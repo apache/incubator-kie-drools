@@ -38,7 +38,7 @@ public class LogicTransformerTest extends DroolsTestCase
      *     a   c    b   c
      * </pre>
      */
-    public void testSingleOrAndOrTransformation()
+    public void testSingleOrAndOrTransformation() throws InvalidPatternException
     {
         String a = "a";
         String b = "b";
@@ -105,7 +105,7 @@ public class LogicTransformerTest extends DroolsTestCase
      *              f        f        f        f
      * </pre>
      */
-    public void testMultipleOrAndOrTransformation()
+    public void testMultipleOrAndOrTransformation()  throws InvalidPatternException
     {
         String a = "a";
         String b = "b";
@@ -195,28 +195,20 @@ public class LogicTransformerTest extends DroolsTestCase
     }
 
     /**
+     * This data structure is now valid
+     * 
      * (Not (OR (A B)
      * 
      * <pre>
-     *           Not
-     *            | 
-     *           or   
-     *          /  \
-     *         a    b
+     *         Not
+     *          | 
+     *         or   
+     *        /  \
+     *       a    b
      * </pre>
      * 
-     * (And ( Not (a) Exist (b)) )
-     * 
-     * <pre>
-     *           And   
-     *          /   \
-     *         Not  Not
-     *         |     |
-     *         a     b
-     * </pre>
-     * </pre>
      */
-    public void testNotOrTransformation()
+    public void testNotOrTransformation()  throws InvalidPatternException
     {
         String a = "a";
         String b = "b";
@@ -228,48 +220,31 @@ public class LogicTransformerTest extends DroolsTestCase
         or.addChild( a );
         or.addChild( b );
 
-        And newAnd = (And) LogicTransformer.getInstance( ).applyOrTransformation( not,
-                                                                                  or );
-
-        assertLength( 2,
-                      newAnd.getChildren( ) );
-        assertEquals( Not.class,
-                      newAnd.getChildren( ).get( 0 ).getClass( ) );
-        assertEquals( Not.class,
-                      newAnd.getChildren( ).get( 1 ).getClass( ) );
-
-        Not not1 = (Not) newAnd.getChildren( ).get( 0 );
-        assertContains( a,
-                        not1.getChildren( ) );
-
-        Not not2 = (Not) newAnd.getChildren( ).get( 1 );
-        assertContains( b,
-                        not2.getChildren( ) );
+        try
+        {
+	        And newAnd = (And) LogicTransformer.getInstance( ).applyOrTransformation( not,
+	                                                                                  or );
+	        fail("This should fail as you cannot nest Ors under Nots");
+        }
+        catch(InvalidPatternException e)
+        {
+        	//
+        }
     }
 
     /**
+     * This data structure is not valid
      * (Exist (OR (A B)
-     * 
      * <pre>
-     *           Not
-     *            | 
-     *           or   
-     *          /  \
-     *         a    b
+     *         Exist
+     *          | 
+     *         or   
+     *        /  \
+     *       a    b
      * </pre>
      * 
-     * (And ( Exist (a) Exist (b)) )
-     * 
-     * <pre>
-     *           And   
-     *          /   \
-     *         Not  Not
-     *         |     |
-     *         a     b
-     * </pre>
-     * </pre>
      */
-    public void testExistOrTransformation()
+    public void testExistOrTransformation()  throws InvalidPatternException
     {
         String a = "a";
         String b = "b";
@@ -281,26 +256,21 @@ public class LogicTransformerTest extends DroolsTestCase
         or.addChild( a );
         or.addChild( b );
 
-        And newAnd = (And) LogicTransformer.getInstance( ).applyOrTransformation( exist,
-                                                                                  or );
+        try
+        {                 
+        	And newAnd = (And) LogicTransformer.getInstance( ).applyOrTransformation( exist,
+        			or );
+        	
+	        fail("This should fail as you cannot nest Ors under Existss");
+        }
+        catch(InvalidPatternException e)
+        {
+        	//
+        }	        
 
-        assertLength( 2,
-                      newAnd.getChildren( ) );
-        assertEquals( Exist.class,
-                      newAnd.getChildren( ).get( 0 ).getClass( ) );
-        assertEquals( Exist.class,
-                      newAnd.getChildren( ).get( 1 ).getClass( ) );
-
-        Exist exist1 = (Exist) newAnd.getChildren( ).get( 0 );
-        assertContains( a,
-                        exist1.getChildren( ) );
-
-        Exist exist2 = (Exist) newAnd.getChildren( ).get( 1 );
-        assertContains( b,
-                        exist2.getChildren( ) );
     }
 
-    public void testDuplicatTransformation()
+    public void testDuplicatTransformation()  throws InvalidRuleException
     {
         String a = "a";
         String b = "b";
@@ -344,15 +314,15 @@ public class LogicTransformerTest extends DroolsTestCase
      *                 /     |     \ 
      *              __/      |      \__
      *             /         |         \
-     *            And       and         Not
-     *           / | \      / \          |
-     *         a  And d    e  Or        Or
-     *            / \        /  \      / \
-     *           b  Not     f  Exist  i  And  
-     *               |           |       / \
-     *              Not         Or      j   k 
-     *               |         /  \
-     *               c        g    h 
+     *            And       and        Not
+     *           / | \      / \         |
+     *         a  And d    e  Or        h
+     *            / \        /  \      
+     *           b  Not     f  Exist    
+     *               |           |      
+     *              Not          g   
+     *               |           
+     *               c         
      * </pre>
      * <pre>
      *                       _/|\__
@@ -362,13 +332,13 @@ public class LogicTransformerTest extends DroolsTestCase
      *               /         |             \__
      *              /          |                \__
      *             |           |                   \
-     *            And          Or                  And
-     *          / | | \       /  \                /  \  
-     *        a   b d Not   And   And           Not  Not
-     *                 |    / \  / |  \          |    | 
-     *                Not  e  f e Exist Exist    i   And  
-     *                 |           |      |          / \
-     *                 c           g      h         j   k
+     *            And          Or                 Not
+     *          / | | \       /  \                 |  
+     *        a   b d Not   And   And              i
+     *                 |    / \  / |            
+     *                Not  e  f e Exist       
+     *                 |           |        
+     *                 c           g        
      * </pre>
      * 
      * @throws IOException
@@ -378,7 +348,8 @@ public class LogicTransformerTest extends DroolsTestCase
      * 
      */
     public void testProcessTree() throws IOException,
-                                 ClassNotFoundException
+                                 ClassNotFoundException,
+                                 InvalidPatternException
     {
         String a = "a";
         String b = "b";
@@ -409,21 +380,12 @@ public class LogicTransformerTest extends DroolsTestCase
         Or or1 = new Or( );
         and3.addChild( or1 );
         Exist exist1 = new Exist( );
-        Or or2 = new Or( );
-        or2.addChild( f );
-        or2.addChild( g );
-        exist1.addChild( or2 );
+        exist1.addChild( g );
         or1.addChild( exist1 );
         or1.addChild( h );
 
-        Not not3 = new Not( );
-        Or or3 = new Or( );
-        not3.addChild( or3 );
-        or3.addChild( i );
-        And and4 = new And( );
-        and4.addChild( j );
-        and4.addChild( k );
-        or3.addChild( and4 );
+        Not not3 = new Not( );               
+        not3.addChild( i );
 
         And root = new And( );
         root.addChild( and1 );
@@ -457,6 +419,10 @@ public class LogicTransformerTest extends DroolsTestCase
 
         // Get known correct tree
         // The binary stream was created from a handchecked correct output
+        
+        // Uncomment this when you need to output a new known correct tree result
+        //writeTree(root, "correct_processTree1.dat");
+        
         ObjectInputStream ois = new ObjectInputStream( this.getClass( ).getResourceAsStream( "correct_processTree1.dat" ) );
 
         And correctResultRoot = (And) ois.readObject( );
@@ -516,12 +482,12 @@ public class LogicTransformerTest extends DroolsTestCase
      *              __/      |      \__
      *             /         |         \
      *            And       or         And
-     *           /  \       / \        / \
-     *         a    Or     d  e      Not OR
-     *             / \                |  / \
-     *           b    c              Or h  i
-     *                               / \
-     *                              f  g
+     *           /  \       / \        /  \
+     *         a    Or     d   e      Not OR
+     *             / \                |  / | 
+     *           b    c               f g Not
+     *                                     |
+     *                                     h
      *              
      *               
      *              
@@ -530,11 +496,11 @@ public class LogicTransformerTest extends DroolsTestCase
      * <pre>
      * 
      *
-     *            And___       And___       And___       And___       And___       And___       And___       And___     
-     *         ||||  \  \   ||||  \  \   ||||  \  \   ||||  \  \   ||||  \  \   ||||  \  \   ||||  \  \   ||||  \  \
-     *         dabh Not Not dabi Not Not dach Not Not daci Not Not eabh Not Not eabi Not Not each Not Not eaci Not Not
-     *               |   |        |   |        |   |        |   |        |   |        |   |        |   |        |   |  
-     *               f   g        f   g        f   g        f   g        f   g        f   g        f   g        f   g
+     *   And___     And___      And___      And___        And__    And___       And___    And___     
+     *  ||| |  \   ||| |  \     ||| |  \   ||| |  \     ||| |  \  ||| |  \     ||| |  \  ||| |  \ 
+     *  dab Not g  dab Not Not  dac Not g  dac Not Not  eab Not g eab Not Not  eac Not g eac Not Not
+     *       |          |   |        |          |   |   |    |        |    |       |          |   |   
+     *       f          f   h        f          f   h        f        f    h       f          f   h
      *                    
      *                    
      * </pre>
@@ -550,7 +516,8 @@ public class LogicTransformerTest extends DroolsTestCase
      * 
      */
     public void testTransform() throws IOException,
-                               ClassNotFoundException
+                               ClassNotFoundException,
+                               InvalidPatternException
     {
         String a = "a";
         String b = "b";
@@ -579,16 +546,13 @@ public class LogicTransformerTest extends DroolsTestCase
 
         And and2 = new And( );
         Not not1 = new Not( );
+        not1.addChild( f );        
         Or or3 = new Or( );
-        not1.addChild( or3 );
-        or3.addChild( f );
         or3.addChild( g );
-        and2.addChild( not1 );
-        Or or4 = new Or( );
-        or4.addChild( h );
-        or4.addChild( i );
-        and2.addChild( or4 );
-        and.addChild( and2 );
+        
+        Not not2 = new Not( );
+        not2.addChild( h );          
+        or3.addChild( not2 );
         
         //---------------------------------------
         // Check a simple case no just one branch
@@ -620,6 +584,9 @@ public class LogicTransformerTest extends DroolsTestCase
  
         ands = LogicTransformer.getInstance( ).transform( and );
 
+        // Uncomment this when you need to output a new known correct tree result
+        //writeTree(ands, "correct_transform1.dat");
+        
         //Now check the main tree
         
         // Get known correct tree
@@ -632,6 +599,18 @@ public class LogicTransformerTest extends DroolsTestCase
             assertEquals( correctResultAnds[j],
                           ands[j] );
         }
+    }
+    
+    private void writeTree(Object object, String fileName) throws IOException
+    {    	
+    	String className = this.getClass().getName();    	    
+    	  	
+    	File file = new File( this.getClass().getResource( className.substring( className.lastIndexOf( '.' ) + 1 ) + ".class" ).getFile() );
+    	
+    	file = new File( file.getParent(), 
+    					 fileName );
+    	    	
+    	new ObjectOutputStream ( new FileOutputStream(file) ).writeObject ( object );    	
     }
     
 }

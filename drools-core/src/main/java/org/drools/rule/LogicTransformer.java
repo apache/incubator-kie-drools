@@ -100,7 +100,7 @@ class LogicTransformer
                       method );
     }
 
-     And[] transform(And and)
+     And[] transform(And and) throws InvalidPatternException
      {
          And cloned = (And) and.clone();
          
@@ -154,7 +154,7 @@ class LogicTransformer
      * 
      * @param ce
      */
-    void processTree(ConditionalElement ce)
+    void processTree(ConditionalElement ce) throws InvalidPatternException
     {
         List newChildren = new ArrayList( );
 
@@ -238,7 +238,7 @@ class LogicTransformer
     }
 
     ConditionalElement applyOrTransformation(ConditionalElement parent,
-                                             ConditionalElement child)
+                                             ConditionalElement child) throws InvalidPatternException
     {
         OrTransformation transformation = null;
         Map map = (HashMap) this.orTransformations.get( parent.getClass( ) );
@@ -255,9 +255,9 @@ class LogicTransformer
         return transformation.transform( parent );
     }
 
-    interface OrTransformation
+    interface OrTransformation 
     {
-        ConditionalElement transform(ConditionalElement element);
+        ConditionalElement transform(ConditionalElement element)  throws InvalidPatternException;
     }
 
     /**
@@ -292,7 +292,7 @@ class LogicTransformer
         OrTransformation
     {
 
-        public ConditionalElement transform(ConditionalElement and)
+        public ConditionalElement transform(ConditionalElement and) throws InvalidPatternException
         {
             Or or = new Or( );
             determinePermutations( 0,
@@ -400,8 +400,8 @@ class LogicTransformer
     }
 
     /**
+     * This data structure is not valid
      * (Exist (OR (A B)
-     * 
      * <pre>
      *         Exist
      *          | 
@@ -410,45 +410,22 @@ class LogicTransformer
      *       a    b
      * </pre>
      * 
-     * (Exist ( Not (a) Not (b)) )
-     * 
-     * <pre>
-     *        Exist   
-     *        /   \
-     *       Not  Not
-     *       |     |
-     *       a     b
-     * </pre>
      */
     class ExistOrTransformation
         implements
         OrTransformation
     {
 
-        public ConditionalElement transform(ConditionalElement exist)
+        public ConditionalElement transform(ConditionalElement exist) throws InvalidPatternException
         {
-            if ( !(exist.getChildren( ).get( 0 ) instanceof Or) )
-            {
-                throw new RuntimeException( "ExistOrTransformation expected '" + Or.class.getName( ) + "' but instead found '" + exist.getChildren( ).get( 0 ).getClass( ).getName( ) + "'" );
-            }
-
-            /*
-             * we know a Not only ever has one child, and the previous algorithm
-             * has confirmed the child is an OR
-             */
-            Or or = (Or) exist.getChildren( ).get( 0 );
-            And and = new And( );
-            for ( Iterator it = or.getChildren( ).iterator( ); it.hasNext( ); )
-            {
-                Exist newExist = new Exist( );
-                newExist.addChild( it.next( ) );
-                and.addChild( newExist );
-            }
-            return and;
+        	  throw new InvalidPatternException("You cannot nest an OR within an Exist");
         }
     }
+        
 
     /**
+     * This data structure is now valid
+     * 
      * (Not (OR (A B)
      * 
      * <pre>
@@ -459,41 +436,15 @@ class LogicTransformer
      *       a    b
      * </pre>
      * 
-     * (And ( Not (a) Exist (b)) )
-     * 
-     * <pre>
-     *         And   
-     *        /   \
-     *       Not  Not
-     *       |     |
-     *       a     b
-     * </pre>
      */
     class NotOrTransformation
         implements
         OrTransformation
     {
 
-        public ConditionalElement transform(ConditionalElement not)
+        public ConditionalElement transform(ConditionalElement not) throws InvalidPatternException
         {
-            if ( !(not.getChildren( ).get( 0 ) instanceof Or) )
-            {
-                throw new RuntimeException( "NotOrTransformation expected '" + Or.class.getName( ) + "' but instead found '" + not.getChildren( ).get( 0 ).getClass( ).getName( ) + "'" );
-            }
-
-            /*
-             * we know a Not only ever has one child, and the previous algorithm
-             * has confirmed the child is an OR
-             */
-            Or or = (Or) not.getChildren( ).get( 0 );
-            And and = new And( );
-            for ( Iterator it = or.getChildren( ).iterator( ); it.hasNext( ); )
-            {
-                Not newNot = new Not( );
-                newNot.addChild( it.next( ) );
-                and.addChild( newNot );
-            }
-            return and;
+        	throw new InvalidPatternException("You cannot nest an OR within an Not");
         }
     }
 
