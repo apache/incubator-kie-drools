@@ -1,0 +1,41 @@
+%&latex
+\documentclass[14pt]{extbook}
+
+%+MakeIndex
+\usepackage{makeidx}
+\makeindex
+%-MakeIndex
+
+\begin{document}
+
+\title{\Huge\bf JBoss Rules}
+\author{Mark Proctor,\\ 
+       Bob McWhirter,\\ 
+       Michael Neale}
+\date{\today}
+\maketitle
+
+%+Contents
+\tableofcontents
+%+Contents
+
+\include {The_Rule_Engine}
+
+\include {The_Rule_Assembly_Language}
+
+\include {JSR-94}
+
+%+Bibliography
+\begin{thebibliography}{99}
+\bibitem{Label1} ...
+\bibitem{Label2} ...
+\end{thebibliography}
+%-Bibliography
+
+%+MakeIndex
+\printindex
+%-MakeIndex
+
+\end{document}
+
+
