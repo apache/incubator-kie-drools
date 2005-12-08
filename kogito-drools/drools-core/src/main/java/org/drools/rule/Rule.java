@@ -433,8 +433,9 @@ public class Rule
      * logic branch. The processing uses as a clone of the Rule's patterns, so they are not changed.
      * 
      * @return
+     * @throws InvalidPatternException 
      */
-    public And[] getProcessPatterns()
+    public And[] getProcessPatterns() throws InvalidPatternException
     {
         return LogicTransformer.getInstance( ).transform( this.headPattern );
     }
