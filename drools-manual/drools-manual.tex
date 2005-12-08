@@ -1,14 +1,21 @@
 %&latex
-\documentclass[14pt]{extbook}
+\documentclass[14pt]{book}
+
+ \usepackage{color}
+ \usepackage{listings}
+ \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
+ \definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
+ \definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
 
 %+MakeIndex
 \usepackage{makeidx}
+
 \makeindex
 %-MakeIndex
 
 \begin{document}
 
-\title{\Huge\bf JBoss Rules}
+\title{\Huge\bf Drools\\ the\\ JBoss Rules}
 \author{Mark Proctor,\\ 
        Bob McWhirter,\\ 
        Michael Neale}
@@ -19,11 +26,25 @@
 \tableofcontents
 %+Contents
 
+\part {Drools}
+
 \include {The_Rule_Engine}
 
 \include {The_Rule_Assembly_Language}
 
+\include {Semantic_Module_Framework}
+
 \include {JSR-94}
+
+\include {Decision_Tables}
+
+\include {Building_And_Deploying_Rule_Bases}
+
+\include {Rule_Management}
+
+\include {Developing_Drools}
+
+\part {Examples and Case Studies}
 
 %+Bibliography
 \begin{thebibliography}{99}
