@@ -221,4 +221,11 @@ abstract class ObjectSource extends BaseNode
     
     public abstract void remove();
     
+    public int hashCode()
+    {
+        return this.id;
+    }
+    
+   
+    
 }

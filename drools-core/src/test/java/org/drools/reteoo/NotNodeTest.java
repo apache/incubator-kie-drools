@@ -5,10 +5,10 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RetractionException;
-import org.drools.rule.BooleanConstraint;
+import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-import org.drools.spi.BooleanExpressionConstraint;
+import org.drools.spi.PredicateExpressionConstraint;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.Extractor;
 import org.drools.spi.ObjectType;
@@ -62,7 +62,7 @@ public class NotNodeTest extends DroolsTestCase
                                                           9 );
 
         /* create the boolean expression check */
-        BooleanExpressionConstraint checkString = new BooleanExpressionConstraint() {
+        PredicateExpressionConstraint checkString = new PredicateExpressionConstraint() {
             public boolean isAllowed(Object object,
                                      FactHandle handle,
                                      Declaration declaration, // ?string1
@@ -78,7 +78,7 @@ public class NotNodeTest extends DroolsTestCase
         };
 
         /* create the constraint */
-        BooleanConstraint constraint = new BooleanConstraint( checkString,
+        PredicateConstraint constraint = new PredicateConstraint( checkString,
                                                               string1Declaration,
                                                               new Declaration[]{string2Declaration} );
 

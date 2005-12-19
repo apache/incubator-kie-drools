@@ -111,6 +111,16 @@ public class ClassObjectType implements ObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
+     * Produce the hash of this object.
+     *
+     * @return The hash.
+     */
+    public int hashCode()
+    {
+        return getType( ).hashCode( );
+    }
+    
+    /**
      * Determine if another object is equal to this.
      *
      * @param object The object to test.
@@ -131,17 +141,8 @@ public class ClassObjectType implements ObjectType
         }
 
         return this.objectTypeClass == ( ( ClassObjectType ) object ).objectTypeClass;
-    }
-
-    /**
-     * Produce the hash of this object.
-     *
-     * @return The hash.
-     */
-    public int hashCode()
-    {
-        return getType( ).hashCode( );
-    }
+    }    
+        
 
     public String toString()
     {

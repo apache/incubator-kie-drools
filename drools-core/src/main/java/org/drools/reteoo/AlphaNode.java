@@ -97,4 +97,21 @@ public class AlphaNode extends ObjectSource
     {
         return new HashSet( );
     }
+        
+    public boolean equals( Object object )
+    {
+        if ( this == object )
+        {
+            return true;
+        }
+     
+        if ( object == null || getClass( ) != object.getClass( ) )
+        {
+            return false;
+        }
+        
+        AlphaNode other = (AlphaNode) object;
+        
+        return this.objectSource.equals( other.objectSource ) && this.constraint.equals( other.constraint );
+    }     
 }

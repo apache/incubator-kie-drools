@@ -234,9 +234,9 @@ public class LogicTransformerTest extends DroolsTestCase
 
     /**
      * This data structure is not valid
-     * (Exist (OR (A B)
+     * (Exists (OR (A B)
      * <pre>
-     *         Exist
+     *         Exists
      *          | 
      *         or   
      *        /  \
@@ -249,7 +249,7 @@ public class LogicTransformerTest extends DroolsTestCase
         String a = "a";
         String b = "b";
 
-        Exist exist = new Exist( );
+        Exists exist = new Exists( );
         Or or = new Or( );
         exist.addChild( or );
 
@@ -318,7 +318,7 @@ public class LogicTransformerTest extends DroolsTestCase
      *           / | \      / \         |
      *         a  And d    e  Or        h
      *            / \        /  \      
-     *           b  Not     f  Exist    
+     *           b  Not     f  Exists    
      *               |           |      
      *              Not          g   
      *               |           
@@ -336,7 +336,7 @@ public class LogicTransformerTest extends DroolsTestCase
      *          / | | \       /  \                 |  
      *        a   b d Not   And   And              i
      *                 |    / \  / |            
-     *                Not  e  f e Exist       
+     *                Not  e  f e Exists       
      *                 |           |        
      *                 c           g        
      * </pre>
@@ -379,7 +379,7 @@ public class LogicTransformerTest extends DroolsTestCase
         and3.addChild( e );
         Or or1 = new Or( );
         and3.addChild( or1 );
-        Exist exist1 = new Exist( );
+        Exists exist1 = new Exists( );
         exist1.addChild( g );
         or1.addChild( exist1 );
         or1.addChild( h );

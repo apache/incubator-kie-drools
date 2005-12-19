@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.drools.FactHandle;
 import org.drools.reteoo.InstrumentedReteTuple;
 import org.drools.reteoo.InstrumentedWorkingMemoryImpl;
-import org.drools.spi.BooleanExpressionConstraint;
+import org.drools.spi.PredicateExpressionConstraint;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.ConstraintComparator;
 import org.drools.spi.Extractor;
@@ -218,7 +218,7 @@ public class ConstraintTest extends TestCase
      *  
      * </pre>
      */
-    public void testBooleanExpressionConstraint()
+    public void testPredicateExpressionConstraint()
     {
         InstrumentedWorkingMemoryImpl workingMemory = new InstrumentedWorkingMemoryImpl( );
 
@@ -248,7 +248,7 @@ public class ConstraintTest extends TestCase
                                                          priceOfCheeseExtractor,
                                                          1 );
 
-        BooleanExpressionConstraint isDoubleThePrice = new BooleanExpressionConstraint( ) {
+        PredicateExpressionConstraint isDoubleThePrice = new PredicateExpressionConstraint( ) {
             public boolean isAllowed(Object object,
                                      FactHandle handle,
                                      Declaration declaration, // ?price2
@@ -262,7 +262,7 @@ public class ConstraintTest extends TestCase
             }
         };
 
-        BooleanConstraint constraint1 = new BooleanConstraint( isDoubleThePrice,
+        PredicateConstraint constraint1 = new PredicateConstraint( isDoubleThePrice,
                                                                price2Declaration,
                                                                new Declaration[]{price1Declaration} );
 

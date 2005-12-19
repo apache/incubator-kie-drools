@@ -55,14 +55,14 @@ class LogicTransformer
                                And.class );
         addTransformationPair( Or.class,
                                Or.class );
-        addTransformationPair( Exist.class,
-                               Exist.class );
+        addTransformationPair( Exists.class,
+                               Exists.class );
 
         // these pairs will be transformed
         addTransformationPair( Not.class,
                                Or.class,
                                new NotOrTransformation( ) );
-        addTransformationPair( Exist.class,
+        addTransformationPair( Exists.class,
                                Or.class,
                                new ExistOrTransformation( ) );
         addTransformationPair( And.class,
@@ -401,9 +401,9 @@ class LogicTransformer
 
     /**
      * This data structure is not valid
-     * (Exist (OR (A B)
+     * (Exists (OR (A B)
      * <pre>
-     *         Exist
+     *         Exists
      *          | 
      *         or   
      *        /  \
@@ -418,7 +418,7 @@ class LogicTransformer
 
         public ConditionalElement transform(ConditionalElement exist) throws InvalidPatternException
         {
-        	  throw new InvalidPatternException("You cannot nest an OR within an Exist");
+        	  throw new InvalidPatternException("You cannot nest an OR within an Exists");
         }
     }
         

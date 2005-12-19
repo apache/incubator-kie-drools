@@ -4,10 +4,10 @@ import org.drools.AssertionException;
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.RetractionException;
-import org.drools.rule.BooleanConstraint;
+import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-import org.drools.spi.BooleanExpressionConstraint;
+import org.drools.spi.PredicateExpressionConstraint;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.Extractor;
 import org.drools.spi.ObjectType;
@@ -440,7 +440,7 @@ public class JoinNodeTest extends DroolsTestCase
     }
 
     /**
-     * While all the previous tests work with the DefaultJoinNodeBinder, ie joins always succeed. This tests joins with BooleanExpressionConstraint. We only use one constraint, as Constraints are tested more thorougly else where, likewise for this
+     * While all the previous tests work with the DefaultJoinNodeBinder, ie joins always succeed. This tests joins with PredicateExpressionConstraint. We only use one constraint, as Constraints are tested more thorougly else where, likewise for this
      * reason we use a very simple constraint.
      * 
      * @throws Exception
@@ -473,7 +473,7 @@ public class JoinNodeTest extends DroolsTestCase
                                                           9 );
 
         /* create the boolean expression check */
-        BooleanExpressionConstraint checkString = new BooleanExpressionConstraint() {
+        PredicateExpressionConstraint checkString = new PredicateExpressionConstraint() {
             public boolean isAllowed(Object object,
                                      FactHandle handle,
                                      Declaration declaration, // ?string1
@@ -489,7 +489,7 @@ public class JoinNodeTest extends DroolsTestCase
         };
 
         /* create the constraint */
-        BooleanConstraint constraint = new BooleanConstraint( checkString,
+        PredicateConstraint constraint = new PredicateConstraint( checkString,
                                                               string1Declaration,
                                                               new Declaration[]{string2Declaration} );
 
