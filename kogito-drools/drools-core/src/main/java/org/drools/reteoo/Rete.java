@@ -50,6 +50,7 @@ import java.util.Map;
 
 import org.drools.FactException;
 import org.drools.rule.And;
+import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -218,7 +219,7 @@ class Rete extends ObjectSource
         // do nothing this is the root node
     }
     
-    void addRule(Rule rule)
+    void addRule(Rule rule) throws InvalidPatternException
     {
         //And is the implicit head node
         And[] rules = rule.getProcessPatterns();
@@ -250,6 +251,12 @@ class Rete extends ObjectSource
             node.ruleAttached();
             it.remove();
         }         
+    }
+
+    public void remove()
+    {
+        // TODO Auto-generated method stub
+        
     }
     
 }

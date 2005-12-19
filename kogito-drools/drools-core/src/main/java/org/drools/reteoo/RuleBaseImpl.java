@@ -54,6 +54,7 @@ import org.drools.RuleIntegrationException;
 import org.drools.RuleSetIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.conflict.DefaultConflictResolver;
+import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleSet;
 import org.drools.spi.ConflictResolver;
@@ -272,9 +273,10 @@ class RuleBaseImpl
      *             if an error prevents complete construction of the network for
      *             the <code>Rule</code>.
      * @throws FactException 
+     * @throws InvalidPatternException 
      */
     public void addRuleSet(RuleSet ruleSet) throws RuleIntegrationException,
-                                                   RuleSetIntegrationException, FactException
+                                                   RuleSetIntegrationException, FactException, InvalidPatternException
     {
         Map newApplicationData = ruleSet.getApplicationData( );
      
@@ -301,7 +303,7 @@ class RuleBaseImpl
         }
     }    
     
-    public void addRule(Rule rule) throws FactException, RuleIntegrationException
+    public void addRule(Rule rule) throws FactException, RuleIntegrationException, InvalidPatternException
     {
         this.builder.addRule( rule );
 
