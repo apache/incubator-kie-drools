@@ -113,5 +113,11 @@ public class AlphaNode extends ObjectSource
         AlphaNode other = (AlphaNode) object;
         
         return this.objectSource.equals( other.objectSource ) && this.constraint.equals( other.constraint );
+    }
+
+    public void remove()
+    {
+        // TODO Auto-generated method stub
+        
     }     
 }
