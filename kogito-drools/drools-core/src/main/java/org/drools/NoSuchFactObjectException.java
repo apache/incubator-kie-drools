@@ -55,7 +55,7 @@ package org.drools;
  * @version $Id: NoSuchFactObjectException.java,v 1.3 2003/11/19 21:31:09 bob
  *          Exp $
  */
-public class NoSuchFactObjectException extends FactException
+public class NoSuchFactObjectException extends RuntimeException
 {
     /** Invalid fact handle. */
     private final FactHandle handle;

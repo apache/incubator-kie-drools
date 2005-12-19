@@ -10,6 +10,7 @@ public class Column
 {
     private final ObjectType    objectType;
     private List                constraints = Collections.EMPTY_LIST;
+    private List				declarations = Collections.EMPTY_LIST;
     private final ColumnBinding binding;
     private final int           index;
 
@@ -24,6 +25,7 @@ public class Column
     public Column(int index,
                   ObjectType objectType,
                   ColumnBinding binding)
+    
     {
         this.index = index;
         this.objectType = objectType;
@@ -34,6 +36,20 @@ public class Column
     {
         return this.objectType;
     }
+    
+    public List getDeclarations()
+    {
+        return Collections.unmodifiableList( this.declarations );
+    }
+
+    public void addDeclaration(Declaration declaration)
+    {
+        if (this.declarations == Collections.EMPTY_LIST)
+        {
+            this.declarations = new ArrayList( 1 );
+        }
+        this.declarations.add( declaration );
+    }    
 
     public List getConstraints()
     {

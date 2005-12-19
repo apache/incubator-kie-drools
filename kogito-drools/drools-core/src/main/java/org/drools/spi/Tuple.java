@@ -62,7 +62,6 @@ public interface Tuple
      * @return The currently bound <code>Object</code> value.
      */
     Object get(int column);
-  
     
     Object get(Declaration declaration);
     

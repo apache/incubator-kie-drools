@@ -159,7 +159,7 @@ class ReteTuple
     public Object get(Declaration declaration)
     {
         return declaration.getValue( get( declaration.getColumn( ) ) );
-    }
+    }    
 
     /**
      * @see Tuple

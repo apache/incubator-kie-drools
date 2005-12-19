@@ -3,7 +3,7 @@ package org.drools.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Exist  extends ConditionalElement
+public class Exists  extends ConditionalElement
 {
     public Object getChild()
     {

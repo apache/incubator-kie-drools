@@ -220,7 +220,7 @@ abstract class BetaNode extends TupleSource
 
         BetaNode other = (BetaNode) object;
 
-        return this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput );
+        return this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.joinNodeBinder.equals( other.joinNodeBinder ) ;
     }
 
     public Object createMemory()

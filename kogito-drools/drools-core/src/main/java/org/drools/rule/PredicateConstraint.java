@@ -1,21 +1,23 @@
 package org.drools.rule;
 
 import org.drools.FactHandle;
-import org.drools.spi.BooleanExpressionConstraint;
+import org.drools.spi.PredicateExpressionConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.Tuple;
 
-public class BooleanConstraint
+public class PredicateConstraint
     implements
     Constraint
 {
     private final Declaration                 declaration;
 
-    private final BooleanExpressionConstraint booleanExpression;
+    private final PredicateExpressionConstraint booleanExpression;
 
     private final Declaration[]               requiredDeclarations;
+    
+    private static final Declaration[]        EMPTY_DECLARATIONS = new Declaration[0];
 
-    public BooleanConstraint(BooleanExpressionConstraint expression,
+    public PredicateConstraint(PredicateExpressionConstraint expression,
                              Declaration declaration)
     {
         this( expression,
@@ -23,7 +25,7 @@ public class BooleanConstraint
               null );
     }
 
-    public BooleanConstraint(BooleanExpressionConstraint expression,
+    public PredicateConstraint(PredicateExpressionConstraint expression,
                              Declaration declaration,
                              Declaration[] declarations)
     {
@@ -33,7 +35,7 @@ public class BooleanConstraint
 
         if ( declarations == null )
         {
-            this.requiredDeclarations = new Declaration[]{};
+            this.requiredDeclarations = PredicateConstraint.EMPTY_DECLARATIONS;
         }
         else
         {
@@ -41,7 +43,7 @@ public class BooleanConstraint
         }
     }
 
-    public BooleanExpressionConstraint getExpression()
+    public PredicateExpressionConstraint getExpression()
     {
         return this.booleanExpression;
     }

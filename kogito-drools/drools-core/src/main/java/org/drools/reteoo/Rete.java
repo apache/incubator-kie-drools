@@ -50,7 +50,6 @@ import java.util.Map;
 
 import org.drools.FactException;
 import org.drools.rule.And;
-import org.drools.rule.LogicTransformer;
 import org.drools.rule.Rule;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -188,32 +187,6 @@ class Rete extends ObjectSource
         return (ObjectTypeNode) this.objectTypeNodes.get( objectType );
     }
 
-    /**
-     * Retrieve an <code>ObjectTypeNode</code> keyed by
-     * <code>ObjectType</code>, creating one, if necessary.
-     * 
-     * @param objectType
-     *            The <code>ObjectType</code> key.
-     * 
-     * @return The matching <code>ObjectTypeNode</codeb>.
-     */
-    ObjectTypeNode getOrCreateObjectTypeNode(ObjectType objectType)
-    {
-        ObjectTypeNode node = getObjectTypeNode( objectType );
-
-        if ( node == null )
-        {
-            node = new ObjectTypeNode( 0,
-                                       objectType,
-                                       this );
-
-            node.attach( );
-        }
-
-        this.rulesToUpdate.add( node );
-
-        return node;
-    }
 
     /**
      * Add an <code>ObjectTypeNode</code> child to this <code>Rete</code>.
