@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.apache.commons.lang.StringUtils;
 import org.drools.natural.NaturalLanguageException;
 import org.drools.natural.ruledoc.RuleDocumentListener;
 import org.htmlparser.Node;
@@ -85,7 +86,10 @@ public class HTMLDocParser
     
     private void handleText(String text)
     {
-        listener.handleText(unescapeSmartQuotes(unescapeEntities(text)));
+        String noNewLines = StringUtils.replaceChars(text, '\n', ' ');
+        noNewLines = StringUtils.replaceChars(noNewLines, '\r', ' ');
+        
+        listener.handleText(unescapeSmartQuotes(unescapeEntities(noNewLines)));
         
     }
 
@@ -120,9 +124,9 @@ public class HTMLDocParser
                 listener.endComment();
             }
         } else if (tagName.equals("P")) {
-            handleText(" ");
+            handleText("\n");
         } else if (tagName.equals("BR")) {
-            handleText(" ");
+            handleText("\n");
         }
         
         
