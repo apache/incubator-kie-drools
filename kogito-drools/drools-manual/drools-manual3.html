@@ -1,0 +1,512 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>text</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/mn.html)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/mn.html)"> 
+<!-- html,frames,png --> 
+<meta name="src" content="drools-manual.tex"> 
+<meta name="date" content="2005-12-21 01:40:00"> 
+<link rel="stylesheet" type="text/css" href="drools-manual.css"> 
+</head><body 
+id="tex4ht-main">
+   <a 
+ id="tex4ht-body"></a>
+   <div class="maketitle">
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+<h2 class="titleHead">Drools<br>
+the<br>
+JBoss Rules</h2>
+ <div class="author" ><span 
+class="cmr-12">Mark Proctor,</span>
+<br><span 
+class="cmr-12">Bob McWhirter,</span>
+<br> <span 
+class="cmr-12">Michael Neale</span></div>
+<br>
+<div class="date" ><span 
+class="cmr-12">December 21, 2005</span></div>
+                                                                  
+
+                                                                  
+   </div>
+                                                                  
+
+                                                                  
+   <h2 class="likechapterHead"><a 
+ id="x3-1000"></a>Contents</h2> <div class="tableofcontents">
+   <span class="partToc">I&nbsp;&nbsp;<a 
+href="#x3-2000I" id="QQ2-3-2">Drools</a></span>
+<br>   <span class="chapterToc">1 <a 
+href="#x3-30001" id="QQ2-3-3">The Rule Engine</a></span>
+<br>   &nbsp;<span class="sectionToc">1.1 <a 
+href="#x3-40001.1" id="QQ2-3-4">Rete Algorithm</a></span>
+<br>   &nbsp;<span class="sectionToc">1.2 <a 
+href="#x3-50001.2" id="QQ2-3-5">Rule Base</a></span>
+<br>   &nbsp;<span class="sectionToc">1.3 <a 
+href="#x3-60001.3" id="QQ2-3-6">Working Memory</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.3.1 <a 
+href="#x3-70001.3.1" id="QQ2-3-7">Facts</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.3.2 <a 
+href="#x3-80001.3.2" id="QQ2-3-8">Assertion</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.3.3 <a 
+href="#x3-90001.3.3" id="QQ2-3-9">Retraction</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.3.4 <a 
+href="#x3-100001.3.4" id="QQ2-3-10">Modification</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.3.5 <a 
+href="#x3-110001.3.5" id="QQ2-3-11">Application Data</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.3.6 <a 
+href="#x3-120001.3.6" id="QQ2-3-12">Property Change Listeners</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.3.7 <a 
+href="#x3-130001.3.7" id="QQ2-3-13">Shadow Facts</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.3.8 <a 
+href="#x3-140001.3.8" id="QQ2-3-14">Stateless and Stateful Sessions</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.3.9 <a 
+href="#x3-150001.3.9" id="QQ2-3-15">Synchronisation and Threading Issues</a></span>
+<br>   &nbsp;<span class="sectionToc">1.4 <a 
+href="#x3-160001.4" id="QQ2-3-16">Agenda</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.4.1 <a 
+href="#x3-170001.4.1" id="QQ2-3-17">Conflict Resolution</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.4.2 <a 
+href="#x3-180001.4.2" id="QQ2-3-18">Modules</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.4.3 <a 
+href="#x3-190001.4.3" id="QQ2-3-19">Filters</a></span>
+<br>   &nbsp;<span class="sectionToc">1.5 <a 
+href="#x3-200001.5" id="QQ2-3-20">Event Model</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.5.1 <a 
+href="#x3-210001.5.1" id="QQ2-3-21">Debug Event Listener</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">1.5.2 <a 
+href="#x3-220001.5.2" id="QQ2-3-22">Audit Event Listener</a></span>
+<br>   <span class="chapterToc">2 <a 
+href="#x3-230002" id="QQ2-3-23">The Rule Assembly Language</a></span>
+<br>   &nbsp;<span class="sectionToc">2.1 <a 
+href="#x3-240002.1" id="QQ2-3-24">Rule Overview</a></span>
+<br>   &nbsp;<span class="sectionToc">2.2 <a 
+href="#x3-250002.2" id="QQ2-3-25">Pattern Matching</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">2.2.1 <a 
+href="#x3-260002.2.1" id="QQ2-3-26">Columns</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">2.2.2 <a 
+href="#x3-290002.2.2" id="QQ2-3-29">Constraints</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">2.2.3 <a 
+href="#x3-330002.2.3" id="QQ2-3-33">Conditional Elements</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">2.2.4 <a 
+href="#x3-420002.2.4" id="QQ2-3-42">Functions</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">2.2.5 <a 
+href="#x3-430002.2.5" id="QQ2-3-43">Application Data</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">2.2.6 <a 
+href="#x3-440002.2.6" id="QQ2-3-44">Imports</a></span>
+<br>   &nbsp;<span class="sectionToc">2.3 <a 
+href="#x3-450002.3" id="QQ2-3-45">Rule Execution Control</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">2.3.1 <a 
+href="#x3-460002.3.1" id="QQ2-3-46">Salience</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">2.3.2 <a 
+href="#x3-470002.3.2" id="QQ2-3-47">Semaphores</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">2.3.3 <a 
+href="#x3-480002.3.3" id="QQ2-3-48">Modules</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">2.3.4 <a 
+href="#x3-490002.3.4" id="QQ2-3-49">Xor Group</a></span>
+<br>   &nbsp;<span class="sectionToc">2.4 <a 
+href="#x3-500002.4" id="QQ2-3-50">Temporal Rules</a></span>
+                                                                  
+
+                                                                  
+<br>   &nbsp;<span class="sectionToc">2.5 <a 
+href="#x3-510002.5" id="QQ2-3-51">Truth Maintenance</a></span>
+<br>   &nbsp;<span class="sectionToc">2.6 <a 
+href="#x3-520002.6" id="QQ2-3-52">Searching with Query</a></span>
+<br>   <span class="chapterToc">3 <a 
+href="#x3-530003" id="QQ2-3-53">Semantic Module Framework</a></span>
+<br>   &nbsp;<span class="sectionToc">3.1 <a 
+href="#x3-540003.1" id="QQ2-3-54">Semantic Modules</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">3.1.1 <a 
+href="#x3-550003.1.1" id="QQ2-3-55">Java</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">3.1.2 <a 
+href="#x3-560003.1.2" id="QQ2-3-56">Groovy</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">3.1.3 <a 
+href="#x3-570003.1.3" id="QQ2-3-57">Python</a></span>
+<br>   &nbsp;&nbsp;<span class="subsectionToc">3.1.4 <a 
+href="#x3-580003.1.4" id="QQ2-3-58">C#</a></span>
+<br>   <span class="chapterToc">4 <a 
+href="#x3-590004" id="QQ2-3-59">JSR-94</a></span>
+<br>   <span class="chapterToc">5 <a 
+href="#x3-600005" id="QQ2-3-60">Decision Tables</a></span>
+<br>   <span class="chapterToc">6 <a 
+href="#x3-610006" id="QQ2-3-61">Building and Deploying Rule Bases</a></span>
+<br>   &nbsp;<span class="sectionToc">6.1 <a 
+href="#x3-620006.1" id="QQ2-3-62">Loading a Rule Set</a></span>
+<br>   &nbsp;<span class="sectionToc">6.2 <a 
+href="#x3-630006.2" id="QQ2-3-63">Loading a Rule Base</a></span>
+<br>   &nbsp;<span class="sectionToc">6.3 <a 
+href="#x3-640006.3" id="QQ2-3-64">Deployment with Drools Deployment Jars (.ddj)</a></span>
+<br>   &nbsp;<span class="sectionToc">6.4 <a 
+href="#x3-650006.4" id="QQ2-3-65">Debugging with Drools Deployment Source Jars </a></span>
+<br>   <span class="chapterToc">7 <a 
+href="#x3-660007" id="QQ2-3-66">Rule Management</a></span>
+<br>   &nbsp;<span class="sectionToc">7.1 <a 
+href="#x3-670007.1" id="QQ2-3-67">The Rule Repository</a></span>
+<br>   <span class="chapterToc">8 <a 
+href="#x3-680008" id="QQ2-3-68">Developing Drools</a></span>
+<br>   &nbsp;<span class="sectionToc">8.1 <a 
+href="#x3-690008.1" id="QQ2-3-69">Building with Maven 2.0</a></span>
+<br>   &nbsp;<span class="sectionToc">8.2 <a 
+href="#x3-700008.2" id="QQ2-3-70">Using Eclipse</a></span>
+<br>   &nbsp;<span class="sectionToc">8.3 <a 
+href="#x3-710008.3" id="QQ2-3-71">Using IntelliJ</a></span>
+<br>   <span class="partToc">II&nbsp;&nbsp;<a 
+href="#x3-72000II" id="QQ2-3-72">Examples and Case Studies/Examples and Case Studies</a></span>
+   </div>
+                                                                  
+
+                                                                  
+<!--l. 26--><p class="indent">
+                                                                  
+
+                                                                  
+<!--l. 26--><p class="indent">
+                                                                  
+
+                                                                  
+   <h1 class="partHead"><span class="titlemark">Part&nbsp;I<br></span><a 
+ id="x3-2000I"></a>Drools</h1>
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+   <h2 class="chapterHead"><span class="titlemark">Chapter&nbsp;1</span><br><a 
+ id="x3-30001"></a>The Rule Engine</h2> There is text in first chapter
+   <h3 class="sectionHead"><span class="titlemark">1.1   </span> <a 
+ id="x3-40001.1"></a>Rete Algorithm</h3>
+<!--l. 6--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">1.2   </span> <a 
+ id="x3-50001.2"></a>Rule Base</h3>
+<!--l. 8--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">1.3   </span> <a 
+ id="x3-60001.3"></a>Working Memory</h3>
+<!--l. 9--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.3.1   </span> <a 
+ id="x3-70001.3.1"></a>Facts</h4>
+<!--l. 10--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.3.2   </span> <a 
+ id="x3-80001.3.2"></a>Assertion</h4>
+<!--l. 11--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.3.3   </span> <a 
+ id="x3-90001.3.3"></a>Retraction</h4>
+<!--l. 12--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.3.4   </span> <a 
+ id="x3-100001.3.4"></a>Modification</h4>
+<!--l. 13--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.3.5   </span> <a 
+ id="x3-110001.3.5"></a>Application Data</h4>
+<!--l. 14--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.3.6   </span> <a 
+ id="x3-120001.3.6"></a>Property Change Listeners</h4>
+<!--l. 15--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.3.7   </span> <a 
+ id="x3-130001.3.7"></a>Shadow Facts</h4>
+                                                                  
+
+                                                                  
+<!--l. 16--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.3.8   </span> <a 
+ id="x3-140001.3.8"></a>Stateless and Stateful Sessions</h4>
+<!--l. 17--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.3.9   </span> <a 
+ id="x3-150001.3.9"></a>Synchronisation and Threading Issues</h4>
+<!--l. 19--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">1.4   </span> <a 
+ id="x3-160001.4"></a>Agenda</h3>
+<!--l. 20--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.4.1   </span> <a 
+ id="x3-170001.4.1"></a>Conflict Resolution</h4>
+<!--l. 21--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.4.2   </span> <a 
+ id="x3-180001.4.2"></a>Modules</h4>
+<!--l. 22--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.4.3   </span> <a 
+ id="x3-190001.4.3"></a>Filters</h4>
+<!--l. 24--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">1.5   </span> <a 
+ id="x3-200001.5"></a>Event Model</h3>
+<!--l. 25--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.5.1   </span> <a 
+ id="x3-210001.5.1"></a>Debug Event Listener</h4>
+<!--l. 26--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">1.5.2   </span> <a 
+ id="x3-220001.5.2"></a>Audit Event Listener</h4>
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+   <h2 class="chapterHead"><span class="titlemark">Chapter&nbsp;2</span><br><a 
+ id="x3-230002"></a>The Rule Assembly Language</h2> There is text in first chapter
+   <h3 class="sectionHead"><span class="titlemark">2.1   </span> <a 
+ id="x3-240002.1"></a>Rule Overview</h3>
+<!--l. 6--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">2.2   </span> <a 
+ id="x3-250002.2"></a>Pattern Matching</h3>
+<!--l. 8--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">2.2.1   </span> <a 
+ id="x3-260002.2.1"></a>Columns</h4>
+<!--l. 9--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-270002.2.1"></a>Column Bindings</h5>
+<!--l. 10--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-280002.2.1"></a>Field Bindings</h5>
+<!--l. 12--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">2.2.2   </span> <a 
+ id="x3-290002.2.2"></a>Constraints</h4>
+<!--l. 13--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-300002.2.2"></a>Literal Constraints</h5>
+<!--l. 14--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-310002.2.2"></a>Predicate Field Constraints</h5>
+<!--l. 15--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-320002.2.2"></a>Return Value Constraints</h5>
+<!--l. 17--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">2.2.3   </span> <a 
+ id="x3-330002.2.3"></a>Conditional Elements</h4>
+                                                                  
+
+                                                                  
+<!--l. 18--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-340002.2.3"></a>The &#8217;evaluate&#8217; Conditional Element</h5>
+<!--l. 19--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-350002.2.3"></a>The &#8217;and&#8217; Conditional Element</h5>
+<!--l. 20--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-360002.2.3"></a>The &#8217;or&#8217; Conditional Element</h5>
+<!--l. 21--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-370002.2.3"></a>The &#8217;not&#8217; Conditional Element</h5>
+<!--l. 22--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-380002.2.3"></a>The &#8217;exist&#8217; Conditional Element</h5>
+<!--l. 23--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-390002.2.3"></a>The &#8217;forall&#8217; Conditional Element</h5>
+<!--l. 24--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-400002.2.3"></a>The &#8217;accumulate&#8217; Conditional Element</h5>
+<!--l. 25--><p class="noindent">
+   <h5 class="subsubsectionHead"><a 
+ id="x3-410002.2.3"></a>The &#8217;logical&#8217; Conditional Element</h5>
+<!--l. 27--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">2.2.4   </span> <a 
+ id="x3-420002.2.4"></a>Functions</h4>
+<!--l. 29--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">2.2.5   </span> <a 
+ id="x3-430002.2.5"></a>Application Data</h4>
+<!--l. 31--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">2.2.6   </span> <a 
+ id="x3-440002.2.6"></a>Imports</h4>
+                                                                  
+
+                                                                  
+<!--l. 33--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">2.3   </span> <a 
+ id="x3-450002.3"></a>Rule Execution Control</h3>
+<!--l. 34--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">2.3.1   </span> <a 
+ id="x3-460002.3.1"></a>Salience</h4>
+<!--l. 35--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">2.3.2   </span> <a 
+ id="x3-470002.3.2"></a>Semaphores</h4>
+<!--l. 36--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">2.3.3   </span> <a 
+ id="x3-480002.3.3"></a>Modules</h4>
+<!--l. 37--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">2.3.4   </span> <a 
+ id="x3-490002.3.4"></a>Xor Group</h4>
+<!--l. 39--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">2.4   </span> <a 
+ id="x3-500002.4"></a>Temporal Rules</h3>
+<!--l. 41--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">2.5   </span> <a 
+ id="x3-510002.5"></a>Truth Maintenance</h3>
+<!--l. 43--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">2.6   </span> <a 
+ id="x3-520002.6"></a>Searching with Query</h3>
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+<!--l. 1--><p class="indent">
+                                                                  
+
+                                                                  
+   <h2 class="chapterHead"><span class="titlemark">Chapter&nbsp;3</span><br><a 
+ id="x3-530003"></a>Semantic Module Framework</h2> There is text in first chapter
+   <h3 class="sectionHead"><span class="titlemark">3.1   </span> <a 
+ id="x3-540003.1"></a>Semantic Modules</h3>
+<!--l. 6--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">3.1.1   </span> <a 
+ id="x3-550003.1.1"></a>Java</h4>
+<!--l. 8--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">3.1.2   </span> <a 
+ id="x3-560003.1.2"></a>Groovy</h4>
+<!--l. 10--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">3.1.3   </span> <a 
+ id="x3-570003.1.3"></a>Python</h4>
+<!--l. 12--><p class="noindent">
+   <h4 class="subsectionHead"><span class="titlemark">3.1.4   </span> <a 
+ id="x3-580003.1.4"></a>C#</h4>
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+<!--l. 1--><p class="indent">
+                                                                  
+
+                                                                  
+   <h2 class="chapterHead"><span class="titlemark">Chapter&nbsp;4</span><br><a 
+ id="x3-590004"></a>JSR-94</h2> There is text in first chapter
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+<!--l. 1--><p class="indent">
+                                                                  
+
+                                                                  
+   <h2 class="chapterHead"><span class="titlemark">Chapter&nbsp;5</span><br><a 
+ id="x3-600005"></a>Decision Tables</h2> There is text in first chapter
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+<!--l. 1--><p class="indent">
+                                                                  
+
+                                                                  
+   <h2 class="chapterHead"><span class="titlemark">Chapter&nbsp;6</span><br><a 
+ id="x3-610006"></a>Building and Deploying Rule Bases</h2> There is text in first chapter
+   <h3 class="sectionHead"><span class="titlemark">6.1   </span> <a 
+ id="x3-620006.1"></a>Loading a Rule Set</h3>
+<!--l. 6--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">6.2   </span> <a 
+ id="x3-630006.2"></a>Loading a Rule Base</h3>
+<!--l. 8--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">6.3   </span> <a 
+ id="x3-640006.3"></a>Deployment with Drools Deployment Jars (.ddj)</h3>
+<!--l. 10--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">6.4   </span> <a 
+ id="x3-650006.4"></a>Debugging with Drools Deployment Source Jars </h3>
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+<!--l. 1--><p class="indent">
+                                                                  
+
+                                                                  
+   <h2 class="chapterHead"><span class="titlemark">Chapter&nbsp;7</span><br><a 
+ id="x3-660007"></a>Rule Management</h2> There is text in first chapter
+   <h3 class="sectionHead"><span class="titlemark">7.1   </span> <a 
+ id="x3-670007.1"></a>The Rule Repository</h3>
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+<!--l. 1--><p class="indent">
+                                                                  
+
+                                                                  
+   <h2 class="chapterHead"><span class="titlemark">Chapter&nbsp;8</span><br><a 
+ id="x3-680008"></a>Developing Drools</h2>
+   <h3 class="sectionHead"><span class="titlemark">8.1   </span> <a 
+ id="x3-690008.1"></a>Building with Maven 2.0</h3>
+<!--l. 5--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">8.2   </span> <a 
+ id="x3-700008.2"></a>Using Eclipse</h3>
+<!--l. 7--><p class="noindent">
+   <h3 class="sectionHead"><span class="titlemark">8.3   </span> <a 
+ id="x3-710008.3"></a>Using IntelliJ</h3>
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+<!--l. 44--><p class="indent">
+                                                                  
+
+                                                                  
+<!--l. 44--><p class="indent">
+                                                                  
+
+                                                                  
+   <h1 class="partHead"><span class="titlemark">Part&nbsp;II<br></span><a 
+ id="x3-72000II"></a>Examples and Case Studies/Examples and Case Studies</h1>
+                                                                  
+
+                                                                  
+<!--l. 47--><p class="indent">
+                                                                  
+
+                                                                  
+   <h2 class="likechapterHead"><a 
+ id="x3-73000II"></a>Bibliography</h2>
+    <div class="thebibliography">
+    <p class="bibitem"><span class="biblabel">
+  [1]<span class="bibsp">&nbsp;&nbsp;&nbsp;</span></span><a 
+ id="XLabel1"></a>...
+    </p>
+    <p class="bibitem"><span class="biblabel">
+  [2]<span class="bibsp">&nbsp;&nbsp;&nbsp;</span></span><a 
+ id="XLabel2"></a>...</p></div>
+                                                                  
+
+                                                                  
+    
+</body></html> 
