@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.0  (Win32)">
 	<META NAME="CREATED" CONTENT="20051214;11592400">
 	<META NAME="CHANGEDBY" CONTENT="Michael Neale">
-	<META NAME="CHANGED" CONTENT="20051215;16490707">
+	<META NAME="CHANGED" CONTENT="20051221;17212142">
 	<STYLE>
 	<!--
 		@page { size: 21cm 29.7cm; margin: 2cm }
@@ -114,19 +114,25 @@ term &ldquo;Rule-start&rdquo; indicates the start of a rule section,
 which continues until &ldquo;Rule-end&rdquo;. This is from literate
 programming. So just about everything outside is a &ldquo;comment&rdquo;.
 This is the opposite of normal source.</FONT></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; font-weight: medium; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
+<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt"><SPAN STYLE="background: #e6e6e6">Start-rule
+[In-the-beginning]<BR>Priority[1]<BR>Group[group1]<BR>Input[String
+message]</SPAN></FONT></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
-<BR><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
-<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt"><B>Rule-start:
-In the beginning</B><SPAN STYLE="font-weight: medium"> <BR></SPAN><B>IF<BR></B><SPAN STYLE="font-weight: medium">	Today
+<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt"><B>IF<BR>	</B><SPAN STYLE="font-weight: medium">Today
 <I>is</I> before date of 10-Jul-2005 or Today is date of
 10-Jul-2006<BR></SPAN><B>THEN<BR>	</B><SPAN STYLE="font-weight: medium">Log
-[I am a parameter to the log function]</SPAN></FONT></FONT></FONT></P>
+&ldquo;I am a parameter to the log function&rdquo;</SPAN></FONT></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; font-weight: medium; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
+<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt">	[System.out.println(&ldquo;boo&rdquo;)]</FONT></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
-<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt"><SPAN STYLE="font-weight: medium">Log
-message+number<BR>	<I>Hey, ignore me, I am italics &ndash; they are
-treated as comments when in a rule.<BR></I></SPAN><B>Rule-end</B></FONT></FONT></FONT></P>
+<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt"><SPAN STYLE="font-weight: medium"><I><BR></I><SPAN STYLE="background: #e6e6e6">End-rule</SPAN></SPAN></FONT></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; font-weight: medium; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
+<BR><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; font-weight: medium; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
+<BR><BR>
+</P>
 <P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
 <BR><BR>
 </P>
@@ -139,7 +145,7 @@ is done in a tabular fashion <I>somewhere else</I> in the document. </FONT></FON
 <FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt">The
 expressions in the rule are compiled with the aid of a dictionary.
 You can help the lexer out by putting &ldquo;[ and ]&rdquo; around
-multi work expressions. Alternatively, you can put whole expressions
+multi word expressions. Alternatively, you can put whole expressions
 in square brackets, and they will be passed through the natural
 language compiler.</FONT></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-weight: medium; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
@@ -240,8 +246,8 @@ Appendix probably makes most sense.</FONT></FONT></P>
 <P><BR><BR>
 </P>
 <P><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt">The
-&quot;Rules&quot; table sets up technical attributes and parameters
-for the rule.</FONT></FONT></P>
+&quot;Rule configuration&quot; table sets up technical attributes and
+parameters for the rule.</FONT></FONT></P>
 <DL>
 	<DD>
 	<TABLE WIDTH=560 BORDER=0 CELLPADDING=0 CELLSPACING=0>
@@ -250,20 +256,17 @@ for the rule.</FONT></FONT></P>
 		<THEAD>
 			<TR>
 				<TH COLSPAN=2 WIDTH=560 VALIGN=TOP BGCOLOR="#e6e6e6">
-					<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium"><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt">Rules</FONT></FONT></P>
+					<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium"><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt">Rule-configuration</FONT></FONT></P>
 				</TH>
 			</TR>
 		</THEAD>
 		<TBODY>
 			<TR VALIGN=TOP>
 				<TD WIDTH=140>
-					<P ALIGN=LEFT><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt">In
-					the beginning</FONT></FONT></P>
+					<P ALIGN=LEFT><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt">In-the-beginning</FONT></FONT></P>
 				</TD>
 				<TD WIDTH=420>
-					<P ALIGN=LEFT><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt">salience=1
-					</FONT></FONT>
-					</P>
+					<P ALIGN=LEFT><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt">Salience=1</FONT></FONT></P>
 					<P ALIGN=LEFT><FONT FACE="Verdana, sans-serif"><FONT SIZE=1 STYLE="font-size: 8pt">xor-group=group1
 					</FONT></FONT>
 					</P>
@@ -288,16 +291,25 @@ for the rule.</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; font-weight: medium; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
 <BR><BR>
 </P>
-<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
-<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2 STYLE="font-size: 9pt"><B>Thats
+<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-weight: medium; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
+<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2 STYLE="font-size: 9pt"><I>Thats
 it for now... go have a coffee. Spend some quality time with your
-family. Remember them?</B></FONT></FONT></FONT></P>
+family. Remember them?</I></FONT></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
 <BR><BR>
 </P>
+<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-weight: medium; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
+<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2 STYLE="font-size: 9pt"><I>TODO:
+Macros for content sharing. eg (Include something here) and (Import
+something here). Just like literate programming.</I></FONT></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-weight: medium; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
+<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2 STYLE="font-size: 9pt"><I>TODO:
+Output as HTML the bits that are parsed out.</I></FONT></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; font-style: normal; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
-<FONT COLOR="#000000"><FONT FACE="Verdana, sans-serif"><FONT SIZE=2 STYLE="font-size: 9pt"><B>TODO:
-Macros for content sharing. Like (Include something here) and (Import
-something here). Just like literate programming.</B></FONT></FONT></FONT></P>
+<BR><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0.32cm; background: transparent; line-height: 130%; page-break-inside: auto; widows: 2; orphans: 2; page-break-before: auto; page-break-after: auto">
+<BR><BR>
+</P>
 </BODY>
 </HTML>

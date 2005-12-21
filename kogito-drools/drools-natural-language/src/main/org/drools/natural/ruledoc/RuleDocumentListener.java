@@ -1,27 +1,91 @@
 package org.drools.natural.ruledoc;
 
-public interface RuleDocumentListener
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This is a simple rule listener implementation. Doesn't do anything clever, just extracts the rules.
+ * Leaves everything else alone.
+ * No special treatment of tables.
+ * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
+ */
+public class RuleDocumentListener 
 {
 
-    /**
-     * Process a line of text.
-     */
-    public abstract void handleText(String text);
+    private boolean inComment;
+    private List    rules;
+    private StringBuffer ruleBuffer;
+    private boolean inRule;
+    
+    public RuleDocumentListener() {
+        rules = new ArrayList();
+    }
 
-    public abstract void startTable();
+    public void handleText(String text)
+    {
+        if (text.trim().startsWith(Keywords.getKeyword("rule.start"))) {
+            startNewRule(text);
+        } else if (text.trim().endsWith(Keywords.getKeyword("rule.end"))) {
+            finishCurrentRule(text);
+        } else if (inComment) { 
+            return;
+        } else if (inRule) {
+            ruleBuffer.append(text);
+        }
+        
+    }
 
-    public abstract void startColumn();
+    private void finishCurrentRule(String text)
+    {
+        ruleBuffer.append(text);
+        rules.add(ruleBuffer.toString());    
+        inRule = false;
+    }
 
-    public abstract void startRow();
+    private void startNewRule(String text)
+    {
+        ruleBuffer = new StringBuffer();
+        ruleBuffer.append(text);
+        inRule = true;
+    }
 
-    public abstract void endTable();
+    public void startTable()
+    {
+        // TODO Auto-generated method stub
+        
+    }
 
-    public abstract void endColumn();
+    public void startColumn()
+    {
+        // TODO Auto-generated method stub
+        
+    }
 
-    public abstract void endRow();
+    public void startRow()
+    {
+        // TODO Auto-generated method stub
+        
+    }
 
-    public abstract void startComment();
+    public void endTable()
+    {
+        // TODO Auto-generated method stub
+        
+    }
 
-    public abstract void endComment();
+    public void startComment()
+    {
+        this.inComment = true;                
+    }
+
+    public void endComment()
+    {
+        this.inComment = false;              
+    }
+    
+    public List getRules() {
+        return rules;
+    }
+    
 
 }

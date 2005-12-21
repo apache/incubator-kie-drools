@@ -9,14 +9,14 @@ import org.drools.natural.NaturalLanguageException;
 public class Keywords
 {
     
-    public static Keywords instance;
+    private static Keywords instance;
     private Properties props;
     
     private Keywords(Properties p) {
         this.props = p;        
     }
     
-    public static Keywords getInstance() {
+    private static Keywords getInstance() {
         if (instance == null) {
             
             Properties props = new Properties();
@@ -34,6 +34,10 @@ public class Keywords
      * Helper method to get a keyword
      */
     public static String getKeyword(String key) {
+        Keywords keywords = getInstance();
+        if (!keywords.props.containsKey(key)) {
+            throw new IllegalArgumentException("The keyword [" + key + "] was not in the configuration.");
+        }
         return getInstance().props.getProperty(key);
     }
     
