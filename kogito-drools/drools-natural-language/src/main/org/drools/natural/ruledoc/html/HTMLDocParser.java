@@ -124,9 +124,9 @@ public class HTMLDocParser
                 listener.endComment();
             }
         } else if (tagName.equals("P")) {
-            handleText("\n");
-        } else if (tagName.equals("BR")) {
-            handleText("\n");
+            listener.handleText("\n");            
+        } else if (tagName.equals("BR")) {            
+            listener.handleText("\n");
         }
         
         
