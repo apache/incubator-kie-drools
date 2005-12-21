@@ -1,0 +1,7 @@
+Rule-start: start of rule IF	
+condition 1
+AND
+condition 2 AND condition 3
+THEN
+consequence 1; AND
+System.out.println("blah") Rule-end
