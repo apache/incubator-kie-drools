@@ -1,5 +1,14 @@
 package org.drools.natural.ast;
 
+/**
+ * All natural language syntax nodes extend this class.
+ * 
+ * Basically we start out with a list of tokens, each token is then classified into one of the syntax types,
+ * and then they build themselvs up into a list of little ASTs.
+ * 
+ * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
+ *
+ */
 public abstract class AbstractSyntaxNode
 {
     

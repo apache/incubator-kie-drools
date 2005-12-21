@@ -13,5 +13,9 @@ public class NaturalLanguageException extends RuntimeException
     {
         super(message);
     }
+    
+    public NaturalLanguageException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

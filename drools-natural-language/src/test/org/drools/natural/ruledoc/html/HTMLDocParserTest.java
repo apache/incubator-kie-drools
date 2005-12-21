@@ -1,46 +1,58 @@
 package org.drools.natural.ruledoc.html;
 
-import java.io.InputStream;
-
-import org.drools.natural.ruledoc.RuleDocumentListener;
+import java.net.URL;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 
-public class HTMLDocParserImplTest extends TestCase
+import org.drools.natural.ruledoc.RuleDocumentListener;
+
+public class HTMLDocParserTest extends TestCase
 {
     public void testDocParsing() throws Exception {
         
         MockRuleDocumentListenter listener = new MockRuleDocumentListenter();
-        InputStream stream = this.getClass().getResourceAsStream("simplest.html");
-        HTMLDocParserImpl parser = new HTMLDocParserImpl();
-        parser.parseDocument(stream, listener);
-        assertTrue(listener.buf.toString().indexOf("line B") > 0);
+        URL url = this.getClass().getResource("simplest.html");
+        HTMLDocParser parser = new HTMLDocParser();
+        parser.parseDocument(url.openConnection(), listener);
+      
+        assertTrue(listener.buf.toString().indexOf("A line") > 0);
         assertFalse(listener.comment.toString().indexOf("comment") > 0);
-        System.out.println(listener.buf.toString());
+        
         assertEquals("comment", listener.comment.toString());
+        
+        assertTrue(listener.table.toString().indexOf("left1|right1") > 0);
     }
     
-    static class MockRuleDocumentListenter implements RuleDocumentListener {
+    static class MockRuleDocumentListenter extends RuleDocumentListener {
 
         public StringBuffer comment = new StringBuffer();
         public StringBuffer buf = new StringBuffer();
         private boolean inComment = false;
+        public StringBuffer table = new StringBuffer();
+        private boolean inTable = false;
         
         public void handleText(String text) 
         {
-            if (!inComment) {
-                buf.append(text + "|");
-            } else {
+            if (inComment) {
                 comment.append(text);
+            } else if (inTable) {
+                table.append(text);
+            }           
+            else {
+                buf.append(text);
+                
             }
         }
 
         public void startTable()
         {
+            inTable = true;
         }
 
         public void startColumn()
         {
+            this.table.append("|");
         }
 
         public void startRow()
@@ -49,6 +61,8 @@ public class HTMLDocParserImplTest extends TestCase
 
         public void endTable()
         {
+            this.table.append("||");
+            inTable = false;
         }
 
         public void endColumn()
