@@ -13,8 +13,6 @@ import java.util.Stack;
  * 
  * Validates that brackets and quotes are balanced. 
  * 
- * TODO: Build a "grammar aware" lexer so square brackets aren't always needed.
- * It would need to extend this one, I think.
  * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
