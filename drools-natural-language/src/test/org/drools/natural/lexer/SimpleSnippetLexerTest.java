@@ -111,7 +111,7 @@ public class SimpleSnippetLexerTest extends TestCase
     }
     
     public void testRemoveTabsAndNewLines() {
-        String sample = "[Age of] \n \r bob \t [less [] than] 35";
+        String sample = "[Age of] \n    \r bob \t [less [] than] 35";
         
         NaturalSnippetLexer lex = new SimpleSnippetLexer(sample);
         List rawTokens = lex.getRawTokens().getTokens();
@@ -124,6 +124,7 @@ public class SimpleSnippetLexerTest extends TestCase
         
         assertEquals(expected, rawTokens);
     }
+        
     
     
 }
