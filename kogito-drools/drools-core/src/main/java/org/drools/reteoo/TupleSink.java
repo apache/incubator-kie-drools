@@ -87,8 +87,6 @@ interface TupleSink
      */
     void retractTuples(TupleKey key,
                        PropagationContext context, 
-                       WorkingMemoryImpl workingMemory) throws FactException;
-    
-    public void ruleAttached();
+                       WorkingMemoryImpl workingMemory) throws FactException;       
 
 }

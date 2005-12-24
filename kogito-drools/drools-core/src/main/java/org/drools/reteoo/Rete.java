@@ -75,9 +75,7 @@ class Rete extends ObjectSource
     // ------------------------------------------------------------
 
     /** The set of <code>ObjectTypeNodes</code>. */
-    private final Map objectTypeNodes = new HashMap( );    
-    
-    private final List rulesToUpdate = new ArrayList( );
+    private final Map objectTypeNodes = new HashMap( );        
 
     // ------------------------------------------------------------
     // Constructors
@@ -219,43 +217,22 @@ class Rete extends ObjectSource
         // do nothing this is the root node
     }
     
+    public void updateNewNode( WorkingMemoryImpl workingMemory,
+                               PropagationContext context ) throws FactException
+    {
+        // do nothing this has no data to propagate
+    }
+    
     void addRule(Rule rule) throws InvalidPatternException
     {
         //And is the implicit head node
         And[] rules = rule.getProcessPatterns();
     }
     
-    void updateWorkingMemory(WorkingMemoryImpl workingMemory) throws FactException
-    {
-        Iterator it = this.rulesToUpdate.iterator();
-        ObjectTypeNode node = null;
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION, 
-                                                             null, 
-                                                             null );
-        while( it.hasNext() )
-        {            
-            node =  ( ObjectTypeNode ) it.next();
-            node.updateNewRule( workingMemory,
-                                context );
-        }          
-    }
-    
-    void ruleAdded()
-    {
-        Iterator it = this.rulesToUpdate.iterator();
-        ObjectTypeNode node = null;
-
-        while( it.hasNext() )
-        {
-            node = ( ObjectTypeNode ) it.next();
-            node.ruleAttached();
-            it.remove();
-        }         
-    }
 
     public void remove()
     {
-        // TODO Auto-generated method stub
+        // do nothing the rete node is root and cannot be removed
         
     }
     

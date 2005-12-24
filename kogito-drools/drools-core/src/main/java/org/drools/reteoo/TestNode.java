@@ -40,6 +40,11 @@ package org.drools.reteoo;
  *
  */
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.AssertionException;
 import org.drools.FactException;
 import org.drools.RetractionException;
@@ -62,7 +67,8 @@ import org.drools.spi.PropagationContext;
  */
 class TestNode extends TupleSource
     implements
-    TupleSink
+    TupleSink,
+    NodeMemory
 {
     // ------------------------------------------------------------
     // Instance members
@@ -89,11 +95,13 @@ class TestNode extends TupleSource
      */
     TestNode(int id,
              TupleSource tupleSource,
-             Condition condition)
+             Condition condition,
+             boolean hasMemory)
     {
         super( id );
         this.condition = condition;
         this.tupleSource = tupleSource;
+        this.hasMemory = hasMemory;
     }
 
     /**
@@ -137,20 +145,67 @@ class TestNode extends TupleSource
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) throws FactException
     {
-        boolean allowed = this.condition.isAllowed( tuple );
-
-        workingMemory.getReteooNodeEventSupport( ).propagateReteooNode( this,
-                                                                        tuple,
-                                                                        allowed );
-
-        if ( allowed )
+        
+        if ( hasMemory() )
         {
-            propagateAssertTuple( tuple,
-                                  context,
-                                  workingMemory );
+            Map memory = ( Map ) workingMemory.getNodeMemory( this );
+            if ( ! memory.containsKey( tuple.getKey( ) ) )
+            {
+                boolean allowed = this.condition.isAllowed( tuple );
+
+                workingMemory.getReteooNodeEventSupport( ).propagateReteooNode( this,
+                                                                                tuple,
+                                                                                allowed );
+
+                if ( allowed )
+                {
+                    memory.put( tuple.getKey( ), tuple );
+                    propagateAssertTuple( tuple,
+                                          context,
+                                          workingMemory );
+                }                
+            }
+        }
+        else
+        {
+            boolean allowed = this.condition.isAllowed( tuple );
+
+            workingMemory.getReteooNodeEventSupport( ).propagateReteooNode( this,
+                                                                            tuple,
+                                                                            allowed );
+
+            if ( allowed )
+            {
+                propagateAssertTuple( tuple,
+                                      context,
+                                      workingMemory );
+            }
+        }
+    }
+    
+    public void updateNewNode( WorkingMemoryImpl workingMemory,
+                               PropagationContext context ) throws FactException
+    {
+        this.attachingNewNode = true;
+        if ( hasMemory() )
+        {
+            Map memory = ( Map ) workingMemory.getNodeMemory( this );
+            for ( Iterator it = memory.values( ).iterator( ); it.hasNext(); )
+            {
+                propagateAssertTuple( ( ReteTuple ) it.next( ), context, workingMemory );
+            }
+        }
+        else
+        {
+            // We need to detach and re-attach to make sure the node is at the top
+            // for the propagation
+            this.tupleSource.removeTupleSink( this );
+            this.tupleSource.addTupleSink( this );            
+            this.tupleSource.updateNewNode( workingMemory, context );            
         }
 
-    }
+        this.attachingNewNode = false;
+    }     
 
     /**
      * Retract tuples.
@@ -167,9 +222,24 @@ class TestNode extends TupleSource
                               PropagationContext context,
                               WorkingMemoryImpl workingMemory) throws FactException
     {
-        propagateRetractTuples( key,
-                                context,
-                                workingMemory );
+        if ( hasMemory() )
+        {
+            Map memory = ( Map ) workingMemory.getNodeMemory( this );
+            if ( memory.remove( key ) != null )
+            {
+                
+                propagateRetractTuples( key,
+                                        context,
+                                        workingMemory );                
+            }
+        }
+        else
+        {
+            propagateRetractTuples( key,
+                                    context,
+                                    workingMemory );            
+        }
+
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,5 +276,16 @@ class TestNode extends TupleSource
         TestNode other = (TestNode) object;
 
         return this.tupleSource.equals( other.tupleSource ) && this.condition.equals( other.condition );
+    }
+
+    public void remove()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public Object createMemory()
+    {
+        return new HashMap();
     }
 }

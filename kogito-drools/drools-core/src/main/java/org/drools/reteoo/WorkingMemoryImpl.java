@@ -355,12 +355,10 @@ class WorkingMemoryImpl
 
     public List getObjects(Class objectClass)
     {
-        List matching = new LinkedList( );
-        Iterator objIter = this.objects.values( ).iterator( );
-        Object obj;
-        while ( objIter.hasNext( ) )
+        List matching = new LinkedList( );        
+        for ( Iterator objIter = this.objects.values( ).iterator( ); objIter.hasNext( ); )
         {
-            obj = objIter.next( );
+            Object obj = objIter.next( );
 
             if ( objectClass.isInstance( obj ) )
             {
@@ -459,12 +457,10 @@ class WorkingMemoryImpl
                  * For each Activation remove the handle. If the Set is empty then remove the activation
                  * from justiers. 
                  */
-                Set activationList = (Set) this.justified.remove( ( (FactHandleImpl) handle ).getId() );
-                Iterator it = activationList.iterator();
-                Activation eachActivation;
-                while ( it.hasNext() )
+                Set activationList = (Set) this.justified.remove( ( (FactHandleImpl) handle ).getId() );                
+                for ( Iterator it = activationList.iterator(); it.hasNext(); )
                 {
-                    eachActivation = (Activation) it.next();
+                    Activation eachActivation = (Activation) it.next();
                     Set handles = (Set) this.justifiers.get( eachActivation );
                     handles.remove( handle );
                     // if an activation has no justified assertions then remove it
@@ -683,9 +679,8 @@ class WorkingMemoryImpl
             FactHandleImpl handleImpl = (FactHandleImpl) handle;            
             Set activations = (Set) this.justified.remove( handleImpl.getId() );
             if ( activations != null )
-            {
-                Iterator it = activations.iterator();
-                while ( it.hasNext() )
+            {                
+                for ( Iterator it = activations.iterator(); it.hasNext(); )
                 {
                     this.justifiers.remove( it.next() );
                 }
@@ -790,6 +785,11 @@ class WorkingMemoryImpl
 
         return memory;
     }
+    
+    public void clearNodeMemory(NodeMemory node)
+    {
+        this.nodeMemories.remove( node.getId( ) );
+    }
 
     public WorkingMemoryEventSupport getWorkingMemoryEventSupport()
     {
@@ -856,12 +856,10 @@ class WorkingMemoryImpl
     public void removeLogicalAssertions(TupleKey key,
                                         PropagationContext context,
                                         Rule rule) throws FactException
-    {
-        AgendaItem item = null;
-        Iterator it = this.justifiers.keySet().iterator();
-        while ( it.hasNext() )
+    {        
+        for( Iterator it = this.justifiers.keySet().iterator(); it.hasNext(); )
         {
-            item = (AgendaItem) it.next( );
+            AgendaItem item = (AgendaItem) it.next( );
 
             if ( item.getRule( ) == rule && item.getKey( ).containsAll( key ) )
             {     
@@ -877,19 +875,16 @@ class WorkingMemoryImpl
                                         PropagationContext context,
                                         Rule rule) throws FactException
     {
-        FactHandleImpl handle = null;
-        Set activations = null;
         Set handles = (Set) this.justifiers.remove( activation );
         /* no justified facts for this activation */
         if ( handles == null )
         {
             return;
-        }
-        Iterator it = handles.iterator();
-        while ( it.hasNext() )
+        }        
+        for ( Iterator it = handles.iterator(); it.hasNext(); )
         {
-            handle = (FactHandleImpl) it.next();
-            activations = (Set) this.justified.get( handle.getId() );
+            FactHandleImpl handle = (FactHandleImpl) it.next();
+            Set activations = (Set) this.justified.get( handle.getId() );
             activations.remove( activation );
             if ( activations.isEmpty() )
             {
@@ -918,5 +913,4 @@ class WorkingMemoryImpl
     {
         this.ruleBase.disposeWorkingMemory( this );        
     }
-
 }

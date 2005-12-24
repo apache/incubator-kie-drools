@@ -42,6 +42,7 @@ package org.drools.reteoo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.AssertionException;
@@ -70,9 +71,7 @@ abstract class TupleSource extends BaseNode
     // ------------------------------------------------------------
 
     /** The destination for <code>Tuples</code>. */
-    private List tupleSinks = new ArrayList( 1 );
-    
-    private boolean isAttachingNewRule = false;
+    private List tupleSinks = new ArrayList( 1 );   
 
     // ------------------------------------------------------------
     // Constructors
@@ -104,8 +103,21 @@ abstract class TupleSource extends BaseNode
         {
             this.tupleSinks.add( tupleSink );
         }
-        this.isAttachingNewRule = true;
-    }      
+    } 
+    
+    /**
+     * Adds the <code>TupleSink</code> so that it may receive
+     * <code>Tuples</code> propagated from this <code>TupleSource</code>.
+     * 
+     * @param tupleSink
+     *            The <code>TupleSink</code> to receive propagated
+     *            <code>Tuples</code>.
+     */
+    protected void removeTupleSink(TupleSink tupleSink)
+    {
+        this.tupleSinks.remove( tupleSink );
+    }     
+     
 
     /**
      * Propagate the assertion of a <code>Tuple</code> to this node's
@@ -123,7 +135,7 @@ abstract class TupleSource extends BaseNode
                                         PropagationContext context, 
                                         WorkingMemoryImpl workingMemory) throws FactException
     {
-        if ( ! this.isAttachingNewRule )
+        if ( ! this.attachingNewNode )
         {
             for ( int i = 0, size = this.tupleSinks.size( ); i < size; i++ )
             {
@@ -180,31 +192,5 @@ abstract class TupleSource extends BaseNode
     {
         return this.tupleSinks;
     }
-    
-    public void ruleAttached()
-    {
-        this.isAttachingNewRule = false;
-        
-        if ( !this.tupleSinks.isEmpty() )
-        {        
-            ((TupleSink) this.tupleSinks.get( this.tupleSinks.size( ) - 1 )).ruleAttached();
-        }
-    }    
-
-
-    public boolean isAttachingNewRule()
-    {
-        return this.isAttachingNewRule;
-    }
-    
-    /**
-     * Retrieve the available tuple <code>Declaration</code>s.
-     * 
-     * @return The available tuple declarations.
-     */
-    // public abstract Set getTupleDeclarations();
-    /**
-     * Attaches this node into the network.
-     */
-    public abstract void attach();
+          
 }

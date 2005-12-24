@@ -421,7 +421,7 @@ public class LogicTransformerTest extends DroolsTestCase
         // The binary stream was created from a handchecked correct output
         
         // Uncomment this when you need to output a new known correct tree result
-        //writeTree(root, "correct_processTree1.dat");
+        // writeTree(root, "correct_processTree1.dat");
         
         ObjectInputStream ois = new ObjectInputStream( this.getClass( ).getResourceAsStream( "correct_processTree1.dat" ) );
 

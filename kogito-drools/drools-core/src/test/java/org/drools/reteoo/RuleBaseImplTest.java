@@ -14,7 +14,7 @@ public class RuleBaseImplTest extends DroolsTestCase
     
     public void setUp()
     {
-        this.ruleBase = new RuleBaseImpl( new Rete() );
+        this.ruleBase = new RuleBaseImpl( );
         
         this.wm1 = ruleBase.newWorkingMemory();
         this.wm2 = ruleBase.newWorkingMemory();

@@ -137,7 +137,7 @@ class RuleBaseImpl
                  RuleBaseContext ruleBaseContext)
     {
         this.rete = new Rete();
-        this.builder  = new Builder();
+        this.builder  = new Builder( this );
         this.factHandleFactory = factHandleFactory;
         this.conflictResolver = conflictResolver;
         this.ruleSets = ruleSets;
@@ -306,14 +306,6 @@ class RuleBaseImpl
     public void addRule(Rule rule) throws FactException, RuleIntegrationException, InvalidPatternException
     {
         this.builder.addRule( rule );
-
-        Iterator it = this.workingMemories.keySet().iterator();
-        while ( it.hasNext() )
-        {
-            this.rete.updateWorkingMemory( ( WorkingMemoryImpl ) it.next() );
-        }
-        
-        this.rete.ruleAdded();
     }
     
     public Set getWorkingMemories()

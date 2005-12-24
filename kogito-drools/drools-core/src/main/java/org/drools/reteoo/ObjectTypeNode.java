@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
@@ -85,7 +86,7 @@ class ObjectTypeNode extends ObjectSource
     /** The <code>ObjectType</code> semantic module. */
     private final ObjectType   objectType;
 
-    private final ObjectSource objectSource;    
+    private final Rete rete;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -99,11 +100,12 @@ class ObjectTypeNode extends ObjectSource
      */
     public ObjectTypeNode(int id,
                           ObjectType objectType,
-                          ObjectSource objectSource)
+                          Rete rete)
     {
         super( id );
-        this.objectSource = objectSource;
+        this.rete = rete;
         this.objectType = objectType;
+        setHasMemory( true );
     }
 
     // ------------------------------------------------------------
@@ -123,7 +125,7 @@ class ObjectTypeNode extends ObjectSource
     public int getId()
     {
         return this.id;
-    }
+    }    
 
     /**
      * Assert a new fact object into this <code>RuleBase</code> and the
@@ -155,7 +157,7 @@ class ObjectTypeNode extends ObjectSource
                                    workingMemory );
         }
 
-    }
+    }       
 
     /**
      * Retract a fact object from this <code>RuleBase</code> and the specified
@@ -190,48 +192,46 @@ class ObjectTypeNode extends ObjectSource
         }
     }
     
-    public void updateNewRule( WorkingMemoryImpl workingMemory,
+    public void updateNewNode( WorkingMemoryImpl workingMemory,
                                PropagationContext context ) throws FactException
     {
-        /* if this ObjectTypeNode has not been marked that a rule is being attached
-         * then there is no updating to do, so return.
-         */
-        if ( !isAttachingNewRule() )
-        {
-            return;
-        }
+        this.attachingNewNode = true;
+        
         PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
-        Iterator it = memory.values().iterator();
                 
-        FactHandleImpl handle = null;
-        Object object = null;
-        while ( it.hasNext() )
+        for(Iterator it = memory.values().iterator(); it.hasNext(); )
         {            
-            handle = (FactHandleImpl) it.next();
-            try
-            {
-                object = workingMemory.getObject( handle );
-                assertObject( object,
-                              handle,
-                              context,
-                              workingMemory );
-            }
-            catch ( NoSuchFactObjectException e )
-            {
-                // do nothing, shouldn't happen
-            }
+            FactHandleImpl handle = (FactHandleImpl) it.next();
+            Object object = workingMemory.getObject( handle );
+            propagateAssertObject( object,
+                                   handle,
+                                   context,
+                                   workingMemory );
         }
+        
+        this.attachingNewNode = false;
     }    
 
+    /**
+     * Rete needs to know that this ObjectTypeNode has been added
+     */
     public void attach()
-    {
-        this.objectSource.addObjectSink( this );
+    {        
+        this.rete.addObjectSink( this );    
     }         
     
     public void remove()
     {
-        this.objectSource.addObjectSink( this );
-    }      
+        //this.rete.removeObjectSink( this );
+    }     
+    
+    /**
+     * Rete needs to know that this ObjectTypeNode has had new nodes attached to it one one of its ancestors
+     */
+    public void addShare()
+    {   
+        super.addShare( );     
+    }     
 
     public Object createMemory()
     {

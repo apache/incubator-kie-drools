@@ -48,5 +48,10 @@ public class ModuleImpl implements Module
     {
         return this.activationQueue;
     }
+    
+    public String toString()
+    {
+        return "Module '" + this.name + "'";
+    }
 
 }

@@ -44,7 +44,7 @@ public class TupleSourceTest extends DroolsTestCase
         PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
                                                              null,
                                                              null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( new Rete() ) );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
 
         MockTupleSource source = new MockTupleSource( 15 );
         MockTupleSink sink1 = new MockTupleSink();
@@ -78,7 +78,7 @@ public class TupleSourceTest extends DroolsTestCase
 
         MockTupleSink sink2 = new MockTupleSink();
         source.addTupleSink( sink2 );
-        source.ruleAttached();
+        // source.ruleAttached();
 
         source.propagateAssertTuple( tuple2,
                                      context,
@@ -141,7 +141,7 @@ public class TupleSourceTest extends DroolsTestCase
         PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
                                                              null,
                                                              null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( new Rete() ) );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
 
         MockTupleSource source = new MockTupleSource( 15 );
         MockTupleSink sink1 = new MockTupleSink();
@@ -226,39 +226,40 @@ public class TupleSourceTest extends DroolsTestCase
         }
     }
     
-    public void testPropogateOnAttachRule() throws FactException
+    public void testAttachNewNode() throws FactException
     {        
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
                                                              null,
                                                              null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( new Rete() ) );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
         
         MockTupleSource source = new MockTupleSource( 15 );
  
+        // Add two Tuple Sinks
         MockTupleSink sink1 = new MockTupleSink();
         source.addTupleSink( sink1 );
-        source.ruleAttached();
 
         MockTupleSink sink2 = new MockTupleSink();
         source.addTupleSink( sink2 );
+        
+        // Only the last added TupleSink should receive facts        
+        source.attachingNewNode = true;
         
         ReteTuple tuple1 = new ReteTuple( 0,
                                           new FactHandleImpl( 2 ),
                                           workingMemory );        
         
-        /* We've just added a new node, so should be marked in ruleAttachN mde */
         source.propagateAssertTuple( tuple1,
                                      context,
                                      workingMemory );     
         
-        /* All sinks except the last one get ignore in propogations during ruleAttach mode */
         assertLength( 0,
                       sink1.getAsserted() );
         assertLength( 1,
                       sink2.getAsserted() ); 
 
-        /* rule is attached and propagation should act as normal */
-        source.ruleAttached();
+        // Now all sinks should receive values
+        source.attachingNewNode = false;
         
         ReteTuple tuple2 = new ReteTuple( 0,
                                           new FactHandleImpl( 3 ),

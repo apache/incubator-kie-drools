@@ -42,6 +42,7 @@ package org.drools.reteoo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.AssertionException;
@@ -70,9 +71,7 @@ abstract class ObjectSource extends BaseNode
     // ------------------------------------------------------------
 
     /** The destination for <code>Tuples</code>. */
-    private List objectSinks = new ArrayList( 1 );    
-    
-    private boolean isAttachingNewRule = false;
+    private List objectSinks = new ArrayList( 1 );        
 
     // ------------------------------------------------------------
     // Constructors
@@ -103,18 +102,14 @@ abstract class ObjectSource extends BaseNode
         if ( !this.objectSinks.contains( objectSink ) )
         {
             this.objectSinks.add( objectSink );
-        }
-        this.isAttachingNewRule = true;
+        }        
     }    
     
-    protected void addRemoveSink(ObjectSink objectSink)
+    protected void removeObjectSink(ObjectSink objectSink)
     {
-        if ( !this.objectSinks.contains( objectSink ) )
-        {
-            this.objectSinks.add( objectSink );
-        }
-        this.isAttachingNewRule = true;
+        this.objectSinks.remove( objectSink );
     }      
+    
 
     /**
      * Propagate the assertion of a <code>Tuple</code> to this node's
@@ -133,7 +128,7 @@ abstract class ObjectSource extends BaseNode
                                          PropagationContext context, 
                                          WorkingMemoryImpl workingMemory) throws FactException
     {
-        if ( ! this.isAttachingNewRule )
+        if ( ! this.attachingNewNode )
         {
             for ( int i = 0, size = this.objectSinks.size( ); i < size; i++ )
             {
@@ -191,41 +186,6 @@ abstract class ObjectSource extends BaseNode
     public List getObjectSinks()
     {
         return this.objectSinks;
-    }      
-    
-    public boolean isAttachingNewRule()
-    {
-        return this.isAttachingNewRule;
-    }
-    
-    public void ruleAttached()
-    {
-        this.isAttachingNewRule = false;
-        
-        if ( !this.objectSinks.isEmpty() )
-        {
-            ((ObjectSink) this.objectSinks.get( this.objectSinks.size( ) - 1 )).ruleAttached();
-        }
-    }
-
-    /**
-     * Retrieve the available tuple <code>Declaration</code>s.
-     * 
-     * @return The available tuple declarations.
-     */
-    // public abstract Set getTupleDeclarations();
-    /**
-     * Attaches this node into the network.
-     */
-    public abstract void attach();
-    
-    public abstract void remove();
-    
-    public int hashCode()
-    {
-        return this.id;
-    }
-    
-   
+    }                   
     
 }

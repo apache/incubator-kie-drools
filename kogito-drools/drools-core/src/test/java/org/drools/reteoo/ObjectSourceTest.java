@@ -44,12 +44,11 @@ public class ObjectSourceTest extends DroolsTestCase
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
                                                              null,
                                                              null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( new Rete() ) );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
         MockObjectSource source = new MockObjectSource( 15 );
         MockObjectSink sink1 = new MockObjectSink();
         source.addObjectSink( sink1 );
-        source.ruleAttached();
         assertLength( 0,
                       sink1.getAsserted() );
 
@@ -69,7 +68,6 @@ public class ObjectSourceTest extends DroolsTestCase
 
         MockObjectSink sink2 = new MockObjectSink();
         source.addObjectSink( sink2 );
-        source.ruleAttached();
 
         source.propagateAssertObject( new Integer( 2 ),
                                       new FactHandleImpl( 3 ),
@@ -133,14 +131,15 @@ public class ObjectSourceTest extends DroolsTestCase
 
     public void testPropagateRetractObject() throws Exception
     {
-
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
                                                              null,
                                                              null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( new Rete() ) );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
 
         MockObjectSource source = new MockObjectSource( 15 );
+        
+        // Test propagation with one ObjectSink
         MockObjectSink sink1 = new MockObjectSink();
         source.addObjectSink( sink1 );
         assertLength( 0,
@@ -161,6 +160,7 @@ public class ObjectSourceTest extends DroolsTestCase
         assertSame( workingMemory,
                     list[2] );
 
+        // Test propagation with two ObjectSinks
         MockObjectSink sink2 = new MockObjectSink();
         source.addObjectSink( sink2 );
 
@@ -217,48 +217,49 @@ public class ObjectSourceTest extends DroolsTestCase
         }
     }
     
-    public void testPropogateOnAttachRule() throws FactException
+    public void testAttachNewNode() throws FactException
     {
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        Rule rule = new Rule( "test-rule" );
+        PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
                                                              null,
                                                              null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( new Rete() ) );
-        
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+
         MockObjectSource source = new MockObjectSource( 15 );
- 
+        
+        // Add two ObjectSinks
         MockObjectSink sink1 = new MockObjectSink();
-        source.addObjectSink( sink1 );
-        source.ruleAttached();
-
+        source.addObjectSink( sink1 );             
+        
         MockObjectSink sink2 = new MockObjectSink();
-        source.addObjectSink( sink2 );
+        source.addObjectSink( sink2 );                
         
-        /* We've just added a new node, so should be marked in ruleAttachN mde */
+        // Only the last added ObjectSink should receive facts
+        source.attachingNewNode = true;
+        
         source.propagateAssertObject( new Integer( 1 ),
-                                      new FactHandleImpl( 2 ),
+                                      new FactHandleImpl( 1 ),
                                       context,
-                                      workingMemory );     
-        
-        /* All sinks except the last one get ignore in propogations during ruleAttach mode */
-        assertLength( 0,
-                      sink1.getAsserted() );
-        assertLength( 1,
-                      sink2.getAsserted() ); 
+                                      workingMemory );
 
-        /* rule is attached and propagation should act as normal */
-        source.ruleAttached();
+        assertLength( 0,
+                      sink1.getAsserted() );           
+        
+        assertLength( 1,
+                      sink2.getAsserted() );         
+
+        // Now all sinks should receive values
+        source.attachingNewNode = false;
         
         source.propagateAssertObject( new Integer( 2 ),
-                                      new FactHandleImpl( 3 ),
+                                      new FactHandleImpl( 2 ),
                                       context,
-                                      workingMemory );     
+                                      workingMemory );
         
-        /* Both sinks receive one object */
         assertLength( 1,
-                      sink1.getAsserted() );
+                      sink1.getAsserted() );  
+        
         assertLength( 2,
-                      sink2.getAsserted() );         
-                       
-    }
-    
+                      sink2.getAsserted() );  
+    }    
 }

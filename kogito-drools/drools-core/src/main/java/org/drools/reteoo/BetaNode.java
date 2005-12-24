@@ -42,6 +42,8 @@ package org.drools.reteoo;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.AssertionException;
 import org.drools.FactException;
@@ -127,6 +129,76 @@ abstract class BetaNode extends TupleSource
         this.joinNodeBinder = joinNodeBinder;
 
     }
+    
+    public void updateNewNode( WorkingMemoryImpl workingMemory,
+                               PropagationContext context ) throws FactException
+    {
+        this.attachingNewNode = true;
+        
+        TupleSource source = null;
+        
+        //iterate until we find a child with memory
+        for ( Iterator it = this.getTupleSinks( ).iterator( ); it.hasNext( ); )
+        {
+            source = (TupleSource) it.next( );
+            if ( source.hasMemory )
+            {
+                break;
+            }
+            
+        }        
+        
+        if ( source != null && source.hasMemory() )
+        {
+            //We have a child with memory so use its tuples
+            Object object = workingMemory.getNodeMemory( (NodeMemory) source );
+            if ( object instanceof BetaMemory )
+            {
+                BetaMemory memory = (BetaMemory) object;
+                memory.getLeftMemory( );
+                for ( Iterator it = memory.getLeftMemory( ).values( ).iterator( ); it.hasNext( ); )
+                {
+                    ReteTuple tuple =( ( TupleMatches ) it.next( ) ).getTuple( ); 
+                    propagateAssertTuple( tuple, context, workingMemory );
+                }
+            }
+            else if ( object instanceof Map )
+            {
+                Map map = (Map) object;
+                for ( Iterator it = map.values( ).iterator( ); it.hasNext( ); )
+                {
+                    propagateAssertTuple( ( ReteTuple ) it.next(), context, workingMemory );
+                }
+            }            
+        } else
+        {
+            // No children with memory so re-determine tuples
+            // first get a reference to the left and right memories then nuke and rebuild the memory
+            // for the node. This will have the side effect of populating our newly attached node
+            BetaMemory memory = ( BetaMemory ) workingMemory.getNodeMemory( this );
+            Map map = memory.getLeftMemory( );
+            Set set = memory.getRightMemory( );
+            workingMemory.clearNodeMemory( this );
+            memory = ( BetaMemory ) workingMemory.getNodeMemory( this );
+            
+            //first re-add all the right input facts
+            for ( Iterator it = set.iterator( ); it.hasNext( ); )
+            {
+                FactHandleImpl handle = (FactHandleImpl) it.next( );
+                Object object = workingMemory.getObject( handle );
+                assertObject( object, handle, context, workingMemory );
+            }
+            
+            //now re-add all the tuples
+            for ( Iterator it = map.values( ).iterator( ); it.hasNext( ); )
+            {
+                ReteTuple tuple =( ( TupleMatches ) it.next( ) ).getTuple( ); 
+                assertTuple( tuple, context, workingMemory );
+            }                        
+        }
+        
+        this.attachingNewNode = true;
+    }
 
     /**
      * Propagate joined asserted tuples.
@@ -139,8 +211,8 @@ abstract class BetaNode extends TupleSource
      *             If an errors occurs while asserting.
      */
     protected void propagateAssertTuples(TupleSet joinedTuples,
-                                       PropagationContext context,
-                                       WorkingMemoryImpl workingMemory) throws FactException
+                                         PropagationContext context,
+                                         WorkingMemoryImpl workingMemory) throws FactException
     {
         Iterator tupleIter = joinedTuples.iterator( );
         while ( tupleIter.hasNext( ) )
@@ -163,8 +235,8 @@ abstract class BetaNode extends TupleSource
      * @throws RetractionException
      */
     protected void propagateRectractTuples(List keys,
-                                         PropagationContext context,
-                                         WorkingMemoryImpl workingMemory) throws FactException
+                                           PropagationContext context,
+                                           WorkingMemoryImpl workingMemory) throws FactException
     {
         Iterator it = keys.iterator( );
         while ( it.hasNext( ) )
@@ -183,7 +255,12 @@ abstract class BetaNode extends TupleSource
     public void attach()
     {
         this.leftInput.addTupleSink( this );
-        this.rightInput.addObjectSink( this );
+        this.rightInput.addObjectSink( this );        
+    }
+    
+    public void remove()
+    {
+        
     }
     
 

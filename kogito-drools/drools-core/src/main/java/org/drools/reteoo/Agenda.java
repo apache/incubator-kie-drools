@@ -199,21 +199,18 @@ class Agenda
                           PropagationContext context,
                           Rule rule) throws FactException 
     {
-        AgendaItem eachItem;
-        Tuple tuple;
         ModuleImpl module = (ModuleImpl) modules.get( rule.getModule( ) );
-        Iterator itemIter = module.getActivationQueue( ).iterator( );             
 
-        while ( itemIter.hasNext( ) )
+        for(Iterator it = module.getActivationQueue( ).iterator( );   it.hasNext( ); )
         {
-            eachItem = (AgendaItem) itemIter.next( );
+            AgendaItem eachItem = (AgendaItem) it.next( );
 
             if ( eachItem.getRule( ) == rule && eachItem.getKey( ).containsAll( key ) )
             {
-                itemIter.remove( );                
+                it.remove( );                
                 // need to restart iterator as heap could place elements before
                 // current iterator position
-                itemIter = module.getActivationQueue( ).iterator( );
+                it = module.getActivationQueue( ).iterator( );
 
                 this.workingMemory.getAgendaEventSupport( ).fireActivationCancelled( rule,
                                                                                eachItem.getTuple( ) );
@@ -223,19 +220,19 @@ class Agenda
             }
         }
 
-        itemIter = this.scheduledItems.values( ).iterator( );
+        
 
-        while ( itemIter.hasNext( ) )
+        for( Iterator it = this.scheduledItems.values( ).iterator( ); it.hasNext( ); )
         {
-            eachItem = (AgendaItem) itemIter.next( );
+            AgendaItem eachItem = (AgendaItem) it.next( );
 
             if ( eachItem.getRule( ) == rule && eachItem.getKey( ).containsAll( key ) )
             {
-                tuple = eachItem.getTuple( );
+                Tuple tuple = eachItem.getTuple( );
 
                 cancelItem( eachItem );
 
-                itemIter.remove( );
+                it.remove( );
 
                 this.workingMemory.getAgendaEventSupport( ).fireActivationCancelled( rule,
                                                                                tuple );
