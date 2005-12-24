@@ -62,10 +62,4 @@ public class MockObjectSink
         this.retractionException = retractionException;
     }
 
-    public void ruleAttached()
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
 }

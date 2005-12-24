@@ -1,7 +1,7 @@
 package org.drools.reteoo;
 
 /*
- * $Id: ReflectiveVisitor.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
+ * $Id: ReflectiveVisitor.java,v 1.7 2005/04/20 00:03:06 mproctor Exp $
  *
  * Copyright 2004-2004 (C) The Werken Company. All Rights Reserved.
  *
@@ -48,7 +48,7 @@ import org.drools.Visitor;
  * Java Tip 98: Reflect on the Visitor design pattern. Implement visitors in
  * Java, using reflection.
  * http://www.javaworld.com/javaworld/javatips/jw-javatip98.html
- * 
+ *
  * @author Jeremy Blosser
  */
 public abstract class ReflectiveVisitor
@@ -70,9 +70,9 @@ public abstract class ReflectiveVisitor
             else
             {
                 Method method = getClass( ).getMethod( "visitNull",
-                                                       (Class[]) null );
+                                                       ( Class[] ) null );
                 method.invoke( this,
-                               (Object[]) null );
+                               ( Object[] ) null );
             }
         }
         catch ( Exception e )

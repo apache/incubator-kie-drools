@@ -66,7 +66,7 @@ public class SchedulerTest extends DroolsTestCase
 {
     public void testScheduledActivation() throws Exception
     {
-        RuleBase ruleBase = new RuleBaseImpl( new Rete() );
+        RuleBase ruleBase = new RuleBaseImpl( );
 
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
         final Scheduler scheduler = Scheduler.getInstance();
@@ -120,7 +120,7 @@ public class SchedulerTest extends DroolsTestCase
 
     public void testDoLoopScheduledActivation() throws Exception
     {
-        RuleBase ruleBase = new RuleBaseImpl( new Rete() );
+        RuleBase ruleBase = new RuleBaseImpl( );
 
         final WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
         final Agenda agenda = workingMemory.getAgenda();
@@ -195,7 +195,7 @@ public class SchedulerTest extends DroolsTestCase
 
     public void testNoLoopScheduledActivation() throws Exception
     {
-        RuleBase ruleBase = new RuleBaseImpl( new Rete() );
+        RuleBase ruleBase = new RuleBaseImpl( );
 
         final WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
         final Agenda agenda = workingMemory.getAgenda();
@@ -271,7 +271,7 @@ public class SchedulerTest extends DroolsTestCase
 
     public void testExceptionHandler() throws Exception
     {
-        RuleBase ruleBase = new RuleBaseImpl( new Rete() );
+        RuleBase ruleBase = new RuleBaseImpl( );
 
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
         Agenda agenda = workingMemory.getAgenda();

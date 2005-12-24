@@ -1,8 +1,10 @@
 package org.drools.reteoo;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.DroolsTestCase;
+import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
@@ -10,11 +12,13 @@ import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.StringConstraintComparator;
 import org.drools.rule.ConstraintTest.Cheese;
+import org.drools.spi.ClassObjectType;
 import org.drools.spi.ConstraintComparator;
 import org.drools.spi.LiteralExpressionConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.ReturnValueExpressionConstraint;
 import org.drools.spi.Tuple;
+import org.drools.util.PrimitiveLongMap;
 
 public class AlphaNodeTest extends DroolsTestCase
 {
@@ -37,6 +41,21 @@ public class AlphaNodeTest extends DroolsTestCase
         assertSame( alphaNode,
                     source.getObjectSinks().get( 0 ) );
     }
+    
+    public void testMemory()
+    {
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+
+
+        AlphaNode alphaNode = new AlphaNode( 2,
+                                             null,
+                                             true,
+                                             null);            
+        
+        Set memory = (HashSet) workingMemory.getNodeMemory( alphaNode );
+        
+        assertNotNull( memory );
+    }    
 
     public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception
     {
@@ -448,5 +467,105 @@ public class AlphaNodeTest extends DroolsTestCase
                     list[0] );
 
     }
+    
+    public void testUpdateNewNodeWithoutMemory() throws FactException
+    {
+        // An AlphaNode without memory needs to inform the parent ObjectTypeNode
+        // to repropagate its memory
+        
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+        Rule rule = new Rule( "test-rule" );
+        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+                                                             null,
+                                                             null );
 
+        // Creat the object source so we can detect the alphaNode telling it to propate its contents
+        MockObjectSource source = new MockObjectSource(1);
+
+        // Create an AlphaNode constraint that always passes
+        LiteralExpressionConstraint mockConstraint0 = new LiteralExpressionConstraint() {
+            public boolean isAllowed(Object object,
+                                     ConstraintComparator comparator)
+            {
+                return true;
+            }                        
+        };
+
+        LiteralConstraint constraint0 = new LiteralConstraint( mockConstraint0,
+                                                               new StringConstraintComparator( ConstraintComparator.EQUAL ) );
+
+        AlphaNode alphaNode = new AlphaNode( 2,
+                                             constraint0,
+                                             false,         /* Without Memory */
+                                             source );
+        alphaNode.attach( );
+        
+        // check that the update propagation requests are 0
+        assertEquals( 0, source.getUdated( ) );
+        
+        alphaNode.updateNewNode( null, null );
+        
+        // now they should be 1, we don't need to test actual repropagation as thats tested in
+        // ObjectSourceTest
+        assertEquals( 1, source.getUdated( ) );        
+    }        
+    
+    public void testUpdateNewNodeWithMemory() throws FactException
+    {    
+        // An AlphaNode with memory should not try and repropagate from its source
+        // Also it should only update the latest tuple sink
+        
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+        Rule rule = new Rule( "test-rule" );
+        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+                                                             null,
+                                                             null );
+
+        MockObjectSource source = new MockObjectSource(1);
+
+        // Create an AlphaNode that always passes
+        LiteralExpressionConstraint mockConstraint0 = new LiteralExpressionConstraint() {
+            public boolean isAllowed(Object object,
+                                     ConstraintComparator comparator)
+            {
+                return true;
+            }                        
+        };
+
+        LiteralConstraint constraint0 = new LiteralConstraint( mockConstraint0,
+                                                               new StringConstraintComparator( ConstraintComparator.EQUAL ) );
+
+        AlphaNode alphaNode = new AlphaNode( 2,
+                                             constraint0,
+                                             true,         /* With Memory */
+                                             source );
+        
+        alphaNode.attach( );
+        
+        MockObjectSink sink1 = new MockObjectSink( );
+        alphaNode.addObjectSink( sink1 );
+        
+        // Assert a single fact which should be in the AlphaNode memory and also propagated to the
+        // the tuple sink
+        String object1 = "string";
+        FactHandleImpl handle1 = new FactHandleImpl( 1 );
+        workingMemory.putObject( handle1, object1 );
+        
+        source.propagateAssertObject( object1, handle1, context, workingMemory );
+        
+        assertLength( 1, sink1.getAsserted( ) );
+        
+        
+        // Attach a new tuple sink
+        MockObjectSink sink2 = new MockObjectSink( );
+        alphaNode.addObjectSink( sink2 );
+        
+        // Tell the alphanode to update the new node. Make sure the first sink1 is not updated
+        // likewise the source should not do anything
+        alphaNode.updateNewNode( workingMemory, context );
+        
+        assertLength( 1, sink1.getAsserted( ) );
+        assertLength( 1, sink2.getAsserted( ) );    
+        assertEquals( 0, source.getUdated( ) );        
+    }
 }

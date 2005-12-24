@@ -45,6 +45,18 @@ public class RightInputAdapterNode extends ObjectSource
     {
         this.tupleSource.addTupleSink( this );
     }
+    
+    public void updateNewNode( WorkingMemoryImpl workingMemory,
+                               PropagationContext context ) throws FactException
+    {
+        this.attachingNewNode = true;
+        // We need to detach and re-attach to make sure the node is at the top
+        // for the propagation
+        this.tupleSource.removeTupleSink( this );
+        this.tupleSource.addTupleSink( this );            
+        this.tupleSource.updateNewNode( workingMemory, context );          
+        this.attachingNewNode = false;
+    }     
 
     public int getId()
     {

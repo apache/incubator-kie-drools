@@ -66,33 +66,36 @@ public class ReteTest extends DroolsTestCase
 
     public void setUp()
     {
-        this.rete = new Rete();
-
-        this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( this.rete ) );
-
-        this.objectTypeNode = this.rete.getOrCreateObjectTypeNode( new ClassObjectType( Object.class ) );
+        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        this.workingMemory = new WorkingMemoryImpl( ruleBase );
+        
+        this.rete = ruleBase.getRete();
+       
+        this.objectTypeNode = new ObjectTypeNode(0, new ClassObjectType( Object.class ), this.rete);
+        this.objectTypeNode.attach();        
         this.objectTypeNode.addObjectSink( new MockObjectSink() );
 
-        this.stringTypeNode = this.rete.getOrCreateObjectTypeNode( new ClassObjectType( String.class ) );
+        this.stringTypeNode = new ObjectTypeNode(0, new ClassObjectType( String.class ), this.rete);
+        this.stringTypeNode.attach();        
         this.stringTypeNode.addObjectSink( new MockObjectSink() );
 
-        this.cheeseTypeNode = this.rete.getOrCreateObjectTypeNode( new ClassObjectType( Cheese.class ) );
+        this.cheeseTypeNode = new ObjectTypeNode(0, new ClassObjectType( Cheese.class ), this.rete);
+        this.cheeseTypeNode.attach();        
         this.cheeseTypeNode.addObjectSink( new MockObjectSink() );
 
-        this.rete.ruleAdded();
+        //this.rete.ruleAdded();
 
     }
 
     public void tearDown()
     {
-        this.rete = null;
     }
 
     public void testGetObjectTypeNodes() throws Exception
     {
         Collection objectTypeNodes = this.rete.getObjectTypeNodes();
 
-        /* Check the ObjectTypeNodes are correctly added to Rete */
+        // Check the ObjectTypeNodes are correctly added to Rete 
         assertEquals( 3,
                       objectTypeNodes.size() );
 
@@ -119,7 +122,7 @@ public class ReteTest extends DroolsTestCase
                                                              null,
                                                              null );
 
-        /* Create and assert two objects */
+        // Create and assert two objects 
         Object object1 = new Object();
         String string1 = "cheese";
 
@@ -136,7 +139,7 @@ public class ReteTest extends DroolsTestCase
         List asserted = null;
 
         // ----------------------------------------
-        /* Check assertions worked on Object ObjectTypeNode */
+        // Check assertions worked on Object ObjectTypeNode 
         MockObjectSink sink1 = (MockObjectSink) this.objectTypeNode.getObjectSinks().get( 0 );
 
         asserted = sink1.getAsserted();
@@ -152,7 +155,7 @@ public class ReteTest extends DroolsTestCase
                     results[0] );
 
         // ----------------------------------------
-        /* Check assertions worked on String ObjectTypeNode */
+        //  Check assertions worked on String ObjectTypeNode 
         MockObjectSink sink2 = (MockObjectSink) this.stringTypeNode.getObjectSinks().get( 0 );
 
         asserted = sink2.getAsserted();
@@ -229,114 +232,13 @@ public class ReteTest extends DroolsTestCase
                     results[0] );
 
         // ----------------------------------------
-        /* Check retractions worked on Cheese ObjectTypeNode, i.e. nothing happened */
+        // Check retractions worked on Cheese ObjectTypeNode, i.e. nothing happened 
         MockObjectSink sink3 = (MockObjectSink) this.cheeseTypeNode.getObjectSinks().get( 0 );
 
         assertLength( 0,
                       sink3.getRetracted() );
     }
 
-    public void testPropogateOnAttachRule() throws FactException
-    {
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
-                                                             null,
-                                                             null );
-
-        /* Create an initial rete with just two object type nodes */
-        this.rete = new Rete();
-        this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( this.rete ) );
-
-        this.objectTypeNode = this.rete.getOrCreateObjectTypeNode( new ClassObjectType( Object.class ) );
-        this.objectTypeNode.addObjectSink( new MockObjectSink() );
-
-        this.stringTypeNode = this.rete.getOrCreateObjectTypeNode( new ClassObjectType( String.class ) );
-        this.stringTypeNode.addObjectSink( new MockObjectSink() );
-
-        this.rete.ruleAdded();
-
-        /* Create three objects and assert them */
-        Object object1 = new Object();
-        String string1 = "cheese";
-        String string2 = "bread";
-        
-        FactHandleImpl handle1 = new FactHandleImpl( 1 );
-        FactHandleImpl handle2 = new FactHandleImpl( 2 );
-        FactHandleImpl handle3 = new FactHandleImpl( 3 );
-
-        this.workingMemory.putObject( handle1,
-                                      object1 );
-        this.workingMemory.putObject( handle2,
-                                      string1 );
-        this.workingMemory.putObject( handle3,
-                                      string2 );
-
-        this.rete.assertObject( object1,
-                                handle1,
-                                context,
-                                this.workingMemory );
-
-        this.rete.assertObject( string1,
-                                handle2,
-                                context,
-                                this.workingMemory );
-
-        this.rete.assertObject( string2,
-                                handle3,
-                                context,
-                                this.workingMemory );
-
-        /* check object was asserted correctly */
-        MockObjectSink sink1 = (MockObjectSink) this.objectTypeNode.getObjectSinks().get( 0 );
-        assertLength( 3,
-                      sink1.getAsserted() );
-
-        /* check string was asserted correctly */
-        MockObjectSink sink2 = (MockObjectSink) this.stringTypeNode.getObjectSinks().get( 0 );
-        assertLength( 2,
-                      sink2.getAsserted() );
-
-        /* Now lets try adding a new "rule". We simulate this by getting/creating the string ObjectTypeNode
-         * and then adding a tuplesink - at this point its obvlivious that the ObjectTypeNode already exists
-         */
-        this.stringTypeNode = this.rete.getOrCreateObjectTypeNode( new ClassObjectType( String.class ) );
-        this.stringTypeNode.addObjectSink( new MockObjectSink() );
-        assertLength( 2,
-                      this.stringTypeNode.getObjectSinks() );
-        MockObjectSink sink3 = (MockObjectSink) this.stringTypeNode.getObjectSinks().get( 1 );
-        /* TupleSink is added but has no assertions */
-        assertLength( 0,
-                      sink3.getAsserted() );
-
-        /* Lets add a Cheese ObjectTypeNode just to see show what happens when a totally new ObjectTypeNode is asserted */
-        this.cheeseTypeNode = this.rete.getOrCreateObjectTypeNode( new ClassObjectType( Cheese.class ) );
-        this.cheeseTypeNode.addObjectSink( new MockObjectSink() );
-
-        /* And ofcourse its got zero assertions */
-        MockObjectSink sink4 = (MockObjectSink) this.cheeseTypeNode.getObjectSinks().get( 0 );
-        assertLength( 0,
-                      sink4.getAsserted() );
-
-        /* Ok now the test, lets force rete to update the new nods */
-        this.rete.updateWorkingMemory( this.workingMemory );
-        /* Check existing nodes didn't change */
-        assertLength( 3,
-                      sink1.getAsserted() );        
-        assertLength( 2,
-                      sink2.getAsserted() );        
-        /* but new nodes should be brought up to date */
-        assertLength( 2,
-                      sink3.getAsserted() );
-        assertLength( 0,
-                      sink4.getAsserted() );
-        
-        /* This checks that after ruleAdded that there is nothing for Rete to update */
-        this.rete.ruleAdded();
-        this.rete.updateWorkingMemory( this.workingMemory );       
-        assertLength( 2,
-                      sink3.getAsserted() );
-        assertLength( 0,
-                      sink4.getAsserted() );        
-    }
 
     class Cheese
     {

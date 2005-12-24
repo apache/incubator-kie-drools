@@ -90,12 +90,12 @@ class BetaMemory
         this.leftMemory = new HashMap( );
         this.rightMemory = new HashSet( );
         // this.binder = joinNodeBinder;
-    }
+    }       
 
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-
+    
     /**
      * This method is here to facilitate unit testing.
      */

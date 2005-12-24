@@ -69,6 +69,7 @@ import org.drools.rule.RuleSet;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.Condition;
 import org.drools.spi.ConflictResolver;
+import org.drools.spi.Consequence;
 import org.drools.spi.Constraint;
 import org.drools.spi.RuleBaseContext;
 
@@ -89,6 +90,9 @@ class Builder
     // Instance members
     // ------------------------------------------------------------
 
+    /** The RuleBase */
+    private RuleBaseImpl ruleBase;
+    
     /** Rete network to build against. */
     private Rete         rete;
 
@@ -104,7 +108,9 @@ class Builder
 
     private ObjectSource objectSource;
 
-    private Map          declarations;
+    private Map          declarations;    
+    
+    private List         propagationPoints;
 
     private int          id;
 
@@ -116,7 +122,7 @@ class Builder
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    Builder()
+    Builder(RuleBaseImpl ruleBase)
     {
         this.rete = new Rete( );
         this.ruleSets = new ArrayList( );
@@ -148,6 +154,7 @@ class Builder
             addRule( and[i],
                      rule );
         }
+        TerminalNode node = new TerminalNode(this.tupleSource, rule);
     }
 
     private void addRule(And and,
@@ -404,7 +411,7 @@ class Builder
         TupleSource node = (TupleSource) this.attachedNodes.get( candidate );
 
         if ( node == null )
-        {
+        {            
             candidate.attach( );
 
             this.attachedNodes.put( candidate,
@@ -414,6 +421,7 @@ class Builder
         }
         else
         {
+            node.addShare();
             id--;
         }
 

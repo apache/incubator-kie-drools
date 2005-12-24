@@ -149,7 +149,7 @@ public class JoinNode extends BetaNode
                 {
                     tupleMatches.addMatch( handle );            
                     merged = new ReteTuple( leftTuple,
-                                                      rightTuple );                
+                                            rightTuple );                
                     tupleSet.addTuple( merged );
                 }
             }
@@ -233,6 +233,12 @@ public class JoinNode extends BetaNode
                                      context,
                                      workingMemory );           
         }
+    }
+
+    public void remove()
+    {
+        // TODO Auto-generated method stub
+        
     }    
     
 }

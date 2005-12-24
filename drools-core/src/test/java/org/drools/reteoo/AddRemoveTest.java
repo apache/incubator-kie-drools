@@ -12,10 +12,12 @@ public class AddRemoveTest extends DroolsTestCase
          * create a RuleBase with a single ObjectTypeNode we attach a MockObjectSink so we can detect assertions and retractions
          */
         Rete rete = new Rete();
-        ObjectTypeNode objectTypeNode = rete.getOrCreateObjectTypeNode( new ClassObjectType( String.class ) );
+        ObjectTypeNode objectTypeNode = new ObjectTypeNode(0, new ClassObjectType( Object.class ), rete);
+        objectTypeNode.attach();
+        
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        RuleBase ruleBase = new RuleBaseImpl( rete );
+        RuleBase ruleBase = new RuleBaseImpl( );
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
         
         //objectTypeNode.
