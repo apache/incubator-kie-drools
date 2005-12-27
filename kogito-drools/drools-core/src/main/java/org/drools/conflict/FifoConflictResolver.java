@@ -47,22 +47,21 @@ import org.drools.spi.ConflictResolver;
 /**
  * <code>ConflictResolver</code> that orders rules on a First-In-First-Out
  * basis.
- *
+ * 
  * @see #getInstance
- *
+ * 
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- *
+ * 
  * @version $Id: RandomConflictResolver.java,v 1.1 2004/06/25 01:55:16 mproctor
  *          Exp $
  */
-public class FifoConflictResolver extends AbstractConflictResolver
-{
+public class FifoConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
     /** Singleton instance. */
-    private static final FifoConflictResolver INSTANCE = new FifoConflictResolver( );
+    private static final FifoConflictResolver INSTANCE = new FifoConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -70,12 +69,11 @@ public class FifoConflictResolver extends AbstractConflictResolver
 
     /**
      * Retrieve the singleton instance.
-     *
+     * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance( )
-    {
-        return INSTANCE;
+    public static ConflictResolver getInstance(){
+        return FifoConflictResolver.INSTANCE;
     }
 
     // ----------------------------------------------------------------------
@@ -85,8 +83,7 @@ public class FifoConflictResolver extends AbstractConflictResolver
     /**
      * Construct.
      */
-    public FifoConflictResolver( )
-    {
+    public FifoConflictResolver(){
         // intentionally left blank
     }
 
@@ -95,9 +92,8 @@ public class FifoConflictResolver extends AbstractConflictResolver
     /**
      * @see ConflictResolver
      */
-    public int compare( Activation lhs,
-                        Activation rhs )
-    {
-        return ( int ) ( lhs.getActivationNumber( ) - rhs.getActivationNumber( ) );
+    public int compare(Activation lhs,
+                       Activation rhs){
+        return (int) (lhs.getActivationNumber() - rhs.getActivationNumber());
     }
 }

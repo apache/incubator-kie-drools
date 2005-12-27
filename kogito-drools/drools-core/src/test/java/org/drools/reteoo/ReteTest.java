@@ -46,14 +46,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.DroolsTestCase;
-import org.drools.FactException;
-import org.drools.FactHandle;
 import org.drools.spi.ClassObjectType;
-import org.drools.spi.MockObjectType;
 import org.drools.spi.PropagationContext;
 
-public class ReteTest extends DroolsTestCase
-{
+public class ReteTest extends DroolsTestCase {
     private Rete              rete;
 
     private WorkingMemoryImpl workingMemory;
@@ -64,38 +60,41 @@ public class ReteTest extends DroolsTestCase
 
     private ObjectTypeNode    cheeseTypeNode;
 
-    public void setUp()
-    {
+    public void setUp(){
         RuleBaseImpl ruleBase = new RuleBaseImpl();
         this.workingMemory = new WorkingMemoryImpl( ruleBase );
-        
+
         this.rete = ruleBase.getRete();
-       
-        this.objectTypeNode = new ObjectTypeNode(0, new ClassObjectType( Object.class ), this.rete);
-        this.objectTypeNode.attach();        
+
+        this.objectTypeNode = new ObjectTypeNode( 0,
+                                                  new ClassObjectType( Object.class ),
+                                                  this.rete );
+        this.objectTypeNode.attach();
         this.objectTypeNode.addObjectSink( new MockObjectSink() );
 
-        this.stringTypeNode = new ObjectTypeNode(0, new ClassObjectType( String.class ), this.rete);
-        this.stringTypeNode.attach();        
+        this.stringTypeNode = new ObjectTypeNode( 0,
+                                                  new ClassObjectType( String.class ),
+                                                  this.rete );
+        this.stringTypeNode.attach();
         this.stringTypeNode.addObjectSink( new MockObjectSink() );
 
-        this.cheeseTypeNode = new ObjectTypeNode(0, new ClassObjectType( Cheese.class ), this.rete);
-        this.cheeseTypeNode.attach();        
+        this.cheeseTypeNode = new ObjectTypeNode( 0,
+                                                  new ClassObjectType( Cheese.class ),
+                                                  this.rete );
+        this.cheeseTypeNode.attach();
         this.cheeseTypeNode.addObjectSink( new MockObjectSink() );
 
-        //this.rete.ruleAdded();
+        // this.rete.ruleAdded();
 
     }
 
-    public void tearDown()
-    {
+    public void tearDown(){
     }
 
-    public void testGetObjectTypeNodes() throws Exception
-    {
+    public void testGetObjectTypeNodes() throws Exception{
         Collection objectTypeNodes = this.rete.getObjectTypeNodes();
 
-        // Check the ObjectTypeNodes are correctly added to Rete 
+        // Check the ObjectTypeNodes are correctly added to Rete
         assertEquals( 3,
                       objectTypeNodes.size() );
 
@@ -114,15 +113,15 @@ public class ReteTest extends DroolsTestCase
     }
 
     /**
-     * All objects asserted to a RootNode must be propagated to all children ObjectTypeNodes.
+     * All objects asserted to a RootNode must be propagated to all children
+     * ObjectTypeNodes.
      */
-    public void testAssertObject() throws Exception
-    {
+    public void testAssertObject() throws Exception{
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
-                                                             null,
-                                                             null );
+                                                                 null,
+                                                                 null );
 
-        // Create and assert two objects 
+        // Create and assert two objects
         Object object1 = new Object();
         String string1 = "cheese";
 
@@ -139,7 +138,7 @@ public class ReteTest extends DroolsTestCase
         List asserted = null;
 
         // ----------------------------------------
-        // Check assertions worked on Object ObjectTypeNode 
+        // Check assertions worked on Object ObjectTypeNode
         MockObjectSink sink1 = (MockObjectSink) this.objectTypeNode.getObjectSinks().get( 0 );
 
         asserted = sink1.getAsserted();
@@ -155,7 +154,7 @@ public class ReteTest extends DroolsTestCase
                     results[0] );
 
         // ----------------------------------------
-        //  Check assertions worked on String ObjectTypeNode 
+        // Check assertions worked on String ObjectTypeNode
         MockObjectSink sink2 = (MockObjectSink) this.stringTypeNode.getObjectSinks().get( 0 );
 
         asserted = sink2.getAsserted();
@@ -175,13 +174,13 @@ public class ReteTest extends DroolsTestCase
     }
 
     /**
-     * All objects retracted from a RootNode must be propagated to all children ObjectTypeNodes.
+     * All objects retracted from a RootNode must be propagated to all children
+     * ObjectTypeNodes.
      */
-    public void testRetractObject() throws Exception
-    {
+    public void testRetractObject() throws Exception{
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
-                                                             null,
-                                                             null );
+                                                                 null,
+                                                                 null );
 
         FactHandleImpl handle1 = new FactHandleImpl( 1 );
         FactHandleImpl handle2 = new FactHandleImpl( 2 );
@@ -202,7 +201,7 @@ public class ReteTest extends DroolsTestCase
                                  this.workingMemory );
 
         // ----------------------------------------
-        /* Check retractions worked on Object ObjectTypeNode */        
+        /* Check retractions worked on Object ObjectTypeNode */
         List retracted = null;
 
         MockObjectSink sink1 = (MockObjectSink) this.objectTypeNode.getObjectSinks().get( 0 );
@@ -232,39 +231,33 @@ public class ReteTest extends DroolsTestCase
                     results[0] );
 
         // ----------------------------------------
-        // Check retractions worked on Cheese ObjectTypeNode, i.e. nothing happened 
+        // Check retractions worked on Cheese ObjectTypeNode, i.e. nothing
+        // happened
         MockObjectSink sink3 = (MockObjectSink) this.cheeseTypeNode.getObjectSinks().get( 0 );
 
         assertLength( 0,
                       sink3.getRetracted() );
     }
 
-
-    class Cheese
-    {
+    class Cheese {
         private String cheese;
 
-        public Cheese(String cheese)
-        {
+        public Cheese(String cheese){
             this.cheese = cheese;
         }
 
-        public String getCheese()
-        {
+        public String getCheese(){
             return this.cheese;
         }
 
-        public boolean equals(Object object)
-        {
-            if ( object != null || !(object instanceof Cheese) )
-            {
+        public boolean equals(Object object){
+            if ( object != null || !(object instanceof Cheese) ) {
                 return false;
             }
             return this.cheese.equals( object );
         }
 
-        public int hashcode()
-        {
+        public int hashcode(){
             return this.cheese.hashCode();
         }
     }

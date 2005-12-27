@@ -43,40 +43,37 @@ package org.drools;
 
 /**
  * Base exception indicating an error in manipulating facts.
- *
+ * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-public class FactException extends DroolsException
-{
+public class FactException extends DroolsException {
     /**
      * @see java.lang.Exception#Exception()
      */
-    public FactException( )
-    {
+    public FactException(){
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public FactException( String message )
-    {
+    public FactException(String message){
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    public FactException( String message, Throwable cause )
-    {
-        super( message, cause );
+    public FactException(String message,
+                         Throwable cause){
+        super( message,
+               cause );
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public FactException( Throwable cause )
-    {
+    public FactException(Throwable cause){
         super( cause );
     }
 }

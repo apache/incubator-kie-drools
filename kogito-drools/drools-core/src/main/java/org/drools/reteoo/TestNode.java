@@ -43,7 +43,6 @@ package org.drools.reteoo;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.AssertionException;
 import org.drools.FactException;
@@ -68,8 +67,7 @@ import org.drools.spi.PropagationContext;
 class TestNode extends TupleSource
     implements
     TupleSink,
-    NodeMemory
-{
+    NodeMemory {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -96,8 +94,7 @@ class TestNode extends TupleSource
     TestNode(int id,
              TupleSource tupleSource,
              Condition condition,
-             boolean hasMemory)
-    {
+             boolean hasMemory){
         super( id );
         this.condition = condition;
         this.tupleSource = tupleSource;
@@ -107,8 +104,7 @@ class TestNode extends TupleSource
     /**
      * Attaches this node into the network.
      */
-    public void attach()
-    {
+    public void attach(){
         this.tupleSource.addTupleSink( this );
     }
 
@@ -121,8 +117,7 @@ class TestNode extends TupleSource
      * 
      * @return The <code>Test</code>.
      */
-    public Condition getCondition()
-    {
+    public Condition getCondition(){
         return this.condition;
     }
 
@@ -143,69 +138,64 @@ class TestNode extends TupleSource
      */
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
-                            WorkingMemoryImpl workingMemory) throws FactException
-    {
-        
-        if ( hasMemory() )
-        {
-            Map memory = ( Map ) workingMemory.getNodeMemory( this );
-            if ( ! memory.containsKey( tuple.getKey( ) ) )
-            {
+                            WorkingMemoryImpl workingMemory) throws FactException{
+
+        if ( hasMemory() ) {
+            Map memory = (Map) workingMemory.getNodeMemory( this );
+            if ( !memory.containsKey( tuple.getKey() ) ) {
                 boolean allowed = this.condition.isAllowed( tuple );
 
-                workingMemory.getReteooNodeEventSupport( ).propagateReteooNode( this,
-                                                                                tuple,
-                                                                                allowed );
+                workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
+                                                                               tuple,
+                                                                               allowed );
 
-                if ( allowed )
-                {
-                    memory.put( tuple.getKey( ), tuple );
+                if ( allowed ) {
+                    memory.put( tuple.getKey(),
+                                tuple );
                     propagateAssertTuple( tuple,
                                           context,
                                           workingMemory );
-                }                
+                }
             }
         }
-        else
-        {
+        else {
             boolean allowed = this.condition.isAllowed( tuple );
 
-            workingMemory.getReteooNodeEventSupport( ).propagateReteooNode( this,
-                                                                            tuple,
-                                                                            allowed );
+            workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
+                                                                           tuple,
+                                                                           allowed );
 
-            if ( allowed )
-            {
+            if ( allowed ) {
                 propagateAssertTuple( tuple,
                                       context,
                                       workingMemory );
             }
         }
     }
-    
-    public void updateNewNode( WorkingMemoryImpl workingMemory,
-                               PropagationContext context ) throws FactException
-    {
+
+    public void updateNewNode(WorkingMemoryImpl workingMemory,
+                              PropagationContext context) throws FactException{
         this.attachingNewNode = true;
-        if ( hasMemory() )
-        {
-            Map memory = ( Map ) workingMemory.getNodeMemory( this );
-            for ( Iterator it = memory.values( ).iterator( ); it.hasNext(); )
-            {
-                propagateAssertTuple( ( ReteTuple ) it.next( ), context, workingMemory );
+        if ( hasMemory() ) {
+            Map memory = (Map) workingMemory.getNodeMemory( this );
+            for ( Iterator it = memory.values().iterator(); it.hasNext(); ) {
+                propagateAssertTuple( (ReteTuple) it.next(),
+                                      context,
+                                      workingMemory );
             }
         }
-        else
-        {
-            // We need to detach and re-attach to make sure the node is at the top
+        else {
+            // We need to detach and re-attach to make sure the node is at the
+            // top
             // for the propagation
             this.tupleSource.removeTupleSink( this );
-            this.tupleSource.addTupleSink( this );            
-            this.tupleSource.updateNewNode( workingMemory, context );            
+            this.tupleSource.addTupleSink( this );
+            this.tupleSource.updateNewNode( workingMemory,
+                                            context );
         }
 
         this.attachingNewNode = false;
-    }     
+    }
 
     /**
      * Retract tuples.
@@ -220,24 +210,20 @@ class TestNode extends TupleSource
      */
     public void retractTuples(TupleKey key,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException
-    {
-        if ( hasMemory() )
-        {
-            Map memory = ( Map ) workingMemory.getNodeMemory( this );
-            if ( memory.remove( key ) != null )
-            {
-                
+                              WorkingMemoryImpl workingMemory) throws FactException{
+        if ( hasMemory() ) {
+            Map memory = (Map) workingMemory.getNodeMemory( this );
+            if ( memory.remove( key ) != null ) {
+
                 propagateRetractTuples( key,
                                         context,
-                                        workingMemory );                
+                                        workingMemory );
             }
         }
-        else
-        {
+        else {
             propagateRetractTuples( key,
                                     context,
-                                    workingMemory );            
+                                    workingMemory );
         }
 
     }
@@ -251,25 +237,20 @@ class TestNode extends TupleSource
      * 
      * @return The debug string.
      */
-    public String toString()
-    {
+    public String toString(){
         return "[ConditionNode: cond=" + this.condition + "]";
     }
 
-    public int hashCode()
-    {
-        return this.tupleSource.hashCode( ) ^ this.condition.hashCode( );
+    public int hashCode(){
+        return this.tupleSource.hashCode() ^ this.condition.hashCode();
     }
 
-    public boolean equals(Object object)
-    {
-        if ( this == object )
-        {
+    public boolean equals(Object object){
+        if ( this == object ) {
             return true;
         }
 
-        if ( object == null || getClass( ) != object.getClass( ) )
-        {
+        if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
 
@@ -278,14 +259,12 @@ class TestNode extends TupleSource
         return this.tupleSource.equals( other.tupleSource ) && this.condition.equals( other.condition );
     }
 
-    public void remove()
-    {
+    public void remove(){
         // TODO Auto-generated method stub
-        
+
     }
 
-    public Object createMemory()
-    {
+    public Object createMemory(){
         return new HashMap();
     }
 }

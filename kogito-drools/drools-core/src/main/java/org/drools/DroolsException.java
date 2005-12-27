@@ -41,57 +41,51 @@ package org.drools;
  *
  */
 
-
 /**
  * Base <code>drools Logic Engine</code> exception.
- *
+ * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
- *
+ * 
  * @version $Id: DroolsException.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  */
-public class DroolsException extends Exception
-{
+public class DroolsException extends Exception {
     /**
      * @see java.lang.Exception#Exception()
      */
-    public DroolsException( )
-    {
+    public DroolsException(){
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public DroolsException( String message )
-    {
+    public DroolsException(String message){
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    public DroolsException( String message, Throwable cause )
-    {
+    public DroolsException(String message,
+                           Throwable cause){
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public DroolsException( Throwable cause )
-    {
+    public DroolsException(Throwable cause){
         super( cause );
     }
 
     /**
      * Get the root cause, if any.
-     *
+     * 
      * @deprecated Use Throwable.getCause()
      * @return The root cause of this exception, as a <code>Throwable</code>,
      *         if this exception has a root cause, else <code>null</code>.
      */
-    public Throwable getRootCause( )
-    {
+    public Throwable getRootCause(){
         return super.getCause();
     }
 }

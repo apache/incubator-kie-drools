@@ -46,8 +46,7 @@ package org.drools.rule;
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public class NoConsequenceException extends InvalidRuleException
-{
+public class NoConsequenceException extends InvalidRuleException {
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -58,8 +57,7 @@ public class NoConsequenceException extends InvalidRuleException
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public NoConsequenceException(Rule rule)
-    {
+    public NoConsequenceException(Rule rule){
         super( rule );
     }
 }

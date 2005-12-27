@@ -54,11 +54,11 @@ import org.drools.FactException;
  * be modified without having to specify the facthandle, because they are not
  * passed to the consequence at runtime. To achieve this the implementation will
  * need to lookup the fact handle of the object form the WorkingMemory.
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:mproctor@codehaus.org">mark proctor</a>
  */
-public interface KnowledgeHelper
-{
+public interface KnowledgeHelper {
     /**
      * Asserts an object, notice that it does not return the FactHandle
      * 

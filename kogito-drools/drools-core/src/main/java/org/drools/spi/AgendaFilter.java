@@ -42,8 +42,7 @@ package org.drools.spi;
 /**
  * @author mproctor
  */
-public interface AgendaFilter
-{
+public interface AgendaFilter {
     /**
      * Determine if a given activation should be fired.
      * 

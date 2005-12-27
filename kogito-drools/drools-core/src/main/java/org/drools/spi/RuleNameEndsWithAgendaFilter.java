@@ -42,36 +42,32 @@ package org.drools.spi;
 
 /**
  * Filters activations based on a specified rule name suffix.
- *
+ * 
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
 public class RuleNameEndsWithAgendaFilter
     implements
-    AgendaFilter
-{
-    private final String suffix;
+    AgendaFilter {
+    private final String  suffix;
 
     private final boolean accept;
 
-    public RuleNameEndsWithAgendaFilter(String suffix)
-    {
-        this( suffix, true );
+    public RuleNameEndsWithAgendaFilter(String suffix){
+        this( suffix,
+              true );
     }
 
-    public RuleNameEndsWithAgendaFilter(String suffix, boolean accept)
-    {
+    public RuleNameEndsWithAgendaFilter(String suffix,
+                                        boolean accept){
         this.suffix = suffix;
         this.accept = accept;
     }
 
-    public boolean accept(Activation activation)
-    {
-        if (activation.getRule( ).getName( ).endsWith( this.suffix ) )
-        {
-            return accept;
+    public boolean accept(Activation activation){
+        if ( activation.getRule().getName().endsWith( this.suffix ) ) {
+            return this.accept;
         }
-        else
-        {
+        else {
             return false;
         }
     }

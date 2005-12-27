@@ -41,20 +41,13 @@ package org.drools.reteoo;
  */
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.InitialFact;
-import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
-import org.drools.RuleSetIntegrationException;
-import org.drools.conflict.DefaultConflictResolver;
 import org.drools.rule.And;
 import org.drools.rule.Binding;
 import org.drools.rule.Column;
@@ -65,13 +58,8 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Rule;
-import org.drools.rule.RuleSet;
 import org.drools.spi.ClassObjectType;
-import org.drools.spi.Condition;
-import org.drools.spi.ConflictResolver;
-import org.drools.spi.Consequence;
 import org.drools.spi.Constraint;
-import org.drools.spi.RuleBaseContext;
 
 /**
  * Builds the Rete-OO network for a <code>RuleSet</code>.
@@ -84,15 +72,14 @@ import org.drools.spi.RuleBaseContext;
  * joins. Currently using forgy's original description of 2-input nodes, which I
  * feel (but don't know for sure, is sub-optimal.
  */
-class Builder
-{
+class Builder {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /** The RuleBase */
     private RuleBaseImpl ruleBase;
-    
+
     /** Rete network to build against. */
     private Rete         rete;
 
@@ -108,8 +95,8 @@ class Builder
 
     private ObjectSource objectSource;
 
-    private Map          declarations;    
-    
+    private Map          declarations;
+
     private List         propagationPoints;
 
     private int          id;
@@ -122,13 +109,12 @@ class Builder
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    Builder(RuleBaseImpl ruleBase)
-    {
-        this.rete = new Rete( );
-        this.ruleSets = new ArrayList( );
-        this.attachedNodes = new HashMap( );
-        this.applicationData = new HashMap( );
-        this.declarations = new HashMap( );
+    Builder(RuleBaseImpl ruleBase){
+        this.rete = new Rete();
+        this.ruleSets = new ArrayList();
+        this.attachedNodes = new HashMap();
+        this.applicationData = new HashMap();
+        this.declarations = new HashMap();
     }
 
     // ------------------------------------------------------------
@@ -146,162 +132,143 @@ class Builder
      *             the <code>Rule</code>.
      * @throws InvalidPatternException
      */
-    void addRule(Rule rule) throws InvalidPatternException
-    {
-        And[] and = rule.getProcessPatterns( );
-        for ( int i = 0; i < and.length; i++ )
-        {
+    void addRule(Rule rule) throws InvalidPatternException{
+        And[] and = rule.getProcessPatterns();
+        for ( int i = 0; i < and.length; i++ ) {
             addRule( and[i],
                      rule );
         }
-        TerminalNode node = new TerminalNode(this.tupleSource, rule);
+        TerminalNode node = new TerminalNode( this.tupleSource,
+                                              rule );
     }
 
     private void addRule(And and,
-                         Rule rule)
-    {
-        for ( Iterator it = and.getChildren( ).iterator( ); it.hasNext( ); )
-        {
-            Object object = it.next( );
+                         Rule rule){
+        for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
+            Object object = it.next();
 
             BetaNodeBinder binder;
             Column column;
 
-            if ( object instanceof Column )
-            {
+            if ( object instanceof Column ) {
                 column = (Column) object;
 
                 binder = attachColumn( (Column) object,
                                        and );
 
-                // If a tupleSource does not exist then we need to adapt this into 
+                // If a tupleSource does not exist then we need to adapt this
+                // into
                 // a TupleSource using LeftInputAdapterNode
-                if ( this.tupleSource == null )
-                {
+                if ( this.tupleSource == null ) {
                     this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-                                                                             column.getIndex( ),
+                                                                             column.getIndex(),
                                                                              this.objectSource ) );
-                    
-                    // objectSource is created by the attachColumn method, if we adapt this to
-                    // a TupleSource then we need to null the objectSource reference.
+
+                    // objectSource is created by the attachColumn method, if we
+                    // adapt this to
+                    // a TupleSource then we need to null the objectSource
+                    // reference.
                     this.objectSource = null;
                 }
             }
-            else
-            {
+            else {
                 // If its not a Column then it can either be a Not or an Exists
                 ConditionalElement ce = (ConditionalElement) object;
-                while ( !(ce.getChildren( ).get( 0 ) instanceof Column) )
-                {
-                    ce = (ConditionalElement) ce.getChildren( ).get( 0 );
+                while ( !(ce.getChildren().get( 0 ) instanceof Column) ) {
+                    ce = (ConditionalElement) ce.getChildren().get( 0 );
                 }
-                column = (Column) ce.getChildren( ).get( 0 );
+                column = (Column) ce.getChildren().get( 0 );
                 binder = attachColumn( (Column) object,
                                        and );
 
                 // If a tupleSource does not exist then we need to adapt an
                 // InitialFact into a a TupleSource using LeftInputAdapterNode
-                if ( this.tupleSource == null )
-                {
+                if ( this.tupleSource == null ) {
                     ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
                                                                                 new ClassObjectType( InitialFact.class ),
                                                                                 this.rete ) );
 
                     this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-                                                                             column.getIndex( ),
+                                                                             column.getIndex(),
                                                                              objectSource ) );
 
                 }
             }
-                        
 
-            if ( object instanceof Not )
-            {
+            if ( object instanceof Not ) {
                 attachNot( this.tupleSource,
                            (Not) object,
                            this.objectSource,
                            binder,
                            column );
             }
-            else if ( object instanceof Exists )
-            {
+            else if ( object instanceof Exists ) {
                 attachExists( this.tupleSource,
                               (Exists) object,
                               this.objectSource,
                               binder,
                               column );
             }
-            else if ( this.objectSource != null )
-            {
+            else if ( this.objectSource != null ) {
                 this.tupleSource = attachNode( new JoinNode( this.id++,
                                                              this.tupleSource,
                                                              this.objectSource,
-                                                             column.getIndex( ),
+                                                             column.getIndex(),
                                                              binder ) );
             }
         }
     }
 
     private BetaNodeBinder attachColumn(Column column,
-                                        ConditionalElement parent)
-    {
+                                        ConditionalElement parent){
         addDeclarations( column );
 
         List predicates = attachAlphaNodes( column );
 
         BetaNodeBinder binder;
 
-        if ( !predicates.isEmpty( ) )
-        {
-            binder = new BetaNodeBinder( (Constraint[]) predicates.toArray( new Constraint[predicates.size( )] ) );
+        if ( !predicates.isEmpty() ) {
+            binder = new BetaNodeBinder( (Constraint[]) predicates.toArray( new Constraint[predicates.size()] ) );
         }
-        else
-        {
-            binder = new BetaNodeBinder( );
+        else {
+            binder = new BetaNodeBinder();
         }
 
         return binder;
     }
 
-    private void addDeclarations(Column column)
-    {
-        for ( Iterator it = column.getDeclarations( ).iterator( ); it.hasNext( ); )
-        {
-            Declaration declaration = (Declaration) it.next( );
-            this.declarations.put( declaration.getIdentifier( ),
+    private void addDeclarations(Column column){
+        for ( Iterator it = column.getDeclarations().iterator(); it.hasNext(); ) {
+            Declaration declaration = (Declaration) it.next();
+            this.declarations.put( declaration.getIdentifier(),
                                    declaration );
         }
 
-        if ( column.getBinding( ) != null )
-        {
-            Binding binding = column.getBinding( );
-            this.declarations.put( binding.getIdentifier( ),
+        if ( column.getBinding() != null ) {
+            Binding binding = column.getBinding();
+            this.declarations.put( binding.getIdentifier(),
                                    binding );
         }
     }
 
-    public List attachAlphaNodes(Column column)
-    {
-        List constraints = column.getConstraints( );
+    public List attachAlphaNodes(Column column){
+        List constraints = column.getConstraints();
 
         ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                    column.getObjectType( ),
+                                                                    column.getObjectType(),
                                                                     this.rete ) );
 
-        List predicateConstraints = new ArrayList( );
+        List predicateConstraints = new ArrayList();
 
-        for ( Iterator it = constraints.iterator( ); it.hasNext( ); )
-        {
-            Constraint constraint = (Constraint) it.next( );
-            if ( constraint instanceof LiteralConstraint )
-            {
+        for ( Iterator it = constraints.iterator(); it.hasNext(); ) {
+            Constraint constraint = (Constraint) it.next();
+            if ( constraint instanceof LiteralConstraint ) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
                                                                constraint,
                                                                true,
                                                                objectSource ) );
             }
-            else
-            {
+            else {
                 predicateConstraints.add( constraint );
             }
         }
@@ -313,38 +280,34 @@ class Builder
                            Not not,
                            ObjectSource ObjectSource,
                            BetaNodeBinder binder,
-                           Column column)
-    {
+                           Column column){
         NotNode notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                              tupleSource,
                                                              ObjectSource,
-                                                             column.getIndex( ),
+                                                             column.getIndex(),
                                                              binder ) );
-        if ( not.getChild( ) instanceof Not )
-        {
+        if ( not.getChild() instanceof Not ) {
 
             RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                                           column.getIndex( ),
+                                                                                                           column.getIndex(),
                                                                                                            notNode ) );
             attachNot( tupleSource,
-                       (Not) not.getChild( ),
+                       (Not) not.getChild(),
                        adapter,
-                       new BetaNodeBinder( ),
+                       new BetaNodeBinder(),
                        column );
         }
-        else if ( not.getChild( ) instanceof Exists )
-        {
+        else if ( not.getChild() instanceof Exists ) {
             RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                                           column.getIndex( ),
+                                                                                                           column.getIndex(),
                                                                                                            notNode ) );
             attachExists( tupleSource,
-                          (Exists) not.getChild( ),
+                          (Exists) not.getChild(),
                           adapter,
-                          new BetaNodeBinder( ),
+                          new BetaNodeBinder(),
                           column );
         }
-        else
-        {
+        else {
             this.tupleSource = notNode;
         }
     }
@@ -353,46 +316,42 @@ class Builder
                               Exists exists,
                               ObjectSource ObjectSource,
                               BetaNodeBinder binder,
-                              Column column)
-    {
+                              Column column){
         NotNode notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                              tupleSource,
                                                              ObjectSource,
-                                                             column.getIndex( ),
+                                                             column.getIndex(),
                                                              binder ) );
         RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                                       column.getIndex( ),
+                                                                                                       column.getIndex(),
                                                                                                        notNode ) );
         notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                      tupleSource,
                                                      adapter,
-                                                     column.getIndex( ),
-                                                     new BetaNodeBinder( ) ) );
+                                                     column.getIndex(),
+                                                     new BetaNodeBinder() ) );
 
-        if ( exists.getChild( ) instanceof Not )
-        {
+        if ( exists.getChild() instanceof Not ) {
             adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                     column.getIndex( ),
+                                                                                     column.getIndex(),
                                                                                      notNode ) );
             attachNot( tupleSource,
-                       (Not) exists.getChild( ),
+                       (Not) exists.getChild(),
                        adapter,
-                       new BetaNodeBinder( ),
+                       new BetaNodeBinder(),
                        column );
         }
-        else if ( exists.getChild( ) instanceof Exists )
-        {
+        else if ( exists.getChild() instanceof Exists ) {
             adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                     column.getIndex( ),
+                                                                                     column.getIndex(),
                                                                                      notNode ) );
             attachExists( tupleSource,
-                          (Exists) exists.getChild( ),
+                          (Exists) exists.getChild(),
                           adapter,
-                          new BetaNodeBinder( ),
+                          new BetaNodeBinder(),
                           column );
         }
-        else
-        {
+        else {
             this.tupleSource = notNode;
         }
     }
@@ -406,44 +365,38 @@ class Builder
      * @param leafNodes
      *            The list to which the newly added node will be added.
      */
-    private TupleSource attachNode(TupleSource candidate)
-    {
+    private TupleSource attachNode(TupleSource candidate){
         TupleSource node = (TupleSource) this.attachedNodes.get( candidate );
 
-        if ( node == null )
-        {            
-            candidate.attach( );
+        if ( node == null ) {
+            candidate.attach();
 
             this.attachedNodes.put( candidate,
                                     candidate );
 
             node = candidate;
         }
-        else
-        {
+        else {
             node.addShare();
-            id--;
+            this.id--;
         }
 
         return node;
     }
 
-    private ObjectSource attachNode(ObjectSource candidate)
-    {
+    private ObjectSource attachNode(ObjectSource candidate){
         ObjectSource node = (ObjectSource) this.attachedNodes.get( candidate );
 
-        if ( node == null )
-        {
-            candidate.attach( );
+        if ( node == null ) {
+            candidate.attach();
 
             this.attachedNodes.put( candidate,
                                     candidate );
 
             node = candidate;
         }
-        else
-        {
-            id--;
+        else {
+            this.id--;
         }
 
         return node;

@@ -57,26 +57,25 @@ import org.drools.spi.Tuple;
 class AgendaItem
     implements
     Activation,
-    Serializable
-{
+    Serializable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /** The tuple. */
-    private ReteTuple   tuple;
+    private ReteTuple          tuple;
 
     /** The rule. */
-    private Rule        rule;
-    
+    private Rule               rule;
+
     private PropagationContext context;
 
     // ** The Counter */
-    private static long counter;
+    private static long        counter;
 
-    private long        activationNumber;
+    private long               activationNumber;
 
-    private boolean     retract;
+    private boolean            retract;
 
     // ------------------------------------------------------------
     // Constructors
@@ -92,32 +91,28 @@ class AgendaItem
      */
     AgendaItem(ReteTuple tuple,
                PropagationContext context,
-               Rule rule)
-    {
+               Rule rule){
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
-        this.activationNumber = counter++;
+        this.activationNumber = AgendaItem.counter++;
     }
 
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    public PropagationContext getPropagationContext()
-    {
+    public PropagationContext getPropagationContext(){
         return this.context;
     }
-    
-    
+
     /**
      * Retrieve the rule.
      * 
      * @return The rule.
      */
-    public Rule getRule()
-    {
+    public Rule getRule(){
         return this.rule;
-    }    
+    }
 
     /**
      * Determine if this tuple depends on the values derrived from a particular
@@ -129,8 +124,7 @@ class AgendaItem
      * @return <code>true<code> if this agenda item depends
      *          upon the item, otherwise <code>false</code>.
      */
-    boolean dependsOn(FactHandle handle)
-    {
+    boolean dependsOn(FactHandle handle){
         return this.tuple.dependsOn( handle );
     }
 
@@ -140,8 +134,7 @@ class AgendaItem
      * @param tuple
      *            The tuple.
      */
-    void setTuple(ReteTuple tuple)
-    {
+    void setTuple(ReteTuple tuple){
         this.tuple = tuple;
     }
 
@@ -150,8 +143,7 @@ class AgendaItem
      * 
      * @return The tuple.
      */
-    public Tuple getTuple()
-    {
+    public Tuple getTuple(){
         return this.tuple;
     }
 
@@ -160,9 +152,8 @@ class AgendaItem
      * 
      * @return The key to the tuple in this item.
      */
-    TupleKey getKey()
-    {
-        return this.tuple.getKey( );
+    TupleKey getKey(){
+        return this.tuple.getKey();
     }
 
     /**
@@ -174,40 +165,33 @@ class AgendaItem
      * @throws ConsequenceException
      *             If an error occurs while attempting to fire the consequence.
      */
-    void fire(WorkingMemoryImpl workingMemory) throws ConsequenceException
-    {
+    void fire(WorkingMemoryImpl workingMemory) throws ConsequenceException{
 
-        this.rule.getConsequence( ).invoke( null );
+        this.rule.getConsequence().invoke( null );
 
-        workingMemory.getAgendaEventSupport( ).fireActivationFired( this.rule,
-                                                              this.tuple );
+        workingMemory.getAgendaEventSupport().fireActivationFired( this.rule,
+                                                                   this.tuple );
     }
 
-    public long getActivationNumber()
-    {
+    public long getActivationNumber(){
         return this.activationNumber;
     }
 
-    public String toString()
-    {
-        return "[" + this.rule.getName( ) + " " + this.tuple + "]";
+    public String toString(){
+        return "[" + this.rule.getName() + " " + this.tuple + "]";
     }
-    
-    public boolean equals(Object object)
-    {
-        if ( ( object == null ) || !( object instanceof AgendaItem) )
-        {
+
+    public boolean equals(Object object){
+        if ( (object == null) || !(object instanceof AgendaItem) ) {
             return false;
         }
-        
+
         AgendaItem otherItem = (AgendaItem) object;
-        
-        return ( this.rule.equals( otherItem.getRule() ) 
-                  && this.tuple.getKey().equals( otherItem.getKey() ) );                        
+
+        return (this.rule.equals( otherItem.getRule() ) && this.tuple.getKey().equals( otherItem.getKey() ));
     }
-    
-    public int hashcode()
-    {
+
+    public int hashcode(){
         return this.getKey().hashCode();
     }
 

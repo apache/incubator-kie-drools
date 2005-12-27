@@ -47,10 +47,10 @@ package org.drools.spi;
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public interface Functions extends SemanticComponent
-{  
+public interface Functions
+    extends
+    SemanticComponent {
     String getText();
-    
+
     String getSemantic();
 }
-

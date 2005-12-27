@@ -45,10 +45,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.rule.Rule;
-import org.drools.spi.Condition;
 import org.drools.spi.ReteooNode;
 import org.drools.spi.Tuple;
 
@@ -57,60 +54,49 @@ import org.drools.spi.Tuple;
  */
 public class ReteooNodeEventSupport
     implements
-    Serializable
-{   
-    private final List          listeners = new ArrayList( );
+    Serializable {
+    private final List          listeners = new ArrayList();
     private final WorkingMemory workingMemory;
 
-    public ReteooNodeEventSupport(WorkingMemory workingMemory)
-    {
+    public ReteooNodeEventSupport(WorkingMemory workingMemory){
         this.workingMemory = workingMemory;
     }
 
-    public void addEventListener(ReteooNodeEventListener listener)
-    {
-        if ( !this.listeners.contains( listener ) )
-        {
+    public void addEventListener(ReteooNodeEventListener listener){
+        if ( !this.listeners.contains( listener ) ) {
             this.listeners.add( listener );
         }
     }
 
-    public void removeEventListener(ReteooNodeEventListener listener)
-    {
+    public void removeEventListener(ReteooNodeEventListener listener){
         this.listeners.remove( listener );
     }
 
-    public List getEventListeners()
-    {
+    public List getEventListeners(){
         return Collections.unmodifiableList( this.listeners );
     }
 
-    public int size()
-    {
-        return this.listeners.size( );
+    public int size(){
+        return this.listeners.size();
     }
 
-    public boolean isEmpty()
-    {
-        return this.listeners.isEmpty( );
+    public boolean isEmpty(){
+        return this.listeners.isEmpty();
     }
 
     public void propagateReteooNode(ReteooNode node,
                                     Tuple tuple,
-                                    boolean result)
-    {
-        if ( this.listeners.isEmpty( ) )
-        {
+                                    boolean result){
+        if ( this.listeners.isEmpty() ) {
             return;
         }
 
         ReteooNodeEvent event = new ReteooNodeEvent( this.workingMemory,
-                                                               node,
-                                                               tuple,
-                                                               result );
+                                                     node,
+                                                     tuple,
+                                                     result );
 
-        for ( int i = 0, size = this.listeners.size( ); i < size; i++ )
-        {
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((ReteooNodeEventListener) this.listeners.get( i )).nodeEvaluated( event );
         }
     }

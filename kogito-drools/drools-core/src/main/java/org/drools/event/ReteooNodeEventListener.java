@@ -4,7 +4,6 @@ import java.util.EventListener;
 
 public interface ReteooNodeEventListener
     extends
-    EventListener
-{
+    EventListener {
     void nodeEvaluated(ReteooNodeEvent event);
 }

@@ -40,7 +40,6 @@ package org.drools.spi;
  *  
  */
 
-
 /**
  * Consequence to be fired upon successful match of a <code>Rule</code>.
  * 
@@ -50,11 +49,12 @@ package org.drools.spi;
  */
 public interface Consequence
     extends
-    SemanticComponent
-{
+    SemanticComponent {
     /**
      * Execute the consequence for the supplied matching <code>Tuple</code>.
-     * @param activation TODO
+     * 
+     * @param activation
+     *            TODO
      * @param workingMemory
      *            The working memory session.
      * 

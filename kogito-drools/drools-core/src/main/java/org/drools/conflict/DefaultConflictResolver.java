@@ -45,36 +45,30 @@ import org.drools.spi.ConflictResolver;
 
 /**
  * Strategy for resolving conflicts amongst multiple rules.
- *
+ * 
  * <p>
  * Since a fact or set of facts may activate multiple rules, a
  * <code>ConflictResolutionStrategy</code> is used to provide priority
  * ordering of conflicting rules.
  * </p>
- *
+ * 
  * @see org.drools.spi.Activation
  * @see org.drools.spi.Tuple
  * @see org.drools.rule.Rule
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
-public class DefaultConflictResolver extends CompositeConflictResolver
-{
+public class DefaultConflictResolver extends CompositeConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
-    private static final ConflictResolver[] CONFLICT_RESOLVERS = new ConflictResolver[]
-        {
-            SalienceConflictResolver.getInstance( ),
-            RecencyConflictResolver.getInstance( ),
-            ComplexityConflictResolver.getInstance( ),
-            LoadOrderConflictResolver.getInstance( )
-        };
+    private static final ConflictResolver[]      CONFLICT_RESOLVERS = new ConflictResolver[]{SalienceConflictResolver.getInstance(), RecencyConflictResolver.getInstance(), ComplexityConflictResolver.getInstance(),
+            LoadOrderConflictResolver.getInstance()                 };
 
     /** Singleton instance. */
-    private static final DefaultConflictResolver INSTANCE = new DefaultConflictResolver( );
+    private static final DefaultConflictResolver INSTANCE           = new DefaultConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -82,19 +76,17 @@ public class DefaultConflictResolver extends CompositeConflictResolver
 
     /**
      * Retrieve the singleton instance.
-     *
+     * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance( )
-    {
-        return INSTANCE;
+    public static ConflictResolver getInstance(){
+        return DefaultConflictResolver.INSTANCE;
     }
 
     /**
      * Setup a default ConflictResolver configuration
      */
-    public DefaultConflictResolver( )
-    {
-        super( CONFLICT_RESOLVERS );
+    public DefaultConflictResolver(){
+        super( DefaultConflictResolver.CONFLICT_RESOLVERS );
     }
 }

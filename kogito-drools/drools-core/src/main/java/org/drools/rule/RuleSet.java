@@ -54,17 +54,16 @@ import org.drools.spi.RuleBaseContext;
 
 /**
  * Collection of related <code>Rule</code>s.
- *
+ * 
  * @see Rule
- *
+ * 
  * @author <a href="mail:bob@werken.com">bob mcwhirter </a>
- *
+ * 
  * @version $Id: RuleSet.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  */
 public class RuleSet
     implements
-    Serializable
-{
+    Serializable {
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
@@ -94,7 +93,7 @@ public class RuleSet
 
     private Map                   functions;
 
-    private RuleBaseContext		  ruleBaseContext;
+    private RuleBaseContext       ruleBaseContext;
 
     // ------------------------------------------------------------
     // Constructors
@@ -102,35 +101,33 @@ public class RuleSet
 
     /**
      * Construct.
-     *
+     * 
      * @param name
      *            The name of this <code>RuleSet</code>.
      */
-    public RuleSet(String name)
-    {
+    public RuleSet(String name){
         this.name = name;
-        this.ruleNames = new HashSet( );
-        this.rules = new ArrayList( );
-        this.applicationData = new HashMap( );
-        this.functions = new HashMap( );
-        this.ruleBaseContext = new RuleBaseContext( );
+        this.ruleNames = new HashSet();
+        this.rules = new ArrayList();
+        this.applicationData = new HashMap();
+        this.functions = new HashMap();
+        this.ruleBaseContext = new RuleBaseContext();
     }
 
     /**
      * Construct.
-     *
+     * 
      * @param name
      *            The name of this <code>RuleSet</code>.
      * @param ruleBaseContext
      */
     public RuleSet(String name,
-                   RuleBaseContext ruleBaseContext)
-    {
+                   RuleBaseContext ruleBaseContext){
         this.name = name;
-        this.ruleNames = new HashSet( );
-        this.rules = new ArrayList( );
-        this.applicationData = new HashMap( );
-        this.functions = new HashMap( );
+        this.ruleNames = new HashSet();
+        this.rules = new ArrayList();
+        this.applicationData = new HashMap();
+        this.functions = new HashMap();
         this.ruleBaseContext = ruleBaseContext;
     }
 
@@ -140,41 +137,38 @@ public class RuleSet
 
     /**
      * Retrieve the name of this <code>RuleSet</code>.
-     *
+     * 
      * @return The name of this <code>RuleSet</code>.
      */
-    public String getName()
-    {
+    public String getName(){
         return this.name;
     }
 
     /**
      * Set the documentation.
-     *
+     * 
      * @param documentation
      *            The documentation.
      */
-    public void setDocumentation(String documentation)
-    {
+    public void setDocumentation(String documentation){
         this.documentation = documentation;
     }
 
     /**
      * Retrieve the documentation.
-     *
+     * 
      * @return The documentation or <code>null</code> if none.
      */
-    public String getDocumentation()
-    {
+    public String getDocumentation(){
         return this.documentation;
     }
 
     /**
      * Add a <code>Rule</code> to this <code>RuleSet</code>.
-     *
+     * 
      * @param rule
      *            The rule to add.
-     *
+     * 
      * @throws DuplicateRuleNameException
      *             If the <code>Rule</code> attempting to be added has the
      *             same name as another previously added <code>Rule</code>.
@@ -182,43 +176,38 @@ public class RuleSet
      *             If the <code>Rule</code> is not valid.
      */
     public void addRule(Rule rule) throws DuplicateRuleNameException,
-                                  InvalidRuleException
-    {
-        rule.checkValidity( );
+                                  InvalidRuleException{
+        rule.checkValidity();
 
-        String name = rule.getName( );
+        String name = rule.getName();
 
-        if ( containsRule( name ) )
-        {
+        if ( containsRule( name ) ) {
             throw new DuplicateRuleNameException( this,
                                                   getRule( name ),
                                                   rule );
         }
 
         this.ruleNames.add( name );
-        rule.setLoadOrder( rules.size( ) );
+        rule.setLoadOrder( this.rules.size() );
         rule.setImporter( this.importer );
         this.rules.add( rule );
     }
 
     /**
      * Retrieve a <code>Rule</code> by name.
-     *
+     * 
      * @param name
      *            The name of the <code>Rule</code> to retrieve.
-     *
+     * 
      * @return The named <code>Rule</code>, or <code>null</code> if not
      *         such <code>Rule</code> has been added to this
      *         <code>RuleSet</code>.
      */
-    public Rule getRule(String name)
-    {
-        Rule[] rules = getRules( );
+    public Rule getRule(String name){
+        Rule[] rules = getRules();
 
-        for ( int i = 0; i < rules.length; ++i )
-        {
-            if ( rules[i].getName( ).equals( name ) )
-            {
+        for ( int i = 0; i < rules.length; ++i ) {
+            if ( rules[i].getName().equals( name ) ) {
                 return rules[i];
             }
         }
@@ -235,55 +224,46 @@ public class RuleSet
      *  @return <code>true</code> if this <code>RuleSet</code> contains a
      *          <code>Rule</code> with the specified name, else <code>false</code>.
      */
-    public boolean containsRule(String name)
-    {
+    public boolean containsRule(String name){
         return this.ruleNames.contains( name );
     }
 
     /**
      * Retrieve all <code>Rules</code> in this <code>RuleSet</code>.
-     *
+     * 
      * @return An array of all <code>Rules</code> in this <code>RuleSet</code>.
      */
-    public Rule[] getRules()
-    {
-        return (Rule[]) this.rules.toArray( new Rule[this.rules.size( )] );
+    public Rule[] getRules(){
+        return (Rule[]) this.rules.toArray( new Rule[this.rules.size()] );
     }
 
-    public Importer getImporter()
-    {
+    public Importer getImporter(){
         return this.importer;
     }
 
-    public void setImporter(Importer importer)
-    {
+    public void setImporter(Importer importer){
         this.importer = importer;
     }
 
-    public void addApplicationData(ApplicationData applicationData)
-    {
-        this.applicationData.put( applicationData.getIdentifier( ),
-                                  applicationData.getType( ) );
+    public void addApplicationData(ApplicationData applicationData){
+        this.applicationData.put( applicationData.getIdentifier(),
+                                  applicationData.getType() );
     }
 
-    public Map getApplicationData()
-    {
+    public Map getApplicationData(){
         return this.applicationData;
     }
 
-    public void addFunctions(Functions functions)
-    {
-        this.functions.put( functions.getSemantic( ),
+    public void addFunctions(Functions functions){
+        this.functions.put( functions.getSemantic(),
                             functions );
     }
 
-    public Functions getFunctions(String semantic)
-    {
+    public Functions getFunctions(String semantic){
         return (Functions) this.functions.get( semantic );
     }
 
-    public RuleBaseContext getRuleBaseContext()
-    {
+    public RuleBaseContext getRuleBaseContext(){
         return this.ruleBaseContext;
     }
 }

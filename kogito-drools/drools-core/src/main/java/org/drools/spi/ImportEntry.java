@@ -43,7 +43,8 @@ package org.drools.spi;
 
 import java.io.Serializable;
 
-public interface ImportEntry extends Serializable
-{
+public interface ImportEntry
+    extends
+    Serializable {
     public String getImportEntry();
 }

@@ -10,13 +10,11 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.PrimitiveLongMap;
 
-public class ObjectTypeNodeTest extends DroolsTestCase
-{
+public class ObjectTypeNodeTest extends DroolsTestCase {
 
-    public void testAttach() throws Exception
-    {
-        Rete source = new Rete( );
-        
+    public void testAttach() throws Exception{
+        Rete source = new Rete();
+
         ObjectType objectType = new ClassObjectType( String.class );
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
@@ -27,31 +25,31 @@ public class ObjectTypeNodeTest extends DroolsTestCase
                       objectTypeNode.getId() );
 
         assertLength( 0,
-                      source.getObjectTypeNodes( ) );
+                      source.getObjectTypeNodes() );
 
         objectTypeNode.attach();
-        
-        assertLength( 1,
-                      source.getObjectTypeNodes( ) );        
 
-        assertSame( objectTypeNode, source.getObjectTypeNode( objectType ) );
+        assertLength( 1,
+                      source.getObjectTypeNodes() );
+
+        assertSame( objectTypeNode,
+                    source.getObjectTypeNode( objectType ) );
     }
 
-    public void testAssertObject() throws Exception
-    {
+    public void testAssertObject() throws Exception{
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
-                                                             null,
-                                                             null );
+                                                                 null,
+                                                                 null );
 
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
-        Rete source = new Rete( );
+        Rete source = new Rete();
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
                                                             source );
-        
+
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
@@ -94,35 +92,33 @@ public class ObjectTypeNodeTest extends DroolsTestCase
         assertSame( handle1,
                     memory.get( handle1.getId() ) );
     }
-    
-    public void testMemory()
-    {
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+
+    public void testMemory(){
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
                                                             new Rete() );
-        
+
         PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
-        
+
         assertNotNull( memory );
     }
 
-    public void testRetractObject() throws Exception
-    {
+    public void testRetractObject() throws Exception{
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
-                                                             null,
-                                                             null );
+                                                                 null,
+                                                                 null );
 
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
-        Rete source = new Rete( );
+        Rete source = new Rete();
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
                                                             source );
-        
+
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
@@ -170,28 +166,28 @@ public class ObjectTypeNodeTest extends DroolsTestCase
         assertLength( 1,
                       retracted );
         assertSame( handle1,
-                    ((Object[]) retracted.get( 0 ) )[0] );
+                    ((Object[]) retracted.get( 0 ))[0] );
     }
-    
-    public void testUpdateNewNode() throws FactException
-    {
-        // Tests that when  new child is added only the last added child is updated
+
+    public void testUpdateNewNode() throws FactException{
+        // Tests that when new child is added only the last added child is
+        // updated
         // When the attachingNewNode flag is set
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
-                                                             null,
-                                                             null );
+                                                                 null,
+                                                                 null );
 
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
-        Rete source = new Rete( );
+        Rete source = new Rete();
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
-                                                            source );        
-        
+                                                            source );
+
         MockObjectSink sink1 = new MockObjectSink();
-        objectTypeNode.addObjectSink( sink1 );        
-        
+        objectTypeNode.addObjectSink( sink1 );
+
         Object string1 = "cheese";
 
         Object string2 = "bread";
@@ -213,47 +209,46 @@ public class ObjectTypeNodeTest extends DroolsTestCase
         objectTypeNode.assertObject( string2,
                                      handle2,
                                      context,
-                                     workingMemory );                        
-        
+                                     workingMemory );
+
         assertLength( 2,
                       sink1.getAsserted() );
-        
+
         objectTypeNode.attachingNewNode = true;
-        
+
         MockObjectSink sink2 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink2 );
-        
+
         assertLength( 0,
-                      sink2.getAsserted() );                
-        
-        objectTypeNode.updateNewNode( workingMemory,null );
-        
+                      sink2.getAsserted() );
+
+        objectTypeNode.updateNewNode( workingMemory,
+                                      null );
+
         objectTypeNode.attachingNewNode = false;
 
         assertLength( 2,
                       sink1.getAsserted() );
         assertLength( 2,
-                      sink2.getAsserted() );        
-        
+                      sink2.getAsserted() );
+
         Object string3 = "water";
-        
-        FactHandleImpl handle3 = new FactHandleImpl( 3 );        
+
+        FactHandleImpl handle3 = new FactHandleImpl( 3 );
         workingMemory.putObject( handle3,
                                  string3 );
-        
+
         objectTypeNode.assertObject( string3,
                                      handle3,
                                      context,
-                                     workingMemory );        
-          
-        
+                                     workingMemory );
+
         assertLength( 3,
                       sink1.getAsserted() );
-        
+
         assertLength( 3,
-                      sink2.getAsserted() );        
-        
-        
+                      sink2.getAsserted() );
+
     }
 
 }

@@ -46,55 +46,53 @@ import org.drools.rule.Rule;
 /**
  * Indicates an error integrating a <code>Rule</code> or <code>RuleSet</code>
  * into a <code>RuleBase</code>.
- *
+ * 
  * @see RuleBase#addRule
  * @see RuleBase#addRuleSet
- *
+ * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
- *
+ * 
  * @version $Id: RuleIntegrationException.java,v 1.6 2004/09/17 00:14:06
  *          mproctor Exp $
  */
-public class RuleIntegrationException extends IntegrationException
-{
+public class RuleIntegrationException extends IntegrationException {
     /** The rule. */
     private final Rule rule;
 
     /**
      * @see java.lang.Exception#Exception()
-     *
+     * 
      * @param rule
      *            The offending rule.
      */
-    public RuleIntegrationException( Rule rule )
-    {
+    public RuleIntegrationException(Rule rule){
         super( createMessage( rule ) );
         this.rule = rule;
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
-     *
+     * 
      * @param rule
      *            The offending rule.
      */
-    public RuleIntegrationException( Rule rule, Throwable cause )
-    {
-        super( createMessage( rule ), cause );
+    public RuleIntegrationException(Rule rule,
+                                    Throwable cause){
+        super( createMessage( rule ),
+               cause );
         this.rule = rule;
     }
 
     /**
      * Retrieve the <code>Rule</code>.
-     *
+     * 
      * @return The rule.
      */
-    public Rule getRule( )
-    {
+    public Rule getRule(){
         return this.rule;
     }
 
-    private static String createMessage( Rule rule ) {
-        return rule.getName( ) + " cannot be integrated";
+    private static String createMessage(Rule rule){
+        return rule.getName() + " cannot be integrated";
     }
 }

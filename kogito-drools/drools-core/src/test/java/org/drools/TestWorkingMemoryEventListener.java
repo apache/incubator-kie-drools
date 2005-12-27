@@ -51,8 +51,9 @@ import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 
 public class TestWorkingMemoryEventListener
-     implements WorkingMemoryEventListener, Serializable     
-{
+    implements
+    WorkingMemoryEventListener,
+    Serializable {
 
     public int asserted;
     public int modified;
@@ -62,43 +63,34 @@ public class TestWorkingMemoryEventListener
     public int cancelled;
     public int fired;
 
-    public TestWorkingMemoryEventListener()
-    {
+    public TestWorkingMemoryEventListener(){
         // intentionally left blank
     }
 
-    public void objectAsserted(ObjectAssertedEvent event)
-    {
-        asserted++;
+    public void objectAsserted(ObjectAssertedEvent event){
+        this.asserted++;
     }
 
-    public void objectModified(ObjectModifiedEvent event)
-    {
-        modified++;
+    public void objectModified(ObjectModifiedEvent event){
+        this.modified++;
     }
 
-    public void objectRetracted(ObjectRetractedEvent event)
-    {
-        retracted++;
-    }
-/*
-    public void conditionTested(ConditionTestedEvent event)
-    {
-        tested++;
-    }
-*/
-    public void activationCreated(ActivationCreatedEvent event)
-    {
-        created++;
+    public void objectRetracted(ObjectRetractedEvent event){
+        this.retracted++;
     }
 
-    public void activationCancelled(ActivationCancelledEvent event)
-    {
-        cancelled++;
+    /*
+     * public void conditionTested(ConditionTestedEvent event) { tested++; }
+     */
+    public void activationCreated(ActivationCreatedEvent event){
+        this.created++;
     }
 
-    public void activationFired(ActivationFiredEvent event)
-    {
-        fired++;
+    public void activationCancelled(ActivationCancelledEvent event){
+        this.cancelled++;
+    }
+
+    public void activationFired(ActivationFiredEvent event){
+        this.fired++;
     }
 }

@@ -62,23 +62,22 @@ abstract class BetaNode extends TupleSource
     implements
     TupleSink,
     ObjectSink,
-    NodeMemory
-{
+    NodeMemory {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /** The left input <code>TupleSource</code>. */
-    private final TupleSource       leftInput;
+    private final TupleSource    leftInput;
 
     /** The right input <code>TupleSource</code>. */
-    private final ObjectSource      rightInput;
+    private final ObjectSource   rightInput;
 
-    private final BetaNodeBinder    joinNodeBinder;
+    private final BetaNodeBinder joinNodeBinder;
 
-    private final int               column;
+    private final int            column;
 
-    //private final BetaNodeDecorator decorator;
+    // private final BetaNodeDecorator decorator;
 
     // ------------------------------------------------------------
     // Constructors
@@ -95,15 +94,15 @@ abstract class BetaNode extends TupleSource
     BetaNode(int id,
              TupleSource leftInput,
              ObjectSource rightInput,
-             int column)//,
-             //BetaNodeDecorator decorator)
+             int column)// ,
+    // BetaNodeDecorator decorator)
     {
         this( id,
               leftInput,
               rightInput,
               column,
-              //decorator,
-              new BetaNodeBinder( ) );
+              // decorator,
+              new BetaNodeBinder() );
     }
 
     /**
@@ -118,85 +117,85 @@ abstract class BetaNode extends TupleSource
              TupleSource leftInput,
              ObjectSource rightInput,
              int column,
-             //BetaNodeDecorator decorator,
-             BetaNodeBinder joinNodeBinder)
-    {
+             // BetaNodeDecorator decorator,
+             BetaNodeBinder joinNodeBinder){
         super( id );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.column = column;
-        //this.decorator = decorator;
+        // this.decorator = decorator;
         this.joinNodeBinder = joinNodeBinder;
 
     }
-    
-    public void updateNewNode( WorkingMemoryImpl workingMemory,
-                               PropagationContext context ) throws FactException
-    {
+
+    public void updateNewNode(WorkingMemoryImpl workingMemory,
+                              PropagationContext context) throws FactException{
         this.attachingNewNode = true;
-        
+
         TupleSource source = null;
-        
-        //iterate until we find a child with memory
-        for ( Iterator it = this.getTupleSinks( ).iterator( ); it.hasNext( ); )
-        {
-            source = (TupleSource) it.next( );
-            if ( source.hasMemory )
-            {
+
+        // iterate until we find a child with memory
+        for ( Iterator it = this.getTupleSinks().iterator(); it.hasNext(); ) {
+            source = (TupleSource) it.next();
+            if ( source.hasMemory ) {
                 break;
             }
-            
-        }        
-        
-        if ( source != null && source.hasMemory() )
-        {
-            //We have a child with memory so use its tuples
-            Object object = workingMemory.getNodeMemory( (NodeMemory) source );
-            if ( object instanceof BetaMemory )
-            {
-                BetaMemory memory = (BetaMemory) object;
-                memory.getLeftMemory( );
-                for ( Iterator it = memory.getLeftMemory( ).values( ).iterator( ); it.hasNext( ); )
-                {
-                    ReteTuple tuple =( ( TupleMatches ) it.next( ) ).getTuple( ); 
-                    propagateAssertTuple( tuple, context, workingMemory );
-                }
-            }
-            else if ( object instanceof Map )
-            {
-                Map map = (Map) object;
-                for ( Iterator it = map.values( ).iterator( ); it.hasNext( ); )
-                {
-                    propagateAssertTuple( ( ReteTuple ) it.next(), context, workingMemory );
-                }
-            }            
-        } else
-        {
-            // No children with memory so re-determine tuples
-            // first get a reference to the left and right memories then nuke and rebuild the memory
-            // for the node. This will have the side effect of populating our newly attached node
-            BetaMemory memory = ( BetaMemory ) workingMemory.getNodeMemory( this );
-            Map map = memory.getLeftMemory( );
-            Set set = memory.getRightMemory( );
-            workingMemory.clearNodeMemory( this );
-            memory = ( BetaMemory ) workingMemory.getNodeMemory( this );
-            
-            //first re-add all the right input facts
-            for ( Iterator it = set.iterator( ); it.hasNext( ); )
-            {
-                FactHandleImpl handle = (FactHandleImpl) it.next( );
-                Object object = workingMemory.getObject( handle );
-                assertObject( object, handle, context, workingMemory );
-            }
-            
-            //now re-add all the tuples
-            for ( Iterator it = map.values( ).iterator( ); it.hasNext( ); )
-            {
-                ReteTuple tuple =( ( TupleMatches ) it.next( ) ).getTuple( ); 
-                assertTuple( tuple, context, workingMemory );
-            }                        
+
         }
-        
+
+        if ( source != null && source.hasMemory() ) {
+            // We have a child with memory so use its tuples
+            Object object = workingMemory.getNodeMemory( (NodeMemory) source );
+            if ( object instanceof BetaMemory ) {
+                BetaMemory memory = (BetaMemory) object;
+                memory.getLeftMemory();
+                for ( Iterator it = memory.getLeftMemory().values().iterator(); it.hasNext(); ) {
+                    ReteTuple tuple = ((TupleMatches) it.next()).getTuple();
+                    propagateAssertTuple( tuple,
+                                          context,
+                                          workingMemory );
+                }
+            }
+            else if ( object instanceof Map ) {
+                Map map = (Map) object;
+                for ( Iterator it = map.values().iterator(); it.hasNext(); ) {
+                    propagateAssertTuple( (ReteTuple) it.next(),
+                                          context,
+                                          workingMemory );
+                }
+            }
+        }
+        else {
+            // No children with memory so re-determine tuples
+            // first get a reference to the left and right memories then nuke
+            // and rebuild the memory
+            // for the node. This will have the side effect of populating our
+            // newly attached node
+            BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+            Map map = memory.getLeftMemory();
+            Set set = memory.getRightMemory();
+            workingMemory.clearNodeMemory( this );
+            memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
+            // first re-add all the right input facts
+            for ( Iterator it = set.iterator(); it.hasNext(); ) {
+                FactHandleImpl handle = (FactHandleImpl) it.next();
+                Object object = workingMemory.getObject( handle );
+                assertObject( object,
+                              handle,
+                              context,
+                              workingMemory );
+            }
+
+            // now re-add all the tuples
+            for ( Iterator it = map.values().iterator(); it.hasNext(); ) {
+                ReteTuple tuple = ((TupleMatches) it.next()).getTuple();
+                assertTuple( tuple,
+                             context,
+                             workingMemory );
+            }
+        }
+
         this.attachingNewNode = true;
     }
 
@@ -212,12 +211,10 @@ abstract class BetaNode extends TupleSource
      */
     protected void propagateAssertTuples(TupleSet joinedTuples,
                                          PropagationContext context,
-                                         WorkingMemoryImpl workingMemory) throws FactException
-    {
-        Iterator tupleIter = joinedTuples.iterator( );
-        while ( tupleIter.hasNext( ) )
-        {
-            propagateAssertTuple( (ReteTuple) tupleIter.next( ),
+                                         WorkingMemoryImpl workingMemory) throws FactException{
+        Iterator tupleIter = joinedTuples.iterator();
+        while ( tupleIter.hasNext() ) {
+            propagateAssertTuple( (ReteTuple) tupleIter.next(),
                                   context,
                                   workingMemory );
         }
@@ -236,73 +233,60 @@ abstract class BetaNode extends TupleSource
      */
     protected void propagateRectractTuples(List keys,
                                            PropagationContext context,
-                                           WorkingMemoryImpl workingMemory) throws FactException
-    {
-        Iterator it = keys.iterator( );
-        while ( it.hasNext( ) )
-        {
-            propagateRetractTuples( (TupleKey) it.next( ),
+                                           WorkingMemoryImpl workingMemory) throws FactException{
+        Iterator it = keys.iterator();
+        while ( it.hasNext() ) {
+            propagateRetractTuples( (TupleKey) it.next(),
                                     context,
                                     workingMemory );
         }
     }
 
-    int getColumn()
-    {
+    int getColumn(){
         return this.column;
     }
 
-    public void attach()
-    {
+    public void attach(){
         this.leftInput.addTupleSink( this );
-        this.rightInput.addObjectSink( this );        
+        this.rightInput.addObjectSink( this );
     }
-    
-    public void remove()
-    {
-        
-    }
-    
 
-    BetaNodeBinder getJoinNodeBinder()
-    {
+    public void remove(){
+
+    }
+
+    BetaNodeBinder getJoinNodeBinder(){
         return this.joinNodeBinder;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    public String toString()
-    {
+    public String toString(){
         // return "[JoinNode: common=" + this.commonDeclarations + "; decls=" +
         // this.tupleDeclarations + "]";
         return "";
     }
 
-    public int hashCode()
-    {
-        return this.leftInput.hashCode( ) ^ this.rightInput.hashCode( );
+    public int hashCode(){
+        return this.leftInput.hashCode() ^ this.rightInput.hashCode();
     }
 
-    public boolean equals(Object object)
-    {
-        if ( this == object )
-        {
+    public boolean equals(Object object){
+        if ( this == object ) {
             return true;
         }
 
-        if ( object == null || getClass( ) != object.getClass( ) )
-        {
+        if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
 
         BetaNode other = (BetaNode) object;
 
-        return this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.joinNodeBinder.equals( other.joinNodeBinder ) ;
+        return this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.joinNodeBinder.equals( other.joinNodeBinder );
     }
 
-    public Object createMemory()
-    {
-        return new BetaMemory( );
+    public Object createMemory(){
+        return new BetaMemory();
     }
 
 }

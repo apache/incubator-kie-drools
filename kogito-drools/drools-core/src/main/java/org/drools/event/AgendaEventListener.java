@@ -4,8 +4,7 @@ import java.util.EventListener;
 
 public interface AgendaEventListener
     extends
-    EventListener
-{
+    EventListener {
     void activationCreated(ActivationCreatedEvent event);
 
     void activationCancelled(ActivationCancelledEvent event);

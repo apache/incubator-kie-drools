@@ -40,34 +40,33 @@ import java.util.List;
  * <p>
  * NOTE: As from version 3.0, the IteratorChain may contain no iterators. In
  * this case the class will function as an empty iterator.
- *
+ * 
  * @since Commons Collections 2.1
  * @version $Revision: 1.1 $ $Date: 2005/07/26 01:06:32 $
- *
+ * 
  * @author Morgan Delagrange
  * @author Stephen Colebourne
  */
 public class IteratorChain
     implements
-    Iterator
-{
+    Iterator {
 
     /** The chain of iterators */
-    protected final List iteratorChain = new ArrayList( );
+    protected final List iteratorChain        = new ArrayList();
     /** The index of the current iterator */
-    protected int currentIteratorIndex = 0;
+    protected int        currentIteratorIndex = 0;
     /** The current iterator */
-    protected Iterator currentIterator = null;
+    protected Iterator   currentIterator      = null;
     /**
      * The "last used" Iterator is the Iterator upon which next() or hasNext()
      * was most recently called used for the remove() operation only
      */
-    protected Iterator lastUsedIterator = null;
+    protected Iterator   lastUsedIterator     = null;
     /**
      * ComparatorChain is "locked" after the first time compare(Object,Object)
      * is called
      */
-    protected boolean isLocked = false;
+    protected boolean    isLocked             = false;
 
     // -----------------------------------------------------------------------
     /**
@@ -76,29 +75,27 @@ public class IteratorChain
      * You will normally use {@link #addIterator(Iterator)}to add some
      * iterators after using this constructor.
      */
-    public IteratorChain()
-    {
-        super( );
+    public IteratorChain(){
+        super();
     }
 
     /**
      * Construct an IteratorChain with a single Iterator.
-     *
+     * 
      * @param iterator
      *            first Iterator in the IteratorChain
      * @throws NullPointerException
      *             if the iterator is null
      */
-    public IteratorChain(Iterator iterator)
-    {
-        super( );
+    public IteratorChain(Iterator iterator){
+        super();
         addIterator( iterator );
     }
 
     /**
      * Constructs a new <code>IteratorChain</code> over the two given
      * iterators.
-     *
+     * 
      * @param a
      *            the first child iterator
      * @param b
@@ -107,9 +104,8 @@ public class IteratorChain
      *             if either iterator is null
      */
     public IteratorChain(Iterator a,
-                         Iterator b)
-    {
-        super( );
+                         Iterator b){
+        super();
         addIterator( a );
         addIterator( b );
     }
@@ -117,17 +113,15 @@ public class IteratorChain
     /**
      * Constructs a new <code>IteratorChain</code> over the array of
      * iterators.
-     *
+     * 
      * @param iterators
      *            the array of iterators
      * @throws NullPointerException
      *             if iterators array is or contains null
      */
-    public IteratorChain(Iterator[] iterators)
-    {
-        super( );
-        for ( int i = 0; i < iterators.length; i++ )
-        {
+    public IteratorChain(Iterator[] iterators){
+        super();
+        for ( int i = 0; i < iterators.length; i++ ) {
             addIterator( iterators[i] );
         }
     }
@@ -135,7 +129,7 @@ public class IteratorChain
     /**
      * Constructs a new <code>IteratorChain</code> over the collection of
      * iterators.
-     *
+     * 
      * @param iterators
      *            the collection of iterators
      * @throws NullPointerException
@@ -143,12 +137,10 @@ public class IteratorChain
      * @throws ClassCastException
      *             if iterators collection doesn't contain an iterator
      */
-    public IteratorChain(Collection iterators)
-    {
-        super( );
-        for ( Iterator it = iterators.iterator( ); it.hasNext( ); )
-        {
-            Iterator item = (Iterator) it.next( );
+    public IteratorChain(Collection iterators){
+        super();
+        for ( Iterator it = iterators.iterator(); it.hasNext(); ) {
+            Iterator item = (Iterator) it.next();
             addIterator( item );
         }
     }
@@ -156,7 +148,7 @@ public class IteratorChain
     // -----------------------------------------------------------------------
     /**
      * Add an Iterator to the end of the chain
-     *
+     * 
      * @param iterator
      *            Iterator to add
      * @throws IllegalStateException
@@ -164,19 +156,17 @@ public class IteratorChain
      * @throws NullPointerException
      *             if the iterator is null
      */
-    public void addIterator(Iterator iterator)
-    {
-        checkLocked( );
-        if ( iterator == null )
-        {
+    public void addIterator(Iterator iterator){
+        checkLocked();
+        if ( iterator == null ) {
             throw new NullPointerException( "Iterator must not be null" );
         }
-        iteratorChain.add( iterator );
+        this.iteratorChain.add( iterator );
     }
 
     /**
      * Set the Iterator at the given index
-     *
+     * 
      * @param index
      *            index of the Iterator to replace
      * @param iterator
@@ -189,56 +179,49 @@ public class IteratorChain
      *             if the iterator is null
      */
     public void setIterator(int index,
-                            Iterator iterator) throws IndexOutOfBoundsException
-    {
-        checkLocked( );
-        if ( iterator == null )
-        {
+                            Iterator iterator) throws IndexOutOfBoundsException{
+        checkLocked();
+        if ( iterator == null ) {
             throw new NullPointerException( "Iterator must not be null" );
         }
-        iteratorChain.set( index,
+        this.iteratorChain.set( index,
                            iterator );
     }
 
     /**
      * Get the list of Iterators (unmodifiable)
-     *
+     * 
      * @return the unmodifiable list of iterators added
      */
-    public List getIterators()
-    {
-        return Collections.unmodifiableList( iteratorChain );
+    public List getIterators(){
+        return Collections.unmodifiableList( this.iteratorChain );
     }
 
     /**
      * Number of Iterators in the current IteratorChain.
-     *
+     * 
      * @return Iterator count
      */
-    public int size()
-    {
-        return iteratorChain.size( );
+    public int size(){
+        return this.iteratorChain.size();
     }
 
     /**
      * Determine if modifications can still be made to the IteratorChain.
      * IteratorChains cannot be modified once they have executed a method from
      * the Iterator interface.
-     *
+     * 
      * @return true if IteratorChain cannot be modified, false if it can
      */
-    public boolean isLocked()
-    {
-        return isLocked;
+    public boolean isLocked(){
+        return this.isLocked;
     }
 
     /**
      * Checks whether the iterator chain is now locked and in use.
      */
-    private void checkLocked()
-    {
-        if ( isLocked == true )
-        {
+    private void checkLocked(){
+        if ( this.isLocked == true ) {
             throw new UnsupportedOperationException( "IteratorChain cannot be changed after the first use of a method from the Iterator interface" );
         }
     }
@@ -247,11 +230,9 @@ public class IteratorChain
      * Lock the chain so no more iterators can be added. This must be called
      * from all Iterator interface methods.
      */
-    private void lockChain()
-    {
-        if ( isLocked == false )
-        {
-            isLocked = true;
+    private void lockChain(){
+        if ( this.isLocked == false ) {
+            this.isLocked = true;
         }
     }
 
@@ -259,59 +240,52 @@ public class IteratorChain
      * Updates the current iterator field to ensure that the current Iterator is
      * not exhausted
      */
-    protected void updateCurrentIterator()
-    {
-        if ( currentIterator == null )
-        {
-            if ( iteratorChain.isEmpty( ) )
-            {
-                currentIterator = Collections.EMPTY_LIST.iterator( );
+    protected void updateCurrentIterator(){
+        if ( this.currentIterator == null ) {
+            if ( this.iteratorChain.isEmpty() ) {
+                this.currentIterator = Collections.EMPTY_LIST.iterator();
             }
-            else
-            {
-                currentIterator = (Iterator) iteratorChain.get( 0 );
+            else {
+                this.currentIterator = (Iterator) this.iteratorChain.get( 0 );
             }
             // set last used iterator here, in case the user calls remove
             // before calling hasNext() or next() (although they shouldn't)
-            lastUsedIterator = currentIterator;
+            this.lastUsedIterator = this.currentIterator;
         }
 
-        while ( currentIterator.hasNext( ) == false && currentIteratorIndex < iteratorChain.size( ) - 1 )
-        {
-            currentIteratorIndex++;
-            currentIterator = (Iterator) iteratorChain.get( currentIteratorIndex );
+        while ( this.currentIterator.hasNext() == false && this.currentIteratorIndex < this.iteratorChain.size() - 1 ) {
+            this.currentIteratorIndex++;
+            this.currentIterator = (Iterator) this.iteratorChain.get( this.currentIteratorIndex );
         }
     }
 
     // -----------------------------------------------------------------------
     /**
      * Return true if any Iterator in the IteratorChain has a remaining element.
-     *
+     * 
      * @return true if elements remain
      */
-    public boolean hasNext()
-    {
-        lockChain( );
-        updateCurrentIterator( );
-        lastUsedIterator = currentIterator;
+    public boolean hasNext(){
+        lockChain();
+        updateCurrentIterator();
+        this.lastUsedIterator = this.currentIterator;
 
-        return currentIterator.hasNext( );
+        return this.currentIterator.hasNext();
     }
 
     /**
      * Returns the next Object of the current Iterator
-     *
+     * 
      * @return Object from the current Iterator
      * @throws java.util.NoSuchElementException
      *             if all the Iterators are exhausted
      */
-    public Object next()
-    {
-        lockChain( );
-        updateCurrentIterator( );
-        lastUsedIterator = currentIterator;
+    public Object next(){
+        lockChain();
+        updateCurrentIterator();
+        this.lastUsedIterator = this.currentIterator;
 
-        return currentIterator.next( );
+        return this.currentIterator.next();
     }
 
     /**
@@ -320,7 +294,7 @@ public class IteratorChain
      * underlying Iterator. Therefore, this method may throw an
      * UnsupportedOperationException if the underlying Iterator does not support
      * this method.
-     *
+     * 
      * @throws UnsupportedOperationException
      *             if the remove operator is not supported by the underlying
      *             Iterator
@@ -329,12 +303,11 @@ public class IteratorChain
      *             method has already been called after the last call to the
      *             next method.
      */
-    public void remove()
-    {
-        lockChain( );
-        updateCurrentIterator( );
+    public void remove(){
+        lockChain();
+        updateCurrentIterator();
 
-        lastUsedIterator.remove( );
+        this.lastUsedIterator.remove();
     }
 
 }

@@ -47,24 +47,23 @@ import org.drools.spi.ConflictResolver;
 /**
  * <code>ConflictResolver</code> that uses the loadOrder of rules to resolve
  * conflict.
- *
+ * 
  * @see #getInstance
  * @see org.drools.rule.Rule#getLoadOrder
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- *
+ * 
  * @version $Id: LoadOrderConflictResolver.java,v 1.1 2004/06/25 01:55:16
  *          mproctor Exp $
  */
-public class LoadOrderConflictResolver extends AbstractConflictResolver
-{
+public class LoadOrderConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
     /** Singleton instance. */
-    private static final LoadOrderConflictResolver INSTANCE = new LoadOrderConflictResolver( );
+    private static final LoadOrderConflictResolver INSTANCE = new LoadOrderConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -72,12 +71,11 @@ public class LoadOrderConflictResolver extends AbstractConflictResolver
 
     /**
      * Retrieve the singleton instance.
-     *
+     * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance( )
-    {
-        return INSTANCE;
+    public static ConflictResolver getInstance(){
+        return LoadOrderConflictResolver.INSTANCE;
     }
 
     // ----------------------------------------------------------------------
@@ -87,8 +85,7 @@ public class LoadOrderConflictResolver extends AbstractConflictResolver
     /**
      * Construct.
      */
-    public LoadOrderConflictResolver( )
-    {
+    public LoadOrderConflictResolver(){
         // intentionally left blank
     }
 
@@ -97,9 +94,8 @@ public class LoadOrderConflictResolver extends AbstractConflictResolver
     /**
      * @see ConflictResolver
      */
-    public int compare( Activation lhs,
-                        Activation rhs )
-    {
-        return ( int ) ( lhs.getRule( ).getLoadOrder( ) - rhs.getRule( ).getLoadOrder( ) );
+    public int compare(Activation lhs,
+                       Activation rhs){
+        return (int) (lhs.getRule().getLoadOrder() - rhs.getRule().getLoadOrder());
     }
 }

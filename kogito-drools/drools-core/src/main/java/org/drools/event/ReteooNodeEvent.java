@@ -4,8 +4,7 @@ import org.drools.WorkingMemory;
 import org.drools.spi.ReteooNode;
 import org.drools.spi.Tuple;
 
-public class ReteooNodeEvent
-{
+public class ReteooNodeEvent {
     private final WorkingMemory workingMemory;
 
     private final ReteooNode    node;
@@ -17,31 +16,26 @@ public class ReteooNodeEvent
     public ReteooNodeEvent(WorkingMemory workingMemory,
                            ReteooNode node,
                            Tuple tuple,
-                           boolean passed)
-    {
+                           boolean passed){
         this.workingMemory = workingMemory;
         this.node = node;
         this.tuple = tuple;
         this.passed = passed;
     }
 
-    public ReteooNode getNode()
-    {
+    public ReteooNode getNode(){
         return this.node;
     }
 
-    public boolean isPassed()
-    {
+    public boolean isPassed(){
         return this.passed;
     }
 
-    public Tuple getTuple()
-    {
+    public Tuple getTuple(){
         return this.tuple;
     }
 
-    public WorkingMemory getWorkingMemory()
-    {
+    public WorkingMemory getWorkingMemory(){
         return this.workingMemory;
     }
 

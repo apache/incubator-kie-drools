@@ -50,8 +50,9 @@ import java.io.Serializable;
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public interface Duration extends Serializable
-{
+public interface Duration
+    extends
+    Serializable {
     /**
      * <p>
      * Retrieve the duration for which the conditions of this <code>Tuple</code>

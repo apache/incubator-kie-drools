@@ -41,7 +41,6 @@ package org.drools;
  *
  */
 
-public interface Visitor
-{
-    void visit( Object o );
+public interface Visitor {
+    void visit(Object o);
 }

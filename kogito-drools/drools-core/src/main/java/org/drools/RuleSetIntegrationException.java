@@ -44,57 +44,55 @@ package org.drools;
 import org.drools.rule.RuleSet;
 
 /**
- * Indicates an error integrating a <code>RuleSet</code>
- * into a <code>RuleBase</code>.
- *
+ * Indicates an error integrating a <code>RuleSet</code> into a
+ * <code>RuleBase</code>.
+ * 
  * @see RuleBase#addRule
  * @see RuleBase#addRuleSet
- *
+ * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
- *
+ * 
  * @version $Id: RuleIntegrationException.java,v 1.6 2004/09/17 00:14:06
  *          mproctor Exp $
  */
-public class RuleSetIntegrationException extends IntegrationException
-{
+public class RuleSetIntegrationException extends IntegrationException {
     /** The rule. */
     private final RuleSet ruleSet;
 
     /**
      * @see java.lang.Exception#Exception()
-     *
+     * 
      * @param ruleSet
      *            The offending rule.
      */
-    public RuleSetIntegrationException( RuleSet ruleSet )
-    {
+    public RuleSetIntegrationException(RuleSet ruleSet){
         super( createMessage( ruleSet ) );
         this.ruleSet = ruleSet;
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
-     *
+     * 
      * @param ruleSet
      *            The offending rule.
      */
-    public RuleSetIntegrationException( RuleSet ruleSet, Throwable cause )
-    {
-        super( createMessage( ruleSet ),  cause );
+    public RuleSetIntegrationException(RuleSet ruleSet,
+                                       Throwable cause){
+        super( createMessage( ruleSet ),
+               cause );
         this.ruleSet = ruleSet;
     }
 
     /**
      * Retrieve the <code>RuleSet</code>.
-     *
+     * 
      * @return The ruleSet
      */
-    public RuleSet getRuleSet( )
-    {
+    public RuleSet getRuleSet(){
         return this.ruleSet;
     }
 
-    private static String createMessage( RuleSet ruleSet ) {
-        return ruleSet.getName( ) + " cannot be integrated";
+    private static String createMessage(RuleSet ruleSet){
+        return ruleSet.getName() + " cannot be integrated";
     }
 }

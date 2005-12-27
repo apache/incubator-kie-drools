@@ -43,30 +43,28 @@ package org.drools.examples.model;
 
 import java.io.Serializable;
 
-public class Seat  implements Serializable
-{
+public class Seat
+    implements
+    Serializable {
     private int    seat;
 
     private String name;
 
-    public Seat(int seat, String name)
-    {
+    public Seat(int seat,
+                String name){
         this.seat = seat;
         this.name = name;
     }
 
-    public int getSeat()
-    {
-        return seat;
+    public int getSeat(){
+        return this.seat;
     }
 
-    public String getName()
-    {
-        return name;
+    public String getName(){
+        return this.name;
     }
 
-    public String toString()
-    {
-        return "{seat=" + seat + ",name=" + name + "}";
+    public String toString(){
+        return "{seat=" + this.seat + ",name=" + this.name + "}";
     }
 }

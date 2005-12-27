@@ -54,9 +54,8 @@ import org.drools.spi.Tuple;
  */
 class TupleKey
     implements
-    Serializable
-{
-    public static final TupleKey EMPTY_KEY = new TupleKey( );
+    Serializable {
+    public static final TupleKey EMPTY_KEY = new TupleKey();
 
     // ------------------------------------------------------------
     // Instance members
@@ -69,27 +68,23 @@ class TupleKey
     // Constructors
     // ------------------------------------------------------------
 
-    private TupleKey()
-    {
+    private TupleKey(){
         this.handles = FactHandleList.EMPTY_LIST;// FactHandleList.EMPTY_LIST;
     }
 
     public TupleKey(TupleKey left,
-                    TupleKey right)
-    {
-        handles = new FactHandleList( left.handles,
+                    TupleKey right){
+        this.handles = new FactHandleList( left.handles,
                                       right.handles );
     }
 
     public TupleKey(int column,
-                    FactHandle handle)
-    {
+                    FactHandle handle){
         this.handles = new FactHandleList( column,
                                            handle );
     }
 
-    public String toString()
-    {
+    public String toString(){
         return "[TupleKey: handles=" + this.handles + "]";
     }
 
@@ -105,8 +100,7 @@ class TupleKey
      * 
      * @return The fact handle.
      */
-    public FactHandle get(int index)
-    {
+    public FactHandle get(int index){
         return this.handles.get( index );
     }
 
@@ -119,8 +113,7 @@ class TupleKey
      * @return <code>true</code> if this key contains the specified root
      *         fact-handle, otherwise <code>false</code>.
      */
-    public boolean containsFactHandle(FactHandle handle)
-    {
+    public boolean containsFactHandle(FactHandle handle){
         return this.handles.contains( handle );
     }
 
@@ -132,26 +125,21 @@ class TupleKey
      * 
      * @return <code>true</code> if the specified key is a subset of this key.
      */
-    public boolean containsAll(TupleKey that)
-    {
+    public boolean containsAll(TupleKey that){
         return this.handles.containsAll( that.handles );
     }
 
-    public FactHandleImpl getMostRecentFact()
-    {
+    public FactHandleImpl getMostRecentFact(){
         FactHandleImpl mostRecent = null;
         long currentRecency = Long.MIN_VALUE;
         FactHandleImpl eachHandle;
         long recency;
 
-        for ( int i = this.handles.size( ) - 1; i >= 0; i-- )
-        {
+        for ( int i = this.handles.size() - 1; i >= 0; i-- ) {
             eachHandle = (FactHandleImpl) this.handles.get( i );
-            if ( eachHandle != null )
-            {
-                recency = eachHandle.getRecency( );
-                if ( recency > currentRecency )
-                {
+            if ( eachHandle != null ) {
+                recency = eachHandle.getRecency();
+                if ( recency > currentRecency ) {
                     currentRecency = recency;
                     mostRecent = eachHandle;
                 }
@@ -161,21 +149,17 @@ class TupleKey
         return mostRecent;
     }
 
-    public FactHandleImpl getLeastRecentFact()
-    {
+    public FactHandleImpl getLeastRecentFact(){
         FactHandleImpl leastRecent = null;
         long currentRecency = Long.MAX_VALUE;
         FactHandleImpl eachHandle;
         long recency;
 
-        for ( int i = this.handles.size( ) - 1; i >= 0; i-- )
-        {
+        for ( int i = this.handles.size() - 1; i >= 0; i-- ) {
             eachHandle = (FactHandleImpl) this.handles.get( i );
-            if ( eachHandle != null )
-            {
-                recency = eachHandle.getRecency( );
-                if ( recency < currentRecency )
-                {
+            if ( eachHandle != null ) {
+                recency = eachHandle.getRecency();
+                if ( recency < currentRecency ) {
                     currentRecency = recency;
                     leastRecent = eachHandle;
                 }
@@ -190,15 +174,12 @@ class TupleKey
     /**
      * @see Object
      */
-    public boolean equals(Object object)
-    {
-        if ( this == object )
-        {
+    public boolean equals(Object object){
+        if ( this == object ) {
             return true;
         }
 
-        if ( object == null || getClass( ) != object.getClass( ) )
-        {
+        if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
 
@@ -208,8 +189,7 @@ class TupleKey
     /**
      * @see Object
      */
-    public int hashCode()
-    {
-        return this.handles.hashCode( );
+    public int hashCode(){
+        return this.handles.hashCode();
     }
 }

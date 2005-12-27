@@ -41,14 +41,9 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.drools.FactException;
-import org.drools.FactHandle;
 import org.drools.NoSuchFactObjectException;
 import org.drools.RetractionException;
 import org.drools.spi.ObjectType;
@@ -84,9 +79,9 @@ class ObjectTypeNode extends ObjectSource
     // ------------------------------------------------------------
 
     /** The <code>ObjectType</code> semantic module. */
-    private final ObjectType   objectType;
+    private final ObjectType objectType;
 
-    private final Rete rete;    
+    private final Rete       rete;
 
     // ------------------------------------------------------------
     // Constructors
@@ -100,8 +95,7 @@ class ObjectTypeNode extends ObjectSource
      */
     public ObjectTypeNode(int id,
                           ObjectType objectType,
-                          Rete rete)
-    {
+                          Rete rete){
         super( id );
         this.rete = rete;
         this.objectType = objectType;
@@ -117,15 +111,13 @@ class ObjectTypeNode extends ObjectSource
      * 
      * @return The semantic <code>ObjectType</code> differentiator.
      */
-    public ObjectType getObjectType()
-    {
+    public ObjectType getObjectType(){
         return this.objectType;
     }
 
-    public int getId()
-    {
+    public int getId(){
         return this.id;
-    }    
+    }
 
     /**
      * Assert a new fact object into this <code>RuleBase</code> and the
@@ -142,22 +134,20 @@ class ObjectTypeNode extends ObjectSource
      */
     public void assertObject(Object object,
                              FactHandleImpl handle,
-                             PropagationContext context, 
-                             WorkingMemoryImpl workingMemory) throws FactException
-    {
-        if ( this.objectType.matches( object ) )
-        {
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) throws FactException{
+        if ( this.objectType.matches( object ) ) {
             PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
             memory.put( handle.getId(),
                         handle );
-            
+
             propagateAssertObject( object,
                                    handle,
                                    context,
                                    workingMemory );
         }
 
-    }       
+    }
 
     /**
      * Retract a fact object from this <code>RuleBase</code> and the specified
@@ -171,13 +161,10 @@ class ObjectTypeNode extends ObjectSource
      *             if an error occurs during assertion.
      */
     public void retractObject(FactHandleImpl handle,
-                              PropagationContext context, 
-                              WorkingMemoryImpl workingMemory) throws FactException
-    {
-        try
-        {
-            if ( this.objectType.matches( workingMemory.getObject( handle ) ) )
-            {
+                              PropagationContext context,
+                              WorkingMemoryImpl workingMemory) throws FactException{
+        try {
+            if ( this.objectType.matches( workingMemory.getObject( handle ) ) ) {
                 PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
                 memory.remove( handle.getId() );
 
@@ -186,21 +173,18 @@ class ObjectTypeNode extends ObjectSource
                                         workingMemory );
             }
         }
-        catch ( NoSuchFactObjectException e )
-        {
+        catch ( NoSuchFactObjectException e ) {
             throw new RetractionException( e );
         }
     }
-    
-    public void updateNewNode( WorkingMemoryImpl workingMemory,
-                               PropagationContext context ) throws FactException
-    {
+
+    public void updateNewNode(WorkingMemoryImpl workingMemory,
+                              PropagationContext context) throws FactException{
         this.attachingNewNode = true;
-        
+
         PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
-                
-        for(Iterator it = memory.values().iterator(); it.hasNext(); )
-        {            
+
+        for ( Iterator it = memory.values().iterator(); it.hasNext(); ) {
             FactHandleImpl handle = (FactHandleImpl) it.next();
             Object object = workingMemory.getObject( handle );
             propagateAssertObject( object,
@@ -208,49 +192,43 @@ class ObjectTypeNode extends ObjectSource
                                    context,
                                    workingMemory );
         }
-        
+
         this.attachingNewNode = false;
-    }    
+    }
 
     /**
      * Rete needs to know that this ObjectTypeNode has been added
      */
-    public void attach()
-    {        
-        this.rete.addObjectSink( this );    
-    }         
-    
-    public void remove()
-    {
-        //this.rete.removeObjectSink( this );
-    }     
-    
-    /**
-     * Rete needs to know that this ObjectTypeNode has had new nodes attached to it one one of its ancestors
-     */
-    public void addShare()
-    {   
-        super.addShare( );     
-    }     
+    public void attach(){
+        this.rete.addObjectSink( this );
+    }
 
-    public Object createMemory()
-    {
+    public void remove(){
+        // this.rete.removeObjectSink( this );
+    }
+
+    /**
+     * Rete needs to know that this ObjectTypeNode has had new nodes attached to
+     * it one one of its ancestors
+     */
+    public void addShare(){
+        super.addShare();
+    }
+
+    public Object createMemory(){
         return new PrimitiveLongMap( 32,
                                      8 );
-    }    
-    
-    public boolean equals( Object object )
-    {
-        if ( this == object )
-        {
+    }
+
+    public boolean equals(Object object){
+        if ( this == object ) {
             return true;
         }
-     
-        if ( object == null || getClass( ) != object.getClass( ) )
-        {
+
+        if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
-        
-        return this.objectType.equals( ( ( ObjectTypeNode ) object).getObjectType() );
+
+        return this.objectType.equals( ((ObjectTypeNode) object).getObjectType() );
     }
 }

@@ -53,8 +53,7 @@ import java.util.Map;
  */
 class TupleSet
     implements
-    Serializable
-{
+    Serializable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -69,9 +68,8 @@ class TupleSet
     /**
      * Construct.
      */
-    TupleSet()
-    {
-        this.tuples = new HashMap( );
+    TupleSet(){
+        this.tuples = new HashMap();
     }
 
     /**
@@ -83,8 +81,7 @@ class TupleSet
      *            The load factor of the set.
      */
     TupleSet(int initialCapacity,
-             float loadFactor)
-    {
+             float loadFactor){
         this.tuples = new HashMap( initialCapacity,
                                    loadFactor );
     }
@@ -95,9 +92,8 @@ class TupleSet
      * @param tuple
      *            The tuple.
      */
-    TupleSet(ReteTuple tuple)
-    {
-        this.tuples = Collections.singletonMap( tuple.getKey( ),
+    TupleSet(ReteTuple tuple){
+        this.tuples = Collections.singletonMap( tuple.getKey(),
                                                 tuple );
     }
 
@@ -106,9 +102,8 @@ class TupleSet
      * 
      * @return The size of this set.
      */
-    public int size()
-    {
-        return this.tuples.size( );
+    public int size(){
+        return this.tuples.size();
     }
 
     /**
@@ -116,9 +111,8 @@ class TupleSet
      * 
      * @return The size of this set.
      */
-    public boolean isEmpty()
-    {
-        return this.tuples.isEmpty( );
+    public boolean isEmpty(){
+        return this.tuples.isEmpty();
     }
 
     /**
@@ -127,9 +121,8 @@ class TupleSet
      * @param tuple
      *            The tuple.
      */
-    public void addTuple(ReteTuple tuple)
-    {
-        this.tuples.put( tuple.getKey( ),
+    public void addTuple(ReteTuple tuple){
+        this.tuples.put( tuple.getKey(),
                          tuple );
     }
 
@@ -141,15 +134,12 @@ class TupleSet
      * @return <code>true</code> if at least one tuple was removed;
      *         <code>false</code> otherwise.
      */
-    public boolean removeAllTuples(TupleKey key)
-    {
+    public boolean removeAllTuples(TupleKey key){
         boolean removed = false;
-        Iterator tupleIter = this.tuples.values( ).iterator( );
-        while ( tupleIter.hasNext( ) )
-        {
-            if ( ((ReteTuple) tupleIter.next( )).getKey( ).containsAll( key ) )
-            {
-                tupleIter.remove( );
+        Iterator tupleIter = this.tuples.values().iterator();
+        while ( tupleIter.hasNext() ) {
+            if ( ((ReteTuple) tupleIter.next()).getKey().containsAll( key ) ) {
+                tupleIter.remove();
                 removed = true;
             }
         }
@@ -165,13 +155,11 @@ class TupleSet
      * @return The matching tuple or <code>null</code> if this set contains no
      *         matching tuple.
      */
-    public ReteTuple getTuple(TupleKey key)
-    {
+    public ReteTuple getTuple(TupleKey key){
         return (ReteTuple) this.tuples.get( key );
     }
 
-    public boolean containsKey(TupleKey key)
-    {
+    public boolean containsKey(TupleKey key){
         return this.tuples.containsKey( key );
     }
 
@@ -181,14 +169,11 @@ class TupleSet
      * @param key
      *            Key matching the tuple.
      */
-    public void removeTuple(TupleKey key)
-    {
-        if ( this.tuples.size( ) == 1 )
-        {
-            this.tuples.clear( );
+    public void removeTuple(TupleKey key){
+        if ( this.tuples.size() == 1 ) {
+            this.tuples.clear();
         }
-        else
-        {
+        else {
             this.tuples.remove( key );
         }
     }
@@ -198,22 +183,19 @@ class TupleSet
      * 
      * @return The iterator.
      */
-    public Iterator iterator()
-    {
-        return this.tuples.values( ).iterator( );
+    public Iterator iterator(){
+        return this.tuples.values().iterator();
     }
 
     /**
      * Clears the TupleSet
      * 
      */
-    public void clear()
-    {
-        this.tuples.clear( );
+    public void clear(){
+        this.tuples.clear();
     }
 
-    public String toString()
-    {
-        return this.tuples.values( ).toString( );
+    public String toString(){
+        return this.tuples.values().toString();
     }
 }

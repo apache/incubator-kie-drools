@@ -46,8 +46,7 @@ package org.drools.rule;
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public class NoColumnsException extends InvalidRuleException
-{
+public class NoColumnsException extends InvalidRuleException {
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -58,8 +57,7 @@ public class NoColumnsException extends InvalidRuleException
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public NoColumnsException(Rule rule)
-    {
+    public NoColumnsException(Rule rule){
         super( rule );
     }
 }

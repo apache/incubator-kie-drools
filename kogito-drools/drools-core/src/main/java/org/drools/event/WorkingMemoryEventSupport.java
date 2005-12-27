@@ -47,58 +47,45 @@ import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.rule.Rule;
-import org.drools.spi.Condition;
-import org.drools.spi.Tuple;
 
 /**
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
 public class WorkingMemoryEventSupport
     implements
-    Serializable
-{
-    private final List          listeners = new ArrayList( );
+    Serializable {
+    private final List          listeners = new ArrayList();
     private final WorkingMemory workingMemory;
 
-    public WorkingMemoryEventSupport(WorkingMemory workingMemory)
-    {
+    public WorkingMemoryEventSupport(WorkingMemory workingMemory){
         this.workingMemory = workingMemory;
     }
 
-    public void addEventListener(WorkingMemoryEventListener listener)
-    {
-        if ( !this.listeners.contains( listener ) )
-        {
+    public void addEventListener(WorkingMemoryEventListener listener){
+        if ( !this.listeners.contains( listener ) ) {
             this.listeners.add( listener );
         }
     }
 
-    public void removeEventListener(WorkingMemoryEventListener listener)
-    {
+    public void removeEventListener(WorkingMemoryEventListener listener){
         this.listeners.remove( listener );
     }
 
-    public List getEventListeners()
-    {
+    public List getEventListeners(){
         return Collections.unmodifiableList( this.listeners );
     }
 
-    public int size()
-    {
-        return this.listeners.size( );
+    public int size(){
+        return this.listeners.size();
     }
 
-    public boolean isEmpty()
-    {
-        return this.listeners.isEmpty( );
+    public boolean isEmpty(){
+        return this.listeners.isEmpty();
     }
 
     public void fireObjectAsserted(FactHandle handle,
-                                   Object object)
-    {
-        if ( this.listeners.isEmpty( ) )
-        {
+                                   Object object){
+        if ( this.listeners.isEmpty() ) {
             return;
         }
 
@@ -106,18 +93,15 @@ public class WorkingMemoryEventSupport
                                                              handle,
                                                              object );
 
-        for ( int i = 0, size = this.listeners.size( ); i < size; i++ )
-        {
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((WorkingMemoryEventListener) this.listeners.get( i )).objectAsserted( event );
         }
     }
 
     public void fireObjectModified(FactHandle handle,
                                    Object oldObject,
-                                   Object object)
-    {
-        if ( this.listeners.isEmpty( ) )
-        {
+                                   Object object){
+        if ( this.listeners.isEmpty() ) {
             return;
         }
 
@@ -126,17 +110,14 @@ public class WorkingMemoryEventSupport
                                                              oldObject,
                                                              object );
 
-        for ( int i = 0, size = this.listeners.size( ); i < size; i++ )
-        {
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((WorkingMemoryEventListener) this.listeners.get( i )).objectModified( event );
         }
     }
 
     public void fireObjectRetracted(FactHandle handle,
-                                    Object oldObject)
-    {
-        if ( this.listeners.isEmpty( ) )
-        {
+                                    Object oldObject){
+        if ( this.listeners.isEmpty() ) {
             return;
         }
 
@@ -144,8 +125,7 @@ public class WorkingMemoryEventSupport
                                                                handle,
                                                                oldObject );
 
-        for ( int i = 0, size = this.listeners.size( ); i < size; i++ )
-        {
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((WorkingMemoryEventListener) this.listeners.get( i )).objectRetracted( event );
         }
     }

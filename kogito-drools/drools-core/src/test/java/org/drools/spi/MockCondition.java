@@ -4,37 +4,31 @@ import org.drools.rule.Declaration;
 
 public class MockCondition
     implements
-    Condition
-{
-    
+    Condition {
+
     private Declaration[] declarations;
     private boolean       isAllowed;
-    
-    private boolean testException;
-    
+
+    private boolean       testException;
+
     public MockCondition(Declaration[] declarations,
-                         boolean isAllowed)
-    {
+                         boolean isAllowed){
         this.declarations = declarations;
         this.isAllowed = isAllowed;
     }
 
-    public Declaration[] getRequiredTupleMembers()
-    {
+    public Declaration[] getRequiredTupleMembers(){
         return this.declarations;
     }
 
-    public boolean isAllowed(Tuple tuple) throws TestException
-    {
-        if ( this.testException )
-        {
+    public boolean isAllowed(Tuple tuple) throws TestException{
+        if ( this.testException ) {
             throw new TestException();
         }
         return this.isAllowed;
     }
-    
-    public void setTestException( boolean testException )
-    {
+
+    public void setTestException(boolean testException){
         this.testException = testException;
     }
 

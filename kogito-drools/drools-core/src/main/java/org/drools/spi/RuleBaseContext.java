@@ -44,24 +44,22 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RuleBaseContext implements Serializable
-{
-    private transient Map map = new HashMap( );
+public class RuleBaseContext
+    implements
+    Serializable {
+    private transient Map map = new HashMap();
 
-    private void readObject(ObjectInputStream stream)
-    {
-        map = new HashMap( );
-    }    
+    private void readObject(ObjectInputStream stream){
+        this.map = new HashMap();
+    }
 
-    public Object get(Object key)
-    {
+    public Object get(Object key){
         Object object = this.map.get( key );
         return object;
     }
 
     public void put(Object key,
-                    Object value)
-    {
+                    Object value){
         this.map.put( key,
                       value );
     }

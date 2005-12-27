@@ -42,7 +42,6 @@ package org.drools;
  */
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.drools.reteoo.FactHandleFactory;
 import org.drools.rule.RuleSet;
@@ -51,56 +50,55 @@ import org.drools.spi.RuleBaseContext;
 
 /**
  * Active collection of <code>Rule</code>s.
- *
+ * 
  * <p>
  * From a <code>RuleBase</code> many <code>WorkingMemory</code> rule
  * sessions may be instantiated. Additionally, it may be inspected to determine
  * which <code>RuleSet</code> s it contains.
  * </p>
- *
+ * 
  * @see WorkingMemory
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- *
+ * 
  * @version $Id: RuleBase.java,v 1.2 2005/08/04 23:33:30 mproctor Exp $
  */
 public interface RuleBase
     extends
-    Serializable
-{
+    Serializable {
     /**
      * Create a new <code>WorkingMemory</code> session for this
      * <code>RuleBase</code>.
-     *
+     * 
      * <p>
      * The created <code>WorkingMemory</code> uses the default conflict
      * resolution strategy.
      * </p>
-     *
+     * 
      * @see WorkingMemory
      * @see org.drools.conflict.DefaultConflictResolver
-     *
+     * 
      * @return A newly initialized <code>WorkingMemory</code>.
      */
-    WorkingMemory newWorkingMemory( );
-    
-    WorkingMemory newWorkingMemory( boolean keepReference );    
+    WorkingMemory newWorkingMemory();
+
+    WorkingMemory newWorkingMemory(boolean keepReference);
 
     /**
      * Retrieve the <code>ConflictResolver</code>.
-     *
+     * 
      * @return The conflict resolution strategy.
      */
-    ConflictResolver getConflictResolver( );
+    ConflictResolver getConflictResolver();
 
     /**
      * Retrieve the <code>FactHandleFactor</code>.
-     *
+     * 
      * @return The fact handle factory.
      */
-    FactHandleFactory getFactHandleFactory( );
+    FactHandleFactory getFactHandleFactory();
 
-    RuleSet[] getRuleSets( );
-    
-    RuleBaseContext getRuleBaseContext( );
+    RuleSet[] getRuleSets();
+
+    RuleBaseContext getRuleBaseContext();
 }

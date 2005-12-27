@@ -44,57 +44,53 @@ package org.drools;
 /**
  * Indicates an attempt to retract, modify or retrieve a fact object that is no
  * longer present.
- *
+ * 
  * @see FactHandle
  * @see WorkingMemory#getFactHandle
- *
+ * 
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- *
+ * 
  * @version $Id: NoSuchFactObjectException.java,v 1.3 2003/11/19 21:31:09 bob
  *          Exp $
  */
-public class NoSuchFactHandleException extends FactException
-{
+public class NoSuchFactHandleException extends FactException {
     /** Invalid fact object. */
     private final Object object;
 
     /**
      * @see java.lang.Exception#Exception()
-     *
+     * 
      * @param object
      *            The invalid fact object.
      */
-    public NoSuchFactHandleException( Object object )
-    {
+    public NoSuchFactHandleException(Object object){
         super( createMessage( object ) );
         this.object = object;
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
-     *
+     * 
      * @param object
      *            The invalid fact object.
      */
-    public NoSuchFactHandleException( Object object, Throwable cause )
-    {
-        super(createMessage( object ), cause );
+    public NoSuchFactHandleException(Object object,
+                                     Throwable cause){
+        super( createMessage( object ),
+               cause );
         this.object = object;
     }
 
     /**
      * Retrieve the invalid Object.
-     *
+     * 
      * @return The invalid fact object.
      */
-    public Object getObject( )
-    {
+    public Object getObject(){
         return this.object;
     }
 
-    private static String createMessage( Object object ) {
-        return object == null
-                ? "null fact object"
-                : "no such fact handle for object:" + object;
+    private static String createMessage(Object object){
+        return object == null ? "null fact object" : "no such fact handle for object:" + object;
     }
 }

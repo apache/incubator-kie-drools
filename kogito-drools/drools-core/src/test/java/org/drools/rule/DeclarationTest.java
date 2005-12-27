@@ -1,24 +1,20 @@
 package org.drools.rule;
 
+import junit.framework.TestCase;
+
 import org.drools.rule.ConstraintTest.Cheese;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.Extractor;
 import org.drools.spi.ObjectType;
 
-import junit.framework.TestCase;
+public class DeclarationTest extends TestCase {
 
-public class DeclarationTest extends TestCase
-{
-
-    public void testDeclaration()
-    {
+    public void testDeclaration(){
         ObjectType stringObjectType = new ClassObjectType( String.class );
 
         /* Determines how the bound value is extracted from the column */
-        Extractor typeOfCheeseExtractor = new Extractor()
-        {
-            public Object getValue(Object object)
-            {
+        Extractor typeOfCheeseExtractor = new Extractor() {
+            public Object getValue(Object object){
                 return ((Cheese) object).getType();
             }
         };
@@ -47,15 +43,12 @@ public class DeclarationTest extends TestCase
 
     }
 
-    public void testGetFieldValue()
-    {
+    public void testGetFieldValue(){
         ObjectType stringObjectType = new ClassObjectType( String.class );
 
         /* Determines how the bound value is extracted from the column */
-        Extractor typeOfCheeseExtractor = new Extractor()
-        {
-            public Object getValue(Object object)
-            {
+        Extractor typeOfCheeseExtractor = new Extractor() {
+            public Object getValue(Object object){
                 return ((Cheese) object).getType();
             }
         };

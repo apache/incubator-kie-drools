@@ -28,56 +28,52 @@ import java.util.Iterator;
  * Changes made to this collection will actually be made on the decorated
  * collection. Add and remove operations require the use of a pluggable
  * strategy. If no strategy is provided then add and remove are unsupported.
- *
+ * 
  * @since Commons Collections 3.0
  * @version $Revision: 1.1 $ $Date: 2005/07/26 01:06:32 $
- *
+ * 
  * @author Brian McCallister
  * @author Stephen Colebourne
  * @author Phil Steitz
  */
 public class CompositeCollection
     implements
-    Collection
-{
+    Collection {
 
     /** CollectionMutator to handle changes to the collection */
     protected CollectionMutator mutator;
 
     /** Collections in the composite */
-    protected Collection[] all;
+    protected Collection[]      all;
 
     /**
      * Create an empty CompositeCollection.
      */
-    public CompositeCollection()
-    {
-        super( );
+    public CompositeCollection(){
+        super();
         this.all = new Collection[0];
     }
 
     /**
      * Create a Composite Collection with only coll composited.
-     *
+     * 
      * @param coll
      *            a collection to decorate
      */
-    public CompositeCollection(Collection coll)
-    {
-        this( );
+    public CompositeCollection(Collection coll){
+        this();
         this.addComposited( coll );
     }
 
     /**
      * Create a CompositeCollection with colls as the initial list of composited
      * collections.
-     *
+     * 
      * @param colls
      *            an array of collections to decorate
      */
-    public CompositeCollection(Collection[] colls)
-    {
-        this( );
+    public CompositeCollection(Collection[] colls){
+        this();
         this.addComposited( colls );
     }
 
@@ -86,15 +82,13 @@ public class CompositeCollection
      * Gets the size of this composite collection.
      * <p>
      * This implementation calls <code>size()</code> on each collection.
-     *
+     * 
      * @return total number of elements in all contained containers
      */
-    public int size()
-    {
+    public int size(){
         int size = 0;
-        for ( int i = this.all.length - 1; i >= 0; i-- )
-        {
-            size += this.all[i].size( );
+        for ( int i = this.all.length - 1; i >= 0; i-- ) {
+            size += this.all[i].size();
         }
         return size;
     }
@@ -103,15 +97,12 @@ public class CompositeCollection
      * Checks whether this composite collection is empty.
      * <p>
      * This implementation calls <code>isEmpty()</code> on each collection.
-     *
+     * 
      * @return true if all of the contained collections are empty
      */
-    public boolean isEmpty()
-    {
-        for ( int i = this.all.length - 1; i >= 0; i-- )
-        {
-            if ( this.all[i].isEmpty( ) == false )
-            {
+    public boolean isEmpty(){
+        for ( int i = this.all.length - 1; i >= 0; i-- ) {
+            if ( this.all[i].isEmpty() == false ) {
                 return false;
             }
         }
@@ -122,17 +113,14 @@ public class CompositeCollection
      * Checks whether this composite collection contains the object.
      * <p>
      * This implementation calls <code>contains()</code> on each collection.
-     *
+     * 
      * @param obj
      *            the object to search for
      * @return true if obj is contained in any of the contained collections
      */
-    public boolean contains(Object obj)
-    {
-        for ( int i = this.all.length - 1; i >= 0; i-- )
-        {
-            if ( this.all[i].contains( obj ) )
-            {
+    public boolean contains(Object obj){
+        for ( int i = this.all.length - 1; i >= 0; i-- ) {
+            if ( this.all[i].contains( obj ) ) {
                 return true;
             }
         }
@@ -143,39 +131,34 @@ public class CompositeCollection
      * Gets an iterator over all the collections in this composite.
      * <p>
      * This implementation uses an <code>IteratorChain</code>.
-     *
+     * 
      * @return an <code>IteratorChain</code> instance which supports
      *         <code>remove()</code>. Iteration occurs over contained
      *         collections in the order they were added, but this behavior
      *         should not be relied upon.
      * @see IteratorChain
      */
-    public Iterator iterator()
-    {
-        if ( this.all.length == 0 )
-        {
-            return Collections.EMPTY_LIST.iterator( );
+    public Iterator iterator(){
+        if ( this.all.length == 0 ) {
+            return Collections.EMPTY_LIST.iterator();
         }
-        IteratorChain chain = new IteratorChain( );
-        for ( int i = 0; i < this.all.length; ++i )
-        {
-            chain.addIterator( this.all[i].iterator( ) );
+        IteratorChain chain = new IteratorChain();
+        for ( int i = 0; i < this.all.length; ++i ) {
+            chain.addIterator( this.all[i].iterator() );
         }
         return chain;
     }
 
     /**
      * Returns an array containing all of the elements in this composite.
-     *
+     * 
      * @return an object array of all the elements in the collection
      */
-    public Object[] toArray()
-    {
-        final Object[] result = new Object[this.size( )];
+    public Object[] toArray(){
+        final Object[] result = new Object[this.size()];
         int i = 0;
-        for ( Iterator it = this.iterator( ); it.hasNext( ); i++ )
-        {
-            result[i] = it.next( );
+        for ( Iterator it = this.iterator(); it.hasNext(); i++ ) {
+            result[i] = it.next();
         }
         return result;
     }
@@ -183,35 +166,29 @@ public class CompositeCollection
     /**
      * Returns an object array, populating the supplied array if possible. See
      * <code>Collection</code> interface for full details.
-     *
+     * 
      * @param array
      *            the array to use, populating if possible
      * @return an array of all the elements in the collection
      */
-    public Object[] toArray(Object[] array)
-    {
-        int size = this.size( );
+    public Object[] toArray(Object[] array){
+        int size = this.size();
         Object[] result;
-        if ( array.length >= size )
-        {
+        if ( array.length >= size ) {
             result = array;
         }
-        else
-        {
-            result = (Object[]) Array.newInstance( array.getClass( ).getComponentType( ),
+        else {
+            result = (Object[]) Array.newInstance( array.getClass().getComponentType(),
                                                    size );
         }
 
         int offset = 0;
-        for ( int i = 0; i < this.all.length; ++i )
-        {
-            for ( Iterator it = this.all[i].iterator( ); it.hasNext( ); )
-            {
-                result[offset++] = it.next( );
+        for ( int i = 0; i < this.all.length; ++i ) {
+            for ( Iterator it = this.all[i].iterator(); it.hasNext(); ) {
+                result[offset++] = it.next();
             }
         }
-        if ( result.length > size )
-        {
+        if ( result.length > size ) {
             result[size] = null;
         }
         return result;
@@ -220,7 +197,7 @@ public class CompositeCollection
     /**
      * Adds an object to the collection, throwing UnsupportedOperationException
      * unless a CollectionMutator strategy is specified.
-     *
+     * 
      * @param obj
      *            the object to add
      * @return true if the collection was modified
@@ -235,10 +212,8 @@ public class CompositeCollection
      * @throws IllegalArgumentException
      *             if the object cannot be added
      */
-    public boolean add(Object obj)
-    {
-        if ( this.mutator == null )
-        {
+    public boolean add(Object obj){
+        if ( this.mutator == null ) {
             throw new UnsupportedOperationException( "add() is not supported on CompositeCollection without a CollectionMutator strategy" );
         }
         return this.mutator.add( this,
@@ -250,7 +225,7 @@ public class CompositeCollection
      * Removes an object from the collection, throwing
      * UnsupportedOperationException unless a CollectionMutator strategy is
      * specified.
-     *
+     * 
      * @param obj
      *            the object being removed
      * @return true if the collection is changed
@@ -263,10 +238,8 @@ public class CompositeCollection
      * @throws IllegalArgumentException
      *             if the object cannot be removed
      */
-    public boolean remove(Object obj)
-    {
-        if ( this.mutator == null )
-        {
+    public boolean remove(Object obj){
+        if ( this.mutator == null ) {
             throw new UnsupportedOperationException( "remove() is not supported on CompositeCollection without a CollectionMutator strategy" );
         }
         return this.mutator.remove( this,
@@ -280,17 +253,14 @@ public class CompositeCollection
      * <p>
      * This implementation calls <code>contains()</code> for each element in
      * the specified collection.
-     *
+     * 
      * @param coll
      *            the collection to check for
      * @return true if all elements contained
      */
-    public boolean containsAll(Collection coll)
-    {
-        for ( Iterator it = coll.iterator( ); it.hasNext( ); )
-        {
-            if ( this.contains( it.next( ) ) == false )
-            {
+    public boolean containsAll(Collection coll){
+        for ( Iterator it = coll.iterator(); it.hasNext(); ) {
+            if ( this.contains( it.next() ) == false ) {
                 return false;
             }
         }
@@ -301,7 +271,7 @@ public class CompositeCollection
      * Adds a collection of elements to this collection, throwing
      * UnsupportedOperationException unless a CollectionMutator strategy is
      * specified.
-     *
+     * 
      * @param coll
      *            the collection to add
      * @return true if the collection was modified
@@ -316,10 +286,8 @@ public class CompositeCollection
      * @throws IllegalArgumentException
      *             if the object cannot be added
      */
-    public boolean addAll(Collection coll)
-    {
-        if ( this.mutator == null )
-        {
+    public boolean addAll(Collection coll){
+        if ( this.mutator == null ) {
             throw new UnsupportedOperationException( "addAll() is not supported on CompositeCollection without a CollectionMutator strategy" );
         }
         return this.mutator.addAll( this,
@@ -332,23 +300,20 @@ public class CompositeCollection
      * collection.
      * <p>
      * This implementation calls <code>removeAll</code> on each collection.
-     *
+     * 
      * @param coll
      *            the collection to remove
      * @return true if the collection was modified
      * @throws UnsupportedOperationException
      *             if removeAll is unsupported
      */
-    public boolean removeAll(Collection coll)
-    {
-        if ( coll.isEmpty( ) )
-        {
+    public boolean removeAll(Collection coll){
+        if ( coll.isEmpty() ) {
             return false;
         }
-        
+
         boolean changed = false;
-        for ( int i = this.all.length - 1; i >= 0; i-- )
-        {
+        for ( int i = this.all.length - 1; i >= 0; i-- ) {
             changed |= this.all[i].removeAll( coll );
         }
         return changed;
@@ -359,18 +324,16 @@ public class CompositeCollection
      * collection, removing all others.
      * <p>
      * This implementation calls <code>retainAll()</code> on each collection.
-     *
+     * 
      * @param coll
      *            the collection to remove
      * @return true if the collection was modified
      * @throws UnsupportedOperationException
      *             if retainAll is unsupported
      */
-    public boolean retainAll(final Collection coll)
-    {
+    public boolean retainAll(final Collection coll){
         boolean changed = false;
-        for ( int i = this.all.length - 1; i >= 0; i-- )
-        {
+        for ( int i = this.all.length - 1; i >= 0; i-- ) {
             changed = (this.all[i].retainAll( coll ) || changed);
         }
         return changed;
@@ -380,100 +343,91 @@ public class CompositeCollection
      * Removes all of the elements from this collection .
      * <p>
      * This implementation calls <code>clear()</code> on each collection.
-     *
+     * 
      * @throws UnsupportedOperationException
      *             if clear is unsupported
      */
-    public void clear()
-    {
-        for ( int i = 0; i < this.all.length; ++i )
-        {
-            this.all[i].clear( );
+    public void clear(){
+        for ( int i = 0; i < this.all.length; ++i ) {
+            this.all[i].clear();
         }
     }
 
     // -----------------------------------------------------------------------
     /**
      * Specify a CollectionMutator strategy instance to handle changes.
-     *
+     * 
      * @param mutator
      *            the mutator to use
      */
-    public void setMutator(CollectionMutator mutator)
-    {
+    public void setMutator(CollectionMutator mutator){
         this.mutator = mutator;
     }
 
     /**
      * Add these Collections to the list of collections in this composite
-     *
+     * 
      * @param comps
      *            Collections to be appended to the composite
      */
-    public void addComposited(Collection[] comps)
-    {
+    public void addComposited(Collection[] comps){
         ArrayList list = new ArrayList( Arrays.asList( this.all ) );
         list.addAll( Arrays.asList( comps ) );
-        all = (Collection[]) list.toArray( new Collection[list.size( )] );
+        this.all = (Collection[]) list.toArray( new Collection[list.size()] );
     }
 
     /**
      * Add an additional collection to this composite.
-     *
+     * 
      * @param c
      *            the collection to add
      */
-    public void addComposited(Collection c)
-    {
+    public void addComposited(Collection c){
         this.addComposited( new Collection[]{c} );
     }
 
     /**
      * Add two additional collections to this composite.
-     *
+     * 
      * @param c
      *            the first collection to add
      * @param d
      *            the second collection to add
      */
     public void addComposited(Collection c,
-                              Collection d)
-    {
+                              Collection d){
         this.addComposited( new Collection[]{c, d} );
     }
 
     /**
      * Removes a collection from the those being decorated in this composite.
-     *
+     * 
      * @param coll
      *            collection to be removed
      */
-    public void removeComposited(Collection coll)
-    {
+    public void removeComposited(Collection coll){
         ArrayList list = new ArrayList( this.all.length );
         list.addAll( Arrays.asList( this.all ) );
         list.remove( coll );
-        this.all = (Collection[]) list.toArray( new Collection[list.size( )] );
+        this.all = (Collection[]) list.toArray( new Collection[list.size()] );
     }
 
     /**
      * Returns a new collection containing all of the elements
-     *
+     * 
      * @return A new ArrayList containing all of the elements in this composite.
      *         The new collection is <i>not </i> backed by this composite.
      */
-    public Collection toCollection()
-    {
+    public Collection toCollection(){
         return new ArrayList( this );
     }
 
     /**
      * Gets the collections being decorated.
-     *
+     * 
      * @return Unmodifiable collection of all collections in this composite.
      */
-    public Collection getCollections()
-    {
+    public Collection getCollections(){
         return Collections.unmodifiableList( Arrays.asList( this.all ) );
     }
 
@@ -481,12 +435,11 @@ public class CompositeCollection
     /**
      * Pluggable strategy to handle changes to the composite.
      */
-    public interface CollectionMutator
-    {
+    public interface CollectionMutator {
 
         /**
          * Called when an object is to be added to the composite.
-         *
+         * 
          * @param composite
          *            the CompositeCollection being changed
          * @param collections
@@ -510,7 +463,7 @@ public class CompositeCollection
 
         /**
          * Called when a collection is to be added to the composite.
-         *
+         * 
          * @param composite
          *            the CompositeCollection being changed
          * @param collections
@@ -534,7 +487,7 @@ public class CompositeCollection
 
         /**
          * Called when an object is to be removed to the composite.
-         *
+         * 
          * @param composite
          *            the CompositeCollection being changed
          * @param collections

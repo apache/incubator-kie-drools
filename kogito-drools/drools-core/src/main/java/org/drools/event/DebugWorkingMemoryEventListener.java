@@ -43,26 +43,21 @@ package org.drools.event;
 
 public class DebugWorkingMemoryEventListener
     implements
-    WorkingMemoryEventListener
-{
-    public DebugWorkingMemoryEventListener()
-    {
+    WorkingMemoryEventListener {
+    public DebugWorkingMemoryEventListener(){
         // intentionally left blank
     }
 
-    public void objectAsserted(ObjectAssertedEvent event)
-    {
+    public void objectAsserted(ObjectAssertedEvent event){
         System.err.println( event );
     }
 
-    public void objectModified(ObjectModifiedEvent event)
-    {
+    public void objectModified(ObjectModifiedEvent event){
         System.err.println( event );
     }
 
-    public void objectRetracted(ObjectRetractedEvent event)
-    {
+    public void objectRetracted(ObjectRetractedEvent event){
         System.err.println( event );
     }
-    
+
 }

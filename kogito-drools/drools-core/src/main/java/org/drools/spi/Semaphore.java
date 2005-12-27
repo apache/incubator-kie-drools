@@ -46,7 +46,8 @@ import java.io.Serializable;
 /**
  * @author mproctor
  */
-public interface Semaphore extends Serializable
-{ 
-    public String getIdentifier( );
+public interface Semaphore
+    extends
+    Serializable {
+    public String getIdentifier();
 }

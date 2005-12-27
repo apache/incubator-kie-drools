@@ -46,71 +46,62 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.rule.Rule;
 
-public class DefaultKnowledgeHelper implements KnowledgeHelper
-{
+public class DefaultKnowledgeHelper
+    implements
+    KnowledgeHelper {
     private final Rule  rule;
     private final Tuple tuple;
 
-    public DefaultKnowledgeHelper( Rule rule,
-                            Tuple tuple )
-    {
+    public DefaultKnowledgeHelper(Rule rule,
+                                  Tuple tuple){
         this.rule = rule;
         this.tuple = tuple;
     }
 
-    public void assertObject(Object object) throws FactException
-    {
-        this.tuple.getWorkingMemory( ).assertObject( object );
+    public void assertObject(Object object) throws FactException{
+        this.tuple.getWorkingMemory().assertObject( object );
     }
 
     public void assertObject(Object object,
-                             boolean dynamic ) throws FactException
-    {
-        this.tuple.getWorkingMemory( ).assertObject( object,
-                                                     dynamic );
+                             boolean dynamic) throws FactException{
+        this.tuple.getWorkingMemory().assertObject( object,
+                                                    dynamic );
     }
 
-    public void modifyObject(Object object) throws FactException
-    {
+    public void modifyObject(Object object) throws FactException{
         FactHandle handle = this.tuple.getFactHandleForObject( object );
 
-        this.tuple.getWorkingMemory( ).modifyObject( handle,
-                                                     object );
+        this.tuple.getWorkingMemory().modifyObject( handle,
+                                                    object );
     }
 
-    public void modifyObject( Object oldObject,
-                              Object newObject ) throws FactException
-    {
+    public void modifyObject(Object oldObject,
+                             Object newObject) throws FactException{
         FactHandle handle = this.tuple.getFactHandleForObject( oldObject );
 
-        this.tuple.getWorkingMemory( ).modifyObject( handle,
-                                                     newObject );
+        this.tuple.getWorkingMemory().modifyObject( handle,
+                                                    newObject );
     }
 
-    public void retractObject( Object object ) throws FactException
-    {
+    public void retractObject(Object object) throws FactException{
         FactHandle handle = this.tuple.getFactHandleForObject( object );
 
-        this.tuple.getWorkingMemory( ).retractObject( handle );
+        this.tuple.getWorkingMemory().retractObject( handle );
     }
 
-    public String getRuleName()
-    {
-        return this.rule.getName( );
+    public String getRuleName(){
+        return this.rule.getName();
     }
 
-    public List getObjects()
-    {
-        return this.tuple.getWorkingMemory( ).getObjects( );
+    public List getObjects(){
+        return this.tuple.getWorkingMemory().getObjects();
     }
 
-    public List getObjects( Class objectClass )
-    {
-        return this.tuple.getWorkingMemory( ).getObjects( objectClass );
+    public List getObjects(Class objectClass){
+        return this.tuple.getWorkingMemory().getObjects( objectClass );
     }
 
-    public void clearAgenda()
-    {
-        this.tuple.getWorkingMemory( ).clearAgenda( );
+    public void clearAgenda(){
+        this.tuple.getWorkingMemory().clearAgenda();
     }
 }
