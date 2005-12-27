@@ -42,9 +42,9 @@ package org.drools.spi;
 
 import org.drools.WorkingMemory;
 
-public interface AsyncExceptionHandler
-{
+public interface AsyncExceptionHandler {
 
-    void handleException(WorkingMemory workingMemory, ConsequenceException exception);
-    
+    void handleException(WorkingMemory workingMemory,
+                         ConsequenceException exception);
+
 }

@@ -46,43 +46,35 @@ import java.util.Map;
 
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
-import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
-import org.drools.rule.StringConstraintComparator;
-import org.drools.spi.ConstraintComparator;
-import org.drools.spi.LiteralExpressionConstraint;
 import org.drools.spi.MockCondition;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.TestException;
 
-public class TestNodeTest extends DroolsTestCase
-{
+public class TestNodeTest extends DroolsTestCase {
     private PropagationContext context;
     private WorkingMemoryImpl  workingMemory;
 
-    public TestNodeTest(String name)
-    {
+    public TestNodeTest(String name){
         super( name );
     }
 
-    public void setUp()
-    {
+    public void setUp(){
         this.context = new PropagationContextImpl( PropagationContext.ASSERTION,
-                                               null,
-                                               null );
+                                                   null,
+                                                   null );
 
-        this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+        this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
     }
 
-    public void testAttach() throws Exception
-    {
+    public void testAttach() throws Exception{
         MockTupleSource source = new MockTupleSource( 12 );
 
         TestNode node = new TestNode( 18,
                                       source,
                                       new MockCondition( null,
                                                          true ),
-                                      false);
+                                      false );
 
         assertEquals( 18,
                       node.getId() );
@@ -98,38 +90,37 @@ public class TestNodeTest extends DroolsTestCase
         assertSame( node,
                     source.getTupleSinks().get( 0 ) );
     }
-    
-    public void testMemory()
-    {
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+
+    public void testMemory(){
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
         MockTupleSource source = new MockTupleSource( 12 );
-        
+
         TestNode node = new TestNode( 18,
                                       source,
                                       new MockCondition( null,
                                                          true ),
-                                      false);            
-        
-        Map memory = ( Map ) workingMemory.getNodeMemory( node );
-        
+                                      false );
+
+        Map memory = (Map) workingMemory.getNodeMemory( node );
+
         assertNotNull( memory );
-    }      
+    }
 
     /**
-     * If a condition allows an incoming Object, then the Object MUST be propagated.
+     * If a condition allows an incoming Object, then the Object MUST be
+     * propagated.
      * 
      * @throws FactException
      */
-    public void testAllowedWithoutMemory() throws FactException
-    {
+    public void testAllowedWithoutMemory() throws FactException{
 
         /* Create a test node that always returns true */
         TestNode node = new TestNode( 1,
                                       new MockTupleSource( 15 ),
                                       new MockCondition( null,
                                                          true ),
-                                      false);                                                         
+                                      false );
 
         MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
@@ -138,11 +129,11 @@ public class TestNodeTest extends DroolsTestCase
         FactHandleImpl f0 = new FactHandleImpl( 0 );
         ReteTuple tuple = new ReteTuple( 0,
                                          f0,
-                                         workingMemory );
+                                         this.workingMemory );
 
         /* Tuple should pass and propagate */
         node.assertTuple( tuple,
-                          context,
+                          this.context,
                           this.workingMemory );
 
         /* Check it propagated */
@@ -159,22 +150,21 @@ public class TestNodeTest extends DroolsTestCase
         assertEquals( 0,
                       sink.getRetracted().size() );
     }
-    
+
     /**
-     * If a condition allows an incoming Object, then the Object MUST be propagated.
-     * This tests that the memory is updated
+     * If a condition allows an incoming Object, then the Object MUST be
+     * propagated. This tests that the memory is updated
      * 
      * @throws FactException
      */
-    public void testAllowedWithMemory() throws FactException
-    {
+    public void testAllowedWithMemory() throws FactException{
 
         /* Create a test node that always returns true */
         TestNode node = new TestNode( 1,
                                       new MockTupleSource( 15 ),
                                       new MockCondition( null,
                                                          true ),
-                                      true);                                                         
+                                      true );
 
         MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
@@ -183,37 +173,42 @@ public class TestNodeTest extends DroolsTestCase
         FactHandleImpl f0 = new FactHandleImpl( 0 );
         ReteTuple tuple = new ReteTuple( 0,
                                          f0,
-                                         workingMemory );
+                                         this.workingMemory );
 
         /* Tuple should pass and propagate */
         node.assertTuple( tuple,
-                          context,
+                          this.context,
                           this.workingMemory );
 
         /* Check memory was populated */
-        Map map = (Map) workingMemory.getNodeMemory( node );
-        
-        assertLength(1, map.keySet( ));
-        assertContains( tuple.getKey( ), map.keySet( ) );
-        
+        Map map = (Map) this.workingMemory.getNodeMemory( node );
+
+        assertLength( 1,
+                      map.keySet() );
+        assertContains( tuple.getKey(),
+                        map.keySet() );
+
         // Now test that the fact is retracted correctly
-        node.retractTuples( tuple.getKey( ), context, workingMemory );
-        assertLength(0, map.keySet( ));
-    }    
+        node.retractTuples( tuple.getKey(),
+                            this.context,
+                            this.workingMemory );
+        assertLength( 0,
+                      map.keySet() );
+    }
 
     /**
-     * If a Condition does not allow an incoming Object, then the object MUST NOT be propagated.
+     * If a Condition does not allow an incoming Object, then the object MUST
+     * NOT be propagated.
      * 
      * @throws FactException
      */
-    public void testNotAllowed() throws FactException
-    {
+    public void testNotAllowed() throws FactException{
         /* Create a test node that always returns false */
         TestNode node = new TestNode( 1,
                                       new MockTupleSource( 15 ),
                                       new MockCondition( null,
                                                          false ),
-                                      false);                                                         
+                                      false );
 
         MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
@@ -222,11 +217,11 @@ public class TestNodeTest extends DroolsTestCase
         FactHandleImpl f0 = new FactHandleImpl( 0 );
         ReteTuple tuple = new ReteTuple( 0,
                                          f0,
-                                         workingMemory );
+                                         this.workingMemory );
 
         /* Tuple should pass and propagate */
         node.assertTuple( tuple,
-                          context,
+                          this.context,
                           this.workingMemory );
 
         /* make sure no assertions were propagated */
@@ -240,20 +235,20 @@ public class TestNodeTest extends DroolsTestCase
     }
 
     /**
-     * Retract Keys  
+     * Retract Keys
      * 
      * @throws FactException
      */
-    public void testRetract() throws FactException
-    {
+    public void testRetract() throws FactException{
         /*
-         * Create a test node that always returns false Although as we are retracting it doesn't matter what it returns
+         * Create a test node that always returns false Although as we are
+         * retracting it doesn't matter what it returns
          */
         TestNode node = new TestNode( 1,
                                       new MockTupleSource( 15 ),
                                       new MockCondition( null,
                                                          false ),
-                                      false);                                                         
+                                      false );
 
         MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
@@ -265,7 +260,7 @@ public class TestNodeTest extends DroolsTestCase
 
         /* Propagate the key */
         node.retractTuples( key,
-                            context,
+                            this.context,
                             this.workingMemory );
 
         /* Check nothing was asserted */
@@ -284,8 +279,7 @@ public class TestNodeTest extends DroolsTestCase
 
     }
 
-    public void testException() throws FactException
-    {
+    public void testException() throws FactException{
         /* Create a condition that will always throw an exception */
         MockCondition condition = new MockCondition( null,
                                                      true );
@@ -295,7 +289,7 @@ public class TestNodeTest extends DroolsTestCase
         TestNode node = new TestNode( 1,
                                       new MockTupleSource( 15 ),
                                       condition,
-                                      false);
+                                      false );
 
         MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
@@ -304,95 +298,104 @@ public class TestNodeTest extends DroolsTestCase
         FactHandleImpl f0 = new FactHandleImpl( 0 );
         ReteTuple tuple = new ReteTuple( 0,
                                          f0,
-                                         workingMemory );
+                                         this.workingMemory );
 
         /* When asserting the node should throw an exception */
-        try
-        {
+        try {
             node.assertTuple( tuple,
-                              context,
+                              this.context,
                               this.workingMemory );
             fail( "Should have thrown TestException" );
         }
-        catch ( TestException e )
-        {
+        catch ( TestException e ) {
             // should throw exception
         }
     }
-    
-    public void testUpdateNewNodeWithoutMemory() throws FactException
-    {
+
+    public void testUpdateNewNodeWithoutMemory() throws FactException{
         // An AlphaNode without memory needs to inform the parent ObjectTypeNode
         // to repropagate its memory
-        
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
-                                                             null,
-                                                             null );
+                                                                 null,
+                                                                 null );
 
-        // Creat the object source so we can detect the alphaNode telling it to propate its contents
-        MockTupleSource source = new MockTupleSource(1);
+        // Creat the object source so we can detect the alphaNode telling it to
+        // propate its contents
+        MockTupleSource source = new MockTupleSource( 1 );
 
         /* Create a test node that always returns true */
         TestNode node = new TestNode( 1,
                                       source,
                                       new MockCondition( null,
                                                          true ),
-                                      false);   
-        node.attach( );
-        
-        // check that the update propagation requests are 0
-        assertEquals( 0, source.getUdated( ) );
-        
-        node.updateNewNode( workingMemory, null );
-        
-        // now they should be 1, we don't need to test actual repropagation as thats tested in
-        // ObjectSourceTest
-        assertEquals( 1, source.getUdated( ) );        
-    }    
-    
-    public void testUpdateWithMemory() throws FactException
-    {  
-        // If no child nodes have children then we need to re-process the left and right memories
-        // as a joinnode does not store the resulting tuples
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+                                      false );
+        node.attach();
 
-        // Creat the object source so we can detect the alphaNode telling it to propate its contents
-        MockTupleSource source = new MockTupleSource(1);
+        // check that the update propagation requests are 0
+        assertEquals( 0,
+                      source.getUdated() );
+
+        node.updateNewNode( workingMemory,
+                            null );
+
+        // now they should be 1, we don't need to test actual repropagation as
+        // thats tested in
+        // ObjectSourceTest
+        assertEquals( 1,
+                      source.getUdated() );
+    }
+
+    public void testUpdateWithMemory() throws FactException{
+        // If no child nodes have children then we need to re-process the left
+        // and right memories
+        // as a joinnode does not store the resulting tuples
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+
+        // Creat the object source so we can detect the alphaNode telling it to
+        // propate its contents
+        MockTupleSource source = new MockTupleSource( 1 );
 
         /* Create a test node that always returns true */
         TestNode testNode = new TestNode( 1,
-                                      source,
-                                      new MockCondition( null,
-                                                         true ),
-                                      true);   
+                                          source,
+                                          new MockCondition( null,
+                                                             true ),
+                                          true );
 
         // Add the first tuple sink and assert a tuple and object
         // The sink has no memory
         MockTupleSink sink1 = new MockTupleSink( 2 );
-        testNode.addTupleSink( sink1 );       
-        
+        testNode.addTupleSink( sink1 );
+
         FactHandleImpl f0 = new FactHandleImpl( 0 );
         workingMemory.putObject( f0,
                                  "string0" );
-        
+
         ReteTuple tuple1 = new ReteTuple( 0,
                                           f0,
-                                          workingMemory );  
-        
-        testNode.assertTuple( tuple1, context, workingMemory );
-        
+                                          workingMemory );
 
-        assertLength( 1, sink1.getAsserted( ) );
-        
-        // Add the new sink, this should be updated from the re-processed joinnode memory
-        MockTupleSink sink2 = new MockTupleSink( 3 ); 
+        testNode.assertTuple( tuple1,
+                              this.context,
+                              workingMemory );
+
+        assertLength( 1,
+                      sink1.getAsserted() );
+
+        // Add the new sink, this should be updated from the re-processed
+        // joinnode memory
+        MockTupleSink sink2 = new MockTupleSink( 3 );
         testNode.addTupleSink( sink2 );
-        assertLength( 0, sink2.getAsserted( ) );        
-        
-        testNode.updateNewNode( workingMemory, context );
-        
-        assertLength( 1, sink2.getAsserted( ) );       
-    }      
+        assertLength( 0,
+                      sink2.getAsserted() );
+
+        testNode.updateNewNode( workingMemory,
+                                this.context );
+
+        assertLength( 1,
+                      sink2.getAsserted() );
+    }
 }

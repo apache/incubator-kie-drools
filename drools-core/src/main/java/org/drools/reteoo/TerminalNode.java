@@ -55,8 +55,7 @@ import org.drools.spi.PropagationContext;
  */
 final class TerminalNode
     implements
-    TupleSink
-{
+    TupleSink {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -77,8 +76,7 @@ final class TerminalNode
      *            The rule.
      */
     TerminalNode(TupleSource inputSource,
-                 Rule rule)
-    {
+                 Rule rule){
         this.rule = rule;
 
         inputSource.addTupleSink( this );
@@ -93,8 +91,7 @@ final class TerminalNode
      * 
      * @return The <code>Action</code> associated with this node.
      */
-    public Rule getRule()
-    {
+    public Rule getRule(){
         return this.rule;
     }
 
@@ -115,11 +112,10 @@ final class TerminalNode
      */
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
-                            WorkingMemoryImpl workingMemory) throws AssertionException
-    {
-        workingMemory.getAgenda( ).addToAgenda( tuple,
-                                                context,
-                                                this.rule );
+                            WorkingMemoryImpl workingMemory) throws AssertionException{
+        workingMemory.getAgenda().addToAgenda( tuple,
+                                               context,
+                                               this.rule );
     }
 
     /**
@@ -129,25 +125,22 @@ final class TerminalNode
      *            The tuple key.
      * @param workingMemory
      *            The working memory seesion.
-     * @throws FactException 
+     * @throws FactException
      */
     public void retractTuples(TupleKey key,
-                              PropagationContext context,                              
-                              WorkingMemoryImpl workingMemory) throws FactException
-    {
-        workingMemory.getAgenda( ).removeFromAgenda( key,
-                                                     context,
-                                                     this.rule );
+                              PropagationContext context,
+                              WorkingMemoryImpl workingMemory) throws FactException{
+        workingMemory.getAgenda().removeFromAgenda( key,
+                                                    context,
+                                                    this.rule );
     }
 
-    public String toString()
-    {
-        return "[TerminalNode: rule=" + rule.getName( ) + "]";
+    public String toString(){
+        return "[TerminalNode: rule=" + this.rule.getName() + "]";
     }
 
-    public void ruleAttached()
-    {
+    public void ruleAttached(){
         // TODO Auto-generated method stub
-        
+
     }
 }

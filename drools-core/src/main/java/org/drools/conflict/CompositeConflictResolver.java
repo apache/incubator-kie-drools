@@ -46,38 +46,34 @@ import org.drools.spi.ConflictResolver;
 
 /**
  * Strategy for resolving conflicts amongst multiple rules.
- *
+ * 
  * <p>
  * Since a fact or set of facts may activate multiple rules, a
  * <code>ConflictResolutionStrategy</code> is used to provide priority
  * ordering of conflicting rules.
  * </p>
- *
+ * 
  * @see Activation
  * @see org.drools.spi.Tuple
  * @see org.drools.rule.Rule
- *
+ * 
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
-public class CompositeConflictResolver extends AbstractConflictResolver
-{
+public class CompositeConflictResolver extends AbstractConflictResolver {
     private final ConflictResolver[] components;
 
-    public CompositeConflictResolver( ConflictResolver[] components )
-    {
+    public CompositeConflictResolver(ConflictResolver[] components){
         this.components = components;
     }
 
     /**
      * @see AbstractConflictResolver
      */
-    public final int compare( Activation lhs,
-                              Activation rhs )
-    {
+    public final int compare(Activation lhs,
+                             Activation rhs){
         int result = 0;
 
-        for ( int i = 0; result == 0 && i < this.components.length; ++i )
-        {
+        for ( int i = 0; result == 0 && i < this.components.length; ++i ) {
             result = this.components[i].compare( lhs,
                                                  rhs );
         }

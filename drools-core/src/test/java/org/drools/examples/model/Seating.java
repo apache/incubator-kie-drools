@@ -44,69 +44,61 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Seating  implements Serializable
-{
+public class Seating
+    implements
+    Serializable {
     private int     seat1, seat2;
 
     private Guest   guest1, guest2;
 
-    private List    tabooList = new ArrayList( );
+    private List    tabooList = new ArrayList();
 
     private Seating prevSeat;
 
-    public Seating(int seat1, Guest guest1, Seating prevSeat)
-    {
+    public Seating(int seat1,
+                   Guest guest1,
+                   Seating prevSeat){
         this.seat1 = seat1;
         this.guest1 = guest1;
         this.prevSeat = prevSeat;
         this.seat2 = seat1 + 1;
 
-        if ( prevSeat != null )
-        {
-            tabooList.addAll( prevSeat.tabooList );
+        if ( prevSeat != null ) {
+            this.tabooList.addAll( prevSeat.tabooList );
         }
 
-        tabooList.add( guest1 );
+        this.tabooList.add( guest1 );
     }
 
-    public int getSeat1()
-    {
-        return seat1;
+    public int getSeat1(){
+        return this.seat1;
     }
 
-    public int getSeat2()
-    {
-        return seat2;
+    public int getSeat2(){
+        return this.seat2;
     }
 
-    public Guest getGuest1()
-    {
-        return guest1;
+    public Guest getGuest1(){
+        return this.guest1;
     }
 
-    public Guest getGuest2()
-    {
-        return guest2;
+    public Guest getGuest2(){
+        return this.guest2;
     }
 
-    public void setGuest2(Guest guest2)
-    {
+    public void setGuest2(Guest guest2){
         this.guest2 = guest2;
     }
 
-    public Seating getPrevSeat()
-    {
-        return prevSeat;
+    public Seating getPrevSeat(){
+        return this.prevSeat;
     }
 
-    public List getTabooList()
-    {
-        return tabooList;
+    public List getTabooList(){
+        return this.tabooList;
     }
 
-    public String toString()
-    {
-        return "{seat1=" + seat1 + ",guest1=" + guest1 + ",seat2=" + seat2
-               + ",guest2=" + guest2 + "}";
+    public String toString(){
+        return "{seat1=" + this.seat1 + ",guest1=" + this.guest1 + ",seat2=" + this.seat2 + ",guest2=" + this.guest2 + "}";
     }
 }

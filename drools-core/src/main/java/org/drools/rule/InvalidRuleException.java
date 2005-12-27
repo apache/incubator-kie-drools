@@ -42,57 +42,56 @@ package org.drools.rule;
 
 /**
  * Indicates an error regarding the semantic validity of a rule.
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public class InvalidRuleException extends RuleConstructionException
-{
+public class InvalidRuleException extends RuleConstructionException {
     /** The invalid rule. */
     private Rule rule;
 
     /**
      * @see java.lang.Exception#Exception()
-     *
+     * 
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public InvalidRuleException( Rule rule )
-    {
+    public InvalidRuleException(Rule rule){
         super();
         this.rule = rule;
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
-     *
+     * 
      * @param message
      * @param rule
      */
-    public InvalidRuleException( String message, Rule rule )
-    {
+    public InvalidRuleException(String message,
+                                Rule rule){
         super( message );
         this.rule = rule;
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
-     *
+     * 
      * @param message
      * @param rule
      */
-    public InvalidRuleException( String message, Rule rule, Throwable cause )
-    {
-        super( message, cause );
+    public InvalidRuleException(String message,
+                                Rule rule,
+                                Throwable cause){
+        super( message,
+               cause );
         this.rule = rule;
     }
 
     /**
      * Retrieve the invalid <code>Rule</code>.
-     *
+     * 
      * @return The invalid <code>Rule</code>.
      */
-    public Rule getRule()
-    {
+    public Rule getRule(){
         return this.rule;
     }
 }

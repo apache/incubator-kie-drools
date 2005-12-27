@@ -49,15 +49,16 @@ import java.util.Set;
  * Importer holds a Set of ImportEntries and facilitates the
  * <code> <import/> </code> tag within a <code> <rule-set/> </code> by allowing
  * Classes to be loaded using a specified ClassLoader
- *
+ * 
  * @author <a href="mailto:mproctor@codehaus.org"> mark proctor </a>
  */
-public interface Importer extends Serializable
-{
+public interface Importer
+    extends
+    Serializable {
     /**
      * <p>
      * Adds an ImportEntry to a Set
-     *
+     * 
      * @param importEntry -
      *            the importEntry
      */
@@ -65,7 +66,7 @@ public interface Importer extends Serializable
 
     /**
      * Imports a Class using the given ClassLoader
-     *
+     * 
      * @param cl -
      *            the ClassLoader to use
      * @param className -
@@ -77,7 +78,9 @@ public interface Importer extends Serializable
      *             Thrown is a class is ambiguously imported.
      */
     public abstract Class importClass(ClassLoader cl,
-                                      String className) throws ClassNotFoundException, Error;
+                                      String className) throws ClassNotFoundException,
+                                                       Error;
+
     /**
      * @return - The Set of ImportEntries
      */

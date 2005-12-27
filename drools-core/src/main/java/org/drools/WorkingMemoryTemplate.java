@@ -1,20 +1,21 @@
 package org.drools;
 
-
 /**
- * Interface invoke WorkingMemory methods within a callback. The concrete implementations
- * of this interface can provide various services related to the WorkingMemory instance
- * (eg, synchronization).
+ * Interface invoke WorkingMemory methods within a callback. The concrete
+ * implementations of this interface can provide various services related to the
+ * WorkingMemory instance (eg, synchronization).
  */
 public interface WorkingMemoryTemplate {
 
     /**
-     * Callback interface for invoking WorkingMemory methods within a synchronized block.
+     * Callback interface for invoking WorkingMemory methods within a
+     * synchronized block.
      */
     public interface Callback {
         /**
-         * Gets called by <code>WorkingMemorySynchronizedTemplate.execute</code> with a
-         * WorkingMemory instance protected by a synchronized block.
+         * Gets called by <code>WorkingMemorySynchronizedTemplate.execute</code>
+         * with a WorkingMemory instance protected by a synchronized block.
+         * 
          * @param workingMemory
          * @return Any object or null.
          */
@@ -22,7 +23,8 @@ public interface WorkingMemoryTemplate {
     }
 
     /**
-     * Invokes <code>Callback.doInWorkingMemory</code>. Any thrown <code>DroolsException<code> is
+     * Invokes <code>Callback.doInWorkingMemory</code>. Any thrown
+     * <code>DroolsException<code> is
      * softened to <code>DroolsRuntimeException</code>.
      * @param callback
      * @return Any object or null.

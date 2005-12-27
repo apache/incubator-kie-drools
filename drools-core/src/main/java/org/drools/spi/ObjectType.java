@@ -49,8 +49,7 @@ package org.drools.spi;
  */
 public interface ObjectType
     extends
-    SemanticComponent
-{
+    SemanticComponent {
     /**
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.

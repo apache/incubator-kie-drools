@@ -42,36 +42,32 @@ package org.drools.spi;
 
 /**
  * Filters activations based on a specified rule name prefix.
- *
+ * 
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
 public class RuleNameStartsWithAgendaFilter
     implements
-    AgendaFilter
-{
-    private final String prefix;
+    AgendaFilter {
+    private final String  prefix;
 
     private final boolean accept;
 
-    public RuleNameStartsWithAgendaFilter(String prefix)
-    {
-        this( prefix, true );
+    public RuleNameStartsWithAgendaFilter(String prefix){
+        this( prefix,
+              true );
     }
 
-    public RuleNameStartsWithAgendaFilter(String prefix, boolean accept)
-    {
+    public RuleNameStartsWithAgendaFilter(String prefix,
+                                          boolean accept){
         this.prefix = prefix;
         this.accept = accept;
     }
 
-    public boolean accept(Activation activation)
-    {
-        if ( activation.getRule( ).getName( ).startsWith( this.prefix ) )
-        {
-            return accept;
+    public boolean accept(Activation activation){
+        if ( activation.getRule().getName().startsWith( this.prefix ) ) {
+            return this.accept;
         }
-        else
-        {
+        else {
             return false;
         }
     }

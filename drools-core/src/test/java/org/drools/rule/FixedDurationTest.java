@@ -43,43 +43,48 @@ package org.drools.rule;
 
 import junit.framework.TestCase;
 
-public class FixedDurationTest extends TestCase
-{
-    public void testConstruct() throws Exception
-    {
-        FixedDuration dur = new FixedDuration( );
+public class FixedDurationTest extends TestCase {
+    public void testConstruct() throws Exception{
+        FixedDuration dur = new FixedDuration();
 
-        assertEquals( 0, dur.getDuration( null ) );
+        assertEquals( 0,
+                      dur.getDuration( null ) );
 
         dur = new FixedDuration( 42 );
 
-        assertEquals( 42000, dur.getDuration( null ) );
+        assertEquals( 42000,
+                      dur.getDuration( null ) );
     }
 
-    public void testAdd() throws Exception
-    {
-        FixedDuration dur = new FixedDuration( );
+    public void testAdd() throws Exception{
+        FixedDuration dur = new FixedDuration();
 
-        assertEquals( 0, dur.getDuration( null ) );
+        assertEquals( 0,
+                      dur.getDuration( null ) );
 
         dur.addSeconds( 42 );
 
-        assertEquals( 42000, dur.getDuration( null ) );
+        assertEquals( 42000,
+                      dur.getDuration( null ) );
 
         dur.addMinutes( 2 );
 
-        assertEquals( 162000, dur.getDuration( null ) );
+        assertEquals( 162000,
+                      dur.getDuration( null ) );
 
         dur.addHours( 2 );
 
-        assertEquals( 7362000, dur.getDuration( null ) );
+        assertEquals( 7362000,
+                      dur.getDuration( null ) );
 
         dur.addDays( 2 );
 
-        assertEquals( 180162000, dur.getDuration( null ) );
+        assertEquals( 180162000,
+                      dur.getDuration( null ) );
 
         dur.addWeeks( 2 );
 
-        assertEquals( 1389762000, dur.getDuration( null ) );
+        assertEquals( 1389762000,
+                      dur.getDuration( null ) );
     }
 }

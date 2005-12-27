@@ -42,7 +42,6 @@ package org.drools.reteoo;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -70,15 +69,14 @@ import org.drools.spi.RuleBaseContext;
  */
 class RuleBaseImpl
     implements
-    RuleBase
-{
+    RuleBase {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private final Rete              rete;
-    
+
     private final Builder           builder;
 
     /** Conflict resolution strategy. */
@@ -87,18 +85,22 @@ class RuleBaseImpl
     /** The fact handle factory. */
     private final FactHandleFactory factHandleFactory;
 
-    private Set                    ruleSets;    
+    private Set                     ruleSets;
 
     private Map                     applicationData;
 
     private RuleBaseContext         ruleBaseContext;
-    
+
     // @todo: replace this with a weak HashSet
-    /** WeakHashMap to keep references of WorkingMemories but allow them to be garbage collected */
+    /**
+     * WeakHashMap to keep references of WorkingMemories but allow them to be
+     * garbage collected
+     */
     private final transient Map     workingMemories;
 
     /** Special value when adding to the underlying map. */
-    private static final Object PRESENT = new Object();    
+    private static final Object     PRESENT = new Object();
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -109,13 +111,12 @@ class RuleBaseImpl
      * @param rete
      *            The rete network.
      */
-    RuleBaseImpl()
-    {
-        this( DefaultConflictResolver.getInstance( ),
-              new DefaultFactHandleFactory( ),
+    RuleBaseImpl(){
+        this( DefaultConflictResolver.getInstance(),
+              new DefaultFactHandleFactory(),
               null,
-              new HashMap( ),
-              new RuleBaseContext( ) );
+              new HashMap(),
+              new RuleBaseContext() );
     }
 
     /**
@@ -134,10 +135,9 @@ class RuleBaseImpl
                  FactHandleFactory factHandleFactory,
                  Set ruleSets,
                  Map applicationData,
-                 RuleBaseContext ruleBaseContext)
-    {
+                 RuleBaseContext ruleBaseContext){
         this.rete = new Rete();
-        this.builder  = new Builder( this );
+        this.builder = new Builder( this );
         this.factHandleFactory = factHandleFactory;
         this.conflictResolver = conflictResolver;
         this.ruleSets = ruleSets;
@@ -149,47 +149,41 @@ class RuleBaseImpl
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-        
+
     /**
      * @see RuleBase
      */
-    public WorkingMemory newWorkingMemory()
-    {
+    public WorkingMemory newWorkingMemory(){
         return newWorkingMemory( true );
     }
-    
+
     /**
      * @see RuleBase
      */
-    public WorkingMemory newWorkingMemory(boolean keepReference)
-    {
+    public WorkingMemory newWorkingMemory(boolean keepReference){
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( this );
-        if ( keepReference )
-        {
+        if ( keepReference ) {
             this.workingMemories.put( workingMemory,
-                                      PRESENT );
+                                      RuleBaseImpl.PRESENT );
         }
         return workingMemory;
     }
-    
-    void disposeWorkingMemory(WorkingMemory workingMemory)
-    {
+
+    void disposeWorkingMemory(WorkingMemory workingMemory){
         this.workingMemories.remove( workingMemory );
     }
 
     /**
      * @see RuleBase
      */
-    public FactHandleFactory getFactHandleFactory()
-    {
+    public FactHandleFactory getFactHandleFactory(){
         return this.factHandleFactory;
     }
 
     /**
      * @see RuleBase
      */
-    public ConflictResolver getConflictResolver()
-    {
+    public ConflictResolver getConflictResolver(){
         return this.conflictResolver;
     }
 
@@ -198,8 +192,7 @@ class RuleBaseImpl
      * 
      * @return The RETE-OO network.
      */
-    Rete getRete()
-    {
+    Rete getRete(){
         return this.rete;
     }
 
@@ -219,12 +212,11 @@ class RuleBaseImpl
     void assertObject(FactHandle handle,
                       Object object,
                       PropagationContext context,
-                      WorkingMemoryImpl workingMemory) throws FactException
-    {
-        getRete( ).assertObject( object,
-                                 (FactHandleImpl) handle,
-                                 context,
-                                 workingMemory );
+                      WorkingMemoryImpl workingMemory) throws FactException{
+        getRete().assertObject( object,
+                                (FactHandleImpl) handle,
+                                context,
+                                workingMemory );
     }
 
     /**
@@ -240,31 +232,28 @@ class RuleBaseImpl
      */
     void retractObject(FactHandle handle,
                        PropagationContext context,
-                       WorkingMemoryImpl workingMemory) throws FactException
-    {
-        getRete( ).retractObject( (FactHandleImpl) handle,
-                                  context,
-                                  workingMemory );
+                       WorkingMemoryImpl workingMemory) throws FactException{
+        getRete().retractObject( (FactHandleImpl) handle,
+                                 context,
+                                 workingMemory );
     }
 
-    public RuleSet[] getRuleSets()
-    {
-        return (RuleSet[]) this.ruleSets.toArray( new RuleSet[ this.ruleSets.size() ] );
+    public RuleSet[] getRuleSets(){
+        return (RuleSet[]) this.ruleSets.toArray( new RuleSet[this.ruleSets.size()] );
     }
 
-    public Map getApplicationData()
-    {
+    public Map getApplicationData(){
         return this.applicationData;
     }
 
-    public RuleBaseContext getRuleBaseContext()
-    {
+    public RuleBaseContext getRuleBaseContext(){
         return this.ruleBaseContext;
     }
-    
+
     /**
-     * Add a <code>RuleSet</code> to the network. Iterates through the <code>RuleSet</code> adding
-     * Each individual <code>Rule</code> to the network.
+     * Add a <code>RuleSet</code> to the network. Iterates through the
+     * <code>RuleSet</code> adding Each individual <code>Rule</code> to the
+     * network.
      * 
      * @param ruleSet
      *            The rule-set to add.
@@ -272,44 +261,43 @@ class RuleBaseImpl
      * @throws RuleIntegrationException
      *             if an error prevents complete construction of the network for
      *             the <code>Rule</code>.
-     * @throws FactException 
-     * @throws InvalidPatternException 
+     * @throws FactException
+     * @throws InvalidPatternException
      */
     public void addRuleSet(RuleSet ruleSet) throws RuleIntegrationException,
-                                                   RuleSetIntegrationException, FactException, InvalidPatternException
-    {
-        Map newApplicationData = ruleSet.getApplicationData( );
-     
-        // Check that the application data is valid, we cannot change the type of an already declared 
+                                           RuleSetIntegrationException,
+                                           FactException,
+                                           InvalidPatternException{
+        Map newApplicationData = ruleSet.getApplicationData();
+
+        // Check that the application data is valid, we cannot change the type
+        // of an already declared
         // application data variable
-        for ( Iterator it = newApplicationData.keySet( ).iterator( ); it.hasNext(); )
-        {
-            String identifier = (String) it.next( );
+        for ( Iterator it = newApplicationData.keySet().iterator(); it.hasNext(); ) {
+            String identifier = (String) it.next();
             Class type = (Class) newApplicationData.get( identifier );
-            if ( this.applicationData.containsKey( identifier ) && !this.applicationData.get( identifier ).equals( type ) )
-            {
+            if ( this.applicationData.containsKey( identifier ) && !this.applicationData.get( identifier ).equals( type ) ) {
                 throw new RuleSetIntegrationException( ruleSet );
             }
         }
         this.applicationData.putAll( newApplicationData );
-        
-        this.ruleSets.add( ruleSet );
-        
-        Rule[] rules = ruleSet.getRules( );
 
-        for ( int i = 0; i < rules.length; ++i )
-        {
+        this.ruleSets.add( ruleSet );
+
+        Rule[] rules = ruleSet.getRules();
+
+        for ( int i = 0; i < rules.length; ++i ) {
             addRule( rules[i] );
         }
-    }    
-    
-    public void addRule(Rule rule) throws FactException, RuleIntegrationException, InvalidPatternException
-    {
+    }
+
+    public void addRule(Rule rule) throws FactException,
+                                  RuleIntegrationException,
+                                  InvalidPatternException{
         this.builder.addRule( rule );
     }
-    
-    public Set getWorkingMemories()
-    {
+
+    public Set getWorkingMemories(){
         return this.workingMemories.keySet();
     }
 }

@@ -1,4 +1,5 @@
 package org.drools.examples.model;
+
 /*
  * $Id: Guest.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
  *
@@ -40,59 +41,52 @@ package org.drools.examples.model;
  *
  */
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Guest implements Serializable
-{
+public class Guest
+    implements
+    Serializable {
     private String name;
 
     private char   sex;
 
     private List   hobbies;
 
-    public Guest(String name, char sex)
-    {
+    public Guest(String name,
+                 char sex){
         this.name = name;
         this.sex = sex;
-        hobbies = new ArrayList( );
+        this.hobbies = new ArrayList();
     }
 
-    public String getName()
-    {
-        return name;
+    public String getName(){
+        return this.name;
     }
 
-    public void addHobby(String hobby)
-    {
-        hobbies.add( hobby );
+    public void addHobby(String hobby){
+        this.hobbies.add( hobby );
     }
 
-    public List getHobbies()
-    {
-        return hobbies;
+    public List getHobbies(){
+        return this.hobbies;
     }
 
-    public boolean hasOppositeSex(Guest guest)
-    {
-        return sex != guest.sex;
+    public boolean hasOppositeSex(Guest guest){
+        return this.sex != guest.sex;
     }
 
-    public boolean hasSameHobby(Guest guest)
-    {
+    public boolean hasSameHobby(Guest guest){
         boolean hobbyFound = false;
-        for ( int i = 0; !hobbyFound && i < hobbies.size( ); i++ )
-        {
-            String hobby = ( String ) hobbies.get( i );
+        for ( int i = 0; !hobbyFound && i < this.hobbies.size(); i++ ) {
+            String hobby = (String) this.hobbies.get( i );
             hobbyFound = guest.hobbies.contains( hobby );
         }
         return hobbyFound;
     }
 
-    public String toString()
-    {
-        return "{name=" + name + ",sex=" + sex + ",hobbies=" + hobbies + "}";
+    public String toString(){
+        return "{name=" + this.name + ",sex=" + this.sex + ",hobbies=" + this.hobbies + "}";
     }
 }

@@ -53,12 +53,11 @@ import java.io.Serializable;
 
 public interface FactHandle
     extends
-    Serializable
-{
+    Serializable {
     /**
      * Convert this handle to an external representation.
-     *
+     * 
      * @return The external string form.
      */
-    String toExternalForm( );
+    String toExternalForm();
 }

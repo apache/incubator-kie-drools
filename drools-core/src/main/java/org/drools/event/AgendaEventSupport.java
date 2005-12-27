@@ -45,10 +45,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.rule.Rule;
-import org.drools.spi.Condition;
 import org.drools.spi.Tuple;
 
 /**
@@ -56,49 +54,39 @@ import org.drools.spi.Tuple;
  */
 public class AgendaEventSupport
     implements
-    Serializable
-{  
-    private final List          listeners = new ArrayList( );
+    Serializable {
+    private final List          listeners = new ArrayList();
     private final WorkingMemory workingMemory;
 
-    public AgendaEventSupport(WorkingMemory workingMemory)
-    {
+    public AgendaEventSupport(WorkingMemory workingMemory){
         this.workingMemory = workingMemory;
     }
 
-    public void addEventListener(AgendaEventListener listener)
-    {
-        if ( !this.listeners.contains( listener ) )
-        {
+    public void addEventListener(AgendaEventListener listener){
+        if ( !this.listeners.contains( listener ) ) {
             this.listeners.add( listener );
         }
     }
 
-    public void removeEventListener(AgendaEventListener listener)
-    {
+    public void removeEventListener(AgendaEventListener listener){
         this.listeners.remove( listener );
     }
 
-    public List getEventListeners()
-    {
+    public List getEventListeners(){
         return Collections.unmodifiableList( this.listeners );
     }
 
-    public int size()
-    {
-        return this.listeners.size( );
+    public int size(){
+        return this.listeners.size();
     }
 
-    public boolean isEmpty()
-    {
-        return this.listeners.isEmpty( );
+    public boolean isEmpty(){
+        return this.listeners.isEmpty();
     }
 
     public void fireActivationCreated(Rule rule,
-                                      Tuple tuple)
-    {
-        if ( this.listeners.isEmpty( ) )
-        {
+                                      Tuple tuple){
+        if ( this.listeners.isEmpty() ) {
             return;
         }
 
@@ -106,17 +94,14 @@ public class AgendaEventSupport
                                                                    rule,
                                                                    tuple );
 
-        for ( int i = 0, size = this.listeners.size( ); i < size; i++ )
-        {
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).activationCreated( event );
         }
     }
 
     public void fireActivationCancelled(Rule rule,
-                                        Tuple tuple)
-    {
-        if ( this.listeners.isEmpty( ) )
-        {
+                                        Tuple tuple){
+        if ( this.listeners.isEmpty() ) {
             return;
         }
 
@@ -124,17 +109,14 @@ public class AgendaEventSupport
                                                                        rule,
                                                                        tuple );
 
-        for ( int i = 0, size = this.listeners.size( ); i < size; i++ )
-        {
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).activationCancelled( event );
         }
     }
 
     public void fireActivationFired(Rule rule,
-                                    Tuple tuple)
-    {
-        if ( this.listeners.isEmpty( ) )
-        {
+                                    Tuple tuple){
+        if ( this.listeners.isEmpty() ) {
             return;
         }
 
@@ -142,8 +124,7 @@ public class AgendaEventSupport
                                                                rule,
                                                                tuple );
 
-        for ( int i = 0, size = this.listeners.size( ); i < size; i++ )
-        {
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).activationFired( event );
         }
     }

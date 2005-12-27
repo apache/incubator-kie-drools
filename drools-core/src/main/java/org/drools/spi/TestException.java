@@ -50,8 +50,7 @@ import org.drools.rule.Rule;
  *
  *  @author <a href="mailto:bob@werken.com">bob mcwhirter</a>
  */
-public class TestException extends AssertionException
-{
+public class TestException extends AssertionException {
     private Rule   rule;
     private String info;
 
@@ -62,36 +61,31 @@ public class TestException extends AssertionException
     /**
      * Construct.
      */
-    public TestException()
-    {
+    public TestException(){
         // intentionally left blank
     }
 
-    public TestException(String message)
-    {
+    public TestException(String message){
         super( message );
     }
 
     /**
      * Construct with a root cause.
-     *
+     * 
      * @param rootCause
-     *        The root cause of this exception.
+     *            The root cause of this exception.
      */
-    public TestException(Throwable rootCause)
-    {
+    public TestException(Throwable rootCause){
         super( rootCause );
     }
 
-    public TestException(Rule rule)
-    {
+    public TestException(Rule rule){
         this.rule = rule;
     }
 
     public TestException(String message,
-                              Rule rule,
-                              String info)
-    {
+                         Rule rule,
+                         String info){
         super( message );
         this.rule = rule;
         this.info = info;
@@ -99,21 +93,19 @@ public class TestException extends AssertionException
 
     /**
      * Construct with a root cause.
-     *
+     * 
      * @param rootCause
-     *        The root cause of this exception.
+     *            The root cause of this exception.
      */
     public TestException(Throwable rootCause,
-                              Rule rule,
-                              String info)
-    {
+                         Rule rule,
+                         String info){
         super( rootCause );
         this.rule = rule;
         this.info = info;
     }
 
-    public Rule getRule()
-    {
+    public Rule getRule(){
         return this.rule;
     }
 }

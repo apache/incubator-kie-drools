@@ -47,24 +47,23 @@ import org.drools.spi.ConflictResolver;
 /**
  * <code>ConflictResolver</code> that uses the semi-random order of rules to
  * resolve conflict.
- *
+ * 
  * @see #getInstance
  * @see System#identityHashCode(Object)
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- *
+ * 
  * @version $Id: RandomConflictResolver.java,v 1.1 2004/06/25 01:55:16 mproctor
  *          Exp $
  */
-public class RandomConflictResolver extends AbstractConflictResolver
-{
+public class RandomConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
     /** Singleton instance. */
-    private static final RandomConflictResolver INSTANCE = new RandomConflictResolver( );
+    private static final RandomConflictResolver INSTANCE = new RandomConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -72,12 +71,11 @@ public class RandomConflictResolver extends AbstractConflictResolver
 
     /**
      * Retrieve the singleton instance.
-     *
+     * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance( )
-    {
-        return INSTANCE;
+    public static ConflictResolver getInstance(){
+        return RandomConflictResolver.INSTANCE;
     }
 
     // ----------------------------------------------------------------------
@@ -87,8 +85,7 @@ public class RandomConflictResolver extends AbstractConflictResolver
     /**
      * Construct.
      */
-    public RandomConflictResolver( )
-    {
+    public RandomConflictResolver(){
         // intentionally left blank
     }
 
@@ -97,9 +94,8 @@ public class RandomConflictResolver extends AbstractConflictResolver
     /**
      * @see ConflictResolver
      */
-    public int compare( Activation lhs,
-                        Activation rhs )
-    {
+    public int compare(Activation lhs,
+                       Activation rhs){
         return System.identityHashCode( lhs ) - System.identityHashCode( rhs );
     }
 }

@@ -47,24 +47,23 @@ import org.drools.spi.ConflictResolver;
 /**
  * <code>ConflictResolver</code> that uses the salience of rules to resolve
  * conflict.
- *
+ * 
  * @see #getInstance
  * @see org.drools.rule.Rule#getSalience
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- *
+ * 
  * @version $Id: SalienceConflictResolver.java,v 1.3 2004/06/25 02:46:39
  *          mproctor Exp $
  */
-public class SalienceConflictResolver extends AbstractConflictResolver
-{
+public class SalienceConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
     /** Singleton instance. */
-    private static final SalienceConflictResolver INSTANCE = new SalienceConflictResolver( );
+    private static final SalienceConflictResolver INSTANCE = new SalienceConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -72,12 +71,11 @@ public class SalienceConflictResolver extends AbstractConflictResolver
 
     /**
      * Retrieve the singleton instance.
-     *
+     * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance( )
-    {
-        return INSTANCE;
+    public static ConflictResolver getInstance(){
+        return SalienceConflictResolver.INSTANCE;
     }
 
     // ----------------------------------------------------------------------
@@ -87,8 +85,7 @@ public class SalienceConflictResolver extends AbstractConflictResolver
     /**
      * Construct.
      */
-    public SalienceConflictResolver( )
-    {
+    public SalienceConflictResolver(){
         // intentionally left blank
     }
 
@@ -97,9 +94,8 @@ public class SalienceConflictResolver extends AbstractConflictResolver
     /**
      * @see ConflictResolver
      */
-    public int compare( Activation lhs,
-                        Activation rhs )
-    {
-        return rhs.getRule( ).getSalience( ) - lhs.getRule( ).getSalience( );
+    public int compare(Activation lhs,
+                       Activation rhs){
+        return rhs.getRule().getSalience() - lhs.getRule().getSalience();
     }
 }

@@ -51,8 +51,7 @@ import org.drools.rule.Declaration;
  */
 public interface Condition
     extends
-    SemanticComponent
-{
+    SemanticComponent {
     /**
      * Retrieve the array of <code>Declaration</code> s required by this
      * condition to perform its duties.

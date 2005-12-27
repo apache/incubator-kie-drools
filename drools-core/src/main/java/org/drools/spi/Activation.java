@@ -49,8 +49,7 @@ import org.drools.rule.Rule;
  * 
  * @version $Id: Activation.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
  */
-public interface Activation
-{
+public interface Activation {
     /**
      * Retrieve the <code>Rule</code> that was activated.
      * 

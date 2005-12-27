@@ -44,12 +44,11 @@ import java.util.EventListener;
 
 public interface WorkingMemoryEventListener
     extends
-    EventListener
-{
+    EventListener {
     void objectAsserted(ObjectAssertedEvent event);
 
     void objectModified(ObjectModifiedEvent event);
 
     void objectRetracted(ObjectRetractedEvent event);
-    
+
 }

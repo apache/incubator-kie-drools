@@ -2,19 +2,16 @@ package org.drools.reteoo;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.drools.FactException;
 import org.drools.spi.Constraint;
 import org.drools.spi.PropagationContext;
-import org.drools.util.PrimitiveLongMap;
 
 public class AlphaNode extends ObjectSource
     implements
     ObjectSink,
-    NodeMemory
-{
+    NodeMemory {
     private final Constraint   constraint;
 
     private final ObjectSource objectSource;
@@ -22,33 +19,27 @@ public class AlphaNode extends ObjectSource
     AlphaNode(int id,
               Constraint constraint,
               boolean hasMemory,
-              ObjectSource objectSource)
-    {
+              ObjectSource objectSource){
         super( id );
         this.constraint = constraint;
         this.objectSource = objectSource;
         setHasMemory( hasMemory );
     }
 
-    public void attach()
-    {
+    public void attach(){
         this.objectSource.addObjectSink( this );
     }
 
     public void assertObject(Object object,
                              FactHandleImpl handle,
                              PropagationContext context,
-                             WorkingMemoryImpl workingMemory) throws FactException
-    {
-        if ( hasMemory( ) )
-        {
+                             WorkingMemoryImpl workingMemory) throws FactException{
+        if ( hasMemory() ) {
             Set memory = (Set) workingMemory.getNodeMemory( this );
-            if ( !memory.contains( handle ) )
-            {
-                if ( constraint.isAllowed( object,
+            if ( !memory.contains( handle ) ) {
+                if ( this.constraint.isAllowed( object,
                                            handle,
-                                           null ) )
-                {
+                                           null ) ) {
                     memory.add( handle );
                     propagateAssertObject( object,
                                            handle,
@@ -57,12 +48,10 @@ public class AlphaNode extends ObjectSource
                 }
             }
         }
-        else
-        {
-            if ( constraint.isAllowed( object,
+        else {
+            if ( this.constraint.isAllowed( object,
                                        handle,
-                                       null ) )
-            {
+                                       null ) ) {
                 propagateAssertObject( object,
                                        handle,
                                        context,
@@ -73,21 +62,17 @@ public class AlphaNode extends ObjectSource
 
     public void retractObject(FactHandleImpl handle,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException
-    {
-        if ( hasMemory( ) )
-        {
+                              WorkingMemoryImpl workingMemory) throws FactException{
+        if ( hasMemory() ) {
             Set memory = (Set) workingMemory.getNodeMemory( this );
-            if ( memory.remove( handle ) )
-            {
+            if ( memory.remove( handle ) ) {
                 memory.remove( handle );
                 propagateRetractObject( handle,
                                         context,
                                         workingMemory );
             }
         }
-        else
-        {
+        else {
             propagateRetractObject( handle,
                                     context,
                                     workingMemory );
@@ -95,17 +80,14 @@ public class AlphaNode extends ObjectSource
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException
-    {
+                              PropagationContext context) throws FactException{
         this.attachingNewNode = true;
 
-        if ( hasMemory( ) )
-        {
+        if ( hasMemory() ) {
             Set memory = (Set) workingMemory.getNodeMemory( this );
 
-            for ( Iterator it = memory.iterator( ); it.hasNext( ); )
-            {
-                FactHandleImpl handle = (FactHandleImpl) it.next( );
+            for ( Iterator it = memory.iterator(); it.hasNext(); ) {
+                FactHandleImpl handle = (FactHandleImpl) it.next();
                 Object object = workingMemory.getObject( handle );
                 propagateAssertObject( object,
                                        handle,
@@ -113,8 +95,7 @@ public class AlphaNode extends ObjectSource
                                        workingMemory );
             }
         }
-        else
-        {
+        else {
             // We need to detach and re-attach to make sure the node is at the
             // top
             // for the propagation
@@ -127,20 +108,16 @@ public class AlphaNode extends ObjectSource
         this.attachingNewNode = false;
     }
 
-    public Object createMemory()
-    {
-        return new HashSet( );
+    public Object createMemory(){
+        return new HashSet();
     }
 
-    public boolean equals(Object object)
-    {
-        if ( this == object )
-        {
+    public boolean equals(Object object){
+        if ( this == object ) {
             return true;
         }
 
-        if ( object == null || getClass( ) != object.getClass( ) )
-        {
+        if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
 
@@ -149,8 +126,7 @@ public class AlphaNode extends ObjectSource
         return this.objectSource.equals( other.objectSource ) && this.constraint.equals( other.constraint );
     }
 
-    public void remove()
-    {
+    public void remove(){
         // TODO Auto-generated method stub
 
     }

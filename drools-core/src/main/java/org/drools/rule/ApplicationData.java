@@ -45,28 +45,24 @@ import java.io.Serializable;
 
 public class ApplicationData
     implements
-    Serializable
-{
+    Serializable {
     private String  identifier;
     private Class   type;
     private RuleSet ruleSet;
 
     public ApplicationData(RuleSet ruleSet,
                            String identifier,
-                           Class type)
-    {
+                           Class type){
         this.identifier = identifier;
         this.type = type;
         this.ruleSet = ruleSet;
     }
 
-    public String getIdentifier()
-    {
+    public String getIdentifier(){
         return this.identifier;
     }
 
-    public Class getType()
-    {
+    public Class getType(){
         return this.type;
     }
 }

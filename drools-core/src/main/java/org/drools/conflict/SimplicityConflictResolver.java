@@ -47,24 +47,23 @@ import org.drools.spi.ConflictResolver;
 /**
  * <code>ConflictResolver</code> that uses the numConditions of rules to
  * resolve conflict.
- *
+ * 
  * @see #getInstance
  * @see org.drools.rule.Rule#getConditionSize
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- *
+ * 
  * @version $Id: SimplicityConflictResolver.java,v 1.9 2004/11/13 01:43:07 simon
  *          Exp $
  */
-public class SimplicityConflictResolver extends AbstractConflictResolver
-{
+public class SimplicityConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
     /** Singleton instance. */
-    private static final SimplicityConflictResolver INSTANCE = new SimplicityConflictResolver( );
+    private static final SimplicityConflictResolver INSTANCE = new SimplicityConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -72,12 +71,11 @@ public class SimplicityConflictResolver extends AbstractConflictResolver
 
     /**
      * Retrieve the singleton instance.
-     *
+     * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance( )
-    {
-        return INSTANCE;
+    public static ConflictResolver getInstance(){
+        return SimplicityConflictResolver.INSTANCE;
     }
 
     // ----------------------------------------------------------------------
@@ -87,8 +85,7 @@ public class SimplicityConflictResolver extends AbstractConflictResolver
     /**
      * Construct.
      */
-    public SimplicityConflictResolver( )
-    {
+    public SimplicityConflictResolver(){
         // intentionally left blank
     }
 
@@ -97,9 +94,8 @@ public class SimplicityConflictResolver extends AbstractConflictResolver
     /**
      * @see ConflictResolver
      */
-    public int compare( Activation lhs,
-                        Activation rhs )
-    {
-        return lhs.getRule( ).getPatternSize( ) - rhs.getRule( ).getPatternSize( );
+    public int compare(Activation lhs,
+                       Activation rhs){
+        return lhs.getRule().getPatternSize() - rhs.getRule().getPatternSize();
     }
 }

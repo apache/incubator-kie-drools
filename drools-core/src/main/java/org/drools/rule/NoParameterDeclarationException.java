@@ -43,23 +43,22 @@ package org.drools.rule;
 /**
  * Validity exception indicating that a <code>Rule</code> does not contain any
  * root object parameter <code>Declaration</code>s.
- *
+ * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-public class NoParameterDeclarationException extends InvalidRuleException
-{
+public class NoParameterDeclarationException extends InvalidRuleException {
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
 
     /**
      * Construct.
-     *
+     * 
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public NoParameterDeclarationException(Rule rule)
-    {
-        super( "Rule has no defined parameters: rule=" + rule.getName(), rule );
+    public NoParameterDeclarationException(Rule rule){
+        super( "Rule has no defined parameters: rule=" + rule.getName(),
+               rule );
     }
 }

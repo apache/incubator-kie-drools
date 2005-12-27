@@ -47,8 +47,7 @@ import org.drools.FactHandle;
 
 public interface FactHandleFactory
     extends
-    Serializable
-{
+    Serializable {
     /**
      * Construct a handle with a new id.
      * 

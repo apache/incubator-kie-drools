@@ -5,7 +5,7 @@ package org.drools;
  */
 public class DroolsRuntimeException extends RuntimeException {
 
-    public DroolsRuntimeException(DroolsException e) {
-        super(e);
+    public DroolsRuntimeException(DroolsException e){
+        super( e );
     }
 }

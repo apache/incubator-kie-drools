@@ -41,11 +41,9 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.FactException;
@@ -68,14 +66,13 @@ import org.drools.spi.PropagationContext;
 class Rete extends ObjectSource
     implements
     Serializable,
-    ObjectSink
-{
+    ObjectSink {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /** The set of <code>ObjectTypeNodes</code>. */
-    private final Map objectTypeNodes = new HashMap( );        
+    private final Map objectTypeNodes = new HashMap();
 
     // ------------------------------------------------------------
     // Constructors
@@ -84,8 +81,7 @@ class Rete extends ObjectSource
     /**
      * Construct.
      */
-    public Rete()
-    {
+    public Rete(){
         super( 0 );
     }
 
@@ -110,16 +106,12 @@ class Rete extends ObjectSource
     public void assertObject(Object object,
                              FactHandleImpl handle,
                              PropagationContext context,
-                             WorkingMemoryImpl workingMemory) throws FactException
-    {
-        Iterator nodeIter = getObjectTypeNodeIterator( );
-
-        while ( nodeIter.hasNext( ) )
-        {
-            ((ObjectTypeNode) nodeIter.next( )).assertObject( object,
-                                                              handle,
-                                                              context,
-                                                              workingMemory );
+                             WorkingMemoryImpl workingMemory) throws FactException{
+        for ( Iterator nodeIter = getObjectTypeNodeIterator(); nodeIter.hasNext(); ) {
+            ((ObjectTypeNode) nodeIter.next()).assertObject( object,
+                                                             handle,
+                                                             context,
+                                                             workingMemory );
         }
     }
 
@@ -137,27 +129,23 @@ class Rete extends ObjectSource
      */
     public void retractObject(FactHandleImpl handle,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException
-    {
-        Iterator nodeIter = getObjectTypeNodeIterator( );
+                              WorkingMemoryImpl workingMemory) throws FactException{
+        Iterator nodeIter = getObjectTypeNodeIterator();
 
-        while ( nodeIter.hasNext( ) )
-        {
-            ((ObjectTypeNode) nodeIter.next( )).retractObject( handle,
-                                                               context,
-                                                               workingMemory );
+        while ( nodeIter.hasNext() ) {
+            ((ObjectTypeNode) nodeIter.next()).retractObject( handle,
+                                                              context,
+                                                              workingMemory );
         }
     }
-
 
     /**
      * Retrieve all <code>ObjectTypeNode</code> children of this node.
      * 
      * @return The <code>Set</code> of <code>ObjectTypeNodes</code>.
      */
-    Collection getObjectTypeNodes()
-    {
-        return this.objectTypeNodes.values( );
+    Collection getObjectTypeNodes(){
+        return this.objectTypeNodes.values();
     }
 
     /**
@@ -166,9 +154,8 @@ class Rete extends ObjectSource
      * 
      * @return An <code>Iterator</code> over <code>ObjectTypeNodes</code>.
      */
-    Iterator getObjectTypeNodeIterator()
-    {
-        return this.objectTypeNodes.values( ).iterator( );
+    Iterator getObjectTypeNodeIterator(){
+        return this.objectTypeNodes.values().iterator();
     }
 
     /**
@@ -181,11 +168,9 @@ class Rete extends ObjectSource
      * @return The matching <code>ObjectTypeNode</code> if one has already
      *         been created, else <code>null</code>.
      */
-    ObjectTypeNode getObjectTypeNode(ObjectType objectType)
-    {
+    ObjectTypeNode getObjectTypeNode(ObjectType objectType){
         return (ObjectTypeNode) this.objectTypeNodes.get( objectType );
     }
-
 
     /**
      * Add an <code>ObjectTypeNode</code> child to this <code>Rete</code>.
@@ -193,12 +178,11 @@ class Rete extends ObjectSource
      * @param node
      *            The node to add.
      */
-    private void addObjectTypeNode(ObjectTypeNode node)
-    {
-        this.objectTypeNodes.put( node.getObjectType( ),
+    private void addObjectTypeNode(ObjectTypeNode node){
+        this.objectTypeNodes.put( node.getObjectType(),
                                   node );
     }
-    
+
     /**
      * Adds the <code>TupleSink</code> so that it may receive
      * <code>Tuples</code> propagated from this <code>TupleSource</code>.
@@ -207,33 +191,27 @@ class Rete extends ObjectSource
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    protected void addObjectSink(ObjectSink objectSink)
-    {
+    protected void addObjectSink(ObjectSink objectSink){
         addObjectTypeNode( (ObjectTypeNode) objectSink );
     }
 
-    public void attach()
-    {
+    public void attach(){
         // do nothing this is the root node
     }
-    
-    public void updateNewNode( WorkingMemoryImpl workingMemory,
-                               PropagationContext context ) throws FactException
-    {
+
+    public void updateNewNode(WorkingMemoryImpl workingMemory,
+                              PropagationContext context) throws FactException{
         // do nothing this has no data to propagate
     }
-    
-    void addRule(Rule rule) throws InvalidPatternException
-    {
-        //And is the implicit head node
+
+    void addRule(Rule rule) throws InvalidPatternException{
+        // And is the implicit head node
         And[] rules = rule.getProcessPatterns();
     }
-    
 
-    public void remove()
-    {
+    public void remove(){
         // do nothing the rete node is root and cannot be removed
-        
+
     }
-    
+
 }

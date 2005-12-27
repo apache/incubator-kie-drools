@@ -46,36 +46,33 @@ import java.util.Collection;
 
 import junit.framework.TestCase;
 
-public abstract class DroolsTestCase extends TestCase
-{
-    public DroolsTestCase()
-    {
-        super( );
+public abstract class DroolsTestCase extends TestCase {
+    public DroolsTestCase(){
+        super();
     }
 
-    public DroolsTestCase(String name)
-    {
+    public DroolsTestCase(String name){
         super( name );
     }
 
-    public void assertLength(int len, Object[] array)
-    {
-        assertEquals( Arrays.asList( array ) + " does not have length of "
-                      + len, len, array.length );
+    public void assertLength(int len,
+                             Object[] array){
+        assertEquals( Arrays.asList( array ) + " does not have length of " + len,
+                      len,
+                      array.length );
     }
 
-    public void assertLength(int len, Collection collection)
-    {
-        assertEquals( collection + " does not have length of " + len, len,
-                      collection.size( ) );
+    public void assertLength(int len,
+                             Collection collection){
+        assertEquals( collection + " does not have length of " + len,
+                      len,
+                      collection.size() );
     }
 
-    public void assertContains(Object obj, Object[] array)
-    {
-        for ( int i = 0; i < array.length; ++i )
-        {
-            if ( array[i] == obj )
-            {
+    public void assertContains(Object obj,
+                               Object[] array){
+        for ( int i = 0; i < array.length; ++i ) {
+            if ( array[i] == obj ) {
                 return;
             }
         }
@@ -83,8 +80,8 @@ public abstract class DroolsTestCase extends TestCase
         fail( Arrays.asList( array ) + " does not contain " + obj );
     }
 
-    public void assertContains(Object obj, Collection collection)
-    {
+    public void assertContains(Object obj,
+                               Collection collection){
         assertTrue( collection + " does not contain " + obj,
                     collection.contains( obj ) );
     }

@@ -61,10 +61,10 @@ import org.drools.spi.ObjectType;
  * A <code>Rule</code> contains a set of <code>Test</code>s and a
  * <code>Consequence</code>.
  * <p>
- * The <code>Test</code>s describe the circumstances that
- * representrepresent a match for this rule. The <code>Consequence</code> gets
- * fired when the Conditions match.
- *
+ * The <code>Test</code>s describe the circumstances that representrepresent
+ * a match for this rule. The <code>Consequence</code> gets fired when the
+ * Conditions match.
+ * 
  * @see Condition
  * @see Consequence
  * @author <a href="mailto:bob@eng.werken.com"> bob mcwhirter </a>
@@ -73,8 +73,7 @@ import org.drools.spi.ObjectType;
  */
 public class Rule
     implements
-    Serializable
-{
+    Serializable {
     /**   */
     // ------------------------------------------------------------
     // Instance members
@@ -96,7 +95,7 @@ public class Rule
 
     private final Map    declarations = new HashMap();
 
-    private final And    headPattern  = new And();    
+    private final And    headPattern  = new And();
 
     private final String module;
 
@@ -134,8 +133,7 @@ public class Rule
      */
     public Rule(String name,
                 RuleSet ruleSet,
-                String module)
-    {
+                String module){
         this.name = name;
         this.ruleSet = ruleSet;
         this.module = module;
@@ -150,16 +148,14 @@ public class Rule
      *            The name of this rule.
      */
     public Rule(String name,
-                String module)
-    {
+                String module){
         this.name = name;
         this.ruleSet = null;
         this.module = module;
         this.applicationData = Collections.EMPTY_MAP;
     }
 
-    public Rule(String name)
-    {
+    public Rule(String name){
         this.name = name;
         this.ruleSet = null;
         this.module = Module.MAIN;
@@ -168,22 +164,20 @@ public class Rule
 
     /**
      * Set the documentation.
-     *
+     * 
      * @param documentation -
-     *        The documentation.
+     *            The documentation.
      */
-    public void setDocumentation(String documentation)
-    {
+    public void setDocumentation(String documentation){
         this.documentation = documentation;
     }
 
     /**
      * Retrieve the documentation.
-     *
+     * 
      * @return The documentation or <code>null</code> if none.
      */
-    public String getDocumentation()
-    {
+    public String getDocumentation(){
         return this.documentation;
     }
 
@@ -191,67 +185,62 @@ public class Rule
      * Set the truthness duration. This causes a delay before the firing of the
      * <code>Consequence</code> if the rule is still true at the end of the
      * duration.
-     *
+     * 
      * <p>
      * This is merely a convenience method for calling
      * {@link #setDuration(Duration)}with a <code>FixedDuration</code>.
      * </p>
-     *
+     * 
      * @see #setDuration(Duration)
      * @see FixedDuration
-     *
+     * 
      * @param seconds -
-     *        The number of seconds the rule must hold true in order to fire.
+     *            The number of seconds the rule must hold true in order to
+     *            fire.
      */
-    public void setDuration(long seconds)
-    {
+    public void setDuration(long seconds){
         this.duration = new FixedDuration( seconds );
     }
 
     /**
-     * Set the truthness duration object. This causes a delay before the firing of the
-     * <code>Consequence</code> if the rule is still true at the end of the
-     * duration.
-     *
+     * Set the truthness duration object. This causes a delay before the firing
+     * of the <code>Consequence</code> if the rule is still true at the end of
+     * the duration.
+     * 
      * @param duration
-     *        The truth duration object.
+     *            The truth duration object.
      */
-    public void setDuration(Duration duration)
-    {
+    public void setDuration(Duration duration){
         this.duration = duration;
     }
 
     /**
      * Retrieve the truthness duration object.
-     *
+     * 
      * @return The truthness duration object.
      */
-    public Duration getDuration()
-    {
+    public Duration getDuration(){
         return this.duration;
     }
 
     /**
      * Determine if this rule is internally consistent and valid.
-     *
+     * 
      * No exception is thrown.
      * <p>
      * A <code>Rule</code> must include at least one parameter declaration and
      * one condition.
      * </p>
-     *
+     * 
      * @return <code>true</code> if this rule is valid, else
      *         <code>false</code>.
      */
-    public boolean isValid()
-    {
-        if ( this.columns.size() == 0 )
-        {
+    public boolean isValid(){
+        if ( this.columns.size() == 0 ) {
             return false;
         }
 
-        if ( this.consequence == null )
-        {
+        if ( this.consequence == null ) {
             return false;
         }
 
@@ -261,59 +250,53 @@ public class Rule
     /**
      * Check the validity of this rule, and throw exceptions if it fails
      * validity tests.
-     *
+     * 
      * <p>
      * Possibly exceptions include:
      * </p>
-     *
+     * 
      * <pre>
-     * NoParameterDeclarationException
-     * NoConsequenceException
+     *  NoParameterDeclarationException
+     *  NoConsequenceException
      * </pre>
-     *
+     * 
      * <p>
      * A <code>Rule</code> must include at least one parameter declaration and
      * one condition.
      * </p>
-     *
+     * 
      * @throws InvalidRuleException
-     *         if this rule is in any way invalid.
+     *             if this rule is in any way invalid.
      */
-    public void checkValidity() throws InvalidRuleException
-    {
-        if ( this.columns.isEmpty() )
-        {
+    public void checkValidity() throws InvalidRuleException{
+        if ( this.columns.isEmpty() ) {
             throw new NoColumnsException( this );
         }
 
-        if ( this.consequence == null )
-        {
+        if ( this.consequence == null ) {
             throw new NoConsequenceException( this );
         }
     }
 
-    public RuleSet getRuleSet()
-    {
+    public RuleSet getRuleSet(){
         return this.ruleSet;
     }
 
     /**
      * Retrieve the name of this rule.
-     *
+     * 
      * @return The name of this rule.
      */
-    public String getName()
-    {
+    public String getName(){
         return this.name;
     }
 
     /**
      * Retrieve the <code>Rule</code> salience.
-     *
+     * 
      * @return The salience.
      */
-    public int getSalience()
-    {
+    public int getSalience(){
         return this.salience;
     }
 
@@ -322,48 +305,41 @@ public class Rule
      *
      *  @param salience The salience.
      */
-    public void setSalience(int salience)
-    {
+    public void setSalience(int salience){
         this.salience = salience;
     }
 
-    public boolean getNoLoop()
-    {
+    public boolean getNoLoop(){
         return this.noLoop;
     }
 
-    public void setNoLoop(boolean noLoop)
-    {
+    public void setNoLoop(boolean noLoop){
         this.noLoop = noLoop;
     }
 
-    public boolean getAutoFocus()
-    {
+    public boolean getAutoFocus(){
         return this.autoFocus;
     }
 
-    public void setAutoFocus(boolean autoFocus)
-    {
+    public void setAutoFocus(boolean autoFocus){
         this.autoFocus = autoFocus;
     }
 
     /**
      * Add a <i>root fact object </i> parameter <code>Declaration</code> for
      * this <code>Rule</code>.
-     *
+     * 
      * @param identifier
-     *        The identifier.
+     *            The identifier.
      * @param objectType
-     *        The type.
+     *            The type.
      * @return The declaration.
      */
     public Declaration addDeclaration(String identifier,
                                       ObjectType objectType,
                                       int column,
-                                      Extractor extractor) throws InvalidRuleException
-    {
-        if ( getDeclaration( identifier ) != null )
-        {
+                                      Extractor extractor) throws InvalidRuleException{
+        if ( getDeclaration( identifier ) != null ) {
             throw new InvalidRuleException( this );
         }
 
@@ -381,83 +357,76 @@ public class Rule
 
     /**
      * Retrieve a parameter <code>Declaration</code> by identifier.
-     *
+     * 
      * @param identifier
-     *        The identifier.
-     *
+     *            The identifier.
+     * 
      * @return The declaration or <code>null</code> if no declaration matches
      *         the <code>identifier</code>.
      */
-    public Declaration getDeclaration(String identifier)
-    {
+    public Declaration getDeclaration(String identifier){
         return (Declaration) this.declarations;
     }
 
     /**
      * Retrieve the set of all <i>root fact object </i> parameter
      * <code>Declarations</code>.
-     *
+     * 
      * @return The Set of <code>Declarations</code> in order which specify the
      *         <i>root fact objects</i>.
      */
-    public Collection getDeclarations()
-    {
+    public Collection getDeclarations(){
         return Collections.unmodifiableCollection( this.declarations.values() );
     }
 
     /**
      * Add a <code>Test</code> to this rule.
-     *
+     * 
      * @param condition
-     *        The <code>Test</code> to add.
+     *            The <code>Test</code> to add.
      */
-    public void addPattern(ConditionalElement ce)
-    {
+    public void addPattern(ConditionalElement ce){
         this.headPattern.addChild( ce );
     }
 
     /**
      * Retrieve the <code>List</code> of <code>Conditions</code> for this
      * rule.
-     *
+     * 
      * @return The <code>List</code> of <code>Conditions</code>.
      */
-    public And getPatterns()
-    {
+    public And getPatterns(){
         return this.headPattern;
     }
-    
+
     /**
-     * Uses the LogicTransformer to process the Rule patters - if no ORs are used this will return an
-     * array of a single AND element. If there are Ors it will return an And element for each possible 
-     * logic branch. The processing uses as a clone of the Rule's patterns, so they are not changed.
+     * Uses the LogicTransformer to process the Rule patters - if no ORs are
+     * used this will return an array of a single AND element. If there are Ors
+     * it will return an And element for each possible logic branch. The
+     * processing uses as a clone of the Rule's patterns, so they are not
+     * changed.
      * 
      * @return
-     * @throws InvalidPatternException 
+     * @throws InvalidPatternException
      */
-    public And[] getProcessPatterns() throws InvalidPatternException
-    {
-        return LogicTransformer.getInstance( ).transform( this.headPattern );
+    public And[] getProcessPatterns() throws InvalidPatternException{
+        return LogicTransformer.getInstance().transform( this.headPattern );
     }
 
-    public int getPatternSize()
-    {
-        //return this.conditions.size();
+    public int getPatternSize(){
+        // return this.conditions.size();
         return determinePatternSize( this.headPattern );
     }
-    
-    private int determinePatternSize(ConditionalElement ce)
-    {
+
+    private int determinePatternSize(ConditionalElement ce){
         Object object = null;
         Iterator it = ce.getChildren().iterator();
         int size = 0;
-        while ( it.hasNext() )
-        {
+        while ( it.hasNext() ) {
             object = it.next();
-            if ( object instanceof ConditionalElement )
-            {
+            if ( object instanceof ConditionalElement ) {
                 size++;
-                size += determinePatternSize( ( ConditionalElement ) object );                
+                size += determinePatternSize( (ConditionalElement) object );
             }
         }
         return size;
@@ -466,58 +435,50 @@ public class Rule
     /**
      * Set the <code>Consequence</code> that is associated with the successful
      * match of this rule.
-     *
+     * 
      * @param consequence
-     *        The <code>Consequence</code> to attach to this <code>Rule</code>.
+     *            The <code>Consequence</code> to attach to this
+     *            <code>Rule</code>.
      */
-    public void setConsequence(Consequence consequence)
-    {
+    public void setConsequence(Consequence consequence){
         this.consequence = consequence;
     }
 
     /**
      * Retrieve the <code>Consequence</code> associated with this
      * <code>Rule</code>.
-     *
+     * 
      * @return The <code>Consequence</code>.
      */
-    public Consequence getConsequence()
-    {
+    public Consequence getConsequence(){
         return this.consequence;
     }
 
-    public long getLoadOrder()
-    {
-        return loadOrder;
+    public long getLoadOrder(){
+        return this.loadOrder;
     }
 
-    void setLoadOrder(long loadOrder)
-    {
+    void setLoadOrder(long loadOrder){
         this.loadOrder = loadOrder;
     }
 
-    public Importer getImporter()
-    {
+    public Importer getImporter(){
         return this.importer;
     }
 
-    public void setImporter(Importer importer)
-    {
+    public void setImporter(Importer importer){
         this.importer = importer;
     }
 
-    public void setApplicationData(Map applicationData)
-    {
+    public void setApplicationData(Map applicationData){
         this.applicationData = applicationData;
     }
 
-    public Map getApplicationData()
-    {
+    public Map getApplicationData(){
         return this.applicationData;
     }
 
-    public String getModule()
-    {
+    public String getModule(){
         return this.module;
     }
 

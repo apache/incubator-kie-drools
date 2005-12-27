@@ -44,40 +44,37 @@ import org.drools.DroolsException;
 
 /**
  * Base exception for errors during <code>Rule</code> construction.
- *
+ * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-public class RuleConstructionException extends DroolsException
-{
+public class RuleConstructionException extends DroolsException {
     /**
      * @see java.lang.Exception#Exception()
      */
-    RuleConstructionException()
-    {
+    RuleConstructionException(){
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    RuleConstructionException( String message )
-    {
+    RuleConstructionException(String message){
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    RuleConstructionException( String message, Throwable cause )
-    {
-        super( message, cause );
+    RuleConstructionException(String message,
+                              Throwable cause){
+        super( message,
+               cause );
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    RuleConstructionException( Throwable cause )
-    {
+    RuleConstructionException(Throwable cause){
         super( cause );
     }
 }

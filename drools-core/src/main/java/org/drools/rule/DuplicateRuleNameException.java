@@ -43,26 +43,25 @@ package org.drools.rule;
 /**
  * Indicates an attempt to add a <code>Rule</code> to a <code>RuleSet</code>
  * that already contains a <code>Rule</code> with the same name.
- *
+ * 
  * @see Rule
  * @see RuleSet
- *
+ * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-public class DuplicateRuleNameException extends RuleConstructionException
-{
+public class DuplicateRuleNameException extends RuleConstructionException {
     /** The rule-set. */
     private RuleSet ruleSet;
 
     /** The member rule. */
-    private Rule originalRule;
+    private Rule    originalRule;
 
     /** The conflicting rule. */
-    private Rule conflictingRule;
+    private Rule    conflictingRule;
 
     /**
      * @see java.lang.Exception#Exception()
-     *
+     * 
      * @param ruleSet
      *            The <code>RuleSet</code>.
      * @param originalRule
@@ -72,9 +71,9 @@ public class DuplicateRuleNameException extends RuleConstructionException
      */
     public DuplicateRuleNameException(RuleSet ruleSet,
                                       Rule originalRule,
-                                      Rule conflictingRule)
-    {
-        super( createMessage( ruleSet, conflictingRule ) );
+                                      Rule conflictingRule){
+        super( createMessage( ruleSet,
+                              conflictingRule ) );
         this.ruleSet = ruleSet;
         this.originalRule = originalRule;
         this.conflictingRule = conflictingRule;
@@ -82,7 +81,7 @@ public class DuplicateRuleNameException extends RuleConstructionException
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
-     *
+     * 
      * @param ruleSet
      *            The <code>RuleSet</code>.
      * @param originalRule
@@ -93,9 +92,10 @@ public class DuplicateRuleNameException extends RuleConstructionException
     public DuplicateRuleNameException(RuleSet ruleSet,
                                       Rule originalRule,
                                       Rule conflictingRule,
-                                      Throwable cause)
-    {
-        super( createMessage( ruleSet, conflictingRule ), cause );
+                                      Throwable cause){
+        super( createMessage( ruleSet,
+                              conflictingRule ),
+               cause );
         this.ruleSet = ruleSet;
         this.originalRule = originalRule;
         this.conflictingRule = conflictingRule;
@@ -103,38 +103,33 @@ public class DuplicateRuleNameException extends RuleConstructionException
 
     /**
      * Retrieve the <code>RuleSet</code>.
-     *
+     * 
      * @return The <code>RuleSet</code>.
      */
-    public RuleSet getRuleSet()
-    {
+    public RuleSet getRuleSet(){
         return this.ruleSet;
     }
 
     /**
      * Retrieve the original <code>Rule</code> in the <code>RuleSet</code>.
-     *
+     * 
      * @return The <code>Rule</code>.
      */
-    public Rule getOriginalRule()
-    {
+    public Rule getOriginalRule(){
         return this.originalRule;
     }
 
     /**
      * Retrieve the new conflicting <code>Rule</code>.
-     *
+     * 
      * @return The <code>Rule</code>.
      */
-    public Rule getConflictingRule()
-    {
+    public Rule getConflictingRule(){
         return this.conflictingRule;
     }
 
-    private static String createMessage(RuleSet ruleSet, Rule rule) {
-        return "Rule-set "
-            + ((ruleSet.getName() != null) ? ruleSet.getName() : "<no-name>")
-            + " already contains rule with name "
-            + rule.getName();
+    private static String createMessage(RuleSet ruleSet,
+                                        Rule rule){
+        return "Rule-set " + ((ruleSet.getName() != null) ? ruleSet.getName() : "<no-name>") + " already contains rule with name " + rule.getName();
     }
 }

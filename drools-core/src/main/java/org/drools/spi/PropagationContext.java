@@ -2,8 +2,7 @@ package org.drools.spi;
 
 import org.drools.rule.Rule;
 
-public interface PropagationContext
-{
+public interface PropagationContext {
 
     public static final int ASSERTION    = 0;
     public static final int RETRACTION   = 1;

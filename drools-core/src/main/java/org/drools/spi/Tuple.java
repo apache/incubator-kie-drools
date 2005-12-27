@@ -46,40 +46,39 @@ import org.drools.rule.Declaration;
 
 /**
  * A mapping of <code>Declaration</code> s to current fact values.
- *
+ * 
  * @see Declaration
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public interface Tuple
-{
+public interface Tuple {
     /**
      * Retrieve the value bound to a particular <code>Declaration</code>.
-     *
+     * 
      * @param declaration
      *            The <code>Declaration</code> key.
-     *
+     * 
      * @return The currently bound <code>Object</code> value.
      */
     Object get(int column);
-    
+
     Object get(Declaration declaration);
-    
-    Object get(FactHandle handle); 
+
+    Object get(FactHandle handle);
 
     /**
      * Retrieve the <code>FactHandle</code> for a given object.
-     *
+     * 
      * <p>
      * Within a consequence of a rule, if the desire is to retract or modify a
      * root fact this method provides a way to retrieve the
      * <code>FactHandle</code>. Facts that are <b>not </b> root fact objects
      * have no handle.
      * </p>
-     *
+     * 
      * @param object
      *            The object.
-     *
+     * 
      * @return The fact-handle or <code>null</code> if the supplied object is
      *         not a root fact object.
      */
@@ -88,7 +87,7 @@ public interface Tuple
     /**
      * Returns a reference to the <code>WorkingMemory</code> associated with
      * this object.
-     *
+     * 
      * @return WorkingMemory
      */
     WorkingMemory getWorkingMemory();

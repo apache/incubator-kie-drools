@@ -1,6 +1,5 @@
 package org.drools;
 
-public interface InitialFact
-{
+public interface InitialFact {
 
 }

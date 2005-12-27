@@ -59,8 +59,7 @@ import org.drools.spi.Tuple;
 class ReteTuple
     implements
     Tuple,
-    Serializable
-{
+    Serializable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -77,8 +76,7 @@ class ReteTuple
     // Constructors
     // ------------------------------------------------------------
     ReteTuple(ReteTuple left,
-              ReteTuple right)
-    {
+              ReteTuple right){
         this.workingMemory = left.workingMemory;
         this.key = new TupleKey( left.key,
                                  right.key );
@@ -86,16 +84,14 @@ class ReteTuple
 
     ReteTuple(int column,
               FactHandleImpl handle,
-              WorkingMemoryImpl workingMemory)
-    {
+              WorkingMemoryImpl workingMemory){
         this.workingMemory = workingMemory;
         this.key = new TupleKey( column,
                                  handle );
     }
 
-    public String toString()
-    {
-        return "{" + key + "}";
+    public String toString(){
+        return "{" + this.key + "}";
     }
 
     // ------------------------------------------------------------
@@ -107,8 +103,7 @@ class ReteTuple
      * 
      * @return The key.
      */
-    TupleKey getKey()
-    {
+    TupleKey getKey(){
         return this.key;
     }
 
@@ -121,8 +116,7 @@ class ReteTuple
      * @return <code>true</code> if this tuple depends upon the specified
      *         object, otherwise <code>false</code>.
      */
-    boolean dependsOn(FactHandle handle)
-    {
+    boolean dependsOn(FactHandle handle){
         return this.key.containsFactHandle( handle );
     }
 
@@ -131,16 +125,12 @@ class ReteTuple
     /**
      * @see Tuple
      */
-    public Object get(FactHandle handle)
-    {
-        if ( (handle != null) && this.key.containsFactHandle( handle ) )
-        {
-            try
-            {
+    public Object get(FactHandle handle){
+        if ( (handle != null) && this.key.containsFactHandle( handle ) ) {
+            try {
                 return this.workingMemory.getObject( handle );
             }
-            catch ( NoSuchFactObjectException e )
-            {
+            catch ( NoSuchFactObjectException e ) {
             }
         }
 
@@ -150,52 +140,42 @@ class ReteTuple
     /**
      * @see Tuple
      */
-    public Object get(int col)
-    {
+    public Object get(int col){
         FactHandle handle = this.key.get( col );
         return get( handle );
     }
 
-    public Object get(Declaration declaration)
-    {
-        return declaration.getValue( get( declaration.getColumn( ) ) );
-    }    
+    public Object get(Declaration declaration){
+        return declaration.getValue( get( declaration.getColumn() ) );
+    }
 
     /**
      * @see Tuple
      */
-    public FactHandle getFactHandleForObject(Object object)
-    {
-        try
-        {
+    public FactHandle getFactHandleForObject(Object object){
+        try {
             return this.workingMemory.getFactHandle( object );
         }
-        catch ( NoSuchFactHandleException e )
-        {
+        catch ( NoSuchFactHandleException e ) {
             return null;
         }
     }
 
-    public WorkingMemory getWorkingMemory()
-    {
+    public WorkingMemory getWorkingMemory(){
         return this.workingMemory;
     }
 
-    public long getMostRecentFactTimeStamp()
-    {
-        if ( this.mostRecentFact == null )
-        {
-            this.mostRecentFact = this.key.getMostRecentFact( );
+    public long getMostRecentFactTimeStamp(){
+        if ( this.mostRecentFact == null ) {
+            this.mostRecentFact = this.key.getMostRecentFact();
         }
-        return this.mostRecentFact.getRecency( );
+        return this.mostRecentFact.getRecency();
     }
 
-    public long getLeastRecentFactTimeStamp()
-    {
-        if ( this.leastRecentFact == null )
-        {
-            this.leastRecentFact = this.key.getLeastRecentFact( );
+    public long getLeastRecentFactTimeStamp(){
+        if ( this.leastRecentFact == null ) {
+            this.leastRecentFact = this.key.getLeastRecentFact();
         }
-        return this.leastRecentFact.getRecency( );
+        return this.leastRecentFact.getRecency();
     }
 }

@@ -44,29 +44,25 @@ import java.util.Collection;
 
 import junit.framework.TestCase;
 
-public class PrimitiveLongMapTest extends TestCase
-{
-    public void testValues()
-    {
-        PrimitiveLongMap map = new PrimitiveLongMap( );
+public class PrimitiveLongMapTest extends TestCase {
+    public void testValues(){
+        PrimitiveLongMap map = new PrimitiveLongMap();
         assertNotNull( "MapNotNullTest ",
                        map );
 
-        Collection values = map.values( );
+        Collection values = map.values();
         assertNotNull( "ValuesNotNullTest ",
                        values );
         assertEquals( "ValuesZeroSizeTest ",
                       0,
-                      values.size( ) );
+                      values.size() );
     }
 
-    public void testPaging()
-    {
+    public void testPaging(){
         PrimitiveLongMap map = new PrimitiveLongMap( 32,
                                                      8 );
 
-        for ( int i = 0; i < 512; i++ )
-        {
+        for ( int i = 0; i < 512; i++ ) {
             Integer value = new Integer( i );
 
             Object oldValue = map.put( i,
@@ -80,35 +76,30 @@ public class PrimitiveLongMapTest extends TestCase
 
     }
 
-    public void testGetWithNegativeKeyReturnsNull()
-    {
+    public void testGetWithNegativeKeyReturnsNull(){
         PrimitiveLongMap map = new PrimitiveLongMap( 2,
                                                      1 );
 
         assertNull( map.get( -1 ) );
     }
 
-    public void testRemoveWithNegativeReturnsNull()
-    {
+    public void testRemoveWithNegativeReturnsNull(){
         PrimitiveLongMap map = new PrimitiveLongMap( 2,
                                                      1 );
 
         assertNull( map.remove( -1 ) );
     }
 
-    public void testPutWithNegativeKeyThrowsIllegalArgumentException()
-    {
+    public void testPutWithNegativeKeyThrowsIllegalArgumentException(){
         PrimitiveLongMap map = new PrimitiveLongMap( 2,
                                                      1 );
 
-        try
-        {
+        try {
             map.put( -1,
-                     new Object( ) );
-            fail( );
+                     new Object() );
+            fail();
         }
-        catch ( IllegalArgumentException e )
-        {
+        catch ( IllegalArgumentException e ) {
             // expected
         }
     }
@@ -118,8 +109,7 @@ public class PrimitiveLongMapTest extends TestCase
      * return null; }
      * 
      */
-    public void testMaxKey()
-    {
+    public void testMaxKey(){
 
         PrimitiveLongMap map = new PrimitiveLongMap( 8,
                                                      4 );
@@ -170,51 +160,49 @@ public class PrimitiveLongMapTest extends TestCase
         assertNull( map.get( 128 ) );
     }
 
-    public void testLastIndexBoundary()
-    {
+    public void testLastIndexBoundary(){
         PrimitiveLongMap map = new PrimitiveLongMap( 32,
                                                      8 );
         map.put( 8192,
-                 new Object( ) );
+                 new Object() );
         map.remove( 8192 );
         map.put( 8192,
-                 new Object( ) );
+                 new Object() );
         map.put( 8191,
-                 new Object( ) );
+                 new Object() );
     }
-    
-    public void testSize()
-    {
+
+    public void testSize(){
         PrimitiveLongMap map = new PrimitiveLongMap( 32,
                                                      8 );
-        
-        Object object = new Object( );        
+
+        Object object = new Object();
         map.put( 231,
-                 object );        
-        Object string = new Object( );        
+                 object );
+        Object string = new Object();
         map.put( 211,
-                 string );        
+                 string );
         map.put( 99822,
-                 null );        
+                 null );
         assertEquals( 3,
                       map.size() );
-        
+
         map.put( 211,
-                 null );         
+                 null );
         map.put( 99822,
-                 string );            
+                 string );
         assertEquals( 3,
                       map.size() );
-        
-        map.remove( 211 );        
+
+        map.remove( 211 );
         assertEquals( 2,
-                      map.size() );           
-        map.remove( 99822 );        
+                      map.size() );
+        map.remove( 99822 );
         assertEquals( 1,
                       map.size() );
-        
+
         map.remove( 231 );
         assertEquals( 0,
-                      map.size() );             
+                      map.size() );
     }
 }

@@ -44,42 +44,39 @@ package org.drools;
 /**
  * Indicates an error while asserting a new <i>root fact object </i> into a
  * <code>WorkingMemory</code>.
- *
+ * 
  * @see WorkingMemory#assertObject
- *
+ * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-public class AssertionException extends FactException
-{
+public class AssertionException extends FactException {
     /**
      * @see java.lang.Exception#Exception()
      */
-    public AssertionException( )
-    {
+    public AssertionException(){
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public AssertionException( Throwable cause )
-    {
+    public AssertionException(Throwable cause){
         super( cause );
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    public AssertionException( String message, Throwable cause )
-    {
-        super( message, cause );
+    public AssertionException(String message,
+                              Throwable cause){
+        super( message,
+               cause );
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public AssertionException( String message )
-    {
+    public AssertionException(String message){
         super( message );
     }
 }

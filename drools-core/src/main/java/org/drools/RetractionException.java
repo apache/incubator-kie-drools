@@ -44,42 +44,39 @@ package org.drools;
 /**
  * Indicates an error while retracting a <i>root fact object </i> from a
  * <code>WorkingMemory</code>.
- *
+ * 
  * @see WorkingMemory#retractObject
- *
+ * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-public class RetractionException extends FactException
-{
+public class RetractionException extends FactException {
     /**
      * @see java.lang.Exception#Exception()
      */
-    public RetractionException( )
-    {
+    public RetractionException(){
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public RetractionException( String message )
-    {
+    public RetractionException(String message){
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    public RetractionException( String message, Throwable cause )
-    {
-        super( message, cause );
+    public RetractionException(String message,
+                               Throwable cause){
+        super( message,
+               cause );
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public RetractionException( Throwable cause )
-    {
+    public RetractionException(Throwable cause){
         super( cause );
     }
 }

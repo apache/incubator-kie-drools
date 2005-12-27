@@ -8,48 +8,41 @@ import org.drools.spi.Tuple;
 
 public class ReturnValueConstraint
     implements
-    Constraint
-{
+    Constraint {
     private final ReturnValueExpressionConstraint returnValueExpression;
 
     private final Declaration[]                   requiredDeclarations;
 
     private final ConstraintComparator            comparator;
-    
-    private static final Declaration[]           noRequiredDeclarations = new Declaration[] {};
+
+    private static final Declaration[]            noRequiredDeclarations = new Declaration[]{};
 
     public ReturnValueConstraint(ReturnValueExpressionConstraint expression,
                                  Declaration[] declarations,
-                                 ConstraintComparator comparator)
-    {
+                                 ConstraintComparator comparator){
         this.returnValueExpression = expression;
 
-        if ( declarations != null )
-        {
+        if ( declarations != null ) {
             this.requiredDeclarations = declarations;
         }
-        else
-        {
-            this.requiredDeclarations = noRequiredDeclarations;
+        else {
+            this.requiredDeclarations = ReturnValueConstraint.noRequiredDeclarations;
         }
 
         this.comparator = comparator;
     }
 
-    public ReturnValueExpressionConstraint getExpression()
-    {
+    public ReturnValueExpressionConstraint getExpression(){
         return this.returnValueExpression;
     }
 
-    public Declaration[] getRequiredDeclarations()
-    {
+    public Declaration[] getRequiredDeclarations(){
         return this.requiredDeclarations;
     }
 
     public boolean isAllowed(Object object,
                              FactHandle handle,
-                             Tuple tuple)
-    {
+                             Tuple tuple){
         return this.returnValueExpression.isAllowed( object,
                                                      handle,
                                                      this.requiredDeclarations,

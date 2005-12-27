@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * The RedHill Consulting, Pty. Ltd. Software License, Version 1.0
  *
@@ -29,10 +30,8 @@ import junit.framework.TestCase;
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  * @version $Id: PriorityQueueTest.java,v 1.1 2005/07/26 01:06:34 mproctor Exp $
  */
-public class PriorityQueueTest extends TestCase
-{
-    public void testIsSerializable()
-    {
-        assertTrue(Serializable.class.isAssignableFrom(PriorityQueue.class));
+public class PriorityQueueTest extends TestCase {
+    public void testIsSerializable(){
+        assertTrue( Serializable.class.isAssignableFrom( PriorityQueue.class ) );
     }
 }

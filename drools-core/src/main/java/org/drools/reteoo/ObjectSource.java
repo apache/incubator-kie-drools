@@ -42,7 +42,6 @@ package org.drools.reteoo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.AssertionException;
@@ -64,14 +63,13 @@ import org.drools.spi.PropagationContext;
  */
 abstract class ObjectSource extends BaseNode
     implements
-    Serializable
-{
+    Serializable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /** The destination for <code>Tuples</code>. */
-    private List objectSinks = new ArrayList( 1 );        
+    private List objectSinks = new ArrayList( 1 );
 
     // ------------------------------------------------------------
     // Constructors
@@ -80,8 +78,7 @@ abstract class ObjectSource extends BaseNode
     /**
      * Construct.
      */
-    ObjectSource(int id)
-    {
+    ObjectSource(int id){
         super( id );
     }
 
@@ -97,19 +94,15 @@ abstract class ObjectSource extends BaseNode
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    protected void addObjectSink(ObjectSink objectSink)
-    {
-        if ( !this.objectSinks.contains( objectSink ) )
-        {
+    protected void addObjectSink(ObjectSink objectSink){
+        if ( !this.objectSinks.contains( objectSink ) ) {
             this.objectSinks.add( objectSink );
-        }        
-    }    
-    
-    protected void removeObjectSink(ObjectSink objectSink)
-    {
+        }
+    }
+
+    protected void removeObjectSink(ObjectSink objectSink){
         this.objectSinks.remove( objectSink );
-    }      
-    
+    }
 
     /**
      * Propagate the assertion of a <code>Tuple</code> to this node's
@@ -125,25 +118,21 @@ abstract class ObjectSource extends BaseNode
      */
     protected void propagateAssertObject(Object object,
                                          FactHandleImpl handle,
-                                         PropagationContext context, 
-                                         WorkingMemoryImpl workingMemory) throws FactException
-    {
-        if ( ! this.attachingNewNode )
-        {
-            for ( int i = 0, size = this.objectSinks.size( ); i < size; i++ )
-            {
+                                         PropagationContext context,
+                                         WorkingMemoryImpl workingMemory) throws FactException{
+        if ( !this.attachingNewNode ) {
+            for ( int i = 0, size = this.objectSinks.size(); i < size; i++ ) {
                 ((ObjectSink) this.objectSinks.get( i )).assertObject( object,
                                                                        handle,
                                                                        context,
                                                                        workingMemory );
             }
         }
-        else
-        {
-            ((ObjectSink) this.objectSinks.get( this.objectSinks.size( ) - 1 )).assertObject( object,
-                                                                                              handle,
-                                                                                              context,
-                                                                                              workingMemory );            
+        else {
+            ((ObjectSink) this.objectSinks.get( this.objectSinks.size() - 1 )).assertObject( object,
+                                                                                             handle,
+                                                                                             context,
+                                                                                             workingMemory );
         }
     }
 
@@ -161,11 +150,9 @@ abstract class ObjectSource extends BaseNode
      * 
      */
     protected void propagateRetractObject(FactHandleImpl handle,
-                                          PropagationContext context, 
-                                          WorkingMemoryImpl workingMemory) throws FactException
-    {
-        for ( int i = 0, size = this.objectSinks.size( ); i < size; i++ )
-        {
+                                          PropagationContext context,
+                                          WorkingMemoryImpl workingMemory) throws FactException{
+        for ( int i = 0, size = this.objectSinks.size(); i < size; i++ ) {
             ((ObjectSink) this.objectSinks.get( i )).retractObject( handle,
                                                                     context,
                                                                     workingMemory );
@@ -183,9 +170,8 @@ abstract class ObjectSource extends BaseNode
      * @return The <code>TupleSinks</code> that receive propagated
      *         <code>Tuples</code>.
      */
-    public List getObjectSinks()
-    {
+    public List getObjectSinks(){
         return this.objectSinks;
-    }                   
-    
+    }
+
 }

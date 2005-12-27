@@ -7,11 +7,9 @@ import org.drools.RetractionException;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 
-public class TupleSourceTest extends DroolsTestCase
-{
+public class TupleSourceTest extends DroolsTestCase {
 
-    public void testObjectTupleConstructor()
-    {
+    public void testObjectTupleConstructor(){
         MockTupleSource source = new MockTupleSource( 15 );
         assertEquals( 15,
                       source.getId() );
@@ -23,8 +21,7 @@ public class TupleSourceTest extends DroolsTestCase
                       source.getAttached() );
     }
 
-    public void testAddTupleSink()
-    {
+    public void testAddTupleSink(){
         MockTupleSource source = new MockTupleSource( 15 );
         assertLength( 0,
                       source.getTupleSinks() );
@@ -38,13 +35,12 @@ public class TupleSourceTest extends DroolsTestCase
                       source.getTupleSinks() );
     }
 
-    public void testPropagateAssertTuple() throws Exception
-    {
+    public void testPropagateAssertTuple() throws Exception{
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
-                                                             null,
-                                                             null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+                                                                 null,
+                                                                 null );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
         MockTupleSource source = new MockTupleSource( 15 );
         MockTupleSink sink1 = new MockTupleSink();
@@ -116,8 +112,7 @@ public class TupleSourceTest extends DroolsTestCase
         assertSame( workingMemory,
                     list[2] );
 
-        try
-        {
+        try {
             sink1.setAssertionException( new AssertionException( "test" ) );
             source.propagateAssertTuple( tuple1,
                                          context,
@@ -125,23 +120,20 @@ public class TupleSourceTest extends DroolsTestCase
             fail( "Should have thrown 'AssertionException'" );
 
         }
-        catch ( AssertionException e )
-        {
+        catch ( AssertionException e ) {
 
         }
-        catch ( Exception e )
-        {
+        catch ( Exception e ) {
             fail( "Should have thrown 'AssertionException' and not '" + e.getClass() + "'" );
         }
     }
 
-    public void testPropagateRetractTuple() throws Exception
-    {
+    public void testPropagateRetractTuple() throws Exception{
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
-                                                             null,
-                                                             null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
+                                                                 null,
+                                                                 null );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
         MockTupleSource source = new MockTupleSource( 15 );
         MockTupleSink sink1 = new MockTupleSink();
@@ -207,8 +199,7 @@ public class TupleSourceTest extends DroolsTestCase
         assertSame( workingMemory,
                     list[2] );
 
-        try
-        {
+        try {
             sink1.setRetractionException( new RetractionException( "test" ) );
             source.propagateRetractTuples( key2,
                                            context,
@@ -216,65 +207,62 @@ public class TupleSourceTest extends DroolsTestCase
             fail( "Should have thrown 'RetractionException'" );
 
         }
-        catch ( RetractionException e )
-        {
+        catch ( RetractionException e ) {
 
         }
-        catch ( Exception e )
-        {
+        catch ( Exception e ) {
             fail( "Should have thrown 'RetractionException' and not '" + e.getClass() + "'" );
         }
     }
-    
-    public void testAttachNewNode() throws FactException
-    {        
+
+    public void testAttachNewNode() throws FactException{
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
-                                                             null,
-                                                             null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl( ) );
-        
+                                                                 null,
+                                                                 null );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+
         MockTupleSource source = new MockTupleSource( 15 );
- 
+
         // Add two Tuple Sinks
         MockTupleSink sink1 = new MockTupleSink();
         source.addTupleSink( sink1 );
 
         MockTupleSink sink2 = new MockTupleSink();
         source.addTupleSink( sink2 );
-        
-        // Only the last added TupleSink should receive facts        
+
+        // Only the last added TupleSink should receive facts
         source.attachingNewNode = true;
-        
+
         ReteTuple tuple1 = new ReteTuple( 0,
                                           new FactHandleImpl( 2 ),
-                                          workingMemory );        
-        
+                                          workingMemory );
+
         source.propagateAssertTuple( tuple1,
                                      context,
-                                     workingMemory );     
-        
+                                     workingMemory );
+
         assertLength( 0,
                       sink1.getAsserted() );
         assertLength( 1,
-                      sink2.getAsserted() ); 
+                      sink2.getAsserted() );
 
         // Now all sinks should receive values
         source.attachingNewNode = false;
-        
+
         ReteTuple tuple2 = new ReteTuple( 0,
                                           new FactHandleImpl( 3 ),
-                                          workingMemory );          
-        
+                                          workingMemory );
+
         source.propagateAssertTuple( tuple2,
                                      context,
-                                     workingMemory );     
-        
+                                     workingMemory );
+
         /* Both sinks receive one object */
         assertLength( 1,
                       sink1.getAsserted() );
         assertLength( 2,
-                      sink2.getAsserted() );         
-                       
-    }    
+                      sink2.getAsserted() );
+
+    }
 
 }

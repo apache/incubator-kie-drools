@@ -2,13 +2,11 @@ package org.drools.reteoo;
 
 import junit.framework.TestCase;
 
-public class FactHandleTest extends TestCase
-{
+public class FactHandleTest extends TestCase {
     /*
      * Class under test for void FactHandleImpl(long)
      */
-    public void testFactHandleImpllong()
-    {
+    public void testFactHandleImpllong(){
         FactHandleImpl f0 = new FactHandleImpl( 134 );
         assertEquals( 134,
                       f0.getId() );
@@ -19,8 +17,7 @@ public class FactHandleTest extends TestCase
     /*
      * Class under test for void FactHandleImpl(long, long)
      */
-    public void testFactHandleImpllonglong()
-    {
+    public void testFactHandleImpllonglong(){
         FactHandleImpl f0 = new FactHandleImpl( 134,
                                                 678 );
         assertEquals( 134,
@@ -32,8 +29,7 @@ public class FactHandleTest extends TestCase
     /*
      * Class under test for boolean equals(Object)
      */
-    public void testEqualsObject()
-    {
+    public void testEqualsObject(){
         FactHandleImpl f0 = new FactHandleImpl( 134 );
         FactHandleImpl f1 = new FactHandleImpl( 96 );
         FactHandleImpl f3 = new FactHandleImpl( 96 );
@@ -46,15 +42,13 @@ public class FactHandleTest extends TestCase
                        f3 );
     }
 
-    public void testHashCode()
-    {
+    public void testHashCode(){
         FactHandleImpl f0 = new FactHandleImpl( 234 );
         assertEquals( 234,
                       f0.hashCode() );
     }
 
-    public void testToExternalForm()
-    {
+    public void testToExternalForm(){
         FactHandleImpl f0 = new FactHandleImpl( 134 );
 
         assertEquals( "[fid:134]",
@@ -64,16 +58,14 @@ public class FactHandleTest extends TestCase
     /*
      * Class under test for String toString()
      */
-    public void testToString()
-    {
+    public void testToString(){
         FactHandleImpl f0 = new FactHandleImpl( 134 );
 
         assertEquals( "[fid:134]",
                       f0.toString() );
     }
 
-    public void testInvalidate()
-    {
+    public void testInvalidate(){
         FactHandleImpl f0 = new FactHandleImpl( 134 );
         assertEquals( 134,
                       f0.getId() );

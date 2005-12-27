@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  *  Copyright 2003-2004 The Apache Software Foundation
  *
@@ -33,11 +34,10 @@ import java.util.Iterator;
  * <code>setValue()</code>.
  * 
  * <pre>
- * MapIterator it = map.mapIterator( );
- * while ( it.hasNext( ) )
- * {
- *     Object key = it.next( );
- *     Object value = it.getValue( );
+ * MapIterator it = map.mapIterator();
+ * while ( it.hasNext() ) {
+ *     Object key = it.next();
+ *     Object value = it.getValue();
  *     it.setValue( newValue );
  * }
  * </pre>
@@ -49,8 +49,7 @@ import java.util.Iterator;
  */
 public interface MapIterator
     extends
-    Iterator
-{
+    Iterator {
 
     /**
      * Checks to see if there are more entries still to be iterated.

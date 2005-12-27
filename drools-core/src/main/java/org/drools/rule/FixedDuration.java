@@ -55,8 +55,7 @@ import org.drools.spi.Tuple;
  */
 public class FixedDuration
     implements
-    Duration
-{
+    Duration {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -71,8 +70,7 @@ public class FixedDuration
     /**
      * Construct.
      */
-    public FixedDuration()
-    {
+    public FixedDuration(){
         this.duration = 0;
     }
 
@@ -82,8 +80,7 @@ public class FixedDuration
      * @param seconds
      *            Number of seconds.
      */
-    public FixedDuration(long seconds)
-    {
+    public FixedDuration(long seconds){
         this.duration = seconds * 1000;
     }
 
@@ -97,8 +94,7 @@ public class FixedDuration
      * @param seconds
      *            Number of seconds.
      */
-    public void addSeconds(long seconds)
-    {
+    public void addSeconds(long seconds){
         this.duration += (seconds * 1000);
     }
 
@@ -108,8 +104,7 @@ public class FixedDuration
      * @param minutes
      *            Number of minutes.
      */
-    public void addMinutes(long minutes)
-    {
+    public void addMinutes(long minutes){
         this.duration += ((minutes * 60) * 1000);
     }
 
@@ -119,8 +114,7 @@ public class FixedDuration
      * @param hours
      *            Number of hours.
      */
-    public void addHours(long hours)
-    {
+    public void addHours(long hours){
         this.duration += ((hours * 60 * 60) * 1000);
     }
 
@@ -130,8 +124,7 @@ public class FixedDuration
      * @param days
      *            Number of days.
      */
-    public void addDays(long days)
-    {
+    public void addDays(long days){
         this.duration += ((days * 60 * 60 * 24) * 1000);
     }
 
@@ -141,8 +134,7 @@ public class FixedDuration
      * @param weeks
      *            Number of weeks.
      */
-    public void addWeeks(long weeks)
-    {
+    public void addWeeks(long weeks){
         this.duration += ((weeks * 60 * 60 * 24 * 7) * 1000);
     }
 
@@ -151,8 +143,7 @@ public class FixedDuration
     /**
      * @see Duration
      */
-    public long getDuration(Tuple tuple)
-    {
+    public long getDuration(Tuple tuple){
         return this.duration;
     }
 }

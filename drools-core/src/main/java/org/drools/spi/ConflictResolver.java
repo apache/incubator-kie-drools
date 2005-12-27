@@ -64,8 +64,7 @@ import java.util.Comparator;
 public interface ConflictResolver
     extends
     Serializable,
-    Comparator
-{
+    Comparator {
     int compare(Activation lhs,
                 Activation rhs);
 }

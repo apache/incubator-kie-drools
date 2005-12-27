@@ -57,8 +57,7 @@ import org.drools.spi.PropagationContext;
  */
 interface TupleSink
     extends
-    Serializable
-{
+    Serializable {
     /**
      * Assert a new <code>Tuple</code>.
      * 
@@ -71,7 +70,7 @@ interface TupleSink
      *             If an error occurs while asserting.
      */
     void assertTuple(ReteTuple tuple,
-                     PropagationContext context, 
+                     PropagationContext context,
                      WorkingMemoryImpl workingMemory) throws FactException;
 
     /**
@@ -86,7 +85,7 @@ interface TupleSink
      *             If an error occurs while retracting.
      */
     void retractTuples(TupleKey key,
-                       PropagationContext context, 
-                       WorkingMemoryImpl workingMemory) throws FactException;       
+                       PropagationContext context,
+                       WorkingMemoryImpl workingMemory) throws FactException;
 
 }

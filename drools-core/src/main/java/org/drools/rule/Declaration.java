@@ -47,36 +47,33 @@ import org.drools.spi.ObjectType;
 
 /**
  * A typed, named variable for <code>Test</code> evaluation.
- *
+ * 
  * @see ObjectType
  * @see org.drools.spi.Condition
- *
+ * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
 public class Declaration
     implements
     Serializable,
-    Comparable
-{
+    Comparable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /** The identifier for the variable. */
-    private final String identifier;
+    private final String     identifier;
 
     /** The type of the variable. */
     private final ObjectType objectType;
-    
-    private final Extractor extractor;
-    
-    private final int column;
-    
-    /** The index within a rule. */
-    private final int index;    
-    
 
+    private final Extractor  extractor;
+
+    private final int        column;
+
+    /** The index within a rule. */
+    private final int        index;
 
     // ------------------------------------------------------------
     // Constructors
@@ -84,18 +81,21 @@ public class Declaration
 
     /**
      * Construct.
-     * @param identifier The name of the variable.
-     * @param objectType The type of this variable declaration.
-     * @param order The index within a rule.
+     * 
+     * @param identifier
+     *            The name of the variable.
+     * @param objectType
+     *            The type of this variable declaration.
+     * @param order
+     *            The index within a rule.
      */
-    public Declaration( int index,
-                        String identifier,               
-                        ObjectType objectType,
-                        Extractor extractor,
-                        int column )
-    {
+    public Declaration(int index,
+                       String identifier,
+                       ObjectType objectType,
+                       Extractor extractor,
+                       int column){
         this.identifier = identifier;
-        this.objectType = objectType;   
+        this.objectType = objectType;
         this.extractor = extractor;
         this.column = column;
         this.index = index;
@@ -107,94 +107,81 @@ public class Declaration
 
     /**
      * Retrieve the variable's identifier.
-     *
+     * 
      * @return The variable's identifier.
      */
-    public String getIdentifier()
-    {
+    public String getIdentifier(){
         return this.identifier;
-    }    
-    
-    
+    }
+
     /**
      * Retrieve the <code>ObjectType</code>.
-     *
+     * 
      * @return The object-type.
      */
-    public ObjectType getObjectType()
-    {
+    public ObjectType getObjectType(){
         return this.objectType;
-    }         
-    
+    }
+
     /**
      * Returns the index of the column
+     * 
      * @return the column
      */
-    public int getColumn()
-    {
+    public int getColumn(){
         return this.column;
     }
-    
+
     /**
      * Returns the Extractor expression
+     * 
      * @return
-     */     
-    public Extractor getExtractor()
-    {
+     */
+    public Extractor getExtractor(){
         return this.extractor;
-    }    
-   
+    }
+
     /**
      * Returns the index of the Decleration
+     * 
      * @return
-     */    
-    public int getIndex()
-    {
+     */
+    public int getIndex(){
         return this.index;
     }
-    
-    public Object getValue(Object object)
-    {
+
+    public Object getValue(Object object){
         return this.extractor.getValue( object );
-    }    
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    public int compareTo( Object object )
-    {
-        return this.index - ( ( Declaration ) object ).index;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    public String toString()
-    {
+    public int compareTo(Object object){
+        return this.index - ((Declaration) object).index;
+    }
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    public String toString(){
         return "[Declaration: " + this.identifier + "]";
     }
 
-    public int hashCode()
-    {
+    public int hashCode(){
         return this.index;
     }
 
-    public boolean equals( Object object )
-    {
-        if ( this == object )
-        {
+    public boolean equals(Object object){
+        if ( this == object ) {
             return true;
         }
 
-        if ( object == null || getClass( ) != object.getClass( ) )
-        {
+        if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
 
-        Declaration other = ( Declaration ) object;
+        Declaration other = (Declaration) object;
 
-        return this.index == other.index
-               && this.identifier.equals( other.identifier )
-               && this.objectType.equals( other.objectType );
+        return this.index == other.index && this.identifier.equals( other.identifier ) && this.objectType.equals( other.objectType );
     }
-
 
 }

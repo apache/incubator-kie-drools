@@ -51,6 +51,5 @@ import java.io.Serializable;
  */
 public interface SemanticComponent
     extends
-    Serializable
-{
+    Serializable {
 }

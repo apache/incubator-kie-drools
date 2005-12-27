@@ -5,44 +5,40 @@ import junit.framework.TestCase;
 import org.drools.FactHandle;
 import org.drools.reteoo.InstrumentedReteTuple;
 import org.drools.reteoo.InstrumentedWorkingMemoryImpl;
-import org.drools.spi.PredicateExpressionConstraint;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.ConstraintComparator;
 import org.drools.spi.Extractor;
 import org.drools.spi.LiteralExpressionConstraint;
 import org.drools.spi.ObjectType;
+import org.drools.spi.PredicateExpressionConstraint;
 import org.drools.spi.ReturnValueExpressionConstraint;
 import org.drools.spi.Tuple;
 
-public class ConstraintTest extends TestCase
-{
-    public ConstraintTest()
-    {
-        super( );
+public class ConstraintTest extends TestCase {
+    public ConstraintTest(){
+        super();
     }
 
     /**
      * <pre>
-     * 
      *  
-     *         ( Cheese (type &quot;cheddar&quot;) )
      *   
-     *  
+     *          ( Cheese (type &quot;cheddar&quot;) )
+     *    
+     *   
      * </pre>
      * 
      * This is currently the same as using a ReturnValueConstraint just that it
      * doesn't need any requiredDeclarations
      */
-    public void testLiteralConstraint()
-    {
+    public void testLiteralConstraint(){
 
-        LiteralExpressionConstraint isCheddar = new LiteralExpressionConstraint( ) {
+        LiteralExpressionConstraint isCheddar = new LiteralExpressionConstraint() {
 
             public boolean isAllowed(Object object,
-                                     ConstraintComparator comparator)
-            {
+                                     ConstraintComparator comparator){
                 Cheese cheese = (Cheese) object;
-                return comparator.compare( cheese.getType( ),
+                return comparator.compare( cheese.getType(),
                                            "cheddar" );
             }
 
@@ -68,24 +64,22 @@ public class ConstraintTest extends TestCase
 
     /**
      * <pre>
-     * 
-     *      
-     *         ( Cheese ( type ?typeOfCheese ) )  
-     *   
      *  
+     *       
+     *          ( Cheese ( type ?typeOfCheese ) )  
+     *    
+     *   
      * </pre>
      */
-    public void testBoundConstraint()
-    {
-        InstrumentedWorkingMemoryImpl workingMemory = new InstrumentedWorkingMemoryImpl( );
+    public void testBoundConstraint(){
+        InstrumentedWorkingMemoryImpl workingMemory = new InstrumentedWorkingMemoryImpl();
 
         ObjectType stringObjectType = new ClassObjectType( String.class );
 
         /* Determines how the bound value is extracted from the column */
-        Extractor typeOfCheeseExtractor = new Extractor( ) {
-            public Object getValue(Object object)
-            {
-                return ((Cheese) object).getType( );
+        Extractor typeOfCheeseExtractor = new Extractor() {
+            public Object getValue(Object object){
+                return ((Cheese) object).getType();
             }
         };
 
@@ -96,7 +90,6 @@ public class ConstraintTest extends TestCase
                                                                stringObjectType,
                                                                typeOfCheeseExtractor,
                                                                0 );
-
 
         /* Create some facts */
         Cheese cheddar = new Cheese( "cheddar",
@@ -116,29 +109,27 @@ public class ConstraintTest extends TestCase
 
     /**
      * <pre>
-     * 
      *  
-     *         (Cheese (type ?typeOfCheese ) 
-     *         (Cheese (type ?typeOfCheese )
      *   
-     *  
+     *          (Cheese (type ?typeOfCheese ) 
+     *          (Cheese (type ?typeOfCheese )
+     *    
+     *   
      * </pre>
      * 
      * In this case its really up to the compiler to realise the second binding
      * really is actually a constraint, ie making sure it has the same value as
      * derived from the first column's type field.
      */
-    public void testDoubleBoundConstraint()
-    {
-        InstrumentedWorkingMemoryImpl workingMemory = new InstrumentedWorkingMemoryImpl( );
+    public void testDoubleBoundConstraint(){
+        InstrumentedWorkingMemoryImpl workingMemory = new InstrumentedWorkingMemoryImpl();
 
         ObjectType stringObjectType = new ClassObjectType( String.class );
 
         /* Determines how the bound value is extracted from the column */
-        Extractor typeOfCheeseExtractor = new Extractor( ) {
-            public Object getValue(Object object)
-            {
-                return ((Cheese) object).getType( );
+        Extractor typeOfCheeseExtractor = new Extractor() {
+            public Object getValue(Object object){
+                return ((Cheese) object).getType();
             }
         };
 
@@ -150,15 +141,14 @@ public class ConstraintTest extends TestCase
                                                                typeOfCheeseExtractor,
                                                                0 );
 
-        ReturnValueExpressionConstraint isCheddar = new ReturnValueExpressionConstraint( ) {
+        ReturnValueExpressionConstraint isCheddar = new ReturnValueExpressionConstraint() {
             public boolean isAllowed(Object object,
                                      FactHandle handle,
                                      Declaration[] declarations,
                                      Tuple tuple,
-                                     ConstraintComparator comparator)
-            {
+                                     ConstraintComparator comparator){
 
-                return comparator.compare( ((Cheese) object).getType( ),
+                return comparator.compare( ((Cheese) object).getType(),
                                            tuple.get( declarations[0] ) );
             }
 
@@ -210,25 +200,23 @@ public class ConstraintTest extends TestCase
 
     /**
      * <pre>
-     * 
      *  
-     *         (Cheese (price ?price1 ) 
-     *         (Cheese (price ?price2&amp;:(= ?price2 (* 2 ?price1) )
      *   
-     *  
+     *          (Cheese (price ?price1 ) 
+     *          (Cheese (price ?price2&amp;:(= ?price2 (* 2 ?price1) )
+     *    
+     *   
      * </pre>
      */
-    public void testPredicateExpressionConstraint()
-    {
-        InstrumentedWorkingMemoryImpl workingMemory = new InstrumentedWorkingMemoryImpl( );
+    public void testPredicateExpressionConstraint(){
+        InstrumentedWorkingMemoryImpl workingMemory = new InstrumentedWorkingMemoryImpl();
 
         ObjectType integerObjectType = new ClassObjectType( Integer.class );
 
         /* Determines how the bound value is extracted from the column */
-        Extractor priceOfCheeseExtractor = new Extractor( ) {
-            public Object getValue(Object object)
-            {
-                return new Integer( ((Cheese) object).getPrice( ) );
+        Extractor priceOfCheeseExtractor = new Extractor() {
+            public Object getValue(Object object){
+                return new Integer( ((Cheese) object).getPrice() );
             }
         };
 
@@ -248,23 +236,22 @@ public class ConstraintTest extends TestCase
                                                          priceOfCheeseExtractor,
                                                          1 );
 
-        PredicateExpressionConstraint isDoubleThePrice = new PredicateExpressionConstraint( ) {
+        PredicateExpressionConstraint isDoubleThePrice = new PredicateExpressionConstraint() {
             public boolean isAllowed(Object object,
                                      FactHandle handle,
                                      Declaration declaration, // ?price2
                                      Declaration[] declarations, // ?price1
-                                     Tuple tuple)
-            {
-                int price1 = ((Integer) tuple.get( declarations[0] )).intValue( );
-                int price2 = ((Integer) tuple.get( declaration )).intValue( );
+                                     Tuple tuple){
+                int price1 = ((Integer) tuple.get( declarations[0] )).intValue();
+                int price2 = ((Integer) tuple.get( declaration )).intValue();
                 return (price2 == (price1 * 2));
 
             }
         };
 
         PredicateConstraint constraint1 = new PredicateConstraint( isDoubleThePrice,
-                                                               price2Declaration,
-                                                               new Declaration[]{price1Declaration} );
+                                                                   price2Declaration,
+                                                                   new Declaration[]{price1Declaration} );
 
         Cheese cheddar0 = new Cheese( "cheddar",
                                       5 );
@@ -292,26 +279,24 @@ public class ConstraintTest extends TestCase
 
     /**
      * <pre>
-     * 
      *  
-     *         (Cheese (price ?price ) 
-     *         (Cheese (price =(* 2 ?price) )
-     *         (Cheese (price &gt;(* 2 ?price) )
      *   
-     *  
+     *          (Cheese (price ?price ) 
+     *          (Cheese (price =(* 2 ?price) )
+     *          (Cheese (price &gt;(* 2 ?price) )
+     *    
+     *   
      * </pre>
      */
-    public void testReturnValueConstraint()
-    {
-        InstrumentedWorkingMemoryImpl workingMemory = new InstrumentedWorkingMemoryImpl( );
+    public void testReturnValueConstraint(){
+        InstrumentedWorkingMemoryImpl workingMemory = new InstrumentedWorkingMemoryImpl();
 
         ObjectType integerObjectType = new ClassObjectType( Integer.class );
 
         /* Determines how the bound value is extracted from the column */
-        Extractor priceOfCheeseExtractor = new Extractor( ) {
-            public Object getValue(Object object)
-            {
-                return new Integer( ((Cheese) object).getPrice( ) );
+        Extractor priceOfCheeseExtractor = new Extractor() {
+            public Object getValue(Object object){
+                return new Integer( ((Cheese) object).getPrice() );
             }
         };
 
@@ -323,16 +308,15 @@ public class ConstraintTest extends TestCase
                                                         priceOfCheeseExtractor,
                                                         0 );
 
-        ReturnValueExpressionConstraint isDoubleThePrice = new ReturnValueExpressionConstraint( ) {
+        ReturnValueExpressionConstraint isDoubleThePrice = new ReturnValueExpressionConstraint() {
             public boolean isAllowed(Object object,
                                      FactHandle handle,
                                      Declaration[] declarations, // ?price
                                      Tuple tuple,
-                                     ConstraintComparator comparator)
-            {
-                int price = ((Integer) tuple.get( declarations[0] )).intValue( );
+                                     ConstraintComparator comparator){
+                int price = ((Integer) tuple.get( declarations[0] )).intValue();
 
-                return comparator.compare( new Integer( ((Cheese) object).getPrice( ) ),
+                return comparator.compare( new Integer( ((Cheese) object).getPrice() ),
                                            new Integer( 2 * price ) );
             }
         };
@@ -373,46 +357,38 @@ public class ConstraintTest extends TestCase
                                             tuple ) );
     }
 
-    static public class Cheese
-    {
+    static public class Cheese {
         private String type;
 
         private int    price;
 
         public Cheese(String type,
-                      int price)
-        {
+                      int price){
             this.type = type;
             this.price = price;
         }
 
-        public String getType()
-        {
+        public String getType(){
             return this.type;
         }
 
-        public int getPrice()
-        {
+        public int getPrice(){
             return this.price;
         }
 
-        public boolean equals(Object object)
-        {
-            return this.type.equals( ((Cheese) object).getType( ) );
+        public boolean equals(Object object){
+            return this.type.equals( ((Cheese) object).getType() );
         }
     }
 
-    static public class Person
-    {
+    static public class Person {
         private String name;
 
-        public Person(String name)
-        {
+        public Person(String name){
             this.name = name;
         }
 
-        public String getName()
-        {
+        public String getName(){
             return this.name;
         }
 

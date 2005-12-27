@@ -41,111 +41,104 @@ package org.drools.spi;
  *
  */
 
-import org.drools.spi.ObjectType;
 
 /**
  * Java class semantics <code>ObjectType</code>.
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob@werken.com </a>
- *
+ * 
  * @version $Id: ClassObjectType.java,v 1.5 2005/02/04 02:13:36 mproctor Exp $
  */
-public class ClassObjectType implements ObjectType
-{
+public class ClassObjectType
+    implements
+    ObjectType {
     // ------------------------------------------------------------
-    //     Instance members
+    // Instance members
     // ------------------------------------------------------------
 
     /** Java object class. */
     private Class objectTypeClass;
-    
 
     // ------------------------------------------------------------
-    //     Constructors
+    // Constructors
     // ------------------------------------------------------------
 
     /**
      * Construct.
-     *
-     * @param objectTypeClass Java object class.
+     * 
+     * @param objectTypeClass
+     *            Java object class.
      */
-    public ClassObjectType( Class objectTypeClass )
-    {
+    public ClassObjectType(Class objectTypeClass){
         this.objectTypeClass = objectTypeClass;
     }
 
     // ------------------------------------------------------------
-    //     Instance methods
+    // Instance methods
     // ------------------------------------------------------------
 
     /**
      * Return the Java object class.
-     *
+     * 
      * @return The Java object class.
      */
-    public Class getType()
-    {
+    public Class getType(){
         return this.objectTypeClass;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    //     org.drools.spi.ObjectType
+    // org.drools.spi.ObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.
-     *
-     * @param object The <code>Object</code> to test.
-     *
+     * 
+     * @param object
+     *            The <code>Object</code> to test.
+     * 
      * @return <code>true</code> if the <code>Object</code> matches this
      *         object type, else <code>false</code>.
      */
-    public boolean matches( Object object )
-    {
-        return getType( ).isInstance( object );
+    public boolean matches(Object object){
+        return getType().isInstance( object );
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    //     java.lang.Object
+    // java.lang.Object
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
      * Produce the hash of this object.
-     *
+     * 
      * @return The hash.
      */
-    public int hashCode()
-    {
-        return getType( ).hashCode( );
+    public int hashCode(){
+        return getType().hashCode();
     }
-    
+
     /**
      * Determine if another object is equal to this.
-     *
-     * @param object The object to test.
-     *
+     * 
+     * @param object
+     *            The object to test.
+     * 
      * @return <code>true</code> if <code>object</code> is equal to this,
      *         otherwise <code>false</code>.
      */
-    public boolean equals( Object object )
-    {
-        if ( this == object )
-        {
+    public boolean equals(Object object){
+        if ( this == object ) {
             return true;
         }
 
-        if ( object == null || getClass( ) != object.getClass( ) )
-        {
+        if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
 
-        return this.objectTypeClass == ( ( ClassObjectType ) object ).objectTypeClass;
-    }    
-        
+        return this.objectTypeClass == ((ClassObjectType) object).objectTypeClass;
+    }
 
-    public String toString()
-    {
-        return getType( ).getName( );
+    public String toString(){
+        return getType().getName();
     }
 }

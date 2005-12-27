@@ -41,42 +41,36 @@ package org.drools;
  *
  */
 
-public class MockFactHandle implements FactHandle
-{
+public class MockFactHandle
+    implements
+    FactHandle {
     private int id;
 
-    public MockFactHandle(int id)
-    {
+    public MockFactHandle(int id){
         this.id = id;
     }
 
-    public String toExternalForm()
-    {
-        return "[fact:" + id + "]";
+    public String toExternalForm(){
+        return "[fact:" + this.id + "]";
     }
 
-    public int hashCode()
-    {
-        return id;
+    public int hashCode(){
+        return this.id;
     }
 
-    public boolean equals( Object object )
-    {
-        if ( this == object )
-        {
+    public boolean equals(Object object){
+        if ( this == object ) {
             return true;
         }
 
-        if ( object == null || getClass( ) != object.getClass( ) )
-        {
+        if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
 
-        return ( ( MockFactHandle ) object ).id == this.id;
+        return ((MockFactHandle) object).id == this.id;
     }
 
-    public long getId()
-    {
+    public long getId(){
         return this.id;
     }
 }

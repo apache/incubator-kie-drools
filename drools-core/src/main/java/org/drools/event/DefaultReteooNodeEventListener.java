@@ -43,15 +43,12 @@ package org.drools.event;
 
 public class DefaultReteooNodeEventListener
     implements
-    ReteooNodeEventListener
-{
-    public DefaultReteooNodeEventListener()
-    {
+    ReteooNodeEventListener {
+    public DefaultReteooNodeEventListener(){
         // intentionally left blank
     }
 
-    public void nodeEvaluated(ReteooNodeEvent event)
-    {
+    public void nodeEvaluated(ReteooNodeEvent event){
         // intentionally left blank
     }
 

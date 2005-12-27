@@ -42,38 +42,32 @@ package org.drools.spi;
 
 /**
  * Filters activations based on an exact match of a rule name.
- *
+ * 
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
 public class RuleNameEqualsAgendaFilter
     implements
-    AgendaFilter
-{
-    private final String name;
+    AgendaFilter {
+    private final String  name;
 
     private final boolean accept;
 
-    public RuleNameEqualsAgendaFilter(String name)
-    {
-        this( name, true );
+    public RuleNameEqualsAgendaFilter(String name){
+        this( name,
+              true );
     }
 
-    public RuleNameEqualsAgendaFilter(String name, boolean accept)
-    {
+    public RuleNameEqualsAgendaFilter(String name,
+                                      boolean accept){
         this.name = name;
         this.accept = accept;
     }
 
-
-
-    public boolean accept(Activation activation)
-    {
-        if ( activation.getRule( ).getName( ).equals( this.name ) )
-        {
-            return accept;
+    public boolean accept(Activation activation){
+        if ( activation.getRule().getName().equals( this.name ) ) {
+            return this.accept;
         }
-        else
-        {
+        else {
             return false;
         }
     }

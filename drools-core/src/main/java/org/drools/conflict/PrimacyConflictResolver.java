@@ -47,21 +47,20 @@ import org.drools.spi.ConflictResolver;
 /**
  * <code>ConflictResolver</code> that uses the leastRecentFactTimeStamp of
  * tuples to resolve conflict.
- *
+ * 
  * @see #getInstance
  * @see org.drools.spi.Tuple#getLeastRecentFactTimeStamp
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
-public class PrimacyConflictResolver extends AbstractConflictResolver
-{
+public class PrimacyConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
     /** Singleton instance. */
-    private static final PrimacyConflictResolver INSTANCE = new PrimacyConflictResolver( );
+    private static final PrimacyConflictResolver INSTANCE = new PrimacyConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -69,12 +68,11 @@ public class PrimacyConflictResolver extends AbstractConflictResolver
 
     /**
      * Retrieve the singleton instance.
-     *
+     * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance( )
-    {
-        return INSTANCE;
+    public static ConflictResolver getInstance(){
+        return PrimacyConflictResolver.INSTANCE;
     }
 
     // ----------------------------------------------------------------------
@@ -84,8 +82,7 @@ public class PrimacyConflictResolver extends AbstractConflictResolver
     /**
      * Construct.
      */
-    public PrimacyConflictResolver( )
-    {
+    public PrimacyConflictResolver(){
         // intentionally left blank
     }
 
@@ -94,10 +91,8 @@ public class PrimacyConflictResolver extends AbstractConflictResolver
     /**
      * @see ConflictResolver
      */
-    public int compare( Activation lhs,
-                        Activation rhs )
-    {
-        return ( int ) (  lhs.getTuple( ).getLeastRecentFactTimeStamp( )
-                        - rhs.getTuple( ).getLeastRecentFactTimeStamp( ) );
+    public int compare(Activation lhs,
+                       Activation rhs){
+        return (int) (lhs.getTuple().getLeastRecentFactTimeStamp() - rhs.getTuple().getLeastRecentFactTimeStamp());
     }
 }

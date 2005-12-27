@@ -1,6 +1,5 @@
 package org.drools.spi;
 
-public interface ReteooNode
-{    
-    public int getId();    
+public interface ReteooNode {
+    public int getId();
 }

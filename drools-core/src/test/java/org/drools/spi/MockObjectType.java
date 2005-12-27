@@ -41,61 +41,58 @@ package org.drools.spi;
  *
  */
 
-import org.drools.spi.ObjectType;
 
 /**
  * Java class semantics <code>ObjectType</code>.
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob@werken.com </a>
- *
+ * 
  * @version $Id: MockObjectType.java,v 1.1 2005/07/26 01:06:34 mproctor Exp $
  */
-public class MockObjectType implements ObjectType
-{
+public class MockObjectType
+    implements
+    ObjectType {
     // ------------------------------------------------------------
-    //     Instance members
+    // Instance members
     // ------------------------------------------------------------
 
     /** Java object class. */
     private boolean matches;
-    
 
     // ------------------------------------------------------------
-    //     Constructors
+    // Constructors
     // ------------------------------------------------------------
 
     /**
      * Construct.
-     *
-     * @param objectTypeClass Java object class.
+     * 
+     * @param objectTypeClass
+     *            Java object class.
      */
-    public MockObjectType( boolean matches )
-    {
+    public MockObjectType(boolean matches){
         this.matches = matches;
     }
 
     // ------------------------------------------------------------
-    //     Instance methods
+    // Instance methods
     // ------------------------------------------------------------
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    //     org.drools.spi.ObjectType
+    // org.drools.spi.ObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.
-     *
-     * @param object The <code>Object</code> to test.
-     *
+     * 
+     * @param object
+     *            The <code>Object</code> to test.
+     * 
      * @return <code>true</code> if the <code>Object</code> matches this
      *         object type, else <code>false</code>.
      */
-    public boolean matches( Object object )
-    {
-        return matches;
+    public boolean matches(Object object){
+        return this.matches;
     }
 
-
- 
 }

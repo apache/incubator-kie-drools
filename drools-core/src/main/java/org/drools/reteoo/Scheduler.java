@@ -54,14 +54,13 @@ import org.drools.spi.ConsequenceException;
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-final class Scheduler
-{
+final class Scheduler {
     // ------------------------------------------------------------
     // Class members
     // ------------------------------------------------------------
 
     /** Singleton instance. */
-    private static final Scheduler INSTANCE = new Scheduler( );
+    private static final Scheduler INSTANCE = new Scheduler();
 
     // ------------------------------------------------------------
     // Class methods
@@ -72,9 +71,8 @@ final class Scheduler
      * 
      * @return The singleton instance.
      */
-    static Scheduler getInstance()
-    {
-        return INSTANCE;
+    static Scheduler getInstance(){
+        return Scheduler.INSTANCE;
     }
 
     // ------------------------------------------------------------
@@ -96,11 +94,10 @@ final class Scheduler
     /**
      * Construct.
      */
-    private Scheduler()
-    {
+    private Scheduler(){
         this.scheduler = new Timer( true );
 
-        this.tasks = new HashMap( );
+        this.tasks = new HashMap();
     }
 
     /**
@@ -112,11 +109,10 @@ final class Scheduler
      *            The working memory session.
      */
     void scheduleAgendaItem(AgendaItem item,
-                            WorkingMemoryImpl workingMemory)
-    {
-        Date now = new Date( );
+                            WorkingMemoryImpl workingMemory){
+        Date now = new Date();
 
-        Date then = new Date( now.getTime( ) + item.getRule( ).getDuration( ).getDuration( item.getTuple( ) ) );
+        Date then = new Date( now.getTime() + item.getRule().getDuration().getDuration( item.getTuple() ) );
 
         TimerTask task = new AgendaItemFireListener( item,
                                                      workingMemory );
@@ -134,29 +130,24 @@ final class Scheduler
      * @param item
      *            The item to cancle.
      */
-    void cancelAgendaItem(AgendaItem item)
-    {
+    void cancelAgendaItem(AgendaItem item){
         TimerTask task = (TimerTask) this.tasks.remove( item );
 
-        if ( task != null )
-        {
-            task.cancel( );
+        if ( task != null ) {
+            task.cancel();
         }
     }
 
-    void setAsyncExceptionHandler(AsyncExceptionHandler handler)
-    {
+    void setAsyncExceptionHandler(AsyncExceptionHandler handler){
         this.exceptionHandler = handler;
     }
 
-    AsyncExceptionHandler getAsyncExceptionHandler()
-    {
+    AsyncExceptionHandler getAsyncExceptionHandler(){
         return this.exceptionHandler;
     }
 
-    public int size()
-    {
-        return this.tasks.size( );
+    public int size(){
+        return this.tasks.size();
     }
 
     /**
@@ -165,8 +156,7 @@ final class Scheduler
      * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
      */
 
-    class AgendaItemFireListener extends TimerTask
-    {
+    class AgendaItemFireListener extends TimerTask {
         // ------------------------------------------------------------
         // Instance members
         // ------------------------------------------------------------
@@ -190,8 +180,7 @@ final class Scheduler
          *            The working memory session.
          */
         AgendaItemFireListener(AgendaItem item,
-                               WorkingMemoryImpl workingMemory)
-        {
+                               WorkingMemoryImpl workingMemory){
             this.item = item;
             this.workingMemory = workingMemory;
         }
@@ -207,18 +196,15 @@ final class Scheduler
         /**
          * Handle the firing of an alarm.
          */
-        public void run()
-        {
-            try
-            {
+        public void run(){
+            try {
                 this.item.fire( this.workingMemory );
-                Scheduler.this.tasks.remove( item );
+                Scheduler.this.tasks.remove( this.item );
             }
-            catch ( ConsequenceException e )
-            {
+            catch ( ConsequenceException e ) {
 
-                Scheduler.getInstance( ).getAsyncExceptionHandler( ).handleException( this.workingMemory,
-                                                                                      e );
+                Scheduler.getInstance().getAsyncExceptionHandler().handleException( this.workingMemory,
+                                                                                    e );
             }
         }
     }
