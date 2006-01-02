@@ -1,0 +1,29 @@
+<html>
+
+<body>
+
+<h1>Ruleset name: $ruleset-name</h1>
+
+<h2>Imports: $imports</h2>
+
+
+<h2>Application data: $application-data</h2>
+
+
+<h2>Functions: $functions</h2>
+
+
+
+
+/** rules */
+#foreach ($rule in $rule-list)
+<table>
+<tr><td>Rule Name</td><td>$rule.getName()</td><tr>
+<tr><td>Rule natural</td><td>$rule.getFragment()</td>
+<tr><td>Conditions</td><td>#foreach ($condition in $rule.getConditions()) $condition <br/>#end</td></tr>
+<tr><td>Consequences</td><td>#foreach ($consequence in $rule.getConsequences()) $consequence; #end</td></tr>
+</table>
+#end
+
+</body>
+</html>
