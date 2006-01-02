@@ -2,28 +2,39 @@ package org.drools.rule;
 
 import org.drools.FactHandle;
 import org.drools.spi.Constraint;
-import org.drools.spi.ConstraintComparator;
+import org.drools.spi.BaseEvaluator;
+import org.drools.spi.Evaluator;
+import org.drools.spi.Field;
+import org.drools.spi.FieldExtractor;
 import org.drools.spi.LiteralExpressionConstraint;
 import org.drools.spi.Tuple;
 
 public class LiteralConstraint
     implements
     Constraint {
-    private final LiteralExpressionConstraint literalExpression;
 
-    private final ConstraintComparator        comparator;
+    private final Field                field;
 
-    private static final Declaration[]        requiredDeclarations = new Declaration[]{};
+    private final FieldExtractor       extractor;
 
-    public LiteralConstraint(LiteralExpressionConstraint literalExpression,
-                             ConstraintComparator comparator){
-        this.literalExpression = literalExpression;
+    private final Evaluator            evaluator;
 
-        this.comparator = comparator;
+    private static final Declaration[] requiredDeclarations = new Declaration[]{};
+
+    public LiteralConstraint(Field field,
+                             FieldExtractor extractor,
+                             Evaluator evaluator) {
+        this.field = field;
+        this.extractor = extractor;
+        this.evaluator = evaluator;
     }
 
-    public LiteralExpressionConstraint getliteralExpression(){
-        return this.literalExpression;
+    public Evaluator getEvaluator() {
+        return this.evaluator;
+    }
+
+    public Object getField() {
+        return this.field;
     }
 
     /**
@@ -31,29 +42,12 @@ public class LiteralConstraint
      * Just returns an empty static Declaration[]
      * 
      */
-    public Declaration[] getRequiredDeclarations(){
+    public Declaration[] getRequiredDeclarations() {
         return LiteralConstraint.requiredDeclarations;
     }
 
-    public boolean isAllowed(Object object){
-        return this.literalExpression.isAllowed( object,
-                                                 this.comparator );
-    }
-
-    /**
-     * LiteralConstraints are always at the alpha node and thus never have
-     * access to the Tuple and the handle is not needed. This mehod is used
-     * purely so LiteralConstraint can be used with the same interface as the
-     * other Constraint implementations.
-     * 
-     * @param object
-     * @param handle
-     * @param tuple
-     * @return
-     */
-    public boolean isAllowed(Object object,
-                             FactHandle handle,
-                             Tuple tuple){
-        return isAllowed( object );
+    public boolean isAllowed(Object object) {
+        return evaluator.evaluate( this.field.getValue(),
+                                   this.extractor.getValue( object ) );
     }
 };

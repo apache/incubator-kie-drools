@@ -55,7 +55,7 @@ public class InvalidRuleException extends RuleConstructionException {
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public InvalidRuleException(Rule rule){
+    public InvalidRuleException(Rule rule) {
         super();
         this.rule = rule;
     }
@@ -67,7 +67,7 @@ public class InvalidRuleException extends RuleConstructionException {
      * @param rule
      */
     public InvalidRuleException(String message,
-                                Rule rule){
+                                Rule rule) {
         super( message );
         this.rule = rule;
     }
@@ -80,7 +80,7 @@ public class InvalidRuleException extends RuleConstructionException {
      */
     public InvalidRuleException(String message,
                                 Rule rule,
-                                Throwable cause){
+                                Throwable cause) {
         super( message,
                cause );
         this.rule = rule;
@@ -91,7 +91,7 @@ public class InvalidRuleException extends RuleConstructionException {
      * 
      * @return The invalid <code>Rule</code>.
      */
-    public Rule getRule(){
+    public Rule getRule() {
         return this.rule;
     }
 }

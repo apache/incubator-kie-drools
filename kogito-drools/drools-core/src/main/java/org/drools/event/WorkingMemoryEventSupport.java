@@ -57,34 +57,34 @@ public class WorkingMemoryEventSupport
     private final List          listeners = new ArrayList();
     private final WorkingMemory workingMemory;
 
-    public WorkingMemoryEventSupport(WorkingMemory workingMemory){
+    public WorkingMemoryEventSupport(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
     }
 
-    public void addEventListener(WorkingMemoryEventListener listener){
+    public void addEventListener(WorkingMemoryEventListener listener) {
         if ( !this.listeners.contains( listener ) ) {
             this.listeners.add( listener );
         }
     }
 
-    public void removeEventListener(WorkingMemoryEventListener listener){
+    public void removeEventListener(WorkingMemoryEventListener listener) {
         this.listeners.remove( listener );
     }
 
-    public List getEventListeners(){
+    public List getEventListeners() {
         return Collections.unmodifiableList( this.listeners );
     }
 
-    public int size(){
+    public int size() {
         return this.listeners.size();
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return this.listeners.isEmpty();
     }
 
     public void fireObjectAsserted(FactHandle handle,
-                                   Object object){
+                                   Object object) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -100,7 +100,7 @@ public class WorkingMemoryEventSupport
 
     public void fireObjectModified(FactHandle handle,
                                    Object oldObject,
-                                   Object object){
+                                   Object object) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -116,7 +116,7 @@ public class WorkingMemoryEventSupport
     }
 
     public void fireObjectRetracted(FactHandle handle,
-                                    Object oldObject){
+                                    Object oldObject) {
         if ( this.listeners.isEmpty() ) {
             return;
         }

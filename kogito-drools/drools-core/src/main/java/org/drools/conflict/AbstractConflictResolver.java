@@ -59,7 +59,7 @@ public abstract class AbstractConflictResolver
      * @see ConflictResolver
      */
     public final int compare(Object existing,
-                             Object adding){
+                             Object adding) {
         return compare( (Activation) existing,
                         (Activation) adding );
     }

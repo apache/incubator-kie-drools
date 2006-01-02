@@ -1,30 +1,30 @@
 package org.drools.rule;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+
 import junit.framework.TestCase;
 
-import org.drools.rule.ConstraintTest.Cheese;
+import org.drools.Cheese;
+import org.drools.spi.ClassFieldExtractor;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.Extractor;
+import org.drools.spi.FieldExtractor;
 import org.drools.spi.ObjectType;
 
 public class DeclarationTest extends TestCase {
 
-    public void testDeclaration(){
-        ObjectType stringObjectType = new ClassObjectType( String.class );
-
-        /* Determines how the bound value is extracted from the column */
-        Extractor typeOfCheeseExtractor = new Extractor() {
-            public Object getValue(Object object){
-                return ((Cheese) object).getType();
-            }
-        };
+    public void testDeclaration() throws IntrospectionException {
+        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                            getIndex( Cheese.class,
+                                                                      "type" ) );
 
         /* Bind the extractor to a decleration */
-        /* Declarations know the column they derive their value form */
+        /* Declarations know the column they derive their value from */
         Declaration declaration = new Declaration( 3,
                                                    "typeOfCheese",
-                                                   stringObjectType,
-                                                   typeOfCheeseExtractor,
+                                                   extractor,
                                                    5 );
         assertEquals( 3,
                       declaration.getIndex() );
@@ -32,10 +32,10 @@ public class DeclarationTest extends TestCase {
         assertEquals( "typeOfCheese",
                       declaration.getIdentifier() );
 
-        assertSame( stringObjectType,
-                    declaration.getObjectType() );
+        assertSame( String.class,
+                    declaration.getDeclarationType() );
 
-        assertSame( typeOfCheeseExtractor,
+        assertSame( extractor,
                     declaration.getExtractor() );
 
         assertEquals( 5,
@@ -43,23 +43,17 @@ public class DeclarationTest extends TestCase {
 
     }
 
-    public void testGetFieldValue(){
-        ObjectType stringObjectType = new ClassObjectType( String.class );
-
-        /* Determines how the bound value is extracted from the column */
-        Extractor typeOfCheeseExtractor = new Extractor() {
-            public Object getValue(Object object){
-                return ((Cheese) object).getType();
-            }
-        };
+    public void testGetFieldValue() throws IntrospectionException {
+        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                            getIndex( Cheese.class,
+                                                                      "type" ) );
 
         /* Bind the extractor to a decleration */
-        /* Declarations know the column they derive their value form */
-        Declaration typeOfCheeseDeclaration = new Declaration( 0,
-                                                               "typeOfCheese",
-                                                               stringObjectType,
-                                                               typeOfCheeseExtractor,
-                                                               0 );
+        /* Declarations know the column they derive their value from */
+        Declaration declaration = new Declaration( 3,
+                                                   "typeOfCheese",
+                                                   extractor,
+                                                   5 );
 
         /* Create some facts */
         Cheese cheddar = new Cheese( "cheddar",
@@ -67,7 +61,17 @@ public class DeclarationTest extends TestCase {
 
         /* Check we can extract Declarations correctly */
         assertEquals( "cheddar",
-                      typeOfCheeseDeclaration.getValue( cheddar ) );
+                      declaration.getValue( cheddar ) );
     }
 
+    public static int getIndex(Class clazz,
+                               String name) throws IntrospectionException {
+        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
+        for ( int i = 0; i < descriptors.length; i++ ) {
+            if ( descriptors[i].getName().equals( name ) ) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

@@ -52,22 +52,21 @@ public class RuleNameStartsWithAgendaFilter
 
     private final boolean accept;
 
-    public RuleNameStartsWithAgendaFilter(String prefix){
+    public RuleNameStartsWithAgendaFilter(String prefix) {
         this( prefix,
               true );
     }
 
     public RuleNameStartsWithAgendaFilter(String prefix,
-                                          boolean accept){
+                                          boolean accept) {
         this.prefix = prefix;
         this.accept = accept;
     }
 
-    public boolean accept(Activation activation){
+    public boolean accept(Activation activation) {
         if ( activation.getRule().getName().startsWith( this.prefix ) ) {
             return this.accept;
-        }
-        else {
+        } else {
             return false;
         }
     }

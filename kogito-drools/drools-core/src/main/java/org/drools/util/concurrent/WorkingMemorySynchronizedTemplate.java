@@ -8,18 +8,18 @@ import org.drools.WorkingMemory;
  * example:
  * 
  * <pre><code>
- *      private void updateWorkingMemory(Foo foo, Bar oldBar, Bar newBar) {
- *          new WorkingMemoryTemplate(workingMemory).execute(new WorkingMemoryCallback() {
- *              public Object doInWorkingMemory(final WorkingMemory workingMemory) {
- *                  workingMemory.assertObject(foo);
- * 
- *                  FactHandle handle = workingMemory.getFactHandle(oldBar)
- *                  workingMemory.modifyObject(handle, newBar);
- * 
- *                  workingMemory.fireAllRules();
- *              }
- *          }
- *      }
+ *         private void updateWorkingMemory(Foo foo, Bar oldBar, Bar newBar) {
+ *             new WorkingMemoryTemplate(workingMemory).execute(new WorkingMemoryCallback() {
+ *                 public Object doInWorkingMemory(final WorkingMemory workingMemory) {
+ *                     workingMemory.assertObject(foo);
+ *    
+ *                     FactHandle handle = workingMemory.getFactHandle(oldBar)
+ *                     workingMemory.modifyObject(handle, newBar);
+ *    
+ *                     workingMemory.fireAllRules();
+ *                 }
+ *             }
+ *         }
  * </code></pre>
  * 
  * @see org.drools.util.concurrent.AbstractWorkingMemorySynchronizedTemplate
@@ -33,11 +33,11 @@ public class WorkingMemorySynchronizedTemplate extends AbstractWorkingMemorySync
      * 
      * @param workingMemory
      */
-    public WorkingMemorySynchronizedTemplate(final WorkingMemory workingMemory){
+    public WorkingMemorySynchronizedTemplate(final WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
     }
 
-    protected WorkingMemory getWorkingMemory(){
+    protected WorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
 }

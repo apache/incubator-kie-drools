@@ -8,7 +8,7 @@ import junit.framework.TestCase;
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
 public class WorkingMemoryEventSupportTest extends TestCase {
-    public void testIsSerializable(){
+    public void testIsSerializable() {
         assertTrue( Serializable.class.isAssignableFrom( WorkingMemoryEventSupport.class ) );
     }
 

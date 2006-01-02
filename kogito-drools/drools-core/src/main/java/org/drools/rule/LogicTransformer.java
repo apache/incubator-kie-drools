@@ -24,7 +24,7 @@ class LogicTransformer {
 
     private static LogicTransformer INSTANCE                 = null;
 
-    static LogicTransformer getInstance(){
+    static LogicTransformer getInstance() {
         if ( LogicTransformer.INSTANCE == null ) {
             LogicTransformer.INSTANCE = new LogicTransformer();
         }
@@ -32,7 +32,7 @@ class LogicTransformer {
         return LogicTransformer.INSTANCE;
     }
 
-    LogicTransformer(){
+    LogicTransformer() {
         initialize();
     }
 
@@ -40,7 +40,7 @@ class LogicTransformer {
      * sets up the parent->child transformations map
      * 
      */
-    private void initialize(){
+    private void initialize() {
         // these pairs will have their duplciates removed
         addTransformationPair( And.class,
                                And.class );
@@ -62,7 +62,7 @@ class LogicTransformer {
     }
 
     private void addTransformationPair(Class parent,
-                                       Class child){
+                                       Class child) {
         Map map = this.duplicateTransformations;
         Set childSet = (Set) map.get( child );
         if ( childSet == null ) {
@@ -75,7 +75,7 @@ class LogicTransformer {
 
     private void addTransformationPair(Class parent,
                                        Class child,
-                                       Object method){
+                                       Object method) {
         Map map = this.orTransformations;
         Map childMap = (Map) map.get( parent );
         if ( childMap == null ) {
@@ -87,7 +87,7 @@ class LogicTransformer {
                       method );
     }
 
-    And[] transform(And and) throws InvalidPatternException{
+    And[] transform(And and) throws InvalidPatternException {
         And cloned = (And) and.clone();
 
         processTree( cloned );
@@ -110,8 +110,7 @@ class LogicTransformer {
         if ( or == null ) {
             // No or so just assign
             ands = new And[]{cloned};
-        }
-        else {
+        } else {
             ands = new And[or.getChildren().size()];
             int i = 0;
             for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
@@ -136,7 +135,7 @@ class LogicTransformer {
      * 
      * @param ce
      */
-    void processTree(ConditionalElement ce) throws InvalidPatternException{
+    void processTree(ConditionalElement ce) throws InvalidPatternException {
         List newChildren = new ArrayList();
 
         for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
@@ -176,7 +175,7 @@ class LogicTransformer {
      * @return
      */
     boolean removeDuplicate(ConditionalElement parent,
-                            ConditionalElement child){
+                            ConditionalElement child) {
         if ( this.duplicateTransformations.get( parent.getClass() ) != null ) {
             return ((HashSet) this.duplicateTransformations.get( parent.getClass() )).contains( child.getClass() );
         }
@@ -189,7 +188,7 @@ class LogicTransformer {
      * duplicate child is removed by the parent method.
      * 
      */
-    void checkForAndRemoveDuplicates(ConditionalElement parent){
+    void checkForAndRemoveDuplicates(ConditionalElement parent) {
         List newChildren = new ArrayList();
 
         for ( Iterator it = parent.getChildren().iterator(); it.hasNext(); ) {
@@ -209,7 +208,7 @@ class LogicTransformer {
     }
 
     ConditionalElement applyOrTransformation(ConditionalElement parent,
-                                             ConditionalElement child) throws InvalidPatternException{
+                                             ConditionalElement child) throws InvalidPatternException {
         OrTransformation transformation = null;
         Map map = (HashMap) this.orTransformations.get( parent.getClass() );
         if ( map != null ) {
@@ -234,31 +233,31 @@ class LogicTransformer {
      * (a||b)&&c
      * 
      * <pre>
-     *          and
-     *          / \
-     *         or  c 
-     *        /  \
-     *       a    b
+     *             and
+     *             / \
+     *            or  c 
+     *           /  \
+     *          a    b
      * </pre>
      * 
      * Should become (a&&c)||(b&&c)
      * 
      * <pre>
-     *            
-     *          or
-     *         /  \  
-     *        /    \ 
-     *       /      \ 
-     *     and      and     
-     *     / \      / \
-     *    a   c    b   c
+     *               
+     *             or
+     *            /  \  
+     *           /    \ 
+     *          /      \ 
+     *        and      and     
+     *        / \      / \
+     *       a   c    b   c
      * </pre>
      */
     class AndOrTransformation
         implements
         OrTransformation {
 
-        public ConditionalElement transform(ConditionalElement and) throws InvalidPatternException{
+        public ConditionalElement transform(ConditionalElement and) throws InvalidPatternException {
             Or or = new Or();
             determinePermutations( 0,
                                    (And) and,
@@ -279,7 +278,7 @@ class LogicTransformer {
         private void determinePermutations(int currentLevel,
                                            And and,
                                            And combination,
-                                           Or or){
+                                           Or or) {
             Object entry = and.getChildren().get( currentLevel );
             if ( entry instanceof Or ) {
                 // Only OR nodes need to be iterated over
@@ -291,8 +290,7 @@ class LogicTransformer {
                     if ( currentLevel == 0 ) {
                         // Always start with a clean combination
                         combination = new And();
-                    }
-                    else {
+                    } else {
                         temp.getChildren().addAll( combination.getChildren() );
                     }
 
@@ -304,8 +302,7 @@ class LogicTransformer {
                         for ( Iterator childIter = childAnd.getChildren().iterator(); childIter.hasNext(); ) {
                             temp.addChild( childIter.next() );
                         }
-                    }
-                    else {
+                    } else {
                         // no duplicates so just add
                         temp.addChild( object );
                     }
@@ -317,23 +314,20 @@ class LogicTransformer {
                                                and,
                                                temp,
                                                or );
-                    }
-                    else {
+                    } else {
                         // we are at the end so just attach the combination to
                         // the or node
                         or.addChild( temp );
                     }
                 }
-            }
-            else {
+            } else {
                 // Make a temp copy of combinations+new entry which will be sent
                 // forward
                 And temp = new And();
                 if ( currentLevel == 0 ) {
                     // Always start with a clean combination
                     combination = new And();
-                }
-                else {
+                } else {
                     temp.getChildren().addAll( combination.getChildren() );
                 }
                 temp.addChild( entry );
@@ -345,8 +339,7 @@ class LogicTransformer {
                                            and,
                                            temp,
                                            or );
-                }
-                else {
+                } else {
                     // we are at the end so just attach the combination to the
                     // or node
                     or.addChild( temp );
@@ -359,11 +352,11 @@ class LogicTransformer {
      * This data structure is not valid (Exists (OR (A B)
      * 
      * <pre>
-     *          Exists
-     *           | 
-     *          or   
-     *         /  \
-     *        a    b
+     *             Exists
+     *              | 
+     *             or   
+     *            /  \
+     *           a    b
      * </pre>
      * 
      */
@@ -371,7 +364,7 @@ class LogicTransformer {
         implements
         OrTransformation {
 
-        public ConditionalElement transform(ConditionalElement exist) throws InvalidPatternException{
+        public ConditionalElement transform(ConditionalElement exist) throws InvalidPatternException {
             throw new InvalidPatternException( "You cannot nest an OR within an Exists" );
         }
     }
@@ -382,11 +375,11 @@ class LogicTransformer {
      * (Not (OR (A B)
      * 
      * <pre>
-     *          Not
-     *           | 
-     *          or   
-     *         /  \
-     *        a    b
+     *             Not
+     *              | 
+     *             or   
+     *            /  \
+     *           a    b
      * </pre>
      * 
      */
@@ -394,7 +387,7 @@ class LogicTransformer {
         implements
         OrTransformation {
 
-        public ConditionalElement transform(ConditionalElement not) throws InvalidPatternException{
+        public ConditionalElement transform(ConditionalElement not) throws InvalidPatternException {
             throw new InvalidPatternException( "You cannot nest an OR within an Not" );
         }
     }

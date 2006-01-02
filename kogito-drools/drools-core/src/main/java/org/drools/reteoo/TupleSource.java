@@ -78,7 +78,7 @@ abstract class TupleSource extends BaseNode
     /**
      * Construct.
      */
-    TupleSource(int id){
+    TupleSource(int id) {
         super( id );
     }
 
@@ -94,7 +94,7 @@ abstract class TupleSource extends BaseNode
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    protected void addTupleSink(TupleSink tupleSink){
+    protected void addTupleSink(TupleSink tupleSink) {
         if ( !this.tupleSinks.contains( tupleSink ) ) {
             this.tupleSinks.add( tupleSink );
         }
@@ -108,7 +108,7 @@ abstract class TupleSource extends BaseNode
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    protected void removeTupleSink(TupleSink tupleSink){
+    protected void removeTupleSink(TupleSink tupleSink) {
         this.tupleSinks.remove( tupleSink );
     }
 
@@ -126,15 +126,14 @@ abstract class TupleSource extends BaseNode
      */
     protected void propagateAssertTuple(ReteTuple tuple,
                                         PropagationContext context,
-                                        WorkingMemoryImpl workingMemory) throws FactException{
+                                        WorkingMemoryImpl workingMemory) throws FactException {
         if ( !this.attachingNewNode ) {
             for ( int i = 0, size = this.tupleSinks.size(); i < size; i++ ) {
                 ((TupleSink) this.tupleSinks.get( i )).assertTuple( tuple,
                                                                     context,
                                                                     workingMemory );
             }
-        }
-        else {
+        } else {
             ((TupleSink) this.tupleSinks.get( this.tupleSinks.size() - 1 )).assertTuple( tuple,
                                                                                          context,
                                                                                          workingMemory );
@@ -156,7 +155,7 @@ abstract class TupleSource extends BaseNode
      */
     protected void propagateRetractTuples(TupleKey key,
                                           PropagationContext context,
-                                          WorkingMemoryImpl workingMemory) throws FactException{
+                                          WorkingMemoryImpl workingMemory) throws FactException {
         for ( int i = 0, size = this.tupleSinks.size(); i < size; i++ ) {
             ((TupleSink) this.tupleSinks.get( i )).retractTuples( key,
                                                                   context,
@@ -175,7 +174,7 @@ abstract class TupleSource extends BaseNode
      * @return The <code>TupleSinks</code> that receive propagated
      *         <code>Tuples</code>.
      */
-    public List getTupleSinks(){
+    public List getTupleSinks() {
         return this.tupleSinks;
     }
 

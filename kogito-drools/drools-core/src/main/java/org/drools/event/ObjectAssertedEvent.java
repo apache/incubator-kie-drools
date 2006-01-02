@@ -51,21 +51,21 @@ public class ObjectAssertedEvent extends WorkingMemoryEvent {
 
     public ObjectAssertedEvent(WorkingMemory workingMemory,
                                FactHandle handle,
-                               Object object){
+                               Object object) {
         super( workingMemory );
         this.handle = handle;
         this.object = object;
     }
 
-    public FactHandle getFactHandle(){
+    public FactHandle getFactHandle() {
         return this.handle;
     }
 
-    public Object getObject(){
+    public Object getObject() {
         return this.object;
     }
 
-    public String toString(){
+    public String toString() {
         return "[ObjectAsserted: handle=" + this.handle + "; object=" + this.object + "]";
     }
 }

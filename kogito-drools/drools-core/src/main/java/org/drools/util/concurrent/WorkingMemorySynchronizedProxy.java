@@ -20,13 +20,13 @@ public class WorkingMemorySynchronizedProxy {
      * @return A proxy that invokes workingMemory methods within a synchronized
      *         block.
      */
-    public static WorkingMemory createProxy(final WorkingMemory workingMemory){
+    public static WorkingMemory createProxy(final WorkingMemory workingMemory) {
         return (WorkingMemory) Proxy.newProxyInstance( WorkingMemory.class.getClassLoader(),
                                                        new Class[]{WorkingMemory.class},
                                                        new InvocationHandler() {
                                                            public Object invoke(Object proxy,
                                                                                 Method method,
-                                                                                Object[] args) throws Throwable{
+                                                                                Object[] args) throws Throwable {
                                                                synchronized ( workingMemory ) {
                                                                    return method.invoke( workingMemory,
                                                                                          args );

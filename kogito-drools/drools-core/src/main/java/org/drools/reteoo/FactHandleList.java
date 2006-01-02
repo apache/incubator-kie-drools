@@ -76,7 +76,7 @@ final class FactHandleList
     /**
      * Private constructor for creating the {@link #EMPTY_LIST}.
      */
-    private FactHandleList(){
+    private FactHandleList() {
         this.handles = new FactHandleImpl[0];
         this.hashCode = 0;
     }
@@ -90,7 +90,7 @@ final class FactHandleList
      *            The right list.
      */
     public FactHandleList(FactHandleList left,
-                          FactHandleList right){
+                          FactHandleList right) {
         this.handles = new FactHandle[Math.max( left.handles.length,
                                                 right.handles.length )];
 
@@ -123,7 +123,7 @@ final class FactHandleList
      *            The handle to use.
      */
     public FactHandleList(int index,
-                          FactHandle handle){
+                          FactHandle handle) {
         this.handles = new FactHandleImpl[index + 1];
         this.handles[index] = handle;
         this.hashCode = handle.hashCode();
@@ -138,7 +138,7 @@ final class FactHandleList
      * @throws ArrayIndexOutOfBoundsException
      *             if <code>index</code> &gt; {@link #size()}.
      */
-    public FactHandle get(int index){
+    public FactHandle get(int index) {
         return this.handles[index];
     }
 
@@ -150,7 +150,7 @@ final class FactHandleList
      * @return <code>true</code> if the handle is found; otherwise
      *         <code>false</code>
      */
-    public boolean contains(FactHandle handle){
+    public boolean contains(FactHandle handle) {
         for ( int i = this.handles.length - 1; i >= 0; i-- ) {
             if ( handle.equals( this.handles[i] ) ) {
                 return true;
@@ -168,7 +168,7 @@ final class FactHandleList
      * @return <code>true</code> if this list contains all values from the
      *         other list; <code>false</code> otherwise.
      */
-    public boolean containsAll(FactHandleList other){
+    public boolean containsAll(FactHandleList other) {
         if ( other.handles.length > this.handles.length ) {
             return false;
         }
@@ -188,15 +188,15 @@ final class FactHandleList
      * 
      * @return The length of the list, including all <code>null</code> values.
      */
-    public int size(){
+    public int size() {
         return this.handles.length;
     }
 
-    public int hashCode(){
+    public int hashCode() {
         return this.hashCode;
     }
 
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if ( this == object ) {
             return true;
         }

@@ -11,7 +11,7 @@ public class RuleBaseImplTest extends DroolsTestCase {
     WorkingMemory wm3;
     WorkingMemory wm4;
 
-    public void setUp(){
+    public void setUp() {
         this.ruleBase = new RuleBaseImpl();
 
         this.wm1 = this.ruleBase.newWorkingMemory();
@@ -20,7 +20,7 @@ public class RuleBaseImplTest extends DroolsTestCase {
         this.wm4 = this.ruleBase.newWorkingMemory();
     }
 
-    public void testKeepReference() throws Exception{
+    public void testKeepReference() throws Exception {
         /* Make sure the RuleBase is referencing all 4 Working Memories */
         assertLength( 4,
                       this.ruleBase.getWorkingMemories() );
@@ -30,7 +30,7 @@ public class RuleBaseImplTest extends DroolsTestCase {
         assertTrue( this.ruleBase.getWorkingMemories().contains( this.wm4 ) );
     }
 
-    public void testWeakReference() throws Exception{
+    public void testWeakReference() throws Exception {
         /* nulling these two so the keys should get garbage collected */
         this.wm2 = null;
         this.wm4 = null;
@@ -51,7 +51,7 @@ public class RuleBaseImplTest extends DroolsTestCase {
 
     }
 
-    public void testDispose() throws Exception{
+    public void testDispose() throws Exception {
         /*
          * Now lets test the dispose method on the WorkingMemory itself. dispose
          * doesn't need GC
@@ -64,7 +64,7 @@ public class RuleBaseImplTest extends DroolsTestCase {
         assertFalse( this.ruleBase.getWorkingMemories().contains( this.wm3 ) );
     }
 
-    public void testNoKeepReference() throws Exception{
+    public void testNoKeepReference() throws Exception {
         WorkingMemory wm5 = this.ruleBase.newWorkingMemory( false );
         WorkingMemory wm6 = this.ruleBase.newWorkingMemory( false );
         assertLength( 4,

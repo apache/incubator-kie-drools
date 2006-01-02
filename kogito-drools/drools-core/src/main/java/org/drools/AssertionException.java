@@ -53,14 +53,14 @@ public class AssertionException extends FactException {
     /**
      * @see java.lang.Exception#Exception()
      */
-    public AssertionException(){
+    public AssertionException() {
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public AssertionException(Throwable cause){
+    public AssertionException(Throwable cause) {
         super( cause );
     }
 
@@ -68,7 +68,7 @@ public class AssertionException extends FactException {
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     public AssertionException(String message,
-                              Throwable cause){
+                              Throwable cause) {
         super( message,
                cause );
     }
@@ -76,7 +76,7 @@ public class AssertionException extends FactException {
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public AssertionException(String message){
+    public AssertionException(String message) {
         super( message );
     }
 }

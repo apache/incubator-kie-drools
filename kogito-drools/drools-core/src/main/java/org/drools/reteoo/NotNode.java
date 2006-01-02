@@ -49,7 +49,7 @@ public class NotNode extends BetaNode {
             ObjectSource rightInput,
             int column,
             // BetaNodeDecorator decorator,
-            BetaNodeBinder joinNodeBinder){
+            BetaNodeBinder joinNodeBinder) {
         super( id,
                leftInput,
                rightInput,
@@ -69,7 +69,7 @@ public class NotNode extends BetaNode {
      */
     public void assertTuple(ReteTuple leftTuple,
                             PropagationContext context,
-                            WorkingMemoryImpl workingMemory) throws FactException{
+                            WorkingMemoryImpl workingMemory) throws FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( !memory.contains( leftTuple.getKey() ) ) {
             TupleMatches tupleMatches = new TupleMatches( leftTuple );
@@ -111,36 +111,55 @@ public class NotNode extends BetaNode {
     public void assertObject(Object object,
                              FactHandleImpl handle,
                              PropagationContext context,
-                             WorkingMemoryImpl workingMemory) throws FactException{
+                             WorkingMemoryImpl workingMemory) throws FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( !memory.contains( handle ) ) {
             memory.add( handle );
 
-            ReteTuple leftTuple = null;
-            TupleMatches tupleMatches = null;
-
-            TupleSet tupleSet = new TupleSet();
+            TupleSet assertTupleSet = null;           
+            List retractKeyList = null;
+            
             BetaNodeBinder binder = getJoinNodeBinder();
-            Iterator it = memory.getLeftMemory().values().iterator();
+            
 
-            while ( it.hasNext() ) {
-                tupleMatches = (TupleMatches) it.next();
-                leftTuple = tupleMatches.getTuple();
+            for ( Iterator it = memory.getLeftMemory().values().iterator(); it.hasNext(); ) {
+                TupleMatches tupleMatches = (TupleMatches) it.next();
+                int previousSize  = tupleMatches.getMatches().size();
+                ReteTuple leftTuple = tupleMatches.getTuple();
                 if ( binder.isAllowed( object,
                                        handle,
                                        leftTuple,
                                        workingMemory ) ) {
                     tupleMatches.addMatch( handle );
                 }
-
-                if ( tupleMatches.getMatches().size() == 0 ) {
-                    tupleSet.addTuple( leftTuple );
-                }
+                
+                int size = tupleMatches.getMatches().size();
+                
+                if ( size == 0 ) {
+                    if (assertTupleSet == null) {
+                        assertTupleSet = new TupleSet();
+                    }
+                    assertTupleSet.addTuple( leftTuple );
+                } else if ( previousSize == 0 && size == 1 ) {
+                    // If we previously had size of 0 and now its one we need to remove any created activations                    
+                    if (retractKeyList == null) {
+                        retractKeyList = new ArrayList();
+                    }
+                    retractKeyList.add( leftTuple.getKey() );                       
+                }                
             }
 
-            propagateAssertTuples( tupleSet,
-                                   context,
-                                   workingMemory );
+            if (assertTupleSet != null) {
+                propagateAssertTuples( assertTupleSet,
+                                       context,
+                                       workingMemory );
+            }
+
+            if (retractKeyList != null) {
+                propagateRetractTuples( retractKeyList,
+                                        context,
+                                        workingMemory );
+            }            
         }
     }
 
@@ -156,14 +175,14 @@ public class NotNode extends BetaNode {
      */
     public void retractTuples(TupleKey leftKey,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException{
+                              WorkingMemoryImpl workingMemory) throws FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         if ( memory.contains( leftKey ) ) {
             List keys = new ArrayList( 1 );
             keys.add( leftKey );
             memory.remove( leftKey );
-            propagateRectractTuples( keys,
+            propagateRetractTuples( keys,
                                      context,
                                      workingMemory );
         }
@@ -181,7 +200,7 @@ public class NotNode extends BetaNode {
     public void retractObject(FactHandleImpl handle,
                               PropagationContext context,
                               WorkingMemoryImpl workingMemory) throws AssertionException,
-                                                              FactException{
+                                                              FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         if ( memory.contains( handle ) ) {

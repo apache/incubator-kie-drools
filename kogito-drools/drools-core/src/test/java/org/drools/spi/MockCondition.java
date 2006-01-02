@@ -12,23 +12,23 @@ public class MockCondition
     private boolean       testException;
 
     public MockCondition(Declaration[] declarations,
-                         boolean isAllowed){
+                         boolean isAllowed) {
         this.declarations = declarations;
         this.isAllowed = isAllowed;
     }
 
-    public Declaration[] getRequiredTupleMembers(){
+    public Declaration[] getRequiredTupleMembers() {
         return this.declarations;
     }
 
-    public boolean isAllowed(Tuple tuple) throws TestException{
+    public boolean isAllowed(Tuple tuple) throws TestException {
         if ( this.testException ) {
             throw new TestException();
         }
         return this.isAllowed;
     }
 
-    public void setTestException(boolean testException){
+    public void setTestException(boolean testException) {
         this.testException = testException;
     }
 

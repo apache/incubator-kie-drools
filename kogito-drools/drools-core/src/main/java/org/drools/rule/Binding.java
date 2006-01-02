@@ -8,7 +8,7 @@ public abstract class Binding {
     private final ObjectType objectType;
 
     public Binding(String identifier,
-                   ObjectType objectType){
+                   ObjectType objectType) {
         this.identifier = identifier;
         this.objectType = objectType;
     }
@@ -16,14 +16,14 @@ public abstract class Binding {
     /**
      * @return Returns the identifier.
      */
-    public String getIdentifier(){
+    public String getIdentifier() {
         return this.identifier;
     }
 
     /**
      * @return Returns the objectType.
      */
-    public ObjectType getObjectType(){
+    public ObjectType getObjectType() {
         return this.objectType;
     }
 

@@ -59,7 +59,7 @@ import org.drools.spi.Tuple;
  */
 
 public class SchedulerTest extends DroolsTestCase {
-    public void testScheduledActivation() throws Exception{
+    public void testScheduledActivation() throws Exception {
         RuleBase ruleBase = new RuleBaseImpl();
 
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
@@ -70,14 +70,14 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 data.add( "tested" );
             }
         } );
 
         /* 1/10th of a second */
         Duration duration = new Duration() {
-            public long getDuration(Tuple tuple){
+            public long getDuration(Tuple tuple) {
                 return 100;
             }
 
@@ -108,7 +108,7 @@ public class SchedulerTest extends DroolsTestCase {
                       data.size() );
     }
 
-    public void testDoLoopScheduledActivation() throws Exception{
+    public void testDoLoopScheduledActivation() throws Exception {
         RuleBase ruleBase = new RuleBaseImpl();
 
         final WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
@@ -120,7 +120,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         /* 1/10th of a second */
         Duration duration = new Duration() {
-            public long getDuration(Tuple tuple){
+            public long getDuration(Tuple tuple) {
                 return 100;
             }
 
@@ -130,7 +130,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 /* on first invoke add another one to the agenda */
                 if ( data.size() < 3 ) {
                     PropagationContext context2 = new PropagationContextImpl( 0,
@@ -177,7 +177,7 @@ public class SchedulerTest extends DroolsTestCase {
 
     }
 
-    public void testNoLoopScheduledActivation() throws Exception{
+    public void testNoLoopScheduledActivation() throws Exception {
         RuleBase ruleBase = new RuleBaseImpl();
 
         final WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
@@ -189,7 +189,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         /* 1/10th of a second */
         Duration duration = new Duration() {
-            public long getDuration(Tuple tuple){
+            public long getDuration(Tuple tuple) {
                 return 100;
             }
 
@@ -200,7 +200,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 /* on first invoke add another one to the agenda */
                 if ( data.size() < 5 ) {
                     PropagationContext context2 = new PropagationContextImpl( 0,
@@ -247,7 +247,7 @@ public class SchedulerTest extends DroolsTestCase {
 
     }
 
-    public void testExceptionHandler() throws Exception{
+    public void testExceptionHandler() throws Exception {
         RuleBase ruleBase = new RuleBaseImpl();
 
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
@@ -258,7 +258,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation) throws ConsequenceException{
+            public void invoke(Activation activation) throws ConsequenceException {
                 throw new ConsequenceException( "not enough cheese",
                                                 rule );
             }
@@ -266,7 +266,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         /* 1/10th of a second */
         Duration duration = new Duration() {
-            public long getDuration(Tuple tuple){
+            public long getDuration(Tuple tuple) {
                 return 100;
             }
 
@@ -288,7 +288,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         AsyncExceptionHandler handler = new AsyncExceptionHandler() {
             public void handleException(WorkingMemory workingMemory,
-                                        ConsequenceException exception){
+                                        ConsequenceException exception) {
                 data.add( "tested" );
             }
         };

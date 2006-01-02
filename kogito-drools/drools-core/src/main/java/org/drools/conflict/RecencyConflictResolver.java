@@ -71,7 +71,7 @@ public class RecencyConflictResolver extends AbstractConflictResolver {
      * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance(){
+    public static ConflictResolver getInstance() {
         return RecencyConflictResolver.INSTANCE;
     }
 
@@ -82,7 +82,7 @@ public class RecencyConflictResolver extends AbstractConflictResolver {
     /**
      * Construct.
      */
-    public RecencyConflictResolver(){
+    public RecencyConflictResolver() {
         // intentionally left blank
     }
 
@@ -92,7 +92,7 @@ public class RecencyConflictResolver extends AbstractConflictResolver {
      * @see ConflictResolver
      */
     public int compare(Activation lhs,
-                       Activation rhs){
+                       Activation rhs) {
         return (int) (lhs.getTuple().getMostRecentFactTimeStamp() - rhs.getTuple().getMostRecentFactTimeStamp());
     }
 }

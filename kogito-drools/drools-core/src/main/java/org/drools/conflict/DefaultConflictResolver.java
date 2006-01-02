@@ -79,14 +79,14 @@ public class DefaultConflictResolver extends CompositeConflictResolver {
      * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance(){
+    public static ConflictResolver getInstance() {
         return DefaultConflictResolver.INSTANCE;
     }
 
     /**
      * Setup a default ConflictResolver configuration
      */
-    public DefaultConflictResolver(){
+    public DefaultConflictResolver() {
         super( DefaultConflictResolver.CONFLICT_RESOLVERS );
     }
 }

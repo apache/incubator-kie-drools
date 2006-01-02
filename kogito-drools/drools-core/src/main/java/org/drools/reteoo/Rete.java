@@ -50,6 +50,9 @@ import org.drools.FactException;
 import org.drools.rule.And;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
+import org.drools.spi.AssertedObjectTransformer;
+import org.drools.spi.ClassObjectTypeResolver;
+import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
@@ -73,6 +76,8 @@ class Rete extends ObjectSource
 
     /** The set of <code>ObjectTypeNodes</code>. */
     private final Map objectTypeNodes = new HashMap();
+    
+    private final ObjectTypeResolver resolver;   
 
     // ------------------------------------------------------------
     // Constructors
@@ -81,9 +86,15 @@ class Rete extends ObjectSource
     /**
      * Construct.
      */
-    public Rete(){
-        super( 0 );
+    public Rete() {
+        this( null );
     }
+    
+    public Rete(ObjectTypeResolver resolver) {
+        super( 0 );
+        this.resolver = resolver;
+    }
+    
 
     // ------------------------------------------------------------
     // Instance methods
@@ -106,12 +117,14 @@ class Rete extends ObjectSource
     public void assertObject(Object object,
                              FactHandleImpl handle,
                              PropagationContext context,
-                             WorkingMemoryImpl workingMemory) throws FactException{
-        for ( Iterator nodeIter = getObjectTypeNodeIterator(); nodeIter.hasNext(); ) {
+                             WorkingMemoryImpl workingMemory) throws FactException {
+        Iterator nodeIter = getObjectTypeNodeIterator();
+
+        while ( nodeIter.hasNext() ) {
             ((ObjectTypeNode) nodeIter.next()).assertObject( object,
                                                              handle,
                                                              context,
-                                                             workingMemory );
+                                                             workingMemory );   
         }
     }
 
@@ -129,7 +142,7 @@ class Rete extends ObjectSource
      */
     public void retractObject(FactHandleImpl handle,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException{
+                              WorkingMemoryImpl workingMemory) throws FactException {
         Iterator nodeIter = getObjectTypeNodeIterator();
 
         while ( nodeIter.hasNext() ) {
@@ -144,7 +157,7 @@ class Rete extends ObjectSource
      * 
      * @return The <code>Set</code> of <code>ObjectTypeNodes</code>.
      */
-    Collection getObjectTypeNodes(){
+    Collection getObjectTypeNodes() {
         return this.objectTypeNodes.values();
     }
 
@@ -154,7 +167,7 @@ class Rete extends ObjectSource
      * 
      * @return An <code>Iterator</code> over <code>ObjectTypeNodes</code>.
      */
-    Iterator getObjectTypeNodeIterator(){
+    Iterator getObjectTypeNodeIterator() {
         return this.objectTypeNodes.values().iterator();
     }
 
@@ -168,7 +181,7 @@ class Rete extends ObjectSource
      * @return The matching <code>ObjectTypeNode</code> if one has already
      *         been created, else <code>null</code>.
      */
-    ObjectTypeNode getObjectTypeNode(ObjectType objectType){
+    ObjectTypeNode getObjectTypeNode(ObjectType objectType) {
         return (ObjectTypeNode) this.objectTypeNodes.get( objectType );
     }
 
@@ -178,7 +191,7 @@ class Rete extends ObjectSource
      * @param node
      *            The node to add.
      */
-    private void addObjectTypeNode(ObjectTypeNode node){
+    private void addObjectTypeNode(ObjectTypeNode node) {
         this.objectTypeNodes.put( node.getObjectType(),
                                   node );
     }
@@ -191,25 +204,25 @@ class Rete extends ObjectSource
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    protected void addObjectSink(ObjectSink objectSink){
+    protected void addObjectSink(ObjectSink objectSink) {
         addObjectTypeNode( (ObjectTypeNode) objectSink );
     }
 
-    public void attach(){
+    public void attach() {
         // do nothing this is the root node
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException{
+                              PropagationContext context) throws FactException {
         // do nothing this has no data to propagate
     }
 
-    void addRule(Rule rule) throws InvalidPatternException{
+    void addRule(Rule rule) throws InvalidPatternException {
         // And is the implicit head node
         And[] rules = rule.getProcessPatterns();
     }
 
-    public void remove(){
+    public void remove() {
         // do nothing the rete node is root and cannot be removed
 
     }

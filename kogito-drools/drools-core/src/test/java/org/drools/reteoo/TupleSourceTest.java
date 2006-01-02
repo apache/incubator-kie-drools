@@ -9,7 +9,7 @@ import org.drools.spi.PropagationContext;
 
 public class TupleSourceTest extends DroolsTestCase {
 
-    public void testObjectTupleConstructor(){
+    public void testObjectTupleConstructor() {
         MockTupleSource source = new MockTupleSource( 15 );
         assertEquals( 15,
                       source.getId() );
@@ -21,7 +21,7 @@ public class TupleSourceTest extends DroolsTestCase {
                       source.getAttached() );
     }
 
-    public void testAddTupleSink(){
+    public void testAddTupleSink() {
         MockTupleSource source = new MockTupleSource( 15 );
         assertLength( 0,
                       source.getTupleSinks() );
@@ -35,7 +35,7 @@ public class TupleSourceTest extends DroolsTestCase {
                       source.getTupleSinks() );
     }
 
-    public void testPropagateAssertTuple() throws Exception{
+    public void testPropagateAssertTuple() throws Exception {
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
                                                                  null,
@@ -119,16 +119,14 @@ public class TupleSourceTest extends DroolsTestCase {
                                          workingMemory );
             fail( "Should have thrown 'AssertionException'" );
 
-        }
-        catch ( AssertionException e ) {
+        } catch ( AssertionException e ) {
 
-        }
-        catch ( Exception e ) {
+        } catch ( Exception e ) {
             fail( "Should have thrown 'AssertionException' and not '" + e.getClass() + "'" );
         }
     }
 
-    public void testPropagateRetractTuple() throws Exception{
+    public void testPropagateRetractTuple() throws Exception {
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
                                                                  null,
@@ -206,16 +204,14 @@ public class TupleSourceTest extends DroolsTestCase {
                                            workingMemory );
             fail( "Should have thrown 'RetractionException'" );
 
-        }
-        catch ( RetractionException e ) {
+        } catch ( RetractionException e ) {
 
-        }
-        catch ( Exception e ) {
+        } catch ( Exception e ) {
             fail( "Should have thrown 'RetractionException' and not '" + e.getClass() + "'" );
         }
     }
 
-    public void testAttachNewNode() throws FactException{
+    public void testAttachNewNode() throws FactException {
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );

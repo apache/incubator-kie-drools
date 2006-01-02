@@ -7,7 +7,7 @@ import org.drools.spi.PropagationContext;
 
 public class BaseNodeTest extends TestCase {
 
-    public void testBaseNode(){
+    public void testBaseNode() {
         MockBaseNode node = new MockBaseNode( 10 );
         assertEquals( 10,
                       node.getId() );
@@ -18,27 +18,27 @@ public class BaseNodeTest extends TestCase {
     }
 
     class MockBaseNode extends BaseNode {
-        public MockBaseNode(int id){
+        public MockBaseNode(int id) {
             super( id );
         }
 
-        public void ruleAttached(){
+        public void ruleAttached() {
             // TODO Auto-generated method stub
 
         }
 
-        public void attach(){
+        public void attach() {
             // TODO Auto-generated method stub
 
         }
 
-        public void remove(){
+        public void remove() {
             // TODO Auto-generated method stub
 
         }
 
         public void updateNewNode(WorkingMemoryImpl workingMemory,
-                                  PropagationContext context) throws FactException{
+                                  PropagationContext context) throws FactException {
             // TODO Auto-generated method stub
 
         }

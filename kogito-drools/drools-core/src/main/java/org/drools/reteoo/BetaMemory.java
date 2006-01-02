@@ -82,7 +82,7 @@ class BetaMemory
      * @param tupleDeclarations
      * @param commonDeclarations
      */
-    BetaMemory(){
+    BetaMemory() {
         // this.column = column;
         // this.betaNode = betaNode;
         this.leftMemory = new HashMap();
@@ -97,7 +97,7 @@ class BetaMemory
     /**
      * This method is here to facilitate unit testing.
      */
-    TupleMatches getBetaMemory(TupleKey key){
+    TupleMatches getBetaMemory(TupleKey key) {
         return (TupleMatches) this.leftMemory.get( key );
     }
 
@@ -107,45 +107,45 @@ class BetaMemory
      * int getColumn() { return this.column; }
      */
 
-    Map getLeftMemory(){
+    Map getLeftMemory() {
         return this.leftMemory;
     }
 
-    Set getRightMemory(){
+    Set getRightMemory() {
         return this.rightMemory;
     }
 
-    boolean contains(TupleKey key){
+    boolean contains(TupleKey key) {
         return this.leftMemory.containsKey( key );
     }
 
-    boolean contains(FactHandleImpl handle){
+    boolean contains(FactHandleImpl handle) {
         return this.rightMemory.contains( handle );
     }
 
     void put(TupleKey key,
-             TupleMatches tupleMatches){
+             TupleMatches tupleMatches) {
         this.leftMemory.put( key,
                              tupleMatches );
     }
 
-    Object remove(TupleKey key){
+    Object remove(TupleKey key) {
         return this.leftMemory.remove( key );
     }
 
-    void add(FactHandleImpl handle){
+    void add(FactHandleImpl handle) {
         this.rightMemory.add( handle );
     }
 
-    boolean remove(FactHandleImpl handle){
+    boolean remove(FactHandleImpl handle) {
         return this.rightMemory.remove( handle );
     }
 
-    int leftMemorySize(){
+    int leftMemorySize() {
         return this.leftMemory.size();
     }
 
-    int rightMemorySize(){
+    int rightMemorySize() {
         return this.rightMemory.size();
     }
 
@@ -158,7 +158,7 @@ class BetaMemory
      * 
      * @return The debug string.
      */
-    public String toString(){
+    public String toString() {
         return "[JoinMemory \n\tleft=" + this.leftMemory + "\n\tright=" + this.rightMemory + "]";
     }
 

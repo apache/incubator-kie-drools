@@ -58,8 +58,10 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Rule;
+import org.drools.spi.BetaNodeConstraint;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.Constraint;
+import org.drools.spi.ObjectTypeResolver;
 
 /**
  * Builds the Rete-OO network for a <code>RuleSet</code>.
@@ -78,26 +80,26 @@ class Builder {
     // ------------------------------------------------------------
 
     /** The RuleBase */
-    private RuleBaseImpl ruleBase;
+    private final RuleBaseImpl ruleBase;
 
+    private final ObjectTypeResolver resolver;
+    
     /** Rete network to build against. */
-    private Rete         rete;
+    private final Rete         rete;
 
     /** Rule-sets added. */
-    private List         ruleSets;
+    private final List         ruleSets;
 
     /** Nodes that have been attached. */
-    private Map          attachedNodes;
+    private final Map          attachedNodes;
 
-    private Map          applicationData;
+    private final Map          applicationData;
 
     private TupleSource  tupleSource;
 
     private ObjectSource objectSource;
 
     private Map          declarations;
-
-    private List         propagationPoints;
 
     private int          id;
 
@@ -109,8 +111,10 @@ class Builder {
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    Builder(RuleBaseImpl ruleBase){
+    Builder(RuleBaseImpl ruleBase, ObjectTypeResolver resolver) {
+        this.ruleBase = ruleBase;
         this.rete = new Rete();
+        this.resolver = resolver;
         this.ruleSets = new ArrayList();
         this.attachedNodes = new HashMap();
         this.applicationData = new HashMap();
@@ -132,7 +136,7 @@ class Builder {
      *             the <code>Rule</code>.
      * @throws InvalidPatternException
      */
-    void addRule(Rule rule) throws InvalidPatternException{
+    void addRule(Rule rule) throws InvalidPatternException {
         And[] and = rule.getProcessPatterns();
         for ( int i = 0; i < and.length; i++ ) {
             addRule( and[i],
@@ -143,7 +147,7 @@ class Builder {
     }
 
     private void addRule(And and,
-                         Rule rule){
+                         Rule rule) {
         for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
             Object object = it.next();
 
@@ -170,8 +174,7 @@ class Builder {
                     // reference.
                     this.objectSource = null;
                 }
-            }
-            else {
+            } else {
                 // If its not a Column then it can either be a Not or an Exists
                 ConditionalElement ce = (ConditionalElement) object;
                 while ( !(ce.getChildren().get( 0 ) instanceof Column) ) {
@@ -201,15 +204,13 @@ class Builder {
                            this.objectSource,
                            binder,
                            column );
-            }
-            else if ( object instanceof Exists ) {
+            } else if ( object instanceof Exists ) {
                 attachExists( this.tupleSource,
                               (Exists) object,
                               this.objectSource,
                               binder,
                               column );
-            }
-            else if ( this.objectSource != null ) {
+            } else if ( this.objectSource != null ) {
                 this.tupleSource = attachNode( new JoinNode( this.id++,
                                                              this.tupleSource,
                                                              this.objectSource,
@@ -220,7 +221,7 @@ class Builder {
     }
 
     private BetaNodeBinder attachColumn(Column column,
-                                        ConditionalElement parent){
+                                        ConditionalElement parent) {
         addDeclarations( column );
 
         List predicates = attachAlphaNodes( column );
@@ -228,16 +229,15 @@ class Builder {
         BetaNodeBinder binder;
 
         if ( !predicates.isEmpty() ) {
-            binder = new BetaNodeBinder( (Constraint[]) predicates.toArray( new Constraint[predicates.size()] ) );
-        }
-        else {
+            binder = new BetaNodeBinder( (BetaNodeConstraint[]) predicates.toArray( new BetaNodeConstraint[predicates.size()] ) );
+        } else {
             binder = new BetaNodeBinder();
         }
 
         return binder;
     }
 
-    private void addDeclarations(Column column){
+    private void addDeclarations(Column column) {
         for ( Iterator it = column.getDeclarations().iterator(); it.hasNext(); ) {
             Declaration declaration = (Declaration) it.next();
             this.declarations.put( declaration.getIdentifier(),
@@ -251,7 +251,7 @@ class Builder {
         }
     }
 
-    public List attachAlphaNodes(Column column){
+    public List attachAlphaNodes(Column column) {
         List constraints = column.getConstraints();
 
         ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
@@ -264,11 +264,10 @@ class Builder {
             Constraint constraint = (Constraint) it.next();
             if ( constraint instanceof LiteralConstraint ) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
-                                                               constraint,
+                                                               (LiteralConstraint) constraint,
                                                                true,
                                                                objectSource ) );
-            }
-            else {
+            } else {
                 predicateConstraints.add( constraint );
             }
         }
@@ -280,7 +279,7 @@ class Builder {
                            Not not,
                            ObjectSource ObjectSource,
                            BetaNodeBinder binder,
-                           Column column){
+                           Column column) {
         NotNode notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                              tupleSource,
                                                              ObjectSource,
@@ -296,8 +295,7 @@ class Builder {
                        adapter,
                        new BetaNodeBinder(),
                        column );
-        }
-        else if ( not.getChild() instanceof Exists ) {
+        } else if ( not.getChild() instanceof Exists ) {
             RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
                                                                                                            column.getIndex(),
                                                                                                            notNode ) );
@@ -306,8 +304,7 @@ class Builder {
                           adapter,
                           new BetaNodeBinder(),
                           column );
-        }
-        else {
+        } else {
             this.tupleSource = notNode;
         }
     }
@@ -316,7 +313,7 @@ class Builder {
                               Exists exists,
                               ObjectSource ObjectSource,
                               BetaNodeBinder binder,
-                              Column column){
+                              Column column) {
         NotNode notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                              tupleSource,
                                                              ObjectSource,
@@ -340,8 +337,7 @@ class Builder {
                        adapter,
                        new BetaNodeBinder(),
                        column );
-        }
-        else if ( exists.getChild() instanceof Exists ) {
+        } else if ( exists.getChild() instanceof Exists ) {
             adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
                                                                                      column.getIndex(),
                                                                                      notNode ) );
@@ -350,8 +346,7 @@ class Builder {
                           adapter,
                           new BetaNodeBinder(),
                           column );
-        }
-        else {
+        } else {
             this.tupleSource = notNode;
         }
     }
@@ -365,7 +360,7 @@ class Builder {
      * @param leafNodes
      *            The list to which the newly added node will be added.
      */
-    private TupleSource attachNode(TupleSource candidate){
+    private TupleSource attachNode(TupleSource candidate) {
         TupleSource node = (TupleSource) this.attachedNodes.get( candidate );
 
         if ( node == null ) {
@@ -375,8 +370,7 @@ class Builder {
                                     candidate );
 
             node = candidate;
-        }
-        else {
+        } else {
             node.addShare();
             this.id--;
         }
@@ -384,7 +378,7 @@ class Builder {
         return node;
     }
 
-    private ObjectSource attachNode(ObjectSource candidate){
+    private ObjectSource attachNode(ObjectSource candidate) {
         ObjectSource node = (ObjectSource) this.attachedNodes.get( candidate );
 
         if ( node == null ) {
@@ -394,8 +388,7 @@ class Builder {
                                     candidate );
 
             node = candidate;
-        }
-        else {
+        } else {
             this.id--;
         }
 

@@ -58,34 +58,34 @@ public class AgendaEventSupport
     private final List          listeners = new ArrayList();
     private final WorkingMemory workingMemory;
 
-    public AgendaEventSupport(WorkingMemory workingMemory){
+    public AgendaEventSupport(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
     }
 
-    public void addEventListener(AgendaEventListener listener){
+    public void addEventListener(AgendaEventListener listener) {
         if ( !this.listeners.contains( listener ) ) {
             this.listeners.add( listener );
         }
     }
 
-    public void removeEventListener(AgendaEventListener listener){
+    public void removeEventListener(AgendaEventListener listener) {
         this.listeners.remove( listener );
     }
 
-    public List getEventListeners(){
+    public List getEventListeners() {
         return Collections.unmodifiableList( this.listeners );
     }
 
-    public int size(){
+    public int size() {
         return this.listeners.size();
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return this.listeners.isEmpty();
     }
 
     public void fireActivationCreated(Rule rule,
-                                      Tuple tuple){
+                                      Tuple tuple) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -100,7 +100,7 @@ public class AgendaEventSupport
     }
 
     public void fireActivationCancelled(Rule rule,
-                                        Tuple tuple){
+                                        Tuple tuple) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -115,7 +115,7 @@ public class AgendaEventSupport
     }
 
     public void fireActivationFired(Rule rule,
-                                    Tuple tuple){
+                                    Tuple tuple) {
         if ( this.listeners.isEmpty() ) {
             return;
         }

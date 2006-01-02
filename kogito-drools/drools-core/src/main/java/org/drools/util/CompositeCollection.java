@@ -49,7 +49,7 @@ public class CompositeCollection
     /**
      * Create an empty CompositeCollection.
      */
-    public CompositeCollection(){
+    public CompositeCollection() {
         super();
         this.all = new Collection[0];
     }
@@ -60,7 +60,7 @@ public class CompositeCollection
      * @param coll
      *            a collection to decorate
      */
-    public CompositeCollection(Collection coll){
+    public CompositeCollection(Collection coll) {
         this();
         this.addComposited( coll );
     }
@@ -72,7 +72,7 @@ public class CompositeCollection
      * @param colls
      *            an array of collections to decorate
      */
-    public CompositeCollection(Collection[] colls){
+    public CompositeCollection(Collection[] colls) {
         this();
         this.addComposited( colls );
     }
@@ -85,7 +85,7 @@ public class CompositeCollection
      * 
      * @return total number of elements in all contained containers
      */
-    public int size(){
+    public int size() {
         int size = 0;
         for ( int i = this.all.length - 1; i >= 0; i-- ) {
             size += this.all[i].size();
@@ -100,7 +100,7 @@ public class CompositeCollection
      * 
      * @return true if all of the contained collections are empty
      */
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         for ( int i = this.all.length - 1; i >= 0; i-- ) {
             if ( this.all[i].isEmpty() == false ) {
                 return false;
@@ -118,7 +118,7 @@ public class CompositeCollection
      *            the object to search for
      * @return true if obj is contained in any of the contained collections
      */
-    public boolean contains(Object obj){
+    public boolean contains(Object obj) {
         for ( int i = this.all.length - 1; i >= 0; i-- ) {
             if ( this.all[i].contains( obj ) ) {
                 return true;
@@ -138,7 +138,7 @@ public class CompositeCollection
      *         should not be relied upon.
      * @see IteratorChain
      */
-    public Iterator iterator(){
+    public Iterator iterator() {
         if ( this.all.length == 0 ) {
             return Collections.EMPTY_LIST.iterator();
         }
@@ -154,7 +154,7 @@ public class CompositeCollection
      * 
      * @return an object array of all the elements in the collection
      */
-    public Object[] toArray(){
+    public Object[] toArray() {
         final Object[] result = new Object[this.size()];
         int i = 0;
         for ( Iterator it = this.iterator(); it.hasNext(); i++ ) {
@@ -171,13 +171,12 @@ public class CompositeCollection
      *            the array to use, populating if possible
      * @return an array of all the elements in the collection
      */
-    public Object[] toArray(Object[] array){
+    public Object[] toArray(Object[] array) {
         int size = this.size();
         Object[] result;
         if ( array.length >= size ) {
             result = array;
-        }
-        else {
+        } else {
             result = (Object[]) Array.newInstance( array.getClass().getComponentType(),
                                                    size );
         }
@@ -212,7 +211,7 @@ public class CompositeCollection
      * @throws IllegalArgumentException
      *             if the object cannot be added
      */
-    public boolean add(Object obj){
+    public boolean add(Object obj) {
         if ( this.mutator == null ) {
             throw new UnsupportedOperationException( "add() is not supported on CompositeCollection without a CollectionMutator strategy" );
         }
@@ -238,7 +237,7 @@ public class CompositeCollection
      * @throws IllegalArgumentException
      *             if the object cannot be removed
      */
-    public boolean remove(Object obj){
+    public boolean remove(Object obj) {
         if ( this.mutator == null ) {
             throw new UnsupportedOperationException( "remove() is not supported on CompositeCollection without a CollectionMutator strategy" );
         }
@@ -258,7 +257,7 @@ public class CompositeCollection
      *            the collection to check for
      * @return true if all elements contained
      */
-    public boolean containsAll(Collection coll){
+    public boolean containsAll(Collection coll) {
         for ( Iterator it = coll.iterator(); it.hasNext(); ) {
             if ( this.contains( it.next() ) == false ) {
                 return false;
@@ -286,7 +285,7 @@ public class CompositeCollection
      * @throws IllegalArgumentException
      *             if the object cannot be added
      */
-    public boolean addAll(Collection coll){
+    public boolean addAll(Collection coll) {
         if ( this.mutator == null ) {
             throw new UnsupportedOperationException( "addAll() is not supported on CompositeCollection without a CollectionMutator strategy" );
         }
@@ -307,7 +306,7 @@ public class CompositeCollection
      * @throws UnsupportedOperationException
      *             if removeAll is unsupported
      */
-    public boolean removeAll(Collection coll){
+    public boolean removeAll(Collection coll) {
         if ( coll.isEmpty() ) {
             return false;
         }
@@ -331,7 +330,7 @@ public class CompositeCollection
      * @throws UnsupportedOperationException
      *             if retainAll is unsupported
      */
-    public boolean retainAll(final Collection coll){
+    public boolean retainAll(final Collection coll) {
         boolean changed = false;
         for ( int i = this.all.length - 1; i >= 0; i-- ) {
             changed = (this.all[i].retainAll( coll ) || changed);
@@ -347,7 +346,7 @@ public class CompositeCollection
      * @throws UnsupportedOperationException
      *             if clear is unsupported
      */
-    public void clear(){
+    public void clear() {
         for ( int i = 0; i < this.all.length; ++i ) {
             this.all[i].clear();
         }
@@ -360,7 +359,7 @@ public class CompositeCollection
      * @param mutator
      *            the mutator to use
      */
-    public void setMutator(CollectionMutator mutator){
+    public void setMutator(CollectionMutator mutator) {
         this.mutator = mutator;
     }
 
@@ -370,7 +369,7 @@ public class CompositeCollection
      * @param comps
      *            Collections to be appended to the composite
      */
-    public void addComposited(Collection[] comps){
+    public void addComposited(Collection[] comps) {
         ArrayList list = new ArrayList( Arrays.asList( this.all ) );
         list.addAll( Arrays.asList( comps ) );
         this.all = (Collection[]) list.toArray( new Collection[list.size()] );
@@ -382,7 +381,7 @@ public class CompositeCollection
      * @param c
      *            the collection to add
      */
-    public void addComposited(Collection c){
+    public void addComposited(Collection c) {
         this.addComposited( new Collection[]{c} );
     }
 
@@ -395,7 +394,7 @@ public class CompositeCollection
      *            the second collection to add
      */
     public void addComposited(Collection c,
-                              Collection d){
+                              Collection d) {
         this.addComposited( new Collection[]{c, d} );
     }
 
@@ -405,7 +404,7 @@ public class CompositeCollection
      * @param coll
      *            collection to be removed
      */
-    public void removeComposited(Collection coll){
+    public void removeComposited(Collection coll) {
         ArrayList list = new ArrayList( this.all.length );
         list.addAll( Arrays.asList( this.all ) );
         list.remove( coll );
@@ -418,7 +417,7 @@ public class CompositeCollection
      * @return A new ArrayList containing all of the elements in this composite.
      *         The new collection is <i>not </i> backed by this composite.
      */
-    public Collection toCollection(){
+    public Collection toCollection() {
         return new ArrayList( this );
     }
 
@@ -427,7 +426,7 @@ public class CompositeCollection
      * 
      * @return Unmodifiable collection of all collections in this composite.
      */
-    public Collection getCollections(){
+    public Collection getCollections() {
         return Collections.unmodifiableList( Arrays.asList( this.all ) );
     }
 

@@ -71,7 +71,7 @@ public class PrimacyConflictResolver extends AbstractConflictResolver {
      * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance(){
+    public static ConflictResolver getInstance() {
         return PrimacyConflictResolver.INSTANCE;
     }
 
@@ -82,7 +82,7 @@ public class PrimacyConflictResolver extends AbstractConflictResolver {
     /**
      * Construct.
      */
-    public PrimacyConflictResolver(){
+    public PrimacyConflictResolver() {
         // intentionally left blank
     }
 
@@ -92,7 +92,7 @@ public class PrimacyConflictResolver extends AbstractConflictResolver {
      * @see ConflictResolver
      */
     public int compare(Activation lhs,
-                       Activation rhs){
+                       Activation rhs) {
         return (int) (lhs.getTuple().getLeastRecentFactTimeStamp() - rhs.getTuple().getLeastRecentFactTimeStamp());
     }
 }

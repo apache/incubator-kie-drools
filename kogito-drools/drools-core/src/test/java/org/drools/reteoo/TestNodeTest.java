@@ -55,11 +55,11 @@ public class TestNodeTest extends DroolsTestCase {
     private PropagationContext context;
     private WorkingMemoryImpl  workingMemory;
 
-    public TestNodeTest(String name){
+    public TestNodeTest(String name) {
         super( name );
     }
 
-    public void setUp(){
+    public void setUp() {
         this.context = new PropagationContextImpl( PropagationContext.ASSERTION,
                                                    null,
                                                    null );
@@ -67,7 +67,7 @@ public class TestNodeTest extends DroolsTestCase {
         this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
     }
 
-    public void testAttach() throws Exception{
+    public void testAttach() throws Exception {
         MockTupleSource source = new MockTupleSource( 12 );
 
         TestNode node = new TestNode( 18,
@@ -91,7 +91,7 @@ public class TestNodeTest extends DroolsTestCase {
                     source.getTupleSinks().get( 0 ) );
     }
 
-    public void testMemory(){
+    public void testMemory() {
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
         MockTupleSource source = new MockTupleSource( 12 );
@@ -113,7 +113,7 @@ public class TestNodeTest extends DroolsTestCase {
      * 
      * @throws FactException
      */
-    public void testAllowedWithoutMemory() throws FactException{
+    public void testAllowedWithoutMemory() throws FactException {
 
         /* Create a test node that always returns true */
         TestNode node = new TestNode( 1,
@@ -157,7 +157,7 @@ public class TestNodeTest extends DroolsTestCase {
      * 
      * @throws FactException
      */
-    public void testAllowedWithMemory() throws FactException{
+    public void testAllowedWithMemory() throws FactException {
 
         /* Create a test node that always returns true */
         TestNode node = new TestNode( 1,
@@ -202,7 +202,7 @@ public class TestNodeTest extends DroolsTestCase {
      * 
      * @throws FactException
      */
-    public void testNotAllowed() throws FactException{
+    public void testNotAllowed() throws FactException {
         /* Create a test node that always returns false */
         TestNode node = new TestNode( 1,
                                       new MockTupleSource( 15 ),
@@ -239,7 +239,7 @@ public class TestNodeTest extends DroolsTestCase {
      * 
      * @throws FactException
      */
-    public void testRetract() throws FactException{
+    public void testRetract() throws FactException {
         /*
          * Create a test node that always returns false Although as we are
          * retracting it doesn't matter what it returns
@@ -279,7 +279,7 @@ public class TestNodeTest extends DroolsTestCase {
 
     }
 
-    public void testException() throws FactException{
+    public void testException() throws FactException {
         /* Create a condition that will always throw an exception */
         MockCondition condition = new MockCondition( null,
                                                      true );
@@ -306,13 +306,12 @@ public class TestNodeTest extends DroolsTestCase {
                               this.context,
                               this.workingMemory );
             fail( "Should have thrown TestException" );
-        }
-        catch ( TestException e ) {
+        } catch ( TestException e ) {
             // should throw exception
         }
     }
 
-    public void testUpdateNewNodeWithoutMemory() throws FactException{
+    public void testUpdateNewNodeWithoutMemory() throws FactException {
         // An AlphaNode without memory needs to inform the parent ObjectTypeNode
         // to repropagate its memory
 
@@ -348,7 +347,7 @@ public class TestNodeTest extends DroolsTestCase {
                       source.getUdated() );
     }
 
-    public void testUpdateWithMemory() throws FactException{
+    public void testUpdateWithMemory() throws FactException {
         // If no child nodes have children then we need to re-process the left
         // and right memories
         // as a joinnode does not store the resulting tuples

@@ -7,11 +7,11 @@ import org.drools.FactHandle;
  * package protected methods.
  */
 public class InstrumentedWorkingMemoryImpl extends WorkingMemoryImpl {
-    public InstrumentedWorkingMemoryImpl(){
+    public InstrumentedWorkingMemoryImpl() {
         this( new RuleBaseImpl() );
     }
 
-    public InstrumentedWorkingMemoryImpl(RuleBaseImpl ruleBase){
+    public InstrumentedWorkingMemoryImpl(RuleBaseImpl ruleBase) {
         super( ruleBase );
     }
 
@@ -24,7 +24,7 @@ public class InstrumentedWorkingMemoryImpl extends WorkingMemoryImpl {
      *            The object.
      */
     public Object putObject(FactHandle handle,
-                            Object object){
+                            Object object) {
         return super.putObject( handle,
                                 object );
     }
@@ -32,7 +32,7 @@ public class InstrumentedWorkingMemoryImpl extends WorkingMemoryImpl {
     /**
      * Helper method to return FactHandles with a specific id
      */
-    public FactHandle createFactHandle(int id){
+    public FactHandle createFactHandle(int id) {
         return new FactHandleImpl( id );
     }
 }

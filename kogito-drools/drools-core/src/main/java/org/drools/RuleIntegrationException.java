@@ -65,7 +65,7 @@ public class RuleIntegrationException extends IntegrationException {
      * @param rule
      *            The offending rule.
      */
-    public RuleIntegrationException(Rule rule){
+    public RuleIntegrationException(Rule rule) {
         super( createMessage( rule ) );
         this.rule = rule;
     }
@@ -77,7 +77,7 @@ public class RuleIntegrationException extends IntegrationException {
      *            The offending rule.
      */
     public RuleIntegrationException(Rule rule,
-                                    Throwable cause){
+                                    Throwable cause) {
         super( createMessage( rule ),
                cause );
         this.rule = rule;
@@ -88,11 +88,11 @@ public class RuleIntegrationException extends IntegrationException {
      * 
      * @return The rule.
      */
-    public Rule getRule(){
+    public Rule getRule() {
         return this.rule;
     }
 
-    private static String createMessage(Rule rule){
+    private static String createMessage(Rule rule) {
         return rule.getName() + " cannot be integrated";
     }
 }

@@ -16,26 +16,26 @@ public class ReteooNodeEvent {
     public ReteooNodeEvent(WorkingMemory workingMemory,
                            ReteooNode node,
                            Tuple tuple,
-                           boolean passed){
+                           boolean passed) {
         this.workingMemory = workingMemory;
         this.node = node;
         this.tuple = tuple;
         this.passed = passed;
     }
 
-    public ReteooNode getNode(){
+    public ReteooNode getNode() {
         return this.node;
     }
 
-    public boolean isPassed(){
+    public boolean isPassed() {
         return this.passed;
     }
 
-    public Tuple getTuple(){
+    public Tuple getTuple() {
         return this.tuple;
     }
 
-    public WorkingMemory getWorkingMemory(){
+    public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
 

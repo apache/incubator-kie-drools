@@ -105,7 +105,7 @@ public class RuleSet
      * @param name
      *            The name of this <code>RuleSet</code>.
      */
-    public RuleSet(String name){
+    public RuleSet(String name) {
         this.name = name;
         this.ruleNames = new HashSet();
         this.rules = new ArrayList();
@@ -122,7 +122,7 @@ public class RuleSet
      * @param ruleBaseContext
      */
     public RuleSet(String name,
-                   RuleBaseContext ruleBaseContext){
+                   RuleBaseContext ruleBaseContext) {
         this.name = name;
         this.ruleNames = new HashSet();
         this.rules = new ArrayList();
@@ -140,7 +140,7 @@ public class RuleSet
      * 
      * @return The name of this <code>RuleSet</code>.
      */
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
@@ -150,7 +150,7 @@ public class RuleSet
      * @param documentation
      *            The documentation.
      */
-    public void setDocumentation(String documentation){
+    public void setDocumentation(String documentation) {
         this.documentation = documentation;
     }
 
@@ -159,7 +159,7 @@ public class RuleSet
      * 
      * @return The documentation or <code>null</code> if none.
      */
-    public String getDocumentation(){
+    public String getDocumentation() {
         return this.documentation;
     }
 
@@ -176,7 +176,7 @@ public class RuleSet
      *             If the <code>Rule</code> is not valid.
      */
     public void addRule(Rule rule) throws DuplicateRuleNameException,
-                                  InvalidRuleException{
+                                  InvalidRuleException {
         rule.checkValidity();
 
         String name = rule.getName();
@@ -203,7 +203,7 @@ public class RuleSet
      *         such <code>Rule</code> has been added to this
      *         <code>RuleSet</code>.
      */
-    public Rule getRule(String name){
+    public Rule getRule(String name) {
         Rule[] rules = getRules();
 
         for ( int i = 0; i < rules.length; ++i ) {
@@ -224,7 +224,7 @@ public class RuleSet
      *  @return <code>true</code> if this <code>RuleSet</code> contains a
      *          <code>Rule</code> with the specified name, else <code>false</code>.
      */
-    public boolean containsRule(String name){
+    public boolean containsRule(String name) {
         return this.ruleNames.contains( name );
     }
 
@@ -233,37 +233,37 @@ public class RuleSet
      * 
      * @return An array of all <code>Rules</code> in this <code>RuleSet</code>.
      */
-    public Rule[] getRules(){
+    public Rule[] getRules() {
         return (Rule[]) this.rules.toArray( new Rule[this.rules.size()] );
     }
 
-    public Importer getImporter(){
+    public Importer getImporter() {
         return this.importer;
     }
 
-    public void setImporter(Importer importer){
+    public void setImporter(Importer importer) {
         this.importer = importer;
     }
 
-    public void addApplicationData(ApplicationData applicationData){
+    public void addApplicationData(ApplicationData applicationData) {
         this.applicationData.put( applicationData.getIdentifier(),
                                   applicationData.getType() );
     }
 
-    public Map getApplicationData(){
+    public Map getApplicationData() {
         return this.applicationData;
     }
 
-    public void addFunctions(Functions functions){
+    public void addFunctions(Functions functions) {
         this.functions.put( functions.getSemantic(),
                             functions );
     }
 
-    public Functions getFunctions(String semantic){
+    public Functions getFunctions(String semantic) {
         return (Functions) this.functions.get( semantic );
     }
 
-    public RuleBaseContext getRuleBaseContext(){
+    public RuleBaseContext getRuleBaseContext() {
         return this.ruleBaseContext;
     }
 }

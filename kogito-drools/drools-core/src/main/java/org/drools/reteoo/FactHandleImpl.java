@@ -62,7 +62,7 @@ public class FactHandleImpl
     // Constructors
     // ----------------------------------------------------------------------
 
-    protected FactHandleImpl(long id){
+    protected FactHandleImpl(long id) {
         this.id = id;
         this.recency = id;
     }
@@ -74,7 +74,7 @@ public class FactHandleImpl
      *            Handle id.
      */
     protected FactHandleImpl(long id,
-                             long recency){
+                             long recency) {
         this.id = id;
         this.recency = recency;
     }
@@ -86,7 +86,7 @@ public class FactHandleImpl
     /**
      * @see Object
      */
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if ( this == object ) {
             return true;
         }
@@ -101,33 +101,33 @@ public class FactHandleImpl
     /**
      * @see Object
      */
-    public int hashCode(){
+    public int hashCode() {
         return (int) this.id;
     }
 
     /**
      * @see FactHandle
      */
-    public String toExternalForm(){
+    public String toExternalForm() {
         return "[fid:" + this.id + "]";
     }
 
     /**
      * @see Object
      */
-    public String toString(){
+    public String toString() {
         return toExternalForm();
     }
 
-    public long getRecency(){
+    public long getRecency() {
         return this.recency;
     }
 
-    public long getId(){
+    public long getId() {
         return this.id;
     }
 
-    void invalidate(){
+    void invalidate() {
         this.id = -1;
     }
 

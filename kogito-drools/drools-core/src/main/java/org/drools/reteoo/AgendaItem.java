@@ -91,7 +91,7 @@ class AgendaItem
      */
     AgendaItem(ReteTuple tuple,
                PropagationContext context,
-               Rule rule){
+               Rule rule) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
@@ -101,7 +101,7 @@ class AgendaItem
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    public PropagationContext getPropagationContext(){
+    public PropagationContext getPropagationContext() {
         return this.context;
     }
 
@@ -110,7 +110,7 @@ class AgendaItem
      * 
      * @return The rule.
      */
-    public Rule getRule(){
+    public Rule getRule() {
         return this.rule;
     }
 
@@ -124,7 +124,7 @@ class AgendaItem
      * @return <code>true<code> if this agenda item depends
      *          upon the item, otherwise <code>false</code>.
      */
-    boolean dependsOn(FactHandle handle){
+    boolean dependsOn(FactHandle handle) {
         return this.tuple.dependsOn( handle );
     }
 
@@ -134,7 +134,7 @@ class AgendaItem
      * @param tuple
      *            The tuple.
      */
-    void setTuple(ReteTuple tuple){
+    void setTuple(ReteTuple tuple) {
         this.tuple = tuple;
     }
 
@@ -143,7 +143,7 @@ class AgendaItem
      * 
      * @return The tuple.
      */
-    public Tuple getTuple(){
+    public Tuple getTuple() {
         return this.tuple;
     }
 
@@ -152,7 +152,7 @@ class AgendaItem
      * 
      * @return The key to the tuple in this item.
      */
-    TupleKey getKey(){
+    TupleKey getKey() {
         return this.tuple.getKey();
     }
 
@@ -165,7 +165,7 @@ class AgendaItem
      * @throws ConsequenceException
      *             If an error occurs while attempting to fire the consequence.
      */
-    void fire(WorkingMemoryImpl workingMemory) throws ConsequenceException{
+    void fire(WorkingMemoryImpl workingMemory) throws ConsequenceException {
 
         this.rule.getConsequence().invoke( null );
 
@@ -173,15 +173,15 @@ class AgendaItem
                                                                    this.tuple );
     }
 
-    public long getActivationNumber(){
+    public long getActivationNumber() {
         return this.activationNumber;
     }
 
-    public String toString(){
+    public String toString() {
         return "[" + this.rule.getName() + " " + this.tuple + "]";
     }
 
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if ( (object == null) || !(object instanceof AgendaItem) ) {
             return false;
         }
@@ -191,7 +191,7 @@ class AgendaItem
         return (this.rule.equals( otherItem.getRule() ) && this.tuple.getKey().equals( otherItem.getKey() ));
     }
 
-    public int hashcode(){
+    public int hashcode() {
         return this.getKey().hashCode();
     }
 

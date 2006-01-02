@@ -65,7 +65,7 @@ public class NoSuchFactObjectException extends RuntimeException {
      * @param object
      *            The invalid fact object.
      */
-    public NoSuchFactObjectException(FactHandle handle){
+    public NoSuchFactObjectException(FactHandle handle) {
         super( createMessage( handle ) );
         this.handle = handle;
     }
@@ -77,7 +77,7 @@ public class NoSuchFactObjectException extends RuntimeException {
      *            The invalid fact object.
      */
     public NoSuchFactObjectException(FactHandle handle,
-                                     Throwable cause){
+                                     Throwable cause) {
         super( createMessage( handle ) );
         this.handle = handle;
     }
@@ -87,11 +87,11 @@ public class NoSuchFactObjectException extends RuntimeException {
      * 
      * @return The invalid fact handle.
      */
-    public FactHandle getFactHandle(){
+    public FactHandle getFactHandle() {
         return this.handle;
     }
 
-    private static String createMessage(FactHandle handle){
+    private static String createMessage(FactHandle handle) {
         return handle == null ? "null fact object" : "no such fact object for handle:" + handle.toExternalForm();
     }
 }

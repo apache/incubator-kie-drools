@@ -46,7 +46,7 @@ public class IdentityMap extends AbstractHashedMap
     /**
      * Constructs a new empty map with default size and load factor.
      */
-    public IdentityMap(){
+    public IdentityMap() {
         super( AbstractHashedMap.DEFAULT_CAPACITY,
                AbstractHashedMap.DEFAULT_LOAD_FACTOR,
                AbstractHashedMap.DEFAULT_THRESHOLD );
@@ -60,7 +60,7 @@ public class IdentityMap extends AbstractHashedMap
      * @throws IllegalArgumentException
      *             if the initial capacity is less than one
      */
-    public IdentityMap(int initialCapacity){
+    public IdentityMap(int initialCapacity) {
         super( initialCapacity );
     }
 
@@ -78,7 +78,7 @@ public class IdentityMap extends AbstractHashedMap
      *             if the load factor is less than zero
      */
     public IdentityMap(int initialCapacity,
-                       float loadFactor){
+                       float loadFactor) {
         super( initialCapacity,
                loadFactor );
     }
@@ -91,7 +91,7 @@ public class IdentityMap extends AbstractHashedMap
      * @throws NullPointerException
      *             if the map is null
      */
-    public IdentityMap(Map map){
+    public IdentityMap(Map map) {
         super( map );
     }
 
@@ -104,7 +104,7 @@ public class IdentityMap extends AbstractHashedMap
      *            the key to get a hash code for
      * @return the hash code
      */
-    protected int hash(Object key){
+    protected int hash(Object key) {
         return System.identityHashCode( key );
     }
 
@@ -118,7 +118,7 @@ public class IdentityMap extends AbstractHashedMap
      * @return true if equal by identity
      */
     protected boolean isEqualKey(Object key1,
-                                 Object key2){
+                                 Object key2) {
         return (key1 == key2);
     }
 
@@ -132,7 +132,7 @@ public class IdentityMap extends AbstractHashedMap
      * @return true if equal by identity
      */
     protected boolean isEqualValue(Object value1,
-                                   Object value2){
+                                   Object value2) {
         return (value1 == value2);
     }
 
@@ -153,7 +153,7 @@ public class IdentityMap extends AbstractHashedMap
     protected HashEntry createEntry(HashEntry next,
                                     int hashCode,
                                     Object key,
-                                    Object value){
+                                    Object value) {
         return new IdentityEntry( next,
                                   hashCode,
                                   key,
@@ -169,14 +169,14 @@ public class IdentityMap extends AbstractHashedMap
         protected IdentityEntry(HashEntry next,
                                 int hashCode,
                                 Object key,
-                                Object value){
+                                Object value) {
             super( next,
                    hashCode,
                    key,
                    value );
         }
 
-        public boolean equals(Object obj){
+        public boolean equals(Object obj) {
             if ( obj == this ) {
                 return true;
             }
@@ -187,7 +187,7 @@ public class IdentityMap extends AbstractHashedMap
             return (getKey() == other.getKey()) && (getValue() == other.getValue());
         }
 
-        public int hashCode(){
+        public int hashCode() {
             return System.identityHashCode( getKey() ) ^ System.identityHashCode( getValue() );
         }
     }
@@ -198,14 +198,14 @@ public class IdentityMap extends AbstractHashedMap
      * 
      * @return a shallow clone
      */
-    public Object clone(){
+    public Object clone() {
         return super.clone();
     }
 
     /**
      * Write the map out using a custom routine.
      */
-    private void writeObject(ObjectOutputStream out) throws IOException{
+    private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         doWriteObject( out );
     }
@@ -214,7 +214,7 @@ public class IdentityMap extends AbstractHashedMap
      * Read the map in using a custom routine.
      */
     private void readObject(ObjectInputStream in) throws IOException,
-                                                 ClassNotFoundException{
+                                                 ClassNotFoundException {
         in.defaultReadObject();
         doReadObject( in );
     }

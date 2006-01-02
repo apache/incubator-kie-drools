@@ -53,26 +53,26 @@ public class ActivationCreatedEvent extends WorkingMemoryEvent {
 
     public ActivationCreatedEvent(WorkingMemory workingMemory,
                                   Rule rule,
-                                  Tuple tuple){
+                                  Tuple tuple) {
         super( workingMemory );
 
         this.rule = rule;
         this.tuple = tuple;
     }
 
-    public Rule getRule(){
+    public Rule getRule() {
         return this.rule;
     }
 
-    public Consequence getConsequence(){
+    public Consequence getConsequence() {
         return this.rule.getConsequence();
     }
 
-    public Tuple getTuple(){
+    public Tuple getTuple() {
         return this.tuple;
     }
 
-    public String toString(){
+    public String toString() {
         return "[ActivationCreated: rule=" + this.rule.getName() + "; tuple=" + this.tuple + "]";
     }
 }

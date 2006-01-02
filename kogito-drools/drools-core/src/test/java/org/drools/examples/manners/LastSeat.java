@@ -1,7 +1,7 @@
-package org.drools.examples.model;
+package org.drools.examples.manners;
 
 /*
- * $Id: Seat.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
+ * $Id: LastSeat.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
  *
  * Copyright 2002 (C) The Werken Company. All Rights Reserved.
  *
@@ -43,28 +43,20 @@ package org.drools.examples.model;
 
 import java.io.Serializable;
 
-public class Seat
+public class LastSeat
     implements
     Serializable {
-    private int    seat;
+    private int seat;
 
-    private String name;
-
-    public Seat(int seat,
-                String name){
+    public LastSeat(int seat) {
         this.seat = seat;
-        this.name = name;
     }
 
-    public int getSeat(){
+    public int getSeat() {
         return this.seat;
     }
 
-    public String getName(){
-        return this.name;
-    }
-
-    public String toString(){
-        return "{seat=" + this.seat + ",name=" + this.name + "}";
+    public String toString() {
+        return "{seat=" + this.seat + "}";
     }
 }

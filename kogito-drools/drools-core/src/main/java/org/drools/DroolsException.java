@@ -52,14 +52,14 @@ public class DroolsException extends Exception {
     /**
      * @see java.lang.Exception#Exception()
      */
-    public DroolsException(){
+    public DroolsException() {
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public DroolsException(String message){
+    public DroolsException(String message) {
         super( message );
     }
 
@@ -67,14 +67,14 @@ public class DroolsException extends Exception {
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     public DroolsException(String message,
-                           Throwable cause){
+                           Throwable cause) {
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public DroolsException(Throwable cause){
+    public DroolsException(Throwable cause) {
         super( cause );
     }
 
@@ -85,7 +85,7 @@ public class DroolsException extends Exception {
      * @return The root cause of this exception, as a <code>Throwable</code>,
      *         if this exception has a root cause, else <code>null</code>.
      */
-    public Throwable getRootCause(){
+    public Throwable getRootCause() {
         return super.getCause();
     }
 }

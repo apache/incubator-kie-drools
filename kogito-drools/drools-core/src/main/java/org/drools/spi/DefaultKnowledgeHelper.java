@@ -53,22 +53,22 @@ public class DefaultKnowledgeHelper
     private final Tuple tuple;
 
     public DefaultKnowledgeHelper(Rule rule,
-                                  Tuple tuple){
+                                  Tuple tuple) {
         this.rule = rule;
         this.tuple = tuple;
     }
 
-    public void assertObject(Object object) throws FactException{
+    public void assertObject(Object object) throws FactException {
         this.tuple.getWorkingMemory().assertObject( object );
     }
 
     public void assertObject(Object object,
-                             boolean dynamic) throws FactException{
+                             boolean dynamic) throws FactException {
         this.tuple.getWorkingMemory().assertObject( object,
                                                     dynamic );
     }
 
-    public void modifyObject(Object object) throws FactException{
+    public void modifyObject(Object object) throws FactException {
         FactHandle handle = this.tuple.getFactHandleForObject( object );
 
         this.tuple.getWorkingMemory().modifyObject( handle,
@@ -76,32 +76,32 @@ public class DefaultKnowledgeHelper
     }
 
     public void modifyObject(Object oldObject,
-                             Object newObject) throws FactException{
+                             Object newObject) throws FactException {
         FactHandle handle = this.tuple.getFactHandleForObject( oldObject );
 
         this.tuple.getWorkingMemory().modifyObject( handle,
                                                     newObject );
     }
 
-    public void retractObject(Object object) throws FactException{
+    public void retractObject(Object object) throws FactException {
         FactHandle handle = this.tuple.getFactHandleForObject( object );
 
         this.tuple.getWorkingMemory().retractObject( handle );
     }
 
-    public String getRuleName(){
+    public String getRuleName() {
         return this.rule.getName();
     }
 
-    public List getObjects(){
+    public List getObjects() {
         return this.tuple.getWorkingMemory().getObjects();
     }
 
-    public List getObjects(Class objectClass){
+    public List getObjects(Class objectClass) {
         return this.tuple.getWorkingMemory().getObjects( objectClass );
     }
 
-    public void clearAgenda(){
+    public void clearAgenda() {
         this.tuple.getWorkingMemory().clearAgenda();
     }
 }

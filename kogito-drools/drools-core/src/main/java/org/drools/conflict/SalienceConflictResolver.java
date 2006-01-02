@@ -74,7 +74,7 @@ public class SalienceConflictResolver extends AbstractConflictResolver {
      * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance(){
+    public static ConflictResolver getInstance() {
         return SalienceConflictResolver.INSTANCE;
     }
 
@@ -85,7 +85,7 @@ public class SalienceConflictResolver extends AbstractConflictResolver {
     /**
      * Construct.
      */
-    public SalienceConflictResolver(){
+    public SalienceConflictResolver() {
         // intentionally left blank
     }
 
@@ -95,7 +95,7 @@ public class SalienceConflictResolver extends AbstractConflictResolver {
      * @see ConflictResolver
      */
     public int compare(Activation lhs,
-                       Activation rhs){
+                       Activation rhs) {
         return rhs.getRule().getSalience() - lhs.getRule().getSalience();
     }
 }

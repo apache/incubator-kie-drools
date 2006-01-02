@@ -72,7 +72,7 @@ public class FifoConflictResolver extends AbstractConflictResolver {
      * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance(){
+    public static ConflictResolver getInstance() {
         return FifoConflictResolver.INSTANCE;
     }
 
@@ -83,7 +83,7 @@ public class FifoConflictResolver extends AbstractConflictResolver {
     /**
      * Construct.
      */
-    public FifoConflictResolver(){
+    public FifoConflictResolver() {
         // intentionally left blank
     }
 
@@ -93,7 +93,7 @@ public class FifoConflictResolver extends AbstractConflictResolver {
      * @see ConflictResolver
      */
     public int compare(Activation lhs,
-                       Activation rhs){
+                       Activation rhs) {
         return (int) (lhs.getActivationNumber() - rhs.getActivationNumber());
     }
 }

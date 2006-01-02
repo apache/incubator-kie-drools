@@ -133,7 +133,7 @@ public class Rule
      */
     public Rule(String name,
                 RuleSet ruleSet,
-                String module){
+                String module) {
         this.name = name;
         this.ruleSet = ruleSet;
         this.module = module;
@@ -148,14 +148,14 @@ public class Rule
      *            The name of this rule.
      */
     public Rule(String name,
-                String module){
+                String module) {
         this.name = name;
         this.ruleSet = null;
         this.module = module;
         this.applicationData = Collections.EMPTY_MAP;
     }
 
-    public Rule(String name){
+    public Rule(String name) {
         this.name = name;
         this.ruleSet = null;
         this.module = Module.MAIN;
@@ -168,7 +168,7 @@ public class Rule
      * @param documentation -
      *            The documentation.
      */
-    public void setDocumentation(String documentation){
+    public void setDocumentation(String documentation) {
         this.documentation = documentation;
     }
 
@@ -177,7 +177,7 @@ public class Rule
      * 
      * @return The documentation or <code>null</code> if none.
      */
-    public String getDocumentation(){
+    public String getDocumentation() {
         return this.documentation;
     }
 
@@ -198,7 +198,7 @@ public class Rule
      *            The number of seconds the rule must hold true in order to
      *            fire.
      */
-    public void setDuration(long seconds){
+    public void setDuration(long seconds) {
         this.duration = new FixedDuration( seconds );
     }
 
@@ -210,7 +210,7 @@ public class Rule
      * @param duration
      *            The truth duration object.
      */
-    public void setDuration(Duration duration){
+    public void setDuration(Duration duration) {
         this.duration = duration;
     }
 
@@ -219,7 +219,7 @@ public class Rule
      * 
      * @return The truthness duration object.
      */
-    public Duration getDuration(){
+    public Duration getDuration() {
         return this.duration;
     }
 
@@ -235,7 +235,7 @@ public class Rule
      * @return <code>true</code> if this rule is valid, else
      *         <code>false</code>.
      */
-    public boolean isValid(){
+    public boolean isValid() {
         if ( this.columns.size() == 0 ) {
             return false;
         }
@@ -256,8 +256,8 @@ public class Rule
      * </p>
      * 
      * <pre>
-     *  NoParameterDeclarationException
-     *  NoConsequenceException
+     *     NoParameterDeclarationException
+     *     NoConsequenceException
      * </pre>
      * 
      * <p>
@@ -268,7 +268,7 @@ public class Rule
      * @throws InvalidRuleException
      *             if this rule is in any way invalid.
      */
-    public void checkValidity() throws InvalidRuleException{
+    public void checkValidity() throws InvalidRuleException {
         if ( this.columns.isEmpty() ) {
             throw new NoColumnsException( this );
         }
@@ -278,7 +278,7 @@ public class Rule
         }
     }
 
-    public RuleSet getRuleSet(){
+    public RuleSet getRuleSet() {
         return this.ruleSet;
     }
 
@@ -287,7 +287,7 @@ public class Rule
      * 
      * @return The name of this rule.
      */
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
@@ -296,7 +296,7 @@ public class Rule
      * 
      * @return The salience.
      */
-    public int getSalience(){
+    public int getSalience() {
         return this.salience;
     }
 
@@ -305,23 +305,23 @@ public class Rule
      *
      *  @param salience The salience.
      */
-    public void setSalience(int salience){
+    public void setSalience(int salience) {
         this.salience = salience;
     }
 
-    public boolean getNoLoop(){
+    public boolean getNoLoop() {
         return this.noLoop;
     }
 
-    public void setNoLoop(boolean noLoop){
+    public void setNoLoop(boolean noLoop) {
         this.noLoop = noLoop;
     }
 
-    public boolean getAutoFocus(){
+    public boolean getAutoFocus() {
         return this.autoFocus;
     }
 
-    public void setAutoFocus(boolean autoFocus){
+    public void setAutoFocus(boolean autoFocus) {
         this.autoFocus = autoFocus;
     }
 
@@ -336,16 +336,14 @@ public class Rule
      * @return The declaration.
      */
     public Declaration addDeclaration(String identifier,
-                                      ObjectType objectType,
                                       int column,
-                                      Extractor extractor) throws InvalidRuleException{
+                                      Extractor extractor) throws InvalidRuleException {
         if ( getDeclaration( identifier ) != null ) {
             throw new InvalidRuleException( this );
         }
 
         Declaration declaration = new Declaration( this.declarations.size(),
                                                    identifier,
-                                                   objectType,
                                                    extractor,
                                                    column );
 
@@ -364,7 +362,7 @@ public class Rule
      * @return The declaration or <code>null</code> if no declaration matches
      *         the <code>identifier</code>.
      */
-    public Declaration getDeclaration(String identifier){
+    public Declaration getDeclaration(String identifier) {
         return (Declaration) this.declarations;
     }
 
@@ -375,7 +373,7 @@ public class Rule
      * @return The Set of <code>Declarations</code> in order which specify the
      *         <i>root fact objects</i>.
      */
-    public Collection getDeclarations(){
+    public Collection getDeclarations() {
         return Collections.unmodifiableCollection( this.declarations.values() );
     }
 
@@ -385,7 +383,7 @@ public class Rule
      * @param condition
      *            The <code>Test</code> to add.
      */
-    public void addPattern(ConditionalElement ce){
+    public void addPattern(ConditionalElement ce) {
         this.headPattern.addChild( ce );
     }
 
@@ -395,7 +393,7 @@ public class Rule
      * 
      * @return The <code>List</code> of <code>Conditions</code>.
      */
-    public And getPatterns(){
+    public And getPatterns() {
         return this.headPattern;
     }
 
@@ -409,16 +407,16 @@ public class Rule
      * @return
      * @throws InvalidPatternException
      */
-    public And[] getProcessPatterns() throws InvalidPatternException{
+    public And[] getProcessPatterns() throws InvalidPatternException {
         return LogicTransformer.getInstance().transform( this.headPattern );
     }
 
-    public int getPatternSize(){
+    public int getPatternSize() {
         // return this.conditions.size();
         return determinePatternSize( this.headPattern );
     }
 
-    private int determinePatternSize(ConditionalElement ce){
+    private int determinePatternSize(ConditionalElement ce) {
         Object object = null;
         Iterator it = ce.getChildren().iterator();
         int size = 0;
@@ -440,7 +438,7 @@ public class Rule
      *            The <code>Consequence</code> to attach to this
      *            <code>Rule</code>.
      */
-    public void setConsequence(Consequence consequence){
+    public void setConsequence(Consequence consequence) {
         this.consequence = consequence;
     }
 
@@ -450,35 +448,35 @@ public class Rule
      * 
      * @return The <code>Consequence</code>.
      */
-    public Consequence getConsequence(){
+    public Consequence getConsequence() {
         return this.consequence;
     }
 
-    public long getLoadOrder(){
+    public long getLoadOrder() {
         return this.loadOrder;
     }
 
-    void setLoadOrder(long loadOrder){
+    void setLoadOrder(long loadOrder) {
         this.loadOrder = loadOrder;
     }
 
-    public Importer getImporter(){
+    public Importer getImporter() {
         return this.importer;
     }
 
-    public void setImporter(Importer importer){
+    public void setImporter(Importer importer) {
         this.importer = importer;
     }
 
-    public void setApplicationData(Map applicationData){
+    public void setApplicationData(Map applicationData) {
         this.applicationData = applicationData;
     }
 
-    public Map getApplicationData(){
+    public Map getApplicationData() {
         return this.applicationData;
     }
 
-    public String getModule(){
+    public String getModule() {
         return this.module;
     }
 

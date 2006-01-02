@@ -1,7 +1,7 @@
-package org.drools.examples.model;
+package org.drools.examples.manners;
 
 /*
- * $Id: LastSeat.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
+ * $Id: Context.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
  *
  * Copyright 2002 (C) The Werken Company. All Rights Reserved.
  *
@@ -43,20 +43,27 @@ package org.drools.examples.model;
 
 import java.io.Serializable;
 
-public class LastSeat
+public class Context
     implements
     Serializable {
-    private int seat;
 
-    public LastSeat(int seat){
-        this.seat = seat;
+    public static final int START_UP = 0;
+
+    private int             state;
+
+    public Context(int state) {
+        this.state = state;
     }
 
-    public int getSeat(){
-        return this.seat;
+    public void setState(int state) {
+        this.state = state;
     }
 
-    public String toString(){
-        return "{seat=" + this.seat + "}";
+    public boolean isState(int state) {
+        return this.state == state;
+    }
+
+    public String toString() {
+        return "{state=" + this.state + "}";
     }
 }

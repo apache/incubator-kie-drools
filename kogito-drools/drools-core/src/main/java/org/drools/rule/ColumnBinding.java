@@ -7,7 +7,7 @@ public class ColumnBinding extends Binding {
 
     public ColumnBinding(String identifier,
                          ObjectType objectType,
-                         Column column){
+                         Column column) {
         super( identifier,
                objectType );
         this.column = column;
@@ -16,7 +16,7 @@ public class ColumnBinding extends Binding {
     /**
      * @return Returns the column.
      */
-    public Column getColumn(){
+    public Column getColumn() {
         return this.column;
     }
 

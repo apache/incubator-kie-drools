@@ -19,7 +19,7 @@ public class MockObjectSink
     public void assertObject(Object object,
                              FactHandleImpl handle,
                              PropagationContext context,
-                             WorkingMemoryImpl workingMemory) throws FactException{
+                             WorkingMemoryImpl workingMemory) throws FactException {
         if ( this.assertionException != null ) {
             throw this.assertionException;
         }
@@ -29,7 +29,7 @@ public class MockObjectSink
 
     public void retractObject(FactHandleImpl handle,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException{
+                              WorkingMemoryImpl workingMemory) throws FactException {
         if ( this.retractionException != null ) {
             throw this.retractionException;
         }
@@ -37,19 +37,19 @@ public class MockObjectSink
         this.retracted.add( new Object[]{handle, context, workingMemory} );
     }
 
-    public List getAsserted(){
+    public List getAsserted() {
         return this.asserted;
     }
 
-    public List getRetracted(){
+    public List getRetracted() {
         return this.retracted;
     }
 
-    public void setAssertionException(AssertionException assertionException){
+    public void setAssertionException(AssertionException assertionException) {
         this.assertionException = assertionException;
     }
 
-    public void setRetractionException(RetractionException retractionException){
+    public void setRetractionException(RetractionException retractionException) {
         this.retractionException = retractionException;
     }
 

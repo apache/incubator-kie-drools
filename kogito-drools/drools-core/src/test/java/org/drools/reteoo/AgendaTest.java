@@ -63,7 +63,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                  null,
                                                                  null );
 
-    public void testAddToAgenda() throws Exception{
+    public void testAddToAgenda() throws Exception {
         RuleBase ruleBase = new RuleBaseImpl();
 
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
@@ -96,7 +96,7 @@ public class AgendaTest extends DroolsTestCase {
          * Add consequence.
          */
         rule1.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 /*
                  * context1 one shows we are adding to the agenda where the rule
                  * is the same as its propogation context
@@ -158,7 +158,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.focusSize() );
     }
 
-    public void testClearAgenda(){
+    public void testClearAgenda() {
         RuleBase ruleBase = new RuleBaseImpl();
 
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
@@ -182,7 +182,7 @@ public class AgendaTest extends DroolsTestCase {
          * is itself
          */
         rule1.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 // do nothing
             }
         } );
@@ -204,7 +204,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.focusSize() );
     }
 
-    public void testFilters() throws Exception{
+    public void testFilters() throws Exception {
         RuleBase ruleBase = new RuleBaseImpl();
 
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
@@ -215,7 +215,7 @@ public class AgendaTest extends DroolsTestCase {
         final Map results = new HashMap();
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 results.put( "fired",
                              new Boolean( true ) );
             }
@@ -238,7 +238,7 @@ public class AgendaTest extends DroolsTestCase {
          * True filter, activations should always add
          */
         AgendaFilter filterTrue = new AgendaFilter() {
-            public boolean accept(Activation item){
+            public boolean accept(Activation item) {
                 return true;
             }
         };
@@ -265,7 +265,7 @@ public class AgendaTest extends DroolsTestCase {
          * False filter, activations should always be denied
          */
         AgendaFilter filterFalse = new AgendaFilter() {
-            public boolean accept(Activation item){
+            public boolean accept(Activation item) {
                 return false;
             }
         };
@@ -285,7 +285,7 @@ public class AgendaTest extends DroolsTestCase {
         assertNull( results.get( "fired" ) );
     }
 
-    public void testFocusStack() throws ConsequenceException{
+    public void testFocusStack() throws ConsequenceException {
         RuleBase ruleBase = new RuleBaseImpl();
 
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
@@ -307,7 +307,7 @@ public class AgendaTest extends DroolsTestCase {
 
         /* create the consequence */
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 // do nothing
             }
         };
@@ -492,7 +492,7 @@ public class AgendaTest extends DroolsTestCase {
 
     }
 
-    public void testAutoFocus() throws ConsequenceException{
+    public void testAutoFocus() throws ConsequenceException {
         RuleBase ruleBase = new RuleBaseImpl();
 
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
@@ -506,7 +506,7 @@ public class AgendaTest extends DroolsTestCase {
 
         /* create the consequence */
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 // do nothing
             }
         };

@@ -67,18 +67,18 @@ public class PrimitiveLongMap
     private Page[]              pageIndex;
     private int                 totalSize;
 
-    public PrimitiveLongMap(){
+    public PrimitiveLongMap() {
         this( 32,
               8 );
     }
 
-    public PrimitiveLongMap(int tableSize){
+    public PrimitiveLongMap(int tableSize) {
         this( tableSize,
               8 );
     }
 
     public PrimitiveLongMap(int tableSize,
-                            int indexIntervals){
+                            int indexIntervals) {
         // determine number of shifts for intervals
         int i = 1;
         int size = 2;
@@ -120,7 +120,7 @@ public class PrimitiveLongMap
     }
 
     public Object put(long key,
-                      Object value){
+                      Object value) {
         if ( key < 0 ) {
             throw new IllegalArgumentException( "-ve keys not supported: " + key );
         }
@@ -143,7 +143,7 @@ public class PrimitiveLongMap
         return oldValue;
     }
 
-    public Object remove(long key){
+    public Object remove(long key) {
         if ( key > this.maxKey || key < 0 ) {
             return null;
         }
@@ -164,7 +164,7 @@ public class PrimitiveLongMap
         return oldValue;
     }
 
-    public Object get(long key){
+    public Object get(long key) {
         if ( key > this.maxKey || key < 0 ) {
             return null;
         }
@@ -178,11 +178,11 @@ public class PrimitiveLongMap
         return value;
     }
 
-    public int size(){
+    public int size() {
         return this.totalSize;
     }
 
-    public Collection values(){
+    public Collection values() {
         CompositeCollection collection = new CompositeCollection();
         Page page = this.firstPage;
         while ( page != null && page.getPageId() <= this.lastPageId ) {
@@ -192,7 +192,7 @@ public class PrimitiveLongMap
         return collection;
     }
 
-    public boolean containsKey(long key){
+    public boolean containsKey(long key) {
         if ( key < 0 ) {
             return false;
         }
@@ -203,7 +203,7 @@ public class PrimitiveLongMap
     /**
      * Expand index to accomodate given pageId Create empty TopNodes
      */
-    public Page expandPages(int toPageId){
+    public Page expandPages(int toPageId) {
         for ( int x = this.lastPageId; x < toPageId; x++ ) {
             this.lastPage = new Page( this.lastPage,
                                       ++this.lastPageId,
@@ -222,7 +222,7 @@ public class PrimitiveLongMap
     /**
      * Shrink index to accomodate given pageId
      */
-    public void shrinkPages(int toPageId){
+    public void shrinkPages(int toPageId) {
         for ( int x = this.lastPageId; x >= toPageId; x-- ) {
             // last page is on index so shrink index
             if ( (this.lastPageId) % this.indexIntervals == 0 && this.lastPageId != 0 ) {
@@ -238,7 +238,7 @@ public class PrimitiveLongMap
         }
     }
 
-    public void resizeIndex(int newSize){
+    public void resizeIndex(int newSize) {
         Page[] newIndex = new Page[newSize];
         System.arraycopy( this.pageIndex,
                           0,
@@ -248,7 +248,7 @@ public class PrimitiveLongMap
         this.pageIndex = newIndex;
     }
 
-    private Page findPage(long key){
+    private Page findPage(long key) {
         // determine Page
         int pageId = (int) key >> this.doubleShifts;
         Page page;
@@ -264,8 +264,7 @@ public class PrimitiveLongMap
         // if pageId is greater than lastTopNodeId need to expand
         else if ( pageId > this.lastPageId ) {
             page = expandPages( pageId );
-        }
-        else {
+        } else {
             // determine offset
             int offset = pageId >> this.intervalShifts;
             // are we before or after the halfway point of an index interval
@@ -275,8 +274,7 @@ public class PrimitiveLongMap
                 while ( page.getPageId() != pageId ) {
                     page = page.getPreviousSibling();
                 }
-            }
-            else {
+            } else {
                 // before so go to node index and go forwards
                 page = this.pageIndex[offset];
                 while ( page.getPageId() != pageId ) {
@@ -302,7 +300,7 @@ public class PrimitiveLongMap
 
         Page(Page previousSibling,
              int pageId,
-             int tableSize){
+             int tableSize) {
             // determine number of shifts
             int i = 1;
             int size = 2;
@@ -323,27 +321,27 @@ public class PrimitiveLongMap
             this.pageSize = tableSize << this.shifts;
         }
 
-        public int getPageId(){
+        public int getPageId() {
             return this.pageId;
         }
 
-        void setNextSibling(Page nextSibling){
+        void setNextSibling(Page nextSibling) {
             this.nextSibling = nextSibling;
         }
 
-        public Page getNextSibling(){
+        public Page getNextSibling() {
             return this.nextSibling;
         }
 
-        void setPreviousSibling(Page previousSibling){
+        void setPreviousSibling(Page previousSibling) {
             this.previousSibling = previousSibling;
         }
 
-        public Page getPreviousSibling(){
+        public Page getPreviousSibling() {
             return this.previousSibling;
         }
 
-        public Object get(long key){
+        public Object get(long key) {
             if ( this.tables == null ) {
                 return null;
             }
@@ -361,7 +359,7 @@ public class PrimitiveLongMap
         }
 
         public Object put(long key,
-                          Object newValue){
+                          Object newValue) {
             if ( this.tables == null ) {
                 // initiate tree;
                 this.tables = new Object[this.tableSize][this.tableSize];
@@ -386,8 +384,7 @@ public class PrimitiveLongMap
             // update number of empty cells for TopNode
             if ( oldValue == null && newValue != null ) {
                 this.filledSlots++;
-            }
-            else if ( oldValue != null && newValue == null ) {
+            } else if ( oldValue != null && newValue == null ) {
                 this.filledSlots--;
             }
 
@@ -400,11 +397,11 @@ public class PrimitiveLongMap
             return oldValue;
         }
 
-        Object[][] getTables(){
+        Object[][] getTables() {
             return this.tables;
         }
 
-        Object[] getValues(){
+        Object[] getValues() {
             Object[] values = new Object[this.filledSlots];
             if ( values.length == 0 ) {
                 return values;
@@ -427,11 +424,11 @@ public class PrimitiveLongMap
             return values;
         }
 
-        public boolean isEmpty(){
+        public boolean isEmpty() {
             return this.filledSlots == 0;
         }
 
-        void clear(){
+        void clear() {
             this.previousSibling = null;
             this.nextSibling = null;
             this.tables = null;

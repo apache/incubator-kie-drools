@@ -12,7 +12,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     public RightInputAdapterNode(int id,
                                  int column,
-                                 TupleSource source){
+                                 TupleSource source) {
 
         super( id );
         this.column = column;
@@ -21,7 +21,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
-                            WorkingMemoryImpl workingMemory) throws FactException{
+                            WorkingMemoryImpl workingMemory) throws FactException {
         Object object = (Object) tuple.get( this.column );
         FactHandleImpl handle = (FactHandleImpl) tuple.getKey().get( this.column );
 
@@ -33,7 +33,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     public void retractTuples(TupleKey key,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException{
+                              WorkingMemoryImpl workingMemory) throws FactException {
         FactHandleImpl handle = (FactHandleImpl) key.get( this.column );
 
         propagateRetractObject( handle,
@@ -41,12 +41,12 @@ public class RightInputAdapterNode extends ObjectSource
                                 workingMemory );
     }
 
-    public void attach(){
+    public void attach() {
         this.tupleSource.addTupleSink( this );
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException{
+                              PropagationContext context) throws FactException {
         this.attachingNewNode = true;
         // We need to detach and re-attach to make sure the node is at the top
         // for the propagation
@@ -57,11 +57,11 @@ public class RightInputAdapterNode extends ObjectSource
         this.attachingNewNode = false;
     }
 
-    public int getId(){
+    public int getId() {
         return this.id;
     }
 
-    public void remove(){
+    public void remove() {
         // TODO Auto-generated method stub
 
     }

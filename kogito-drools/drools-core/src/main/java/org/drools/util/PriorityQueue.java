@@ -81,7 +81,7 @@ public class PriorityQueue extends AbstractCollection
      * Constructs a new empty buffer that sorts in ascending order by the
      * natural order of the objects added.
      */
-    public PriorityQueue(){
+    public PriorityQueue() {
         this( PriorityQueue.DEFAULT_CAPACITY,
               true,
               null );
@@ -95,7 +95,7 @@ public class PriorityQueue extends AbstractCollection
      *            the comparator used to order the elements, null means use
      *            natural order
      */
-    public PriorityQueue(Comparator comparator){
+    public PriorityQueue(Comparator comparator) {
         this( PriorityQueue.DEFAULT_CAPACITY,
               true,
               comparator );
@@ -109,7 +109,7 @@ public class PriorityQueue extends AbstractCollection
      *            if <code>true</code> the heap is created as a minimum heap;
      *            otherwise, the heap is created as a maximum heap
      */
-    public PriorityQueue(boolean ascendingOrder){
+    public PriorityQueue(boolean ascendingOrder) {
         this( PriorityQueue.DEFAULT_CAPACITY,
               ascendingOrder,
               null );
@@ -126,7 +126,7 @@ public class PriorityQueue extends AbstractCollection
      *            natural order
      */
     public PriorityQueue(boolean ascendingOrder,
-                         Comparator comparator){
+                         Comparator comparator) {
         this( PriorityQueue.DEFAULT_CAPACITY,
               ascendingOrder,
               comparator );
@@ -141,7 +141,7 @@ public class PriorityQueue extends AbstractCollection
      * @throws IllegalArgumentException
      *             if <code>capacity</code> is &lt;= <code>0</code>
      */
-    public PriorityQueue(int capacity){
+    public PriorityQueue(int capacity) {
         this( capacity,
               true,
               null );
@@ -160,7 +160,7 @@ public class PriorityQueue extends AbstractCollection
      *             if <code>capacity</code> is &lt;= <code>0</code>
      */
     public PriorityQueue(int capacity,
-                         Comparator comparator){
+                         Comparator comparator) {
         this( capacity,
               true,
               comparator );
@@ -179,7 +179,7 @@ public class PriorityQueue extends AbstractCollection
      *             if <code>capacity</code> is <code>&lt;= 0</code>
      */
     public PriorityQueue(int capacity,
-                         boolean ascendingOrder){
+                         boolean ascendingOrder) {
         this( capacity,
               ascendingOrder,
               null );
@@ -202,7 +202,7 @@ public class PriorityQueue extends AbstractCollection
      */
     public PriorityQueue(int capacity,
                          boolean ascendingOrder,
-                         Comparator comparator){
+                         Comparator comparator) {
         super();
         if ( capacity <= 0 ) {
             throw new IllegalArgumentException( "invalid capacity" );
@@ -220,7 +220,7 @@ public class PriorityQueue extends AbstractCollection
      * 
      * @return true if ascending order (a min heap)
      */
-    public boolean isAscendingOrder(){
+    public boolean isAscendingOrder() {
         return this.ascendingOrder;
     }
 
@@ -229,7 +229,7 @@ public class PriorityQueue extends AbstractCollection
      * 
      * @return the comparator in use, null is natural order
      */
-    public Comparator comparator(){
+    public Comparator comparator() {
         return this.comparator;
     }
 
@@ -239,14 +239,14 @@ public class PriorityQueue extends AbstractCollection
      * 
      * @return the number of elements in this buffer
      */
-    public int size(){
+    public int size() {
         return this.size;
     }
 
     /**
      * Clears all elements from the buffer.
      */
-    public void clear(){
+    public void clear() {
         this.elements = new Object[this.elements.length]; // for gc
         this.size = 0;
     }
@@ -259,15 +259,14 @@ public class PriorityQueue extends AbstractCollection
      *            the element to be added
      * @return true always
      */
-    public boolean add(Object element){
+    public boolean add(Object element) {
         if ( isAtCapacity() ) {
             grow();
         }
         // percolate element to it's place in tree
         if ( this.ascendingOrder ) {
             percolateUpMinHeap( element );
-        }
-        else {
+        } else {
             percolateUpMaxHeap( element );
         }
         return true;
@@ -280,11 +279,10 @@ public class PriorityQueue extends AbstractCollection
      * @throws NoSuchElementException
      *             if the buffer is empty
      */
-    public Object get(){
+    public Object get() {
         if ( isEmpty() ) {
             throw new NoSuchElementException();
-        }
-        else {
+        } else {
             return this.elements[1];
         }
     }
@@ -296,7 +294,7 @@ public class PriorityQueue extends AbstractCollection
      * @throws NoSuchElementException
      *             if the buffer is empty
      */
-    public Object remove(){
+    public Object remove() {
         final Object result = get();
         this.elements[1] = this.elements[this.size--];
 
@@ -308,8 +306,7 @@ public class PriorityQueue extends AbstractCollection
             // percolate top element to it's place in tree
             if ( this.ascendingOrder ) {
                 percolateDownMinHeap( 1 );
-            }
-            else {
+            } else {
                 percolateDownMaxHeap( 1 );
             }
         }
@@ -324,7 +321,7 @@ public class PriorityQueue extends AbstractCollection
      * @return <code>true</code> if buffer is full; <code>false</code>
      *         otherwise.
      */
-    protected boolean isAtCapacity(){
+    protected boolean isAtCapacity() {
         // +1 as element 0 is noop
         return this.elements.length == this.size + 1;
     }
@@ -336,7 +333,7 @@ public class PriorityQueue extends AbstractCollection
      * @param index
      *            the index for the element
      */
-    protected void percolateDownMinHeap(final int index){
+    protected void percolateDownMinHeap(final int index) {
         final Object element = this.elements[index];
         int hole = index;
 
@@ -346,7 +343,7 @@ public class PriorityQueue extends AbstractCollection
             // if we have a right child and that child can not be percolated
             // up then move onto other child
             if ( child != this.size && compare( this.elements[child + 1],
-                                           this.elements[child] ) < 0 ) {
+                                                this.elements[child] ) < 0 ) {
                 child++;
             }
 
@@ -370,7 +367,7 @@ public class PriorityQueue extends AbstractCollection
      * @param index
      *            the index of the element
      */
-    protected void percolateDownMaxHeap(final int index){
+    protected void percolateDownMaxHeap(final int index) {
         final Object element = this.elements[index];
         int hole = index;
 
@@ -380,7 +377,7 @@ public class PriorityQueue extends AbstractCollection
             // if we have a right child and that child can not be percolated
             // up then move onto other child
             if ( child != this.size && compare( this.elements[child + 1],
-                                           this.elements[child] ) > 0 ) {
+                                                this.elements[child] ) > 0 ) {
                 child++;
             }
 
@@ -404,7 +401,7 @@ public class PriorityQueue extends AbstractCollection
      * @param index
      *            the index of the element to be percolated up
      */
-    protected void percolateUpMinHeap(final int index){
+    protected void percolateUpMinHeap(final int index) {
         int hole = index;
         Object element = this.elements[hole];
         while ( hole > 1 && compare( element,
@@ -425,7 +422,7 @@ public class PriorityQueue extends AbstractCollection
      * @param element
      *            the element
      */
-    protected void percolateUpMinHeap(final Object element){
+    protected void percolateUpMinHeap(final Object element) {
         this.elements[++this.size] = element;
         percolateUpMinHeap( this.size );
     }
@@ -437,7 +434,7 @@ public class PriorityQueue extends AbstractCollection
      * @param index
      *            the index of the element to be percolated up
      */
-    protected void percolateUpMaxHeap(final int index){
+    protected void percolateUpMaxHeap(final int index) {
         int hole = index;
         Object element = this.elements[hole];
 
@@ -460,7 +457,7 @@ public class PriorityQueue extends AbstractCollection
      * @param element
      *            the element
      */
-    protected void percolateUpMaxHeap(final Object element){
+    protected void percolateUpMaxHeap(final Object element) {
         this.elements[++this.size] = element;
         percolateUpMaxHeap( this.size );
     }
@@ -477,12 +474,11 @@ public class PriorityQueue extends AbstractCollection
      *         b
      */
     protected int compare(Object a,
-                          Object b){
+                          Object b) {
         if ( this.comparator != null ) {
             return this.comparator.compare( a,
-                                       b );
-        }
-        else {
+                                            b );
+        } else {
             return ((Comparable) a).compareTo( b );
         }
     }
@@ -490,7 +486,7 @@ public class PriorityQueue extends AbstractCollection
     /**
      * Increases the size of the heap to support additional elements
      */
-    protected void grow(){
+    protected void grow() {
         final Object[] array = new Object[this.elements.length * 2];
         System.arraycopy( this.elements,
                           0,
@@ -506,18 +502,18 @@ public class PriorityQueue extends AbstractCollection
      * 
      * @return an iterator over this heap's elements
      */
-    public Iterator iterator(){
+    public Iterator iterator() {
         return new Iterator() {
 
             private int index             = 1;
 
             private int lastReturnedIndex = -1;
 
-            public boolean hasNext(){
+            public boolean hasNext() {
                 return this.index <= PriorityQueue.this.size;
             }
 
-            public Object next(){
+            public Object next() {
                 if ( !hasNext() ) {
                     throw new NoSuchElementException();
                 }
@@ -526,7 +522,7 @@ public class PriorityQueue extends AbstractCollection
                 return PriorityQueue.this.elements[this.lastReturnedIndex];
             }
 
-            public void remove(){
+            public void remove() {
                 if ( this.lastReturnedIndex == -1 ) {
                     throw new IllegalStateException();
                 }
@@ -542,16 +538,13 @@ public class PriorityQueue extends AbstractCollection
                     if ( PriorityQueue.this.ascendingOrder ) {
                         if ( this.lastReturnedIndex > 1 && compareToParent < 0 ) {
                             percolateUpMinHeap( this.lastReturnedIndex );
-                        }
-                        else {
+                        } else {
                             percolateDownMinHeap( this.lastReturnedIndex );
                         }
-                    }
-                    else { // max heap
+                    } else { // max heap
                         if ( this.lastReturnedIndex > 1 && compareToParent > 0 ) {
                             percolateUpMaxHeap( this.lastReturnedIndex );
-                        }
-                        else {
+                        } else {
                             percolateDownMaxHeap( this.lastReturnedIndex );
                         }
                     }
@@ -569,7 +562,7 @@ public class PriorityQueue extends AbstractCollection
      * 
      * @return a string representation of this heap
      */
-    public String toString(){
+    public String toString() {
         final StringBuffer sb = new StringBuffer();
 
         sb.append( "[ " );

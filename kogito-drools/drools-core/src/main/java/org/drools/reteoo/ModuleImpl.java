@@ -13,16 +13,16 @@ public class ModuleImpl
     private final PriorityQueue activationQueue;
 
     public ModuleImpl(String name,
-                      ConflictResolver conflictResolver){
+                      ConflictResolver conflictResolver) {
         this.name = name;
         this.activationQueue = new PriorityQueue( conflictResolver );
     }
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
-    public boolean equal(Object object){
+    public boolean equal(Object object) {
         if ( (object == null) || !(object instanceof ModuleImpl) ) {
             return false;
         }
@@ -34,15 +34,15 @@ public class ModuleImpl
         return false;
     }
 
-    public int hashcode(){
+    public int hashcode() {
         return this.name.hashCode();
     }
 
-    public PriorityQueue getActivationQueue(){
+    public PriorityQueue getActivationQueue() {
         return this.activationQueue;
     }
 
-    public String toString(){
+    public String toString() {
         return "Module '" + this.name + "'";
     }
 

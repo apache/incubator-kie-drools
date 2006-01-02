@@ -62,7 +62,7 @@ import org.drools.spi.ConflictResolver;
 public class CompositeConflictResolver extends AbstractConflictResolver {
     private final ConflictResolver[] components;
 
-    public CompositeConflictResolver(ConflictResolver[] components){
+    public CompositeConflictResolver(ConflictResolver[] components) {
         this.components = components;
     }
 
@@ -70,7 +70,7 @@ public class CompositeConflictResolver extends AbstractConflictResolver {
      * @see AbstractConflictResolver
      */
     public final int compare(Activation lhs,
-                             Activation rhs){
+                             Activation rhs) {
         int result = 0;
 
         for ( int i = 0; result == 0 && i < this.components.length; ++i ) {

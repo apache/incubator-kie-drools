@@ -57,7 +57,7 @@ public class NoColumnsException extends InvalidRuleException {
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public NoColumnsException(Rule rule){
+    public NoColumnsException(Rule rule) {
         super( rule );
     }
 }

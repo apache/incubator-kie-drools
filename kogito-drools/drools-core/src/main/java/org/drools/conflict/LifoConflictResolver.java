@@ -72,7 +72,7 @@ public class LifoConflictResolver extends AbstractConflictResolver {
      * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance(){
+    public static ConflictResolver getInstance() {
         return LifoConflictResolver.INSTANCE;
     }
 
@@ -83,7 +83,7 @@ public class LifoConflictResolver extends AbstractConflictResolver {
     /**
      * Construct.
      */
-    public LifoConflictResolver(){
+    public LifoConflictResolver() {
         // intentionally left blank
     }
 
@@ -93,7 +93,7 @@ public class LifoConflictResolver extends AbstractConflictResolver {
      * @see ConflictResolver
      */
     public int compare(Activation lhs,
-                       Activation rhs){
+                       Activation rhs) {
         return (int) (rhs.getActivationNumber() - lhs.getActivationNumber());
     }
 }

@@ -49,11 +49,11 @@ public class PrimitiveLongStack
     private int       currentPageId;
     private Page      currentPage;
 
-    public PrimitiveLongStack(){
+    public PrimitiveLongStack() {
         this( 256 );
     }
 
-    public PrimitiveLongStack(int tableSize){
+    public PrimitiveLongStack(int tableSize) {
         this.tableSize = tableSize;
         this.currentPageId = 0;
 
@@ -65,7 +65,7 @@ public class PrimitiveLongStack
                                      this.tableSize );
     }
 
-    public void push(long value){
+    public void push(long value) {
         if ( this.currentPage.getPosition() == this.tableSize - 1 ) {
 
             Page node = new Page( this.currentPage,
@@ -77,7 +77,7 @@ public class PrimitiveLongStack
         this.currentPage.push( value );
     }
 
-    public long pop(){
+    public long pop() {
         if ( this.currentPage.getPosition() == -1 ) {
             if ( this.currentPageId == 0 ) {
                 throw new RuntimeException( "Unable to pop" );
@@ -93,7 +93,7 @@ public class PrimitiveLongStack
         return this.currentPage.pop();
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return this.currentPageId == 0 && this.currentPage.getPosition() == -1;
     }
 
@@ -108,7 +108,7 @@ public class PrimitiveLongStack
 
         Page(Page previousSibling,
              int nodeId,
-             int tableSize){
+             int tableSize) {
             // create bi-directional link
             this.previousSibling = previousSibling;
             if ( this.previousSibling != null ) {
@@ -121,35 +121,35 @@ public class PrimitiveLongStack
             this.table = new long[tableSize];
         }
 
-        public int getNodeId(){
+        public int getNodeId() {
             return this.pageId;
         }
 
-        void setNextSibling(Page nextSibling){
+        void setNextSibling(Page nextSibling) {
             this.nextSibling = nextSibling;
         }
 
-        public Page getNextSibling(){
+        public Page getNextSibling() {
             return this.nextSibling;
         }
 
-        public Page getPreviousSibling(){
+        public Page getPreviousSibling() {
             return this.previousSibling;
         }
 
-        public long pop(){
+        public long pop() {
             return this.table[this.lastKey--];
         }
 
-        public void push(long value){
+        public void push(long value) {
             this.table[++this.lastKey] = value;
         }
 
-        public int getPosition(){
+        public int getPosition() {
             return this.lastKey;
         }
 
-        void remove(){
+        void remove() {
             this.previousSibling.setNextSibling( null );
             this.previousSibling = null;
             this.table = null;

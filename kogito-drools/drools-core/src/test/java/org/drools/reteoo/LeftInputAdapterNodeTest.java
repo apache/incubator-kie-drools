@@ -8,7 +8,7 @@ import org.drools.spi.PropagationContext;
 
 public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
-    public void testLeftInputAdapterNode(){
+    public void testLeftInputAdapterNode() {
         MockObjectSource source = new MockObjectSource( 15 );
         LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 23,
                                                                  0,
@@ -23,7 +23,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                       source.getAttached() );
     }
 
-    public void testAttach() throws Exception{
+    public void testAttach() throws Exception {
         MockObjectSource source = new MockObjectSource( 15 );
 
         LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
@@ -45,7 +45,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                     source.getObjectSinks().get( 0 ) );
     }
 
-    public void testAssertObject() throws Exception{
+    public void testAssertObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
                                                                  null,
@@ -102,7 +102,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                     tuple.get( handle2 ) );
     }
 
-    public void testRetractObject() throws Exception{
+    public void testRetractObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
                                                                  null,
