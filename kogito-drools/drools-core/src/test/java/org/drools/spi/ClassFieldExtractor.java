@@ -28,7 +28,6 @@ public class ClassFieldExtractor
     public Object getValue(Object object) {
         Object value = null;
         try {
-            System.out.println( object );
             value = Introspector.getBeanInfo( this.clazz ).getPropertyDescriptors()[this.index].getReadMethod().invoke( object,
                                                                                                                         null );
         } catch ( Exception e ) {
