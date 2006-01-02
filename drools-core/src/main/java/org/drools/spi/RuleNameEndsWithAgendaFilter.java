@@ -52,22 +52,21 @@ public class RuleNameEndsWithAgendaFilter
 
     private final boolean accept;
 
-    public RuleNameEndsWithAgendaFilter(String suffix){
+    public RuleNameEndsWithAgendaFilter(String suffix) {
         this( suffix,
               true );
     }
 
     public RuleNameEndsWithAgendaFilter(String suffix,
-                                        boolean accept){
+                                        boolean accept) {
         this.suffix = suffix;
         this.accept = accept;
     }
 
-    public boolean accept(Activation activation){
+    public boolean accept(Activation activation) {
         if ( activation.getRule().getName().endsWith( this.suffix ) ) {
             return this.accept;
-        }
-        else {
+        } else {
             return false;
         }
     }

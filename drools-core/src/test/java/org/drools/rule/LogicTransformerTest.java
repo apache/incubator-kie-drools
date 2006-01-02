@@ -13,27 +13,27 @@ public class LogicTransformerTest extends DroolsTestCase {
      * (a||b)&&c
      * 
      * <pre>
-     *            and
-     *            / \
-     *           or  c 
-     *          /  \
-     *         a    b
+     *               and
+     *               / \
+     *              or  c 
+     *             /  \
+     *            a    b
      * </pre>
      * 
      * Should become (a&&c)||(b&&c)
      * 
      * <pre>
-     *              
-     *            or
-     *           /  \  
-     *          /    \ 
-     *         /      \ 
-     *          and      and     
-     *       / \      / \
-     *      a   c    b   c
+     *                 
+     *               or
+     *              /  \  
+     *             /    \ 
+     *            /      \ 
+     *             and      and     
+     *          / \      / \
+     *         a   c    b   c
      * </pre>
      */
-    public void testSingleOrAndOrTransformation() throws InvalidPatternException{
+    public void testSingleOrAndOrTransformation() throws InvalidPatternException {
         String a = "a";
         String b = "b";
         String c = "c";
@@ -73,33 +73,33 @@ public class LogicTransformerTest extends DroolsTestCase {
      * (a||b)&&c
      * 
      * <pre>
-     *                And
-     *               /|\ \__
-     *             _/ | \_  \_
-     *            /   |   \   \  
-     *           or   |   or   not
-     *          /   \ |  / \    |
-     *         a    b c d   e   f
+     *                   And
+     *                  /|\ \__
+     *                _/ | \_  \_
+     *               /   |   \   \  
+     *              or   |   or   not
+     *             /   \ |  / \    |
+     *            a    b c d   e   f
      * </pre>
      * 
      * Should become (a&&c)||(b&&c)
      * 
      * <pre>
-     *                        /\
-     *                      _/  \_
-     *                     /      \
-     *                   _/|       |\_
-     *                __/  |       |  \__
-     *             __/     |       |     \__
-     *            /        |       |        \
-     *           and      and     and      and
-     *          /||\     /||\     /||\     /||\
-     *         a cd Not a ce Not b cd Not b ce Not
-     *               |        |        |        |
-     *               f        f        f        f
+     *                           /\
+     *                         _/  \_
+     *                        /      \
+     *                      _/|       |\_
+     *                   __/  |       |  \__
+     *                __/     |       |     \__
+     *               /        |       |        \
+     *              and      and     and      and
+     *             /||\     /||\     /||\     /||\
+     *            a cd Not a ce Not b cd Not b ce Not
+     *                  |        |        |        |
+     *                  f        f        f        f
      * </pre>
      */
-    public void testMultipleOrAndOrTransformation() throws InvalidPatternException{
+    public void testMultipleOrAndOrTransformation() throws InvalidPatternException {
         String a = "a";
         String b = "b";
         String c = "c";
@@ -193,15 +193,15 @@ public class LogicTransformerTest extends DroolsTestCase {
      * (Not (OR (A B)
      * 
      * <pre>
-     *          Not
-     *           | 
-     *          or   
-     *         /  \
-     *        a    b
+     *             Not
+     *              | 
+     *             or   
+     *            /  \
+     *           a    b
      * </pre>
      * 
      */
-    public void testNotOrTransformation() throws InvalidPatternException{
+    public void testNotOrTransformation() throws InvalidPatternException {
         String a = "a";
         String b = "b";
 
@@ -216,8 +216,7 @@ public class LogicTransformerTest extends DroolsTestCase {
             And newAnd = (And) LogicTransformer.getInstance().applyOrTransformation( not,
                                                                                      or );
             fail( "This should fail as you cannot nest Ors under Nots" );
-        }
-        catch ( InvalidPatternException e ) {
+        } catch ( InvalidPatternException e ) {
             //
         }
     }
@@ -226,15 +225,15 @@ public class LogicTransformerTest extends DroolsTestCase {
      * This data structure is not valid (Exists (OR (A B)
      * 
      * <pre>
-     *          Exists
-     *           | 
-     *          or   
-     *         /  \
-     *        a    b
+     *             Exists
+     *              | 
+     *             or   
+     *            /  \
+     *           a    b
      * </pre>
      * 
      */
-    public void testExistOrTransformation() throws InvalidPatternException{
+    public void testExistOrTransformation() throws InvalidPatternException {
         String a = "a";
         String b = "b";
 
@@ -250,14 +249,13 @@ public class LogicTransformerTest extends DroolsTestCase {
                                                                                      or );
 
             fail( "This should fail as you cannot nest Ors under Existss" );
-        }
-        catch ( InvalidPatternException e ) {
+        } catch ( InvalidPatternException e ) {
             //
         }
 
     }
 
-    public void testDuplicatTransformation() throws InvalidRuleException{
+    public void testDuplicatTransformation() throws InvalidRuleException {
         String a = "a";
         String b = "b";
         String c = "c";
@@ -295,36 +293,36 @@ public class LogicTransformerTest extends DroolsTestCase {
 
     /**
      * <pre>
-     *                      _/|\_
-     *                   __/  |  \__
-     *                  /     |     \ 
-     *               __/      |      \__
-     *              /         |         \
-     *             And       and        Not
-     *            / | \      / \         |
-     *          a  And d    e  Or        h
-     *             / \        /  \      
-     *            b  Not     f  Exists    
-     *                |           |      
-     *               Not          g   
-     *                |           
-     *                c         
+     *                         _/|\_
+     *                      __/  |  \__
+     *                     /     |     \ 
+     *                  __/      |      \__
+     *                 /         |         \
+     *                And       and        Not
+     *               / | \      / \         |
+     *             a  And d    e  Or        h
+     *                / \        /  \      
+     *               b  Not     f  Exists    
+     *                   |           |      
+     *                  Not          g   
+     *                   |           
+     *                   c         
      * </pre>
      * <pre>
-     *                        _/|\__
-     *                     __/  |   \___
-     *                    /     |       \__
-     *                 __/      |          \__
-     *                /         |             \__
-     *               /          |                \__
-     *              |           |                   \
-     *             And          Or                 Not
-     *           / | | \       /  \                 |  
-     *         a   b d Not   And   And              i
-     *                  |    / \  / |            
-     *                 Not  e  f e Exists       
-     *                  |           |        
-     *                  c           g        
+     *                           _/|\__
+     *                        __/  |   \___
+     *                       /     |       \__
+     *                    __/      |          \__
+     *                   /         |             \__
+     *                  /          |                \__
+     *                 |           |                   \
+     *                And          Or                 Not
+     *              / | | \       /  \                 |  
+     *            a   b d Not   And   And              i
+     *                     |    / \  / |            
+     *                    Not  e  f e Exists       
+     *                     |           |        
+     *                     c           g        
      * </pre>
      * 
      * @throws IOException
@@ -335,7 +333,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      */
     public void testProcessTree() throws IOException,
                                  ClassNotFoundException,
-                                 InvalidPatternException{
+                                 InvalidPatternException {
         String a = "a";
         String b = "b";
         String c = "c";
@@ -417,7 +415,7 @@ public class LogicTransformerTest extends DroolsTestCase {
                       root );
     }
 
-    public void testCloneable(){
+    public void testCloneable() {
         String a = "a";
         String b = "b";
         String c = "c";
@@ -461,35 +459,35 @@ public class LogicTransformerTest extends DroolsTestCase {
      * /**
      * 
      * <pre>
-     *                      _/|\_
-     *                   __/  |  \__
-     *                  /     |     \ 
-     *               __/      |      \__
-     *              /         |         \
-     *             And       or         And
-     *            /  \       / \        /  \
-     *          a    Or     d   e      Not OR
-     *              / \                |  / | 
-     *            b    c               f g Not
-     *                                      |
-     *                                      h
-     *               
-     *                
-     *               
+     *                         _/|\_
+     *                      __/  |  \__
+     *                     /     |     \ 
+     *                  __/      |      \__
+     *                 /         |         \
+     *                And       or         And
+     *               /  \       / \        /  \
+     *             a    Or     d   e      Not OR
+     *                 / \                |  / | 
+     *               b    c               f g Not
+     *                                         |
+     *                                         h
+     *                  
+     *                   
+     *                  
      * </pre>
      * 
      * Each And is a Rete sub rule
      * 
      * <pre>
-     *  
-     * 
-     *    And___     And___      And___      And___        And__    And___       And___    And___     
-     *   ||| |  \   ||| |  \     ||| |  \   ||| |  \     ||| |  \  ||| |  \     ||| |  \  ||| |  \ 
-     *   dab Not g  dab Not Not  dac Not g  dac Not Not  eab Not g eab Not Not  eac Not g eac Not Not
-     *        |          |   |        |          |   |   |    |        |    |       |          |   |   
-     *        f          f   h        f          f   h        f        f    h       f          f   h
-     *                     
-     *                     
+     *     
+     *    
+     *       And___     And___      And___      And___        And__    And___       And___    And___     
+     *      ||| |  \   ||| |  \     ||| |  \   ||| |  \     ||| |  \  ||| |  \     ||| |  \  ||| |  \ 
+     *      dab Not g  dab Not Not  dac Not g  dac Not Not  eab Not g eab Not Not  eac Not g eac Not Not
+     *           |          |   |        |          |   |   |    |        |    |       |          |   |   
+     *           f          f   h        f          f   h        f        f    h       f          f   h
+     *                        
+     *                        
      * </pre>
      * 
      * @throws IOException
@@ -504,7 +502,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      */
     public void testTransform() throws IOException,
                                ClassNotFoundException,
-                               InvalidPatternException{
+                               InvalidPatternException {
         String a = "a";
         String b = "b";
         String c = "c";
@@ -589,7 +587,7 @@ public class LogicTransformerTest extends DroolsTestCase {
     }
 
     private void writeTree(Object object,
-                           String fileName) throws IOException{
+                           String fileName) throws IOException {
         String className = this.getClass().getName();
 
         File file = new File( this.getClass().getResource( className.substring( className.lastIndexOf( '.' ) + 1 ) + ".class" ).getFile() );

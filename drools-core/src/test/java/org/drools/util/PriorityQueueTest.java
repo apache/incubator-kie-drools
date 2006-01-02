@@ -31,7 +31,7 @@ import junit.framework.TestCase;
  * @version $Id: PriorityQueueTest.java,v 1.1 2005/07/26 01:06:34 mproctor Exp $
  */
 public class PriorityQueueTest extends TestCase {
-    public void testIsSerializable(){
+    public void testIsSerializable() {
         assertTrue( Serializable.class.isAssignableFrom( PriorityQueue.class ) );
     }
 }

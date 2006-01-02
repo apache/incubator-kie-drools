@@ -74,7 +74,7 @@ public class SimplicityConflictResolver extends AbstractConflictResolver {
      * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance(){
+    public static ConflictResolver getInstance() {
         return SimplicityConflictResolver.INSTANCE;
     }
 
@@ -85,7 +85,7 @@ public class SimplicityConflictResolver extends AbstractConflictResolver {
     /**
      * Construct.
      */
-    public SimplicityConflictResolver(){
+    public SimplicityConflictResolver() {
         // intentionally left blank
     }
 
@@ -95,7 +95,7 @@ public class SimplicityConflictResolver extends AbstractConflictResolver {
      * @see ConflictResolver
      */
     public int compare(Activation lhs,
-                       Activation rhs){
+                       Activation rhs) {
         return lhs.getRule().getPatternSize() - rhs.getRule().getPatternSize();
     }
 }

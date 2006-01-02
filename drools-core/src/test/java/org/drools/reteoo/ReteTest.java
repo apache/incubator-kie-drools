@@ -60,7 +60,7 @@ public class ReteTest extends DroolsTestCase {
 
     private ObjectTypeNode    cheeseTypeNode;
 
-    public void setUp(){
+    public void setUp() {
         RuleBaseImpl ruleBase = new RuleBaseImpl();
         this.workingMemory = new WorkingMemoryImpl( ruleBase );
 
@@ -88,10 +88,10 @@ public class ReteTest extends DroolsTestCase {
 
     }
 
-    public void tearDown(){
+    public void tearDown() {
     }
 
-    public void testGetObjectTypeNodes() throws Exception{
+    public void testGetObjectTypeNodes() throws Exception {
         Collection objectTypeNodes = this.rete.getObjectTypeNodes();
 
         // Check the ObjectTypeNodes are correctly added to Rete
@@ -116,7 +116,7 @@ public class ReteTest extends DroolsTestCase {
      * All objects asserted to a RootNode must be propagated to all children
      * ObjectTypeNodes.
      */
-    public void testAssertObject() throws Exception{
+    public void testAssertObject() throws Exception {
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
@@ -177,7 +177,7 @@ public class ReteTest extends DroolsTestCase {
      * All objects retracted from a RootNode must be propagated to all children
      * ObjectTypeNodes.
      */
-    public void testRetractObject() throws Exception{
+    public void testRetractObject() throws Exception {
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
@@ -242,22 +242,22 @@ public class ReteTest extends DroolsTestCase {
     class Cheese {
         private String cheese;
 
-        public Cheese(String cheese){
+        public Cheese(String cheese) {
             this.cheese = cheese;
         }
 
-        public String getCheese(){
+        public String getCheese() {
             return this.cheese;
         }
 
-        public boolean equals(Object object){
+        public boolean equals(Object object) {
             if ( object != null || !(object instanceof Cheese) ) {
                 return false;
             }
             return this.cheese.equals( object );
         }
 
-        public int hashcode(){
+        public int hashcode() {
             return this.cheese.hashCode();
         }
     }

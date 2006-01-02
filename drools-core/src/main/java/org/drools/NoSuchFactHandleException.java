@@ -63,7 +63,7 @@ public class NoSuchFactHandleException extends FactException {
      * @param object
      *            The invalid fact object.
      */
-    public NoSuchFactHandleException(Object object){
+    public NoSuchFactHandleException(Object object) {
         super( createMessage( object ) );
         this.object = object;
     }
@@ -75,7 +75,7 @@ public class NoSuchFactHandleException extends FactException {
      *            The invalid fact object.
      */
     public NoSuchFactHandleException(Object object,
-                                     Throwable cause){
+                                     Throwable cause) {
         super( createMessage( object ),
                cause );
         this.object = object;
@@ -86,11 +86,11 @@ public class NoSuchFactHandleException extends FactException {
      * 
      * @return The invalid fact object.
      */
-    public Object getObject(){
+    public Object getObject() {
         return this.object;
     }
 
-    private static String createMessage(Object object){
+    private static String createMessage(Object object) {
         return object == null ? "null fact object" : "no such fact handle for object:" + object;
     }
 }

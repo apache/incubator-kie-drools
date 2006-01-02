@@ -58,35 +58,35 @@ public class ReteooNodeEventSupport
     private final List          listeners = new ArrayList();
     private final WorkingMemory workingMemory;
 
-    public ReteooNodeEventSupport(WorkingMemory workingMemory){
+    public ReteooNodeEventSupport(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
     }
 
-    public void addEventListener(ReteooNodeEventListener listener){
+    public void addEventListener(ReteooNodeEventListener listener) {
         if ( !this.listeners.contains( listener ) ) {
             this.listeners.add( listener );
         }
     }
 
-    public void removeEventListener(ReteooNodeEventListener listener){
+    public void removeEventListener(ReteooNodeEventListener listener) {
         this.listeners.remove( listener );
     }
 
-    public List getEventListeners(){
+    public List getEventListeners() {
         return Collections.unmodifiableList( this.listeners );
     }
 
-    public int size(){
+    public int size() {
         return this.listeners.size();
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return this.listeners.isEmpty();
     }
 
     public void propagateReteooNode(ReteooNode node,
                                     Tuple tuple,
-                                    boolean result){
+                                    boolean result) {
         if ( this.listeners.isEmpty() ) {
             return;
         }

@@ -11,11 +11,11 @@ public abstract class ConditionalElement
     Cloneable {
     private List children = new ArrayList();
 
-    public void addChild(Object child){
+    public void addChild(Object child) {
         this.children.add( child );
     }
 
-    public List getChildren(){
+    public List getChildren() {
         return this.children;
     }
 
@@ -27,7 +27,7 @@ public abstract class ConditionalElement
      * @param e2
      * @return
      */
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         // Return false if its null or not an instance of ConditionalElement
         if ( object == null || !(object instanceof ConditionalElement) ) {
             return false;
@@ -55,19 +55,16 @@ public abstract class ConditionalElement
                         System.out.println( e1Object1.getClass().getName() + " did not have identical children" );
                         return false;
                     }
-                }
-                else {
+                } else {
                     System.out.println( "Should be the equal Conditionalelements but instead was '" + e1Object1.getClass().getName() + "', '" + e2Object1.getClass().getName() + "'" );
                     return false;
                 }
-            }
-            else if ( e1Object1 instanceof String ) {
+            } else if ( e1Object1 instanceof String ) {
                 if ( !e1Object1.equals( e2Object1 ) ) {
                     System.out.println( "Should be the equal Strings but instead was '" + e1Object1 + "', '" + e2Object1 + "'" );
                     return false;
                 }
-            }
-            else {
+            } else {
                 System.out.println( "Objects are neither instances of ConditionalElement or String" );
                 return false;
             }
@@ -76,7 +73,7 @@ public abstract class ConditionalElement
         return true;
     }
 
-    public int hashCode(){
+    public int hashCode() {
         return this.children.hashCode();
     }
 
@@ -88,16 +85,14 @@ public abstract class ConditionalElement
      * @param e2
      * @return
      */
-    public Object clone(){
+    public Object clone() {
         ConditionalElement cloned = null;
 
         try {
             cloned = (ConditionalElement) this.getClass().newInstance();
-        }
-        catch ( InstantiationException e ) {
+        } catch ( InstantiationException e ) {
             throw new RuntimeException( "Could not clone '" + this.getClass().getName() + "'" );
-        }
-        catch ( IllegalAccessException e ) {
+        } catch ( IllegalAccessException e ) {
             throw new RuntimeException( "Could not clone '" + this.getClass().getName() + "'" );
         }
 

@@ -49,7 +49,7 @@ public class JoinNode extends BetaNode {
              ObjectSource rightInput,
              int column,
              // BetaNodeDecorator decorator,
-             BetaNodeBinder joinNodeBinder){
+             BetaNodeBinder joinNodeBinder) {
         super( id,
                leftInput,
                rightInput,
@@ -69,7 +69,7 @@ public class JoinNode extends BetaNode {
      */
     public void assertTuple(ReteTuple leftTuple,
                             PropagationContext context,
-                            WorkingMemoryImpl workingMemory) throws FactException{
+                            WorkingMemoryImpl workingMemory) throws FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( !memory.contains( leftTuple.getKey() ) ) {
             TupleMatches tupleMatches = new TupleMatches( leftTuple );
@@ -114,7 +114,7 @@ public class JoinNode extends BetaNode {
     public void assertObject(Object object,
                              FactHandleImpl handle,
                              PropagationContext context,
-                             WorkingMemoryImpl workingMemory) throws FactException{
+                             WorkingMemoryImpl workingMemory) throws FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( !memory.contains( handle ) ) {
             memory.add( handle );
@@ -162,7 +162,7 @@ public class JoinNode extends BetaNode {
      */
     public void retractTuples(TupleKey leftKey,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException{
+                              WorkingMemoryImpl workingMemory) throws FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         if ( memory.contains( leftKey ) ) {
@@ -177,7 +177,7 @@ public class JoinNode extends BetaNode {
                                         new TupleKey( column,
                                                       handle ) ) );
             }
-            propagateRectractTuples( keys,
+            propagateRetractTuples( keys,
                                      context,
                                      workingMemory );
         }
@@ -193,7 +193,7 @@ public class JoinNode extends BetaNode {
      */
     public void retractObject(FactHandleImpl handle,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException{
+                              WorkingMemoryImpl workingMemory) throws FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         if ( memory.contains( handle ) ) {
@@ -212,13 +212,13 @@ public class JoinNode extends BetaNode {
                                             rightKey ) );
                 }
             }
-            propagateRectractTuples( keys,
+            propagateRetractTuples( keys,
                                      context,
                                      workingMemory );
         }
     }
 
-    public void remove(){
+    public void remove() {
         // TODO Auto-generated method stub
 
     }

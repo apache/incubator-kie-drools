@@ -1,26 +1,31 @@
 package org.drools.reteoo;
 
+import java.beans.IntrospectionException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.rule.Declaration;
+import org.drools.rule.EvaluatorFactory;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
-import org.drools.rule.StringConstraintComparator;
-import org.drools.rule.ConstraintTest.Cheese;
-import org.drools.spi.ConstraintComparator;
+import org.drools.spi.BaseEvaluator;
+import org.drools.spi.ClassFieldExtractor;
+import org.drools.spi.Evaluator;
+import org.drools.spi.Field;
+import org.drools.spi.FieldExtractor;
 import org.drools.spi.LiteralExpressionConstraint;
+import org.drools.spi.MockField;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.ReturnValueExpressionConstraint;
 import org.drools.spi.Tuple;
 
 public class AlphaNodeTest extends DroolsTestCase {
 
-    public void testAttach() throws Exception{
+    public void testAttach() throws Exception {
         MockObjectSource source = new MockObjectSource( 15 );
 
         AlphaNode alphaNode = new AlphaNode( 2,
@@ -38,7 +43,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                     source.getObjectSinks().get( 0 ) );
     }
 
-    public void testMemory(){
+    public void testMemory() {
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
         AlphaNode alphaNode = new AlphaNode( 2,
@@ -51,7 +56,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertNotNull( memory );
     }
 
-    public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception{
+    public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception {
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
@@ -60,26 +65,25 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         MockObjectSource source = new MockObjectSource( 15 );
 
-        LiteralExpressionConstraint isCheddar = new LiteralExpressionConstraint() {
+        int index = Cheese.getIndex( Cheese.class,
+                                     "type" );
 
-            public boolean isAllowed(Object object,
-                                     ConstraintComparator comparator){
-                Cheese cheese = (Cheese) object;
-                return comparator.compare( cheese.getType(),
-                                           "cheddar" );
+        Field field = new MockField( "type",
+                                     "cheddar",
+                                     index );
 
-            }
-        };
+        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                            field.getIndex() );
 
-        /*
-         * Creates a constraint with the given expression
-         */
-        LiteralConstraint constraint0 = new LiteralConstraint( isCheddar,
-                                                               new StringConstraintComparator( ConstraintComparator.EQUAL ) );
+        Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                           Evaluator.EQUAL );
+        LiteralConstraint constraint = new LiteralConstraint( field,
+                                                              extractor,
+                                                              evaluator );
 
         /* Without Memory */
         AlphaNode alphaNode = new AlphaNode( 2,
-                                             constraint0,
+                                             constraint,
                                              false,
                                              source );
         MockObjectSink sink = new MockObjectSink();
@@ -135,7 +139,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                     list[0] );
     }
 
-    public void testLiteralConstraintAssertObjectWithMemory() throws Exception{
+    public void testLiteralConstraintAssertObjectWithMemory() throws Exception {
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
@@ -144,26 +148,25 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         MockObjectSource source = new MockObjectSource( 15 );
 
-        LiteralExpressionConstraint isCheddar = new LiteralExpressionConstraint() {
+        int index = Cheese.getIndex( Cheese.class,
+                                     "type" );
 
-            public boolean isAllowed(Object object,
-                                     ConstraintComparator comparator){
-                Cheese cheese = (Cheese) object;
-                return comparator.compare( cheese.getType(),
-                                           "cheddar" );
+        Field field = new MockField( "type",
+                                     "cheddar",
+                                     index );
 
-            }
-        };
+        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                            field.getIndex() );
 
-        /*
-         * Creates a constraint with the given expression
-         */
-        LiteralConstraint constraint0 = new LiteralConstraint( isCheddar,
-                                                               new StringConstraintComparator( ConstraintComparator.EQUAL ) );
+        Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                           Evaluator.EQUAL );
+        LiteralConstraint constraint = new LiteralConstraint( field,
+                                                              extractor,
+                                                              evaluator );
 
         /* With Memory */
         AlphaNode alphaNode = new AlphaNode( 2,
-                                             constraint0,
+                                             constraint,
                                              true,
                                              source );
 
@@ -239,7 +242,7 @@ public class AlphaNodeTest extends DroolsTestCase {
      * on the previous two tests. This just test AlphaNode With a different
      * Constraint type.
      */
-    public void testReturnValueConstraintAssertObject() throws Exception{
+    public void testReturnValueConstraintAssertObject() throws Exception {
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
@@ -248,41 +251,24 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         MockObjectSource source = new MockObjectSource( 15 );
 
-        ReturnValueExpressionConstraint isCheddar = new ReturnValueExpressionConstraint() {
+        int index = Cheese.getIndex( Cheese.class,
+                                     "type" );
 
-            public boolean isAllowed(Object object,
-                                     ConstraintComparator comparator){
-                Cheese cheese = (Cheese) object;
-                return comparator.compare( cheese.getType(),
-                                           "cheddar" );
-            }
+        Field field = new MockField( "type",
+                                     "cheddar",
+                                     index );
 
-            /* everything is ignored - except object */
-            public boolean isAllowed(Object object,
-                                     FactHandle handle,
-                                     Declaration[] declarations,
-                                     Tuple tuple,
-                                     ConstraintComparator comparator){
-                Cheese cheese = (Cheese) object;
-                return comparator.compare( cheese.getType(),
-                                           "cheddar" );
-            }
-        };
+        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                            field.getIndex() );
 
-        /*
-         * Creates a constraint with the given expression
-         */
-        ReturnValueConstraint constraint0 = new ReturnValueConstraint( isCheddar,
-                                                                       null, // alpha
-                                                                                // nodes
-                                                                                // cannot
-                                                                                // have
-                                                                                // required
-                                                                                // declarations
-                                                                       new StringConstraintComparator( ConstraintComparator.EQUAL ) );
+        Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                           Evaluator.EQUAL );
+        LiteralConstraint constraint = new LiteralConstraint( field,
+                                                              extractor,
+                                                              evaluator );
 
         AlphaNode alphaNode = new AlphaNode( 2,
-                                             constraint0,
+                                             constraint,
                                              true,
                                              source );
         MockObjectSink sink = new MockObjectSink();
@@ -326,7 +312,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                     list[0] );
     }
 
-    public void testRetractObjectWithoutMemory() throws Exception{
+    public void testRetractObjectWithoutMemory() throws Exception {
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
@@ -338,12 +324,13 @@ public class AlphaNodeTest extends DroolsTestCase {
         /*
          * just create a dummy constraint, as no evaluation happens in retract
          */
-        LiteralConstraint constraint0 = new LiteralConstraint( null,
-                                                               null );
+        LiteralConstraint constraint = new LiteralConstraint( null,
+                                                              null,
+                                                              null );
 
         /* With Memory */
         AlphaNode alphaNode = new AlphaNode( 2,
-                                             constraint0,
+                                             constraint,
                                              false,
                                              source );
 
@@ -375,7 +362,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                     list[0] );
     }
 
-    public void testRetractObjectWithMemory() throws Exception{
+    public void testRetractObjectWithMemory() throws Exception {
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
@@ -384,26 +371,25 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         MockObjectSource source = new MockObjectSource( 15 );
 
-        LiteralExpressionConstraint isCheddar = new LiteralExpressionConstraint() {
+        int index = Cheese.getIndex( Cheese.class,
+                                     "type" );
 
-            public boolean isAllowed(Object object,
-                                     ConstraintComparator comparator){
-                Cheese cheese = (Cheese) object;
-                return comparator.compare( cheese.getType(),
-                                           "cheddar" );
+        Field field = new MockField( "type",
+                                     "cheddar",
+                                     index );
 
-            }
-        };
+        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                            field.getIndex() );
 
-        /*
-         * Creates a constraint with the given expression
-         */
-        LiteralConstraint constraint0 = new LiteralConstraint( isCheddar,
-                                                               new StringConstraintComparator( ConstraintComparator.EQUAL ) );
+        Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                           Evaluator.EQUAL );
+        LiteralConstraint constraint = new LiteralConstraint( field,
+                                                              extractor,
+                                                              evaluator );
 
         /* With Memory */
         AlphaNode alphaNode = new AlphaNode( 2,
-                                             constraint0,
+                                             constraint,
                                              true,
                                              source );
         MockObjectSink sink = new MockObjectSink();
@@ -459,7 +445,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
     }
 
-    public void testUpdateNewNodeWithoutMemory() throws FactException{
+    public void testUpdateNewNodeWithoutMemory() throws FactException,
+                                                IntrospectionException {
         // An AlphaNode without memory needs to inform the parent ObjectTypeNode
         // to repropagate its memory
 
@@ -473,19 +460,24 @@ public class AlphaNodeTest extends DroolsTestCase {
         // propate its contents
         MockObjectSource source = new MockObjectSource( 1 );
 
-        // Create an AlphaNode constraint that always passes
-        LiteralExpressionConstraint mockConstraint0 = new LiteralExpressionConstraint() {
-            public boolean isAllowed(Object object,
-                                     ConstraintComparator comparator){
-                return true;
-            }
-        };
+        int index = Cheese.getIndex( Cheese.class,
+                                     "type" );
 
-        LiteralConstraint constraint0 = new LiteralConstraint( mockConstraint0,
-                                                               new StringConstraintComparator( ConstraintComparator.EQUAL ) );
+        Field field = new MockField( "type",
+                                     "cheddar",
+                                     index );
+
+        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                            field.getIndex() );
+
+        Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                           Evaluator.EQUAL );
+        LiteralConstraint constraint = new LiteralConstraint( field,
+                                                              extractor,
+                                                              evaluator );
 
         AlphaNode alphaNode = new AlphaNode( 2,
-                                             constraint0,
+                                             constraint,
                                              false, /* Without Memory */
                                              source );
         alphaNode.attach();
@@ -504,7 +496,8 @@ public class AlphaNodeTest extends DroolsTestCase {
                       source.getUdated() );
     }
 
-    public void testUpdateNewNodeWithMemory() throws FactException{
+    public void testUpdateNewNodeWithMemory() throws FactException,
+                                             IntrospectionException {
         // An AlphaNode with memory should not try and repropagate from its
         // source
         // Also it should only update the latest tuple sink
@@ -517,19 +510,24 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         MockObjectSource source = new MockObjectSource( 1 );
 
-        // Create an AlphaNode that always passes
-        LiteralExpressionConstraint mockConstraint0 = new LiteralExpressionConstraint() {
-            public boolean isAllowed(Object object,
-                                     ConstraintComparator comparator){
-                return true;
-            }
-        };
+        int index = Cheese.getIndex( Cheese.class,
+                                     "type" );
 
-        LiteralConstraint constraint0 = new LiteralConstraint( mockConstraint0,
-                                                               new StringConstraintComparator( ConstraintComparator.EQUAL ) );
+        Field field = new MockField( "type",
+                                     "cheddar",
+                                     index );
+
+        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                            field.getIndex() );
+
+        Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                           Evaluator.EQUAL );
+        LiteralConstraint constraint = new LiteralConstraint( field,
+                                                              extractor,
+                                                              evaluator );
 
         AlphaNode alphaNode = new AlphaNode( 2,
-                                             constraint0,
+                                             constraint,
                                              true, /* With Memory */
                                              source );
 
@@ -541,12 +539,13 @@ public class AlphaNodeTest extends DroolsTestCase {
         // Assert a single fact which should be in the AlphaNode memory and also
         // propagated to the
         // the tuple sink
-        String object1 = "string";
+        Cheese cheese = new Cheese( "cheddar",
+                                    0 );
         FactHandleImpl handle1 = new FactHandleImpl( 1 );
         workingMemory.putObject( handle1,
-                                 object1 );
+                                 cheese );
 
-        source.propagateAssertObject( object1,
+        source.propagateAssertObject( cheese,
                                       handle1,
                                       context,
                                       workingMemory );

@@ -95,7 +95,7 @@ class ObjectTypeNode extends ObjectSource
      */
     public ObjectTypeNode(int id,
                           ObjectType objectType,
-                          Rete rete){
+                          Rete rete) {
         super( id );
         this.rete = rete;
         this.objectType = objectType;
@@ -111,11 +111,11 @@ class ObjectTypeNode extends ObjectSource
      * 
      * @return The semantic <code>ObjectType</code> differentiator.
      */
-    public ObjectType getObjectType(){
+    public ObjectType getObjectType() {
         return this.objectType;
     }
 
-    public int getId(){
+    public int getId() {
         return this.id;
     }
 
@@ -135,7 +135,7 @@ class ObjectTypeNode extends ObjectSource
     public void assertObject(Object object,
                              FactHandleImpl handle,
                              PropagationContext context,
-                             WorkingMemoryImpl workingMemory) throws FactException{
+                             WorkingMemoryImpl workingMemory) throws FactException {
         if ( this.objectType.matches( object ) ) {
             PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
             memory.put( handle.getId(),
@@ -162,7 +162,7 @@ class ObjectTypeNode extends ObjectSource
      */
     public void retractObject(FactHandleImpl handle,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException{
+                              WorkingMemoryImpl workingMemory) throws FactException {
         try {
             if ( this.objectType.matches( workingMemory.getObject( handle ) ) ) {
                 PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
@@ -172,14 +172,13 @@ class ObjectTypeNode extends ObjectSource
                                         context,
                                         workingMemory );
             }
-        }
-        catch ( NoSuchFactObjectException e ) {
+        } catch ( NoSuchFactObjectException e ) {
             throw new RetractionException( e );
         }
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException{
+                              PropagationContext context) throws FactException {
         this.attachingNewNode = true;
 
         PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
@@ -199,11 +198,11 @@ class ObjectTypeNode extends ObjectSource
     /**
      * Rete needs to know that this ObjectTypeNode has been added
      */
-    public void attach(){
+    public void attach() {
         this.rete.addObjectSink( this );
     }
 
-    public void remove(){
+    public void remove() {
         // this.rete.removeObjectSink( this );
     }
 
@@ -211,16 +210,16 @@ class ObjectTypeNode extends ObjectSource
      * Rete needs to know that this ObjectTypeNode has had new nodes attached to
      * it one one of its ancestors
      */
-    public void addShare(){
+    public void addShare() {
         super.addShare();
     }
 
-    public Object createMemory(){
+    public Object createMemory() {
         return new PrimitiveLongMap( 32,
                                      8 );
     }
 
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if ( this == object ) {
             return true;
         }

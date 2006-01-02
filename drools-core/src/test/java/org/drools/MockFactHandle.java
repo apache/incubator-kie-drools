@@ -46,19 +46,19 @@ public class MockFactHandle
     FactHandle {
     private int id;
 
-    public MockFactHandle(int id){
+    public MockFactHandle(int id) {
         this.id = id;
     }
 
-    public String toExternalForm(){
+    public String toExternalForm() {
         return "[fact:" + this.id + "]";
     }
 
-    public int hashCode(){
+    public int hashCode() {
         return this.id;
     }
 
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if ( this == object ) {
             return true;
         }
@@ -70,7 +70,7 @@ public class MockFactHandle
         return ((MockFactHandle) object).id == this.id;
     }
 
-    public long getId(){
+    public long getId() {
         return this.id;
     }
 }

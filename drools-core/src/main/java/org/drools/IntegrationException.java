@@ -45,14 +45,14 @@ public class IntegrationException extends DroolsException {
     /**
      * @see java.lang.Exception#Exception()
      */
-    public IntegrationException(){
+    public IntegrationException() {
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public IntegrationException(String message){
+    public IntegrationException(String message) {
         super( message );
     }
 
@@ -60,14 +60,14 @@ public class IntegrationException extends DroolsException {
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     public IntegrationException(String message,
-                                Throwable cause){
+                                Throwable cause) {
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public IntegrationException(Throwable cause){
+    public IntegrationException(Throwable cause) {
         super( cause );
     }
 }

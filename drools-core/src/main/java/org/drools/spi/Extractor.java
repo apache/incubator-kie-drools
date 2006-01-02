@@ -6,4 +6,6 @@ public interface Extractor
     extends
     Serializable {
     Object getValue(Object object);
+    
+    Class getValueType();
 }

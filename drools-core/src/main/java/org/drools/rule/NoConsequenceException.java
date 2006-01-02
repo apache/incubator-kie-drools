@@ -57,7 +57,7 @@ public class NoConsequenceException extends InvalidRuleException {
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public NoConsequenceException(Rule rule){
+    public NoConsequenceException(Rule rule) {
         super( rule );
     }
 }

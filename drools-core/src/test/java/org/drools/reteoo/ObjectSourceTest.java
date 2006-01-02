@@ -9,7 +9,7 @@ import org.drools.spi.PropagationContext;
 
 public class ObjectSourceTest extends DroolsTestCase {
 
-    public void testObjectSourceConstructor(){
+    public void testObjectSourceConstructor() {
         MockObjectSource source = new MockObjectSource( 15 );
         assertEquals( 15,
                       source.getId() );
@@ -21,7 +21,7 @@ public class ObjectSourceTest extends DroolsTestCase {
                       source.getAttached() );
     }
 
-    public void testAddObjectSink(){
+    public void testAddObjectSink() {
         MockObjectSource source = new MockObjectSource( 15 );
         assertLength( 0,
                       source.getObjectSinks() );
@@ -35,7 +35,7 @@ public class ObjectSourceTest extends DroolsTestCase {
                       source.getObjectSinks() );
     }
 
-    public void testPropagateAssertObject() throws Exception{
+    public void testPropagateAssertObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
                                                                  null,
@@ -113,16 +113,14 @@ public class ObjectSourceTest extends DroolsTestCase {
                                           workingMemory );
             fail( "Should have thrown 'AssertionException'" );
 
-        }
-        catch ( AssertionException e ) {
+        } catch ( AssertionException e ) {
             // this exception should be thrown
-        }
-        catch ( Exception e ) {
+        } catch ( Exception e ) {
             fail( "Should have thrown 'AssertionException' and not '" + e.getClass() + "'" );
         }
     }
 
-    public void testPropagateRetractObject() throws Exception{
+    public void testPropagateRetractObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
                                                                  null,
@@ -197,16 +195,14 @@ public class ObjectSourceTest extends DroolsTestCase {
                                            workingMemory );
             fail( "Should have thrown 'RetractionException'" );
 
-        }
-        catch ( RetractionException e ) {
+        } catch ( RetractionException e ) {
 
-        }
-        catch ( Exception e ) {
+        } catch ( Exception e ) {
             fail( "Should have thrown 'RetractionException' and not '" + e.getClass() + "'" );
         }
     }
 
-    public void testAttachNewNode() throws FactException{
+    public void testAttachNewNode() throws FactException {
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
                                                                  null,

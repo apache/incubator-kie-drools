@@ -118,7 +118,7 @@ abstract class BetaNode extends TupleSource
              ObjectSource rightInput,
              int column,
              // BetaNodeDecorator decorator,
-             BetaNodeBinder joinNodeBinder){
+             BetaNodeBinder joinNodeBinder) {
         super( id );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
@@ -129,7 +129,7 @@ abstract class BetaNode extends TupleSource
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException{
+                              PropagationContext context) throws FactException {
         this.attachingNewNode = true;
 
         TupleSource source = null;
@@ -155,8 +155,7 @@ abstract class BetaNode extends TupleSource
                                           context,
                                           workingMemory );
                 }
-            }
-            else if ( object instanceof Map ) {
+            } else if ( object instanceof Map ) {
                 Map map = (Map) object;
                 for ( Iterator it = map.values().iterator(); it.hasNext(); ) {
                     propagateAssertTuple( (ReteTuple) it.next(),
@@ -164,8 +163,7 @@ abstract class BetaNode extends TupleSource
                                           workingMemory );
                 }
             }
-        }
-        else {
+        } else {
             // No children with memory so re-determine tuples
             // first get a reference to the left and right memories then nuke
             // and rebuild the memory
@@ -211,7 +209,7 @@ abstract class BetaNode extends TupleSource
      */
     protected void propagateAssertTuples(TupleSet joinedTuples,
                                          PropagationContext context,
-                                         WorkingMemoryImpl workingMemory) throws FactException{
+                                         WorkingMemoryImpl workingMemory) throws FactException {
         Iterator tupleIter = joinedTuples.iterator();
         while ( tupleIter.hasNext() ) {
             propagateAssertTuple( (ReteTuple) tupleIter.next(),
@@ -231,9 +229,9 @@ abstract class BetaNode extends TupleSource
      *             If an errors occurs while asserting.
      * @throws RetractionException
      */
-    protected void propagateRectractTuples(List keys,
+    protected void propagateRetractTuples(List keys,
                                            PropagationContext context,
-                                           WorkingMemoryImpl workingMemory) throws FactException{
+                                           WorkingMemoryImpl workingMemory) throws FactException {
         Iterator it = keys.iterator();
         while ( it.hasNext() ) {
             propagateRetractTuples( (TupleKey) it.next(),
@@ -242,36 +240,36 @@ abstract class BetaNode extends TupleSource
         }
     }
 
-    int getColumn(){
+    int getColumn() {
         return this.column;
     }
 
-    public void attach(){
+    public void attach() {
         this.leftInput.addTupleSink( this );
         this.rightInput.addObjectSink( this );
     }
 
-    public void remove(){
+    public void remove() {
 
     }
 
-    BetaNodeBinder getJoinNodeBinder(){
+    BetaNodeBinder getJoinNodeBinder() {
         return this.joinNodeBinder;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    public String toString(){
+    public String toString() {
         // return "[JoinNode: common=" + this.commonDeclarations + "; decls=" +
         // this.tupleDeclarations + "]";
         return "";
     }
 
-    public int hashCode(){
+    public int hashCode() {
         return this.leftInput.hashCode() ^ this.rightInput.hashCode();
     }
 
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if ( this == object ) {
             return true;
         }
@@ -285,7 +283,7 @@ abstract class BetaNode extends TupleSource
         return this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.joinNodeBinder.equals( other.joinNodeBinder );
     }
 
-    public Object createMemory(){
+    public Object createMemory() {
         return new BetaMemory();
     }
 

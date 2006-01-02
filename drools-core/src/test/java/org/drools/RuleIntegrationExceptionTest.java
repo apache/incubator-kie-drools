@@ -46,7 +46,7 @@ import junit.framework.TestCase;
 import org.drools.rule.Rule;
 
 public class RuleIntegrationExceptionTest extends TestCase {
-    public void testConstruct(){
+    public void testConstruct() {
         Rule rule = new Rule( "cheese" );
 
         RuleIntegrationException e = new RuleIntegrationException( rule );

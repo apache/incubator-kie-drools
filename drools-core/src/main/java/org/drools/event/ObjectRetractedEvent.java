@@ -51,21 +51,21 @@ public class ObjectRetractedEvent extends WorkingMemoryEvent {
 
     public ObjectRetractedEvent(WorkingMemory workingMemory,
                                 FactHandle handle,
-                                Object oldObject){
+                                Object oldObject) {
         super( workingMemory );
         this.handle = handle;
         this.oldObject = oldObject;
     }
 
-    public FactHandle getFactHandle(){
+    public FactHandle getFactHandle() {
         return this.handle;
     }
 
-    public Object getOldObject(){
+    public Object getOldObject() {
         return this.oldObject;
     }
 
-    public String toString(){
+    public String toString() {
         return "[ObjectRetracted: handle=" + this.handle + "; old_object=" + this.oldObject + "]";
     }
 }

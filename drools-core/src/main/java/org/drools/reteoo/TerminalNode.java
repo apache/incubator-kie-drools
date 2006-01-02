@@ -76,7 +76,7 @@ final class TerminalNode
      *            The rule.
      */
     TerminalNode(TupleSource inputSource,
-                 Rule rule){
+                 Rule rule) {
         this.rule = rule;
 
         inputSource.addTupleSink( this );
@@ -91,7 +91,7 @@ final class TerminalNode
      * 
      * @return The <code>Action</code> associated with this node.
      */
-    public Rule getRule(){
+    public Rule getRule() {
         return this.rule;
     }
 
@@ -112,7 +112,7 @@ final class TerminalNode
      */
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
-                            WorkingMemoryImpl workingMemory) throws AssertionException{
+                            WorkingMemoryImpl workingMemory) throws AssertionException {
         workingMemory.getAgenda().addToAgenda( tuple,
                                                context,
                                                this.rule );
@@ -129,17 +129,17 @@ final class TerminalNode
      */
     public void retractTuples(TupleKey key,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException{
+                              WorkingMemoryImpl workingMemory) throws FactException {
         workingMemory.getAgenda().removeFromAgenda( key,
                                                     context,
                                                     this.rule );
     }
 
-    public String toString(){
+    public String toString() {
         return "[TerminalNode: rule=" + this.rule.getName() + "]";
     }
 
-    public void ruleAttached(){
+    public void ruleAttached() {
         // TODO Auto-generated method stub
 
     }

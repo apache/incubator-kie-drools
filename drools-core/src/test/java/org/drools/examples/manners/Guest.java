@@ -1,7 +1,7 @@
-package org.drools.examples.model;
+package org.drools.examples.manners;
 
 /*
- * $Id: Seating.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
+ * $Id: Guest.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
  *
  * Copyright 2002 (C) The Werken Company. All Rights Reserved.
  *
@@ -38,67 +38,55 @@ package org.drools.examples.model;
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
+ *
  */
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Seating
+public class Guest
     implements
     Serializable {
-    private int     seat1, seat2;
+    private String name;
 
-    private Guest   guest1, guest2;
+    private char   sex;
 
-    private List    tabooList = new ArrayList();
+    private List   hobbies;
 
-    private Seating prevSeat;
+    public Guest(String name,
+                 char sex) {
+        this.name = name;
+        this.sex = sex;
+        this.hobbies = new ArrayList();
+    }
 
-    public Seating(int seat1,
-                   Guest guest1,
-                   Seating prevSeat){
-        this.seat1 = seat1;
-        this.guest1 = guest1;
-        this.prevSeat = prevSeat;
-        this.seat2 = seat1 + 1;
+    public String getName() {
+        return this.name;
+    }
 
-        if ( prevSeat != null ) {
-            this.tabooList.addAll( prevSeat.tabooList );
+    public void addHobby(String hobby) {
+        this.hobbies.add( hobby );
+    }
+
+    public List getHobbies() {
+        return this.hobbies;
+    }
+
+    public boolean hasOppositeSex(Guest guest) {
+        return this.sex != guest.sex;
+    }
+
+    public boolean hasSameHobby(Guest guest) {
+        boolean hobbyFound = false;
+        for ( int i = 0; !hobbyFound && i < this.hobbies.size(); i++ ) {
+            String hobby = (String) this.hobbies.get( i );
+            hobbyFound = guest.hobbies.contains( hobby );
         }
-
-        this.tabooList.add( guest1 );
+        return hobbyFound;
     }
 
-    public int getSeat1(){
-        return this.seat1;
-    }
-
-    public int getSeat2(){
-        return this.seat2;
-    }
-
-    public Guest getGuest1(){
-        return this.guest1;
-    }
-
-    public Guest getGuest2(){
-        return this.guest2;
-    }
-
-    public void setGuest2(Guest guest2){
-        this.guest2 = guest2;
-    }
-
-    public Seating getPrevSeat(){
-        return this.prevSeat;
-    }
-
-    public List getTabooList(){
-        return this.tabooList;
-    }
-
-    public String toString(){
-        return "{seat1=" + this.seat1 + ",guest1=" + this.guest1 + ",seat2=" + this.seat2 + ",guest2=" + this.guest2 + "}";
+    public String toString() {
+        return "{name=" + this.name + ",sex=" + this.sex + ",hobbies=" + this.hobbies + "}";
     }
 }

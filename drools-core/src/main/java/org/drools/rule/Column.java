@@ -14,7 +14,7 @@ public class Column {
     private final int           index;
 
     public Column(int index,
-                  ObjectType objectType){
+                  ObjectType objectType) {
         this( index,
               objectType,
               null );
@@ -22,49 +22,51 @@ public class Column {
 
     public Column(int index,
                   ObjectType objectType,
-                  ColumnBinding binding)
+                  String identifier)
 
     {
         this.index = index;
         this.objectType = objectType;
-        this.binding = binding;
+        this.binding = new ColumnBinding( identifier,
+                                          this.objectType,
+                                          this );
     }
 
-    public ObjectType getObjectType(){
+    public ObjectType getObjectType() {
         return this.objectType;
     }
 
-    public List getDeclarations(){
+    public List getDeclarations() {
         return Collections.unmodifiableList( this.declarations );
     }
 
-    public void addDeclaration(Declaration declaration){
+    public void addDeclaration(Declaration declaration) {
         if ( this.declarations == Collections.EMPTY_LIST ) {
             this.declarations = new ArrayList( 1 );
         }
         this.declarations.add( declaration );
     }
 
-    public List getConstraints(){
+    public List getConstraints() {
         return Collections.unmodifiableList( this.constraints );
     }
 
-    public void addConstraint(Object constraint){
+    public void addConstraint(Object constraint) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
             this.constraints = new ArrayList( 1 );
         }
         this.constraints.add( constraint );
     }
 
-    public boolean isBound(){
+    public boolean isBound() {
         return (this.binding != null);
     }
 
-    public Binding getBinding(){
+    public Binding getBinding() {
         return this.binding;
     }
 
-    public int getIndex(){
+    public int getIndex() {
         return this.index;
     }
 }

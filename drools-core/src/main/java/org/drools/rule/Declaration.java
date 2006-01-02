@@ -65,9 +65,6 @@ public class Declaration
     /** The identifier for the variable. */
     private final String     identifier;
 
-    /** The type of the variable. */
-    private final ObjectType objectType;
-
     private final Extractor  extractor;
 
     private final int        column;
@@ -91,11 +88,9 @@ public class Declaration
      */
     public Declaration(int index,
                        String identifier,
-                       ObjectType objectType,
                        Extractor extractor,
-                       int column){
+                       int column) {
         this.identifier = identifier;
-        this.objectType = objectType;
         this.extractor = extractor;
         this.column = column;
         this.index = index;
@@ -110,7 +105,7 @@ public class Declaration
      * 
      * @return The variable's identifier.
      */
-    public String getIdentifier(){
+    public String getIdentifier() {
         return this.identifier;
     }
 
@@ -119,8 +114,8 @@ public class Declaration
      * 
      * @return The object-type.
      */
-    public ObjectType getObjectType(){
-        return this.objectType;
+    public Class getDeclarationType() {
+        return this.extractor.getValueType();
     }
 
     /**
@@ -128,7 +123,7 @@ public class Declaration
      * 
      * @return the column
      */
-    public int getColumn(){
+    public int getColumn() {
         return this.column;
     }
 
@@ -137,7 +132,7 @@ public class Declaration
      * 
      * @return
      */
-    public Extractor getExtractor(){
+    public Extractor getExtractor() {
         return this.extractor;
     }
 
@@ -146,31 +141,31 @@ public class Declaration
      * 
      * @return
      */
-    public int getIndex(){
+    public int getIndex() {
         return this.index;
     }
 
-    public Object getValue(Object object){
+    public Object getValue(Object object) {
         return this.extractor.getValue( object );
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    public int compareTo(Object object){
+    public int compareTo(Object object) {
         return this.index - ((Declaration) object).index;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    public String toString(){
+    public String toString() {
         return "[Declaration: " + this.identifier + "]";
     }
 
-    public int hashCode(){
+    public int hashCode() {
         return this.index;
     }
 
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if ( this == object ) {
             return true;
         }
@@ -181,7 +176,7 @@ public class Declaration
 
         Declaration other = (Declaration) object;
 
-        return this.index == other.index && this.identifier.equals( other.identifier ) && this.objectType.equals( other.objectType );
+        return this.index == other.index && this.identifier.equals( other.identifier ) && this.extractor.getValueType().equals( other.extractor.getValueType() );
     }
 
 }

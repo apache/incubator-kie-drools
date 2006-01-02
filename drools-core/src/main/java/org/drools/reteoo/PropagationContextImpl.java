@@ -15,7 +15,7 @@ public class PropagationContextImpl
 
     public PropagationContextImpl(int type,
                                   Rule rule,
-                                  Activation activation){
+                                  Activation activation) {
         this.type = type;
         this.rule = rule;
         this.activation = activation;
@@ -26,7 +26,7 @@ public class PropagationContextImpl
      * 
      * @see org.drools.reteoo.PropagationContext#getRuleOrigin()
      */
-    public Rule getRuleOrigin(){
+    public Rule getRuleOrigin() {
         return this.rule;
     }
 
@@ -35,7 +35,7 @@ public class PropagationContextImpl
      * 
      * @see org.drools.reteoo.PropagationContext#getActivationOrigin()
      */
-    public Activation getActivationOrigin(){
+    public Activation getActivationOrigin() {
         return this.activation;
     }
 
@@ -44,7 +44,7 @@ public class PropagationContextImpl
      * 
      * @see org.drools.reteoo.PropagationContext#getType()
      */
-    public int getType(){
+    public int getType() {
         return this.type;
     }
 

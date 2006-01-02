@@ -61,11 +61,11 @@ public class ConsequenceException extends AssertionException {
     /**
      * Construct.
      */
-    public ConsequenceException(){
+    public ConsequenceException() {
         // intentionally left blank
     }
 
-    public ConsequenceException(String message){
+    public ConsequenceException(String message) {
         super( message );
     }
 
@@ -75,11 +75,11 @@ public class ConsequenceException extends AssertionException {
      * @param rootCause
      *            The root cause of this exception.
      */
-    public ConsequenceException(Throwable rootCause){
+    public ConsequenceException(Throwable rootCause) {
         super( rootCause );
     }
 
-    public ConsequenceException(Rule rule){
+    public ConsequenceException(Rule rule) {
         this.rule = rule;
     }
 
@@ -93,7 +93,7 @@ public class ConsequenceException extends AssertionException {
      * 
      */
     public ConsequenceException(String message,
-                                Rule rule){
+                                Rule rule) {
         super( message );
         this.rule = rule;
     }
@@ -108,14 +108,14 @@ public class ConsequenceException extends AssertionException {
      * 
      */
     public ConsequenceException(Throwable rootCause,
-                                Rule rule){
+                                Rule rule) {
         super( rootCause );
         this.rule = rule;
     }
 
     public ConsequenceException(String message,
                                 Rule rule,
-                                String info){
+                                String info) {
         super( message );
         this.rule = rule;
         this.info = info;
@@ -129,13 +129,13 @@ public class ConsequenceException extends AssertionException {
      */
     public ConsequenceException(Throwable rootCause,
                                 Rule rule,
-                                String info){
+                                String info) {
         super( rootCause );
         this.rule = rule;
         this.info = info;
     }
 
-    public Rule getRule(){
+    public Rule getRule() {
         return this.rule;
     }
 
@@ -147,11 +147,11 @@ public class ConsequenceException extends AssertionException {
      * other information in the case that Consequence does not have block text.
      * </p>
      */
-    public void setInfo(String info){
+    public void setInfo(String info) {
         this.info = info;
     }
 
-    public String getInfo(){
+    public String getInfo() {
         return this.info;
     }
 }

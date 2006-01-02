@@ -52,11 +52,11 @@ public class DefaultFactHandleFactory
     /** The number of facts created - used for recency. */
     private long counter;
 
-    public final FactHandle newFactHandle(){
+    public final FactHandle newFactHandle() {
         return newFactHandle( ++this.id );
     }
 
-    public final FactHandle newFactHandle(long id){
+    public final FactHandle newFactHandle(long id) {
         return new FactHandleImpl( id,
                                    ++this.counter );
     }

@@ -11,18 +11,18 @@ import org.drools.WorkingMemoryTemplate;
  * example:
  * 
  * <pre><code>
- *      private void updateWorkingMemory(Foo foo, Bar oldBar, Bar newBar) {
- *          new WorkingMemoryTemplate(workingMemory).execute(new WorkingMemoryCallback() {
- *              public Object doInWorkingMemory(final WorkingMemory workingMemory) {
- *                  workingMemory.assertObject(foo);
- * 
- *                  FactHandle handle = workingMemory.getFactHandle(oldBar)
- *                  workingMemory.modifyObject(handle, newBar);
- * 
- *                  workingMemory.fireAllRules();
- *              }
- *          }
- *      }
+ *         private void updateWorkingMemory(Foo foo, Bar oldBar, Bar newBar) {
+ *             new WorkingMemoryTemplate(workingMemory).execute(new WorkingMemoryCallback() {
+ *                 public Object doInWorkingMemory(final WorkingMemory workingMemory) {
+ *                     workingMemory.assertObject(foo);
+ *    
+ *                     FactHandle handle = workingMemory.getFactHandle(oldBar)
+ *                     workingMemory.modifyObject(handle, newBar);
+ *    
+ *                     workingMemory.fireAllRules();
+ *                 }
+ *             }
+ *         }
  * </code></pre>
  * 
  * The abstract method <code>getWorkingMemory</code> allows concrete subclass
@@ -47,12 +47,11 @@ public abstract class AbstractWorkingMemorySynchronizedTemplate
      * @param callback
      * @return Any object or null.
      */
-    public Object execute(Callback callback){
+    public Object execute(Callback callback) {
         synchronized ( getWorkingMemory() ) {
             try {
                 return callback.doInWorkingMemory( getWorkingMemory() );
-            }
-            catch ( DroolsException e ) {
+            } catch ( DroolsException e ) {
                 throw new DroolsRuntimeException( e );
             }
         }

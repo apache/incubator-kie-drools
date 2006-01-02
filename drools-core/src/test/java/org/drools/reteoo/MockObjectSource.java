@@ -8,29 +8,29 @@ public class MockObjectSource extends ObjectSource {
 
     private int updated;
 
-    public MockObjectSource(int id){
+    public MockObjectSource(int id) {
         super( id );
     }
 
-    public void attach(){
+    public void attach() {
         this.attached++;
 
     }
 
-    public int getAttached(){
+    public int getAttached() {
         return this.attached;
     }
 
-    public int getUdated(){
+    public int getUdated() {
         return this.updated;
     }
 
-    public void remove(){
+    public void remove() {
 
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException{
+                              PropagationContext context) throws FactException {
         this.updated++;
     }
 

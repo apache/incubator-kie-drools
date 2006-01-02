@@ -52,22 +52,21 @@ public class RuleNameEqualsAgendaFilter
 
     private final boolean accept;
 
-    public RuleNameEqualsAgendaFilter(String name){
+    public RuleNameEqualsAgendaFilter(String name) {
         this( name,
               true );
     }
 
     public RuleNameEqualsAgendaFilter(String name,
-                                      boolean accept){
+                                      boolean accept) {
         this.name = name;
         this.accept = accept;
     }
 
-    public boolean accept(Activation activation){
+    public boolean accept(Activation activation) {
         if ( activation.getRule().getName().equals( this.name ) ) {
             return this.accept;
-        }
-        else {
+        } else {
             return false;
         }
     }

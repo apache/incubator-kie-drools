@@ -51,14 +51,14 @@ public class ReteException extends DroolsException {
     /**
      * @see java.lang.Exception#Exception()
      */
-    public ReteException(){
+    public ReteException() {
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    public ReteException(String message){
+    public ReteException(String message) {
         super( message );
     }
 
@@ -66,7 +66,7 @@ public class ReteException extends DroolsException {
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     public ReteException(String message,
-                         Throwable rootCause){
+                         Throwable rootCause) {
         super( message,
                rootCause );
     }
@@ -74,7 +74,7 @@ public class ReteException extends DroolsException {
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public ReteException(Throwable rootCause){
+    public ReteException(Throwable rootCause) {
         super( rootCause );
     }
 }

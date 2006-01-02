@@ -7,7 +7,7 @@ public class DefaultFactHandleFactoryTest extends TestCase {
     /*
      * Class under test for FactHandle newFactHandle()
      */
-    public void testNewFactHandle(){
+    public void testNewFactHandle() {
         DefaultFactHandleFactory factory = new DefaultFactHandleFactory();
         FactHandleImpl handle = (FactHandleImpl) factory.newFactHandle();
         assertEquals( 1,
@@ -31,7 +31,7 @@ public class DefaultFactHandleFactoryTest extends TestCase {
     /*
      * Class under test for FactHandle newFactHandle(long)
      */
-    public void testNewFactHandlelong(){
+    public void testNewFactHandlelong() {
         DefaultFactHandleFactory factory = new DefaultFactHandleFactory();
         FactHandleImpl handle = (FactHandleImpl) factory.newFactHandle( 5 );
         assertEquals( 5,

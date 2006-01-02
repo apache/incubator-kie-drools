@@ -50,14 +50,14 @@ public class FactException extends DroolsException {
     /**
      * @see java.lang.Exception#Exception()
      */
-    public FactException(){
+    public FactException() {
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public FactException(String message){
+    public FactException(String message) {
         super( message );
     }
 
@@ -65,7 +65,7 @@ public class FactException extends DroolsException {
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     public FactException(String message,
-                         Throwable cause){
+                         Throwable cause) {
         super( message,
                cause );
     }
@@ -73,7 +73,7 @@ public class FactException extends DroolsException {
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public FactException(Throwable cause){
+    public FactException(Throwable cause) {
         super( cause );
     }
 }

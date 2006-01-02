@@ -94,7 +94,7 @@ class TestNode extends TupleSource
     TestNode(int id,
              TupleSource tupleSource,
              Condition condition,
-             boolean hasMemory){
+             boolean hasMemory) {
         super( id );
         this.condition = condition;
         this.tupleSource = tupleSource;
@@ -104,7 +104,7 @@ class TestNode extends TupleSource
     /**
      * Attaches this node into the network.
      */
-    public void attach(){
+    public void attach() {
         this.tupleSource.addTupleSink( this );
     }
 
@@ -117,7 +117,7 @@ class TestNode extends TupleSource
      * 
      * @return The <code>Test</code>.
      */
-    public Condition getCondition(){
+    public Condition getCondition() {
         return this.condition;
     }
 
@@ -138,7 +138,7 @@ class TestNode extends TupleSource
      */
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
-                            WorkingMemoryImpl workingMemory) throws FactException{
+                            WorkingMemoryImpl workingMemory) throws FactException {
 
         if ( hasMemory() ) {
             Map memory = (Map) workingMemory.getNodeMemory( this );
@@ -157,8 +157,7 @@ class TestNode extends TupleSource
                                           workingMemory );
                 }
             }
-        }
-        else {
+        } else {
             boolean allowed = this.condition.isAllowed( tuple );
 
             workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
@@ -174,7 +173,7 @@ class TestNode extends TupleSource
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException{
+                              PropagationContext context) throws FactException {
         this.attachingNewNode = true;
         if ( hasMemory() ) {
             Map memory = (Map) workingMemory.getNodeMemory( this );
@@ -183,8 +182,7 @@ class TestNode extends TupleSource
                                       context,
                                       workingMemory );
             }
-        }
-        else {
+        } else {
             // We need to detach and re-attach to make sure the node is at the
             // top
             // for the propagation
@@ -210,7 +208,7 @@ class TestNode extends TupleSource
      */
     public void retractTuples(TupleKey key,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException{
+                              WorkingMemoryImpl workingMemory) throws FactException {
         if ( hasMemory() ) {
             Map memory = (Map) workingMemory.getNodeMemory( this );
             if ( memory.remove( key ) != null ) {
@@ -219,8 +217,7 @@ class TestNode extends TupleSource
                                         context,
                                         workingMemory );
             }
-        }
-        else {
+        } else {
             propagateRetractTuples( key,
                                     context,
                                     workingMemory );
@@ -237,15 +234,15 @@ class TestNode extends TupleSource
      * 
      * @return The debug string.
      */
-    public String toString(){
+    public String toString() {
         return "[ConditionNode: cond=" + this.condition + "]";
     }
 
-    public int hashCode(){
+    public int hashCode() {
         return this.tupleSource.hashCode() ^ this.condition.hashCode();
     }
 
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if ( this == object ) {
             return true;
         }
@@ -259,12 +256,12 @@ class TestNode extends TupleSource
         return this.tupleSource.equals( other.tupleSource ) && this.condition.equals( other.condition );
     }
 
-    public void remove(){
+    public void remove() {
         // TODO Auto-generated method stub
 
     }
 
-    public Object createMemory(){
+    public Object createMemory() {
         return new HashMap();
     }
 }

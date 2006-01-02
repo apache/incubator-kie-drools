@@ -1,7 +1,7 @@
-package org.drools.examples.model;
+package org.drools.examples.manners;
 
 /*
- * $Id: Guest.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
+ * $Id: Seat.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
  *
  * Copyright 2002 (C) The Werken Company. All Rights Reserved.
  *
@@ -42,51 +42,29 @@ package org.drools.examples.model;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-public class Guest
+public class Seat
     implements
     Serializable {
+    private int    seat;
+
     private String name;
 
-    private char   sex;
-
-    private List   hobbies;
-
-    public Guest(String name,
-                 char sex){
+    public Seat(int seat,
+                String name) {
+        this.seat = seat;
         this.name = name;
-        this.sex = sex;
-        this.hobbies = new ArrayList();
     }
 
-    public String getName(){
+    public int getSeat() {
+        return this.seat;
+    }
+
+    public String getName() {
         return this.name;
     }
 
-    public void addHobby(String hobby){
-        this.hobbies.add( hobby );
-    }
-
-    public List getHobbies(){
-        return this.hobbies;
-    }
-
-    public boolean hasOppositeSex(Guest guest){
-        return this.sex != guest.sex;
-    }
-
-    public boolean hasSameHobby(Guest guest){
-        boolean hobbyFound = false;
-        for ( int i = 0; !hobbyFound && i < this.hobbies.size(); i++ ) {
-            String hobby = (String) this.hobbies.get( i );
-            hobbyFound = guest.hobbies.contains( hobby );
-        }
-        return hobbyFound;
-    }
-
-    public String toString(){
-        return "{name=" + this.name + ",sex=" + this.sex + ",hobbies=" + this.hobbies + "}";
+    public String toString() {
+        return "{seat=" + this.seat + ",name=" + this.name + "}";
     }
 }

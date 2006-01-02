@@ -47,30 +47,30 @@ import java.util.Collection;
 import junit.framework.TestCase;
 
 public abstract class DroolsTestCase extends TestCase {
-    public DroolsTestCase(){
+    public DroolsTestCase() {
         super();
     }
 
-    public DroolsTestCase(String name){
+    public DroolsTestCase(String name) {
         super( name );
     }
 
     public void assertLength(int len,
-                             Object[] array){
+                             Object[] array) {
         assertEquals( Arrays.asList( array ) + " does not have length of " + len,
                       len,
                       array.length );
     }
 
     public void assertLength(int len,
-                             Collection collection){
+                             Collection collection) {
         assertEquals( collection + " does not have length of " + len,
                       len,
                       collection.size() );
     }
 
     public void assertContains(Object obj,
-                               Object[] array){
+                               Object[] array) {
         for ( int i = 0; i < array.length; ++i ) {
             if ( array[i] == obj ) {
                 return;
@@ -81,7 +81,7 @@ public abstract class DroolsTestCase extends TestCase {
     }
 
     public void assertContains(Object obj,
-                               Collection collection){
+                               Collection collection) {
         assertTrue( collection + " does not contain " + obj,
                     collection.contains( obj ) );
     }

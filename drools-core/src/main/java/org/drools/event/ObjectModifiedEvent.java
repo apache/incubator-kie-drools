@@ -54,26 +54,26 @@ public class ObjectModifiedEvent extends WorkingMemoryEvent {
     public ObjectModifiedEvent(WorkingMemory workingMemory,
                                FactHandle handle,
                                Object oldObject,
-                               Object object){
+                               Object object) {
         super( workingMemory );
         this.handle = handle;
         this.oldObject = oldObject;
         this.object = object;
     }
 
-    public FactHandle getFactHandle(){
+    public FactHandle getFactHandle() {
         return this.handle;
     }
 
-    public Object getOldObject(){
+    public Object getOldObject() {
         return this.oldObject;
     }
 
-    public Object getObject(){
+    public Object getObject() {
         return this.object;
     }
 
-    public String toString(){
+    public String toString() {
         return "[ObjectModified: handle=" + this.handle + "; old_object=" + this.oldObject + "; new_object=" + this.object + "]";
     }
 }

@@ -6,28 +6,28 @@ import java.util.Set;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.spi.Constraint;
+import org.drools.spi.BetaNodeConstraint;
 import org.drools.spi.Tuple;
 
 public class BetaNodeBinder {
-    private final Constraint[] constraints;
+    private final BetaNodeConstraint[] constraints;
 
-    public BetaNodeBinder(){
+    public BetaNodeBinder() {
         this.constraints = null;
     }
 
-    public BetaNodeBinder(Constraint constraint){
-        this.constraints = new Constraint[]{constraint};
+    public BetaNodeBinder(BetaNodeConstraint constraint) {
+        this.constraints = new BetaNodeConstraint[]{constraint};
     }
 
-    public BetaNodeBinder(Constraint[] constraints){
+    public BetaNodeBinder(BetaNodeConstraint[] constraints) {
         this.constraints = constraints;
     }
 
     boolean isAllowed(Object object,
                       FactHandle handle,
                       Tuple tuple,
-                      WorkingMemory workingMemory){
+                      WorkingMemory workingMemory) {
         if ( this.constraints == null ) {
             return true;
         }
@@ -46,7 +46,11 @@ public class BetaNodeBinder {
 
     boolean isAllowed(FactHandle handle,
                       Tuple tuple,
-                      WorkingMemory workingMemory){
+                      WorkingMemory workingMemory) {
+        if ( this.constraints == null ) {
+            return true;
+        }
+        
         Object object = workingMemory.getObject( handle );
 
         return isAllowed( object,
@@ -55,7 +59,7 @@ public class BetaNodeBinder {
                           workingMemory );
     }
 
-    public Set getRequiredDeclarations(){
+    public Set getRequiredDeclarations() {
         Set declarations = new HashSet();
         for ( int i = 0; i < this.constraints.length; i++ ) {
             Collections.addAll( declarations,
@@ -64,7 +68,7 @@ public class BetaNodeBinder {
         return declarations;
     }
 
-    public int hashCode(){
+    public int hashCode() {
         return this.constraints.hashCode();
     }
 
@@ -77,7 +81,7 @@ public class BetaNodeBinder {
      * @return <code>true</code> if <code>object</code> is equal to this,
      *         otherwise <code>false</code>.
      */
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if ( this == object ) {
             return true;
         }

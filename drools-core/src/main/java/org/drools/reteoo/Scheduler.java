@@ -71,7 +71,7 @@ final class Scheduler {
      * 
      * @return The singleton instance.
      */
-    static Scheduler getInstance(){
+    static Scheduler getInstance() {
         return Scheduler.INSTANCE;
     }
 
@@ -94,7 +94,7 @@ final class Scheduler {
     /**
      * Construct.
      */
-    private Scheduler(){
+    private Scheduler() {
         this.scheduler = new Timer( true );
 
         this.tasks = new HashMap();
@@ -109,7 +109,7 @@ final class Scheduler {
      *            The working memory session.
      */
     void scheduleAgendaItem(AgendaItem item,
-                            WorkingMemoryImpl workingMemory){
+                            WorkingMemoryImpl workingMemory) {
         Date now = new Date();
 
         Date then = new Date( now.getTime() + item.getRule().getDuration().getDuration( item.getTuple() ) );
@@ -130,7 +130,7 @@ final class Scheduler {
      * @param item
      *            The item to cancle.
      */
-    void cancelAgendaItem(AgendaItem item){
+    void cancelAgendaItem(AgendaItem item) {
         TimerTask task = (TimerTask) this.tasks.remove( item );
 
         if ( task != null ) {
@@ -138,15 +138,15 @@ final class Scheduler {
         }
     }
 
-    void setAsyncExceptionHandler(AsyncExceptionHandler handler){
+    void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
         this.exceptionHandler = handler;
     }
 
-    AsyncExceptionHandler getAsyncExceptionHandler(){
+    AsyncExceptionHandler getAsyncExceptionHandler() {
         return this.exceptionHandler;
     }
 
-    public int size(){
+    public int size() {
         return this.tasks.size();
     }
 
@@ -180,7 +180,7 @@ final class Scheduler {
          *            The working memory session.
          */
         AgendaItemFireListener(AgendaItem item,
-                               WorkingMemoryImpl workingMemory){
+                               WorkingMemoryImpl workingMemory) {
             this.item = item;
             this.workingMemory = workingMemory;
         }
@@ -196,12 +196,11 @@ final class Scheduler {
         /**
          * Handle the firing of an alarm.
          */
-        public void run(){
+        public void run() {
             try {
                 this.item.fire( this.workingMemory );
                 Scheduler.this.tasks.remove( this.item );
-            }
-            catch ( ConsequenceException e ) {
+            } catch ( ConsequenceException e ) {
 
                 Scheduler.getInstance().getAsyncExceptionHandler().handleException( this.workingMemory,
                                                                                     e );

@@ -12,7 +12,7 @@ import org.drools.spi.PropagationContext;
 
 public class LogicalAssertionTest extends DroolsTestCase {
 
-    public void testSingleLogicalRelationship() throws Exception{
+    public void testSingleLogicalRelationship() throws Exception {
         RuleBaseImpl ruleBase = new RuleBaseImpl();
         Rete rete = ruleBase.getRete();
         // create a RuleBase with a single ObjectTypeNode we attach a
@@ -29,7 +29,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 // do nothing
             }
         };
@@ -99,7 +99,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                     values[0] );
     }
 
-    public void testEqualsMap() throws Exception{
+    public void testEqualsMap() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         Rete rete = new Rete();
@@ -115,7 +115,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 // do nothing
             }
         };
@@ -167,7 +167,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
      * 
      * @throws Exception
      */
-    public void testStatedOverride() throws Exception{
+    public void testStatedOverride() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         Rete rete = new Rete();
@@ -183,7 +183,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 // do nothing
             }
         };
@@ -290,7 +290,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
     }
 
-    public void testRetract() throws Exception{
+    public void testRetract() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         Rete rete = new Rete();
@@ -304,7 +304,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 // do nothing
             }
         };
@@ -376,7 +376,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
     }
 
-    public void testMultipleLogicalRelationships() throws FactException{
+    public void testMultipleLogicalRelationships() throws FactException {
         RuleBaseImpl ruleBase = new RuleBaseImpl();
         Rete rete = ruleBase.getRete();
 
@@ -394,7 +394,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation){
+            public void invoke(Activation activation) {
                 // do nothing
             }
         };

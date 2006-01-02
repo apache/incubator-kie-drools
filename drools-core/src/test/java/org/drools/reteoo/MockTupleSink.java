@@ -19,17 +19,17 @@ public class MockTupleSink extends TupleSource
     private AssertionException  assertionException;
     private RetractionException retractionException;
 
-    public MockTupleSink(){
+    public MockTupleSink() {
         super( 0 );
     }
 
-    public MockTupleSink(int id){
+    public MockTupleSink(int id) {
         super( id );
     }
 
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
-                            WorkingMemoryImpl workingMemory) throws AssertionException{
+                            WorkingMemoryImpl workingMemory) throws AssertionException {
         if ( this.assertionException != null ) {
             throw this.assertionException;
         }
@@ -46,7 +46,7 @@ public class MockTupleSink extends TupleSource
 
     public void retractTuples(TupleKey key,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws RetractionException{
+                              WorkingMemoryImpl workingMemory) throws RetractionException {
         if ( this.retractionException != null ) {
             throw this.retractionException;
         }
@@ -60,50 +60,50 @@ public class MockTupleSink extends TupleSource
 
     }
 
-    public List getAsserted(){
+    public List getAsserted() {
         return this.asserted;
     }
 
-    public List getRetracted(){
+    public List getRetracted() {
         return this.retracted;
     }
 
-    public void setAssertionException(AssertionException assertionException){
+    public void setAssertionException(AssertionException assertionException) {
         this.assertionException = assertionException;
     }
 
-    public void setRetractionException(RetractionException retractionException){
+    public void setRetractionException(RetractionException retractionException) {
         this.retractionException = retractionException;
     }
 
-    public void ruleAttached(){
+    public void ruleAttached() {
         // TODO Auto-generated method stub
     }
 
-    public void setHasMemory(boolean hasMemory){
+    public void setHasMemory(boolean hasMemory) {
         this.hasMemory = hasMemory;
     }
 
-    public int getId(){
+    public int getId() {
         return this.id;
     }
 
-    public Object createMemory(){
+    public Object createMemory() {
         return new HashMap();
     }
 
-    public void attach(){
+    public void attach() {
         // TODO Auto-generated method stub
 
     }
 
-    public void remove(){
+    public void remove() {
         // TODO Auto-generated method stub
 
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException{
+                              PropagationContext context) throws FactException {
         // TODO Auto-generated method stub
 
     }

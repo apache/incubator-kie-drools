@@ -44,7 +44,7 @@ package org.drools.rule;
 import junit.framework.TestCase;
 
 public class FixedDurationTest extends TestCase {
-    public void testConstruct() throws Exception{
+    public void testConstruct() throws Exception {
         FixedDuration dur = new FixedDuration();
 
         assertEquals( 0,
@@ -56,7 +56,7 @@ public class FixedDurationTest extends TestCase {
                       dur.getDuration( null ) );
     }
 
-    public void testAdd() throws Exception{
+    public void testAdd() throws Exception {
         FixedDuration dur = new FixedDuration();
 
         assertEquals( 0,

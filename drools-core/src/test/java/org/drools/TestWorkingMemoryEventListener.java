@@ -63,34 +63,34 @@ public class TestWorkingMemoryEventListener
     public int cancelled;
     public int fired;
 
-    public TestWorkingMemoryEventListener(){
+    public TestWorkingMemoryEventListener() {
         // intentionally left blank
     }
 
-    public void objectAsserted(ObjectAssertedEvent event){
+    public void objectAsserted(ObjectAssertedEvent event) {
         this.asserted++;
     }
 
-    public void objectModified(ObjectModifiedEvent event){
+    public void objectModified(ObjectModifiedEvent event) {
         this.modified++;
     }
 
-    public void objectRetracted(ObjectRetractedEvent event){
+    public void objectRetracted(ObjectRetractedEvent event) {
         this.retracted++;
     }
 
     /*
      * public void conditionTested(ConditionTestedEvent event) { tested++; }
      */
-    public void activationCreated(ActivationCreatedEvent event){
+    public void activationCreated(ActivationCreatedEvent event) {
         this.created++;
     }
 
-    public void activationCancelled(ActivationCancelledEvent event){
+    public void activationCancelled(ActivationCancelledEvent event) {
         this.cancelled++;
     }
 
-    public void activationFired(ActivationFiredEvent event){
+    public void activationFired(ActivationFiredEvent event) {
         this.fired++;
     }
 }

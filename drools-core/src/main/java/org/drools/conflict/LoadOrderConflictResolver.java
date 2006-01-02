@@ -74,7 +74,7 @@ public class LoadOrderConflictResolver extends AbstractConflictResolver {
      * 
      * @return The singleton instance.
      */
-    public static ConflictResolver getInstance(){
+    public static ConflictResolver getInstance() {
         return LoadOrderConflictResolver.INSTANCE;
     }
 
@@ -85,7 +85,7 @@ public class LoadOrderConflictResolver extends AbstractConflictResolver {
     /**
      * Construct.
      */
-    public LoadOrderConflictResolver(){
+    public LoadOrderConflictResolver() {
         // intentionally left blank
     }
 
@@ -95,7 +95,7 @@ public class LoadOrderConflictResolver extends AbstractConflictResolver {
      * @see ConflictResolver
      */
     public int compare(Activation lhs,
-                       Activation rhs){
+                       Activation rhs) {
         return (int) (lhs.getRule().getLoadOrder() - rhs.getRule().getLoadOrder());
     }
 }

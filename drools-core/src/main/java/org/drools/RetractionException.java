@@ -53,14 +53,14 @@ public class RetractionException extends FactException {
     /**
      * @see java.lang.Exception#Exception()
      */
-    public RetractionException(){
+    public RetractionException() {
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public RetractionException(String message){
+    public RetractionException(String message) {
         super( message );
     }
 
@@ -68,7 +68,7 @@ public class RetractionException extends FactException {
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     public RetractionException(String message,
-                               Throwable cause){
+                               Throwable cause) {
         super( message,
                cause );
     }
@@ -76,7 +76,7 @@ public class RetractionException extends FactException {
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public RetractionException(Throwable cause){
+    public RetractionException(Throwable cause) {
         super( cause );
     }
 }

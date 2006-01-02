@@ -57,7 +57,7 @@ public class NoParameterDeclarationException extends InvalidRuleException {
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public NoParameterDeclarationException(Rule rule){
+    public NoParameterDeclarationException(Rule rule) {
         super( "Rule has no defined parameters: rule=" + rule.getName(),
                rule );
     }

@@ -14,10 +14,10 @@ class InitialFactImpl
     InitialFact {
     private static final InitialFact INSTANCE = new InitialFactImpl();
 
-    public static InitialFact getInstance(){
+    public static InitialFact getInstance() {
         return InitialFactImpl.INSTANCE;
     }
 
-    private InitialFactImpl(){
+    private InitialFactImpl() {
     }
 }

@@ -4,14 +4,14 @@ public class InvalidPatternException extends RuleConstructionException {
     /**
      * @see java.lang.Exception#Exception()
      */
-    InvalidPatternException(){
+    InvalidPatternException() {
         super();
     }
 
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    InvalidPatternException(String message){
+    InvalidPatternException(String message) {
         super( message );
     }
 
@@ -19,7 +19,7 @@ public class InvalidPatternException extends RuleConstructionException {
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     InvalidPatternException(String message,
-                            Throwable cause){
+                            Throwable cause) {
         super( message,
                cause );
     }
@@ -27,7 +27,7 @@ public class InvalidPatternException extends RuleConstructionException {
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    InvalidPatternException(Throwable cause){
+    InvalidPatternException(Throwable cause) {
         super( cause );
     }
 }

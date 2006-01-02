@@ -12,7 +12,7 @@ import org.drools.util.PrimitiveLongMap;
 
 public class ObjectTypeNodeTest extends DroolsTestCase {
 
-    public void testAttach() throws Exception{
+    public void testAttach() throws Exception {
         Rete source = new Rete();
 
         ObjectType objectType = new ClassObjectType( String.class );
@@ -36,7 +36,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                     source.getObjectTypeNode( objectType ) );
     }
 
-    public void testAssertObject() throws Exception{
+    public void testAssertObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
                                                                  null,
@@ -93,7 +93,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                     memory.get( handle1.getId() ) );
     }
 
-    public void testMemory(){
+    public void testMemory() {
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
@@ -105,7 +105,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertNotNull( memory );
     }
 
-    public void testRetractObject() throws Exception{
+    public void testRetractObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
                                                                  null,
@@ -169,7 +169,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                     ((Object[]) retracted.get( 0 ))[0] );
     }
 
-    public void testUpdateNewNode() throws FactException{
+    public void testUpdateNewNode() throws FactException {
         // Tests that when new child is added only the last added child is
         // updated
         // When the attachingNewNode flag is set

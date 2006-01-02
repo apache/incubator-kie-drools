@@ -41,7 +41,6 @@ package org.drools.spi;
  *
  */
 
-
 /**
  * Java class semantics <code>ObjectType</code>.
  * 
@@ -69,7 +68,7 @@ public class MockObjectType
      * @param objectTypeClass
      *            Java object class.
      */
-    public MockObjectType(boolean matches){
+    public MockObjectType(boolean matches) {
         this.matches = matches;
     }
 
@@ -91,7 +90,7 @@ public class MockObjectType
      * @return <code>true</code> if the <code>Object</code> matches this
      *         object type, else <code>false</code>.
      */
-    public boolean matches(Object object){
+    public boolean matches(Object object) {
         return this.matches;
     }
 

@@ -44,19 +44,19 @@ package org.drools.event;
 public class DebugAgendaEventListener
     implements
     AgendaEventListener {
-    public DebugAgendaEventListener(){
+    public DebugAgendaEventListener() {
         // intentionally left blank
     }
 
-    public void activationCreated(ActivationCreatedEvent event){
+    public void activationCreated(ActivationCreatedEvent event) {
         System.err.println( event );
     }
 
-    public void activationCancelled(ActivationCancelledEvent event){
+    public void activationCancelled(ActivationCancelledEvent event) {
         System.err.println( event );
     }
 
-    public void activationFired(ActivationFiredEvent event){
+    public void activationFired(ActivationFiredEvent event) {
         System.err.println( event );
     }
 

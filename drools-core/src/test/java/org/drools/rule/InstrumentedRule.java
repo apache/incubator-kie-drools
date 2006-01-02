@@ -44,20 +44,19 @@ package org.drools.rule;
 public class InstrumentedRule extends Rule {
     public Boolean isValid;
 
-    public InstrumentedRule(String name){
+    public InstrumentedRule(String name) {
         super( name );
     }
 
-    public void isValid(boolean isValid){
+    public void isValid(boolean isValid) {
         if ( isValid ) {
             this.isValid = Boolean.TRUE;
-        }
-        else {
+        } else {
             this.isValid = Boolean.FALSE;
         }
     }
 
-    public boolean isValid(){
+    public boolean isValid() {
         if ( this.isValid == null ) {
             return super.isValid();
         }
@@ -65,15 +64,13 @@ public class InstrumentedRule extends Rule {
         return this.isValid.booleanValue();
     }
 
-    public void checkValidity() throws InvalidRuleException{
+    public void checkValidity() throws InvalidRuleException {
         if ( this.isValid == null ) {
             super.checkValidity();
             return;
-        }
-        else if ( this.isValid.booleanValue() ) {
+        } else if ( this.isValid.booleanValue() ) {
             return;
-        }
-        else {
+        } else {
             throw new InvalidRuleException( this );
         }
     }

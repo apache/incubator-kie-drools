@@ -71,7 +71,7 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      */
     public DuplicateRuleNameException(RuleSet ruleSet,
                                       Rule originalRule,
-                                      Rule conflictingRule){
+                                      Rule conflictingRule) {
         super( createMessage( ruleSet,
                               conflictingRule ) );
         this.ruleSet = ruleSet;
@@ -92,7 +92,7 @@ public class DuplicateRuleNameException extends RuleConstructionException {
     public DuplicateRuleNameException(RuleSet ruleSet,
                                       Rule originalRule,
                                       Rule conflictingRule,
-                                      Throwable cause){
+                                      Throwable cause) {
         super( createMessage( ruleSet,
                               conflictingRule ),
                cause );
@@ -106,7 +106,7 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      * 
      * @return The <code>RuleSet</code>.
      */
-    public RuleSet getRuleSet(){
+    public RuleSet getRuleSet() {
         return this.ruleSet;
     }
 
@@ -115,7 +115,7 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      * 
      * @return The <code>Rule</code>.
      */
-    public Rule getOriginalRule(){
+    public Rule getOriginalRule() {
         return this.originalRule;
     }
 
@@ -124,12 +124,12 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      * 
      * @return The <code>Rule</code>.
      */
-    public Rule getConflictingRule(){
+    public Rule getConflictingRule() {
         return this.conflictingRule;
     }
 
     private static String createMessage(RuleSet ruleSet,
-                                        Rule rule){
+                                        Rule rule) {
         return "Rule-set " + ((ruleSet.getName() != null) ? ruleSet.getName() : "<no-name>") + " already contains rule with name " + rule.getName();
     }
 }

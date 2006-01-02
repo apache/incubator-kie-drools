@@ -8,7 +8,7 @@ public class ExtractorBinding extends Binding {
 
     public ExtractorBinding(String identifier,
                             ObjectType objectType,
-                            Extractor extractor){
+                            Extractor extractor) {
         super( identifier,
                objectType );
         this.extractor = extractor;
@@ -17,7 +17,7 @@ public class ExtractorBinding extends Binding {
     /**
      * @return Returns the extractor.
      */
-    public Extractor getExtractor(){
+    public Extractor getExtractor() {
         return this.extractor;
     }
 

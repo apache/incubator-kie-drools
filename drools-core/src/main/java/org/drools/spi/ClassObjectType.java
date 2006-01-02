@@ -41,7 +41,6 @@ package org.drools.spi;
  *
  */
 
-
 /**
  * Java class semantics <code>ObjectType</code>.
  * 
@@ -57,7 +56,7 @@ public class ClassObjectType
     // ------------------------------------------------------------
 
     /** Java object class. */
-    private Class objectTypeClass;
+    protected Class objectTypeClass;
 
     // ------------------------------------------------------------
     // Constructors
@@ -69,7 +68,7 @@ public class ClassObjectType
      * @param objectTypeClass
      *            Java object class.
      */
-    public ClassObjectType(Class objectTypeClass){
+    public ClassObjectType(Class objectTypeClass) {
         this.objectTypeClass = objectTypeClass;
     }
 
@@ -82,7 +81,7 @@ public class ClassObjectType
      * 
      * @return The Java object class.
      */
-    public Class getType(){
+    public Class getType() {
         return this.objectTypeClass;
     }
 
@@ -100,7 +99,7 @@ public class ClassObjectType
      * @return <code>true</code> if the <code>Object</code> matches this
      *         object type, else <code>false</code>.
      */
-    public boolean matches(Object object){
+    public boolean matches(Object object) {
         return getType().isInstance( object );
     }
 
@@ -113,7 +112,7 @@ public class ClassObjectType
      * 
      * @return The hash.
      */
-    public int hashCode(){
+    public int hashCode() {
         return getType().hashCode();
     }
 
@@ -126,19 +125,19 @@ public class ClassObjectType
      * @return <code>true</code> if <code>object</code> is equal to this,
      *         otherwise <code>false</code>.
      */
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if ( this == object ) {
             return true;
         }
 
-        if ( object == null || getClass() != object.getClass() ) {
+        if ( object == null || !(object instanceof ClassObjectType) ) {
             return false;
         }
 
-        return this.objectTypeClass == ((ClassObjectType) object).objectTypeClass;
+        return this.objectTypeClass == ( (ClassObjectType) object).objectTypeClass;
     }
 
-    public String toString(){
+    public String toString() {
         return getType().getName();
     }
 }

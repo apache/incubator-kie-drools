@@ -56,7 +56,9 @@ import org.drools.conflict.DefaultConflictResolver;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleSet;
+import org.drools.spi.ClassObjectTypeResolver;
 import org.drools.spi.ConflictResolver;
+import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleBaseContext;
 
@@ -111,7 +113,7 @@ class RuleBaseImpl
      * @param rete
      *            The rete network.
      */
-    RuleBaseImpl(){
+    RuleBaseImpl() {
         this( DefaultConflictResolver.getInstance(),
               new DefaultFactHandleFactory(),
               null,
@@ -135,9 +137,10 @@ class RuleBaseImpl
                  FactHandleFactory factHandleFactory,
                  Set ruleSets,
                  Map applicationData,
-                 RuleBaseContext ruleBaseContext){
-        this.rete = new Rete();
-        this.builder = new Builder( this );
+                 RuleBaseContext ruleBaseContext) {
+        ObjectTypeResolver resolver = new ClassObjectTypeResolver();
+        this.rete = new Rete( resolver );
+        this.builder = new Builder( this, resolver );
         this.factHandleFactory = factHandleFactory;
         this.conflictResolver = conflictResolver;
         this.ruleSets = ruleSets;
@@ -153,14 +156,14 @@ class RuleBaseImpl
     /**
      * @see RuleBase
      */
-    public WorkingMemory newWorkingMemory(){
+    public WorkingMemory newWorkingMemory() {
         return newWorkingMemory( true );
     }
 
     /**
      * @see RuleBase
      */
-    public WorkingMemory newWorkingMemory(boolean keepReference){
+    public WorkingMemory newWorkingMemory(boolean keepReference) {
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( this );
         if ( keepReference ) {
             this.workingMemories.put( workingMemory,
@@ -169,21 +172,21 @@ class RuleBaseImpl
         return workingMemory;
     }
 
-    void disposeWorkingMemory(WorkingMemory workingMemory){
+    void disposeWorkingMemory(WorkingMemory workingMemory) {
         this.workingMemories.remove( workingMemory );
     }
 
     /**
      * @see RuleBase
      */
-    public FactHandleFactory getFactHandleFactory(){
+    public FactHandleFactory getFactHandleFactory() {
         return this.factHandleFactory;
     }
 
     /**
      * @see RuleBase
      */
-    public ConflictResolver getConflictResolver(){
+    public ConflictResolver getConflictResolver() {
         return this.conflictResolver;
     }
 
@@ -192,7 +195,7 @@ class RuleBaseImpl
      * 
      * @return The RETE-OO network.
      */
-    Rete getRete(){
+    Rete getRete() {
         return this.rete;
     }
 
@@ -212,7 +215,7 @@ class RuleBaseImpl
     void assertObject(FactHandle handle,
                       Object object,
                       PropagationContext context,
-                      WorkingMemoryImpl workingMemory) throws FactException{
+                      WorkingMemoryImpl workingMemory) throws FactException {
         getRete().assertObject( object,
                                 (FactHandleImpl) handle,
                                 context,
@@ -232,21 +235,21 @@ class RuleBaseImpl
      */
     void retractObject(FactHandle handle,
                        PropagationContext context,
-                       WorkingMemoryImpl workingMemory) throws FactException{
+                       WorkingMemoryImpl workingMemory) throws FactException {
         getRete().retractObject( (FactHandleImpl) handle,
                                  context,
                                  workingMemory );
     }
 
-    public RuleSet[] getRuleSets(){
+    public RuleSet[] getRuleSets() {
         return (RuleSet[]) this.ruleSets.toArray( new RuleSet[this.ruleSets.size()] );
     }
 
-    public Map getApplicationData(){
+    public Map getApplicationData() {
         return this.applicationData;
     }
 
-    public RuleBaseContext getRuleBaseContext(){
+    public RuleBaseContext getRuleBaseContext() {
         return this.ruleBaseContext;
     }
 
@@ -267,7 +270,7 @@ class RuleBaseImpl
     public void addRuleSet(RuleSet ruleSet) throws RuleIntegrationException,
                                            RuleSetIntegrationException,
                                            FactException,
-                                           InvalidPatternException{
+                                           InvalidPatternException {
         Map newApplicationData = ruleSet.getApplicationData();
 
         // Check that the application data is valid, we cannot change the type
@@ -293,11 +296,11 @@ class RuleBaseImpl
 
     public void addRule(Rule rule) throws FactException,
                                   RuleIntegrationException,
-                                  InvalidPatternException{
+                                  InvalidPatternException {
         this.builder.addRule( rule );
     }
 
-    public Set getWorkingMemories(){
+    public Set getWorkingMemories() {
         return this.workingMemories.keySet();
     }
 }

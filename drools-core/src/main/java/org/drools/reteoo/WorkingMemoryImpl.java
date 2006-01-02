@@ -139,7 +139,7 @@ class WorkingMemoryImpl
      * @param ruleBase
      *            The backing rule-base.
      */
-    public WorkingMemoryImpl(RuleBaseImpl ruleBase){
+    public WorkingMemoryImpl(RuleBaseImpl ruleBase) {
         this.ruleBase = ruleBase;
         this.agenda = new Agenda( this,
                                   ruleBase.getConflictResolver() );
@@ -149,39 +149,39 @@ class WorkingMemoryImpl
     // Instance methods
     // ------------------------------------------------------------
 
-    public void addEventListener(WorkingMemoryEventListener listener){
+    public void addEventListener(WorkingMemoryEventListener listener) {
         this.workingMemoryEventSupport.addEventListener( listener );
     }
 
-    public void removeEventListener(WorkingMemoryEventListener listener){
+    public void removeEventListener(WorkingMemoryEventListener listener) {
         this.workingMemoryEventSupport.removeEventListener( listener );
     }
 
-    public List getWorkingMemoryEventListeners(){
+    public List getWorkingMemoryEventListeners() {
         return this.workingMemoryEventSupport.getEventListeners();
     }
 
-    public void addEventListener(AgendaEventListener listener){
+    public void addEventListener(AgendaEventListener listener) {
         this.agendaEventSupport.addEventListener( listener );
     }
 
-    public void removeEventListener(AgendaEventListener listener){
+    public void removeEventListener(AgendaEventListener listener) {
         this.agendaEventSupport.removeEventListener( listener );
     }
 
-    public List getAgendaEventListeners(){
+    public List getAgendaEventListeners() {
         return this.agendaEventSupport.getEventListeners();
     }
 
-    public void addEventListener(ReteooNodeEventListener listener){
+    public void addEventListener(ReteooNodeEventListener listener) {
         this.reteooNodeEventSupport.addEventListener( listener );
     }
 
-    public void removeEventListener(ReteooNodeEventListener listener){
+    public void removeEventListener(ReteooNodeEventListener listener) {
         this.reteooNodeEventSupport.removeEventListener( listener );
     }
 
-    public List getReteooNodeEventListeners(){
+    public List getReteooNodeEventListeners() {
         return this.reteooNodeEventSupport.getEventListeners();
     }
 
@@ -190,7 +190,7 @@ class WorkingMemoryImpl
      * 
      * @return The new fact handle.
      */
-    FactHandle newFactHandle(){
+    FactHandle newFactHandle() {
         if ( !this.factHandlePool.isEmpty() ) {
             return this.ruleBase.getFactHandleFactory().newFactHandle( this.factHandlePool.pop() );
         }
@@ -201,7 +201,7 @@ class WorkingMemoryImpl
     /**
      * @see WorkingMemory
      */
-    public Map getApplicationDataMap(){
+    public Map getApplicationDataMap() {
         return this.applicationData;
     }
 
@@ -209,18 +209,16 @@ class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public void setApplicationData(String name,
-                                   Object value){
+                                   Object value) {
         // Make sure the application data has been declared in the RuleBase
         Map applicationDataDefintions = this.ruleBase.getApplicationData();
         Class type = (Class) applicationDataDefintions.get( name );
         if ( (type == null) ) {
             throw new RuntimeException( "Unexpected application data [" + name + "]" );
-        }
-        else if ( !type.isInstance( value ) ) {
+        } else if ( !type.isInstance( value ) ) {
             throw new RuntimeException( "Illegal class for application data. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
 
-        }
-        else {
+        } else {
             this.applicationData.put( name,
                                       value );
         }
@@ -229,7 +227,7 @@ class WorkingMemoryImpl
     /**
      * @see WorkingMemory
      */
-    public Object getApplicationData(String name){
+    public Object getApplicationData(String name) {
         return this.applicationData.get( name );
     }
 
@@ -239,25 +237,25 @@ class WorkingMemoryImpl
      * 
      * @return The <code>Agenda</code>.
      */
-    protected Agenda getAgenda(){
+    protected Agenda getAgenda() {
         return this.agenda;
     }
 
     /**
      * Clear the Agenda
      */
-    public void clearAgenda(){
+    public void clearAgenda() {
         this.agenda.clearAgenda();
     }
 
     /**
      * @see WorkingMemory
      */
-    public RuleBase getRuleBase(){
+    public RuleBase getRuleBase() {
         return this.ruleBase;
     }
 
-    public void fireAllRules(AgendaFilter agendaFilter) throws FactException{
+    public void fireAllRules(AgendaFilter agendaFilter) throws FactException {
         // If we're already firing a rule, then it'll pick up
         // the firing for any other assertObject(..) that get
         // nested inside, avoiding concurrent-modification
@@ -270,8 +268,7 @@ class WorkingMemoryImpl
                 while ( this.agenda.fireNextItem( agendaFilter ) ) {
                     ;
                 }
-            }
-            finally {
+            } finally {
                 this.firing = false;
             }
         }
@@ -280,14 +277,14 @@ class WorkingMemoryImpl
     /**
      * @see WorkingMemory
      */
-    public void fireAllRules() throws FactException{
+    public void fireAllRules() throws FactException {
         fireAllRules( null );
     }
 
     /**
      * @see WorkingMemory
      */
-    public Object getObject(FactHandle handle) throws NoSuchFactObjectException{
+    public Object getObject(FactHandle handle) throws NoSuchFactObjectException {
         Object object = this.objects.get( ((FactHandleImpl) handle).getId() );
 
         if ( object == null ) {
@@ -300,7 +297,7 @@ class WorkingMemoryImpl
     /**
      * @see WorkingMemory
      */
-    public FactHandle getFactHandle(Object object) throws NoSuchFactHandleException{
+    public FactHandle getFactHandle(Object object) throws NoSuchFactHandleException {
         FactHandle factHandle = (FactHandle) this.identityMap.get( object );
 
         if ( factHandle == null ) {
@@ -310,18 +307,18 @@ class WorkingMemoryImpl
         return factHandle;
     }
 
-    public List getFactHandles(){
+    public List getFactHandles() {
         return new ArrayList( this.identityMap.values() );
     }
 
     /**
      * @see WorkingMemory
      */
-    public List getObjects(){
+    public List getObjects() {
         return new ArrayList( this.objects.values() );
     }
 
-    public List getObjects(Class objectClass){
+    public List getObjects(Class objectClass) {
         List matching = new LinkedList();
         for ( Iterator objIter = this.objects.values().iterator(); objIter.hasNext(); ) {
             Object obj = objIter.next();
@@ -337,14 +334,14 @@ class WorkingMemoryImpl
     /**
      * @see WorkingMemory
      */
-    public boolean containsObject(FactHandle handle){
+    public boolean containsObject(FactHandle handle) {
         return this.objects.containsKey( ((FactHandleImpl) handle).getId() );
     }
 
     /**
      * @see WorkingMemory
      */
-    public FactHandle assertObject(Object object) throws FactException{
+    public FactHandle assertObject(Object object) throws FactException {
         return assertObject( object, /* Not-Dynamic */
                              false,
                              false,
@@ -355,7 +352,7 @@ class WorkingMemoryImpl
     /**
      * @see WorkingMemory
      */
-    public FactHandle assertLogicalObject(Object object) throws FactException{
+    public FactHandle assertLogicalObject(Object object) throws FactException {
         return assertObject( object, /* Not-Dynamic */
                              false,
                              true,
@@ -364,7 +361,7 @@ class WorkingMemoryImpl
     }
 
     public FactHandle assertObject(Object object,
-                                   boolean dynamic) throws FactException{
+                                   boolean dynamic) throws FactException {
         return assertObject( object,
                              dynamic,
                              false,
@@ -373,7 +370,7 @@ class WorkingMemoryImpl
     }
 
     public FactHandle assertLogicalObject(Object object,
-                                          boolean dynamic) throws FactException{
+                                          boolean dynamic) throws FactException {
         return assertObject( object,
                              dynamic,
                              true,
@@ -385,7 +382,7 @@ class WorkingMemoryImpl
                             boolean dynamic,
                             boolean logical,
                             Rule rule,
-                            Activation activation) throws FactException{
+                            Activation activation) throws FactException {
         /* check if the object already exists in the WM */
         FactHandle handle = (FactHandle) this.identityMap.get( object );
 
@@ -425,8 +422,7 @@ class WorkingMemoryImpl
                         this.justifiers.remove( eachActivation );
                     }
                 }
-            }
-            else {
+            } else {
                 handle = newFactHandle();
             }
 
@@ -434,13 +430,12 @@ class WorkingMemoryImpl
                        object );
 
             this.equalsMap.put( object,
-                           WorkingMemoryImpl.STATED );
+                                WorkingMemoryImpl.STATED );
 
             if ( dynamic ) {
                 addPropertyChangeListener( object );
             }
-        }
-        else {
+        } else {
             /* This object is already STATED, we cannot make it justifieable */
             if ( logicalState == WorkingMemoryImpl.STATED ) {
                 return null;
@@ -478,46 +473,41 @@ class WorkingMemoryImpl
         }
 
         this.ruleBase.assertObject( handle,
-                               object,
-                               new PropagationContextImpl( PropagationContext.ASSERTION,
-                                                           rule,
-                                                           activation ),
-                               this );
+                                    object,
+                                    new PropagationContextImpl( PropagationContext.ASSERTION,
+                                                                rule,
+                                                                activation ),
+                                    this );
 
         this.workingMemoryEventSupport.fireObjectAsserted( handle,
                                                            object );
         return handle;
     }
 
-    private void addPropertyChangeListener(Object object){
+    private void addPropertyChangeListener(Object object) {
         try {
             Method method = object.getClass().getMethod( "addPropertyChangeListener",
                                                          WorkingMemoryImpl.ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES );
 
             method.invoke( object,
                            this.addRemovePropertyChangeListenerArgs );
-        }
-        catch ( NoSuchMethodException e ) {
+        } catch ( NoSuchMethodException e ) {
             System.err.println( "Warning: Method addPropertyChangeListener not found" + " on the class " + object.getClass() + " so Drools will be unable to process JavaBean" + " PropertyChangeEvents on the asserted Object" );
-        }
-        catch ( IllegalArgumentException e ) {
+        } catch ( IllegalArgumentException e ) {
             System.err.println( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " does not take" + " a simple PropertyChangeListener argument" + " so Drools will be unable to process JavaBean"
                                 + " PropertyChangeEvents on the asserted Object" );
-        }
-        catch ( IllegalAccessException e ) {
+        } catch ( IllegalAccessException e ) {
             System.err.println( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " is not public" + " so Drools will be unable to process JavaBean" + " PropertyChangeEvents on the asserted Object" );
-        }
-        catch ( InvocationTargetException e ) {
+        } catch ( InvocationTargetException e ) {
             System.err.println( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " threw an InvocationTargetException" + " so Drools will be unable to process JavaBean"
                                 + " PropertyChangeEvents on the asserted Object: " + e.getMessage() );
-        }
-        catch ( SecurityException e ) {
+        } catch ( SecurityException e ) {
             System.err.println( "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a" + " addPropertyChangeListener method" + " so Drools will be unable to process JavaBean"
                                 + " PropertyChangeEvents on the asserted Object: " + e.getMessage() );
         }
     }
 
-    private void removePropertyChangeListener(FactHandle handle) throws NoSuchFactObjectException{
+    private void removePropertyChangeListener(FactHandle handle) throws NoSuchFactObjectException {
         Object object = null;
         try {
             object = getObject( handle );
@@ -527,25 +517,20 @@ class WorkingMemoryImpl
 
             mehod.invoke( handle,
                           this.addRemovePropertyChangeListenerArgs );
-        }
-        catch ( NoSuchMethodException e ) {
+        } catch ( NoSuchMethodException e ) {
             // The removePropertyChangeListener method on the class
             // was not found so Drools will be unable to
             // stop processing JavaBean PropertyChangeEvents
             // on the retracted Object
-        }
-        catch ( IllegalArgumentException e ) {
+        } catch ( IllegalArgumentException e ) {
             System.err.println( "Warning: The removePropertyChangeListener method" + " on the class " + object.getClass() + " does not take" + " a simple PropertyChangeListener argument" + " so Drools will be unable to stop processing JavaBean"
                                 + " PropertyChangeEvents on the retracted Object" );
-        }
-        catch ( IllegalAccessException e ) {
+        } catch ( IllegalAccessException e ) {
             System.err.println( "Warning: The removePropertyChangeListener method" + " on the class " + object.getClass() + " is not public" + " so Drools will be unable to stop processing JavaBean" + " PropertyChangeEvents on the retracted Object" );
-        }
-        catch ( InvocationTargetException e ) {
+        } catch ( InvocationTargetException e ) {
             System.err.println( "Warning: The removePropertyChangeL istener method" + " on the class " + object.getClass() + " threw an InvocationTargetException" + " so Drools will be unable to stop processing JavaBean"
                                 + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
-        }
-        catch ( SecurityException e ) {
+        } catch ( SecurityException e ) {
             System.err.println( "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a" + " removePropertyChangeListener method" + " so Drools will be unable to stop processing JavaBean"
                                 + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
         }
@@ -560,7 +545,7 @@ class WorkingMemoryImpl
      *            The object.
      */
     Object putObject(FactHandle handle,
-                     Object object){
+                     Object object) {
         Object oldValue = this.objects.put( ((FactHandleImpl) handle).getId(),
                                             object );
 
@@ -570,7 +555,7 @@ class WorkingMemoryImpl
         return oldValue;
     }
 
-    Object removeObject(FactHandle handle){
+    Object removeObject(FactHandle handle) {
         Object object = this.objects.remove( ((FactHandleImpl) handle).getId() );
 
         this.identityMap.remove( object );
@@ -578,7 +563,7 @@ class WorkingMemoryImpl
         return object;
     }
 
-    public void retractObject(FactHandle handle) throws FactException{
+    public void retractObject(FactHandle handle) throws FactException {
         retractObject( handle,
                        true,
                        true,
@@ -593,14 +578,14 @@ class WorkingMemoryImpl
                               boolean removeLogical,
                               boolean updateEqualsMap,
                               Rule rule,
-                              Activation activation) throws FactException{
+                              Activation activation) throws FactException {
         removePropertyChangeListener( handle );
 
         this.ruleBase.retractObject( handle,
-                                new PropagationContextImpl( PropagationContext.RETRACTION,
-                                                            rule,
-                                                            activation ),
-                                this );
+                                     new PropagationContextImpl( PropagationContext.RETRACTION,
+                                                                 rule,
+                                                                 activation ),
+                                     this );
 
         Object oldObject = removeObject( handle );
 
@@ -629,7 +614,7 @@ class WorkingMemoryImpl
     }
 
     public void modifyObject(FactHandle handle,
-                             Object object) throws FactException{
+                             Object object) throws FactException {
         modifyObject( handle,
                       object,
                       null,
@@ -642,7 +627,7 @@ class WorkingMemoryImpl
     public void modifyObject(FactHandle handle,
                              Object object,
                              Rule rule,
-                             Activation activation) throws FactException{
+                             Activation activation) throws FactException {
         Object originalObject = removeObject( handle );
 
         if ( originalObject == null ) {
@@ -690,7 +675,7 @@ class WorkingMemoryImpl
      * 
      * @return The node's memory.
      */
-    public Object getNodeMemory(NodeMemory node){
+    public Object getNodeMemory(NodeMemory node) {
         Object memory = this.nodeMemories.get( node.getId() );
 
         if ( memory == null ) {
@@ -703,19 +688,19 @@ class WorkingMemoryImpl
         return memory;
     }
 
-    public void clearNodeMemory(NodeMemory node){
+    public void clearNodeMemory(NodeMemory node) {
         this.nodeMemories.remove( node.getId() );
     }
 
-    public WorkingMemoryEventSupport getWorkingMemoryEventSupport(){
+    public WorkingMemoryEventSupport getWorkingMemoryEventSupport() {
         return this.workingMemoryEventSupport;
     }
 
-    public AgendaEventSupport getAgendaEventSupport(){
+    public AgendaEventSupport getAgendaEventSupport() {
         return this.agendaEventSupport;
     }
 
-    public ReteooNodeEventSupport getReteooNodeEventSupport(){
+    public ReteooNodeEventSupport getReteooNodeEventSupport() {
         return this.reteooNodeEventSupport;
     }
 
@@ -725,7 +710,7 @@ class WorkingMemoryImpl
      * 
      * @param handler
      */
-    public void setAsyncExceptionHandler(AsyncExceptionHandler handler){
+    public void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
         this.agenda.setAsyncExceptionHandler( handler );
     }
 
@@ -735,17 +720,15 @@ class WorkingMemoryImpl
      * this.joinMemories.get( it.next( ) )).dump( ); } }
      */
 
-    public void propertyChange(PropertyChangeEvent event){
+    public void propertyChange(PropertyChangeEvent event) {
         Object object = event.getSource();
 
         try {
             modifyObject( getFactHandle( object ),
                           object );
-        }
-        catch ( NoSuchFactHandleException e ) {
+        } catch ( NoSuchFactHandleException e ) {
             // Not a fact so unable to process the chnage event
-        }
-        catch ( FactException e ) {
+        } catch ( FactException e ) {
             throw new RuntimeException( e.getMessage() );
         }
     }
@@ -757,7 +740,7 @@ class WorkingMemoryImpl
      */
     public void removeLogicalAssertions(TupleKey key,
                                         PropagationContext context,
-                                        Rule rule) throws FactException{
+                                        Rule rule) throws FactException {
         for ( Iterator it = this.justifiers.keySet().iterator(); it.hasNext(); ) {
             AgendaItem item = (AgendaItem) it.next();
 
@@ -772,7 +755,7 @@ class WorkingMemoryImpl
 
     public void removeLogicalAssertions(Activation activation,
                                         PropagationContext context,
-                                        Rule rule) throws FactException{
+                                        Rule rule) throws FactException {
         Set handles = (Set) this.justifiers.remove( activation );
         /* no justified facts for this activation */
         if ( handles == null ) {
@@ -794,15 +777,15 @@ class WorkingMemoryImpl
         }
     }
 
-    public PrimitiveLongMap getJustified(){
+    public PrimitiveLongMap getJustified() {
         return this.justified;
     }
 
-    public Map getJustifiers(){
+    public Map getJustifiers() {
         return this.justifiers;
     }
 
-    public void dispose(){
+    public void dispose() {
         this.ruleBase.disposeWorkingMemory( this );
     }
 }
