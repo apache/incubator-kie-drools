@@ -124,6 +124,19 @@ public class SimpleSnippetLexerTest extends TestCase
         
         assertEquals(expected, rawTokens);
     }
+    
+    public void testNormaliseWhitespaceInTokens() {
+        String sample ="[Age  of][Age\n    of]";
+        NaturalSnippetLexer lex = new SimpleSnippetLexer(sample);
+        List rawTokens = lex.getRawTokens().getTokens();
+        
+        List expected = new ArrayList();
+        expected.add("Age of");        
+        expected.add("Age of");
+        
+        assertEquals(expected, rawTokens);
+        
+    }
         
     
     
