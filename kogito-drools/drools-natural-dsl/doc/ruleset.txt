@@ -1,0 +1,11 @@
+Start-rule
+Name: Raincoat
+Input: Weather weather
+IF 
+	weather is rainy and going outside
+	do not have raincoat
+THEN
+	purchase raincost
+	modify clothing
+
+End-rule
