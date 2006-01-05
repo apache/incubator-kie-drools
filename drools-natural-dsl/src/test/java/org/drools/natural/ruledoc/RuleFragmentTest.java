@@ -59,7 +59,7 @@ public class RuleFragmentTest extends TestCase {
         RuleFragment helper = new RuleFragment(fragment, grammar);
         List cons = helper.getConsequences();
         assertEquals(1, cons.size());
-        assertEquals("cons  1", cons.get(0));
+        assertEquals("cons 1", cons.get(0));
     }    
     
     

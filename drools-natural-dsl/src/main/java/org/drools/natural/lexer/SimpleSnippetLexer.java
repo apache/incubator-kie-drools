@@ -142,15 +142,29 @@ public class SimpleSnippetLexer implements NaturalSnippetLexer
 
     private void breakBySpace(int pos)
     {
-        if ( bracketStack.size( ) > 0 || inDoubleQuotes )
-        {
+        if (inDoubleQuotes) {
             appendCurrentChar( pos );
+        } else if ( bracketStack.size( ) > 0)
+        {
+            if (previousIsNotSpace(pos)) {
+                appendCurrentChar( pos );
+            }
         }
         else
         {
             newToken( );
         }
 
+    }
+
+    private boolean previousIsNotSpace(int pos){
+        
+        if (pos == 0) return true;
+        if (snippet[pos - 1] == ' ') {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private void newToken()
