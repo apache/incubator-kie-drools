@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.FactException;
 import org.drools.WorkingMemory;
@@ -18,6 +20,7 @@ import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
 import org.drools.rule.ColumnBinding;
 import org.drools.rule.Declaration;
+import org.drools.rule.DuplicateRuleNameException;
 import org.drools.rule.EvaluatorFactory;
 import org.drools.rule.FieldBinding;
 import org.drools.rule.InvalidRuleException;
@@ -41,7 +44,7 @@ import org.drools.spi.LiteralExpressionConstraint;
 import org.drools.spi.MockField;
 import org.drools.spi.Tuple;
 
-public class MannersTest {
+public class MannersTest extends TestCase {
     /** Number of guests at the dinner (default: 16). */
     private int             numGuests  = 16;
 
@@ -92,9 +95,17 @@ public class MannersTest {
         this.booleanNotEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.BOOLEAN_TYPE,
                                                                                      Evaluator.NOT_EQUAL );
 
+    }
+    
+    public void test1() throws DuplicateRuleNameException, InvalidRuleException, IntrospectionException {
         RuleSet ruleSet = new RuleSet( "Miss Manners" );
-        Rule assignFirstSeat = getAssignFirstSeatRule();
-
+        ruleSet.addRule( getAssignFirstSeatRule() );
+        ruleSet.addRule( getMakePath() );
+        ruleSet.addRule( getFindSeating() );
+        ruleSet.addRule( getPathDone() );
+        ruleSet.addRule( getAreWeDone() );
+        ruleSet.addRule( getContinueProcessing() );
+        ruleSet.addRule( getAllDone() );
     }
 
     /**
@@ -237,7 +248,7 @@ public class MannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule makePath() throws IntrospectionException,
+    private Rule getMakePath() throws IntrospectionException,
                            InvalidRuleException {
         final Rule rule = new Rule( "makePath" );
 
@@ -315,9 +326,8 @@ public class MannersTest {
         Not not = new Not();
 
         not.addChild( notPathColumn );
-        notPathColumn.addConstraint( not );
 
-        rule.addPattern( notPathColumn );
+        rule.addPattern( not );
 
         // ------------
         // drools.assert( new Path( id, pathName, pathSeat ) );
@@ -389,9 +399,9 @@ public class MannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule findSeating() throws IntrospectionException,
+    private Rule getFindSeating() throws IntrospectionException,
                               InvalidRuleException {
-        final Rule rule = new Rule( "makePath" );
+        final Rule rule = new Rule( "findSeating" );
 
         // ---------------
         // context : Context( state == Context.ASSIGN_SEATS )
@@ -514,9 +524,9 @@ public class MannersTest {
                                                                  "guestName",
                                                                  leftGuestNameDeclaration,
                                                                  objectEqualEvaluator ) );
-        Not not = new Not();
-        not.addChild( notPathColumn );
-        notPathColumn.addConstraint( not );
+        Not notPath = new Not();
+        notPath.addChild( notPathColumn );
+        notPathColumn.addConstraint( notPath );
         // ------------
         // not ( Chosen( id == seatingId, guestName == leftGuestName, hobby == rightGuestHobby ) )
         // ------------
@@ -538,9 +548,10 @@ public class MannersTest {
                                                                    rightGuestHobbyDeclaration,
                                                                    objectEqualEvaluator ) );
 
-        notChosenColumn.addConstraint( notChosenColumn );
+        Not notChosen = new Not();
+        notChosen.addChild( notChosenColumn );
 
-        rule.addPattern( notChosenColumn );
+        rule.addPattern( notChosen );
 
         // ------------
         // int newSeat = rightSeat + 1;
@@ -627,9 +638,9 @@ public class MannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule pathDone() throws IntrospectionException,
+    private Rule getPathDone() throws IntrospectionException,
                            InvalidRuleException {
-        final Rule rule = new Rule( "makePath" );
+        final Rule rule = new Rule( "pathDone" );
 
         // -----------
         // context : Context( state == Context.MAKE_PATH )
@@ -704,7 +715,7 @@ public class MannersTest {
      *     when {
      *         context : Context( state == Context.CHECK_DONE )
      *         LastSeat( lastSeat: seat )
-     *         Seating( seat == lastSeat ) 
+     *         Seating( rightSeat == lastSeat ) 
      *     } then {
      *         context.setState( Context.PRINT_RESULTS );
      *     }
@@ -715,7 +726,7 @@ public class MannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule areWeDone() throws IntrospectionException,
+    private Rule getAreWeDone() throws IntrospectionException,
                            InvalidRuleException {
         final Rule rule = new Rule( "areWeDone" );
 
@@ -746,16 +757,16 @@ public class MannersTest {
         rule.addPattern( lastSeatColumn );
         final Declaration lastSeatDeclaration = rule.getDeclaration( "lastSeat" );
         // -------------
-        // Seating( seat == lastSeat )         
+        // Seating( rightSeat == lastSeat )         
         // -------------
         Column seatingColumn = new Column( 2,
                                            seatingType,
                                            null );
         
         seatingColumn.addConstraint( getBoundVariableConstraint( seatingColumn,
-                                                                   "seat",
-                                                                   lastSeatDeclaration,
-                                                                   integerEqualEvaluator ) );        
+                                                                 "rightSeat",
+                                                                 lastSeatDeclaration,
+                                                                 integerEqualEvaluator ) );        
         
         rule.addPattern( seatingColumn );
         
@@ -803,7 +814,7 @@ public class MannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule continueProcessing() throws IntrospectionException,
+    private Rule getContinueProcessing() throws IntrospectionException,
                            InvalidRuleException {
         final Rule rule = new Rule( "continueProcessng" );
 
@@ -866,7 +877,7 @@ public class MannersTest {
      * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private Rule allDone() throws IntrospectionException,
+    private Rule getAllDone() throws IntrospectionException,
                            InvalidRuleException {
         final Rule rule = new Rule( "alldone" );
 

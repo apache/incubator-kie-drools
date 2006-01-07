@@ -27,9 +27,13 @@ public class Column {
     {
         this.index = index;
         this.objectType = objectType;
-        this.binding = new ColumnBinding( identifier,
-                                          this.objectType,
-                                          this );
+        if (identifier != null) {
+            this.binding = new ColumnBinding( identifier,
+                                              this.objectType,
+                                              this );
+        } else {
+            this.binding = null;
+        }
     }
 
     public ObjectType getObjectType() {
