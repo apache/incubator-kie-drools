@@ -253,10 +253,10 @@ class Builder {
 
     public List attachAlphaNodes(Column column) {
         List constraints = column.getConstraints();
-
-        ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                    column.getObjectType(),
-                                                                    this.rete ) );
+ 
+        this.objectSource = attachNode( new ObjectTypeNode( this.id++,
+                                                            column.getObjectType(),
+                                                            this.rete ) );
 
         List predicateConstraints = new ArrayList();
 
