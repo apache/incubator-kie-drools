@@ -113,7 +113,7 @@ class Builder {
      */
     Builder(RuleBaseImpl ruleBase, ObjectTypeResolver resolver) {
         this.ruleBase = ruleBase;
-        this.rete = new Rete();
+        this.rete = this.ruleBase.getRete();
         this.resolver = resolver;
         this.ruleSets = new ArrayList();
         this.attachedNodes = new HashMap();

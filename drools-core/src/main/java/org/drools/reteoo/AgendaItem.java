@@ -167,7 +167,7 @@ class AgendaItem
      */
     void fire(WorkingMemoryImpl workingMemory) throws ConsequenceException {
 
-        this.rule.getConsequence().invoke( null );
+        this.rule.getConsequence().invoke( this );
 
         workingMemory.getAgendaEventSupport().fireActivationFired( this.rule,
                                                                    this.tuple );
