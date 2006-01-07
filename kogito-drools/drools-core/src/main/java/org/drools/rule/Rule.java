@@ -49,9 +49,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.spi.ClassObjectType;
+import org.drools.spi.ColumnExtractor;
 import org.drools.spi.Condition;
 import org.drools.spi.Consequence;
+import org.drools.spi.Constraint;
 import org.drools.spi.Duration;
+import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.Importer;
 import org.drools.spi.Module;
@@ -363,7 +367,7 @@ public class Rule
      *         the <code>identifier</code>.
      */
     public Declaration getDeclaration(String identifier) {
-        return (Declaration) this.declarations;
+        return (Declaration) this.declarations.get( identifier );
     }
 
     /**
@@ -378,13 +382,49 @@ public class Rule
     }
 
     /**
-     * Add a <code>Test</code> to this rule.
+     * Add a pattern to the rule. All patterns are searched for bindings which are then added to the rule
+     * as declarations 
      * 
      * @param condition
      *            The <code>Test</code> to add.
+     * @throws InvalidRuleException 
      */
-    public void addPattern(ConditionalElement ce) {
+    public void addPattern(ConditionalElement ce) throws InvalidRuleException {
+        addDeclarations( ce );
         this.headPattern.addChild( ce );
+    }
+    
+    public  void addPattern(Column column) throws InvalidRuleException {
+        addDeclarations( column );
+        this.headPattern.addChild( column );
+    }
+    
+    private void addDeclarations(Column column) throws InvalidRuleException {
+        // Check if the column is bound and if so add it as a declaration
+        if ( column.getBinding() != null ) {
+            ColumnBinding binding = (ColumnBinding ) column.getBinding();
+            addDeclaration( binding.getIdentifier(), column.getIndex(), new ColumnExtractor( new ClassObjectType( Object.class ) ) );
+        }
+        
+        // Check if there are any bound fields and if so add it as a declaration
+        for ( Iterator constraintIter = column.getConstraints().iterator(); constraintIter.hasNext(); ) {
+            Constraint constraint = ( Constraint ) constraintIter.next();
+            if ( constraint instanceof FieldBinding ) {
+                FieldBinding fieldBinding = ( FieldBinding ) constraint;
+                addDeclaration(fieldBinding.getIdentifier(), fieldBinding.getColumn(), fieldBinding.getExtractor() );
+            }                     
+        }    
+    }
+    
+    private void addDeclarations(ConditionalElement ce) throws InvalidRuleException {
+        for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
+            Object object = it.next();
+            if ( object instanceof Column ) {
+                 addDeclarations( (Column) object );                 
+            } else if ( object instanceof ConditionalElement ) {
+                addDeclarations( (ConditionalElement) object );
+            }
+        }
     }
 
     /**

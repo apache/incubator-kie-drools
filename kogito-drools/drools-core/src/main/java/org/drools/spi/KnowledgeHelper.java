@@ -44,6 +44,7 @@ package org.drools.spi;
 import java.util.List;
 
 import org.drools.FactException;
+import org.drools.FactHandle;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -111,6 +112,9 @@ public interface KnowledgeHelper {
     void modifyObject(Object oldObject,
                       Object newObject) throws FactException;
 
+    void modifyObject(FactHandle handle,
+                      Object newObject) throws FactException;    
+    
     /**
      * Retracts an object from the WorkingMemory. All Activations on the Agenda
      * that are cancelled should emit ActivationCancelled events.

@@ -41,6 +41,8 @@ package org.drools.spi;
  *
  */
 
+import java.util.Arrays;
+
 /**
  * Java class semantics <code>ObjectType</code>.
  * 
@@ -57,6 +59,8 @@ public class ClassObjectType
 
     /** Java object class. */
     protected Class objectTypeClass;
+    
+    protected int valueType;
 
     // ------------------------------------------------------------
     // Constructors
@@ -81,7 +85,7 @@ public class ClassObjectType
      * 
      * @return The Java object class.
      */
-    public Class getType() {
+    public Class getClassType() {
         return this.objectTypeClass;
     }
 
@@ -100,8 +104,12 @@ public class ClassObjectType
      *         object type, else <code>false</code>.
      */
     public boolean matches(Object object) {
-        return getType().isInstance( object );
+        return getClassType().isInstance( object );
     }
+    
+    public int getValueType() {
+        return this.valueType;
+    }    
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // java.lang.Object
@@ -113,7 +121,31 @@ public class ClassObjectType
      * @return The hash.
      */
     public int hashCode() {
-        return getType().hashCode();
+        return getClassType().hashCode();
+    }
+    
+    protected void setValueType(Class clazz) {
+        if ( clazz == Character.class ) {
+            this.valueType = Evaluator.CHAR_TYPE;
+        } else if ( clazz == Byte.class ) { 
+            this.valueType = Evaluator.BYTE_TYPE;
+        } else if (clazz == Short.class ) {
+            this.valueType = Evaluator.SHORT_TYPE;
+        } else if (clazz == Integer.class ) {
+            this.valueType = Evaluator.INTEGER_TYPE;
+        } else if (clazz == Long.class) {
+            this.valueType = Evaluator.LONG_TYPE;
+        } else if (clazz == Float.class) {
+            this.valueType = Evaluator.FLOAT_TYPE;
+        } else if (clazz == Double.class) {
+            this.valueType = Evaluator.DOUBLE_TYPE;
+        } else if (clazz == java.sql.Date.class) {
+            this.valueType = Evaluator.DATE_TYPE;
+        } else if (clazz.isAssignableFrom( Object[].class )) {
+            this.valueType = Evaluator.ARRAY_TYPE;
+        } else if (clazz instanceof Object) {
+            this.valueType = Evaluator.OBJECT_TYPE;
+        }
     }
 
     /**
@@ -138,6 +170,6 @@ public class ClassObjectType
     }
 
     public String toString() {
-        return getType().getName();
+        return getClassType().getName();
     }
 }

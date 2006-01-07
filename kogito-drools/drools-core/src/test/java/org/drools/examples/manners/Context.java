@@ -47,9 +47,15 @@ public class Context
     implements
     Serializable {
 
-    public static final int START_UP = 0;
+    public static final int START_UP        = 0;
+    public static final int ASSIGN_SEATS    = 1;
+    public static final int MAKE_PATH       = 2;
+    public static final int CHECK_DONE      = 3;
+    public static final int PRINT_RESULTS   = 4;
 
     private int             state;
+    
+    //private Path            path;
 
     public Context(int state) {
         this.state = state;
@@ -62,6 +68,10 @@ public class Context
     public boolean isState(int state) {
         return this.state == state;
     }
+
+    public int getState() {
+        return this.state;
+    }          
 
     public String toString() {
         return "{state=" + this.state + "}";

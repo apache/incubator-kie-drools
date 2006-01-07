@@ -48,45 +48,33 @@ import java.util.List;
 public class Guest
     implements
     Serializable {
-    private String name;
+    private final String name;
 
-    private char   sex;
+    private final Sex   sex;
 
-    private List   hobbies;
+    private final Hobby  hobby;
 
     public Guest(String name,
-                 char sex) {
+                 Sex sex,
+                 Hobby hobby) {
         this.name = name;
         this.sex = sex;
-        this.hobbies = new ArrayList();
+        this.hobby = hobby;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void addHobby(String hobby) {
-        this.hobbies.add( hobby );
+    public Hobby getHobby() {
+        return this.hobby;
     }
-
-    public List getHobbies() {
-        return this.hobbies;
-    }
-
-    public boolean hasOppositeSex(Guest guest) {
-        return this.sex != guest.sex;
-    }
-
-    public boolean hasSameHobby(Guest guest) {
-        boolean hobbyFound = false;
-        for ( int i = 0; !hobbyFound && i < this.hobbies.size(); i++ ) {
-            String hobby = (String) this.hobbies.get( i );
-            hobbyFound = guest.hobbies.contains( hobby );
-        }
-        return hobbyFound;
-    }
+    
+    public Sex getSex() {
+        return this.sex;
+    }    
 
     public String toString() {
-        return "{name=" + this.name + ",sex=" + this.sex + ",hobbies=" + this.hobbies + "}";
+        return "{name=" + this.name + ",sex=" + this.sex + ",hobbies=" + this.hobby + "}";
     }
 }

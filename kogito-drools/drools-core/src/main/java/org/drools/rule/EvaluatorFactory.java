@@ -23,6 +23,8 @@ public class EvaluatorFactory {
                 return getShortEvaluator( operator );
             case Evaluator.INTEGER_TYPE :
                 return getIntegerEvaluator( operator );
+            case Evaluator.BOOLEAN_TYPE :
+                return getBooleanEvaluator( operator );                
             default :
                 throw new RuntimeException( "Type '" + type + "' does not exist for BaseEvaluatorFactory" );
         }
@@ -80,6 +82,59 @@ public class EvaluatorFactory {
             return !object1.equals( object2 );
         }
     }
+    
+    static class BooleanEqualEvaluator extends BaseEvaluator {
+        private static Evaluator INSTANCE;
+
+        public static Evaluator getInstance() {
+            if ( INSTANCE == null ) {
+                INSTANCE = new BooleanEqualEvaluator();
+            }
+            return INSTANCE;
+        }
+
+        private BooleanEqualEvaluator() {
+            super( Evaluator.BOOLEAN_TYPE,
+                   Evaluator.EQUAL );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            return ((Boolean)object1).booleanValue() == ((Boolean)object2).booleanValue();
+        }
+    }
+    
+    Evaluator getBooleanEvaluator(int operator) {
+        switch ( operator ) {
+            case Evaluator.EQUAL :
+                return ObjectEqualEvaluator.getInstance();
+            case Evaluator.NOT_EQUAL :
+                return ObjectNotEqualEvaluator.getInstance();
+            default :
+                throw new RuntimeException( "Operator '" + operator + "' does not exist for BooleanEvaluator" );
+        }
+    }    
+
+    static class BooleanNotEqualEvaluator extends BaseEvaluator {
+        private static Evaluator INSTANCE;
+
+        public static Evaluator getInstance() {
+            if ( INSTANCE == null ) {
+                INSTANCE = new BooleanNotEqualEvaluator();
+            }
+            return INSTANCE;
+        }
+
+        private BooleanNotEqualEvaluator() {
+            super( Evaluator.BOOLEAN_TYPE,
+                   Evaluator.NOT_EQUAL );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            return ((Boolean)object1).booleanValue() != ((Boolean)object2).booleanValue();
+        }
+    }    
 
     Evaluator getShortEvaluator(int operator) {
         switch ( operator ) {

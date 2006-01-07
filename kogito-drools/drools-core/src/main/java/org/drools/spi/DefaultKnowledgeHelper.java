@@ -78,9 +78,13 @@ public class DefaultKnowledgeHelper
     public void modifyObject(Object oldObject,
                              Object newObject) throws FactException {
         FactHandle handle = this.tuple.getFactHandleForObject( oldObject );
-
-        this.tuple.getWorkingMemory().modifyObject( handle,
-                                                    newObject );
+        
+        modifyObject(handle, newObject);
+    }
+    
+    public void modifyObject(FactHandle handle,
+                      Object newObject) throws FactException {
+        this.tuple.getWorkingMemory().modifyObject( handle, newObject );
     }
 
     public void retractObject(Object object) throws FactException {

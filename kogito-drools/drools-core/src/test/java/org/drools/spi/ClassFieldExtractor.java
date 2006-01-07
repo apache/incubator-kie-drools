@@ -13,11 +13,14 @@ public class ClassFieldExtractor
     implements
     FieldExtractor {
     private Class clazz;
-    private int   index;
+    private ClassObjectType objectType;
+    private int             index;
 
     public ClassFieldExtractor(Class clazz,
                                int index) {
         this.clazz = clazz;
+        this.objectType = new ClassObjectType( getClassType( clazz,
+                                                             index ) );
         this.index = index;
     }
 
@@ -29,22 +32,25 @@ public class ClassFieldExtractor
         Object value = null;
         try {
             value = Introspector.getBeanInfo( this.clazz ).getPropertyDescriptors()[this.index].getReadMethod().invoke( object,
-                                                                                                                        null );
+                                                                                                                                            null );
         } catch ( Exception e ) {
             throw new RuntimeException( e );
         }
         return value;
     }
 
-    public Class getValueType() {
-        Class clazz = null;
-        try {
-            clazz = Introspector.getBeanInfo( this.clazz ).getPropertyDescriptors()[this.index].getPropertyType();
-        } catch ( IntrospectionException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return clazz;
+    public ObjectType getObjectType() {
+        return this.objectType;
     }
 
+    private Class getClassType(Class clazz,
+                               int index) {
+        Class fieldClass = null;
+        try {
+            fieldClass = Introspector.getBeanInfo( clazz ).getPropertyDescriptors()[index].getPropertyType();
+        } catch ( IntrospectionException e ) {
+            e.printStackTrace();
+        }
+        return fieldClass;
+    }
 }

@@ -114,8 +114,8 @@ public class Declaration
      * 
      * @return The object-type.
      */
-    public Class getDeclarationType() {
-        return this.extractor.getValueType();
+    public ObjectType getObjectType() {
+        return this.extractor.getObjectType();
     }
 
     /**
@@ -176,7 +176,7 @@ public class Declaration
 
         Declaration other = (Declaration) object;
 
-        return this.index == other.index && this.identifier.equals( other.identifier ) && this.extractor.getValueType().equals( other.extractor.getValueType() );
+        return this.index == other.index && this.identifier.equals( other.identifier ) && this.extractor.getObjectType().equals( other.extractor.getObjectType() );
     }
 
 }

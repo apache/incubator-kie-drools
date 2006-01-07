@@ -24,11 +24,11 @@ public class ConstraintTest extends TestCase {
 
     /**
      * <pre>
-     *       
      *        
-     *               ( Cheese (type &quot;cheddar&quot;) )
      *         
-     *        
+     *                ( Cheese (type &quot;cheddar&quot;) )
+     *          
+     *         
      * </pre>
      * 
      * This is currently the same as using a ReturnValueConstraint just that it
@@ -38,7 +38,7 @@ public class ConstraintTest extends TestCase {
      */
     public void testLiteralConstraint() throws IntrospectionException {
         int index = Cheese.getIndex( Cheese.class,
-                                           "type" );
+                                     "type" );
 
         Field field = new MockField( "type",
                                      "cheddar",
@@ -68,12 +68,12 @@ public class ConstraintTest extends TestCase {
 
     /**
      * <pre>
-     *       
      *        
-     *               (Cheese (price ?price1 ) 
-     *               (Cheese (price ?price2&amp;:(= ?price2 (* 2 ?price1) )
      *         
-     *        
+     *                (Cheese (price ?price1 ) 
+     *                (Cheese (price ?price2&amp;:(= ?price2 (* 2 ?price1) )
+     *          
+     *         
      * </pre>
      * 
      * @throws IntrospectionException
@@ -143,13 +143,13 @@ public class ConstraintTest extends TestCase {
 
     /**
      * <pre>
-     *       
      *        
-     *               (Cheese (price ?price ) 
-     *               (Cheese (price =(* 2 ?price) )
-     *               (Cheese (price &gt;(* 2 ?price) )
      *         
-     *        
+     *                (Cheese (price ?price ) 
+     *                (Cheese (price =(* 2 ?price) )
+     *                (Cheese (price &gt;(* 2 ?price) )
+     *          
+     *         
      * </pre>
      * 
      * @throws IntrospectionException
