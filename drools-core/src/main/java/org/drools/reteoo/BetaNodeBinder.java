@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.rule.Declaration;
 import org.drools.spi.BetaNodeConstraint;
 import org.drools.spi.Tuple;
 
@@ -62,8 +63,10 @@ public class BetaNodeBinder {
     public Set getRequiredDeclarations() {
         Set declarations = new HashSet();
         for ( int i = 0; i < this.constraints.length; i++ ) {
-            Collections.addAll( declarations,
-                                this.constraints[i].getRequiredDeclarations() );
+            Declaration[] array = this.constraints[i].getRequiredDeclarations();
+            for (int j = 0; j < array.length; j++) {
+                declarations.add( array[j] );
+            }
         }
         return declarations;
     }
