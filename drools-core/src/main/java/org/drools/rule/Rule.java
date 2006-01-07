@@ -95,7 +95,7 @@ public class Rule
     private int          salience;
 
     /** Columns */
-    private final List   columns      = new ArrayList();
+    //private final List   columns      = new ArrayList();
 
     private final Map    declarations = new HashMap();
 
@@ -240,9 +240,9 @@ public class Rule
      *         <code>false</code>.
      */
     public boolean isValid() {
-        if ( this.columns.size() == 0 ) {
-            return false;
-        }
+        //if ( this.columns.size() == 0 ) {
+        //    return false;
+        //}
 
         if ( this.consequence == null ) {
             return false;
@@ -273,9 +273,9 @@ public class Rule
      *             if this rule is in any way invalid.
      */
     public void checkValidity() throws InvalidRuleException {
-        if ( this.columns.isEmpty() ) {
-            throw new NoColumnsException( this );
-        }
+        //if ( this.columns.isEmpty() ) {
+        //    throw new NoColumnsException( this );
+        //}
 
         if ( this.consequence == null ) {
             throw new NoConsequenceException( this );
