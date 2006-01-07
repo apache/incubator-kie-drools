@@ -94,4 +94,8 @@ public class MockObjectType
         return this.matches;
     }
 
+    public int getValueType() {
+        return 0;
+    }
+
 }

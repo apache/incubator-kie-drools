@@ -1,5 +1,6 @@
 package org.drools.rule;
 
+import org.drools.spi.ColumnExtractor;
 import org.drools.spi.ObjectType;
 
 public class ColumnBinding extends Binding {
@@ -9,7 +10,8 @@ public class ColumnBinding extends Binding {
                          ObjectType objectType,
                          Column column) {
         super( identifier,
-               objectType );
+               objectType,
+               new ColumnExtractor(objectType));
         this.column = column;
     }
 

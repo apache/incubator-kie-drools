@@ -47,58 +47,64 @@ import java.util.List;
 public class Seating
     implements
     Serializable {
-    private int     seat1, seat2;
+    private final int id, pid;
+    
+    private final int     leftSeat, rightSeat;
 
-    private Guest   guest1, guest2;
+    private final String   leftGuestName, rightGuestName;
 
-    private List    tabooList = new ArrayList();
-
-    private Seating prevSeat;
-
-    public Seating(int seat1,
-                   Guest guest1,
-                   Seating prevSeat) {
-        this.seat1 = seat1;
-        this.guest1 = guest1;
-        this.prevSeat = prevSeat;
-        this.seat2 = seat1 + 1;
-
-        if ( prevSeat != null ) {
-            this.tabooList.addAll( prevSeat.tabooList );
-        }
-
-        this.tabooList.add( guest1 );
+    private boolean pathDone;
+    
+    public Seating(final int id,
+                   final int pid,
+                   final boolean pathDone,
+                   final int leftSeat,
+                   final String leftGuestName,                   
+                   final int rightSeat,
+                   final String rightGuestName) {
+        super();
+        this.id = id;
+        this.pid = pid;
+        this.pathDone = pathDone;
+        this.leftSeat = leftSeat;
+        this.leftGuestName = leftGuestName;        
+        this.rightSeat = rightSeat;
+        this.rightGuestName = rightGuestName;
     }
 
-    public int getSeat1() {
-        return this.seat1;
+    public boolean isPathDone() {
+        return this.pathDone;
     }
 
-    public int getSeat2() {
-        return this.seat2;
+    public void setPathDone(boolean pathDone) {
+        this.pathDone = pathDone;
     }
 
-    public Guest getGuest1() {
-        return this.guest1;
+    public int getId() {
+        return this.id;
     }
 
-    public Guest getGuest2() {
-        return this.guest2;
+    public String getLeftGuestName() {
+        return this.leftGuestName;
     }
 
-    public void setGuest2(Guest guest2) {
-        this.guest2 = guest2;
+    public int getLeftSeat() {
+        return this.leftSeat;
     }
 
-    public Seating getPrevSeat() {
-        return this.prevSeat;
+    public int getPid() {
+        return this.pid;
     }
 
-    public List getTabooList() {
-        return this.tabooList;
+    public String getRightGuestName() {
+        return this.rightGuestName;
+    }
+
+    public int getRightSeat() {
+        return this.rightSeat;
     }
 
     public String toString() {
-        return "{seat1=" + this.seat1 + ",guest1=" + this.guest1 + ",seat2=" + this.seat2 + ",guest2=" + this.guest2 + "}";
+        return "{leftSeat=" + this.leftSeat + ",leftGuestName=" + this.leftGuestName + ",rightSeat=" + this.rightSeat + ",rightGuestName=" + this.rightGuestName + "}";
     }
 }

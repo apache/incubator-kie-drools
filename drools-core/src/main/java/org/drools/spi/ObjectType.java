@@ -61,4 +61,6 @@ public interface ObjectType
      *         object type, else <code>false</code>.
      */
     boolean matches(Object object);
+    
+    int getValueType();
 }

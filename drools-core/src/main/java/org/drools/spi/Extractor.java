@@ -7,5 +7,5 @@ public interface Extractor
     Serializable {
     Object getValue(Object object);
     
-    Class getValueType();
+    ObjectType getObjectType();
 }

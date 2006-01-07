@@ -83,6 +83,8 @@ public interface Tuple {
      *         not a root fact object.
      */
     FactHandle getFactHandleForObject(Object object);
+    
+    FactHandle getFactHandleForDeclaration(Declaration declaration);
 
     /**
      * Returns a reference to the <code>WorkingMemory</code> associated with

@@ -158,6 +158,10 @@ class ReteTuple
             return null;
         }
     }
+    
+    public FactHandle getFactHandleForDeclaration(Declaration declaration) {
+        return this.key.get( declaration.getColumn() );
+    }    
 
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;

@@ -48,23 +48,31 @@ public class Seat
     Serializable {
     private int    seat;
 
-    private String name;
+    private Guest guest;
+    
+    public Seat(int seat) {
+        this.seat = seat;        
+    }    
 
     public Seat(int seat,
-                String name) {
+                Guest guest) {
         this.seat = seat;
-        this.name = name;
+        this.guest = guest;
     }
 
     public int getSeat() {
         return this.seat;
     }
 
-    public String getName() {
-        return this.name;
+    public void setGuest(Guest guest) {
+        this.guest = guest;
+    }    
+    
+    public Guest getGuest() {
+        return this.guest;
     }
 
     public String toString() {
-        return "{seat=" + this.seat + ",name=" + this.name + "}";
+        return "{seat=" + this.seat + ", guest=" + this.guest + "}";
     }
 }
