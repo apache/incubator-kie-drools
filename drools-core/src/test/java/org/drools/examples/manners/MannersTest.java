@@ -3,12 +3,18 @@ package org.drools.examples.manners;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 import junit.framework.TestCase;
 
@@ -228,7 +234,7 @@ public class MannersTest extends TestCase {
                     context.setState( Context.ASSIGN_SEATS );
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
                                          context );
-                    System.out.println( "leftSeat " + guestName );
+                    System.out.println( "assigned first seat :  " + guestName );
 
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
@@ -931,6 +937,81 @@ public class MannersTest extends TestCase {
 
         return rule;
     }    
+
+//    /**
+//     * Convert the facts from the <code>InputStream</code> to a list of
+//     * objects.
+//     */
+//    private List getInputObjects(InputStream inputStream) throws IOException
+//    {
+//        List list = new ArrayList( );
+//
+//        BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );
+//
+//        String line;
+//        while ( (line = br.readLine( )) != null )
+//        {
+//            if ( line.trim( ).length( ) == 0 || line.trim( ).startsWith( ";" ) )
+//            {
+//                continue;
+//            }
+//            StringTokenizer st = new StringTokenizer( line,
+//                                                      "() " );
+//            String type = st.nextToken( );
+//
+//            if ( "guest".equals( type ) )
+//            {
+//                if ( !"name".equals( st.nextToken( ) ) )
+//                {
+//                    throw new IOException( "expected 'name' in: " + line );
+//                }
+//                String name = st.nextToken( );
+//                if ( !"sex".equals( st.nextToken( ) ) )
+//                {
+//                    throw new IOException( "expected 'sex' in: " + line );
+//                }
+//                String sex = st.nextToken( );
+//                if ( !"hobby".equals( st.nextToken( ) ) )
+//                {
+//                    throw new IOException( "expected 'hobby' in: " + line );
+//                }
+//                String hobby = st.nextToken( );
+//
+//                Guest guest = (Guest) guests.get( name );
+//                if ( guest == null )
+//                {
+//                    guest = new Guest( name,
+//                                       sex.charAt( 0 )
+//                                       Hobby);
+//                    guests.put( name,
+//                                guest );
+//                    list.add( guest );
+//                }
+//                guest.addHobby( hobby );
+//            }
+//
+//            if ( "last_seat".equals( type ) )
+//            {
+//                if ( !"seat".equals( st.nextToken( ) ) )
+//                {
+//                    throw new IOException( "expected 'seat' in: " + line );
+//                }
+//                list.add( new LastSeat( new Integer( st.nextToken( ) ).intValue( ) ) );
+//            }
+//
+//            if ( "context".equals( type ) )
+//            {
+//                if ( !"state".equals( st.nextToken( ) ) )
+//                {
+//                    throw new IOException( "expected 'state' in: " + line );
+//                }
+//                list.add( new Context( st.nextToken( ) ) );
+//            }
+//        }
+//        inputStream.close( );
+//
+//        return list;
+//    }    
     
     private InputStream generateData() {
         final String LINE_SEPARATOR = System.getProperty( "line.separator" );
