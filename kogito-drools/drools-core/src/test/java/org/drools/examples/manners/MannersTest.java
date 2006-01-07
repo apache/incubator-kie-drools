@@ -115,6 +115,13 @@ public class MannersTest extends TestCase {
         RuleBaseImpl ruleBase = new RuleBaseImpl();
         ruleBase.addRuleSet( ruleSet );
         
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        workingMemory.assertObject( new Context( Context.START_UP ) );
+        workingMemory.assertObject( new Guest("mark", Sex.m, Hobby.h1) );
+        workingMemory.assertObject( new Count(0) );
+        
+        workingMemory.fireAllRules();
+        
         System.out.println( "ttt" );
     }
 

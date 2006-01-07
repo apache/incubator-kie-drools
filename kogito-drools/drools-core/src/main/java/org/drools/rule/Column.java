@@ -73,4 +73,8 @@ public class Column {
     public int getIndex() {
         return this.index;
     }
+    
+    public String toString() {
+        return "Column type='"+ this.objectType + "', index='"+ this.index + "' identifer='"+ this.binding.getIdentifier() + "'";
+    }
 }
