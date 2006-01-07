@@ -41,6 +41,7 @@ package org.drools.reteoo;
  */
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -69,7 +70,7 @@ import org.drools.spi.RuleBaseContext;
  * 
  * @version $Id: RuleBaseImpl.java,v 1.5 2005/08/14 22:44:12 mproctor Exp $
  */
-class RuleBaseImpl
+public class RuleBaseImpl
     implements
     RuleBase {
     // ------------------------------------------------------------
@@ -113,10 +114,10 @@ class RuleBaseImpl
      * @param rete
      *            The rete network.
      */
-    RuleBaseImpl() {
+    public RuleBaseImpl() {
         this( DefaultConflictResolver.getInstance(),
               new DefaultFactHandleFactory(),
-              null,
+              new HashSet(),
               new HashMap(),
               new RuleBaseContext() );
     }
@@ -133,7 +134,7 @@ class RuleBaseImpl
      * @param ruleSets
      * @param applicationData
      */
-    RuleBaseImpl(ConflictResolver conflictResolver,
+    public RuleBaseImpl(ConflictResolver conflictResolver,
                  FactHandleFactory factHandleFactory,
                  Set ruleSets,
                  Map applicationData,
@@ -274,8 +275,7 @@ class RuleBaseImpl
         Map newApplicationData = ruleSet.getApplicationData();
 
         // Check that the application data is valid, we cannot change the type
-        // of an already declared
-        // application data variable
+        // of an already declared application data variable
         for ( Iterator it = newApplicationData.keySet().iterator(); it.hasNext(); ) {
             String identifier = (String) it.next();
             Class type = (Class) newApplicationData.get( identifier );

@@ -14,7 +14,11 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.FactException;
+import org.drools.RuleBase;
+import org.drools.RuleIntegrationException;
+import org.drools.RuleSetIntegrationException;
 import org.drools.WorkingMemory;
+import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.And;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
@@ -23,6 +27,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.DuplicateRuleNameException;
 import org.drools.rule.EvaluatorFactory;
 import org.drools.rule.FieldBinding;
+import org.drools.rule.InvalidPatternException;
 import org.drools.rule.InvalidRuleException;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
@@ -97,15 +102,20 @@ public class MannersTest extends TestCase {
 
     }
     
-    public void test1() throws DuplicateRuleNameException, InvalidRuleException, IntrospectionException {
+    public void test1() throws DuplicateRuleNameException, InvalidRuleException, IntrospectionException, RuleIntegrationException, RuleSetIntegrationException, InvalidPatternException, FactException {
         RuleSet ruleSet = new RuleSet( "Miss Manners" );
         ruleSet.addRule( getAssignFirstSeatRule() );
-        ruleSet.addRule( getMakePath() );
-        ruleSet.addRule( getFindSeating() );
-        ruleSet.addRule( getPathDone() );
-        ruleSet.addRule( getAreWeDone() );
-        ruleSet.addRule( getContinueProcessing() );
-        ruleSet.addRule( getAllDone() );
+//        ruleSet.addRule( getMakePath() );
+//        ruleSet.addRule( getFindSeating() );
+//        ruleSet.addRule( getPathDone() );
+//        ruleSet.addRule( getAreWeDone() );
+//        ruleSet.addRule( getContinueProcessing() );
+//        ruleSet.addRule( getAllDone() );
+        
+        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        ruleBase.addRuleSet( ruleSet );
+        
+        System.out.println( "ttt" );
     }
 
     /**

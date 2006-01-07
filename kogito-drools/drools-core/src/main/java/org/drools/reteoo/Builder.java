@@ -181,7 +181,7 @@ class Builder {
                     ce = (ConditionalElement) ce.getChildren().get( 0 );
                 }
                 column = (Column) ce.getChildren().get( 0 );
-                binder = attachColumn( (Column) object,
+                binder = attachColumn( column,
                                        and );
 
                 // If a tupleSource does not exist then we need to adapt an
@@ -267,7 +267,7 @@ class Builder {
                                                                (LiteralConstraint) constraint,
                                                                true,
                                                                objectSource ) );
-            } else {
+            } else if (constraint instanceof BetaNodeConstraint ){
                 predicateConstraints.add( constraint );
             }
         }
