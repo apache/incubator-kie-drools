@@ -2,14 +2,14 @@ package org.drools;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,7 +20,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
 import org.drools.reteoo.ReteooToJungVisitor;
-import org.drools.reteoo.ReteooToJungVisitor.BaseNodeVertex;
 
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.Vertex;
@@ -30,11 +29,8 @@ import edu.uci.ics.jung.graph.decorators.DefaultToolTipFunction;
 import edu.uci.ics.jung.graph.decorators.EdgeShape;
 import edu.uci.ics.jung.graph.decorators.EllipseVertexShapeFunction;
 import edu.uci.ics.jung.graph.decorators.PickableEdgePaintFunction;
-import edu.uci.ics.jung.graph.decorators.PickableVertexPaintFunction;
 import edu.uci.ics.jung.graph.decorators.VertexPaintFunction;
 import edu.uci.ics.jung.graph.impl.DirectedSparseGraph;
-import edu.uci.ics.jung.graph.impl.SparseGraph;
-import edu.uci.ics.jung.graph.impl.SparseTree;
 import edu.uci.ics.jung.visualization.DefaultGraphLabelRenderer;
 import edu.uci.ics.jung.visualization.GraphMouseListener;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
@@ -43,15 +39,13 @@ import edu.uci.ics.jung.visualization.PluggableRenderer;
 import edu.uci.ics.jung.visualization.ShapePickSupport;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.contrib.DAGLayout;
-import edu.uci.ics.jung.visualization.contrib.TreeLayout;
 import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
 import edu.uci.ics.jung.visualization.control.CrossoverScalingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.PickingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.PluggableGraphMouse;
+import edu.uci.ics.jung.visualization.control.RotatingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
 import edu.uci.ics.jung.visualization.control.ViewScalingGraphMousePlugin;
-
-import samples.graph.TreeLayoutDemo;
 
 public class ReteooJungViewer extends JFrame {
 
@@ -65,14 +59,12 @@ public class ReteooJungViewer extends JFrame {
      */
     VisualizationViewer vv;
 
-    public static void createAndShowGUI(RuleBase ruleBase) {
-        ReteooJungViewer viewer = new ReteooJungViewer( ruleBase );;
-    }
+    private boolean     running;
 
     public ReteooJungViewer(RuleBase ruleBase) {
         // Setup a standard left/right splitPane
-        JPanel leftPanel = new JPanel(new BorderLayout());
-        JPanel rightPanel = new JPanel(new BorderLayout());
+        JPanel leftPanel = new JPanel( new BorderLayout() );
+        JPanel rightPanel = new JPanel( new BorderLayout() );
         JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
                                                leftPanel,
                                                rightPanel );
@@ -86,9 +78,9 @@ public class ReteooJungViewer extends JFrame {
         visitor.visit( ruleBase );
 
         final PluggableRenderer pr = new PluggableRenderer();
-        
+
         pr.setEdgeShapeFunction( new EdgeShape.QuadCurve() );
-        
+
         pr.setVertexPaintFunction( new VertexPaintFunction() {
             public Paint getFillPaint(Vertex v) {
                 return ((DroolsVertex) v).getFillPaint();
@@ -113,8 +105,8 @@ public class ReteooJungViewer extends JFrame {
 
         this.vv = new VisualizationViewer( layout,
                                            pr,
-                                           new Dimension( 600,
-                                                          600 ) );
+                                           new Dimension( 800,
+                                                          800 ) );
 
         this.vv.setBackground( Color.white );
         this.vv.setPickSupport( new ShapePickSupport() );
@@ -124,6 +116,7 @@ public class ReteooJungViewer extends JFrame {
         graphMouse.add( new PickingGraphMousePlugin() );
         graphMouse.add( new ViewScalingGraphMousePlugin() );
         graphMouse.add( new CrossoverScalingGraphMousePlugin() );
+        graphMouse.add( new RotatingGraphMousePlugin() );
 
         this.vv.setGraphMouse( graphMouse );
 
@@ -167,9 +160,9 @@ public class ReteooJungViewer extends JFrame {
         //        Put the editor pane in a scroll pane.
         JScrollPane infoScrollPane = new JScrollPane( infoPane );
         infoScrollPane.setPreferredSize( new Dimension( 250,
-                                                        600 ) );
+                                                        800 ) );
         infoScrollPane.setMinimumSize( new Dimension( 50,
-                                                      600 ) );
+                                                      800 ) );
 
         // Add a mouse listener to update the info panel when a node is clicked
         this.vv.addGraphMouseListener( new GraphMouseListener() {
@@ -192,8 +185,23 @@ public class ReteooJungViewer extends JFrame {
 
         rightPanel.add( infoScrollPane );
 
+    }
+
+    public void showGUI() {
         pack();
         setVisible( true );
+        this.running = true;
+
+        addWindowListener( new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                ReteooJungViewer viewer = (ReteooJungViewer) e.getSource();
+                viewer.running = false;
+            }
+        } );
+    }
+
+    public boolean isRunning() {
+        return this.running;
     }
 
     public interface DroolsVertex {

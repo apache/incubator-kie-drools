@@ -81,11 +81,11 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
      */
     private Map                 visitedNodes = new HashMap();
 
-    Graph                       graph;
+    private Graph                       graph;
 
-    Vertex                      rootVertex;
+    private Vertex                      rootVertex;
 
-    Vertex                      parentVertex;
+    private Vertex                      parentVertex;    
 
     /**
      * Constructor.
