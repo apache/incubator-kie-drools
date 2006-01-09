@@ -123,9 +123,11 @@ public class MannersTest extends TestCase {
         final RuleBaseImpl ruleBase = new RuleBaseImpl();
         ruleBase.addRuleSet( ruleSet );
         
+        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase);
+        
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                ReteooJungViewer.createAndShowGUI(ruleBase);
+                viewer.showGUI();
             }
         });               
               
@@ -137,13 +139,12 @@ public class MannersTest extends TestCase {
         for (Iterator it = list.iterator(); it.hasNext(); ) {
             workingMemory.assertObject( it.next() );
         }
-        //System.out.println( list );
         
         workingMemory.assertObject( new Count(0) );
         
         workingMemory.fireAllRules();
         
-        while (true) {
+        while (viewer.isRunning()) {
             Thread.sleep( 1000 );
         }
         
