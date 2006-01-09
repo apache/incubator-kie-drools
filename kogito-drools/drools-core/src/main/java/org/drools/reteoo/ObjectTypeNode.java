@@ -218,6 +218,10 @@ class ObjectTypeNode extends ObjectSource
         return new PrimitiveLongMap( 32,
                                      8 );
     }
+    
+    public String toString() {
+        return "[ObjectTypeNode objectType=" + this.objectType + "]";
+    }
 
     public boolean equals(Object object) {
         if ( this == object ) {
@@ -228,6 +232,10 @@ class ObjectTypeNode extends ObjectSource
             return false;
         }
 
-        return this.objectType.equals( ((ObjectTypeNode) object).getObjectType() );
+        return this.objectType.equals( this.objectType );
+    }
+    
+    public int hashCode() {
+        return this.objectType.hashCode();
     }
 }

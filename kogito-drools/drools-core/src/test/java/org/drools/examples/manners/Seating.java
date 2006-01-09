@@ -105,6 +105,6 @@ public class Seating
     }
 
     public String toString() {
-        return "{leftSeat=" + this.leftSeat + ",leftGuestName=" + this.leftGuestName + ",rightSeat=" + this.rightSeat + ",rightGuestName=" + this.rightGuestName + "}";
+        return "[Seating id=" + this.id + " , pid=" + this.pid + " , pathDone=" + this.pathDone + " , leftSeat=" + this.leftSeat + ", leftGuestName=" + this.leftGuestName + ", rightSeat=" + this.rightSeat + ", rightGuestName=" + this.rightGuestName + "]";
     }
 }

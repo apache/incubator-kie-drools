@@ -51,11 +51,17 @@ public class Context
     public static final int ASSIGN_SEATS    = 1;
     public static final int MAKE_PATH       = 2;
     public static final int CHECK_DONE      = 3;
-    public static final int PRINT_RESULTS   = 4;
-
+    public static final int PRINT_RESULTS   = 4;   
+    
     private int             state;
     
-    //private Path            path;
+    public Context(String state) {
+        if ("start".equals( state ) ) {
+            this.state = Context.START_UP;
+        } else {
+            throw new RuntimeException("Context '" + state + "' does not exist for Context Enum" );
+        }
+    }
 
     public Context(int state) {
         this.state = state;
@@ -71,9 +77,25 @@ public class Context
 
     public int getState() {
         return this.state;
-    }          
+    }        
+    
+    public String getStringValue() {
+        switch (this.state) {
+            case 0:
+                return "START_UP";
+            case 1:
+                return "ASSIGN_SEATS";
+            case 2:
+                return "MAKE_PATH";
+            case 3:
+                return "CHECK_DONE";
+            case 4:
+                return "PRINT_RESULTS";                
+        }
+        return "";
+    }
 
     public String toString() {
-        return "{state=" + this.state + "}";
+        return "[Context state=" + getStringValue() + "]";
     }
 }

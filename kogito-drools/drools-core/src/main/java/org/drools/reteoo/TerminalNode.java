@@ -53,7 +53,7 @@ import org.drools.spi.PropagationContext;
  * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-final class TerminalNode
+final class TerminalNode extends BaseNode
     implements
     TupleSink {
     // ------------------------------------------------------------
@@ -75,8 +75,10 @@ final class TerminalNode
      * @param rule
      *            The rule.
      */
-    TerminalNode(TupleSource inputSource,
+    TerminalNode(int id,
+                 TupleSource inputSource,
                  Rule rule) {
+        super(id);
         this.rule = rule;
 
         inputSource.addTupleSink( this );
@@ -142,5 +144,21 @@ final class TerminalNode
     public void ruleAttached() {
         // TODO Auto-generated method stub
 
+    }
+
+    public void attach() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void remove() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void updateNewNode(WorkingMemoryImpl workingMemory,
+                              PropagationContext context) throws FactException {
+        // TODO Auto-generated method stub
+        
     }
 }

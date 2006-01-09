@@ -1,9 +1,9 @@
 package org.drools.examples.manners;
 
 public class Hobby {
-    public static final Hobby h1 = new Hobby( 1 );
-    public static final Hobby h2 = new Hobby( 2 );
-    public static final Hobby h3 = new Hobby( 3 );       
+    public static final Hobby H1 = new Hobby( 1 );
+    public static final Hobby H2 = new Hobby( 2 );
+    public static final Hobby H3 = new Hobby( 3 );       
 
     public static final String stringH1 = "h1";
     public static final String stringH2 = "h2";
@@ -15,7 +15,7 @@ public class Hobby {
         this.hobby = hobby;
     }
     
-    public String getValue() {
+    public String getHobby() {
         switch ( this.hobby ) {
             case 1 :
                 return stringH1;            
@@ -28,8 +28,20 @@ public class Hobby {
         }
     }
     
+    public static Hobby resolve(String hobby) {
+        if (stringH1.equals( hobby ) ) {
+            return Hobby.H1;
+        } else if (stringH2.equals( hobby ) ) {
+            return Hobby.H2;
+        } else if (stringH3.equals( hobby ) ) {
+            return Hobby.H3;
+        } else {
+            throw new RuntimeException("Hobby '" + hobby + "' does not exist for Hobby Enum" );
+        }
+    }
+    
     public String toString() {
-        return getValue();
+        return getHobby();
     }
     
     public boolean equals(Object object) {

@@ -8,8 +8,7 @@ import org.drools.spi.ObjectType;
 
 public class Column {
     private final ObjectType    objectType;
-    private List                constraints  = Collections.EMPTY_LIST;
-    private List                declarations = Collections.EMPTY_LIST;
+    private List                constraints  = Collections.EMPTY_LIST;   
     private final ColumnBinding binding;
     private final int           index;
 
@@ -38,17 +37,6 @@ public class Column {
 
     public ObjectType getObjectType() {
         return this.objectType;
-    }
-
-    public List getDeclarations() {
-        return Collections.unmodifiableList( this.declarations );
-    }
-
-    public void addDeclaration(Declaration declaration) {
-        if ( this.declarations == Collections.EMPTY_LIST ) {
-            this.declarations = new ArrayList( 1 );
-        }
-        this.declarations.add( declaration );
     }
 
     public List getConstraints() {

@@ -519,5 +519,28 @@ public class Rule
     public String getModule() {
         return this.module;
     }
+    
+    public String toString() {
+        return "[Rule name=" + this.name + ", module=" + this.module + ", salience=" + this.salience + ", no-loop=" + this.noLoop + "]";
+    }
+    
+    public boolean equals(Object object) {
+        if ( this == object ) {
+            return true;
+        }
+        
+        if (object == null||!(object instanceof Rule)) {
+            return false;
+        }
+        
+        Rule other = (Rule) object;
+        
+        return (this.name.equals(other.name) && this.module.equals( other.module ) && this.salience == other.salience && this.noLoop == other.noLoop);
+    }
+    
+    public int hashCode() {
+        return this.name.hashCode();
+    }
+    
 
 }

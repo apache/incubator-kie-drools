@@ -75,6 +75,6 @@ public class Guest
     }    
 
     public String toString() {
-        return "{name=" + this.name + ",sex=" + this.sex + ",hobbies=" + this.hobby + "}";
+        return "[Guest name=" + this.name + ", sex=" + this.sex + ", hobbies=" + this.hobby + "]";
     }
 }

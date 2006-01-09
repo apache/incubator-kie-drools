@@ -57,6 +57,6 @@ public class LastSeat
     }
 
     public String toString() {
-        return "{seat=" + this.seat + "}";
+        return "[LastSeat seat=" + this.seat + "]";
     }
 }

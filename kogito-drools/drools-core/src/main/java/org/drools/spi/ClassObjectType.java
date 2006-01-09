@@ -115,15 +115,6 @@ public class ClassObjectType
     // java.lang.Object
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /**
-     * Produce the hash of this object.
-     * 
-     * @return The hash.
-     */
-    public int hashCode() {
-        return getClassType().hashCode();
-    }
-    
     protected void setValueType(Class clazz) {
         if ( clazz == Character.class ) {
             this.valueType = Evaluator.CHAR_TYPE;
@@ -147,6 +138,10 @@ public class ClassObjectType
             this.valueType = Evaluator.OBJECT_TYPE;
         }
     }
+    
+    public String toString() {
+        return "[ClassObjectType class=" + getClassType().getName() + "]";
+    }    
 
     /**
      * Determine if another object is equal to this.
@@ -168,8 +163,10 @@ public class ClassObjectType
 
         return this.objectTypeClass == ( (ClassObjectType) object).objectTypeClass;
     }
-
-    public String toString() {
-        return getClassType().getName();
+    
+    public int hashCode() {
+        return this.objectTypeClass.hashCode();
     }
+
+
 }

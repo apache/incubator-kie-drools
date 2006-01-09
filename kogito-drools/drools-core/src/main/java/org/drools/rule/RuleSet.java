@@ -266,4 +266,26 @@ public class RuleSet
     public RuleBaseContext getRuleBaseContext() {
         return this.ruleBaseContext;
     }
+    
+    public String toString() {
+        return "[RuleSet name=" + this.name + "]";
+    }
+    
+    public boolean equals(Object object) {
+        if ( this == object ) {
+            return true;
+        }
+        
+        if (object == null||!(object instanceof RuleSet)) {
+            return false;
+        }
+        
+        RuleSet other = (RuleSet) object;
+        
+        return (this.name.equals(other.name));
+    }
+    
+    public int hashCode() {
+        return this.name.hashCode();
+    }    
 }
