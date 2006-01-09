@@ -112,9 +112,9 @@ public class MannersTest extends TestCase {
     
     public void test1() throws DuplicateRuleNameException, InvalidRuleException, IntrospectionException, RuleIntegrationException, RuleSetIntegrationException, InvalidPatternException, FactException, IOException, InterruptedException {
         RuleSet ruleSet = new RuleSet( "Miss Manners" );
-        ruleSet.addRule( getAssignFirstSeatRule() );
+//        ruleSet.addRule( getAssignFirstSeatRule() );
 //        ruleSet.addRule( getMakePath() );
-//        ruleSet.addRule( getFindSeating() );
+        ruleSet.addRule( getFindSeating() );
 //        ruleSet.addRule( getPathDone() );
 //        ruleSet.addRule( getAreWeDone() );
 //        ruleSet.addRule( getContinueProcessing() );
