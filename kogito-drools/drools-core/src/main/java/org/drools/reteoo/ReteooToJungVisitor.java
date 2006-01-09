@@ -47,7 +47,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.ReteooJungViewer.HtmlContent;
+import org.drools.ReteooJungViewer.DroolsVertex;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.Field;
 
@@ -90,7 +90,8 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     /**
      * Constructor.
      */
-    public ReteooToJungVisitor() {
+    public ReteooToJungVisitor(Graph graph) {
+        this.graph = graph;
     }
 
     public Graph getGraph() {
@@ -115,7 +116,6 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
                                    this.rootVertex );
         }
 
-        this.graph = new DirectedSparseGraph();
         this.graph.addVertex( this.rootVertex );
         this.parentVertex = this.rootVertex;
         for ( Iterator i = rete.getObjectTypeNodeIterator(); i.hasNext(); ) {
@@ -375,7 +375,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
 
     public static abstract class BaseNodeVertex extends DirectedSparseVertex
         implements
-        HtmlContent {
+        DroolsVertex {
         public BaseNodeVertex() {
             super();
             
