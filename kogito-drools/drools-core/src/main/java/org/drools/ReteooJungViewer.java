@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -17,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drools.reteoo.ReteooToJungVisitor;
-import org.drools.reteoo.ReteooToJungVisitor.ReteooNodeVertex;
+import org.drools.reteoo.ReteooToJungVisitor.BaseNodeVertex;
 
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.Vertex;
@@ -26,6 +27,7 @@ import edu.uci.ics.jung.graph.decorators.EdgeShape;
 import edu.uci.ics.jung.graph.decorators.EllipseVertexShapeFunction;
 import edu.uci.ics.jung.graph.decorators.PickableEdgePaintFunction;
 import edu.uci.ics.jung.graph.decorators.PickableVertexPaintFunction;
+import edu.uci.ics.jung.graph.decorators.VertexPaintFunction;
 import edu.uci.ics.jung.graph.impl.SparseGraph;
 import edu.uci.ics.jung.graph.impl.SparseTree;
 import edu.uci.ics.jung.visualization.DefaultGraphLabelRenderer;
@@ -76,11 +78,17 @@ public class ReteooJungViewer extends JFrame {
         this.graph = visitor.getGraph();
 
         final PluggableRenderer pr = new PluggableRenderer();
+        
+        pr.setVertexPaintFunction(new VertexPaintFunction() {
+            public Paint getFillPaint(Vertex v) {
+                return ((HtmlContent) v).getFillPaint();
+            }
 
-        pr.setVertexPaintFunction( new PickableVertexPaintFunction( pr,
-                                                                    Color.black,
-                                                                    Color.white,
-                                                                    Color.yellow ) );
+            public Paint getDrawPaint(Vertex v) {
+                return ((HtmlContent) v).getDrawPaint();
+            }
+        });        
+
         pr.setEdgePaintFunction( new PickableEdgePaintFunction( pr,
                                                                 Color.black,
                                                                 Color.cyan ) );
@@ -180,5 +188,9 @@ public class ReteooJungViewer extends JFrame {
     
     public interface HtmlContent {
         public String getHtml();
+        
+        public Paint getFillPaint();
+       
+        public Paint getDrawPaint();
     }
 }

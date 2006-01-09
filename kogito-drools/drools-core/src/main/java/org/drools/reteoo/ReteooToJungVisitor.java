@@ -40,21 +40,21 @@ package org.drools.reteoo;
  *
  */
 
+import java.awt.Color;
+import java.awt.Paint;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
+import org.drools.ReteooJungViewer.HtmlContent;
 
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.Vertex;
 import edu.uci.ics.jung.graph.impl.DirectedSparseEdge;
 import edu.uci.ics.jung.graph.impl.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.impl.DirectedSparseVertex;
-import edu.uci.ics.jung.graph.impl.SparseGraph;
-import edu.uci.ics.jung.graph.impl.UndirectedSparseEdge;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import org.drools.ReteooJungViewer.HtmlContent;
 
 /**
  * Produces a graph in GraphViz DOT format.
@@ -81,8 +81,6 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
 
     Graph                       graph;
 
-    VisualizationViewer         vv;
-
     Vertex                      rootVertex;
 
     Vertex                      parentVertex;
@@ -95,25 +93,6 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
 
     public Graph getGraph() {
         return this.graph;
-    }
-
-    /**
-     * Default visitor if an unknown object is visited.
-     */
-    public void visitObject(Object object) {
-        Vertex vertex = this.graph.addVertex( new UnkownVertex() );
-        this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                    vertex ) );
-    }
-
-    /**
-     * Null visitor if a NULL object gets visited. Unique String objects are
-     * generated to ensure every NULL object is distinct.
-     */
-    public void visitNull() {
-        Vertex vertex = this.graph.addVertex( new UnkownVertex() );
-        this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                    vertex ) );
     }
 
     /**
@@ -143,14 +122,17 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
     }
 
-    /**
-     * ObjectTypeNode displays its objectType and then visits each of its
-     * ParameterNodes.
-     */
-    public void visitObjectTypeNode(ObjectTypeNode node) {
-        Vertex vertex = (ObjectTypeNodeVertex) this.visitedNodes.get( dotId( node ) );
+    public void visitBaseNode(BaseNode node) {
+        Vertex vertex = (Vertex) this.visitedNodes.get( dotId( node ) );
         if ( vertex == null ) {
-            vertex = new ObjectTypeNodeVertex( node );
+            try {
+                String name = node.getClass().getName();
+                name = name.substring( name.lastIndexOf( '.' ) + 1 ) + "Vertex";
+                Class clazz = Class.forName( "org.drools.reteoo.ReteooToJungVisitor$" + name );
+                vertex = (Vertex) clazz.getConstructor( new Class[]{node.getClass()} ).newInstance( new Object[]{node} );
+            } catch ( Exception e ) {
+                throw new RuntimeException( "problem visiting node " + node.getClass().getName(), e);
+            }
             this.graph.addVertex( vertex );
             this.visitedNodes.put( dotId( node ),
                                    vertex );
@@ -159,183 +141,24 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
             Vertex oldParentVertex = this.parentVertex;
             this.parentVertex = vertex;
 
-            //makeNode( node,
-            //          "ObjectTypeNode",
-            //          "objectType: " + node.getObjectType( ) );
-            for ( Iterator i = node.getObjectSinks().iterator(); i.hasNext(); ) {
-                Object nextNode = i.next();
-                visitNode( nextNode );
+            List list = null;
+            if ( node instanceof ObjectSource ) {
+                list = ((ObjectSource) node).getObjectSinks();
+            } else if ( node instanceof TupleSource ) {
+                list = ((TupleSource) node).getTupleSinks();
             }
-            this.parentVertex = oldParentVertex;            
-        } else {
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );            
-        }
-    }
 
-    public void visitAlphaNode(AlphaNode node) {
-        Vertex vertex = (AlphaNodeVertex) this.visitedNodes.get( dotId( node ) );
-        if ( vertex == null ) {
-            vertex = new AlphaNodeVertex( node );
-            this.graph.addVertex( vertex );
-            this.visitedNodes.put( dotId( node ),
-                                   vertex );
+            if ( list != null ) {
+                for ( Iterator it = list.iterator(); it.hasNext(); ) {
+                    Object nextNode = it.next();
+                    visitNode( nextNode );
+                }
+            }
+            this.parentVertex = oldParentVertex;
+        } else {
             this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
                                                         vertex ) );
-            Vertex oldParentVertex = this.parentVertex;
-            this.parentVertex = vertex;
-
-            for ( Iterator i = node.getObjectSinks().iterator(); i.hasNext(); ) {
-                Object nextNode = i.next();
-                visitNode( nextNode );
-            }
-            this.parentVertex = oldParentVertex;            
-        } else {
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );            
         }
-    }
-
-    public void visitRightInputAdapterNode(RightInputAdapterNode node) {
-        Vertex vertex = (RightInputAdapterNodeVertex) this.visitedNodes.get( dotId( node ) );
-        if ( vertex == null ) {
-            vertex = new RightInputAdapterNodeVertex( node );
-            this.graph.addVertex( vertex );
-            this.visitedNodes.put( dotId( node ),
-                                   vertex );
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );
-            Vertex oldParentVertex = this.parentVertex;
-            this.parentVertex = vertex;
-
-            for ( Iterator i = node.getObjectSinks().iterator(); i.hasNext(); ) {
-                Object nextNode = i.next();
-                visitNode( nextNode );
-            }
-            this.parentVertex = oldParentVertex;            
-        } else {
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );            
-        }
-    }
-    
-    public void visitLeftInputAdapterNode(LeftInputAdapterNode node) {
-        Vertex vertex = (LeftInputAdapterNodeVertex) this.visitedNodes.get( dotId( node ) );
-        if ( vertex == null ) {
-            vertex = new  LeftInputAdapterNodeVertex( node );
-            this.graph.addVertex( vertex );
-            this.visitedNodes.put( dotId( node ),
-                                   vertex );
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );
-            Vertex oldParentVertex = this.parentVertex;
-            this.parentVertex = vertex;
-
-            for ( Iterator i = node.getTupleSinks().iterator(); i.hasNext(); ) {
-                Object nextNode = i.next();
-                visitNode( nextNode );
-            }
-            this.parentVertex = oldParentVertex;            
-        } else {
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );            
-        }
-    }
-
-    public void visitJoinNode(JoinNode node) {
-        Vertex vertex = (JoinNodeVertex) this.visitedNodes.get( dotId( node ) );
-        if ( vertex == null ) {
-            vertex = new  JoinNodeVertex( node );
-            this.graph.addVertex( vertex );
-            this.visitedNodes.put( dotId( node ),
-                                   vertex );
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );
-            Vertex oldParentVertex = this.parentVertex;
-            this.parentVertex = vertex;
-
-            for ( Iterator i = node.getTupleSinks().iterator(); i.hasNext(); ) {
-                Object nextNode = i.next();
-                visitNode( nextNode );
-            }
-            this.parentVertex = oldParentVertex;            
-        } else {
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );            
-        }
-    }
-
-    public void visitNotNode(NotNode node) {
-        Vertex vertex = (NotNodeVertex) this.visitedNodes.get( dotId( node ) );
-        if ( vertex == null ) {
-            vertex = new  NotNodeVertex( node );
-            this.graph.addVertex( vertex );
-            this.visitedNodes.put( dotId( node ),
-                                   vertex );
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );
-            Vertex oldParentVertex = this.parentVertex;
-            this.parentVertex = vertex;
-
-            for ( Iterator i = node.getTupleSinks().iterator(); i.hasNext(); ) {
-                Object nextNode = i.next();
-                visitNode( nextNode );
-            }
-            this.parentVertex = oldParentVertex;            
-        } else {
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );            
-        }
-    }
-
-    public void visitTestNode(TestNode node) {
-        Vertex vertex = (TestNodeVertex) this.visitedNodes.get( dotId( node ) );
-        if ( vertex == null ) {
-            vertex = new  TestNodeVertex( node );
-            this.graph.addVertex( vertex );
-            this.visitedNodes.put( dotId( node ),
-                                   vertex );
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );
-            Vertex oldParentVertex = this.parentVertex;
-            this.parentVertex = vertex;
-
-            for ( Iterator i = node.getTupleSinks().iterator(); i.hasNext(); ) {
-                Object nextNode = i.next();
-                visitNode( nextNode );
-            }
-            this.parentVertex = oldParentVertex;            
-        } else {
-            this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                        vertex ) );            
-        }
-    }
-
-    //    /**
-    //     * ConditionNode displays its condition and tuple Declarations and then
-    //     * visits its TupleSink.
-    //     */
-    //    public void visitConditionNode(ConditionNode node)
-    //    {
-    //        makeTupleSourceNode( node,
-    //                  "ConditionNode",
-    //                  "TupleSource/TupleSink",
-    //                  "condition: " + node.getCondition( ) + newline + format( node.getTupleDeclarations( ),
-    //                                                                           "tuple" ) );
-    //    }
-
-    /**
-     * TerminalNode displays its rule.
-     */
-    public void visitTerminalNode(TerminalNode node) {
-        Vertex vertex = this.graph.addVertex( new TerminalNodeVertex( node ) );
-        this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
-                                                    vertex ) );
-
-        //        makeNode( node,
-        //                  "TerminalNode",
-        //                  "TupleSink",
-        //                  "rule: " + node.getRule( ).getName( ) );
     }
 
     /**
@@ -365,7 +188,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         //        }
     }
 
-    class ReteNodeVertex extends ReteooNodeVertex {
+    static class ReteNodeVertex extends BaseNodeVertex {
         private final Rete node;
 
         public ReteNodeVertex(Rete node) {
@@ -382,7 +205,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
     }
 
-    class ObjectTypeNodeVertex extends ReteooNodeVertex {
+    static class ObjectTypeNodeVertex extends BaseNodeVertex {
         private final ObjectTypeNode node;
 
         public ObjectTypeNodeVertex(ObjectTypeNode node) {
@@ -391,15 +214,19 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
 
         public String getHtml() {
-            return "ObjectTypeNode : " + this.node.getId();
+            return "ObjectTypeNode : " + this.node.getObjectType();
         }
 
         public String toString() {
             return "ObjectTypeNode";
         }
+
+        public Paint getFillPaint() {
+            return Color.RED;
+        }
     }
 
-    class AlphaNodeVertex extends ReteooNodeVertex {
+    static class AlphaNodeVertex extends BaseNodeVertex {
         private final AlphaNode node;
 
         public AlphaNodeVertex(AlphaNode node) {
@@ -416,7 +243,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
     }
 
-    class LeftInputAdapterNodeVertex extends ReteooNodeVertex {
+    static class LeftInputAdapterNodeVertex extends BaseNodeVertex {
         private final LeftInputAdapterNode node;
 
         public LeftInputAdapterNodeVertex(LeftInputAdapterNode node) {
@@ -433,7 +260,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
     }
 
-    class RightInputAdapterNodeVertex extends ReteooNodeVertex {
+    static class RightInputAdapterNodeVertex extends BaseNodeVertex {
         private final RightInputAdapterNode node;
 
         public RightInputAdapterNodeVertex(RightInputAdapterNode node) {
@@ -450,7 +277,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
     }
 
-    class JoinNodeVertex extends ReteooNodeVertex {
+    static class JoinNodeVertex extends BaseNodeVertex {
         private final JoinNode node;
 
         public JoinNodeVertex(JoinNode node) {
@@ -467,7 +294,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
     }
 
-    class NotNodeVertex extends ReteooNodeVertex {
+    static class NotNodeVertex extends BaseNodeVertex {
         private final NotNode node;
 
         public NotNodeVertex(NotNode node) {
@@ -484,7 +311,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
     }
 
-    class TestNodeVertex extends ReteooNodeVertex {
+    static class TestNodeVertex extends BaseNodeVertex {
         private final TestNode node;
 
         public TestNodeVertex(TestNode node) {
@@ -501,7 +328,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
     }
 
-    class TerminalNodeVertex extends ReteooNodeVertex {
+    static class TerminalNodeVertex extends BaseNodeVertex {
         private final TerminalNode node;
 
         public TerminalNodeVertex(TerminalNode node) {
@@ -518,28 +345,23 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
     }
 
-    class UnkownVertex extends ReteooNodeVertex {
-
-        public UnkownVertex() {
+    public static abstract class BaseNodeVertex extends DirectedSparseVertex
+        implements
+        HtmlContent {
+        public BaseNodeVertex() {
             super();
         }
 
         public String getHtml() {
-            return "Uknown";
+            return this.getClass().getName().toString();
+        }
+        
+        public Paint getFillPaint() {
+            return Color.WHITE;
         }
 
-        public String toString() {
-            return "Unknown";
-        }
-    }
-
-    public static abstract class ReteooNodeVertex extends DirectedSparseVertex
-        implements
-        HtmlContent {
-        public ReteooNodeVertex() {
-            super();
-        }
-
-        public abstract String getHtml();
+        public Paint getDrawPaint() {
+            return Color.BLACK;
+        }        
     }
 }
