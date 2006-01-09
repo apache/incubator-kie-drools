@@ -24,6 +24,8 @@ public class BetaNodeBinder {
     public BetaNodeBinder(BetaNodeConstraint[] constraints) {
         this.constraints = constraints;
     }
+    
+    //public BetaNodeConstraints[] constraints
 
     boolean isAllowed(Object object,
                       FactHandle handle,

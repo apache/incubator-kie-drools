@@ -33,7 +33,7 @@ public class LiteralConstraint
         return this.evaluator;
     }
 
-    public Object getField() {
+    public Field getField() {
         return this.field;
     }
 

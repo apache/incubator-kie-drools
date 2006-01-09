@@ -112,7 +112,7 @@ public class MannersTest extends TestCase {
     
     public void test1() throws DuplicateRuleNameException, InvalidRuleException, IntrospectionException, RuleIntegrationException, RuleSetIntegrationException, InvalidPatternException, FactException, IOException, InterruptedException {
         RuleSet ruleSet = new RuleSet( "Miss Manners" );
-//        ruleSet.addRule( getAssignFirstSeatRule() );
+        ruleSet.addRule( getAssignFirstSeatRule() );
 //        ruleSet.addRule( getMakePath() );
         ruleSet.addRule( getFindSeating() );
 //        ruleSet.addRule( getPathDone() );
@@ -127,26 +127,25 @@ public class MannersTest extends TestCase {
             public void run() {
                 ReteooJungViewer.createAndShowGUI(ruleBase);
             }
-        });        
+        });               
+              
+        
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        InputStream is = getClass().getResourceAsStream( "/manners16.dat" );
+        List list = getInputObjects(is);
+        for (Iterator it = list.iterator(); it.hasNext(); ) {
+            workingMemory.assertObject( it.next() );
+        }
+        //System.out.println( list );
+        
+        workingMemory.assertObject( new Count(0) );
+        
+        workingMemory.fireAllRules();
         
         while (true) {
             Thread.sleep( 1000 );
         }
-        
-        
-//        
-//        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-//        
-//        InputStream is = getClass().getResourceAsStream( "/manners16.dat" );
-//        List list = getInputObjects(is);
-//        for (Iterator it = list.iterator(); it.hasNext(); ) {
-//            workingMemory.assertObject( it.next() );
-//        }
-//        //System.out.println( list );
-//        
-//        workingMemory.assertObject( new Count(0) );
-//        
-//        workingMemory.fireAllRules();
         
     }
 
