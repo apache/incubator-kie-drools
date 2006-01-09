@@ -60,6 +60,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return object1.equals( object2 );
         }
+        
+        public String toString() {
+            return "Object ==";
+        }
     }
 
     static class ObjectNotEqualEvaluator extends BaseEvaluator {
@@ -81,7 +85,22 @@ public class EvaluatorFactory {
                                 Object object2) {
             return !object1.equals( object2 );
         }
+        
+        public String toString() {
+            return "Object !=";
+        }        
     }
+    
+    Evaluator getBooleanEvaluator(int operator) {
+        switch ( operator ) {
+            case Evaluator.EQUAL :
+                return ObjectEqualEvaluator.getInstance();
+            case Evaluator.NOT_EQUAL :
+                return ObjectNotEqualEvaluator.getInstance();
+            default :
+                throw new RuntimeException( "Operator '" + operator + "' does not exist for BooleanEvaluator" );
+        }
+    }      
     
     static class BooleanEqualEvaluator extends BaseEvaluator {
         private static Evaluator INSTANCE;
@@ -102,18 +121,11 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Boolean)object1).booleanValue() == ((Boolean)object2).booleanValue();
         }
-    }
-    
-    Evaluator getBooleanEvaluator(int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return ObjectEqualEvaluator.getInstance();
-            case Evaluator.NOT_EQUAL :
-                return ObjectNotEqualEvaluator.getInstance();
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for BooleanEvaluator" );
-        }
-    }    
+        
+        public String toString() {
+            return "Boolean ==";
+        }        
+    }      
 
     static class BooleanNotEqualEvaluator extends BaseEvaluator {
         private static Evaluator INSTANCE;
@@ -134,6 +146,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Boolean)object1).booleanValue() != ((Boolean)object2).booleanValue();
         }
+        
+        public String toString() {
+            return "Boolean !=";
+        }        
     }    
 
     Evaluator getShortEvaluator(int operator) {
@@ -174,6 +190,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).shortValue() == ((Number) object2).shortValue();
         }
+        
+        public String toString() {
+            return "Short ==";
+        }         
     }
 
     static class ShortNotEqualEvaluator extends BaseEvaluator {
@@ -195,6 +215,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).shortValue() != ((Number) object2).shortValue();
         }
+        
+        public String toString() {
+            return "Short !=";
+        }         
     }
 
     static class ShortLessEvaluator extends BaseEvaluator {
@@ -216,6 +240,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).shortValue() < ((Number) object2).shortValue();
         }
+        
+        public String toString() {
+            return "Short <";
+        }         
     }
 
     static class ShortLessOrEqualEvaluator extends BaseEvaluator {
@@ -237,6 +265,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).shortValue() <= ((Number) object2).shortValue();
         }
+        
+        public String toString() {
+            return "Boolean <=";
+        }         
     }
 
     static class ShortGreaterEvaluator extends BaseEvaluator {
@@ -258,6 +290,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).shortValue() > ((Number) object2).shortValue();
         }
+        
+        public String toString() {
+            return "Short >";
+        }         
     }
 
     static class ShortGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -279,6 +315,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).shortValue() >= ((Number) object2).shortValue();
         }
+        
+        public String toString() {
+            return "Short >=";
+        }         
     }
 
     Evaluator getIntegerEvaluator(int operator) {
@@ -319,6 +359,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).intValue() == ((Number) object2).intValue();
         }
+        
+        public String toString() {
+            return "Integer ==";
+        }         
     }
 
     static class IntegerNotEqualEvaluator extends BaseEvaluator {
@@ -340,6 +384,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).intValue() != ((Number) object2).intValue();
         }
+        
+        public String toString() {
+            return "Integer !=";
+        }                 
     }
 
     static class IntegerLessEvaluator extends BaseEvaluator {
@@ -361,6 +409,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).intValue() < ((Number) object2).intValue();
         }
+        
+        public String toString() {
+            return "Integer <";
+        }                 
     }
 
     static class IntegerLessOrEqualEvaluator extends BaseEvaluator {
@@ -382,6 +434,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).intValue() <= ((Number) object2).intValue();
         }
+        
+        public String toString() {
+            return "Integer <=";
+        }         
     }
 
     static class IntegerGreaterEvaluator extends BaseEvaluator {
@@ -403,6 +459,10 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).intValue() > ((Number) object2).intValue();
         }
+        
+        public String toString() {
+            return "Integer >";
+        }         
     }
 
     static class IntegerGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -424,5 +484,9 @@ public class EvaluatorFactory {
                                 Object object2) {
             return ((Number) object1).intValue() >= ((Number) object2).intValue();
         }
+        
+        public String toString() {
+            return "Integer >=";
+        }         
     }
 }

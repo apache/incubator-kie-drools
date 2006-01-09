@@ -103,6 +103,7 @@ public class ReteooJungViewer extends JFrame {
                                       pr,
                                       new Dimension( 600,
                                                      600 ) );
+        
         this.vv.setPickSupport( new ShapePickSupport() );
         pr.setEdgeShapeFunction( new EdgeShape.QuadCurve() );
         this.vv.setBackground( Color.white );
