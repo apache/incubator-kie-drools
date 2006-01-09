@@ -302,7 +302,6 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
 
         public String getHtml() {
-            this.node.getJoinNodeBinder().
             return "JoinNode : " + this.node.getId();
         }
 
@@ -379,6 +378,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         HtmlContent {
         public BaseNodeVertex() {
             super();
+            
         }
 
         public String getHtml() {

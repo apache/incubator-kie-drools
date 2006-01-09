@@ -22,6 +22,8 @@ import org.drools.reteoo.ReteooToJungVisitor.BaseNodeVertex;
 
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.Vertex;
+import edu.uci.ics.jung.graph.decorators.ConstantVertexAspectRatioFunction;
+import edu.uci.ics.jung.graph.decorators.ConstantVertexSizeFunction;
 import edu.uci.ics.jung.graph.decorators.DefaultToolTipFunction;
 import edu.uci.ics.jung.graph.decorators.EdgeShape;
 import edu.uci.ics.jung.graph.decorators.EllipseVertexShapeFunction;
@@ -87,7 +89,7 @@ public class ReteooJungViewer extends JFrame {
             public Paint getDrawPaint(Vertex v) {
                 return ((HtmlContent) v).getDrawPaint();
             }
-        });        
+        });                
 
         pr.setEdgePaintFunction( new PickableEdgePaintFunction( pr,
                                                                 Color.black,
@@ -95,7 +97,8 @@ public class ReteooJungViewer extends JFrame {
         pr.setGraphLabelRenderer( new DefaultGraphLabelRenderer( Color.cyan,
                                                                  Color.cyan ) );
 
-        pr.setVertexShapeFunction( new EllipseVertexShapeFunction() );
+        pr.setVertexShapeFunction( new EllipseVertexShapeFunction( new ConstantVertexSizeFunction(14), 
+                                                                   new ConstantVertexAspectRatioFunction(1.0f)) );
 
         Layout layout = new DAGLayout( this.graph );
 
