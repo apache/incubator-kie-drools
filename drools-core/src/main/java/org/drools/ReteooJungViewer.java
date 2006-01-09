@@ -2,6 +2,7 @@ package org.drools;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -16,6 +17,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 
 import org.drools.reteoo.ReteooToJungVisitor;
 import org.drools.reteoo.ReteooToJungVisitor.BaseNodeVertex;
@@ -30,6 +32,7 @@ import edu.uci.ics.jung.graph.decorators.EllipseVertexShapeFunction;
 import edu.uci.ics.jung.graph.decorators.PickableEdgePaintFunction;
 import edu.uci.ics.jung.graph.decorators.PickableVertexPaintFunction;
 import edu.uci.ics.jung.graph.decorators.VertexPaintFunction;
+import edu.uci.ics.jung.graph.impl.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.impl.SparseGraph;
 import edu.uci.ics.jung.graph.impl.SparseTree;
 import edu.uci.ics.jung.visualization.DefaultGraphLabelRenderer;
@@ -55,41 +58,46 @@ public class ReteooJungViewer extends JFrame {
     /**
      * the graph
      */
-    Graph          graph;
+    Graph               graph;
 
     /**
      * the visual component and renderer for the graph
      */
     VisualizationViewer vv;
 
-    //    public static void main(String[] args) {
-    //        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-    //            public void run() {
-    //                createAndShowGUI();
-    //            }
-    //        });
-    //    }
-
     public static void createAndShowGUI(RuleBase ruleBase) {
-        ReteooJungViewer viewer = new ReteooJungViewer(ruleBase);;
+        ReteooJungViewer viewer = new ReteooJungViewer( ruleBase );;
     }
 
     public ReteooJungViewer(RuleBase ruleBase) {
-        ReteooToJungVisitor visitor = new ReteooToJungVisitor();
+        // Setup a standard left/right splitPane
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        JPanel rightPanel = new JPanel(new BorderLayout());
+        JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
+                                               leftPanel,
+                                               rightPanel );
+        splitPane.setDividerLocation( 0.75 );
+        splitPane.setResizeWeight( 1 );
+        getContentPane().add( splitPane );
+
+        // Create the graph and parse it to the visitor where it will parse the rulebase and attach the vertices
+        this.graph = new DirectedSparseGraph();
+        ReteooToJungVisitor visitor = new ReteooToJungVisitor( this.graph );
         visitor.visit( ruleBase );
-        this.graph = visitor.getGraph();
 
         final PluggableRenderer pr = new PluggableRenderer();
         
-        pr.setVertexPaintFunction(new VertexPaintFunction() {
+        pr.setEdgeShapeFunction( new EdgeShape.QuadCurve() );
+        
+        pr.setVertexPaintFunction( new VertexPaintFunction() {
             public Paint getFillPaint(Vertex v) {
-                return ((HtmlContent) v).getFillPaint();
+                return ((DroolsVertex) v).getFillPaint();
             }
 
             public Paint getDrawPaint(Vertex v) {
-                return ((HtmlContent) v).getDrawPaint();
+                return ((DroolsVertex) v).getDrawPaint();
             }
-        });                
+        } );
 
         pr.setEdgePaintFunction( new PickableEdgePaintFunction( pr,
                                                                 Color.black,
@@ -97,26 +105,20 @@ public class ReteooJungViewer extends JFrame {
         pr.setGraphLabelRenderer( new DefaultGraphLabelRenderer( Color.cyan,
                                                                  Color.cyan ) );
 
-        pr.setVertexShapeFunction( new EllipseVertexShapeFunction( new ConstantVertexSizeFunction(14), 
-                                                                   new ConstantVertexAspectRatioFunction(1.0f)) );
+        // Sets the size of the nodes
+        pr.setVertexShapeFunction( new EllipseVertexShapeFunction( new ConstantVertexSizeFunction( 14 ),
+                                                                   new ConstantVertexAspectRatioFunction( 1.0f ) ) );
 
         Layout layout = new DAGLayout( this.graph );
 
         this.vv = new VisualizationViewer( layout,
-                                      pr,
-                                      new Dimension( 600,
-                                                     600 ) );
-        
-        this.vv.setPickSupport( new ShapePickSupport() );
-        pr.setEdgeShapeFunction( new EdgeShape.QuadCurve() );
+                                           pr,
+                                           new Dimension( 600,
+                                                          600 ) );
+
         this.vv.setBackground( Color.white );
-
-        // add a listener for ToolTips
+        this.vv.setPickSupport( new ShapePickSupport() );
         this.vv.setToolTipFunction( new DefaultToolTipFunction() );
-
-        Container content = getContentPane();
-        final GraphZoomScrollPane panel = new GraphZoomScrollPane( this.vv );
-        content.add( panel );
 
         final PluggableGraphMouse graphMouse = new PluggableGraphMouse();
         graphMouse.add( new PickingGraphMousePlugin() );
@@ -144,27 +146,38 @@ public class ReteooJungViewer extends JFrame {
             }
         } );
 
+        final GraphZoomScrollPane graphPanel = new GraphZoomScrollPane( this.vv );
+        leftPanel.add( graphPanel );
+
+        // Add the zoom controls
         JPanel scaleGrid = new JPanel( new GridLayout( 1,
                                                        0 ) );
         scaleGrid.setBorder( BorderFactory.createTitledBorder( "Zoom" ) );
-
         JPanel controls = new JPanel();
         scaleGrid.add( plus );
         scaleGrid.add( minus );
         controls.add( scaleGrid );
-        content.add( controls,
-                     BorderLayout.SOUTH );
+        leftPanel.add( controls,
+                       BorderLayout.SOUTH );
 
-        final JEditorPane editorPane = new JEditorPane();
-        editorPane.setEditable( false );
-        editorPane.setContentType( "text/html" );
+        final JEditorPane infoPane = new JEditorPane();
+        infoPane.setEditable( false );
+        infoPane.setContentType( "text/html" );
 
+        //        Put the editor pane in a scroll pane.
+        JScrollPane infoScrollPane = new JScrollPane( infoPane );
+        infoScrollPane.setPreferredSize( new Dimension( 250,
+                                                        600 ) );
+        infoScrollPane.setMinimumSize( new Dimension( 50,
+                                                      600 ) );
+
+        // Add a mouse listener to update the info panel when a node is clicked
         this.vv.addGraphMouseListener( new GraphMouseListener() {
 
             public void graphClicked(Vertex vertex,
                                      MouseEvent e) {
                 System.out.println( vertex );
-                editorPane.setText( ((HtmlContent)vertex).getHtml() );
+                infoPane.setText( ((DroolsVertex) vertex).getHtml() );
             }
 
             public void graphPressed(Vertex vertex,
@@ -177,24 +190,17 @@ public class ReteooJungViewer extends JFrame {
 
         } );
 
-        //        Put the editor pane in a scroll pane.
-        JScrollPane editorScrollPane = new JScrollPane( editorPane );
-        editorScrollPane.setPreferredSize( new Dimension( 250,
-                                                          145 ) );
-        editorScrollPane.setMinimumSize( new Dimension( 10,
-                                                        10 ) );
-        content.add( editorScrollPane,
-                     BorderLayout.EAST );
-        
+        rightPanel.add( infoScrollPane );
+
         pack();
-        setVisible( true ); 
+        setVisible( true );
     }
-    
-    public interface HtmlContent {
+
+    public interface DroolsVertex {
         public String getHtml();
-        
+
         public Paint getFillPaint();
-       
+
         public Paint getDrawPaint();
     }
 }
