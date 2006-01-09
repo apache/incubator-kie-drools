@@ -12,5 +12,5 @@ public class WorkingMemoryEventSupportTest extends TestCase {
         assertTrue( Serializable.class.isAssignableFrom( WorkingMemoryEventSupport.class ) );
     }
 
-    // TODO: Need more tests but I'm tired! Need sleep.
+    // TODO: Need more tests but I'M tired! Need sleep.
 }

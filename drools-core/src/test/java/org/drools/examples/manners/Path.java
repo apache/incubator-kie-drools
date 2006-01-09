@@ -23,6 +23,9 @@ public class Path {
         return this.id;
     }
     
+    public String toString() {
+        return "[Path id=" + this.id + ", seat=" + this.seat + ", guest=" + this.guestName + "]";
+    }
     
     
 }

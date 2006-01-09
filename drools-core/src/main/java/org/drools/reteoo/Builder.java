@@ -142,12 +142,14 @@ class Builder {
             addRule( and[i],
                      rule );
         }
-        TerminalNode node = new TerminalNode( this.tupleSource,
+        TerminalNode node = new TerminalNode( ++this.id,
+                                              this.tupleSource,
                                               rule );
     }
 
     private void addRule(And and,
                          Rule rule) {
+        this.objectSource = null;
         for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
             Object object = it.next();
 
@@ -222,7 +224,7 @@ class Builder {
 
     private BetaNodeBinder attachColumn(Column column,
                                         ConditionalElement parent) {
-        addDeclarations( column );
+//        addDeclarations( column );
 
         List predicates = attachAlphaNodes( column );
 
@@ -237,19 +239,19 @@ class Builder {
         return binder;
     }
 
-    private void addDeclarations(Column column) {
-        for ( Iterator it = column.getDeclarations().iterator(); it.hasNext(); ) {
-            Declaration declaration = (Declaration) it.next();
-            this.declarations.put( declaration.getIdentifier(),
-                                   declaration );
-        }
-
-        if ( column.getBinding() != null ) {
-            Binding binding = column.getBinding();
-            this.declarations.put( binding.getIdentifier(),
-                                   binding );
-        }
-    }
+//    private void addDeclarations(Column column) {
+//        for ( Iterator it = column.getDeclarations().iterator(); it.hasNext(); ) {
+//            Declaration declaration = (Declaration) it.next();
+//            this.declarations.put( declaration.getIdentifier(),
+//                                   declaration );
+//        }
+//
+//        if ( column.getBinding() != null ) {
+//            Binding binding = column.getBinding();
+//            this.declarations.put( binding.getIdentifier(),
+//                                   binding );
+//        }
+//    }
 
     public List attachAlphaNodes(Column column) {
         List constraints = column.getConstraints();

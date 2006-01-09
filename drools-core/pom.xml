@@ -11,5 +11,13 @@
 
   <name>Drools :: Rete-OO Core</name>
   <version>3.0-M1-dev</version>
+  
+  <dependencies>
+    <dependency>
+      <groupId>jung</groupId>
+      <artifactId>jung</artifactId>
+      <version>1.7.2</version>
+    </dependency>  
+  </dependencies>
 
 </project>

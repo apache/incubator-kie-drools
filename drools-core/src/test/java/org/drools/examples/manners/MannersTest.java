@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -20,6 +21,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.FactException;
+import org.drools.ReteooJungViewer;
 import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
 import org.drools.RuleSetIntegrationException;
@@ -106,9 +108,9 @@ public class MannersTest extends TestCase {
         this.booleanNotEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.BOOLEAN_TYPE,
                                                                                      Evaluator.NOT_EQUAL );
 
-    }
+    }     
     
-    public void test1() throws DuplicateRuleNameException, InvalidRuleException, IntrospectionException, RuleIntegrationException, RuleSetIntegrationException, InvalidPatternException, FactException {
+    public void test1() throws DuplicateRuleNameException, InvalidRuleException, IntrospectionException, RuleIntegrationException, RuleSetIntegrationException, InvalidPatternException, FactException, IOException, InterruptedException {
         RuleSet ruleSet = new RuleSet( "Miss Manners" );
         ruleSet.addRule( getAssignFirstSeatRule() );
 //        ruleSet.addRule( getMakePath() );
@@ -118,17 +120,34 @@ public class MannersTest extends TestCase {
 //        ruleSet.addRule( getContinueProcessing() );
 //        ruleSet.addRule( getAllDone() );
         
-        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        final RuleBaseImpl ruleBase = new RuleBaseImpl();
         ruleBase.addRuleSet( ruleSet );
         
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        workingMemory.assertObject( new Context( Context.START_UP ) );
-        workingMemory.assertObject( new Guest("mark", Sex.m, Hobby.h1) );
-        workingMemory.assertObject( new Count(0) );
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                ReteooJungViewer.createAndShowGUI(ruleBase);
+            }
+        });        
         
-        workingMemory.fireAllRules();
+        while (true) {
+            Thread.sleep( 1000 );
+        }
         
-        System.out.println( "ttt" );
+        
+//        
+//        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+//        
+//        InputStream is = getClass().getResourceAsStream( "/manners16.dat" );
+//        List list = getInputObjects(is);
+//        for (Iterator it = list.iterator(); it.hasNext(); ) {
+//            workingMemory.assertObject( it.next() );
+//        }
+//        //System.out.println( list );
+//        
+//        workingMemory.assertObject( new Count(0) );
+//        
+//        workingMemory.fireAllRules();
+        
     }
 
     /**
@@ -234,7 +253,7 @@ public class MannersTest extends TestCase {
                     context.setState( Context.ASSIGN_SEATS );
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
                                          context );
-                    System.out.println( "assigned first seat :  " + guestName );
+                    System.out.println( "assigned first seat :  " + guest );
 
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
@@ -368,9 +387,13 @@ public class MannersTest extends TestCase {
                     String guestName = (String) tuple.get( pathGuestNameDeclaration );
                     int seat = ((Integer) tuple.get( pathSeatDeclaration )).intValue();
 
-                    drools.assertObject( new Path( id,
-                                                   seat,
-                                                   guestName ) );
+                    Path path = new Path( id,
+                                          seat,
+                                          guestName );
+                    
+                    drools.assertObject( path );
+                    
+                    System.out.println( path );
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
@@ -396,7 +419,7 @@ public class MannersTest extends TestCase {
      *      when {
      *          context : Context( state == Context.ASSIGN_SEATS )
      *          Seating( seatingId:id, seatingPid:pid, pathDone == true 
-     *                   seatingRightGuestName:rightGuestName )
+     *                   seatingRightSeat:rightSeat seatingRightGuestName:rightGuestName )
      *          Guest( name == seatingRightGuestName, rightGuestSex:sex, rightGuestHobby:hobby )
      *          Guest( leftGuestName:name , sex != rightGuestSex, hobby == rightGuestHobby )
      *   
@@ -444,8 +467,7 @@ public class MannersTest extends TestCase {
 
         // -------------------------------
         // Seating( seatingId:id, seatingPid:pid, pathDone == true
-        //          seatingRightSeat:rightSeat
-        //          seatingRightGuestName:rightGuestName )
+        //          seatingRightSeat:rightSeat seatingRightGuestName:rightGuestName )
         // -------------------------------
         Column seatingColumn = new Column( 1,
                                            seatingType );
@@ -474,8 +496,7 @@ public class MannersTest extends TestCase {
         final Declaration seatingRightGuestNameDeclaration = rule.getDeclaration( "seatingRightGuestName" );
         final Declaration seatingRightSeatDeclaration = rule.getDeclaration( "seatingRightSeat" );
         // --------------
-        // Guest( name == seatingRightGuestName, rightGuestSex:sex,
-        //        rightGuestHobby:hobby )
+        // Guest( name == seatingRightGuestName, rightGuestSex:sex, rightGuestHobby:hobby )
         // ---------------
         Column rightGuestColumn = new Column( 2,
                                               guestType );
@@ -533,7 +554,6 @@ public class MannersTest extends TestCase {
 
         // --------------
         // not ( Path( id == seatingId, guestName == leftGuestName) )
-        // not ( Chosen( id == seatingId, guestName == leftGuestName, hobby == rightGuestHobby) )
         // --------------
         Column notPathColumn = new Column( 3,
                                            pathType );
@@ -549,7 +569,7 @@ public class MannersTest extends TestCase {
                                                                  objectEqualEvaluator ) );
         Not notPath = new Not();
         notPath.addChild( notPathColumn );
-        notPathColumn.addConstraint( notPath );
+        rule.addPattern( notPath );
         // ------------
         // not ( Chosen( id == seatingId, guestName == leftGuestName, hobby == rightGuestHobby ) )
         // ------------
@@ -606,13 +626,14 @@ public class MannersTest extends TestCase {
                     String rightGuestName = (String) tuple.get( seatingRightGuestNameDeclaration );
                     Hobby rightGuestHobby = (Hobby) tuple.get( rightGuestHobbyDeclaration );
 
-                    drools.assertObject( new Seating( count.getValue(),
-                                                      seatId,
-                                                      false,
-                                                      seatingRightSeat,
-                                                      leftGuestName,
-                                                      seatingRightSeat + 1,
-                                                      rightGuestName ) );
+                    Seating seating = new Seating( count.getValue(),
+                                                   seatId,
+                                                   false,
+                                                   seatingRightSeat,
+                                                   leftGuestName,
+                                                   seatingRightSeat + 1,
+                                                   rightGuestName );
+                    drools.assertObject( seating );
 
                     drools.assertObject( new Path( count.getValue(),
                                                    seatingRightSeat + 1,
@@ -630,6 +651,8 @@ public class MannersTest extends TestCase {
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
                                          context );
 
+                    System.out.println( seating );
+                    
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
@@ -938,80 +961,74 @@ public class MannersTest extends TestCase {
         return rule;
     }    
 
-//    /**
-//     * Convert the facts from the <code>InputStream</code> to a list of
-//     * objects.
-//     */
-//    private List getInputObjects(InputStream inputStream) throws IOException
-//    {
-//        List list = new ArrayList( );
-//
-//        BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );
-//
-//        String line;
-//        while ( (line = br.readLine( )) != null )
-//        {
-//            if ( line.trim( ).length( ) == 0 || line.trim( ).startsWith( ";" ) )
-//            {
-//                continue;
-//            }
-//            StringTokenizer st = new StringTokenizer( line,
-//                                                      "() " );
-//            String type = st.nextToken( );
-//
-//            if ( "guest".equals( type ) )
-//            {
-//                if ( !"name".equals( st.nextToken( ) ) )
-//                {
-//                    throw new IOException( "expected 'name' in: " + line );
-//                }
-//                String name = st.nextToken( );
-//                if ( !"sex".equals( st.nextToken( ) ) )
-//                {
-//                    throw new IOException( "expected 'sex' in: " + line );
-//                }
-//                String sex = st.nextToken( );
-//                if ( !"hobby".equals( st.nextToken( ) ) )
-//                {
-//                    throw new IOException( "expected 'hobby' in: " + line );
-//                }
-//                String hobby = st.nextToken( );
-//
-//                Guest guest = (Guest) guests.get( name );
-//                if ( guest == null )
-//                {
-//                    guest = new Guest( name,
-//                                       sex.charAt( 0 )
-//                                       Hobby);
-//                    guests.put( name,
-//                                guest );
-//                    list.add( guest );
-//                }
-//                guest.addHobby( hobby );
-//            }
-//
-//            if ( "last_seat".equals( type ) )
-//            {
-//                if ( !"seat".equals( st.nextToken( ) ) )
-//                {
-//                    throw new IOException( "expected 'seat' in: " + line );
-//                }
-//                list.add( new LastSeat( new Integer( st.nextToken( ) ).intValue( ) ) );
-//            }
-//
-//            if ( "context".equals( type ) )
-//            {
-//                if ( !"state".equals( st.nextToken( ) ) )
-//                {
-//                    throw new IOException( "expected 'state' in: " + line );
-//                }
-//                list.add( new Context( st.nextToken( ) ) );
-//            }
-//        }
-//        inputStream.close( );
-//
-//        return list;
-//    }    
+    /**
+     * Convert the facts from the <code>InputStream</code> to a list of
+     * objects.
+     */
+    private List getInputObjects(InputStream inputStream) throws IOException
+    {
+        List list = new ArrayList( );
+
+        BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );
+
+        String line;
+        while ( (line = br.readLine( )) != null )
+        {
+            if ( line.trim( ).length( ) == 0 || line.trim( ).startsWith( ";" ) )
+            {
+                continue;
+            }
+            StringTokenizer st = new StringTokenizer( line,
+                                                      "() " );
+            String type = st.nextToken( );
+
+            if ( "guest".equals( type ) )
+            {
+                if ( !"name".equals( st.nextToken( ) ) )
+                {
+                    throw new IOException( "expected 'name' in: " + line );
+                }
+                String name = st.nextToken( );
+                if ( !"sex".equals( st.nextToken( ) ) )
+                {
+                    throw new IOException( "expected 'sex' in: " + line );
+                }
+                String sex = st.nextToken( );
+                if ( !"hobby".equals( st.nextToken( ) ) )
+                {
+                    throw new IOException( "expected 'hobby' in: " + line );
+                }
+                String hobby = st.nextToken( );
+
+                Guest guest = new Guest( name,
+                                         Sex.resolve(sex),
+                                         Hobby.resolve(hobby));
+
+                list.add( guest );               
+            }
+
+            if ( "last_seat".equals( type ) )
+            {
+                if ( !"seat".equals( st.nextToken( ) ) )
+                {
+                    throw new IOException( "expected 'seat' in: " + line );
+                }
+                list.add( new LastSeat( new Integer( st.nextToken( ) ).intValue( ) ) );
+            }
+
+            if ( "context".equals( type ) )
+            {
+                if ( !"state".equals( st.nextToken( ) ) )
+                {
+                    throw new IOException( "expected 'state' in: " + line );
+                }
+                list.add( new Context( st.nextToken( ) ) );
+            }
+        }
+        inputStream.close( );
+
+        return list;
+    }    
     
     private InputStream generateData() {
         final String LINE_SEPARATOR = System.getProperty( "line.separator" );
