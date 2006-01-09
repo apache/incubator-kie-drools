@@ -74,7 +74,6 @@ public class ReteooJungViewer extends JFrame {
         ReteooToJungVisitor visitor = new ReteooToJungVisitor();
         visitor.visit( ruleBase );
         this.graph = visitor.getGraph();
-        this.graph.g
 
         final PluggableRenderer pr = new PluggableRenderer();
 
