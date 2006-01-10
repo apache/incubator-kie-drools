@@ -24,6 +24,10 @@ public class SimpleGrammar implements Serializable, NaturalGrammar
         dictionary = new HashMap();
     }
     
+    public SimpleGrammar(Properties props) {
+        dictionary = props;
+    }
+    
     public void addToDictionary(String token, String expression) {
         if (dictionary.containsKey(token)) {
             throw new NaturalLanguageException("The token [" + token + "] is already in the dictionary.");
