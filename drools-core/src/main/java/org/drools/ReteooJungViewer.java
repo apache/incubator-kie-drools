@@ -169,7 +169,6 @@ public class ReteooJungViewer extends JFrame {
 
             public void graphClicked(Vertex vertex,
                                      MouseEvent e) {
-                System.out.println( vertex );
                 infoPane.setText( ((DroolsVertex) vertex).getHtml() );
             }
 
