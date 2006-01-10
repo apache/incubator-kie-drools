@@ -150,6 +150,7 @@ class Builder {
     private void addRule(And and,
                          Rule rule) {
         this.objectSource = null;
+        this.tupleSource = null;
         for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
             Object object = it.next();
 

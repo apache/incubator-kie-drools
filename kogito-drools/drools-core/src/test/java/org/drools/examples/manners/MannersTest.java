@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.FactException;
+import org.drools.FactHandle;
 import org.drools.ReteooJungViewer;
 import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
@@ -113,23 +114,23 @@ public class MannersTest extends TestCase {
     public void test1() throws DuplicateRuleNameException, InvalidRuleException, IntrospectionException, RuleIntegrationException, RuleSetIntegrationException, InvalidPatternException, FactException, IOException, InterruptedException {
         RuleSet ruleSet = new RuleSet( "Miss Manners" );
         ruleSet.addRule( getAssignFirstSeatRule() );
-//        ruleSet.addRule( getMakePath() );
+        ruleSet.addRule( getMakePath() );
         ruleSet.addRule( getFindSeating() );
-//        ruleSet.addRule( getPathDone() );
-//        ruleSet.addRule( getAreWeDone() );
-//        ruleSet.addRule( getContinueProcessing() );
+        ruleSet.addRule( getPathDone() );
+        ruleSet.addRule( getAreWeDone() );
+        ruleSet.addRule( getContinueProcessing() );
 //        ruleSet.addRule( getAllDone() );
         
         final RuleBaseImpl ruleBase = new RuleBaseImpl();
         ruleBase.addRuleSet( ruleSet );
         
-        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase);
-        
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                viewer.showGUI();
-            }
-        });               
+//        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase);
+//        
+//        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//                viewer.showGUI();
+//            }
+//        });               
               
         
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
@@ -137,16 +138,16 @@ public class MannersTest extends TestCase {
         InputStream is = getClass().getResourceAsStream( "/manners16.dat" );
         List list = getInputObjects(is);
         for (Iterator it = list.iterator(); it.hasNext(); ) {
-            workingMemory.assertObject( it.next() );
+            FactHandle handle = workingMemory.assertObject( it.next() );            
         }
         
         workingMemory.assertObject( new Count(0) );
         
         workingMemory.fireAllRules();
         
-        while (viewer.isRunning()) {
-            Thread.sleep( 1000 );
-        }
+//        while (viewer.isRunning()) {
+//            Thread.sleep( 1000 );
+//        }
         
     }
 
@@ -393,7 +394,7 @@ public class MannersTest extends TestCase {
                     
                     drools.assertObject( path );
                     
-                    System.out.println( path );
+                    System.out.println( "make path : " + path );
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
@@ -527,7 +528,7 @@ public class MannersTest extends TestCase {
 
         leftGuestColumn.addConstraint( getFieldBinding( leftGuestColumn,
                                                         "name",
-                                                        "leftGuestHobby" ) );
+                                                        "leftGuestName" ) );
 
         leftGuestColumn.addConstraint( getBoundVariableConstraint( leftGuestColumn,
                                                                    "sex",
@@ -539,12 +540,12 @@ public class MannersTest extends TestCase {
                                                                    rightGuestHobbyDeclaration,
                                                                    objectEqualEvaluator ) );
         rule.addPattern( leftGuestColumn );
-        final Declaration leftGuestNameDeclaration = rule.getDeclaration( "lefttGuestName" );
+        final Declaration leftGuestNameDeclaration = rule.getDeclaration( "leftGuestName" );
 
         // ---------------
         // count : Count()
         // ---------------
-        Column count = new Column( 2,
+        Column count = new Column( 4,
                                    countType,
                                    "count" );
 
@@ -573,7 +574,7 @@ public class MannersTest extends TestCase {
         // ------------
         // not ( Chosen( id == seatingId, guestName == leftGuestName, hobby == rightGuestHobby ) )
         // ------------
-        Column notChosenColumn = new Column( 4,
+        Column notChosenColumn = new Column( 5,
                                              chosenType );
 
         notChosenColumn.addConstraint( getBoundVariableConstraint( notChosenColumn,
@@ -651,7 +652,7 @@ public class MannersTest extends TestCase {
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
                                          context );
 
-                    System.out.println( seating );
+                    System.out.println( "assign seating : " + seating );
                     
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
@@ -692,7 +693,8 @@ public class MannersTest extends TestCase {
         // context : Context( state == Context.MAKE_PATH )
         // -----------
         Column contextColumn = new Column( 0,
-                                           contextType );
+                                           contextType,
+                                           "context" );
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
@@ -740,7 +742,8 @@ public class MannersTest extends TestCase {
                     
                     context.setState( Context.CHECK_DONE );
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
-                                         context );                                        
+                                         context );     
+                    System.out.println("path done" + seating);
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
@@ -832,7 +835,9 @@ public class MannersTest extends TestCase {
                     context.setState( Context.PRINT_RESULTS );
                 
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
-                                         context );                                                            
+                                         context );      
+                    
+                    System.out.println( "are we done yet" );
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
@@ -868,7 +873,8 @@ public class MannersTest extends TestCase {
         // context : Context( state == Context.CHECK_DONE )
         // -----------
         Column contextColumn = new Column( 0,
-                                           contextType );
+                                           contextType,
+                                           "context" );
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
@@ -894,7 +900,9 @@ public class MannersTest extends TestCase {
                     context.setState( Context.ASSIGN_SEATS );
                 
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
-                                         context );                                                            
+                                         context ); 
+                    
+                    System.out.println("continue processing");
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }

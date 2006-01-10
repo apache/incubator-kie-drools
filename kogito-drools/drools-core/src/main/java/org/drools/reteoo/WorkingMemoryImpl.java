@@ -470,7 +470,7 @@ class WorkingMemoryImpl
                                      handles );
             }
             handles.add( handle );
-        }
+        }        
 
         this.ruleBase.assertObject( handle,
                                     object,
