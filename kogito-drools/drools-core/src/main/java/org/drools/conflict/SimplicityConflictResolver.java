@@ -96,6 +96,6 @@ public class SimplicityConflictResolver extends AbstractConflictResolver {
      */
     public int compare(Activation lhs,
                        Activation rhs) {
-        return lhs.getRule().getPatternSize() - rhs.getRule().getPatternSize();
+        return lhs.getRule().getSpecifity() - rhs.getRule().getSpecifity();
     }
 }
