@@ -76,6 +76,6 @@ public class Chosen
     }    
 
     public String toString() {
-        return "{guest name=" + this.guestName + ",hobbies=" + this.hobby + "}";        
+        return "{Chosen id=" + this.id + ", name=" + this.guestName + ", hobbies=" + this.hobby + "}";        
     }
 }
