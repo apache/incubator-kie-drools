@@ -451,24 +451,33 @@ public class Rule
         return LogicTransformer.getInstance().transform( this.headPattern );
     }
 
-    public int getPatternSize() {
-        // return this.conditions.size();
-        return determinePatternSize( this.headPattern );
+    public int getSpecifity() {
+        return getSpecifity( this.headPattern );
     }
 
-    private int determinePatternSize(ConditionalElement ce) {
-        Object object = null;
-        Iterator it = ce.getChildren().iterator();
-        int size = 0;
-        while ( it.hasNext() ) {
-            object = it.next();
-            if ( object instanceof ConditionalElement ) {
-                size++;
-                size += determinePatternSize( (ConditionalElement) object );
-            }
+    private int getSpecifity(ConditionalElement ce) {
+        int specificity = 0;        
+        for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
+        	Object object = it.next();
+        	if ( object instanceof Column ) {
+        		specificity += getSpecifity((Column) object);	 
+        	} else if ( object instanceof ConditionalElement ) {
+        		specificity += getSpecifity((ConditionalElement) object);
+        	}        	
         }
-        return size;
+        return specificity;
     }
+    
+    private int getSpecifity(Column column) {
+    	int specificity = 0;
+        for (Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
+        	if (!(it.next() instanceof Binding)) {
+        		specificity++;
+        	}        		
+        }
+        
+        return specificity;
+    }    
 
     /**
      * Set the <code>Consequence</code> that is associated with the successful
