@@ -127,7 +127,7 @@ public class MannersTest extends TestCase {
         ruleSet.addRule( getPathDone() );
         ruleSet.addRule( getAreWeDone() );
         ruleSet.addRule( getContinueProcessing() );
-        // ruleSet.addRule( getAllDone() );
+        ruleSet.addRule( getAllDone() );
 
         final RuleBaseImpl ruleBase = new RuleBaseImpl();
         ruleBase.addRuleSet( ruleSet );
@@ -690,11 +690,18 @@ public class MannersTest extends TestCase {
 
     /**
      * 
-     * rule pathDone() { Context context; Seating seating; when { context :
-     * Context( state == Context.MAKE_PATH ) seating : Seating( pathDone ==
-     * false ) } then { seating.setPathDone( true ); context.setName(
-     * Context.CHECK_DONE ); } }
-     * 
+     * <pre>
+     * rule pathDone() { 
+     *     Context context; Seating seating; 
+     *     when { 
+     *         context : Context( state == Context.MAKE_PATH ) 
+     *         seating : Seating( pathDone == false ) 
+     *     } then { 
+     *         seating.setPathDone( true ); 
+     *         context.setName( Context.CHECK_DONE ); 
+     *     } 
+     * }
+     * </pre>
      * 
      * @return
      * @throws IntrospectionException
@@ -773,12 +780,18 @@ public class MannersTest extends TestCase {
     }
 
     /**
-     * 
-     * rule areWeDone() { Context context; LastSeat lastSear; when { context :
-     * Context( state == Context.CHECK_DONE ) LastSeat( lastSeat: seat )
-     * Seating( rightSeat == lastSeat ) } then { context.setState(
-     * Context.PRINT_RESULTS ); } }
-     * 
+     * <pre>
+     * rule areWeDone() { 
+     *     Context context; LastSeat lastSear; 
+     *     when { 
+     *         context : Context( state == Context.CHECK_DONE ) 
+     *         LastSeat( lastSeat: seat )
+     *         Seating( rightSeat == lastSeat ) 
+     *     } then { 
+     *         context.setState(Context.PRINT_RESULTS ); 
+     *     } 
+     * }
+     * </pre>
      * 
      * @return
      * @throws IntrospectionException
@@ -861,10 +874,16 @@ public class MannersTest extends TestCase {
     }
 
     /**
-     * 
-     * rule continue() { Context context; when { context : Context( state ==
-     * Context.CHECK_DONE ) } then { context.setState( Context.ASSIGN_SEATS ); } }
-     * 
+     * <pre>
+     * rule continue() { 
+     *     Context context; 
+     *     when { 
+     *         context : Context( state == Context.CHECK_DONE ) 
+     *     } then { 
+     *         context.setState( Context.ASSIGN_SEATS ); 
+     *     } 
+     * }
+     * </pre>
      * @return
      * @throws IntrospectionException
      * @throws InvalidRuleException
