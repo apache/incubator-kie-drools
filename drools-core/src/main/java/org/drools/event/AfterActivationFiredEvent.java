@@ -1,9 +1,9 @@
 package org.drools.event;
 
 /*
- * $Id: ObjectRetractedEvent.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
+ * $Id: ActivationFiredEvent.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  *
- * Copyright 2004 (C) The Werken Company. All Rights Reserved.
+ * Copyright 2004-2005 (C) The Werken Company. All Rights Reserved.
  *
  * Redistribution and use of this software and associated documentation
  * ("Software"), with or without modification, are permitted provided that the
@@ -41,33 +41,19 @@ package org.drools.event;
  *
  */
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.rule.Rule;
+import org.drools.spi.Activation;
+import org.drools.spi.Consequence;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 
-public class ObjectRetractedEvent extends WorkingMemoryEvent {
-    private final FactHandle handle;
-
-    private final Object     oldObject;
-
-    public ObjectRetractedEvent(WorkingMemory workingMemory,
-                                PropagationContext propagationContext,
-                                FactHandle handle,
-                                Object oldObject) {
-        super( workingMemory, propagationContext );
-        this.handle = handle;
-        this.oldObject = oldObject;
-    }
-
-    public FactHandle getFactHandle() {
-        return this.handle;
-    }
-
-    public Object getOldObject() {
-        return this.oldObject;
+public class AfterActivationFiredEvent extends ActivationEvent {
+    public AfterActivationFiredEvent(Activation activation) {
+        super(activation);
     }
 
     public String toString() {
-        return "[ObjectRetracted: handle=" + this.handle + "; old_object=" + this.oldObject + "]";
+        return "[AfterActivationFired: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
     }
 }

@@ -167,10 +167,11 @@ class AgendaItem
      */
     void fire(WorkingMemoryImpl workingMemory) throws ConsequenceException {
 
+        workingMemory.getAgendaEventSupport().fireBeforeActivationFired( this );
+        
         this.rule.getConsequence().invoke( this );
 
-        workingMemory.getAgendaEventSupport().fireActivationFired( this.rule,
-                                                                   this.tuple );
+        workingMemory.getAgendaEventSupport().fireAfterActivationFired( this );
     }
 
     public long getActivationNumber() {

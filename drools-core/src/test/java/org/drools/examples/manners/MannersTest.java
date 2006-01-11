@@ -150,8 +150,22 @@ public class MannersTest extends TestCase {
 
         workingMemory.assertObject( new Count( 1 ) );
 
+//        workingMemory.fireAllRules();
+//        
+//        Seating seating = new Seating(2,1,false,1,"n11",2,"n10");
+//        Path path = new Path(2,2,"n10");
+//        Chosen chosen = new Chosen(1, "n10",Hobby.H2);
+//
+//        workingMemory.assertObject( seating );
+//        workingMemory.assertObject( path );
+//        workingMemory.assertObject( chosen );
+//        
+//        Context context = (Context) workingMemory.getObjects( Context.class ).get( 0 );
+//        context.setState( Context.MAKE_PATH );
+//        workingMemory.modifyObject( workingMemory.getFactHandle( context ), context );
+        
         workingMemory.fireAllRules();
-
+        
         // while (viewer.isRunning()) {
         // Thread.sleep( 1000 );
         // }
@@ -254,7 +268,7 @@ public class MannersTest extends TestCase {
                     drools.assertObject( seating );
 
                     Path path = new Path( count.getValue(),
-                                          0,
+                                          1,
                                           guestName );
 
                     drools.assertObject( path );
@@ -819,8 +833,7 @@ public class MannersTest extends TestCase {
         // LastSeat( lastSeat: seat )
         // ---------------
         Column lastSeatColumn = new Column( 1,
-                                            lastSeatType,
-                                            null );
+                                            lastSeatType );
 
         lastSeatColumn.addConstraint( getFieldBinding( lastSeatColumn,
                                                        "seat",

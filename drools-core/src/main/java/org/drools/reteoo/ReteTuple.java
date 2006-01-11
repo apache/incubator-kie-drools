@@ -126,14 +126,7 @@ class ReteTuple
      * @see Tuple
      */
     public Object get(FactHandle handle) {
-        if ( (handle != null) && this.key.containsFactHandle( handle ) ) {
-            try {
-                return this.workingMemory.getObject( handle );
-            } catch ( NoSuchFactObjectException e ) {
-            }
-        }
-
-        return null;
+        return this.workingMemory.getObject( handle );
     }
 
     /**

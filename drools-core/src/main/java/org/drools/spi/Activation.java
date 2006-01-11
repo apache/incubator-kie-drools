@@ -63,6 +63,8 @@ public interface Activation {
      * @return The tuple.
      */
     Tuple getTuple();
+    
+    PropagationContext getPropagationContext();
 
     /**
      * Retrieve the activation number that was assigned by the counter to his

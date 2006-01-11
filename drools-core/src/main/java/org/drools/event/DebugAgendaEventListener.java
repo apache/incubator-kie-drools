@@ -56,7 +56,11 @@ public class DebugAgendaEventListener
         System.err.println( event );
     }
 
-    public void activationFired(ActivationFiredEvent event) {
+    public void beforeActivationFired(BeforeActivationFiredEvent event) {
+        System.err.println( event );
+    }    
+    
+    public void afterActivationFired(AfterActivationFiredEvent event) {
         System.err.println( event );
     }
 

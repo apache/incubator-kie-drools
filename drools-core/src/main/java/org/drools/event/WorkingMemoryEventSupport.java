@@ -47,6 +47,7 @@ import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.spi.PropagationContext;
 
 /**
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
@@ -83,13 +84,15 @@ public class WorkingMemoryEventSupport
         return this.listeners.isEmpty();
     }
 
-    public void fireObjectAsserted(FactHandle handle,
+    public void fireObjectAsserted(PropagationContext propagationContext,
+                                   FactHandle handle,
                                    Object object) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
         ObjectAssertedEvent event = new ObjectAssertedEvent( this.workingMemory,
+                                                             propagationContext,
                                                              handle,
                                                              object );
 
@@ -98,7 +101,8 @@ public class WorkingMemoryEventSupport
         }
     }
 
-    public void fireObjectModified(FactHandle handle,
+    public void fireObjectModified(PropagationContext propagationContext,
+                                   FactHandle handle,
                                    Object oldObject,
                                    Object object) {
         if ( this.listeners.isEmpty() ) {
@@ -106,6 +110,7 @@ public class WorkingMemoryEventSupport
         }
 
         ObjectModifiedEvent event = new ObjectModifiedEvent( this.workingMemory,
+                                                             propagationContext,
                                                              handle,
                                                              oldObject,
                                                              object );
@@ -115,13 +120,15 @@ public class WorkingMemoryEventSupport
         }
     }
 
-    public void fireObjectRetracted(FactHandle handle,
+    public void fireObjectRetracted(PropagationContext propagationContext,
+                                    FactHandle handle,
                                     Object oldObject) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
         ObjectRetractedEvent event = new ObjectRetractedEvent( this.workingMemory,
+                                                               propagationContext,
                                                                handle,
                                                                oldObject );
 

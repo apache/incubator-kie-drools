@@ -2,6 +2,8 @@ package org.drools.spi;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.drools.spi.FieldExtractor;
 
@@ -14,6 +16,7 @@ public class ClassFieldExtractor
     FieldExtractor {
     private Class clazz;
     private ClassObjectType objectType;
+    private Method method;
     private int             index;
 
     public ClassFieldExtractor(Class clazz,
@@ -22,6 +25,12 @@ public class ClassFieldExtractor
         this.objectType = new ClassObjectType( getClassType( clazz,
                                                              index ) );
         this.index = index;
+        try {
+            this.method  = Introspector.getBeanInfo( this.clazz ).getPropertyDescriptors()[this.index].getReadMethod();
+        }
+        catch ( IntrospectionException e ) {
+            throw new RuntimeException( e );
+        }
     }
 
     public int getIndex() {
@@ -31,9 +40,15 @@ public class ClassFieldExtractor
     public Object getValue(Object object) {
         Object value = null;
         try {
-            value = Introspector.getBeanInfo( this.clazz ).getPropertyDescriptors()[this.index].getReadMethod().invoke( object,
-                                                                                                                                            null );
-        } catch ( Exception e ) {
+            value = this.method.invoke( object, (Object[]) null );
+        }
+        catch ( IllegalArgumentException e ) {
+            throw new RuntimeException( e );
+        }
+        catch ( IllegalAccessException e ) {
+            throw new RuntimeException( e );
+        }
+        catch ( InvocationTargetException e ) {
             throw new RuntimeException( e );
         }
         return value;

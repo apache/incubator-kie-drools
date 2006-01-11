@@ -472,14 +472,17 @@ class WorkingMemoryImpl
             handles.add( handle );
         }        
 
+        PropagationContext propagationContext = new PropagationContextImpl( PropagationContext.ASSERTION,
+                                                                            rule,
+                                                                            activation );
+        
         this.ruleBase.assertObject( handle,
                                     object,
-                                    new PropagationContextImpl( PropagationContext.ASSERTION,
-                                                                rule,
-                                                                activation ),
+                                    propagationContext,
                                     this );
 
-        this.workingMemoryEventSupport.fireObjectAsserted( handle,
+        this.workingMemoryEventSupport.fireObjectAsserted( propagationContext,
+                                                           handle,
                                                            object );
         return handle;
     }
@@ -581,10 +584,13 @@ class WorkingMemoryImpl
                               Activation activation) throws FactException {
         removePropertyChangeListener( handle );
 
+        PropagationContext propagationContext = 
+            new PropagationContextImpl( PropagationContext.RETRACTION,
+                                        rule,
+                                        activation );
+        
         this.ruleBase.retractObject( handle,
-                                     new PropagationContextImpl( PropagationContext.RETRACTION,
-                                                                 rule,
-                                                                 activation ),
+                                     propagationContext,
                                      this );
 
         Object oldObject = removeObject( handle );
@@ -607,7 +613,8 @@ class WorkingMemoryImpl
 
         this.factHandlePool.push( ((FactHandleImpl) handle).getId() );
 
-        this.workingMemoryEventSupport.fireObjectRetracted( handle,
+        this.workingMemoryEventSupport.fireObjectRetracted( propagationContext,
+                                                            handle,
                                                             oldObject );
 
         ((FactHandleImpl) handle).invalidate();
@@ -645,23 +652,24 @@ class WorkingMemoryImpl
                                 handle );
         }
 
+        PropagationContext propagationContext = new PropagationContextImpl( PropagationContext.MODIFICATION,
+                                                                            rule,
+                                                                            activation );  
+
         this.ruleBase.retractObject( handle,
-                                     new PropagationContextImpl( PropagationContext.MODIFICATION,
-                                                                 rule,
-                                                                 activation ),
+                                     propagationContext,
                                      this );
 
         this.ruleBase.assertObject( handle,
                                     object,
-                                    new PropagationContextImpl( PropagationContext.MODIFICATION,
-                                                                rule,
-                                                                activation ),
+                                    propagationContext,
                                     this );
 
         /*
          * this.ruleBase.modifyObject( handle, object, this );
          */
-        this.workingMemoryEventSupport.fireObjectModified( handle,
+        this.workingMemoryEventSupport.fireObjectModified( propagationContext,
+                                                           handle,
                                                            originalObject,
                                                            object );
     }

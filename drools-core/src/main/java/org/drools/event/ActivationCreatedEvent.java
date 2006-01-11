@@ -43,36 +43,17 @@ package org.drools.event;
 
 import org.drools.WorkingMemory;
 import org.drools.rule.Rule;
+import org.drools.spi.Activation;
 import org.drools.spi.Consequence;
+import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
-public class ActivationCreatedEvent extends WorkingMemoryEvent {
-    private final Rule  rule;
-
-    private final Tuple tuple;
-
-    public ActivationCreatedEvent(WorkingMemory workingMemory,
-                                  Rule rule,
-                                  Tuple tuple) {
-        super( workingMemory );
-
-        this.rule = rule;
-        this.tuple = tuple;
+public class ActivationCreatedEvent extends ActivationEvent {
+    public ActivationCreatedEvent(Activation activation) {
+        super(activation);
     }
-
-    public Rule getRule() {
-        return this.rule;
-    }
-
-    public Consequence getConsequence() {
-        return this.rule.getConsequence();
-    }
-
-    public Tuple getTuple() {
-        return this.tuple;
-    }
-
+    
     public String toString() {
-        return "[ActivationCreated: rule=" + this.rule.getName() + "; tuple=" + this.tuple + "]";
-    }
+        return "[ActivatioRule: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
+    }    
 }

@@ -169,13 +169,11 @@ class Agenda
             this.scheduledItems.put( item.getKey(),
                                      item );
             scheduleItem( item );
-            this.workingMemory.getAgendaEventSupport().fireActivationCreated( rule,
-                                                                              tuple );
+            this.workingMemory.getAgendaEventSupport().fireActivationCreated( item );
         } else {
             ModuleImpl module = (ModuleImpl) this.modules.get( rule.getModule() );
             module.getActivationQueue().add( item );
-            this.workingMemory.getAgendaEventSupport().fireActivationCreated( rule,
-                                                                              tuple );
+            this.workingMemory.getAgendaEventSupport().fireActivationCreated( item );
         }
     }
 
@@ -201,8 +199,7 @@ class Agenda
                 // current iterator position
                 it = module.getActivationQueue().iterator();
 
-                this.workingMemory.getAgendaEventSupport().fireActivationCancelled( rule,
-                                                                                    eachItem.getTuple() );
+                this.workingMemory.getAgendaEventSupport().fireActivationCancelled( eachItem );
                 this.workingMemory.removeLogicalAssertions( eachItem,
                                                             context,
                                                             rule );
@@ -219,8 +216,7 @@ class Agenda
 
                 it.remove();
 
-                this.workingMemory.getAgendaEventSupport().fireActivationCancelled( rule,
-                                                                                    tuple );
+                this.workingMemory.getAgendaEventSupport().fireActivationCancelled( eachItem );
                 this.workingMemory.removeLogicalAssertions( eachItem,
                                                             context,
                                                             rule );
@@ -252,8 +248,7 @@ class Agenda
 
                 queueIterator.remove();
 
-                this.workingMemory.getAgendaEventSupport().fireActivationCancelled( eachItem.getRule(),
-                                                                                    eachItem.getTuple() );
+                this.workingMemory.getAgendaEventSupport().fireActivationCancelled( eachItem );
             }
         }
 
@@ -268,8 +263,7 @@ class Agenda
 
             iter.remove();
 
-            this.workingMemory.getAgendaEventSupport().fireActivationCancelled( eachItem.getRule(),
-                                                                                eachItem.getTuple() );
+            this.workingMemory.getAgendaEventSupport().fireActivationCancelled( eachItem );
         }
     }
 

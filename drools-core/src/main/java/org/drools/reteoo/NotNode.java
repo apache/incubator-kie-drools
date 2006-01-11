@@ -178,10 +178,9 @@ public class NotNode extends BetaNode {
                               WorkingMemoryImpl workingMemory) throws FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        if ( memory.contains( leftKey ) ) {
+        if ( memory.remove( leftKey ) != null ) {
             List keys = new ArrayList( 1 );
             keys.add( leftKey );
-            memory.remove( leftKey );
             propagateRetractTuples( keys,
                                      context,
                                      workingMemory );
@@ -211,9 +210,7 @@ public class NotNode extends BetaNode {
 
             while ( it.hasNext() ) {
                 tupleMatches = (TupleMatches) it.next();
-                if ( tupleMatches.matched( handle ) ) {
-                    tupleMatches.removeMatch( handle );
-                }
+                tupleMatches.removeMatch( handle );
 
                 if ( tupleMatches.getMatches().size() == 0 ) {
                     tupleSet.addTuple( tupleMatches.getTuple() );
