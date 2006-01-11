@@ -47,6 +47,7 @@ import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.rule.Rule;
+import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 
 /**
@@ -84,48 +85,51 @@ public class AgendaEventSupport
         return this.listeners.isEmpty();
     }
 
-    public void fireActivationCreated(Rule rule,
-                                      Tuple tuple) {
+    public void fireActivationCreated(Activation activation) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        ActivationCreatedEvent event = new ActivationCreatedEvent( this.workingMemory,
-                                                                   rule,
-                                                                   tuple );
+        ActivationCreatedEvent event = new ActivationCreatedEvent( activation);
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).activationCreated( event );
         }
     }
 
-    public void fireActivationCancelled(Rule rule,
-                                        Tuple tuple) {
+    public void fireActivationCancelled(Activation activation) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        ActivationCancelledEvent event = new ActivationCancelledEvent( this.workingMemory,
-                                                                       rule,
-                                                                       tuple );
+        ActivationCancelledEvent event = new ActivationCancelledEvent( activation);
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).activationCancelled( event );
         }
     }
 
-    public void fireActivationFired(Rule rule,
-                                    Tuple tuple) {
+    public void fireBeforeActivationFired(Activation activation) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        ActivationFiredEvent event = new ActivationFiredEvent( this.workingMemory,
-                                                               rule,
-                                                               tuple );
+        BeforeActivationFiredEvent event = new BeforeActivationFiredEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).activationFired( event );
+            ((AgendaEventListener) this.listeners.get( i )).beforeActivationFired( event );
         }
     }
+    
+    public void fireAfterActivationFired(Activation activation) {
+        if ( this.listeners.isEmpty() ) {
+            return;
+        }
+
+        AfterActivationFiredEvent event = new AfterActivationFiredEvent( activation );
+
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((AgendaEventListener) this.listeners.get( i )).afterActivationFired( event );
+        }
+    }    
 }

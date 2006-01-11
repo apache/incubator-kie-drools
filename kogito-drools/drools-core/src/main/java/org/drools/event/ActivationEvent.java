@@ -1,7 +1,7 @@
 package org.drools.event;
 
 /*
- * $Id: ActivationFiredEvent.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
+ * $Id: WorkingMemoryEvent.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  *
  * Copyright 2004-2005 (C) The Werken Company. All Rights Reserved.
  *
@@ -41,38 +41,20 @@ package org.drools.event;
  *
  */
 
+import java.util.EventObject;
+
 import org.drools.WorkingMemory;
-import org.drools.rule.Rule;
-import org.drools.spi.Consequence;
-import org.drools.spi.Tuple;
+import org.drools.spi.Activation;
+import org.drools.spi.PropagationContext;
 
-public class ActivationFiredEvent extends WorkingMemoryEvent {
-    private Rule  rule;
-
-    private Tuple tuple;
-
-    public ActivationFiredEvent(WorkingMemory workingMemory,
-                                Rule rule,
-                                Tuple tuple) {
-        super( workingMemory );
-
-        this.rule = rule;
-        this.tuple = tuple;
+public class ActivationEvent extends EventObject {
+    
+    public ActivationEvent(Activation activation) {
+        super( activation );
     }
 
-    public Rule getRule() {
-        return this.rule;
+    public Activation getActivation() {
+        return (Activation) getSource();
     }
-
-    public Consequence getConsequence() {
-        return this.rule.getConsequence();
-    }
-
-    public Tuple getTuple() {
-        return this.tuple;
-    }
-
-    public String toString() {
-        return "[ActivationFired: rule=" + this.rule.getName() + "; tuple=" + this.tuple + "]";
-    }
+    
 }

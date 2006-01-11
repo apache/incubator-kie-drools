@@ -43,6 +43,7 @@ package org.drools.event;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.spi.PropagationContext;
 
 public class ObjectAssertedEvent extends WorkingMemoryEvent {
     private final FactHandle handle;
@@ -50,9 +51,10 @@ public class ObjectAssertedEvent extends WorkingMemoryEvent {
     private final Object     object;
 
     public ObjectAssertedEvent(WorkingMemory workingMemory,
+                               PropagationContext propagationContext,
                                FactHandle handle,
                                Object object) {
-        super( workingMemory );
+        super( workingMemory, propagationContext );
         this.handle = handle;
         this.object = object;
     }

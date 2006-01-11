@@ -44,13 +44,21 @@ package org.drools.event;
 import java.util.EventObject;
 
 import org.drools.WorkingMemory;
+import org.drools.spi.PropagationContext;
 
 public class WorkingMemoryEvent extends EventObject {
-    public WorkingMemoryEvent(WorkingMemory workingMemory) {
+    private final PropagationContext propagationContext;
+    
+    public WorkingMemoryEvent(WorkingMemory workingMemory, PropagationContext propagationContext) {
         super( workingMemory );
+        this.propagationContext = propagationContext;
     }
 
-    public final WorkingMemory getWorkingMemory() {
+    public WorkingMemory getWorkingMemory() {
         return (WorkingMemory) getSource();
+    }
+    
+    public PropagationContext getPropagationContext() {
+        return this.propagationContext;
     }
 }

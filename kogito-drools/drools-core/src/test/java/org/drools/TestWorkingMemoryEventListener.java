@@ -44,7 +44,7 @@ import java.io.Serializable;
 
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.ActivationFiredEvent;
+import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.ObjectAssertedEvent;
 import org.drools.event.ObjectModifiedEvent;
 import org.drools.event.ObjectRetractedEvent;
@@ -90,7 +90,7 @@ public class TestWorkingMemoryEventListener
         this.cancelled++;
     }
 
-    public void activationFired(ActivationFiredEvent event) {
+    public void activationFired(AfterActivationFiredEvent event) {
         this.fired++;
     }
 }
