@@ -48,12 +48,15 @@ import org.drools.spi.Consequence;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
+import sun.rmi.runtime.GetThreadPoolAction;
+
 public class BeforeActivationFiredEvent extends ActivationEvent {
     public BeforeActivationFiredEvent(Activation activation) {
         super(activation);
     }
 
     public String toString() {
-        return "[BeforeActivationFired: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
+        //return "[BeforeActivationFired: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
+        return "[BeforeActivationFired: rule=" + getActivation().getRule().getName() + "]";
     }
 }

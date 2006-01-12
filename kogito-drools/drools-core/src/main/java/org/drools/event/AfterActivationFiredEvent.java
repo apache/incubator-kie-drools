@@ -54,6 +54,7 @@ public class AfterActivationFiredEvent extends ActivationEvent {
     }
 
     public String toString() {
-        return "[AfterActivationFired: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
+        //return "[AfterActivationFired: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
+        return "[AfterActivationFired: rule=" + getActivation().getRule().getName() + "]";
     }
 }

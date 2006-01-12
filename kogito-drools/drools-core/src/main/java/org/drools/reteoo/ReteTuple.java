@@ -91,7 +91,11 @@ class ReteTuple
     }
 
     public String toString() {
-        return "{" + this.key + "}";
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < this.key.size(); i++) {
+            buffer.append( this.key.get( i ) + " : " + get(i) + "\n" );            
+        }
+        return buffer.toString();
     }
 
     // ------------------------------------------------------------
@@ -173,4 +177,5 @@ class ReteTuple
         }
         return this.leastRecentFact.getRecency();
     }
+    
 }
