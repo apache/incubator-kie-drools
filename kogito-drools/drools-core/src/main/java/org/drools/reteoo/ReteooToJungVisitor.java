@@ -47,9 +47,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.ReteooJungViewer.DroolsVertex;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.Field;
+import org.drools.visualize.ReteooJungViewer.DroolsVertex;
 
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.Vertex;
@@ -96,6 +96,10 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
 
     public Graph getGraph() {
         return this.graph;
+    }
+    
+    public Vertex getRootVertex() {
+    		return this.rootVertex;
     }
 
     /**

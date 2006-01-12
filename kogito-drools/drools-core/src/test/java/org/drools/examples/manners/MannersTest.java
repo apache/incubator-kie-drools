@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.ReteooJungViewer;
 import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
 import org.drools.RuleSetIntegrationException;
@@ -57,6 +56,7 @@ import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.LiteralExpressionConstraint;
 import org.drools.spi.MockField;
 import org.drools.spi.Tuple;
+import org.drools.visualize.ReteooJungViewer;
 
 public class MannersTest extends TestCase {
     /** Number of guests at the dinner (default: 16). */
