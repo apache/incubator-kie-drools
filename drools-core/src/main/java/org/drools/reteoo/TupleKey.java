@@ -168,6 +168,10 @@ class TupleKey
 
         return leastRecent;
     }
+    
+    public int size() {
+        return this.handles.size();
+    }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

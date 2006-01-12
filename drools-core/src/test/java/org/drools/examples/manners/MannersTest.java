@@ -26,6 +26,12 @@ import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
 import org.drools.RuleSetIntegrationException;
 import org.drools.WorkingMemory;
+import org.drools.event.ActivationCancelledEvent;
+import org.drools.event.ActivationCreatedEvent;
+import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugWorkingMemoryEventListener;
+import org.drools.event.DefaultAgendaEventListener;
 import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.And;
 import org.drools.rule.BoundVariableConstraint;
@@ -132,15 +138,15 @@ public class MannersTest extends TestCase {
         final RuleBaseImpl ruleBase = new RuleBaseImpl();
         ruleBase.addRuleSet( ruleSet );
 
-        // final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase);
-        //        
-        // javax.swing.SwingUtilities.invokeLater(new Runnable() {
-        // public void run() {
-        // viewer.showGUI();
-        // }
-        // });
+//        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase);
+//                
+//        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+//        public void run() {
+//            viewer.showGUI();
+//            }
+//        });
 
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();        
 
         InputStream is = getClass().getResourceAsStream( "/manners16.dat" );
         List list = getInputObjects( is );
@@ -148,27 +154,42 @@ public class MannersTest extends TestCase {
             FactHandle handle = workingMemory.assertObject( it.next() );
         }
 
+        workingMemory.addEventListener( new DebugWorkingMemoryEventListener() );
+        
+//        workingMemory.addEventListener( new DebugAgendaEventListener() );        
+        
+        workingMemory.addEventListener( new DefaultAgendaEventListener() { 
+            public void activationCreated(ActivationCreatedEvent event) {
+                System.err.println( event );
+            }
+            
+            public void activationCancelled(ActivationCancelledEvent event) {
+                System.err.println( event );
+            }
+            
+            public void beforeActivationFired(BeforeActivationFiredEvent event) {
+                System.err.println( event );
+            }
+        } );        
+        
         workingMemory.assertObject( new Count( 1 ) );
-
-//        workingMemory.fireAllRules();
+// 
+//        workingMemory.assertObject( new Seating(1,0,true,1,"n11",1,"n11") );
+//        workingMemory.assertObject( new Seating(2,1,true,1,"n11",2,"n10") );
+//        workingMemory.assertObject( new Path(1,1,"n11") );
+//        workingMemory.assertObject( new Path(2,2,"n10") );
+//        workingMemory.assertObject( new Path(2,1,"n11") );
 //        
-//        Seating seating = new Seating(2,1,false,1,"n11",2,"n10");
-//        Path path = new Path(2,2,"n10");
-//        Chosen chosen = new Chosen(1, "n10",Hobby.H2);
-//
-//        workingMemory.assertObject( seating );
-//        workingMemory.assertObject( path );
-//        workingMemory.assertObject( chosen );
+//        workingMemory.assertObject( new Chosen(1, "n10",Hobby.H2) );;
 //        
-//        Context context = (Context) workingMemory.getObjects( Context.class ).get( 0 );
-//        context.setState( Context.MAKE_PATH );
-//        workingMemory.modifyObject( workingMemory.getFactHandle( context ), context );
+//        Context context = new Context( Context.ASSIGN_SEATS );
+//        workingMemory.assertObject( context );
         
         workingMemory.fireAllRules();
         
-        // while (viewer.isRunning()) {
-        // Thread.sleep( 1000 );
-        // }
+//        while (true) {
+//            Thread.sleep( 1000 );
+//        }
 
     }
 
@@ -280,148 +301,8 @@ public class MannersTest extends TestCase {
                     context.setState( Context.ASSIGN_SEATS );
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
                                          context );
-                    System.out.println( "assign first seat :  " + seating + " : " + path );
+                    //System.out.println( "assign first seat :  " + seating + " : " + path );
 
-                }
-                catch ( Exception e ) {
-                    throw new ConsequenceException( e );
-                }
-            }
-
-        };
-
-        rule.setConsequence( consequence );
-
-        return rule;
-    }
-
-    /**
-     * <pre>
-     *    rule makePath() {
-     *        Context context;
-     *        int seatingId, seatingPid, pathSeat;
-     *        String pathGuestName;
-     *   
-     *        when {
-     *            context : Context( state == Context.MAKE_PATH )
-     *            Seating( seatingId:id, seatingPid:pid, pathDone == false )
-     *            Path( id == seatingPid, pathGuestName:guest, pathSeat:seat )
-     *            (not Path( id == seatingId, guestName == pathGuestName )
-     *        } else {
-     *            drools.assert( new Path( seatingId, pathSeat, pathGuestName ) );
-     *   
-     *        }
-     *    } 
-     * </pre>
-     * 
-     * @return
-     * @throws IntrospectionException
-     * @throws InvalidRuleException
-     */
-    private Rule getMakePath() throws IntrospectionException,
-                              InvalidRuleException {
-        final Rule rule = new Rule( "makePath" );
-
-        // -----------
-        // context : Context( state == Context.MAKE_PATH )
-        // -----------
-        Column contextColumn = new Column( 0,
-                                           contextType );
-
-        contextColumn.addConstraint( getLiteralConstraint( contextColumn,
-                                                           "state",
-                                                           new Integer( Context.MAKE_PATH ),
-                                                           this.integerEqualEvaluator ) );
-
-        rule.addPattern( contextColumn );
-
-        // ---------------
-        // Seating( seatingId:id, seatingPid:pid, pathDone == false )
-        // ---------------
-        Column seatingColumn = new Column( 1,
-                                           seatingType );
-
-        seatingColumn.addConstraint( getFieldBinding( seatingColumn,
-                                                      "id",
-                                                      "seatingId" ) );
-        seatingColumn.addConstraint( getFieldBinding( seatingColumn,
-                                                      "pid",
-                                                      "seatingPid" ) );
-        seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
-                                                           "pathDone",
-                                                           new Boolean( false ),
-                                                           booleanEqualEvaluator ) );
-
-        rule.addPattern( seatingColumn );
-
-        final Declaration seatingIdDeclaration = rule.getDeclaration( "seatingId" );
-        final Declaration seatingPidDeclaration = rule.getDeclaration( "seatingPid" );
-
-        // -----------
-        // Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
-        // -----------
-        Column pathColumn = new Column( 2,
-                                        pathType );
-
-        pathColumn.addConstraint( getBoundVariableConstraint( pathColumn,
-                                                              "id",
-                                                              seatingPidDeclaration,
-                                                              integerEqualEvaluator ) );
-        pathColumn.addConstraint( getFieldBinding( pathColumn,
-                                                   "guestName",
-                                                   "pathGuestName" ) );
-        pathColumn.addConstraint( getFieldBinding( pathColumn,
-                                                   "seat",
-                                                   "pathSeat" ) );
-
-        rule.addPattern( pathColumn );
-
-        final Declaration pathGuestNameDeclaration = rule.getDeclaration( "pathGuestName" );
-        final Declaration pathSeatDeclaration = rule.getDeclaration( "pathSeat" );
-        // -------------
-        // (not Path( id == seatingId, guestName == pathGuestName )
-        // -------------
-        Column notPathColumn = new Column( 3,
-                                           pathType );
-
-        notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
-                                                                 "id",
-                                                                 seatingIdDeclaration,
-                                                                 integerEqualEvaluator ) );
-        notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
-                                                                 "guestName",
-                                                                 pathGuestNameDeclaration,
-                                                                 objectEqualEvaluator ) );
-
-        Not not = new Not();
-
-        not.addChild( notPathColumn );
-
-        rule.addPattern( not );
-
-        // ------------
-        // drools.assert( new Path( id, pathName, pathSeat ) );
-        // ------------
-        Consequence consequence = new Consequence() {
-
-            public void invoke(Activation activation) throws ConsequenceException {
-                try {
-                    Rule rule = activation.getRule();
-                    Tuple tuple = activation.getTuple();
-                    KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple );
-
-                    int id = ((Integer) tuple.get( seatingIdDeclaration )).intValue();
-                    int seat = ((Integer) tuple.get( pathSeatDeclaration )).intValue();
-                    String guestName = (String) tuple.get( pathGuestNameDeclaration );
-
-                    Path path = new Path( id,
-                                          seat,
-                                          guestName );
-
-                    drools.assertObject( path );
-
-                    System.out.println( "make path : " + path );
                 }
                 catch ( Exception e ) {
                     throw new ConsequenceException( e );
@@ -687,7 +568,7 @@ public class MannersTest extends TestCase {
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
                                          context );
 
-                    System.out.println( "find seating : " + seating + " : " + path + " : " + chosen );
+                    System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
 
                 }
                 catch ( Exception e ) {
@@ -699,6 +580,146 @@ public class MannersTest extends TestCase {
 
         rule.setConsequence( consequence );
 
+        return rule;
+    }
+
+    /**
+     * <pre>
+     *    rule makePath() {
+     *        Context context;
+     *        int seatingId, seatingPid, pathSeat;
+     *        String pathGuestName;
+     *   
+     *        when {
+     *            context : Context( state == Context.MAKE_PATH )
+     *            Seating( seatingId:id, seatingPid:pid, pathDone == false )
+     *            Path( id == seatingPid, pathGuestName:guest, pathSeat:seat )
+     *            (not Path( id == seatingId, guestName == pathGuestName )
+     *        } else {
+     *            drools.assert( new Path( seatingId, pathSeat, pathGuestName ) );
+     *   
+     *        }
+     *    } 
+     * </pre>
+     * 
+     * @return
+     * @throws IntrospectionException
+     * @throws InvalidRuleException
+     */
+    private Rule getMakePath() throws IntrospectionException,
+                              InvalidRuleException {
+        final Rule rule = new Rule( "makePath" );
+    
+        // -----------
+        // context : Context( state == Context.MAKE_PATH )
+        // -----------
+        Column contextColumn = new Column( 0,
+                                           contextType );
+    
+        contextColumn.addConstraint( getLiteralConstraint( contextColumn,
+                                                           "state",
+                                                           new Integer( Context.MAKE_PATH ),
+                                                           this.integerEqualEvaluator ) );
+    
+        rule.addPattern( contextColumn );
+    
+        // ---------------
+        // Seating( seatingId:id, seatingPid:pid, pathDone == false )
+        // ---------------
+        Column seatingColumn = new Column( 1,
+                                           seatingType );
+    
+        seatingColumn.addConstraint( getFieldBinding( seatingColumn,
+                                                      "id",
+                                                      "seatingId" ) );
+        seatingColumn.addConstraint( getFieldBinding( seatingColumn,
+                                                      "pid",
+                                                      "seatingPid" ) );
+        seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
+                                                           "pathDone",
+                                                           new Boolean( false ),
+                                                           booleanEqualEvaluator ) );
+    
+        rule.addPattern( seatingColumn );
+    
+        final Declaration seatingIdDeclaration = rule.getDeclaration( "seatingId" );
+        final Declaration seatingPidDeclaration = rule.getDeclaration( "seatingPid" );
+    
+        // -----------
+        // Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
+        // -----------
+        Column pathColumn = new Column( 2,
+                                        pathType );
+    
+        pathColumn.addConstraint( getBoundVariableConstraint( pathColumn,
+                                                              "id",
+                                                              seatingPidDeclaration,
+                                                              integerEqualEvaluator ) );
+        pathColumn.addConstraint( getFieldBinding( pathColumn,
+                                                   "guestName",
+                                                   "pathGuestName" ) );
+        pathColumn.addConstraint( getFieldBinding( pathColumn,
+                                                   "seat",
+                                                   "pathSeat" ) );
+    
+        rule.addPattern( pathColumn );
+    
+        final Declaration pathGuestNameDeclaration = rule.getDeclaration( "pathGuestName" );
+        final Declaration pathSeatDeclaration = rule.getDeclaration( "pathSeat" );
+        // -------------
+        // (not Path( id == seatingId, guestName == pathGuestName )
+        // -------------
+        Column notPathColumn = new Column( 3,
+                                           pathType );
+    
+        notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
+                                                                 "id",
+                                                                 seatingIdDeclaration,
+                                                                 integerEqualEvaluator ) );
+        notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
+                                                                 "guestName",
+                                                                 pathGuestNameDeclaration,
+                                                                 objectEqualEvaluator ) );
+    
+        Not not = new Not();
+    
+        not.addChild( notPathColumn );
+    
+        rule.addPattern( not );
+    
+        // ------------
+        // drools.assert( new Path( id, pathName, pathSeat ) );
+        // ------------
+        Consequence consequence = new Consequence() {
+    
+            public void invoke(Activation activation) throws ConsequenceException {
+                try {
+                    Rule rule = activation.getRule();
+                    Tuple tuple = activation.getTuple();
+                    KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
+                                                                         tuple );
+    
+                    int id = ((Integer) tuple.get( seatingIdDeclaration )).intValue();
+                    int seat = ((Integer) tuple.get( pathSeatDeclaration )).intValue();
+                    String guestName = (String) tuple.get( pathGuestNameDeclaration );
+    
+                    Path path = new Path( id,
+                                          seat,
+                                          guestName );
+    
+                    drools.assertObject( path );
+    
+                    //System.out.println( "make path : " + path );
+                }
+                catch ( Exception e ) {
+                    throw new ConsequenceException( e );
+                }
+            }
+    
+        };
+    
+        rule.setConsequence( consequence );
+    
         return rule;
     }
 
@@ -779,7 +800,7 @@ public class MannersTest extends TestCase {
                     context.setState( Context.CHECK_DONE );
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
                                          context );
-                    System.out.println( "path done" + seating );
+                    //System.out.println( "path done" + seating );
                 }
                 catch ( Exception e ) {
                     throw new ConsequenceException( e );
@@ -872,7 +893,7 @@ public class MannersTest extends TestCase {
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
                                          context );
 
-                    System.out.println( "are we done yet" );
+                    //System.out.println( "are we done yet" );
                 }
                 catch ( Exception e ) {
                     throw new ConsequenceException( e );
@@ -938,7 +959,7 @@ public class MannersTest extends TestCase {
                     drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
                                          context );
 
-                    System.out.println( "continue processing" );
+                    //System.out.println( "continue processing" );
                 }
                 catch ( Exception e ) {
                     throw new ConsequenceException( e );
