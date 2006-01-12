@@ -12,12 +12,29 @@
   <name>Drools :: Rete-OO Core</name>
   <version>3.0-M1-dev</version>
   
+  <repositories>
+    <repository>
+      <id>basedir</id>
+      <url>file://${basedir}/../repository</url>
+    </repository>
+  </repositories>  
+  
   <dependencies>
     <dependency>
       <groupId>jung</groupId>
       <artifactId>jung</artifactId>
       <version>1.7.2</version>
     </dependency>  
+    <dependency>
+      <groupId>jfunutil</groupId>
+      <artifactId>jfunutil</artifactId>
+      <version>0.01</version>
+    </dependency> 
+    <dependency>
+      <groupId>jparsec</groupId>
+      <artifactId>jparsec</artifactId>
+      <version>0.01</version>
+    </dependency>       
   </dependencies>
 
 </project>
