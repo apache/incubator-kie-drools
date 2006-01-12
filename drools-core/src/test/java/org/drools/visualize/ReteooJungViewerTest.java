@@ -1,4 +1,4 @@
-package org.drools;
+package org.drools.visualize;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -10,13 +10,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
 import junit.framework.TestCase;
 
+import org.drools.FactException;
+import org.drools.RuleIntegrationException;
+import org.drools.RuleSetIntegrationException;
 import org.drools.examples.manners.Chosen;
 import org.drools.examples.manners.Context;
 import org.drools.examples.manners.Count;

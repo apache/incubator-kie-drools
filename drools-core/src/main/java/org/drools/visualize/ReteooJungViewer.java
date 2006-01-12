@@ -1,4 +1,4 @@
-package org.drools;
+package org.drools.visualize;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
+import org.drools.RuleBase;
 import org.drools.reteoo.ReteooToJungVisitor;
 
 import edu.uci.ics.jung.graph.Graph;
@@ -38,7 +39,6 @@ import edu.uci.ics.jung.visualization.Layout;
 import edu.uci.ics.jung.visualization.PluggableRenderer;
 import edu.uci.ics.jung.visualization.ShapePickSupport;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.contrib.DAGLayout;
 import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
 import edu.uci.ics.jung.visualization.control.CrossoverScalingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.PickingGraphMousePlugin;
@@ -101,7 +101,12 @@ public class ReteooJungViewer extends JFrame {
         pr.setVertexShapeFunction( new EllipseVertexShapeFunction( new ConstantVertexSizeFunction( 14 ),
                                                                    new ConstantVertexAspectRatioFunction( 1.0f ) ) );
 
+        ReteooLayoutSolver solver = new ReteooLayoutSolver( visitor.getRootVertex() );
+        
+        Layout layout = new ReteooLayout( this.graph, new VertexFunctions(), solver.getRowList() );
+        /*
         Layout layout = new DAGLayout( this.graph );
+        */
 
         this.vv = new VisualizationViewer( layout,
                                            pr,
@@ -111,7 +116,7 @@ public class ReteooJungViewer extends JFrame {
         this.vv.setBackground( Color.white );
         this.vv.setPickSupport( new ShapePickSupport() );
         this.vv.setToolTipFunction( new DefaultToolTipFunction() );
-
+        
         final PluggableGraphMouse graphMouse = new PluggableGraphMouse();
         graphMouse.add( new PickingGraphMousePlugin() );
         graphMouse.add( new ViewScalingGraphMousePlugin() );
@@ -183,7 +188,6 @@ public class ReteooJungViewer extends JFrame {
         } );
 
         rightPanel.add( infoScrollPane );
-
     }
 
     public void showGUI() {
