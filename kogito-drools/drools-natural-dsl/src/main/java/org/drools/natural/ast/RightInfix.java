@@ -43,10 +43,10 @@ public class RightInfix extends InfixNode
 
 
     
-    public List getArguments() {
+    List getArguments() {
         return this.args;
     }
-
+    
 
     public String render()
     {

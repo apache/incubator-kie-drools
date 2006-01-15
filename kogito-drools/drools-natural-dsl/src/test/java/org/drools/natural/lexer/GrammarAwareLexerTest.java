@@ -77,6 +77,14 @@ public class GrammarAwareLexerTest extends TestCase
         {
             return items;
         }
+
+        public boolean ignoreUnknownTokens() {
+            return false;
+        }
+
+        public boolean delimitersRequired() {
+            return false;
+        }
         
     }
     

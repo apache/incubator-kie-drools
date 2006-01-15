@@ -18,8 +18,9 @@ public class ExpressionContext {
 	private BaseSyntaxNode firstNode;    
     private BaseSyntaxNode prevNode;
     
-	private NaturalGrammar grammar;
-	
+	NaturalGrammar grammar;
+	private boolean ignoreUnknownTokens = false;
+    
 	public ExpressionContext(NaturalGrammar grammar) {		
 		this.grammar = grammar;		
 	}
@@ -45,7 +46,7 @@ public class ExpressionContext {
     
     public String render() {
         buildTreeByOrderOfPrecedence();
-        return firstNode.findStartNode().renderAll();
+        return firstNode.findStartNode().renderAll().trim();
     }
     
 
@@ -65,6 +66,7 @@ public class ExpressionContext {
      */
     private void addNode(BaseSyntaxNode thisNode)
     {        
+        thisNode.setContext(this);
         if (firstNode == null) {
             firstNode = thisNode;            
         } else {
@@ -74,7 +76,7 @@ public class ExpressionContext {
         prevNode = thisNode;
     }
 	
-
+    
 
     
 

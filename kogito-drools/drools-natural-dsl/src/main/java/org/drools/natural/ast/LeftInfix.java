@@ -44,10 +44,10 @@ public class LeftInfix extends InfixNode
 
 
     
-    public List getArguments() {
+    List getArguments() {
         return this.args;
     }
-
+    
     public String render()
     {
         List vars = super.getVariableNameList();

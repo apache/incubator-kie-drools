@@ -18,6 +18,7 @@ public abstract class BaseSyntaxNode
     public BaseSyntaxNode next;
     public BaseSyntaxNode prev;    
     public String originalValue;
+    protected ExpressionContext context;
     
     /**
      * Node types return true when all their argument needs have been satisfied.
@@ -40,14 +41,14 @@ public abstract class BaseSyntaxNode
     {        
         BaseSyntaxNode currentNode = this;
         
-        boolean flag = true;
-        while (currentNode != null && flag == true) {
+        boolean satisfied = true;
+        while (currentNode != null && satisfied == true) {
             if (currentNode.isThisCorrectType( nodeType )) {
-                flag = flag && currentNode.isSatisfied();
+                satisfied = satisfied && currentNode.isSatisfied();
             }
             currentNode = currentNode.next;
         }
-        return flag;
+        return satisfied;
             
     }
 
@@ -121,6 +122,10 @@ public abstract class BaseSyntaxNode
         } else {
             return this;
         }
+    }
+
+    public void setContext(ExpressionContext context) {
+        this.context = context;
     }
     
 

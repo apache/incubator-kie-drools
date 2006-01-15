@@ -59,15 +59,16 @@ public class LeftRightInfix extends InfixNode
                               InfixNode.Direction.RIGHT );
     }
 
-    public List getArgumentsLeft()
+    List getArgumentsLeft()
     {
         return this.argsLeft;
     }
 
-    public List getArgumentsRight()
+    List getArgumentsRight()
     {
         return this.argsRight;
     }
+    
 
     public String render()
     {

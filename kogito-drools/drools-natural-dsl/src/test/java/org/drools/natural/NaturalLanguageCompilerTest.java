@@ -1,5 +1,8 @@
 package org.drools.natural;
 
+import java.util.Properties;
+
+import org.drools.natural.grammar.NaturalGrammar;
 import org.drools.natural.grammar.SimpleGrammar;
 
 import junit.framework.TestCase;
@@ -23,10 +26,12 @@ public class NaturalLanguageCompilerTest extends TestCase
         grammar.addToDictionary("->", "${left}.${right}()");
         grammar.addToDictionary("or", "||");
         grammar.addToDictionary("and", "&&");
+        grammar.addToDictionary("less than", "${left} < ${right}");
+        grammar.addToDictionary("ignore.unknown", "true");
     }
     
     public void testNaturalLanguage() {
-        String snippet = "bob [likes cheese] or [age of] bob < 21 " +
+        String snippet = "bob [likes cheese] or [age of] bob [less than] 21 " +
                 "or bob equals mark and bob -> health equals good";
         NaturalLanguageCompiler parser = new NaturalLanguageCompiler(grammar);
         
@@ -37,12 +42,18 @@ public class NaturalLanguageCompilerTest extends TestCase
     }
     
     public void testLookNoBracketsMum() {
-        String snippet = "bob likes cheese or age of bob < 21 " +
+        String snippet = "check that bob likes cheese or check the age of bob less than 21 " +
                 "or bob equals mark and bob -> health equals good";
+               
         NaturalLanguageCompiler parser = new NaturalLanguageCompiler(grammar);
         
         String result = parser.compileNaturalExpression(snippet);
         assertEquals("bob.likesCheese() || ageOf(bob) < 21 || bob.equals(mark) && bob.health().equals(good)", result);
+
+        //now check it to make sure it doesn't require brackets by default
+        result = parser.compile(snippet);
+        assertEquals("bob.likesCheese() || ageOf(bob) < 21 || bob.equals(mark) && bob.health().equals(good)", result);
+        
         
     }    
     
@@ -57,7 +68,8 @@ public class NaturalLanguageCompilerTest extends TestCase
     
     public void testNotInDictionary() {
         String snippet = "nothing is in the dictionary";
-        NaturalLanguageCompiler parser = new NaturalLanguageCompiler(grammar);
+        
+        NaturalLanguageCompiler parser = new NaturalLanguageCompiler(new SimpleGrammar(new Properties()));
         assertEquals(snippet, parser.compileExpression(snippet));
         
         snippet = "[well some is like bob likes cheese, but by using brackets is all escaped]";     
@@ -65,5 +77,13 @@ public class NaturalLanguageCompilerTest extends TestCase
         assertEquals(bracketsRemoved, parser.compileExpression(snippet));
         
     }
+    
+    public void testIgnoreUnknown() {
+        NaturalLanguageCompiler parser = new NaturalLanguageCompiler(grammar);
+        String snippet = "that bob likes cheese";
+        assertEquals("bob.likesCheese()", parser.compileNaturalExpression(snippet));
+    }
+    
+
 
 }
