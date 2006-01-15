@@ -35,8 +35,11 @@ public class ExpanderContext implements Serializable {
 		return enabled;
 	}
 	
+	public void disable() {
+		this.enabled = false;
+	}
+	
 	public ExpanderContext(Collection initialExpanders) {
-		enabled = true;
 		this.expanders = new HashSet(initialExpanders);
 	}
 	
@@ -62,7 +65,7 @@ public class ExpanderContext implements Serializable {
 	 * If <code>isEnabled()</code> is false then it is not required to 
 	 * call this method.
 	 */
-	public String expand(String expression, RuleParser context) {
+	public CharSequence expand(CharSequence expression, RuleParser context) {
 		return expression;
 	}
 	
