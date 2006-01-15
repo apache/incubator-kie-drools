@@ -38,7 +38,7 @@ public class SimpleGrammarTest extends TestCase
     {
         SimpleGrammar g = new SimpleGrammar( );
         g.addToDictionary( "A",
-                           "${all-left}.getSomething()" );
+                           "${left}.getSomething()" );
         
         assertEquals( "A",
                       g.listNaturalItems( )[0] );
@@ -50,6 +50,19 @@ public class SimpleGrammarTest extends TestCase
         
         g = new SimpleGrammar();
         assertEquals(0, g.listNaturalItems().length);
+    }
+    
+    public void testConfigParams() {
+        SimpleGrammar g = new SimpleGrammar( );
+        g.addToDictionary( "A",
+                           "${left}.getSomething()" );        
+        assertFalse(g.ignoreUnknownTokens());
+        g.addToDictionary(NaturalGrammar.IGNORE_UNKNOWN_TOKENS, "true");
+        assertTrue(g.ignoreUnknownTokens());
+        
+        assertFalse(g.delimitersRequired());
+        g.addToDictionary(NaturalGrammar.REQUIRE_DELIMITERS, "true");
+        assertTrue(g.delimitersRequired());
     }
     
 

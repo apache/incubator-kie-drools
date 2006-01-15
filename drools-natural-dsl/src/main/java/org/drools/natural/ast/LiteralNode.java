@@ -14,14 +14,14 @@ public class LiteralNode extends BaseSyntaxNode
 		super.originalValue = val;
 	}
 	
-	public boolean equals(Object obj) {
-		if (!(obj instanceof LiteralNode)) {
-			return false;
-		} else {
-			LiteralNode in = (LiteralNode) obj;
-			return in.originalValue.equals(super.originalValue);
-		}
-	}
+//	public boolean equals(Object obj) {
+//		if (!(obj instanceof LiteralNode)) {
+//			return false;
+//		} else {
+//			LiteralNode in = (LiteralNode) obj;
+//			return in.originalValue.equals(super.originalValue);
+//		}
+//	}
 
     public boolean isSatisfied()
     {
@@ -39,13 +39,29 @@ public class LiteralNode extends BaseSyntaxNode
     /**
      * if the previous node is also a literal or a sub, then
      * a space will be inserted to honour the intent of the original.
+     * 
+     * For literals, if context says to ignore unknown, 
+     * then they will NEVER be included in the output
+     * unless they are an argument to an infix operator.
      */
     public String render()
     {
+        if (ignoreUnknown()) {
+            return "";
+        }
+
         if (prev != null) {
             return SPACE + super.originalValue;
         } else {
             return super.originalValue;
         }
+    }
+
+    private boolean ignoreUnknown() {
+        return context != null 
+                && 
+                context.grammar.ignoreUnknownTokens() 
+                && 
+                super.parent == null;
     }
 }

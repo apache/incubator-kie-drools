@@ -1,7 +1,10 @@
 package org.drools.natural;
 
+import java.util.Properties;
+
 import org.drools.natural.ast.ExpressionContext;
 import org.drools.natural.grammar.NaturalGrammar;
+import org.drools.natural.grammar.SimpleGrammar;
 import org.drools.natural.lexer.GrammarAwareLexer;
 import org.drools.natural.lexer.NaturalSnippetLexer;
 import org.drools.natural.lexer.SimpleSnippetLexer;
@@ -22,7 +25,24 @@ public class NaturalLanguageCompiler
         grammar = g;
     }
     
+    public NaturalLanguageCompiler(Properties p) {
+        grammar = new SimpleGrammar(p);
+    }
     
+    /**
+     * Build a natural expression. 
+     * This method uses the grammar configuration to 
+     * work out the type of expression it is.
+     * See NaturalGrammar#compileExpression 
+     * and NaturalGrammar#compileNaturalExpression.
+     */
+    public String compile(String expression) {
+       if (grammar.delimitersRequired()) {
+           return this.compileExpression(expression);
+       } else {
+           return this.compileNaturalExpression(expression);
+       }
+    }
     
     /**
      * Will parse a natural language expression into a compiled version, according to 

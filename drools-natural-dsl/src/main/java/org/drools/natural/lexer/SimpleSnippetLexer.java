@@ -28,7 +28,6 @@ public class SimpleSnippetLexer implements NaturalSnippetLexer
 
     public SimpleSnippetLexer(String snippet)
     {
-
         this.snippet = snippet.toCharArray( );
         this.tokens = new ArrayList( );
         this.currentToken = new StringBuffer( );
