@@ -53,6 +53,9 @@ public class ExpanderContext implements Serializable {
 	}
 	
 	/**
+     * The parser should call this on an expression/line that potentially needs expanding 
+     * BEFORE it parses that line (as the line may change radically as the result of expansion).
+     * 
 	 * Expands the expression Just-In-Time for the parser.
 	 * If the expression is not meant to be expanded, or if no
 	 * appropriate expander is found, it will echo back the same 
