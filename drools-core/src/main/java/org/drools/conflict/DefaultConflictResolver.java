@@ -64,11 +64,7 @@ public class DefaultConflictResolver extends CompositeConflictResolver {
     // Class members
     // ----------------------------------------------------------------------
 
-    // private static final ConflictResolver[] CONFLICT_RESOLVERS = new
-    // ConflictResolver[]{SalienceConflictResolver.getInstance(),
-    // RecencyConflictResolver.getInstance(),
-    // ComplexityConflictResolver.getInstance(),
-    private static final ConflictResolver[]      CONFLICT_RESOLVERS = new ConflictResolver[]{SalienceConflictResolver.getInstance(),  LifoConflictResolver.getInstance() };
+     private static final ConflictResolver[] CONFLICT_RESOLVERS = new ConflictResolver[]{SalienceConflictResolver.getInstance(), LifoConflictResolver.getInstance()};
 
     /** Singleton instance. */
     private static final DefaultConflictResolver INSTANCE           = new DefaultConflictResolver();

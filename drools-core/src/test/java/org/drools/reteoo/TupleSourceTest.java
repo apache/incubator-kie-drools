@@ -37,7 +37,8 @@ public class TupleSourceTest extends DroolsTestCase {
 
     public void testPropagateAssertTuple() throws Exception {
         Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.RETRACTION,
                                                                  null,
                                                                  null );
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
@@ -128,7 +129,8 @@ public class TupleSourceTest extends DroolsTestCase {
 
     public void testPropagateRetractTuple() throws Exception {
         Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.RETRACTION,
                                                                  null,
                                                                  null );
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
@@ -212,7 +214,8 @@ public class TupleSourceTest extends DroolsTestCase {
     }
 
     public void testAttachNewNode() throws FactException {
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );

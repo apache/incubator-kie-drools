@@ -60,4 +60,12 @@ public class DefaultFactHandleFactory
         return new FactHandleImpl( id,
                                    ++this.counter );
     }
+
+    public final void increaseFactHandleRecency(FactHandle factHandle) {
+        ((FactHandleImpl) factHandle).setRecency( ++this.counter );
+    }
+
+    public FactHandleFactory newInstance() {
+        return new DefaultFactHandleFactory();
+    }
 }

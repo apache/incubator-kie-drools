@@ -36,7 +36,8 @@ public class NotNodeTest extends DroolsTestCase {
      */
     public void setUp() throws IntrospectionException {
         this.rule = new Rule( "test-rule" );
-        this.context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        this.context = new PropagationContextImpl( 0,
+                                                   PropagationContext.ASSERTION,
                                                    null,
                                                    null );
         this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );                       
@@ -174,10 +175,8 @@ public class NotNodeTest extends DroolsTestCase {
         assertLength( 3,
                       this.sink.getAsserted() );
         
-        // assert object. While this object is correct there are incorrect
-        // tuples on the left side which will cause no matches and those left
-        // tuples will propagate
-        //
+        // assert object. There should  be no propagations as the matching tuples
+        // are already satisfied.
         FactHandleImpl f5 = new FactHandleImpl( 5 );
         Cheese gouda = new Cheese("gouda", 10);
         this.workingMemory.putObject( f5,
@@ -188,7 +187,7 @@ public class NotNodeTest extends DroolsTestCase {
                                 this.workingMemory );
 
         // above has two none-matches, so propagate
-        assertLength( 5,
+        assertLength( 3,
                       this.sink.getAsserted() );
         
         // assert object. While this one is incorrect Two tuples already have
@@ -202,8 +201,8 @@ public class NotNodeTest extends DroolsTestCase {
                                 this.context,
                                 this.workingMemory );
 
-        // above has no matches, so check propagation
-        assertLength( 7,
+        // above has no matches but tuples are  already satisfied, so check  no propagation
+        assertLength( 3,
                       this.sink.getAsserted() );
 
         // check memories

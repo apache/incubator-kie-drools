@@ -115,8 +115,7 @@ public class NotNode extends BetaNode {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( !memory.contains( handle ) ) {
             memory.add( handle );
-
-            TupleSet assertTupleSet = null;           
+      
             List retractKeyList = null;
             
             BetaNodeBinder binder = getJoinNodeBinder();
@@ -135,24 +134,13 @@ public class NotNode extends BetaNode {
                 
                 int size = tupleMatches.getMatches().size();
                 
-                if ( size == 0 ) {
-                    if (assertTupleSet == null) {
-                        assertTupleSet = new TupleSet();
-                    }
-                    assertTupleSet.addTuple( leftTuple );
-                } else if ( previousSize == 0 && size == 1 ) {
+                if ( previousSize == 0 && size != 0 ) {
                     // If we previously had size of 0 and now its one we need to remove any created activations                    
                     if (retractKeyList == null) {
                         retractKeyList = new ArrayList();
                     }
                     retractKeyList.add( leftTuple.getKey() );                       
                 }                
-            }
-
-            if (assertTupleSet != null) {
-                propagateAssertTuples( assertTupleSet,
-                                       context,
-                                       workingMemory );
             }
 
             if (retractKeyList != null) {
@@ -202,24 +190,28 @@ public class NotNode extends BetaNode {
                                                               FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        if ( memory.contains( handle ) ) {
-            TupleMatches tupleMatches = null;
-            TupleSet tupleSet = new TupleSet();
+        if ( memory.contains( handle ) ) {            
+            TupleSet tupleSet = null;
             memory.remove( handle );
-            Iterator it = memory.getLeftMemory().values().iterator();
-
-            while ( it.hasNext() ) {
-                tupleMatches = (TupleMatches) it.next();
+            
+            for ( Iterator it = memory.getLeftMemory().values().iterator(); it.hasNext();  ) {
+                TupleMatches tupleMatches = (TupleMatches) it.next();
+                int previousSize  = tupleMatches.getMatches().size();
                 tupleMatches.removeMatch( handle );
-
-                if ( tupleMatches.getMatches().size() == 0 ) {
+                
+                if ( previousSize != 0 && tupleMatches.getMatches().size() == 0) {
+                    if ( tupleSet == null ) {
+                        tupleSet = new TupleSet();
+                    }
                     tupleSet.addTuple( tupleMatches.getTuple() );
                 }
             }
 
-            propagateAssertTuples( tupleSet,
-                                   context,
-                                   workingMemory );
+            if ( tupleSet != null ) {
+                propagateAssertTuples( tupleSet,
+                                       context,
+                                       workingMemory );
+            }
         }
     }
 

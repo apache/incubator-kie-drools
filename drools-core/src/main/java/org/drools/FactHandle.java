@@ -60,4 +60,6 @@ public interface FactHandle
      * @return The external string form.
      */
     String toExternalForm();
+    
+    long getRecency();
 }

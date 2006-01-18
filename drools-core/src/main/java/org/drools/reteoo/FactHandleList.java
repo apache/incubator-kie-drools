@@ -182,6 +182,10 @@ final class FactHandleList
         }
         return true;
     }
+    
+    FactHandle[] getHandles() {
+        return this.handles;
+    }
 
     /**
      * Obtains the length of the list.

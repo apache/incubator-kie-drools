@@ -38,7 +38,8 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
     public void testAssertObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 
@@ -107,7 +108,8 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
     public void testRetractObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 
@@ -173,7 +175,8 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         // Tests that when new child is added only the last added child is
         // updated
         // When the attachingNewNode flag is set
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 

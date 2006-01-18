@@ -156,7 +156,8 @@ class Agenda
 
         Duration dur = rule.getDuration();
 
-        AgendaItem item = new AgendaItem( tuple,
+        AgendaItem item = new AgendaItem( context.getPropagationNumber(),
+                                          tuple,
                                           context,
                                           rule );
 

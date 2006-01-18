@@ -71,36 +71,35 @@ public class JoinNode extends BetaNode {
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) throws FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        if ( !memory.contains( leftTuple.getKey() ) ) {
-            TupleMatches tupleMatches = new TupleMatches( leftTuple );
-            memory.put( leftTuple.getKey(),
-                        tupleMatches );
+        
+        TupleMatches tupleMatches = new TupleMatches( leftTuple );
+        memory.put( leftTuple.getKey(),
+                    tupleMatches );
 
-            int column = getColumn();
-            FactHandleImpl handle = null;
-            ReteTuple merged = null;
-            TupleSet tupleSet = new TupleSet();
-            BetaNodeBinder binder = getJoinNodeBinder();
-            Iterator it = memory.getRightMemory().iterator();
-            while ( it.hasNext() ) {
-                handle = (FactHandleImpl) it.next();
-                if ( binder.isAllowed( handle,
-                                       leftTuple,
-                                       workingMemory ) ) {
-                    tupleMatches.addMatch( handle );
+        int column = getColumn();
+        FactHandleImpl handle = null;
+        ReteTuple merged = null;
+        TupleSet tupleSet = new TupleSet();
+        BetaNodeBinder binder = getJoinNodeBinder();
+        Iterator it = memory.getRightMemory().iterator();
+        while ( it.hasNext() ) {
+            handle = (FactHandleImpl) it.next();
+            if ( binder.isAllowed( handle,
+                                   leftTuple,
+                                   workingMemory ) ) {
+                tupleMatches.addMatch( handle );
 
-                    merged = new ReteTuple( leftTuple,
-                                            new ReteTuple( column,
-                                                           handle,
-                                                           workingMemory ) );
-                    tupleSet.addTuple( merged );
-                }
+                merged = new ReteTuple( leftTuple,
+                                        new ReteTuple( column,
+                                                       handle,
+                                                       workingMemory ) );
+                tupleSet.addTuple( merged );
             }
-
-            propagateAssertTuples( tupleSet,
-                                   context,
-                                   workingMemory );
         }
+
+        propagateAssertTuples( tupleSet,
+                               context,
+                               workingMemory );
     }
 
     /**
@@ -116,38 +115,36 @@ public class JoinNode extends BetaNode {
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) throws FactException {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        if ( !memory.contains( handle ) ) {
-            memory.add( handle );
+        memory.add( handle );
 
-            ReteTuple leftTuple = null;
-            TupleMatches tupleMatches = null;
-            ReteTuple merged = null;
+        ReteTuple leftTuple = null;
+        TupleMatches tupleMatches = null;
+        ReteTuple merged = null;
 
-            ReteTuple rightTuple = new ReteTuple( getColumn(),
-                                                  handle,
-                                                  workingMemory );
-            TupleSet tupleSet = new TupleSet();
-            BetaNodeBinder binder = getJoinNodeBinder();
-            Iterator it = memory.getLeftMemory().values().iterator();
+        ReteTuple rightTuple = new ReteTuple( getColumn(),
+                                              handle,
+                                              workingMemory );
+        TupleSet tupleSet = new TupleSet();
+        BetaNodeBinder binder = getJoinNodeBinder();
+        Iterator it = memory.getLeftMemory().values().iterator();
 
-            while ( it.hasNext() ) {
-                tupleMatches = (TupleMatches) it.next();
-                leftTuple = tupleMatches.getTuple();
-                if ( binder.isAllowed( object,
-                                       handle,
-                                       leftTuple,
-                                       workingMemory ) ) {
-                    tupleMatches.addMatch( handle );
-                    merged = new ReteTuple( leftTuple,
-                                            rightTuple );
-                    tupleSet.addTuple( merged );
-                }
+        while ( it.hasNext() ) {
+            tupleMatches = (TupleMatches) it.next();
+            leftTuple = tupleMatches.getTuple();
+            if ( binder.isAllowed( object,
+                                   handle,
+                                   leftTuple,
+                                   workingMemory ) ) {
+                tupleMatches.addMatch( handle );
+                merged = new ReteTuple( leftTuple,
+                                        rightTuple );
+                tupleSet.addTuple( merged );
             }
-
-            propagateAssertTuples( tupleSet,
-                                   context,
-                                   workingMemory );
         }
+
+        propagateAssertTuples( tupleSet,
+                               context,
+                               workingMemory );
     }
 
     /**

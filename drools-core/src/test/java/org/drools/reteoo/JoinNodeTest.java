@@ -35,7 +35,8 @@ public class JoinNodeTest extends DroolsTestCase {
      */
     public void setUp() {
         this.rule = new Rule( "test-rule" );
-        this.context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        this.context = new PropagationContextImpl( 0,
+                                                   PropagationContext.ASSERTION,
                                                    null,
                                                    null );
         this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );

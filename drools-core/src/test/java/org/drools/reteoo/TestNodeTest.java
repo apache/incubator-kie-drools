@@ -60,7 +60,8 @@ public class TestNodeTest extends DroolsTestCase {
     }
 
     public void setUp() {
-        this.context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        this.context = new PropagationContextImpl( 0,
+                                                   PropagationContext.ASSERTION,
                                                    null,
                                                    null );
 
@@ -317,7 +318,8 @@ public class TestNodeTest extends DroolsTestCase {
 
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
         Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 

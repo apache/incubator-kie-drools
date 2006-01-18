@@ -107,6 +107,14 @@ public class RuleBaseImpl
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    
+    public RuleBaseImpl(ConflictResolver conflictResolver){
+        this( conflictResolver,
+              new DefaultFactHandleFactory(),
+              new HashSet(),
+              new HashMap(),
+              new RuleBaseContext() );
+    }
 
     /**
      * Construct.
@@ -182,6 +190,10 @@ public class RuleBaseImpl
      */
     public FactHandleFactory getFactHandleFactory() {
         return this.factHandleFactory;
+    }
+    
+    public FactHandleFactory newFactHandleFactory() {
+        return this.factHandleFactory.newInstance();
     }
 
     /**

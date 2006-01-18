@@ -122,12 +122,16 @@ class WorkingMemoryImpl
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     private final RuleBaseImpl              ruleBase;
+    
+    private final FactHandleFactory               handleFactory;
 
     /** Rule-firing agenda. */
     private final Agenda                    agenda;
 
     /** Flag to determine if a rule is currently being fired. */
     private boolean                         firing;
+    
+    private long                            propagationIdCounter;   
 
     // ------------------------------------------------------------
     // Constructors
@@ -143,6 +147,7 @@ class WorkingMemoryImpl
         this.ruleBase = ruleBase;
         this.agenda = new Agenda( this,
                                   ruleBase.getConflictResolver() );
+        this.handleFactory = this.ruleBase.newFactHandleFactory();
     }
 
     // ------------------------------------------------------------
@@ -192,10 +197,10 @@ class WorkingMemoryImpl
      */
     FactHandle newFactHandle() {
         if ( !this.factHandlePool.isEmpty() ) {
-            return this.ruleBase.getFactHandleFactory().newFactHandle( this.factHandlePool.pop() );
+            return this.handleFactory.newFactHandle( this.factHandlePool.pop() );
         }
 
-        return this.ruleBase.getFactHandleFactory().newFactHandle();
+        return this.handleFactory.newFactHandle();
     }
 
     /**
@@ -472,7 +477,8 @@ class WorkingMemoryImpl
             handles.add( handle );
         }        
 
-        PropagationContext propagationContext = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext propagationContext = new PropagationContextImpl( ++this.propagationIdCounter,
+                                                                            PropagationContext.ASSERTION,
                                                                             rule,
                                                                             activation );
         
@@ -585,7 +591,8 @@ class WorkingMemoryImpl
         removePropertyChangeListener( handle );
 
         PropagationContext propagationContext = 
-            new PropagationContextImpl( PropagationContext.RETRACTION,
+            new PropagationContextImpl( ++this.propagationIdCounter,
+                                        PropagationContext.RETRACTION,
                                         rule,
                                         activation );
         
@@ -636,10 +643,12 @@ class WorkingMemoryImpl
                              Rule rule,
                              Activation activation) throws FactException {
         Object originalObject = removeObject( handle );
-
+                
         if ( originalObject == null ) {
             throw new NoSuchFactObjectException( handle );
         }
+        
+        this.handleFactory.increaseFactHandleRecency( handle );
 
         putObject( handle,
                    object );
@@ -652,7 +661,8 @@ class WorkingMemoryImpl
                                 handle );
         }
 
-        PropagationContext propagationContext = new PropagationContextImpl( PropagationContext.MODIFICATION,
+        PropagationContext propagationContext = new PropagationContextImpl( ++this.propagationIdCounter,
+                                                                            PropagationContext.MODIFICATION,
                                                                             rule,
                                                                             activation );  
 

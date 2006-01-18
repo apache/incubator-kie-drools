@@ -73,4 +73,9 @@ public class MockFactHandle
     public long getId() {
         return this.id;
     }
+
+    public long getRecency() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

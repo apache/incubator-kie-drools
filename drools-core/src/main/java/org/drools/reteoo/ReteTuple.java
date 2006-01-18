@@ -93,7 +93,7 @@ class ReteTuple
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < this.key.size(); i++) {
-            buffer.append( this.key.get( i ) + " : " + get(i) + "\n" );            
+            buffer.append( this.key.get( i ) + " : " + get(i) + ", " );            
         }
         return buffer.toString();
     }
@@ -109,6 +109,10 @@ class ReteTuple
      */
     TupleKey getKey() {
         return this.key;
+    }
+    
+    public FactHandle[] getFactHandles() {
+        return this.key.getFactHandles();
     }
 
     /**
@@ -138,6 +142,9 @@ class ReteTuple
      */
     public Object get(int col) {
         FactHandle handle = this.key.get( col );
+        if ( handle == null) {
+            return null;
+        }
         return get( handle );
     }
 
@@ -163,19 +170,4 @@ class ReteTuple
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
-
-    public long getMostRecentFactTimeStamp() {
-        if ( this.mostRecentFact == null ) {
-            this.mostRecentFact = this.key.getMostRecentFact();
-        }
-        return this.mostRecentFact.getRecency();
-    }
-
-    public long getLeastRecentFactTimeStamp() {
-        if ( this.leastRecentFact == null ) {
-            this.leastRecentFact = this.key.getLeastRecentFact();
-        }
-        return this.leastRecentFact.getRecency();
-    }
-    
 }

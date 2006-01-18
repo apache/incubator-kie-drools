@@ -88,10 +88,12 @@ public class DefaultKnowledgeHelper
     }
 
     public void retractObject(Object object) throws FactException {
-        FactHandle handle = this.tuple.getFactHandleForObject( object );
-
-        this.tuple.getWorkingMemory().retractObject( handle );
+        retractObject( this.tuple.getFactHandleForObject( object ) );
     }
+    
+    public void retractObject(FactHandle handle) throws FactException {
+        this.tuple.getWorkingMemory().retractObject( handle );
+    }    
 
     public String getRuleName() {
         return this.rule.getName();

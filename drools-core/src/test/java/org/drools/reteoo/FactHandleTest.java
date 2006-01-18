@@ -51,7 +51,7 @@ public class FactHandleTest extends TestCase {
     public void testToExternalForm() {
         FactHandleImpl f0 = new FactHandleImpl( 134 );
 
-        assertEquals( "[fid:134]",
+        assertEquals( "[fid:134:134]",
                       f0.toExternalForm() );
     }
 
@@ -61,7 +61,7 @@ public class FactHandleTest extends TestCase {
     public void testToString() {
         FactHandleImpl f0 = new FactHandleImpl( 134 );
 
-        assertEquals( "[fid:134]",
+        assertEquals( "[fid:134:134]",
                       f0.toString() );
     }
 

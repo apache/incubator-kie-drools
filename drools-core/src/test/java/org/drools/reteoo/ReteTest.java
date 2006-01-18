@@ -109,7 +109,7 @@ public class ReteTest extends DroolsTestCase {
                                                   new ClassObjectType( Map.class ),
                                                   null );
 
-        assertFalse( objectTypeNodes.contains( node ) );
+        assertTrue( objectTypeNodes.contains( node ) );
     }
 
     /**
@@ -117,7 +117,8 @@ public class ReteTest extends DroolsTestCase {
      * ObjectTypeNodes.
      */
     public void testAssertObject() throws Exception {
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 
@@ -178,7 +179,8 @@ public class ReteTest extends DroolsTestCase {
      * ObjectTypeNodes.
      */
     public void testRetractObject() throws Exception {
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 

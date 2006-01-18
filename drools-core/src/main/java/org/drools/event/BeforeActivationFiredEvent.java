@@ -56,7 +56,7 @@ public class BeforeActivationFiredEvent extends ActivationEvent {
     }
 
     public String toString() {
-        //return "[BeforeActivationFired: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
-        return "[BeforeActivationFired: rule=" + getActivation().getRule().getName() + "]";
+        return "[BeforeActivationFired: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
+        //return "[BeforeActivationFired(" + getActivation().getActivationNumber() + "): rule=" + getActivation().getRule().getName() + "]";
     }
 }
