@@ -70,12 +70,9 @@ class AgendaItem
 
     private PropagationContext context;
 
-    // ** The Counter */
-    private static long        counter;
-
-    private long               activationNumber;
-
     private boolean            retract;
+    
+    public long                activationNumber;
 
     // ------------------------------------------------------------
     // Constructors
@@ -89,13 +86,14 @@ class AgendaItem
      * @param rule
      *            The rule.
      */
-    AgendaItem(ReteTuple tuple,
+    AgendaItem(long activationNumber,
+               ReteTuple tuple,
                PropagationContext context,
                Rule rule) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
-        this.activationNumber = AgendaItem.counter++;
+        this.activationNumber = activationNumber;
     }
 
     // ------------------------------------------------------------
@@ -175,14 +173,18 @@ class AgendaItem
     }
 
     public long getActivationNumber() {
-        return this.activationNumber;
+        return this.activationNumber;        
     }
 
     public String toString() {
-        return "[" + this.rule.getName() + " " + this.tuple + "]";
+        return "[Activation rule=" + this.rule.getName() + ", tuple=" + this.tuple + "]";
     }
 
     public boolean equals(Object object) {
+        if ( object == this ) {
+            return true;
+        }
+        
         if ( (object == null) || !(object instanceof AgendaItem) ) {
             return false;
         }

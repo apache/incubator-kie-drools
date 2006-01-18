@@ -125,6 +125,8 @@ public interface KnowledgeHelper {
      *             Wraps and returns any exception that may occur.
      */
     void retractObject(Object object) throws FactException;
+    
+    void retractObject(FactHandle handle) throws FactException;
 
     /**
      * @return - The rule name

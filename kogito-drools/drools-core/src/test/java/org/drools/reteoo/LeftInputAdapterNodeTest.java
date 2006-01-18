@@ -47,7 +47,8 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
     public void testAssertObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 
@@ -104,7 +105,8 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
     public void testRetractObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 

@@ -8,10 +8,12 @@ public interface PropagationContext {
     public static final int RETRACTION   = 1;
     public static final int MODIFICATION = 2;
 
-    public abstract Rule getRuleOrigin();
+    public long getPropagationNumber();
+    
+    public Rule getRuleOrigin();
 
-    public abstract Activation getActivationOrigin();
+    public Activation getActivationOrigin();
 
-    public abstract int getType();
+    public int getType();
 
 }

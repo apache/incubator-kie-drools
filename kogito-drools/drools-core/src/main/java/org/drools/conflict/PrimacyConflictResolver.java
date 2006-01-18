@@ -41,6 +41,7 @@ package org.drools.conflict;
  *
  */
 
+import org.drools.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 
@@ -93,6 +94,56 @@ public class PrimacyConflictResolver extends AbstractConflictResolver {
      */
     public int compare(Activation lhs,
                        Activation rhs) {
-        return (int) (lhs.getTuple().getLeastRecentFactTimeStamp() - rhs.getTuple().getLeastRecentFactTimeStamp());
+        FactHandle[] lFacts = lhs.getTuple().getFactHandles();
+        FactHandle[] rFacts = rhs.getTuple().getFactHandles();
+        
+        FactHandle leftLeastRecent = getLeastRecentFact(lFacts);
+        FactHandle rightLeastRecent = getLeastRecentFact(rFacts);
+        
+        int lastIndex = ( lFacts.length < rFacts.length ) ?  lFacts.length : rFacts.length ;
+        
+        if (leftLeastRecent.getRecency() == rightLeastRecent.getRecency() && lastIndex > 1 ) {
+            for ( int i = 0; i < lastIndex; i++ ) {
+                leftLeastRecent = getLeastRecentFact( lFacts, leftLeastRecent );
+                rightLeastRecent = getLeastRecentFact( rFacts, rightLeastRecent );
+                if ( leftLeastRecent.getRecency() != rightLeastRecent.getRecency() ) {
+                    return (int) ( rightLeastRecent.getRecency() - leftLeastRecent.getRecency() );
+                }
+            }
+        } else {
+            return (int) ( leftLeastRecent.getRecency() - rightLeastRecent.getRecency() );
+        }
+        
+        return  rFacts.length - lFacts.length;
     }
+    
+    private FactHandle getLeastRecentFact(FactHandle[] handles) {
+        FactHandle mostRecent = handles[0];
+        for ( int i = 1; i < handles.length; i++ ) {
+            FactHandle eachHandle = handles[i];
+            
+            if ( eachHandle.getRecency() < mostRecent.getRecency()) {
+                mostRecent = eachHandle;
+            }
+        }  
+        return mostRecent;
+    }
+    
+    private FactHandle getLeastRecentFact(FactHandle[] handles, FactHandle handle) {
+        FactHandle mostRecent = null;
+        
+        for ( int i =  0; i < handles.length; i++ ) {
+            FactHandle eachHandle = handles[i];
+            
+            if ( mostRecent == null && eachHandle.getRecency() > handle.getRecency() ) {
+                mostRecent = eachHandle;
+            }
+            
+            if ( mostRecent != null && eachHandle.getRecency() < mostRecent.getRecency() &&  eachHandle.getRecency() > handle.getRecency() ) {
+                mostRecent = eachHandle;
+            }            
+        }  
+        return (mostRecent != null) ? mostRecent : handle;
+    }    
+    
 }

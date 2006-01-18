@@ -7,18 +7,26 @@ import org.drools.spi.PropagationContext;
 public class PropagationContextImpl
     implements
     PropagationContext {
-    private int        type;
+    private final int        type;
 
-    private Rule       rule;
+    private final Rule       rule;
 
-    private Activation activation;
+    private final Activation activation;
+    
+    private final long       propagationNumber;
 
-    public PropagationContextImpl(int type,
+    public PropagationContextImpl(long number,
+                                  int type,
                                   Rule rule,
                                   Activation activation) {
         this.type = type;
         this.rule = rule;
         this.activation = activation;
+        this.propagationNumber = number;
+    }
+    
+    public long getPropagationNumber() {
+        return this.propagationNumber;
     }
 
     /*

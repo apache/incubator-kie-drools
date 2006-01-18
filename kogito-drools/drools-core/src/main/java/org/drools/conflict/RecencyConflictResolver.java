@@ -41,6 +41,8 @@ package org.drools.conflict;
  *
  */
 
+import org.drools.FactHandle;
+import org.drools.reteoo.FactHandleImpl;
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 
@@ -93,6 +95,58 @@ public class RecencyConflictResolver extends AbstractConflictResolver {
      */
     public int compare(Activation lhs,
                        Activation rhs) {
-        return (int) (lhs.getTuple().getMostRecentFactTimeStamp() - rhs.getTuple().getMostRecentFactTimeStamp());
+        FactHandle[] lFacts = lhs.getTuple().getFactHandles();
+        FactHandle[] rFacts = rhs.getTuple().getFactHandles();
+        
+        FactHandle leftMostRecent = getMostRecentFact(lFacts);
+        FactHandle rightMostRecent = getMostRecentFact(rFacts);
+        
+        int lastIndex = ( lFacts.length < rFacts.length ) ?  lFacts.length : rFacts.length ;
+        
+        if (leftMostRecent.getRecency() == rightMostRecent.getRecency() && lastIndex > 1) {
+            
+            for ( int i = 0; i < lastIndex; i++ ) {
+                leftMostRecent = getMostRecentFact( lFacts, leftMostRecent );
+                rightMostRecent = getMostRecentFact( rFacts, rightMostRecent );
+                if ( leftMostRecent.getRecency() != rightMostRecent.getRecency() ) {
+                    return (int) ( rightMostRecent.getRecency() - leftMostRecent.getRecency() );
+                }
+            }
+        } else {
+            return (int) ( rightMostRecent.getRecency() - leftMostRecent.getRecency() );
+        }
+        
+        return  rFacts.length - lFacts.length;
     }
+    
+    private FactHandle getMostRecentFact(FactHandle[] handles) {
+        FactHandle mostRecent = handles[0];
+        for ( int i = 1; i < handles.length; i++ ) {
+            FactHandle eachHandle = handles[i];
+            
+            if ( eachHandle.getRecency() > mostRecent.getRecency()) {
+                mostRecent = eachHandle;
+            }
+        }  
+        return mostRecent;
+    }
+    
+    private FactHandle getMostRecentFact(FactHandle[] handles, FactHandle handle) {
+        FactHandle mostRecent = null;
+        
+        for ( int i =  0; i < handles.length; i++ ) {
+            FactHandle eachHandle = handles[i];
+            
+            if ( mostRecent == null && eachHandle.getRecency() < handle.getRecency() ) {
+                mostRecent = eachHandle;
+            }
+            
+            if ( mostRecent != null && eachHandle.getRecency() > mostRecent.getRecency() &&  eachHandle.getRecency() < handle.getRecency() ) {
+                mostRecent = eachHandle;
+            }            
+        }  
+        return (mostRecent != null) ? mostRecent : handle;
+    }    
+    
+    
 }

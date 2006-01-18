@@ -54,7 +54,7 @@ public class ActivationCancelledEvent extends ActivationEvent {
     }
 
     public String toString() {
-        //return "[ActivationCancelled: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
-        return "[ActivationCancelled: rule=" + getActivation().getRule().getName() + "]";
+        return "<==[ActivationCancelled(" + getActivation().getActivationNumber() + "): rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
+        //return "<==[ActivationCancelled: rule=" + getActivation().getRule().getName() + "]";
     }
 }

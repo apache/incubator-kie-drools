@@ -128,45 +128,9 @@ class TupleKey
     public boolean containsAll(TupleKey that) {
         return this.handles.containsAll( that.handles );
     }
-
-    public FactHandleImpl getMostRecentFact() {
-        FactHandleImpl mostRecent = null;
-        long currentRecency = Long.MIN_VALUE;
-        FactHandleImpl eachHandle;
-        long recency;
-
-        for ( int i = this.handles.size() - 1; i >= 0; i-- ) {
-            eachHandle = (FactHandleImpl) this.handles.get( i );
-            if ( eachHandle != null ) {
-                recency = eachHandle.getRecency();
-                if ( recency > currentRecency ) {
-                    currentRecency = recency;
-                    mostRecent = eachHandle;
-                }
-            }
-        }
-
-        return mostRecent;
-    }
-
-    public FactHandleImpl getLeastRecentFact() {
-        FactHandleImpl leastRecent = null;
-        long currentRecency = Long.MAX_VALUE;
-        FactHandleImpl eachHandle;
-        long recency;
-
-        for ( int i = this.handles.size() - 1; i >= 0; i-- ) {
-            eachHandle = (FactHandleImpl) this.handles.get( i );
-            if ( eachHandle != null ) {
-                recency = eachHandle.getRecency();
-                if ( recency < currentRecency ) {
-                    currentRecency = recency;
-                    leastRecent = eachHandle;
-                }
-            }
-        }
-
-        return leastRecent;
+    
+    FactHandle[] getFactHandles() {
+        return this.handles.getHandles();
     }
     
     public int size() {
@@ -196,4 +160,5 @@ class TupleKey
     public int hashCode() {
         return this.handles.hashCode();
     }
+    
 }

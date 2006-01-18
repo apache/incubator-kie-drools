@@ -59,7 +59,8 @@ import org.drools.spi.PropagationContext;
  */
 
 public class AgendaTest extends DroolsTestCase {
-    PropagationContext initContext = new PropagationContextImpl( PropagationContext.ASSERTION,
+    PropagationContext initContext = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 
@@ -80,15 +81,19 @@ public class AgendaTest extends DroolsTestCase {
                                                new FactHandleImpl( 1 ),
                                                workingMemory );
 
-        final PropagationContext context1 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
                                                                         rule1,
-                                                                        new AgendaItem( tuple,
+                                                                        new AgendaItem( 0,
+                                                                                        tuple,
                                                                                         this.initContext,
                                                                                         rule1 ) );
 
-        final PropagationContext context2 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        final PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
                                                                         rule2,
-                                                                        new AgendaItem( tuple,
+                                                                        new AgendaItem( 0,
+                                                                                        tuple,
                                                                                         this.initContext,
                                                                                         rule2 ) );
 
@@ -171,9 +176,11 @@ public class AgendaTest extends DroolsTestCase {
                                          new FactHandleImpl( 1 ),
                                          workingMemory );
 
-        final PropagationContext context1 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
                                                                         rule1,
-                                                                        new AgendaItem( tuple,
+                                                                        new AgendaItem( 0,
+                                                                                        tuple,
                                                                                         this.initContext,
                                                                                         rule1 ) );
 
@@ -224,9 +231,11 @@ public class AgendaTest extends DroolsTestCase {
         ReteTuple tuple = new ReteTuple( 0,
                                          new FactHandleImpl( 1 ),
                                          workingMemory );
-        final PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
                                                                        rule,
-                                                                       new AgendaItem( tuple,
+                                                                       new AgendaItem( 0,
+                                                                                       tuple,
                                                                                        this.initContext,
                                                                                        rule ) );
 
@@ -319,36 +328,44 @@ public class AgendaTest extends DroolsTestCase {
         /* create a rule for each module */
         Rule rule0 = new Rule( "test-rule0" );
         rule0.setConsequence( consequence );
-        PropagationContext context0 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context0 = new PropagationContextImpl( 0,
+                                                                  PropagationContext.ASSERTION,
                                                                   rule0,
-                                                                  new AgendaItem( tuple,
+                                                                  new AgendaItem( 0,
+                                                                                  tuple,
                                                                                   this.initContext,
                                                                                   rule0 ) );
 
         Rule rule1 = new Rule( "test-rule1",
                                "module1" );
         rule1.setConsequence( consequence );
-        PropagationContext context1 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                  PropagationContext.ASSERTION,
                                                                   rule1,
-                                                                  new AgendaItem( tuple,
+                                                                  new AgendaItem( 0,
+                                                                                  tuple,
                                                                                   this.initContext,
                                                                                   rule0 ) );
 
         Rule rule2 = new Rule( "test-rule2",
                                "module2" );
         rule2.setConsequence( consequence );
-        PropagationContext context2 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                  PropagationContext.ASSERTION,
                                                                   rule2,
-                                                                  new AgendaItem( tuple,
+                                                                  new AgendaItem( 0,
+                                                                                  tuple,
                                                                                   this.initContext,
                                                                                   rule0 ) );
 
         Rule rule3 = new Rule( "test-rule3",
                                "module3" );
         rule3.setConsequence( consequence );
-        PropagationContext context3 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context3 = new PropagationContextImpl( 0,
+                                                                  PropagationContext.ASSERTION,
                                                                   rule3,
-                                                                  new AgendaItem( tuple,
+                                                                  new AgendaItem( 0,
+                                                                                  tuple,
                                                                                   this.initContext,
                                                                                   rule0 ) );
 
@@ -519,9 +536,11 @@ public class AgendaTest extends DroolsTestCase {
         Rule rule = new Rule( "test-rule",
                               "module" );
         rule.setConsequence( consequence );
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  rule,
-                                                                 new AgendaItem( tuple,
+                                                                 new AgendaItem( 0,
+                                                                                 tuple,
                                                                                  this.initContext,
                                                                                  rule ) );
 

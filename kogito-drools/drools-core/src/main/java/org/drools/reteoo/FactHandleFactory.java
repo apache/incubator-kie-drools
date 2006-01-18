@@ -63,4 +63,12 @@ public interface FactHandleFactory
      * @return The handle.
      */
     FactHandle newFactHandle(long id);
+    
+    public void increaseFactHandleRecency(FactHandle factHandle);
+    
+    /**
+     * 
+     * @return a fresh instance of the fact handle factory, with any IDs reset etc.
+     */
+    FactHandleFactory newInstance();    
 }

@@ -85,6 +85,8 @@ public interface Tuple {
     FactHandle getFactHandleForObject(Object object);
     
     FactHandle getFactHandleForDeclaration(Declaration declaration);
+    
+    FactHandle[] getFactHandles();
 
     /**
      * Returns a reference to the <code>WorkingMemory</code> associated with
@@ -93,10 +95,6 @@ public interface Tuple {
      * @return WorkingMemory
      */
     WorkingMemory getWorkingMemory();
-
-    long getMostRecentFactTimeStamp();
-
-    long getLeastRecentFactTimeStamp();
 
     // long getConditionTimeStamp(int i);
 }

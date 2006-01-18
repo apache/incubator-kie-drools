@@ -56,7 +56,7 @@ public class FactHandleImpl
 
     /** Handle id. */
     private long       id;
-    private final long recency;
+    private long recency;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -109,7 +109,7 @@ public class FactHandleImpl
      * @see FactHandle
      */
     public String toExternalForm() {
-        return "[fid:" + this.id + "]";
+        return "[fid:" + this.id + ":" + this.recency + "]";
     }
 
     /**
@@ -122,6 +122,10 @@ public class FactHandleImpl
     public long getRecency() {
         return this.recency;
     }
+    
+    public void setRecency(long recency) {
+        this.recency = recency;
+    }    
 
     public long getId() {
         return this.id;

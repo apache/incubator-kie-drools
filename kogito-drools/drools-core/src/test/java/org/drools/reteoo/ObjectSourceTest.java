@@ -37,7 +37,8 @@ public class ObjectSourceTest extends DroolsTestCase {
 
     public void testPropagateAssertObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
@@ -122,7 +123,8 @@ public class ObjectSourceTest extends DroolsTestCase {
 
     public void testPropagateRetractObject() throws Exception {
         Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.RETRACTION,
                                                                  null,
                                                                  null );
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
@@ -204,7 +206,8 @@ public class ObjectSourceTest extends DroolsTestCase {
 
     public void testAttachNewNode() throws FactException {
         Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( PropagationContext.RETRACTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.RETRACTION,
                                                                  null,
                                                                  null );
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );

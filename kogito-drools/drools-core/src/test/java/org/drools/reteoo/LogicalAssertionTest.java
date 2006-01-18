@@ -41,7 +41,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                           handle1,
                                           workingMemory );
 
-        final PropagationContext context1 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
                                                                         null,
                                                                         null );
 
@@ -127,7 +128,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                           handle1,
                                           workingMemory );
 
-        final PropagationContext context1 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
                                                                         null,
                                                                         null );
 
@@ -195,7 +197,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                           handle1,
                                           workingMemory );
 
-        final PropagationContext context1 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
                                                                         null,
                                                                         null );
 
@@ -318,11 +321,13 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                           handle1,
                                           workingMemory );
 
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 
-        Activation activation1 = new AgendaItem( tuple1,
+        Activation activation1 = new AgendaItem( 0,
+                                                 tuple1,
                                                  context,
                                                  rule1 );
 
@@ -343,7 +348,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                           handle2,
                                           workingMemory );
 
-        Activation activation2 = new AgendaItem( tuple2,
+        Activation activation2 = new AgendaItem( 0,
+                                                 tuple2,
                                                  context,
                                                  rule2 );
 
@@ -408,7 +414,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                           handle1,
                                           workingMemory );
 
-        final PropagationContext context1 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
                                                                         null,
                                                                         null );
 
@@ -426,7 +433,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                           handle2,
                                           workingMemory );
 
-        final PropagationContext context2 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        final PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
                                                                         null,
                                                                         null );
 

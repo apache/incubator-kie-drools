@@ -84,7 +84,8 @@ public class SchedulerTest extends DroolsTestCase {
         };
         rule.setDuration( duration );
 
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 
@@ -134,6 +135,7 @@ public class SchedulerTest extends DroolsTestCase {
                 /* on first invoke add another one to the agenda */
                 if ( data.size() < 3 ) {
                     PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                              0,
                                                                               rule,
                                                                               activation );
                     ReteTuple tuple2 = new ReteTuple( 0,
@@ -148,7 +150,8 @@ public class SchedulerTest extends DroolsTestCase {
             }
         } );
 
-        PropagationContext context1 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                  PropagationContext.ASSERTION,
                                                                   null,
                                                                   null );
 
@@ -204,6 +207,7 @@ public class SchedulerTest extends DroolsTestCase {
                 /* on first invoke add another one to the agenda */
                 if ( data.size() < 5 ) {
                     PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                              0,
                                                                               rule,
                                                                               activation );
                     ReteTuple tuple2 = new ReteTuple( 0,
@@ -218,7 +222,8 @@ public class SchedulerTest extends DroolsTestCase {
             }
         } );
 
-        PropagationContext context1 = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                  PropagationContext.ASSERTION,
                                                                   null,
                                                                   null );
 
@@ -275,7 +280,8 @@ public class SchedulerTest extends DroolsTestCase {
 
         final List data = new ArrayList();
 
-        PropagationContext context = new PropagationContextImpl( PropagationContext.ASSERTION,
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 
