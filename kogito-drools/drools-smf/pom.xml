@@ -1,0 +1,32 @@
+<project>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+	<version>3.0-M1-dev</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>drools-smf</artifactId>
+
+  <name>Drools :: Semantic Module Framework</name>
+  <version>3.0-M1-dev</version>
+
+  <repositories>
+    <repository>
+      <id>basedir</id>
+      <url>file://${basedir}/../repository</url>
+    </repository>
+  </repositories>  
+
+
+  <!--  will keep JCI local for now.  -->
+  <dependencies>
+    <dependency>
+      <groupId>jci</groupId>
+      <artifactId>jci</artifactId>
+      <version>SNAPSHOT-2005</version>
+    </dependency>    
+  </dependencies>
+
+</project>
