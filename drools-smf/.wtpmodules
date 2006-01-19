@@ -1,0 +1,8 @@
+<project-modules id="moduleCoreId">
+  <wb-module deploy-name="drools-smf">
+    <module-type module-type-id="jst.utility">
+      <property name="java-output-path" value="/target/classes"/>
+    </module-type>
+    <wb-resource deploy-path="/" source-path="src/main/java"/>
+  </wb-module>
+</project-modules>
