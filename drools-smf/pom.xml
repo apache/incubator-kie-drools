@@ -20,13 +20,19 @@
   </repositories>  
 
 
-  <!--  will keep JCI local for now.  -->
+  <!--  will keep JCI local for now. Move to ibiblio when its updated  -->
   <dependencies>
     <dependency>
       <groupId>jci</groupId>
       <artifactId>jci</artifactId>
       <version>SNAPSHOT-2005</version>
-    </dependency>    
+    </dependency> 
+    
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>       
   </dependencies>
 
 </project>
