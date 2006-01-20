@@ -42,6 +42,7 @@ package org.drools.rule;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -262,6 +263,11 @@ public class RuleSet
     public Functions getFunctions(String semantic) {
         return (Functions) this.functions.get( semantic );
     }
+    
+    public Map getFunctions()
+    {        
+        return  Collections.unmodifiableMap( this.functions );
+    }        
 
     public RuleBaseContext getRuleBaseContext() {
         return this.ruleBaseContext;
