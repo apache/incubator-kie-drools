@@ -96,7 +96,7 @@ public interface Configuration
      * 
      * @return The attribute names.
      */
-    String[] getAttributeNames();
+    String[] getAttributeNames(); 
 
     /**
      * Retrieve a child node.
