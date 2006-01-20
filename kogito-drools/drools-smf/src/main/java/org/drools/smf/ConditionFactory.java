@@ -46,9 +46,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Condition;
 import org.drools.spi.RuleBaseContext;
 
-/** 
- * @deprecated Not used in Drools 3.0
- */
+
 public interface ConditionFactory
 {
     Condition[] newCondition(Rule rule,
