@@ -148,5 +148,16 @@ public interface SemanticModule
     FunctionsFactory getFunctionsFactory(String name);
 
     Set getFunctionsFactoryNames();     
+    
+    
+    PredicateEvaluatorFactory getPredicateEvaluatorFactory(String name);
+    
+    Set getPredicateEvaluatorFactoryNames();
+    
+    
+    ReturnValueEvaluatorFactory getReturnValueEvaluatorFactory(String name);
+    
+    Set getReturnValueEvaluatorFactoryNames();
+    
 
 }

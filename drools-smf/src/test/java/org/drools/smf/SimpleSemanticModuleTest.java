@@ -48,6 +48,8 @@ import org.drools.spi.Condition;
 import org.drools.spi.Consequence;
 import org.drools.spi.Duration;
 import org.drools.spi.ObjectType;
+import org.drools.spi.PredicateEvaluator;
+import org.drools.spi.ReturnValueEvaluator;
 import org.drools.spi.RuleBaseContext;
 
 public class SimpleSemanticModuleTest extends DroolsTestCase
@@ -143,6 +145,37 @@ public class SimpleSemanticModuleTest extends DroolsTestCase
 
     } 
     
+    public void testAddGetPredicateEvalFactory() {
+        SimpleSemanticModule module = new SimpleSemanticModule( "http://cheese.org" );
+        
+        PredicateEvaluatorFactory factory = new MockPredicateEvaluatorFactory();
+        
+        module.addPredicateEvaluatorFactory("mockCheese", factory);
+
+        assertSame( module.getPredicateEvaluatorFactory( "mockCheese" ),
+                    factory );
+
+        assertEquals( module.getPredicateEvaluatorFactoryNames( ).size( ),
+                      1 );        
+        
+    }
+    
+    public void testAddGetReturnValueEvalFactory() {
+        SimpleSemanticModule module = new SimpleSemanticModule( "http://cheese.org" );
+        
+        ReturnValueEvaluatorFactory factory = new MockReturnValueEvaluatorFactory();
+        
+        module.addReturnValueEvaluatorFactory("mockCheese", factory);
+
+        assertSame( module.getReturnValueEvaluatorFactory( "mockCheese" ),
+                    factory );
+
+        assertEquals( module.getReturnValueEvaluatorFactoryNames( ).size( ),
+                      1 );        
+                
+    }
+    
+    
     private class MockRuleFactory
         implements
         RuleFactory
@@ -222,5 +255,29 @@ public class SimpleSemanticModuleTest extends DroolsTestCase
         }
 
     }
+    
+    private class MockPredicateEvaluatorFactory
+        implements
+        PredicateEvaluatorFactory   {
+
+        public PredicateEvaluator[] newPredicateEvaluator(Rule rule,
+                                                          RuleBaseContext context,
+                                                          Configuration config) throws FactoryException {
+            return null;
+        }
+        
+    }
+    
+    private class MockReturnValueEvaluatorFactory
+        implements
+        ReturnValueEvaluatorFactory   {
+
+        public ReturnValueEvaluator[] newReturnValueEvaluator(Rule rule,
+                                                          RuleBaseContext context,
+                                                          Configuration config) throws FactoryException {
+            return null;
+        }
+    
+    }    
 
 }

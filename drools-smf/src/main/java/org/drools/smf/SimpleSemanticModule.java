@@ -44,6 +44,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.spi.ReturnValueEvaluator;
+
 /**
  * Simple implementation of a Semantic Module.
  *
@@ -83,6 +85,10 @@ public class SimpleSemanticModule implements SemanticModule
     /** functions factories */
     private Map    functionFactories;    
     
+    private Map     predicateEvaluatorFactories;
+    
+    private Map     returnValueEvaluatorFactories;
+    
     private Map    types;
 
 
@@ -108,6 +114,8 @@ public class SimpleSemanticModule implements SemanticModule
         this.applicationDataFactories = new HashMap( ); 
         this.functionFactories = new HashMap( );    
         this.types = new HashMap( );
+        this.predicateEvaluatorFactories = new HashMap( );
+        this.returnValueEvaluatorFactories = new HashMap( );
     }
 
     // ------------------------------------------------------------
@@ -145,6 +153,36 @@ public class SimpleSemanticModule implements SemanticModule
     {
         return this.ruleFactories.keySet( );
     }
+    
+    public void addPredicateEvaluatorFactory(String name,
+                                             PredicateEvaluatorFactory factory) {
+        this.predicateEvaluatorFactories.put( name, factory);
+        this.types.put(name, "PredicateEvaluator");
+    }        
+    
+    public PredicateEvaluatorFactory getPredicateEvaluatorFactory(String name) {
+        return (PredicateEvaluatorFactory) this.predicateEvaluatorFactories.get(name);
+    }
+    
+    public Set getPredicateEvaluatorFactoryNames() {
+        return this.predicateEvaluatorFactories.keySet();
+    }
+    
+    
+    public void addReturnValueEvaluatorFactory(String name,
+                                               ReturnValueEvaluatorFactory factory) {
+        this.returnValueEvaluatorFactories.put( name, factory);
+        this.types.put(name, "ReturnValueEvaluator");
+    }        
+    
+    public ReturnValueEvaluatorFactory getReturnValueEvaluatorFactory(String name) {
+        return (ReturnValueEvaluatorFactory) this.returnValueEvaluatorFactories.get(name);
+    }
+    
+    public Set getReturnValueEvaluatorFactoryNames() {
+        return this.returnValueEvaluatorFactories.keySet();
+    }
+    
 
     /**
      * Add a semantic <code>ObjectTypeFactory</code>.
@@ -293,5 +331,7 @@ public class SimpleSemanticModule implements SemanticModule
     public Set getFunctionsFactoryNames()
     {
         return this.functionFactories.keySet();
-    }    
+    }
+
+
 }
