@@ -1,0 +1,17 @@
+RuleSet name: $ruleset-name
+Application Data: $application-data
+Imports: $imports
+Functions: $functions
+
+#foreach ($rule in $rule-list)
+	Rule name is $rule.getName()
+	
+	#foreach ($condition in $rule.getConditions())
+		condition: $condition
+	#end
+	
+	#foreach ($consequence in $rule.getConsequences())
+		consequence: $consequence
+	#end
+	 
+#end

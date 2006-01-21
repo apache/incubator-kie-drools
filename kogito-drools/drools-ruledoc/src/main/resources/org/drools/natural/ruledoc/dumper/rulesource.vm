@@ -1,0 +1,34 @@
+--dummy rule source file--
+
+/**ruleset name*/
+$ruleset-name
+
+/** imports */
+$imports
+
+/** application data */
+$application-data
+
+/** functions */
+$functions
+
+
+
+/** rules */
+#foreach ($rule in $rule-list)
+	Rule {$rule.getName()} {
+		@input($rule.getParameterDeclarations())
+		@salience($rule.getSalience())
+		@xor-group($rule.getXorGroup())
+		
+		when {
+			#foreach ($condition in $rule.getConditions())
+				$condition
+			#end
+		} then {
+			#foreach ($consequence in $rule.getConsequences()) 
+				$consequence;
+			#end
+		}
+	}
+#end

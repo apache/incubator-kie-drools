@@ -1,0 +1,55 @@
+<project>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+    <version>3.0-M1-dev</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>drools-ruledoc</artifactId>
+  <name>Drools :: Rule Documents</name>
+  <version>3.1-M1-dev</version>  
+  <packaging>jar</packaging>
+
+
+  <dependencies>
+
+	<!-- requries drools natural DSL module to be installed -->  
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-natural-dsl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>htmlparser</groupId>
+      <artifactId>htmlparser</artifactId>
+      <version>1.5</version>
+    </dependency>
+    
+
+    <dependency>
+      <groupId>velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.4</version>
+    </dependency>
+    
+    
+
+  </dependencies>
+
+
+</project>
