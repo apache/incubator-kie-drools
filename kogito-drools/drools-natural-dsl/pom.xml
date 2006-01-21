@@ -6,11 +6,10 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>drools-natural</artifactId>
-  <name>Drools :: Natural DSL utility</name>
+  <artifactId>drools-natural-dsl</artifactId>
+  <name>Drools :: Natural and DSL utility</name>
   <version>3.0-M1-dev</version>  
   <packaging>jar</packaging>
-
 
   <dependencies>
     <dependency>
@@ -25,20 +24,6 @@
       <artifactId>commons-lang</artifactId>
       <version>2.1</version>
     </dependency>
-
-    <dependency>
-      <groupId>htmlparser</groupId>
-      <artifactId>htmlparser</artifactId>
-      <version>1.5</version>
-    </dependency>
-    
-
-    <dependency>
-      <groupId>velocity</groupId>
-      <artifactId>velocity</artifactId>
-      <version>1.4</version>
-    </dependency>
-    
 
   </dependencies>
 
