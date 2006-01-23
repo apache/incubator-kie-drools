@@ -32,12 +32,11 @@ public class TemplateTest extends TestCase {
         
         //and this is the right hand side grammar mapping (no lexing required, simple hole filling !).
         String grammar_r = "something({0}, {1})";
-
         
         //and this is the full expression
         String nl = "yeah this is an expression baby on board exp1 and exp2 burt ward end.";
         
-        //match the pattern, put the values in the map        
+        //match the pattern in nl, put the values in the map        
         HashMap map = new HashMap();
         ctx.processNL(nl, map);
         
@@ -52,6 +51,20 @@ public class TemplateTest extends TestCase {
         
         assertEquals("yeah this is an expression something(exp1, exp2) end.", result);
                 
+        
+        
+    }
+    
+    public void testAllInOne() {
+        Context ctx = new Context();        
+        //chunks represent a lexed grammar "left hand side"
+        ctx.addChunk("baby on board")
+            .addChunk("{0}")
+            .addChunk("and")
+            .addChunk("{1}")
+            .addChunk("burt ward");        
+        String result = ctx.process("yeah this is an expression baby on board exp1 and exp2 burt ward end.", "something({0}, {1})");
+        assertEquals("yeah this is an expression something(exp1, exp2) end.", result);        
     }
 
 
@@ -202,7 +215,7 @@ public class TemplateTest extends TestCase {
          * @param grammar_r The grammar item which will have the values plugged into the "holes".
          * @return The final expression ready for substitution.
          */
-        String populateTargetString(HashMap map,
+        String populateTargetString(Map map,
                                    String grammar_r) {
             for ( Iterator iter = map.keySet().iterator(); iter.hasNext(); ) {
                 String key = (String) iter.next();
@@ -219,6 +232,21 @@ public class TemplateTest extends TestCase {
          */
         String replaceNlWithTarget(String nl, String subKey, String target) {
             return StringUtils.replace(nl, subKey, target);            
+        }
+        
+        /**
+         * This does it all as one call. Requires that chunks have been setup.
+         * @param nl The nl expression to process. 
+         * @param grammarRHS The grammar expression that will be populated, and then inserted in to the nl.
+         * @return the NL with the populated grammarRHS replacing the original pattern (from the chunks).
+         */
+        public String process(String nl, String grammarRHS) {
+            Map values = new HashMap();
+            this.processNL(nl, values);
+            String subKey = this.getSubstitutionKey();
+            String target = this.populateTargetString(values, grammarRHS);
+            return this.replaceNlWithTarget(nl, subKey, target);
+            
         }
                 
         
