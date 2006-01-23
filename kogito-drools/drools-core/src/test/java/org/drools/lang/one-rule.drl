@@ -1,0 +1,35 @@
+# Example DRL with only a package decl
+#
+
+// yes, you can use silly java comments
+
+package org.drools.lang;
+
+# semi colons are optional, we're line-centric
+
+import java.util.List
+import java.util.ArrayList;
+
+rule find_seating
+    when
+	    context => Context( state == Context.ASSIGN_SEATS )
+	    Seating( seatingId:id, seatingPid:pid, pathDone == true, seatingRightSeat:rightSeat, seatingRightGuestName:rightGuestName )
+	    
+	    #:bob is in atlanta
+	    
+        Guest( name == seatingRightGuestName, rightGuestSex:sex, rightGuestHobby:hobby )
+        Guest( leftGuestName:name , sex != rightGuestSex, hobby == rightGuestHobby )
+        count => Count()
+        #not ( Path( id == seatingId, guestName == leftGuestName) )
+        #not ( Chosen( id == seatingId, guestName == leftGuestName, hobby == rightGuestHobby) )
+    then
+        make a ruckus, damnit
+        Really, you should
+end
+
+
+
+
+
+
+
