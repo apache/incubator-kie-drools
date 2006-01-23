@@ -68,7 +68,7 @@ public class ExpanderContext implements Serializable {
 	 * If <code>isEnabled()</code> is false then it is not required to 
 	 * call this method.
 	 */
-	public CharSequence expand(CharSequence expression, RuleParser context) {
+	public CharSequence expand(CharSequence expression, Parser context) {
 		return expression;
 	}
 	

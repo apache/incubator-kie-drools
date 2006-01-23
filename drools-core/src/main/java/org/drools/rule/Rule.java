@@ -41,12 +41,10 @@ package org.drools.rule;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.spi.ClassObjectType;
@@ -55,11 +53,9 @@ import org.drools.spi.Condition;
 import org.drools.spi.Consequence;
 import org.drools.spi.Constraint;
 import org.drools.spi.Duration;
-import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.Importer;
 import org.drools.spi.Module;
-import org.drools.spi.ObjectType;
 
 /**
  * A <code>Rule</code> contains a set of <code>Test</code>s and a

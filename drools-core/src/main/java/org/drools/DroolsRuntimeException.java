@@ -8,4 +8,8 @@ public class DroolsRuntimeException extends RuntimeException {
     public DroolsRuntimeException(DroolsException e) {
         super( e );
     }
+    
+    public DroolsRuntimeException(String message) {
+    		super( message );
+    }
 }
