@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
  * 
  * Chunks also know how to parse themselves to work out the value.
  * 
- * This is used by TemplatePopulateContext.
+ * This is used by TemplateContext.
  * This class is very recursive, to be prepated to be confused.
  * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
@@ -21,7 +21,8 @@ import org.apache.commons.lang.StringUtils;
 class Chunk {
     
     //the chunk of text from the dicitonary   
-    String text;
+    final String text;
+    final boolean isHole;
     
     Chunk next;
     
@@ -35,6 +36,11 @@ class Chunk {
     
     Chunk(String text)  {
         this.text = text;
+        if (text.startsWith("{")) {
+            isHole = true;
+        } else {
+            isHole = false;
+        }
     }
     
     /**
@@ -42,7 +48,7 @@ class Chunk {
      * Can then swap it with the target text.
      */
     void buildSubtitutionKey(StringBuffer buffer) {
-        if (isHole()) {
+        if (isHole) {
             buffer.append(padL + value + padR);
         } else {
             buffer.append(text);
@@ -52,12 +58,8 @@ class Chunk {
         }
     }
 
-    boolean isHole() {
-        return text.startsWith("{");
-    }
-    
     void process(String expression) {
-        if (isHole()) {
+        if (isHole) {
             //value = text until next next.text is found
             if (next == null || next.text == null) {
                 storeSpacePadding( expression );
@@ -82,7 +84,7 @@ class Chunk {
     }
     
     void buildValueMap(Map map) {
-        if (this.isHole()) {
+        if (isHole) {
             map.put(text, value);
         }
         if (next != null) {

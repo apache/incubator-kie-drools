@@ -1,7 +1,9 @@
 package org.drools.natural.template;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This is the utility class for compiling pseudo natural/DSL expression into the target 
@@ -23,19 +25,33 @@ import java.util.Iterator;
  */
 public class NLExpressionCompiler {
 
-    private TemplateFactory factory;
-    private Collection grammar;
+    //a map of templates to the template contexts (template contexts are used to populate populate
+    //the target mappings with data from a real expression.
+    private Map templateCache;
+    
     
     public NLExpressionCompiler(NLGrammar grammar) {
-        this.grammar = grammar.getMappings();
-        this.factory = new TemplateFactory();
+        Collection grammarItems = grammar.getMappings();        
+        this.templateCache = new HashMap();
+
+        //build up a map of templates
+        TemplateFactory factory = new TemplateFactory();
+        for ( Iterator iter = grammarItems.iterator(); iter.hasNext(); ) {
+            NLMappingItem mapping = (NLMappingItem) iter.next();
+            TemplateContext ctx = factory.getContext(mapping.getNaturalTemplate());
+            templateCache.put(mapping, ctx);
+        }
     }
     
+    /**
+     * 
+     */
     public String compile(String expression) {
         String nl = expression;
-        for ( Iterator iter = grammar.iterator(); iter.hasNext(); ) {
-            NLMappingItem mapping = (NLMappingItem) iter.next();
-            TemplateContext ctx = factory.buildContext(mapping.getNaturalTemplate());
+        for ( Iterator iter = templateCache.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            NLMappingItem mapping = (NLMappingItem) entry.getKey();
+            TemplateContext ctx = (TemplateContext) entry.getValue();
             nl = ctx.processAllInstances(nl, mapping.getGrammarTemplate());
         }
         return nl;

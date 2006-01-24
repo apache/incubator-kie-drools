@@ -36,7 +36,6 @@ public class NLExpressionCompilerTest extends TestCase {
         
     }
     
-    /** This is surprisingly fast. I didn't build it for speed. */
     public void testLargeGrammar() {
         Properties props = new Properties();
         
