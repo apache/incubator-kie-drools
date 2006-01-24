@@ -14,7 +14,7 @@ import java.util.ArrayList;
 # use expander foo;
 
 
-rule find_seating
+rule find seating
     when
 	    context => Context( state == Context.ASSIGN_SEATS ) 
 	    Seating( seatingId:id, seatingPid:pid, pathDone == true, seatingRightSeat:rightSeat, seatingRightGuestName:rightGuestName )

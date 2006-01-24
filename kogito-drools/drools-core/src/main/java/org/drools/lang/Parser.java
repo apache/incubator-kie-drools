@@ -24,7 +24,7 @@ public class Parser {
 	
     private static Pattern PACKAGE_DECL = Pattern.compile( "\\s*package\\s*([^;]+);?\\s*" );
 	private static Pattern IMPORT_STATEMENT = Pattern.compile( "\\s*import\\s*([^;]+);?\\s*" );
-	private static Pattern RULE_DECL = Pattern.compile( "\\s*rule\\s*([^\\s]+)\\s*" );
+	private static Pattern RULE_DECL = Pattern.compile( "\\s*rule\\s*(.*[^\\s]+)\\s*" );
     
     private static Pattern EXPANDER_STATEMENT = Pattern.compile("\\s*use\\s*expander\\s([^;]+);?\\s*");
 	
