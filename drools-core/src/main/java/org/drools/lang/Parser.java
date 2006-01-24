@@ -303,11 +303,12 @@ public class Parser {
 				if ( line == null ) {
 					throw new ParseException( "end expected", lineNumber );
 				}
-				if ( line.trim().equals( "end" ) ) {
+                String trimLine = line.trim();
+				if ( trimLine.equals( "end" ) ) {
 					break;
 				}
 				consumeDiscard();
-                line = maybeExpand( line );
+                line = maybeExpand( trimLine );
 				consequence.append( line + "\n" );
 			}
 			System.err.println( "begin consequence");
