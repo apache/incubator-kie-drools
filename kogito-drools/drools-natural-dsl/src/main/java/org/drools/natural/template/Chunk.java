@@ -20,18 +20,22 @@ import org.apache.commons.lang.StringUtils;
  */
 class Chunk {
     
+    //the chunk of text from the dicitonary   
     String text;
+    
     Chunk next;
     
-    //value if it is a hole, starts out as null.
-    String value;
+    //for building the substitution string, remember how the {0} was spaced with the rest of the string
+    //for example: date of '{0}' ---- this needs to be handled as well as: date of ' {0} '
+    String padL = "";
+    String padR = "";
     
+    //value parsed out if it is a hole, starts out as null.
+    String value;
     
     Chunk(String text)  {
         this.text = text;
     }
-    
-    
     
     /**
      * This will build up a key to use to substitute the original string with.
@@ -39,7 +43,7 @@ class Chunk {
      */
     void buildSubtitutionKey(StringBuffer buffer) {
         if (isHole()) {
-            buffer.append(" " + value + " ");
+            buffer.append(padL + value + padR);
         } else {
             buffer.append(text);
         }
@@ -56,9 +60,12 @@ class Chunk {
         if (isHole()) {
             //value = text until next next.text is found
             if (next == null || next.text == null) {
+                storeSpacePadding( expression );
                 value = expression.trim();
             } else {
-                value = StringUtils.substringBefore(expression, next.text).trim();
+                String val = StringUtils.substringBefore(expression, next.text);
+                storeSpacePadding( val );
+                value = val.trim();
             }
             
         } else {
@@ -67,6 +74,11 @@ class Chunk {
         if (next != null) {
             next.process(StringUtils.substringAfter(expression, value));
         }            
+    }
+
+    private void storeSpacePadding(String val) {
+        if (val.startsWith(" ")) padL = " ";
+        if (val.endsWith(" ")) padR = " ";
     }
     
     void buildValueMap(Map map) {

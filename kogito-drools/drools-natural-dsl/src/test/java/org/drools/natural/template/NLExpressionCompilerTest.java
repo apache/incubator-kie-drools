@@ -82,13 +82,12 @@ public class NLExpressionCompilerTest extends TestCase {
         
         grammar = new NLGrammar();
         
-        grammar.addNLItem(new NLMappingItem(1, "date of ' {0} '", "dateOf({0})"));
+        grammar.addNLItem(new NLMappingItem(1, "date of '{0}'", "dateOf({0})"));
         grammar.addNLItem(new NLMappingItem(2, "age of [ {0} ]", "{0}.getAge()"));
         grammar.addNLItem(new NLMappingItem(3, "Today", "new java.util.Date()"));
         grammar.addNLItem(new NLMappingItem(4, "{0} is before {1}", "({0}).compareTo({1}) > 0"));
         
-        
-        nl = "date of ' 10-jul-2006 ' is before Today";
+        nl = "date of '10-jul-2006' is before Today";
         
         compiler = new NLExpressionCompiler(grammar);
         expected = "(dateOf(10-jul-2006)).compareTo(new java.util.Date()) > 0";
