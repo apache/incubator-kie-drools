@@ -10,12 +10,14 @@ package org.drools.lang;
 import java.util.List
 import java.util.ArrayList;
 
+# use expanders for domain specific and pseudo natural language extensions
+# use expander foo;
+
+
 rule find_seating
     when
-	    context => Context( state == Context.ASSIGN_SEATS )
+	    context => Context( state == Context.ASSIGN_SEATS ) 
 	    Seating( seatingId:id, seatingPid:pid, pathDone == true, seatingRightSeat:rightSeat, seatingRightGuestName:rightGuestName )
-	    
-	    #:bob is in atlanta
 	    
         Guest( name == seatingRightGuestName, rightGuestSex:sex, rightGuestHobby:hobby )
         Guest( leftGuestName:name , sex != rightGuestSex, hobby == rightGuestHobby )
