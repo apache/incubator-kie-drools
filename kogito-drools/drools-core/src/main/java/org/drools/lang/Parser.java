@@ -14,11 +14,19 @@ import org.drools.rule.DuplicateRuleNameException;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConstructionException;
 
+/**
+ * The one, the only DRL parser.
+ * 
+ * @master Bob McWirther
+ * @apprentice Michael Neale
+ */
 public class Parser {
 	
 	private static Pattern PACKAGE_DECL = Pattern.compile( "\\s*package\\s*([^;]+);?\\s*" );
 	private static Pattern IMPORT_STATEMENT = Pattern.compile( "\\s*import\\s*([^;]+);?\\s*" );
 	private static Pattern RULE_DECL = Pattern.compile( "\\s*rule\\s*([^\\s]+)\\s*" );
+    
+    private static Pattern EXPANDER_STATEMENT = Pattern.compile("\\s*use\\s*expander\\s([^;]+);?\\s*");
 	
 	private static Pattern FACT_BINDING = Pattern.compile( "\\s*(\\w+)\\s*=>\\s*(.*)" );
 	private static Pattern FIELD_BINDING = Pattern.compile( "\\s*(\\w+):(\\w+)\\s*" );
@@ -27,12 +35,19 @@ public class Parser {
 	
 	private String packageDeclaration;
 	private List imports;
+    private String expanderName;
 	private List rules;
+
+    
+    
+    private int lineNumber;
 
 	public Parser(Reader reader) {
 		this.reader  = new BufferedReader( reader );
 		this.imports = new ArrayList();
 		this.rules   = new ArrayList();
+        this.expanderName = null;
+        this.lineNumber = 0;
 	}
 	
 	public String getPackageDeclaration() {
@@ -46,6 +61,10 @@ public class Parser {
 	public List getRules() {
 		return rules;
 	}
+    
+    String getExpanderName() {
+        return expanderName;
+    }
 	
 	public void parse() throws IOException, RuleConstructionException {
 		prolog();
@@ -55,6 +74,7 @@ public class Parser {
 	protected void prolog() throws IOException {
 		packageDeclaration();
 		importStatements();
+        expanderStatement();
 		functions();
 	}
 	
@@ -76,7 +96,7 @@ public class Parser {
 			// just do it again
 		}
 	}
-	
+    
 	protected boolean importStatement() throws IOException {
 		String line = laDiscard();
 		
@@ -92,6 +112,22 @@ public class Parser {
 		
 		return false;
 	}
+    
+    protected boolean expanderStatement() throws IOException {
+        String line = laDiscard();
+        
+        if ( line == null ) { return false; }
+        
+        Matcher matcher = EXPANDER_STATEMENT.matcher( line );
+        
+        if ( matcher.matches() ) {
+            consumeDiscard();
+            expanderName = matcher.group( 1 );
+            return true;
+        }
+        
+        return false;
+    }    
 	
 	protected void functions() {
 		
@@ -129,7 +165,7 @@ public class Parser {
 		line = laDiscard();
 		
 		if ( ! line.trim().equals( "end" ) ) {
-			throw new ParseException( "end expected" );
+			throw new ParseException( "end expected.", lineNumber);
 		}
 		
 		consumeDiscard();
@@ -181,31 +217,48 @@ public class Parser {
 			pattern = line;
 		}
 		
-		if ( pattern.startsWith( ":" ) ) {
-			pattern = expand( pattern );
-		}
+        
+		pattern = maybeExpand( pattern );
 		
 		pattern( pattern );
 		
 		return true;
 	}
+
+    /**
+     * Only want to expand if we are using an expander, and if the pattern isn't escaped.
+     */
+    protected String maybeExpand(final String pattern) {
+        if ( expanding() ) {
+            if (pattern.startsWith( ">" )) {
+                return pattern.substring(1);
+            } else {
+                return expand( pattern );
+            }
+		}
+        return pattern;
+    }
 	
 	protected String expand(String pattern) {
-		// TODO: Michael, here goes the expansion bits
-		return pattern;
+        //MN hook in here. Will only be called if it is honest to God expanding.
+   		return pattern;
 	}
+
+    protected boolean expanding() {
+        return this.expanderName != null;
+    }
 	
 	protected void pattern(String pattern) {
 		int leftParen = pattern.indexOf( "(" );
 		
 		if ( leftParen < 0 ) {
-			throw new ParseException( "invalid pattern: " + pattern );
+			throw new ParseException( "invalid pattern: " + pattern, lineNumber );
 		}
 		
 		int rightParen = pattern.lastIndexOf( ")" );
 		
 		if ( rightParen < 0 ) {
-			throw new ParseException( "invalid pattern: " + pattern );
+			throw new ParseException( "invalid pattern: " + pattern, lineNumber );
 		}
 		
 		String guts = pattern.substring( leftParen+1, rightParen ).trim();
@@ -244,12 +297,13 @@ public class Parser {
 			while ( true ) {
 				line = laDiscard();
 				if ( line == null ) {
-					throw new ParseException( "end expected" );
+					throw new ParseException( "end expected", lineNumber );
 				}
 				if ( line.trim().equals( "end" ) ) {
 					break;
 				}
 				consumeDiscard();
+                line = maybeExpand( line );
 				consequence.append( line + "\n" );
 			}
 			System.err.println( "begin consequence");
@@ -289,6 +343,7 @@ public class Parser {
 	}
 	
 	protected String consume() throws IOException {
+        lineNumber++;
 		return reader.readLine();
 	}
 	
@@ -302,7 +357,8 @@ public class Parser {
 				reader.reset();
 				return null;
 			}
-			
+			lineNumber++;
+            
 			String trimLine = line.trim();
 			
 			if ( trimLine.length() == 0 || trimLine.startsWith( "#" ) || trimLine.startsWith( "//" ) ) {
