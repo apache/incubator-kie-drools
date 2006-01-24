@@ -49,8 +49,13 @@ public class ParserTest extends TestCase {
 		assertEquals( 1, parser.getRules().size() );
 		assertEquals( "find_seating", ((Rule)parser.getRules().get(0)).getName() );
         
-        assertEquals(null, parser.getExpanderName());
+        assertEquals(null, parser.getExpander());
 	}
+    
+    public void test_with_expander() throws Exception {
+        Parser parser = parser( "rule-with-expansion.drl" );
+        parser.parse();
+    }
 	
 	protected Parser parser(String name) {
 		InputStream in = getClass().getResourceAsStream( name );

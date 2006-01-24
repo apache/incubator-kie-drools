@@ -39,7 +39,7 @@ public class Parser {
 	
 	private String packageDeclaration;
 	private List imports;
-    private String expanderName;
+    private Expander expander;
 	private List rules;
 
     
@@ -50,7 +50,7 @@ public class Parser {
 		this.reader  = new BufferedReader( reader );
 		this.imports = new ArrayList();
 		this.rules   = new ArrayList();
-        this.expanderName = null;
+        this.expander = null;
         this.lineNumber = 0;
 	}
 	
@@ -66,8 +66,8 @@ public class Parser {
 		return rules;
 	}
     
-    String getExpanderName() {
-        return expanderName;
+    Expander getExpander() {
+        return expander;
     }
 	
 	public void parse() throws IOException, RuleConstructionException {
@@ -126,7 +126,8 @@ public class Parser {
         
         if ( matcher.matches() ) {
             consumeDiscard();
-            expanderName = matcher.group( 1 );
+            String expanderName = matcher.group( 1 );
+            expander = ExpanderContext.getInstance().getExpander(expanderName);
             return true;
         }
         
@@ -244,12 +245,11 @@ public class Parser {
     }
 	
 	protected String expand(String pattern) {
-        //MN hook in here. Will only be called if it is honest to God expanding.
-   		return pattern;
+   		return expander.expand(pattern, this);
 	}
 
     protected boolean expanding() {
-        return this.expanderName != null;
+        return this.expander != null;
     }
 	
 	protected void pattern(String pattern) {
