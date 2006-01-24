@@ -19,7 +19,7 @@ class TemplateFactory {
      * @param template From the grammar. eg "{0} likes cheese" is a template.
      * @return A template context ready to apply to a nl expression.
      */
-    public TemplateContext buildContext(String template) {
+    public TemplateContext getContext(String template) {
         
         TemplateContext ctx = new TemplateContext();
         

@@ -8,7 +8,7 @@ public class TemplateFactoryTest extends TestCase {
 
     public void testMake() {
         TemplateFactory factory = new TemplateFactory();
-        TemplateContext ctx = factory.buildContext("something {0} going {1} on.");
+        TemplateContext ctx = factory.getContext("something {0} going {1} on.");
         assertNotNull(ctx);
     }
     

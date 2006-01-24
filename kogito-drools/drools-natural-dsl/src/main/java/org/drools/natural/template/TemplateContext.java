@@ -23,7 +23,7 @@ class TemplateContext {
     /**
      * Ad a chunk from the dictionary expression.
      * A chunk is a piece of nl, or a hole.
-     * nl & holes should not be mixed.
+     * nl & holes must not be mixed.
      */
     TemplateContext addChunk(String chunkText) {
         Chunk chunk = new Chunk(chunkText);

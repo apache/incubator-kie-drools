@@ -83,7 +83,6 @@ public class NaturalLanguageCompilerTest extends TestCase
         String snippet = "that bob likes cheese";
         assertEquals("bob.likesCheese()", parser.compileNaturalExpression(snippet));
     }
-    
 
 
 }
