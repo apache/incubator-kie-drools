@@ -40,8 +40,8 @@ public class NLMappingItem
         if ( arg instanceof NLMappingItem ) {
             NLMappingItem item = (NLMappingItem) arg;
             if ( item.priority == this.priority ) return 0;
-            if ( item.priority > this.priority ) return 1;
-            if ( item.priority < this.priority ) return -1;
+            if ( item.priority > this.priority ) return -1;
+            if ( item.priority < this.priority ) return 1;
             return 0;
         }
         else {
@@ -49,4 +49,8 @@ public class NLMappingItem
         }
     }
 
+    int getPriority() {
+        return this.priority;
+    }
+    
 }

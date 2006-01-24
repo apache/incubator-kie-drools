@@ -23,18 +23,18 @@ public class NLGrammar
 
     /** 
      * When loading from properties, the order in which they apprear in the props file
-     * is the priority.
+     * is the priority. (TODO: order means nothing to properties it seems).
      * 
      * Which makes sense intuitively, the order you read them it the order in which they will be applied.
      */
     public void loadFromProperties(Properties props) {
-        int i = 0;
+        int i = props.size();
         for ( Iterator iter = props.keySet().iterator(); iter.hasNext(); ) {
             String key = (String) iter.next();
             String property = props.getProperty(key);
             NLMappingItem item = new NLMappingItem(i, key, property);
             addNLItem(item);
-            i++;
+            i--;
         }
     }
     
