@@ -27,13 +27,13 @@ public class TemplateFactoryTest extends TestCase {
         assertEquals("chunks", list.get(2));
 
         
-        list = factory.lexChunks("{42} more {0} chunks");
+        list = factory.lexChunks("{42} more '{0}' chunks");
         assertEquals(4, list.size());
         
         assertEquals("{42}", list.get(0));
-        assertEquals("more", list.get(1));
+        assertEquals("more '", list.get(1));
         assertEquals("{0}", list.get(2));
-        assertEquals("chunks", list.get(3));
+        assertEquals("' chunks", list.get(3));
         
         
     }
