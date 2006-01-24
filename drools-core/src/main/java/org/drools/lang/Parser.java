@@ -335,7 +335,7 @@ public class Parser {
 				return null;
 			}
 			
-			String trimLine = line.trim();
+			String trimLine = line.trim(); 
 			
 			if ( trimLine.length() == 0 || trimLine.startsWith( COMMENT_1 ) || trimLine.startsWith( COMMENT_2 ) ) {
 				line = null;
@@ -343,7 +343,7 @@ public class Parser {
 		}
 		
 		reader.reset();
-		return stripTrailingComments(line);
+		return line;
 	}
 	
 	protected String consume() throws IOException {
@@ -370,19 +370,7 @@ public class Parser {
 			}
 		}
 		
-		return stripTrailingComments(line);
+		return line;
 	}
-    
-    /**
-     * Removes "inline" comments from string.
-     */
-    protected String stripTrailingComments(final String line) {
-        //BOB: is this more efficient with a single regex? 
-        //Then can have a single definition of a comment?
-        int pos = line.lastIndexOf(COMMENT_1);
-        if (pos  > 0) return line.substring(0, pos);
-        pos = line.lastIndexOf(COMMENT_2);
-        if (pos > 0)  return line.substring(0, pos);
-        return line;
-    }
+
 }
