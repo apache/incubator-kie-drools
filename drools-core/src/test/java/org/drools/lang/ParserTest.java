@@ -47,7 +47,7 @@ public class ParserTest extends TestCase {
 		assertEquals( "java.util.ArrayList", parser.getImports().get( 1 ) );
 		
 		assertEquals( 1, parser.getRules().size() );
-		assertEquals( "find_seating", ((Rule)parser.getRules().get(0)).getName() );
+		assertEquals( "find seating", ((Rule)parser.getRules().get(0)).getName() );
         
         assertEquals(null, parser.getExpander());
 	}
