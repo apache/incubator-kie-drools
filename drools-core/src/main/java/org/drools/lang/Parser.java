@@ -22,7 +22,7 @@ import org.drools.rule.RuleConstructionException;
  */
 public class Parser {
 	
-	private static Pattern PACKAGE_DECL = Pattern.compile( "\\s*package\\s*([^;]+);?\\s*" );
+    private static Pattern PACKAGE_DECL = Pattern.compile( "\\s*package\\s*([^;]+);?\\s*" );
 	private static Pattern IMPORT_STATEMENT = Pattern.compile( "\\s*import\\s*([^;]+);?\\s*" );
 	private static Pattern RULE_DECL = Pattern.compile( "\\s*rule\\s*([^\\s]+)\\s*" );
     
@@ -30,7 +30,11 @@ public class Parser {
 	
 	private static Pattern FACT_BINDING = Pattern.compile( "\\s*(\\w+)\\s*=>\\s*(.*)" );
 	private static Pattern FIELD_BINDING = Pattern.compile( "\\s*(\\w+):(\\w+)\\s*" );
-	
+
+    private static String COMMENT_2 = "//";
+    private static String COMMENT_1 = "#";
+    
+    
 	private BufferedReader reader;
 	
 	private String packageDeclaration;
@@ -165,7 +169,7 @@ public class Parser {
 		line = laDiscard();
 		
 		if ( ! line.trim().equals( "end" ) ) {
-			throw new ParseException( "end expected.", lineNumber);
+			throw new ParseException( "[end] expected. But instead got: [" + line.trim() + "]", lineNumber);
 		}
 		
 		consumeDiscard();
@@ -263,7 +267,7 @@ public class Parser {
 		
 		String guts = pattern.substring( leftParen+1, rightParen ).trim();
 		
-		// TODO: Michael, should be also expand the guts?
+		// TODO: Michael, should be also expand the guts? Nope. Don't really think so.
 		
 		StringTokenizer tokens = new StringTokenizer( guts, "," );
 		
@@ -281,7 +285,7 @@ public class Parser {
 			String field = matcher.group( 2 );
 			System.err.println( "bind [" + bindTo + "] to field [" + field + "]" );
 		} else {
-			// TODO: Michael, want to jack in here also?
+			// TODO: Michael, want to jack in here also? Nope, not really...
 			System.err.println( "further work required for [" + constraint + "]" );
 		}
 	}
@@ -333,13 +337,13 @@ public class Parser {
 			
 			String trimLine = line.trim();
 			
-			if ( trimLine.length() == 0 || trimLine.startsWith( "#" ) || trimLine.startsWith( "//" ) ) {
+			if ( trimLine.length() == 0 || trimLine.startsWith( COMMENT_1 ) || trimLine.startsWith( COMMENT_2 ) ) {
 				line = null;
 			}
 		}
 		
 		reader.reset();
-		return line;
+		return stripTrailingComments(line);
 	}
 	
 	protected String consume() throws IOException {
@@ -361,11 +365,24 @@ public class Parser {
             
 			String trimLine = line.trim();
 			
-			if ( trimLine.length() == 0 || trimLine.startsWith( "#" ) || trimLine.startsWith( "//" ) ) {
+			if ( trimLine.length() == 0 || trimLine.startsWith( COMMENT_1 ) || trimLine.startsWith( COMMENT_2 ) ) {
 				line = null;
 			}
 		}
 		
-		return line;
+		return stripTrailingComments(line);
 	}
+    
+    /**
+     * Removes "inline" comments from string.
+     */
+    protected String stripTrailingComments(final String line) {
+        //BOB: is this more efficient with a single regex? 
+        //Then can have a single definition of a comment?
+        int pos = line.lastIndexOf(COMMENT_1);
+        if (pos  > 0) return line.substring(0, pos);
+        pos = line.lastIndexOf(COMMENT_2);
+        if (pos > 0)  return line.substring(0, pos);
+        return line;
+    }
 }

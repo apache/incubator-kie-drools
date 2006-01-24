@@ -7,7 +7,7 @@ package org.drools.lang;
 
 # semi colons are optional, we're line-centric
 
-import java.util.List
+import java.util.List//trailing comment
 import java.util.ArrayList;
 
 # use expanders for domain specific and pseudo natural language extensions
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 
 rule find_seating
-    when
+    when #trailing comment
 	    context => Context( state == Context.ASSIGN_SEATS ) 
 	    Seating( seatingId:id, seatingPid:pid, pathDone == true, seatingRightSeat:rightSeat, seatingRightGuestName:rightGuestName )
 	    
