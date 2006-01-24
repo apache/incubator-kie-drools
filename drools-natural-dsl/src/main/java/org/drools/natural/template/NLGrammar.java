@@ -22,7 +22,7 @@ public class NLGrammar
     
 
     /** 
-     * When loading from properties, the order in which they apprear in the props file
+     * When loading from properties, the order in which they appear in the props file
      * is the priority. (TODO: order means nothing to properties it seems).
      * 
      * Which makes sense intuitively, the order you read them it the order in which they will be applied.
