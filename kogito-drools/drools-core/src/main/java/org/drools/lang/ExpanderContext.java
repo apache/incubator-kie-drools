@@ -1,5 +1,6 @@
 package org.drools.lang;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
@@ -67,7 +68,7 @@ public class ExpanderContext implements Serializable {
             registerExpander(expander, expanderName);
             return expander;
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException("Unable to load expander with name: " + expanderName);
         }
     }

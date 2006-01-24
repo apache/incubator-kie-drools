@@ -34,7 +34,17 @@
       <groupId>jparsec</groupId>
       <artifactId>jparsec</artifactId>
       <version>0.01</version>
-    </dependency>       
+    </dependency>   
+    
+	  <!-- only needed for the default expander in lang.. remove when it is refactored. -->
+	  <dependency>
+	      <groupId>commons-lang</groupId>
+	      <artifactId>commons-lang</artifactId>
+	      <version>2.1</version>
+	  </dependency>    
+        
   </dependencies>
+  
+
 
 </project>

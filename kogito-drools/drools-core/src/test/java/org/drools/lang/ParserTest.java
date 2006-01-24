@@ -53,8 +53,10 @@ public class ParserTest extends TestCase {
 	}
     
     public void test_with_expander() throws Exception {
-        Parser parser = parser( "rule-with-expansion.drl" );
+        Parser parser = parser( "cheese-rules.drl" );
         parser.parse();
+        assertEquals("cheese_rules", ((Rule)parser.getRules().get(0)).getName() );
+        
     }
 	
 	protected Parser parser(String name) {
