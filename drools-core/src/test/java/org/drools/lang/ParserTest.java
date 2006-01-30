@@ -2,6 +2,8 @@ package org.drools.lang;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -56,6 +58,23 @@ public class ParserTest extends TestCase {
         Parser parser = parser( "cheese-rules.drl" );
         parser.parse();
         assertEquals("cheese_rules", ((Rule)parser.getRules().get(0)).getName() );
+        
+    }
+    
+    public void test_with_appdata() throws Exception  {
+        Parser parser = parser ( "application-data.drl" );
+        parser.parse();
+        Map appData = parser.getApplicationData();
+        assertEquals(2, appData.size());
+        assertEquals("MyObject", appData.get("me"));
+        assertEquals("YourObject", appData.get("you"));
+    }
+    
+    public void test_with_functions() throws Exception {
+        Parser parser = parser ( "functions.drl" );
+        parser.parse();
+        assertNotNull(parser.getFunctions());
+        assertTrue(parser.getFunctions().indexOf("System.out.println(string);") > -1);
         
     }
 	
