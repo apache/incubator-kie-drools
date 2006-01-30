@@ -4,12 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.rule.ApplicationData;
 import org.drools.rule.DuplicateRuleNameException;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConstructionException;
@@ -24,16 +27,15 @@ public class Parser {
 	
     private static Pattern PACKAGE_DECL = Pattern.compile( "\\s*package\\s*([^;]+);?\\s*" );
 	private static Pattern IMPORT_STATEMENT = Pattern.compile( "\\s*import\\s*([^;]+);?\\s*" );
+    private static Pattern APP_DATA_STATEMENT = Pattern.compile( "\\s*application-data\\s*([^;]+)\\s([^;]+);?\\s*" );    
 	private static Pattern RULE_DECL = Pattern.compile( "\\s*rule\\s*(.*[^\\s]+)\\s*" );
-    
+    private static Pattern FUNCTION_DECL = Pattern.compile("\\s*functions?\\s*");
     private static Pattern EXPANDER_STATEMENT = Pattern.compile("\\s*use\\s*expander\\s([^;]+);?\\s*");
-	
 	private static Pattern FACT_BINDING = Pattern.compile( "\\s*(\\w+)\\s*=>\\s*(.*)" );
 	private static Pattern FIELD_BINDING = Pattern.compile( "\\s*(\\w+):(\\w+)\\s*" );
 
-    private static String COMMENT_2 = "//";
     private static String COMMENT_1 = "#";
-    
+    private static String COMMENT_2 = "//";
     
 	private BufferedReader reader;
 	
@@ -41,8 +43,8 @@ public class Parser {
 	private List imports;
     private Expander expander;
 	private List rules;
-
-    
+    private Map applicationData;
+    private String functions;
     
     private int lineNumber;
 
@@ -51,6 +53,7 @@ public class Parser {
 		this.imports = new ArrayList();
 		this.rules   = new ArrayList();
         this.expander = null;
+        this.applicationData = new HashMap();
         this.lineNumber = 0;
 	}
 	
@@ -66,6 +69,10 @@ public class Parser {
 		return rules;
 	}
     
+    public String getFunctions() {
+        return functions;
+    }
+    
     Expander getExpander() {
         return expander;
     }
@@ -73,13 +80,17 @@ public class Parser {
 	public void parse() throws IOException, RuleConstructionException {
 		prolog();
 		rules();
+        
 	}
 	
 	protected void prolog() throws IOException {
 		packageDeclaration();
 		importStatements();
+        applicationDataStatements();
         expanderStatement();
-		functions();
+        functions();
+        //BOB: do we want to allow flexible ordering of functions, etc? 
+        //I think they should be at the end actually...
 	}
 	
 	protected void packageDeclaration() throws IOException {
@@ -100,6 +111,29 @@ public class Parser {
 			// just do it again
 		}
 	}
+    
+    protected void applicationDataStatements() throws IOException {
+        while ( applicationDataStatement() ) {
+            //nike
+        }
+    }
+    
+    protected boolean applicationDataStatement() throws IOException {
+        String line = laDiscard();
+        
+        if ( line == null ) { return false; }
+        
+        Matcher matcher = APP_DATA_STATEMENT.matcher( line );
+        
+        if ( matcher.matches() ) {
+            consumeDiscard();
+            
+            applicationData.put( matcher.group( 2 ).trim(), matcher.group( 1 ).trim() );
+            return true;
+        }
+        
+        return false;
+    }
     
 	protected boolean importStatement() throws IOException {
 		String line = laDiscard();
@@ -134,9 +168,45 @@ public class Parser {
         return false;
     }    
 	
-	protected void functions() {
-		
-	}
+	protected void functions() throws IOException {
+        String line = laDiscard();
+        
+        if ( line == null ) { return; }
+        
+        Matcher matcher = FUNCTION_DECL.matcher( line );
+        
+        if ( matcher.matches() ) {
+            consumeDiscard();
+            //here we could put the semantic type declaration
+        } else {
+            return; //no functions, chopper... here, theres no functions.
+        }
+        
+        StringBuffer buffer = new StringBuffer();
+        
+        while ( true ) {
+            line = laDiscard();
+            if ( line == null ) {
+                throw new ParseException( "end of functions expected", lineNumber );
+            }
+            String trimLine = line.trim();
+            if ( trimLine.equals( "end" ) ) {
+                break;
+            }
+            consumeDiscard();
+            line = maybeExpand( trimLine );
+            buffer.append( line + "\n" );
+        }
+        
+        if ( ! line.trim().equals( "end" ) ) {
+            throw new ParseException( "[end] of functions expected. But instead got: [" + line.trim() + "]", lineNumber);
+        }
+        
+        this.functions = buffer.toString();
+        
+        consumeDiscard();
+   }
+    
 	
 	protected void rules() throws IOException, RuleConstructionException {
 		while ( rule() ) {
@@ -170,7 +240,7 @@ public class Parser {
 		line = laDiscard();
 		
 		if ( ! line.trim().equals( "end" ) ) {
-			throw new ParseException( "[end] expected. But instead got: [" + line.trim() + "]", lineNumber);
+			throw new ParseException( "end of rule expected. But instead got: [" + line.trim() + "]", lineNumber);
 		}
 		
 		consumeDiscard();
@@ -373,5 +443,12 @@ public class Parser {
 		
 		return line;
 	}
+
+    /**
+     * @return A Map<<String>identifier, <String>Class> view of the app data
+     */
+    public Map getApplicationData() {
+        return this.applicationData;
+    }
 
 }
