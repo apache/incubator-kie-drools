@@ -19,41 +19,63 @@ import org.drools.rule.RuleConstructionException;
 
 /**
  * The one, the only DRL parser.
+ * Full of regex goodness. If you are not totally comfortable with regex,
+ * then please either look elsewhere, or put on your safety pants.
  * 
  * @master Bob McWirther
  * @apprentice Michael Neale
  */
 public class Parser {
 	
-    private static Pattern PACKAGE_DECL = Pattern.compile( "\\s*package\\s*([^;]+);?\\s*" );
-	private static Pattern IMPORT_STATEMENT = Pattern.compile( "\\s*import\\s*([^;]+);?\\s*" );
-    private static Pattern APP_DATA_STATEMENT = Pattern.compile( "\\s*application-data\\s*([^;]+)\\s([^;]+);?\\s*" );    
-	private static Pattern RULE_DECL = Pattern.compile( "\\s*rule\\s*(.*[^\\s]+)\\s*" );
-    private static Pattern FUNCTION_DECL = Pattern.compile("\\s*functions?\\s*");
-    private static Pattern EXPANDER_STATEMENT = Pattern.compile("\\s*use\\s*expander\\s([^;]+);?\\s*");
-	private static Pattern FACT_BINDING = Pattern.compile( "\\s*(\\w+)\\s*=>\\s*(.*)" );
-	private static Pattern FIELD_BINDING = Pattern.compile( "\\s*(\\w+):(\\w+)\\s*" );
+    
+    //----------------------------------------
+    // General parser recogniser patterns
+    //----------------------------------------
+    static Pattern PACKAGE_DECL = Pattern.compile( "\\s*package\\s*([^;]+);?\\s*" );
+	static Pattern IMPORT_STATEMENT = Pattern.compile( "\\s*import\\s*([^;]+);?\\s*" );
+    static Pattern APP_DATA_STATEMENT = Pattern.compile( "\\s*application-data\\s*([^;]+)\\s([^;]+);?\\s*" );    
+	static Pattern RULE_DECL = Pattern.compile( "\\s*rule\\s*(.*[^\\s]+)\\s*" );
+    static Pattern FUNCTION_DECL = Pattern.compile("\\s*functions?\\s*");
+    static Pattern EXPANDER_STATEMENT = Pattern.compile("\\s*use\\s*expander\\s([^;]+);?\\s*");
+	static Pattern FACT_BINDING = Pattern.compile( "\\s*(\\w+)\\s*=>\\s*(.*)" );
+	static Pattern FIELD_BINDING = Pattern.compile( "\\s*(\\w+):(\\w+)\\s*" );
 
-    private static String COMMENT_1 = "#";
-    private static String COMMENT_2 = "//";
+    //----------------------------------------
+    // Consequence handling patterns
+    //----------------------------------------
+    static String KNOWLEDGE_HELPER_PFX = ""; //could also be: "drools\\." for "classic" mode.
+    static Pattern MODIFY = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "modify\\s*\\(([^\\)]+)\\)(.*)");
+    static Pattern ASSERT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "assert\\s*\\(([^\\)]+)\\)(.*)");
+    static Pattern RETRACT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "retract\\s*\\(([^\\)]+)\\)(.*)");
+
+    
+    //---------------------------------------
+    // Constants
+    //---------------------------------------
+    static String COMMENT_1 = "#";
+    static String COMMENT_2 = "//";
     
 	private BufferedReader reader;
-	
 	private String packageDeclaration;
 	private List imports;
     private Expander expander;
+    private Expander consequenceExpander;
 	private List rules;
     private Map applicationData;
     private String functions;
-    
     private int lineNumber;
 
-	public Parser(Reader reader) {
+
+    /**
+     * @param reader A reader to UTF-8 encoded (preferably) DRL source.
+     */
+    public Parser(Reader reader) {
 		this.reader  = new BufferedReader( reader );
 		this.imports = new ArrayList();
 		this.rules   = new ArrayList();
         this.expander = null;
         this.applicationData = new HashMap();
+        this.consequenceExpander = new ConsequenceExpander();
         this.lineNumber = 0;
 	}
 	
@@ -378,7 +400,11 @@ public class Parser {
 					break;
 				}
 				consumeDiscard();
-                line = maybeExpand( trimLine );
+                
+                //we expand with special consequence expander first (for knowledge helper).
+                line = maybeExpand( 
+                                    consequenceExpander.expand(trimLine, this) 
+                                   );
 				consequence.append( line + "\n" );
 			}
 			System.err.println( "begin consequence");

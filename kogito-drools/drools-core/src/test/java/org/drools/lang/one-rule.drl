@@ -27,6 +27,8 @@ rule find seating
     then
         make a ruckus, damnit
         Really, you should
+        #following should be expanded using the consequence expander...
+        modify ( anObject );
 end
 
 
