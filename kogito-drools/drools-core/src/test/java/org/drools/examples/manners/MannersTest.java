@@ -196,6 +196,7 @@ public class MannersTest extends TestCase {
 //            Thread.sleep( 1000 );
 //        }
 
+        System.out.println("Integer evals:" + EvaluatorFactory.getIntEqEvalCount());
     }
 
     /**

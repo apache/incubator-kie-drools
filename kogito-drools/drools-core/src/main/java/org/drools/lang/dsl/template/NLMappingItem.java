@@ -18,22 +18,22 @@ public class NLMappingItem
     private int priority = 0;
     
     private String naturalTemplate;
-    private String grammarTemplate;
+    private String targetTemplate;
     
     public NLMappingItem(int priority,
                          String naturalTemplate,
-                         String grammarTemplate) {
+                         String targetTemplate) {
         this.priority = priority;
         this.naturalTemplate = naturalTemplate;
-        this.grammarTemplate = grammarTemplate;
+        this.targetTemplate = targetTemplate;
     }
     
     public String getNaturalTemplate() {
         return naturalTemplate;
     }
 
-    public String getGrammarTemplate() {
-        return grammarTemplate;
+    public String getTargetTemplate() {
+        return targetTemplate;
     }
 
     public int compareTo(Object arg) {

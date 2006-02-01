@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This takes a grammar template (the left hand side of a grammar mapping table)
+ * This takes a natural grammar template (the left hand side of a grammar mapping table)
  * and builds a TemplateContext for it.
  * 
  * Uses a built in lexer.
@@ -16,19 +16,19 @@ class TemplateFactory {
 
     /**
      * This will lex the template string into chunks.
-     * @param template From the grammar. eg "{0} likes cheese" is a template.
+     * @param naturalTemplate From the grammar. eg "{0} likes cheese" is a template.
      * @return A template context ready to apply to a nl expression.
      */
-    public TemplateContext getContext(String template) {
+    public Template getTemplate(String naturalTemplate) {
         
-        TemplateContext ctx = new TemplateContext();
+        Template template = new Template();
         
-        List chunkList = lexChunks(template);
+        List chunkList = lexChunks(naturalTemplate);
         for ( Iterator iter = chunkList.iterator(); iter.hasNext(); ) {
-             ctx.addChunk((String) iter.next());
+             template.addChunk((String) iter.next());
             
         }
-        return ctx;
+        return template;
     }
     
     

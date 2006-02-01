@@ -12,25 +12,25 @@ public class TemplateContextTest extends TestCase {
 
     
     public void testAllInOne() {
-        TemplateContext ctx = new TemplateContext();        
+        Template ctx = new Template();        
         //chunks represent a lexed grammar "left hand side"
         ctx.addChunk("baby on board")
             .addChunk("{0}")
             .addChunk("and")
             .addChunk("{1}")
             .addChunk("burt ward");        
-        String result = ctx.process("yeah this is an expression baby on board exp1 and exp2 burt ward end.", "something({0}, {1})");
+        String result = ctx.expandOnce("yeah this is an expression baby on board exp1 and exp2 burt ward end.", "something({0}, {1})");
         assertEquals("yeah this is an expression something(exp1, exp2) end.", result);
         
         
         //and check that the iterative one is OK.
-        result = ctx.process("yeah this is an expression baby on board exp1 and exp2 burt ward end.", "something({0}, {1})");
+        result = ctx.expandOnce("yeah this is an expression baby on board exp1 and exp2 burt ward end.", "something({0}, {1})");
         assertEquals("yeah this is an expression something(exp1, exp2) end.", result);        
     }    
     
     public void testBuildStrings() {
         
-        TemplateContext ctx = new TemplateContext();
+        Template ctx = new Template();
         
         //chunks represent a lexed grammar "left hand side"
         ctx.addChunk("baby on board")
@@ -67,7 +67,7 @@ public class TemplateContextTest extends TestCase {
 
     public void testMultipleReplacement() {
 
-        TemplateContext ctx = new TemplateContext();
+        Template ctx = new Template();
         
         //chunks represent a lexed grammar "left hand side"
         ctx.addChunk("{0}")
@@ -78,7 +78,7 @@ public class TemplateContextTest extends TestCase {
         String expected = "bob.likesCheese() and michael.likesCheese() conan.likesCheese()";
         
         
-        String result = ctx.processAllInstances(nl, grammarTemplate);
+        String result = ctx.expandAll(nl, grammarTemplate);
         assertEquals(expected, result);
     }
 

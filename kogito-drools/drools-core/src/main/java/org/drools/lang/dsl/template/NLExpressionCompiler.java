@@ -38,8 +38,8 @@ public class NLExpressionCompiler {
         TemplateFactory factory = new TemplateFactory();
         for ( Iterator iter = grammarItems.iterator(); iter.hasNext(); ) {
             NLMappingItem mapping = (NLMappingItem) iter.next();
-            TemplateContext ctx = factory.getContext(mapping.getNaturalTemplate());
-            templateCache.put(mapping, ctx);
+            Template template = factory.getTemplate(mapping.getNaturalTemplate());
+            templateCache.put(mapping, template);
         }
     }
     
@@ -49,14 +49,14 @@ public class NLExpressionCompiler {
      * the original, and then move on to the next item from the grammar/dictionary.
      */
     public String compile(String expression) {
-        String nl = expression;
+        String expanded = expression;
         for ( Iterator iter = templateCache.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             NLMappingItem mapping = (NLMappingItem) entry.getKey();
-            TemplateContext ctx = (TemplateContext) entry.getValue();
-            nl = ctx.processAllInstances(nl, mapping.getGrammarTemplate());
+            Template template = (Template) entry.getValue();
+            expanded = template.expandAll(expanded, mapping.getTargetTemplate());
         }
-        return nl;
+        return expanded;
     }
     
     
