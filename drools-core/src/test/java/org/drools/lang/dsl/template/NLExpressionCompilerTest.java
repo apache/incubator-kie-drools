@@ -82,7 +82,7 @@ public class NLExpressionCompilerTest extends TestCase {
         grammar = new NLGrammar();
         
         grammar.addNLItem(new NLMappingItem(1, "date of '{0}'", "dateOf({0})"));
-        grammar.addNLItem(new NLMappingItem(2, "age of [ {0} ]", "{0}.getAge()"));
+        grammar.addNLItem(new NLMappingItem(2, "age of [{0}]", "{0}.getAge()"));
         grammar.addNLItem(new NLMappingItem(3, "Today", "new java.util.Date()"));
         grammar.addNLItem(new NLMappingItem(4, "{0} is before {1}", "({0}).compareTo({1}) > 0"));
         
@@ -92,11 +92,16 @@ public class NLExpressionCompilerTest extends TestCase {
         expected = "(dateOf(10-jul-2006)).compareTo(new java.util.Date()) > 0";
         assertEquals(expected, compiler.compile(nl));
         
-        nl = "age of [ bob ] < age of [ michael ]";
+        //test repeating...
+        nl = "age of [bob] < age of [michael]";
         expected = "bob.getAge() < michael.getAge()";
         assertEquals(expected, compiler.compile(nl));
         
+        //test no change to output
+        nl = "nothing relevant here... move along";
+        expected = nl;
         
+        assertEquals(expected, compiler.compile(nl));
         
     }
     

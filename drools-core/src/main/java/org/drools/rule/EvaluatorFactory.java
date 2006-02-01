@@ -343,6 +343,8 @@ public class EvaluatorFactory {
     static class IntegerEqualEvaluator extends BaseEvaluator {
         private static Evaluator INSTANCE;
 
+        public static long count = 0;
+        
         public static Evaluator getInstance() {
             if ( INSTANCE == null ) {
                 INSTANCE = new IntegerEqualEvaluator();
@@ -357,6 +359,7 @@ public class EvaluatorFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
+            count++;
             return ((Number) object1).intValue() == ((Number) object2).intValue();
         }
         
@@ -488,5 +491,9 @@ public class EvaluatorFactory {
         public String toString() {
             return "Integer >=";
         }         
+    }
+    
+    public static long getIntEqEvalCount() {
+        return IntegerEqualEvaluator.count;
     }
 }

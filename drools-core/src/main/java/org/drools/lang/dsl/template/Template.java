@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  * This is an alternative approach to the infix parser.
  */
-class TemplateContext {
+class Template {
 
     //the start of the linked list.
     Chunk start;
@@ -25,7 +25,7 @@ class TemplateContext {
      * A chunk is a piece of nl, or a hole.
      * nl & holes must not be mixed.
      */
-    TemplateContext addChunk(String chunkText) {
+    Template addChunk(String chunkText) {
         Chunk chunk = new Chunk(chunkText);
         if (start == null) {
             start = chunk;
@@ -86,30 +86,30 @@ class TemplateContext {
     /**
      * This does it all as one call. Requires that chunks have been setup.
      * @param nl The nl expression to process. 
-     * @param grammarTemplate The grammar expression that will be interpolated (with the values from the original chunks), 
+     * @param targetTemplate The target grammar expression that will be interpolated (with the values from the original chunks), 
      * and then inserted in to the nl.
      * @return the NL with the populated grammarRHS replacing the original pattern (from the chunks).
      */
-    public String process(String nl, String grammarTemplate) {
+    public String expandOnce(String nl, String targetTemplate) {
         Map values = new HashMap();
         this.processNL(nl, values);
         String subKey = this.getSubstitutionKey();
-        String target = this.populateTargetString(values, grammarTemplate);
+        String target = this.populateTargetString(values, targetTemplate);
         return this.interpolate(nl, subKey, target);      
     }
 
     
     /** 
-     * Similar to process, but processes iteratively until there is
+     * Similar to expandOnce, but processes iteratively until there is
      * no change in the output. This allows for stuff to be repeated in an NL expression.
      */
-    public String processAllInstances(String nl, String grammarTemplate) {
+    public String expandAll(String nl, String targetTemplate) {
         String result = nl;
         
         //put an upper limit
         int i = 0;
         while (i < 10) {
-            String newResult = process(result, grammarTemplate);
+            String newResult = expandOnce(result, targetTemplate);
             if (newResult.equals(result)) {                
                 break;
             }
@@ -120,7 +120,7 @@ class TemplateContext {
                 throw new IllegalArgumentException("To many iterations in processing the expression: [" + 
                                                    nl + 
                                                    "] with target template: [" + 
-                                                   grammarTemplate + "]");
+                                                   targetTemplate + "]");
             }
         }
         return result;

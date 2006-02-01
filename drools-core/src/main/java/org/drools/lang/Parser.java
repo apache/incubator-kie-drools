@@ -39,7 +39,10 @@ public class Parser {
     static Pattern EXPANDER_STATEMENT = Pattern.compile("\\s*use\\s*expander\\s([^;]+);?\\s*");
 	static Pattern FACT_BINDING = Pattern.compile( "\\s*(\\w+)\\s*=>\\s*(.*)" );
 	static Pattern FIELD_BINDING = Pattern.compile( "\\s*(\\w+):(\\w+)\\s*" );
-
+	static Pattern SALIENCE_STATEMENT = Pattern.compile("\\s*salience\\s*([^;]+)\\s*");
+    static Pattern NOLOOP_STATEMENT = Pattern.compile("\\s*no-loop\\s*([^;]+)\\s*");
+    
+    
     //----------------------------------------
     // Consequence handling patterns
     //----------------------------------------
@@ -100,9 +103,16 @@ public class Parser {
     }
 	
 	public void parse() throws IOException, RuleConstructionException {
-		prolog();
-		rules();
-        
+        try {
+    		prolog();
+    		rules();
+        } catch (Exception e) { //for misc exceptions. Stil want the line number.
+            if (e instanceof ParseException) {
+                throw (ParseException) e;
+            } else {
+                throw new ParseException("Parse error", this.lineNumber, e);
+            }
+        }
 	}
 	
 	protected void prolog() throws IOException {
@@ -253,11 +263,14 @@ public class Parser {
 					throw new DuplicateRuleNameException( null, rule, null );
 				}
 			}
-			rules.add( new Rule( ruleName ) );
-		}
-		
-		ruleConditions();
-		ruleConsequence();
+            Rule rule = new Rule( ruleName );
+			rules.add( rule );
+            
+            ruleAttributes(rule);
+            ruleConditions();
+            ruleConsequence();
+            
+		} 
 		
 		line = laDiscard();
 		
@@ -270,6 +283,46 @@ public class Parser {
 		return true;
 	}
 	
+    /** For rule attributes like salience, etc */
+    protected void ruleAttributes(Rule rule) throws IOException {
+        String line = laDiscard();
+        
+        if ( line == null ) { return; }
+        
+        while ( ruleAttribute(rule) ) {
+            
+        }
+    }
+    
+    protected boolean ruleAttribute(Rule rule) throws IOException {
+        String line = laDiscard();
+        if ( line == null ) {
+            return false;
+        }
+        
+        line = line.trim();
+        
+        if ( line.equals( "when" ) || line.equals( "then" ) ) {
+            return false;
+        }        
+        
+        line = consume();
+        
+        Matcher matcher = SALIENCE_STATEMENT.matcher(line);
+        if (matcher.matches()) {
+            rule.setSalience(Integer.parseInt(matcher.group(1)));
+            return true;
+        }
+        matcher = NOLOOP_STATEMENT.matcher(line);
+        if (matcher.matches()) {
+            rule.setNoLoop(Boolean.parseBoolean(matcher.group(1)));
+            return true;
+        }
+        
+        
+        return true;
+    }
+    
 	protected void ruleConditions() throws IOException {
 		String line = laDiscard();
 		
