@@ -43,7 +43,7 @@ public class ProxyGeneratorTest extends TestCase {
         
     }
     
-    public void xxtestChangeListener() throws IOException {
+    public void testChangeListener() throws IOException {
         Person original = new Person();
         original.setAge(31);
         original.setName("michael");
