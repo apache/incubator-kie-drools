@@ -58,10 +58,12 @@ public class ShadowedFactInterceptor extends FactInterceptor {
                             MethodProxy proxy) throws Throwable {
         
         //this one is a little different...
-        if (method.getDeclaringClass() == indexAccessor.getDeclaringClass() ) {
+        Class methodClass = method.getDeclaringClass();
+        
+        if (methodClass == indexAccessor.getDeclaringClass() ) {
             Integer arg = (Integer) args[0];
             return values[arg.intValue() - 1];
-        } else if (method.getDeclaringClass() == targetAccessor.getDeclaringClass() ) {
+        } else if (methodClass == targetAccessor.getDeclaringClass() ) {
             return target;
         } else {
             //check if method is in targetFields
