@@ -81,6 +81,10 @@ public class ProxyGeneratorTest extends TestCase {
         assertEquals("jo", event.getOldValue());
         assertEquals("chloe", event.getNewValue());
         
+        cl.removePropertyChangeListener(listener);
+        p.setName("done");
+        assertEquals(2, listener.events.size());
+        
     }
     
     public void testOtherObject() throws Exception {
@@ -138,10 +142,6 @@ public class ProxyGeneratorTest extends TestCase {
             String s = o.getName() + i;
         }
         System.out.println("Time taken native: " + (System.currentTimeMillis() - start));        
-        
-        
-        
-        
         
         
     }

@@ -7,9 +7,6 @@ import net.sf.cglib.proxy.MethodProxy;
 
 /**
  * This implements the stuff used by the dynamic proxies that are wrapped around facts.
- * This version is a simple non-shadow one.
- * 
- * This is where all the field handling is done.
  * 
  * @author Michael Neale
  */
@@ -18,8 +15,7 @@ public class FactInterceptor
     MethodInterceptor {
 
     protected final Object target;
-    protected static final Method indexAccessor = getIndexAccessor();
-    protected static final Method targetAccessor = getTargetAccessor();
+    
     protected final Method[] targetFields;
     
     public FactInterceptor(Object target, Method[] fieldMethods) {
@@ -31,33 +27,21 @@ public class FactInterceptor
                             Method method,
                             Object[] args,
                             MethodProxy proxy) throws Throwable {
-        if (method.getDeclaringClass() == indexAccessor.getDeclaringClass() ) {
+        if (method.getDeclaringClass() == FieldIndexAccessor.class ) {
             Integer arg = (Integer) args[0];
             return targetFields[arg.intValue() - 1].invoke(target, null);
-        } else if (method.getDeclaringClass() == targetAccessor.getDeclaringClass() ) {
+        } else if (method.getDeclaringClass() == TargetAccessor.class ) {
             return target;
         }
+//        } else if (method.getDeclaringClass() == SerializableProxy.class) {
+//            
+//        }
         return method.invoke(target, args);
         
     }
     
-    private static Method getIndexAccessor() {
-        try {
-            return FieldIndexAccessor.class.getMethod("getField", new Class[]{int.class});
-        }
-        catch ( Exception e ) {
-            throw new IllegalStateException( e );
-        }
-    }
-    
-    private static Method getTargetAccessor() {
-        try {
-            return TargetAccessor.class.getMethod("getTarget", null);
-        }
-        catch ( Exception e ) {
-            throw new IllegalStateException( e );
-        }
-    }    
-    
 
+
+    
+    
 }
