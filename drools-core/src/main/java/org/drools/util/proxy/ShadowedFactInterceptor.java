@@ -60,10 +60,10 @@ public class ShadowedFactInterceptor extends FactInterceptor {
         //this one is a little different...
         Class methodClass = method.getDeclaringClass();
         
-        if (methodClass == indexAccessor.getDeclaringClass() ) {
+        if (methodClass == FieldIndexAccessor.class ) {
             Integer arg = (Integer) args[0];
             return values[arg.intValue() - 1];
-        } else if (methodClass == targetAccessor.getDeclaringClass() ) {
+        } else if (methodClass == TargetAccessor.class ) {
             return target;
         } else {
             //check if method is in targetFields

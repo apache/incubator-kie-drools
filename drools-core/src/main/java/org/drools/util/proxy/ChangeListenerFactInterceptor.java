@@ -73,15 +73,15 @@ public class ChangeListenerFactInterceptor
                             Object[] args,
                             MethodProxy proxy) throws Throwable {
         Class decClass = method.getDeclaringClass();
-        if (decClass == indexAccessor.getDeclaringClass() ) {
+        if (decClass == FieldIndexAccessor.class ) {
             Integer arg = (Integer) args[0];
             return targetFields[arg.intValue() - 1].invoke(target, null);
-        } else if (decClass == targetAccessor.getDeclaringClass() ) {
+        } else if (decClass == TargetAccessor.class ) {
             return target;
-        } else if (decClass == addListener.getDeclaringClass()) {
+        } else if (method.equals(addListener)) {
             addListener(args[0]);
             return null;
-        } else if (decClass == removeListenerMethod.getDeclaringClass()) {
+        } else if (method.equals(removeListenerMethod)) {
             removeListener(args[0]);
             return null;
         } else {
