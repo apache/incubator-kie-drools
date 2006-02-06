@@ -27,40 +27,44 @@ import net.sf.cglib.proxy.MethodProxy;
  */
 public class ShadowedFactInterceptor extends FactInterceptor {
 
-    private final Object[] values;
-    private final Map   fieldToValue;
+    private Map   fieldToValue;
     private final Object target;
+    private final Method[] fieldMethods;
     
     public ShadowedFactInterceptor(Object target,
                                    Method[] fieldMethods) {
-
         this.target = target;
-        
+        this.fieldMethods = fieldMethods;
+        refreshShadowCopies();
+    }
+
+    
+    private void refreshShadowCopies() {
         fieldToValue = new HashMap();
         int numOfFields = fieldMethods.length;
-        values = new Object[numOfFields];
         try {
             for ( int i = 0; i < numOfFields; i++ ) {
 
                 //read all the objects into a value array
                 Method method = fieldMethods[i];
                 Object val = method.invoke( target, null);
-                values[i] = fieldMethods[i].invoke( target,
-                                                    null );
                 fieldToValue.put(method, val);
             }
         }
         catch ( Exception e ) {
             throw new IllegalStateException( e );
         }
-
     }
 
     public Object intercept(Object obj,
                             Method method,
                             Object[] args,
                             MethodProxy proxy) throws Throwable {
-        
+    
+            if (method.getDeclaringClass() == ShadowUpdater.class) {
+                refreshShadowCopies();
+                return null;
+            }
             //check if method is in targetFields
             Object val = fieldToValue.get(method);
             if (val != null) {
