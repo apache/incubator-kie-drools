@@ -47,9 +47,7 @@ public class TupleSourceTest extends DroolsTestCase {
         assertLength( 0,
                       sink1.getAsserted() );
 
-        ReteTuple tuple1 = new ReteTuple( 0,
-                                          new FactHandleImpl( 1 ),
-                                          workingMemory );
+        ReteTuple tuple1 = new ReteTuple( new FactHandleImpl( 1 ) );
 
         source.propagateAssertTuple( tuple1,
                                      context,
@@ -66,9 +64,7 @@ public class TupleSourceTest extends DroolsTestCase {
         assertSame( workingMemory,
                     list[2] );
 
-        ReteTuple tuple2 = new ReteTuple( 0,
-                                          new FactHandleImpl( 1 ),
-                                          workingMemory );
+        ReteTuple tuple2 = new ReteTuple( new FactHandleImpl( 1 ) );
 
         MockTupleSink sink2 = new MockTupleSink();
         source.addTupleSink( sink2 );
@@ -130,9 +126,7 @@ public class TupleSourceTest extends DroolsTestCase {
         // Only the last added TupleSink should receive facts
         source.attachingNewNode = true;
 
-        ReteTuple tuple1 = new ReteTuple( 0,
-                                          new FactHandleImpl( 2 ),
-                                          workingMemory );
+        ReteTuple tuple1 = new ReteTuple( new FactHandleImpl( 2 ) );
 
         source.propagateAssertTuple( tuple1,
                                      context,
@@ -146,9 +140,7 @@ public class TupleSourceTest extends DroolsTestCase {
         // Now all sinks should receive values
         source.attachingNewNode = false;
 
-        ReteTuple tuple2 = new ReteTuple( 0,
-                                          new FactHandleImpl( 3 ),
-                                          workingMemory );
+        ReteTuple tuple2 = new ReteTuple( new FactHandleImpl( 3 ) );
 
         source.propagateAssertTuple( tuple2,
                                      context,
