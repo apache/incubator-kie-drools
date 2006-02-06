@@ -122,61 +122,30 @@ public class MannersTest extends TestCase {
 
         final RuleBaseImpl ruleBase = new RuleBaseImpl( );
         ruleBase.addRuleSet( ruleSet );
-
-//        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase);                
-//        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-//        public void run() {
-//            viewer.showGUI();
-//            }
-//        });
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();        
 
         InputStream is = getClass().getResourceAsStream( "/manners16.dat" );
         List list = getInputObjects( is );
         for ( Iterator it = list.iterator(); it.hasNext(); ) {
             Object object = it.next();
-            //System.err.println( object );
             workingMemory.assertObject( object );
         }
-
-        //workingMemory.addEventListener( new DebugWorkingMemoryEventListener() );
-        
-        //workingMemory.addEventListener( new DebugAgendaEventListener() );        
-        
-//        workingMemory.addEventListener( new DefaultAgendaEventListener() { 
-//            public void activationCreated(ActivationCreatedEvent event) {
-//                System.err.println( event );
-//            }
-//            
-//            public void activationCancelled(ActivationCancelledEvent event) {
-//                System.err.println( event );
-//            }
-//            
-//            public void beforeActivationFired(BeforeActivationFiredEvent event) {
-//                System.err.println( event );
-//            }
-//        } );        
-        
+              
         workingMemory.assertObject( new Count( 1 ) );
-// 
-//        workingMemory.assertObject( new Seating(1,0,true,1,"n11",1,"n11") );
-//        workingMemory.assertObject( new Seating(2,1,true,1,"n11",2,"n10") );
-//        workingMemory.assertObject( new Path(1,1,"n11") );
-//        workingMemory.assertObject( new Path(2,2,"n10") );
-//        workingMemory.assertObject( new Path(2,1,"n11") );
-//        
-//        workingMemory.assertObject( new Chosen(1, "n10",Hobby.H2) );;
-//        
-//        Context context = new Context( Context.ASSIGN_SEATS );
-//        workingMemory.assertObject( context );
         
         long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
         System.err.println( System.currentTimeMillis() - start );
         
-//        while (true) {
-//            Thread.sleep( 1000 );
-//        }
+        //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase); 
+        //        
+        //        javax.swing.SwingUtilities.invokeLater(new Runnable() { 
+        //        		public void run() {
+        //        			viewer.showGUI();
+        //        		}
+        //        });
+        //        
+        //        Thread.sleep( 10000 );
 
         System.out.println("Integer evals:" + EvaluatorFactory.getIntEqEvalCount());
     }
