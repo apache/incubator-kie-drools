@@ -29,6 +29,7 @@ public class ProxyGenerator {
     //cache the generated classes, and lists of indexable "fields" on each pojo class
     static Map cache = new HashMap();
     
+    /** In this version, change listening features will be added to the pojo, based on bean properties */
     public static Object generateChangeListenerProxy(Object pojo) throws IOException {
         Class cls = pojo.getClass();
         GeneratedEntry holder = getEntryFor(cls);
@@ -59,7 +60,7 @@ public class ProxyGenerator {
         GeneratedEntry entry = (GeneratedEntry) cache.get(pojoClass);
         if (entry == null) {
             entry = new GeneratedEntry();
-            entry.instanceFactory = createInstanceFactory(pojoClass, new Class[] {ChangeListener.class});
+            entry.instanceFactory = createInstanceFactory(pojoClass, new Class[] {ChangeListener.class, ShadowUpdater.class});
             entry.fieldMethods = extractFieldMethodsInOrder(pojoClass);
             cache.put(pojoClass, entry);
         }

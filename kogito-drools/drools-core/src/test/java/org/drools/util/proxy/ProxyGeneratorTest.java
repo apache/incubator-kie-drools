@@ -25,6 +25,9 @@ public class ProxyGeneratorTest extends TestCase {
         assertEquals("michael", p.getName()); //ooh clever...
         assertEquals("jo", original.getName());        
         
+        ((ShadowUpdater) p).refreshShadowCopies();
+        assertEquals("jo", p.getName());
+        
     }
     
     public void testChangeListener() throws IOException {
