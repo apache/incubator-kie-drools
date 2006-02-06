@@ -67,6 +67,14 @@ class BetaMemory
         this.leftMemory = new LinkedList();
         this.rightMemory = new LinkedHashMap();
     }
+    
+    public LinkedList getLeftTupleMemory() {
+    	return this.leftMemory;
+    }
+    
+    public Map getRightFactHandleMemory() {
+    	return this.rightMemory;
+    }
 
     
     /**

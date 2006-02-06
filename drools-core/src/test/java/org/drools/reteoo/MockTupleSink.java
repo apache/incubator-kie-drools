@@ -3,15 +3,16 @@ package org.drools.reteoo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.drools.FactException;
 import org.drools.spi.PropagationContext;
 
 public class MockTupleSink extends TupleSource
     implements
     TupleSink,
     NodeMemory {
-    private List                asserted  = new ArrayList();
+    private List asserted  = new ArrayList();
+    private List retracted = new ArrayList();
 
     public MockTupleSink() {
         super( 0 );
@@ -24,21 +25,25 @@ public class MockTupleSink extends TupleSource
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
-
-        if ( workingMemory != null ) {
-            Map map = (Map) workingMemory.getNodeMemory( this );
-            map.put( tuple.getKey(),
-                     tuple );
-        }
-
         this.asserted.add( new Object[]{tuple, context, workingMemory} );
+
+    }
+
+    public void retractTuple(ReteTuple tuple,
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
+        this.retracted.add( new Object[]{tuple, context, workingMemory} );
 
     }
 
     public List getAsserted() {
         return this.asserted;
     }
-    
+
+    public List getRetracted() {
+        return this.retracted;
+    }
+
     public void ruleAttached() {
         // TODO Auto-generated method stub
     }
@@ -66,7 +71,7 @@ public class MockTupleSink extends TupleSource
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) {
+                              PropagationContext context) throws FactException {
         // TODO Auto-generated method stub
 
     }
