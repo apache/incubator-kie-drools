@@ -35,6 +35,12 @@
       <artifactId>jparsec</artifactId>
       <version>0.01</version>
     </dependency>   
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>2.1_3</version>
+    </dependency>   
+
     
 	  <!-- only needed for the default expander in lang.. remove when it is refactored. -->
 	  <dependency>

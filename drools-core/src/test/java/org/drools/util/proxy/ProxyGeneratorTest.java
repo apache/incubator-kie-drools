@@ -11,28 +11,12 @@ import junit.framework.TestCase;
 
 public class ProxyGeneratorTest extends TestCase {
 
-    public void testNonShadow() throws IOException {
-        Person original = new Person();
-        original.setAge(31);
-        original.setName("michael");
-        
-        Person p = (Person) ProxyGenerator.generateProxy(original, false, false);
-        standardTests( original,
-                   p );
-               
-        
-        //check that stuff is passed through (bypasses the proxy).
-        p.changeName("jo");
-        assertEquals("jo", p.getName());
-        assertEquals("jo", original.getName());        
-    }
-    
     public void testShadow() throws IOException {
         Person original = new Person();
         original.setAge(31);
         original.setName("michael");
         
-        Person p = (Person) ProxyGenerator.generateProxy(original, true, false);
+        Person p = (Person) ProxyGenerator.generateProxyWithShadow(original);
         standardTests( original,
                    p );
         
@@ -48,7 +32,7 @@ public class ProxyGeneratorTest extends TestCase {
         original.setAge(31);
         original.setName("michael");
         
-        Person p = (Person) ProxyGenerator.generateProxy(original, false, true);
+        Person p = (Person) ProxyGenerator.generateChangeListenerProxy(original);
         standardTests( original,
                    p );
                
@@ -89,10 +73,9 @@ public class ProxyGeneratorTest extends TestCase {
     
     public void testOtherObject() throws Exception {
         Person p = new Person();
-        Object personProxy = ProxyGenerator.generateProxy(p, false, false);
-        
+       
         Child c = new Child(new BigInteger("321321321"), "Chloe Emma Neale");
-        Child proxyChild = (Child) ProxyGenerator.generateProxy(c, true, false);
+        Child proxyChild = (Child) ProxyGenerator.generateProxyWithShadow(c);
         assertNotSame(proxyChild, c);
         assertEquals(proxyChild.getName(), c.getName());
     }
@@ -101,7 +84,6 @@ public class ProxyGeneratorTest extends TestCase {
 
     private void standardTests(Person original,
                            Person p) {
-        assertTrue(p instanceof FieldIndexAccessor);
         assertNotSame(p, original);
         
         //check we can use the proxy
@@ -109,18 +91,6 @@ public class ProxyGeneratorTest extends TestCase {
         assertEquals(original.getAge(), p.getAge());
         assertEquals(original.isHappy(), p.isHappy());
         
-        FieldIndexAccessor s = (FieldIndexAccessor) p;
-        
-        //check that order of declarations count, and we can access then via the indexaccessor interface
-        assertNotNull(p.getName(), s.getField(1));
-        assertEquals(p.getAge(), ((Integer)s.getField(2)).intValue());
-        assertEquals(p.isHappy(), ((Boolean) s.getField(3)).booleanValue());
-
-        
-        //now check that you can get back to the target
-        assertTrue(p instanceof TargetAccessor);
-        TargetAccessor t = (TargetAccessor) p;
-        assertEquals(original, t.getTarget());
     }
     
     public void testPerf() throws Exception {
@@ -129,7 +99,7 @@ public class ProxyGeneratorTest extends TestCase {
         o.setName("michael");
         o.setAge(31);
         
-        Person p = (Person) ProxyGenerator.generateProxy(o, true, false);
+        Person p = (Person) ProxyGenerator.generateChangeListenerProxy(o);
         
         long start = System.currentTimeMillis();
         for (int i = 0; i < 100000; i++) {
