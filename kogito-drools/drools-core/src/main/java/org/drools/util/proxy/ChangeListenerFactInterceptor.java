@@ -18,9 +18,7 @@ import net.sf.cglib.proxy.MethodProxy;
  * 
  * @author Michael Neale
  */
-public class ChangeListenerFactInterceptor
-    extends
-    FactInterceptor {
+public class ChangeListenerFactInterceptor extends FactInterceptor {
 
     
     protected static final Method addListener = getAddListener();
@@ -33,9 +31,11 @@ public class ChangeListenerFactInterceptor
     //a map of properties, keyed on setter method
     protected final Map properties;
     
+    private final Object target;
     
-    public ChangeListenerFactInterceptor(Object target, Method[] fieldMethods) {
-        super(target, fieldMethods);
+    
+    public ChangeListenerFactInterceptor(Object target) {
+        this.target = target;
         try{ 
             properties = loadPropertyInfo( target );
             changes = new PropertyChangeSupport(target);            
@@ -72,13 +72,8 @@ public class ChangeListenerFactInterceptor
                             Method method,
                             Object[] args,
                             MethodProxy proxy) throws Throwable {
-        Class decClass = method.getDeclaringClass();
-        if (decClass == FieldIndexAccessor.class ) {
-            Integer arg = (Integer) args[0];
-            return targetFields[arg.intValue() - 1].invoke(target, null);
-        } else if (decClass == TargetAccessor.class ) {
-            return target;
-        } else if (method.equals(addListener)) {
+        
+        if (method.equals(addListener)) {
             addListener(args[0]);
             return null;
         } else if (method.equals(removeListenerMethod)) {
