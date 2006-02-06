@@ -5,9 +5,9 @@ import org.drools.WorkingMemory;
 
 public class InstrumentedReteTuple extends ReteTuple {
     public InstrumentedReteTuple(ReteTuple left,
-                                 ReteTuple right) {
+                                 FactHandle handle) {
         super( left,
-               right );
+               (FactHandleImpl) handle );
     }
 
     public InstrumentedReteTuple(int column,

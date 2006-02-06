@@ -41,137 +41,148 @@ package org.drools.reteoo;
  *
  */
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.DroolsTestCase;
+import org.drools.FactException;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.PropagationContext;
 
+/**
+ * @author mproctor
+ *
+ */
 public class ReteTest extends DroolsTestCase {
-    private Rete              rete;
 
-    private WorkingMemoryImpl workingMemory;
-
-    private ObjectTypeNode    objectTypeNode;
-
-    private ObjectTypeNode    stringTypeNode;
-
-    private ObjectTypeNode    cheeseTypeNode;
-
-    public void setUp() {
+    /**
+     * Tests ObjectTypeNodes are correctly added to the Rete object
+     * 
+     * @throws Exception
+     */
+    public void testObjectTypeNodes() throws Exception {
         RuleBaseImpl ruleBase = new RuleBaseImpl();
-        this.workingMemory = new WorkingMemoryImpl( ruleBase );
 
-        this.rete = ruleBase.getRete();
+        Rete rete = ruleBase.getRete();
 
-        this.objectTypeNode = new ObjectTypeNode( 0,
-                                                  new ClassObjectType( Object.class ),
-                                                  this.rete );
-        this.objectTypeNode.attach();
-        this.objectTypeNode.addObjectSink( new MockObjectSink() );
+        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                            new ClassObjectType( Object.class ),
+                                                            rete );
+        objectTypeNode.attach();
 
-        this.stringTypeNode = new ObjectTypeNode( 0,
-                                                  new ClassObjectType( String.class ),
-                                                  this.rete );
-        this.stringTypeNode.attach();
-        this.stringTypeNode.addObjectSink( new MockObjectSink() );
+        ObjectTypeNode stringTypeNode = new ObjectTypeNode( 2,
+                                                            new ClassObjectType( String.class ),
+                                                            rete );
+        stringTypeNode.attach();
 
-        this.cheeseTypeNode = new ObjectTypeNode( 0,
-                                                  new ClassObjectType( Cheese.class ),
-                                                  this.rete );
-        this.cheeseTypeNode.attach();
-        this.cheeseTypeNode.addObjectSink( new MockObjectSink() );
-
-        // this.rete.ruleAdded();
-
-    }
-
-    public void tearDown() {
-    }
-
-    public void testGetObjectTypeNodes() throws Exception {
-        Collection objectTypeNodes = this.rete.getObjectTypeNodes();
+        Collection objectTypeNodes = rete.getObjectTypeNodes();
 
         // Check the ObjectTypeNodes are correctly added to Rete
-        assertEquals( 3,
+        assertEquals( 2,
                       objectTypeNodes.size() );
 
-        assertContains( this.objectTypeNode,
+        assertContains( objectTypeNode,
                         objectTypeNodes );
-        assertContains( this.stringTypeNode,
+        assertContains( stringTypeNode,
                         objectTypeNodes );
-        assertContains( this.cheeseTypeNode,
-                        objectTypeNodes );
-
-        ObjectTypeNode node = new ObjectTypeNode( 0,
-                                                  new ClassObjectType( Map.class ),
-                                                  null );
-
-        assertTrue( objectTypeNodes.contains( node ) );
     }
 
     /**
-     * All objects asserted to a RootNode must be propagated to all children
-     * ObjectTypeNodes.
+     * Tests that interfaces and parent classes for an asserted  class are  cached, for  quick future iterations
+     * 
+     * @throws FactException
+     */
+    public void testCache() throws FactException {
+        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( ruleBase );
+
+        // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
+        Rete rete = ruleBase.getRete();
+        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                            new ClassObjectType( List.class ),
+                                                            rete );
+        objectTypeNode.attach();
+        objectTypeNode = new ObjectTypeNode( 1,
+                                             new ClassObjectType( Collection.class ),
+                                             rete );
+        objectTypeNode.attach();
+        objectTypeNode = new ObjectTypeNode( 1,
+                                             new ClassObjectType( ArrayList.class ),
+                                             rete );
+        objectTypeNode.attach();
+
+        // ArrayList matches all three ObjectTypeNodes
+        FactHandleImpl h1 = new FactHandleImpl( 1 );
+        h1.setObject( new ArrayList() );
+        rete.assertObject( h1,
+                           null,
+                           workingMemory );
+
+        // LinkedList matches two ObjectTypeNodes        
+        h1.setObject( new LinkedList() );
+        rete.assertObject( h1,
+                           null,
+                           workingMemory );
+
+        Map map = (HashMap) workingMemory.getNodeMemory( rete );
+        assertLength( 3,
+                      (ObjectTypeNode[]) map.get( ArrayList.class ) );
+
+        assertLength( 2,
+                      (ObjectTypeNode[]) map.get( LinkedList.class ) );
+
+    }
+
+    /**
+     * Test asserts correctly propagate
+     * 
+     * @throws Exception
      */
     public void testAssertObject() throws Exception {
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 null,
-                                                                 null );
+        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( ruleBase );
 
-        // Create and assert two objects
-        Object object1 = new Object();
-        String string1 = "cheese";
+        // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
+        Rete rete = ruleBase.getRete();
+        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                            new ClassObjectType( List.class ),
+                                                            rete );
+        objectTypeNode.attach();
+        objectTypeNode.addObjectSink( new MockObjectSink() );
 
-        this.rete.assertObject( object1,
-                                new FactHandleImpl( 1 ),
-                                context,
-                                this.workingMemory );
+        // There are no String ObjectTypeNodes, make sure its not propagated
+        FactHandleImpl h1 = new FactHandleImpl( 1 );
+        String string = "String";
+        h1.setObject( string );
 
-        this.rete.assertObject( string1,
-                                new FactHandleImpl( 2 ),
-                                context,
-                                this.workingMemory );
+        rete.assertObject( h1,
+                           null,
+                           workingMemory );
 
-        List asserted = null;
+        MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinks().get( 0 );
+        assertLength( 0,
+                      sink1.getAsserted() );
 
-        // ----------------------------------------
-        // Check assertions worked on Object ObjectTypeNode
-        MockObjectSink sink1 = (MockObjectSink) this.objectTypeNode.getObjectSinks().get( 0 );
+        // There is a List ObjectTypeNode, make sure it was propagated
+        FactHandleImpl h2 = new FactHandleImpl( 1 );
+        List list = new ArrayList();
+        h2.setObject( list );
 
-        asserted = sink1.getAsserted();
-        assertLength( 2,
-                      asserted );
+        rete.assertObject( h2,
+                           null,
+                           workingMemory );
 
-        Object[] results = (Object[]) asserted.get( 0 );
-        assertSame( object1,
-                    results[0] );
-
-        results = (Object[]) asserted.get( 1 );
-        assertSame( string1,
-                    results[0] );
-
-        // ----------------------------------------
-        // Check assertions worked on String ObjectTypeNode
-        MockObjectSink sink2 = (MockObjectSink) this.stringTypeNode.getObjectSinks().get( 0 );
-
-        asserted = sink2.getAsserted();
+        List asserted = sink1.getAsserted();
         assertLength( 1,
                       asserted );
 
-        results = (Object[]) asserted.get( 0 );
-        assertSame( string1,
-                    results[0] );
-
-        // ----------------------------------------
-        /* Nothing was asserted to Cheese, so there should be no assertions */
-        MockObjectSink sink3 = (MockObjectSink) this.cheeseTypeNode.getObjectSinks().get( 0 );
-        assertLength( 0,
-                      sink3.getAsserted() );
-
+        Object[] results = (Object[]) asserted.get( 0 );
+        assertSame( list,
+                    ((FactHandleImpl) results[0]).getObject() );
     }
 
     /**
@@ -179,88 +190,46 @@ public class ReteTest extends DroolsTestCase {
      * ObjectTypeNodes.
      */
     public void testRetractObject() throws Exception {
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 null,
-                                                                 null );
+        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( ruleBase );
 
-        FactHandleImpl handle1 = new FactHandleImpl( 1 );
-        FactHandleImpl handle2 = new FactHandleImpl( 2 );
+        // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
+        Rete rete = ruleBase.getRete();
+        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                            new ClassObjectType( List.class ),
+                                                            rete );
+        objectTypeNode.attach();
+        objectTypeNode.addObjectSink( new MockObjectSink() );
 
-        // this.workingMemory.
-        this.workingMemory.putObject( handle1,
-                                      "cheese1" );
+        // There are no String ObjectTypeNodes, make sure its not propagated
+        FactHandleImpl h1 = new FactHandleImpl( 1 );
+        String string = "String";
+        h1.setObject( string );
 
-        this.workingMemory.putObject( handle2,
-                                      new Object() );
+        rete.assertObject( h1,
+                           null,
+                           workingMemory );
 
-        this.rete.retractObject( handle1,
-                                 context,
-                                 this.workingMemory );
+        MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinks().get( 0 );
+        assertLength( 0,
+                      sink1.getRetracted() );
 
-        this.rete.retractObject( handle2,
-                                 context,
-                                 this.workingMemory );
+        // There is a List ObjectTypeNode, make sure it was propagated
+        FactHandleImpl h2 = new FactHandleImpl( 1 );
+        List list = new ArrayList();
+        h2.setObject( list );
 
-        // ----------------------------------------
-        /* Check retractions worked on Object ObjectTypeNode */
-        List retracted = null;
+        rete.retractObject( h2,
+                            null,
+                            workingMemory );
 
-        MockObjectSink sink1 = (MockObjectSink) this.objectTypeNode.getObjectSinks().get( 0 );
-
-        retracted = sink1.getRetracted();
-        assertLength( 2,
-                      retracted );
-
-        Object[] results = (Object[]) retracted.get( 0 );
-        assertSame( handle1,
-                    results[0] );
-
-        results = (Object[]) retracted.get( 1 );
-        assertSame( handle2,
-                    results[0] );
-
-        // ----------------------------------------
-        /* Check retractions worked on String ObjectTypeNode */
-        MockObjectSink sink2 = (MockObjectSink) this.stringTypeNode.getObjectSinks().get( 0 );
-
-        retracted = sink2.getRetracted();
+        List retracted = sink1.getRetracted();
         assertLength( 1,
                       retracted );
 
-        results = (Object[]) retracted.get( 0 );
-        assertSame( handle1,
-                    results[0] );
-
-        // ----------------------------------------
-        // Check retractions worked on Cheese ObjectTypeNode, i.e. nothing
-        // happened
-        MockObjectSink sink3 = (MockObjectSink) this.cheeseTypeNode.getObjectSinks().get( 0 );
-
-        assertLength( 0,
-                      sink3.getRetracted() );
+        Object[] results = (Object[]) retracted.get( 0 );
+        assertSame( list,
+                    ((FactHandleImpl) results[0]).getObject() );
     }
 
-    class Cheese {
-        private String cheese;
-
-        public Cheese(String cheese) {
-            this.cheese = cheese;
-        }
-
-        public String getCheese() {
-            return this.cheese;
-        }
-
-        public boolean equals(Object object) {
-            if ( object != null || !(object instanceof Cheese) ) {
-                return false;
-            }
-            return this.cheese.equals( object );
-        }
-
-        public int hashcode() {
-            return this.cheese.hashCode();
-        }
-    }
 }

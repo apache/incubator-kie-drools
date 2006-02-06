@@ -41,7 +41,7 @@ package org.drools;
  *
  */
 
-public class IntegrationException extends DroolsException {
+public class IntegrationException extends CheckedDroolsException {
     /**
      * @see java.lang.Exception#Exception()
      */

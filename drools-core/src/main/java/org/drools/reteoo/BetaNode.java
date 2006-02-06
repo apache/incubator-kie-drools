@@ -1,62 +1,35 @@
 package org.drools.reteoo;
-
 /*
- * $Id: BetaNode.java,v 1.3 2005/08/14 22:44:12 mproctor Exp $
- *
- * Copyright 2001-2003 (C) The Werken Company. All Rights Reserved.
- *
- * Redistribution and use of this software and associated documentation
- * ("Software"), with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * 1. Redistributions of source code must retain copyright statements and
- * notices. Redistributions must also contain a copy of this document.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * 3. The name "drools" must not be used to endorse or promote products derived
- * from this Software without prior written permission of The Werken Company.
- * For written permission, please contact bob@werken.com.
- *
- * 4. Products derived from this Software may not be called "drools" nor may
- * "drools" appear in their names without prior written permission of The Werken
- * Company. "drools" is a trademark of The Werken Company.
- *
- * 5. Due credit should be given to The Werken Company. (http://werken.com/)
- *
- * THIS SOFTWARE IS PROVIDED BY THE WERKEN COMPANY AND CONTRIBUTORS ``AS IS''
- * AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE WERKEN COMPANY OR ITS CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.drools.AssertionException;
-import org.drools.FactException;
-import org.drools.RetractionException;
+import org.drools.spi.BetaNodeBinder;
 import org.drools.spi.PropagationContext;
 
 /**
- * A two-input Rete-OO <i>join node </i>.
+ * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
+ * both TupleSink and ObjectSink and as such can receive <code>Tuple</code>s and <code>FactHandle</code>s. BetaNode uses BetaMemory
+ * to store the propagated instances.
  * 
  * @see org.drools.reteoo.TupleSource
  * @see org.drools.reteoo.TupleSink
+ * @see org.drools.reteoo.BetaMemory
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 abstract class BetaNode extends TupleSource
     implements
@@ -75,175 +48,75 @@ abstract class BetaNode extends TupleSource
 
     private final BetaNodeBinder joinNodeBinder;
 
-    private final int            column;
-
-    // private final BetaNodeDecorator decorator;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
 
     /**
-     * Construct.
+     * The constructor defaults to using a BetaNodeBinder with no constraints
      * 
      * @param leftInput
      *            The left input <code>TupleSource</code>.
      * @param rightInput
-     *            The right input <code>TupleSource</code>.
+     *            The right input <code>ObjectSource</code>.
      */
     BetaNode(int id,
              TupleSource leftInput,
-             ObjectSource rightInput,
-             int column)// ,
-    // BetaNodeDecorator decorator)
+             ObjectSource rightInput)
     {
         this( id,
               leftInput,
               rightInput,
-              column,
-              // decorator,
-              new BetaNodeBinder() );
+              BetaNodeBinder.simpleBinder );
     }
 
     /**
-     * Construct.
+     * Constructs a <code>BetaNode</code> using the specified <code>BetaNodeBinder</code>.
      * 
      * @param leftInput
      *            The left input <code>TupleSource</code>.
      * @param rightInput
-     *            The right input <code>TupleSource</code>.
+     *            The right input <code>ObjectSource</code>.
      */
     BetaNode(int id,
              TupleSource leftInput,
              ObjectSource rightInput,
-             int column,
-             // BetaNodeDecorator decorator,
              BetaNodeBinder joinNodeBinder) {
         super( id );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
-        this.column = column;
-        // this.decorator = decorator;
         this.joinNodeBinder = joinNodeBinder;
 
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
+     */
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException {
-        this.attachingNewNode = true;
-
-        TupleSource source = null;
-
-        // iterate until we find a child with memory
-        for ( Iterator it = this.getTupleSinks().iterator(); it.hasNext(); ) {
-            source = (TupleSource) it.next();
-            if ( source.hasMemory ) {
-                break;
-            }
-
-        }
-
-        if ( source != null && source.hasMemory() ) {
-            // We have a child with memory so use its tuples
-            Object object = workingMemory.getNodeMemory( (NodeMemory) source );
-            if ( object instanceof BetaMemory ) {
-                BetaMemory memory = (BetaMemory) object;
-                memory.getLeftMemory();
-                for ( Iterator it = memory.getLeftMemory().values().iterator(); it.hasNext(); ) {
-                    ReteTuple tuple = ((TupleMatches) it.next()).getTuple();
-                    propagateAssertTuple( tuple,
-                                          context,
-                                          workingMemory );
-                }
-            } else if ( object instanceof Map ) {
-                Map map = (Map) object;
-                for ( Iterator it = map.values().iterator(); it.hasNext(); ) {
-                    propagateAssertTuple( (ReteTuple) it.next(),
-                                          context,
-                                          workingMemory );
-                }
-            }
-        } else {
-            // No children with memory so re-determine tuples
-            // first get a reference to the left and right memories then nuke
-            // and rebuild the memory
-            // for the node. This will have the side effect of populating our
-            // newly attached node
-            BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-            Map map = memory.getLeftMemory();
-            Set set = memory.getRightMemory();
-            workingMemory.clearNodeMemory( this );
-            memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-            // first re-add all the right input facts
-            for ( Iterator it = set.iterator(); it.hasNext(); ) {
-                FactHandleImpl handle = (FactHandleImpl) it.next();
-                Object object = workingMemory.getObject( handle );
-                assertObject( object,
-                              handle,
-                              context,
-                              workingMemory );
-            }
-
-            // now re-add all the tuples
-            for ( Iterator it = map.values().iterator(); it.hasNext(); ) {
-                ReteTuple tuple = ((TupleMatches) it.next()).getTuple();
-                assertTuple( tuple,
-                             context,
-                             workingMemory );
-            }
-        }
-
-        this.attachingNewNode = true;
+                              PropagationContext context) {
+//        this.attachingNewNode = true;
+//
+//        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+//        
+//        for ( Iterator it = memory.rightObjectIterator(); it.hasNext(); ) {
+//            ObjectMatches objectMatches = (ObjectMatches) it.next();
+//            for ( Iterator it2 = objectMatches.iterator( context, workingMemory ); it2.hasNext(); ) {
+//                TupleMatch node = (TupleMatch) it2.next();
+//                propagateAssertTuple( node.getJoinedTuple(),
+//                                      context,
+//                                      workingMemory );
+//            }
+//
+//        }
+//            
+//
+//        this.attachingNewNode = true;
     }
-
-    /**
-     * Propagate joined asserted tuples.
-     * 
-     * @param joinedTuples
-     *            The tuples to propagate.
-     * @param workingMemory
-     *            The working memory session.
-     * @throws AssertionException
-     *             If an errors occurs while asserting.
+    
+    
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNode#attach()
      */
-    protected void propagateAssertTuples(TupleSet joinedTuples,
-                                         PropagationContext context,
-                                         WorkingMemoryImpl workingMemory) throws FactException {
-        Iterator tupleIter = joinedTuples.iterator();
-        while ( tupleIter.hasNext() ) {
-            propagateAssertTuple( (ReteTuple) tupleIter.next(),
-                                  context,
-                                  workingMemory );
-        }
-    }
-
-    /**
-     * Propagate joined asserted tuples.
-     * 
-     * @param joinedTuples
-     *            The tuples to propagate.
-     * @param workingMemory
-     *            The working memory session.
-     * @throws AssertionException
-     *             If an errors occurs while asserting.
-     * @throws RetractionException
-     */
-    protected void propagateRetractTuples(List keys,
-                                           PropagationContext context,
-                                           WorkingMemoryImpl workingMemory) throws FactException {
-        Iterator it = keys.iterator();
-        while ( it.hasNext() ) {
-            propagateRetractTuples( (TupleKey) it.next(),
-                                    context,
-                                    workingMemory );
-        }
-    }
-
-    int getColumn() {
-        return this.column;
-    }
-
     public void attach() {
         this.leftInput.addTupleSink( this );
         this.rightInput.addObjectSink( this );
@@ -253,6 +126,9 @@ abstract class BetaNode extends TupleSource
 
     }
 
+    /**
+     * @return the <code>joinNodeBinder</code>
+     */
     BetaNodeBinder getJoinNodeBinder() {
         return this.joinNodeBinder;
     }
@@ -265,10 +141,16 @@ abstract class BetaNode extends TupleSource
         return "";
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNode#hashCode()
+     */
     public int hashCode() {
         return this.leftInput.hashCode() ^ this.rightInput.hashCode();
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     public boolean equals(Object object) {
         if ( this == object ) {
             return true;
@@ -283,6 +165,9 @@ abstract class BetaNode extends TupleSource
         return this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.joinNodeBinder.equals( other.joinNodeBinder );
     }
 
+    /**
+     * Creates a BetaMemory for the BetaNode's memory.
+     */
     public Object createMemory() {
         return new BetaMemory();
     }

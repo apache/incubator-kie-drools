@@ -1,49 +1,27 @@
 package org.drools.reteoo;
-
 /*
- * $Id: Rete.java,v 1.6 2005/08/14 22:44:12 mproctor Exp $
- *
- * Copyright 2001-2003 (C) The Werken Company. All Rights Reserved.
- *
- * Redistribution and use of this software and associated documentation
- * ("Software"), with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * 1. Redistributions of source code must retain copyright statements and
- * notices. Redistributions must also contain a copy of this document.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * 3. The name "drools" must not be used to endorse or promote products derived
- * from this Software without prior written permission of The Werken Company.
- * For written permission, please contact bob@werken.com.
- *
- * 4. Products derived from this Software may not be called "drools" nor may
- * "drools" appear in their names without prior written permission of The Werken
- * Company. "drools" is a trademark of The Werken Company.
- *
- * 5. Due credit should be given to The Werken Company. (http://werken.com/)
- *
- * THIS SOFTWARE IS PROVIDED BY THE WERKEN COMPANY AND CONTRIBUTORS ``AS IS''
- * AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE WERKEN COMPANY OR ITS CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.FactException;
@@ -59,25 +37,35 @@ import org.drools.spi.PropagationContext;
 /**
  * The Rete-OO network.
  * 
- * This node accepts an <code>Object</code>, and simply propagates it to all
- * <code>ObjectTypeNode</code> s for type testings.
+ * The Rete class is the root <code>Object</code>. All objects are asserted into
+ * the Rete node where it propagates to all matching ObjectTypeNodes.
+ * 
+ * The first time an  instance of a Class type is asserted it does a full
+ * iteration of all ObjectTyppeNodes looking for matches, any matches are 
+ * then cached in a HashMap which is used for future assertions.
+ * 
+ * While Rete  extends ObjectSource nad implements ObjectSink it nulls the 
+ * methods attach(), remove() and  updateNewNode() as this is the root node
+ * they are no applicable
  * 
  * @see ObjectTypeNode
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 class Rete extends ObjectSource
     implements
     Serializable,
-    ObjectSink {
+    ObjectSink,
+    NodeMemory {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
-    /** The set of <code>ObjectTypeNodes</code>. */
-    private final Map objectTypeNodes = new HashMap();
+    /** The <code>Map</code> of <code>ObjectTypeNodes</code>. */
+    private final Map                objectTypeNodes = new HashMap();
     
-    private final ObjectTypeResolver resolver;   
+    private final ObjectTypeResolver resolver;       
 
     // ------------------------------------------------------------
     // Constructors
@@ -94,37 +82,42 @@ class Rete extends ObjectSource
         super( 0 );
         this.resolver = resolver;
     }
-    
-
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
 
+    
+
     /**
-     * Assert a new fact object into this <code>RuleBase</code> and the
-     * specified <code>WorkingMemory</code>.
+     * This is the entry point into the network for all asserted Facts. Iterates a cache
+     * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
+     * exist it first iteraes and builds the cache.
      * 
      * @param handle
-     *            The fact handle.
-     * @param object
-     *            The object to assert.
+     *            The FactHandle of the fact to assert
+     * @param context
+     *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action   
      * @param workingMemory
      *            The working memory session.
-     * 
-     * @throws FactException
-     *             if an error occurs during assertion.
      */
-    public void assertObject(Object object,
-                             FactHandleImpl handle,
+    public void assertObject(FactHandleImpl handle,
                              PropagationContext context,
-                             WorkingMemoryImpl workingMemory) throws FactException {
-        Iterator nodeIter = getObjectTypeNodeIterator();
+                             WorkingMemoryImpl workingMemory) {
+        HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
 
-        while ( nodeIter.hasNext() ) {
-            ((ObjectTypeNode) nodeIter.next()).assertObject( object,
-                                                             handle,
-                                                             context,
-                                                             workingMemory );   
+        Object object = handle.getObject();
+
+        ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );
+        if ( cachedNodes == null ) {
+            cachedNodes = getMatchingNodes( object );
+            memory.put( object.getClass(),
+                        cachedNodes );
+        }
+
+        for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
+            cachedNodes[i].assertObject( handle,
+                                         context,
+                                         workingMemory );
         }
     }
 
@@ -136,20 +129,38 @@ class Rete extends ObjectSource
      *            The handle of the fact to retract.
      * @param workingMemory
      *            The working memory session.
-     * 
-     * @throws FactException
-     *             if an error occurs during retraction.
      */
     public void retractObject(FactHandleImpl handle,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException {
-        Iterator nodeIter = getObjectTypeNodeIterator();
+                              WorkingMemoryImpl workingMemory) {
+        HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
 
-        while ( nodeIter.hasNext() ) {
-            ((ObjectTypeNode) nodeIter.next()).retractObject( handle,
-                                                              context,
-                                                              workingMemory );
+        Object object = handle.getObject();
+
+        ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );
+        if ( cachedNodes == null ) {
+            cachedNodes = getMatchingNodes( object );
+            memory.put( object.getClass(),
+                        cachedNodes );
         }
+
+        for ( int i = 0; i < cachedNodes.length; i++ ) {
+            cachedNodes[i].retractObject( handle,
+                                          context,
+                                          workingMemory );
+        }
+    }
+
+    private ObjectTypeNode[] getMatchingNodes(Object object) throws FactException {
+        List cache = new ArrayList();
+
+        for ( Iterator it = objectTypeNodeIterator(); it.hasNext(); ) {
+            ObjectTypeNode node = (ObjectTypeNode) it.next();
+            if ( node.matches( object ) ) {
+                cache.add( node );
+            }
+        }
+        return (ObjectTypeNode[]) cache.toArray( new ObjectTypeNode[cache.size()] );
     }
 
     /**
@@ -167,7 +178,7 @@ class Rete extends ObjectSource
      * 
      * @return An <code>Iterator</code> over <code>ObjectTypeNodes</code>.
      */
-    Iterator getObjectTypeNodeIterator() {
+    Iterator objectTypeNodeIterator() {
         return this.objectTypeNodes.values().iterator();
     }
 
@@ -213,18 +224,17 @@ class Rete extends ObjectSource
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException {
+                              PropagationContext context) {
         // do nothing this has no data to propagate
-    }
-
-    void addRule(Rule rule) throws InvalidPatternException {
-        // And is the implicit head node
-        And[] rules = rule.getProcessPatterns();
     }
 
     public void remove() {
         // do nothing the rete node is root and cannot be removed
 
+    }
+
+    public Object createMemory() {
+        return new HashMap();
     }
 
 }

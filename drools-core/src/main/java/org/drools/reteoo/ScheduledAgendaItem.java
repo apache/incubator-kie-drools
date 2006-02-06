@@ -15,23 +15,22 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
 import java.io.Serializable;
+import java.util.TimerTask;
 
 import org.drools.FactHandle;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.ConsequenceException;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.AbstractBaseLinkedListNode;
 
 /**
  * Item entry in the <code>Agenda</code>.
  * 
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
+ * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-class AgendaItem extends AbstractBaseLinkedListNode
+class ScheduledAgendaItem  extends  TimerTask
     implements
     Activation,
     Serializable {
@@ -39,20 +38,22 @@ class AgendaItem extends AbstractBaseLinkedListNode
     // Instance members
     // ------------------------------------------------------------
 
+    private ScheduledAgendaItem               previous;
+
+    private ScheduledAgendaItem               next;
+
     /** The tuple. */
     private final ReteTuple          tuple;
 
     /** The rule. */
-    private final Rule               rule;
+    private final  Rule              rule;
+    
+    private final WorkingMemoryImpl  workingMemory;
 
-    /** The propagation context */
     private final PropagationContext context;
 
-    /** The activation number */
-    private final long               activationNumber;    
+    private final long               activationNumber;        
 
-    /** A reference to the ActivatinQeue the item is on */
-    private final ActivationQueue          queue;
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -65,16 +66,16 @@ class AgendaItem extends AbstractBaseLinkedListNode
      * @param rule
      *            The rule.
      */
-    AgendaItem(long activationNumber,
-               ReteTuple tuple,
-               PropagationContext context,
-               Rule rule,
-               ActivationQueue queue) {
+    ScheduledAgendaItem(long activationNumber,
+                        ReteTuple tuple,
+                        WorkingMemoryImpl workingMemory,
+                        PropagationContext context,
+                        Rule rule) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
+        this.workingMemory = workingMemory;
         this.activationNumber = activationNumber;
-        this.queue = queue;
     }
 
     // ------------------------------------------------------------
@@ -94,7 +95,8 @@ class AgendaItem extends AbstractBaseLinkedListNode
     }
 
     /**
-     * Determine if this <code>Actiation</code>'s tuple depends on the given FactHandle
+     * Determine if this tuple depends on the values derrived from a particular
+     * root object.
      * 
      * @param handle
      *            The root object handle.
@@ -124,48 +126,56 @@ class AgendaItem extends AbstractBaseLinkedListNode
         return this.tuple.getKey();
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.spi.Activation#getActivationNumber()
+    /**
+     * Handle the firing of an alarm.
      */
+    public void run() {
+        this.workingMemory.getAgenda().fireActivation( this );
+    }
+
     public long getActivationNumber() {
         return this.activationNumber;
     }
-    
-    /* (non-Javadoc)
-     * @see org.drools.spi.Activation#remove()
-     */
-    public void remove() {
-        this.tuple.setActivation( null );        
-        this.queue.remove( this );
-    }    
 
     public String toString() {
         return "[Activation rule=" + this.rule.getName() + ", tuple=" + this.tuple + "]";
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     public boolean equals(Object object) {
         if ( object == this ) {
             return true;
         }
 
-        if ( (object == null) || !(object instanceof AgendaItem) ) {
+        if ( (object == null) || !(object instanceof ScheduledAgendaItem) ) {
             return false;
         }
 
-        AgendaItem otherItem = (AgendaItem) object;
+        ScheduledAgendaItem otherItem = (ScheduledAgendaItem) object;
 
         return (this.rule.equals( otherItem.getRule() ) && this.tuple.getKey().equals( otherItem.getKey() ));
     }
 
-
-    /**
-     * Return the hashcode of the <code>TupleKey<code> as the hashcode of the AgendaItem
-     * @return
-     */
     public int hashcode() {
         return this.getKey().hashCode();
+    }
+
+    public ScheduledAgendaItem getNext() {
+        return this.next;
+    }
+
+    public void setNext(ScheduledAgendaItem next) {
+        this.next = next;
+    }
+
+    public ScheduledAgendaItem getPrevious() {
+        return this.previous;
+    }
+
+    public void setPrevious(ScheduledAgendaItem previous) {
+        this.previous = previous;
+    }
+
+    public void remove() {
+        this.workingMemory.getAgenda().removeScheduleItem( this );        
     }    
 }

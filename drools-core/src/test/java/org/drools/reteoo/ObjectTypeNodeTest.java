@@ -37,7 +37,6 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testAssertObject() throws Exception {
-        Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( 0,
                                                                  PropagationContext.ASSERTION,
                                                                  null,
@@ -50,41 +49,29 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
                                                             source );
-
+        
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
         Object string1 = "cheese";
 
-        Object object1 = new Object();
-
         FactHandleImpl handle1 = new FactHandleImpl( 1 );
-        FactHandleImpl handle2 = new FactHandleImpl( 2 );
 
         workingMemory.putObject( handle1,
                                  string1 );
 
-        workingMemory.putObject( handle2,
-                                 object1 );
-
         /* should assert as ObjectType matches */
-        objectTypeNode.assertObject( string1,
-                                     handle1,
+        objectTypeNode.assertObject( handle1,
                                      context,
                                      workingMemory );
 
-        /* shouldn't assert as ObjectType does not match */
-        objectTypeNode.assertObject( object1,
-                                     handle2,
-                                     context,
-                                     workingMemory );
 
         /* make sure just string1 was asserted */
         List asserted = sink.getAsserted();
         assertLength( 1,
                       asserted );
         assertSame( string1,
-                    ((Object[]) asserted.get( 0 ))[0] );
+                    workingMemory.getObject( (FactHandleImpl) ((Object[]) asserted.get( 0 ))[0]) );
 
         /* check asserted object was added to memory */
         PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
@@ -105,9 +92,30 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         assertNotNull( memory );
     }
+    
+    public void testMatches() {
+
+        Rete source = new Rete();
+
+        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                            new ClassObjectType( String.class ),
+                                                            source );
+        
+        assertFalse( objectTypeNode.matches( new Object() ) );
+        assertFalse( objectTypeNode.matches( new Integer(5) ) );        
+        assertTrue( objectTypeNode.matches( "string" ) );
+        
+        objectTypeNode = new ObjectTypeNode( 1,
+                                             new ClassObjectType( Object.class ),
+                                             source );
+        
+        assertTrue( objectTypeNode.matches( new Object() ) );
+        assertTrue( objectTypeNode.matches( new Integer(5) ) );        
+        assertTrue( objectTypeNode.matches( "string" ) );        
+
+    }
 
     public void testRetractObject() throws Exception {
-        Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( 0,
                                                                  PropagationContext.ASSERTION,
                                                                  null,
@@ -126,32 +134,17 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         Object string1 = "cheese";
 
-        Object object1 = new Object();
-
         FactHandleImpl handle1 = new FactHandleImpl( 1 );
-        FactHandleImpl handle2 = new FactHandleImpl( 2 );
 
         workingMemory.putObject( handle1,
                                  string1 );
 
-        workingMemory.putObject( handle2,
-                                 object1 );
-
         /* should assert as ObjectType matches */
-        objectTypeNode.assertObject( string1,
-                                     handle1,
+        objectTypeNode.assertObject( handle1,
                                      context,
                                      workingMemory );
         /* check asserted object was added to memory */
         PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
-        assertEquals( 1,
-                      memory.size() );
-
-        /* shouldn't retract as ObjectType does not match */
-        objectTypeNode.retractObject( handle2,
-                                      context,
-                                      workingMemory );
-        /* check asserted object was not removed from memory */
         assertEquals( 1,
                       memory.size() );
 
@@ -204,13 +197,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         workingMemory.putObject( handle2,
                                  string2 );
 
-        objectTypeNode.assertObject( string1,
-                                     handle1,
+        objectTypeNode.assertObject( handle1,
                                      context,
                                      workingMemory );
 
-        objectTypeNode.assertObject( string2,
-                                     handle2,
+        objectTypeNode.assertObject( handle2,
                                      context,
                                      workingMemory );
 
@@ -241,8 +232,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         workingMemory.putObject( handle3,
                                  string3 );
 
-        objectTypeNode.assertObject( string3,
-                                     handle3,
+        objectTypeNode.assertObject( handle3,
                                      context,
                                      workingMemory );
 

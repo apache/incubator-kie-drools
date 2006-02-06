@@ -1,15 +1,51 @@
 package org.drools.reteoo;
+/*
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import java.util.ArrayList;
+
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.drools.AssertionException;
-import org.drools.FactException;
-import org.drools.RetractionException;
+import org.drools.spi.BetaNodeBinder;
 import org.drools.spi.PropagationContext;
 
-public class JoinNode extends BetaNode {
+/**
+ * <code>JoinNode</code> extends <code>BetaNode</code> to perform <code>ReteTuple</code> and <code>FactHandle</code> joins. Tuples are considered to be 
+ * asserted from the left input and facts from the right input. The <code>BetaNode</code> provides the BetaMemory to store assserted ReteTuples and 
+ * <code>FactHandleImpl<code>s. Each fact handle is stored in the right memory as a key in a <code>HashMap</code>, the value is an <code>ObjectMatches</code> 
+ * instance which maintains a <code>LinkedList of <code>TuplesMatches - The tuples that are matched with the handle. the left memory is a <code>LinkedList</code> 
+ * of <code>ReteTuples</code> which maintains a <code>HashMa</code>, where the keys are the matching <code>FactHandleImpl</code>s and the value is 
+ * populated <code>TupleMatche</code>es, the keys are matched fact handles. <code>TupleMatch</code> maintains a <code>List</code> of resulting joins, 
+ * where there is joined <code>ReteTuple</code> per <code>TupleSink</code>.
+ *  
+ * 
+ * The BetaNode provides
+ * the BetaMemory which stores the 
+ * 
+ * @see BetaNode
+ * @see ObjectMatches
+ * @see TupleMatch
+ * @see TupleSink
+ * 
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
+ *
+ */
+class JoinNode extends BetaNode {
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
@@ -24,200 +60,181 @@ public class JoinNode extends BetaNode {
      */
     JoinNode(int id,
              TupleSource leftInput,
-             ObjectSource rightInput,
-             int column)// ,
-    // BetaNodeDecorator decorator)
-    {
+             ObjectSource rightInput) {
         super( id,
                leftInput,
-               rightInput,
-               column,
-               // decorator,
-               new BetaNodeBinder() );
+               rightInput);
     }
 
-    /**
-     * Construct.
-     * 
-     * @param leftInput
-     *            The left input <code>TupleSource</code>.
-     * @param rightInput
-     *            The right input <code>TupleSource</code>.
-     */
     JoinNode(int id,
              TupleSource leftInput,
              ObjectSource rightInput,
-             int column,
-             // BetaNodeDecorator decorator,
-             BetaNodeBinder joinNodeBinder) {
+             BetaNodeBinder binder) {
         super( id,
                leftInput,
                rightInput,
-               column,
-               joinNodeBinder );
+               binder );
     }
 
     /**
-     * Assert a new <code>Tuple</code> from the left input.
+     * Assert a new <code>ReteTuple</code>. The right input of <code>FactHandleInput</code>'s is iterated and joins attemped, via the binder, 
+     * any successful bindings results in joined tuples being created and propaged. there is a joined tuple per TupleSink.
+     * 
+     * @see ReteTuple
+     * @see ObjectMatches
+     * @see TupleSink
+     * @see TupleMatch
      * 
      * @param tuple
      *            The <code>Tuple</code> being asserted.
+     * @param context
+     *            The <code>PropagationContext</code>
      * @param workingMemory
      *            The working memory seesion.
-     * @throws AssertionException
-     *             If an error occurs while asserting.
      */
     public void assertTuple(ReteTuple leftTuple,
                             PropagationContext context,
-                            WorkingMemoryImpl workingMemory) throws FactException {
+                            WorkingMemoryImpl workingMemory) {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        TupleMatches tupleMatches = new TupleMatches( leftTuple );
-        memory.put( leftTuple.getKey(),
-                    tupleMatches );
 
-        int column = getColumn();
-        FactHandleImpl handle = null;
-        ReteTuple merged = null;
-        TupleSet tupleSet = new TupleSet();
+        memory.add( leftTuple );
+
         BetaNodeBinder binder = getJoinNodeBinder();
-        Iterator it = memory.getRightMemory().iterator();
-        while ( it.hasNext() ) {
-            handle = (FactHandleImpl) it.next();
+        for ( Iterator it = memory.rightObjectIterator(); it.hasNext(); ) {
+            ObjectMatches objectMatches = (ObjectMatches) it.next();
+            FactHandleImpl handle = objectMatches.getFactHandle();
             if ( binder.isAllowed( handle,
                                    leftTuple,
                                    workingMemory ) ) {
-                tupleMatches.addMatch( handle );
 
-                merged = new ReteTuple( leftTuple,
-                                        new ReteTuple( column,
-                                                       handle,
-                                                       workingMemory ) );
-                tupleSet.addTuple( merged );
+                TupleMatch tupleMatch = objectMatches.add( leftTuple );
+
+                leftTuple.addMatch( handle,
+                                    tupleMatch );
+
+                for ( int i = 0, size = getTupleSinks().size(); i < size; i++ ) {
+                    ReteTuple joined = new ReteTuple( leftTuple,
+                                                      handle );
+                    tupleMatch.addJoinedTuple( joined );
+                    ((TupleSink) getTupleSinks().get( i )).assertTuple( joined,
+                                                                        context,
+                                                                        workingMemory );
+                }
             }
         }
-
-        propagateAssertTuples( tupleSet,
-                               context,
-                               workingMemory );
     }
 
     /**
-     * Assert a new <code>Tuple</code> from the right input.
+     * Assert a new <code>FactHandleImpl</code>. The left input of <code>ReteTuple</code>s is iterated and joins attemped, via the binder, 
+     * any successful bindings results in joined tuples being created and propaged. there is a joined tuple per TupleSink. 
      * 
-     * @param tuple
-     *            The <code>Tuple</code> being asserted.
+     * @see ReteTuple
+     * @see ObjectMatches
+     * @see TupleSink
+     * @see TupleMatch
+     * 
+     * @param handle
+     *            The <code>FactHandleImpl</code> being asserted.
+     * @param context
+     *            The <code>PropagationContext</code>
      * @param workingMemory
      *            The working memory seesion.
      */
-    public void assertObject(Object object,
-                             FactHandleImpl handle,
+    public void assertObject(FactHandleImpl handle,
                              PropagationContext context,
-                             WorkingMemoryImpl workingMemory) throws FactException {
+                             WorkingMemoryImpl workingMemory) {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.add( handle );
+        ObjectMatches objectMatches = memory.add( handle );
 
-        ReteTuple leftTuple = null;
-        TupleMatches tupleMatches = null;
-        ReteTuple merged = null;
-
-        ReteTuple rightTuple = new ReteTuple( getColumn(),
-                                              handle,
-                                              workingMemory );
-        TupleSet tupleSet = new TupleSet();
         BetaNodeBinder binder = getJoinNodeBinder();
-        Iterator it = memory.getLeftMemory().values().iterator();
-
-        while ( it.hasNext() ) {
-            tupleMatches = (TupleMatches) it.next();
-            leftTuple = tupleMatches.getTuple();
-            if ( binder.isAllowed( object,
-                                   handle,
+        for ( ReteTuple leftTuple = memory.getFirstTuple(); leftTuple != null; leftTuple = (ReteTuple) leftTuple.getNext() ) {
+            if ( binder.isAllowed( handle,
                                    leftTuple,
                                    workingMemory ) ) {
-                tupleMatches.addMatch( handle );
-                merged = new ReteTuple( leftTuple,
-                                        rightTuple );
-                tupleSet.addTuple( merged );
-            }
-        }
 
-        propagateAssertTuples( tupleSet,
-                               context,
-                               workingMemory );
-    }
+                TupleMatch tupleMatch = objectMatches.add( leftTuple );
+                leftTuple.addMatch( handle,
+                                    tupleMatch );
 
-    /**
-     * Retract tuples.
-     * 
-     * @param key
-     *            The tuple key.
-     * @param workingMemory
-     *            The working memory seesion.
-     * @throws RetractionException
-     *             If an error occurs while retracting.
-     */
-    public void retractTuples(TupleKey leftKey,
-                              PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException {
-        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        if ( memory.contains( leftKey ) ) {
-            FactHandleImpl handle = null;
-            List keys = new ArrayList();
-            TupleMatches tupleMatches = (TupleMatches) memory.remove( leftKey );
-            int column = getColumn();
-            Iterator it = tupleMatches.getMatches().iterator();
-            while ( it.hasNext() ) {
-                handle = (FactHandleImpl) it.next();
-                keys.add( new TupleKey( leftKey,
-                                        new TupleKey( column,
-                                                      handle ) ) );
-            }
-            propagateRetractTuples( keys,
-                                     context,
-                                     workingMemory );
+                for ( int i = 0, size = getTupleSinks().size(); i < size; i++ ) {
+                    ReteTuple joined = new ReteTuple( leftTuple,
+                                                      handle );
+                    tupleMatch.addJoinedTuple( joined );
+                    ((TupleSink) getTupleSinks().get( i )).assertTuple( joined,
+                                                                        context,
+                                                                        workingMemory );
+                }
+            }            
         }
     }
 
     /**
-     * Retract tuples.
+     * Retract a FactHandleImpl. Iterates the referenced TupleMatches stored in the handle's ObjectMatches retracting joined tuples.
      * 
-     * @param key
-     *            The tuple key.
+     * @param handle
+     *            the <codeFactHandleImpl</code> being retracted
+     * @param context
+     *            The <code>PropagationContext</code>
      * @param workingMemory
      *            The working memory seesion.
      */
     public void retractObject(FactHandleImpl handle,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException {
+                              WorkingMemoryImpl workingMemory) {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        if ( memory.contains( handle ) ) {
-            TupleMatches tupleMatches = null;
-            List keys = new ArrayList();
-            memory.remove( handle );
-            Iterator it = memory.getLeftMemory().values().iterator();
+        // Remove the FactHandle from memory
+        ObjectMatches objectMatches = memory.remove( handle );
 
-            TupleKey rightKey = new TupleKey( getColumn(),
-                                              handle );
-            while ( it.hasNext() ) {
-                tupleMatches = (TupleMatches) it.next();
-                if ( tupleMatches.matched( handle ) ) {
-                    tupleMatches.removeMatch( handle );
-                    keys.add( new TupleKey( tupleMatches.getKey(),
-                                            rightKey ) );
+        for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null;tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
+            ReteTuple leftTuple = tupleMatch.getTuple();
+            leftTuple.removeMatch( handle );
+            List tuples = tupleMatch.getJoinedTuples();
+            for ( int i = 0; i < tuples.size(); i++ ) {
+                ReteTuple joined = (ReteTuple) tuples.get( i );
+                ((TupleSink) getTupleSinks().get( i )).retractTuple( joined,
+                                                                     context,
+                                                                     workingMemory );
+            }           
+        }
+    }
+
+    /**
+     * Retract a <code>ReteTuple</code>. Iterates the referenced <code>TupleMatche</code>'s stored in the tuples <code>Map</code> retracting all joined tuples.
+     * 
+     * @param key
+     *            The tuple key.
+     * @param context
+     *            The <code>PropagationContext</code>
+     * @param workingMemory
+     *            The working memory seesion.
+     */    
+    public void retractTuple(ReteTuple leftTuple,
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
+
+        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        memory.remove( leftTuple );
+        
+        Map matches = leftTuple.getTupleMatches();
+
+        if ( !matches.isEmpty() ) {
+            for ( Iterator it = matches.values().iterator(); it.hasNext(); ) {
+                TupleMatch tupleMatch = (TupleMatch) it.next();
+                tupleMatch.getObjectMatches().remove( tupleMatch );
+                List tuples = tupleMatch.getJoinedTuples();
+                for ( int i = 0; i < tuples.size(); i++ ) {
+                    ReteTuple joined = (ReteTuple) tuples.get( i );
+                    ((TupleSink) getTupleSinks().get( i )).retractTuple( joined,
+                                                                         context,
+                                                                         workingMemory );
                 }
             }
-            propagateRetractTuples( keys,
-                                     context,
-                                     workingMemory );
         }
     }
 
     public void remove() {
         // TODO Auto-generated method stub
 
-    }
-
+    }    
 }

@@ -40,7 +40,7 @@ package org.drools.spi;
  *
  */
 
-import org.drools.AssertionException;
+import org.drools.RuntimeDroolsException;
 import org.drools.rule.Rule;
 
 /**
@@ -50,7 +50,7 @@ import org.drools.rule.Rule;
  *
  *  @author <a href="mailto:bob@werken.com">bob mcwhirter</a>
  */
-public class TestException extends AssertionException {
+public class TestException extends RuntimeDroolsException {
     private Rule   rule;
     private String info;
 

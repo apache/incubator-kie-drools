@@ -43,11 +43,13 @@ package org.drools.spi;
 import org.drools.rule.Rule;
 
 /**
- * A <code>Rule</code> activation for the purposes of conflict resolution.
+ * When a <code>Tuple</code> fully matches a rule it is added to the <code>Agenda</code>
+ * As an <code>Activation</code>. Each <code>Activation</code> is assigned a number, this 
+ * number is determined by the <code>WorkingMemory</code> all <code>Activations</code> created 
+ * from a single assert, modify, retract are assgigned the same Activation number.
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * 
- * @version $Id: Activation.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public interface Activation {
     /**
@@ -64,13 +66,22 @@ public interface Activation {
      */
     Tuple getTuple();
     
+    /**
+     * Retrieve the <code>PropagationContext</code> for the <code>Activation</code>
+     * 
+     * @return The propagation context
+     */    
     PropagationContext getPropagationContext();
 
     /**
-     * Retrieve the activation number that was assigned by the counter to his
-     * activation at creation time.
+     * Retrieve the activation number.
      * 
-     * @return The tuple.
+     * @return The activation number
      */
     long getActivationNumber();
+    
+    /**
+     * Cancel the <code>Activation</code> by removing it from the <code>Agenda</code>. 
+     */
+    void remove();
 }

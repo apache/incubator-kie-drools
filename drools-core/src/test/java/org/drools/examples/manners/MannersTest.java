@@ -10,36 +10,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
 import junit.framework.TestCase;
 
-import org.drools.Cheese;
 import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
 import org.drools.RuleSetIntegrationException;
 import org.drools.WorkingMemory;
-import org.drools.conflict.CompositeConflictResolver;
-import org.drools.conflict.RecencyConflictResolver;
-import org.drools.conflict.SalienceConflictResolver;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.DebugAgendaEventListener;
-import org.drools.event.DebugWorkingMemoryEventListener;
-import org.drools.event.DefaultAgendaEventListener;
 import org.drools.reteoo.RuleBaseImpl;
-import org.drools.rule.And;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
-import org.drools.rule.ColumnBinding;
 import org.drools.rule.Declaration;
 import org.drools.rule.DuplicateRuleNameException;
 import org.drools.rule.EvaluatorFactory;
@@ -53,20 +37,17 @@ import org.drools.rule.RuleSet;
 import org.drools.spi.Activation;
 import org.drools.spi.ClassFieldExtractor;
 import org.drools.spi.ClassObjectType;
-import org.drools.spi.BaseEvaluator;
-import org.drools.spi.ConflictResolver;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Constraint;
 import org.drools.spi.DefaultKnowledgeHelper;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Field;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.LiteralExpressionConstraint;
 import org.drools.spi.MockField;
 import org.drools.spi.Tuple;
-import org.drools.visualize.ReteooJungViewer;
 
 public class MannersTest extends TestCase {
     /** Number of guests at the dinner (default: 16). */
@@ -132,14 +113,14 @@ public class MannersTest extends TestCase {
                        InterruptedException {
         RuleSet ruleSet = new RuleSet( "Miss Manners" );
         ruleSet.addRule( getAssignFirstSeatRule() );
-        ruleSet.addRule( getMakePath() );
         ruleSet.addRule( getFindSeating() );
         ruleSet.addRule( getPathDone() );
-        ruleSet.addRule( getAreWeDone() );
+        ruleSet.addRule( getMakePath() );
         ruleSet.addRule( getContinueProcessing() );
+        ruleSet.addRule( getAreWeDone() );        
         ruleSet.addRule( getAllDone() );
 
-        final RuleBaseImpl ruleBase = new RuleBaseImpl( new CompositeConflictResolver(new ConflictResolver[]{SalienceConflictResolver.getInstance(), RecencyConflictResolver.getInstance() } ) );
+        final RuleBaseImpl ruleBase = new RuleBaseImpl( );
         ruleBase.addRuleSet( ruleSet );
 
 //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase);                
@@ -148,14 +129,13 @@ public class MannersTest extends TestCase {
 //            viewer.showGUI();
 //            }
 //        });
-
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();        
 
-        InputStream is = getClass().getResourceAsStream( "/manners8.dat" );
+        InputStream is = getClass().getResourceAsStream( "/manners16.dat" );
         List list = getInputObjects( is );
         for ( Iterator it = list.iterator(); it.hasNext(); ) {
             Object object = it.next();
-            System.err.println( object );
+            //System.err.println( object );
             workingMemory.assertObject( object );
         }
 
@@ -190,7 +170,9 @@ public class MannersTest extends TestCase {
 //        Context context = new Context( Context.ASSIGN_SEATS );
 //        workingMemory.assertObject( context );
         
+        long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
+        System.err.println( System.currentTimeMillis() - start );
         
 //        while (true) {
 //            Thread.sleep( 1000 );
@@ -271,16 +253,17 @@ public class MannersTest extends TestCase {
 
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
                     KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple );
+                                                                         tuple,
+                                                                         workingMemory );
 
-                    Guest guest = (Guest) tuple.get( guestDeclaration );
-                    Context context = (Context) tuple.get( contextDeclaration );
-                    Count count = (Count) tuple.get( countDeclaration );
+                    Guest guest = (Guest) drools.get( guestDeclaration );
+                    Context context = (Context) drools.get( contextDeclaration );
+                    Count count = (Count) drools.get( countDeclaration );
 
                     String guestName = guest.getName();
 
@@ -301,16 +284,17 @@ public class MannersTest extends TestCase {
                     drools.assertObject( path );
 
                     count.setValue( count.getValue() + 1 );
-                    drools.modifyObject( tuple.getFactHandleForDeclaration( countDeclaration ),
+                    drools.modifyObject( tuple.get( countDeclaration ),
                                          count );
 
                     context.setState( Context.ASSIGN_SEATS );
-                    drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
+                    drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
-                    System.out.println( "assign first seat :  " + seating + " : " + path );
+                    //System.out.println( "assign first seat :  " + seating + " : " + path );
 
                 }
                 catch ( Exception e ) {
+                    e.printStackTrace();
                     throw new ConsequenceException( e );
                 }
             }
@@ -530,20 +514,22 @@ public class MannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
                     KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple );
+                                                                         tuple,
+                                                                         workingMemory );
 
-                    Context context = (Context) tuple.get( contextDeclaration );
-                    Count count = (Count) tuple.get( countDeclaration );
-                    int seatId = ((Integer) tuple.get( seatingIdDeclaration )).intValue();
-                    int seatingRightSeat = ((Integer) tuple.get( seatingRightSeatDeclaration )).intValue();
-                    String leftGuestName = (String) tuple.get( leftGuestNameDeclaration );
-                    String rightGuestName = (String) tuple.get( seatingRightGuestNameDeclaration );
-                    Hobby rightGuestHobby = (Hobby) tuple.get( rightGuestHobbyDeclaration );
+                    Context context = (Context) drools.get( contextDeclaration );
+                    Count count = (Count) drools.get( countDeclaration );                 
+                    int seatId = ((Integer) drools.get( seatingIdDeclaration ) ).intValue();                    
+                    int seatingRightSeat = ((Integer) drools.get( seatingRightSeatDeclaration ) ).intValue();
+                    
+                    String leftGuestName = (String) drools.get( leftGuestNameDeclaration );
+                    String rightGuestName = (String) drools.get( seatingRightGuestNameDeclaration );
+                    Hobby rightGuestHobby = (Hobby) drools.get( rightGuestHobbyDeclaration );
 
                     Seating seating = new Seating( count.getValue(),
                                                    seatId,
@@ -574,12 +560,12 @@ public class MannersTest extends TestCase {
 //                                             count );                        
 //                    }
                     
-                    drools.modifyObject( tuple.getFactHandleForDeclaration( countDeclaration ),
+                    drools.modifyObject( tuple.get( countDeclaration ),
                                          count );   
 
 
                     context.setState( Context.MAKE_PATH );
-                    drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
+                    drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
 
                     System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
@@ -588,6 +574,7 @@ public class MannersTest extends TestCase {
 
                 }
                 catch ( Exception e ) {
+                    e.printStackTrace();
                     throw new ConsequenceException( e );
                 }
             }
@@ -607,7 +594,7 @@ public class MannersTest extends TestCase {
      *        String pathGuestName;
      *   
      *        when {
-     *            context : Context( state == Context.MAKE_PATH )
+     *            Context( state == Context.MAKE_PATH )
      *            Seating( seatingId:id, seatingPid:pid, pathDone == false )
      *            Path( id == seatingPid, pathGuestName:guest, pathSeat:seat )
      *            (not Path( id == seatingId, guestName == pathGuestName )
@@ -708,16 +695,17 @@ public class MannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
     
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
                     KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple );
+                                                                         tuple,
+                                                                         workingMemory );
     
-                    int id = ((Integer) tuple.get( seatingIdDeclaration )).intValue();
-                    int seat = ((Integer) tuple.get( pathSeatDeclaration )).intValue();
-                    String guestName = (String) tuple.get( pathGuestNameDeclaration );
+                    int id = ( (Integer) drools.get( seatingIdDeclaration ) ).intValue();
+                    int seat = ( (Integer) drools.get( pathSeatDeclaration ) ).intValue();
+                    String guestName = (String) drools.get( pathGuestNameDeclaration );
     
                     Path path = new Path( id,
                                           seat,
@@ -728,6 +716,7 @@ public class MannersTest extends TestCase {
                     //System.out.println( "make path : " + path );
                 }
                 catch ( Exception e ) {
+                    e.printStackTrace();
                     throw new ConsequenceException( e );
                 }
             }
@@ -799,26 +788,27 @@ public class MannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
                     KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple );
+                                                                         tuple,
+                                                                         workingMemory);
 
-                    Context context = (Context) tuple.get( contextDeclaration );
-                    Seating seating = (Seating) tuple.get( seatingDeclaration );
+                    Context context = (Context) drools.get( contextDeclaration );
+                    Seating seating = (Seating) drools.get( seatingDeclaration );
 
                     seating.setPathDone( true );
                     
                     if ( seating.getId() == 6 ) {
                         System.out.println("pause");
                     }
-                    drools.modifyObject( tuple.getFactHandleForDeclaration( seatingDeclaration ),
+                    drools.modifyObject( tuple.get( seatingDeclaration ),
                                          seating );
 
                     context.setState( Context.CHECK_DONE );
-                    drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
+                    drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
                     //System.out.println( "path done" + seating );
                 }
@@ -901,17 +891,18 @@ public class MannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
                     KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple );
+                                                                         tuple,
+                                                                         workingMemory );
 
-                    Context context = (Context) tuple.get( contextDeclaration );
+                    Context context = (Context) drools.get( contextDeclaration );
                     context.setState( Context.PRINT_RESULTS );
 
-                    drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
+                    drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
 
                    System.err.println( "We Are Done!!!" );
@@ -967,22 +958,24 @@ public class MannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
                     KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple );
+                                                                         tuple,
+                                                                         workingMemory );
 
-                    Context context = (Context) tuple.get( contextDeclaration );
+                    Context context = (Context) drools.get( contextDeclaration );
                     context.setState( Context.ASSIGN_SEATS );
 
-                    drools.modifyObject( tuple.getFactHandleForDeclaration( contextDeclaration ),
+                    drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
 
                     //System.out.println( "continue processing" );
                 }
                 catch ( Exception e ) {
+                    e.printStackTrace();
                     throw new ConsequenceException( e );
                 }
             }
@@ -1032,7 +1025,7 @@ public class MannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     System.err.println( "all done" );
                 }
@@ -1168,7 +1161,7 @@ public class MannersTest extends TestCase {
         return -1;
     }
 
-    private Constraint getLiteralConstraint(Column column,
+    private FieldConstraint getLiteralConstraint(Column column,
                                             String fieldName,
                                             Object fieldValue,
                                             Evaluator evaluator) throws IntrospectionException {
@@ -1205,7 +1198,7 @@ public class MannersTest extends TestCase {
                                  column.getIndex() );
     }
 
-    private Constraint getBoundVariableConstraint(Column column,
+    private FieldConstraint getBoundVariableConstraint(Column column,
                                                   String fieldName,
                                                   Declaration declaration,
                                                   Evaluator evaluator) throws IntrospectionException {

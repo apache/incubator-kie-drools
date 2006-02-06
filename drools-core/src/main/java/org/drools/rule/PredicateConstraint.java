@@ -1,27 +1,28 @@
 package org.drools.rule;
 
 import org.drools.FactHandle;
-import org.drools.spi.BetaNodeConstraint;
-import org.drools.spi.Constraint;
-import org.drools.spi.PredicateEvaluator;
+import org.drools.WorkingMemory;
+import org.drools.spi.FieldConstraint;
+import org.drools.spi.PredicateExpression;
 import org.drools.spi.Tuple;
 
 public class PredicateConstraint
     implements
-    BetaNodeConstraint {    
-    private final PredicateEvaluator            evaluator;
-    
-    private final Declaration                   declaration;
+    FieldConstraint {    
+    private final PredicateExpression           evaluator;    
 
+    private final Declaration                   declaration;
+    
     private final Declaration[]                 requiredDeclarations;
 
     private static final Declaration[]          EMPTY_DECLARATIONS = new Declaration[0];
 
-    public PredicateConstraint(PredicateEvaluator evaluator,
+    public PredicateConstraint(PredicateExpression evaluator,
                                Declaration declaration,
                                Declaration[] requiredDeclarations) {
         
         this.evaluator = evaluator;
+        
         this.declaration = declaration;
 
         if ( requiredDeclarations == null ) {
@@ -35,15 +36,15 @@ public class PredicateConstraint
         return this.requiredDeclarations;
     }
 
-    public boolean isAllowed(Object object,
-                             FactHandle handle,
-                             Tuple tuple) {
+    public boolean isAllowed(FactHandle handle,
+                             Tuple tuple,
+                             WorkingMemory workingMemory) {
 
         return evaluator.evaluate( tuple,
-                                   object,
                                    handle,
-                                   this.declaration,
-                                   this.requiredDeclarations );
+                                   this.declaration, 
+                                   this.requiredDeclarations, 
+                                   workingMemory);
 
     }
 

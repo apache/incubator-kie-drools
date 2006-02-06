@@ -45,6 +45,9 @@ import java.util.List;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
+import org.drools.WorkingMemory;
+import org.drools.rule.Declaration;
+import org.drools.rule.Rule;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -98,20 +101,6 @@ public interface KnowledgeHelper {
      */
     void modifyObject(Object object) throws FactException;
 
-    /**
-     * Modifies an object by looking up the handle of the oldObject and
-     * replacing the oldObject with the newObject for the FactHandle. This is
-     * used for updating immutable objects.
-     * 
-     * @param oldObject -
-     *            The old object to be modified
-     * @param newObject -
-     *            the new modified object
-     * @throws FactException
-     */
-    void modifyObject(Object oldObject,
-                      Object newObject) throws FactException;
-
     void modifyObject(FactHandle handle,
                       Object newObject) throws FactException;    
     
@@ -128,10 +117,16 @@ public interface KnowledgeHelper {
     
     void retractObject(FactHandle handle) throws FactException;
 
+    Object get(Declaration declaration);
+    
     /**
      * @return - The rule name
      */
-    String getRuleName();
+    Rule getRule();
+    
+    Tuple getTuple();
+    
+    WorkingMemory getWorkingMemory();
 
     /** @return - A List of the objects in the WorkingMemory */
     List getObjects();
@@ -145,6 +140,8 @@ public interface KnowledgeHelper {
      *         filter
      */
     List getObjects(Class objectClass);
+    
+
 
     /**
      * Clears the agenda causing all existing Activations to fire

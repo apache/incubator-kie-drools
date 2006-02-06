@@ -1,6 +1,5 @@
 package org.drools.reteoo;
 
-import org.drools.FactException;
 import org.drools.spi.PropagationContext;
 
 public class MockObjectSource extends ObjectSource {
@@ -30,7 +29,7 @@ public class MockObjectSource extends ObjectSource {
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException {
+                              PropagationContext context) {
         this.updated++;
     }
 

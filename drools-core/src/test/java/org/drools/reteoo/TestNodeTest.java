@@ -41,11 +41,13 @@ package org.drools.reteoo;
  *
  */
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
+import org.drools.reteoo.TestNode.TestNodeMemory;
 import org.drools.rule.Rule;
 import org.drools.spi.MockCondition;
 import org.drools.spi.PropagationContext;
@@ -103,7 +105,7 @@ public class TestNodeTest extends DroolsTestCase {
                                                          true ),
                                       false );
 
-        Map memory = (Map) workingMemory.getNodeMemory( node );
+        TestNodeMemory memory = (TestNodeMemory) workingMemory.getNodeMemory( node );
 
         assertNotNull( memory );
     }
@@ -146,10 +148,6 @@ public class TestNodeTest extends DroolsTestCase {
         Object[] list = (Object[]) asserted.get( 0 );
         assertSame( tuple,
                     list[0] );
-
-        /* make sure nothing was retracted */
-        assertEquals( 0,
-                      sink.getRetracted().size() );
     }
 
     /**
@@ -160,7 +158,7 @@ public class TestNodeTest extends DroolsTestCase {
      */
     public void testAllowedWithMemory() throws FactException {
 
-        /* Create a test node that always returns true */
+        // Create a test node that always returns true 
         TestNode node = new TestNode( 1,
                                       new MockTupleSource( 15 ),
                                       new MockCondition( null,
@@ -170,31 +168,31 @@ public class TestNodeTest extends DroolsTestCase {
         MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
 
-        /* Create the Tuple */
+        // Create the Tuple 
         FactHandleImpl f0 = new FactHandleImpl( 0 );
         ReteTuple tuple = new ReteTuple( 0,
                                          f0,
                                          this.workingMemory );
 
-        /* Tuple should pass and propagate */
+        // Tuple should pass and propagate
         node.assertTuple( tuple,
                           this.context,
                           this.workingMemory );
 
-        /* Check memory was populated */
-        Map map = (Map) this.workingMemory.getNodeMemory( node );
+        // Check memory was populated
+        TestNodeMemory memory = (TestNodeMemory) this.workingMemory.getNodeMemory( node );
 
-        assertLength( 1,
-                      map.keySet() );
-        assertContains( tuple.getKey(),
-                        map.keySet() );
+        assertEquals( 1,
+                     iteratorSize( memory.iterator( context, workingMemory ) ) );
+        assertEquals( tuple,
+                      memory.iterator( context, workingMemory ).next() );
 
         // Now test that the fact is retracted correctly
-        node.retractTuples( tuple.getKey(),
-                            this.context,
-                            this.workingMemory );
-        assertLength( 0,
-                      map.keySet() );
+        tuple.remove( context, workingMemory );
+
+        // Now test that the fact is retracted correctly
+        assertEquals( 0,
+                      iteratorSize( memory.iterator( context, workingMemory ) ) );
     }
 
     /**
@@ -229,56 +227,8 @@ public class TestNodeTest extends DroolsTestCase {
         assertEquals( 0,
                       sink.getAsserted().size() );
 
-        /* make sure no retractions were propagated */
-        assertEquals( 0,
-                      sink.getRetracted().size() );
-
     }
 
-    /**
-     * Retract Keys
-     * 
-     * @throws FactException
-     */
-    public void testRetract() throws FactException {
-        /*
-         * Create a test node that always returns false Although as we are
-         * retracting it doesn't matter what it returns
-         */
-        TestNode node = new TestNode( 1,
-                                      new MockTupleSource( 15 ),
-                                      new MockCondition( null,
-                                                         false ),
-                                      false );
-
-        MockTupleSink sink = new MockTupleSink();
-        node.addTupleSink( sink );
-
-        /* Create the TupleKey */
-        FactHandleImpl f0 = new FactHandleImpl( 0 );
-        TupleKey key = new TupleKey( 0,
-                                     f0 );
-
-        /* Propagate the key */
-        node.retractTuples( key,
-                            this.context,
-                            this.workingMemory );
-
-        /* Check nothing was asserted */
-        assertEquals( 0,
-                      sink.getAsserted().size() );
-
-        /* Make sure only one object as propagated */
-        List retracted = sink.getRetracted();
-        assertEquals( 1,
-                      retracted.size() );
-
-        /* Check its the same key we asserted */
-        Object[] list = (Object[]) retracted.get( 0 );
-        assertSame( key,
-                    list[0] );
-
-    }
 
     public void testException() throws FactException {
         /* Create a condition that will always throw an exception */
@@ -399,4 +349,13 @@ public class TestNodeTest extends DroolsTestCase {
         assertLength( 1,
                       sink2.getAsserted() );
     }
+    
+    private int iteratorSize(Iterator it) {
+        int count = 0;
+        for (;it.hasNext();) {
+            it.next();
+            ++count;
+        }
+        return count;
+    }    
 }

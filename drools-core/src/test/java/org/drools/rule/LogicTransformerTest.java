@@ -344,7 +344,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         String h = "h";
         String i = "i";
         String j = "j";
-        String k = "k";
+        String k = "notAssertObject";
 
         And and1 = new And();
         And and2 = new And();

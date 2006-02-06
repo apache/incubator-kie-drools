@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.spi;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,25 +15,28 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import org.drools.InitialFact;
 
 /**
- * We dont want users to be able to instantiate InitialFact so we expose it as
- * an interface and make the class and its constructor package protected
+ *  The <code>Agenda</code> can be partitioned into groups, called <code>AgendaGroup</code>s. <code>Rule</code>s can be assigned to
+ *  these <code>AgendaGroup</code>s. Only rules in the focus group can fire. 
+ * 
+ * @see Agenda
  * 
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
- * 
+ *
  */
-class InitialFactImpl
-    implements
-    InitialFact {
-    private static final InitialFact INSTANCE = new InitialFactImpl();
+public interface AgendaGroup {
 
-    public static InitialFact getInstance() {
-        return InitialFactImpl.INSTANCE;
-    }
+    /**
+     * Static reference to determine the default <code>AgendaGroup</code> name.
+     */
+    public static String MAIN = "MAIN";
 
-    private InitialFactImpl() {
-    }
+    /**
+     * @return
+     *      The <code>AgendaGroup</code> name
+     */
+    public String getName();
+
 }

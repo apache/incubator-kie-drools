@@ -1,48 +1,30 @@
 package org.drools.reteoo;
-
 /*
- * $Id: TerminalNode.java,v 1.4 2005/08/14 22:44:12 mproctor Exp $
- *
- * Copyright 2001-2003 (C) The Werken Company. All Rights Reserved.
- *
- * Redistribution and use of this software and associated documentation
- * ("Software"), with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * 1. Redistributions of source code must retain copyright statements and
- * notices. Redistributions must also contain a copy of this document.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * 3. The name "drools" must not be used to endorse or promote products derived
- * from this Software without prior written permission of The Werken Company.
- * For written permission, please contact bob@werken.com.
- *
- * 4. Products derived from this Software may not be called "drools" nor may
- * "drools" appear in their names without prior written permission of The Werken
- * Company. "drools" is a trademark of The Werken Company.
- *
- * 5. Due credit should be given to The Werken Company. (http://werken.com/)
- *
- * THIS SOFTWARE IS PROVIDED BY THE WERKEN COMPANY AND CONTRIBUTORS ``AS IS''
- * AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE WERKEN COMPANY OR ITS CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-import org.drools.AssertionException;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TimerTask;
+
 import org.drools.FactException;
 import org.drools.rule.Rule;
+import org.drools.spi.Activation;
+import org.drools.spi.Duration;
+import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -55,7 +37,8 @@ import org.drools.spi.PropagationContext;
  */
 final class TerminalNode extends BaseNode
     implements
-    TupleSink {
+    TupleSink,
+    NodeMemory {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -78,7 +61,7 @@ final class TerminalNode extends BaseNode
     TerminalNode(int id,
                  TupleSource inputSource,
                  Rule rule) {
-        super(id);
+        super( id );
         this.rule = rule;
 
         inputSource.addTupleSink( this );
@@ -108,34 +91,91 @@ final class TerminalNode extends BaseNode
      *            The <code>Tuple</code> being asserted.
      * @param workingMemory
      *            The working memory seesion.
-     * 
      * @throws AssertionException
      *             If an error occurs while asserting.
      */
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
-                            WorkingMemoryImpl workingMemory) throws AssertionException {
-        workingMemory.getAgenda().addToAgenda( tuple,
-                                               context,
-                                               this.rule );
-    }
+                            WorkingMemoryImpl workingMemory) {
+        // if the current Rule is no-loop and the origin rule is the same then
+        // return
+        if ( rule.getNoLoop() && rule.equals( context.getRuleOrigin() ) ) {
+            return;
+        }
+        Agenda agenda = workingMemory.getAgenda();                       
 
-    /**
-     * Retract tuples.
-     * 
-     * @param key
-     *            The tuple key.
-     * @param workingMemory
-     *            The working memory seesion.
-     * @throws FactException
-     */
-    public void retractTuples(TupleKey key,
-                              PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException {
-        workingMemory.getAgenda().removeFromAgenda( key,
-                                                    context,
-                                                    this.rule );
+        Duration dur = rule.getDuration();
+
+        if ( dur != null && dur.getDuration( tuple ) > 0 ) {
+            ScheduledAgendaItem item = new ScheduledAgendaItem( context.getPropagationNumber(),
+                                                                tuple,
+                                                                workingMemory,
+                                                                context,
+                                                                rule );
+            agenda.scheduleItem( item );
+            tuple.setActivation( item );
+            workingMemory.getAgendaEventSupport().fireActivationCreated( item );
+        } else {
+            // -----------------
+            // Lazy instantiation and addition to the Agenda of AgendGroup implementations
+            // ----------------
+            TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
+            AgendaGroupImpl agendaGroup = memory.getAgendaGroup() ;
+            if (agendaGroup == null ) {                
+                if (rule.getAgendaGroup() == null || rule.getAgendaGroup().equals( "" ) || rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
+                    // Is the Rule AgendaGroup undefined? If it is use MAIN, which is added to the Agenda by default
+                    agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup( AgendaGroup.MAIN );
+                } else {
+                    // AgendaGroup is defined, so try and get the AgendaGroup from the Agenda
+                    agendaGroup = (AgendaGroupImpl)  agenda.getAgendaGroup( rule.getAgendaGroup() );
+                }
+                
+                if ( agendaGroup == null) {
+                    // The AgendaGroup is defined but not yet added to the Agenda, so create the AgendaGroup and add to the Agenda.
+                    agendaGroup = new AgendaGroupImpl( rule.getAgendaGroup() );
+                    workingMemory.getAgenda().addAgendaGroup( agendaGroup );
+                }            
+                
+                memory.setAgendaGroup( agendaGroup );
+            } 
+            
+            // set the focus if rule autoFocus is true 
+            if ( rule.getAutoFocus() ) {
+                agenda.setFocus( agendaGroup );
+            }
+
+            // Lazy assignment of the AgendaGroup's Activation Lifo Queue 
+            if ( memory.getLifo() == null ) {
+                memory.setLifo( agendaGroup.getActivationQueue( this.rule.getSalience() ) );
+            }
+            
+            ActivationQueue queue = memory.getLifo();
+            
+            AgendaItem item = new AgendaItem( context.getPropagationNumber(),
+                                              tuple,
+                                              context,
+                                              rule,
+                                              queue );            
+
+            queue.add( item );
+
+            // Makes sure the Lifo is added to the AgendaGroup priority queue
+            // If the AgendaGroup is already in the priority queue it just returns.
+            agendaGroup.addToAgenda( memory.getLifo() );
+            tuple.setActivation( item );
+            workingMemory.getAgendaEventSupport().fireActivationCreated( item );
+        }
     }
+    
+    public void retractTuple(ReteTuple tuple,
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
+        Activation activation = tuple.getActivation();
+        if ( activation != null ) {
+            activation.remove();
+            workingMemory.getAgendaEventSupport().fireActivationCancelled(  activation );            
+        }        
+    }    
 
     public String toString() {
         return "[TerminalNode: rule=" + this.rule.getName() + "]";
@@ -148,17 +188,44 @@ final class TerminalNode extends BaseNode
 
     public void attach() {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void remove() {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException {
-        // TODO Auto-generated method stub
-        
+                              PropagationContext context) {
+        // TODO Auto-generated method stub        
     }
+
+    public Object createMemory() {
+        return new TerminalNodeMemory();
+    }
+
+    class TerminalNodeMemory {
+        private AgendaGroupImpl agendaGroup;
+        private ActivationQueue lifo;
+
+        public ActivationQueue getLifo() {
+            return this.lifo;
+        }
+
+        public void setLifo(ActivationQueue lifo) {
+            this.lifo = lifo;
+        }
+
+        public AgendaGroupImpl getAgendaGroup() {
+            return this.agendaGroup;
+        }
+
+        public void setAgendaGroup(AgendaGroupImpl agendaGroup) {
+            this.agendaGroup = agendaGroup;
+        }
+    }
+
+
+
 }

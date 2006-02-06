@@ -23,6 +23,10 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                       source.getAttached() );
     }
 
+    /**
+     * Tests the attaching of the LeftInputAdapterNode to an ObjectSource
+     * @throws Exception
+     */
     public void testAttach() throws Exception {
         MockObjectSource source = new MockObjectSource( 15 );
 
@@ -45,8 +49,12 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                     source.getObjectSinks().get( 0 ) );
     }
 
+    /**
+     * Tests the assertion of objects into LeftInputAdapterNode
+     * 
+     * @throws Exception
+     */
     public void testAssertObject() throws Exception {
-        Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( 0,
                                                                  PropagationContext.ASSERTION,
                                                                  null,
@@ -63,20 +71,14 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         liaNode.addTupleSink( sink );
 
         Object string1 = "cheese";
-        Object object1 = new Object();
 
         FactHandleImpl handle1 = new FactHandleImpl( 1 );
-        FactHandleImpl handle2 = new FactHandleImpl( 2 );
 
         workingMemory.putObject( handle1,
                                  string1 );
 
-        workingMemory.putObject( handle2,
-                                 object1 );
-
         /* assert object */
-        liaNode.assertObject( string1,
-                              handle1,
+        liaNode.assertObject( handle1,
                               context,
                               workingMemory );
 
@@ -84,33 +86,25 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         assertLength( 1,
                       asserted );
 
-        /* assert object */
-        liaNode.assertObject( object1,
-                              handle2,
-                              context,
-                              workingMemory );
-        assertLength( 2,
-                      asserted );
-
         /* check tuple comes out */
         ReteTuple tuple = (ReteTuple) ((Object[]) asserted.get( 0 ))[0];
         assertSame( string1,
-                    tuple.get( handle1 ) );
-
-        /* check tuple comes out */
-        tuple = (ReteTuple) ((Object[]) asserted.get( 1 ))[0];
-        assertSame( object1,
-                    tuple.get( handle2 ) );
+                    workingMemory.getObject( tuple.get( 0 ) ) );
     }
 
+    /**
+     * Tests the retractions from a LeftInputAdapterNode.
+     * Object Assertions result in tuple propagations, so we 
+     * test the remove(...) method
+     * @throws Exception
+     */
     public void testRetractObject() throws Exception {
-        Rule rule = new Rule( "test-rule" );
         PropagationContext context = new PropagationContextImpl( 0,
                                                                  PropagationContext.ASSERTION,
                                                                  null,
                                                                  null );
 
-        WorkingMemoryImpl memory = new WorkingMemoryImpl( new RuleBaseImpl() );
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
         MockObjectSource source = new MockObjectSource( 15 );
 
@@ -122,43 +116,31 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
         Object string1 = "cheese";
 
-        Object object1 = new Object();
-
         FactHandleImpl handle1 = new FactHandleImpl( 1 );
-        FactHandleImpl handle2 = new FactHandleImpl( 2 );
 
-        memory.putObject( handle1,
+        workingMemory.putObject( handle1,
                           string1 );
 
-        memory.putObject( handle2,
-                          object1 );
-
-        /* retract object */
-        liaNode.retractObject( handle1,
-                               context,
-                               memory );
-
-        List retracted = sink.getRetracted();
-        assertLength( 1,
-                      retracted );
-
-        /* retract object */
-        liaNode.retractObject( handle2,
-                               context,
-                               memory );
-
-        assertLength( 2,
-                      retracted );
-
-        /* check TupleKey comes out */
-        TupleKey key = (TupleKey) ((Object[]) retracted.get( 0 ))[0];
-        assertSame( handle1,
-                    key.get( 0 ) );
-
-        /* check TupleKey comes out */
-        key = (TupleKey) ((Object[]) retracted.get( 1 ))[0];
-        assertSame( handle2,
-                    key.get( 0 ) );
+        /* assert object */
+        liaNode.assertObject( handle1,
+                              context,
+                              workingMemory );
+        
+        ReteTuple tuple = (ReteTuple) ((Object[]) sink.getAsserted().get( 0 ))[0];
+        
+        ReteTuple previous = new ReteTuple(0, handle1, workingMemory);
+        ReteTuple next = new ReteTuple(0, handle1, workingMemory);
+        
+        tuple.setPrevious( previous );
+        tuple.setNext( next );
+        
+        tuple.remove( context, workingMemory );
+        
+        assertSame(previous.getNext(), next);
+        assertSame(next.getPrevious(), previous);
+        
+        assertNull(tuple.getPrevious());
+        assertNull(tuple.getNext());
 
     }
 

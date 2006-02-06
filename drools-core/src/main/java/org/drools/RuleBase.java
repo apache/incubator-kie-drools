@@ -85,13 +85,6 @@ public interface RuleBase
     WorkingMemory newWorkingMemory(boolean keepReference);
 
     /**
-     * Retrieve the <code>ConflictResolver</code>.
-     * 
-     * @return The conflict resolution strategy.
-     */
-    ConflictResolver getConflictResolver();
-
-    /**
      * Retrieve the <code>FactHandleFactor</code>.
      * 
      * @return The fact handle factory.

@@ -1,64 +1,32 @@
 package org.drools.reteoo;
-
 /*
- * $Id: Agenda.java,v 1.7 2005/08/16 22:55:37 mproctor Exp $
- *
- * Copyright 2001-2003 (C) The Werken Company. All Rights Reserved.
- *
- * Redistribution and use of this software and associated documentation
- * ("Software"), with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * 1. Redistributions of source code must retain copyright statements and
- * notices. Redistributions must also contain a copy of this document.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * 3. The name "drools" must not be used to endorse or promote products derived
- * from this Software without prior written permission of The Werken Company.
- * For written permission, please contact bob@werken.com.
- *
- * 4. Products derived from this Software may not be called "drools" nor may
- * "drools" appear in their names without prior written permission of The Werken
- * Company. "drools" is a trademark of The Werken Company.
- *
- * 5. Due credit should be given to The Werken Company. (http://werken.com/)
- *
- * THIS SOFTWARE IS PROVIDED BY THE WERKEN COMPANY AND CONTRIBUTORS ``AS IS''
- * AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE WERKEN COMPANY OR ITS CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
+import java.util.TimerTask;
 
-import org.drools.FactException;
-import org.drools.rule.Rule;
+import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
-import org.drools.spi.AsyncExceptionHandler;
+import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceException;
-import org.drools.spi.Duration;
-import org.drools.spi.Module;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 
 /**
  * Rule-firing Agenda.
@@ -85,19 +53,18 @@ class Agenda
     // ------------------------------------------------------------
 
     /** Working memory of this Agenda. */
-    private final WorkingMemoryImpl workingMemory;
+    private final WorkingMemoryImpl workingMemory; 
 
+    private ScheduledAgendaItem firstScheduledTask;
+    private ScheduledAgendaItem lastScheduledTask;    
+    
     /** Items time-delayed. */
-    private final Map               scheduledItems;
 
-    private final Map               modules;
+    private final Map               agendaGroups;
 
     private final LinkedList        focusStack;
 
-    private ModuleImpl              currentModule;
-
-    private final Set               justifiedActivations;
-
+    private AgendaGroupImpl         currentModule;
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -110,161 +77,40 @@ class Agenda
      * @param conflictResolver
      *            The conflict resolver.
      */
-    public Agenda(WorkingMemoryImpl workingMemory,
-                  ConflictResolver conflictResolver) {
+    public Agenda(WorkingMemoryImpl workingMemory ) {        
         this.workingMemory = workingMemory;
-        this.scheduledItems = new HashMap();
-        this.modules = new HashMap();
+        this.agendaGroups = new HashMap();
         this.focusStack = new LinkedList();
 
-        /* MAIN should always be the first module and can never be removed */
-        ModuleImpl main = new ModuleImpl( Module.MAIN,
-                                          conflictResolver );
-        this.modules.put( Module.MAIN,
-                          main );
+        // MAIN should always be the first AgendaGroup and can never be removed
+        AgendaGroupImpl main = new AgendaGroupImpl( AgendaGroup.MAIN );
+        this.agendaGroups.put( AgendaGroup.MAIN,
+                               main );
 
         this.focusStack.add( main );
 
-        this.justifiedActivations = new HashSet();
-
-    }
-
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------
-
-    /**
-     * Schedule a rule action invokation on this <code>Agenda</code>. Rules
-     * specified with noNoop=true that are active should not be added to the
-     * agenda 3
-     * 
-     * @param tuple
-     *            The matching <code>Tuple</code>.
-     * @param rule
-     *            The rule to fire.
-     */
-    void addToAgenda(ReteTuple tuple,
-                     PropagationContext context,
-                     Rule rule) {
-        /*
-         * if the current Rule is no-loop and the origin rule is the same then
-         * return
-         */
-        if ( rule.getNoLoop() && rule.equals( context.getRuleOrigin() ) ) {
-            return;
-        }
-
-        Duration dur = rule.getDuration();
-
-        AgendaItem item = new AgendaItem( context.getPropagationNumber(),
-                                          tuple,
-                                          context,
-                                          rule );
-
-        /* set the focus if rule autoFocus is true */
-        if ( rule.getAutoFocus() ) {
-            setFocus( rule.getModule() );
-        }
-
-        if ( dur != null && dur.getDuration( tuple ) > 0 ) {
-            this.scheduledItems.put( item.getKey(),
-                                     item );
-            scheduleItem( item );
-            this.workingMemory.getAgendaEventSupport().fireActivationCreated( item );
-        } else {
-            ModuleImpl module = (ModuleImpl) this.modules.get( rule.getModule() );
-            module.getActivationQueue().add( item );
-            this.workingMemory.getAgendaEventSupport().fireActivationCreated( item );
-        }
-    }
-
-    /**
-     * Remove a tuple from the agenda.
-     * 
-     * @param key
-     *            The key to the tuple to be removed.
-     * @param rule
-     *            The rule to remove.
-     */
-    void removeFromAgenda(TupleKey key,
-                          PropagationContext context,
-                          Rule rule) throws FactException {
-        ModuleImpl module = (ModuleImpl) this.modules.get( rule.getModule() );
-
-        for ( Iterator it = module.getActivationQueue().iterator(); it.hasNext(); ) {
-            AgendaItem eachItem = (AgendaItem) it.next();
-
-            if ( eachItem.getRule() == rule && eachItem.getKey().containsAll( key ) ) {
-                it.remove();
-                // need to restart iterator as heap could place elements before
-                // current iterator position
-                it = module.getActivationQueue().iterator();
-
-                this.workingMemory.getAgendaEventSupport().fireActivationCancelled( eachItem );
-                this.workingMemory.removeLogicalAssertions( eachItem,
-                                                            context,
-                                                            rule );
-            }
-        }
-
-        for ( Iterator it = this.scheduledItems.values().iterator(); it.hasNext(); ) {
-            AgendaItem eachItem = (AgendaItem) it.next();
-
-            if ( eachItem.getRule() == rule && eachItem.getKey().containsAll( key ) ) {
-                Tuple tuple = eachItem.getTuple();
-
-                cancelItem( eachItem );
-
-                it.remove();
-
-                this.workingMemory.getAgendaEventSupport().fireActivationCancelled( eachItem );
-                this.workingMemory.removeLogicalAssertions( eachItem,
-                                                            context,
-                                                            rule );
-            }
-        }
-
-        this.workingMemory.removeLogicalAssertions( key,
-                                                    context,
-                                                    rule );
     }
 
     /**
      * Clears all Activations from the Agenda
      * 
      */
-    void clearAgenda() {
-        AgendaItem eachItem;
-
-        ModuleImpl module;
-        Iterator queueIterator;
-        Iterator moduleIterator = this.modules.values().iterator();
-
-        // Cancel all items and fire a Cancelled event for each Module
-        while ( moduleIterator.hasNext() ) {
-            module = (ModuleImpl) moduleIterator.next();
-            queueIterator = module.getActivationQueue().iterator();
-            while ( queueIterator.hasNext() ) {
-                eachItem = (AgendaItem) queueIterator.next();
-
-                queueIterator.remove();
-
-                this.workingMemory.getAgendaEventSupport().fireActivationCancelled( eachItem );
+    void clearAgenda() {       
+        // Cancel all items and fire a Cancelled event for each Activation
+        for ( Iterator agendaGroupIterator = this.agendaGroups.values().iterator();agendaGroupIterator.hasNext(); ) {
+            AgendaGroupImpl group = (AgendaGroupImpl) agendaGroupIterator.next();
+            for ( Iterator queueIterator = group.getPriorityQueue().iterator(); queueIterator.hasNext(); ) {
+                AgendaItem item = (AgendaItem) queueIterator.next();                
+                item.remove( );
+                this.workingMemory.getAgendaEventSupport().fireActivationCancelled( item );
             }
         }
 
-        Iterator iter = this.scheduledItems.values().iterator();
-
-        // Cancel all items in the Schedule and fire a Cancelled event for each
-        // activation
-        while ( iter.hasNext() ) {
-            eachItem = (AgendaItem) iter.next();
-
-            cancelItem( eachItem );
-
-            iter.remove();
-
-            this.workingMemory.getAgendaEventSupport().fireActivationCancelled( eachItem );
+        // Cancel all scheduled items and fire a Cancelled event for each Activation    
+        for ( ScheduledAgendaItem item = this.firstScheduledTask ; item.getNext() != null; ) {
+            item = item.getNext();
+            item.remove( );
+            this.workingMemory.getAgendaEventSupport().fireActivationCancelled( item );
         }
     }
 
@@ -274,37 +120,55 @@ class Agenda
      * @param item
      *            The item to schedule.
      */
-    void scheduleItem(AgendaItem item) {
-        Scheduler.getInstance().scheduleAgendaItem( item,
-                                                    this.workingMemory );
+    TimerTask scheduleItem(ScheduledAgendaItem item) {
+        Scheduler.getInstance().scheduleAgendaItem( item );
+        
+        if ( this.firstScheduledTask == null ) { 
+            this.firstScheduledTask = item;
+            this.lastScheduledTask = item;
+        } else {        
+            this.lastScheduledTask.setNext( item );
+            item.setPrevious( this.lastScheduledTask );
+            this.lastScheduledTask = item;
+        }
+        
+        return item;
+    }
+    
+    void removeScheduleItem(ScheduledAgendaItem item) {        
+        if (this.firstScheduledTask != item && this.lastScheduledTask != item) {
+            item.getPrevious().setNext( item.getNext() );
+            item.getNext().setPrevious( item.getPrevious() ); 
+        } else {        
+            if ( this.firstScheduledTask == item ) {
+                this.firstScheduledTask = item.getNext();
+                item.setPrevious( null );
+            }
+            
+            if ( this.lastScheduledTask == item ) {
+                this.lastScheduledTask= item.getPrevious(); 
+                item.setNext( null );
+            }       
+        }
+        item.cancel();
+    }    
+
+    public void addAgendaGroup(AgendaGroup agendaGroup) {
+        this.agendaGroups.put( agendaGroup.getName(),
+                               agendaGroup );
     }
 
-    /**
-     * Cancel a scheduled agenda item for delayed firing.
-     * 
-     * @param item
-     *            The item to cancel.
-     */
-    void cancelItem(AgendaItem item) {
-        Scheduler.getInstance().cancelAgendaItem( item );
-    }
-
-    public void addModule(Module module) {
-        this.modules.put( module.getName(),
-                          module );
-    }
-
-    public void setFocus(Module module) {
-        /* remove the object from the stack, before we add it to the end */
-        this.focusStack.add( module );
+    public void setFocus(AgendaGroup agendaGroup) {
+        // remove the object from the stack, before we add it to the end
+        this.focusStack.add( agendaGroup );
     }
 
     public void setFocus(String name) {
-        setFocus( (Module) this.modules.get( name ) );
+        setFocus( (AgendaGroup) this.agendaGroups.get( name ) );
     }
 
-    public Module getFocus() {
-        return (Module) this.focusStack.getLast();
+    public AgendaGroup getFocus() {
+        return (AgendaGroup) this.focusStack.getLast();
     }
 
     /**
@@ -313,12 +177,12 @@ class Agenda
      * 
      * @return
      */
-    public Module getNextFocus() {
-        ModuleImpl module = null;
+    public AgendaGroup getNextFocus() {
+        AgendaGroupImpl module = null;
         boolean iterate = true;
         while ( iterate ) {
-            module = (ModuleImpl) this.focusStack.getLast();
-            if ( module.getActivationQueue().isEmpty() && !module.getName().equals( Module.MAIN ) ) {
+            module = (AgendaGroupImpl) this.focusStack.getLast();
+            if ( module.getPriorityQueue().isEmpty() && !module.getName().equals( AgendaGroup.MAIN ) ) {
                 this.focusStack.removeLast();
             } else {
                 iterate = false;
@@ -327,54 +191,49 @@ class Agenda
         return module;
     }
 
-    public void setCurrentModule(Module module) {
-        this.currentModule = (ModuleImpl) module;
+    public void setCurrentAgendaGroup(AgendaGroup agendaGroup) {
+        this.currentModule = (AgendaGroupImpl) agendaGroup;
     }
 
-    public Module getCurrentModule() {
+    public AgendaGroup getCurrentAgendaGroup() {
         return this.currentModule;
     }
 
-    public Module getModule(String name) {
-        return (Module) this.modules.get( name );
+    public AgendaGroup getAgendaGroup(String name) {
+        return (AgendaGroup) this.agendaGroups.get( name );
     }
 
     public int focusSize() {
-        return ((ModuleImpl) getFocus()).getActivationQueue().size();
+        return ((AgendaGroupImpl) getFocus()).getPriorityQueue().size();
     }
-    
-    public Module[] getModules() {
-        return (Module[]) this.modules.values().toArray( new Module[ this.modules.size() ] );
-    }
-    
-    public Module[] getStack() {
-        return (Module[]) this.focusStack.toArray( new Module[ this.focusStack.size() ] );
-    }    
 
-    public Map getScheduledItems() {
-        return this.scheduledItems;
+    public AgendaGroup[] getAgendaGroups() {
+        return (AgendaGroup[]) this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
+    }
+
+    public AgendaGroup[] getStack() {
+        return (AgendaGroup[]) this.focusStack.toArray( new AgendaGroup[this.focusStack.size()] );
     }
 
     public int totalStackSize() {
-        ModuleImpl module;
-        Iterator iterator = this.focusStack.iterator();
+        AgendaGroupImpl module;        
 
         int size = 0;
-        while ( iterator.hasNext() ) {
-            module = (ModuleImpl) iterator.next();
-            size += module.getActivationQueue().size();
+        for ( Iterator iterator = this.focusStack.iterator(); iterator.hasNext(); ) {
+            module = (AgendaGroupImpl) iterator.next();
+            size += module.getPriorityQueue().size();
         }
         return size;
     }
 
     public int totalAgendaSize() {
-        ModuleImpl module;
-        Iterator iterator = this.modules.values().iterator();
+        AgendaGroupImpl module;
+        Iterator iterator = this.agendaGroups.values().iterator();
 
         int size = 0;
         while ( iterator.hasNext() ) {
-            module = (ModuleImpl) iterator.next();
-            size += module.getActivationQueue().size();
+            module = (AgendaGroupImpl) iterator.next();
+            size += module.getPriorityQueue().size();
         }
         return size;
     }
@@ -386,30 +245,48 @@ class Agenda
      *             If an error occurs while firing an agenda item.
      */
     public boolean fireNextItem(AgendaFilter filter) throws ConsequenceException {
-        ModuleImpl module = (ModuleImpl) getNextFocus();
-
+        AgendaGroupImpl group = (AgendaGroupImpl) getNextFocus();
+        
         /* return if there are no Activations to fire */
-        if ( module.getActivationQueue().isEmpty() ) {
+        if ( group.getPriorityQueue().isEmpty() ) {
             return false;
         }
 
-        AgendaItem item = (AgendaItem) module.getActivationQueue().remove();
 
-        if ( filter == null || filter.accept( item ) ) {
-            item.fire( this.workingMemory );
+        ActivationQueue queue = (ActivationQueue) group.getPriorityQueue().get();
+        while ( !group.getPriorityQueue().isEmpty() && queue.isEmpty() ) {
+            queue = (ActivationQueue) group.getPriorityQueue().remove();
+        }
+        
+        boolean fired = false;
+        if ( ! queue.isEmpty() ) {        
+            Activation item = queue.remove();        
+            
+            if ( filter == null || filter.accept( item ) ) {
+                fireActivation( item );                
+            }
+    
+            fired = true;
         }
 
-        return true;
+        return fired;
     }
-
+    
     /**
-     * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
-     * Scheduler used for duration rules.
+     * Fire this item.
      * 
-     * @param handler
-     */
-    void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
-        Scheduler.getInstance().setAsyncExceptionHandler( handler );
+     * @param workingMemory
+     *            The working memory context.
+     * 
+     * @throws ConsequenceException
+     *             If an error occurs while attempting to fire the consequence.
+     */    
+    public synchronized void fireActivation(Activation activation)  throws ConsequenceException  {
+        this.workingMemory.getAgendaEventSupport().fireBeforeActivationFired( activation );
+        
+        activation.getRule().getConsequence().invoke( activation, this.workingMemory );
+
+        this.workingMemory.getAgendaEventSupport().fireAfterActivationFired( activation );        
     }
 
 }

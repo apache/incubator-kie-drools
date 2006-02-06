@@ -2,7 +2,6 @@ package org.drools.reteoo;
 
 import junit.framework.TestCase;
 
-import org.drools.FactException;
 import org.drools.spi.PropagationContext;
 
 public class BaseNodeTest extends TestCase {
@@ -38,7 +37,7 @@ public class BaseNodeTest extends TestCase {
         }
 
         public void updateNewNode(WorkingMemoryImpl workingMemory,
-                                  PropagationContext context) throws FactException {
+                                  PropagationContext context) {
             // TODO Auto-generated method stub
 
         }

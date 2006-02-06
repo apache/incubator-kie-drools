@@ -40,17 +40,19 @@ package org.drools.spi;
  *
  */
 
-import org.drools.AssertionException;
+import org.drools.CheckedDroolsException;
+import org.drools.RuntimeDroolsException;
 import org.drools.rule.Rule;
 
 /**
- * Indicates an error during a <code>Consequence</code> invokation.
+ * Indicates an error during a <code>Consequence</code> invocation.
  * 
  * @see Consequence
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public class ConsequenceException extends AssertionException {
+public class ConsequenceException extends RuntimeDroolsException {
     private Rule   rule;
     private String info;
 

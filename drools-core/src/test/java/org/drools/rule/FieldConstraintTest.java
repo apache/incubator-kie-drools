@@ -6,19 +6,21 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.spi.MockField;
 import org.drools.reteoo.InstrumentedReteTuple;
 import org.drools.reteoo.InstrumentedWorkingMemoryImpl;
+import org.drools.reteoo.RuleBaseImpl;
 import org.drools.spi.ClassFieldExtractor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Field;
 import org.drools.spi.FieldExtractor;
-import org.drools.spi.PredicateEvaluator;
-import org.drools.spi.ReturnValueEvaluator;
+import org.drools.spi.PredicateExpression;
+import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
 
-public class ConstraintTest extends TestCase {
-    public ConstraintTest() {
+public class FieldConstraintTest extends TestCase {
+    public FieldConstraintTest() {
         super();
     }
 
@@ -37,6 +39,9 @@ public class ConstraintTest extends TestCase {
      * @throws IntrospectionException
      */
     public void testLiteralConstraint() throws IntrospectionException {
+        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
         int index = Cheese.getIndex( Cheese.class,
                                      "type" );
 
@@ -56,14 +61,22 @@ public class ConstraintTest extends TestCase {
         Cheese cheddar = new Cheese( "cheddar",
                                      5 );
 
+        FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
+
         // check constraint
-        assertTrue( constraint.isAllowed( cheddar ) );
+        assertTrue( constraint.isAllowed( cheddarHandle,
+                                          null,
+                                          workingMemory ) );
 
         Cheese stilton = new Cheese( "stilton",
                                      5 );
 
+        FactHandle stiltonHandle = workingMemory.assertObject( stilton );
+
         // check constraint
-        assertFalse( constraint.isAllowed( stilton ) );
+        assertFalse( constraint.isAllowed( stiltonHandle,
+                                           null,
+                                           workingMemory ) );
     }
 
     /**
@@ -79,7 +92,8 @@ public class ConstraintTest extends TestCase {
      * @throws IntrospectionException
      */
     public void testPredicateConstraint() throws IntrospectionException {
-        InstrumentedWorkingMemoryImpl workingMemory = new InstrumentedWorkingMemoryImpl();
+        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                  Cheese.getIndex( Cheese.class,
@@ -99,15 +113,16 @@ public class ConstraintTest extends TestCase {
                                                          priceExtractor,
                                                          1 );
 
-        PredicateEvaluator evaluator = new PredicateEvaluator() {
+        PredicateExpression evaluator = new PredicateExpression() {
 
             public boolean evaluate(Tuple tuple,
-                                    Object object,
-                                    FactHandle handle,
+                                    FactHandle factHandle,
                                     Declaration declaration,
-                                    Declaration[] declarations) {
-                int price1 = ((Integer) tuple.get( declarations[0] )).intValue();
-                int price2 = ((Integer) declaration.getValue( object )).intValue();
+                                    Declaration[] declarations,
+                                    WorkingMemory workingMemory) {
+                int price1 = ((Integer) declarations[0].getValue( workingMemory.getObject( tuple.get( declarations[0] ) ) )).intValue();
+                int price2 = ( (Integer) declaration.getValue( workingMemory.getObject( factHandle ) ) ).intValue();
+
                 return (price2 == (price1 * 2));
 
             }
@@ -119,26 +134,21 @@ public class ConstraintTest extends TestCase {
 
         Cheese cheddar0 = new Cheese( "cheddar",
                                       5 );
-        FactHandle f0 = workingMemory.createFactHandle( 0 );
-        workingMemory.putObject( f0,
-                                 cheddar0 );
+        FactHandle f0 = workingMemory.assertObject( cheddar0 );
         InstrumentedReteTuple tuple = new InstrumentedReteTuple( 0,
                                                                  f0,
                                                                  workingMemory );
 
         Cheese cheddar1 = new Cheese( "cheddar",
                                       10 );
-        FactHandle f1 = workingMemory.createFactHandle( 1 );
-        workingMemory.putObject( f1,
-                                 cheddar1 );
-        tuple = new InstrumentedReteTuple( tuple,
-                                           new InstrumentedReteTuple( 1,
-                                                                      f1,
-                                                                      workingMemory ) );
+        FactHandle f1 = workingMemory.assertObject( cheddar1 );
 
-        assertTrue( constraint1.isAllowed( cheddar1,
-                                           f1,
-                                           tuple ) );
+        tuple = new InstrumentedReteTuple( tuple,
+                                           f1 );
+
+        assertTrue( constraint1.isAllowed( f1,
+                                           tuple,
+                                           workingMemory ) );
     }
 
     /**
@@ -155,7 +165,8 @@ public class ConstraintTest extends TestCase {
      * @throws IntrospectionException
      */
     public void testReturnValueConstraint() throws IntrospectionException {
-        InstrumentedWorkingMemoryImpl workingMemory = new InstrumentedWorkingMemoryImpl();
+        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                  Cheese.getIndex( Cheese.class,
@@ -168,10 +179,12 @@ public class ConstraintTest extends TestCase {
                                                         priceExtractor,
                                                         0 );
 
-        ReturnValueEvaluator isDoubleThePrice = new ReturnValueEvaluator() {
+        ReturnValueExpression isDoubleThePrice = new ReturnValueExpression() {
             public Object evaluate(Tuple tuple, // ?price
-                                   Declaration[] declarations) {
-                return new Integer( 2 * ((Integer) tuple.get( declarations[0] )).intValue() );
+                                   Declaration[] declarations,
+                                   WorkingMemory workingMemory) {
+                int price = ((Integer) declarations[0].getValue( workingMemory.getObject( tuple.get( declarations[0] ) ) )).intValue();
+                return new Integer( 2 * price );
 
             }
         };
@@ -190,40 +203,34 @@ public class ConstraintTest extends TestCase {
 
         Cheese cheddar0 = new Cheese( "cheddar",
                                       5 );
-        FactHandle f0 = workingMemory.createFactHandle( 0 );
-        workingMemory.putObject( f0,
-                                 cheddar0 );
+        FactHandle f0 = workingMemory.assertObject( cheddar0 );
+
         InstrumentedReteTuple tuple = new InstrumentedReteTuple( 0,
                                                                  f0,
                                                                  workingMemory );
 
         Cheese cheddar1 = new Cheese( "cheddar",
                                       10 );
-        FactHandle f1 = workingMemory.createFactHandle( 1 );
-        workingMemory.putObject( f1,
-                                 cheddar1 );
+        FactHandle f1 = workingMemory.assertObject( cheddar1 );
         tuple = new InstrumentedReteTuple( tuple,
-                                           new InstrumentedReteTuple( 0,
-                                                                      f1,
-                                                                      workingMemory ) );
+                                           f1 );
 
-        assertTrue( constraint1.isAllowed( cheddar1,
-                                           f1,
-                                           tuple ) );
+        assertTrue( constraint1.isAllowed( f1,
+                                           tuple,
+                                           workingMemory ) );
 
-        assertFalse( constraint2.isAllowed( cheddar1,
-                                            f1,
-                                            tuple ) );
+        assertFalse( constraint2.isAllowed( f1,
+                                            tuple,
+                                            workingMemory ) );
 
-        cheddar1 = new Cheese( "cheddar",
-                               11 );
+        Cheese cheddar2 = new Cheese( "cheddar",
+                                      11 );
 
-        workingMemory.putObject( f1,
-                                 cheddar1 );
+        FactHandle f2 = workingMemory.assertObject( cheddar2 );
 
-        assertTrue( constraint2.isAllowed( cheddar1,
-                                           f1,
-                                           tuple ) );
+        assertTrue( constraint2.isAllowed( f2,
+                                           tuple,
+                                           workingMemory ) );
     }
 
 }

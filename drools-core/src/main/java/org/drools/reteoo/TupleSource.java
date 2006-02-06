@@ -1,52 +1,24 @@
 package org.drools.reteoo;
-
 /*
- * $Id: TupleSource.java,v 1.4 2005/08/14 22:44:12 mproctor Exp $
- *
- * Copyright 2001-2003 (C) The Werken Company. All Rights Reserved.
- *
- * Redistribution and use of this software and associated documentation
- * ("Software"), with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * 1. Redistributions of source code must retain copyright statements and
- * notices. Redistributions must also contain a copy of this document.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * 3. The name "drools" must not be used to endorse or promote products derived
- * from this Software without prior written permission of The Werken Company.
- * For written permission, please contact bob@werken.com.
- *
- * 4. Products derived from this Software may not be called "drools" nor may
- * "drools" appear in their names without prior written permission of The Werken
- * Company. "drools" is a trademark of The Werken Company.
- *
- * 5. Due credit should be given to The Werken Company. (http://werken.com/)
- *
- * THIS SOFTWARE IS PROVIDED BY THE WERKEN COMPANY AND CONTRIBUTORS ``AS IS''
- * AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE WERKEN COMPANY OR ITS CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.AssertionException;
-import org.drools.FactException;
-import org.drools.RetractionException;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -59,7 +31,8 @@ import org.drools.spi.PropagationContext;
  * @see TupleSource
  * @see ReteTuple
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 abstract class TupleSource extends BaseNode
     implements
@@ -73,10 +46,11 @@ abstract class TupleSource extends BaseNode
 
     // ------------------------------------------------------------
     // Constructors
-    // ------------------------------------------------------------
-
+    // ------------------------------------------------------------   
+    
     /**
-     * Construct.
+     * Single parameter constructor that specifies the unique id of the node.
+     * @param id
      */
     TupleSource(int id) {
         super( id );
@@ -101,32 +75,29 @@ abstract class TupleSource extends BaseNode
     }
 
     /**
-     * Adds the <code>TupleSink</code> so that it may receive
-     * <code>Tuples</code> propagated from this <code>TupleSource</code>.
+     * Removes the <code>TupleSink</code> 
      * 
      * @param tupleSink
-     *            The <code>TupleSink</code> to receive propagated
-     *            <code>Tuples</code>.
+     *            The <code>TupleSink</code> to remove
      */
     protected void removeTupleSink(TupleSink tupleSink) {
         this.tupleSinks.remove( tupleSink );
     }
 
     /**
-     * Propagate the assertion of a <code>Tuple</code> to this node's
+     * Propagate the assertion of a <code>ReteTuple</code> to this node's
      * <code>TupleSink</code>.
      * 
      * @param tuple
-     *            The <code>Tuple</code> to propagate.
+     *            The <code>ReteTuple</code> to propagate.
+     * @param context
+     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action            
      * @param workingMemory
-     *            the working memory session.
-     * 
-     * @throws AssertionException
-     *             If an errors occurs while attempting assertion.
+     *            the <code>WorkingMemory</code> session.
      */
     protected void propagateAssertTuple(ReteTuple tuple,
                                         PropagationContext context,
-                                        WorkingMemoryImpl workingMemory) throws FactException {
+                                        WorkingMemoryImpl workingMemory) {
         if ( !this.attachingNewNode ) {
             for ( int i = 0, size = this.tupleSinks.size(); i < size; i++ ) {
                 ((TupleSink) this.tupleSinks.get( i )).assertTuple( tuple,
@@ -141,35 +112,8 @@ abstract class TupleSource extends BaseNode
     }
 
     /**
-     * Propagate the retration of a <code>Tuple</code> to this node's
-     * <code>TupleSink</code>.
-     * 
-     * @param key
-     *            The tuple key.
-     * @param workingMemory
-     *            The working memory session.
-     * 
-     * @throws RetractionException
-     *             If an error occurs while attempting retraction
-     * 
-     */
-    protected void propagateRetractTuples(TupleKey key,
-                                          PropagationContext context,
-                                          WorkingMemoryImpl workingMemory) throws FactException {
-        for ( int i = 0, size = this.tupleSinks.size(); i < size; i++ ) {
-            ((TupleSink) this.tupleSinks.get( i )).retractTuples( key,
-                                                                  context,
-                                                                  workingMemory );
-        }
-    }
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // org.drools.reteoo.TupleSource
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    /**
      * Retrieve the <code>TupleSinks</code> that receive propagated
-     * <code>Tuples</code>.
+     * <code>Tuples</code>s.
      * 
      * @return The <code>TupleSinks</code> that receive propagated
      *         <code>Tuples</code>.

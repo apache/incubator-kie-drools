@@ -54,12 +54,11 @@ import java.io.Serializable;
 public interface FactHandle
     extends
     Serializable {
+    
     /**
      * Convert this handle to an external representation.
      * 
      * @return The external string form.
      */
-    String toExternalForm();
-    
-    long getRecency();
+    String toExternalForm();    
 }

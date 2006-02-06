@@ -102,7 +102,7 @@ public class AgendaEventSupport
             return;
         }
 
-        ActivationCancelledEvent event = new ActivationCancelledEvent( activation);
+        ActivationCancelledEvent event = new ActivationCancelledEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).activationCancelled( event );

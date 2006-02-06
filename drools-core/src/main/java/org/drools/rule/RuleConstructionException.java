@@ -40,14 +40,15 @@ package org.drools.rule;
  *
  */
 
-import org.drools.DroolsException;
+import org.drools.CheckedDroolsException;
 
 /**
  * Base exception for errors during <code>Rule</code> construction.
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public class RuleConstructionException extends DroolsException {
+public class RuleConstructionException extends CheckedDroolsException {
     /**
      * @see java.lang.Exception#Exception()
      */
