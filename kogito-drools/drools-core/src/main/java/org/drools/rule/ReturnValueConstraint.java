@@ -1,20 +1,20 @@
 package org.drools.rule;
 
 import org.drools.FactHandle;
-import org.drools.spi.BetaNodeConstraint;
-import org.drools.spi.Constraint;
+import org.drools.WorkingMemory;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
-import org.drools.spi.ReturnValueEvaluator;
+import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
 
 public class ReturnValueConstraint
     implements
-    BetaNodeConstraint {
+    FieldConstraint {
 
     private final FieldExtractor       fieldExtractor;
 
-    private final ReturnValueEvaluator returnValueEvaluator;
+    private final ReturnValueExpression returnValueExpression;
 
     private final Declaration[]        requiredDeclarations;
 
@@ -23,12 +23,12 @@ public class ReturnValueConstraint
     private static final Declaration[] noRequiredDeclarations = new Declaration[]{};
 
     public ReturnValueConstraint(FieldExtractor fieldExtractor,
-                                 ReturnValueEvaluator returnValueEvaluator,
+                                 ReturnValueExpression returnValueExpression,
                                  Declaration[] declarations,
                                  Evaluator evaluator) {
         this.fieldExtractor = fieldExtractor;
 
-        this.returnValueEvaluator = returnValueEvaluator;
+        this.returnValueExpression = returnValueExpression;
 
         if ( declarations != null ) {
             this.requiredDeclarations = declarations;
@@ -43,11 +43,12 @@ public class ReturnValueConstraint
         return this.requiredDeclarations;
     }
 
-    public boolean isAllowed(Object object,
-                             FactHandle handle,
-                             Tuple tuple) {
-        return evaluator.evaluate( this.fieldExtractor.getValue( object ),
-                                   this.returnValueEvaluator.evaluate( tuple,
-                                                                       this.requiredDeclarations ) );
+    public boolean isAllowed(FactHandle handle,
+                             Tuple tuple,
+                             WorkingMemory workingMemory) {
+        return evaluator.evaluate( this.fieldExtractor.getValue( workingMemory.getObject( handle ) ),
+                                   this.returnValueExpression.evaluate( tuple,
+                                                                        this.requiredDeclarations,
+                                                                        workingMemory ) );
     }
 }

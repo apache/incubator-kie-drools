@@ -1,54 +1,24 @@
 package org.drools.reteoo;
 
 /*
- * $Id: TestNode.java,v 1.3 2005/08/14 22:44:12 mproctor Exp $
- *
- * Copyright 2001-2003 (C) The Werken Company. All Rights Reserved.
- *
- * Redistribution and use of this software and associated documentation
- * ("Software"), with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * 1. Redistributions of source code must retain copyright statements and
- * notices. Redistributions must also contain a copy of this document.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * 3. The name "drools" must not be used to endorse or promote products derived
- * from this Software without prior written permission of The Werken Company.
- * For written permission, please contact bob@werken.com.
- *
- * 4. Products derived from this Software may not be called "drools" nor may
- * "drools" appear in their names without prior written permission of The Werken
- * Company. "drools" is a trademark of The Werken Company.
- *
- * 5. Due credit should be given to The Werken Company. (http://werken.com/)
- *
- * THIS SOFTWARE IS PROVIDED BY THE WERKEN COMPANY AND CONTRIBUTORS ``AS IS''
- * AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE WERKEN COMPANY OR ITS CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.drools.AssertionException;
-import org.drools.FactException;
-import org.drools.RetractionException;
 import org.drools.spi.Condition;
 import org.drools.spi.PropagationContext;
+import org.drools.util.LinkedList;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -62,7 +32,8 @@ import org.drools.spi.PropagationContext;
  * @see Condition
  * @see ReteTuple
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 class TestNode extends TupleSource
     implements
@@ -132,30 +103,26 @@ class TestNode extends TupleSource
      *            The <code>Tuple</code> being asserted.
      * @param workingMemory
      *            The working memory seesion.
-     * 
      * @throws AssertionException
      *             If an error occurs while asserting.
      */
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
-                            WorkingMemoryImpl workingMemory) throws FactException {
+                            WorkingMemoryImpl workingMemory) {
 
         if ( hasMemory() ) {
-            Map memory = (Map) workingMemory.getNodeMemory( this );
-            if ( !memory.containsKey( tuple.getKey() ) ) {
-                boolean allowed = this.condition.isAllowed( tuple );
+            boolean allowed = this.condition.isAllowed( tuple );
 
-                workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
-                                                                               tuple,
-                                                                               allowed );
+            workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
+                                                                           tuple,
+                                                                           allowed );
 
-                if ( allowed ) {
-                    memory.put( tuple.getKey(),
-                                tuple );
-                    propagateAssertTuple( tuple,
-                                          context,
-                                          workingMemory );
-                }
+            if ( allowed ) {
+                LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+                memory.add( tuple );
+                propagateAssertTuple( tuple,
+                                      context,
+                                      workingMemory );
             }
         } else {
             boolean allowed = this.condition.isAllowed( tuple );
@@ -173,15 +140,15 @@ class TestNode extends TupleSource
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException {
+                              PropagationContext context) {
         this.attachingNewNode = true;
         if ( hasMemory() ) {
-            Map memory = (Map) workingMemory.getNodeMemory( this );
-            for ( Iterator it = memory.values().iterator(); it.hasNext(); ) {
-                propagateAssertTuple( (ReteTuple) it.next(),
-                                      context,
-                                      workingMemory );
-            }
+            //            LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+            //            for ( Iterator it = memory.iterator(null, null); it.hasNext(); ) {
+            //                propagateAssertTuple( (ReteTuple) it.next(),
+            //                                      context,
+            //                                      workingMemory );
+            //            }
         } else {
             // We need to detach and re-attach to make sure the node is at the
             // top
@@ -193,36 +160,6 @@ class TestNode extends TupleSource
         }
 
         this.attachingNewNode = false;
-    }
-
-    /**
-     * Retract tuples.
-     * 
-     * @param key
-     *            The tuple key.
-     * @param workingMemory
-     *            The working memory seesion.
-     * 
-     * @throws RetractionException
-     *             If an error occurs while retracting.
-     */
-    public void retractTuples(TupleKey key,
-                              PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException {
-        if ( hasMemory() ) {
-            Map memory = (Map) workingMemory.getNodeMemory( this );
-            if ( memory.remove( key ) != null ) {
-
-                propagateRetractTuples( key,
-                                        context,
-                                        workingMemory );
-            }
-        } else {
-            propagateRetractTuples( key,
-                                    context,
-                                    workingMemory );
-        }
-
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -262,6 +199,13 @@ class TestNode extends TupleSource
     }
 
     public Object createMemory() {
-        return new HashMap();
+        return new LinkedList();
+    }
+
+    public void retractTuple(ReteTuple tuple,
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
+        // TODO Auto-generated method stub
+
     }
 }

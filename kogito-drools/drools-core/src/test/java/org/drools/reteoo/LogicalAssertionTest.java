@@ -4,6 +4,7 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
+import org.drools.WorkingMemory;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.ClassObjectType;
@@ -17,7 +18,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         Rete rete = ruleBase.getRete();
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
+        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
                                                             rete );
         objectTypeNode.attach();
@@ -29,7 +30,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation) {
+            public void invoke(Activation activation, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -50,8 +51,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         agenda.addToAgenda( tuple1,
                             context1,
                             rule1 );
-        ModuleImpl main = (ModuleImpl) agenda.getFocus();
-        Activation activation1 = (Activation) main.getActivationQueue().get();
+        AgendaGroupImpl main = (AgendaGroupImpl) agenda.getFocus();
+        Activation activation1 = (Activation) main.getPriorityQueue().get();
 
         String logicalString = new String( "logical" );
         FactHandle logicalHandle = workingMemory.assertObject( logicalString,
@@ -77,7 +78,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         agenda.addToAgenda( tuple1,
                             context1,
                             rule1 );
-        activation1 = (Activation) main.getActivationQueue().get();
+        activation1 = (Activation) main.getPriorityQueue().get();
 
         logicalHandle = workingMemory.assertObject( logicalString,
                                                     false,
@@ -116,7 +117,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation) {
+            public void invoke(Activation activation, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -137,8 +138,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         agenda.addToAgenda( tuple1,
                             context1,
                             rule1 );
-        ModuleImpl main = (ModuleImpl) agenda.getFocus();
-        Activation activation1 = (Activation) main.getActivationQueue().get();
+        AgendaGroupImpl main = (AgendaGroupImpl) agenda.getFocus();
+        Activation activation1 = (Activation) main.getPriorityQueue().get();
 
         String logicalString1 = new String( "logical" );
         FactHandle logicalHandle1 = workingMemory.assertObject( logicalString1,
@@ -185,7 +186,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation) {
+            public void invoke(Activation activation, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -206,8 +207,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         agenda.addToAgenda( tuple1,
                             context1,
                             rule1 );
-        ModuleImpl main = (ModuleImpl) agenda.getFocus();
-        Activation activation1 = (Activation) main.getActivationQueue().get();
+        AgendaGroupImpl main = (AgendaGroupImpl) agenda.getFocus();
+        Activation activation1 = (Activation) main.getPriorityQueue().get();
 
         String logicalString1 = new String( "logical" );
         FactHandle logicalHandle1 = workingMemory.assertObject( logicalString1,
@@ -245,7 +246,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         agenda.addToAgenda( tuple1,
                             context1,
                             rule1 );
-        activation1 = (Activation) main.getActivationQueue().get();
+        activation1 = (Activation) main.getPriorityQueue().get();
 
         logicalString2 = new String( "logical" );
         logicalHandle2 = workingMemory.assertObject( logicalString2 );
@@ -307,7 +308,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation) {
+            public void invoke(Activation activation, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -388,7 +389,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
+        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
                                                             rete );
         objectTypeNode.attach();
@@ -400,7 +401,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation) {
+            public void invoke(Activation activation, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -444,8 +445,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                             rule2 );
 
         // We have two activations on the Agenda, so use toArray to get them out
-        ModuleImpl main = (ModuleImpl) agenda.getFocus();
-        Activation[] activations = (Activation[]) main.getActivationQueue().toArray( new Activation[]{} );
+        AgendaGroupImpl main = (AgendaGroupImpl) agenda.getFocus();
+        Activation[] activations = (Activation[]) main.getPriorityQueue().toArray( new Activation[]{} );
 
         // Create the first justifieable relationship
         String logicalString1 = new String( "logical" );

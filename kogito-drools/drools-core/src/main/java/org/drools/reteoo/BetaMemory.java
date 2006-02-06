@@ -1,56 +1,46 @@
 package org.drools.reteoo;
-
 /*
- * $Id: BetaMemory.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
- *
- * Copyright 2001-2003 (C) The Werken Company. All Rights Reserved.
- *
- * Redistribution and use of this software and associated documentation
- * ("Software"), with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * 1. Redistributions of source code must retain copyright statements and
- * notices. Redistributions must also contain a copy of this document.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * 3. The name "drools" must not be used to endorse or promote products derived
- * from this Software without prior written permission of The Werken Company.
- * For written permission, please contact bob@werken.com.
- *
- * 4. Products derived from this Software may not be called "drools" nor may
- * "drools" appear in their names without prior written permission of The Werken
- * Company. "drools" is a trademark of The Werken Company.
- *
- * 5. Due credit should be given to The Werken Company. (http://werken.com/)
- *
- * THIS SOFTWARE IS PROVIDED BY THE WERKEN COMPANY AND CONTRIBUTORS ``AS IS''
- * AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE WERKEN COMPANY OR ITS CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.drools.spi.PropagationContext;
+import org.drools.util.LinkedList;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
- * Memory for left and right inputs of a <code>JoinNode</code>.
+ * Memory for left and right inputs of a <code>BetaNode</code>. The LeftMemory is a <code>LinkedList</code> for all incoming 
+ * <code>Tuples</code> and the right memory is a LinkedHashMap which stores each incoming <code>FactHandle</code> with 
+ * its <code>ObjectMatche</code>. A LinkedHashMap is used as iteration must be in assertion order otherwise you break
+ * LIFO based agenda evaluation.
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  * @see ReteTuple
+ * @see ObjectMatches
+ * 
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 class BetaMemory
     implements
@@ -60,106 +50,117 @@ class BetaMemory
     // ------------------------------------------------------------
 
     /** Left-side tuples. */
-    /* @todo: make a BetaSet to wrap the Map */
-    private final Map leftMemory;
+    private LinkedList leftMemory;
 
     /** Right-side tuples. */
-    private final Set rightMemory;
-
-    // private final BetaNode betaNode;
-
-    // private final BetaNodeBinder binder;
-
-    // private final int column;
+    private final Map  rightMemory;
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
 
     /**
-     * Construct.
-     * 
-     * @param tupleDeclarations
-     * @param commonDeclarations
+     * Construct a BetaMemory with a LinkedList for the <code>Tuples</code> and a <code>LinkedHashMap</code> for the 
+     * <code>FactHandle</code>s
      */
     BetaMemory() {
-        // this.column = column;
-        // this.betaNode = betaNode;
-        this.leftMemory = new HashMap();
-        this.rightMemory = new HashSet();
-        // this.binder = joinNodeBinder;
+        this.leftMemory = new LinkedList();
+        this.rightMemory = new LinkedHashMap();
     }
 
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------
+    
+    /**
+     * @return The first <code>Tuple</code>
+     */
+    public ReteTuple getFirstTuple() {
+        return (ReteTuple) this.leftMemory.getFirst();
+    }
 
     /**
-     * This method is here to facilitate unit testing.
+     * @return The last <code>Tuple</code>
      */
-    TupleMatches getBetaMemory(TupleKey key) {
-        return (TupleMatches) this.leftMemory.get( key );
+    public ReteTuple getLastTuple() {
+        return (ReteTuple) this.leftMemory.getLast();
+    }
+    
+    /**
+     * The iterator iterates the propagated FactHandles in assertion order
+     * @return The an Iterator for the right memory
+     */    
+    Iterator rightObjectIterator() {
+        return this.rightMemory.values().iterator();
     }
 
-    /*
-     * BetaNodeBinder getBetaNodeBinder() { return this.binder; }
+
+    /**
+     * Add a <code>ReteTuple</code> to the end of the LinkedList.
+     * @param tuple
+     */
+    void add(ReteTuple tuple) {
+        this.leftMemory.add( tuple );
+    }
+
+    /**
+     * Remove the <code>ReteTuple</code> from the left memory.
+     * @param tuple
+     */
+    void remove(ReteTuple tuple) {
+        this.leftMemory.remove( tuple );  
+    }
+
+    
+    /**
+     * Adds a <code>FactHandleImp</code> to the right memory <code>LinkedHashMap</code>. On being added to
+     * The right memory an <code>ObjectMatches</code> class is created and added as the key's value and then returned.
+     *  
+     *  @see ObjectMatches
+     *  
+     * @param handle
+     * @return
+     *      The ObjectMatches to hold the tuples that match with the <code>FactHandleImpl</code>
+     */
+    ObjectMatches add(FactHandleImpl handle) {
+        ObjectMatches objectMatches = new ObjectMatches( handle );
+        this.rightMemory.put( handle,
+                              objectMatches );
+        return objectMatches;
+    }
+
+    
+    /**
+     * Remove the <code>FactHandleImpl<code> from the right memroy <code>LinkedHashMap</code>. The key's ObjectMatches
+     * value is returned.
      * 
-     * int getColumn() { return this.column; }
+     * @param handle
+     * @return
+     *      The ObjectMatches that held the tuples that match with the <code>FactHandleImpl</code>
      */
-
-    Map getLeftMemory() {
-        return this.leftMemory;
+    ObjectMatches remove(FactHandleImpl handle) {
+        return (ObjectMatches) this.rightMemory.remove( handle );
     }
 
-    Set getRightMemory() {
-        return this.rightMemory;
+    
+    /**
+     * @return The boolean value indicating the empty status of the left tuple memory
+     */
+    public boolean isLeftMemoryEmpty() {
+        return this.leftMemory.isEmpty();
     }
 
-    boolean contains(TupleKey key) {
-        return this.leftMemory.containsKey( key );
-    }
-
-    boolean contains(FactHandleImpl handle) {
-        return this.rightMemory.contains( handle );
-    }
-
-    void put(TupleKey key,
-             TupleMatches tupleMatches) {
-        this.leftMemory.put( key,
-                             tupleMatches );
-    }
-
-    Object remove(TupleKey key) {
-        return this.leftMemory.remove( key );
-    }
-
-    void add(FactHandleImpl handle) {
-        this.rightMemory.add( handle );
-    }
-
-    boolean remove(FactHandleImpl handle) {
-        return this.rightMemory.remove( handle );
-    }
-
-    int leftMemorySize() {
-        return this.leftMemory.size();
-    }
-
-    int rightMemorySize() {
-        return this.rightMemory.size();
-    }
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // java.lang.Object
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+    /**
+     * @return The boolean value indicating the empty status of the right fact handle memory
+     */    
+    public boolean isRightMemoryEmpty() {
+        return this.rightMemory.isEmpty();
+    }        
     /**
      * Produce debug string.
      * 
      * @return The debug string.
      */
     public String toString() {
-        return "[JoinMemory \n\tleft=" + this.leftMemory + "\n\tright=" + this.rightMemory + "]";
+        return "[JoinMemory]";
+        //return "[JoinMemory \n\tleft=" + this.leftMemory + "\n\tright=" + this.rightMemory + "]";
     }
 
 }

@@ -1,5 +1,7 @@
 package org.drools.spi;
 
+import org.drools.WorkingMemory;
+
 /*
  * $Id: Consequence.java,v 1.2 2005/08/14 22:44:13 mproctor Exp $
  * 
@@ -55,12 +57,12 @@ public interface Consequence
      * 
      * @param activation
      *            TODO
+     * @param workingMemory TODO
      * @param workingMemory
      *            The working memory session.
-     * 
      * @throws ConsequenceException
      *             If an error occurs while attempting to invoke the
      *             consequence.
      */
-    void invoke(Activation activation) throws ConsequenceException;
+    void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException;
 }

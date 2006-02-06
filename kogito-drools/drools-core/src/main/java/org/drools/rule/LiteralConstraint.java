@@ -1,17 +1,16 @@
 package org.drools.rule;
 
 import org.drools.FactHandle;
-import org.drools.spi.Constraint;
-import org.drools.spi.BaseEvaluator;
+import org.drools.WorkingMemory;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Field;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
-import org.drools.spi.LiteralExpressionConstraint;
 import org.drools.spi.Tuple;
 
 public class LiteralConstraint
     implements
-    Constraint {
+    FieldConstraint {
 
     private final Field                field;
 
@@ -38,16 +37,18 @@ public class LiteralConstraint
     }
 
     /**
-     * Not needed but implemented so we can implement the Constraint interface
-     * Just returns an empty static Declaration[]
-     * 
+     * Literal constraints cannot have required declarations, so always return an empty array.
+     * @return
+     *      Return an empty <code>Declaration[]</code>
      */
     public Declaration[] getRequiredDeclarations() {
         return LiteralConstraint.requiredDeclarations;
     }
 
-    public boolean isAllowed(Object object) {
+    public boolean isAllowed(FactHandle handle,
+                             Tuple tuple,
+                             WorkingMemory workingMemory) {
         return evaluator.evaluate( this.field.getValue(),
-                                   this.extractor.getValue( object ) );
+                                   this.extractor.getValue( workingMemory.getObject( handle ) ) );
     }
 };

@@ -52,10 +52,11 @@ import org.drools.spi.ColumnExtractor;
 import org.drools.spi.Condition;
 import org.drools.spi.Consequence;
 import org.drools.spi.Constraint;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.Duration;
 import org.drools.spi.Extractor;
 import org.drools.spi.Importer;
-import org.drools.spi.Module;
+import org.drools.spi.AgendaGroup;
 
 /**
  * A <code>Rule</code> contains a set of <code>Test</code>s and a
@@ -97,7 +98,7 @@ public class Rule
 
     private final And    headPattern  = new And();
 
-    private final String module;
+    private final String agendaGroup;
 
     /** Consequence. */
     private Consequence  consequence;
@@ -133,10 +134,10 @@ public class Rule
      */
     public Rule(String name,
                 RuleSet ruleSet,
-                String module) {
+                String agendaGroup) {
         this.name = name;
         this.ruleSet = ruleSet;
-        this.module = module;
+        this.agendaGroup = agendaGroup;
         this.applicationData = Collections.EMPTY_MAP;
     }
 
@@ -148,17 +149,17 @@ public class Rule
      *            The name of this rule.
      */
     public Rule(String name,
-                String module) {
+                String agendaGroup) {
         this.name = name;
         this.ruleSet = null;
-        this.module = module;
+        this.agendaGroup = agendaGroup;
         this.applicationData = Collections.EMPTY_MAP;
     }
 
     public Rule(String name) {
         this.name = name;
         this.ruleSet = null;
-        this.module = Module.MAIN;
+        this.agendaGroup = AgendaGroup.MAIN;
         this.applicationData = Collections.EMPTY_MAP;
     }
 
@@ -521,12 +522,12 @@ public class Rule
         return this.applicationData;
     }
 
-    public String getModule() {
-        return this.module;
+    public String getAgendaGroup() {
+        return this.agendaGroup;
     }
     
     public String toString() {
-        return "[Rule name=" + this.name + ", module=" + this.module + ", salience=" + this.salience + ", no-loop=" + this.noLoop + "]";
+        return "[Rule name=" + this.name + ", agendaGroup=" + this.agendaGroup + ", salience=" + this.salience + ", no-loop=" + this.noLoop + "]";
     }
     
     public boolean equals(Object object) {
@@ -540,7 +541,7 @@ public class Rule
         
         Rule other = (Rule) object;
         
-        return (this.name.equals(other.name) && this.module.equals( other.module ) && this.salience == other.salience && this.noLoop == other.noLoop);
+        return (this.name.equals(other.name) && this.agendaGroup.equals( other.agendaGroup ) && this.salience == other.salience && this.noLoop == other.noLoop);
     }
     
     public int hashCode() {

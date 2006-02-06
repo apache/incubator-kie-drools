@@ -1,9 +1,8 @@
 package org.drools.reteoo;
 
-import org.drools.AssertionException;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
-import org.drools.RetractionException;
+import org.drools.FactHandle;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 
@@ -49,8 +48,8 @@ public class ObjectSourceTest extends DroolsTestCase {
         assertLength( 0,
                       sink1.getAsserted() );
 
-        source.propagateAssertObject( new Integer( 1 ),
-                                      new FactHandleImpl( 2 ),
+        FactHandleImpl f1 = (FactHandleImpl) workingMemory.assertObject( new Integer( 1 ) );
+        source.propagateAssertObject( f1,
                                       context,
                                       workingMemory );
 
@@ -59,15 +58,14 @@ public class ObjectSourceTest extends DroolsTestCase {
 
         Object[] list = (Object[]) sink1.getAsserted().get( 0 );
         assertEquals( new Integer( 1 ),
-                      list[0] );
-        assertEquals( new FactHandleImpl( 2 ),
-                      list[1] );
+                      workingMemory.getObject( (FactHandleImpl) list[0] ) );
+        
 
         MockObjectSink sink2 = new MockObjectSink();
         source.addObjectSink( sink2 );
 
-        source.propagateAssertObject( new Integer( 2 ),
-                                      new FactHandleImpl( 3 ),
+        FactHandleImpl f2 = (FactHandleImpl) workingMemory.assertObject( new Integer( 2 ) );
+        source.propagateAssertObject( f2,
                                       context,
                                       workingMemory );
 
@@ -79,46 +77,27 @@ public class ObjectSourceTest extends DroolsTestCase {
 
         list = (Object[]) sink1.getAsserted().get( 0 );
         assertEquals( new Integer( 1 ),
-                      list[0] );
-        assertEquals( new FactHandleImpl( 2 ),
-                      list[1] );
+                      workingMemory.getObject( (FactHandle) list[0] ) );
         assertSame( context,
-                    list[2] );
+                    list[1] );
         assertSame( workingMemory,
-                    list[3] );
+                    list[2] );
 
         list = (Object[]) sink1.getAsserted().get( 1 );
         assertEquals( new Integer( 2 ),
-                      list[0] );
-        assertEquals( new FactHandleImpl( 3 ),
-                      list[1] );
+                      workingMemory.getObject( (FactHandle) list[0] ));
         assertSame( context,
-                    list[2] );
+                    list[1] );
         assertSame( workingMemory,
-                    list[3] );
+                    list[2] );
 
         list = (Object[]) sink2.getAsserted().get( 0 );
         assertEquals( new Integer( 2 ),
-                      list[0] );
-        assertEquals( new FactHandleImpl( 3 ),
-                      list[1] );
+                      workingMemory.getObject( (FactHandle) list[0] ) );
         assertSame( context,
-                    list[2] );
+                    list[1] );
         assertSame( workingMemory,
-                    list[3] );
-        try {
-            sink1.setAssertionException( new AssertionException( "test" ) );
-            source.propagateAssertObject( new Integer( 2 ),
-                                          new FactHandleImpl( 3 ),
-                                          context,
-                                          workingMemory );
-            fail( "Should have thrown 'AssertionException'" );
-
-        } catch ( AssertionException e ) {
-            // this exception should be thrown
-        } catch ( Exception e ) {
-            fail( "Should have thrown 'AssertionException' and not '" + e.getClass() + "'" );
-        }
+                    list[2] );
     }
 
     public void testPropagateRetractObject() throws Exception {
@@ -189,19 +168,6 @@ public class ObjectSourceTest extends DroolsTestCase {
                     list[1] );
         assertSame( workingMemory,
                     list[2] );
-
-        try {
-            sink1.setRetractionException( new RetractionException( "test" ) );
-            source.propagateRetractObject( new FactHandleImpl( 3 ),
-                                           context,
-                                           workingMemory );
-            fail( "Should have thrown 'RetractionException'" );
-
-        } catch ( RetractionException e ) {
-
-        } catch ( Exception e ) {
-            fail( "Should have thrown 'RetractionException' and not '" + e.getClass() + "'" );
-        }
     }
 
     public void testAttachNewNode() throws FactException {
@@ -224,8 +190,7 @@ public class ObjectSourceTest extends DroolsTestCase {
         // Only the last added ObjectSink should receive facts
         source.attachingNewNode = true;
 
-        source.propagateAssertObject( new Integer( 1 ),
-                                      new FactHandleImpl( 1 ),
+        source.propagateAssertObject( new FactHandleImpl( 1 ),
                                       context,
                                       workingMemory );
 
@@ -238,8 +203,7 @@ public class ObjectSourceTest extends DroolsTestCase {
         // Now all sinks should receive values
         source.attachingNewNode = false;
 
-        source.propagateAssertObject( new Integer( 2 ),
-                                      new FactHandleImpl( 2 ),
+        source.propagateAssertObject( new FactHandleImpl( 2 ),
                                       context,
                                       workingMemory );
 

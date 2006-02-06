@@ -5,7 +5,7 @@ package org.drools;
  */
 public class DroolsRuntimeException extends RuntimeException {
 
-    public DroolsRuntimeException(DroolsException e) {
+    public DroolsRuntimeException(CheckedDroolsException e) {
         super( e );
     }
     

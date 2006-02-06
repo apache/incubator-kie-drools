@@ -1,9 +1,6 @@
 package org.drools.reteoo;
 
-import org.drools.AssertionException;
 import org.drools.DroolsTestCase;
-import org.drools.FactException;
-import org.drools.RetractionException;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 
@@ -112,108 +109,9 @@ public class TupleSourceTest extends DroolsTestCase {
                     list[1] );
         assertSame( workingMemory,
                     list[2] );
-
-        try {
-            sink1.setAssertionException( new AssertionException( "test" ) );
-            source.propagateAssertTuple( tuple1,
-                                         context,
-                                         workingMemory );
-            fail( "Should have thrown 'AssertionException'" );
-
-        } catch ( AssertionException e ) {
-
-        } catch ( Exception e ) {
-            fail( "Should have thrown 'AssertionException' and not '" + e.getClass() + "'" );
-        }
     }
 
-    public void testPropagateRetractTuple() throws Exception {
-        Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.RETRACTION,
-                                                                 null,
-                                                                 null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
-
-        MockTupleSource source = new MockTupleSource( 15 );
-        MockTupleSink sink1 = new MockTupleSink();
-        source.addTupleSink( sink1 );
-        assertLength( 0,
-                      sink1.getRetracted() );
-
-        TupleKey key1 = new TupleKey( 1,
-                                      new FactHandleImpl( 1 ) );
-
-        source.propagateRetractTuples( key1,
-                                       context,
-                                       workingMemory );
-
-        assertLength( 1,
-                      sink1.getRetracted() );
-
-        Object[] list = (Object[]) sink1.getRetracted().get( 0 );
-        assertSame( key1,
-                    list[0] );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        MockTupleSink sink2 = new MockTupleSink();
-        source.addTupleSink( sink2 );
-
-        TupleKey key2 = new TupleKey( 2,
-                                      new FactHandleImpl( 2 ) );
-
-        source.propagateRetractTuples( key2,
-                                       context,
-                                       workingMemory );
-
-        assertLength( 2,
-                      sink1.getRetracted() );
-
-        assertLength( 1,
-                      sink2.getRetracted() );
-
-        list = (Object[]) sink1.getRetracted().get( 0 );
-        assertSame( key1,
-                    list[0] );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        list = (Object[]) sink1.getRetracted().get( 1 );
-        assertSame( key2,
-                    list[0] );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        list = (Object[]) sink2.getRetracted().get( 0 );
-        assertSame( key2,
-                    list[0] );
-        assertSame( context,
-                    list[1] );
-        assertSame( workingMemory,
-                    list[2] );
-
-        try {
-            sink1.setRetractionException( new RetractionException( "test" ) );
-            source.propagateRetractTuples( key2,
-                                           context,
-                                           workingMemory );
-            fail( "Should have thrown 'RetractionException'" );
-
-        } catch ( RetractionException e ) {
-
-        } catch ( Exception e ) {
-            fail( "Should have thrown 'RetractionException' and not '" + e.getClass() + "'" );
-        }
-    }
-
-    public void testAttachNewNode() throws FactException {
+    public void testAttachNewNode() {
         PropagationContext context = new PropagationContextImpl( 0,
                                                                  PropagationContext.ASSERTION,
                                                                  null,

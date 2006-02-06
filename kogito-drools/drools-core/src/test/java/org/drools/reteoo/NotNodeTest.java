@@ -1,22 +1,23 @@
 package org.drools.reteoo;
 
 import java.beans.IntrospectionException;
+import java.util.Iterator;
 
-import org.drools.AssertionException;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.RetractionException;
+import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Rule;
+import org.drools.spi.BetaNodeBinder;
 import org.drools.spi.ClassFieldExtractor;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.ObjectType;
-import org.drools.spi.PredicateEvaluator;
+import org.drools.spi.PredicateExpression;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
@@ -26,9 +27,11 @@ public class NotNodeTest extends DroolsTestCase {
     WorkingMemoryImpl  workingMemory;
     MockObjectSource   objectSource;
     MockTupleSource    tupleSource;
-    MockTupleSink      sink;
-    BetaNode           node;
+    MockObjectSink      sink;
+    NotNode           node;
+    RightInputAdapterNode  ria;
     BetaMemory         memory;
+    boolean            allowed = true;
 
     /**
      * Setup the BetaNode used in each of the tests
@@ -42,49 +45,35 @@ public class NotNodeTest extends DroolsTestCase {
                                                    null );
         this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );                       
 
-        // just return the object 
-        FieldExtractor priceExtractor = new ClassFieldExtractor(Cheese.class, Cheese.getIndex( Cheese.class, "price" ) );
-
-        // Bind the extractor to a decleration               
-        Declaration string1Declaration = new Declaration( 0,
-                                                          "cheese1",
-                                                          priceExtractor,
-                                                          3 );
-
-        // Bind the extractor to a decleration 
-        Declaration string2Declaration = new Declaration( 0,
-                                                          "cheese2",
-                                                          priceExtractor,
-                                                          9 );
-
-        PredicateEvaluator evaluator = new PredicateEvaluator() {
+        PredicateExpression evaluator = new PredicateExpression() {
 
             public boolean evaluate(Tuple tuple,
-                                    Object object,
                                     FactHandle handle,
                                     Declaration declaration,
-                                    Declaration[] declarations) {
-                int price1 = ( (Integer) tuple.get( declarations[0] )).intValue();
-                int price2 = ( (Integer) declaration.getValue( object )).intValue();
-
-                return price1 == price2;
+                                    Declaration[] declarations,
+                                    WorkingMemory workingMemory) {
+                return NotNodeTest.this.allowed;
 
             }
         };
 
         PredicateConstraint constraint = new PredicateConstraint( evaluator,
-                                                                  string2Declaration,
-                                                                   new Declaration[]{string1Declaration} );        
+                                                                  null,
+                                                                  new Declaration[]{} );        
                 
 
         // string1Declaration is bound to column 3 
         this.node = new NotNode( 15,
                                  new MockTupleSource( 5 ),
                                  new MockObjectSource( 8 ),
-                                 3,
+                                 1,
                                  new BetaNodeBinder( constraint ) );
-        this.sink = new MockTupleSink();
-        this.node.addTupleSink( this.sink );
+        
+        this.ria = new RightInputAdapterNode(2, 0, this.node);
+        this.ria.attach();
+        
+        this.sink = new MockObjectSink();
+        this.ria.addObjectSink( this.sink );
 
         this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
     }
@@ -94,248 +83,157 @@ public class NotNodeTest extends DroolsTestCase {
      * 
      * @throws AssertionException
      */
-    public void testAssertPropagations() throws FactException {
+    public void testNotStandard() throws FactException {
         // assert tuple
-        Cheese cheddar = new Cheese( "cheddar", 10 );       
-        FactHandleImpl f0 = new FactHandleImpl( 0 );
-        this.workingMemory.putObject( f0,
-                                      cheddar );
-        ReteTuple tuple1 = new ReteTuple( 3,
+        Cheese cheddar = new Cheese( "cheddar", 10 );
+        FactHandleImpl f0 = (FactHandleImpl) workingMemory.assertObject( cheddar );
+
+        ReteTuple tuple1 = new ReteTuple( 0,
                                           f0,
                                           this.workingMemory );
+        
+        assertNull( tuple1.getNotTuple() );        
+        
         this.node.assertTuple( tuple1,
                                this.context,
-                               this.workingMemory );
+                               this.workingMemory );        
 
         // no matching objects, so should propagate
         assertLength( 1,
                       this.sink.getAsserted() );
+        
+        assertLength( 0,
+                      this.sink.getRetracted() );        
 
-        // assert will match, so dont propagate
+        assertNotNull( tuple1.getNotTuple() );
+        
+        assertEquals( f0,
+                      ((Object[])this.sink.getAsserted().get( 0 ))[0] );
+        
+        // assert will match, so propagated tuple should be retracted
         Cheese brie = new Cheese( "brie", 10 );        
-        FactHandleImpl f1 = new FactHandleImpl( 1 );
-        this.workingMemory.putObject( f1,
-                                      brie );
-        this.node.assertObject( brie,
-                                f1,
+        FactHandleImpl f1 = (FactHandleImpl) workingMemory.assertObject( brie );
+        
+        this.node.assertObject( f1,
                                 this.context,
-                                this.workingMemory );
+                                this.workingMemory );        
 
-        // check no propagations 
+        // check no as assertions, but should be one retraction
         assertLength( 1,
                       this.sink.getAsserted() );
 
+        assertLength( 1,
+                      this.sink.getRetracted() );        
+        
+        assertEquals( f0,
+                      ((Object[])this.sink.getRetracted().get( 0 ))[0] );                        
+
         // assert tuple, will have matches, so no propagation
-        FactHandleImpl f2 = new FactHandleImpl( 2 );
-        this.workingMemory.putObject( f2,
-                                      new Cheese( "gouda", 10 ) );
-        ReteTuple tuple2 = new ReteTuple( 3,
+        FactHandleImpl f2 = (FactHandleImpl) workingMemory.assertObject( new Cheese( "gouda", 10 ) );
+        ReteTuple tuple2 = new ReteTuple( 0,
                                           f2,
                                           this.workingMemory );
         this.node.assertTuple( tuple2,
                                this.context,
                                this.workingMemory );
 
-        // check no propagations
+        // check no propagations 
         assertLength( 1,
                       this.sink.getAsserted() );
+
+        assertLength( 1,
+                      this.sink.getRetracted() );        
+        
 
         // check memory sizes
         assertEquals( 2,
-                      this.memory.leftMemorySize() );
+                      iteratorSize( this.memory.leftTupleIterator( context, workingMemory ) ) );
         assertEquals( 1,
-                      this.memory.rightMemorySize() );
-
-        // assert tuple, no matches, so propagate
-        FactHandleImpl f3 = new FactHandleImpl( 3 );
-        this.workingMemory.putObject( f3,
-                                      new Cheese( "cheddar", 9 ) );
-        ReteTuple tuple3 = new ReteTuple( 3,
-                                          f3,
-                                          this.workingMemory );
-        this.node.assertTuple( tuple3,
-                               this.context,
-                               this.workingMemory );
-        // check there was one propatation
-        assertLength( 2,
-                      this.sink.getAsserted() );
-
-        // assert tuple, no matches, so propagate
-        FactHandleImpl f4 = new FactHandleImpl( 4 );
-        this.workingMemory.putObject( f4,
-                                      new Cheese("stilton", 5) );
-        ReteTuple tuple4 = new ReteTuple( 3,
-                                          f4,
-                                          this.workingMemory );
-        this.node.assertTuple( tuple4,
-                               this.context,
-                               this.workingMemory );
+                      iteratorSize( this.memory.rightObjectIterator() ) );
         
-        // check there was one propatation
-        assertLength( 3,
-                      this.sink.getAsserted() );
+        // When this is retracter both tuples should assert
+        this.node.retractObject( f1, context, workingMemory );
         
-        // assert object. There should  be no propagations as the matching tuples
-        // are already satisfied.
-        FactHandleImpl f5 = new FactHandleImpl( 5 );
-        Cheese gouda = new Cheese("gouda", 10);
-        this.workingMemory.putObject( f5,
-                                      gouda );
-        this.node.assertObject( gouda,
-                                f5,
-                                this.context,
-                                this.workingMemory );
-
-        // above has two none-matches, so propagate
-        assertLength( 3,
-                      this.sink.getAsserted() );
-        
-        // assert object. While this one is incorrect Two tuples already have
-        // matches so cannot propagate        
-        FactHandleImpl f6 = new FactHandleImpl( 6 );
-        Cheese edam = new Cheese( "edam", 4 );
-        this.workingMemory.putObject( f6,
-                                      edam );
-        this.node.assertObject( edam,
-                                f6,
-                                this.context,
-                                this.workingMemory );
-
-        // above has no matches but tuples are  already satisfied, so check  no propagation
+        // check no propagations 
         assertLength( 3,
                       this.sink.getAsserted() );
 
-        // check memories
-        assertEquals( 4,
-                      this.memory.leftMemorySize() );
-        assertEquals( 3,
-                      this.memory.rightMemorySize() );
-
+        assertLength( 1,
+                      this.sink.getRetracted() );        
     }
-
+    
     /**
-     * Test retractions with both tuples and objects
+     * Test assertion with both Objects and Tuples
      * 
      * @throws AssertionException
-     * @throws RetractionException
      */
-    public void testRetractPropagations() throws FactException {
-        // assert object 
-        FactHandleImpl f0 = new FactHandleImpl( 0 );
-        Cheese gouda = new Cheese( "gouda", 10);
-        this.workingMemory.putObject( f0,
-                                      gouda );
-        this.node.assertObject( gouda,
-                                f0,
-                                this.context,
-                                this.workingMemory );
-
-        // assert tuple, will match so no propagation 
-        FactHandleImpl f1 = new FactHandleImpl( 1 );
-        Cheese cheddar = new Cheese( "cheddar", 10);
-        this.workingMemory.putObject( f1,
-                                      cheddar );
+    public void testNotWithConstraints() throws FactException {
+        this.allowed = false;
         
-        ReteTuple tuple1 = new ReteTuple( 3,
-                                          f1,
+        // assert tuple
+        Cheese cheddar = new Cheese( "cheddar", 10 );
+        FactHandleImpl f0 = (FactHandleImpl) workingMemory.assertObject( cheddar );
+
+        ReteTuple tuple1 = new ReteTuple( 0,
+                                          f0,
                                           this.workingMemory );
+        
+        assertNull( tuple1.getNotTuple() );        
+        
         this.node.assertTuple( tuple1,
                                this.context,
-                               this.workingMemory );
+                               this.workingMemory );        
 
-        // check no propagations 
-        assertLength( 0,
-                      this.sink.getAsserted() );
-        assertLength( 0,
-                      this.sink.getRetracted() );
-
-         // retracting the object should mean no matches for the left tuple. So
-         // check left tuple propagated as assert
-        this.node.retractObject( f0,
-                                 this.context,
-                                 this.workingMemory );
-
-        // check left tuple asserted
+        // no matching objects, so should propagate
         assertLength( 1,
                       this.sink.getAsserted() );
-
-         // make sure the asserted tuple is not joined with the right input
-         // object/handle
-        Object[] list = (Object[]) this.sink.getAsserted().get( 0 );
-        assertSame( tuple1,
-                    list[0] );
-
-        // check nothing actually propagated as retract
+        
         assertLength( 0,
-                      this.sink.getRetracted() );
+                      this.sink.getRetracted() );        
 
-        // Try again with two left tuples, original is still asserted
-        this.node.assertObject( gouda,
-                                f0,
+        assertNotNull( tuple1.getNotTuple() );
+        
+        assertEquals( f0,
+                      ((Object[])this.sink.getAsserted().get( 0 ))[0] );
+        
+        // assert will not match, so activation should stay propagated
+        Cheese brie = new Cheese( "brie", 10 );        
+        FactHandleImpl f1 = (FactHandleImpl) workingMemory.assertObject( brie );
+        
+        this.node.assertObject( f1,
                                 this.context,
-                                this.workingMemory );
+                                this.workingMemory );        
 
-        // check no propagations 
+        // check no as assertions, but should be one retraction
         assertLength( 1,
                       this.sink.getAsserted() );
 
-        // assert tuple, will match so no propagation 
-        FactHandleImpl f2 = new FactHandleImpl( 2 );        
-        this.workingMemory.putObject( f2,
-                                      cheddar );
-        ReteTuple tuple2 = new ReteTuple( 3,
+        assertLength( 0,
+                      this.sink.getRetracted() );      
+        
+        // assert tuple, will have no matches, so do assert propagation
+        FactHandleImpl f2 = (FactHandleImpl) workingMemory.assertObject( new Cheese( "gouda", 10 ) );
+        ReteTuple tuple2 = new ReteTuple( 0,
                                           f2,
                                           this.workingMemory );
         this.node.assertTuple( tuple2,
                                this.context,
-                               this.workingMemory );
-
-        // retracting the object should mean no matches for the two left tuples.
-        this.node.retractObject( f0,
-                                 this.context,
-                                 this.workingMemory );
-
-        // check both tuples where asserted 
-        assertLength( 3,
+                               this.workingMemory );        
+        
+        // check no as assertions, but should be one retraction
+        assertLength( 2,
                       this.sink.getAsserted() );
 
-        // put the object back in, this should cause the two asserted tuples to be retracted
-        this.node.assertObject( gouda,
-                                f0,
-                                this.context,
-                                this.workingMemory );
-        // check we have two more retractions
-        assertLength( 3,
-                      this.sink.getRetracted() );        
-
-        // Should retract and propagated the left tuple
-        this.node.retractTuples( tuple1.getKey(),
-                                 this.context,
-                                 this.workingMemory );        
-        
-         // retract the object, so we can later check a tuple retract with not
-         // matching objects
-        this.node.retractObject( f0,
-                                 this.context,
-                                 this.workingMemory );
-
-        // check tuple retract with no matches objects
-        this.node.retractTuples( tuple2.getKey(),
-                                 this.context,
-                                 this.workingMemory );
-
-        // check tuplekey was propagated
-        assertLength( 5,
-                      this.sink.getRetracted() );
-       
-         // Make sure the propagated keys where not combined with the right input
-         // object/handle
-        list = (Object[]) this.sink.getRetracted().get( 0 );
-        assertSame( tuple1.getKey(),
-                    list[0] );
-
-        list = (Object[]) this.sink.getRetracted().get( 1 );
-        assertSame( tuple2.getKey(),
-                    list[0] );
+        assertLength( 0,
+                      this.sink.getRetracted() );           
     }
+    
+    private int iteratorSize(Iterator it) {
+        int count = 0;
+        for (;it.hasNext();) {
+            it.next();
+            ++count;
+        }
+        return count;
+    }    
 }

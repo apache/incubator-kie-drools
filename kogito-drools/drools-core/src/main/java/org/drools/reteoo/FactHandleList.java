@@ -1,44 +1,20 @@
 package org.drools.reteoo;
-
 /*
- * $Id: FactHandleList.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
- *
- * Copyright 2001-2004 (C) The Werken Company. All Rights Reserved.
- *
- * Redistribution and use of this software and associated documentation
- * ("Software"), with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * 1. Redistributions of source code must retain copyright statements and
- * notices. Redistributions must also contain a copy of this document.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * 3. The name "drools" must not be used to endorse or promote products derived
- * from this Software without prior written permission of The Werken Company.
- * For written permission, please contact bob@werken.com.
- *
- * 4. Products derived from this Software may not be called "drools" nor may
- * "drools" appear in their names without prior written permission of The Werken
- * Company. "drools" is a trademark of The Werken Company.
- *
- * 5. Due credit should be given to The Werken Company. (http://werken.com/)
- *
- * THIS SOFTWARE IS PROVIDED BY THE WERKEN COMPANY AND CONTRIBUTORS ``AS IS''
- * AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE WERKEN COMPANY OR ITS CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -64,11 +40,12 @@ import org.drools.rule.Declaration;
 final class FactHandleList
     implements
     Serializable {
+    
     /** Empty list for testing purposes only. */
     static final FactHandleList EMPTY_LIST = new FactHandleList();
 
     /** The list of handles. */
-    private final FactHandle[]  handles;
+    private final FactHandleImpl[]  handles;
 
     /** The cached hash code value. */
     private final int           hashCode;
@@ -79,7 +56,7 @@ final class FactHandleList
     private FactHandleList() {
         this.handles = new FactHandleImpl[0];
         this.hashCode = 0;
-    }
+    }    
 
     /**
      * Join two lists.
@@ -90,28 +67,18 @@ final class FactHandleList
      *            The right list.
      */
     public FactHandleList(FactHandleList left,
-                          FactHandleList right) {
-        this.handles = new FactHandle[Math.max( left.handles.length,
-                                                right.handles.length )];
+                          FactHandleImpl handle) {
+        this.handles = new FactHandleImpl[left.handles.length+1];
 
         System.arraycopy( left.handles,
                           0,
                           this.handles,
                           0,
                           left.handles.length );
+        
+        this.handles[left.handles.length] = handle;
 
-        int hashCode = left.hashCode;
-        FactHandle handle;
-
-        for ( int i = right.handles.length - 1; i >= 0; i-- ) {
-            handle = right.handles[i];
-            if ( handle != null && this.handles[i] == null ) {
-                this.handles[i] = handle;
-                hashCode += handle.hashCode();
-            }
-        }
-
-        this.hashCode = hashCode;
+        this.hashCode = left.hashCode + handle.hashCode(); 
     }
 
     /**
@@ -122,10 +89,8 @@ final class FactHandleList
      * @param handle
      *            The handle to use.
      */
-    public FactHandleList(int index,
-                          FactHandle handle) {
-        this.handles = new FactHandleImpl[index + 1];
-        this.handles[index] = handle;
+    public FactHandleList(FactHandleImpl handle) {
+        this.handles = new FactHandleImpl[] { handle };
         this.hashCode = handle.hashCode();
     }
 
@@ -138,7 +103,7 @@ final class FactHandleList
      * @throws ArrayIndexOutOfBoundsException
      *             if <code>index</code> &gt; {@link #size()}.
      */
-    public FactHandle get(int index) {
+    public FactHandleImpl get(int index) {
         return this.handles[index];
     }
 

@@ -1,22 +1,25 @@
 package org.drools.reteoo;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
-import org.drools.AssertionException;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.RetractionException;
+import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Rule;
+import org.drools.spi.BetaNodeBinder;
 import org.drools.spi.ClassFieldExtractor;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.ObjectType;
-import org.drools.spi.PredicateEvaluator;
+import org.drools.spi.PredicateExpression;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
@@ -56,9 +59,9 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // check memories are empty
         assertEquals( 0,
-                      this.memory.leftMemorySize() );
+                      iteratorSize(this.memory.leftTupleIterator( this.context, this.workingMemory )) );
         assertEquals( 0,
-                      this.memory.rightMemorySize() );
+                      iteratorSize(this.memory.rightObjectIterator( ) ) );
 
     }
 
@@ -119,18 +122,12 @@ public class JoinNodeTest extends DroolsTestCase {
                                this.context,
                                this.workingMemory );
         assertEquals( 1,
-                      this.memory.leftMemorySize() );
+                      iteratorSize(this.memory.leftTupleIterator( this.context, this.workingMemory )) );
         assertEquals( 0,
-                      this.memory.rightMemorySize() );
+                      iteratorSize(this.memory.rightObjectIterator( ) ) );
 
-        // tuple already exists, so memory shouldn't increase
-        this.node.assertTuple( tuple1,
-                               this.context,
-                               this.workingMemory );
-        assertEquals( 1,
-                      this.memory.leftMemorySize() );
 
-        // check new tuples still assert
+        // assert tuple, should add left memory should be 2
         FactHandleImpl f1 = new FactHandleImpl( 1 );
         ReteTuple tuple2 = new ReteTuple( 0,
                                           f1,
@@ -139,15 +136,14 @@ public class JoinNodeTest extends DroolsTestCase {
                                this.context,
                                this.workingMemory );
         assertEquals( 2,
-                      this.memory.leftMemorySize() );
-
-        // make sure there have been no matches or propagation
-        TupleMatches betaMemory1 = this.memory.getBetaMemory( tuple1.getKey() );
-        TupleMatches betaMemory2 = this.memory.getBetaMemory( tuple2.getKey() );
-        assertLength( 0,
-                      betaMemory1.getMatches() );
-        assertLength( 0,
-                      betaMemory2.getMatches() );
+                      iteratorSize(this.memory.leftTupleIterator( this.context, this.workingMemory )) );
+        
+        Iterator it = this.memory.leftTupleIterator( this.context, this.workingMemory );
+        ReteTuple tuple = (ReteTuple) it.next();
+        assertEquals(0, tuple.matchesSize() );
+        tuple = (ReteTuple) it.next();
+        assertEquals(0, tuple.matchesSize() );
+        assertFalse(it.hasNext());
         assertLength( 0,
                       this.sink.getAsserted() );
     }
@@ -158,38 +154,37 @@ public class JoinNodeTest extends DroolsTestCase {
      * @throws Exception
      */
     public void testAssertObject() throws Exception {
-        FactHandleImpl f0 = new FactHandleImpl( 0 );
-
+        FactHandleImpl f0 = (FactHandleImpl) this.workingMemory.assertObject( "test0" );
+        
         // assert tuple, should add one to left memory
-        this.node.assertObject( "test2",
-                                f0,
+        this.node.assertObject( f0,
                                 this.context,
                                 this.workingMemory );
         assertEquals( 0,
-                      this.memory.leftMemorySize() );
+                      iteratorSize(this.memory.leftTupleIterator( this.context, this.workingMemory )) );
         assertEquals( 1,
-                      this.memory.rightMemorySize() );
-
-        // object/handle already exists, so memory shouldn't increase
-        this.node.assertObject( "test0",
-                                f0,
-                                this.context,
-                                this.workingMemory );
-        assertEquals( 1,
-                      this.memory.rightMemorySize() );
+                      iteratorSize(this.memory.rightObjectIterator( ) ) );
 
         // check new objects/handles still assert
-        FactHandleImpl f1 = new FactHandleImpl( 1 );
-        this.node.assertObject( "test1",
-                                f1,
+        FactHandleImpl f1 = (FactHandleImpl) this.workingMemory.assertObject( "test1" );
+        this.node.assertObject( f1,
                                 this.context,
                                 this.workingMemory );
         assertEquals( 2,
-                      this.memory.rightMemorySize() );
+                      iteratorSize(this.memory.rightObjectIterator( ) ) );
+        
+        Iterator it = this.memory.rightObjectIterator();
+        Set set = new HashSet();
+        set.add(((ObjectMatches) it.next()).getFactHandle());
+        set.add(((ObjectMatches) it.next()).getFactHandle());
+        assertFalse(it.hasNext());
+        
+        assertContains( f0, set );
+        assertContains( f1, set );
 
         // make sure there have been no left memory increases or propagation
         assertEquals( 0,
-                      this.memory.leftMemorySize() );
+                      iteratorSize(this.memory.leftTupleIterator( this.context, this.workingMemory ) ) );
         assertLength( 0,
                       this.sink.getAsserted() );
     }
@@ -200,7 +195,6 @@ public class JoinNodeTest extends DroolsTestCase {
      * @throws Exception
      */
     public void testAssertPropagations() throws Exception {
-
         // Assert first tuple
         FactHandleImpl f0 = new FactHandleImpl( 0 );
         ReteTuple tuple1 = new ReteTuple( 0,
@@ -209,8 +203,7 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node.assertTuple( tuple1,
                                this.context,
                                this.workingMemory );
-        TupleMatches betaMemory1 = this.memory.getBetaMemory( tuple1.getKey() );
-
+                
         // Assert second tuple
         FactHandleImpl f1 = new FactHandleImpl( 0 );
         ReteTuple tuple2 = new ReteTuple( 1,
@@ -219,24 +212,27 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node.assertTuple( tuple2,
                                this.context,
                                this.workingMemory );
-        TupleMatches betaMemory2 = this.memory.getBetaMemory( tuple2.getKey() );
 
         // Assert an object and make sure we get matches and propogations
-        FactHandleImpl f2 = new FactHandleImpl( 2 );
-        this.workingMemory.putObject( f2,
-                                      "test1" );
-        this.node.assertObject( "test1",
-                                f2,
+        FactHandleImpl f2 = (FactHandleImpl) this.workingMemory.assertObject( "test1" );
+        this.node.assertObject( f2,
                                 this.context,
-                                this.workingMemory );
+                                this.workingMemory );    
+        
+        BetaMemory betaMemory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
+        
+        ObjectMatches matches1 = (ObjectMatches) betaMemory.rightObjectIterator().next();
+        
+        assertEquals( 2,
+                      iteratorSize(  matches1.iterator( context, workingMemory ) ) );
         assertLength( 1,
-                      betaMemory1.getMatches() );
+                      tuple1.getTupleMatches().values() );
         assertLength( 1,
-                      betaMemory2.getMatches() );
+                      tuple2.getTupleMatches().values() );        
         assertLength( 2,
                       this.sink.getAsserted() );
 
-        // Assert another tuple and make sure there was one propagation
+        // Assert another tuple and make sure there was one propagation        
         FactHandleImpl f3 = new FactHandleImpl( 3 );
         ReteTuple tuple3 = new ReteTuple( 0,
                                           f3,
@@ -249,19 +245,17 @@ public class JoinNodeTest extends DroolsTestCase {
                       this.sink.getAsserted() );
 
         // Assert another object and make sure there were three propagations
-        FactHandleImpl f4 = new FactHandleImpl( 4 );
-        this.node.assertObject( "test1",
-                                f4,
+        FactHandleImpl f4 = (FactHandleImpl) this.workingMemory.assertObject( "test2" );
+        this.node.assertObject( f4,
                                 this.context,
                                 this.workingMemory );
-        TupleMatches betaMemory3 = this.memory.getBetaMemory( tuple3.getKey() );
-
+               
+        assertEquals( 3,
+                      iteratorSize(  matches1.iterator( context, workingMemory ) ) );
         assertLength( 2,
-                      betaMemory1.getMatches() );
+                      tuple1.getTupleMatches().values() );
         assertLength( 2,
-                      betaMemory2.getMatches() );
-        assertLength( 2,
-                      betaMemory3.getMatches() );
+                      tuple2.getTupleMatches().values() );        
         assertLength( 6,
                       this.sink.getAsserted() );
     }
@@ -272,38 +266,63 @@ public class JoinNodeTest extends DroolsTestCase {
      * @throws Exception
      * @throws RetractionException
      */
-    public void testRetractTuple() throws Exception,
-                                  RetractionException {
+    public void testRetractTuple() throws Exception {
+        // Assert first tuple
         FactHandleImpl f0 = new FactHandleImpl( 0 );
         ReteTuple tuple1 = new ReteTuple( 0,
                                           f0,
                                           this.workingMemory );
-
-        // Shouldn't propagate as there are no matched tuple/facts
-        this.node.retractTuples( tuple1.getKey(),
-                                 this.context,
-                                 this.workingMemory );
-        assertLength( 0,
-                      this.sink.getRetracted() );
-
-        // assert tuple, should add one to left memory
         this.node.assertTuple( tuple1,
                                this.context,
                                this.workingMemory );
-        assertEquals( 1,
-                      this.memory.leftMemorySize() );
+                
+        // Assert second tuple
+        FactHandleImpl f1 = new FactHandleImpl( 0 );
+        ReteTuple tuple2 = new ReteTuple( 1,
+                                          f1,
+                                          this.workingMemory );
+        this.node.assertTuple( tuple2,
+                               this.context,
+                               this.workingMemory );
 
-        // Shouldn't propagate as still no matched tuple/facts. Although it will
-        // remove the asserted tuple
-        this.node.retractTuples( tuple1.getKey(),
-                                 this.context,
-                                 this.workingMemory );
-        assertLength( 0,
-                      this.sink.getRetracted() );
-        assertEquals( 0,
-                      this.memory.leftMemorySize() );
-        assertEquals( 0,
-                      this.memory.rightMemorySize() );
+        // Assert an object and make sure we get matches and propogations
+        FactHandleImpl f2 = (FactHandleImpl) this.workingMemory.assertObject( "test1" );
+        this.node.assertObject( f2,
+                                this.context,
+                                this.workingMemory );    
+        
+        // Assert another object and make sure there were three propagations
+        FactHandleImpl f4 = (FactHandleImpl) this.workingMemory.assertObject( "test2" );
+        this.node.assertObject( f4,
+                                this.context,
+                                this.workingMemory );
+        
+        BetaMemory betaMemory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
+        ObjectMatches matches1 = (ObjectMatches) betaMemory.rightObjectIterator().next();
+
+        assertEquals( 2,
+                      iteratorSize(  betaMemory.leftTupleIterator(this.context, this.workingMemory ) ) );
+        assertEquals( 2,
+                      iteratorSize(  matches1.iterator( context, workingMemory ) ) );
+        assertLength( 2,
+                      tuple1.getTupleMatches().values() );
+        assertLength( 2,
+                      tuple2.getTupleMatches().values() );        
+        assertLength( 4,
+                      this.sink.getAsserted() );        
+        
+        tuple1.remove( this.context, this.workingMemory );
+
+        assertEquals( 1,
+                      iteratorSize(  betaMemory.leftTupleIterator(this.context, this.workingMemory ) ) );
+        
+        assertEquals( 1,
+                      iteratorSize(  matches1.iterator( context, workingMemory ) ) );
+        assertEquals( tuple2,
+                      betaMemory.leftTupleIterator(this.context, this.workingMemory ).next() );
+        assertLength( 2,
+                      tuple2.getTupleMatches().values() );          
+        
     }
 
     /**
@@ -312,47 +331,7 @@ public class JoinNodeTest extends DroolsTestCase {
      * @throws Exception
      * @throws RetractionException
      */
-    public void testRetractObject() throws Exception,
-                                   RetractionException {
-        FactHandleImpl f0 = new FactHandleImpl( 0 );
-
-        // Shouldn't propagate as there are no matched tuple/facts
-        this.node.retractObject( f0,
-                                 this.context,
-                                 this.workingMemory );
-        assertLength( 0,
-                      this.sink.getRetracted() );
-
-        // assert object, should add one to right memory
-        this.node.assertObject( "test0",
-                                f0,
-                                this.context,
-                                this.workingMemory );
-        assertEquals( 1,
-                      this.memory.rightMemorySize() );
-
-        // Shouldn't propagate as still no matched tuple/facts. Although it will
-        // remove the asserted object
-        this.node.retractObject( f0,
-                                 this.context,
-                                 this.workingMemory );
-        assertLength( 0,
-                      this.sink.getRetracted() );
-        assertEquals( 0,
-                      this.memory.leftMemorySize() );
-        assertEquals( 0,
-                      this.memory.rightMemorySize() );
-    }
-
-    /**
-     * Test retractions with both tuples and objects
-     * 
-     * @throws Exception
-     * @throws RetractionException
-     */
-    public void testRetractPropagations() throws Exception,
-                                         RetractionException {
-        // assert tuple
+    public void testRetractObject() throws Exception {
         FactHandleImpl f0 = new FactHandleImpl( 0 );
         ReteTuple tuple1 = new ReteTuple( 0,
                                           f0,
@@ -360,97 +339,27 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node.assertTuple( tuple1,
                                this.context,
                                this.workingMemory );
-
-        // assert object
+        
+        // assert object, should add one to right memory
         FactHandleImpl f1 = new FactHandleImpl( 1 );
-        this.node.assertObject( "test1",
-                                f1,
+        this.node.assertObject( f1,
                                 this.context,
-                                this.workingMemory );
-
-        // assert object
-        FactHandleImpl f2 = new FactHandleImpl( 2 );
-        this.node.assertObject( "test2",
-                                f2,
-                                this.context,
-                                this.workingMemory );
-
-        // should have three asserted propagations
-        assertLength( 2,
-                      this.sink.getAsserted() );
-
-        // check zero retracted propatations
-        assertLength( 0,
-                      this.sink.getRetracted() );
-
-        // retract an object, should have one retracted propagations
-        this.node.retractObject( f2,
-                                 this.context,
-                                 this.workingMemory );
-        assertLength( 1,
-                      this.sink.getRetracted() );
-
-        // retract a tuple, should have one retracted propagations
-        this.node.retractTuples( tuple1.getKey(),
-                                 this.context,
-                                 this.workingMemory );
-        assertLength( 2,
-                      this.sink.getRetracted() );
-
-        // should be zero left tuples and 1 right handle in memory
-        assertEquals( 0,
-                      this.memory.leftMemorySize() );
-        assertEquals( 1,
-                      this.memory.rightMemorySize() );
-
-        // clear out the final right memory item
-        this.node.retractObject( f1,
-                                 this.context,
-                                 this.workingMemory );
-
-        assertEquals( 0,
-                      this.memory.rightMemorySize() );
-
+                                this.workingMemory );        
+                        
+        BetaMemory betaMemory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
+        ObjectMatches objectMatches = (ObjectMatches) betaMemory.rightObjectIterator().next();
+        assertEquals(1, iteratorSize( objectMatches.iterator( context, workingMemory ) ) );
+        
+        ReteTuple tuple = (ReteTuple) betaMemory.leftTupleIterator( context, workingMemory ).next();
+        assertLength(1, tuple.getTupleMatches().values() );
+        
+        this.node.retractObject( f1, context, workingMemory );        
+        
+        assertEquals(0, iteratorSize( betaMemory.rightObjectIterator() ) );
+        assertLength(0, tuple.getTupleMatches().values() );                       
     }
 
-    /**
-     * Test that a correct join results from propatation
-     */
-    public void testJoin() throws Exception {
-        // assert tuple
-        FactHandleImpl f0 = new FactHandleImpl( 0 );
-        this.workingMemory.putObject( f0,
-                                      "test0" );
-        ReteTuple tuple1 = new ReteTuple( 2,
-                                          f0,
-                                          this.workingMemory );
-        this.node.assertTuple( tuple1,
-                               this.context,
-                               this.workingMemory );
 
-        // assert object
-        FactHandleImpl f1 = new FactHandleImpl( 1 );
-        this.workingMemory.putObject( f1,
-                                      "test1" );
-        this.node.assertObject( "test1",
-                                f1,
-                                this.context,
-                                this.workingMemory );
-
-        Object[] list = (Object[]) this.sink.getAsserted().get( 0 );
-        ReteTuple joinedTuple = (ReteTuple) list[0];
-
-        assertNull( joinedTuple.get( 1 ) );
-
-        assertEquals( "test0",
-                      joinedTuple.get( 2 ) );
-
-        assertNull( joinedTuple.get( 3 ) );
-        assertNull( joinedTuple.get( 4 ) );
-
-        assertEquals( "test1",
-                      joinedTuple.get( 5 ) );
-    }
 
     /**
      * While all the previous tests work with the DefaultJoinNodeBinder, ie
@@ -463,52 +372,48 @@ public class JoinNodeTest extends DroolsTestCase {
      * 
      */
     public void testJoinNodeWithConstraint() throws Exception {
-//        ObjectType stringObjectType = new ClassObjectType( String.class, "price" );
-
-//        // just return the object
-//        Extractor stringExtractor = new Extractor() {
-//            public Object getValue(Object object) {
-//                return object;
-//            }
-//        };
-
-        FieldExtractor priceExtractor = new ClassFieldExtractor(Cheese.class, Cheese.getIndex( Cheese.class, "price" ) );
-        
-        // Bind the extractor to a decleration
-        Declaration string1Declaration = new Declaration( 0,
-                                                          "price1",
-                                                          priceExtractor,
-                                                          3 );
+        FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
+                                                                 Cheese.getIndex( Cheese.class,
+                                                                                  "price" ) );
 
         // Bind the extractor to a decleration
-        Declaration string2Declaration = new Declaration( 0,
-                                                          "price2",
-                                                          priceExtractor,
-                                                          9 );
+        // Declarations know the column they derive their value form
+        Declaration price1Declaration = new Declaration( 0,
+                                                         "price1",
+                                                         priceExtractor,
+                                                         0 );
 
-        // create the boolean expression check
-        PredicateEvaluator checkString = new PredicateEvaluator() {
+        // Bind the extractor to a decleration
+        // Declarations know the column they derive their value form
+        Declaration price2Declaration = new Declaration( 1,
+                                                         "price2",
+                                                         priceExtractor,
+                                                         1 );
+
+        PredicateExpression evaluator = new PredicateExpression() {
+
             public boolean evaluate(Tuple tuple,
-                                     Object object,
-                                     FactHandle handle,
-                                     Declaration declaration, // ?string1
-                                     Declaration[] declarations ) { // ?string2
-                int price1 = ((Integer) tuple.get( declarations[0] )).intValue();
-                int price2 = ((Integer) declaration.getValue( object )).intValue();
-                return (price2 == (price1 * 2));                
+                                    FactHandle factHandle,
+                                    Declaration declaration,
+                                    Declaration[] declarations,
+                                    WorkingMemory workingMemory) {
+                int price1 = ((Integer) declarations[0].getValue( workingMemory.getObject( tuple.get( declarations[0] ) ) )).intValue();
+                int price2 = ( (Integer) declaration.getValue( workingMemory.getObject( factHandle ) ) ).intValue();
+
+                return (price2 == (price1 * 2));
+
             }
         };
 
-        // create the constraint
-        PredicateConstraint constraint = new PredicateConstraint( checkString,
-                                                                  string1Declaration,
-                                                                  new Declaration[]{string2Declaration} );
+        PredicateConstraint constraint = new PredicateConstraint( evaluator,
+                                                                  price2Declaration,
+                                                                  new Declaration[]{price1Declaration} );
 
         // string1Declaration is bound to column 3
         this.node = new JoinNode( 15,
                                   new MockTupleSource( 5 ),
                                   new MockObjectSource( 8 ),
-                                  3,
+                                  0,
                                   new BetaNodeBinder( constraint ) );
 
         this.node.addTupleSink( this.sink );
@@ -517,10 +422,8 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // assert tuple
         Cheese cheddar = new Cheese( "cheddar", 5 );
-        FactHandleImpl f0 = new FactHandleImpl( 0 );        
-        this.workingMemory.putObject( f0,
-                                      cheddar );
-        ReteTuple tuple1 = new ReteTuple( 9,
+        FactHandleImpl f0 = (FactHandleImpl)this.workingMemory.assertObject( cheddar );        
+        ReteTuple tuple1 = new ReteTuple( 0,
                                           f0,
                                           this.workingMemory );
         this.node.assertTuple( tuple1,
@@ -528,12 +431,9 @@ public class JoinNodeTest extends DroolsTestCase {
                                this.workingMemory );
 
         // assert object
-        Cheese brie = new Cheese( "brie", 10 );        
-        FactHandleImpl f1 = new FactHandleImpl( 1 );
-        this.workingMemory.putObject( f1,
-                                      brie );
-        this.node.assertObject( brie,
-                                f1,
+        Cheese brie = new Cheese( "brie", 10 ); 
+        FactHandleImpl f1 = (FactHandleImpl) this.workingMemory.assertObject( brie );
+        this.node.assertObject( f1,
                                 this.context,
                                 this.workingMemory );
 
@@ -543,18 +443,16 @@ public class JoinNodeTest extends DroolsTestCase {
 
         Object[] list = (Object[]) this.sink.getAsserted().get( 0 );
         ReteTuple joinedTuple = (ReteTuple) list[0];
-        assertEquals( new Cheese("brie", 10),
-                      joinedTuple.get( 3 ) );
-
         assertEquals( new Cheese("cheddar", 5),
-                      joinedTuple.get( 9 ) );
+                      this.workingMemory.getObject( joinedTuple.get( 0 ) ) );
+
+        assertEquals( new Cheese("brie", 10),
+                      this.workingMemory.getObject( joinedTuple.get( 1 ) ) );
 
         // now check that constraint blocks these assertions /* assert tuple
         Cheese stilton = new Cheese( "stilton", 12);        
-        FactHandleImpl f2 = new FactHandleImpl( 2 );
-        this.workingMemory.putObject( f2,
-                                      stilton );
-        ReteTuple tuple2 = new ReteTuple( 9,
+        FactHandleImpl f2 = (FactHandleImpl) this.workingMemory.assertObject( stilton );
+        ReteTuple tuple2 = new ReteTuple( 0,
                                           f2,
                                           this.workingMemory );
         this.node.assertTuple( tuple2,
@@ -566,17 +464,16 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // Although it will remember the tuple for possible future matches
         assertEquals( 2,
-                      this.memory.leftMemorySize() );
+                     iteratorSize( this.memory.leftTupleIterator( context, workingMemory ) ) );
         assertEquals( 1,
-                      this.memory.rightMemorySize() );
+                      iteratorSize( this.memory.rightObjectIterator() ) );
 
         // assert object
         stilton = new Cheese( "stilton", 20);  
         FactHandleImpl f3 = new FactHandleImpl( 3 );
         this.workingMemory.putObject( f3,
                                       stilton );
-        this.node.assertObject( stilton,
-                                f3,
+        this.node.assertObject( f3,
                                 this.context,
                                 this.workingMemory );
         // nothing extra should be asserted
@@ -585,68 +482,15 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // Although it will remember the tuple for possible future matches
         assertEquals( 2,
-                      this.memory.leftMemorySize() );
+                      iteratorSize( this.memory.leftTupleIterator( context, workingMemory ) ) );
         assertEquals( 2,
-                      this.memory.rightMemorySize() );
+                      iteratorSize( this.memory.rightObjectIterator() ) );
 
     }
 
-    public void testUpdateWithChildNodeMemory() throws FactException {
-        // Join nodes check children to see if one has memory, if it has memory
-        // it
-        // propagate the contents of that memory to the new child
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
-        JoinNode joinNode = new JoinNode( 1,
-                                          this.tupleSource,
-                                          this.objectSource,
-                                          1 );
-
-        // Add the new sink with memory and assert a tuple which will be
-        // repropagated to the new child node
-        MockTupleSink sink1 = new MockTupleSink( 2 );
-        sink1.setHasMemory( true );
-
-        FactHandleImpl f0 = new FactHandleImpl( 0 );
-        workingMemory.putObject( f0,
-                                 "string2" );
-        ReteTuple tuple1 = new ReteTuple( 9,
-                                          f0,
-                                          workingMemory );
-
-        sink1.assertTuple( tuple1,
-                           this.context,
-                           workingMemory );
-
-        // Make sure the memory was correctly updated
-        Map map = (Map) workingMemory.getNodeMemory( sink1 );
-        assertLength( 1,
-                      map.keySet() );
-        assertLength( 1,
-                      sink1.getAsserted() );
-
-        joinNode.addTupleSink( sink1 );
-
-        // Add the new sink which should have its data upated from the first
-        // sink that has memory
-        MockTupleSink sink2 = new MockTupleSink( 3 );
-        joinNode.addTupleSink( sink2 );
-
-        assertLength( 0,
-                      sink2.getAsserted() );
-
-        joinNode.updateNewNode( workingMemory,
-                                this.context );
-
-        assertLength( 1,
-                      sink2.getAsserted() );
-
-    }
 
     public void testUpdateWithMemory() throws FactException {
-        // If no child nodes have children then we need to re-process the left
-        // and right memories
-        // as a joinnode does not store the resulting tuples
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
 
         JoinNode joinNode = new JoinNode( 1,
@@ -676,8 +520,7 @@ public class JoinNodeTest extends DroolsTestCase {
         workingMemory.putObject( string1Handle,
                                  string1 );
 
-        joinNode.assertObject( string1,
-                               string1Handle,
+        joinNode.assertObject( string1Handle,
                                this.context,
                                workingMemory );
 
@@ -686,7 +529,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // Add the new sink, this should be updated from the re-processed
         // joinnode memory
-        MockTupleSink sink2 = new MockTupleSink( 3 );
+        MockTupleSink sink2 = new MockTupleSink( 3 );                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
         joinNode.addTupleSink( sink2 );
         assertLength( 0,
                       sink2.getAsserted() );
@@ -696,5 +539,14 @@ public class JoinNodeTest extends DroolsTestCase {
 
         assertLength( 1,
                       sink2.getAsserted() );
+    }
+    
+    private int iteratorSize(Iterator it) {
+        int count = 0;
+        for (;it.hasNext();) {
+            it.next();
+            ++count;
+        }
+        return count;
     }
 }

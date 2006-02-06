@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 import org.drools.FactException;
 import org.drools.RuleIntegrationException;
 import org.drools.RuleSetIntegrationException;
+import org.drools.WorkingMemory;
 import org.drools.examples.manners.Chosen;
 import org.drools.examples.manners.Context;
 import org.drools.examples.manners.Count;
@@ -46,7 +47,7 @@ import org.drools.spi.ClassFieldExtractor;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
-import org.drools.spi.Constraint;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.DefaultKnowledgeHelper;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Field;
@@ -213,7 +214,7 @@ public class ReteooJungViewerTest extends TestCase {
 
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
@@ -373,7 +374,7 @@ public class ReteooJungViewerTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
@@ -612,7 +613,7 @@ public class ReteooJungViewerTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
@@ -731,7 +732,7 @@ public class ReteooJungViewerTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
@@ -828,7 +829,7 @@ public class ReteooJungViewerTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
@@ -894,7 +895,7 @@ public class ReteooJungViewerTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
@@ -955,7 +956,7 @@ public class ReteooJungViewerTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     System.out.println( "all done" );
                 }
@@ -1091,7 +1092,7 @@ public class ReteooJungViewerTest extends TestCase {
         return -1;
     }
 
-    private Constraint getLiteralConstraint(Column column,
+    private FieldConstraint getLiteralConstraint(Column column,
                                             String fieldName,
                                             Object fieldValue,
                                             Evaluator evaluator) throws IntrospectionException {
@@ -1112,7 +1113,7 @@ public class ReteooJungViewerTest extends TestCase {
                                       evaluator );
     }
 
-    private Constraint getFieldBinding(Column column,
+    private FieldConstraint getFieldBinding(Column column,
                                        String fieldName,
                                        String declarationName) throws IntrospectionException {
         Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
@@ -1128,7 +1129,7 @@ public class ReteooJungViewerTest extends TestCase {
                                  column.getIndex() );
     }
 
-    private Constraint getBoundVariableConstraint(Column column,
+    private FieldConstraint getBoundVariableConstraint(Column column,
                                                   String fieldName,
                                                   Declaration declaration,
                                                   Evaluator evaluator) throws IntrospectionException {

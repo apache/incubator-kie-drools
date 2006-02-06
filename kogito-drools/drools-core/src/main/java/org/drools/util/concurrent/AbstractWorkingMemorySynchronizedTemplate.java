@@ -1,6 +1,6 @@
 package org.drools.util.concurrent;
 
-import org.drools.DroolsException;
+import org.drools.CheckedDroolsException;
 import org.drools.DroolsRuntimeException;
 import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryTemplate;
@@ -51,7 +51,7 @@ public abstract class AbstractWorkingMemorySynchronizedTemplate
         synchronized ( getWorkingMemory() ) {
             try {
                 return callback.doInWorkingMemory( getWorkingMemory() );
-            } catch ( DroolsException e ) {
+            } catch ( CheckedDroolsException e ) {
                 throw new DroolsRuntimeException( e );
             }
         }

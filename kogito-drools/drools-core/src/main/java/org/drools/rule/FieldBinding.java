@@ -1,6 +1,7 @@
 package org.drools.rule;
 
 import org.drools.spi.Constraint;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.Extractor;
 import org.drools.spi.ObjectType;
 

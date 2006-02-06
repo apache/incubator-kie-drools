@@ -19,7 +19,7 @@ public interface WorkingMemoryTemplate {
          * @param workingMemory
          * @return Any object or null.
          */
-        Object doInWorkingMemory(final WorkingMemory workingMemory) throws DroolsException;
+        Object doInWorkingMemory(final WorkingMemory workingMemory) throws CheckedDroolsException;
     }
 
     /**

@@ -1,71 +1,45 @@
 package org.drools.reteoo;
-
 /*
- * $Id: ObjectTypeNode.java,v 1.3 2005/08/14 22:44:12 mproctor Exp $
- *
- * Copyright 2001-2003 (C) The Werken Company. All Rights Reserved.
- *
- * Redistribution and use of this software and associated documentation
- * ("Software"), with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * 1. Redistributions of source code must retain copyright statements and
- * notices. Redistributions must also contain a copy of this document.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * 3. The name "drools" must not be used to endorse or promote products derived
- * from this Software without prior written permission of The Werken Company.
- * For written permission, please contact bob@werken.com.
- *
- * 4. Products derived from this Software may not be called "drools" nor may
- * "drools" appear in their names without prior written permission of The Werken
- * Company. "drools" is a trademark of The Werken Company.
- *
- * 5. Due credit should be given to The Werken Company. (http://werken.com/)
- *
- * THIS SOFTWARE IS PROVIDED BY THE WERKEN COMPANY AND CONTRIBUTORS ``AS IS''
- * AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE WERKEN COMPANY OR ITS CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import java.io.Serializable;
 import java.util.Iterator;
 
-import org.drools.FactException;
-import org.drools.NoSuchFactObjectException;
-import org.drools.RetractionException;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.PrimitiveLongMap;
 
 /**
+ * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
+ * fact assertions propagated from the <code>Rete</code> node using <code>ObjectType</code> interface.
+ * <p>
+ * The assert and retract methods do not attempt to filter as this is the role of the <code>Rete</code>
+ * node which builds up a cache of matching <code>ObjectTypdeNodes</code>s for each asserted object, using
+ * the <code>matches(Object object)</code> method. Incorrect propagation in these methods is not checked and
+ * will result in <code>ClassCastExpcections</code> later on in the network.
+ * <p>
  * Filters <code>Objects</code> coming from the <code>Rete</code> using a
  * <code>ObjectType</code> semantic module.
  * 
- * <p>
- * It receives <code>Objects</code> from the <code>Rete</code>, uses a
- * <code>ObjectType</code> instance to determine membership, and propagates
- * matching <code>Objects</code> further to all matching
- * <code>ParameterNode</code>s.
- * </p>
  * 
  * @see ObjectType
- * @see ParameterNode
  * @see Rete
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob@eng.werken.com </a>
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 class ObjectTypeNode extends ObjectSource
     implements
@@ -81,6 +55,7 @@ class ObjectTypeNode extends ObjectSource
     /** The <code>ObjectType</code> semantic module. */
     private final ObjectType objectType;
 
+    /** The parent Rete node */
     private final Rete       rete;
 
     // ------------------------------------------------------------
@@ -88,10 +63,13 @@ class ObjectTypeNode extends ObjectSource
     // ------------------------------------------------------------
 
     /**
-     * Construct given a semantic <code>ObjectType</code>.
+     * Construct given a semantic <code>ObjectType</code> and the provided
+     * unique id. All <code>ObjectTypdeNode</code> have node memory.
      * 
+     * @param id
+     *          The unique id for the node.
      * @param objectType
-     *            The semantic object-type differentiator.
+     *           The semantic object-type differentiator.
      */
     public ObjectTypeNode(int id,
                           ObjectType objectType,
@@ -109,19 +87,29 @@ class ObjectTypeNode extends ObjectSource
     /**
      * Retrieve the semantic <code>ObjectType</code> differentiator.
      * 
-     * @return The semantic <code>ObjectType</code> differentiator.
+     * @return 
+     *      The semantic <code>ObjectType</code> differentiator.
      */
     public ObjectType getObjectType() {
         return this.objectType;
     }
 
-    public int getId() {
-        return this.id;
+    /**
+     * Tests the provided object to see if this <code>ObjectTypeNode</code> can receive the object
+     * for assertion and retraction propagations.
+     * 
+     * @param object
+     * @return
+     *      boolean value indicating whether the <code>ObjectTypeNode</code> can receive the object.
+     */
+    public boolean matches(Object object) {
+        return this.objectType.matches( object );
     }
 
     /**
-     * Assert a new fact object into this <code>RuleBase</code> and the
-     * specified <code>WorkingMemory</code>.
+     * Propagate the <code>FactHandleimpl</code> through the <code>Rete</code> network. All
+     * <code>FactHandleImpl</code> should be remembered in the node memory, so that later runtime rule attachmnents
+     * can have the matched facts propagated to them.
      * 
      * @param handle
      *            The fact handle.
@@ -129,65 +117,53 @@ class ObjectTypeNode extends ObjectSource
      *            The object to assert.
      * @param workingMemory
      *            The working memory session.
-     * @throws FactException
-     *             if an error occurs during assertion.
      */
-    public void assertObject(Object object,
-                             FactHandleImpl handle,
+    public void assertObject(FactHandleImpl handle,
                              PropagationContext context,
-                             WorkingMemoryImpl workingMemory) throws FactException {
-        if ( this.objectType.matches( object ) ) {
-            PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
-            memory.put( handle.getId(),
-                        handle );
+                             WorkingMemoryImpl workingMemory) {
+        PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
+        memory.put( handle.getId(),
+                    handle );
 
-            propagateAssertObject( object,
-                                   handle,
-                                   context,
-                                   workingMemory );
-        }
-
+        propagateAssertObject( handle,
+                               context,
+                               workingMemory );
     }
 
     /**
-     * Retract a fact object from this <code>RuleBase</code> and the specified
-     * <code>WorkingMemory</code>.
+     * Retract the <code>FactHandleimpl</code> from the <code>Rete</code> network. Also remove the 
+     * <code>FactHandleImpl</code> from the node memory.
      * 
      * @param handle
-     *            The handle of the fact to retract.
+     *            The fact handle.
+     * @param object
+     *            The object to assert.
      * @param workingMemory
      *            The working memory session.
-     * @throws FactException
-     *             if an error occurs during assertion.
      */
     public void retractObject(FactHandleImpl handle,
                               PropagationContext context,
-                              WorkingMemoryImpl workingMemory) throws FactException {
-        try {
-            if ( this.objectType.matches( workingMemory.getObject( handle ) ) ) {
-                PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
-                memory.remove( handle.getId() );
+                              WorkingMemoryImpl workingMemory) {
+        PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
+        memory.remove( handle.getId() );
 
-                propagateRetractObject( handle,
-                                        context,
-                                        workingMemory );
-            }
-        } catch ( NoSuchFactObjectException e ) {
-            throw new RetractionException( e );
-        }
+        propagateRetractObject( handle,
+                                context,
+                                workingMemory );
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
+     */
     public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) throws FactException {
+                              PropagationContext context) {
         this.attachingNewNode = true;
 
         PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
 
         for ( Iterator it = memory.values().iterator(); it.hasNext(); ) {
-            FactHandleImpl handle = (FactHandleImpl) it.next();
-            Object object = workingMemory.getObject( handle );
-            propagateAssertObject( object,
-                                   handle,
+            FactHandleImpl handle = (FactHandleImpl) it.next(); 
+            propagateAssertObject( handle,
                                    context,
                                    workingMemory );
         }
@@ -214,11 +190,16 @@ class ObjectTypeNode extends ObjectSource
         super.addShare();
     }
 
+    /**
+     * Creates memory for the node using PrimitiveLongMap as its optimised for storage and reteivals of Longs.
+     * However PrimitiveLongMap is not ideal for spase data. So it should be monitored incase its more optimal
+     * to switch back to a standard HashMap.
+     */
     public Object createMemory() {
         return new PrimitiveLongMap( 32,
                                      8 );
     }
-    
+
     public String toString() {
         return "[ObjectTypeNode objectType=" + this.objectType + "]";
     }
@@ -234,7 +215,10 @@ class ObjectTypeNode extends ObjectSource
 
         return this.objectType.equals( this.objectType );
     }
-    
+
+    /**
+     * Uses he hashcode() of the underlying ObjectType implementation.
+     */
     public int hashCode() {
         return this.objectType.hashCode();
     }

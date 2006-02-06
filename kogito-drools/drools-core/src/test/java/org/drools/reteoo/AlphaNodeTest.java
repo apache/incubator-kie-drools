@@ -7,21 +7,15 @@ import java.util.Set;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.rule.Declaration;
 import org.drools.rule.EvaluatorFactory;
 import org.drools.rule.LiteralConstraint;
-import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
-import org.drools.spi.BaseEvaluator;
 import org.drools.spi.ClassFieldExtractor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Field;
 import org.drools.spi.FieldExtractor;
-import org.drools.spi.LiteralExpressionConstraint;
 import org.drools.spi.MockField;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 
 public class AlphaNodeTest extends DroolsTestCase {
 
@@ -107,8 +101,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       memory );
 
         /* object should assert as it passes test */
-        alphaNode.assertObject( cheddar,
-                                f0,
+        alphaNode.assertObject( f0,
                                 context,
                                 workingMemory );
 
@@ -119,15 +112,17 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    list[0] );
+                    workingMemory.getObject( (FactHandleImpl) list[0] ) );
 
         FactHandleImpl f1 = new FactHandleImpl( 0 );
         Cheese stilton = new Cheese( "stilton",
                                      6 );
 
+        workingMemory.putObject( f1,
+                                 stilton );
+
         /* object should NOT assert as it does not pass test */
-        alphaNode.assertObject( stilton,
-                                f1,
+        alphaNode.assertObject( f1,
                                 context,
                                 workingMemory );
 
@@ -137,7 +132,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       memory );
         list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    list[0] );
+                    workingMemory.getObject( (FactHandleImpl) list[0] ) );
     }
 
     public void testLiteralConstraintAssertObjectWithMemory() throws Exception {
@@ -191,8 +186,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       memory );
 
         /* object should assert as it passes text */
-        alphaNode.assertObject( cheddar,
-                                f0,
+        alphaNode.assertObject( f0,
                                 context,
                                 workingMemory );
 
@@ -202,13 +196,12 @@ public class AlphaNodeTest extends DroolsTestCase {
                       memory );
         Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    list[0] );
+                    workingMemory.getObject( (FactHandleImpl) list[0] ) );
         assertTrue( "Should contain 'cheddar handle'",
                     memory.contains( f0 ) );
 
         /* object should not assert as it already exists */
-        alphaNode.assertObject( cheddar,
-                                f0,
+        alphaNode.assertObject( f0,
                                 context,
                                 workingMemory );
 
@@ -220,10 +213,11 @@ public class AlphaNodeTest extends DroolsTestCase {
         FactHandleImpl f1 = new FactHandleImpl( 1 );
         Cheese stilton = new Cheese( "stilton",
                                      6 );
+        workingMemory.putObject( f1,
+                                 stilton );
 
         /* object should NOT assert as it does not pass test */
-        alphaNode.assertObject( stilton,
-                                f1,
+        alphaNode.assertObject( f1,
                                 context,
                                 workingMemory );
 
@@ -233,7 +227,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       memory );
         list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    list[0] );
+                    workingMemory.getObject( (FactHandleImpl) list[0] ) );
         assertTrue( "Should contain 'cheddar handle'",
                     memory.contains( f0 ) );
 
@@ -288,8 +282,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getAsserted() );
 
         /* object should assert as it passes text */
-        alphaNode.assertObject( cheddar,
-                                f0,
+        alphaNode.assertObject( f0,
                                 context,
                                 workingMemory );
 
@@ -297,14 +290,13 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getAsserted() );
         Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    list[0] );
+                    workingMemory.getObject( (FactHandleImpl) list[0] ) );
 
         Cheese stilton = new Cheese( "stilton",
                                      6 );
 
         /* object should not assert as it does not pass text */
-        alphaNode.assertObject( stilton,
-                                f0,
+        alphaNode.assertObject( f0,
                                 context,
                                 workingMemory );
 
@@ -312,7 +304,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getAsserted() );
         list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    list[0] );
+                    workingMemory.getObject( (FactHandleImpl) list[0] ) );
     }
 
     public void testRetractObjectWithoutMemory() throws Exception {
@@ -413,8 +405,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       memory );
 
         /* object should assert as it passes text */
-        alphaNode.assertObject( cheddar,
-                                f0,
+        alphaNode.assertObject( f0,
                                 context,
                                 workingMemory );
 
@@ -552,8 +543,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         workingMemory.putObject( handle1,
                                  cheese );
 
-        source.propagateAssertObject( cheese,
-                                      handle1,
+        source.propagateAssertObject( handle1,
                                       context,
                                       workingMemory );
 

@@ -44,9 +44,10 @@ package org.drools;
 /**
  * Base exception indicating an error in manipulating facts.
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public class FactException extends DroolsException {
+public class FactException extends RuntimeDroolsException {
     /**
      * @see java.lang.Exception#Exception()
      */

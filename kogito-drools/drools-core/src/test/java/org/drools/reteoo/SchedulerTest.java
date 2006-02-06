@@ -70,7 +70,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation) {
+            public void invoke(Activation activation, WorkingMemory workingMemory) {
                 data.add( "tested" );
             }
         } );
@@ -131,7 +131,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation) {
+            public void invoke(Activation activation, WorkingMemory workingMemory) {
                 /* on first invoke add another one to the agenda */
                 if ( data.size() < 3 ) {
                     PropagationContext context2 = new PropagationContextImpl( 0,
@@ -203,7 +203,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation) {
+            public void invoke(Activation activation, WorkingMemory workingMemory) {
                 /* on first invoke add another one to the agenda */
                 if ( data.size() < 5 ) {
                     PropagationContext context2 = new PropagationContextImpl( 0,
@@ -263,7 +263,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation) throws ConsequenceException {
+            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
                 throw new ConsequenceException( "not enough cheese",
                                                 rule );
             }

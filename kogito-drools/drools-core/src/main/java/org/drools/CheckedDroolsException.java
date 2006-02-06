@@ -1,7 +1,7 @@
-package org.drools.conflict;
+package org.drools;
 
 /*
- * $Id: SalienceConflictResolver.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
+ * $Id: DroolsException.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  *
  * Copyright 2001-2004 (C) The Werken Company. All Rights Reserved.
  *
@@ -41,61 +41,50 @@ package org.drools.conflict;
  *
  */
 
-import org.drools.spi.Activation;
-import org.drools.spi.ConflictResolver;
-
 /**
- * <code>ConflictResolver</code> that uses the salience of rules to resolve
- * conflict.
+ * Base RuntimeException<code>drools Logic Engine</code> exception.
  * 
- * @see #getInstance
- * @see org.drools.rule.Rule#getSalience
- * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- * 
- * @version $Id: SalienceConflictResolver.java,v 1.3 2004/06/25 02:46:39
- *          mproctor Exp $
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public class SalienceConflictResolver extends AbstractConflictResolver {
-    // ----------------------------------------------------------------------
-    // Class members
-    // ----------------------------------------------------------------------
-
-    /** Singleton instance. */
-    private static final SalienceConflictResolver INSTANCE = new SalienceConflictResolver();
-
-    // ----------------------------------------------------------------------
-    // Class methods
-    // ----------------------------------------------------------------------
+public class CheckedDroolsException extends Exception {
+    /**
+     * @see java.lang.Exception#Exception()
+     */
+    public CheckedDroolsException() {
+        super();
+    }
 
     /**
-     * Retrieve the singleton instance.
+     * @see java.lang.Exception#Exception(String message)
+     */
+    public CheckedDroolsException(String message) {
+        super( message );
+    }
+
+    /**
+     * @see java.lang.Exception#Exception(String message, Throwable cause)
+     */
+    public CheckedDroolsException(String message,
+                           Throwable cause) {
+        super( message );
+    }
+
+    /**
+     * @see java.lang.Exception#Exception(Throwable cause)
+     */
+    public CheckedDroolsException(Throwable cause) {
+        super( cause );
+    }
+
+    /**
+     * Get the root cause, if any.
      * 
-     * @return The singleton instance.
+     * @deprecated Use Throwable.getCause()
+     * @return The root cause of this exception, as a <code>Throwable</code>,
+     *         if this exception has a root cause, else <code>null</code>.
      */
-    public static ConflictResolver getInstance() {
-        return SalienceConflictResolver.INSTANCE;
-    }
-
-    // ----------------------------------------------------------------------
-    // Constructors
-    // ----------------------------------------------------------------------
-
-    /**
-     * Construct.
-     */
-    public SalienceConflictResolver() {
-        // intentionally left blank
-    }
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    /**
-     * @see ConflictResolver
-     */
-    public int compare(Activation lhs,
-                       Activation rhs) {
-        return rhs.getRule().getSalience() - lhs.getRule().getSalience();
+    public Throwable getRootCause() {
+        return super.getCause();
     }
 }
