@@ -19,18 +19,22 @@ import net.sf.cglib.proxy.MethodProxy;
  * If the getField method of the FieldIndexAccessor interface is used, the shadow is returned.
  * Otherwise its just normal, turtles all the way down.
  * 
+ * TODO: this needs to use a property change listener, and queue up the changes, rather then applying them
+ * directly. Can then have another method that refreshes the shadow data.
+ * Could do this with the ChangeListener version.
+ * 
  * @author Michael Neale
  */
 public class ShadowedFactInterceptor extends FactInterceptor {
 
     private final Object[] values;
     private final Map   fieldToValue;
+    private final Object target;
     
     public ShadowedFactInterceptor(Object target,
                                    Method[] fieldMethods) {
 
-        super( target,
-               fieldMethods );
+        this.target = target;
         
         fieldToValue = new HashMap();
         int numOfFields = fieldMethods.length;
@@ -57,15 +61,6 @@ public class ShadowedFactInterceptor extends FactInterceptor {
                             Object[] args,
                             MethodProxy proxy) throws Throwable {
         
-        //this one is a little different...
-        Class methodClass = method.getDeclaringClass();
-        
-        if (methodClass == FieldIndexAccessor.class ) {
-            Integer arg = (Integer) args[0];
-            return values[arg.intValue() - 1];
-        } else if (methodClass == TargetAccessor.class ) {
-            return target;
-        } else {
             //check if method is in targetFields
             Object val = fieldToValue.get(method);
             if (val != null) {
@@ -74,7 +69,6 @@ public class ShadowedFactInterceptor extends FactInterceptor {
                 //bugger it, lets pass through.
                 return method.invoke(target, args);
             }
-        }
     }
 
 }

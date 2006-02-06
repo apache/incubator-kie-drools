@@ -29,36 +29,26 @@ public class ProxyGenerator {
     //cache the generated classes, and lists of indexable "fields" on each pojo class
     static Map cache = new HashMap();
     
-    /** 
-     * Generate a proxy that adds in a field index accessor, and an accessor to get to the target.
-     * Shadow and non shadow options are available etc.
-     * 
-     * @param pojo The end user object which is to be proxied. Must have empty constructor, be non final etc.
-     * @param shadow If true, accessible "fields" (indicated by "getters") will be shallow copied, and accessed when reading.
-     * @param propertyChangeListener If true, this will add in property change support. So all setters notify of changes.
-     * This can be used with the property change support in the rule engine. This option is mutually exclusive with shadow,
-     * as they are both ways to solve the same problem. 
-     * 
-     * @throws IOException If unable to load the class data to proxy. 
-     */
-    public static Object generateProxy(Object pojo, boolean shadow, boolean propertyChangeListener) throws IOException {
+    public static Object generateChangeListenerProxy(Object pojo) throws IOException {
         Class cls = pojo.getClass();
-        
         GeneratedEntry holder = getEntryFor(cls);
-        
         Factory factory = holder.instanceFactory;      
-        Method[] fieldMethods = holder.fieldMethods;
         FactInterceptor interceptor;
-        if (shadow) {
-            interceptor = new ShadowedFactInterceptor(pojo, fieldMethods);
-        } else if (propertyChangeListener) {
-            interceptor = new ChangeListenerFactInterceptor(pojo, fieldMethods);
-        } else {
-            interceptor = new FactInterceptor(pojo, fieldMethods);
-        }
+        interceptor = new ChangeListenerFactInterceptor(pojo);
 
         return factory.newInstance(interceptor);
     }   
+    
+    public static Object generateProxyWithShadow(Object pojo) throws IOException {
+        Class cls = pojo.getClass();
+        GeneratedEntry holder = getEntryFor(cls);
+        Factory factory = holder.instanceFactory;      
+        FactInterceptor interceptor;
+        interceptor = new ShadowedFactInterceptor(pojo, holder.fieldMethods);
+
+        return factory.newInstance(interceptor);
+    }   
+
     
     
     /**
@@ -69,9 +59,7 @@ public class ProxyGenerator {
         GeneratedEntry entry = (GeneratedEntry) cache.get(pojoClass);
         if (entry == null) {
             entry = new GeneratedEntry();
-            entry.instanceFactory = createInstanceFactory(pojoClass, new Class[] {FieldIndexAccessor.class, 
-                                                                                  TargetAccessor.class, 
-                                                                                  ChangeListener.class});
+            entry.instanceFactory = createInstanceFactory(pojoClass, new Class[] {ChangeListener.class});
             entry.fieldMethods = extractFieldMethodsInOrder(pojoClass);
             cache.put(pojoClass, entry);
         }
@@ -87,7 +75,7 @@ public class ProxyGenerator {
         enhancer.setSuperclass(pojoClass);
         enhancer.setInterfaces(interfaces);
         //just need some callback of the correct type to keep it happy, gets replaced when instantiating anyway.
-        enhancer.setCallback(new FactInterceptor(null, null));
+        enhancer.setCallback(new FactInterceptor());
         return (Factory) enhancer.create();
     }
     
