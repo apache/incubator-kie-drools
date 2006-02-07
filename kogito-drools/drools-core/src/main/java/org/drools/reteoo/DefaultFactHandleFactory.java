@@ -16,6 +16,7 @@ package org.drools.reteoo;
  */
 
 import org.drools.FactHandle;
+import org.drools.spi.FactHandleFactory;
 
 class DefaultFactHandleFactory
     implements

@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.spi;
 /*
  * Copyright 2005 JBoss Inc
  * 

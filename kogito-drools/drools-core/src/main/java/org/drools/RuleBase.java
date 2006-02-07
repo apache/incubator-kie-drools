@@ -43,9 +43,9 @@ package org.drools;
 
 import java.io.Serializable;
 
-import org.drools.reteoo.FactHandleFactory;
 import org.drools.rule.RuleSet;
 import org.drools.spi.ConflictResolver;
+import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseContext;
 
 /**

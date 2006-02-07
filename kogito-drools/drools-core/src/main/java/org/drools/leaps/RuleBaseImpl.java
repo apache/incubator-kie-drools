@@ -13,12 +13,12 @@ import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.leaps.conflict.DefaultConflictResolver;
 import org.drools.reteoo.DefaultFactHandleFactory;
-import org.drools.reteoo.FactHandleFactory;
 import org.drools.rule.DuplicateRuleNameException;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.InvalidRuleException;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleSet;
+import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseContext;
 
 /**

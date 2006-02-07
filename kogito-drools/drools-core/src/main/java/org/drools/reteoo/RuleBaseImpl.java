@@ -34,6 +34,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.RuleSet;
 import org.drools.spi.ClassObjectTypeResolver;
 import org.drools.spi.ConflictResolver;
+import org.drools.spi.FactHandleFactory;
 import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleBaseContext;

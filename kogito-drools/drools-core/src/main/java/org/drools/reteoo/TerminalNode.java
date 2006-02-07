@@ -181,7 +181,7 @@ final class TerminalNode extends BaseNode
             workingMemory.getAgendaEventSupport().fireActivationCancelled(  activation );            
         }        
         
-        workingMemory.removeLogicalAssertions( tuple.getKey(),
+        workingMemory.removeLogicalAssertions( tuple,
                                                context,
                                                this.rule );
     }    

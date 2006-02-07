@@ -47,7 +47,9 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
+import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 import org.drools.util.IdentityMap;
 import org.drools.util.PrimitiveLongMap;
 import org.drools.util.PrimitiveLongStack;
@@ -742,9 +744,11 @@ class WorkingMemoryImpl
      * 
      * public Map getJustifiers() { return this.justifiers; }
      */
-    public void removeLogicalAssertions(TupleKey key,
+    public void removeLogicalAssertions(Tuple tuple,
                                         PropagationContext context,
                                         Rule rule) throws FactException {
+        this.justifiers.get( tuple );
+        
         for ( Iterator it = this.justifiers.keySet().iterator(); it.hasNext(); ) {
             AgendaItem item = (AgendaItem) it.next();
 
