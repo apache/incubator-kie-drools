@@ -1,4 +1,4 @@
-package org.drools.util.proxy;
+package org.drools.util.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,10 +6,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.objectweb.asm.Attribute;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.CodeVisitor;
+import org.drools.asm.AnnotationVisitor;
+import org.drools.asm.Attribute;
+import org.drools.asm.ClassReader;
+import org.drools.asm.ClassVisitor;
+
+import org.drools.asm.FieldVisitor;
+import org.drools.asm.MethodVisitor;
+import org.drools.asm.Opcodes;
 
 
 /**
@@ -18,7 +22,7 @@ import org.objectweb.asm.CodeVisitor;
  * 
  * @author Michael Neale
  */
-public class FieldOrderInspector {
+public class ClassFieldInspector {
 
     private List methods;
     
@@ -26,7 +30,7 @@ public class FieldOrderInspector {
      * @param clazz The class that the fields to be shadowed are extracted for.
      * @throws IOException
      */
-    public FieldOrderInspector(Class clazz) throws IOException {
+    public ClassFieldInspector(Class clazz) throws IOException {
         String name = getResourcePath( clazz );
         InputStream stream = this.getClass().getResourceAsStream(name);
         ClassReader reader = new ClassReader(stream);
@@ -52,12 +56,11 @@ public class FieldOrderInspector {
     
     
     /**
-     * Using ASM pluck it out in the order they appear in the class file.
+     * Using the ASM classfield extractor to pluck it out in the order they appear in the class file.
      * @author Michael Neale
      */
     static class ClassFieldVisitor implements ClassVisitor {
 
-        private static final int PUBLIC_ACCESS = 1;
         private List methodList = new ArrayList();
         private Class clazz;
         
@@ -71,24 +74,7 @@ public class FieldOrderInspector {
             return methodList;
         }
         
-        public CodeVisitor visitMethod(int access,
-                                       String name,
-                                       String desc,
-                                       String[] signature,
-                                       Attribute attr) {
-            //only want public methods that are get or is
-            if (access == PUBLIC_ACCESS) {
-                if (name.startsWith("get") || name.startsWith("is")) {
-                    try {
-                        Method method = clazz.getMethod(name, null);
-                        methodList.add(method);
-                    } catch (NoSuchMethodException e) {
-                        //TODO: must be a better way. We only want fields with no args.
-                    }
-                }
-            }
-            return null;
-        }
+
         
         
         public void visit(int arg0,
@@ -113,6 +99,69 @@ public class FieldOrderInspector {
         public void visitAttribute(Attribute arg0) {}
 
         public void visitEnd() {}
+
+
+        public void visit(int arg0,
+                          int arg1,
+                          String arg2,
+                          String arg3,
+                          String arg4,
+                          String[] arg5) {
+            
+            
+        }
+
+
+        public void visitSource(String arg0,
+                                String arg1) {
+            
+            
+        }
+
+
+        public void visitOuterClass(String arg0,
+                                    String arg1,
+                                    String arg2) {
+            
+            
+        }
+
+
+        public AnnotationVisitor visitAnnotation(String arg0,
+                                                 boolean arg1) {
+            
+            return null;
+        }
+
+
+        public FieldVisitor visitField(int arg0,
+                                       String arg1,
+                                       String arg2,
+                                       String arg3,
+                                       Object arg4) {
+            
+            return null;
+        }
+
+
+        public MethodVisitor visitMethod(int access,
+                                         String name,
+                                         String desc,
+                                         String signature,
+                                         String[] exceptions) {
+            //only want public methods that start with 'get' or 'is'
+            if (access == Opcodes.ACC_PUBLIC) {
+                if (name.startsWith("get") || name.startsWith("is")) {
+                    try {
+                        Method method = clazz.getMethod(name, null);
+                        methodList.add(method);
+                    } catch (NoSuchMethodException e) {
+                        //TODO: must be a better way. We only want fields with no args.
+                    }
+                }
+            }
+            return null;
+        }
         
         
     }
