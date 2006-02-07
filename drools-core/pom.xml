@@ -20,6 +20,24 @@
   </repositories>  
   
   <dependencies>
+ 
+    
+    <!-- required for util.proxy stuff. It should be refactored into tools module. -->    
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>2.1_3</version>
+    </dependency>   
+    
+
+	<!-- required for asm stuff. Using jarjar to isolate ASM version. (its very small) -->
+    <dependency>
+      <groupId>drools-asm</groupId>
+      <artifactId>drools-asm</artifactId>
+      <version>2.2.1</version>
+    </dependency>   
+
+    <!-- following are required for parser (lang). May be refactored out of core module. -->
     <dependency>
       <groupId>jung</groupId>
       <artifactId>jung</artifactId>
@@ -34,15 +52,9 @@
       <groupId>jparsec</groupId>
       <artifactId>jparsec</artifactId>
       <version>0.01</version>
-    </dependency>   
-    <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib</artifactId>
-      <version>2.1_3</version>
-    </dependency>   
-
+    </dependency>  
     
-	  <!-- only needed for the default expander in lang.. remove when it is refactored. -->
+	  <!-- only needed for the default expander in parser/lang.. to remove when it is refactored into another module. -->
 	  <dependency>
 	      <groupId>commons-lang</groupId>
 	      <artifactId>commons-lang</artifactId>
