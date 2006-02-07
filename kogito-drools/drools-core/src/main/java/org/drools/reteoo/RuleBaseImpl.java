@@ -86,41 +86,18 @@ public class RuleBaseImpl
      * @param rete
      *            The rete network.
      */
-    public RuleBaseImpl() {
-        this( new DefaultFactHandleFactory(),
-              new HashSet(),
-              new HashMap(),
-              new RuleBaseContext() );
-    }
-    
-    
-    /**
-     * Construct.
-     * 
-     * @param rete
-     *            The rete network.
-     * @param conflictResolver
-     *            The conflict resolver.
-     * @param factHandleFactory
-     *            The fact handle factory.
-     * @param ruleSets
-     * @param applicationData
-     */
-    public RuleBaseImpl(FactHandleFactory factHandleFactory,
-                        Set ruleSets,
-                        Map applicationData,
-                        RuleBaseContext ruleBaseContext) {
+    public RuleBaseImpl() {        
         ObjectTypeResolver resolver = new ClassObjectTypeResolver();
         this.rete = new Rete( resolver );
         this.builder = new Builder( this,
                                     resolver );
-        this.factHandleFactory = factHandleFactory;
-        this.ruleSets = ruleSets;
-        this.applicationData = applicationData;
-        this.ruleBaseContext = ruleBaseContext;
+        this.factHandleFactory = new DefaultFactHandleFactory();
+        this.ruleSets = new HashSet();
+        this.applicationData = new HashMap();
+        this.ruleBaseContext = new RuleBaseContext();
         this.workingMemories = new WeakHashMap();
     }
-
+    
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
