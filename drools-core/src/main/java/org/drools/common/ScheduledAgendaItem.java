@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -22,7 +22,6 @@ import java.util.TimerTask;
 import org.drools.FactHandle;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.ConsequenceException;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedListNode;
@@ -32,7 +31,7 @@ import org.drools.util.LinkedListNode;
  * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-class ScheduledAgendaItem extends TimerTask
+public class ScheduledAgendaItem extends TimerTask
     implements
     Activation,
     Serializable,
@@ -46,12 +45,12 @@ class ScheduledAgendaItem extends TimerTask
     private LinkedListNode           next;
 
     /** The tuple. */
-    private final ReteTuple          tuple;
+    private final Tuple              tuple;
 
     /** The rule. */
     private final Rule               rule;
 
-    private final WorkingMemoryImpl  workingMemory;
+    private final Agenda             agenda;
 
     private final PropagationContext context;
 
@@ -69,15 +68,15 @@ class ScheduledAgendaItem extends TimerTask
      * @param rule
      *            The rule.
      */
-    ScheduledAgendaItem(long activationNumber,
-                        ReteTuple tuple,
-                        WorkingMemoryImpl workingMemory,
-                        PropagationContext context,
-                        Rule rule) {
+    public ScheduledAgendaItem(long activationNumber,
+                               Tuple tuple,
+                               Agenda agenda,
+                               PropagationContext context,
+                               Rule rule) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
-        this.workingMemory = workingMemory;
+        this.agenda = agenda;
         this.activationNumber = activationNumber;
     }
 
@@ -121,19 +120,10 @@ class ScheduledAgendaItem extends TimerTask
     }
 
     /**
-     * Retrieve the <code>TupleKey</code>.
-     * 
-     * @return The key to the tuple in this item.
-     */
-    TupleKey getKey() {
-        return this.tuple.getKey();
-    }
-
-    /**
      * Handle the firing of an alarm.
      */
     public void run() {
-        this.workingMemory.getAgenda().fireActivation( this );
+        this.agenda.fireActivation( this );
     }
 
     public long getActivationNumber() {
@@ -155,11 +145,11 @@ class ScheduledAgendaItem extends TimerTask
 
         ScheduledAgendaItem otherItem = (ScheduledAgendaItem) object;
 
-        return (this.rule.equals( otherItem.getRule() ) && this.tuple.getKey().equals( otherItem.getKey() ));
+        return (this.rule.equals( otherItem.getRule() ) && this.tuple.equals( otherItem.getTuple() ));
     }
 
     public int hashcode() {
-        return this.getKey().hashCode();
+        return this.tuple.hashCode();
     }
 
     public LinkedListNode getNext() {
@@ -179,6 +169,6 @@ class ScheduledAgendaItem extends TimerTask
     }
 
     public void remove() {
-        this.workingMemory.getAgenda().removeScheduleItem( this );
+        agenda.removeScheduleItem( this );
     }
 }

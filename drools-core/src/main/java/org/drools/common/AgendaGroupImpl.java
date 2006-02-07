@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.common;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -35,7 +35,7 @@ import org.drools.util.PriorityQueue;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-class AgendaGroupImpl
+public class AgendaGroupImpl
     implements
     AgendaGroup {
     private final String        name;

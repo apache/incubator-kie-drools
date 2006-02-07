@@ -79,4 +79,8 @@ public interface Tuple {
        
     FactHandle[] getFactHandles();
 
+    boolean dependsOn(FactHandle handle);
+
+    void setActivation(Activation activation);
+
 }

@@ -142,7 +142,7 @@ class ReteTuple extends AbstractBaseLinkedListNode
      * @return <code>true</code> if this tuple depends upon the specified
      *         object, otherwise <code>false</code>.
      */
-    boolean dependsOn(FactHandle handle) {
+    public boolean dependsOn(FactHandle handle) {
         return this.key.containsFactHandle( handle );
     }
 

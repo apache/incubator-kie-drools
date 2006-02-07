@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.common;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -40,7 +40,7 @@ import org.drools.util.LinkedListNode;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-class ActivationQueue
+public class ActivationQueue
     implements
     Comparable {
     private LinkedList list;

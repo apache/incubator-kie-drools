@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.common;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -31,7 +31,7 @@ import org.drools.util.AbstractBaseLinkedListNode;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-class AgendaItem extends AbstractBaseLinkedListNode
+public class AgendaItem extends AbstractBaseLinkedListNode
     implements
     Activation,
     Serializable {
@@ -40,7 +40,7 @@ class AgendaItem extends AbstractBaseLinkedListNode
     // ------------------------------------------------------------
 
     /** The tuple. */
-    private final ReteTuple          tuple;
+    private final Tuple          tuple;
 
     /** The rule. */
     private final Rule               rule;
@@ -65,11 +65,11 @@ class AgendaItem extends AbstractBaseLinkedListNode
      * @param rule
      *            The rule.
      */
-    AgendaItem(long activationNumber,
-               ReteTuple tuple,
-               PropagationContext context,
-               Rule rule,
-               ActivationQueue queue) {
+    public AgendaItem(long activationNumber,
+                      Tuple tuple,
+                      PropagationContext context,
+                      Rule rule,
+                      ActivationQueue queue) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
@@ -115,15 +115,6 @@ class AgendaItem extends AbstractBaseLinkedListNode
         return this.tuple;
     }
 
-    /**
-     * Retrieve the <code>TupleKey</code>.
-     * 
-     * @return The key to the tuple in this item.
-     */
-    TupleKey getKey() {
-        return this.tuple.getKey();
-    }
-
     /* (non-Javadoc)
      * @see org.drools.spi.Activation#getActivationNumber()
      */
@@ -157,7 +148,7 @@ class AgendaItem extends AbstractBaseLinkedListNode
 
         AgendaItem otherItem = (AgendaItem) object;
 
-        return (this.rule.equals( otherItem.getRule() ) && this.tuple.getKey().equals( otherItem.getKey() ));
+        return (this.rule.equals( otherItem.getRule() ) && this.tuple.equals( otherItem.getTuple() ));
     }
 
 
@@ -166,6 +157,6 @@ class AgendaItem extends AbstractBaseLinkedListNode
      * @return
      */
     public int hashcode() {
-        return this.getKey().hashCode();
+        return this.tuple.hashCode();
     }    
 }

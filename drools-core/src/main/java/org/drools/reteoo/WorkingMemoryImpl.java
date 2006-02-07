@@ -34,6 +34,9 @@ import org.drools.NoSuchFactHandleException;
 import org.drools.NoSuchFactObjectException;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
+import org.drools.common.Agenda;
+import org.drools.common.AgendaItem;
+import org.drools.common.EventSupport;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.ReteooNodeEventListener;
@@ -58,6 +61,7 @@ import org.drools.util.PrimitiveLongStack;
 class WorkingMemoryImpl
     implements
     WorkingMemory,
+    EventSupport,
     PropertyChangeListener {
     // ------------------------------------------------------------
     // Constants
@@ -374,34 +378,30 @@ class WorkingMemoryImpl
                             boolean logical,
                             Rule rule,
                             Activation activation) throws FactException {
-        /* check if the object already exists in the WM */
+        // check if the object already exists in the WM
         FactHandleImpl handle = (FactHandleImpl) this.identityMap.get( object );
 
-        /* only return if the handle exists and this is a logical assertion */
+        // return if the handle exists and this is a logical assertion
         if ( (handle != null) && (logical) ) {
             return handle;
         }
 
-        /* lets see if the object is already logical asserted */
+        // lets see if the object is already logical asserted
         Object logicalState = this.equalsMap.get( object );
 
-        /* if we have a handle and this STATED fact was previously STATED */
+        // if we have a handle and this STATED fact was previously STATED
         if ( (handle != null) && (!logical) && logicalState == WorkingMemoryImpl.STATED ) {
             return handle;
         }
 
         if ( !logical ) {
-            /*
-             * If this stated assertion already has justifications then we need
-             * to cancel them
-             */
+             // If this stated assertion already has justifications then we need
+             // to cancel them
             if ( logicalState instanceof FactHandleImpl ) {
                 handle = (FactHandleImpl) logicalState;
-                /*
-                 * remove handle from the justified Map and then iterate each of
-                 * each Activations. For each Activation remove the handle. If
-                 * the Set is empty then remove the activation from justiers.
-                 */
+                 // remove handle from the justified Map and then iterate each of
+                 // each Activations. For each Activation remove the handle. If
+                 // the Set is empty then remove the activation from justiers.
                 Set activationList = (Set) this.justified.remove( ((FactHandleImpl) handle).getId() );
                 for ( Iterator it = activationList.iterator(); it.hasNext(); ) {
                     Activation eachActivation = (Activation) it.next();
@@ -433,10 +433,8 @@ class WorkingMemoryImpl
             }
 
             handle = (FactHandleImpl) logicalState;
-            /*
-             * we create a lookup handle for the first asserted equals object
-             * all future equals objects will use that handle
-             */
+             // we create a lookup handle for the first asserted equals object
+             // all future equals objects will use that handle
             if ( handle == null ) {
                 handle = (FactHandleImpl) newFactHandle();
 
@@ -750,11 +748,11 @@ class WorkingMemoryImpl
         for ( Iterator it = this.justifiers.keySet().iterator(); it.hasNext(); ) {
             AgendaItem item = (AgendaItem) it.next();
 
-            if ( item.getRule() == rule && item.getKey().containsAll( key ) ) {
-                removeLogicalAssertions( item,
-                                         context,
-                                         rule );
-            }
+//            if ( item.getRule() == rule && item.getKey().containsAll( key ) ) {
+//                removeLogicalAssertions( item,
+//                                         context,
+//                                         rule );
+//            }
         }
 
     }

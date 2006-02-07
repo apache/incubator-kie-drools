@@ -21,6 +21,11 @@ import java.util.Set;
 import java.util.TimerTask;
 
 import org.drools.FactException;
+import org.drools.common.ActivationQueue;
+import org.drools.common.Agenda;
+import org.drools.common.AgendaGroupImpl;
+import org.drools.common.AgendaItem;
+import org.drools.common.ScheduledAgendaItem;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.Duration;
@@ -109,7 +114,7 @@ final class TerminalNode extends BaseNode
         if ( dur != null && dur.getDuration( tuple ) > 0 ) {
             ScheduledAgendaItem item = new ScheduledAgendaItem( context.getPropagationNumber(),
                                                                 tuple,
-                                                                workingMemory,
+                                                                workingMemory.getAgenda(),
                                                                 context,
                                                                 rule );
             agenda.scheduleItem( item );
@@ -175,6 +180,10 @@ final class TerminalNode extends BaseNode
             activation.remove();
             workingMemory.getAgendaEventSupport().fireActivationCancelled(  activation );            
         }        
+        
+        workingMemory.removeLogicalAssertions( tuple.getKey(),
+                                               context,
+                                               this.rule );
     }    
 
     public String toString() {
