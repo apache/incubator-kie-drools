@@ -16,6 +16,7 @@ import org.drools.spi.ClassFieldExtractor;
 import org.drools.spi.ClassObjectType;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
+import org.drools.spi.MockConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.PropagationContext;
@@ -31,7 +32,7 @@ public class NotNodeTest extends DroolsTestCase {
     NotNode           node;
     RightInputAdapterNode  ria;
     BetaMemory         memory;
-    boolean            allowed = true;
+    MockConstraint    constraint = new MockConstraint(); 
 
     /**
      * Setup the BetaNode used in each of the tests
@@ -43,31 +44,13 @@ public class NotNodeTest extends DroolsTestCase {
                                                    PropagationContext.ASSERTION,
                                                    null,
                                                    null );
-        this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );                       
-
-        PredicateExpression evaluator = new PredicateExpression() {
-
-            public boolean evaluate(Tuple tuple,
-                                    FactHandle handle,
-                                    Declaration declaration,
-                                    Declaration[] declarations,
-                                    WorkingMemory workingMemory) {
-                return NotNodeTest.this.allowed;
-
-            }
-        };
-
-        PredicateConstraint constraint = new PredicateConstraint( evaluator,
-                                                                  null,
-                                                                  new Declaration[]{} );        
-                
+        this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );                                       
 
         // string1Declaration is bound to column 3 
         this.node = new NotNode( 15,
                                  new MockTupleSource( 5 ),
                                  new MockObjectSource( 8 ),
-                                 1,
-                                 new BetaNodeBinder( constraint ) );
+                                 new BetaNodeBinder( this.constraint ) );
         
         this.ria = new RightInputAdapterNode(2, 0, this.node);
         this.ria.attach();
@@ -88,11 +71,9 @@ public class NotNodeTest extends DroolsTestCase {
         Cheese cheddar = new Cheese( "cheddar", 10 );
         FactHandleImpl f0 = (FactHandleImpl) workingMemory.assertObject( cheddar );
 
-        ReteTuple tuple1 = new ReteTuple( 0,
-                                          f0,
-                                          this.workingMemory );
+        ReteTuple tuple1 = new ReteTuple( f0 );
         
-        assertNull( tuple1.getNotTuple() );        
+        assertNull( tuple1.getLinkedTuples() );        
         
         this.node.assertTuple( tuple1,
                                this.context,
@@ -105,7 +86,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertLength( 0,
                       this.sink.getRetracted() );        
 
-        assertNotNull( tuple1.getNotTuple() );
+        assertNotNull( tuple1.getLinkedTuples() );
         
         assertEquals( f0,
                       ((Object[])this.sink.getAsserted().get( 0 ))[0] );
@@ -130,9 +111,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         // assert tuple, will have matches, so no propagation
         FactHandleImpl f2 = (FactHandleImpl) workingMemory.assertObject( new Cheese( "gouda", 10 ) );
-        ReteTuple tuple2 = new ReteTuple( 0,
-                                          f2,
-                                          this.workingMemory );
+        ReteTuple tuple2 = new ReteTuple( f2 );
         this.node.assertTuple( tuple2,
                                this.context,
                                this.workingMemory );
@@ -147,9 +126,9 @@ public class NotNodeTest extends DroolsTestCase {
 
         // check memory sizes
         assertEquals( 2,
-                      iteratorSize( this.memory.leftTupleIterator( context, workingMemory ) ) );
+                      this.memory.getLeftTupleMemory().size() );
         assertEquals( 1,
-                      iteratorSize( this.memory.rightObjectIterator() ) );
+                      this.memory.getRightFactHandleMemory().size() );
         
         // When this is retracter both tuples should assert
         this.node.retractObject( f1, context, workingMemory );
@@ -168,17 +147,15 @@ public class NotNodeTest extends DroolsTestCase {
      * @throws AssertionException
      */
     public void testNotWithConstraints() throws FactException {
-        this.allowed = false;
+        this.constraint.isAllowed = false;
         
         // assert tuple
         Cheese cheddar = new Cheese( "cheddar", 10 );
         FactHandleImpl f0 = (FactHandleImpl) workingMemory.assertObject( cheddar );
 
-        ReteTuple tuple1 = new ReteTuple( 0,
-                                          f0,
-                                          this.workingMemory );
+        ReteTuple tuple1 = new ReteTuple( f0 );
         
-        assertNull( tuple1.getNotTuple() );        
+        assertNull( tuple1.getLinkedTuples() );        
         
         this.node.assertTuple( tuple1,
                                this.context,
@@ -191,7 +168,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertLength( 0,
                       this.sink.getRetracted() );        
 
-        assertNotNull( tuple1.getNotTuple() );
+        assertNotNull( tuple1.getLinkedTuples() );
         
         assertEquals( f0,
                       ((Object[])this.sink.getAsserted().get( 0 ))[0] );
@@ -213,9 +190,7 @@ public class NotNodeTest extends DroolsTestCase {
         
         // assert tuple, will have no matches, so do assert propagation
         FactHandleImpl f2 = (FactHandleImpl) workingMemory.assertObject( new Cheese( "gouda", 10 ) );
-        ReteTuple tuple2 = new ReteTuple( 0,
-                                          f2,
-                                          this.workingMemory );
+        ReteTuple tuple2 = new ReteTuple( f2 );
         this.node.assertTuple( tuple2,
                                this.context,
                                this.workingMemory );        
@@ -226,14 +201,5 @@ public class NotNodeTest extends DroolsTestCase {
 
         assertLength( 0,
                       this.sink.getRetracted() );           
-    }
-    
-    private int iteratorSize(Iterator it) {
-        int count = 0;
-        for (;it.hasNext();) {
-            it.next();
-            ++count;
-        }
-        return count;
-    }    
+    }  
 }

@@ -54,9 +54,8 @@ class Agenda
 
     /** Working memory of this Agenda. */
     private final WorkingMemoryImpl workingMemory; 
-
-    private ScheduledAgendaItem firstScheduledTask;
-    private ScheduledAgendaItem lastScheduledTask;    
+    
+    private org.drools.util.LinkedList scheduledActivations;
     
     /** Items time-delayed. */
 
@@ -106,13 +105,11 @@ class Agenda
             }
         }
 
-        // Cancel all scheduled items and fire a Cancelled event for each Activation    
-        for ( ScheduledAgendaItem item = this.firstScheduledTask ; item.getNext() != null; ) {
-            item = item.getNext();
-            item.remove( );
-            this.workingMemory.getAgendaEventSupport().fireActivationCancelled( item );
+        for (ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst();item != null ; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst()) {
+            item.remove();
+            this.workingMemory.getAgendaEventSupport().fireActivationCancelled( item );            
         }
-    }
+   }
 
     /**
      * Schedule an agenda item for delayed firing.
@@ -120,39 +117,26 @@ class Agenda
      * @param item
      *            The item to schedule.
      */
-    TimerTask scheduleItem(ScheduledAgendaItem item) {
+    void scheduleItem(ScheduledAgendaItem item) {
         Scheduler.getInstance().scheduleAgendaItem( item );
         
-        if ( this.firstScheduledTask == null ) { 
-            this.firstScheduledTask = item;
-            this.lastScheduledTask = item;
-        } else {        
-            this.lastScheduledTask.setNext( item );
-            item.setPrevious( this.lastScheduledTask );
-            this.lastScheduledTask = item;
+        if (this.scheduledActivations == null ) {
+            this.scheduledActivations = new org.drools.util.LinkedList();
         }
         
-        return item;
+        this.scheduledActivations.add( item );       
     }
     
-    void removeScheduleItem(ScheduledAgendaItem item) {        
-        if (this.firstScheduledTask != item && this.lastScheduledTask != item) {
-            item.getPrevious().setNext( item.getNext() );
-            item.getNext().setPrevious( item.getPrevious() ); 
-        } else {        
-            if ( this.firstScheduledTask == item ) {
-                this.firstScheduledTask = item.getNext();
-                item.setPrevious( null );
-            }
-            
-            if ( this.lastScheduledTask == item ) {
-                this.lastScheduledTask= item.getPrevious(); 
-                item.setNext( null );
-            }       
-        }
+    void removeScheduleItem(ScheduledAgendaItem item) {    
+        this.scheduledActivations.remove( item );
         item.cancel();
     }    
 
+    
+    org.drools.util.LinkedList getScheduledItems() {
+        return this.scheduledActivations;
+    }
+    
     public void addAgendaGroup(AgendaGroup agendaGroup) {
         this.agendaGroups.put( agendaGroup.getName(),
                                agendaGroup );

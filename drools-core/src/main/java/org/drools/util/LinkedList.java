@@ -85,16 +85,14 @@ public class LinkedList {
         if ( this.firstNode != node && this.lastNode != node ) {
             node.getPrevious().setNext( node.getNext() );
             node.getNext().setPrevious( node.getPrevious() );
+            this.size--;
         } else {
             if ( this.firstNode == node ) {
                 removeFirst();
-            }
-
-            if ( this.lastNode == node ) {
+            } else if ( this.lastNode == node ) {
                 removeLast();
             }
         }
-        this.size--;
     }
 
     
