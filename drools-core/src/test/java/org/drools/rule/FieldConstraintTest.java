@@ -135,9 +135,7 @@ public class FieldConstraintTest extends TestCase {
         Cheese cheddar0 = new Cheese( "cheddar",
                                       5 );
         FactHandle f0 = workingMemory.assertObject( cheddar0 );
-        InstrumentedReteTuple tuple = new InstrumentedReteTuple( 0,
-                                                                 f0,
-                                                                 workingMemory );
+        InstrumentedReteTuple tuple = new InstrumentedReteTuple( f0 );
 
         Cheese cheddar1 = new Cheese( "cheddar",
                                       10 );
@@ -205,9 +203,7 @@ public class FieldConstraintTest extends TestCase {
                                       5 );
         FactHandle f0 = workingMemory.assertObject( cheddar0 );
 
-        InstrumentedReteTuple tuple = new InstrumentedReteTuple( 0,
-                                                                 f0,
-                                                                 workingMemory );
+        InstrumentedReteTuple tuple = new InstrumentedReteTuple( f0 );
 
         Cheese cheddar1 = new Cheese( "cheddar",
                                       10 );
