@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -24,35 +25,37 @@ import org.drools.spi.Activation;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.drools.util.LinkedListNode;
 
 /**
  * Item entry in the <code>Agenda</code>.
  * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-class ScheduledAgendaItem  extends  TimerTask
+class ScheduledAgendaItem extends TimerTask
     implements
     Activation,
-    Serializable {
+    Serializable,
+    LinkedListNode {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
-    private ScheduledAgendaItem               previous;
+    private LinkedListNode           previous;
 
-    private ScheduledAgendaItem               next;
+    private LinkedListNode           next;
 
     /** The tuple. */
     private final ReteTuple          tuple;
 
     /** The rule. */
-    private final  Rule              rule;
-    
+    private final Rule               rule;
+
     private final WorkingMemoryImpl  workingMemory;
 
     private final PropagationContext context;
 
-    private final long               activationNumber;        
+    private final long               activationNumber;
 
     // ------------------------------------------------------------
     // Constructors
@@ -159,23 +162,23 @@ class ScheduledAgendaItem  extends  TimerTask
         return this.getKey().hashCode();
     }
 
-    public ScheduledAgendaItem getNext() {
+    public LinkedListNode getNext() {
         return this.next;
     }
 
-    public void setNext(ScheduledAgendaItem next) {
+    public void setNext(LinkedListNode next) {
         this.next = next;
     }
 
-    public ScheduledAgendaItem getPrevious() {
+    public LinkedListNode getPrevious() {
         return this.previous;
     }
 
-    public void setPrevious(ScheduledAgendaItem previous) {
+    public void setPrevious(LinkedListNode previous) {
         this.previous = previous;
     }
 
     public void remove() {
-        this.workingMemory.getAgenda().removeScheduleItem( this );        
-    }    
+        this.workingMemory.getAgenda().removeScheduleItem( this );
+    }
 }

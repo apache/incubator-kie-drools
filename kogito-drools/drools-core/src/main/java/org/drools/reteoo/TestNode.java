@@ -64,12 +64,11 @@ class TestNode extends TupleSource
      */
     TestNode(int id,
              TupleSource tupleSource,
-             Condition condition,
-             boolean hasMemory) {
+             Condition condition ) {
         super( id );
         this.condition = condition;
         this.tupleSource = tupleSource;
-        this.hasMemory = hasMemory;
+        this.hasMemory = true;
     }
 
     /**
@@ -109,36 +108,42 @@ class TestNode extends TupleSource
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
+        
+        boolean allowed = this.condition.isAllowed( tuple );
 
-        if ( hasMemory() ) {
-            boolean allowed = this.condition.isAllowed( tuple );
+        workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
+                                                                       tuple,
+                                                                       allowed );
 
-            workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
-                                                                           tuple,
-                                                                           allowed );
-
-            if ( allowed ) {
-                LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-                memory.add( tuple );
-                propagateAssertTuple( tuple,
-                                      context,
-                                      workingMemory );
-            }
-        } else {
-            boolean allowed = this.condition.isAllowed( tuple );
-
-            workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
-                                                                           tuple,
-                                                                           allowed );
-
-            if ( allowed ) {
-                propagateAssertTuple( tuple,
-                                      context,
-                                      workingMemory );
-            }
+        if ( allowed ) {
+            LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+            memory.add( tuple );
+            
+            for ( int i = 0, size = getTupleSinks().size(); i < size; i++ ) {
+                ReteTuple child = new ReteTuple( tuple );
+                tuple.addLinkedTuple( child );
+                ((TupleSink) getTupleSinks().get( i )).assertTuple( child,
+                                                                    context,
+                                                                    workingMemory );
+            }                
         }
     }
 
+    public void retractTuple(ReteTuple tuple,
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
+        LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+        
+        memory.remove( tuple );
+       
+        int i = 0;
+        for (ReteTuple child = (ReteTuple) tuple.getLinkedTuples().getFirst(); child != null; child = (ReteTuple) child.getNext()) {
+            ((TupleSink) getTupleSinks().get( i++ )).retractTuple( child,
+                                                                   context,
+                                                                   workingMemory );            
+        }              
+    }
+    
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
         this.attachingNewNode = true;
@@ -161,10 +166,6 @@ class TestNode extends TupleSource
 
         this.attachingNewNode = false;
     }
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // java.lang.Object
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
      * Produce a debug string.
@@ -202,10 +203,4 @@ class TestNode extends TupleSource
         return new LinkedList();
     }
 
-    public void retractTuple(ReteTuple tuple,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
-        // TODO Auto-generated method stub
-
-    }
 }
