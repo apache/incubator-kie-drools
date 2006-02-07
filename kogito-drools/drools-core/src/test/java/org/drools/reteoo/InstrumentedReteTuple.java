@@ -10,11 +10,7 @@ public class InstrumentedReteTuple extends ReteTuple {
                (FactHandleImpl) handle );
     }
 
-    public InstrumentedReteTuple(int column,
-                                 FactHandle handle,
-                                 WorkingMemory workingMemory) {
-        super( column,
-               (FactHandleImpl) handle,
-               (WorkingMemoryImpl) workingMemory );
+    public InstrumentedReteTuple(FactHandle handle) {
+        super( (FactHandleImpl) handle );
     }
 }
