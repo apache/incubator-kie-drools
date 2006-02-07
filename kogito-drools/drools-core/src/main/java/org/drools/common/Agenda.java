@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.common;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TimerTask;
 
+import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -45,7 +46,7 @@ import org.drools.spi.ConsequenceException;
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
-class Agenda
+public class Agenda
     implements
     Serializable {
     // ------------------------------------------------------------
@@ -53,7 +54,7 @@ class Agenda
     // ------------------------------------------------------------
 
     /** Working memory of this Agenda. */
-    private final WorkingMemoryImpl workingMemory; 
+    private final WorkingMemory workingMemory; 
     
     private org.drools.util.LinkedList scheduledActivations;
     
@@ -76,7 +77,7 @@ class Agenda
      * @param conflictResolver
      *            The conflict resolver.
      */
-    public Agenda(WorkingMemoryImpl workingMemory ) {        
+    public Agenda(WorkingMemory workingMemory ) {        
         this.workingMemory = workingMemory;
         this.agendaGroups = new HashMap();
         this.focusStack = new LinkedList();
@@ -94,20 +95,21 @@ class Agenda
      * Clears all Activations from the Agenda
      * 
      */
-    void clearAgenda() {       
+    public void clearAgenda() {    
+        EventSupport eventsupport = (EventSupport) this.workingMemory;
         // Cancel all items and fire a Cancelled event for each Activation
         for ( Iterator agendaGroupIterator = this.agendaGroups.values().iterator();agendaGroupIterator.hasNext(); ) {
             AgendaGroupImpl group = (AgendaGroupImpl) agendaGroupIterator.next();
             for ( Iterator queueIterator = group.getPriorityQueue().iterator(); queueIterator.hasNext(); ) {
                 AgendaItem item = (AgendaItem) queueIterator.next();                
                 item.remove( );
-                this.workingMemory.getAgendaEventSupport().fireActivationCancelled( item );
+                eventsupport.getAgendaEventSupport().fireActivationCancelled( item );
             }
         }
 
         for (ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst();item != null ; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst()) {
             item.remove();
-            this.workingMemory.getAgendaEventSupport().fireActivationCancelled( item );            
+            eventsupport.getAgendaEventSupport().fireActivationCancelled( item );            
         }
    }
 
@@ -117,7 +119,7 @@ class Agenda
      * @param item
      *            The item to schedule.
      */
-    void scheduleItem(ScheduledAgendaItem item) {
+    public void scheduleItem(ScheduledAgendaItem item) {
         Scheduler.getInstance().scheduleAgendaItem( item );
         
         if (this.scheduledActivations == null ) {
@@ -127,13 +129,13 @@ class Agenda
         this.scheduledActivations.add( item );       
     }
     
-    void removeScheduleItem(ScheduledAgendaItem item) {    
+    public void removeScheduleItem(ScheduledAgendaItem item) {    
         this.scheduledActivations.remove( item );
         item.cancel();
     }    
 
     
-    org.drools.util.LinkedList getScheduledItems() {
+    public org.drools.util.LinkedList getScheduledItems() {
         return this.scheduledActivations;
     }
     
@@ -266,11 +268,13 @@ class Agenda
      *             If an error occurs while attempting to fire the consequence.
      */    
     public synchronized void fireActivation(Activation activation)  throws ConsequenceException  {
-        this.workingMemory.getAgendaEventSupport().fireBeforeActivationFired( activation );
+        EventSupport eventsupport = (EventSupport) this.workingMemory;
+        
+        eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation );
         
         activation.getRule().getConsequence().invoke( activation, this.workingMemory );
 
-        this.workingMemory.getAgendaEventSupport().fireAfterActivationFired( activation );        
+        eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );        
     }
 
 }
