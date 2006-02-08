@@ -6,7 +6,7 @@ import org.drools.leaps.ConflictResolver;
 
 /**
  * Default strategy for resolving conflicts amongst multiple rules.
- * 
+ *  
  * <p>
  * Since a fact or set of facts may activate multiple rules, a
  * <code>ConflictResolutionStrategy</code> is used to provide priority
@@ -26,7 +26,7 @@ public class DefaultConflictResolver extends CompositeConflictResolver {
 
 	private static final Comparator[] RULE_CONFLICT_RESOLVERS = new Comparator[] {
 			RuleSalienceConflictResolver.getInstance(),
-			RuleComplexityConflictResolver.getInstance(),
+//			RuleComplexityConflictResolver.getInstance(),
 			RuleLoadOrderConflictResolver.getInstance() };
 
 	/** Singleton instance. */

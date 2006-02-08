@@ -3,12 +3,12 @@ package org.drools.leaps;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.reteoo.BetaNodeBinder;
+import org.drools.spi.BetaNodeBinder;
 import org.drools.rule.Column;
 
 /**
  * Collection of <code>Column</code> specific constraints
- * 
+ *  
  * @author Alexander Bagerman
  * 
  */
