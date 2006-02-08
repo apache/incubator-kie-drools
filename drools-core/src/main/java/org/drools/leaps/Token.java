@@ -8,12 +8,13 @@ import org.drools.WorkingMemory;
 import org.drools.leaps.util.TableIterator;
 import org.drools.leaps.util.TableOutOfBoundException;
 import org.drools.rule.Declaration;
+import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 
 /**
- * this object wears multiple hats - Tuple, Activation and being main element
+ * this object wears multiple hats - Tuple and being main element
  * that wraps fact handle on main leaps stack
- * 
+ *  
  * @author Alexander Bagerman
  * 
  */
@@ -38,7 +39,7 @@ public class Token implements Tuple, Serializable {
 	boolean resume = false;
 
 	private Iterator rules = null;
-
+	
 	/**
 	 * activation parts
 	 */
@@ -164,15 +165,15 @@ public class Token implements Tuple, Serializable {
 	 * 
 	 * @return The currently bound <code>Object</code> value.
 	 */
-	public Object get(int idx) {
-		return this.getFactHandleAtPosition(idx).getObject();
+	public FactHandle get(int idx) {
+		return this.getFactHandleAtPosition(idx);
 	}
 
 	/**
 	 * 
 	 */
-	public Object get(Declaration declaration) {
-		return declaration.getValue(this.get(declaration.getColumn()));
+	public FactHandle get(Declaration declaration) {
+		return this.get(declaration.getColumn());
 	}
 
 	public Object get(FactHandle factHandle) {
@@ -293,4 +294,29 @@ public class Token implements Tuple, Serializable {
 		return new LeapsTuple(this.dominantFactHandle, this.currentFactHandles,
 				this.workingMemory);
 	}
+
+
+    /**
+     * Determine if this tuple depends upon a specified object.
+     * 
+     * @param handle
+     *            The object handle to test.
+     * 
+     * @return <code>true</code> if this tuple depends upon the specified
+     *         object, otherwise <code>false</code>.
+     */
+    public boolean dependsOn(FactHandle handle) {
+    	for (int i = 0; i < this.currentFactHandles.length; i++){
+    		if (this.currentFactHandles[i].equals(handle)) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+
+	public void setActivation(Activation activation) {
+		// do nothing
+	}
+
+    
 }

@@ -1,10 +1,11 @@
 package org.drools.leaps;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.drools.reteoo.BetaNodeBinder;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.ConditionalElement;
@@ -13,23 +14,48 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Rule;
-import org.drools.spi.BetaNodeConstraint;
+import org.drools.spi.BetaNodeBinder;
 import org.drools.spi.Constraint;
+import org.drools.spi.FieldConstraint;
+import org.drools.spi.ObjectTypeResolver;
 
 /**
  * A Rule<code>Builder</code> to process <code>Rule</code>s for use with
  * Leaps WorkingMemories. Produces list of Leaps rules that wrap Rule
  * and can be used in Leaps algorithm
- * 
+ *  
  * @author Alexander Bagerman
  * 
  */
 class Builder {
-	/**
-	 * 
-	 */
-	Builder() {
-	}
+    /** The RuleBase */
+    private final RuleBaseImpl       ruleBase;
+
+    private final ObjectTypeResolver resolver;
+
+    /** Rete network to build against. */
+//    private final Rete               rete;
+
+    /** Rule-sets added. */
+    private final List               ruleSets;
+
+    private final Map                applicationData;
+
+    private Map                      declarations;
+
+    /**
+     * Construct a <code>Builder</code> against an existing <code>Rete</code>
+     * network.
+     */
+    Builder(RuleBaseImpl ruleBase,
+            ObjectTypeResolver resolver) {
+        this.ruleBase = ruleBase;
+        this.resolver = resolver;
+        this.ruleSets = new ArrayList();
+        this.applicationData = new HashMap();
+        this.declarations = new HashMap();
+    }
+
 
 	/**
 	 * follows RETEOO logic flow but returns leaps rules list
@@ -103,14 +129,14 @@ class Builder {
 			Constraint constraint = (Constraint) it.next();
 			if (constraint instanceof LiteralConstraint) {
 				alphaConstraints.add(constraint);
-			} else if (constraint instanceof BetaNodeConstraint) {
+			} else if (constraint instanceof FieldConstraint) {
 				betaConstraints.add(constraint);
 			}
 		}
 
 		if (!betaConstraints.isEmpty()) {
-			binder = new BetaNodeBinder((BetaNodeConstraint[]) betaConstraints
-					.toArray(new BetaNodeConstraint[betaConstraints.size()]));
+			binder = new BetaNodeBinder((FieldConstraint[]) betaConstraints
+					.toArray(new FieldConstraint[betaConstraints.size()]));
 		} else {
 			binder = new BetaNodeBinder();
 		}
