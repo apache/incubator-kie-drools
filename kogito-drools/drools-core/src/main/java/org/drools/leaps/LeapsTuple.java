@@ -23,14 +23,8 @@ import org.drools.util.LinkedListNode;
 public class LeapsTuple implements Tuple, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private FactHandleImpl dominantFactHandle;
-
-	private WorkingMemoryImpl workingMemory;
-
 	private FactHandleImpl[] factHandles;
 
-	   /** The </code>TupleKey</code> */
-	private final TupleKey key;
 
 	private Activation activation; 
 	
@@ -38,38 +32,11 @@ public class LeapsTuple implements Tuple, Serializable {
 	 * activation parts
 	 */
 
-	LeapsTuple(FactHandleImpl dominantFactHandle, FactHandleImpl factHandles[],
-			WorkingMemoryImpl workingMemory) {
-		this.dominantFactHandle = dominantFactHandle;
-		this.workingMemory = workingMemory;
+	LeapsTuple(FactHandleImpl factHandles[]) {
 		this.factHandles = new FactHandleImpl[factHandles.length];
 		System.arraycopy(factHandles, 0, this.factHandles, 0,
 				factHandles.length);
-		TupleKey tupleKey = null;
-		for(int i = 0; i < this.factHandles.length; i++ ){
-			if(i == 0){
-				tupleKey = new TupleKey(this.factHandles[0]);
-			}
-			else {
-				tupleKey= new TupleKey(this.key, this.factHandles[i]);
-			}
-		}
-		this.key = tupleKey;
-
 	}
-
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------
-
-    /**
-     * Retrieve the key for this tuple.
-     * 
-     * @return The key.
-     */
-    TupleKey getKey() {
-        return this.key;
-    }
 
     /**
      * Determine if this tuple depends upon a specified object.
@@ -81,7 +48,12 @@ public class LeapsTuple implements Tuple, Serializable {
      *         object, otherwise <code>false</code>.
      */
     public boolean dependsOn(FactHandle handle) {
-        return this.key.containsFactHandle( handle );
+    	for (int i = 0; i < this.factHandles.length; i++){
+    		if (!handle.equals(this.factHandles[i])){
+    			return false;
+    		}
+    	}
+        return true;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,77 +89,18 @@ public class LeapsTuple implements Tuple, Serializable {
             return false;
         }
 
-        return this.key.equals( ((LeapsTuple) object).key );
-    }
-
-    public int hashCode() {
-        return this.key.hashCode();
+        
+        return true;
     }
 
     public String toString() {
         StringBuffer buffer = new StringBuffer();
-        for ( int i = 0; i < this.key.size(); i++ ) {
-            buffer.append( this.key.get( i ) + ", " );
+        for ( int i = 0; i < this.factHandles.length; i++ ) {
+            buffer.append( this.factHandles[i] + ", " );
         }
         return buffer.toString();
     }
 
-
-    
-    
-    
-    
-    
-//	public Object get(FactHandle factHandle) {
-//		return ((FactHandleImpl) factHandle).getObject();
-//	}
-//
-//	public FactHandleImpl getFactHandleAtPosition(int idx) {
-//		return this.factHandles[idx];
-//	}
-//
-//	public FactHandleImpl getDominantFactHandle() {
-//		return this.dominantFactHandle;
-//	}
-//
-//	/**
-//	 * Retrieve the <code>FactHandle</code> for a given object.
-//	 * 
-//	 * <p>
-//	 * Within a consequence of a rule, if the desire is to retract or modify a
-//	 * root fact this method provides a way to retrieve the
-//	 * <code>FactHandle</code>. Facts that are <b>not </b> root fact objects
-//	 * have no handle.
-//	 * </p>
-//	 * 
-//	 * @param object
-//	 *            The object.
-//	 * 
-//	 * @return The fact-handle or <code>null</code> if the supplied object is
-//	 *         not a root fact object.
-//	 */
-//	public FactHandle getFactHandleForObject(Object object) {
-//		if (this.factHandles != null) {
-//			for (int i = 0; i < this.factHandles.length; i++) {
-//				if (this.factHandles[i].getObject() == object) {
-//					return this.getFactHandleAtPosition(i);
-//				}
-//			}
-//		}
-//
-//		return null;
-//	}
-//
-//	/**
-//	 * @see Tuple
-//	 */
-//	public FactHandle getFactHandleForDeclaration(Declaration declaration) {
-//		return this.getFactHandleAtPosition(declaration.getColumn());
-//	}
-//
-//	/**
-//	 * @see Tuple
-//	 */
 	public FactHandle[] getFactHandles() {
 		return this.factHandles;
 	}

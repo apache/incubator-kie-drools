@@ -26,6 +26,7 @@ import org.drools.common.ActivationQueue;
 import org.drools.common.Agenda;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.AgendaItem;
+import org.drools.common.EventSupport;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
@@ -62,7 +63,9 @@ import org.drools.util.PrimitiveLongMap;
  * @see java.io.Serializable
  * 
  */
-class WorkingMemoryImpl implements WorkingMemory, PropertyChangeListener {
+class WorkingMemoryImpl implements WorkingMemory, EventSupport,
+		PropertyChangeListener {
+
 	// ------------------------------------------------------------
 	// Constants
 	// ------------------------------------------------------------
@@ -128,7 +131,8 @@ class WorkingMemoryImpl implements WorkingMemory, PropertyChangeListener {
 	public WorkingMemoryImpl(RuleBaseImpl ruleBase) {
 		this.ruleBase = ruleBase;
 		this.agenda = new Agenda(this);
-		this.handleFactory = (HandleFactory)this.ruleBase.newFactHandleFactory();
+		this.handleFactory = (HandleFactory) this.ruleBase
+				.newFactHandleFactory();
 	}
 
 	// ------------------------------------------------------------
@@ -618,8 +622,8 @@ class WorkingMemoryImpl implements WorkingMemory, PropertyChangeListener {
 		// leaps specific actions
 		//
 		Object object = ((FactHandleImpl) handle).getObject();
-		FactHandleImpl retractedFactHandle = new FactHandleImpl(this.handleFactory
-				.getNextId(), object);
+		FactHandleImpl retractedFactHandle = new FactHandleImpl(
+				this.handleFactory.getNextId(), object);
 		// ret = ret + "\n" +"<== " + factHandle);
 		// remove fact from all tables
 		for (Iterator it = this.getFactTablesList(object.getClass()).iterator(); it
@@ -688,7 +692,7 @@ class WorkingMemoryImpl implements WorkingMemory, PropertyChangeListener {
 		 * this.ruleBase.modifyObject( handle, object, this );
 		 */
 		this.workingMemoryEventSupport.fireObjectModified(propagationContext,
-				handle, ((FactHandleImpl)handle).getObject(), object);
+				handle, ((FactHandleImpl) handle).getObject(), object);
 	}
 
 	public WorkingMemoryEventSupport getWorkingMemoryEventSupport() {
@@ -736,18 +740,17 @@ class WorkingMemoryImpl implements WorkingMemory, PropertyChangeListener {
 	 * 
 	 * public Map getJustifiers() { return this.justifiers; }
 	 */
-	public void removeLogicalAssertions(TupleKey key,
-			PropagationContext context, Rule rule) throws FactException {
-		for (Iterator it = this.justifiers.keySet().iterator(); it.hasNext();) {
-			AgendaItem item = (AgendaItem) it.next();
-
-//			if (item.getRule() == rule && item.getKey().containsAll(key)) {
-//				removeLogicalAssertions(item, context, rule);
-//			}
-		}
-
-	}
-
+	//	public void removeLogicalAssertions(TupleKey key,
+	//			PropagationContext context, Rule rule) throws FactException {
+	//		for (Iterator it = this.justifiers.keySet().iterator(); it.hasNext();) {
+	//			AgendaItem item = (AgendaItem) it.next();
+	//
+	////			if (item.getRule() == rule && item.getKey().containsAll(key)) {
+	////				removeLogicalAssertions(item, context, rule);
+	////			}
+	//		}
+	//
+	//	}
 	public void removeLogicalAssertions(Activation activation,
 			PropagationContext context, Rule rule) throws FactException {
 		Set handles = (Set) this.justifiers.remove(activation);
@@ -805,7 +808,7 @@ class WorkingMemoryImpl implements WorkingMemory, PropertyChangeListener {
 
 	private final String lock = new String("lock");
 
-//	private long idsSequence;
+	//	private long idsSequence;
 
 	private long idLastFireAllAt = -1;
 
@@ -913,7 +916,8 @@ class WorkingMemoryImpl implements WorkingMemory, PropertyChangeListener {
 			table = new FactTable(DefaultConflictResolver.getInstance());
 			this.tables.put(c, table);
 			// shadow tables created here
-			this.shadowTables.put(c, new FactTable(DefaultConflictResolver.getInstance()));
+			this.shadowTables.put(c, new FactTable(DefaultConflictResolver
+					.getInstance()));
 		}
 
 		return table;
@@ -928,14 +932,16 @@ class WorkingMemoryImpl implements WorkingMemory, PropertyChangeListener {
 			for (Iterator it = rules.iterator(); it.hasNext();) {
 				rule = (LeapsRule) it.next();
 				for (int i = 0; i < rule.getNumberOfColumns(); i++) {
-					ruleHandle = new RuleHandle(this.handleFactory.getNextId(), rule, i,
+					ruleHandle = new RuleHandle(this.handleFactory.getNextId(),
+							rule, i,
 							(ClassObjectType) ((ColumnConstraints) rule
 									.getColumnConstraintsAtPosition(i))
 									.getColumn().getObjectType(), true);
 					this.addRuleHandle(ruleHandle);
 				}
 				for (int i = 0; i < rule.getNumberOfNotColumns(); i++) {
-					ruleHandle = new RuleHandle(this.handleFactory.getNextId(), rule, i,
+					ruleHandle = new RuleHandle(this.handleFactory.getNextId(),
+							rule, i,
 							(ClassObjectType) ((ColumnConstraints) rule
 									.getNotColumnConstraintsAtPosition(i))
 									.getColumn().getObjectType(), false);
@@ -1005,12 +1011,12 @@ class WorkingMemoryImpl implements WorkingMemory, PropertyChangeListener {
 									System.out.println("exception - " + e);
 								}
 							}
-						}
-						// we put everything on agenda
-						// and if there is no modules or anything like it
-						// it would fire just activated rule
-						while (this.agenda.fireNextItem(agendaFilter)) {
-							;
+							// we put everything on agenda
+							// and if there is no modules or anything like it
+							// it would fire just activated rule
+							while (this.agenda.fireNextItem(agendaFilter)) {
+								;
+							}
 						}
 					}
 				} catch (TableOutOfBoundException e) {
@@ -1125,7 +1131,8 @@ class WorkingMemoryImpl implements WorkingMemory, PropertyChangeListener {
 												: PropagationContext.RETRACTION,
 										(Rule) null, (Activation) null);
 								// let agenda to do its work
-								this.assertTuple(token.getTuple(), propagationContext, token
+								this.assertTuple(token.getTuple(),
+										propagationContext, token
 												.getCurrentRuleHandle()
 												.getLeapsRule().getRule());
 
@@ -1322,87 +1329,85 @@ class WorkingMemoryImpl implements WorkingMemory, PropertyChangeListener {
 		return ret;
 	}
 
-    /**
-     * Assert a new <code>Tuple</code>.
-     * 
-     * @param tuple
-     *            The <code>Tuple</code> being asserted.
-     * @param workingMemory
-     *            The working memory seesion.
-     * @throws AssertionException
-     *             If an error occurs while asserting.
-     */
-    public void assertTuple(LeapsTuple tuple,
-                            PropagationContext context,
-                            Rule rule) {
-        // if the current Rule is no-loop and the origin rule is the same then
-        // return
-        if ( rule.getNoLoop() && rule.equals( context.getRuleOrigin() ) ) {
-            return;
-        }
-        Agenda agenda = this.getAgenda();                       
+	/**
+	 * Assert a new <code>Tuple</code>.
+	 * 
+	 * @param tuple
+	 *            The <code>Tuple</code> being asserted.
+	 * @param workingMemory
+	 *            The working memory seesion.
+	 * @throws AssertionException
+	 *             If an error occurs while asserting.
+	 */
+	public void assertTuple(LeapsTuple tuple, PropagationContext context,
+			Rule rule) {
+		// if the current Rule is no-loop and the origin rule is the same then
+		// return
+		if (rule.getNoLoop() && rule.equals(context.getRuleOrigin())) {
+			return;
+		}
+		Agenda agenda = this.getAgenda();
 
-        Duration dur = rule.getDuration();
+		Duration dur = rule.getDuration();
 
-        if ( dur != null && dur.getDuration( tuple ) > 0 ) {
-            ScheduledAgendaItem item = new ScheduledAgendaItem( context.getPropagationNumber(),
-                    tuple,
-                    this.getAgenda(),
-                    context,
-                    rule );
-            agenda.scheduleItem( item );
-            tuple.setActivation( item );
-            this.getAgendaEventSupport().fireActivationCreated( item );
-        } else {
-            // -----------------
-            // Lazy instantiation and addition to the Agenda of AgendGroup implementations
-            // ----------------
-            AgendaGroupImpl agendaGroup = null ;
-                if (rule.getAgendaGroup() == null || rule.getAgendaGroup().equals( "" ) || rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
-                    // Is the Rule AgendaGroup undefined? If it is use MAIN, which is added to the Agenda by default
-                    agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup( AgendaGroup.MAIN );
-                } else {
-                    // AgendaGroup is defined, so try and get the AgendaGroup from the Agenda
-                    agendaGroup = (AgendaGroupImpl)  agenda.getAgendaGroup( rule.getAgendaGroup() );
-                }
-                
-                if ( agendaGroup == null) {
-                    // The AgendaGroup is defined but not yet added to the Agenda, so create the AgendaGroup and add to the Agenda.
-                    agendaGroup = new AgendaGroupImpl( rule.getAgendaGroup() );
-                    this.getAgenda().addAgendaGroup( agendaGroup );
-                }            
-            
-            // set the focus if rule autoFocus is true 
-            if ( rule.getAutoFocus() ) {
-                agenda.setFocus( agendaGroup );
-            }
-            
-            ActivationQueue queue = agendaGroup.getActivationQueue( rule.getSalience() );
-            AgendaItem item = new AgendaItem( context.getPropagationNumber(),
-                                              tuple,
-                                              context,
-                                              rule,
-                                              queue );            
+		if (dur != null && dur.getDuration(tuple) > 0) {
+			ScheduledAgendaItem item = new ScheduledAgendaItem(context
+					.getPropagationNumber(), tuple, this.getAgenda(), context,
+					rule);
+			agenda.scheduleItem(item);
+			tuple.setActivation(item);
+			this.getAgendaEventSupport().fireActivationCreated(item);
+		} else {
+			// -----------------
+			// Lazy instantiation and addition to the Agenda of AgendGroup implementations
+			// ----------------
+			AgendaGroupImpl agendaGroup = null;
+			if (rule.getAgendaGroup() == null
+					|| rule.getAgendaGroup().equals("")
+					|| rule.getAgendaGroup().equals(AgendaGroup.MAIN)) {
+				// Is the Rule AgendaGroup undefined? If it is use MAIN, which is added to the Agenda by default
+				agendaGroup = (AgendaGroupImpl) agenda
+						.getAgendaGroup(AgendaGroup.MAIN);
+			} else {
+				// AgendaGroup is defined, so try and get the AgendaGroup from the Agenda
+				agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup(rule
+						.getAgendaGroup());
+			}
 
-            agendaGroup.getActivationQueue( rule.getSalience() ).add( item );
+			if (agendaGroup == null) {
+				// The AgendaGroup is defined but not yet added to the Agenda, so create the AgendaGroup and add to the Agenda.
+				agendaGroup = new AgendaGroupImpl(rule.getAgendaGroup());
+				this.getAgenda().addAgendaGroup(agendaGroup);
+			}
 
-            // Makes sure the Lifo is added to the AgendaGroup priority queue
-            // If the AgendaGroup is already in the priority queue it just returns.
-            agendaGroup.addToAgenda( queue );
-            tuple.setActivation( item );
-            this.getAgendaEventSupport().fireActivationCreated( item );
-        }
-    }
-    
-    public void retractTuple(LeapsTuple tuple,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
-        Activation activation = tuple.getActivation();
-        if ( activation != null ) {
-            activation.remove();
-            workingMemory.getAgendaEventSupport().fireActivationCancelled(  activation );            
-        }        
-    }    
+			// set the focus if rule autoFocus is true 
+			if (rule.getAutoFocus()) {
+				agenda.setFocus(agendaGroup);
+			}
 
+			ActivationQueue queue = agendaGroup.getActivationQueue(rule
+					.getSalience());
+			AgendaItem item = new AgendaItem(context.getPropagationNumber(),
+					tuple, context, rule, queue);
+
+			queue.add(item);
+
+			// Makes sure the Lifo is added to the AgendaGroup priority queue
+			// If the AgendaGroup is already in the priority queue it just returns.
+			agendaGroup.addToAgenda(queue);
+			tuple.setActivation(item);
+			this.getAgendaEventSupport().fireActivationCreated(item);
+		}
+	}
+
+	public void retractTuple(LeapsTuple tuple, PropagationContext context,
+			WorkingMemoryImpl workingMemory) {
+		Activation activation = tuple.getActivation();
+		if (activation != null) {
+			activation.remove();
+			workingMemory.getAgendaEventSupport().fireActivationCancelled(
+					activation);
+		}
+	}
 
 }

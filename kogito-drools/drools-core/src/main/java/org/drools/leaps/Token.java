@@ -291,8 +291,7 @@ public class Token implements Tuple, Serializable {
 	}
 
 	LeapsTuple getTuple() {
-		return new LeapsTuple(this.dominantFactHandle, this.currentFactHandles,
-				this.workingMemory);
+		return new LeapsTuple(this.currentFactHandles);
 	}
 
 
