@@ -242,6 +242,7 @@ public class Agenda
         ActivationQueue queue = (ActivationQueue) group.getPriorityQueue().get();
         while ( !group.getPriorityQueue().isEmpty() && queue.isEmpty() ) {
             queue = (ActivationQueue) group.getPriorityQueue().remove();
+            queue.setActivate(false);
         }
         
         boolean fired = false;
