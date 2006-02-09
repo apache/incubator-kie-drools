@@ -128,12 +128,7 @@ public class LinkedList {
         LinkedListNode node = this.firstNode;
         this.firstNode = node.getNext();
         if ( this.firstNode != null ) {
-            if ( this.firstNode.getPrevious() != null ) {
-                this.firstNode.setPrevious( null );
-            }
-            if ( this.firstNode.getNext() == null ) {
-                this.lastNode = this.firstNode;
-            }
+            this.firstNode.setPrevious( null );
         } else {
             this.lastNode = null;
         }
@@ -155,12 +150,6 @@ public class LinkedList {
         LinkedListNode node = this.lastNode;
         this.lastNode = node.getPrevious();
         if ( this.lastNode != null) {
-            if (this.lastNode.getNext() != null ) {
-                this.lastNode.setNext( null );
-            }
-            if (this.lastNode.getPrevious() == null) {
-                 this.firstNode = this.lastNode;
-            }
             this.lastNode.setNext( null );
         } else {
             this.firstNode = this.lastNode;
