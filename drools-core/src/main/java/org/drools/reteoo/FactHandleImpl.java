@@ -68,7 +68,7 @@ class FactHandleImpl
             return true;
         }
 
-        if ( object == null || !(object instanceof FactHandle) ) {
+        if ( object == null || !(object instanceof FactHandleImpl) ) {
             return false;
         }
 
