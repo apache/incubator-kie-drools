@@ -1,10 +1,24 @@
 package org.drools.leaps;
 
+/*
+ * Copyright 2006 Alexander Bagerman
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.rule.And;
 import org.drools.rule.Column;
@@ -17,54 +31,25 @@ import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeBinder;
 import org.drools.spi.Constraint;
 import org.drools.spi.FieldConstraint;
-import org.drools.spi.ObjectTypeResolver;
 
 /**
  * A Rule<code>Builder</code> to process <code>Rule</code>s for use with
- * Leaps WorkingMemories. Produces list of Leaps rules that wrap Rule
- * and can be used in Leaps algorithm
- *  
+ * Leaps WorkingMemories. Produces list of Leaps rules that wrap Rule and can be
+ * used in Leaps algorithm. All methods are static
+ * 
  * @author Alexander Bagerman
  * 
  */
 class Builder {
-    /** The RuleBase */
-    private final RuleBaseImpl       ruleBase;
-
-    private final ObjectTypeResolver resolver;
-
-    /** Rete network to build against. */
-//    private final Rete               rete;
-
-    /** Rule-sets added. */
-    private final List               ruleSets;
-
-    private final Map                applicationData;
-
-    private Map                      declarations;
-
-    /**
-     * Construct a <code>Builder</code> against an existing <code>Rete</code>
-     * network.
-     */
-    Builder(RuleBaseImpl ruleBase,
-            ObjectTypeResolver resolver) {
-        this.ruleBase = ruleBase;
-        this.resolver = resolver;
-        this.ruleSets = new ArrayList();
-        this.applicationData = new HashMap();
-        this.declarations = new HashMap();
-    }
-
-
 	/**
 	 * follows RETEOO logic flow but returns leaps rules list
 	 * 
 	 * @param rule
-	 * @return list of leaps rule 
+	 * @return list of leaps rule
 	 * @throws InvalidPatternException
 	 */
-	public List processRule(Rule rule) throws InvalidPatternException {
+	final protected static List processRule(Rule rule)
+			throws InvalidPatternException {
 		ArrayList leapsRules = new ArrayList();
 		And[] and = rule.getProcessPatterns();
 		for (int i = 0; i < and.length; i++) {
@@ -80,7 +65,7 @@ class Builder {
 	 * @param rule
 	 * @return list of leaps rules for the given And
 	 */
-	private List processRuleForAnd(And and, Rule rule) {
+	final private static List processRuleForAnd(And and, Rule rule) {
 		ArrayList leapsRules = new ArrayList();
 		ArrayList cols = new ArrayList();
 		ArrayList notCols = new ArrayList();
@@ -89,7 +74,7 @@ class Builder {
 			Object object = it.next();
 			if (object instanceof Column) {
 				// create column constraints
-				cols.add(this.processColumn((Column) object, and));
+				cols.add(Builder.processColumn((Column) object, and));
 			} else {
 				// NOTS and EXISTS
 				ConditionalElement ce = (ConditionalElement) object;
@@ -97,11 +82,11 @@ class Builder {
 					ce = (ConditionalElement) ce.getChildren().get(0);
 				}
 				if (object instanceof Not) {
-					notCols.add(this.processColumn((Column) ce.getChildren()
+					notCols.add(Builder.processColumn((Column) ce.getChildren()
 							.get(0), and));
 				} else if (object instanceof Exists) {
-					existsCols.add(this.processColumn((Column) ce.getChildren()
-							.get(0), and));
+					existsCols.add(Builder.processColumn((Column) ce
+							.getChildren().get(0), and));
 				} else {
 				}
 			}
@@ -120,7 +105,7 @@ class Builder {
 	 * @param and
 	 * @return leaps packaged ColumnConstraints
 	 */
-	private ColumnConstraints processColumn(Column column, And and) {
+	final private static ColumnConstraints processColumn(Column column, And and) {
 		BetaNodeBinder binder;
 		List alphaConstraints = new ArrayList();
 		List betaConstraints = new ArrayList();

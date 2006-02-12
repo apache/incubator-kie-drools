@@ -1,7 +1,7 @@
-package org.drools.leaps.util;
+package org.drools.leaps;
 
 /*
- * Copyright 2005 Alexander Bagerman
+ * Copyright 2006 Alexander Bagerman
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,33 @@ package org.drools.leaps.util;
  * limitations under the License.
  */
 
+import org.drools.spi.Activation;
+
 /**
  * 
  * @author Alexander Bagerman
  * 
  */
-public class TableOutOfBoundException extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+class PostedActivation {
+	boolean wasRemoved;
 
-	public TableOutOfBoundException() {
-		super();
+	Activation activation;
+
+	public PostedActivation(Activation activation) {
+		this.activation = activation;
+		this.wasRemoved = false;
 	}
 
-	public TableOutOfBoundException(String msg) {
-		super(msg);
+	protected boolean isWasRemoved() {
+		return this.wasRemoved;
 	}
 
-	public TableOutOfBoundException(Exception ex) {
-		super(ex);
+	protected void setWasRemoved(boolean wasRemoved) {
+		this.wasRemoved = wasRemoved;
 	}
+
+	protected Activation getActivation() {
+		return this.activation;
+	}
+
 }

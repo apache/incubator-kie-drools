@@ -1,6 +1,20 @@
 package org.drools.leaps;
 
-import org.drools.spi.ClassObjectType;
+/*
+ * Copyright 2006 Alexander Bagerman
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /**
  * class container for rules used in the system. Handle is created for each
@@ -9,21 +23,15 @@ import org.drools.spi.ClassObjectType;
  * retracted tuple combination
  * 
  * @author Alexander Bagerman
+ * 
  */
 public class RuleHandle extends Handle {
 	// ce position for which handle is created
 	private final int dominantPosition;
 
-	private final ClassObjectType dominantPositionType;
-
-	private final boolean isDominantFactAsserted;
-
-	public RuleHandle(long id, LeapsRule rule, int dominantPosition,
-			ClassObjectType dominantPositionType, boolean isDominantFactAsserted) {
+	public RuleHandle(long id, LeapsRule rule, int dominantPosition) {
 		super(id, rule);
 		this.dominantPosition = dominantPosition;
-		this.dominantPositionType = dominantPositionType;
-		this.isDominantFactAsserted = isDominantFactAsserted;
 	}
 
 	/**
@@ -37,21 +45,7 @@ public class RuleHandle extends Handle {
 	 * @return base column / ce position
 	 */
 	public int getDominantPosition() {
-		return dominantPosition;
-	}
-
-	/**
-	 * @return base column / ce position type
-	 */
-	public ClassObjectType getDominantPositionType() {
-		return dominantPositionType;
-	}
-
-	/**
-	 * @return type of fact to be at position (asserted vs. retracted)
-	 */
-	public boolean isDominantFactAsserted() {
-		return isDominantFactAsserted;
+		return this.dominantPosition;
 	}
 
 	/**
@@ -78,11 +72,9 @@ public class RuleHandle extends Handle {
 			return false;
 		return (this.getId() == ((RuleHandle) that).getId()
 				&& this.getLeapsRule().equals(
-						((RuleHandle) that).getLeapsRule())
-				&& (this.getDominantPosition() == ((RuleHandle) that)
-						.getDominantPosition()) && (this
-				.getDominantPositionType() == ((RuleHandle) that)
-				.getDominantPositionType()));
+						((RuleHandle) that).getLeapsRule()) && (this
+				.getDominantPosition() == ((RuleHandle) that)
+				.getDominantPosition()));
 	}
 
 	/**

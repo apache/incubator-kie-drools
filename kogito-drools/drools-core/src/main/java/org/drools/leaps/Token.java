@@ -1,5 +1,21 @@
 package org.drools.leaps;
 
+/*
+ * Copyright 2006 Alexander Bagerman
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import java.io.Serializable;
 import java.util.Iterator;
 
@@ -12,23 +28,17 @@ import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 
 /**
- * this object wears multiple hats - Tuple and being main element
- * that wraps fact handle on main leaps stack
- *  
+ * this object wears multiple hats - Tuple and being main element that wraps
+ * fact handle on main leaps stack
+ * 
  * @author Alexander Bagerman
  * 
  */
-public class Token implements Tuple, Serializable {
+class Token implements Tuple, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public final static int ASSERTED = 0;
-
-	public final static int RETRACTED = 1;
-
 	private WorkingMemoryImpl workingMemory;
-
-	private final int tupleType;
 
 	private final FactHandleImpl dominantFactHandle;
 
@@ -39,29 +49,21 @@ public class Token implements Tuple, Serializable {
 	boolean resume = false;
 
 	private Iterator rules = null;
-	
+
 	/**
 	 * activation parts
 	 */
 
-	public Token(WorkingMemoryImpl workingMemory, FactHandleImpl factHandle,
-			int tupleType) {
+	public Token(WorkingMemoryImpl workingMemory, FactHandleImpl factHandle) {
 		this.workingMemory = workingMemory;
 		this.dominantFactHandle = factHandle;
-		this.tupleType = tupleType;
-		this.rules = null;
 	}
 
 	private Iterator rulesIterator() {
 		if (this.rules == null) {
-			FactTable factTable = this.workingMemory
-					.getFactTable(this.dominantFactHandle.getObject()
-							.getClass());
-			if (this.tupleType == Token.ASSERTED) {
-				this.rules = factTable.getPositiveRulesIterator();
-			} else {
-				this.rules = factTable.getNegativeRulesIterator();
-			}
+			this.rules = this.workingMemory.getFactTable(
+					this.dominantFactHandle.getObject().getClass())
+					.getRulesIterator();
 		}
 		return this.rules;
 	}
@@ -71,7 +73,7 @@ public class Token implements Tuple, Serializable {
 	}
 
 	public RuleHandle nextRuleHandle() throws TableOutOfBoundException {
-		this.currentRuleHandle = (RuleHandle) rules.next();
+		this.currentRuleHandle = (RuleHandle) this.rules.next();
 		this.currentFactHandles = new FactHandleImpl[this.currentRuleHandle
 				.getLeapsRule().getNumberOfColumns()];
 		return this.currentRuleHandle;
@@ -86,9 +88,9 @@ public class Token implements Tuple, Serializable {
 
 	public boolean hasNextRuleHandle() throws TableOutOfBoundException {
 		boolean ret = false;
-		// starting with calling rulesIterator() to make sure that we picks
-		// rules because fact can be asserted before rules added
 		if (this.rulesIterator() != null) {
+			// starting with calling rulesIterator() to make sure that we picks
+			// rules because fact can be asserted before rules added
 			long levelId = this.workingMemory.getIdLastFireAllAt();
 			if (this.dominantFactHandle.getId() >= levelId) {
 				ret = this.rules.hasNext();
@@ -132,10 +134,6 @@ public class Token implements Tuple, Serializable {
 		return this.currentRuleHandle;
 	}
 
-	public int getTokenType() {
-		return this.tupleType;
-	}
-
 	public boolean isResume() {
 		return this.resume;
 	}
@@ -162,20 +160,23 @@ public class Token implements Tuple, Serializable {
 	 * Retrieve the value at position
 	 * 
 	 * @param position
-	 * 
 	 * @return The currently bound <code>Object</code> value.
+	 * @see org.drools.spi.Tuple
 	 */
 	public FactHandle get(int idx) {
 		return this.getFactHandleAtPosition(idx);
 	}
 
 	/**
-	 * 
+	 * @see org.drools.spi.Tuple
 	 */
 	public FactHandle get(Declaration declaration) {
 		return this.get(declaration.getColumn());
 	}
 
+	/**
+	 * @see org.drools.spi.Tuple
+	 */
 	public Object get(FactHandle factHandle) {
 		return ((FactHandleImpl) factHandle).getObject();
 	}
@@ -209,14 +210,14 @@ public class Token implements Tuple, Serializable {
 	}
 
 	/**
-	 * @see Tuple
+	 * @see org.drools.spi.Tuple
 	 */
 	public FactHandle getFactHandleForDeclaration(Declaration declaration) {
 		return this.getFactHandleAtPosition(declaration.getColumn());
 	}
 
 	/**
-	 * @see Tuple
+	 * @see org.drools.spi.Tuple
 	 */
 	public FactHandle[] getFactHandles() {
 		return this.currentFactHandles;
@@ -235,7 +236,7 @@ public class Token implements Tuple, Serializable {
 	/**
 	 * does not matter at all for leaps.
 	 * 
-	 * @see Tuple.
+	 * @see org.drools.spi.Tuple
 	 */
 	public long getMostRecentFactTimeStamp() {
 		if (this.currentFactHandles != null) {
@@ -256,7 +257,7 @@ public class Token implements Tuple, Serializable {
 	/**
 	 * does not matter at all for leaps.
 	 * 
-	 * @see Tuple.
+	 * @see org.drools.spi.Tuple
 	 */
 	public long getLeastRecentFactTimeStamp() {
 		if (this.currentFactHandles != null) {
@@ -274,11 +275,12 @@ public class Token implements Tuple, Serializable {
 		}
 	}
 
+	/**
+	 * @see java.lang.Object
+	 */
 	public String toString() {
-		String ret = "TOKEN ["
-				+ ((this.tupleType == Token.ASSERTED) ? "ASSERTED"
-						: "RETRACTED") + ":: " + dominantFactHandle + "]\n"
-				+ "\tRULE : " + this.currentRuleHandle + "\n";
+		String ret = "TOKEN [" + dominantFactHandle + "]\n" + "\tRULE : "
+				+ this.currentRuleHandle + "\n";
 		if (this.currentFactHandles != null) {
 			for (int i = 0; i < this.currentFactHandles.length; i++) {
 				ret = ret
@@ -290,32 +292,41 @@ public class Token implements Tuple, Serializable {
 		return ret;
 	}
 
+	/**
+	 * creates lightweight tuple suitable for activation
+	 * 
+	 * @return LeapsTuple
+	 */
 	LeapsTuple getTuple() {
 		return new LeapsTuple(this.currentFactHandles);
 	}
 
+	/**
+	 * Determine if this tuple depends upon a specified object.
+	 * 
+	 * @param handle
+	 *            The object handle to test.
+	 * 
+	 * @return <code>true</code> if this tuple depends upon the specified
+	 *         object, otherwise <code>false</code>.
+	 */
+	public boolean dependsOn(FactHandle handle) {
+		for (int i = 0; i < this.currentFactHandles.length; i++) {
+			if (this.currentFactHandles[i].equals(handle)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    /**
-     * Determine if this tuple depends upon a specified object.
-     * 
-     * @param handle
-     *            The object handle to test.
-     * 
-     * @return <code>true</code> if this tuple depends upon the specified
-     *         object, otherwise <code>false</code>.
-     */
-    public boolean dependsOn(FactHandle handle) {
-    	for (int i = 0; i < this.currentFactHandles.length; i++){
-    		if (this.currentFactHandles[i].equals(handle)) {
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-
+	/**
+	 * Do nothing because this tuple never gets to activation stage. Another one -
+	 * LeapsTuple - is created to take part in activation processing
+	 * 
+	 * @see getTuple()
+	 * @see org.drools.spi.Tuple
+	 */
 	public void setActivation(Activation activation) {
 		// do nothing
 	}
-
-    
 }

@@ -1,11 +1,26 @@
 package org.drools.leaps;
 
+/*
+ * Copyright 2006 Alexander Bagerman
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.drools.rule.Rule;
 import org.drools.spi.ClassObjectType;
-
 
 /**
  * Wrapper class to drools generic rule to extract matching elements from it to
@@ -17,80 +32,55 @@ import org.drools.spi.ClassObjectType;
 class LeapsRule {
 	Rule rule;
 
-	ArrayList columns;
+	ColumnConstraints[] columns = new ColumnConstraints[0];
 
-	ArrayList notColumns;
+	boolean notColumnsPresent;
 
-	ArrayList existsColumns;
+	Iterator notColumnsIterator;
+
+	Iterator existsColumnsIterator;
+
+	boolean existsColumnsPresent;
 
 	public LeapsRule(Rule rule, ArrayList columns, ArrayList notColumns,
 			ArrayList existsColumns) {
 		this.rule = rule;
-		this.columns = columns;
-		this.notColumns = notColumns;
-		this.existsColumns = existsColumns;
+		this.columns = (ColumnConstraints[]) columns.toArray(this.columns);
+		this.notColumnsIterator = notColumns.iterator();
+		this.notColumnsPresent = (notColumns.size() != 0);
+		this.existsColumnsIterator = existsColumns.iterator();
+		this.existsColumnsPresent = (existsColumns.size() != 0);
 	}
 
 	public Rule getRule() {
-		return rule;
+		return this.rule;
 	}
 
 	public int getNumberOfColumns() {
-		return this.columns.size();
+		return this.columns.length;
 	}
 
 	public ClassObjectType getColumnClassObjectTypeAtPosition(int idx) {
-		return (ClassObjectType) ((ColumnConstraints) this.columns.get(idx))
-				.getColumn().getObjectType();
+		return (ClassObjectType) this.columns[idx].getColumn().getObjectType();
 	}
 
 	public ColumnConstraints getColumnConstraintsAtPosition(int idx) {
-		return (ColumnConstraints) this.columns.get(idx);
-	}
-
-	public int getNumberOfNotColumns() {
-		return this.notColumns.size();
-	}
-
-	public Iterator getColumnsIterator() {
-		return this.columns.iterator();
+		return (ColumnConstraints) this.columns[idx];
 	}
 
 	public Iterator getNotColumnsIterator() {
-		return this.notColumns.iterator();
+		return this.notColumnsIterator;
 	}
 
 	public Iterator getExistsColumnsIterator() {
-		return this.existsColumns.iterator();
-	}
-
-	public ClassObjectType getNotColumnClassObjectTypeAtPosition(int idx) {
-		return (ClassObjectType) ((ColumnConstraints) this.notColumns.get(idx))
-				.getColumn().getObjectType();
-	}
-
-	public ColumnConstraints getNotColumnConstraintsAtPosition(int idx) {
-		return (ColumnConstraints) this.notColumns.get(idx);
-	}
-
-	public int getNumberOfExistsColumns() {
-		return this.existsColumns.size();
-	}
-
-	public ClassObjectType getExistsColumnClassObjectTypeAtPosition(int idx) {
-		return (ClassObjectType) ((ColumnConstraints) this.existsColumns
-				.get(idx)).getColumn().getObjectType();
-	}
-
-	public ColumnConstraints getExistsColumnConstraintsAtPosition(int idx) {
-		return (ColumnConstraints) this.existsColumns.get(idx);
+		return this.existsColumnsIterator;
 	}
 
 	public boolean containsNotColumns() {
-		return this.notColumns.size() != 0;
+		return this.notColumnsPresent;
 	}
 
 	public boolean containsExistsColumns() {
-		return this.existsColumns.size() != 0;
+		return this.existsColumnsPresent;
 	}
 }
