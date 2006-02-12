@@ -15,6 +15,9 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.spi.Activation;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
@@ -129,6 +132,14 @@ public class ActivationQueue
      */
     public void remove(Activation activation) {
         this.list.remove( (LinkedListNode) activation );
+    }
+    
+    public Activation[] getActivations() {
+        List activations = new ArrayList();
+        for (LinkedListNode node = list.getFirst(); node != null; node = node.getNext()) {
+            activations.add( node );
+        }
+        return (Activation[]) activations.toArray( new Activation[activations.size()] );
     }
     
     /**

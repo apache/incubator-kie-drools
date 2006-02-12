@@ -15,14 +15,19 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.AgendaGroup;
 import org.drools.util.PriorityQueue;
+
+import java.util.Arrays;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -150,6 +155,15 @@ public class AgendaGroupImpl
         
         return empty;
     }    
+    
+    public Activation[] getActivations() {
+        List list = new ArrayList();
+        for (Iterator it = this.priorityQueue.iterator(); it.hasNext();) {
+            ActivationQueue queue = (ActivationQueue) it.next();
+            list.addAll( Arrays.asList( queue.getActivations() ) );
+        }
+        return (Activation[])  list.toArray( new Activation[list.size()] );
+    }
 
     public String toString() {
         return "AgendaGroup '" + this.name + "'";

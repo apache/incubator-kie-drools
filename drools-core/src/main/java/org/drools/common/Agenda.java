@@ -16,9 +16,12 @@ package org.drools.common;
  */
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 
@@ -243,6 +246,15 @@ public class Agenda
             size += group.size();
         }
         return size;       
+    }
+    
+    public Activation[] getActivations() {
+        List list = new ArrayList();        
+        for ( Iterator it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
+            AgendaGroup group = (AgendaGroup) it.next();
+            list.addAll( Arrays.asList( group.getActivations() ) );
+        }
+        return (Activation[]) list.toArray( new Activation[list.size()] );
     }
 
     /**

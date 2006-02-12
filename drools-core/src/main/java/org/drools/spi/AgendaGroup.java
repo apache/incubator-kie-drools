@@ -39,6 +39,10 @@ public interface AgendaGroup {
      */
     public String getName();
     
+    /**
+     * @return An array of all the activations in the AgendaGroup
+     */
+    Activation[] getActivations();
     
     /**
      * The total number of activations in this group
