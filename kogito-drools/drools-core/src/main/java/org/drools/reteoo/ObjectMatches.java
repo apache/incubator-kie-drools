@@ -92,5 +92,13 @@ class ObjectMatches {
      */    
     public TupleMatch getLastTupleMatch() {
         return (TupleMatch) this.list.getLast();
-    }        
+    }  
+    
+    public int size() {
+        return this.list.size();
+    }
+    
+    public boolean hasMatches() {
+        return !this.list.isEmpty();
+    }
 }

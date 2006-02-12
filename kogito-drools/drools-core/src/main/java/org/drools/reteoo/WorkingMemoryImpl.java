@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -37,6 +38,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.Agenda;
 import org.drools.common.AgendaItem;
 import org.drools.common.EventSupport;
+import org.drools.common.LogicalDependency;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.ReteooNodeEventListener;
@@ -91,7 +93,7 @@ class WorkingMemoryImpl
     /** Object-to-handle mapping. */
     private final Map                       identityMap                                   = new IdentityMap();
     private final Map                       equalsMap                                     = new HashMap();
-    private final Map                       justifiers                                    = new HashMap();
+
     private final PrimitiveLongMap          justified                                     = new PrimitiveLongMap( 8,
                                                                                                                   32 );
     private final PrimitiveLongStack        factHandlePool                                = new PrimitiveLongStack();
@@ -105,16 +107,16 @@ class WorkingMemoryImpl
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     private final RuleBaseImpl              ruleBase;
-    
-    private final FactHandleFactory               handleFactory;
+
+    private final FactHandleFactory         handleFactory;
 
     /** Rule-firing agenda. */
     private final Agenda                    agenda;
 
     /** Flag to determine if a rule is currently being fired. */
     private boolean                         firing;
-    
-    private long                            propagationIdCounter;   
+
+    private long                            propagationIdCounter;
 
     // ------------------------------------------------------------
     // Constructors
@@ -128,7 +130,7 @@ class WorkingMemoryImpl
      */
     public WorkingMemoryImpl(RuleBaseImpl ruleBase) {
         this.ruleBase = ruleBase;
-        this.agenda = new Agenda( this  );
+        this.agenda = new Agenda( this );
         this.handleFactory = this.ruleBase.newFactHandleFactory();
     }
 
@@ -269,19 +271,21 @@ class WorkingMemoryImpl
     }
 
     /**
-     * Returns the fact Object for the given <code>FactHandle</code>. It actually attemps to return
-     * the value from the handle, before retrieving it from objects map.
+     * Returns the fact Object for the given <code>FactHandle</code>. It
+     * actually attemps to return the value from the handle, before retrieving
+     * it from objects map.
      * 
      * @see WorkingMemory
      * 
-     * @param  handle
-     *      The <code>FactHandle</code> reference for the <code>Object</code> lookup
+     * @param handle
+     *            The <code>FactHandle</code> reference for the
+     *            <code>Object</code> lookup
      * 
      */
     public Object getObject(FactHandle handle) {
         FactHandleImpl handleImpl = (FactHandleImpl) handle;
-        if  (handleImpl.getObject() == null) {
-            Object object = this.objects.get( handleImpl.getId() ) ;
+        if ( handleImpl.getObject() == null ) {
+            Object object = this.objects.get( handleImpl.getId() );
             if ( object == null ) {
                 throw new NoSuchFactObjectException( handle );
             }
@@ -397,24 +401,11 @@ class WorkingMemoryImpl
         }
 
         if ( !logical ) {
-             // If this stated assertion already has justifications then we need
-             // to cancel them
+            // If this stated assertion already has justifications then we need
+            // to cancel them
             if ( logicalState instanceof FactHandleImpl ) {
                 handle = (FactHandleImpl) logicalState;
-                 // remove handle from the justified Map and then iterate each of
-                 // each Activations. For each Activation remove the handle. If
-                 // the Set is empty then remove the activation from justiers.
-                Set activationList = (Set) this.justified.remove( ((FactHandleImpl) handle).getId() );
-                for ( Iterator it = activationList.iterator(); it.hasNext(); ) {
-                    Activation eachActivation = (Activation) it.next();
-                    Set handles = (Set) this.justifiers.get( eachActivation );
-                    handles.remove( handle );
-                    // if an activation has no justified assertions then remove
-                    // it
-                    if ( handles.isEmpty() ) {
-                        this.justifiers.remove( eachActivation );
-                    }
-                }
+                removeLogicalDependencies( handle );
             } else {
                 handle = (FactHandleImpl) newFactHandle();
             }
@@ -429,14 +420,14 @@ class WorkingMemoryImpl
                 addPropertyChangeListener( object );
             }
         } else {
-            /* This object is already STATED, we cannot make it justifieable */
+            // This object is already STATED, we cannot make it justifieable
             if ( logicalState == WorkingMemoryImpl.STATED ) {
                 return null;
             }
 
             handle = (FactHandleImpl) logicalState;
-             // we create a lookup handle for the first asserted equals object
-             // all future equals objects will use that handle
+            // we create a lookup handle for the first asserted equals object
+            // all future equals objects will use that handle
             if ( handle == null ) {
                 handle = (FactHandleImpl) newFactHandle();
 
@@ -446,30 +437,16 @@ class WorkingMemoryImpl
                 this.equalsMap.put( object,
                                     handle );
             }
-            Set activationList = (Set) this.justified.get( ((FactHandleImpl) handle).getId() );
-            if ( activationList == null ) {
-                activationList = new HashSet();
-                this.justified.put( ((FactHandleImpl) handle).getId(),
-                                    activationList );
-            }
-            activationList.add( activation );
-
-            Set handles = (Set) this.justifiers.get( activation );
-            if ( handles == null ) {
-                handles = new HashSet();
-                this.justifiers.put( activation,
-                                     handles );
-            }
-            handles.add( handle );
+            addLogicalDependency( handle, activation, activation.getPropagationContext(), rule );
         }
-        
+
         handle.setObject( object );
 
         PropagationContext propagationContext = new PropagationContextImpl( ++this.propagationIdCounter,
                                                                             PropagationContext.ASSERTION,
                                                                             rule,
-                                                                            activation );       
-        
+                                                                            activation );
+
         this.ruleBase.assertObject( handle,
                                     object,
                                     propagationContext,
@@ -549,6 +526,7 @@ class WorkingMemoryImpl
         this.identityMap.put( object,
                               handle );
 
+        ((FactHandleImpl) handle).setObject( object );
         return oldValue;
     }
 
@@ -578,12 +556,11 @@ class WorkingMemoryImpl
                               Activation activation) throws FactException {
         removePropertyChangeListener( handle );
 
-        PropagationContext propagationContext = 
-            new PropagationContextImpl( ++this.propagationIdCounter,
-                                        PropagationContext.RETRACTION,
-                                        rule,
-                                        activation );
-        
+        PropagationContext propagationContext = new PropagationContextImpl( ++this.propagationIdCounter,
+                                                                            PropagationContext.RETRACTION,
+                                                                            rule,
+                                                                            activation );
+
         this.ruleBase.retractObject( handle,
                                      propagationContext,
                                      this );
@@ -592,15 +569,9 @@ class WorkingMemoryImpl
 
         /* check to see if this was a logical asserted object */
         if ( removeLogical ) {
-            FactHandleImpl handleImpl = (FactHandleImpl) handle;
-            Set activations = (Set) this.justified.remove( handleImpl.getId() );
-            if ( activations != null ) {
-                for ( Iterator it = activations.iterator(); it.hasNext(); ) {
-                    this.justifiers.remove( it.next() );
-                }
-            }
+            removeLogicalDependencies( handle );
             this.equalsMap.remove( oldObject );
-        }
+        }                    
 
         if ( updateEqualsMap ) {
             this.equalsMap.remove( oldObject );
@@ -631,11 +602,11 @@ class WorkingMemoryImpl
                              Rule rule,
                              Activation activation) throws FactException {
         Object originalObject = removeObject( handle );
-                
+
         if ( originalObject == null ) {
             throw new NoSuchFactObjectException( handle );
         }
-        
+
         this.handleFactory.increaseFactHandleRecency( handle );
 
         putObject( handle,
@@ -652,16 +623,19 @@ class WorkingMemoryImpl
         PropagationContext propagationContext = new PropagationContextImpl( ++this.propagationIdCounter,
                                                                             PropagationContext.MODIFICATION,
                                                                             rule,
-                                                                            activation );  
+                                                                            activation );
 
-        this.ruleBase.retractObject( handle,
-                                     propagationContext,
-                                     this );
-
-        this.ruleBase.assertObject( handle,
-                                    object,
+        this.ruleBase.modifyObject( handle,
                                     propagationContext,
                                     this );
+        // this.ruleBase.retractObject( handle,
+        // propagationContext,
+        // this );
+        //
+        // this.ruleBase.assertObject( handle,
+        // object,
+        // propagationContext,
+        // this );
 
         /*
          * this.ruleBase.modifyObject( handle, object, this );
@@ -717,7 +691,7 @@ class WorkingMemoryImpl
      * @param handler
      */
     public void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
-        //this.agenda.setAsyncExceptionHandler( handler );
+        // this.agenda.setAsyncExceptionHandler( handler );
     }
 
     /*
@@ -739,58 +713,56 @@ class WorkingMemoryImpl
         }
     }
 
-    /*
-     * public PrimitiveLongMap getJustified() { return this.justified; }
-     * 
-     * public Map getJustifiers() { return this.justifiers; }
-     */
-    public void removeLogicalAssertions(Tuple tuple,
-                                        PropagationContext context,
-                                        Rule rule) throws FactException {
-        this.justifiers.get( tuple );
-        
-        for ( Iterator it = this.justifiers.keySet().iterator(); it.hasNext(); ) {
-            AgendaItem item = (AgendaItem) it.next();
-
-//            if ( item.getRule() == rule && item.getKey().containsAll( key ) ) {
-//                removeLogicalAssertions( item,
-//                                         context,
-//                                         rule );
-//            }
-        }
-
-    }
-
-    public void removeLogicalAssertions(Activation activation,
-                                        PropagationContext context,
-                                        Rule rule) throws FactException {
-        Set handles = (Set) this.justifiers.remove( activation );
-        /* no justified facts for this activation */
-        if ( handles == null ) {
+    public void removeLogicalDependencies(Activation activation,
+                                          PropagationContext context,
+                                          Rule rule) throws FactException {
+        org.drools.util.LinkedList list = activation.getLogicalDependencies();
+        if ( list == null || list.isEmpty() ) {
             return;
         }
-        for ( Iterator it = handles.iterator(); it.hasNext(); ) {
-            FactHandleImpl handle = (FactHandleImpl) it.next();
-            Set activations = (Set) this.justified.get( handle.getId() );
-            activations.remove( activation );
-            if ( activations.isEmpty() ) {
+        for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
+            FactHandleImpl handle = (FactHandleImpl) node.getFactHandle();
+            Set set = (Set) this.justified.get( handle.getId() );
+            set.remove( node );
+            if ( set.isEmpty() ) {
                 this.justified.remove( handle.getId() );
                 retractObject( handle,
                                false,
                                true,
                                context.getRuleOrigin(),
-                               context.getActivationOrigin() );
-            }
-
+                               context.getActivationOrigin() );                
+            }            
         }
+    }
+
+    public void removeLogicalDependencies(FactHandle handle) throws FactException {
+        Set set = (Set) this.justified.remove( ((FactHandleImpl) handle).getId() );
+        if (!set.isEmpty()) {
+            for( Iterator it = set.iterator(); it.hasNext(); ) {
+                LogicalDependency node = (LogicalDependency) it.next();
+                node.getJustifier().getLogicalDependencies().remove( node );
+            }
+        }
+    }
+
+    public void addLogicalDependency(FactHandle handle,
+                                     Activation activation,
+                                     PropagationContext context,
+                                     Rule rule) throws FactException {
+        LogicalDependency node = new LogicalDependency( activation,
+                                                        handle );
+        activation.addLogicalDependency( node );
+        Set set = (Set) this.justified.get( ((FactHandleImpl) handle).getId() );
+        if ( set == null ) {
+            set = new HashSet();
+            this.justified.put( ((FactHandleImpl) handle).getId(),
+                                set );
+        }
+        set.add( node );
     }
 
     public PrimitiveLongMap getJustified() {
         return this.justified;
-    }
-
-    public Map getJustifiers() {
-        return this.justifiers;
     }
 
     public void dispose() {

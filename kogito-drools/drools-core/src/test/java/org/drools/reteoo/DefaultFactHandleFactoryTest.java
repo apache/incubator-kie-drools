@@ -10,6 +10,12 @@ public class DefaultFactHandleFactoryTest extends TestCase {
     public void testNewFactHandle() {
         DefaultFactHandleFactory factory = new DefaultFactHandleFactory();
         FactHandleImpl handle = (FactHandleImpl) factory.newFactHandle();
+        assertEquals( 0,
+                      handle.getId() );
+        assertEquals( 0,
+                      handle.getRecency() );
+
+        handle = (FactHandleImpl) factory.newFactHandle();
         assertEquals( 1,
                       handle.getId() );
         assertEquals( 1,
@@ -19,12 +25,6 @@ public class DefaultFactHandleFactoryTest extends TestCase {
         assertEquals( 2,
                       handle.getId() );
         assertEquals( 2,
-                      handle.getRecency() );
-
-        handle = (FactHandleImpl) factory.newFactHandle();
-        assertEquals( 3,
-                      handle.getId() );
-        assertEquals( 3,
                       handle.getRecency() );
     }
 
@@ -36,19 +36,19 @@ public class DefaultFactHandleFactoryTest extends TestCase {
         FactHandleImpl handle = (FactHandleImpl) factory.newFactHandle( 5 );
         assertEquals( 5,
                       handle.getId() );
-        assertEquals( 1,
+        assertEquals( 0,
                       handle.getRecency() );
 
         handle = (FactHandleImpl) factory.newFactHandle( 3 );
         assertEquals( 3,
                       handle.getId() );
-        assertEquals( 2,
+        assertEquals( 1,
                       handle.getRecency() );
 
         handle = (FactHandleImpl) factory.newFactHandle( 255 );
         assertEquals( 255,
                       handle.getId() );
-        assertEquals( 3,
+        assertEquals( 2,
                       handle.getRecency() );
     }
 

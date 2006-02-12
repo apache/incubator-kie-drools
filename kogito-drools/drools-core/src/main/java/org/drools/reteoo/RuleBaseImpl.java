@@ -167,6 +167,14 @@ public class RuleBaseImpl
                                 context,
                                 workingMemory );
     }
+    
+    void modifyObject(FactHandle handle,
+                      PropagationContext context,
+                      WorkingMemoryImpl workingMemory) throws FactException {
+        getRete().modifyObject( (FactHandleImpl) handle,
+                                context,
+                                workingMemory );
+    }    
 
     /**
      * Retract a fact object.

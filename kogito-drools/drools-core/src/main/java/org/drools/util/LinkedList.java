@@ -86,6 +86,8 @@ public class LinkedList {
             node.getPrevious().setNext( node.getNext() );
             node.getNext().setPrevious( node.getPrevious() );
             this.size--;
+            node.setPrevious(null);
+            node.setNext(null);
         } else {
             if ( this.firstNode == node ) {
                 removeFirst();
@@ -127,6 +129,7 @@ public class LinkedList {
         }
         LinkedListNode node = this.firstNode;
         this.firstNode = node.getNext();
+        node.setNext( null );
         if ( this.firstNode != null ) {
             this.firstNode.setPrevious( null );
         } else {
@@ -149,6 +152,7 @@ public class LinkedList {
         }
         LinkedListNode node = this.lastNode;
         this.lastNode = node.getPrevious();
+        node.setPrevious( null );
         if ( this.lastNode != null) {
             this.lastNode.setNext( null );
         } else {

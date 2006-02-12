@@ -124,7 +124,7 @@ public class MannersTest extends TestCase {
         ruleBase.addRuleSet( ruleSet );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();        
 
-        InputStream is = getClass().getResourceAsStream( "/manners16.dat" );
+        InputStream is = getClass().getResourceAsStream( "/manners5.dat" );
         List list = getInputObjects( is );
         for ( Iterator it = list.iterator(); it.hasNext(); ) {
             Object object = it.next();
@@ -146,8 +146,6 @@ public class MannersTest extends TestCase {
         //        });
         //        
         //        Thread.sleep( 10000 );
-
-        System.out.println("Integer evals:" + EvaluatorFactory.getIntEqEvalCount());
     }
 
     /**
@@ -259,7 +257,7 @@ public class MannersTest extends TestCase {
                     context.setState( Context.ASSIGN_SEATS );
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
-                    //System.out.println( "assign first seat :  " + seating + " : " + path );
+                    System.out.println( "assign first seat :  " + seating + " : " + path );
 
                 }
                 catch ( Exception e ) {

@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,7 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
 import org.drools.FactHandle;
 
 /**
@@ -31,8 +31,8 @@ class FactHandleImpl
     // ----------------------------------------------------------------------
 
     /** Handle id. */
-    private long       id;
-    private long recency;
+    private long             id;
+    private long             recency;
     private transient Object object;
 
     // ----------------------------------------------------------------------
@@ -68,7 +68,7 @@ class FactHandleImpl
             return true;
         }
 
-        if ( object == null || !(object instanceof FactHandleImpl) ) {
+        if ( object == null || !( object instanceof FactHandleImpl ) ) {
             return false;
         }
 
@@ -99,10 +99,10 @@ class FactHandleImpl
     public long getRecency() {
         return this.recency;
     }
-    
+
     public void setRecency(long recency) {
         this.recency = recency;
-    }    
+    }
 
     public long getId() {
         return this.id;
@@ -111,13 +111,13 @@ class FactHandleImpl
     void invalidate() {
         this.id = -1;
     }
-    
-   Object getObject() {
-       return this.object;
-   }
-   
-   void setObject(Object object) {
-       this.object = object;
-   }
+
+    Object getObject() {
+        return this.object;
+    }
+
+    void setObject(Object object) {
+        this.object = object;
+    }
 
 }

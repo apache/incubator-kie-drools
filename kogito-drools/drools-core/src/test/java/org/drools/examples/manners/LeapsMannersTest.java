@@ -146,8 +146,6 @@ public class LeapsMannersTest extends TestCase {
         //        });
         //        
         //        Thread.sleep( 10000 );
-
-        System.out.println("Integer evals:" + EvaluatorFactory.getIntEqEvalCount());
     }
 
     /**

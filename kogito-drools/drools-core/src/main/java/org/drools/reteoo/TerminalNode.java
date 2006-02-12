@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,7 +15,6 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 import java.util.HashSet;
 import java.util.Set;
@@ -107,7 +107,7 @@ final class TerminalNode extends BaseNode
         if ( rule.getNoLoop() && rule.equals( context.getRuleOrigin() ) ) {
             return;
         }
-        Agenda agenda = workingMemory.getAgenda();                       
+        Agenda agenda = workingMemory.getAgenda();
 
         Duration dur = rule.getDuration();
 
@@ -119,71 +119,86 @@ final class TerminalNode extends BaseNode
                                                                 rule );
             agenda.scheduleItem( item );
             tuple.setActivation( item );
+            item.setActivated( true );
             workingMemory.getAgendaEventSupport().fireActivationCreated( item );
-        } else {
+        } else {           
             // -----------------
-            // Lazy instantiation and addition to the Agenda of AgendGroup implementations
+            // Lazy instantiation and addition to the Agenda of AgendGroup
+            // implementations
             // ----------------
             TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-            AgendaGroupImpl agendaGroup = memory.getAgendaGroup() ;
-            if (agendaGroup == null ) {                
-                if (rule.getAgendaGroup() == null || rule.getAgendaGroup().equals( "" ) || rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
-                    // Is the Rule AgendaGroup undefined? If it is use MAIN, which is added to the Agenda by default
+            AgendaGroupImpl agendaGroup = memory.getAgendaGroup();
+            if ( agendaGroup == null ) {
+                if ( rule.getAgendaGroup() == null || rule.getAgendaGroup().equals( "" ) || rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
+                    // Is the Rule AgendaGroup undefined? If it is use MAIN,
+                    // which is added to the Agenda by default
                     agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup( AgendaGroup.MAIN );
                 } else {
-                    // AgendaGroup is defined, so try and get the AgendaGroup from the Agenda
-                    agendaGroup = (AgendaGroupImpl)  agenda.getAgendaGroup( rule.getAgendaGroup() );
+                    // AgendaGroup is defined, so try and get the AgendaGroup
+                    // from the Agenda
+                    agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup( rule.getAgendaGroup() );
                 }
-                
-                if ( agendaGroup == null) {
-                    // The AgendaGroup is defined but not yet added to the Agenda, so create the AgendaGroup and add to the Agenda.
+
+                if ( agendaGroup == null ) {
+                    // The AgendaGroup is defined but not yet added to the
+                    // Agenda, so create the AgendaGroup and add to the Agenda.
                     agendaGroup = new AgendaGroupImpl( rule.getAgendaGroup() );
                     workingMemory.getAgenda().addAgendaGroup( agendaGroup );
-                }            
-                
+                }
+
                 memory.setAgendaGroup( agendaGroup );
-            } 
-            
-            // set the focus if rule autoFocus is true 
+            }
+
+            // set the focus if rule autoFocus is true
             if ( rule.getAutoFocus() ) {
                 agenda.setFocus( agendaGroup );
             }
 
-            // Lazy assignment of the AgendaGroup's Activation Lifo Queue 
+            // Lazy assignment of the AgendaGroup's Activation Lifo Queue
             if ( memory.getLifo() == null ) {
                 memory.setLifo( agendaGroup.getActivationQueue( this.rule.getSalience() ) );
             }
-            
+
             ActivationQueue queue = memory.getLifo();
-            
+
             AgendaItem item = new AgendaItem( context.getPropagationNumber(),
                                               tuple,
                                               context,
                                               rule,
-                                              queue );            
+                                              queue );
 
             queue.add( item );
 
             // Makes sure the Lifo is added to the AgendaGroup priority queue
-            // If the AgendaGroup is already in the priority queue it just returns.
+            // If the AgendaGroup is already in the priority queue it just
+            // returns.
             agendaGroup.addToAgenda( memory.getLifo() );
-            tuple.setActivation( item );
+            tuple.setActivation( item );      
+            item.setActivated( true );
             workingMemory.getAgendaEventSupport().fireActivationCreated( item );
         }
     }
-    
+
     public void retractTuple(ReteTuple tuple,
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) {
         Activation activation = tuple.getActivation();
-        if ( activation != null ) {
+        if ( activation.isActivated() ) {
             activation.remove();
-            workingMemory.getAgendaEventSupport().fireActivationCancelled(  activation );            
-        }        
+            workingMemory.getAgendaEventSupport().fireActivationCancelled( activation );
+        }
+
+        workingMemory.removeLogicalDependencies( activation, context, this.rule );
+    }
+    
+    public void modifyTuple(ReteTuple tuple,
+                            PropagationContext context,
+                            WorkingMemoryImpl workingMemory) {
+        if ( tuple.getActivation().isActivated() ) {
+            tuple.getActivation().remove();
+        } 
+        assertTuple( tuple, context, workingMemory);
         
-        workingMemory.removeLogicalAssertions( tuple,
-                                               context,
-                                               this.rule );
     }    
 
     public String toString() {
@@ -207,7 +222,7 @@ final class TerminalNode extends BaseNode
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
-        // TODO Auto-generated method stub        
+        // TODO Auto-generated method stub
     }
 
     public Object createMemory() {
@@ -234,7 +249,4 @@ final class TerminalNode extends BaseNode
             this.agendaGroup = agendaGroup;
         }
     }
-
-
-
 }

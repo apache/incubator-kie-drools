@@ -83,6 +83,14 @@ public class RightInputAdapterNode extends ObjectSource
                                 context,
                                 workingMemory );
     }
+    
+    public void modifyTuple(ReteTuple tuple,
+                            PropagationContext context,
+                            WorkingMemoryImpl workingMemory) {
+             propagateModifyObject( (FactHandleImpl) tuple.get( this.column ),
+                                     context,
+                                     workingMemory );
+         }    
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#attach()

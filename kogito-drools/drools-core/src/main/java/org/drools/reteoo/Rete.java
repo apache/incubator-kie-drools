@@ -150,6 +150,27 @@ class Rete extends ObjectSource
                                           workingMemory );
         }
     }
+    
+    public void modifyObject(FactHandleImpl handle,
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
+        HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
+
+        Object object = handle.getObject();
+
+        ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );
+        if ( cachedNodes == null ) {
+            cachedNodes = getMatchingNodes( object );
+            memory.put( object.getClass(),
+                        cachedNodes );
+        }
+
+        for ( int i = 0; i < cachedNodes.length; i++ ) {
+            cachedNodes[i].modifyObject( handle,
+                                          context,
+                                          workingMemory );
+        }
+    }    
 
     private ObjectTypeNode[] getMatchingNodes(Object object) throws FactException {
         List cache = new ArrayList();

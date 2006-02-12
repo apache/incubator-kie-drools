@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -24,7 +25,8 @@ import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
 
 /**
- * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used to apply <code>FieldConstraint<.code>s on asserted fact 
+ * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
+ * to apply <code>FieldConstraint<.code>s on asserted fact 
  * objects where the <code>FieldConstraint</code>s have no dependencies on any other of the facts in the current <code>Rule</code>.
  * 
  *  @see FieldConstraint
@@ -45,8 +47,10 @@ class AlphaNode extends ObjectSource
     private final ObjectSource    objectSource;
 
     /**
-     * Construct an <code>AlphaNode</code> with a unique id using the provided <code>FieldConstraint</code>. <code>NodeMemory</code> is optional
-     * in <code>AlphaNode</code>s and is only of benefit when adding additional <code>Rule</code>s at runtime.
+     * Construct an <code>AlphaNode</code> with a unique id using the provided
+     * <code>FieldConstraint</code>. <code>NodeMemory</code> is optional in
+     * <code>AlphaNode</code>s and is only of benefit when adding additional
+     * <code>Rule</code>s at runtime.
      * 
      * @param id
      * @param constraint
@@ -55,24 +59,25 @@ class AlphaNode extends ObjectSource
      */
     AlphaNode(int id,
               FieldConstraint constraint,
-              boolean hasMemory,
               ObjectSource objectSource) {
         super( id );
         this.constraint = constraint;
         this.objectSource = objectSource;
-        setHasMemory( hasMemory );
+        setHasMemory( true );
     }
 
     /**
-     * Retruns the <code>FieldConstraint</code> 
-     * @return
-     *      <code>FieldConstraint</code>
+     * Retruns the <code>FieldConstraint</code>
+     * 
+     * @return <code>FieldConstraint</code>
      */
     public FieldConstraint getConstraint() {
         return this.constraint;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.drools.reteoo.BaseNode#attach()
      */
     public void attach() {
@@ -82,42 +87,53 @@ class AlphaNode extends ObjectSource
     public void assertObject(FactHandleImpl handle,
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) throws FactException {
-        if ( hasMemory() ) {
-            Set memory = (Set) workingMemory.getNodeMemory( this );
-            if ( this.constraint.isAllowed( handle,
-                                            null,
-                                            workingMemory ) ) {
-                memory.add( handle );
-                propagateAssertObject( handle,
-                                       context,
-                                       workingMemory );
-            }
-        } else {
-            if ( this.constraint.isAllowed( handle,
-                                            null,
-                                            workingMemory ) ) {
-                propagateAssertObject( handle,
-                                       context,
-                                       workingMemory );
-            }
+        Set memory = (Set) workingMemory.getNodeMemory( this );
+        if ( this.constraint.isAllowed( handle,
+                                        null,
+                                        workingMemory ) ) {
+            memory.add( handle );
+            propagateAssertObject( handle,
+                                   context,
+                                   workingMemory );
         }
     }
 
     public void retractObject(FactHandleImpl handle,
                               PropagationContext context,
                               WorkingMemoryImpl workingMemory) {
-        if ( hasMemory() ) {
-            Set memory = (Set) workingMemory.getNodeMemory( this );
+        Set memory = (Set) workingMemory.getNodeMemory( this );
+        if ( memory.remove( handle ) ) {
+            propagateRetractObject( handle,
+                                    context,
+                                    workingMemory );
+        }
+    }
+
+    public void modifyObject(FactHandleImpl handle,
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
+        Set memory = (Set) workingMemory.getNodeMemory( this );
+
+        if ( this.constraint.isAllowed( handle,
+                                        null,
+                                        workingMemory ) ) {
+            if ( memory.add( handle ) ) {
+                propagateAssertObject( handle,
+                                       context,
+                                       workingMemory );
+            } else {                
+                // handle already existed so propagate as modify
+                propagateModifyObject( handle,
+                                       context,
+                                       workingMemory );                             
+            }
+        } else {
             if ( memory.remove( handle ) ) {
                 propagateRetractObject( handle,
                                         context,
                                         workingMemory );
             }
-        } else {
-            propagateRetractObject( handle,
-                                    context,
-                                    workingMemory );
-        }
+        }        
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
@@ -147,7 +163,6 @@ class AlphaNode extends ObjectSource
         this.attachingNewNode = false;
     }
 
-
     /**
      * Creates a HashSet for the AlphaNode's memory.
      */
@@ -155,7 +170,9 @@ class AlphaNode extends ObjectSource
         return new HashSet();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object object) {

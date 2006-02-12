@@ -119,13 +119,7 @@ class TestNode extends TupleSource
             LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
             memory.add( tuple );
             
-            for ( int i = 0, size = getTupleSinks().size(); i < size; i++ ) {
-                ReteTuple child = new ReteTuple( tuple );
-                tuple.addLinkedTuple( child );
-                ((TupleSink) getTupleSinks().get( i )).assertTuple( child,
-                                                                    context,
-                                                                    workingMemory );
-            }                
+            propagateAssertTuple( tuple, context, workingMemory );              
         }
     }
 
@@ -136,13 +130,36 @@ class TestNode extends TupleSource
         
         memory.remove( tuple );
        
-        int i = 0;
-        for (ReteTuple child = (ReteTuple) tuple.getLinkedTuples().getFirst(); child != null; child = (ReteTuple) child.getNext()) {
-            ((TupleSink) getTupleSinks().get( i++ )).retractTuple( child,
-                                                                   context,
-                                                                   workingMemory );            
-        }              
+        propagateRetractTuple( tuple, context, workingMemory );           
     }
+    
+    public void modifyTuple(ReteTuple tuple,
+                            PropagationContext context,
+                            WorkingMemoryImpl workingMemory) {
+        LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+        boolean exists = ( tuple.getPrevious() == null && tuple.getNext() == null );
+        if  (exists) {
+            // Remove the tuple so it can be readded to the top of the list
+            memory.remove( tuple );
+        }
+        
+        boolean allowed = this.condition.isAllowed( tuple );
+
+        workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
+                                                                       tuple,
+                                                                       allowed );
+
+        if ( allowed ) {
+            memory.add( tuple );   
+            if ( exists ) {         
+                propagateAssertTuple( tuple, context, workingMemory );                
+            } else {
+                propagateModifyTuple( tuple, context, workingMemory );
+            }              
+        } else {            
+            propagateRetractTuple( tuple, context, workingMemory );
+        }                        
+    }    
     
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
@@ -202,5 +219,4 @@ class TestNode extends TupleSource
     public Object createMemory() {
         return new LinkedList();
     }
-
 }

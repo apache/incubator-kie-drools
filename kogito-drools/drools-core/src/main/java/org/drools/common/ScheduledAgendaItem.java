@@ -24,6 +24,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
 
 /**
@@ -55,6 +56,11 @@ public class ScheduledAgendaItem extends TimerTask
     private final PropagationContext context;
 
     private final long               activationNumber;
+
+    private LinkedList               justified;
+
+    private boolean                  activated;
+    
 
     // ------------------------------------------------------------
     // Constructors
@@ -130,28 +136,6 @@ public class ScheduledAgendaItem extends TimerTask
         return this.activationNumber;
     }
 
-    public String toString() {
-        return "[Activation rule=" + this.rule.getName() + ", tuple=" + this.tuple + "]";
-    }
-
-    public boolean equals(Object object) {
-        if ( object == this ) {
-            return true;
-        }
-
-        if ( (object == null) || !(object instanceof ScheduledAgendaItem) ) {
-            return false;
-        }
-
-        ScheduledAgendaItem otherItem = (ScheduledAgendaItem) object;
-
-        return (this.rule.equals( otherItem.getRule() ) && this.tuple.equals( otherItem.getTuple() ));
-    }
-
-    public int hashcode() {
-        return this.tuple.hashCode();
-    }
-
     public LinkedListNode getNext() {
         return this.next;
     }
@@ -170,5 +154,57 @@ public class ScheduledAgendaItem extends TimerTask
 
     public void remove() {
         agenda.removeScheduleItem( this );
+    }
+
+    public String toString() {
+        return "[Activation rule=" + this.rule.getName() + ", tuple=" + this.tuple + "]";
+    }
+
+    public void addLogicalDependency(LogicalDependency node) {
+        if ( this.justified == null ) {
+            this.justified = new LinkedList();
+        }
+
+        this.justified.add( node );
+    }
+
+    public LinkedList getLogicalDependencies() {
+        return this.justified;
+    }
+
+    public boolean isActivated() {
+        return this.activated;
+    }
+    
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }  
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object object) {
+        if ( object == this ) {
+            return true;
+        }
+
+        if ( (object == null) || !(object instanceof AgendaItem) ) {
+            return false;
+        }
+
+        AgendaItem otherItem = (AgendaItem) object;
+
+        return (this.rule.equals( otherItem.getRule() ) && this.tuple.equals( otherItem.getTuple() ));
+    }
+
+    /**
+     * Return the hashcode of the
+     * <code>TupleKey<code> as the hashcode of the AgendaItem
+     * @return
+     */
+    public int hashcode() {
+        return this.tuple.hashCode();
     }
 }

@@ -49,5 +49,9 @@ interface TupleSink
     void retractTuple(ReteTuple tuple,
                       PropagationContext context,
                       WorkingMemoryImpl workingMemory);    
+    
+    void modifyTuple(ReteTuple tuple,
+                     PropagationContext context,
+                     WorkingMemoryImpl workingMemory);        
 
 }

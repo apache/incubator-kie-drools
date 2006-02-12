@@ -30,4 +30,11 @@ public class MockObjectSink
     public List getRetracted() {
         return this.retracted;
     }
+
+    public void modifyObject(FactHandleImpl handle,
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
+        // TODO Auto-generated method stub
+        
+    }
 }

@@ -38,5 +38,13 @@ public interface AgendaGroup {
      *      The <code>AgendaGroup</code> name
      */
     public String getName();
+    
+    
+    /**
+     * The total number of activations in this group
+     * @return
+     *      int value for the total number of activations
+     */
+    public int size();
 
 }
