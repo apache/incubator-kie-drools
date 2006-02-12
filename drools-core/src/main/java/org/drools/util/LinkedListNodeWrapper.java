@@ -15,6 +15,11 @@ package org.drools.util;
  * limitations under the License.
  */
 
+/**
+ * The idea behind <code>LinkedListNodeWrapper</code> is to be able to add
+ * the same <code>LinkedListNode</code> to multiple <code>LinkedList</code>s 
+ * where the node can have different previous and next nodes in each list.
+ */
 public class LinkedListNodeWrapper extends AbstractBaseLinkedListNode {
     private LinkedListNode node;
     
