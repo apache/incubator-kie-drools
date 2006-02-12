@@ -1,5 +1,21 @@
 package org.drools.leaps;
 
+/*
+ * Copyright 2006 Alexander Bagerman
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import java.io.Serializable;
 import java.util.Iterator;
 
@@ -26,13 +42,7 @@ class FactTable extends Table implements Serializable {
 	 * positive rules are not complete rules but rather its conditions that
 	 * relates by type
 	 */
-	private RuleTable positiveRules;
-
-	/**
-	 * negative rules are not complete rules but rather its conditions that
-	 * relates by type
-	 */
-	private RuleTable negativeRules;
+	private RuleTable rules;
 
 	/**
 	 * dynamic rule management support. used to push facts on stack again after
@@ -49,10 +59,7 @@ class FactTable extends Table implements Serializable {
 	 */
 	public FactTable(ConflictResolver conflictResolver) {
 		super(conflictResolver.getFactConflictResolver());
-		positiveRules = new RuleTable(conflictResolver
-				.getRuleConflictResolver());
-		negativeRules = new RuleTable(conflictResolver
-				.getRuleConflictResolver());
+		this.rules = new RuleTable(conflictResolver.getRuleConflictResolver());
 	}
 
 	/**
@@ -61,15 +68,8 @@ class FactTable extends Table implements Serializable {
 	 * @param workingMemory
 	 * @param ruleHandle
 	 */
-	public void addNegativeRule(WorkingMemoryImpl workingMemory,
-			RuleHandle ruleHandle) {
-		this.negativeRules.add(ruleHandle);
-		// no need to check negative facts
-	}
-
-	public void addPositiveRule(WorkingMemoryImpl workingMemory,
-			RuleHandle ruleHandle) {
-		this.positiveRules.add(ruleHandle);
+	public void addRule(WorkingMemoryImpl workingMemory, RuleHandle ruleHandle) {
+		this.rules.add(ruleHandle);
 		// push facts back to stack if needed
 		this.checkAndAddFactsToStack(workingMemory);
 	}
@@ -87,15 +87,15 @@ class FactTable extends Table implements Serializable {
 			this.setReseededStack(false);
 			// let's only add facts below waterline - added before rule is added
 			// rest would be added to stack automatically
-			Handle factHandle = new FactHandleImpl(
-                    workingMemory.getIdLastFireAllAt(), null);
+			Handle factHandle = new FactHandleImpl(workingMemory
+					.getIdLastFireAllAt(), null);
 			try {
-			for (Iterator it = this.tailIterator(factHandle, factHandle); it.hasNext();) {
-				workingMemory.pushTokenOnStack(new Token(workingMemory,
-						(FactHandleImpl) it.next(), Token.ASSERTED));
-			}
-			}
-			catch (TableOutOfBoundException e){
+				for (Iterator it = this.tailIterator(factHandle, factHandle); it
+						.hasNext();) {
+					workingMemory.pushTokenOnStack(new Token(workingMemory,
+							(FactHandleImpl) it.next()));
+				}
+			} catch (TableOutOfBoundException e) {
 				// should never get here
 			}
 		}
@@ -110,31 +110,23 @@ class FactTable extends Table implements Serializable {
 	}
 
 	/**
-	 * returns an iterator of rule handles to the negative CEs "(not ())"
-	 * portions of rules were type matches this fact table underlying type
-	 * 
-	 * @return iterator of negative rule handles
-	 */
-	public Iterator getNegativeRulesIterator() {
-		return this.negativeRules.iterator();
-	}
-
-	/**
 	 * returns an iterator of rule handles to the regular(positive) CEs portions
 	 * of rules were type matches this fact table underlying type
 	 * 
 	 * @return iterator of positive rule handles
 	 */
-	public Iterator getPositiveRulesIterator() {
-		return this.positiveRules.iterator();
+	public Iterator getRulesIterator() {
+		return this.rules.iterator();
 	}
 
+	/**
+	 * @see java.lang.Object
+	 */
 	public String toString() {
 		String ret = this.toString();
 		ret = ret + "\n" + "POSITIVE RULES :";
-		ret = ret + "\n" + this.positiveRules.toString();
-		ret = ret + "\n" + "NEGATIVE RULES :";
-		ret = ret + "\n" + this.negativeRules.toString();
+		ret = ret + "\n" + this.rules.toString();
+
 		return ret;
 	}
 }

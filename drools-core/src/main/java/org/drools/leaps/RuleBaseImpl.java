@@ -1,5 +1,21 @@
 package org.drools.leaps;
 
+/*
+ * Copyright 2006 Alexander Bagerman
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,18 +29,16 @@ import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
 import org.drools.RuleSetIntegrationException;
 import org.drools.WorkingMemory;
-import org.drools.spi.FactHandleFactory;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleSet;
-import org.drools.spi.ClassObjectTypeResolver;
-import org.drools.spi.ObjectTypeResolver;
+import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseContext;
 
 /**
  * This base class for the engine and analogous to Drool's RuleBase class. It
  * has a similar interface adapted to the Leaps algorithm
- *  
+ * 
  * @author Alexander Bagerman
  * 
  */
@@ -32,15 +46,13 @@ public class RuleBaseImpl implements RuleBase {
 
 	private HashMap leapsRules = new HashMap();
 
-	private final Builder builder;
-
 	/**
 	 * TODO we do not need it here. and it references RETEoo class
 	 * 
 	 * The fact handle factory.
 	 */
 	/** The fact handle factory. */
-	private final FactHandleFactory factHandleFactory;
+	private final HandleFactory factHandleFactory;
 
 	private Set ruleSets;
 
@@ -57,10 +69,6 @@ public class RuleBaseImpl implements RuleBase {
 
 	/** Special value when adding to the underlying map. */
 	private static final Object PRESENT = new Object();
-
-	// ------------------------------------------------------------
-	// Constructors
-	// ------------------------------------------------------------
 
 	/**
 	 * Construct.
@@ -90,9 +98,8 @@ public class RuleBaseImpl implements RuleBase {
 			Map applicationData, RuleBaseContext ruleBaseContext)
 			throws RuleIntegrationException, RuleSetIntegrationException,
 			FactException, InvalidPatternException {
-		ObjectTypeResolver resolver = new ClassObjectTypeResolver();
-		this.builder = new Builder(this, resolver);
-		this.factHandleFactory = factHandleFactory;
+		// because we can deal only with leaps fact handle factory
+		this.factHandleFactory = (HandleFactory) factHandleFactory;
 		this.ruleSets = ruleSets;
 		this.applicationData = applicationData;
 		this.ruleBaseContext = ruleBaseContext;
@@ -103,10 +110,6 @@ public class RuleBaseImpl implements RuleBase {
 			this.addRuleSet((RuleSet) it.next());
 		}
 	}
-
-	// ------------------------------------------------------------
-	// Instance methods
-	// ------------------------------------------------------------
 
 	/**
 	 * @see RuleBase
@@ -136,53 +139,25 @@ public class RuleBaseImpl implements RuleBase {
 	}
 
 	/**
-	 * TODO do not understand its location here
-	 * 
 	 * @see RuleBase
 	 */
 	public FactHandleFactory getFactHandleFactory() {
 		return this.factHandleFactory;
 	}
 
+	/**
+	 * returns NEW fact handle factory because each working memory needs the new
+	 * one
+	 * 
+	 * @see RuleBase
+	 */
 	public FactHandleFactory newFactHandleFactory() {
 		return this.factHandleFactory.newInstance();
 	}
 
 	/**
-	 * Assert a fact object.
-	 * 
-	 * @param handle
-	 *            The handle.
-	 * @param object
-	 *            The fact.
-	 * @param workingMemory
-	 *            The working-memory.
-	 * 
-	 * @throws FactException
-	 *             If an error occurs while performing the assertion.
+	 * @see RuleBase
 	 */
-//	void assertObject(FactHandle handle, Object object,
-//			PropagationContext context, WorkingMemoryImpl workingMemory)
-//			throws FactException {
-//		workingMemory.assertObject(object);
-//	}
-
-	/**
-	 * Retract a fact object.
-	 * 
-	 * @param handle
-	 *            The handle.
-	 * @param workingMemory
-	 *            The working-memory.
-	 * 
-	 * @throws FactException
-	 *             If an error occurs while performing the retraction.
-	 */
-//	void retractObject(FactHandle handle, PropagationContext context,
-//			WorkingMemoryImpl workingMemory) throws FactException {
-//		workingMemory.retractObject(handle);
-//	}
-//
 	public RuleSet[] getRuleSets() {
 		return (RuleSet[]) this.ruleSets.toArray(new RuleSet[this.ruleSets
 				.size()]);
@@ -192,6 +167,9 @@ public class RuleBaseImpl implements RuleBase {
 		return this.applicationData;
 	}
 
+	/**
+	 * @see RuleBase
+	 */
 	public RuleBaseContext getRuleBaseContext() {
 		return this.ruleBaseContext;
 	}
@@ -245,7 +223,7 @@ public class RuleBaseImpl implements RuleBase {
 	 */
 	public void addRule(Rule rule) throws FactException,
 			RuleIntegrationException, InvalidPatternException {
-		List rules = this.builder.processRule(rule);
+		List rules = Builder.processRule(rule);
 
 		this.leapsRules.put(rule, rules);
 
@@ -253,9 +231,5 @@ public class RuleBaseImpl implements RuleBase {
 				.hasNext();) {
 			((WorkingMemoryImpl) it.next()).addLeapsRules(rules);
 		}
-	}
-
-	public Set getWorkingMemories() {
-		return this.workingMemories.keySet();
 	}
 }

@@ -1,5 +1,21 @@
 package org.drools.leaps;
 
+/*
+ * Copyright 2006 Alexander Bagerman
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
@@ -35,11 +51,8 @@ import org.drools.event.ReteooNodeEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.leaps.conflict.DefaultConflictResolver;
-import org.drools.leaps.util.TableIterator;
 import org.drools.leaps.util.TableOutOfBoundException;
 import org.drools.reteoo.PropagationContextImpl;
-import org.drools.rule.InvalidRuleException;
-import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
@@ -53,8 +66,8 @@ import org.drools.util.PrimitiveLongMap;
 
 /**
  * Followed RETEOO implementation for interfaces.
- *  
- * This class is a repository for leaps specific containers (fact tables).
+ * 
+ * This class is a repository for leaps specific containers (fact factTables).
  * 
  * @author Alexander Bagerman
  * 
@@ -118,6 +131,14 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 
 	private long propagationIdCounter;
 
+	//
+	// new way to handle retractions
+	// collection of pending activations for each blocking fact handle
+	private final IdentityMap blockingFactHandles;
+
+	// collection of pending activations for each blocking fact handle
+	private final IdentityMap factHandlesWithActivations;
+
 	// ------------------------------------------------------------
 	// Constructors
 	// ------------------------------------------------------------
@@ -133,6 +154,8 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 		this.agenda = new Agenda(this);
 		this.handleFactory = (HandleFactory) this.ruleBase
 				.newFactHandleFactory();
+		this.blockingFactHandles = new IdentityMap();
+		this.factHandlesWithActivations = new IdentityMap();
 	}
 
 	// ------------------------------------------------------------
@@ -176,8 +199,6 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 	}
 
 	/**
-	 * TODO make use of facthandle factory
-	 * 
 	 * Create a new <code>FactHandle</code>.
 	 * 
 	 * @return The new fact handle.
@@ -253,8 +274,8 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 
 	/**
 	 * Returns the fact Object for the given <code>FactHandle</code>. It
-	 * actually returns the value from the handle, before retrieving
-	 * it from objects map.
+	 * actually returns the value from the handle, before retrieving it from
+	 * objects map.
 	 * 
 	 * @see WorkingMemory
 	 * 
@@ -344,8 +365,8 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 	 * 
 	 * 
 	 * 
-	 * TODO find out if you  need to remove fact handles from tables on certain 
-	 * logical, dynamic conditions
+	 * TODO find out if you need to remove fact handles from factTables on
+	 * certain logical, dynamic conditions
 	 * 
 	 * 
 	 * 
@@ -460,15 +481,16 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 				++this.propagationIdCounter, PropagationContext.ASSERTION,
 				rule, activation);
 
-		//  ret = ret + "\n" +"==> " + factHandle);
-		//  determine what classes it belongs to put it into the "table" on
-		//  class name key
+		// ret = ret + "\n" +"==> " + factHandle);
+		// determine what classes it belongs to put it into the "table" on
+		// class name key
 		List tablesList = this.getFactTablesList(object.getClass());
 		for (Iterator it = tablesList.iterator(); it.hasNext();) {
 			// adding fact to container
 			((FactTable) it.next()).add(handle);
 		}
-		Token token = new Token(this, (FactHandleImpl) handle, Token.ASSERTED);
+		Token token = new Token(this, (FactHandleImpl) handle);
+
 		this.pushTokenOnStack(token);
 
 		this.workingMemoryEventSupport.fireObjectAsserted(propagationContext,
@@ -621,29 +643,43 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 		//
 		// leaps specific actions
 		//
-		Object object = ((FactHandleImpl) handle).getObject();
-		FactHandleImpl retractedFactHandle = new FactHandleImpl(
-				this.handleFactory.getNextId(), object);
-		// ret = ret + "\n" +"<== " + factHandle);
-		// remove fact from all tables
-		for (Iterator it = this.getFactTablesList(object.getClass()).iterator(); it
-				.hasNext();) {
-			// removing fact to container
-			((FactTable) it.next()).remove(handle);
+		Set pendingActivations = (Set) this.blockingFactHandles.remove(handle);
+		if (pendingActivations != null) {
+			for (Iterator it = pendingActivations.iterator(); it.hasNext();) {
+				PendingActivation item = (PendingActivation) it.next();
+				item.decrementBlockingFactsCount();
+				if (!item.containsBlockingFacts()) {
+					boolean allPresent = true;
+					FactHandleImpl[] factHandles = (FactHandleImpl[]) item
+							.getTuple().getFactHandles();
+					for (int i = 0; i < factHandles.length && allPresent; i++) {
+						allPresent = this.objects.containsKey(factHandles[i]
+								.getId());
+					}
+					if (allPresent) {
+						this.assertTuple(item.getTuple(), new HashSet(), item
+								.getContext(), item.getRule());
+					}
+				}
+			}
 		}
-
-		// add fact to all shadow tables
-		for (Iterator it = this.getShadowFactTablesList(object.getClass())
-				.iterator(); it.hasNext();) {
-			// adding fact to container
-			((FactTable) it.next()).add(retractedFactHandle);
+		Set postedActivations = (Set) this.factHandlesWithActivations
+				.remove(handle);
+		if (postedActivations != null) {
+			for (Iterator it = postedActivations.iterator(); it.hasNext();) {
+				PostedActivation item = (PostedActivation) it.next();
+				if (!item.isWasRemoved()) {
+					if (!((LeapsTuple) ((AgendaItem) item.getActivation())
+							.getTuple()).isActivationNull()) {
+						item.getActivation().remove();
+					}
+					item.setWasRemoved(true);
+				}
+			}
 		}
 		// remove it from stack
-		this.removeLeapsTokenFromStack(new Token(this, (FactHandleImpl) handle,
-				Token.ASSERTED));
-		// put the new one back on stack
-		Token token = new Token(this, retractedFactHandle, Token.RETRACTED);
-		this.pushTokenOnStack(token);
+		this.stack.remove(new Token(this, (FactHandleImpl) handle));
+
 		//
 		// end leaps specific actions
 		//
@@ -714,7 +750,7 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 	 * @param handler
 	 */
 	public void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
-		//this.agenda.setAsyncExceptionHandler( handler );
+		// this.agenda.setAsyncExceptionHandler( handler );
 	}
 
 	/*
@@ -740,17 +776,6 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 	 * 
 	 * public Map getJustifiers() { return this.justifiers; }
 	 */
-	//	public void removeLogicalAssertions(TupleKey key,
-	//			PropagationContext context, Rule rule) throws FactException {
-	//		for (Iterator it = this.justifiers.keySet().iterator(); it.hasNext();) {
-	//			AgendaItem item = (AgendaItem) it.next();
-	//
-	////			if (item.getRule() == rule && item.getKey().containsAll(key)) {
-	////				removeLogicalAssertions(item, context, rule);
-	////			}
-	//		}
-	//
-	//	}
 	public void removeLogicalAssertions(Activation activation,
 			PropagationContext context, Rule rule) throws FactException {
 		Set handles = (Set) this.justifiers.remove(activation);
@@ -808,7 +833,7 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 
 	private final String lock = new String("lock");
 
-	//	private long idsSequence;
+	// private long idsSequence;
 
 	private long idLastFireAllAt = -1;
 
@@ -820,29 +845,12 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 
 	Stack stack = new Stack();
 
-	// Table stack = new Table(new Comparator() {
-	// public int compare(Object o1, Object o2) {
-	// Token tuple1 = (Token) o1;
-	// Token tuple2 = (Token) o2;
-	// // negatives are behind positive
-	// int ret = tuple2.getTupleType() - tuple1.getTupleType();
-	// if (ret == 0) {
-	// ret = (int) (tuple1.getDominantFactHandle().getId() - tuple2
-	// .getDominantFactHandle().getId());
-	// }
-	// return ret;
-	// }
-	// });
-
 	// to store facts to cursor over it
-	private final Hashtable tables = new Hashtable();
-
-	// to store negated facts to cursor over it in negative condition search
-	private final Hashtable shadowTables = new Hashtable();
+	private final Hashtable factTables = new Hashtable();
 
 	/**
-	 * generates or just return List of internal tables that correspond a class
-	 * can be used to generate tables
+	 * generates or just return List of internal factTables that correspond a
+	 * class can be used to generate factTables
 	 * 
 	 * @return
 	 */
@@ -858,73 +866,31 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 		return list;
 	}
 
-	protected List getShadowFactTablesList(Class c) {
-		ArrayList list = new ArrayList();
-		Class bufClass = c;
-		while (bufClass != null) {
-			//
-			list.add(this.getShadowFactTable(bufClass));
-			// and get the next class on the list
-			bufClass = bufClass.getSuperclass();
-		}
-		return list;
-	}
-
-	protected boolean isStackEmpty() {
-		return this.stack.isEmpty();
-	}
-
-	protected Token getTopLeapsTokenFromStack() {
-		return (Token) this.stack.peek();
-		// return (Token) this.stack.top();
-	}
-
 	/**
 	 * 
 	 * @return
 	 */
-
-	protected void popTopTokenFromStack(Token token) {
-		this.stack.remove(token);
-	}
-
-	private void removeLeapsTokenFromStack(Token token) {
-		// add whatever additional info for token that you need : rules, ces
-		// etc.
-		this.stack.remove(token);
-	}
-
 	protected void pushTokenOnStack(Token token) {
 		// add whatever additional info for token that you need : rules, ces
 		// etc.
 		this.stack.push(token);
 	}
 
-	// getting shadow table
-	// no need to create one. it would be created with the regular one
-	// shadow is never hit before regular
-	protected FactTable getShadowFactTable(Class c) {
-		return (FactTable) this.shadowTables.get(c);
-	}
-
 	// regular table
 	protected FactTable getFactTable(Class c) {
 		FactTable table;
-		if (this.tables.containsKey(c)) {
-			table = (FactTable) this.tables.get(c);
+		if (this.factTables.containsKey(c)) {
+			table = (FactTable) this.factTables.get(c);
 		} else {
 			table = new FactTable(DefaultConflictResolver.getInstance());
-			this.tables.put(c, table);
-			// shadow tables created here
-			this.shadowTables.put(c, new FactTable(DefaultConflictResolver
-					.getInstance()));
+			this.factTables.put(c, table);
 		}
 
 		return table;
 	}
 
 	protected void addLeapsRules(List rules) {
-		synchronized (lock) {
+		synchronized (this.lock) {
 			this.addedRulesAfterLastFire = true;
 
 			LeapsRule rule;
@@ -933,34 +899,15 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 				rule = (LeapsRule) it.next();
 				for (int i = 0; i < rule.getNumberOfColumns(); i++) {
 					ruleHandle = new RuleHandle(this.handleFactory.getNextId(),
-							rule, i,
-							(ClassObjectType) ((ColumnConstraints) rule
+							rule, i);
+
+					this.getFactTable(
+							((ClassObjectType) ((ColumnConstraints) rule
 									.getColumnConstraintsAtPosition(i))
-									.getColumn().getObjectType(), true);
-					this.addRuleHandle(ruleHandle);
-				}
-				for (int i = 0; i < rule.getNumberOfNotColumns(); i++) {
-					ruleHandle = new RuleHandle(this.handleFactory.getNextId(),
-							rule, i,
-							(ClassObjectType) ((ColumnConstraints) rule
-									.getNotColumnConstraintsAtPosition(i))
-									.getColumn().getObjectType(), false);
+									.getColumn().getObjectType())
+									.getClassType()).addRule(this, ruleHandle);
 				}
 			}
-		}
-	}
-
-	private void addRuleHandle(RuleHandle ruleHandle) {
-		// positive
-		if (ruleHandle.isDominantFactAsserted()) {
-			this.getFactTable(
-					ruleHandle.getDominantPositionType().getClassType())
-					.addPositiveRule(this, ruleHandle);
-		} else {
-
-			this.getFactTable(
-					ruleHandle.getDominantPositionType().getClassType())
-					.addNegativeRule(this, ruleHandle);
 		}
 	}
 
@@ -978,18 +925,20 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 			try {
 				this.firing = true;
 
-				Token token;
-				boolean done;
 				try {
-					while (!this.isStackEmpty()) {
-						token = this.getTopLeapsTokenFromStack();
-						done = false;
+					while (!this.stack.isEmpty()) {
+						Token token = (Token) this.stack.peek();
+						boolean done = false;
 						while (!done) {
 							if (!token.isResume()) {
 								if (token.hasNextRuleHandle()) {
 									token.nextRuleHandle();
 								} else {
-									this.popTopTokenFromStack(token);
+									// we do not pop because something might get
+									// asserted
+									// and placed on hte top of the stack during
+									// firing
+									this.stack.remove(token);
 									done = true;
 								}
 							}
@@ -1000,7 +949,7 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 									// ready to seek to checks if any activation
 									// matches on
 									// current rule
-									this.seek(token);
+									TokenEvaluator.evaluate(token);
 
 									token.setResume(true);
 									done = true;
@@ -1026,8 +975,8 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 					this.addedRulesAfterLastFire = false;
 					// mark when method was called last time
 					this.idLastFireAllAt = this.handleFactory.getNextId();
-					// set all tables to be reseeded
-					for (Enumeration e = this.tables.elements(); e
+					// set all factTables to be reseeded
+					for (Enumeration e = this.factTables.elements(); e
 							.hasMoreElements();) {
 						((FactTable) e.nextElement()).setReseededStack(true);
 					}
@@ -1038,272 +987,8 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 		}
 	}
 
-	void seek(Token token) throws NoMatchesFoundException, Exception,
-			InvalidRuleException {
-		RuleHandle ruleHandle = token.getCurrentRuleHandle();
-		TableIterator[] iterators = new TableIterator[ruleHandle.getLeapsRule()
-				.getNumberOfColumns()];
-		int numberOfColumns = ruleHandle.getLeapsRule().getNumberOfColumns();
-		// getting iterators first
-		for (int i = 0; i < numberOfColumns; i++) {
-			// there is no dominant fact for negative based searches
-			if (token.getTokenType() == Token.ASSERTED
-					&& i == ruleHandle.getDominantPosition()) {
-				iterators[i] = TableIterator.baseFactIterator(token
-						.getDominantFactHandle());
-			} else {
-				iterators[i] = this.getFactTable(
-						ruleHandle.getLeapsRule()
-								.getColumnClassObjectTypeAtPosition(i)
-								.getClassType()).tailIterator(
-						token.getDominantFactHandle(),
-						(token.isResume() ? token.getFactHandleAtPosition(i)
-								: token.getDominantFactHandle()));
-			}
-		}
-		// check if any iterators are empty to abort
-		// check if we resume and any facts disappeared
-		boolean someIteratorsEmpty = false;
-		boolean doReset = false;
-		boolean skip = token.isResume();
-		TableIterator currentIterator;
-		for (int i = 0; i < numberOfColumns && !someIteratorsEmpty; i++) {
-			currentIterator = iterators[i];
-			if (currentIterator.isEmpty()) {
-				someIteratorsEmpty = true;
-			} else {
-				if (!doReset) {
-					if (skip
-							&& currentIterator.hasNext()
-							&& !currentIterator.peekNext().equals(
-									token.getFactHandleAtPosition(i))) {
-						skip = false;
-						doReset = true;
-					}
-				} else {
-					currentIterator.reset();
-				}
-			}
-
-		}
-		// check if one of them is empty and immediate return
-		if (someIteratorsEmpty) {
-			throw new NoMatchesFoundException();
-			// "some of tables do not have facts");
-		}
-		// iterating is done in nested loop
-		// column position in the nested loop
-		int jj = 0;
-		boolean found = false;
-		boolean done = false;
-		while (!done) {
-			currentIterator = iterators[jj];
-			if (!currentIterator.hasNext()) {
-				if (jj == 0) {
-					done = true;
-				} else {
-					//                    
-					currentIterator.reset();
-					token.setCurrentFactHandleAtPosition(jj,
-							(FactHandleImpl) null);
-					jj = jj - 1;
-					if (skip) {
-						skip = false;
-					}
-				}
-			} else {
-				currentIterator.next();
-				token.setCurrentFactHandleAtPosition(jj,
-						(FactHandleImpl) iterators[jj].current());
-				// check if match found
-				if (this.evaluatePositiveConditions(token, jj, iterators)) {
-					// start iteratating next iterator
-					// or for the last one check negative conditions and fire
-					// consequence
-					if (jj == (numberOfColumns - 1)) {
-						if (!skip) {
-							// check for negative conditions
-							if (this.evaluateNotAndExistsConditions(token)) {
-								// event support
-								PropagationContextImpl propagationContext = new PropagationContextImpl(
-										++this.propagationIdCounter,
-										(token.getTokenType() == Token.ASSERTED) ? PropagationContext.ASSERTION
-												: PropagationContext.RETRACTION,
-										(Rule) null, (Activation) null);
-								// let agenda to do its work
-								this.assertTuple(token.getTuple(),
-										propagationContext, token
-												.getCurrentRuleHandle()
-												.getLeapsRule().getRule());
-
-								done = true;
-								found = true;
-							}
-						} else {
-							skip = false;
-						}
-					} else {
-						jj = jj + 1;
-					}
-				} else {
-					if (skip) {
-						skip = false;
-					}
-				}
-			}
-		}
-		if (!found) {
-			throw new NoMatchesFoundException();
-			// "iteration did not find anything");
-		}
-	}
-
-	/**
-	 * 
-	 * Check if any conditions with max value of declaration index at this
-	 * position (<code>index</code>) are satisfied
-	 * 
-	 * @param index
-	 *            Position of the iterator that needs condition checking
-	 * @return success Indicator if all conditions at this position were
-	 *         satisfied.
-	 * @throws Exception
-	 */
-	private boolean evaluatePositiveConditions(Token token, int index,
-			TableIterator[] iterators) throws Exception {
-		FactHandleImpl factHandle = (FactHandleImpl) iterators[index].current();
-		return checkConstraints(token, token.getCurrentRuleHandle()
-				.getLeapsRule().getColumnConstraintsAtPosition(index),
-				factHandle);
-	}
-
-	private boolean checkConstraints(Token token,
-			ColumnConstraints constraints, FactHandleImpl factHandle) {
-		// check alphas
-		for (Iterator alphas = constraints.getAlpha(); alphas.hasNext();) {
-			if (!((LiteralConstraint) alphas.next()).isAllowed(factHandle,
-					token, this)) {
-				// escape immediately
-				return false;
-			}
-		}
-		// finaly beta
-		return constraints.getBeta().isAllowed(factHandle, token, this);
-
-	}
-
-	/**
-	 * Check if any of the negative conditions are satisfied success when none
-	 * found
-	 * 
-	 * @param memory
-	 * @param token
-	 * @return success
-	 * @throws Exception
-	 */
-	private boolean evaluateNotAndExistsConditions(Token token)
-			throws Exception {
-		if (!token.getCurrentRuleHandle().getLeapsRule().containsNotColumns()
-				&& !token.getCurrentRuleHandle().getLeapsRule()
-						.containsExistsColumns()) {
-			return true;
-		} else {
-			ColumnConstraints constraints;
-			// not found is used in the begining in an opposite sense
-			// to see if retracted fact trigger rule conditions to be sutisfied
-			boolean checkSucceed = true;
-			//
-			// NOT conditions checking first - checking retracted negative that
-			// becomes positive
-			if (token.getTokenType() == Token.RETRACTED) {
-				// check alphas
-				checkSucceed = checkConstraints(token, token
-						.getCurrentRuleHandle().getLeapsRule()
-						.getNotColumnConstraintsAtPosition(
-								token.getCurrentRuleHandle()
-										.getDominantPosition()), token
-						.getDominantFactHandle());
-			}
-			TableIterator tableIterator;
-			if (checkSucceed) {
-				// let's now iterate over not and exists columns to see if
-				// conditions satisfied
-
-				// get each NOT column spec and check
-				boolean done = false;
-				for (Iterator it = token.getCurrentRuleHandle().getLeapsRule()
-						.getNotColumnsIterator(); it.hasNext() && !done;) {
-					constraints = (ColumnConstraints) it.next();
-					// 1. starting with regular tables
-					// scan the whole table
-					tableIterator = this.getFactTable(
-							((ClassObjectType) constraints.getColumn()
-									.getObjectType()).getClassType())
-							.iterator();
-					// fails if exists
-					done = this.matchingFactExists(constraints, token,
-							tableIterator);
-					if (!done) {
-						// 2. checking shadow tables scan only higher facts
-						tableIterator = this.getShadowFactTable(
-								((ClassObjectType) constraints.getColumn()
-										.getObjectType()).getClassType())
-								.headIterator(token.getDominantFactHandle());
-						// fails if exists
-						done = this.matchingFactExists(constraints, token,
-								tableIterator);
-					}
-				}
-
-				if (!done) {
-					// get each EXISTS column spec and check
-					for (Iterator it = token.getCurrentRuleHandle()
-							.getLeapsRule().getExistsColumnsIterator(); it
-							.hasNext()
-							&& !done;) {
-						constraints = (ColumnConstraints) it.next();
-						// regular tables - scan the whole table
-						tableIterator = this.getFactTable(
-								((ClassObjectType) constraints.getColumn()
-										.getObjectType()).getClassType())
-								.iterator();
-						// fails if does not exists
-						done = !this.matchingFactExists(constraints, token,
-								tableIterator);
-					}
-				}
-				checkSucceed = !done;
-			}
-
-			return checkSucceed;
-		}
-	}
-
-	private boolean matchingFactExists(ColumnConstraints constraints,
-			Token token, TableIterator tableIterator) {
-		boolean found = false;
-		FactHandleImpl factHandle;
-		while (tableIterator.hasNext() && !found) {
-			factHandle = (FactHandleImpl) tableIterator.next();
-			// check alphas
-			for (Iterator alphas = constraints.getAlpha(); alphas.hasNext()
-					&& !found;) {
-				// escape immediately
-				found = ((LiteralConstraint) alphas.next()).isAllowed(
-						factHandle, token, this);
-			}
-			if (!found) {
-				// finaly beta
-				found = constraints.getBeta()
-						.isAllowed(factHandle, token, this);
-			}
-		}
-
-		return found;
-	}
-
 	protected long getIdLastFireAllAt() {
-		return idLastFireAllAt;
+		return this.idLastFireAllAt;
 	}
 
 	public String toString() {
@@ -1311,19 +996,13 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 		Object key;
 		ret = ret + "\n" + "Working memory";
 		ret = ret + "\n" + "Fact Tables by types:";
-		for (Enumeration e = this.tables.keys(); e.hasMoreElements();) {
+		for (Enumeration e = this.factTables.keys(); e.hasMoreElements();) {
 			key = e.nextElement();
 			ret = ret + "\n" + "******************   " + key;
-			((FactTable) this.tables.get(key)).toString();
-		}
-		ret = ret + "\n" + "Shadow Fact Tables by types:";
-		for (Enumeration e = this.shadowTables.keys(); e.hasMoreElements();) {
-			key = e.nextElement();
-			ret = ret + "\n" + "******************   " + key;
-			((FactTable) this.shadowTables.get(key)).toString();
+			((FactTable) this.factTables.get(key)).toString();
 		}
 		System.out.print("Stack:\n");
-		for (Iterator it = stack.iterator(); it.hasNext();) {
+		for (Iterator it = this.stack.iterator(); it.hasNext();) {
 			ret = ret + "\n" + "\t" + it.next();
 		}
 		return ret;
@@ -1339,75 +1018,108 @@ class WorkingMemoryImpl implements WorkingMemory, EventSupport,
 	 * @throws AssertionException
 	 *             If an error occurs while asserting.
 	 */
-	public void assertTuple(LeapsTuple tuple, PropagationContext context,
-			Rule rule) {
+	public void assertTuple(LeapsTuple tuple, Set blockingFactHandles,
+			PropagationContext context, Rule rule) {
 		// if the current Rule is no-loop and the origin rule is the same then
 		// return
 		if (rule.getNoLoop() && rule.equals(context.getRuleOrigin())) {
 			return;
 		}
-		Agenda agenda = this.getAgenda();
+		// see if there are blocking facts and put it on pending activations
+		// list
+		if (blockingFactHandles.size() != 0) {
+			FactHandleImpl factHandle;
+			PendingActivation item = new PendingActivation(tuple,
+					blockingFactHandles.size(), context, rule);
+			Set pendingActivations;
+			for (Iterator it = blockingFactHandles.iterator(); it.hasNext();) {
+				factHandle = (FactHandleImpl) it.next();
+				pendingActivations = (Set) this.blockingFactHandles
+						.get(factHandle);
+				if (pendingActivations == null) {
+					pendingActivations = new HashSet();
+					this.blockingFactHandles
+							.put(factHandle, pendingActivations);
+				}
+				pendingActivations.add(item);
+			}
+			return;
+		}
 
 		Duration dur = rule.getDuration();
 
 		if (dur != null && dur.getDuration(tuple) > 0) {
 			ScheduledAgendaItem item = new ScheduledAgendaItem(context
-					.getPropagationNumber(), tuple, this.getAgenda(), context,
-					rule);
-			agenda.scheduleItem(item);
+					.getPropagationNumber(), tuple, this.agenda, context, rule);
+			this.agenda.scheduleItem(item);
 			tuple.setActivation(item);
 			this.getAgendaEventSupport().fireActivationCreated(item);
 		} else {
 			// -----------------
-			// Lazy instantiation and addition to the Agenda of AgendGroup implementations
+			// Lazy instantiation and addition to the Agenda of AgendGroup
+			// implementations
 			// ----------------
 			AgendaGroupImpl agendaGroup = null;
 			if (rule.getAgendaGroup() == null
 					|| rule.getAgendaGroup().equals("")
 					|| rule.getAgendaGroup().equals(AgendaGroup.MAIN)) {
-				// Is the Rule AgendaGroup undefined? If it is use MAIN, which is added to the Agenda by default
-				agendaGroup = (AgendaGroupImpl) agenda
+				// Is the Rule AgendaGroup undefined? If it is use MAIN, which
+				// is added to the Agenda by default
+				agendaGroup = (AgendaGroupImpl) this.agenda
 						.getAgendaGroup(AgendaGroup.MAIN);
 			} else {
-				// AgendaGroup is defined, so try and get the AgendaGroup from the Agenda
-				agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup(rule
+				// AgendaGroup is defined, so try and get the AgendaGroup from
+				// the Agenda
+				agendaGroup = (AgendaGroupImpl) this.agenda.getAgendaGroup(rule
 						.getAgendaGroup());
 			}
 
 			if (agendaGroup == null) {
-				// The AgendaGroup is defined but not yet added to the Agenda, so create the AgendaGroup and add to the Agenda.
+				// The AgendaGroup is defined but not yet added to the Agenda,
+				// so create the AgendaGroup and add to the Agenda.
 				agendaGroup = new AgendaGroupImpl(rule.getAgendaGroup());
-				this.getAgenda().addAgendaGroup(agendaGroup);
+				this.agenda.addAgendaGroup(agendaGroup);
 			}
 
-			// set the focus if rule autoFocus is true 
+			// set the focus if rule autoFocus is true
 			if (rule.getAutoFocus()) {
-				agenda.setFocus(agendaGroup);
+				this.agenda.setFocus(agendaGroup);
 			}
 
 			ActivationQueue queue = agendaGroup.getActivationQueue(rule
 					.getSalience());
 			AgendaItem item = new AgendaItem(context.getPropagationNumber(),
 					tuple, context, rule, queue);
+			// to take activation of the agenda on retraction
+			FactHandleImpl factHandle;
+			PostedActivation postedActivation = new PostedActivation(item);
+			Set postedActivations;
+			FactHandleImpl[] factHandles = (FactHandleImpl[]) tuple
+					.getFactHandles();
+			for (int i = 0; i < factHandles.length; i++) {
+				factHandle = factHandles[i];
+				postedActivations = (Set) this.factHandlesWithActivations
+						.get(factHandle);
+				if (postedActivations == null) {
+					postedActivations = new HashSet();
+					this.factHandlesWithActivations.put(factHandle,
+							postedActivations);
+				}
+				postedActivations.add(postedActivation);
+			}
 
 			queue.add(item);
 
 			// Makes sure the Lifo is added to the AgendaGroup priority queue
-			// If the AgendaGroup is already in the priority queue it just returns.
+			// If the AgendaGroup is already in the priority queue it just
+			// returns.
 			agendaGroup.addToAgenda(queue);
 			tuple.setActivation(item);
 			this.getAgendaEventSupport().fireActivationCreated(item);
 		}
 	}
 
-	public void retractTuple(LeapsTuple tuple, PropagationContext context,
-			WorkingMemoryImpl workingMemory) {
-		Activation activation = tuple.getActivation();
-		if (activation != null) {
-			activation.remove();
-			workingMemory.getAgendaEventSupport().fireActivationCancelled(
-					activation);
-		}
+	protected long increamentPropagationIdCounter() {
+		return ++this.propagationIdCounter;
 	}
-
 }
