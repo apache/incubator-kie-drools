@@ -135,8 +135,8 @@ public class ActivationQueue
     }
     
     public Activation[] getActivations() {
-        List activations = new ArrayList();
-        for (LinkedListNode node = list.getFirst(); node != null; node = node.getNext()) {
+        List activations = new ArrayList( this.list.size() );
+        for (LinkedListNode node = this.list.getFirst(); node != null; node = node.getNext()) {
             activations.add( node );
         }
         return (Activation[]) activations.toArray( new Activation[activations.size()] );
