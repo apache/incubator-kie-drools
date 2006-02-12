@@ -151,12 +151,12 @@ public class ClassFieldInspector {
                                          String[] exceptions) {
             //only want public methods that start with 'get' or 'is'
             if (access == Opcodes.ACC_PUBLIC) {
-                if (name.startsWith("get") || name.startsWith("is")) {
+                if (signature.startsWith( "()" ) && ( name.startsWith("get") || name.startsWith("is") ) ) {
                     try {
                         Method method = clazz.getMethod(name, null);
                         methodList.add(method);
                     } catch (NoSuchMethodException e) {
-                        //TODO: must be a better way. We only want fields with no args.
+                        //TODO: this shouldn't swallow
                     }
                 }
             }
