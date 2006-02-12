@@ -31,6 +31,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceException;
+import org.drools.util.LinkedListNode;
 import org.drools.util.PriorityQueue;
 
 /**
@@ -256,6 +257,14 @@ public class Agenda
         }
         return (Activation[]) list.toArray( new Activation[list.size()] );
     }
+           
+    public Activation[] getScheduledActivations() {
+        List list = new ArrayList(this.scheduledActivations.size());
+        for (LinkedListNode node = this.scheduledActivations.getFirst(); node != null; node = node.getNext() ) {
+            list.add( node );
+        }        
+        return (Activation[]) list.toArray( new Activation[list.size()] );
+    }    
 
     /**
      * Fire the next scheduled <code>Agenda</code> item.
