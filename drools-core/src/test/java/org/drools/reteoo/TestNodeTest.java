@@ -114,7 +114,7 @@ public class TestNodeTest extends DroolsTestCase {
      * 
      * @throws FactException
      */
-    public void testAllowedWithMemory() throws FactException {
+    public void testAllowed() throws FactException {
 
         // Create a test node that always returns true 
         TestNode node = new TestNode( 1,
@@ -157,7 +157,7 @@ public class TestNodeTest extends DroolsTestCase {
      * @throws FactException
      */
     public void testNotAllowed() throws FactException {
-        /* Create a test node that always returns false */
+        // Create a test node that always returns false 
         TestNode node = new TestNode( 1,
                                       new MockTupleSource( 15 ),
                                       new MockCondition( null,
@@ -166,16 +166,16 @@ public class TestNodeTest extends DroolsTestCase {
         MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
 
-        /* Create the Tuple */
+        // Create the Tuple
         FactHandleImpl f0 = new FactHandleImpl( 0 );
         ReteTuple tuple = new ReteTuple( f0 );
 
-        /* Tuple should pass and propagate */
+        // Tuple should pass and propagate 
         node.assertTuple( tuple,
                           this.context,
                           this.workingMemory );
 
-        /* make sure no assertions were propagated */
+        // make sure no assertions were propagated
         assertEquals( 0,
                       sink.getAsserted().size() );
 
@@ -183,12 +183,12 @@ public class TestNodeTest extends DroolsTestCase {
 
 
     public void testException() throws FactException {
-        /* Create a condition that will always throw an exception */
+        // Create a condition that will always throw an exception
         MockCondition condition = new MockCondition( null,
                                                      true );
         condition.setTestException( true );
 
-        /* Create the TestNode */
+        // Create the TestNode 
         TestNode node = new TestNode( 1,
                                       new MockTupleSource( 15 ),
                                       condition );

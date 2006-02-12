@@ -87,7 +87,7 @@ public class ActivationQueue
      * @param active
      *      boolena value that sets the activate state. 
      */
-    public void setActivate(boolean active) {
+    public void setActivated(boolean active) {
         this.active = active;
     }
 
@@ -105,7 +105,7 @@ public class ActivationQueue
      * @param activation
      *      the <code>Activation</code> to be placed onto the queue
      */
-    public void add(Activation activation) {
+    public void add(Activation activation) {        
         this.list.add( (LinkedListNode ) activation );
     }
     
@@ -140,4 +140,7 @@ public class ActivationQueue
         return this.list.isEmpty();
     }
 
+    public int size() {
+        return this.list.size();
+    }
 }

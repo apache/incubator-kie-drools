@@ -193,8 +193,12 @@ class ReteTuple extends AbstractBaseLinkedListNode
     public LinkedList getLinkedTuples() {
         return this.linkedTuples;
     }
+    
+    public void clearLinkedTuple() {
+        this.linkedTuples.clear();
+    }
 
-    public void addMatch(FactHandleImpl handle,
+    public void addTupleMatch(FactHandleImpl handle,
                          TupleMatch node) {
         if ( this.matches == Collections.EMPTY_MAP ) {
             this.matches = new HashMap();
@@ -210,9 +214,13 @@ class ReteTuple extends AbstractBaseLinkedListNode
     public Map getTupleMatches() {
         return this.matches;
     }
+    
+    public TupleMatch getTupleMatch(FactHandleImpl handle) {
+        return (TupleMatch) this.matches.get( handle );
+    }    
 
-    public boolean removeMatch(FactHandleImpl handle) {
-        return ( this.matches.remove( handle ) != null);
+    public TupleMatch removeMatch(FactHandleImpl handle) {
+        return (TupleMatch) this.matches.remove( handle );
     }
 
 //    public void remove(PropagationContext context,

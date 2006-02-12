@@ -257,7 +257,6 @@ class Builder {
             if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
                                                                fieldConstraint,
-                                                               true,
                                                                objectSource ) );
             } else {
                 predicateConstraints.add( fieldConstraint );

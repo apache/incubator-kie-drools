@@ -129,6 +129,20 @@ class LeftInputAdapterNode extends TupleSource
                                                                  workingMemory );
         }
     }
+    
+    public void modifyObject(FactHandleImpl handle,
+                              PropagationContext context,
+                              WorkingMemoryImpl workingMemory) {
+        Map memory = (Map) workingMemory.getNodeMemory( this );
+        LinkedList list = (LinkedList) memory.get( handle );
+
+        int i = 0;
+        for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
+            ((TupleSink) getTupleSinks().get( i++ )).modifyTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
+                                                                  context,
+                                                                  workingMemory );
+        }
+    }    
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)

@@ -76,4 +76,11 @@ public class MockTupleSink extends TupleSource
 
     }
 
+    public void modifyTuple(ReteTuple tuple,
+                            PropagationContext context,
+                            WorkingMemoryImpl workingMemory) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

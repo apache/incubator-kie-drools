@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,7 +15,6 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -49,11 +49,12 @@ abstract class ObjectSource extends BaseNode
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    
+
     /**
      * Single parameter constructor that specifies the unique id of the node.
+     * 
      * @param id
-     */    
+     */
     ObjectSource(int id) {
         super( id );
     }
@@ -64,7 +65,8 @@ abstract class ObjectSource extends BaseNode
 
     /**
      * Adds the <code>ObjectSink</code> so that it may receive
-     * <code>FactHandleImpl</code> propagated from this <code>ObjectSource</code>.
+     * <code>FactHandleImpl</code> propagated from this
+     * <code>ObjectSource</code>.
      * 
      * @param objectSink
      *            The <code>ObjectSink</code> to receive propagated
@@ -77,7 +79,7 @@ abstract class ObjectSource extends BaseNode
     }
 
     /**
-     * Removes the <code>ObjectSink</code> 
+     * Removes the <code>ObjectSink</code>
      * 
      * @param objectSink
      *            The <code>ObjectSink</code> to remove
@@ -106,7 +108,8 @@ abstract class ObjectSource extends BaseNode
                                                                        context,
                                                                        workingMemory );
             }
-        } else {
+        }
+        else {
             ((ObjectSink) this.objectSinks.get( this.objectSinks.size() - 1 )).assertObject( handle,
                                                                                              context,
                                                                                              workingMemory );
@@ -123,7 +126,7 @@ abstract class ObjectSource extends BaseNode
      *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action            
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
-     * 
+     *
      */
     protected void propagateRetractObject(FactHandleImpl handle,
                                           PropagationContext context,
@@ -134,7 +137,17 @@ abstract class ObjectSource extends BaseNode
                                                                     workingMemory );
         }
     }
-    
+
+    protected void propagateModifyObject(FactHandleImpl handle,
+                                         PropagationContext context,
+                                         WorkingMemoryImpl workingMemory) {
+        for ( int i = 0, size = this.objectSinks.size(); i < size; i++ ) {
+            ((ObjectSink) this.objectSinks.get( i )).modifyObject( handle,
+                                                                   context,
+                                                                   workingMemory );
+        }
+    }
+
     /**
      * Retrieve the <code>ObectsSinks</code> that receive propagated
      * <code>FactHandleImpl</code>s.

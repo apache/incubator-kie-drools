@@ -492,8 +492,4 @@ public class EvaluatorFactory {
             return "Integer >=";
         }         
     }
-    
-    public static long getIntEqEvalCount() {
-        return IntegerEqualEvaluator.count;
-    }
 }

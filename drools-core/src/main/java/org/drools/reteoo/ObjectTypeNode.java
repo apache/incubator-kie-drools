@@ -151,6 +151,16 @@ class ObjectTypeNode extends ObjectSource
                                 context,
                                 workingMemory );
     }
+    
+    public void modifyObject(FactHandleImpl handle,
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
+        PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
+
+        propagateModifyObject( handle,
+                               context,
+                               workingMemory );
+    }    
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)

@@ -17,6 +17,7 @@ package org.drools.common;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.spi.ConflictResolver;
@@ -103,9 +104,51 @@ public class AgendaGroupImpl
      */
     public void addToAgenda(ActivationQueue queue) {
         if ( !queue.isActive() ) {
-            queue.setActivate( true );
+            queue.setActivated( true );
             this.priorityQueue.add( queue );
         }
+    }    
+    
+    /* (non-Javadoc)
+     * @see org.drools.spi.AgendaGroup#size()
+     */
+    public int size() {
+        // Iterates the PriorityQueue getting the size of each ActivationQueue. Empty ActivationQueues are removed
+        int size = 0;
+        for (Iterator it = this.priorityQueue.iterator(); it.hasNext(); ) {
+            ActivationQueue queue = (ActivationQueue) it.next();
+            if ( !queue.isEmpty() ) {
+                size += queue.size();                
+            } else {
+                queue.setActivated( false );
+                it.remove();
+            }
+        }
+        return size;
+    }
+    
+    /**
+     * Iterates a PriorityQueue removing empty entries until it finds a populated entry and return true,
+     * otherwise it returns false;
+     * 
+     * @param priorityQueue
+     * @return
+     */
+    public boolean isEmpty() {
+        // Iterate removing empty queues until we either find a populated queue or there are no more queues
+        boolean empty = this.priorityQueue.isEmpty();
+        while ( ! empty ) {
+            ActivationQueue queue = (ActivationQueue) this.priorityQueue.get();
+            if ( queue.isEmpty() ) {
+                queue.setActivated( false );
+                this.priorityQueue.remove();
+            }  else {
+                break;
+            }
+            empty = this.priorityQueue.isEmpty();
+        }        
+        
+        return empty;
     }    
 
     public String toString() {
