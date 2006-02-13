@@ -30,20 +30,22 @@ public class FieldAccessorGenerator {
      * Looks up an instance of a field accessor for the given class.
      * If none is found it will generate one, and then cache it.
      */
-    public FieldAccessor getInstanceFor(Class cls) throws Exception {
+    public FieldAccessorMap getInstanceFor(Class cls) throws Exception {
         Object obj = cache.get(cls);
         if (obj == null) {
             obj = newInstanceFor(cls);
             cache.put(cls, obj);
         }
-        return (FieldAccessor) obj;
+        return (FieldAccessorMap) obj;
     }
+    
+
     
     /**
      * Generate a new implementation for of a FieldAccessor for the given class.
      * No caching. Uses ASM.
      */
-    public FieldAccessor newInstanceFor(Class cls) throws Exception {
+    public FieldAccessorMap newInstanceFor(Class cls) throws Exception {
         
         ClassFieldInspector inspector = new ClassFieldInspector(cls);
         Method[] getters = (Method[]) inspector.getPropertyGetters().toArray(new Method[] {});
@@ -53,11 +55,13 @@ public class FieldAccessorGenerator {
         byte[] generatedClass = AccessorClassFactory.generateClass(getters, cls, generatedClassName);
         ByteArrayClassLoader cl = new ByteArrayClassLoader( Thread.currentThread().getContextClassLoader() );
         cl.addByteArray( generatedClassName,  generatedClass);
-        return (FieldAccessor) cl.loadClass( generatedClassName ).newInstance();
+        FieldAccessor accessor = (FieldAccessor) cl.loadClass( generatedClassName ).newInstance();
+        FieldAccessorMap map = new FieldAccessorMap(accessor, inspector.getFieldNames());
+        return map;
     }
-
-
-
+    
+    
+    
     /**
      * OK, deep breaths, this is where it all happens...
      * If you don't know ASM, and a bit about bytecode, then move along, theres nothing to see here.

@@ -1,6 +1,7 @@
 package org.drools.util.asm;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -12,6 +13,14 @@ public class ClassFieldInspectorTest extends TestCase {
         assertEquals("getAge", ((Method) ext.getPropertyGetters().get(0)).getName());
         assertEquals("isHappy", ((Method) ext.getPropertyGetters().get(1)).getName());
         assertEquals("getName", ((Method) ext.getPropertyGetters().get(2)).getName());
+        
+        Map names = ext.getFieldNames();
+        assertNotNull(names);
+        assertEquals(3, names.size());
+        assertEquals(0, ((Integer)names.get("age")).intValue());
+        assertEquals(1, ((Integer)names.get("happy")).intValue());
+        assertEquals(2, ((Integer)names.get("name")).intValue());
+        
     }
     
     static class Person {
@@ -37,6 +46,12 @@ public class ClassFieldInspectorTest extends TestCase {
             this.name = name;
         }
         
+        //ignore this as it returns void type
+        public void getNotAGetter() {
+            return;
+        }
+        
+        //ignore this as private
         private boolean isBogus() {
             return false;
         }
