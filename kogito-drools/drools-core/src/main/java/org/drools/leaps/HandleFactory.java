@@ -24,6 +24,8 @@ import org.drools.spi.FactHandleFactory;
  * 
  */
 class HandleFactory implements FactHandleFactory {
+	private static final long serialVersionUID = 8510623248591449450L;
+
 	private long counter;
 
 	HandleFactory() {
@@ -32,11 +34,21 @@ class HandleFactory implements FactHandleFactory {
 
 	/**
 	 * fact handle with no object
-	 *  
+	 * 
 	 * @see org.drools.reteoo.FactHandleFactory
 	 */
 	public final FactHandle newFactHandle() {
 		return new FactHandleImpl(this.getNextId(), null);
+	}
+
+	/**
+	 * leaps handle 
+	 * 
+	 * @param object
+	 * @return leaps handle
+	 */
+	public final FactHandle newFactHandle(Object object) {
+		return new FactHandleImpl(this.getNextId(), object);
 	}
 
 	/**
@@ -48,8 +60,8 @@ class HandleFactory implements FactHandleFactory {
 	}
 
 	/**
-	 * it does not make sense in leaps context. so we generate fact handle 
-	 * as we did with no counter supplied
+	 * it does not make sense in leaps context. so we generate fact handle as we
+	 * did with no counter supplied
 	 * 
 	 * @see org.drools.reteoo.FactHandleFactory
 	 */

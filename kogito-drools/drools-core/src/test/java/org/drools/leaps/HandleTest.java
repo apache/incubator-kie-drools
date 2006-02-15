@@ -16,35 +16,17 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import org.drools.spi.Activation;
+import junit.framework.TestCase;
 
-/**
- * This is wrapper for drools activation to keep track of activations
- * that were revoked from the agenda due to the fact retraction
- * 
- * @author Alexander Bagerman
- * 
- */
-class PostedActivation {
-	boolean removed;
+public class HandleTest extends TestCase {
 
-	Activation activation;
-
-	public PostedActivation(Activation activation) {
-		this.activation = activation;
-		this.removed = false;
-	}
-
-	protected boolean isRemoved() {
-		return this.removed;
-	}
-
-	protected void setRemoved() {
-		this.removed = true;
-	}
-
-	protected Activation getActivation() {
-		return this.activation;
+	/*
+	 * Test method for 'leaps.LeapsFactHandle.getId()'
+	 */
+	public void testGetId() {
+		Handle handle = new Handle(123456789, new String("test124"));
+		assertEquals(handle.getId(), 123456789);
+		assertEquals(handle.getObject(), "test124");
 	}
 
 }

@@ -279,7 +279,7 @@ class Token implements Tuple, Serializable {
 	 * @see java.lang.Object
 	 */
 	public String toString() {
-		String ret = "TOKEN [" + dominantFactHandle + "]\n" + "\tRULE : "
+		String ret = "TOKEN [" + this.dominantFactHandle + "]\n" + "\tRULE : "
 				+ this.currentRuleHandle + "\n";
 		if (this.currentFactHandles != null) {
 			for (int i = 0; i < this.currentFactHandles.length; i++) {

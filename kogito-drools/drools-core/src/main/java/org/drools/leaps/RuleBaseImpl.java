@@ -43,15 +43,13 @@ import org.drools.spi.RuleBaseContext;
  * 
  */
 public class RuleBaseImpl implements RuleBase {
+	private static final long serialVersionUID = 1487738104393155409L;
 
 	private HashMap leapsRules = new HashMap();
 
 	/**
-	 * TODO we do not need it here. and it references RETEoo class
-	 * 
 	 * The fact handle factory.
 	 */
-	/** The fact handle factory. */
 	private final HandleFactory factHandleFactory;
 
 	private Set ruleSets;
@@ -232,4 +230,8 @@ public class RuleBaseImpl implements RuleBase {
 			((WorkingMemoryImpl) it.next()).addLeapsRules(rules);
 		}
 	}
+
+    public Set getWorkingMemories() {
+        return this.workingMemories.keySet();
+    }
 }

@@ -65,7 +65,7 @@ public class Table {
 		} else {
 			SortedMap bufMap = this.map.headMap(object);
 			if (!bufMap.isEmpty()) {
-				TableRecord bufRec = (TableRecord) map.get(bufMap.lastKey());
+				TableRecord bufRec = (TableRecord) this.map.get(bufMap.lastKey());
 				if (bufRec.right != null) {
 					bufRec.right.left = newRecord;
 				}

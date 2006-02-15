@@ -20,6 +20,10 @@ import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 
 /**
+ * Tuple/rule wrapper for such combinations were they are pending due
+ * to NOT conditions being satisfied by "blocking" facts. As blocking
+ * facts retracted counter goes down and when the last one removed 
+ * AgendaItem submitted to Agenda for firing (if it's still valid)
  * 
  * @author Alexander Bagerman
  * 
@@ -40,7 +44,7 @@ class PendingActivation {
 	}
 
 	protected boolean containsBlockingFacts() {
-		return this.blockingFactsCount != 0;
+		return this.blockingFactsCount > 0;
 	}
 
 	protected void decrementBlockingFactsCount() {

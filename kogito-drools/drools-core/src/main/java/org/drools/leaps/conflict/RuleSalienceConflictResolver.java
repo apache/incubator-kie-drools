@@ -30,7 +30,7 @@ import org.drools.leaps.RuleHandle;
  * @see org.drools.leaps.ConflictResolver
  * @see org.drools.spi.ConflictResolver
  */
-public class RuleSalienceConflictResolver implements Comparator {
+class RuleSalienceConflictResolver implements Comparator {
 	/** Singleton instance. */
 	private static final RuleSalienceConflictResolver INSTANCE = new RuleSalienceConflictResolver();
 
