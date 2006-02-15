@@ -1,0 +1,66 @@
+<project>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+	<version>3.0-M1-dev</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>drools-compiler</artifactId>
+
+  <name>Drools :: Compiler</name>
+  <version>3.0-M1-dev</version>
+
+  <repositories>
+    <repository>
+      <id>basedir</id>
+      <url>file://${basedir}/../repository</url>
+    </repository>
+  </repositories>  
+
+
+  <!--  will keep JCI local for now. Move to ibiblio when its updated  -->
+  <dependencies>
+	<!-- required for asm stuff. Using jarjar to isolate ASM version. (its very small) -->
+    <dependency>
+      <groupId>drools-asm</groupId>
+      <artifactId>drools-asm</artifactId>
+      <version>2.2.1</version>
+    </dependency> 
+      
+    <dependency>
+      <groupId>jci</groupId>
+      <artifactId>jci</artifactId>
+      <version>SNAPSHOT-2005</version>
+    </dependency> 
+
+	<!-- only needed for the default expander in parser/lang.. to remove when it is refactored into another module. -->
+	<dependency>
+	    <groupId>commons-lang</groupId>
+	    <artifactId>commons-lang</artifactId>
+	    <version>2.1</version>
+	</dependency>    
+             
+    <!-- required for util.proxy stuff. It should be refactored into tools module. -->    
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>2.1_3</version>
+    </dependency>       
+    
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-smf</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+			<groupId>freemarker</groupId>
+			<artifactId>freemarker</artifactId>    
+			<version>2.3.4</version>
+    </dependency>      
+           
+  </dependencies>
+
+</project>
