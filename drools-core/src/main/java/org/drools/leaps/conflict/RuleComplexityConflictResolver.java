@@ -29,7 +29,7 @@ import org.drools.leaps.RuleHandle;
  * @see org.drools.leaps.ConflictResolver
  * @see org.drools.spi.ConflictResolver
  */
-public class RuleComplexityConflictResolver implements Comparator {
+class RuleComplexityConflictResolver implements Comparator {
 
 	/** Singleton instance. */
 	private static final RuleComplexityConflictResolver INSTANCE = new RuleComplexityConflictResolver();

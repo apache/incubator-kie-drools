@@ -27,13 +27,13 @@ import org.drools.leaps.ConflictResolver;
  * 
  */
 
-public abstract class AbstractConflictResolver implements ConflictResolver {
+abstract class AbstractConflictResolver implements ConflictResolver {
 	// need for comparator
-	public static int compare(int i1, int i2) {
+	static int compare(int i1, int i2) {
 		return i1 - i2;
 	}
 
-	public static int compare(long l1, long l2) {
+	static int compare(long l1, long l2) {
 		return (int) (l1 - l2);
 	}
 

@@ -55,11 +55,11 @@ class LeapsTuple implements Tuple, Serializable {
 	 */
 	public boolean dependsOn(FactHandle handle) {
 		for (int i = 0; i < this.factHandles.length; i++) {
-			if (!handle.equals(this.factHandles[i])) {
-				return false;
+			if (handle.equals(this.factHandles[i])) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**

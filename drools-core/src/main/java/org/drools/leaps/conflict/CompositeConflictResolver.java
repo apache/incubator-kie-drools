@@ -34,7 +34,7 @@ import java.util.Comparator;
  * @see org.drools.spi.ConflictResolver
  */
 
-public class CompositeConflictResolver extends AbstractConflictResolver {
+class CompositeConflictResolver extends AbstractConflictResolver {
 	private final Comparator[] factResolvers;
 
 	private final Comparator[] ruleResolvers;
@@ -50,8 +50,8 @@ public class CompositeConflictResolver extends AbstractConflictResolver {
 			public int compare(Object o1, Object o2) {
 				int ret = 0;
 				if (o1 != o2) {
-					for (int i = 0; ret == 0 && i < factResolvers.length; ++i) {
-						ret = factResolvers[i].compare(o1, o2);
+					for (int i = 0; ret == 0 && i < CompositeConflictResolver.this.factResolvers.length; ++i) {
+						ret = CompositeConflictResolver.this.factResolvers[i].compare(o1, o2);
 					}
 				}
 				return ret;
@@ -64,8 +64,8 @@ public class CompositeConflictResolver extends AbstractConflictResolver {
 			public int compare(Object o1, Object o2) {
 				int ret = 0;
 				if (o1 != o2) {
-					for (int i = 0; ret == 0 && i < ruleResolvers.length; ++i) {
-						ret = ruleResolvers[i].compare(o1, o2);
+					for (int i = 0; ret == 0 && i < CompositeConflictResolver.this.ruleResolvers.length; ++i) {
+						ret = CompositeConflictResolver.this.ruleResolvers[i].compare(o1, o2);
 					}
 				}
 				return ret;
