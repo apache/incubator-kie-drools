@@ -64,7 +64,7 @@ public class Parser {
     private Expander expander;
     private Expander consequenceExpander;
 	private List rules;
-    private Map applicationData;
+    private Map globalDeclarations;
     private String functions;
     private int lineNumber;
 
@@ -77,7 +77,7 @@ public class Parser {
 		this.imports = new ArrayList();
 		this.rules   = new ArrayList();
         this.expander = null;
-        this.applicationData = new HashMap();
+        this.globalDeclarations = new HashMap();
         this.consequenceExpander = new ConsequenceExpander();
         this.lineNumber = 0;
 	}
@@ -160,7 +160,7 @@ public class Parser {
         if ( matcher.matches() ) {
             consumeDiscard();
             
-            applicationData.put( matcher.group( 2 ).trim(), matcher.group( 1 ).trim() );
+            globalDeclarations.put( matcher.group( 2 ).trim(), matcher.group( 1 ).trim() );
             return true;
         }
         
@@ -526,8 +526,8 @@ public class Parser {
     /**
      * @return A Map<<String>identifier, <String>Class> view of the app data
      */
-    public Map getApplicationData() {
-        return this.applicationData;
+    public Map getGlobalDeclarations() {
+        return this.globalDeclarations;
     }
 
 }

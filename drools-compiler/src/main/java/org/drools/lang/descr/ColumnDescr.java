@@ -7,14 +7,14 @@ import java.util.List;
 public class ColumnDescr extends PatternDescr {
     private int    index;
     private String objectType;
-    private String binding;
+    private String identifier;
     private List   descrs = Collections.EMPTY_LIST;
 
     public ColumnDescr(int index,
                        String objectType,
-                       String binding) {
+                       String identifier) {
         this.objectType = objectType;
-        this.binding = binding;
+        this.identifier = identifier;
     }
 
     public void addDescr(PatternDescr patternDescr) {
@@ -32,8 +32,8 @@ public class ColumnDescr extends PatternDescr {
         return objectType;
     }
 
-    public String getBinding() {
-        return binding;
+    public String getIdentifier() {
+        return identifier;
     }
 
     public List getDescrs() {

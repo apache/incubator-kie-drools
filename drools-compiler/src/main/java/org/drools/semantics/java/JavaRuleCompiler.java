@@ -1,5 +1,8 @@
 package org.drools.semantics.java;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
@@ -23,6 +26,7 @@ import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueDescr;
+import org.drools.rule.ColumnBinding;
 import org.drools.rule.Declaration;
 import org.drools.rule.FieldBinding;
 import org.drools.rule.Rule;
@@ -44,7 +48,10 @@ public class JavaRuleCompiler {
     private Map invokerMethods;
     private List invokerImpls;
     
-    private Map bindings;    
+    private Map globals;
+    private Set usedGlobals;
+    
+    private Map bindings;   
     
     // @todo move to an interface so it can work as a decorator
     private JavaExprAnalyzer analyzer = new JavaExprAnalyzer(); 
@@ -57,15 +64,17 @@ public class JavaRuleCompiler {
         this.invokerMethods = new HashMap();
         this.invokerImpls = new ArrayList();
         this.bindings = new HashMap();
+        this.globals = ruleSetBundle.getRuleSet().getGlobalDeclarations();
+        this.usedGlobals = new HashSet();
     }
     
-    public void configure(Rule rule, AndDescr lhs, ConsequenceDescr rhs) throws IOException, TemplateException, TokenStreamException, RecognitionException {
+    public void configure(Rule rule, AndDescr lhs, ConsequenceDescr rhs) throws IOException, TemplateException, TokenStreamException, RecognitionException, ClassNotFoundException, IntrospectionException {
         this.rule = rule;
         configure( lhs );
     }
     
-    private void configure(ConditionalElement ce) throws IOException, TemplateException, TokenStreamException, RecognitionException {
-        for (Iterator it = ce.getDescrs().iterator(); it.hasNext(); ) {
+    private void configure(ConditionalElement descr) throws IOException, TemplateException, TokenStreamException, RecognitionException, ClassNotFoundException, IntrospectionException {
+        for (Iterator it = descr.getDescrs().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof ConditionalElement ) {
                 configure( (ConditionalElement) object );
@@ -75,15 +84,19 @@ public class JavaRuleCompiler {
         }
     }
     
-    private void configure(ColumnDescr column) throws IOException, TemplateException, TokenStreamException, RecognitionException {
-        if ( column.getBinding() != null || column.getBinding().equals( "" ) ) {
-            
+    private void configure(ColumnDescr column) throws IOException, TemplateException, TokenStreamException, RecognitionException, ClassNotFoundException, IntrospectionException {
+        Class clazz = Class.forName( column.getObjectType());  
+        
+        // We need to keep the type of the binding, so it can be specified in the imports of the generated code
+        // We can reuse this as part of the ruel generation
+        if ( column.getIdentifier() != null || column.getIdentifier().equals( "" ) ) {
+            this.bindings.put( column.getIdentifier(), clazz );         
         }
         
         for (Iterator it = column.getDescrs().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof FieldBindingDescr ) {
-                configure( column, (FieldBindingDescr) object );
+                configure( clazz, (FieldBindingDescr) object );
             } else if ( object instanceof BoundVariableDescr ) {
                 configure( column, (BoundVariableDescr) object );
             } else if ( object instanceof ReturnValueDescr ) {
@@ -100,22 +113,15 @@ public class JavaRuleCompiler {
         // generate invoker
     }    
 
-    private void configure(ColumnDescr column, FieldBindingDescr fieldBinding) throws ClassNotFoundException {
-        Class clazz = Class.forName( fieldBinding.getFieldName() );        
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            fieldBinding.getFieldName() );
-
-        FieldBinding binding = new FieldBinding( fieldBinding.getIdentifier(),
-                                 null,
-                                 extractor,
-                                 column.getIndex() );
-        
-        bindings.put( fieldBinding.getIdentifier(), binding );
+    private void configure(Class parentClazz, FieldBindingDescr fieldBinding) throws ClassNotFoundException, IntrospectionException {
+        // We need to keep the type of the binding, so it can be specified in the imports of the generated code
+        // We can reuse this as part of the ruel generation        
+        bindings.put( fieldBinding.getIdentifier(), getClassType( parentClazz,
+                                                                  fieldBinding.getFieldName() ) );
     }
     
     private void configure(ColumnDescr column, BoundVariableDescr boundVariable) {
-        // generate method
-        // generate invoker
+        // Do nothing no code needs to be generated for this one.
     }    
     
     private void configure(ColumnDescr column, ReturnValueDescr returnValue) throws IOException, TemplateException, TokenStreamException, RecognitionException {
@@ -163,21 +169,13 @@ public class JavaRuleCompiler {
 //        }
 //    }
     
-    private Parameter[] getParameters(Map globals,
-                                      Set usedGlobals,
-                                      String text)
+    private List getUsedGlobals(String text)
     {
         List list = new ArrayList();
 
-        Set keys = globals.keySet();
-        String key;
-        Class clazz;
-        String type;
-        int nestedClassPosition;
-
-        for ( Iterator it = keys.iterator(); it.hasNext(); )
+        for ( Iterator it = globals.keySet().iterator(); it.hasNext(); )
         {
-            key = (String) it.next();
+            String key = (String) it.next();
 
             /*
              * poor mans check. Only add the application variable if it appears as text in the script
@@ -186,10 +184,10 @@ public class JavaRuleCompiler {
             {
                 continue;
             }
-            clazz = (Class) globals.get( key );
+            Class clazz = (Class) globals.get( key );
 
-            type = clazz.getName();
-            nestedClassPosition = type.indexOf( '$' );
+            String type = clazz.getName();
+            int nestedClassPosition = type.indexOf( '$' );
 
             if ( nestedClassPosition != -1 )
             {
@@ -199,13 +197,12 @@ public class JavaRuleCompiler {
 
             usedGlobals.add( key );
 
-            imports.add( type );
-
-            list.add( new Parameter( type,
-                                     key ) );
+            if (!list.contains( key )) {
+                list.add( key );
+            }
         }
 
-        return (Parameter[]) list.toArray( new Parameter[list.size()] );
+        return list;
     }   
     
     /**
@@ -242,5 +239,19 @@ public class JavaRuleCompiler {
         }
 
         return newName;
+    }    
+    
+    private Class getClassType(Class clazz,
+                               String name) throws IntrospectionException {
+        Class fieldType = null;
+        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
+        for ( int i = 0; i < descriptors.length; i++ ) {
+            if ( descriptors[i].getName().equals( name ) ) {
+                fieldType = descriptors[i].getPropertyType();
+                break;
+            }
+        }
+        return fieldType;
+
     }    
 }
