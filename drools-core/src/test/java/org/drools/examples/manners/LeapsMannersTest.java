@@ -1129,55 +1129,49 @@ public class LeapsMannersTest extends TestCase {
     }
 
     private FieldConstraint getLiteralConstraint(Column column,
+                                                 String fieldName,
+                                                 Object fieldValue,
+                                                 Evaluator evaluator) throws IntrospectionException {
+             Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+
+             FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                 fieldName );
+             
+             Field field = new MockField( fieldName,
+                                          fieldValue,
+                                          extractor.getIndex() );
+
+
+             return new LiteralConstraint( field,
+                                           extractor,
+                                           evaluator );
+         }
+
+         private Constraint getFieldBinding(Column column,
                                             String fieldName,
-                                            Object fieldValue,
-                                            Evaluator evaluator) throws IntrospectionException {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+                                            String declarationName) throws IntrospectionException {
+             Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        int index = getIndex( clazz,
-                              fieldName );
+             FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                 fieldName );
 
-        Field field = new MockField( fieldName,
-                                     fieldValue,
-                                     index );
-
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            index );
-
-        return new LiteralConstraint( field,
+             return new FieldBinding( declarationName,
+                                      null,
                                       extractor,
-                                      evaluator );
-    }
+                                      column.getIndex() );
+         }
 
-    private Constraint getFieldBinding(Column column,
-                                       String fieldName,
-                                       String declarationName) throws IntrospectionException {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-        int index = getIndex( clazz,
-                              fieldName );
+         private FieldConstraint getBoundVariableConstraint(Column column,
+                                                            String fieldName,
+                                                            Declaration declaration,
+                                                            Evaluator evaluator) throws IntrospectionException {
+             Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            index );
+             FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                 fieldName );
 
-        return new FieldBinding( declarationName,
-                                 null,
-                                 extractor,
-                                 column.getIndex() );
-    }
-
-    private FieldConstraint getBoundVariableConstraint(Column column,
-                                                  String fieldName,
-                                                  Declaration declaration,
-                                                  Evaluator evaluator) throws IntrospectionException {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-        int index = getIndex( clazz,
-                              fieldName );
-
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            index );
-
-        return new BoundVariableConstraint( extractor,
-                                            declaration,
-                                            evaluator );
-    }
+             return new BoundVariableConstraint( extractor,
+                                                 declaration,
+                                                evaluator );
+         }    
 }
