@@ -315,7 +315,7 @@ public class Parser {
         }
         matcher = NOLOOP_STATEMENT.matcher(line);
         if (matcher.matches()) {
-            rule.setNoLoop(Boolean.parseBoolean(matcher.group(1)));
+            rule.setNoLoop(Boolean.getBoolean(matcher.group(1)));
             return true;
         }
         

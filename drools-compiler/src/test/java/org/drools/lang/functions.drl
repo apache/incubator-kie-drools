@@ -1,0 +1,29 @@
+# shows functions 
+
+import java.lang.String
+
+functions
+	
+	public static void log(String string) {
+		System.out.println(string);
+	}
+
+end
+
+
+rule something 
+	when
+		#nothing
+	then
+		#nothing
+end
+
+rule one more thing
+	when
+		#nothing
+	then
+		#nothing
+end
+
+
+

@@ -1,5 +1,6 @@
 package org.drools.lang.descr;
 
-public class ExistsDescr extends PatternDescr {
+public class ExistsDescr extends PatternDescr 
+    implements ConditionalElement {
 
 }
