@@ -16,7 +16,7 @@ package org.drools.reteoo;
  */
 
 
-import org.drools.spi.BetaNodeBinder;
+import org.drools.common.BetaNodeBinder;
 import org.drools.spi.PropagationContext;
 
 /**

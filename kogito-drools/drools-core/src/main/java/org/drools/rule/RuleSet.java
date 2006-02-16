@@ -246,12 +246,12 @@ public class RuleSet
         this.importer = importer;
     }
 
-    public void addApplicationData(ApplicationData applicationData) {
-        this.applicationData.put( applicationData.getIdentifier(),
-                                  applicationData.getType() );
+    public void addGlobalDeclaration(GlobalDeclaration globalDeclaration) {
+        this.applicationData.put( globalDeclaration.getIdentifier(),
+                                  globalDeclaration.getType() );
     }
 
-    public Map getApplicationData() {
+    public Map getGlobalDeclarations() {
         return this.applicationData;
     }
 

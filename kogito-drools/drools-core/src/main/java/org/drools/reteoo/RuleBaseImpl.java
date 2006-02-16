@@ -63,7 +63,7 @@ public class RuleBaseImpl
 
     private Set                     ruleSets;
 
-    private Map                     applicationData;
+    private Map                     globalDeclarations;
 
     private RuleBaseContext         ruleBaseContext;
 
@@ -94,7 +94,7 @@ public class RuleBaseImpl
                                     resolver );
         this.factHandleFactory = new DefaultFactHandleFactory();
         this.ruleSets = new HashSet();
-        this.applicationData = new HashMap();
+        this.globalDeclarations = new HashMap();
         this.ruleBaseContext = new RuleBaseContext();
         this.workingMemories = new WeakHashMap();
     }
@@ -199,8 +199,8 @@ public class RuleBaseImpl
         return (RuleSet[]) this.ruleSets.toArray( new RuleSet[this.ruleSets.size()] );
     }
 
-    public Map getApplicationData() {
-        return this.applicationData;
+    public Map getGlobalDeclarations() {
+        return this.globalDeclarations;
     }
 
     public RuleBaseContext getRuleBaseContext() {
@@ -225,18 +225,18 @@ public class RuleBaseImpl
                                            RuleSetIntegrationException,
                                            FactException,
                                            InvalidPatternException {
-        Map newApplicationData = ruleSet.getApplicationData();
+        Map newApplicationData = ruleSet.getGlobalDeclarations();
 
-        // Check that the application data is valid, we cannot change the type
-        // of an already declared application data variable
+        // Check that the global data is valid, we cannot change the type
+        // of an already declared global variable
         for ( Iterator it = newApplicationData.keySet().iterator(); it.hasNext(); ) {
             String identifier = (String) it.next();
             Class type = (Class) newApplicationData.get( identifier );
-            if ( this.applicationData.containsKey( identifier ) && !this.applicationData.get( identifier ).equals( type ) ) {
+            if ( this.globalDeclarations.containsKey( identifier ) && !this.globalDeclarations.get( identifier ).equals( type ) ) {
                 throw new RuleSetIntegrationException( ruleSet );
             }
         }
-        this.applicationData.putAll( newApplicationData );
+        this.globalDeclarations.putAll( newApplicationData );
 
         this.ruleSets.add( ruleSet );
 

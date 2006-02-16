@@ -1,6 +1,7 @@
 package org.drools.reteoo;
 
 import org.drools.DroolsTestCase;
+import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 

@@ -28,7 +28,6 @@ import org.drools.FactException;
 import org.drools.rule.And;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
-import org.drools.spi.AssertedObjectTransformer;
 import org.drools.spi.ClassObjectTypeResolver;
 import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.ObjectType;

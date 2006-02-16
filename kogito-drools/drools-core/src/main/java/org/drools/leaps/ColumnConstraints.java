@@ -18,9 +18,9 @@ package org.drools.leaps;
 
 import java.util.List;
 
+import org.drools.common.BetaNodeBinder;
 import org.drools.rule.Column;
 import org.drools.rule.LiteralConstraint;
-import org.drools.spi.BetaNodeBinder;
 
 /**
  * Collection of <code>Column</code> specific constraints

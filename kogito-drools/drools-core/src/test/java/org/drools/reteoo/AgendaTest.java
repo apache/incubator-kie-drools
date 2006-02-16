@@ -25,6 +25,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.ActivationQueue;
 import org.drools.common.Agenda;
 import org.drools.common.AgendaGroupImpl;
+import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;

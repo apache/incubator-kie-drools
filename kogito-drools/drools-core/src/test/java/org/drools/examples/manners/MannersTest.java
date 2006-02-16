@@ -21,12 +21,15 @@ import org.drools.FactException;
 import org.drools.RuleIntegrationException;
 import org.drools.RuleSetIntegrationException;
 import org.drools.WorkingMemory;
+import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassObjectType;
+import org.drools.base.DefaultKnowledgeHelper;
+import org.drools.base.EvaluatorFactory;
 import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.DuplicateRuleNameException;
-import org.drools.rule.EvaluatorFactory;
 import org.drools.rule.FieldBinding;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.InvalidRuleException;
@@ -35,12 +38,9 @@ import org.drools.rule.Not;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleSet;
 import org.drools.spi.Activation;
-import org.drools.spi.ClassFieldExtractor;
-import org.drools.spi.ClassObjectType;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Constraint;
-import org.drools.spi.DefaultKnowledgeHelper;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Field;
 import org.drools.spi.FieldConstraint;
@@ -1134,15 +1134,13 @@ public class MannersTest extends TestCase {
                                             Evaluator evaluator) throws IntrospectionException {
         Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        int index = getIndex( clazz,
-                              fieldName );
-
+        FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                            fieldName );
+        
         Field field = new MockField( fieldName,
                                      fieldValue,
-                                     index );
+                                     extractor.getIndex() );
 
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            index );
 
         return new LiteralConstraint( field,
                                       extractor,
@@ -1153,11 +1151,9 @@ public class MannersTest extends TestCase {
                                        String fieldName,
                                        String declarationName) throws IntrospectionException {
         Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-        int index = getIndex( clazz,
-                              fieldName );
 
         FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            index );
+                                                            fieldName );
 
         return new FieldBinding( declarationName,
                                  null,
@@ -1166,15 +1162,13 @@ public class MannersTest extends TestCase {
     }
 
     private FieldConstraint getBoundVariableConstraint(Column column,
-                                                  String fieldName,
-                                                  Declaration declaration,
-                                                  Evaluator evaluator) throws IntrospectionException {
+                                                       String fieldName,
+                                                       Declaration declaration,
+                                                       Evaluator evaluator) throws IntrospectionException {
         Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-        int index = getIndex( clazz,
-                              fieldName );
 
         FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            index );
+                                                            fieldName );
 
         return new BoundVariableConstraint( extractor,
                                             declaration,

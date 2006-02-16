@@ -2,7 +2,7 @@ package org.drools.reteoo;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
-import org.drools.spi.ClassObjectType;
+import org.drools.base.ClassObjectType;
 
 public class AddRemoveTest extends DroolsTestCase {
     public void testAdd() {

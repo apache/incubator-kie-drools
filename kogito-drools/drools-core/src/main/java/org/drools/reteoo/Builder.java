@@ -24,6 +24,8 @@ import java.util.Map;
 
 import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
+import org.drools.base.ClassObjectType;
+import org.drools.common.BetaNodeBinder;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.ConditionalElement;
@@ -32,8 +34,6 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Not;
 import org.drools.rule.Rule;
 import org.drools.spi.AgendaGroup;
-import org.drools.spi.BetaNodeBinder;
-import org.drools.spi.ClassObjectType;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.ObjectTypeResolver;
 
@@ -115,7 +115,7 @@ class Builder {
      * @throws InvalidPatternException
      */
     void addRule(Rule rule) throws InvalidPatternException {
-        And[] and = rule.getProcessPatterns();
+        And[] and = rule.getTransformedLhs();
         for ( int i = 0; i < and.length; i++ ) {
             addRule( and[i],
                      rule );

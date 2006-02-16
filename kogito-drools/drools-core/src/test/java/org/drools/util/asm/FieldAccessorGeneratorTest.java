@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 public class FieldAccessorGeneratorTest extends TestCase {
 
     public void testBasic() throws Exception {
-        FieldAccessorGenerator gen = new FieldAccessorGenerator();
+        FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
         FieldAccessorMap map = gen.newInstanceFor(TestObject.class);
         FieldAccessor ac = map.getFieldAccessor();
         assertNotNull(ac);
@@ -33,7 +33,7 @@ public class FieldAccessorGeneratorTest extends TestCase {
     }
     
     public void testAnother() throws Exception {
-        FieldAccessorGenerator gen = new FieldAccessorGenerator();
+        FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
         FieldAccessor ac = gen.getInstanceFor(TestBean.class).getFieldAccessor();
         TestBean obj = new TestBean();
         obj.setBlah(false);

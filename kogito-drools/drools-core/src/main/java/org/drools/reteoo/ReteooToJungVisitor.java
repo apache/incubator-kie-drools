@@ -317,9 +317,9 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     }
 
     static class TestNodeVertex extends BaseNodeVertex {
-        private final TestNode node;
+        private final EvalConditionNode node;
 
-        public TestNodeVertex(TestNode node) {
+        public TestNodeVertex(EvalConditionNode node) {
             super();
             this.node = node;
         }

@@ -133,7 +133,7 @@ public interface WorkingMemory
      * 
      * @return the application data as a Map
      */
-    Map getApplicationDataMap();
+    Map getGlobals();
 
     /**
      * Set a specific piece of application data in this working memory
@@ -143,7 +143,7 @@ public interface WorkingMemory
      * @param value
      *            the application data
      */
-    void setApplicationData(String name,
+    void setGlobal(String name,
                             Object value);
 
     /**
@@ -151,7 +151,7 @@ public interface WorkingMemory
      * 
      * @return application data or null if nothing is set under this name
      */
-    Object getApplicationData(String name);
+    Object getGlobal(String name);
 
     /**
      * Retrieve the <code>RuleBase</code> of this working memory.

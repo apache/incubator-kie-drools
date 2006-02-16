@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.DroolsTestCase;
+import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;

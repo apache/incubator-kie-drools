@@ -174,14 +174,14 @@ abstract public class AbstractWorkingMemory
     /**
      * @see WorkingMemory
      */
-    public Map getApplicationDataMap() {
+    public Map getGlobals() {
         return this.applicationData;
     }
 
     /**
      * @see WorkingMemory
      */
-    public Object getApplicationData(String name) {
+    public Object getGlobal(String name) {
         return this.applicationData.get( name );
     }
 

@@ -5,10 +5,11 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
+import org.drools.base.ClassObjectType;
 import org.drools.common.Agenda;
+import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.ClassObjectType;
 import org.drools.spi.Consequence;
 import org.drools.spi.PropagationContext;
 

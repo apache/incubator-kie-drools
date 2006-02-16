@@ -28,8 +28,6 @@ import java.util.Set;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  * Memory for left and right inputs of a <code>BetaNode</code>. The LeftMemory is a <code>LinkedList</code> for all incoming 
  * <code>Tuples</code> and the right memory is a LinkedHashMap which stores each incoming <code>FactHandle</code> with 

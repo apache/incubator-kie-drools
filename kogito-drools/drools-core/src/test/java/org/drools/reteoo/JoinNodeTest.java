@@ -3,8 +3,9 @@ package org.drools.reteoo;
 import java.util.Map;
 
 import org.drools.DroolsTestCase;
+import org.drools.common.BetaNodeBinder;
+import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
-import org.drools.spi.BetaNodeBinder;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.PropagationContext;

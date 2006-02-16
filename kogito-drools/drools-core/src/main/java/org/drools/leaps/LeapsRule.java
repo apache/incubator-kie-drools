@@ -19,8 +19,8 @@ package org.drools.leaps;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.drools.base.ClassObjectType;
 import org.drools.rule.Rule;
-import org.drools.spi.ClassObjectType;
 
 /**
  * Wrapper class to drools generic rule to extract matching elements from it to

@@ -20,12 +20,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.drools.base.ClassObjectType;
+import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.TableIterator;
-import org.drools.reteoo.PropagationContextImpl;
 import org.drools.rule.InvalidRuleException;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.ClassObjectType;
 import org.drools.spi.PropagationContext;
 
 /**
