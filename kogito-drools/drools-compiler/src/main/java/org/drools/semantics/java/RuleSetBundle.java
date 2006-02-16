@@ -10,11 +10,13 @@ import org.apache.commons.jci.stores.ResourceStoreClassLoader;
 import org.drools.rule.RuleSet;
 
 public class RuleSetBundle {
-    private final MemoryResourceReader src;
-    private final MemoryResourceStore  dst;
-    private int counter;
+    private final MemoryResourceReader     src;
+    private final MemoryResourceStore      dst;
+    private int                            counter;
     
-    private final String               packageName; 
+    private final RuleSet                  ruleSet;
+    
+    private final String                   packageName; 
     
     private final ResourceStoreClassLoader classLoader;
     
@@ -26,6 +28,8 @@ public class RuleSetBundle {
         this.src = new MemoryResourceReader();
         this.dst = new MemoryResourceStore();       
                  
+        this.ruleSet = ruleSet;
+        
         this.packageName = packageName + "." + ruleSet.getName().replaceAll( "(^[0-9]|[^\\w$])", "_" ) + "_" + System.currentTimeMillis();
         
         if ( parentClassLoader == null ) {
@@ -38,6 +42,10 @@ public class RuleSetBundle {
         
         classLoader = new ResourceStoreClassLoader( parentClassLoader,
                                                     new ResourceStore[]{dst} );
+    }
+    
+    public RuleSet getRuleSet() {
+        return this.ruleSet;
     }
     
     public String getPackageName() {

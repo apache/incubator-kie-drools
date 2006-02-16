@@ -41,8 +41,7 @@ public class FtlTest extends TestCase {
         root.put( "declaration", declaration );
         
         FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            getIndex( Cheese.class,
-                                                                      "type" ) );
+                                                            "type" );
 
         Declaration declaration1 = new Declaration( 3,
                                                    "typeOfCheese",
