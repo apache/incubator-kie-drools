@@ -21,12 +21,12 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 
+import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassObjectType;
+import org.drools.base.EvaluatorFactory;
 import org.drools.examples.manners.Context;
 import org.drools.rule.Column;
-import org.drools.rule.EvaluatorFactory;
 import org.drools.rule.LiteralConstraint;
-import org.drools.spi.ClassFieldExtractor;
-import org.drools.spi.ClassObjectType;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Field;
 import org.drools.spi.FieldConstraint;

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
-import org.drools.spi.BetaNodeBinder;
+import org.drools.common.BetaNodeBinder;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 

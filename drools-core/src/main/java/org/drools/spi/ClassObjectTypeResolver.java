@@ -1,5 +1,7 @@
 package org.drools.spi;
 
+import org.drools.base.ClassObjectType;
+
 /**
  * 
  * @author mproctor

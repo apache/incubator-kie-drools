@@ -50,7 +50,7 @@ import java.util.Map;
 
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
-import org.drools.spi.ClassObjectType;
+import org.drools.base.ClassObjectType;
 import org.drools.spi.PropagationContext;
 
 /**

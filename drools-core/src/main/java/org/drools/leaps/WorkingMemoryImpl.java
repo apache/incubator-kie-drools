@@ -32,6 +32,7 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
+import org.drools.base.ClassObjectType;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.ActivationQueue;
 import org.drools.common.Agenda;
@@ -47,7 +48,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
-import org.drools.spi.ClassObjectType;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
 import org.drools.util.IdentityMap;
@@ -106,7 +106,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements WorkingMemory, 
 	/**
 	 * @see WorkingMemory
 	 */
-	public void setApplicationData(String name, Object value) {
+	public void setGlobal(String name, Object value) {
 		// Make sure the application data has been declared in the RuleBase
 		Map applicationDataDefintions = ((RuleBaseImpl)this.ruleBase).getApplicationData();
 		Class type = (Class) applicationDataDefintions.get(name);

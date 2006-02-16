@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.common.BetaNodeBinder;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.ConditionalElement;
@@ -28,7 +29,6 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Rule;
-import org.drools.spi.BetaNodeBinder;
 import org.drools.spi.Constraint;
 import org.drools.spi.FieldConstraint;
 
@@ -51,7 +51,7 @@ class Builder {
 	final protected static List processRule(Rule rule)
 			throws InvalidPatternException {
 		ArrayList leapsRules = new ArrayList();
-		And[] and = rule.getProcessPatterns();
+		And[] and = rule.getTransformedLhs();
 		for (int i = 0; i < and.length; i++) {
 			leapsRules.addAll(processRuleForAnd(and[i], rule));
 		}

@@ -47,9 +47,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.spi.ClassObjectType;
+import org.drools.base.ClassObjectType;
 import org.drools.spi.ColumnExtractor;
-import org.drools.spi.Condition;
 import org.drools.spi.Consequence;
 import org.drools.spi.Constraint;
 import org.drools.spi.FieldConstraint;
@@ -57,6 +56,7 @@ import org.drools.spi.Duration;
 import org.drools.spi.Extractor;
 import org.drools.spi.Importer;
 import org.drools.spi.AgendaGroup;
+import org.drools.spi.ObjectType;
 
 /**
  * A <code>Rule</code> contains a set of <code>Test</code>s and a
@@ -66,7 +66,7 @@ import org.drools.spi.AgendaGroup;
  * a match for this rule. The <code>Consequence</code> gets fired when the
  * Conditions match.
  * 
- * @see Condition
+ * @see Eval
  * @see Consequence
  * @author <a href="mailto:bob@eng.werken.com"> bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au"> Simon Harris </a>
@@ -96,7 +96,7 @@ public class Rule
 
     private final Map    declarations = new HashMap();
 
-    private final And    headPattern  = new And();
+    private final And    lhsRoot  = new And();
 
     private final String agendaGroup;
 
@@ -388,13 +388,13 @@ public class Rule
      */
     public void addPattern(ConditionalElement ce) throws InvalidRuleException {
         addDeclarations( ce );
-        this.headPattern.addChild( ce );
+        this.lhsRoot.addChild( ce );
     }
     
     public  void addPattern(Column column) throws InvalidRuleException {
         addDeclarations( column );
-        this.headPattern.addChild( column );
-    }
+        this.lhsRoot.addChild( column );
+    }       
     
     private void addDeclarations(Column column) throws InvalidRuleException {
         // Check if the column is bound and if so add it as a declaration
@@ -430,8 +430,8 @@ public class Rule
      * 
      * @return The <code>List</code> of <code>Conditions</code>.
      */
-    public And getPatterns() {
-        return this.headPattern;
+    public And getLhs() {
+        return this.lhsRoot;
     }
 
     /**
@@ -444,12 +444,12 @@ public class Rule
      * @return
      * @throws InvalidPatternException
      */
-    public And[] getProcessPatterns() throws InvalidPatternException {
-        return LogicTransformer.getInstance().transform( this.headPattern );
+    public And[] getTransformedLhs() throws InvalidPatternException {
+        return LogicTransformer.getInstance().transform( this.lhsRoot );
     }
 
     public int getSpecifity() {
-        return getSpecifity( this.headPattern );
+        return getSpecifity( this.lhsRoot );
     }
 
     private int getSpecifity(ConditionalElement ce) {

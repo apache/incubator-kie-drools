@@ -7,10 +7,11 @@ import java.util.Set;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
-import org.drools.rule.EvaluatorFactory;
+import org.drools.base.ClassFieldExtractor;
+import org.drools.base.EvaluatorFactory;
+import org.drools.common.PropagationContextImpl;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
-import org.drools.spi.ClassFieldExtractor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Field;
 import org.drools.spi.FieldExtractor;
@@ -58,15 +59,11 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         MockObjectSource source = new MockObjectSource( 15 );
 
-        int index = Cheese.getIndex( Cheese.class,
-                                     "type" );
+        ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class, "type" );
 
         Field field = new MockField( "type",
                                      "cheddar",
-                                     index );
-
-        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            field.getIndex() );
+                                      extractor.getIndex() );
 
         Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
                                                                            Evaluator.EQUAL );
@@ -150,15 +147,12 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         MockObjectSource source = new MockObjectSource( 15 );
 
-        int index = Cheese.getIndex( Cheese.class,
-                                     "type" );
+        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                            "type" );
 
         Field field = new MockField( "type",
                                      "cheddar",
-                                     index );
-
-        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            field.getIndex() );
+                                     extractor.getIndex() );
 
         Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
                                                                            Evaluator.EQUAL );
@@ -219,15 +213,14 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         MockObjectSource source = new MockObjectSource( 15 );
 
-        int index = Cheese.getIndex( Cheese.class,
-                                     "type" );
-
+        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                            "type" );
+        
         Field field = new MockField( "type",
                                      "cheddar",
-                                     index );
+                                     extractor.getIndex() );
 
-        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            field.getIndex() );
+
 
         Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
                                                                            Evaluator.EQUAL );
@@ -294,7 +287,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                              IntrospectionException {
         // An AlphaNode with memory should not try and repropagate from its
         // source
-        // Also it should only update the latest tuple sink
+        // Also it should only update the latest tuple sinky
 
         WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
         Rule rule = new Rule( "test-rule" );
@@ -305,15 +298,14 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         MockObjectSource source = new MockObjectSource( 1 );
 
-        int index = Cheese.getIndex( Cheese.class,
-                                     "type" );
+        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                            "type");
 
         Field field = new MockField( "type",
                                      "cheddar",
-                                     index );
+                                     extractor.getIndex());
 
-        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            field.getIndex() );
+
 
         Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
                                                                            Evaluator.EQUAL );

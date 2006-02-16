@@ -4,8 +4,9 @@ import java.util.List;
 
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
+import org.drools.base.ClassObjectType;
+import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
-import org.drools.spi.ClassObjectType;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.PrimitiveLongMap;

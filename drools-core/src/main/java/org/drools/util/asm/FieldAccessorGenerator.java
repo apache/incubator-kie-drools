@@ -21,10 +21,23 @@ import org.drools.asm.Type;
  * @author Michael Neale
  */
 public class FieldAccessorGenerator {
-
+    private static FieldAccessorGenerator INSTANCE;
+    
     //used to make sure generated classes are unique...
     private static final String GEN_PACKAGE_PREFIX = "org.drools.fieldaccess.";
     private final Map cache = new HashMap();
+   
+    private FieldAccessorGenerator() {
+        
+    }
+    
+    public static FieldAccessorGenerator getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new FieldAccessorGenerator();
+        }
+        return INSTANCE;
+    }
+    
     
     /**
      * Looks up an instance of a field accessor for the given class.

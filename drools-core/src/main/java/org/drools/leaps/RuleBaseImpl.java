@@ -188,7 +188,7 @@ public class RuleBaseImpl implements RuleBase {
 	 */
 	public void addRuleSet(RuleSet ruleSet) throws RuleIntegrationException,
 			RuleSetIntegrationException, FactException, InvalidPatternException {
-		Map newApplicationData = ruleSet.getApplicationData();
+		Map newApplicationData = ruleSet.getGlobalDeclarations();
 
 		// Check that the application data is valid, we cannot change the type
 		// of an already declared application data variable

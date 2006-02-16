@@ -39,6 +39,7 @@ import org.drools.common.Agenda;
 import org.drools.common.AgendaItem;
 import org.drools.common.EventSupport;
 import org.drools.common.LogicalDependency;
+import org.drools.common.PropagationContextImpl;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.ReteooNodeEventListener;
@@ -84,7 +85,7 @@ class WorkingMemoryImpl
                                                                                                                   8 );
 
     /** Application data which is associated with this memory. */
-    private final Map                       applicationData                               = new HashMap();
+    private final Map                       globals                                       = new HashMap();
 
     /** Handle-to-object mapping. */
     private final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
@@ -190,17 +191,17 @@ class WorkingMemoryImpl
     /**
      * @see WorkingMemory
      */
-    public Map getApplicationDataMap() {
-        return this.applicationData;
+    public Map getGlobals() {
+        return this.globals;
     }
 
     /**
      * @see WorkingMemory
      */
-    public void setApplicationData(String name,
-                                   Object value) {
+    public void setGlobal(String name,
+                          Object value) {
         // Make sure the application data has been declared in the RuleBase
-        Map applicationDataDefintions = this.ruleBase.getApplicationData();
+        Map applicationDataDefintions = this.ruleBase.getGlobalDeclarations();
         Class type = (Class) applicationDataDefintions.get( name );
         if ( (type == null) ) {
             throw new RuntimeException( "Unexpected application data [" + name + "]" );
@@ -208,7 +209,7 @@ class WorkingMemoryImpl
             throw new RuntimeException( "Illegal class for application data. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
 
         } else {
-            this.applicationData.put( name,
+            this.globals.put( name,
                                       value );
         }
     }
@@ -216,8 +217,8 @@ class WorkingMemoryImpl
     /**
      * @see WorkingMemory
      */
-    public Object getApplicationData(String name) {
-        return this.applicationData.get( name );
+    public Object getGlobal(String name) {
+        return this.globals.get( name );
     }
 
     /**

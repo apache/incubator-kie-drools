@@ -47,6 +47,7 @@ import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.common.Agenda;
+import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AsyncExceptionHandler;

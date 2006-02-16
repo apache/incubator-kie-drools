@@ -1,33 +1,34 @@
-package org.drools.spi;
+package org.drools.base;
 
-import org.drools.WorkingMemory;
+import org.drools.spi.Activation;
+import org.drools.spi.AgendaFilter;
 
 /*
- * $Id: Consequence.java,v 1.2 2005/08/14 22:44:13 mproctor Exp $
- * 
+ * $Id: RuleNameEqualsAgendaFilter.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
+ *
  * Copyright 2001-2003 (C) The Werken Company. All Rights Reserved.
- * 
+ *
  * Redistribution and use of this software and associated documentation
  * ("Software"), with or without modification, are permitted provided that the
  * following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain copyright statements and
  * notices. Redistributions must also contain a copy of this document.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The name "drools" must not be used to endorse or promote products derived
  * from this Software without prior written permission of The Werken Company.
  * For written permission, please contact bob@werken.com.
- * 
+ *
  * 4. Products derived from this Software may not be called "drools" nor may
  * "drools" appear in their names without prior written permission of The Werken
  * Company. "drools" is a trademark of The Werken Company.
- * 
+ *
  * 5. Due credit should be given to The Werken Company. (http://werken.com/)
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE WERKEN COMPANY AND CONTRIBUTORS ``AS IS''
  * AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,28 +40,37 @@ import org.drools.WorkingMemory;
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *  
+ *
  */
 
 /**
- * Consequence to be fired upon successful match of a <code>Rule</code>.
+ * Filters activations based on an exact match of a rule name.
  * 
- * @see org.drools.rule.Rule
- * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
+ * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
-public interface Consequence  extends Invoker {
-    /**
-     * Execute the consequence for the supplied matching <code>Tuple</code>.
-     * 
-     * @param activation
-     *            TODO
-     * @param workingMemory TODO
-     * @param workingMemory
-     *            The working memory session.
-     * @throws ConsequenceException
-     *             If an error occurs while attempting to invoke the
-     *             consequence.
-     */
-    void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException;
+public class RuleNameEqualsAgendaFilter
+    implements
+    AgendaFilter {
+    private final String  name;
+
+    private final boolean accept;
+
+    public RuleNameEqualsAgendaFilter(String name) {
+        this( name,
+              true );
+    }
+
+    public RuleNameEqualsAgendaFilter(String name,
+                                      boolean accept) {
+        this.name = name;
+        this.accept = accept;
+    }
+
+    public boolean accept(Activation activation) {
+        if ( activation.getRule().getName().equals( this.name ) ) {
+            return this.accept;
+        } else {
+            return false;
+        }
+    }
 }

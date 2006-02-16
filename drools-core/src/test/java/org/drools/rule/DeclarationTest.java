@@ -7,8 +7,8 @@ import java.beans.PropertyDescriptor;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
-import org.drools.spi.ClassFieldExtractor;
-import org.drools.spi.ClassObjectType;
+import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassObjectType;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.ObjectType;
@@ -17,8 +17,7 @@ public class DeclarationTest extends TestCase {
 
     public void testDeclaration() throws IntrospectionException {
         FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            getIndex( Cheese.class,
-                                                                      "type" ) );
+                                                            "type" );
 
         /* Bind the extractor to a decleration */
         /* Declarations know the column they derive their value from */
@@ -45,8 +44,7 @@ public class DeclarationTest extends TestCase {
 
     public void testGetFieldValue() throws IntrospectionException {
         FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            getIndex( Cheese.class,
-                                                                      "type" ) );
+                                                            "type" );
 
         /* Bind the extractor to a decleration */
         /* Declarations know the column they derive their value from */

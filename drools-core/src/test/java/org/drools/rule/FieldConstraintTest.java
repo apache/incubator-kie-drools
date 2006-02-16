@@ -8,10 +8,11 @@ import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.MockField;
+import org.drools.base.ClassFieldExtractor;
+import org.drools.base.EvaluatorFactory;
 import org.drools.reteoo.InstrumentedReteTuple;
 import org.drools.reteoo.InstrumentedWorkingMemoryImpl;
 import org.drools.reteoo.RuleBaseImpl;
-import org.drools.spi.ClassFieldExtractor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Field;
 import org.drools.spi.FieldExtractor;
@@ -42,15 +43,14 @@ public class FieldConstraintTest extends TestCase {
         RuleBaseImpl ruleBase = new RuleBaseImpl();
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        int index = Cheese.getIndex( Cheese.class,
-                                     "type" );
+        ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                  "type" );
 
         Field field = new MockField( "type",
                                      "cheddar",
-                                     index );
+                                     extractor.getIndex() );
 
-        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            field.getIndex() );
+
 
         Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
                                                                            Evaluator.EQUAL );
@@ -96,8 +96,7 @@ public class FieldConstraintTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
-                                                                 Cheese.getIndex( Cheese.class,
-                                                                                  "price" ) );
+                                                                 "price" );
 
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
@@ -167,8 +166,7 @@ public class FieldConstraintTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
-                                                                 Cheese.getIndex( Cheese.class,
-                                                                                  "price" ) );
+                                                                 "price" );
 
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form

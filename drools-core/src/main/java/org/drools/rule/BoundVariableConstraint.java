@@ -20,8 +20,8 @@ public class BoundVariableConstraint
     private final Evaluator            evaluator;
 
     public BoundVariableConstraint(FieldExtractor fieldExtractor,
-                                  Declaration declaration,
-                                  Evaluator evaluator) {
+                                   Declaration declaration,
+                                   Evaluator evaluator) {
         this.fieldExtractor = fieldExtractor;
         this.declaration = declaration;
         this.requiredDeclarations = new Declaration[] { declaration };
