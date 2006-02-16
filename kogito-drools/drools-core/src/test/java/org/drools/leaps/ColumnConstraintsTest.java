@@ -117,7 +117,7 @@ public class ColumnConstraintsTest extends TestCase {
 
 		Field field = new MockField(fieldName, fieldValue, index);
 
-		FieldExtractor extractor = new ClassFieldExtractor(clazz, index);
+		FieldExtractor extractor = new ClassFieldExtractor(clazz, fieldName);
 
 		return new LiteralConstraint(field, extractor, evaluator);
 	}
