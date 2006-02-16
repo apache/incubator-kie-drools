@@ -1,4 +1,4 @@
-package org.drools.semantic.java;
+package org.drools.semantics.java;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -14,9 +14,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.Cheese;
+import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassObjectType;
 import org.drools.rule.Declaration;
-import org.drools.spi.ClassFieldExtractor;
-import org.drools.spi.ClassObjectType;
 import org.drools.spi.ColumnExtractor;
 import org.drools.spi.FieldExtractor;
 

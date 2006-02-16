@@ -1,0 +1,6 @@
+# Example DRL with only a package decl
+#
+
+package org.drools.lang;
+
+

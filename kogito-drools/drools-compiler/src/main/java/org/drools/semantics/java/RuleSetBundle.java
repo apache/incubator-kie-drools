@@ -1,4 +1,4 @@
-package org.drools.semantic.java;
+package org.drools.semantics.java;
 
 import java.util.Collections;
 import java.util.List;
