@@ -1,0 +1,13 @@
+rule "Assign first seat"
+    when
+        context : Context( state == Context.START_UP )
+        guest : Guest()
+        count : Count()
+   then
+       String guestName = guest.getName();
+       drools.assert( new Seating( count.getValue(), 1, true, 1, guestName, 1, guestName) );
+       drools.assert( new Path( count.getValue(), 1, guestName ) );
+       count.setCount(  count.getValue() + 1 );
+       System.out.println( &quot;seat 1 &quot; + guest.getName() + &quot; );  
+       context.setPath( Context.ASSIGN_SEATS );
+end
