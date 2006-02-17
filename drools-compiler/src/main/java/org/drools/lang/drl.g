@@ -1,5 +1,11 @@
 grammar RuleParser;
 
+@members {
+	private String packageName="";
+	private RuleDescr rule;
+}
+
+
 compilation_unit
 	:	prolog 
 		rule*
@@ -12,7 +18,7 @@ prolog
 	;
 	
 package_statement
-	:	'package' ID ( '.' ID )* ';'?	
+	:	'package' id=ID { packageName = id.getText(); } ( '.' id=ID { packageName += "." + id.getText(); } )* ';'?	
 	;
 	
 import_statement
@@ -25,17 +31,16 @@ use_expander
 
 
 rule
-	:	'rule' word
+	:
+		'rule' ruleName=word 
+		{ rule = new RuleDescr( packageName + "." + ruleName, null ); }
 		rule_options?
 		'when' ':'?
-			lhs+
+		{ AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); }
+			(l=lhs { rootLhs.addConfiguration( l ); } )*
 		'then' ':'?
+		{ rule.setRhs( null ); }
 		'end' 
-	;
-	
-rule_name
-	:
-		ID
 	;
 
 rule_options
@@ -54,48 +59,50 @@ no_loop
 	;
 	
 	
-lhs	
-	: lhs_or
+lhs returns [PatternDescr d]
+	: l=lhs_or { d = l; }
 	;
 
 	
-lhs_column
+lhs_column returns [ColumnDesc d]
 	:	fact_binding
 	|	fact
 	;
  	
-fact_binding
+fact_binding returns [PatternDescr d]
  	:
- 		ID '=>' fact
+ 		ID '=>' f=fact { d=f; }
  	;
  
-fact
+fact returns [PatternDescr d] 
  	:	ID '(' constraints? ')'
  	;
  	
 	
-constraints
-	:	constraint ( ',' constraint )*
+constraints returns [List constraints]
+	:	c=constraint  { constraints = new ArrayList(); constraints.add( c ); }
+		( ',' c=constraint { constraints.add( c ); } )*
 	;
 	
-constraint
-	:	ID	(	'=='
+constraint returns [PatternDescr d]
+	:	f=ID	op=(	'=='
 			|	'>'
 			|	'>='
 			|	'<'
 			|	'<='
 			|	'!='
-			)	(	literal_constraint
-				|	retval_constraint )
+			)	(	lc=literal_constraint { d = new LiteralDescr( f.getText(), null, lc ); }
+				|	rvc=retval_constraint { d = new ReturnValueDescr( f.getText(), null, rvc ); } )
 	;
 	
-literal_constraint
-	:	STRING
-	|	INT
-	|	FLOAT	
+literal_constraint returns [String text]
+	:	(	t=STRING
+		|	t=INT
+		|	t=FLOAT	
+		) { text = t.getText(); }
 	;
 	
-retval_constraint
+retval_constraint returns [String text]
 	:
 	;
 	
@@ -103,33 +110,61 @@ field_binding
 	:
 	;
 	
-lhs_or
-	:	lhs_and ( ('or'|'||') lhs_and )*
+lhs_or returns [PatternDescr d]
+	:	
+		{ OrDescr or = null; }
+		left=lhs_and {d = left; }
+		( 	('or'|'||') 
+			right=lhs_and 
+			{
+				if ( or == null ) {
+					or = new OrDescr();
+					or.addConfiguration( left );
+					d = or;
+				}
+				
+				or.addConfiguration( right );
+			}
+		)*
 	;
 	
-lhs_and
+lhs_and returns [PatternDescr d]
 	:
-		lhs_unary ( ('and'|'&&') lhs_unary )* 
+		{ AndDescr and = null; }
+		left=lhs_unary { d = left; }
+		(	('and'|'&&') 
+			right=lhs_unary 
+			{
+				if ( and == null ) {
+					and = new AndDescr();
+					and.addConfiguration( left );
+					d = and;
+				}
+				
+				and.addConfiguration( right );
+			}
+		)* 
 	;
 	
-lhs_unary
-	:	lhs_exist
-	|	lhs_not
-	|	lhs_eval
-	|	lhs_column
-	|	'(' lhs ')'
+lhs_unary returns [PatternDescr d]
+	:	(	u=lhs_exist
+		|	u=lhs_not
+		|	u=lhs_eval
+		|	u=lhs_column
+		|	'(' u=lhs ')'
+		) { d = u; }
 	;
 	
-lhs_exist
-	:	'exists' lhs_column	
+lhs_exist returns [PatternDescr d]
+	:	'exists' column=lhs_column { d = new ExistsDescr( column ); }	
 	;
 	
-lhs_not	
-	:	'not' lhs_column
+lhs_not	returns [NotDescr d]
+	:	'not' column=lhs_column { d = new NotDescr( column ); }
 	;
 
-lhs_eval
-	:	'eval'
+lhs_eval returns [PatternDescr d]
+	:	'eval' { d = new EvalDescr( "" ); }
 	;
 	
 java_package_or_class
@@ -138,16 +173,16 @@ java_package_or_class
 	;
 	
 	
-word
-	:	ID
-	|	'import'
-	|	'use'
-	|	'rule'
-	|	'salience'
-	|	'no-loop'
-	|	'when'
-	|	'then'
-	|	'end'
+word returns [String word]
+	:	id=ID      { word=id.getText(); }
+	|	'import'   { word="import"; }
+	|	'use'      { word="use"; }
+	|	'rule'     { word="rule"; }
+	|	'salience' { word="salience"; }
+ 	|	'no-loop'  { word="no-loop"; }
+	|	'when'     { word="when"; }
+	|	'then'     { word="then"; }
+	|	'end'      { word="end"; }
 	;
 
 
