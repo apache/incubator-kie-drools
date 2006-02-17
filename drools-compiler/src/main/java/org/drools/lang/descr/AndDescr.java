@@ -11,10 +11,11 @@ public class AndDescr extends PatternDescr
     public AndDescr() {
     }
     
-    public void addConfiguration(PatternDescr patternDescr) {
+    public void addDescr(PatternDescr patternDescr) {
         if ( this.descrs == Collections.EMPTY_LIST ) {
             this.descrs = new ArrayList(1);
         }
+        this.descrs.add( patternDescr );
     }
     
     public List getDescrs() {

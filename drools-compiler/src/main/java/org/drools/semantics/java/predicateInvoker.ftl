@@ -11,7 +11,7 @@ public static class ${className}Invoker implements PredicateExpression
         </#list>
 
         <#list usedApplicationData as key>
-        ${applicationData[key].name} ${key} = ( ${applicationData[key].name} ) workingMemory.get( "${key}" );
+        ${applicatbionData[key].name} ${key} = ( ${applicationData[key].name} ) workingMemory.get( "${key}" );
         </#list>
         
         return $ruleName.$methodName( <#list declarations as item>${item.identifier}<#if item_has_next>, </#if></#list><#list usedApplicationData as key>, ${key}</#list> );

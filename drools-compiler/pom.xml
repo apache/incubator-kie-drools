@@ -30,8 +30,14 @@
     <dependency>
       <groupId>jci</groupId>
       <artifactId>jci</artifactId>
-      <version>SNAPSHOT-2005</version>
+      <version>SNAPSHOT-378493</version>
     </dependency> 
+    
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging-api</artifactId>
+      <version>1.0.4</version>
+    </dependency>
 
 	  <!-- only needed for the default expander in parser/lang.. to remove when it is refactored into another module. -->
 	  <dependency>
