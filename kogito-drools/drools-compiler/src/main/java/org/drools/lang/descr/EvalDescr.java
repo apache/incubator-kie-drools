@@ -7,6 +7,8 @@ import java.util.List;
 public class EvalDescr extends PatternDescr {
     private String text;
 
+    private String[] declarations;    
+    
     public EvalDescr(String text) {
         this.text = text;
     }
@@ -14,4 +16,12 @@ public class EvalDescr extends PatternDescr {
     public String getText() {
         return this.text;
     }
+    
+    public void setDeclarations( String[] declarations) {
+        this.declarations = declarations;
+    }
+    
+    public String[] getDeclarations() {
+        return this.declarations;
+    }    
 }

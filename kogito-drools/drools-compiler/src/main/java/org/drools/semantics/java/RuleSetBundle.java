@@ -18,7 +18,7 @@ public class RuleSetBundle {
     
     private final String                   packageName; 
     
-    private final ResourceStoreClassLoader classLoader;
+    private final ResourceStoreClassLoader classLoader;    
     
     public RuleSetBundle(RuleSet ruleSet) {
         this( ruleSet, "org.drools.generated", null );
@@ -74,7 +74,11 @@ public class RuleSetBundle {
     
     public byte[] getBinJar(List objects) {
         return null;
-    }    
+    }   
+    
+    public int getNextInt() {
+        return this.counter++;
+    }
     
     /**
      * Takes a given name and makes sure that its legal and doesn't already exist. If the file exists it increases counter appender untill it is unique.
@@ -98,6 +102,7 @@ public class RuleSetBundle {
         boolean exists = true;
         while ( exists )
         {
+                        
             counter++;
             String fileName = packageName.replaceAll( "\\.",
                                                       "/" ) + newName + "_" + counter + ext;

@@ -11,6 +11,11 @@ public class ColumnDescr extends PatternDescr {
     private List   descrs = Collections.EMPTY_LIST;
 
     public ColumnDescr(int index,
+                       String objectType) {
+        this(index, objectType, null);
+    }    
+    
+    public ColumnDescr(int index,
                        String objectType,
                        String identifier) {
         this.objectType = objectType;
@@ -21,6 +26,7 @@ public class ColumnDescr extends PatternDescr {
         if ( this.descrs == Collections.EMPTY_LIST ) {
             this.descrs = new ArrayList( 1 );
         }
+        this.descrs.add(  patternDescr );
     }
     
     public int getIndex() {

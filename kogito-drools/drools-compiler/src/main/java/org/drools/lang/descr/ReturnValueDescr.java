@@ -4,6 +4,8 @@ public class ReturnValueDescr extends PatternDescr {
     private String fieldName;
     private String evaluator;
     private String text;
+    
+    private String[] declarations;        
         
     public ReturnValueDescr(String fieldName,
                                     String evaluator,
@@ -24,4 +26,12 @@ public class ReturnValueDescr extends PatternDescr {
     public String getText() {
         return this.text;
     } 
+    
+    public void setDeclarations( String[] declarations) {
+        this.declarations = declarations;
+    }
+    
+    public String[] getDeclarations() {
+        return this.declarations;
+    }     
 }
