@@ -79,7 +79,8 @@ class FactTable extends Table implements Serializable {
 	 * where added since then. Iterates through all facts asserted (and not
 	 * retracted, they are not here duh) and adds them to the stack.
 	 * 
-	 * @param working memory
+	 * @param working
+	 *            memory
 	 * 
 	 */
 	private void checkAndAddFactsToStack(WorkingMemoryImpl workingMemory) {
@@ -103,7 +104,9 @@ class FactTable extends Table implements Serializable {
 
 	/**
 	 * set indicator if rule was added already after fire all completed
-	 * @param new value
+	 * 
+	 * @param new
+	 *            value
 	 */
 	public void setReseededStack(boolean reseeded) {
 		this.reseededStack = reseeded;
