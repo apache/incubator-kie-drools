@@ -40,7 +40,7 @@ import org.drools.spi.ObjectTypeResolver;
 /**
  * Builds the Rete-OO network for a <code>RuleSet</code>.
  * 
- * @see org.drools.rule.RuleSet
+ * @see org.drools.rule.Package
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * 
@@ -62,7 +62,7 @@ class Builder {
     private final Rete               rete;
 
     /** Rule-sets added. */
-    private final List               ruleSets;
+    private final List               pkgs;
 
     /** Nodes that have been attached. */
     private final Map                attachedNodes;
@@ -90,7 +90,7 @@ class Builder {
         this.ruleBase = ruleBase;
         this.rete = this.ruleBase.getRete();
         this.resolver = resolver;
-        this.ruleSets = new ArrayList();
+        this.pkgs = new ArrayList();
         this.attachedNodes = new HashMap();
         this.applicationData = new HashMap();
         this.declarations = new HashMap();

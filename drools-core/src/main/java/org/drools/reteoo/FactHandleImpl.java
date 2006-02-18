@@ -17,6 +17,7 @@ package org.drools.reteoo;
  */
 
 import org.drools.FactHandle;
+import org.drools.common.InternalFactHandle;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -25,7 +26,7 @@ import org.drools.FactHandle;
  */
 class FactHandleImpl
     implements
-    FactHandle {
+    InternalFactHandle {
     // ----------------------------------------------------------------------
     // Instance members
     // ----------------------------------------------------------------------

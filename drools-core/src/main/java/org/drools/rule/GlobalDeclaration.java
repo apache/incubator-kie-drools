@@ -48,14 +48,14 @@ public class GlobalDeclaration
     Serializable {
     private String  identifier;
     private Class   type;
-    private RuleSet ruleSet;
+    private Package pkg;
 
-    public GlobalDeclaration(RuleSet ruleSet,
+    public GlobalDeclaration(Package pkg,
                            String identifier,
                            Class type) {
         this.identifier = identifier;
         this.type = type;
-        this.ruleSet = ruleSet;
+        this.pkg = pkg;
     }
 
     public String getIdentifier() {

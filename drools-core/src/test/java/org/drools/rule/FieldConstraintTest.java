@@ -100,15 +100,13 @@ public class FieldConstraintTest extends TestCase {
 
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
-        Declaration price1Declaration = new Declaration( 0,
-                                                         "price1",
+        Declaration price1Declaration = new Declaration( "price1",
                                                          priceExtractor,
                                                          0 );
 
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
-        Declaration price2Declaration = new Declaration( 1,
-                                                         "price2",
+        Declaration price2Declaration = new Declaration( "price2",
                                                          priceExtractor,
                                                          1 );
 
@@ -170,8 +168,7 @@ public class FieldConstraintTest extends TestCase {
 
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
-        Declaration priceDeclaration = new Declaration( 0,
-                                                        "price1",
+        Declaration priceDeclaration = new Declaration( "price1",
                                                         priceExtractor,
                                                         0 );
 

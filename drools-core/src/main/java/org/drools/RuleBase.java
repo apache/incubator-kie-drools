@@ -43,7 +43,7 @@ package org.drools;
 
 import java.io.Serializable;
 
-import org.drools.rule.RuleSet;
+import org.drools.rule.Package;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseContext;
@@ -91,7 +91,7 @@ public interface RuleBase
      */
     FactHandleFactory getFactHandleFactory();
 
-    RuleSet[] getRuleSets();
+    Package[] getRuleSets();
 
     RuleBaseContext getRuleBaseContext();
 }

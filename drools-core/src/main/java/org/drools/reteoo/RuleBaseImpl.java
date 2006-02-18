@@ -27,11 +27,11 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
-import org.drools.RuleSetIntegrationException;
+import org.drools.PackageIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
-import org.drools.rule.RuleSet;
+import org.drools.rule.Package;
 import org.drools.spi.ClassObjectTypeResolver;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.FactHandleFactory;
@@ -61,7 +61,7 @@ public class RuleBaseImpl
     /** The fact handle factory. */
     private final FactHandleFactory factHandleFactory;
 
-    private Set                     ruleSets;
+    private Set                     pkgs;
 
     private Map                     globalDeclarations;
 
@@ -93,7 +93,7 @@ public class RuleBaseImpl
         this.builder = new Builder( this,
                                     resolver );
         this.factHandleFactory = new DefaultFactHandleFactory();
-        this.ruleSets = new HashSet();
+        this.pkgs = new HashSet();
         this.globalDeclarations = new HashMap();
         this.ruleBaseContext = new RuleBaseContext();
         this.workingMemories = new WeakHashMap();
@@ -195,8 +195,8 @@ public class RuleBaseImpl
                                  workingMemory );
     }
 
-    public RuleSet[] getRuleSets() {
-        return (RuleSet[]) this.ruleSets.toArray( new RuleSet[this.ruleSets.size()] );
+    public Package[] getRuleSets() {
+        return (Package[]) this.pkgs.toArray( new Package[this.pkgs.size()] );
     }
 
     public Map getGlobalDeclarations() {
@@ -212,7 +212,7 @@ public class RuleBaseImpl
      * <code>RuleSet</code> adding Each individual <code>Rule</code> to the
      * network.
      * 
-     * @param ruleSet
+     * @param pkg
      *            The rule-set to add.
      * 
      * @throws RuleIntegrationException
@@ -221,11 +221,11 @@ public class RuleBaseImpl
      * @throws FactException
      * @throws InvalidPatternException
      */
-    public void addRuleSet(RuleSet ruleSet) throws RuleIntegrationException,
-                                           RuleSetIntegrationException,
+    public void addRuleSet(Package pkg) throws RuleIntegrationException,
+                                           PackageIntegrationException,
                                            FactException,
                                            InvalidPatternException {
-        Map newApplicationData = ruleSet.getGlobalDeclarations();
+        Map newApplicationData = pkg.getGlobalDeclarations();
 
         // Check that the global data is valid, we cannot change the type
         // of an already declared global variable
@@ -233,14 +233,14 @@ public class RuleBaseImpl
             String identifier = (String) it.next();
             Class type = (Class) newApplicationData.get( identifier );
             if ( this.globalDeclarations.containsKey( identifier ) && !this.globalDeclarations.get( identifier ).equals( type ) ) {
-                throw new RuleSetIntegrationException( ruleSet );
+                throw new PackageIntegrationException( pkg );
             }
         }
         this.globalDeclarations.putAll( newApplicationData );
 
-        this.ruleSets.add( ruleSet );
+        this.pkgs.add( pkg );
 
-        Rule[] rules = ruleSet.getRules();
+        Rule[] rules = pkg.getRules();
 
         for ( int i = 0; i < rules.length; ++i ) {
             addRule( rules[i] );

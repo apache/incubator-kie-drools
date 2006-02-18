@@ -41,7 +41,7 @@ package org.drools;
  *
  */
 
-import org.drools.rule.RuleSet;
+import org.drools.rule.Package;
 
 /**
  * Indicates an error integrating a <code>RuleSet</code> into a
@@ -55,44 +55,44 @@ import org.drools.rule.RuleSet;
  * @version $Id: RuleIntegrationException.java,v 1.6 2004/09/17 00:14:06
  *          mproctor Exp $
  */
-public class RuleSetIntegrationException extends IntegrationException {
+public class PackageIntegrationException extends IntegrationException {
     /** The rule. */
-    private final RuleSet ruleSet;
+    private final Package pkg;
 
     /**
      * @see java.lang.Exception#Exception()
      * 
-     * @param ruleSet
+     * @param pkg
      *            The offending rule.
      */
-    public RuleSetIntegrationException(RuleSet ruleSet) {
-        super( createMessage( ruleSet ) );
-        this.ruleSet = ruleSet;
+    public PackageIntegrationException(Package pkg) {
+        super( createMessage( pkg ) );
+        this.pkg = pkg;
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      * 
-     * @param ruleSet
+     * @param pkg
      *            The offending rule.
      */
-    public RuleSetIntegrationException(RuleSet ruleSet,
+    public PackageIntegrationException(Package pkg,
                                        Throwable cause) {
-        super( createMessage( ruleSet ),
+        super( createMessage( pkg ),
                cause );
-        this.ruleSet = ruleSet;
+        this.pkg = pkg;
     }
 
     /**
      * Retrieve the <code>RuleSet</code>.
      * 
-     * @return The ruleSet
+     * @return The pkg
      */
-    public RuleSet getRuleSet() {
-        return this.ruleSet;
+    public Package getRuleSet() {
+        return this.pkg;
     }
 
-    private static String createMessage(RuleSet ruleSet) {
-        return ruleSet.getName() + " cannot be integrated";
+    private static String createMessage(Package pkg) {
+        return pkg.getName() + " cannot be integrated";
     }
 }

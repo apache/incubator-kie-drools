@@ -84,8 +84,8 @@ class WorkingMemoryImpl
     private final PrimitiveLongMap          nodeMemories                                  = new PrimitiveLongMap( 32,
                                                                                                                   8 );
 
-    /** Application data which is associated with this memory. */
-    private final Map                       globals                                       = new HashMap();
+    /** Global values which are associated with this memory. */
+    private final Map                       globalValues                                  = new HashMap();
 
     /** Handle-to-object mapping. */
     private final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
@@ -192,7 +192,7 @@ class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public Map getGlobals() {
-        return this.globals;
+        return this.globalValues;
     }
 
     /**
@@ -209,7 +209,7 @@ class WorkingMemoryImpl
             throw new RuntimeException( "Illegal class for application data. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
 
         } else {
-            this.globals.put( name,
+            this.globalValues.put( name,
                                       value );
         }
     }
@@ -218,7 +218,7 @@ class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public Object getGlobal(String name) {
-        return this.globals.get( name );
+        return this.globalValues.get( name );
     }
 
     /**
