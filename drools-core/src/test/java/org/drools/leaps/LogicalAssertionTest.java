@@ -21,8 +21,8 @@ import java.util.HashSet;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.FactHandle;
+import org.drools.PackageIntegrationException;
 import org.drools.RuleIntegrationException;
-import org.drools.RuleSetIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.common.Agenda;
 import org.drools.common.PropagationContextImpl;
@@ -246,9 +246,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
 	}
 
-	public void testMultipleLogicalRelationships() throws FactException,
-			RuleSetIntegrationException, InvalidPatternException,
-			RuleIntegrationException {
+	public void testMultipleLogicalRelationships() throws FactException, InvalidPatternException,
+			RuleIntegrationException, PackageIntegrationException {
 		final Rule rule1 = new Rule("test-rule1");
 
 		RuleBaseImpl ruleBase = new RuleBaseImpl();
