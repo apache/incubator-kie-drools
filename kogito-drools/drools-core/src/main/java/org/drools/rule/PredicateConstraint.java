@@ -9,7 +9,7 @@ import org.drools.spi.Tuple;
 public class PredicateConstraint
     implements
     FieldConstraint {    
-    private final PredicateExpression           evaluator;    
+    private PredicateExpression           expression;    
 
     private final Declaration                   declaration;
     
@@ -18,10 +18,15 @@ public class PredicateConstraint
     private static final Declaration[]          EMPTY_DECLARATIONS = new Declaration[0];
 
     public PredicateConstraint(PredicateExpression evaluator,
+                               Declaration declaration) {
+        this(evaluator, declaration, null);
+    }    
+    
+    public PredicateConstraint(PredicateExpression evaluator,
                                Declaration declaration,
                                Declaration[] requiredDeclarations) {
         
-        this.evaluator = evaluator;
+        this.expression = evaluator;
         
         this.declaration = declaration;
 
@@ -35,12 +40,16 @@ public class PredicateConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
     }
+    
+    public void setPredicateExpression(PredicateExpression expression) {
+        this.expression = expression;
+    }
 
     public boolean isAllowed(FactHandle handle,
                              Tuple tuple,
                              WorkingMemory workingMemory) {
 
-        return evaluator.evaluate( tuple,
+        return expression.evaluate( tuple,
                                    handle,
                                    this.declaration, 
                                    this.requiredDeclarations, 

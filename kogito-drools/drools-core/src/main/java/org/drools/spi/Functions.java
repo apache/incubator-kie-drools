@@ -43,7 +43,7 @@ package org.drools.spi;
 /**
  * Function <code>Rule</code>.
  * 
- * @see org.drools.rule.RuleSet
+ * @see org.drools.rule.Package
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */

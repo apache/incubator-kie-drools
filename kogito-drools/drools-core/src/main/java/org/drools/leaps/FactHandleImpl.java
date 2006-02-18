@@ -17,6 +17,7 @@ package org.drools.leaps;
  */
 
 import org.drools.FactHandle;
+import org.drools.common.InternalFactHandle;
 
 /**
  * class container for each object asserted / retracted into the system
@@ -24,7 +25,7 @@ import org.drools.FactHandle;
  * @author Alexander Bagerman
  * 
  */
-public class FactHandleImpl extends Handle implements FactHandle {
+public class FactHandleImpl extends Handle implements InternalFactHandle {
 	/**
 	 * 
 	 */

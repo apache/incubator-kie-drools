@@ -21,12 +21,9 @@ public class DeclarationTest extends TestCase {
 
         /* Bind the extractor to a decleration */
         /* Declarations know the column they derive their value from */
-        Declaration declaration = new Declaration( 3,
-                                                   "typeOfCheese",
+        Declaration declaration = new Declaration( "typeOfCheese",
                                                    extractor,
                                                    5 );
-        assertEquals( 3,
-                      declaration.getIndex() );
 
         assertEquals( "typeOfCheese",
                       declaration.getIdentifier() );
@@ -48,8 +45,7 @@ public class DeclarationTest extends TestCase {
 
         /* Bind the extractor to a decleration */
         /* Declarations know the column they derive their value from */
-        Declaration declaration = new Declaration( 3,
-                                                   "typeOfCheese",
+        Declaration declaration = new Declaration( "typeOfCheese",
                                                    extractor,
                                                    5 );
 

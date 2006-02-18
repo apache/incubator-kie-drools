@@ -18,29 +18,27 @@ import java.util.StringTokenizer;
 import junit.framework.TestCase;
 
 import org.drools.FactException;
+import org.drools.PackageIntegrationException;
 import org.drools.RuleIntegrationException;
-import org.drools.RuleSetIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.EvaluatorFactory;
-import org.drools.leaps.RuleBaseImpl;
+import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.DuplicateRuleNameException;
-import org.drools.rule.FieldBinding;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.InvalidRuleException;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
+import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.rule.RuleSet;
 import org.drools.spi.Activation;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
-import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Field;
 import org.drools.spi.FieldConstraint;
@@ -49,7 +47,7 @@ import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.MockField;
 import org.drools.spi.Tuple;
 
-public class LeapsMannersTest extends TestCase {
+public abstract class BaseMannersTest extends TestCase {
     /** Number of guests at the dinner (default: 16). */
     private int             numGuests  = 16;
 
@@ -61,6 +59,8 @@ public class LeapsMannersTest extends TestCase {
 
     /** Maximun number of hobbies each guest should have (default: 3). */
     private int             maxHobbies = 3;
+    
+    protected Package       pkg;
 
     private ClassObjectType contextType;
     private ClassObjectType guestType;
@@ -99,53 +99,16 @@ public class LeapsMannersTest extends TestCase {
                                                                                   Evaluator.EQUAL );
         this.booleanNotEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.BOOLEAN_TYPE,
                                                                                      Evaluator.NOT_EQUAL );
-
-    }
-
-    public void testManners() throws DuplicateRuleNameException,
-                       InvalidRuleException,
-                       IntrospectionException,
-                       RuleIntegrationException,
-                       RuleSetIntegrationException,
-                       InvalidPatternException,
-                       FactException,
-                       IOException,
-                       InterruptedException {
-        RuleSet ruleSet = new RuleSet( "Miss Manners" );
-        ruleSet.addRule( getAssignFirstSeatRule() );
-        ruleSet.addRule( getFindSeating() );
-        ruleSet.addRule( getPathDone() );
-        ruleSet.addRule( getMakePath() );
-        ruleSet.addRule( getContinueProcessing() );
-        ruleSet.addRule( getAreWeDone() );        
-        ruleSet.addRule( getAllDone() );
-
-        final RuleBaseImpl ruleBase = new RuleBaseImpl( );
-        ruleBase.addRuleSet( ruleSet );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();        
-
-        InputStream is = getClass().getResourceAsStream( "/manners64.dat" );
-        List list = getInputObjects( is );
-        for ( Iterator it = list.iterator(); it.hasNext(); ) {
-            Object object = it.next();
-            workingMemory.assertObject( object );
-        }
-              
-        workingMemory.assertObject( new Count( 1 ) );
         
-        long start = System.currentTimeMillis();
-        workingMemory.fireAllRules();
-        System.err.println( System.currentTimeMillis() - start );
-        
-        //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase); 
-        //        
-        //        javax.swing.SwingUtilities.invokeLater(new Runnable() { 
-        //        		public void run() {
-        //        			viewer.showGUI();
-        //        		}
-        //        });
-        //        
-        //        Thread.sleep( 10000 );
+        this.pkg = new Package( "Miss Manners" );
+        pkg.addRule( getAssignFirstSeatRule() );
+        pkg.addRule( getFindSeating() );
+        pkg.addRule( getPathDone() );
+        pkg.addRule( getMakePath() );
+        pkg.addRule( getContinueProcessing() );
+        pkg.addRule( getAreWeDone() );
+        pkg.addRule( getAllDone() );
+
     }
 
     /**
@@ -220,7 +183,8 @@ public class LeapsMannersTest extends TestCase {
 
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
+            public void invoke(Activation activation,
+                               WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
@@ -257,10 +221,9 @@ public class LeapsMannersTest extends TestCase {
                     context.setState( Context.ASSIGN_SEATS );
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
-                    //System.out.println( "assign first seat :  " + seating + " : " + path );
+                    System.out.println( "assign first seat :  " + seating + " : " + path );
 
-                }
-                catch ( Exception e ) {
+                } catch ( Exception e ) {
                     e.printStackTrace();
                     throw new ConsequenceException( e );
                 }
@@ -339,22 +302,26 @@ public class LeapsMannersTest extends TestCase {
         Column seatingColumn = new Column( 1,
                                            seatingType );
 
-        seatingColumn.addConstraint( getFieldBinding( seatingColumn,
-                                                      "id",
-                                                      "seatingId" ) );
-        seatingColumn.addConstraint( getFieldBinding( seatingColumn,
-                                                      "pid",
-                                                      "seatingPid" ) );
+        setFieldDeclaration( seatingColumn,
+                             "id",
+                             "seatingId" );
+
+        setFieldDeclaration( seatingColumn,
+                             "pid",
+                             "seatingPid" );
+
         seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
                                                            "pathDone",
                                                            new Boolean( true ),
                                                            this.booleanEqualEvaluator ) );
-        seatingColumn.addConstraint( getFieldBinding( seatingColumn,
-                                                      "rightSeat",
-                                                      "seatingRightSeat" ) );
-        seatingColumn.addConstraint( getFieldBinding( seatingColumn,
-                                                      "rightGuestName",
-                                                      "seatingRightGuestName" ) );
+
+        setFieldDeclaration( seatingColumn,
+                             "rightSeat",
+                             "seatingRightSeat" );
+
+        setFieldDeclaration( seatingColumn,
+                             "rightGuestName",
+                             "seatingRightGuestName" );
 
         rule.addPattern( seatingColumn );
 
@@ -374,13 +341,13 @@ public class LeapsMannersTest extends TestCase {
                                                                     seatingRightGuestNameDeclaration,
                                                                     objectEqualEvaluator ) );
 
-        rightGuestColumn.addConstraint( getFieldBinding( rightGuestColumn,
-                                                         "sex",
-                                                         "rightGuestSex" ) );
+        setFieldDeclaration( rightGuestColumn,
+                             "sex",
+                             "rightGuestSex" );
 
-        rightGuestColumn.addConstraint( getFieldBinding( rightGuestColumn,
-                                                         "hobby",
-                                                         "rightGuestHobby" ) );
+        setFieldDeclaration( rightGuestColumn,
+                             "hobby",
+                             "rightGuestHobby" );
 
         rule.addPattern( rightGuestColumn );
 
@@ -394,9 +361,9 @@ public class LeapsMannersTest extends TestCase {
         Column leftGuestColumn = new Column( 3,
                                              guestType );
 
-        leftGuestColumn.addConstraint( getFieldBinding( leftGuestColumn,
-                                                        "name",
-                                                        "leftGuestName" ) );
+        setFieldDeclaration( leftGuestColumn,
+                             "name",
+                             "leftGuestName" );
 
         leftGuestColumn.addConstraint( getBoundVariableConstraint( leftGuestColumn,
                                                                    "sex",
@@ -481,7 +448,8 @@ public class LeapsMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
+            public void invoke(Activation activation,
+                               WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
@@ -490,10 +458,10 @@ public class LeapsMannersTest extends TestCase {
                                                                          workingMemory );
 
                     Context context = (Context) drools.get( contextDeclaration );
-                    Count count = (Count) drools.get( countDeclaration );                 
-                    int seatId = ((Integer) drools.get( seatingIdDeclaration ) ).intValue();                    
-                    int seatingRightSeat = ((Integer) drools.get( seatingRightSeatDeclaration ) ).intValue();
-                    
+                    Count count = (Count) drools.get( countDeclaration );
+                    int seatId = ((Integer) drools.get( seatingIdDeclaration )).intValue();
+                    int seatingRightSeat = ((Integer) drools.get( seatingRightSeatDeclaration )).intValue();
+
                     String leftGuestName = (String) drools.get( leftGuestNameDeclaration );
                     String rightGuestName = (String) drools.get( seatingRightGuestNameDeclaration );
                     Hobby rightGuestHobby = (Hobby) drools.get( rightGuestHobbyDeclaration );
@@ -502,7 +470,7 @@ public class LeapsMannersTest extends TestCase {
                                                    seatId,
                                                    false,
                                                    seatingRightSeat,
-                                                   rightGuestName ,
+                                                   rightGuestName,
                                                    seatingRightSeat + 1,
                                                    leftGuestName );
                     drools.assertObject( seating );
@@ -519,28 +487,24 @@ public class LeapsMannersTest extends TestCase {
 
                     drools.assertObject( chosen );
                     count.setValue( count.getValue() + 1 );
-                    
-//                    if ( count.getValue() == 5 ) {
-//                        drools.retractObject( tuple.getFactHandleForDeclaration( countDeclaration ) );
-//                    } else {
-//                        drools.modifyObject( tuple.getFactHandleForDeclaration( countDeclaration ),
-//                                             count );                        
-//                    }
-                    
-                    drools.modifyObject( tuple.get( countDeclaration ),
-                                         count );   
 
+                    //                    if ( count.getValue() == 5 ) {
+                    //                        drools.retractObject( tuple.getFactHandleForDeclaration( countDeclaration ) );
+                    //                    } else {
+                    //                        drools.modifyObject( tuple.getFactHandleForDeclaration( countDeclaration ),
+                    //                                             count );                        
+                    //                    }
+
+                    drools.modifyObject( tuple.get( countDeclaration ),
+                                         count );
 
                     context.setState( Context.MAKE_PATH );
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
 
                     System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
-                    
 
-
-                }
-                catch ( Exception e ) {
+                } catch ( Exception e ) {
                     e.printStackTrace();
                     throw new ConsequenceException( e );
                 }
@@ -579,61 +543,65 @@ public class LeapsMannersTest extends TestCase {
     private Rule getMakePath() throws IntrospectionException,
                               InvalidRuleException {
         final Rule rule = new Rule( "makePath" );
-    
+
         // -----------
         // context : Context( state == Context.MAKE_PATH )
         // -----------
         Column contextColumn = new Column( 0,
                                            contextType );
-    
+
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
                                                            new Integer( Context.MAKE_PATH ),
                                                            this.integerEqualEvaluator ) );
-    
+
         rule.addPattern( contextColumn );
-    
+
         // ---------------
         // Seating( seatingId:id, seatingPid:pid, pathDone == false )
         // ---------------
         Column seatingColumn = new Column( 1,
                                            seatingType );
-    
-        seatingColumn.addConstraint( getFieldBinding( seatingColumn,
-                                                      "id",
-                                                      "seatingId" ) );
-        seatingColumn.addConstraint( getFieldBinding( seatingColumn,
-                                                      "pid",
-                                                      "seatingPid" ) );
+
+        setFieldDeclaration( seatingColumn,
+                             "id",
+                             "seatingId" );
+
+        setFieldDeclaration( seatingColumn,
+                             "pid",
+                             "seatingPid" );
+
         seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
                                                            "pathDone",
                                                            new Boolean( false ),
                                                            booleanEqualEvaluator ) );
-    
+
         rule.addPattern( seatingColumn );
-    
+
         final Declaration seatingIdDeclaration = rule.getDeclaration( "seatingId" );
         final Declaration seatingPidDeclaration = rule.getDeclaration( "seatingPid" );
-    
+
         // -----------
         // Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
         // -----------
         Column pathColumn = new Column( 2,
                                         pathType );
-    
+
         pathColumn.addConstraint( getBoundVariableConstraint( pathColumn,
                                                               "id",
                                                               seatingPidDeclaration,
                                                               integerEqualEvaluator ) );
-        pathColumn.addConstraint( getFieldBinding( pathColumn,
-                                                   "guestName",
-                                                   "pathGuestName" ) );
-        pathColumn.addConstraint( getFieldBinding( pathColumn,
-                                                   "seat",
-                                                   "pathSeat" ) );
-    
+
+        setFieldDeclaration( pathColumn,
+                             "guestName",
+                             "pathGuestName" );
+
+        setFieldDeclaration( pathColumn,
+                             "seat",
+                             "pathSeat" );
+
         rule.addPattern( pathColumn );
-    
+
         final Declaration pathGuestNameDeclaration = rule.getDeclaration( "pathGuestName" );
         final Declaration pathSeatDeclaration = rule.getDeclaration( "pathSeat" );
         // -------------
@@ -641,7 +609,7 @@ public class LeapsMannersTest extends TestCase {
         // -------------
         Column notPathColumn = new Column( 3,
                                            pathType );
-    
+
         notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
                                                                  "id",
                                                                  seatingIdDeclaration,
@@ -650,48 +618,48 @@ public class LeapsMannersTest extends TestCase {
                                                                  "guestName",
                                                                  pathGuestNameDeclaration,
                                                                  objectEqualEvaluator ) );
-    
+
         Not not = new Not();
-    
+
         not.addChild( notPathColumn );
-    
+
         rule.addPattern( not );
-    
+
         // ------------
         // drools.assert( new Path( id, pathName, pathSeat ) );
         // ------------
         Consequence consequence = new Consequence() {
-    
-            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
+
+            public void invoke(Activation activation,
+                               WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
                     KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
                                                                          tuple,
                                                                          workingMemory );
-    
-                    int id = ( (Integer) drools.get( seatingIdDeclaration ) ).intValue();
-                    int seat = ( (Integer) drools.get( pathSeatDeclaration ) ).intValue();
+
+                    int id = ((Integer) drools.get( seatingIdDeclaration )).intValue();
+                    int seat = ((Integer) drools.get( pathSeatDeclaration )).intValue();
                     String guestName = (String) drools.get( pathGuestNameDeclaration );
-    
+
                     Path path = new Path( id,
                                           seat,
                                           guestName );
-    
+
                     drools.assertObject( path );
-    
+
                     //System.out.println( "make path : " + path );
-                }
-                catch ( Exception e ) {
+                } catch ( Exception e ) {
                     e.printStackTrace();
                     throw new ConsequenceException( e );
                 }
             }
-    
+
         };
-    
+
         rule.setConsequence( consequence );
-    
+
         return rule;
     }
 
@@ -755,21 +723,22 @@ public class LeapsMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
+            public void invoke(Activation activation,
+                               WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
                     KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
                                                                          tuple,
-                                                                         workingMemory);
+                                                                         workingMemory );
 
                     Context context = (Context) drools.get( contextDeclaration );
                     Seating seating = (Seating) drools.get( seatingDeclaration );
 
                     seating.setPathDone( true );
-                    
+
                     if ( seating.getId() == 6 ) {
-                        System.out.println("pause");
+                        System.out.println( "pause" );
                     }
                     drools.modifyObject( tuple.get( seatingDeclaration ),
                                          seating );
@@ -778,8 +747,7 @@ public class LeapsMannersTest extends TestCase {
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
                     //System.out.println( "path done" + seating );
-                }
-                catch ( Exception e ) {
+                } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
             }
@@ -834,9 +802,10 @@ public class LeapsMannersTest extends TestCase {
         Column lastSeatColumn = new Column( 1,
                                             lastSeatType );
 
-        lastSeatColumn.addConstraint( getFieldBinding( lastSeatColumn,
-                                                       "seat",
-                                                       "lastSeat" ) );
+        setFieldDeclaration( lastSeatColumn,
+                             "seat",
+                             "lastSeat" );
+
         rule.addPattern( lastSeatColumn );
         final Declaration lastSeatDeclaration = rule.getDeclaration( "lastSeat" );
         // -------------
@@ -858,7 +827,8 @@ public class LeapsMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
+            public void invoke(Activation activation,
+                               WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
@@ -872,9 +842,8 @@ public class LeapsMannersTest extends TestCase {
                     drools.modifyObject( tuple.get( contextDeclaration ),
                                          context );
 
-                   System.err.println( "We Are Done!!!" );
-                }
-                catch ( Exception e ) {
+                    System.err.println( "We Are Done!!!" );
+                } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
             }
@@ -925,7 +894,8 @@ public class LeapsMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
+            public void invoke(Activation activation,
+                               WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
                     Tuple tuple = activation.getTuple();
@@ -940,8 +910,7 @@ public class LeapsMannersTest extends TestCase {
                                          context );
 
                     //System.out.println( "continue processing" );
-                }
-                catch ( Exception e ) {
+                } catch ( Exception e ) {
                     e.printStackTrace();
                     throw new ConsequenceException( e );
                 }
@@ -992,11 +961,11 @@ public class LeapsMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException {
+            public void invoke(Activation activation,
+                               WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     System.err.println( "all done" );
-                }
-                catch ( Exception e ) {
+                } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
             }
@@ -1012,7 +981,7 @@ public class LeapsMannersTest extends TestCase {
      * Convert the facts from the <code>InputStream</code> to a list of
      * objects.
      */
-    private List getInputObjects(InputStream inputStream) throws IOException {
+    protected List getInputObjects(InputStream inputStream) throws IOException {
         List list = new ArrayList();
 
         BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );
@@ -1132,46 +1101,43 @@ public class LeapsMannersTest extends TestCase {
                                                  String fieldName,
                                                  Object fieldValue,
                                                  Evaluator evaluator) throws IntrospectionException {
-             Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-             FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                                 fieldName );
-             
-             Field field = new MockField( fieldName,
-                                          fieldValue,
-                                          extractor.getIndex() );
+        FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                            fieldName );
 
+        Field field = new MockField( fieldName,
+                                     fieldValue,
+                                     extractor.getIndex() );
 
-             return new LiteralConstraint( field,
-                                           extractor,
-                                           evaluator );
-         }
-
-         private Constraint getFieldBinding(Column column,
-                                            String fieldName,
-                                            String declarationName) throws IntrospectionException {
-             Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-
-             FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                                 fieldName );
-
-             return new FieldBinding( declarationName,
-                                      null,
+        return new LiteralConstraint( field,
                                       extractor,
-                                      column.getIndex() );
-         }
+                                      evaluator );
+    }
 
-         private FieldConstraint getBoundVariableConstraint(Column column,
-                                                            String fieldName,
-                                                            Declaration declaration,
-                                                            Evaluator evaluator) throws IntrospectionException {
-             Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+    private void setFieldDeclaration(Column column,
+                                     String fieldName,
+                                     String identifier) throws IntrospectionException {
+        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-             FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                                 fieldName );
+        FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                            fieldName );
 
-             return new BoundVariableConstraint( extractor,
-                                                 declaration,
-                                                evaluator );
-         }    
+        column.addDeclaration( identifier,
+                               extractor );
+    }
+
+    private FieldConstraint getBoundVariableConstraint(Column column,
+                                                       String fieldName,
+                                                       Declaration declaration,
+                                                       Evaluator evaluator) throws IntrospectionException {
+        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+
+        FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                            fieldName );
+
+        return new BoundVariableConstraint( extractor,
+                                            declaration,
+                                            evaluator );
+    }
 }

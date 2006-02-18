@@ -62,21 +62,21 @@ import org.drools.spi.RuleBaseContext;
  * 
  * @version $Id: RuleSet.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  */
-public class RuleSet
+public class Package
     implements
     Serializable {
     // ------------------------------------------------------------
-    // Constants
+    // Constants`
     // ------------------------------------------------------------
 
     /** Empty <code>RuleSet</code> array. */
-    public static final RuleSet[] EMPTY_ARRAY = new RuleSet[0];
+    public static final Package[] EMPTY_ARRAY = new Package[0];
 
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
-    /** Name of the ruleset. */
+    /** Name of the pkg. */
     private String                name;
 
     /** Documentation. */
@@ -90,7 +90,7 @@ public class RuleSet
 
     private Importer              importer;
 
-    private Map                   applicationData;
+    private Map                   globalDeclarations;
 
     private Map                   functions;
 
@@ -106,11 +106,11 @@ public class RuleSet
      * @param name
      *            The name of this <code>RuleSet</code>.
      */
-    public RuleSet(String name) {
+    public Package(String name) {
         this.name = name;
         this.ruleNames = new HashSet();
         this.rules = new ArrayList();
-        this.applicationData = new HashMap();
+        this.globalDeclarations = new HashMap();
         this.functions = new HashMap();
         this.ruleBaseContext = new RuleBaseContext();
     }
@@ -122,12 +122,12 @@ public class RuleSet
      *            The name of this <code>RuleSet</code>.
      * @param ruleBaseContext
      */
-    public RuleSet(String name,
+    public Package(String name,
                    RuleBaseContext ruleBaseContext) {
         this.name = name;
         this.ruleNames = new HashSet();
         this.rules = new ArrayList();
-        this.applicationData = new HashMap();
+        this.globalDeclarations = new HashMap();
         this.functions = new HashMap();
         this.ruleBaseContext = ruleBaseContext;
     }
@@ -247,12 +247,12 @@ public class RuleSet
     }
 
     public void addGlobalDeclaration(GlobalDeclaration globalDeclaration) {
-        this.applicationData.put( globalDeclaration.getIdentifier(),
+        this.globalDeclarations.put( globalDeclaration.getIdentifier(),
                                   globalDeclaration.getType() );
     }
 
     public Map getGlobalDeclarations() {
-        return this.applicationData;
+        return this.globalDeclarations;
     }
 
     public void addFunctions(Functions functions) {
@@ -282,11 +282,11 @@ public class RuleSet
             return true;
         }
         
-        if (object == null||!(object instanceof RuleSet)) {
+        if (object == null||!(object instanceof Package)) {
             return false;
         }
         
-        RuleSet other = (RuleSet) object;
+        Package other = (Package) object;
         
         return (this.name.equals(other.name));
     }

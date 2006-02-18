@@ -79,8 +79,8 @@ public class Rule
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    /** The parent ruleSet */
-    private RuleSet      ruleSet;
+    /** The parent pkg */
+    private Package      pkg;
 
     /** Name of the rule. */
     private final String name;
@@ -127,23 +127,23 @@ public class Rule
 
     /**
      * Construct a
-     * <code>Rule<code> with the given name for the specified ruleSet parent
+     * <code>Rule<code> with the given name for the specified pkg parent
      *
      * @param name
      *            The name of this rule.
      */
     public Rule(String name,
-                RuleSet ruleSet,
+                Package pkg,
                 String agendaGroup) {
         this.name = name;
-        this.ruleSet = ruleSet;
+        this.pkg = pkg;
         this.agendaGroup = agendaGroup;
         this.applicationData = Collections.EMPTY_MAP;
     }
 
     /**
      * Construct a
-     * <code>Rule<code> with the given name for the specified ruleSet parent
+     * <code>Rule<code> with the given name for the specified pkg parent
      *
      * @param name
      *            The name of this rule.
@@ -151,14 +151,14 @@ public class Rule
     public Rule(String name,
                 String agendaGroup) {
         this.name = name;
-        this.ruleSet = null;
+        this.pkg = null;
         this.agendaGroup = agendaGroup;
         this.applicationData = Collections.EMPTY_MAP;
     }
 
     public Rule(String name) {
         this.name = name;
-        this.ruleSet = null;
+        this.pkg = null;
         this.agendaGroup = AgendaGroup.MAIN;
         this.applicationData = Collections.EMPTY_MAP;
     }
@@ -279,8 +279,8 @@ public class Rule
         }
     }
 
-    public RuleSet getRuleSet() {
-        return this.ruleSet;
+    public Package getRuleSet() {
+        return this.pkg;
     }
 
     /**
@@ -327,34 +327,6 @@ public class Rule
     }
 
     /**
-     * Add a <i>root fact object </i> parameter <code>Declaration</code> for
-     * this <code>Rule</code>.
-     * 
-     * @param identifier
-     *            The identifier.
-     * @param objectType
-     *            The type.
-     * @return The declaration.
-     */
-    public Declaration addDeclaration(String identifier,
-                                      int column,
-                                      Extractor extractor) throws InvalidRuleException {
-        if ( getDeclaration( identifier ) != null ) {
-            throw new InvalidRuleException( this );
-        }
-
-        Declaration declaration = new Declaration( this.declarations.size(),
-                                                   identifier,
-                                                   extractor,
-                                                   column );
-
-        this.declarations.put( identifier,
-                               declaration );
-
-        return declaration;
-    }
-
-    /**
      * Retrieve a parameter <code>Declaration</code> by identifier.
      * 
      * @param identifier
@@ -375,7 +347,7 @@ public class Rule
      *         <i>root fact objects</i>.
      */
     public Collection getDeclarations() {
-        return Collections.unmodifiableCollection( this.declarations.values() );
+        return this.declarations.values();
     }
 
     /**
@@ -398,17 +370,17 @@ public class Rule
     
     private void addDeclarations(Column column) throws InvalidRuleException {
         // Check if the column is bound and if so add it as a declaration
-        if ( column.getBinding() != null ) {
-            ColumnBinding binding = (ColumnBinding ) column.getBinding();
-            addDeclaration( binding.getIdentifier(), column.getIndex(), new ColumnExtractor( new ClassObjectType( Object.class ) ) );
+        if ( column.isBound() ) {
+            Declaration declaration = column.getDeclaration();
+            this.declarations.put( declaration.getIdentifier(), declaration );
         }
         
         // Check if there are any bound fields and if so add it as a declaration
-        for ( Iterator constraintIter = column.getConstraints().iterator(); constraintIter.hasNext(); ) {
-            Constraint constraint = ( Constraint ) constraintIter.next();
-            if ( constraint instanceof FieldBinding ) {
-                FieldBinding fieldBinding = ( FieldBinding ) constraint;
-                addDeclaration(fieldBinding.getIdentifier(), fieldBinding.getColumn(), fieldBinding.getExtractor() );
+        for ( Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
+            Object object = it.next();
+            if (object instanceof Declaration ) {
+                Declaration declaration = ( Declaration ) object;
+                this.declarations.put( declaration.getIdentifier(), declaration );
             }                     
         }    
     }
@@ -468,7 +440,7 @@ public class Rule
     private int getSpecifity(Column column) {
     	int specificity = 0;
         for (Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
-        	if (!(it.next() instanceof Binding)) {
+        	if (!(it.next() instanceof Declaration)) {
         		specificity++;
         	}        		
         }

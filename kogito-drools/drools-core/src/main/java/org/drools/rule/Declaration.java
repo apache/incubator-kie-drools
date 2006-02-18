@@ -69,8 +69,7 @@ import org.drools.spi.ObjectType;
 */
 public class Declaration
     implements
-    Serializable,
-    Comparable {
+    Serializable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -81,9 +80,6 @@ public class Declaration
     private final Extractor  extractor;
 
     private final int        column;
-
-    /** The index within a rule. */
-    private final int        index;
 
     // ------------------------------------------------------------
     // Constructors
@@ -99,14 +95,12 @@ public class Declaration
      * @param order
      *            The index within a rule.
      */
-    public Declaration(int index,
-                       String identifier,
+    public Declaration(String identifier,
                        Extractor extractor,
                        int column) {
         this.identifier = identifier;
         this.extractor = extractor;
         this.column = column;
-        this.index = index;
     }
 
     // ------------------------------------------------------------
@@ -149,25 +143,9 @@ public class Declaration
         return this.extractor;
     }
 
-    /**
-     * Returns the index of the Decleration
-     * 
-     * @return
-     */
-    public int getIndex() {
-        return this.index;
-    }
-
     public Object getValue(Object object) {
         return this.extractor.getValue( object );
     }
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    public int compareTo(Object object) {
-        return this.index - ((Declaration) object).index;
-    }
-
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public String toString() {
@@ -175,7 +153,7 @@ public class Declaration
     }
 
     public int hashCode() {
-        return this.index;
+        return this.identifier.hashCode();
     }
 
     public boolean equals(Object object) {
@@ -189,7 +167,7 @@ public class Declaration
 
         Declaration other = (Declaration) object;
 
-        return this.index == other.index && this.identifier.equals( other.identifier ) && this.extractor.getObjectType().equals( other.extractor.getObjectType() );
+        return this.column == other.column && this.identifier.equals( other.identifier ) && this.extractor.getObjectType().equals( other.extractor.getObjectType() );
     }
 
 }

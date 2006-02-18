@@ -27,11 +27,11 @@ import java.util.WeakHashMap;
 import org.drools.FactException;
 import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
-import org.drools.RuleSetIntegrationException;
+import org.drools.PackageIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
-import org.drools.rule.RuleSet;
+import org.drools.rule.Package;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseContext;
 
@@ -52,7 +52,7 @@ public class RuleBaseImpl implements RuleBase {
 	 */
 	private final HandleFactory factHandleFactory;
 
-	private Set ruleSets;
+	private Set pkgs;
 
 	private Map applicationData;
 
@@ -75,7 +75,7 @@ public class RuleBaseImpl implements RuleBase {
 	 *            The rete network.
 	 */
 	public RuleBaseImpl() throws RuleIntegrationException,
-			RuleSetIntegrationException, FactException, InvalidPatternException {
+			PackageIntegrationException, FactException, InvalidPatternException {
 		this(new HandleFactory(), new HashSet(), new HashMap(),
 				new RuleBaseContext());
 	}
@@ -89,23 +89,23 @@ public class RuleBaseImpl implements RuleBase {
 	 *            The conflict resolver.
 	 * @param factHandleFactory
 	 *            The fact handle factory.
-	 * @param ruleSets
+	 * @param pkgs
 	 * @param applicationData
 	 */
-	public RuleBaseImpl(FactHandleFactory factHandleFactory, Set ruleSets,
+	public RuleBaseImpl(FactHandleFactory factHandleFactory, Set pkgs,
 			Map applicationData, RuleBaseContext ruleBaseContext)
-			throws RuleIntegrationException, RuleSetIntegrationException,
+			throws RuleIntegrationException, PackageIntegrationException,
 			FactException, InvalidPatternException {
 		// because we can deal only with leaps fact handle factory
 		this.factHandleFactory = (HandleFactory) factHandleFactory;
-		this.ruleSets = ruleSets;
+		this.pkgs = pkgs;
 		this.applicationData = applicationData;
 		this.ruleBaseContext = ruleBaseContext;
 		this.workingMemories = new WeakHashMap();
 
-		this.ruleSets = new HashSet();
-		for (Iterator it = ruleSets.iterator(); it.hasNext();) {
-			this.addRuleSet((RuleSet) it.next());
+		this.pkgs = new HashSet();
+		for (Iterator it = pkgs.iterator(); it.hasNext();) {
+			this.addRuleSet((Package) it.next());
 		}
 	}
 
@@ -156,8 +156,8 @@ public class RuleBaseImpl implements RuleBase {
 	/**
 	 * @see RuleBase
 	 */
-	public RuleSet[] getRuleSets() {
-		return (RuleSet[]) this.ruleSets.toArray(new RuleSet[this.ruleSets
+	public Package[] getRuleSets() {
+		return (Package[]) this.pkgs.toArray(new Package[this.pkgs
 				.size()]);
 	}
 
@@ -177,7 +177,7 @@ public class RuleBaseImpl implements RuleBase {
 	 * <code>RuleSet</code> adding Each individual <code>Rule</code> to the
 	 * network.
 	 * 
-	 * @param ruleSet
+	 * @param pkg
 	 *            The rule-set to add.
 	 * 
 	 * @throws RuleIntegrationException
@@ -186,9 +186,9 @@ public class RuleBaseImpl implements RuleBase {
 	 * @throws FactException
 	 * @throws InvalidPatternException
 	 */
-	public void addRuleSet(RuleSet ruleSet) throws RuleIntegrationException,
-			RuleSetIntegrationException, FactException, InvalidPatternException {
-		Map newApplicationData = ruleSet.getGlobalDeclarations();
+	public void addRuleSet(Package pkg) throws RuleIntegrationException,
+			PackageIntegrationException, FactException, InvalidPatternException {
+		Map newApplicationData = pkg.getGlobalDeclarations();
 
 		// Check that the application data is valid, we cannot change the type
 		// of an already declared application data variable
@@ -197,14 +197,14 @@ public class RuleBaseImpl implements RuleBase {
 			Class type = (Class) newApplicationData.get(identifier);
 			if (this.applicationData.containsKey(identifier)
 					&& !this.applicationData.get(identifier).equals(type)) {
-				throw new RuleSetIntegrationException(ruleSet);
+				throw new PackageIntegrationException(pkg);
 			}
 		}
 		this.applicationData.putAll(newApplicationData);
 
-		this.ruleSets.add(ruleSet);
+		this.pkgs.add(pkg);
 
-		Rule[] rules = ruleSet.getRules();
+		Rule[] rules = pkg.getRules();
 
 		for (int i = 0; i < rules.length; ++i) {
 			addRule(rules[i]);
