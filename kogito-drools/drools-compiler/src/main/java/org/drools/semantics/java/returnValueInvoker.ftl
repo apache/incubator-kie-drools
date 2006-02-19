@@ -1,17 +1,17 @@
-    public static class ${className}Invoker implements ReturnValueExpression
+    public static class ${invokerClassName} implements ReturnValueExpression
     {
         public Object evaluate(Tuple tuple,
                                Declaration[] declarations, 
-                               WorkingMemory workingMemory) {
-	        <#list declarations as item>
-	        ${item.objectType.classType.name} ${item.identifier} = ( ${item.objectType.classType.name} ) declarations[${item_index}].getValue( workingMemory.getObject( tuple.get( declarations[${item_index}] ) ) );
+                               WorkingMemory workingMemory) {                               
+	        <#list declarations as declr>
+	        ${declr.objectType.classType.name} ${declr.identifier} = ( ${declr.objectType.classType.name} ) declarations[${declr_index}].getValue( workingMemory.getObject( tuple.get( declarations[${declr_index}] ) ) );
 	        </#list>
 	
-	        <#list usedApplicationData as key>
-	        ${applicationData[key].name} ${key} = ( ${applicationData[key].name} ) workingMemory.get( "${key}" );
+	        <#list globals as identifier>
+	        ${globalTypes[identifier].name} ${identifier} = ( ${globalTypes[identifier].name} ) workingMemory.get( "${identifier}" );
 	        </#list>
 	        
-	        return $ruleName.$methodName( <#list declarations as item>${item.identifier}<#if item_has_next>, </#if></#list><#list usedApplicationData as key>, ${key}</#list> );
+	        return ${ruleClassName}.${methodName}( <#list declarations as decl>${decl.identifier}<#if decl_has_next>, </#if></#list><#list globals as identifier>, ${identifier}</#list> );
         }
     }                        
       

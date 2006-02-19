@@ -6,6 +6,8 @@ public class PredicateDescr extends PatternDescr {
     
     private final String declaration;
     private String[] declarations;
+    
+    private String classMethodName;
         
     public PredicateDescr(String fieldName,
                           String declaration,
@@ -18,6 +20,14 @@ public class PredicateDescr extends PatternDescr {
     public String getFieldName() {
         return fieldName;
     }
+    
+    public String getClassMethodName() {
+        return this.classMethodName;
+    }
+
+    public void setClassMethodName(String classMethodName) {
+        this.classMethodName = classMethodName;
+    }     
     
     public String getText() {
         return this.text;

@@ -41,38 +41,42 @@ public class JavaCompilerTest extends TestCase {
         fieldBindingDescr = new FieldBindingDescr("type", "y");
         column.addDescr( fieldBindingDescr );
         
+        packageDescr.addGlobal( "p", "java.util.Map" );                  
         
-        ReturnValueDescr returnValue = new ReturnValueDescr("price", "==", " y == x * 2");
+        ReturnValueDescr returnValue = new ReturnValueDescr("price", "==", " y == p.get(x) * 2");
         column.addDescr( returnValue );                                        
         
         compiler.addPackage( packageDescr );
     }
     
-//    public void testPredicate() throws CheckedDroolsException {
-//        DdjCompiler compiler = new DdjCompiler();
-//        
-//        PackageDescr packageDescr = new PackageDescr("package1");
-//        
-//        RuleDescr ruleDescr = new RuleDescr("rule-1");
-//        packageDescr.addRule( ruleDescr );
-//        
-//        AndDescr lhs = new AndDescr();
-//        ruleDescr.setLhs( lhs );
-//        
-//        ColumnDescr column = new ColumnDescr(Cheese.class.getName());
-//        lhs.addDescr( column );
-//        
-//        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr("price", "x");
-//        column.addDescr( fieldBindingDescr );
-//        fieldBindingDescr = new FieldBindingDescr("type", "y");
-//        column.addDescr( fieldBindingDescr );
-//        
-//        
-//        PredicateDescr returnValue = new PredicateDescr("age", "q", " q + 2 == x * 2");
-//        column.addDescr( returnValue );                                        
-//        
-//        compiler.addRule( packageDescr, ruleDescr );
-//    }    
+    public void testPredicate() throws CheckedDroolsException, ClassNotFoundException {
+        DdjCompiler compiler = new DdjCompiler();
+        
+        PackageDescr packageDescr = new PackageDescr("p1");        
+        RuleDescr ruleDescr = new RuleDescr("rule-1");
+        packageDescr.addRule( ruleDescr );
+        
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+        
+        ColumnDescr column = new ColumnDescr(Cheese.class.getName());
+        lhs.addDescr( column );
+        
+        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr("price", "x");
+        column.addDescr( fieldBindingDescr );
+        fieldBindingDescr = new FieldBindingDescr("type", "y");
+        column.addDescr( fieldBindingDescr );
+
+        fieldBindingDescr = new FieldBindingDescr("price", "z");
+        column.addDescr( fieldBindingDescr );        
+        
+        packageDescr.addGlobal( "p", "java.util.Map" );                  
+        
+        PredicateDescr predicate = new PredicateDescr("price", "z", " y == p.get(x) * z");
+        column.addDescr( predicate );                                        
+        
+        compiler.addPackage( packageDescr );
+    }    
     
     private Class getClassType(Class clazz,
                                String name) throws IntrospectionException {

@@ -1,4 +1,3 @@
-    public boolean ${methodName}(${declaration.objectType.classType.name} ${declaration.identifier}<#list declarations as item>, ${item.objectType.classType.name} ${item.identifier}</#list><#list usedApplicationData as key>, ${applicationData[key].name} ${key}</#list> ) {        
+    public boolean ${methodName}(${declaration.objectType.classType.name} ${declaration.identifier}<#list declarations as declr>, ${declr.objectType.classType.name} ${declr.identifier}</#list><#list globals as identifier>, ${globalTypes[identifier].name} ${identifier}</#list> ) {        
         return (${text});
-    }                        
-      
+    }              
