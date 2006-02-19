@@ -149,10 +149,10 @@ public class RuleCompiler {
                            (PredicateDescr) object );
             } else if ( object instanceof EvalDescr ) {
                 configure( (EvalDescr) object );
-            } else if ( object instanceof ConsequenceDescr ) {
-                configure( (ConsequenceDescr) object );
-            }
-        }
+            }                                    
+        }        
+        configure( rule, ruleDescr );
+        
         // generate method
         // generate invoker
     }
@@ -322,7 +322,7 @@ public class RuleCompiler {
         // generate invoker
         Map root = new HashMap();
         
-        String classMethodName = "returnValue"  + counter++;
+        String classMethodName = "eval"  + counter++;
         evalDescr.setClassMethodName( classMethodName );
         
         root.put( "package",  this.pkg.getName() );
@@ -347,13 +347,11 @@ public class RuleCompiler {
         root.put( "globalTypes", this.pkg.getGlobals() );
         
         root.put( "text", evalDescr.getText() );
-
-
         
         EvalCondition eval = new EvalCondition(declarations);
         rule.addPattern( eval );
         
-        Template template = this.cfg.getTemplate( "returnValueMethod.ftl" );
+        Template template = this.cfg.getTemplate( "evalMethod.ftl" );
         StringWriter string = new StringWriter();
         template.process( root,
                           string );
@@ -362,7 +360,7 @@ public class RuleCompiler {
         this.invokerMethods.put( evalDescr,
                                  string );
         
-        template = this.cfg.getTemplate( "returnValueInvoker.ftl" );
+        template = this.cfg.getTemplate( "evalInvoker.ftl" );
         string = new StringWriter();
         template.process( root,
                           string );
@@ -370,19 +368,45 @@ public class RuleCompiler {
         System.out.println(string);                        
     }
 
-    private void configure(ConsequenceDescr and) {
+    private void configure(Rule rule, RuleDescr ruleDescr) throws IOException, TokenStreamException, RecognitionException, TemplateException {
         // generate method
         // generate invoker
-    }
+        Map root = new HashMap();
+        
+        String classMethodName = "consequence";
+        
+        root.put( "package",  this.pkg.getName() );
+        root.put( "ruleClassName",  ucFirst( this.ruleDescr.getClassName() ));
+        root.put( "invokerClassName",  ucFirst( classMethodName )  + "Invoker"  );
+        root.put( "methodName",  classMethodName );               
 
-//    private void addDeclarations(List usedDeclarations) {
-//        for ( Iterator it = usedDeclarations.iterator(); it.hasNext(); ) {
-//            String declaration = (String) it.next();
-//            if ( !this.declarations.contains( declaration ) ) {
-//                this.declarations.add( declaration );
-//            }
-//        }
-//    }
+        root.put( "declarations",
+                  this.declarations.values() );
+
+        root.put( "globals",
+                  getUsedGlobals( ruleDescr.getConsequence() ) );
+
+        root.put( "globalTypes", this.pkg.getGlobals() );
+        
+        // @todo: add in michael's regexpr to make modifies more efficient
+        root.put( "text", ruleDescr.getConsequence() );
+        
+        Template template = this.cfg.getTemplate( "consequenceMethod.ftl" );
+        StringWriter string = new StringWriter();
+        template.process( root,
+                          string );
+        string.flush();
+        System.out.println(string);
+        this.invokerMethods.put( ruleDescr,
+                                 string );
+        
+        template = this.cfg.getTemplate( "consequenceInvoker.ftl" );
+        string = new StringWriter();
+        template.process( root,
+                          string );
+        string.flush();
+        System.out.println(string); 
+    }
 
     private List  getUsedGlobals(String text) {
         List list = new ArrayList(1);
