@@ -11,7 +11,7 @@ public class RuleDescr extends PatternDescr  {
     private String documentation;
     
     private AndDescr lhs;
-    private ConsequenceDescr rhs;
+    private String   consequence;
     private List attributes = Collections.EMPTY_LIST;
     private Map declarations = new HashMap(1);
     
@@ -62,13 +62,13 @@ public class RuleDescr extends PatternDescr  {
     }
 
 
-    public ConsequenceDescr getRhs() {
-        return rhs;
+    public String getConsequence() {
+        return this.consequence;
     }
 
 
-    public void setRhs(ConsequenceDescr rhs) {
-        this.rhs = rhs;
+    public void setConsequence(String consequence) {
+        this.consequence = consequence;
     }
     
     public Map getDeclarations() {

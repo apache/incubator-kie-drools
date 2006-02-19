@@ -8,6 +8,8 @@ import org.drools.CheckedDroolsException;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.ConsequenceDescr;
+import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PredicateDescr;
@@ -44,7 +46,9 @@ public class JavaCompilerTest extends TestCase {
         packageDescr.addGlobal( "p", "java.util.Map" );                  
         
         ReturnValueDescr returnValue = new ReturnValueDescr("price", "==", " y == p.get(x) * 2");
-        column.addDescr( returnValue );                                        
+        column.addDescr( returnValue );              
+        
+        ruleDescr.setConsequence( "hello" );
         
         compiler.addPackage( packageDescr );
     }
@@ -72,25 +76,66 @@ public class JavaCompilerTest extends TestCase {
         
         packageDescr.addGlobal( "p", "java.util.Map" );                  
         
-        PredicateDescr predicate = new PredicateDescr("price", "z", " y == p.get(x) * z");
-        column.addDescr( predicate );                                        
+        PredicateDescr predicate = new PredicateDescr("price", "z", "y == p.get(x) * z");
+        column.addDescr( predicate );            
+        
+        ruleDescr.setConsequence( "hello" );
+        
+        compiler.addPackage( packageDescr );
+    }
+    
+    public void testEval() throws Exception {
+        DdjCompiler compiler = new DdjCompiler();
+        
+        PackageDescr packageDescr = new PackageDescr("p1");        
+        RuleDescr ruleDescr = new RuleDescr("rule-1");
+        packageDescr.addRule( ruleDescr );
+        
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+        
+        ColumnDescr column = new ColumnDescr(Cheese.class.getName());
+        lhs.addDescr( column );
+        
+        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr("price", "x");
+        column.addDescr( fieldBindingDescr );
+        fieldBindingDescr = new FieldBindingDescr("type", "y");
+        column.addDescr( fieldBindingDescr );
+        
+        packageDescr.addGlobal( "p", "java.util.Map" );                  
+        
+        EvalDescr eval = new EvalDescr("y == p.get(x) * z");
+        column.addDescr( eval );                         
+        
+        ruleDescr.setConsequence( "hello" );
         
         compiler.addPackage( packageDescr );
     }    
-    
-    private Class getClassType(Class clazz,
-                               String name) throws IntrospectionException {
-        Class fieldType = null;
-        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
-        for ( int i = 0; i < descriptors.length; i++ ) {
-            if ( descriptors[i].getName().equals( name ) ) {
-                fieldType = descriptors[i].getPropertyType();
-                break;
-            }
-        }
 
-        return fieldType;
-    }    
+    public void testConsequence() throws Exception {
+        DdjCompiler compiler = new DdjCompiler();
+        
+        PackageDescr packageDescr = new PackageDescr("p1");        
+        RuleDescr ruleDescr = new RuleDescr("rule-1");
+        packageDescr.addRule( ruleDescr );
+        
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+        
+        ColumnDescr column = new ColumnDescr(Cheese.class.getName());
+        lhs.addDescr( column );
+        
+        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr("price", "x");
+        column.addDescr( fieldBindingDescr );
+        fieldBindingDescr = new FieldBindingDescr("type", "y");
+        column.addDescr( fieldBindingDescr );
+        
+        packageDescr.addGlobal( "p", "java.util.Map" );                  
+        
+        ruleDescr.setConsequence( "hello" );
+        
+        compiler.addPackage( packageDescr );
+    }       
     
     public class Cheese {
         private String type;
