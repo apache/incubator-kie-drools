@@ -50,8 +50,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.spi.Functions;
-import org.drools.spi.Importer;
 import org.drools.spi.RuleBaseContext;
+import org.drools.spi.TypeResolver;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -88,13 +88,13 @@ public class Package
     /** Ordered list of all <code>Rules</code> in this <code>RuleSet</code>. */
     private List                  rules;
 
-    private Importer              importer;
+    private List                  imports;
 
-    private Map                   globalDeclarations;
+    private Map                   globals;
 
     private Map                   functions;
-
-    private RuleBaseContext       ruleBaseContext;
+    
+    private TypeResolver          typeResolver;
 
     // ------------------------------------------------------------
     // Constructors
@@ -108,11 +108,11 @@ public class Package
      */
     public Package(String name) {
         this.name = name;
+        this.imports = new ArrayList(1);
         this.ruleNames = new HashSet();
         this.rules = new ArrayList();
-        this.globalDeclarations = new HashMap();
+        this.globals = new HashMap();
         this.functions = new HashMap();
-        this.ruleBaseContext = new RuleBaseContext();
     }
 
     /**
@@ -127,9 +127,8 @@ public class Package
         this.name = name;
         this.ruleNames = new HashSet();
         this.rules = new ArrayList();
-        this.globalDeclarations = new HashMap();
+        this.globals = new HashMap();
         this.functions = new HashMap();
-        this.ruleBaseContext = ruleBaseContext;
     }
 
     // ------------------------------------------------------------
@@ -163,7 +162,15 @@ public class Package
     public String getDocumentation() {
         return this.documentation;
     }
+    
+    public void addImport(String importEntry) {
+        this.imports.add( importEntry );
+    }
 
+    public List getImports() {
+        return this.imports;
+    }
+    
     /**
      * Add a <code>Rule</code> to this <code>RuleSet</code>.
      * 
@@ -190,7 +197,6 @@ public class Package
 
         this.ruleNames.add( name );
         rule.setLoadOrder( this.rules.size() );
-        rule.setImporter( this.importer );
         this.rules.add( rule );
     }
 
@@ -238,21 +244,13 @@ public class Package
         return (Rule[]) this.rules.toArray( new Rule[this.rules.size()] );
     }
 
-    public Importer getImporter() {
-        return this.importer;
+    public void addGlobalDeclaration(String identifier, Class clazz) {
+        this.globals.put( identifier,
+                          clazz );
     }
 
-    public void setImporter(Importer importer) {
-        this.importer = importer;
-    }
-
-    public void addGlobalDeclaration(GlobalDeclaration globalDeclaration) {
-        this.globalDeclarations.put( globalDeclaration.getIdentifier(),
-                                  globalDeclaration.getType() );
-    }
-
-    public Map getGlobalDeclarations() {
-        return this.globalDeclarations;
+    public Map getGlobals() {
+        return this.globals;
     }
 
     public void addFunctions(Functions functions) {
@@ -267,12 +265,16 @@ public class Package
     public Map getFunctions()
     {        
         return  Collections.unmodifiableMap( this.functions );
-    }        
-
-    public RuleBaseContext getRuleBaseContext() {
-        return this.ruleBaseContext;
     }
     
+    public void setTypeSolver(TypeResolver typeResolver) {
+        this.typeResolver = typeResolver;
+    }
+    
+    public TypeResolver getTypeResolver() {
+        return this.typeResolver;
+    }
+
     public String toString() {
         return "[RuleSet name=" + this.name + "]";
     }

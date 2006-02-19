@@ -20,24 +20,19 @@ import org.drools.util.asm.FieldAccessorMap;
 public class ClassFieldExtractor
     implements
     FieldExtractor {
-    private Class           clazz;
     private ClassObjectType objectType;
-    private Method          method;
     private int             index;
     private FieldAccessor   accessor;
 
     public ClassFieldExtractor(Class clazz,
                                String fieldName) {
         try {
-            this.clazz = clazz;
             FieldAccessorMap accessorMap = FieldAccessorGenerator.getInstance().getInstanceFor( clazz );
             this.accessor = accessorMap.getFieldAccessor();
             this.index = accessorMap.getIndex( fieldName );
 
             this.objectType = new ClassObjectType( getClassType( clazz,
                                                                  fieldName ) );
-
-            this.method = Introspector.getBeanInfo( this.clazz ).getPropertyDescriptors()[this.index].getReadMethod();
         } catch ( Exception e ) {
             throw new RuntimeDroolsException( e );
         }
@@ -48,7 +43,8 @@ public class ClassFieldExtractor
     }
 
     public Object getValue(Object object) {
-        return this.accessor.getFieldByIndex( object, this.index );
+        return this.accessor.getFieldByIndex( object,
+                                              this.index );
     }
 
     public ObjectType getObjectType() {
@@ -64,7 +60,29 @@ public class ClassFieldExtractor
                 fieldType = descriptors[i].getPropertyType();
                 break;
             }
+        }        
+
+        // autobox primitives
+        if ( fieldType.isPrimitive() ) {
+            if (fieldType == char.class ) {
+                fieldType = Character.class;
+            } else if ( fieldType == byte.class ) {
+                fieldType = Byte.class;
+            } else if ( fieldType == short.class ) {
+                fieldType = Short.class;
+            } else if ( fieldType == int.class ) {
+                fieldType = Integer.class;
+            } else if ( fieldType == long.class ) {
+                fieldType = Long.class;
+            } else if ( fieldType == float.class ) {
+                fieldType = Float.class;
+            } else if ( fieldType == double.class ) {
+                fieldType = Double.class;
+            } else if ( fieldType == boolean.class ) {
+                fieldType = Boolean.class;
+            }
         }
+
         return fieldType;
 
     }

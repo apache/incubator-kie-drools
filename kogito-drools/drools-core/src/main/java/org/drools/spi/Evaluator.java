@@ -21,7 +21,7 @@ public interface Evaluator {
     public static final int DATE_TYPE        = 180;
     public static final int ARRAY_TYPE       = 190;
     public static final int OBJECT_TYPE      = 200;
-    public static final int NULL             = 300;
+    public static final int NULL_TYPE        = 300;
     
     public int getType();
 

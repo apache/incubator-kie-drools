@@ -188,7 +188,7 @@ public class RuleBaseImpl implements RuleBase {
 	 */
 	public void addRuleSet(Package pkg) throws RuleIntegrationException,
 			PackageIntegrationException, FactException, InvalidPatternException {
-		Map newApplicationData = pkg.getGlobalDeclarations();
+		Map newApplicationData = pkg.getGlobals();
 
 		// Check that the application data is valid, we cannot change the type
 		// of an already declared application data variable

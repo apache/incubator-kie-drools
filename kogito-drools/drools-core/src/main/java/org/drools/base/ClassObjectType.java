@@ -41,7 +41,9 @@ package org.drools.base;
  *
  */
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.drools.spi.Evaluator;
 import org.drools.spi.ObjectType;
@@ -77,6 +79,7 @@ public class ClassObjectType
      */
     public ClassObjectType(Class objectTypeClass) {
         this.objectTypeClass = objectTypeClass;
+        setValueType( objectTypeClass );
     }
 
     // ------------------------------------------------------------
@@ -119,7 +122,9 @@ public class ClassObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     protected void setValueType(Class clazz) {
-        if ( clazz == Character.class ) {
+        if ( clazz == null ) {
+            this.valueType = Evaluator.NULL_TYPE;
+        } else if ( clazz == Character.class ) {
             this.valueType = Evaluator.CHAR_TYPE;
         } else if ( clazz == Byte.class ) { 
             this.valueType = Evaluator.BYTE_TYPE;
@@ -133,13 +138,15 @@ public class ClassObjectType
             this.valueType = Evaluator.FLOAT_TYPE;
         } else if (clazz == Double.class) {
             this.valueType = Evaluator.DOUBLE_TYPE;
+        } else if (clazz == Boolean.class) {
+                this.valueType = Evaluator.BOOLEAN_TYPE;            
         } else if (clazz == java.sql.Date.class) {
             this.valueType = Evaluator.DATE_TYPE;
         } else if (clazz.isAssignableFrom( Object[].class )) {
             this.valueType = Evaluator.ARRAY_TYPE;
         } else if (clazz instanceof Object) {
             this.valueType = Evaluator.OBJECT_TYPE;
-        }
+        }              
     }
     
     public String toString() {

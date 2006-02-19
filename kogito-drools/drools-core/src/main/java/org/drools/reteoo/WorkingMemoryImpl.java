@@ -85,7 +85,7 @@ class WorkingMemoryImpl
                                                                                                                   8 );
 
     /** Global values which are associated with this memory. */
-    private final Map                       globalValues                                  = new HashMap();
+    private final Map                       globals                                  = new HashMap();
 
     /** Handle-to-object mapping. */
     private final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
@@ -192,7 +192,7 @@ class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public Map getGlobals() {
-        return this.globalValues;
+        return this.globals;
     }
 
     /**
@@ -209,7 +209,7 @@ class WorkingMemoryImpl
             throw new RuntimeException( "Illegal class for application data. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
 
         } else {
-            this.globalValues.put( name,
+            this.globals.put( name,
                                       value );
         }
     }
@@ -218,7 +218,7 @@ class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public Object getGlobal(String name) {
-        return this.globalValues.get( name );
+        return this.globals.get( name );
     }
 
     /**
