@@ -35,6 +35,9 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Declaration;
 import org.drools.rule.Column;
+import org.drools.rule.EvalCondition;
+import org.drools.rule.InvalidRuleException;
+import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.spi.ColumnExtractor;
@@ -56,6 +59,7 @@ public class RuleCompiler {
 
     private Package             pkg;
     private Rule                rule;
+    private RuleDescr           ruleDescr;
 
     public Map                  invokerMethods;
     public List                 invokerClasses;
@@ -86,7 +90,8 @@ public class RuleCompiler {
         String ruleClassName = getUniqueLegalName(pkg.getName(), ruleDescr.getName(), "java" );
         ruleDescr.SetClassName( ruleClassName );        
 
-        Rule rule = new Rule( ruleDescr.getName() );
+        this.rule = new Rule( ruleDescr.getName() );
+        this.ruleDescr = ruleDescr;
         
         try {
             configure( rule, ruleDescr.getLhs() );
@@ -114,7 +119,7 @@ public class RuleCompiler {
                                               TokenStreamException,
                                               RecognitionException,
                                               ClassNotFoundException,
-                                              IntrospectionException {
+                                              IntrospectionException, InvalidRuleException {
         Class clazz = Class.forName( columnDescr.getObjectType() );
         Column column;
         if ( columnDescr.getIdentifier() != null && columnDescr.getIdentifier().equals( "" ) ) {
@@ -197,6 +202,9 @@ public class RuleCompiler {
         String classMethodName = "returnValue"  + counter++;
         returnValueDescr.setClassMethodName( classMethodName );
         
+        root.put( "package",  this.pkg.getName() );
+        root.put( "ruleClassName",  ucFirst( this.ruleDescr.getClassName() ));
+        root.put( "invokerClassName",  ucFirst( classMethodName )  + "Invoker"  );
         root.put( "methodName",  classMethodName );
         
         List usedDeclarations = this.analyzer.analyze( returnValueDescr.getText(),
@@ -219,81 +227,147 @@ public class RuleCompiler {
         
         
         
-        ClassFieldExtractor extractor = new ClassFieldExtractor(((ClassObjectType) column.getObjectType()).getClass(),
+        ClassFieldExtractor extractor = new ClassFieldExtractor(((ClassObjectType) column.getObjectType()).getClassType(),
                                                                 returnValueDescr.getFieldName() );
 
 
+        Evaluator evaluator = EvaluatorFactory.getEvaluator( extractor.getObjectType().getValueType(), returnValueDescr.getEvaluator() );
         
-        //ReturnValueConstraint returnValueConstraint = new ReturnValueConstraint(extractor);
+        ReturnValueConstraint returnValueConstraint = new ReturnValueConstraint(extractor, declarations,  evaluator);
+        column.addConstraint( returnValueConstraint );
         
         Template template = this.cfg.getTemplate( "returnValueMethod.ftl" );
         StringWriter string = new StringWriter();
         template.process( root,
                           string );
         string.flush();
+        System.out.println(string);
         this.invokerMethods.put( returnValueDescr,
                                  string );
         
+        template = this.cfg.getTemplate( "returnValueInvoker.ftl" );
+        string = new StringWriter();
+        template.process( root,
+                          string );
+        string.flush();
+        System.out.println(string);                        
     }
 
     private void configure(Column column,
-                           PredicateDescr predicate) throws TemplateException,
+                           PredicateDescr predicateDescr) throws TemplateException,
                                                     IOException,
                                                     TokenStreamException,
                                                     RecognitionException {
         // generate method
         // generate invoker
         Map root = new HashMap();
-
-        List usedDeclarations = this.analyzer.analyze( predicate.getText(),
+        
+        String classMethodName = "predicate"  + counter++;
+        predicateDescr.setClassMethodName( classMethodName );
+        
+        root.put( "package",  this.pkg.getName() );
+        root.put( "ruleClassName",  ucFirst( this.ruleDescr.getClassName() ));
+        root.put( "invokerClassName",  ucFirst( classMethodName )  + "Invoker"  );
+        root.put( "methodName",  classMethodName );
+        
+        List usedDeclarations = this.analyzer.analyze( predicateDescr.getText(),
                                                        this.declarations.keySet() );
-
-        predicate.setDeclarations( (String[]) usedDeclarations.toArray( new String[usedDeclarations.size()] ) );
-
-        root.put( "declaration",
-                  predicate.getDeclaration() );
+        
+        // Don't include the focus declaration, that hasn't been merged into the tuple yet.
+        usedDeclarations.remove( predicateDescr.getDeclaration() );
+        
+        Declaration[] declarations = new Declaration[usedDeclarations.size()];
+        for ( int i = 0, size = usedDeclarations.size(); i < size; i++) { 
+            declarations[i] = (Declaration) this.declarations.get( (String) usedDeclarations.get(i) );            
+        }
 
         root.put( "declarations",
-                  usedDeclarations );
+                  declarations );
+        
+        Declaration declaration = (Declaration) this.declarations.get( predicateDescr.getDeclaration() );
+        root.put( "declaration",  declaration );
 
         root.put( "globals",
-                  getUsedGlobals( predicate.getText() ) );
+                  getUsedGlobals( predicateDescr.getText() ) );
 
-        Template template = this.cfg.getTemplate( "predicateMethod.tfl" );
+        root.put( "globalTypes", this.pkg.getGlobals() );
+        
+        root.put( "text", predicateDescr.getText() );
+        
+        PredicateConstraint predicateConstraint = new PredicateConstraint(declaration, declarations);
+        column.addConstraint( predicateConstraint );
+        
+        Template template = this.cfg.getTemplate( "predicateMethod.ftl" );
         StringWriter string = new StringWriter();
         template.process( root,
                           string );
         string.flush();
-        this.invokerMethods.put( predicate,
+        System.out.println(string);
+        this.invokerMethods.put( predicateDescr,
                                  string );
+        
+        template = this.cfg.getTemplate( "predicateInvoker.ftl" );
+        string = new StringWriter();
+        template.process( root,
+                          string );
+        string.flush();
+        System.out.println(string);  
     }
 
-    private void configure(EvalDescr eval) throws TokenStreamException,
+    private void configure(EvalDescr evalDescr) throws TokenStreamException,
                                           RecognitionException,
                                           IOException,
-                                          TemplateException {
+                                          TemplateException, InvalidRuleException {
         // generate method
         // generate invoker
         Map root = new HashMap();
-
-        List usedDeclarations = this.analyzer.analyze( eval.getText(),
-                                                       this.declarations.keySet() );
-
-        eval.setDeclarations( (String[]) usedDeclarations.toArray( new String[usedDeclarations.size()] ) );
+        
+        String classMethodName = "returnValue"  + counter++;
+        evalDescr.setClassMethodName( classMethodName );
+        
+        root.put( "package",  this.pkg.getName() );
+        root.put( "ruleClassName",  ucFirst( this.ruleDescr.getClassName() ));
+        root.put( "invokerClassName",  ucFirst( classMethodName )  + "Invoker"  );
+        root.put( "methodName",  classMethodName );
+        
+        List usedDeclarations = this.analyzer.analyze( evalDescr.getText(),
+                                                       this.declarations.keySet() );       
+        
+        Declaration[] declarations = new Declaration[usedDeclarations.size()];
+        for ( int i = 0, size = usedDeclarations.size(); i < size; i++) { 
+            declarations[i] = (Declaration) this.declarations.get( (String) usedDeclarations.get(i) );            
+        }
 
         root.put( "declarations",
-                  usedDeclarations );
+                  declarations );
 
         root.put( "globals",
-                  getUsedGlobals( eval.getText() ) );
+                  getUsedGlobals( evalDescr.getText() ) );
 
-        Template template = this.cfg.getTemplate( "evalMethod" );
+        root.put( "globalTypes", this.pkg.getGlobals() );
+        
+        root.put( "text", evalDescr.getText() );
+
+
+        
+        EvalCondition eval = new EvalCondition(declarations);
+        rule.addPattern( eval );
+        
+        Template template = this.cfg.getTemplate( "returnValueMethod.ftl" );
         StringWriter string = new StringWriter();
         template.process( root,
                           string );
         string.flush();
-        this.invokerMethods.put( eval,
+        System.out.println(string);
+        this.invokerMethods.put( evalDescr,
                                  string );
+        
+        template = this.cfg.getTemplate( "returnValueInvoker.ftl" );
+        string = new StringWriter();
+        template.process( root,
+                          string );
+        string.flush();
+        System.out.println(string);                        
     }
 
     private void configure(ConsequenceDescr and) {
@@ -371,5 +445,9 @@ public class RuleCompiler {
         }
 
         return newName;
+    }
+    
+    private String ucFirst(String name) {
+        return  name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 }

@@ -44,11 +44,11 @@ public class PackageDescr extends PatternDescr  {
         return this.imports;
     }
     
-    public void addGlobal(DeclarationDescr global) {
+    public void addGlobal(String identifier, String type) {
         if ( this.globals == Collections.EMPTY_MAP) {
             this.globals = new HashMap();
         }
-        this.globals.put( global.getIdentifier(), global );
+        this.globals.put( identifier, type );
     }
     
     public Map getGlobals() {
