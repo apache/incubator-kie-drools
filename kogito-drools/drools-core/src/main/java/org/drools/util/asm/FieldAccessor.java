@@ -8,6 +8,7 @@ import java.io.Serializable;
  * when a new class is encountered.
  * 
  * @author Michael Neale
+ * @author "Jeff Brown" <brown_j@ociweb.com>
  */
 public interface FieldAccessor extends Serializable {
 

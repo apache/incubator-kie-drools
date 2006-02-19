@@ -19,6 +19,7 @@ import org.drools.asm.Type;
  * Uses ASM to generate a implementation of a FieldAccessor. 
  * Uses tableswitch so it is as fast as humanly possible.
  * @author Michael Neale
+ * @author "Jeff Brown" <brown_j@ociweb.com>
  */
 public class FieldAccessorGenerator {
     private static FieldAccessorGenerator INSTANCE;
