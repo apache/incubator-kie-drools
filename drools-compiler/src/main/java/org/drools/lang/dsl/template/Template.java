@@ -12,7 +12,11 @@ import org.apache.commons.lang.StringUtils;
  * in an nl string with a interpolated grammar template. 
  * The values are obtained by matching the chunks with the nl.
  * 
+ * A chunk it kind of a token, but tokens are hard to define when you are talking natural language.
+ * Basically chunk == token in parsing nonclamenture.
+ * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
+ * 
  * This is an alternative approach to the infix parser.
  */
 class Template {
@@ -90,7 +94,7 @@ class Template {
      * and then inserted in to the nl.
      * @return the NL with the populated grammarRHS replacing the original pattern (from the chunks).
      */
-    public String expandOnce(String nl, String targetTemplate) {
+    String expandOnce(String nl, String targetTemplate) {
         Map values = new HashMap();
         this.processNL(nl, values);
         String subKey = this.getSubstitutionKey();
@@ -105,7 +109,7 @@ class Template {
      */
     public String expandAll(String nl, String targetTemplate) {
         String result = nl;
-        
+                
         //put an upper limit
         int i = 0;
         while (i < 10) {
