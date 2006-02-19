@@ -137,18 +137,15 @@ public class JavaExprAnalyzer
         Set refs = new HashSet( treeParser.getVariableReferences() );
 
         List decls = new ArrayList();
-
-        Iterator declIter = availDecls.iterator();
-        Declaration eachDecl;
-
-        while ( declIter.hasNext() )
+       
+        for ( Iterator declIter = availDecls.iterator(); declIter.hasNext(); )
         {
-            eachDecl = (Declaration) declIter.next();
+            String eachDecl = (String) declIter.next();
 
-            if ( refs.contains( eachDecl.getIdentifier() ) )
+            if ( refs.contains( eachDecl ) )
             {
                 decls.add( eachDecl );
-                refs.remove( eachDecl.getIdentifier() );
+                refs.remove( eachDecl );
             }
         }
 

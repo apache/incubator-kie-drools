@@ -3,13 +3,13 @@ package org.drools.lang.descr;
 public class BoundVariableDescr extends PatternDescr {
     private String fieldName;
     private String evaluator;
-    private String text;
+    private String declarationIdentifier;
 
     public BoundVariableDescr(String fieldName,
-                        String evaluator,
-                        String text) {
+                              String evaluator,
+                              String identifier) {
         this.fieldName = fieldName;
-        this.text = text;
+        this.declarationIdentifier = identifier;
         this.evaluator = evaluator;
     }
 
@@ -21,7 +21,7 @@ public class BoundVariableDescr extends PatternDescr {
         return evaluator;
     }
 
-    public String getText() {
-        return this.text;
+    public String getDeclarationIdentifier() {
+        return this.declarationIdentifier;
     }
 }

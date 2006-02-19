@@ -84,7 +84,7 @@ public class JavaLexer extends antlr.CharScanner
         literals.put( new ANTLRHashString( "new",
                                            this ),
                       new Integer( 141 ) );
-        literals.put( new ANTLRHashString( "ruleset",
+        literals.put( new ANTLRHashString( "pkg",
                                            this ),
                       new Integer( 44 ) );
         literals.put( new ANTLRHashString( "instanceof",

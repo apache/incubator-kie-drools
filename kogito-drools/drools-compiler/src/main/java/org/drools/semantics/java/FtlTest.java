@@ -34,8 +34,7 @@ public class FtlTest extends TestCase {
         Template temp = cfg.getTemplate( "generatePredicateMethod.ftl" );
         Map root = new HashMap();
         
-        Declaration declaration = new Declaration( 3,
-                                                   "cheese",
+        Declaration declaration = new Declaration( "cheese",
                                                    new ColumnExtractor( new ClassObjectType( Cheese.class ) ),
                                                    5 );
         root.put( "declaration", declaration );
@@ -43,10 +42,9 @@ public class FtlTest extends TestCase {
         FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                             "type" );
 
-        Declaration declaration1 = new Declaration( 3,
-                                                   "typeOfCheese",
-                                                   extractor,
-                                                   5 );
+        Declaration declaration1 = new Declaration( "typeOfCheese",
+                                                    extractor,
+                                                    5 );
         
         List declarations = new ArrayList();
         declarations.add( declaration1 );

@@ -379,20 +379,20 @@ public class JavaRecognizer extends antlr.LLkParser
             }
             while ( true );
         }
-        ruleSet();
+        pkg();
         astFactory.addASTChild( currentAST,
                                 returnAST );
         ruleFile_AST = (AST) currentAST.root;
         returnAST = ruleFile_AST;
     }
 
-    public final void ruleSet() throws RecognitionException,
+    public final void pkg() throws RecognitionException,
                                TokenStreamException
     {
 
         returnAST = null;
         ASTPair currentAST = new ASTPair();
-        AST ruleSet_AST = null;
+        AST pkg_AST = null;
 
         AST tmp5_AST = null;
         tmp5_AST = astFactory.create( LT( 1 ) );
@@ -433,8 +433,8 @@ public class JavaRecognizer extends antlr.LLkParser
             while ( true );
         }
         match( RCURLY );
-        ruleSet_AST = (AST) currentAST.root;
-        returnAST = ruleSet_AST;
+        pkg_AST = (AST) currentAST.root;
+        returnAST = pkg_AST;
     }
 
     public final void rule() throws RecognitionException,
@@ -5436,7 +5436,7 @@ public class JavaRecognizer extends antlr.LLkParser
 
     public static final String[] _tokenNames = {"<0>", "EOF", "<2>", "NULL_TREE_LOOKAHEAD", "BLOCK", "MODIFIERS", "OBJBLOCK", "SLIST", "CTOR_DEF", "METHOD_DEF", "VARIABLE_DEF", "INSTANCE_INIT", "STATIC_INIT", "TYPE", "CLASS_DEF", "INTERFACE_DEF",
             "PACKAGE_DEF", "ARRAY_DECLARATOR", "EXTENDS_CLAUSE", "IMPLEMENTS_CLAUSE", "PARAMETERS", "PARAMETER_DEF", "LABELED_STAT", "TYPECAST", "INDEX_OP", "POST_INC", "POST_DEC", "METHOD_CALL", "EXPR", "ARRAY_INIT", "IMPORT", "UNARY_MINUS",
-            "UNARY_PLUS", "CASE_GROUP", "ELIST", "FOR_INIT", "FOR_CONDITION", "FOR_ITERATOR", "EMPTY_STAT", "\"final\"", "\"abstract\"", "\"strictfp\"", "SUPER_CTOR_CALL", "CTOR_CALL", "\"ruleset\"", "\"rule\"", "\"when\"", "\"then\"", "IDENT",
+            "UNARY_PLUS", "CASE_GROUP", "ELIST", "FOR_INIT", "FOR_CONDITION", "FOR_ITERATOR", "EMPTY_STAT", "\"final\"", "\"abstract\"", "\"strictfp\"", "SUPER_CTOR_CALL", "CTOR_CALL", "\"package\"", "\"rule\"", "\"when\"", "\"then\"", "IDENT",
             "LCURLY", "RCURLY", "LPAREN", "RPAREN", "SEMI", "ASSIGN", "\"package\"", "\"import\"", "LBRACK", "RBRACK", "\"void\"", "\"boolean\"", "\"byte\"", "\"char\"", "\"short\"", "\"int\"", "\"float\"", "\"long\"", "\"double\"", "DOT", "STAR",
             "\"private\"", "\"public\"", "\"protected\"", "\"static\"", "\"transient\"", "\"native\"", "\"threadsafe\"", "\"synchronized\"", "\"volatile\"", "\"class\"", "\"extends\"", "\"interface\"", "COMMA", "\"implements\"", "\"this\"",
             "\"super\"", "\"throws\"", "COLON", "\"if\"", "\"else\"", "\"for\"", "\"while\"", "\"do\"", "\"break\"", "\"continue\"", "\"return\"", "\"switch\"", "\"throw\"", "\"case\"", "\"default\"", "\"try\"", "\"finally\"", "\"catch\"",

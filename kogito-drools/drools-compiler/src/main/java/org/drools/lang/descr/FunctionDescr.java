@@ -1,27 +1,31 @@
 package org.drools.lang.descr;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class FunctionDescr {
-    private String text;    
-    private List types = Collections.EMPTY_LIST;
-    private List identifiers;
+    private final String name;    
+    private List paramters;;    
+    private final String text;  
+
+    public FunctionDescr(String name, String text) {
+        this( name, Collections.EMPTY_LIST, text);
+    }    
     
-    public FunctionDescr(String text) {
+    public FunctionDescr(String name, List parameters, String text) {
+        this.name = name;
+        this.paramters = parameters;
         this.text = text;
     }
     
-    public void AddParatmer(String type, String identifier) {
-        if ( this.types == Collections.EMPTY_LIST ) {
-            this.types = new ArrayList(1);
-            this.identifiers = new ArrayList(1);
-        }
-        this.types.add( type );
-        this.identifiers.add( identifier );
+    public String getName() {
+        return name;
     }
-    
+
+    public List getParamters() {
+        return paramters;
+    }
+
     public String getText() {
         return this.text;
     } 

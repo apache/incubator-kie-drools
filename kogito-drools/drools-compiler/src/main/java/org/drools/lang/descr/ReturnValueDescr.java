@@ -3,9 +3,10 @@ package org.drools.lang.descr;
 public class ReturnValueDescr extends PatternDescr {    
     private String fieldName;
     private String evaluator;
-    private String text;
+    private String text;            
+    private String[] declarations;
     
-    private String[] declarations;        
+    private String classMethodName;
         
     public ReturnValueDescr(String fieldName,
                                     String evaluator,
@@ -18,6 +19,14 @@ public class ReturnValueDescr extends PatternDescr {
     public String getFieldName() {
         return fieldName;
     }
+    
+    public String getClassMethodName() {
+        return this.classMethodName;
+    }
+
+    public void setClassMethodName(String classMethodName) {
+        this.classMethodName = classMethodName;
+    }    
     
     public String getEvaluator() {
         return evaluator;
