@@ -13,7 +13,7 @@ import java.util.Map;
  * 
  * Note that this is not particularly efficient for large grammars - IN THEORY !
  * However, I have tested it with grammars of 200 000 terms, and it took less then a second per expression, 
- * so its no slouch. This could be a problem for bulk compiling of large rulesets with thousands of conditions.
+ * so its no slouch. This could be a problem for bulk compiling of large pkgs with thousands of conditions.
  * 
  * In general, grammars of < 1000 items should be fine. The cost is a parse time cost for Drools, which can be done
  * incrementally in a suitable environment ideally anyway.

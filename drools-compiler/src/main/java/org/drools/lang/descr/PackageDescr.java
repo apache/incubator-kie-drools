@@ -2,25 +2,31 @@ package org.drools.lang.descr;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PackageDescr extends PatternDescr  {
-    private String packageName;
-    private String documentation;
+    private final String name;
+    private final String documentation;
     
     private List imports    = Collections.EMPTY_LIST;
     private List attributes = Collections.EMPTY_LIST;
-    private List globals    = Collections.EMPTY_LIST;    
+    private Map globals = Collections.EMPTY_MAP;    
     private List functions  = Collections.EMPTY_LIST;
     private List rules      = Collections.EMPTY_LIST;
-            
-    public PackageDescr(String packageName, String documentation) {
-        this.packageName = packageName;
+
+    public PackageDescr(String name) {
+        this(name, "");
+    } 
+    
+    public PackageDescr(String name, String documentation) {
+        this.name = name;
         this.documentation = documentation;
     }      
 
-    public String getPackageName() {
-        return this.packageName;
+    public String getName() {
+        return this.name;
     }
     
     public String getDocumentation() {
@@ -38,14 +44,14 @@ public class PackageDescr extends PatternDescr  {
         return this.imports;
     }
     
-    public void addGlobal(String global) {
-        if ( this.globals == Collections.EMPTY_LIST) {
-            this.globals = new ArrayList();
+    public void addGlobal(DeclarationDescr global) {
+        if ( this.globals == Collections.EMPTY_MAP) {
+            this.globals = new HashMap();
         }
-        this.globals.add( global );
+        this.globals.put( global.getIdentifier(), global );
     }
     
-    public List getGlobals() {
+    public Map getGlobals() {
         return this.globals;
     }    
     
@@ -62,7 +68,7 @@ public class PackageDescr extends PatternDescr  {
     
     public void addFunction(FunctionDescr function) {
         if ( this.functions == Collections.EMPTY_LIST) {
-            this.functions = new ArrayList();
+            this.functions = new ArrayList(1);
         }
         this.functions.add( function );
     }        
@@ -73,7 +79,7 @@ public class PackageDescr extends PatternDescr  {
 
     public void addRule(RuleDescr rule) {
         if ( this.rules == Collections.EMPTY_LIST) {
-            this.rules = new ArrayList();
+            this.rules = new ArrayList(1);
         }
         this.rules.add( rule );
     }               

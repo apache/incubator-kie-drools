@@ -2,63 +2,76 @@ package org.drools.lang.descr;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RuleDescr extends PatternDescr  {
-    private String ruleName;
+    private String name;
     private String documentation;
     
-    private PatternDescr lhs;
-    private PatternDescr rhs;
+    private AndDescr lhs;
+    private ConsequenceDescr rhs;
     private List attributes = Collections.EMPTY_LIST;
+    private Map declarations = new HashMap(1);
+    
+    private String className;
+
+    public RuleDescr(String name) {
+        this( name, "");
+    }
     
     public RuleDescr(String ruleName, String documentation) {
-        this.ruleName = ruleName;
+        this.name = ruleName;
         this.documentation = documentation;
     }
     
+    public String getName() {
+        return name;
+    }       
+      
+    public String getClassName() {
+        return this.className;
+    }
+    
+    public void SetClassName(String className) {
+        this.className = className;
+    }    
+    
+    public String getDocumentation() {
+        return documentation;
+    }    
+    
+    public List getAttributes() {
+        return attributes;
+    }    
     
     public void addAttribute(AttributeDescr attribute) {
         if ( this.attributes == Collections.EMPTY_LIST) {
             this.attributes = new ArrayList();
         }
-    }
+    }      
 
-
-    public PatternDescr getLhs() {
+    public AndDescr getLhs() {
         return lhs;
     }
 
 
-    public void setLhs(PatternDescr lhs) {
+    public void setLhs(AndDescr lhs) {
         this.lhs = lhs;
     }
 
 
-    public PatternDescr getRhs() {
+    public ConsequenceDescr getRhs() {
         return rhs;
     }
 
 
-    public void setRhs(PatternDescr rhs) {
+    public void setRhs(ConsequenceDescr rhs) {
         this.rhs = rhs;
     }
-
-
-    public List getAttributes() {
-        return attributes;
-    }
-
-
-    public String getDocumentation() {
-        return documentation;
-    }
-
-
-    public String getRuleName() {
-        return ruleName;
-    }
     
-    
- 
+    public Map getDeclarations() {
+        return this.declarations;
+    }       
 }

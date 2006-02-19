@@ -12,7 +12,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.rule.GlobalDeclaration;
 import org.drools.rule.DuplicateRuleNameException;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConstructionException;

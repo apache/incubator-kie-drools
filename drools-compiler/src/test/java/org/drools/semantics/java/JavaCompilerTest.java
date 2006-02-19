@@ -1,36 +1,94 @@
 package org.drools.semantics.java;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+
 import org.drools.CheckedDroolsException;
+import org.drools.base.ClassFieldExtractor;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Rule;
-import org.drools.rule.RuleSet;
+import org.drools.rule.Package;
+import org.drools.util.asm.FieldAccessor;
+import org.drools.util.asm.FieldAccessorGenerator;
+import org.drools.util.asm.FieldAccessorMap;
 
 import junit.framework.TestCase;
 
 public class JavaCompilerTest extends TestCase {
 
-    public void test1() throws CheckedDroolsException {
-        AndDescr lhs = new AndDescr();
+    public void testReturnValue() throws Exception {
+        DdjCompiler compiler = new DdjCompiler();
         
-        ColumnDescr column = new ColumnDescr(0, Cheese.class.getName());
+        PackageDescr packageDescr = new PackageDescr("p1");        
+        RuleDescr ruleDescr = new RuleDescr("rule-1");
+        packageDescr.addRule( ruleDescr );
+        
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+        
+        ColumnDescr column = new ColumnDescr(Cheese.class.getName());
         lhs.addDescr( column );
         
-        ReturnValueDescr returnValue = new ReturnValueDescr("age", "==", "x * 2");
-        returnValue.setDeclarations( new String[] { "x" } );
-        column.addDescr( returnValue );
+        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr("price", "x");
+        column.addDescr( fieldBindingDescr );
+        fieldBindingDescr = new FieldBindingDescr("type", "y");
+        column.addDescr( fieldBindingDescr );
         
-        RuleSet ruleSet = new RuleSet("ruleset-1");
-        RuleSetBundle bundle = new RuleSetBundle(ruleSet);
         
-        JavaRuleCompiler compiler = new JavaRuleCompiler(bundle);
-        Rule rule = new Rule("rule-1");
+        ReturnValueDescr returnValue = new ReturnValueDescr("price", "==", " y == x * 2");
+        column.addDescr( returnValue );                                        
         
-        compiler.configure( rule, lhs, null );
+        compiler.addPackage( packageDescr );
     }
     
-    class Cheese {
+//    public void testPredicate() throws CheckedDroolsException {
+//        DdjCompiler compiler = new DdjCompiler();
+//        
+//        PackageDescr packageDescr = new PackageDescr("package1");
+//        
+//        RuleDescr ruleDescr = new RuleDescr("rule-1");
+//        packageDescr.addRule( ruleDescr );
+//        
+//        AndDescr lhs = new AndDescr();
+//        ruleDescr.setLhs( lhs );
+//        
+//        ColumnDescr column = new ColumnDescr(Cheese.class.getName());
+//        lhs.addDescr( column );
+//        
+//        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr("price", "x");
+//        column.addDescr( fieldBindingDescr );
+//        fieldBindingDescr = new FieldBindingDescr("type", "y");
+//        column.addDescr( fieldBindingDescr );
+//        
+//        
+//        PredicateDescr returnValue = new PredicateDescr("age", "q", " q + 2 == x * 2");
+//        column.addDescr( returnValue );                                        
+//        
+//        compiler.addRule( packageDescr, ruleDescr );
+//    }    
+    
+    private Class getClassType(Class clazz,
+                               String name) throws IntrospectionException {
+        Class fieldType = null;
+        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
+        for ( int i = 0; i < descriptors.length; i++ ) {
+            if ( descriptors[i].getName().equals( name ) ) {
+                fieldType = descriptors[i].getPropertyType();
+                break;
+            }
+        }
+
+        return fieldType;
+    }    
+    
+    public class Cheese {
         private String type;
         private int price;
         public Cheese(String type,
@@ -41,7 +99,8 @@ public class JavaCompilerTest extends TestCase {
         }
         public int getPrice() {
             return price;
-        }
+        }       
+        
         public String getType() {
             return type;
         }                        

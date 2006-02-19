@@ -1,4 +1,4 @@
-    public Object ${methodName}(${declaration.objectType.classType.name} ${declaration.identifier}<#list declarations as item>, ${item.objectType.classType.name} ${item.identifier}</#list><#list usedApplicationData as key>, ${applicationData[key].name} ${key}</#list> ) {        
-        return (${text});
+   public Object ${methodName}(<#list declarations as decl>${decl.objectType.classType.name} ${decl.identifier}<#if item_has_next>, </#if></#list><#list globals as identifier>, ${globalTypes[identifier].name} ${identifier}</#list> ) {        
+        return (${text});            
     }                        
-            
+        

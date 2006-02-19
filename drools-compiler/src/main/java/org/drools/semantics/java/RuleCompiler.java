@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,6 +20,7 @@ import java.util.Set;
 import org.drools.CheckedDroolsException;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
+import org.drools.base.EvaluatorFactory;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
@@ -25,13 +28,19 @@ import org.drools.lang.descr.ConditionalElement;
 import org.drools.lang.descr.ConsequenceDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueDescr;
-import org.drools.rule.ColumnBinding;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Declaration;
-import org.drools.rule.FieldBinding;
+import org.drools.rule.Column;
+import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
+import org.drools.spi.ColumnExtractor;
+import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
+import org.drools.rule.Package;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -40,90 +49,94 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class JavaRuleCompiler {
-    private final RuleSetBundle ruleSetBundle;
+public class RuleCompiler {
+    private final DdjCompiler   compiler;
+
     private final Configuration cfg;
 
+    private Package             pkg;
     private Rule                rule;
 
-    public Map                 invokerMethods;
-    public List                invokerImpls;
+    public Map                  invokerMethods;
+    public List                 invokerClasses;
 
-    private Map                 globals;
-    private Set                 usedGlobals;
-
-    private Map                 bindings;
+    private Map                 declarations;
+    
+    private int                 counter;
+    
+    private int                 columnCounter; 
 
     // @todo move to an interface so it can work as a decorator
     private JavaExprAnalyzer    analyzer = new JavaExprAnalyzer();
 
-    public JavaRuleCompiler(RuleSetBundle ruleSetBundle) {
-        this.ruleSetBundle = ruleSetBundle;
+    public RuleCompiler(DdjCompiler packageCompiler) {
+        this.compiler = packageCompiler;
         cfg = new Configuration();
         cfg.setClassForTemplateLoading( getClass(),
                                         "" );
+    }
 
+    public synchronized Rule compile(Package pkg,
+                                     RuleDescr ruleDescr) throws CheckedDroolsException {
+        this.pkg = pkg;
         this.invokerMethods = new HashMap();
-        this.invokerImpls = new ArrayList();
-        this.bindings = new HashMap();
-        this.globals = ruleSetBundle.getRuleSet().getGlobalDeclarations();
-        this.usedGlobals = new HashSet();
-    }
+        this.invokerClasses = new ArrayList();
+        this.declarations = ruleDescr.getDeclarations();
+               
+        String ruleClassName = getUniqueLegalName(pkg.getName(), ruleDescr.getName(), "java" );
+        ruleDescr.SetClassName( ruleClassName );        
 
-    public void configure(Rule rule,
-                          AndDescr lhs,
-                          ConsequenceDescr rhs) throws CheckedDroolsException {
+        Rule rule = new Rule( ruleDescr.getName() );
+        
         try {
-            this.rule = rule;
-            configure( lhs );
-        } catch ( Exception e) {
+            configure( rule, ruleDescr.getLhs() );
+        } catch ( Exception e ) {
             e.printStackTrace();
-            throw new CheckedDroolsException(e);
+            throw new CheckedDroolsException( e );
         }
+        
+        return rule;
     }
 
-    private void configure(ConditionalElement descr) throws IOException,
-                                                    TemplateException,
-                                                    TokenStreamException,
-                                                    RecognitionException,
-                                                    ClassNotFoundException,
-                                                    IntrospectionException {
-        System.out.println( "X" );
+    private void configure(Rule rule, ConditionalElement descr) throws Exception {
         for ( Iterator it = descr.getDescrs().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof ConditionalElement ) {
-                configure( (ConditionalElement) object );
+                configure(rule,  (ConditionalElement) object );
             } else if ( object instanceof ColumnDescr ) {
-                configure( (ColumnDescr) object );
+                configure(rule, (ColumnDescr) object );
             }
         }
     }
 
-    private void configure(ColumnDescr column) throws IOException,
+    private void configure(Rule rule, ColumnDescr columnDescr) throws IOException,
                                               TemplateException,
                                               TokenStreamException,
                                               RecognitionException,
                                               ClassNotFoundException,
                                               IntrospectionException {
-        System.out.println( "Y" );
-        Class clazz = Class.forName( column.getObjectType() );
-
-        // We need to keep the type of the binding, so it can be specified in the imports of the generated code
-        // We can reuse this as part of the ruel generation
-        if ( column.getIdentifier() != null && column.getIdentifier().equals( "" ) ) {
-            this.bindings.put( column.getIdentifier(),
-                               clazz );
+        Class clazz = Class.forName( columnDescr.getObjectType() );
+        Column column;
+        if ( columnDescr.getIdentifier() != null && columnDescr.getIdentifier().equals( "" ) ) {
+            column = new Column( columnCounter++, 
+                                 new ClassObjectType(clazz) );
+            this.declarations.put( column.getDeclaration().getIdentifier(),
+                                   column.getDeclaration() );            
+        } else {
+            column = new Column( columnCounter++, 
+                                 new ClassObjectType(clazz),
+                                 columnDescr.getIdentifier() );
         }
 
-        for ( Iterator it = column.getDescrs().iterator(); it.hasNext(); ) {
+        for ( Iterator it = columnDescr.getDescrs().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof FieldBindingDescr ) {
-                configure( clazz,
+                configure( column,
                            (FieldBindingDescr) object );
             } else if ( object instanceof BoundVariableDescr ) {
                 configure( column,
                            (BoundVariableDescr) object );
-            } else if ( object instanceof ReturnValueDescr ) {
+            }  else if ( object instanceof ReturnValueDescr ) {
                 configure( column,
                            (ReturnValueDescr) object );
             } else if ( object instanceof PredicateDescr ) {
@@ -138,52 +151,92 @@ public class JavaRuleCompiler {
         // generate method
         // generate invoker
     }
+    
+    private void configure(Column column,
+                           BoundVariableDescr boundVariable) {
+        
+        boundVariable.getDeclarationIdentifier();
+        
+        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-    private void configure(Class parentClazz,
+        FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                            boundVariable.getFieldName() );        
+        
+        Declaration declaration = (Declaration) this.declarations.get( boundVariable.getDeclarationIdentifier() );
+        
+        Evaluator evaluator = EvaluatorFactory.getEvaluator( declaration.getObjectType().getValueType(), boundVariable.getEvaluator() );
+        
+        column.addConstraint( new BoundVariableConstraint( extractor, 
+                                                           declaration,
+                                                           evaluator ) );
+    }    
+
+    private void configure(Column column,
                            FieldBindingDescr fieldBinding) throws ClassNotFoundException,
                                                           IntrospectionException {
-        // We need to keep the type of the binding, so it can be specified in the imports of the generated code
-        // We can reuse this as part of the ruel generation        
-        bindings.put( fieldBinding.getIdentifier(),
-                      getClassType( parentClazz,
-                                    fieldBinding.getFieldName() ) );
+        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+
+        FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                            fieldBinding.getFieldName() );
+
+        Declaration declaration = column.addDeclaration( fieldBinding.getIdentifier(),
+                                                         extractor );
+        
+        this.declarations.put( declaration.getIdentifier(), declaration );
     }
 
-    private void configure(ColumnDescr column,
-                           BoundVariableDescr boundVariable) {
-        // Do nothing no code needs to be generated for this one.
-    }
-
-    private void configure(ColumnDescr column,
-                           ReturnValueDescr returnValue) throws IOException,
+    private void configure(Column column,
+                           ReturnValueDescr returnValueDescr) throws IOException,
                                                         TemplateException,
                                                         TokenStreamException,
                                                         RecognitionException {
         // generate method
         // generate invoker
         Map root = new HashMap();
-
-        List usedDeclarations = this.analyzer.analyze( returnValue.getText(),
-                                                       this.bindings.keySet() );
-        returnValue.setDeclarations( (String[]) usedDeclarations.toArray( new String[usedDeclarations.size()] ) );
+        
+        String classMethodName = "returnValue"  + counter++;
+        returnValueDescr.setClassMethodName( classMethodName );
+        
+        root.put( "methodName",  classMethodName );
+        
+        List usedDeclarations = this.analyzer.analyze( returnValueDescr.getText(),
+                                                       this.declarations.keySet() );       
+        
+        Declaration[] declarations = new Declaration[usedDeclarations.size()];
+        for ( int i = 0, size = usedDeclarations.size(); i < size; i++) { 
+            declarations[i] = (Declaration) this.declarations.get( (String) usedDeclarations.get(i) );            
+        }
 
         root.put( "declarations",
-                  usedDeclarations );
+                  declarations );
 
         root.put( "globals",
-                  getUsedGlobals( returnValue.getText() ) );
+                  getUsedGlobals( returnValueDescr.getText() ) );
 
+        root.put( "globalTypes", this.pkg.getGlobals() );
+        
+        root.put( "text", returnValueDescr.getText() );
+        
+        
+        
+        ClassFieldExtractor extractor = new ClassFieldExtractor(((ClassObjectType) column.getObjectType()).getClass(),
+                                                                returnValueDescr.getFieldName() );
+
+
+        
+        //ReturnValueConstraint returnValueConstraint = new ReturnValueConstraint(extractor);
+        
         Template template = this.cfg.getTemplate( "returnValueMethod.ftl" );
-        StringWriter string = new StringWriter();               
+        StringWriter string = new StringWriter();
         template.process( root,
                           string );
         string.flush();
-        this.invokerMethods.put( returnValue,
+        this.invokerMethods.put( returnValueDescr,
                                  string );
-        System.out.println( string );
+        
     }
 
-    private void configure(ColumnDescr column,
+    private void configure(Column column,
                            PredicateDescr predicate) throws TemplateException,
                                                     IOException,
                                                     TokenStreamException,
@@ -193,20 +246,20 @@ public class JavaRuleCompiler {
         Map root = new HashMap();
 
         List usedDeclarations = this.analyzer.analyze( predicate.getText(),
-                                                       this.bindings.keySet() );
-        
+                                                       this.declarations.keySet() );
+
         predicate.setDeclarations( (String[]) usedDeclarations.toArray( new String[usedDeclarations.size()] ) );
 
         root.put( "declaration",
                   predicate.getDeclaration() );
-        
+
         root.put( "declarations",
                   usedDeclarations );
 
         root.put( "globals",
                   getUsedGlobals( predicate.getText() ) );
 
-        Template template = this.cfg.getTemplate( "predicateMethod" );
+        Template template = this.cfg.getTemplate( "predicateMethod.tfl" );
         StringWriter string = new StringWriter();
         template.process( root,
                           string );
@@ -215,16 +268,19 @@ public class JavaRuleCompiler {
                                  string );
     }
 
-    private void configure(EvalDescr eval) throws TokenStreamException, RecognitionException, IOException, TemplateException {
+    private void configure(EvalDescr eval) throws TokenStreamException,
+                                          RecognitionException,
+                                          IOException,
+                                          TemplateException {
         // generate method
         // generate invoker
         Map root = new HashMap();
 
         List usedDeclarations = this.analyzer.analyze( eval.getText(),
-                                                       this.bindings.keySet() );
-        
+                                                       this.declarations.keySet() );
+
         eval.setDeclarations( (String[]) usedDeclarations.toArray( new String[usedDeclarations.size()] ) );
-        
+
         root.put( "declarations",
                   usedDeclarations );
 
@@ -237,7 +293,7 @@ public class JavaRuleCompiler {
                           string );
         string.flush();
         this.invokerMethods.put( eval,
-                                 string );        
+                                 string );
     }
 
     private void configure(ConsequenceDescr and) {
@@ -245,18 +301,18 @@ public class JavaRuleCompiler {
         // generate invoker
     }
 
-    //    private void updateDeclarations(List usedDeclarations) {
-    //        for ( Iterator it = usedDeclarations.iterator(); it.hasNext(); ) {
-    //            String declaration = (String) it.next();
-    //            if ( ! this.declarations.contains( declaration ) ) {
-    //                this.declarations.add( declaration );
-    //            }
-    //        }
-    //    }
+//    private void addDeclarations(List usedDeclarations) {
+//        for ( Iterator it = usedDeclarations.iterator(); it.hasNext(); ) {
+//            String declaration = (String) it.next();
+//            if ( !this.declarations.contains( declaration ) ) {
+//                this.declarations.add( declaration );
+//            }
+//        }
+//    }
 
-    private List getUsedGlobals(String text) {
-        List list = new ArrayList();
-
+    private List  getUsedGlobals(String text) {
+        List list = new ArrayList(1);
+        Map globals  =  this.pkg.getGlobals();
         for ( Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
             String key = (String) it.next();
 
@@ -276,8 +332,6 @@ public class JavaRuleCompiler {
                                        nestedClassPosition );
             }
 
-            usedGlobals.add( key );
-
             if ( !list.contains( key ) ) {
                 list.add( key );
             }
@@ -294,14 +348,14 @@ public class JavaRuleCompiler {
      * @param ext
      * @return
      */
-    private String generateUniqueLegalName(String packageName,
-                                           String name,
-                                           String ext) {
+    private String getUniqueLegalName(String packageName,
+                                      String name,
+                                      String ext) {
         // replaces the first char if its a number and after that all non
         // alphanumeric or $ chars with _
         String newName = name.replaceAll( "(^[0-9]|[^\\w$])",
                                           "_" );
-
+        
         // make sure the class name does not exist, if it does increase the counter
         int counter = -1;
         boolean exists = true;
@@ -309,7 +363,7 @@ public class JavaRuleCompiler {
             counter++;
             String fileName = packageName.replaceAll( "\\.",
                                                       "/" ) + newName + "_" + counter + ext;
-            this.ruleSetBundle.getMemoryResourceReader().isAvailable( fileName );
+            exists = this.compiler.getMemoryResourceReader().isAvailable( fileName );
         }
         // we have duplicate file names so append counter
         if ( counter >= 0 ) {
@@ -317,19 +371,5 @@ public class JavaRuleCompiler {
         }
 
         return newName;
-    }
-
-    private Class getClassType(Class clazz,
-                               String name) throws IntrospectionException {
-        Class fieldType = null;
-        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
-        for ( int i = 0; i < descriptors.length; i++ ) {
-            if ( descriptors[i].getName().equals( name ) ) {
-                fieldType = descriptors[i].getPropertyType();
-                break;
-            }
-        }
-        return fieldType;
-
     }
 }

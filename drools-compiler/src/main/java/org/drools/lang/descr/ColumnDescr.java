@@ -5,18 +5,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class ColumnDescr extends PatternDescr {
-    private int    index;
     private String objectType;
     private String identifier;
     private List   descrs = Collections.EMPTY_LIST;
 
-    public ColumnDescr(int index,
-                       String objectType) {
-        this(index, objectType, null);
+    public ColumnDescr(String objectType) {
+        this(objectType, null);
     }    
     
-    public ColumnDescr(int index,
-                       String objectType,
+    public ColumnDescr(String objectType,
                        String identifier) {
         this.objectType = objectType;
         this.identifier = identifier;
@@ -28,11 +25,6 @@ public class ColumnDescr extends PatternDescr {
         }
         this.descrs.add(  patternDescr );
     }
-    
-    public int getIndex() {
-        return this.getIndex();
-    }
-    
 
     public String getObjectType() {
         return objectType;

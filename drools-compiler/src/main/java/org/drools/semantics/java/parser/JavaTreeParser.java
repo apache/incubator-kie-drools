@@ -275,7 +275,7 @@ public class JavaTreeParser extends antlr.TreeParser
                 }
                 while ( true );
             }
-            ruleSet( _t );
+            pkg( _t );
             _t = _retTree;
         }
         catch ( RecognitionException ex )
@@ -289,10 +289,10 @@ public class JavaTreeParser extends antlr.TreeParser
         _retTree = _t;
     }
 
-    public final void ruleSet(AST _t) throws RecognitionException
+    public final void pkg(AST _t) throws RecognitionException
     {
 
-        AST ruleSet_AST_in = (AST) _t;
+        AST pkg_AST_in = (AST) _t;
 
         try
         { // for error handling
@@ -3943,7 +3943,7 @@ public class JavaTreeParser extends antlr.TreeParser
 
     public static final String[] _tokenNames = {"<0>", "EOF", "<2>", "NULL_TREE_LOOKAHEAD", "BLOCK", "MODIFIERS", "OBJBLOCK", "SLIST", "CTOR_DEF", "METHOD_DEF", "VARIABLE_DEF", "INSTANCE_INIT", "STATIC_INIT", "TYPE", "CLASS_DEF", "INTERFACE_DEF",
             "PACKAGE_DEF", "ARRAY_DECLARATOR", "EXTENDS_CLAUSE", "IMPLEMENTS_CLAUSE", "PARAMETERS", "PARAMETER_DEF", "LABELED_STAT", "TYPECAST", "INDEX_OP", "POST_INC", "POST_DEC", "METHOD_CALL", "EXPR", "ARRAY_INIT", "IMPORT", "UNARY_MINUS",
-            "UNARY_PLUS", "CASE_GROUP", "ELIST", "FOR_INIT", "FOR_CONDITION", "FOR_ITERATOR", "EMPTY_STAT", "\"final\"", "\"abstract\"", "\"strictfp\"", "SUPER_CTOR_CALL", "CTOR_CALL", "\"ruleset\"", "\"rule\"", "\"when\"", "\"then\"", "IDENT",
+            "UNARY_PLUS", "CASE_GROUP", "ELIST", "FOR_INIT", "FOR_CONDITION", "FOR_ITERATOR", "EMPTY_STAT", "\"final\"", "\"abstract\"", "\"strictfp\"", "SUPER_CTOR_CALL", "CTOR_CALL", "\"pkg\"", "\"rule\"", "\"when\"", "\"then\"", "IDENT",
             "LCURLY", "RCURLY", "LPAREN", "RPAREN", "SEMI", "ASSIGN", "\"package\"", "\"import\"", "LBRACK", "RBRACK", "\"void\"", "\"boolean\"", "\"byte\"", "\"char\"", "\"short\"", "\"int\"", "\"float\"", "\"long\"", "\"double\"", "DOT", "STAR",
             "\"private\"", "\"public\"", "\"protected\"", "\"static\"", "\"transient\"", "\"native\"", "\"threadsafe\"", "\"synchronized\"", "\"volatile\"", "\"class\"", "\"extends\"", "\"interface\"", "COMMA", "\"implements\"", "\"this\"",
             "\"super\"", "\"throws\"", "COLON", "\"if\"", "\"else\"", "\"for\"", "\"while\"", "\"do\"", "\"break\"", "\"continue\"", "\"return\"", "\"switch\"", "\"throw\"", "\"case\"", "\"default\"", "\"try\"", "\"finally\"", "\"catch\"",
