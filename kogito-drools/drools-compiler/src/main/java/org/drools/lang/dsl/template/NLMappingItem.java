@@ -10,22 +10,23 @@ import java.io.Serializable;
  */
 public class NLMappingItem
     implements
-    Comparable, Serializable {
+    Serializable {
 
 
     private static final long serialVersionUID = 7185580607729787497L;
     
-    private int priority = 0;
-    
     private String naturalTemplate;
     private String targetTemplate;
+    private String scope;
     
-    public NLMappingItem(int priority,
-                         String naturalTemplate,
-                         String targetTemplate) {
-        this.priority = priority;
+
+    
+    public NLMappingItem(String naturalTemplate,
+                         String targetTemplate,
+                         String scope) {
         this.naturalTemplate = naturalTemplate;
-        this.targetTemplate = targetTemplate;
+        this.targetTemplate = targetTemplate;        
+        this.scope = scope;        
     }
     
     public String getNaturalTemplate() {
@@ -36,23 +37,9 @@ public class NLMappingItem
         return targetTemplate;
     }
 
-    public int compareTo(Object arg) {
-        if ( arg instanceof NLMappingItem ) {
-            NLMappingItem item = (NLMappingItem) arg;
-            if ( item.priority == this.priority ) return 0;
-            if ( item.priority > this.priority ) return -1;
-            if ( item.priority < this.priority ) return 1;
-            return 0;
-        }
-        else {
-            return 0;
-        }
-    }
 
-    int getPriority() {
-        return this.priority;
+    public String getScope() {
+        return this.scope;
     }
-
-    
     
 }

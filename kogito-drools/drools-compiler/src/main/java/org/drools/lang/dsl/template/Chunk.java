@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
  * 
  * Chunks also know how to parse themselves to work out the value.
  * 
- * This is used by TemplateContext.
+ * This is used by Template to do the bulk of the work.
  * This class is very recursive, to be prepated to be confused.
  * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>

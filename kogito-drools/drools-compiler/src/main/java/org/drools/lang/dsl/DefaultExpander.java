@@ -1,11 +1,15 @@
 package org.drools.lang.dsl;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import org.drools.lang.Expander;
 import org.drools.lang.Parser;
 import org.drools.lang.dsl.template.NLExpressionCompiler;
 import org.drools.lang.dsl.template.NLGrammar;
+import org.drools.lang.dsl.template.NLMappingItem;
 
 /** 
  * The default expander uses String templates to provide pseudo natural language,
@@ -21,8 +25,9 @@ public class DefaultExpander
     private NLExpressionCompiler compiler; 
     
     public String expand(String pattern,
-                         Parser context) {        
-        return compiler.compile(pattern);
+                         Parser context) {  
+        
+        return compiler.compile(pattern, null);
     }
     
     /**
@@ -33,7 +38,12 @@ public class DefaultExpander
      */
     public DefaultExpander(Properties props) {
         NLGrammar grammar = new NLGrammar();
-        grammar.loadFromProperties(props);
+        for ( Iterator iter = props.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry element = (Map.Entry) iter.next();
+            grammar.addNLItem( new NLMappingItem((String)element.getKey(), (String)element.getValue(), "*"));
+            
+        }
+        //grammar.load(null);
         compiler = new NLExpressionCompiler(grammar);
     }
 
