@@ -13,8 +13,8 @@ public class EvaluatorFactory {
 
     }
     
-    public Evaluator getEvaluator(int type, 
-                                  String operator) {
+    public static Evaluator getEvaluator(int type, 
+                                         String operator) {
         Evaluator evaluator = null;
         if ( operator.equals("==") ) {
             evaluator = getEvaluator(type, Evaluator.EQUAL);
@@ -33,17 +33,17 @@ public class EvaluatorFactory {
         return evaluator;
     }
 
-    public Evaluator getEvaluator(int type,
-                                  int operator) {
+    public static Evaluator getEvaluator(int type,
+                                         int operator) {
         switch ( type ) {
             case Evaluator.OBJECT_TYPE :
-                return getObjectEvaluator( operator );
+                return INSTANCE.getObjectEvaluator( operator );
             case Evaluator.SHORT_TYPE :
-                return getShortEvaluator( operator );
+                return INSTANCE.getShortEvaluator( operator );
             case Evaluator.INTEGER_TYPE :
-                return getIntegerEvaluator( operator );
+                return INSTANCE.getIntegerEvaluator( operator );
             case Evaluator.BOOLEAN_TYPE :
-                return getBooleanEvaluator( operator );                
+                return INSTANCE.getBooleanEvaluator( operator );                
             default :
                 throw new RuntimeException( "Type '" + type + "' does not exist for BaseEvaluatorFactory" );
         }

@@ -47,9 +47,7 @@ package org.drools.spi;
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public interface ObjectType
-    extends
-    SemanticComponent {
+public interface ObjectType {
     /**
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.

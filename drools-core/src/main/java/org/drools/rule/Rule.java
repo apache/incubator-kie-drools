@@ -54,7 +54,6 @@ import org.drools.spi.Constraint;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.Duration;
 import org.drools.spi.Extractor;
-import org.drools.spi.Importer;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ObjectType;
 
@@ -91,9 +90,6 @@ public class Rule
     /** Salience value. */
     private int          salience;
 
-    /** Columns */
-    //private final List   columns      = new ArrayList();
-
     private final Map    declarations = new HashMap();
 
     private final And    lhsRoot  = new And();
@@ -115,12 +111,6 @@ public class Rule
     /** makes the rule's much the current focus */
     private boolean      autoFocus;
 
-    /** A map valid Application names and types */
-    private Map          applicationData;
-
-    /** The Importer to use, as specified by the RuleSet */
-    private Importer     importer;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -138,7 +128,6 @@ public class Rule
         this.name = name;
         this.pkg = pkg;
         this.agendaGroup = agendaGroup;
-        this.applicationData = Collections.EMPTY_MAP;
     }
 
     /**
@@ -153,14 +142,12 @@ public class Rule
         this.name = name;
         this.pkg = null;
         this.agendaGroup = agendaGroup;
-        this.applicationData = Collections.EMPTY_MAP;
     }
 
     public Rule(String name) {
         this.name = name;
         this.pkg = null;
         this.agendaGroup = AgendaGroup.MAIN;
-        this.applicationData = Collections.EMPTY_MAP;
     }
 
     /**
@@ -279,7 +266,7 @@ public class Rule
         }
     }
 
-    public Package getRuleSet() {
+    public Package getPackage() {
         return this.pkg;
     }
 
@@ -476,22 +463,6 @@ public class Rule
 
     void setLoadOrder(long loadOrder) {
         this.loadOrder = loadOrder;
-    }
-
-    public Importer getImporter() {
-        return this.importer;
-    }
-
-    public void setImporter(Importer importer) {
-        this.importer = importer;
-    }
-
-    public void setApplicationData(Map applicationData) {
-        this.applicationData = applicationData;
-    }
-
-    public Map getApplicationData() {
-        return this.applicationData;
     }
 
     public String getAgendaGroup() {

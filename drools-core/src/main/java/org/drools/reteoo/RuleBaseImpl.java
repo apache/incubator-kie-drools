@@ -225,7 +225,7 @@ public class RuleBaseImpl
                                            PackageIntegrationException,
                                            FactException,
                                            InvalidPatternException {
-        Map newApplicationData = pkg.getGlobalDeclarations();
+        Map newApplicationData = pkg.getGlobals();
 
         // Check that the global data is valid, we cannot change the type
         // of an already declared global variable
