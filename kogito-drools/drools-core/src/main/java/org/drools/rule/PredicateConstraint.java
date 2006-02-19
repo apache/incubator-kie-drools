@@ -8,26 +8,35 @@ import org.drools.spi.Tuple;
 
 public class PredicateConstraint
     implements
-    FieldConstraint {    
-    private PredicateExpression           expression;    
-
-    private final Declaration                   declaration;
+    FieldConstraint {
     
-    private final Declaration[]                 requiredDeclarations;
+    private PredicateExpression        expression;
+    
+    private final Declaration          declaration;
 
-    private static final Declaration[]          EMPTY_DECLARATIONS = new Declaration[0];
+    private final Declaration[]        requiredDeclarations;
+
+    private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
     public PredicateConstraint(PredicateExpression evaluator,
                                Declaration declaration) {
-        this(evaluator, declaration, null);
+        this( evaluator,
+              declaration,
+              null );
+    }
+    
+    public PredicateConstraint(Declaration declaration,
+                               Declaration[] requiredDeclarations) {
+        this ( null, declaration, requiredDeclarations );
     }    
     
-    public PredicateConstraint(PredicateExpression evaluator,
+
+    public PredicateConstraint(PredicateExpression expression,
                                Declaration declaration,
                                Declaration[] requiredDeclarations) {
-        
-        this.expression = evaluator;
-        
+
+        this.expression = expression;
+
         this.declaration = declaration;
 
         if ( requiredDeclarations == null ) {
@@ -40,7 +49,7 @@ public class PredicateConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
     }
-    
+
     public void setPredicateExpression(PredicateExpression expression) {
         this.expression = expression;
     }
@@ -50,10 +59,10 @@ public class PredicateConstraint
                              WorkingMemory workingMemory) {
 
         return expression.evaluate( tuple,
-                                   handle,
-                                   this.declaration, 
-                                   this.requiredDeclarations, 
-                                   workingMemory);
+                                    handle,
+                                    this.declaration,
+                                    this.requiredDeclarations,
+                                    workingMemory );
 
     }
 

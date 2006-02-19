@@ -5,17 +5,21 @@ import org.drools.spi.Constraint;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
 
-public class EvalCondition {    
-    private final EvalExpression           eval;    
+public class EvalCondition extends ConditionalElement {    
+    private EvalExpression           expression;    
    
     private final Declaration[]            requiredDeclarations;
 
     private static final Declaration[]     EMPTY_DECLARATIONS = new Declaration[0];
 
+    public EvalCondition(Declaration[] requiredDeclarations) {
+       this( null, requiredDeclarations );
+   }
+    
     public EvalCondition(EvalExpression eval,
                           Declaration[] requiredDeclarations) {
         
-        this.eval = eval;
+        this.expression = eval;
         
 
         if ( requiredDeclarations == null ) {
@@ -23,6 +27,10 @@ public class EvalCondition {
         } else {
             this.requiredDeclarations = requiredDeclarations;
         }
+    }
+    
+    public void setEvalExpression(EvalExpression expression) {
+        this.expression = expression;
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -32,7 +40,7 @@ public class EvalCondition {
     public boolean isAllowed(Tuple tuple,
                              WorkingMemory workingMemory) {
 
-        return eval.evaluate( tuple, 
+        return expression.evaluate( tuple, 
                               this.requiredDeclarations, 
                              workingMemory);
 

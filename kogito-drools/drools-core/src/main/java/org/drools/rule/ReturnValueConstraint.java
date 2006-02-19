@@ -14,20 +14,23 @@ public class ReturnValueConstraint
 
     private final FieldExtractor       fieldExtractor;
 
-    private ReturnValueExpression returnValueExpression;
+    private ReturnValueExpression      returnValueExpression;
 
-    private final Declaration[]               requiredDeclarations;
+    private final Declaration[]        requiredDeclarations;
 
-    private final Evaluator             evaluator;
+    private final Evaluator            evaluator;
 
-    private static final Declaration[]  noRequiredDeclarations = new Declaration[]{};
+    private static final Declaration[] noRequiredDeclarations = new Declaration[]{};
 
     public ReturnValueConstraint(FieldExtractor fieldExtractor,
                                  Declaration[] declarations,
                                  Evaluator evaluator) {
-        this(fieldExtractor, null, declarations, evaluator);
-    }    
-    
+        this( fieldExtractor,
+              null,
+              declarations,
+              evaluator );
+    }
+
     public ReturnValueConstraint(FieldExtractor fieldExtractor,
                                  ReturnValueExpression returnValueExpression,
                                  Declaration[] declarations,
@@ -48,7 +51,7 @@ public class ReturnValueConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
     }
-    
+
     public void setReturnValueExpression(ReturnValueExpression expression) {
         this.returnValueExpression = expression;
     }
