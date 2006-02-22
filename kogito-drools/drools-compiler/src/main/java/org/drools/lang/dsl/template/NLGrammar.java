@@ -1,8 +1,11 @@
 package org.drools.lang.dsl.template;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +32,10 @@ public class NLGrammar
     private static final long serialVersionUID = 1L;
     private List mappings = new ArrayList();
     private static final Pattern itemPrefix = Pattern.compile( "\\[\\s*(when|then)\\s*\\].*" );
+    private String description;
     
+
+
     public NLGrammar() {
     }
     
@@ -42,6 +48,17 @@ public class NLGrammar
     public List getMappings() {        
         return mappings;
     }
+    
+    /** Get the human readable description of this language definition. This should just be a comment. */
+    public String getDescription() {
+        return description;
+    }
+
+    /** Set the human readable description of this language definition. This should just be a comment. */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
 
     /** 
      * This will load from a reader to an appropriate text DSL config.
@@ -67,8 +84,10 @@ public class NLGrammar
                     line = line.substring( 0, line.length() - 1 ) + buf.readLine();
                 }
                 line = line.trim();
-                if (line.equals( "" ) || line.startsWith( "#" )) {
-                    //ignore comment
+                if (line.startsWith( "#" )) {
+                    this.description = line.substring( 1 );
+                } else if (line.equals( "" )) {
+                    //ignore
                 } else {                        
                     this.mappings.add( parseLine( line ) );
                 }
@@ -76,6 +95,25 @@ public class NLGrammar
             
         } catch ( IOException e ) {
             throw new IllegalArgumentException("Unable to read DSL configuration.", e);
+        }
+    }
+    
+    /** Save out the grammar configuration */
+    public void save(OutputStreamWriter writer) {
+        BufferedWriter buffer = new BufferedWriter(writer);
+        try {
+            buffer.write( "#" + this.description + "\n");
+            for ( Iterator iter = this.mappings.iterator(); iter.hasNext(); ) {
+                NLMappingItem item = (NLMappingItem) iter.next();
+                if (item.getScope().equals( "*" )) {
+                    buffer.write( item.getNaturalTemplate() + "=" + item.getTargetTemplate() + "\n");
+                } else {
+                    buffer.write( "[" + item.getScope() + "]" + item.getNaturalTemplate() + "=" + item.getTargetTemplate() + "\n");
+                }
+            }
+            buffer.flush();
+        } catch ( IOException e ) {
+            throw new IllegalStateException("Unable to save DSL configuration.", e);
         }
     }
     
