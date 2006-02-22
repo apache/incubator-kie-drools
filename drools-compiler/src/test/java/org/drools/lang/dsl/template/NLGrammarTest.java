@@ -1,8 +1,11 @@
 package org.drools.lang.dsl.template;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -92,6 +95,30 @@ public class NLGrammarTest extends TestCase {
         assertEquals( 2, g.getMappings("when").size() );
         assertEquals( 1, g.getMappings(null).size() );
         
+        
+    }
+    
+    public void testSave() {
+        NLGrammar g = new NLGrammar();
+        g.addNLItem( new NLMappingItem("This is something", "boo", "then") );
+        g.addNLItem( new NLMappingItem("This is another", "coo", "then") );
+        g.addNLItem( new NLMappingItem("end", "it", "*") );
+        g.setDescription( "my description" );
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        OutputStreamWriter writer = new OutputStreamWriter(out);
+        g.save( writer );
+        
+        String result = out.toString();
+        assertEquals("#my description\n[then]This is something=boo\n[then]This is another=coo\nend=it\n", result);
+       
+        //now load it to double check
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        InputStreamReader reader = new InputStreamReader(in);
+        g = new NLGrammar();
+        g.load( reader );
+        assertEquals(3, g.getMappings().size());
+        assertEquals("my description", g.getDescription());
         
     }
     
