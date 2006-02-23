@@ -95,11 +95,11 @@ public class TableIterator implements Iterator {
 	}
 
 	public boolean hasNext() {
+		boolean ret = false;
 		if (!this.empty) {
-			return this.currentRecord != this.lastRecord;
-		} else {
-			return false;
+			ret = this.currentRecord != this.lastRecord;
 		}
+		return ret;
 	}
 
 	public Object next() {

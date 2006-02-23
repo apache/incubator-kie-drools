@@ -211,17 +211,13 @@ public class TableTest extends TestCase {
 		this.testTable.add(this.h1000);
 		this.testTable.add(this.h100);
 		this.testTable.add(this.h10);
-		try {
-			TableIterator it = this.testTable.headIterator(this.h10);
-			assertTrue(it.hasNext());
-			assertEquals(it.next(), this.h1000);
-			assertTrue(it.hasNext());
-			assertEquals(it.next(), this.h100);
-			assertTrue(it.hasNext());
-			assertEquals(it.next(), this.h10);
-			assertFalse(it.hasNext());
-		} catch (TableOutOfBoundException ex) {
-
-		}
+		TableIterator it = this.testTable.headIterator(this.h10);
+		assertTrue(it.hasNext());
+		assertEquals(it.next(), this.h1000);
+		assertTrue(it.hasNext());
+		assertEquals(it.next(), this.h100);
+		assertTrue(it.hasNext());
+		assertEquals(it.next(), this.h10);
+		assertFalse(it.hasNext());
 	}
 }

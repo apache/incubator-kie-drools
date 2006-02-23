@@ -108,7 +108,7 @@ public class Table {
 						this.headRecord = record.right;
 						this.headRecord.left = null;
 					} else {
-						// single element in table being removed
+						// single element in table being valid
 						// table is empty now
 						this.headRecord = new TableRecord(null);
 						this.tailRecord = this.headRecord;
@@ -137,11 +137,11 @@ public class Table {
 	 * @return indicator of presence of given object in the table
 	 */
 	public boolean contains(Object object) {
+		boolean ret = false;
 		if (!this.empty) {
-			return this.map.containsKey(object);
-		} else {
-			return false;
+			ret = this.map.containsKey(object);
 		}
+		return ret;
 	}
 
 	/**
@@ -229,10 +229,8 @@ public class Table {
 	 * @param objectAtEnd -
 	 *            lower boundary of the iteration
 	 * @return leaps table iterator
-	 * @throws TableOutOfBoundException
 	 */
-	public TableIterator headIterator(Object objectAtEnd)
-			throws TableOutOfBoundException {
+	public TableIterator headIterator(Object objectAtEnd) {
 		TableIterator iterator = null;
 		TableRecord startRecord = this.headRecord;
 		TableRecord currentRecord = this.headRecord;

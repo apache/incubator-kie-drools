@@ -51,7 +51,7 @@ class Token implements Tuple, Serializable {
 	private Iterator rules = null;
 
 	/**
-	 * activation parts
+	 * agendaItem parts
 	 */
 
 	public Token(WorkingMemoryImpl workingMemory, FactHandleImpl factHandle) {
@@ -72,7 +72,7 @@ class Token implements Tuple, Serializable {
 		return this.currentFactHandles[idx];
 	}
 
-	public RuleHandle nextRuleHandle() throws TableOutOfBoundException {
+	public RuleHandle nextRuleHandle() {
 		this.currentRuleHandle = (RuleHandle) this.rules.next();
 		this.currentFactHandles = new FactHandleImpl[this.currentRuleHandle
 				.getLeapsRule().getNumberOfColumns()];
@@ -83,10 +83,9 @@ class Token implements Tuple, Serializable {
 	 * 
 	 * @param memory
 	 * @return indicator if there are more rules
-	 * @throws TableOutOfBoundException
 	 */
 
-	public boolean hasNextRuleHandle() throws TableOutOfBoundException {
+	public boolean hasNextRuleHandle() {
 		boolean ret = false;
 		if (this.rulesIterator() != null) {
 			// starting with calling rulesIterator() to make sure that we picks
@@ -239,8 +238,8 @@ class Token implements Tuple, Serializable {
 	 * @see org.drools.spi.Tuple
 	 */
 	public long getMostRecentFactTimeStamp() {
+		long recency = -1L;
 		if (this.currentFactHandles != null) {
-			long recency = -1;
 			for (int i = 0; i < this.currentFactHandles.length; i++) {
 				if (i == 0) {
 					recency = this.currentFactHandles[0].getRecency();
@@ -248,10 +247,8 @@ class Token implements Tuple, Serializable {
 					recency = this.currentFactHandles[i].getRecency();
 				}
 			}
-			return recency;
-		} else {
-			return -1L;
 		}
+		return recency;
 	}
 
 	/**
@@ -260,8 +257,8 @@ class Token implements Tuple, Serializable {
 	 * @see org.drools.spi.Tuple
 	 */
 	public long getLeastRecentFactTimeStamp() {
+		long recency = -1L;
 		if (this.currentFactHandles != null) {
-			long recency = -1;
 			for (int i = 0; i < this.currentFactHandles.length; i++) {
 				if (i == 0) {
 					recency = this.currentFactHandles[0].getRecency();
@@ -269,10 +266,8 @@ class Token implements Tuple, Serializable {
 					recency = this.currentFactHandles[i].getRecency();
 				}
 			}
-			return recency;
-		} else {
-			return -1L;
 		}
+		return recency;
 	}
 
 	/**
@@ -293,7 +288,7 @@ class Token implements Tuple, Serializable {
 	}
 
 	/**
-	 * creates lightweight tuple suitable for activation
+	 * creates lightweight tuple suitable for agendaItem
 	 * 
 	 * @return LeapsTuple
 	 */
@@ -320,8 +315,8 @@ class Token implements Tuple, Serializable {
 	}
 
 	/**
-	 * Do nothing because this tuple never gets to activation stage. Another one -
-	 * LeapsTuple - is created to take part in activation processing
+	 * Do nothing because this tuple never gets to agendaItem stage. Another one -
+	 * LeapsTuple - is created to take part in agendaItem processing
 	 * 
 	 * @see getTuple()
 	 * @see org.drools.spi.Tuple

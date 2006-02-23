@@ -36,7 +36,7 @@ class LeapsTuple implements Tuple, Serializable {
 	private Activation activation;
 
 	/**
-	 * activation parts
+	 * agendaItem parts
 	 */
 	LeapsTuple(FactHandleImpl factHandles[]) {
 		this.factHandles = factHandles;
@@ -91,10 +91,10 @@ class LeapsTuple implements Tuple, Serializable {
 	}
 
 	/**
-	 * to determine if "active" activation needs to be removed from the queue on
+	 * to determine if "active" agendaItem needs to be valid from the queue on
 	 * fact retraction
 	 * 
-	 * @return indicator if activation was null'ed
+	 * @return indicator if agendaItem was null'ed
 	 */
 	public boolean isActivationNull() {
 		return this.activation == null;
