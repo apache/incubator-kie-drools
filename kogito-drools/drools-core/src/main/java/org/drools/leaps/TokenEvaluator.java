@@ -16,15 +16,14 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.drools.base.ClassObjectType;
 import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.TableIterator;
 import org.drools.rule.InvalidRuleException;
-import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 
@@ -33,6 +32,10 @@ import org.drools.spi.PropagationContext;
  * seek. all methods are static
  * 
  * @author Alexander Bagerman
+ * 
+ */
+/**
+ * @author bageale
  * 
  */
 final class TokenEvaluator {
@@ -132,19 +135,24 @@ final class TokenEvaluator {
 					// consequence
 					if (jj == (numberOfColumns - 1)) {
 						if (!skip) {
+							List existsEnablingFacts = TokenEvaluator
+									.evaluateExistsConditions(token,
+											workingMemory);
 							// check for negative conditions
-							if (TokenEvaluator.evaluateExistsConditions(token,
-									workingMemory)) {
+							if (existsEnablingFacts == null || existsEnablingFacts.size() > 0) {
 								// event support
 								PropagationContextImpl propagationContext = new PropagationContextImpl(
 										workingMemory
 												.increamentPropagationIdCounter(),
 										PropagationContext.ASSERTION,
-										(Rule) null, (Activation) null);
+										token
+										.getCurrentRuleHandle()
+										.getLeapsRule().getRule(), (Activation) null);
 								// let agenda to do its work
 								workingMemory.assertTuple(token.getTuple(),
 										TokenEvaluator.evaluateNotConditions(
 												token, workingMemory),
+										existsEnablingFacts,
 										propagationContext, token
 												.getCurrentRuleHandle()
 												.getLeapsRule().getRule());
@@ -184,17 +192,18 @@ final class TokenEvaluator {
 	 */
 	final static private boolean evaluatePositiveConditions(Token token,
 			int index, WorkingMemoryImpl workingMemory) throws Exception {
+		boolean satisfied = false;
 		FactHandleImpl factHandle = token.getFactHandleAtPosition(index);
 		ColumnConstraints constraints = token.getCurrentRuleHandle()
 				.getLeapsRule().getColumnConstraintsAtPosition(index);
 		// check alphas
 		if (constraints.evaluateAlphas(factHandle, token, workingMemory)) {
 			// finaly beta
-			return constraints.getBeta().isAllowed(factHandle, token,
+			satisfied = constraints.getBeta().isAllowed(factHandle, token,
 					token.getWorkingMemory());
-		} else {
-			return false;
 		}
+		return satisfied;
+
 	}
 
 	/**
@@ -206,38 +215,15 @@ final class TokenEvaluator {
 	 * @return success
 	 * @throws Exception
 	 */
-	final static private Set evaluateNotConditions(Token token,
+	final static private List evaluateNotConditions(Token token,
 			WorkingMemoryImpl workingMemory) throws Exception {
-		HashSet blockingFactHandles = new HashSet();
+		List blockingFactHandles = new LinkedList();
 		if (token.getCurrentRuleHandle().getLeapsRule().containsNotColumns()) {
-			ColumnConstraints constraints;
-			TableIterator tableIterator;
-			// let's now iterate over not and exists columns to see if
-			// conditions satisfied
-
 			// get each NOT column spec and check
 			for (Iterator it = token.getCurrentRuleHandle().getLeapsRule()
 					.getNotColumnsIterator(); it.hasNext();) {
-				constraints = (ColumnConstraints) it.next();
-				// 1. starting with regular tables
-				// scan the whole table
-				tableIterator = workingMemory.getFactTable(
-						((ClassObjectType) constraints.getColumn()
-								.getObjectType()).getClassType()).iterator();
-				// fails if exists
-				FactHandleImpl factHandle;
-				while (tableIterator.hasNext()) {
-					factHandle = (FactHandleImpl) tableIterator.next();
-					// check alphas
-					if (constraints.evaluateAlphas(factHandle, token,
-							workingMemory)) {
-						if (constraints.getBeta().isAllowed(factHandle, token,
-								workingMemory)) {
-							// it's blocking based on beta
-							blockingFactHandles.add(factHandle);
-						}
-					}
-				}
+				blockingFactHandles.addAll(TokenEvaluator.getExistsEnablingFacts(
+						token, workingMemory, (ColumnConstraints) it.next()));
 			}
 		}
 
@@ -253,38 +239,55 @@ final class TokenEvaluator {
 	 * @return success
 	 * @throws Exception
 	 */
-	final static private boolean evaluateExistsConditions(Token token,
+	final static private List evaluateExistsConditions(Token token,
 			WorkingMemoryImpl workingMemory) throws Exception {
-		if (!token.getCurrentRuleHandle().getLeapsRule()
-				.containsExistsColumns()) {
-			return true;
-		} else {
-			boolean found = false;
-			ColumnConstraints constraints;
-			TableIterator tableIterator;
-			FactHandleImpl factHandle;
-			// get each EXISTS column spec and check
+		List enablingFactHandles = null;
+		if (token.getCurrentRuleHandle().getLeapsRule().containsExistsColumns()) {
+			enablingFactHandles = new LinkedList();
+			// get each NOT column spec and check
 			for (Iterator it = token.getCurrentRuleHandle().getLeapsRule()
-					.getExistsColumnsIterator(); it.hasNext() && !found;) {
-				constraints = (ColumnConstraints) it.next();
-				// regular tables - scan the whole table
-				tableIterator = workingMemory.getFactTable(
-						((ClassObjectType) constraints.getColumn()
-								.getObjectType()).getClassType()).iterator();
-				// iterate over facts to see if any match
-				// exit with found = true on hte first one to match
-				while (tableIterator.hasNext() && !found) {
-					factHandle = (FactHandleImpl) tableIterator.next();
-					// check alphas
-					if (constraints.evaluateAlphas(factHandle, token,
-							workingMemory)) {
-						// finaly beta if passed all alpha conditions
-						found = constraints.getBeta().isAllowed(factHandle,
-								token, workingMemory);
-					}
+					.getExistsColumnsIterator(); it.hasNext();) {
+				enablingFactHandles.addAll(TokenEvaluator.getExistsEnablingFacts(
+						token, workingMemory, (ColumnConstraints) it.next()));
+			}
+		}
+
+		return enablingFactHandles;
+	}
+
+	/**
+	 * return set of all facts that satisfy exists condition including not and
+	 * exists cases
+	 * 
+	 * @param token
+	 * @param workingMemory
+	 * @param constraints
+	 * @return all facts that satisfy exists conditions
+	 * @throws Exception
+	 */
+	final static private List getExistsEnablingFacts(Token token,
+			WorkingMemoryImpl workingMemory, ColumnConstraints constraints)
+			throws Exception {
+		List matchingFactHandles = new LinkedList();
+		TableIterator tableIterator;
+		// scan the whole table
+		tableIterator = workingMemory.getFactTable(
+				((ClassObjectType) constraints.getColumn().getObjectType())
+						.getClassType()).iterator();
+		// fails if exists
+		FactHandleImpl factHandle;
+		while (tableIterator.hasNext()) {
+			factHandle = (FactHandleImpl) tableIterator.next();
+			// check alphas
+			if (constraints.evaluateAlphas(factHandle, token, workingMemory)) {
+				if (constraints.getBeta().isAllowed(factHandle, token,
+						workingMemory)) {
+					// it's blocking based on beta
+					matchingFactHandles.add(factHandle);
 				}
 			}
-			return found;
 		}
+
+		return matchingFactHandles;
 	}
 }

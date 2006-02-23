@@ -65,7 +65,7 @@ class LeapsRule {
 	}
 
 	public ColumnConstraints getColumnConstraintsAtPosition(int idx) {
-		return (ColumnConstraints) this.columns[idx];
+		return this.columns[idx];
 	}
 
 	public Iterator getNotColumnsIterator() {

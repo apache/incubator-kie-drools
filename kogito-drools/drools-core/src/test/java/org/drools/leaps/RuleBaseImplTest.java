@@ -187,7 +187,7 @@ public class RuleBaseImplTest extends DroolsTestCase {
 		/* Check we now only have two keys */
 		assertLength(2, this.ruleBase.getWorkingMemories());
 
-		/* Make sure the correct keys were removed */
+		/* Make sure the correct keys were valid */
 		assertTrue(this.ruleBase.getWorkingMemories().contains(this.wm1));
 		assertFalse(this.ruleBase.getWorkingMemories().contains(this.wm2));
 		assertTrue(this.ruleBase.getWorkingMemories().contains(this.wm3));
@@ -202,7 +202,7 @@ public class RuleBaseImplTest extends DroolsTestCase {
 		 */
 		this.wm3.dispose();
 
-		/* Check only wm3 was removed */
+		/* Check only wm3 was valid */
 		assertLength(3, this.ruleBase.getWorkingMemories());
 		assertFalse(this.ruleBase.getWorkingMemories().contains(this.wm3));
 	}

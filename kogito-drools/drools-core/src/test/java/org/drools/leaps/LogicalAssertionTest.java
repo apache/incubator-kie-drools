@@ -16,7 +16,8 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
@@ -68,22 +69,23 @@ public class LogicalAssertionTest extends DroolsTestCase {
 				null, null);
 		factHandles[0] = (FactHandleImpl) handle1;
 		tuple1 = new LeapsTuple(factHandles);
-		workingMemory.assertTuple(tuple1, new HashSet(), context1, rule1);
+		workingMemory.assertTuple(tuple1, new ArrayList(), new ArrayList(),
+				context1, rule1);
+		Iterator activations = workingMemory.getFactHandleActivations(handle1);
 		FactHandle logicalHandle1 = workingMemory.assertObject(logicalString1,
 				false, true, null,
-				(Activation) ((PostedActivation) workingMemory
-						.getFactHandleActivations(handle1).toArray()[0])
-						.getActivation());
+				(activations != null) ? ((PostedActivation) activations.next())
+						.getAgendaItem() : null);
 
 		String logicalString2 = new String("logical");
 		FactHandle logicalHandle2 = workingMemory.assertObject(logicalString2,
 				false, true, rule1,
-				(Activation) ((PostedActivation) workingMemory
-						.getFactHandleActivations(handle1).toArray()[0])
-						.getActivation());
+				((PostedActivation) workingMemory
+						.getFactHandleActivations(handle1).next())
+						.getAgendaItem());
 		factHandles[0] = (FactHandleImpl) logicalHandle2;
 		tuple1 = new LeapsTuple(factHandles);
-		workingMemory.assertTuple(tuple1, new HashSet(), context1, rule1);
+		workingMemory.assertTuple(tuple1, new ArrayList(), new ArrayList(), context1, rule1);
 
 		assertSame(logicalHandle1, logicalHandle2);
 
@@ -128,12 +130,12 @@ public class LogicalAssertionTest extends DroolsTestCase {
 				null, null);
 		factHandles[0] = (FactHandleImpl) handle1;
 		tuple1 = new LeapsTuple(factHandles);
-		workingMemory.assertTuple(tuple1, new HashSet(), context1, rule1);
+		workingMemory.assertTuple(tuple1, new ArrayList(), new ArrayList(), context1, rule1);
+		Iterator activations = workingMemory.getFactHandleActivations(handle1);
 		FactHandle logicalHandle1 = workingMemory.assertObject(logicalString1,
 				false, true, null,
-				(Activation) ((PostedActivation) workingMemory
-						.getFactHandleActivations(handle1).toArray()[0])
-						.getActivation());
+				(activations != null) ? ((PostedActivation) activations.next())
+						.getAgendaItem() : null);
 
 		String logicalString2 = new String("logical");
 		FactHandle logicalHandle2 = workingMemory.assertObject(logicalString2);
@@ -149,7 +151,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 		// Test that a logical assertion cannot override a STATED assertion
 		factHandles[0] = (FactHandleImpl) logicalHandle2;
 		tuple1 = new LeapsTuple(factHandles);
-		workingMemory.assertTuple(tuple1, new HashSet(), context1, rule1);
+		workingMemory.assertTuple(tuple1, new ArrayList(), new ArrayList(),  context1, rule1);
 
 		logicalString2 = new String("logical");
 		logicalHandle2 = workingMemory.assertObject(logicalString2);
@@ -158,18 +160,18 @@ public class LogicalAssertionTest extends DroolsTestCase {
 		// an equals STATED assertion.
 		logicalString1 = new String("logical");
 		logicalHandle1 = workingMemory.assertObject(logicalString1, false,
-				true, null, (Activation) ((PostedActivation) workingMemory
-						.getFactHandleActivations(handle1).toArray()[0])
-						.getActivation());
+				true, null, ((PostedActivation) workingMemory
+						.getFactHandleActivations(handle1).next())
+						.getAgendaItem());
 		// Already an equals object but not identity same, so will do nothing
 		// and return null
 		assertNull(logicalHandle1);
 
 		// Alreyad identify same so return previously assigned handle
 		logicalHandle1 = workingMemory.assertObject(logicalString2, false,
-				true, null, (Activation) ((PostedActivation) workingMemory
-						.getFactHandleActivations(handle1).toArray()[0])
-						.getActivation());
+				true, null, ((PostedActivation) workingMemory
+						.getFactHandleActivations(handle1).next())
+						.getAgendaItem());
 		// return the matched handle
 		assertSame(logicalHandle2, logicalHandle1);
 
@@ -200,7 +202,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 			}
 		};
 
-		// create the first activation which will justify the fact "logical"
+		// create the first agendaItem which will justify the fact "logical"
 		rule1.setConsequence(consequence);
 
 		FactHandleImpl tuple1FactHandle = (FactHandleImpl) workingMemory
@@ -217,7 +219,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
 		PropagationContext context = new PropagationContextImpl(0,
 				PropagationContext.ASSERTION, null, null);
-		workingMemory.assertTuple(tuple1, new HashSet(), context, rule1);
+		workingMemory.assertTuple(tuple1, new ArrayList(), new ArrayList(), context, rule1);
 		Activation activation1 = workingMemory.getAgenda().getActivations()[0];
 
 		// Assert the logical "logical" fact
@@ -225,11 +227,11 @@ public class LogicalAssertionTest extends DroolsTestCase {
 		FactHandle logicalHandle1 = workingMemory.assertObject(logicalString1,
 				false, true, rule1, activation1);
 
-		// create the second activation to justify the "logical" fact
+		// create the second agendaItem to justify the "logical" fact
 		final Rule rule2 = new Rule("test-rule2");
 		rule2.setConsequence(consequence);
 		tuple1 = new LeapsTuple(factHandlesTuple2);
-		workingMemory.assertTuple(tuple1, new HashSet(), context, rule1);
+		workingMemory.assertTuple(tuple1, new ArrayList(), new ArrayList(), context, rule1);
 		Activation activation2 = workingMemory.getAgenda().getActivations()[1];
 		//
 		String logicalString2 = new String("logical");
@@ -262,23 +264,22 @@ public class LogicalAssertionTest extends DroolsTestCase {
 			}
 		};
 
-		// create the first activation which will justify the fact "logical"
+		// create the first agendaItem which will justify the fact "logical"
 		rule1.setConsequence(consequence);
-		FactHandleImpl tuple1FactHandle = (FactHandleImpl) workingMemory
+		FactHandleImpl tuple1Fact = (FactHandleImpl) workingMemory
 				.assertObject("tuple1 object");
-		FactHandleImpl tuple2FactHandle = (FactHandleImpl) workingMemory
+		FactHandleImpl tuple2Fact = (FactHandleImpl) workingMemory
 				.assertObject("tuple2 object");
-		FactHandleImpl[] factHandlesTuple1 = new FactHandleImpl[1];
-		FactHandleImpl[] factHandlesTuple2 = new FactHandleImpl[1];
-		factHandlesTuple1[0] = tuple1FactHandle;
-		factHandlesTuple2[0] = tuple2FactHandle;
-		PropagationContext context1;
-		LeapsTuple tuple1 = new LeapsTuple(factHandlesTuple1);
-		LeapsTuple tuple2 = new LeapsTuple(factHandlesTuple2);
+		FactHandleImpl[] tuple1Handles = new FactHandleImpl[1];
+		FactHandleImpl[] tuple2Handles = new FactHandleImpl[1];
+		tuple1Handles[0] = tuple1Fact;
+		tuple2Handles[0] = tuple2Fact;
+		LeapsTuple tuple1 = new LeapsTuple(tuple1Handles);
+		LeapsTuple tuple2 = new LeapsTuple(tuple2Handles);
 
 		PropagationContext context = new PropagationContextImpl(0,
 				PropagationContext.ASSERTION, null, null);
-		workingMemory.assertTuple(tuple1, new HashSet(), context, rule1);
+		workingMemory.assertTuple(tuple1, new ArrayList(), new ArrayList(), context, rule1);
 		Activation activation1 = workingMemory.getAgenda().getActivations()[0];
 
 		// Assert the logical "logical" fact
@@ -286,28 +287,27 @@ public class LogicalAssertionTest extends DroolsTestCase {
 		FactHandle logicalHandle1 = workingMemory.assertObject(logicalString1,
 				false, true, rule1, activation1);
 
-		// create the second activation to justify the "logical" fact
+		// create the second agendaItem to justify the "logical" fact
 		final Rule rule2 = new Rule("test-rule2");
 		rule2.setConsequence(consequence);
-		tuple2 = new LeapsTuple(factHandlesTuple2);
-		workingMemory.assertTuple(tuple2, new HashSet(), context, rule1);
+		tuple2 = new LeapsTuple(tuple2Handles);
+		workingMemory.assertTuple(tuple2, new ArrayList(), new ArrayList(),  context, rule1);
+		// "logical" should only appear once
 		Activation activation2 = workingMemory.getAgenda().getActivations()[1];
 		//
 		String logicalString2 = new String("logical");
 		FactHandle logicalHandle2 = workingMemory.assertObject(logicalString2,
-				false, true, rule1, activation2);
+				false, true, rule2, activation2);
 
-		// "logical" should only appear once
 		assertLength(1, workingMemory.getJustified().values());
 		//
-		workingMemory.retractObject(tuple1FactHandle);
+		workingMemory.retractObject(tuple1Fact);
 		// check "logical" is still in the system
 		assertLength(1, workingMemory.getJustified().values());
 
 		// now remove that final justification
-		workingMemory.retractObject(tuple2FactHandle);
+		workingMemory.retractObject(tuple2Fact);
 		// "logical" fact should no longer be in the system
 		assertLength(0, workingMemory.getJustified().values());
 	}
-
 }

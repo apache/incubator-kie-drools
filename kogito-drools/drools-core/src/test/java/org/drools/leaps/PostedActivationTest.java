@@ -35,7 +35,7 @@ public class PostedActivationTest extends TestCase {
 		FactHandleImpl arr[] = { h1, h2, h3, h4 };
 		LeapsTuple tuple = new LeapsTuple(arr);
 		this.item = new AgendaItem(0L, tuple, null, null, null);
-		this.postedActivation = new PostedActivation(this.item);
+		this.postedActivation = new PostedActivation(this.item, false, 1, false, -1);
 	}
 
 	/*
@@ -43,16 +43,16 @@ public class PostedActivationTest extends TestCase {
 	 * 'org.drools.leaps.PostedActivation.setWasRemoved(boolean)'
 	 */
 	public void testSetRemoved() {
-		assertFalse(this.postedActivation.isRemoved());
-		this.postedActivation.setRemoved();
-		assertTrue(this.postedActivation.isRemoved());
+		assertTrue(this.postedActivation.isValid());
+		this.postedActivation.invalidate();
+		assertFalse(this.postedActivation.isValid());
 	}
 
 	/*
 	 * Test method for 'org.drools.leaps.PostedActivation.getActivation()'
 	 */
 	public void testGetActivation() {
-		assertEquals(this.item, this.postedActivation.getActivation());
+		assertEquals(this.item, this.postedActivation.getAgendaItem());
 	}
 
 }

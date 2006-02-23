@@ -72,7 +72,7 @@ public class SchedulerTest extends DroolsTestCase {
 
 		assertEquals(0, data.size());
 
-		workingMemory.assertTuple(tuple, new HashSet(), context, rule);
+		workingMemory.assertTuple(tuple, new ArrayList(), new ArrayList(), context, rule);
 
 		// sleep for 2 seconds
 		Thread.sleep(300);
@@ -115,7 +115,7 @@ public class SchedulerTest extends DroolsTestCase {
 					factHandlesTupleIn[0] = tupleFactHandleIn;
 					LeapsTuple tupleIn = new LeapsTuple(factHandlesTupleIn);
 					((WorkingMemoryImpl) workingMemory).assertTuple(tupleIn,
-							new HashSet(), context2, rule);
+							new ArrayList(), new ArrayList(), context2, rule);
 				}
 				data.add("tested");
 			}
@@ -130,7 +130,7 @@ public class SchedulerTest extends DroolsTestCase {
 		factHandlesTuple[0] = tupleFactHandle;
 		LeapsTuple tuple = new LeapsTuple(factHandlesTuple);
 
-		workingMemory.assertTuple(tuple, new HashSet(), context1, rule);
+		workingMemory.assertTuple(tuple, new ArrayList(), new ArrayList(), context1, rule);
 
 		assertEquals(0, data.size());
 
@@ -178,7 +178,7 @@ public class SchedulerTest extends DroolsTestCase {
 					factHandlesTupleIn[0] = tupleFactHandleIn;
 					LeapsTuple tupleIn = new LeapsTuple(factHandlesTupleIn);
 					((WorkingMemoryImpl) workingMemory).assertTuple(tupleIn,
-							new HashSet(), context2, rule);
+							new ArrayList(), new ArrayList(), context2, rule);
 				}
 				data.add("tested");
 			}
@@ -193,7 +193,7 @@ public class SchedulerTest extends DroolsTestCase {
 		factHandlesTuple[0] = tupleFactHandle;
 		LeapsTuple tuple = new LeapsTuple(factHandlesTuple);
 
-		workingMemory.assertTuple(tuple, new HashSet(), context1, rule);
+		workingMemory.assertTuple(tuple, new ArrayList(), new ArrayList(), context1, rule);
 
 		assertEquals(0, data.size());
 

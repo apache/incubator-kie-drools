@@ -16,35 +16,25 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import org.drools.spi.Activation;
+import org.drools.common.AgendaItem;
 
 /**
- * This is wrapper for drools activation to keep track of activations
- * that were revoked from the agenda due to the fact retraction
+ * This is wrapper for drools agendaItem to keep track of activations that were
+ * revoked from the agenda due to the fact retraction
  * 
  * @author Alexander Bagerman
  * 
  */
-class PostedActivation {
-	boolean removed;
+class PostedActivation extends RetractToken {
+	final AgendaItem agendaItem;
 
-	Activation activation;
-
-	public PostedActivation(Activation activation) {
-		this.activation = activation;
-		this.removed = false;
+	public PostedActivation(AgendaItem agendaItem, boolean existsCountRelevant,
+			int existsCount, boolean notCountRelevant, int notCount) {
+		super(existsCountRelevant, existsCount, notCountRelevant, notCount);
+		this.agendaItem = agendaItem;
 	}
 
-	protected boolean isRemoved() {
-		return this.removed;
+	protected AgendaItem getAgendaItem() {
+		return this.agendaItem;
 	}
-
-	protected void setRemoved() {
-		this.removed = true;
-	}
-
-	protected Activation getActivation() {
-		return this.activation;
-	}
-
 }

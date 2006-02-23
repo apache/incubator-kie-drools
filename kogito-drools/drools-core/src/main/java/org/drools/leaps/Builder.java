@@ -26,10 +26,8 @@ import org.drools.rule.Column;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Exists;
 import org.drools.rule.InvalidPatternException;
-import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Rule;
-import org.drools.spi.Constraint;
 import org.drools.spi.FieldConstraint;
 
 /**
@@ -74,7 +72,7 @@ class Builder {
 			Object object = it.next();
 			if (object instanceof Column) {
 				// create column constraints
-				cols.add(Builder.processColumn((Column) object, and));
+				cols.add(Builder.processColumn((Column) object));
 			} else {
 				// NOTS and EXISTS
 				ConditionalElement ce = (ConditionalElement) object;
@@ -83,10 +81,10 @@ class Builder {
 				}
 				if (object instanceof Not) {
 					notCols.add(Builder.processColumn((Column) ce.getChildren()
-							.get(0), and));
+							.get(0)));
 				} else if (object instanceof Exists) {
 					existsCols.add(Builder.processColumn((Column) ce
-							.getChildren().get(0), and));
+							.getChildren().get(0)));
 				} else {
 				}
 			}
@@ -105,19 +103,36 @@ class Builder {
 	 * @param and
 	 * @return leaps packaged ColumnConstraints
 	 */
-	final private static ColumnConstraints processColumn(Column column, And and) {
+	final private static ColumnConstraints processColumn(Column column) {
 		BetaNodeBinder binder;
 		List alphaConstraints = new ArrayList();
 		List betaConstraints = new ArrayList();
 
 		for (Iterator it = column.getConstraints().iterator(); it.hasNext();) {
-			Constraint constraint = (Constraint) it.next();
-			if (constraint instanceof LiteralConstraint) {
-				alphaConstraints.add(constraint);
-			} else if (constraint instanceof FieldConstraint) {
-				betaConstraints.add(constraint);
-			}
-		}
+            Object object = it.next();
+            if (! (object instanceof FieldConstraint ) ) {
+                continue;
+            }
+                
+            FieldConstraint fieldConstraint = (FieldConstraint) object;
+            if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
+				alphaConstraints.add(fieldConstraint);
+            } else {
+            	betaConstraints.add( fieldConstraint );
+            }
+        }
+
+		
+		
+		
+//		for (Iterator it = column.getConstraints().iterator(); it.hasNext();) {
+//			Constraint constraint = (Constraint) it.next();
+//			if (constraint instanceof LiteralConstraint) {
+//				alphaConstraints.add(constraint);
+//			} else if (constraint instanceof FieldConstraint) {
+//				betaConstraints.add(constraint);
+//			}
+//		}
 
 		if (!betaConstraints.isEmpty()) {
 			binder = new BetaNodeBinder((FieldConstraint[]) betaConstraints

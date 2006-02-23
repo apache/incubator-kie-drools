@@ -25,13 +25,12 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.drools.FactException;
-import org.drools.RuleBase;
-import org.drools.RuleIntegrationException;
 import org.drools.PackageIntegrationException;
+import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.rule.InvalidPatternException;
-import org.drools.rule.Rule;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseContext;
 
@@ -74,8 +73,7 @@ public class RuleBaseImpl implements RuleBase {
 	 * @param rete
 	 *            The rete network.
 	 */
-	public RuleBaseImpl() throws RuleIntegrationException,
-			PackageIntegrationException, FactException, InvalidPatternException {
+	public RuleBaseImpl() throws PackageIntegrationException, FactException, InvalidPatternException {
 		this(new HandleFactory(), new HashSet(), new HashMap(),
 				new RuleBaseContext());
 	}
@@ -94,7 +92,7 @@ public class RuleBaseImpl implements RuleBase {
 	 */
 	public RuleBaseImpl(FactHandleFactory factHandleFactory, Set pkgs,
 			Map applicationData, RuleBaseContext ruleBaseContext)
-			throws RuleIntegrationException, PackageIntegrationException,
+			throws PackageIntegrationException,
 			FactException, InvalidPatternException {
 		// because we can deal only with leaps fact handle factory
 		this.factHandleFactory = (HandleFactory) factHandleFactory;
@@ -123,7 +121,7 @@ public class RuleBaseImpl implements RuleBase {
 		WorkingMemoryImpl workingMemory = new WorkingMemoryImpl(this);
 		// add all rules added so far
 		for (Iterator it = this.leapsRules.values().iterator(); it.hasNext();) {
-			((WorkingMemoryImpl) workingMemory).addLeapsRules((List) it.next());
+			workingMemory.addLeapsRules((List) it.next());
 		}
 		//
 		if (keepReference) {
@@ -180,14 +178,10 @@ public class RuleBaseImpl implements RuleBase {
 	 * @param pkg
 	 *            The rule-set to add.
 	 * 
-	 * @throws RuleIntegrationException
-	 *             if an error prevents complete construction of the network for
-	 *             the <code>Rule</code>.
 	 * @throws FactException
 	 * @throws InvalidPatternException
 	 */
-	public void addRuleSet(Package pkg) throws RuleIntegrationException,
-			PackageIntegrationException, FactException, InvalidPatternException {
+	public void addRuleSet(Package pkg) throws PackageIntegrationException, FactException, InvalidPatternException {
 		Map newApplicationData = pkg.getGlobals();
 
 		// Check that the application data is valid, we cannot change the type
@@ -216,11 +210,10 @@ public class RuleBaseImpl implements RuleBase {
 	 * 
 	 * @param rule
 	 * @throws FactException
-	 * @throws RuleIntegrationException
 	 * @throws InvalidPatternException
 	 */
 	public void addRule(Rule rule) throws FactException,
-			RuleIntegrationException, InvalidPatternException {
+			InvalidPatternException {
 		List rules = Builder.processRule(rule);
 
 		this.leapsRules.put(rule, rules);

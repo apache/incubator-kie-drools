@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
@@ -386,20 +388,53 @@ abstract public class AbstractWorkingMemory
         }
     }
 
-    abstract public void removeLogicalDependencies(Activation activation,
-                                          PropagationContext context,
-                                          Rule rule) throws FactException ;
-
-    abstract public void removeLogicalDependencies(FactHandle handle) throws FactException ;
-
-    abstract public void addLogicalDependency(FactHandle handle,
-                                     Activation activation,
-                                     PropagationContext context,
-                                     Rule rule) throws FactException ;
-
     public PrimitiveLongMap getJustified() {
         return this.justified;
     }
 
     abstract public void dispose() ;
+
+    
+	public void addLogicalDependency(FactHandle handle, Activation activation,
+			PropagationContext context, Rule rule) throws FactException {
+		LogicalDependency node = new LogicalDependency(activation, handle);
+		activation.addLogicalDependency(node);
+		Set set = (Set) this.justified.get(((InternalFactHandle) handle).getId());
+		if (set == null) {
+			set = new HashSet();
+			this.justified.put(((InternalFactHandle) handle).getId(), set);
+		}
+		set.add(node);
+	}
+
+	public void removeLogicalDependencies(Activation activation,
+			PropagationContext context, Rule rule) throws FactException {
+		org.drools.util.LinkedList list = activation.getLogicalDependencies();
+		if (list == null || list.isEmpty()) {
+			return;
+		}
+		for (LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node
+				.getNext()) {
+			InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
+			Set set = (Set) this.justified.get(handle.getId());
+			set.remove(node);
+			if (set.isEmpty()) {
+				this.justified.remove(handle.getId());
+				retractObject(handle, false, true, context.getRuleOrigin(),
+						context.getActivationOrigin());
+			}
+		}
+	}
+
+	public void removeLogicalDependencies(FactHandle handle)
+			throws FactException {
+		Set set = (Set) this.justified
+				.remove(((InternalFactHandle) handle).getId());
+		if (set != null && !set.isEmpty()) {
+			for (Iterator it = set.iterator(); it.hasNext();) {
+				LogicalDependency node = (LogicalDependency) it.next();
+				node.getJustifier().getLogicalDependencies().remove(node);
+			}
+		}
+	}
 }

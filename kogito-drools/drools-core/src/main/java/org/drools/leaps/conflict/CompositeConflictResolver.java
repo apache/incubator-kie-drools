@@ -35,9 +35,9 @@ import java.util.Comparator;
  */
 
 class CompositeConflictResolver extends AbstractConflictResolver {
-	private final Comparator[] factResolvers;
+	final Comparator[] factResolvers;
 
-	private final Comparator[] ruleResolvers;
+	final Comparator[] ruleResolvers;
 
 	public CompositeConflictResolver(Comparator[] factResolvers,
 			Comparator[] ruleResolvers) {
