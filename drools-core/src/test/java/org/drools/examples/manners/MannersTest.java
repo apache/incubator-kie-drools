@@ -25,7 +25,7 @@ import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.EvaluatorFactory;
-import org.drools.reteoo.RuleBaseImpl;
+import org.drools.reteoo.WorkingMemoryFileLogger;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
@@ -118,11 +118,13 @@ public class MannersTest extends TestCase {
         pkg.addRule( getAreWeDone() );
         pkg.addRule( getAllDone() );
 
-        final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
+        final org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
         ruleBase.addRuleSet( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-
-        InputStream is = getClass().getResourceAsStream( "/manners64.dat" );
+        
+        // WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
+        
+        InputStream is = getClass().getResourceAsStream( "/manners5.dat" );
         List list = getInputObjects( is );
         for ( Iterator it = list.iterator(); it.hasNext(); ) {
             Object object = it.next();
@@ -135,6 +137,8 @@ public class MannersTest extends TestCase {
         workingMemory.fireAllRules();
         System.err.println( System.currentTimeMillis() - start );
 
+        // logger.writeToDisk();
+        
         //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase); 
         //        
         //        javax.swing.SwingUtilities.invokeLater(new Runnable() { 
