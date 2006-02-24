@@ -16,7 +16,9 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -30,6 +32,7 @@ import org.drools.event.ObjectModifiedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.reteoo.event.ActivationLogEvent;
+import org.drools.reteoo.event.ILogEventFilter;
 import org.drools.reteoo.event.LogEvent;
 import org.drools.reteoo.event.ObjectLogEvent;
 import org.drools.rule.Declaration;
@@ -42,17 +45,18 @@ import org.drools.spi.Tuple;
  * creates associated log event (containing a snapshot of the
  * state of the working event at that time).
  * 
+ * Filters can be used to filter out unwanted events.
+ * 
  * Subclasses of this class should implement the logEventCreated(LogEvent)
  * method and store this information, like for example log to file
  * or database.
- * 
- * TODO: extend this class so filters can be used to specify which
- * events should be logged
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
 public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener, AgendaEventListener {
 
+	private List filters = new ArrayList();
+	
 	/**
 	 * Creates a new working memory logger for the given working memory.
 	 * 
@@ -73,10 +77,62 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	public abstract void logEventCreated(LogEvent logEvent);
 	
 	/**
+	 * This method is invoked every time a new log event is created.
+	 * It filters out unwanted events.
+	 * 
+	 * @param logEvent
+	 */
+	private void filterLogEvent(LogEvent logEvent) {
+		Iterator iterator = filters.iterator();
+		while (iterator.hasNext()) {
+			ILogEventFilter filter = (ILogEventFilter) iterator.next();
+			// do nothing if one of the filters doesn't accept the event
+			if (!filter.acceptEvent(logEvent)) {
+				return;
+			}
+		}
+		// if all the filters accepted the event, signal the creation
+		// of the event
+		logEventCreated(logEvent);
+	}
+	
+	/**
+	 * Adds the given filter to the list of filters for this event log.
+     * A log event must be accepted by all the filters to be entered in
+     * the event log.
+     *
+	 * @param filter The filter that should be added.
+	 */
+	public void addFilter(ILogEventFilter filter) {
+		if (filter == null) {
+			throw new NullPointerException();
+		}
+		filters.add(filter);
+	}
+	
+	/**
+	 * Removes the given filter from the list of filters for this event log.
+	 * If the given filter was not a filter of this event log, nothing
+	 * happens.
+     *
+	 * @param filter The filter that should be removed.
+	 */
+	public void removeFilter(ILogEventFilter filter) {
+		filters.remove(filter);
+	}
+	
+	/**
+	 * Clears all filters of this event log.
+	 */
+	public void clearFilters() {
+		filters.clear();
+	}
+	
+	/**
 	 * @see org.drools.event.WorkingMemoryEventListener
 	 */
 	public void objectAsserted(ObjectAssertedEvent event) {
-		logEventCreated(new ObjectLogEvent(
+		filterLogEvent(new ObjectLogEvent(
 			LogEvent.OBJECT_ASSERTED,
 			((FactHandleImpl) event.getFactHandle()).getId(), 
 			event.getObject().toString()));
@@ -86,7 +142,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	 * @see org.drools.event.WorkingMemoryEventListener
 	 */
 	public void objectModified(ObjectModifiedEvent event) {
-		logEventCreated(new ObjectLogEvent(
+		filterLogEvent(new ObjectLogEvent(
 			LogEvent.OBJECT_MODIFIED,
 			((FactHandleImpl) event.getFactHandle()).getId(), 
 			event.getObject().toString()));
@@ -96,7 +152,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	 * @see org.drools.event.WorkingMemoryEventListener
 	 */
 	public void objectRetracted(ObjectRetractedEvent event) {
-		logEventCreated(new ObjectLogEvent(
+		filterLogEvent(new ObjectLogEvent(
 			LogEvent.OBJECT_RETRACTED,
 			((FactHandleImpl) event.getFactHandle()).getId(), 
 			event.getOldObject().toString()));
@@ -106,7 +162,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	 * @see org.drools.event.AgendaEventListener
 	 */
 	public void activationCreated(ActivationCreatedEvent event) {
-		logEventCreated(new ActivationLogEvent(
+		filterLogEvent(new ActivationLogEvent(
 			LogEvent.ACTIVATION_CREATED,
 			getActivationId(event.getActivation()),
 			event.getActivation().getRule().getName(),
@@ -117,7 +173,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	 * @see org.drools.event.AgendaEventListener
 	 */
 	public void activationCancelled(ActivationCancelledEvent event) {
-		logEventCreated(new ActivationLogEvent(
+		filterLogEvent(new ActivationLogEvent(
 			LogEvent.ACTIVATION_CANCELLED,
 			getActivationId(event.getActivation()),
 			event.getActivation().getRule().getName(),
@@ -128,7 +184,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	 * @see org.drools.event.AgendaEventListener
 	 */
 	public void beforeActivationFired(BeforeActivationFiredEvent event) {
-		logEventCreated(new ActivationLogEvent(
+		filterLogEvent(new ActivationLogEvent(
 			LogEvent.BEFORE_ACTIVATION_FIRE,
 			getActivationId(event.getActivation()),
 			event.getActivation().getRule().getName(),
@@ -139,7 +195,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	 * @see org.drools.event.AgendaEventListener
 	 */
 	public void afterActivationFired(AfterActivationFiredEvent event) {
-		logEventCreated(new ActivationLogEvent(
+		filterLogEvent(new ActivationLogEvent(
 			LogEvent.AFTER_ACTIVATION_FIRE,
 			getActivationId(event.getActivation()),
 			event.getActivation().getRule().getName(),
