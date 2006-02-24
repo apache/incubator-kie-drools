@@ -94,7 +94,7 @@ public class NLGrammar
             }
             
         } catch ( IOException e ) {
-            throw new IllegalArgumentException("Unable to read DSL configuration.", e);
+            throw new IllegalArgumentException("Unable to read DSL configuration.");
         }
     }
     
