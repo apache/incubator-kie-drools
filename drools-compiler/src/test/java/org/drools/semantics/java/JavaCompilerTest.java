@@ -4,6 +4,11 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
+import org.apache.commons.jci.compilers.CompilationResult;
+import org.apache.commons.jci.compilers.JavaCompiler;
+import org.apache.commons.jci.compilers.JavaCompilerFactory;
+import org.apache.commons.jci.readers.MemoryResourceReader;
+import org.apache.commons.jci.stores.MemoryResourceStore;
 import org.drools.CheckedDroolsException;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.lang.descr.AndDescr;
@@ -26,7 +31,7 @@ import junit.framework.TestCase;
 public class JavaCompilerTest extends TestCase {
 
     public void testReturnValue() throws Exception {
-        DdjCompiler compiler = new DdjCompiler();
+        DroolsCompiler compiler = new DroolsCompiler();
         
         PackageDescr packageDescr = new PackageDescr("p1");        
         RuleDescr ruleDescr = new RuleDescr("rule-1");
@@ -35,26 +40,46 @@ public class JavaCompilerTest extends TestCase {
         AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
         
-        ColumnDescr column = new ColumnDescr(Cheese.class.getName());
+        ColumnDescr column = new ColumnDescr(Cheese.class.getName(), "stilton");
         lhs.addDescr( column );
         
         FieldBindingDescr fieldBindingDescr = new FieldBindingDescr("price", "x");
         column.addDescr( fieldBindingDescr );
-        fieldBindingDescr = new FieldBindingDescr("type", "y");
+        fieldBindingDescr = new FieldBindingDescr("price", "y");
         column.addDescr( fieldBindingDescr );
         
         packageDescr.addGlobal( "p", "java.util.Map" );                  
-        
-        ReturnValueDescr returnValue = new ReturnValueDescr("price", "==", " y == p.get(x) * 2");
+
+        ReturnValueDescr returnValue = new ReturnValueDescr("price", "==", "new  Integer(( x.intValue() * y.intValue()))");
         column.addDescr( returnValue );              
         
-        ruleDescr.setConsequence( "hello" );
+        ruleDescr.setConsequence( "drools.modifyObject(stilton);" );
         
         compiler.addPackage( packageDescr );
+        
+        ////////////////////////////////////////////////
+        
+//        MemoryResourceReader src = new MemoryResourceReader();
+//        MemoryResourceStore  dst = new MemoryResourceStore();
+//        JavaCompiler compiler = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
+//        
+//        String className = this.pkg.getName() + "." + ucFirst( this.ruleDescr.getClassName() );
+//        String fileName = this.pkg.getName() + "/" + ucFirst( this.ruleDescr.getClassName() ) + ".java";        
+//        
+//        src.addFile( fileName, string.toString().toCharArray() );                
+//        CompilationResult result = compiler.compile( new String[] { className },src, dst );
+//        
+//        System.out.println( "errors: " + result.getErrors().length );
+//        
+//        if ( result.getErrors().length > 0 ) {
+//            for (int i = 0; i < result.getErrors().length; i++) {
+//                System.out.println( result.getErrors()[i].getMessage() );
+//            }
+//        }   
     }
     
     public void testPredicate() throws CheckedDroolsException, ClassNotFoundException {
-        DdjCompiler compiler = new DdjCompiler();
+        DroolsCompiler compiler = new DroolsCompiler();
         
         PackageDescr packageDescr = new PackageDescr("p1");        
         RuleDescr ruleDescr = new RuleDescr("rule-1");
@@ -85,7 +110,7 @@ public class JavaCompilerTest extends TestCase {
     }
     
     public void testEval() throws Exception {
-        DdjCompiler compiler = new DdjCompiler();
+        DroolsCompiler compiler = new DroolsCompiler();
         
         PackageDescr packageDescr = new PackageDescr("p1");        
         RuleDescr ruleDescr = new RuleDescr("rule-1");
@@ -113,7 +138,7 @@ public class JavaCompilerTest extends TestCase {
     }    
 
     public void testConsequence() throws Exception {
-        DdjCompiler compiler = new DdjCompiler();
+        DroolsCompiler compiler = new DroolsCompiler();
         
         PackageDescr packageDescr = new PackageDescr("p1");        
         RuleDescr ruleDescr = new RuleDescr("rule-1");

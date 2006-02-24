@@ -54,9 +54,22 @@
            
     <dependency>
 			<groupId>antlr</groupId>
+			<artifactId>stringtemplate</artifactId>    
+			<version>2.2</version>
+    </dependency>                        
+           
+    <dependency>
+			<groupId>antlr</groupId>
 			<artifactId>antlr</artifactId>    
 			<version>2.7.6</version>
     </dependency>  
+
+    <dependency>
+			<groupId>eclipse</groupId>
+			<artifactId>jdtcore</artifactId>    
+			<version>3.1.0</version>
+    </dependency>  
+
            
   </dependencies>
 

@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.jci.compilers.CompilationResult;
+import org.apache.commons.jci.compilers.JavaCompiler;
+import org.apache.commons.jci.compilers.JavaCompilerFactory;
 import org.apache.commons.jci.readers.MemoryResourceReader;
 import org.apache.commons.jci.stores.MemoryResourceStore;
 import org.apache.commons.jci.stores.ResourceStore;
@@ -18,30 +21,31 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
 import org.drools.spi.TypeResolver;
 
-public class DdjCompiler {
+public class DroolsCompiler {
     private final MemoryResourceReader     src;
     private final MemoryResourceStore      dst;
     private final ResourceStoreClassLoader classLoader;
 
+    private  JavaCompiler compiler = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
+    
     private int                            counter;
 
     private Map                            packages;
+    
+    private Map                            errors = Collections.EMPTY_MAP;
 
-    private RuleCompiler                   ruleCompiler;
-
-    public DdjCompiler() {
+    public DroolsCompiler() {
         this( null );
     }
 
-    public DdjCompiler(ClassLoader parentClassLoader) {
+    public DroolsCompiler(ClassLoader parentClassLoader) {
         this.src = new MemoryResourceReader();
         this.dst = new MemoryResourceStore();
 
         this.packages = new HashMap();
-
-        this.ruleCompiler = new RuleCompiler( this );
 
         //this.packageName = packageName + "." + pkg.getName().replaceAll( "(^[0-9]|[^\\w$])", "_" ) + "_" + System.currentTimeMillis();
 
@@ -86,7 +90,6 @@ public class DdjCompiler {
 
     private Package newPackage(PackageDescr packageDescr) throws ClassNotFoundException {
         Package pkg = new Package( packageDescr.getName() );
-        pkg.setDocumentation( packageDescr.getDocumentation() );
 
         List imports = packageDescr.getImports();
         for ( Iterator it = imports.iterator(); it.hasNext(); ) {
@@ -128,6 +131,27 @@ public class DdjCompiler {
 
         List attributes = packageDescr.getAttributes();
     }
+    
+    void compile(String className, Map ruleClasses, Map invokerClasses) {
+        
+    }
+    
+    CompilationResult compile(String className, String text) {              
+      src.addFile( className.replace( '.', '/' ) + ".java", text.toCharArray() );                
+      CompilationResult result = compiler.compile( new String[] { className }, src, dst );
+      if ( result.getErrors().length > 0 ) {
+          if ( this.errors == Collections.EMPTY_MAP ) {
+              this.errors = new HashMap();
+          }
+          for ( int i =0, size = result.getErrors().length; i < size; i++ ) {
+              System.out.println(result.getErrors()[i]);
+          }
+          
+          this.errors.put( className, result );
+      }
+     
+      return result;
+    }
 
     public void addFunction(PackageDescr packageDescr,
                             FunctionDescr rule) {
@@ -136,8 +160,37 @@ public class DdjCompiler {
 
     public void addRule(Package pkg,
                         RuleDescr ruleDescr) throws CheckedDroolsException {
-        this.ruleCompiler.compile( pkg,
-                                   ruleDescr );
+        String ruleClassName = getUniqueLegalName( pkg.getName(),
+                                                   ruleDescr.getName(),
+                                                   "java" );
+        ruleDescr.SetClassName( ucFirst( ruleClassName ) );        
+        
+//        this.ruleCompiler.compile( pkg,
+//                                   ruleDescr );
+        
+        RuleBuilder builder = new RuleBuilder();
+        builder.build( pkg, ruleDescr );
+        Rule rule = builder.getRule();
+//        
+//        for( Iterator it = methods.iterator(); it.hasNext(); it.next() ) {            
+//            compile(  pkg.getName() + "." + ucFirst( ruleDescr.getClassName() ), (String) it.next() );              
+//        }
+        
+        System.out.println( ruleDescr.getClassName() + ":\n" + builder.getRuleClass() );
+        
+        compile(  pkg.getName() + "." + ruleDescr.getClassName(), builder.getRuleClass() );
+        
+        for( Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {  
+            String className = (String) it.next();
+            String text = (String) builder.getInvokers().get( className );
+            
+            System.out.println( className + ":\n" + text );
+            
+            compile(  pkg.getName() + "." + className, text );              
+        }        
+                
+        //this.compiler.compile(  this.pkg.getName() + "." + ucFirst( this.ruleDescr.getClassName() ), string.toString() );
+        //this.compiler.compile( pkg.getName() + "." + ruleDescr.getClassName(), this.methods, this.invokers);
     }
 
     public List getPackages() {
@@ -180,7 +233,7 @@ public class DdjCompiler {
      * @param ext
      * @return
      */
-    public String generateUniqueLegalName(String packageName,
+    public String getUniqueLegalName(String packageName,
                                           String name,
                                           String ext) {
         // replaces the first char if its a number and after that all non
@@ -206,5 +259,9 @@ public class DdjCompiler {
 
         return newName;
     }
+    
+    private String ucFirst(String name) {
+        return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
+    }    
 
 }

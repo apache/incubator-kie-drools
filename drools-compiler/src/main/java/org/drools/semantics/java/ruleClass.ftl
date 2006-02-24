@@ -1,14 +1,10 @@
-package ${namespace}.java;
+package ${package};
 
-import org.drools.spi.Tuple;
-import java.io.Serializable;
-import org.drools.spi.Consequence;
-import org.drools.spi.Predicate
+<#list imports as importEntry>import ${importEntry};</#list>
 
-    public static class {className}Invoker implements ReturnValueExpression
-    {
-       ${key}
-	    #list methods as method>
-        {method}
-	    /#list>
-    }      
+public class ${ruleClassName}
+{
+    <#list methods as method>
+    ${method}
+    </#list>	   
+}      
