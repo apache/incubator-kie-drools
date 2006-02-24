@@ -115,12 +115,13 @@ class LeapsTuple implements Tuple, Serializable {
 		FactHandle[] thatFactHandles = ((LeapsTuple) object).getFactHandles();
 		if (thatFactHandles.length != this.factHandles.length) {
 			return false;
-		} else {
-			for (int i = 0; i < this.factHandles.length; i++) {
-				if (!this.factHandles[i].equals(thatFactHandles[i])) {
-					return false;
-				}
+		}
+		
+		for (int i = 0; i < this.factHandles.length; i++) {
+			if (!this.factHandles[i].equals(thatFactHandles[i])) {
+				return false;
 			}
+
 		}
 		return true;
 	}

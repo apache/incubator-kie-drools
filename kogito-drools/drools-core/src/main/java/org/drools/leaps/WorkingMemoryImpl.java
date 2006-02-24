@@ -387,15 +387,16 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 					}
 				}
 			}
-			for (it = info.getPostedNots(); it.hasNext();) {
-				postedActivation = (PostedActivation) it.next();
-				if (postedActivation.isValid()) {
-					postedActivation.decrementNotCount();
-					if (!postedActivation.isValid()) {
-						invalidatePostedActivation(postedActivation);
-					}
-				}
-			}
+			// not is irrelevant for posted activations
+//			for (it = info.getPostedNots(); it.hasNext();) {
+//				postedActivation = (PostedActivation) it.next();
+//				if (postedActivation.isValid()) {
+//					postedActivation.decrementNotCount();
+//					if (!postedActivation.isValid()) {
+//						invalidatePostedActivation(postedActivation);
+//					}
+//				}
+//			}
 		}
 		// remove it from stack
 		this.stack.remove(new Token(this, (FactHandleImpl) handle));
@@ -673,10 +674,10 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 					tuple, existsEnablingFactHandles,context, rule,
 					(existsEnablingFactHandles != null)
 							&& (existsEnablingFactHandles.size() > 0),
-					existsEnablingFactHandles.size(),
+					(existsEnablingFactHandles != null)?existsEnablingFactHandles.size():0,
 					(blockingFactHandles != null)
 							&& (blockingFactHandles.size() > 0),
-					blockingFactHandles.size());
+							(blockingFactHandles != null)?blockingFactHandles.size():0);
 			// exists qualifiers
 			addPendingTuple(pendingTuple, existsEnablingFactHandles, blockingFactHandles);
 			//
@@ -745,12 +746,11 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 					(AgendaItem) agendaItem,
 					(existsEnablingFactHandles != null)
 							&& (existsEnablingFactHandles.size() > 0),
-							(existsEnablingFactHandles != null)?existsEnablingFactHandles.size():-1,
-					(blockingFactHandles != null)
-							&& (blockingFactHandles.size() > 0),
-							(blockingFactHandles != null)?blockingFactHandles.size():-1);
+					(existsEnablingFactHandles != null) ? existsEnablingFactHandles
+							.size()
+							: -1);
 			// to take agendaItem of the agenda on retraction
-			addPostedActivation(postedActivation, existsEnablingFactHandles, blockingFactHandles);
+			addPostedActivation(postedActivation, existsEnablingFactHandles);
 		}
 	}
 
@@ -805,7 +805,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	}
 
 	private void addPostedActivation(PostedActivation activation,
-			List existsFactHandles, List notFactHandles) {
+			List existsFactHandles) {
 		long id;
 		RetractAssembly assembly;
 		// 1. core facts
@@ -832,18 +832,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 				
 			}
 		}
-		// 3. exists
-		if(notFactHandles != null){
-			for(Iterator it = notFactHandles.iterator(); it.hasNext();){
-				id = ((FactHandleImpl)it.next()).getId();
-				assembly = (RetractAssembly)this.retracts.get(id);
-				if(assembly == null) {
-					assembly = new RetractAssembly();
-					this.retracts.put(id, assembly);
-				}
-				assembly.addPostedNot(activation);
-			}
-		}
+		// 3. (not is irrelevant for posted activations
 	}
 
 	protected long increamentPropagationIdCounter() {

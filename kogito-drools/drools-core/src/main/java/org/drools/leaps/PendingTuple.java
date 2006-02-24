@@ -28,7 +28,17 @@ import org.drools.spi.PropagationContext;
  * @author Alexander Bagerman
  * 
  */
-class PendingTuple extends RetractToken {
+class PendingTuple {
+	boolean valid;
+
+	private final boolean existsCountRelevant;
+
+	private int existsCount;
+
+	private final boolean notCountRelevant;
+
+	private int notCount;
+
 	private final LeapsTuple tuple;
 
 	private final List existsQualifiers;
@@ -42,7 +52,11 @@ class PendingTuple extends RetractToken {
 	public PendingTuple(LeapsTuple tuple, List existsQualifiers,
 			PropagationContext context, Rule rule, boolean existsCountRelevant,
 			int existsCount, boolean notCountRelevant, int notCount) {
-		super(existsCountRelevant, existsCount, notCountRelevant, notCount);
+		this.valid = true;
+		this.existsCountRelevant = existsCountRelevant;
+		this.existsCount = existsCount;
+		this.notCountRelevant = notCountRelevant;
+		this.notCount = notCount;
 		this.tuple = tuple;
 		this.context = context;
 		this.rule = rule;
@@ -53,16 +67,39 @@ class PendingTuple extends RetractToken {
 		return this.tuple;
 	}
 
+	protected boolean isValid() {
+		boolean ret = this.valid && !this.submited;
+		if (ret && this.notCountRelevant) {
+			ret = (this.notCount == 0);
+		}
+		if (ret && this.existsCountRelevant) {
+			ret = (this.existsCount > 0);
+		}
+		return ret;
+	}
+
+	protected void invalidate() {
+		this.valid = false;
+	}
+
+	protected void decrementExistsCount() {
+		if (this.existsCountRelevant) {
+			this.existsCount--;
+		}
+	}
+
+	protected void decrementNotCount() {
+		if (this.notCountRelevant) {
+			this.notCount--;
+		}
+	}
+
 	protected List getExistsQualifiers() {
 		return this.existsQualifiers;
 	}
 
 	protected void setSubmited() {
 		this.submited = true;
-	}
-
-	protected boolean isValid() {
-		return super.isValid() && !this.submited;
 	}
 
 	protected PropagationContext getContext() {

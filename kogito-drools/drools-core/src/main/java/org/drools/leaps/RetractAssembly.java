@@ -42,8 +42,6 @@ class RetractAssembly {
 
 	final List postedExists = new LinkedList();
 
-	final List postedNots = new LinkedList();
-
 	RetractAssembly() {
 	}
 
@@ -85,13 +83,5 @@ class RetractAssembly {
 
 	Iterator getPostedExists() {
 		return this.postedExists.iterator();
-	}
-
-	void addPostedNot(PostedActivation activation) {
-		this.postedNots.add(activation);
-	}
-
-	Iterator getPostedNots() {
-		return this.postedNots.iterator();
 	}
 }
