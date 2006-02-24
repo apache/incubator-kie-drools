@@ -113,7 +113,7 @@ public class NLGrammar
             }
             buffer.flush();
         } catch ( IOException e ) {
-            throw new IllegalStateException("Unable to save DSL configuration.", e);
+            throw new IllegalStateException("Unable to save DSL configuration.");
         }
     }
     
