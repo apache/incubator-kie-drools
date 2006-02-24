@@ -52,7 +52,7 @@ public class RuleHandle extends Handle {
 	 * @see org.drools.rule.Rule
 	 */
 	public int getRuleComplexity() {
-		return this.getLeapsRule().getRule().getDeclarations().size();
+		return this.getLeapsRule().getRule().getDeclarations().length;
 	}
 
 	/**

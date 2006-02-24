@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.rule.LiteralConstraint;
-import org.drools.spi.Field;
+import org.drools.spi.FieldValue;
 import org.drools.spi.FieldConstraint;
 import org.drools.visualize.ReteooJungViewer.DroolsVertex;
 
@@ -219,8 +219,8 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
 
         public String getHtml() {
             LiteralConstraint constraint = (LiteralConstraint) node.getConstraint();
-            Field field = constraint.getField();
-            return "AlphaNode<br>field name : " + field.getName() + "<br>evaluator : " + constraint.getEvaluator() + "<br>value :  " + field.getValue();  
+            FieldValue field = constraint.getField();
+            return "AlphaNode<br>field name : " + "<br>evaluator : " + constraint.getEvaluator() + "<br>value :  " + field.getValue();  
         }
 
         public String toString() {

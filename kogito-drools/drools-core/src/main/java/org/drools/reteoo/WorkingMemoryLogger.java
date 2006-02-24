@@ -157,11 +157,11 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	 * @return A String represetation of the declarations of the activation.
 	 */
 	private static String extractDeclarations(Activation activation) {
-		StringBuilder result = new StringBuilder();
+		StringBuffer result = new StringBuffer();
 		Tuple tuple = activation.getTuple();
-		Iterator iterator = activation.getRule().getDeclarations().iterator();
-		while (iterator.hasNext()) {
-			Declaration declaration = (Declaration) iterator.next();
+        Declaration[] declarations = activation.getRule().getDeclarations(); 
+        for ( int i = 0, length = declarations.length; i < length; i++  ) {
+			Declaration declaration = declarations[i];
 			FactHandle handle = tuple.get(declaration);
 			if (handle instanceof FactHandleImpl) {
 				FactHandleImpl handleImpl = (FactHandleImpl) handle;
@@ -178,7 +178,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 					result.append(")");
 				}
 			}
-			if (iterator.hasNext()) {
+			if (i < declarations.length - 1) {
 				result.append("; ");
 			}
 		}
@@ -196,7 +196,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	 * @return A unique id for the activation
 	 */
 	private static String getActivationId(Activation activation) {
-		StringBuilder result = new StringBuilder(activation.getRule().getName());
+		StringBuffer result = new StringBuffer(activation.getRule().getName());
 		result.append(" [");
 		ReteTuple tuple = (ReteTuple) activation.getTuple();
 		FactHandle[] handles = tuple.getKey().getFactHandles();
