@@ -35,7 +35,7 @@ public class PostedActivationTest extends TestCase {
 		FactHandleImpl arr[] = { h1, h2, h3, h4 };
 		LeapsTuple tuple = new LeapsTuple(arr);
 		this.item = new AgendaItem(0L, tuple, null, null, null);
-		this.postedActivation = new PostedActivation(this.item, false, 1, false, -1);
+		this.postedActivation = new PostedActivation(this.item, false, 1);
 	}
 
 	/*

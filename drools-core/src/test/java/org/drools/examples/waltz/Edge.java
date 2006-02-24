@@ -9,9 +9,21 @@ public class Edge {
 
 	private String label;
 
-	private boolean plotted;
+	private String plotted;
+	
+	final public static String NIL = "empty";
+	
+	final public static String TRUE = "true";
 
-	public Edge(int p1, int p2, boolean joined, String label, boolean plotted) {
+	final public static String FALSE = "false";
+
+	final public static String B = "B";
+	
+	final public static String PLUS = "+";
+	
+	final public static String MINUS = "-";
+	
+	public Edge(int p1, int p2, boolean joined, String label, String plotted) {
 		this.p1 = p1;
 		this.p2 = p2;
 		this.joined = joined;
@@ -57,11 +69,11 @@ public class Edge {
 		this.label = label;
 	}
 
-	public boolean isPlotted() {
+	public String getPlotted() {
 		return this.plotted;
 	}
 
-	public void setPlotted(boolean plotted) {
+	public void setPlotted(String plotted) {
 		this.plotted = plotted;
 	}
 }

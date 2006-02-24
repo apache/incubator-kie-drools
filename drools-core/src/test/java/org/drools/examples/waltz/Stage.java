@@ -11,7 +11,16 @@ public class Stage implements Serializable {
 	
 	final public static int FIND_INITIAL_BOUNDARY = 3;
 
+	final public static int FIND_SECOND_BOUNDARY = 4;
+	
+	final public static int LABELING = 5;
+	
+	
+	final public static int PLOT_REMAINING_EDGES = 9;
+
 	final public static int DONE = 10;
+	
+
 
 	private int value;
 

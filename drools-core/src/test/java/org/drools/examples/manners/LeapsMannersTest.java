@@ -30,7 +30,7 @@ public class LeapsMannersTest extends BaseMannersTest {
         ruleBase.addRuleSet( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        InputStream is = getClass().getResourceAsStream( "/manners5.dat" );
+        InputStream is = getClass().getResourceAsStream( "/manners64.dat" );
         List list = getInputObjects( is );
         for ( Iterator it = list.iterator(); it.hasNext(); ) {
             Object object = it.next();

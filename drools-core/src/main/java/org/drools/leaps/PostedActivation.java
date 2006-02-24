@@ -25,16 +25,43 @@ import org.drools.common.AgendaItem;
  * @author Alexander Bagerman
  * 
  */
-class PostedActivation extends RetractToken {
+class PostedActivation {
 	final AgendaItem agendaItem;
 
+	boolean valid;
+
+	private final boolean existsCountRelevant;
+
+	private int existsCount;
+
 	public PostedActivation(AgendaItem agendaItem, boolean existsCountRelevant,
-			int existsCount, boolean notCountRelevant, int notCount) {
-		super(existsCountRelevant, existsCount, notCountRelevant, notCount);
+			int existsCount) {
+		this.valid = true;
+		this.existsCountRelevant = existsCountRelevant;
+		this.existsCount = existsCount;
 		this.agendaItem = agendaItem;
 	}
 
 	protected AgendaItem getAgendaItem() {
 		return this.agendaItem;
+	}
+
+	protected boolean isValid() {
+		boolean ret = this.valid;
+
+		if (ret && this.existsCountRelevant) {
+			ret = (this.existsCount > 0);
+		}
+		return ret;
+	}
+
+	protected void invalidate() {
+		this.valid = false;
+	}
+
+	protected void decrementExistsCount() {
+		if (this.existsCountRelevant) {
+			this.existsCount--;
+		}
 	}
 }

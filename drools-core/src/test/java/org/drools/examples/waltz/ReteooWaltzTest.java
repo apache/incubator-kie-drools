@@ -14,7 +14,7 @@ import org.drools.rule.DuplicateRuleNameException;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.InvalidRuleException;
 
-public class LeapsWaltzTest extends BaseWaltzTest {
+public class ReteooWaltzTest extends BaseWaltzTest {
     
     public void testWaltz() throws DuplicateRuleNameException,
                              InvalidRuleException,
@@ -26,7 +26,7 @@ public class LeapsWaltzTest extends BaseWaltzTest {
                              IOException,
                              InterruptedException {
 
-        final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
+        final org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
         ruleBase.addRuleSet( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
