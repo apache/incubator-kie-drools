@@ -139,12 +139,14 @@ public class ClassObjectType
         } else if (clazz == Double.class) {
             this.valueType = Evaluator.DOUBLE_TYPE;
         } else if (clazz == Boolean.class) {
-                this.valueType = Evaluator.BOOLEAN_TYPE;            
+            this.valueType = Evaluator.BOOLEAN_TYPE;            
         } else if (clazz == java.sql.Date.class) {
             this.valueType = Evaluator.DATE_TYPE;
         } else if (clazz.isAssignableFrom( Object[].class )) {
             this.valueType = Evaluator.ARRAY_TYPE;
-        } else if (clazz instanceof Object) {
+        } else if (clazz == String.class) {
+            this.valueType = Evaluator.STRING_TYPE;
+        }   else if (clazz instanceof Object) {
             this.valueType = Evaluator.OBJECT_TYPE;
         }              
     }

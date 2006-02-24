@@ -3,7 +3,7 @@ package org.drools.rule;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Field;
+import org.drools.spi.FieldValue;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.Tuple;
@@ -12,7 +12,7 @@ public class LiteralConstraint
     implements
     FieldConstraint {
 
-    private final Field                field;
+    private final FieldValue                field;
 
     private final FieldExtractor       extractor;
 
@@ -20,7 +20,7 @@ public class LiteralConstraint
 
     private static final Declaration[] requiredDeclarations = new Declaration[]{};
 
-    public LiteralConstraint(Field field,
+    public LiteralConstraint(FieldValue field,
                              FieldExtractor extractor,
                              Evaluator evaluator) {
         this.field = field;
@@ -32,7 +32,7 @@ public class LiteralConstraint
         return this.evaluator;
     }
 
-    public Field getField() {
+    public FieldValue getField() {
         return this.field;
     }
 

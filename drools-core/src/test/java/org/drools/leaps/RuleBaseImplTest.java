@@ -35,7 +35,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Field;
+import org.drools.spi.FieldValue;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.KnowledgeHelper;
@@ -370,7 +370,7 @@ public class RuleBaseImplTest extends DroolsTestCase {
 
 		FieldExtractor extractor = new ClassFieldExtractor(clazz, fieldName);
 
-		Field field = new MockField(fieldName, fieldValue, extractor.getIndex());
+		FieldValue field = new MockField(fieldValue);
 
 		return new LiteralConstraint(field, extractor, evaluator);
 	}

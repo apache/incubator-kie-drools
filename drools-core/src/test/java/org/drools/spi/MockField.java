@@ -1,32 +1,18 @@
 package org.drools.spi;
 
-import org.drools.spi.Field;
+import org.drools.spi.FieldValue;
 
 public final class MockField
     implements
-    Field {
+    FieldValue {
 
-    private final String name;
-    private final Object value;
-    private final int    index;
+    private final Object value;  
 
-    public MockField(String name,
-                     Object value,
-                     int index) {
-        this.index = index;
+    public MockField(Object value) {
         this.value = value;
-        this.name = name;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public Object getValue() {
         return this.value;
-    }
-
-    public int getIndex() {
-        return this.index;
     }
 }

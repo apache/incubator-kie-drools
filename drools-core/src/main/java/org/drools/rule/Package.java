@@ -79,9 +79,6 @@ public class Package
     /** Name of the pkg. */
     private String                name;
 
-    /** Documentation. */
-    private String                documentation;
-
     /** Set of all rule-names in this <code>RuleSet</code>. */
     private Set                   ruleNames;
 
@@ -142,25 +139,6 @@ public class Package
      */
     public String getName() {
         return this.name;
-    }
-
-    /**
-     * Set the documentation.
-     * 
-     * @param documentation
-     *            The documentation.
-     */
-    public void setDocumentation(String documentation) {
-        this.documentation = documentation;
-    }
-
-    /**
-     * Retrieve the documentation.
-     * 
-     * @return The documentation or <code>null</code> if none.
-     */
-    public String getDocumentation() {
-        return this.documentation;
     }
     
     public void addImport(String importEntry) {

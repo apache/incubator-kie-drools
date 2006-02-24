@@ -28,7 +28,7 @@ import org.drools.examples.manners.Context;
 import org.drools.rule.Column;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Field;
+import org.drools.spi.FieldValue;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.MockField;
@@ -115,7 +115,7 @@ public class ColumnConstraintsTest extends TestCase {
 
 		int index = getIndex(clazz, fieldName);
 
-		Field field = new MockField(fieldName, fieldValue, index);
+		FieldValue field = new MockField(fieldValue);
 
 		FieldExtractor extractor = new ClassFieldExtractor(clazz, fieldName);
 

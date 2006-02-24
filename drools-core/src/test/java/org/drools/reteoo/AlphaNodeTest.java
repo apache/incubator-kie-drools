@@ -13,7 +13,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Field;
+import org.drools.spi.FieldValue;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.MockField;
 import org.drools.spi.PropagationContext;
@@ -61,9 +61,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class, "type" );
 
-        Field field = new MockField( "type",
-                                     "cheddar",
-                                      extractor.getIndex() );
+        FieldValue field = new MockField( "cheddar" );
 
         Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
                                                                            Evaluator.EQUAL );
@@ -150,9 +148,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                             "type" );
 
-        Field field = new MockField( "type",
-                                     "cheddar",
-                                     extractor.getIndex() );
+        FieldValue field = new MockField( "cheddar" );
 
         Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
                                                                            Evaluator.EQUAL );
@@ -216,9 +212,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                             "type" );
         
-        Field field = new MockField( "type",
-                                     "cheddar",
-                                     extractor.getIndex() );
+        FieldValue field = new MockField( "cheddar" );
 
 
 
@@ -301,9 +295,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                             "type");
 
-        Field field = new MockField( "type",
-                                     "cheddar",
-                                     extractor.getIndex());
+        FieldValue field = new MockField( "cheddar" );
 
 
 

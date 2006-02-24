@@ -14,7 +14,7 @@ import org.drools.reteoo.InstrumentedReteTuple;
 import org.drools.reteoo.InstrumentedWorkingMemoryImpl;
 import org.drools.reteoo.RuleBaseImpl;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Field;
+import org.drools.spi.FieldValue;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueExpression;
@@ -46,9 +46,7 @@ public class FieldConstraintTest extends TestCase {
         ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        Field field = new MockField( "type",
-                                     "cheddar",
-                                     extractor.getIndex() );
+        FieldValue field = new MockField( "cheddar" );
 
 
 
