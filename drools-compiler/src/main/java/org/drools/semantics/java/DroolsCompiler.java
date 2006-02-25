@@ -224,6 +224,10 @@ public class DroolsCompiler {
     public int getNextInt() {
         return this.counter++;
     }
+    
+    public Map getErrors() {
+        return this.errors;
+    }
 
     /**
      * Takes a given name and makes sure that its legal and doesn't already exist. If the file exists it increases counter appender untill it is unique.

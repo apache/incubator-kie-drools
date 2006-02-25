@@ -1,5 +1,6 @@
 package ${package};
-public static class ${invokerClassName} implements org.drools.spi.ReturnValueExpression
+
+public class ${invokerClassName} implements org.drools.spi.EvalExpression
 {
     public boolean evaluate(org.drools.spi.Tuple tuple,
                             org.drools.rule.Declaration[] declarations, 
@@ -9,7 +10,7 @@ public static class ${invokerClassName} implements org.drools.spi.ReturnValueExp
         </#list>
 
         <#list globals as identifier>
-        ${globalTypes[identifier].name?replace("$", ".")} ${identifier} = ( ${globalTypes[identifier].name?replace("$", ".")} ) workingMemory.get( "${identifier}" );
+        ${globalTypes[identifier].name?replace("$", ".")} ${identifier} = ( ${globalTypes[identifier].name?replace("$", ".")} ) workingMemory.getGlobal( "${identifier}" );
         </#list>
         
         return ${ruleClassName}.${methodName}( <#list declarations as decl>${decl.identifier}<#if decl_has_next>, </#if></#list><#list globals as identifier>, ${identifier}</#list> );

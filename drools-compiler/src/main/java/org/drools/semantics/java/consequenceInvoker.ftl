@@ -15,7 +15,7 @@ public class ${invokerClassName} implements org.drools.spi.Consequence
         </#list>
 
        <#list globals as identifier>
-       ${globalTypes[identifier].name?replace("$", ".")} ${identifier} = ( ${globalTypes[identifier].name?replace("$", ".")} ) workingMemory.get( "${identifier}" );
+       ${globalTypes[identifier].name?replace("$", ".")} ${identifier} = ( ${globalTypes[identifier].name?replace("$", ".")} ) workingMemory.getGlobal( "${identifier}" );
        </#list>
         
         ${ruleClassName}.${methodName}( knowledgeHelper, 

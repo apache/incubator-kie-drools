@@ -319,6 +319,19 @@ public class RuleBuilder {
                   ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
         root.put( "methodName",
                   classMethodName );
+        
+////////////////
+        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+
+        FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                            predicateDescr.getFieldName() );
+
+        Declaration declaration = column.addDeclaration( predicateDescr.getDeclaration(),
+                                                         extractor );
+
+        this.declarations.put( declaration.getIdentifier(),
+                               declaration );        
+////////////////        
 
         List usedDeclarations = this.analyzer.analyze( predicateDescr.getText(),
                                                        this.declarations.keySet() );
@@ -334,7 +347,6 @@ public class RuleBuilder {
         root.put( "declarations",
                   declarations );
 
-        Declaration declaration = (Declaration) this.declarations.get( predicateDescr.getDeclaration() );
         root.put( "declaration",
                   declaration );
 
