@@ -1,6 +1,6 @@
 package ${package};
 
-public static class ${invokerClassName}Invoker implements org.drools.spi.PredicateExpression
+public class ${invokerClassName} implements org.drools.spi.PredicateExpression
 {
     public boolean evaluate(org.drools.spi.Tuple tuple,
                             org.drools.FactHandle factHandle,
@@ -14,7 +14,7 @@ public static class ${invokerClassName}Invoker implements org.drools.spi.Predica
         </#list>
 
         <#list globals as identifier>
-        ${globalTypes[identifier].name?replace("$", ".")} ${identifier} = ( ${globalTypes[identifier].name?replace("$", ".")} ) workingMemory.get( "${identifier}" );
+        ${globalTypes[identifier].name?replace("$", ".")} ${identifier} = ( ${globalTypes[identifier].name?replace("$", ".")} ) workingMemory.getGlobal( "${identifier}" );
 	    </#list>
         
         return ${ruleClassName}.${methodName}(${declaration.identifier}, <#list declarations as item>${item.identifier}<#if item_has_next>, </#if></#list><#list globals as identifier>, ${identifier}</#list> );

@@ -10,7 +10,7 @@ public class ${invokerClassName} implements org.drools.spi.ReturnValueExpression
         </#list>
 
         <#list globals as identifier>
-        ${globalTypes[identifier].name?replace("$", ".")} ${identifier} = ( ${globalTypes[identifier].name?replace("$", ".")} ) workingMemory.get( "${identifier}" );
+        ${globalTypes[identifier].name?replace("$", ".")} ${identifier} = ( ${globalTypes[identifier].name?replace("$", ".")} ) workingMemory.getGlobal( "${identifier}" );
         </#list>
         
         return ${ruleClassName}.${methodName}( <#list declarations as decl>${decl.identifier}<#if decl_has_next>, </#if></#list><#list globals as identifier>, ${identifier}</#list> );
