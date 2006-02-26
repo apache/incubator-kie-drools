@@ -43,7 +43,11 @@ import com.thoughtworks.xstream.XStream;
 public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 
 	private List events = new ArrayList();
-	private String fileName= "event.log";
+	private String fileName= "event";
+	private int maxEventsInMemory = 1000;
+	private int maxWritesToFile = 10;
+	private int nbOfWriteToFile = 0;
+	private int nbOfFile = 0;
 	
 	/**
 	 * Creates a new WorkingMemoryFileLogger for the given working memory.
@@ -55,10 +59,12 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 	
 	/**
 	 * Sets the name of the file the events are logged in.
+	 * No extensions should be given since .log is automatically appended
+	 * to the file name.
 	 * The default is an event.log file in the current working directory.
 	 * This can be a path relative to the current working directory
-	 * (e.g. "mydir/subDir/myLogFile.log"), or an absolute path 
-	 * (e.g. "C:/myLogFile.log").
+	 * (e.g. "mydir/subDir/myLogFile"), or an absolute path 
+	 * (e.g. "C:/myLogFile").
 	 * 
 	 * @param fileName The name of the file the events should be logged in.
 	 */
@@ -68,14 +74,21 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 	
 	/**
 	 * All events in the log are written to file.
-	 * The log is not cleared afterwards.
+	 * The log is automatically cleared afterwards.
 	 */
 	public void writeToDisk() {
 		try {
 			XStream xstream = new XStream();
-			ObjectOutputStream out = xstream.createObjectOutputStream(new FileWriter(fileName));
+			ObjectOutputStream out = xstream.createObjectOutputStream(
+				new FileWriter(fileName + (nbOfFile == 0 ? ".log" : nbOfFile + ".log"), true));
 			out.writeObject(events);
 			out.close();
+			;
+			if (++nbOfWriteToFile == maxWritesToFile) {
+				nbOfWriteToFile = 0;
+				nbOfFile++;
+			}
+			clear();
 		} catch (Throwable t) {
 			t.printStackTrace(System.err);
 		}
@@ -89,9 +102,41 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 	}
 
 	/**
+	 * Sets the maximum number of log events that are allowed in memory.
+	 * If this number is reached, all events are written to file.
+	 * The default is 1000.
+	 * 
+	 * @param maxEventsInMemory The maximum number of events in memory.
+	 */
+	public void setMaxEventsInMemory(int maxEventsInMemory) {
+		this.maxEventsInMemory = maxEventsInMemory;
+	}
+
+	/**
+	 * Sets the maximum number of consequetive writes to one file.
+	 * If this number is reached, a new log file is created (which
+	 * is the file name appended with the number of the log).
+	 * The default is 10.
+	 * This means that the maximum number of events in a log is
+	 * maxWritesToFile * maxEventsInMemory.
+	 * 
+	 * @param maxEventsInMemory The maximum number of consequetive writes to one file.
+	 */
+	public void setMaxWritesToFile(int maxWritesToFile) {
+		this.maxWritesToFile = maxWritesToFile;
+	}
+
+	/**
 	 * @see org.drools.reteoo.WorkingMemoryLogger
 	 */
 	public void logEventCreated(LogEvent logEvent) {
 		events.add(logEvent);
+		if (events.size() > maxEventsInMemory) {
+			writeToDisk();
+		}
+	}
+	
+	public void finalize() {
+		writeToDisk();
 	}
 }

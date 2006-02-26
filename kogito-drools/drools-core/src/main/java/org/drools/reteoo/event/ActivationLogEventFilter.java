@@ -31,6 +31,14 @@ public class ActivationLogEventFilter implements ILogEventFilter {
 	private boolean allowBeforeActivationFireEvents = true;
 	private boolean allowAfterActivationFireEvents = true;
 	
+	public ActivationLogEventFilter(boolean allowActivationCreatedEvents, boolean allowActivationCancelledEvents,
+			boolean allowBeforeActivationFireEvents, boolean allowAfterActivationFireEvents) {
+		setAllowActivationCreatedEvents(allowActivationCreatedEvents);
+		setAllowActivationCancelledEvents(allowActivationCancelledEvents);
+		setAllowBeforeActivationFireEvents(allowBeforeActivationFireEvents);
+		setAllowAfterActivationFireEvents(allowAfterActivationFireEvents);
+	}
+	
 	/**
 	 * @see org.drools.reteoo.event.ILogEventFilter
 	 */
