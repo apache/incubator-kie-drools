@@ -9,11 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.jci.compilers.CompilationResult;
-import org.apache.commons.jci.compilers.JavaCompiler;
-import org.apache.commons.jci.compilers.JavaCompilerFactory;
-import org.apache.commons.jci.readers.MemoryResourceReader;
-import org.apache.commons.jci.stores.MemoryResourceStore;
 import org.drools.CheckedDroolsException;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
@@ -66,7 +61,9 @@ public class RuleBuilder {
 
     public String               ruleClass;
     public List                 methods;
-    public Map                  invokers;
+    public Map                  invokeables;
+    
+    public Map                  referenceLookups;
 
     private Map                 declarations;
 
@@ -83,8 +80,8 @@ public class RuleBuilder {
                                         "" );
     }
 
-    public Map getInvokers() {
-        return this.invokers;
+    public Map getInvokeables() {
+        return this.invokeables;
     }
 
     public List getMethods() {
@@ -93,6 +90,10 @@ public class RuleBuilder {
 
     public String getRuleClass() {
         return this.ruleClass;
+    }
+    
+    public Map getReferenceLookups() {
+        return this.referenceLookups;
     }
 
     public Rule getRule() {
@@ -107,7 +108,8 @@ public class RuleBuilder {
                                    RuleDescr ruleDescr) throws CheckedDroolsException {
         this.pkg = pkg;
         this.methods = new ArrayList();
-        this.invokers = new HashMap();
+        this.invokeables = new HashMap();
+        this.referenceLookups = new HashMap();
         this.declarations = ruleDescr.getDeclarations();
 
         this.rule = new Rule( ruleDescr.getName() );
@@ -334,8 +336,11 @@ public class RuleBuilder {
         template.process( root,
                           string );
         string.flush();
-        this.invokers.put( ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker",
+        
+        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker"; 
+        this.invokeables.put( invokerClassName,
                            string.toString() );
+        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName, returnValueConstraint );
     }
 
     private void build(Column column,
@@ -359,7 +364,6 @@ public class RuleBuilder {
         root.put( "methodName",
                   classMethodName );
 
-        ////////////////
         Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         FieldExtractor extractor = new ClassFieldExtractor( clazz,
@@ -369,8 +373,7 @@ public class RuleBuilder {
                                                          extractor );
 
         this.declarations.put( declaration.getIdentifier(),
-                               declaration );
-        ////////////////        
+                               declaration );        
 
         List usedDeclarations = this.analyzer.analyze( predicateDescr.getText(),
                                                        this.declarations.keySet() );
@@ -414,8 +417,11 @@ public class RuleBuilder {
         template.process( root,
                           string );
         string.flush();
-        this.invokers.put( ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker",
+
+        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker"; 
+        this.invokeables.put( invokerClassName,
                            string.toString() );
+        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName, predicateConstraint );        
     }
 
     private void build(ConditionalElement ce,
@@ -475,8 +481,11 @@ public class RuleBuilder {
         template.process( root,
                           string );
         string.flush();
-        this.invokers.put( ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker",
+
+        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker"; 
+        this.invokeables.put( invokerClassName,
                            string.toString() );
+        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName, eval );        
     }
 
     private void build(Rule rule,
@@ -524,8 +533,11 @@ public class RuleBuilder {
         template.process( root,
                           string );
         string.flush();
-        this.invokers.put( ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker",
+
+        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker"; 
+        this.invokeables.put( invokerClassName,
                            string.toString() );
+        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName, this.rule );        
 
         template = this.cfg.getTemplate( "ruleClass.ftl" );
         root.put( "imports",
