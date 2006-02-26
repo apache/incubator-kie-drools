@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class OrDescr extends PatternDescr 
-    implements ConditionalElement {
+    implements ConditionalElementDescr {
     private List descrs = Collections.EMPTY_LIST;
     
     public OrDescr() {

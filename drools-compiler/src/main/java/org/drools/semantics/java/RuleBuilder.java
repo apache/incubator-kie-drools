@@ -19,21 +19,30 @@ import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorFactory;
 import org.drools.base.FieldFactory;
+import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
-import org.drools.lang.descr.ConditionalElement;
+import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.LiteralDescr;
+import org.drools.lang.descr.NotDescr;
+import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.And;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
+import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
+import org.drools.rule.Exists;
 import org.drools.rule.InvalidRuleException;
 import org.drools.rule.LiteralConstraint;
+import org.drools.rule.Not;
+import org.drools.rule.Or;
 import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
@@ -74,27 +83,6 @@ public class RuleBuilder {
                                         "" );
     }
 
-    public synchronized Rule build(Package pkg,
-                                   RuleDescr ruleDescr) throws CheckedDroolsException {
-        this.pkg = pkg;
-        this.methods = new ArrayList();
-        this.invokers = new HashMap();
-        this.declarations = ruleDescr.getDeclarations();
-
-        this.rule = new Rule( ruleDescr.getName() );
-        this.ruleDescr = ruleDescr;
-
-        try {
-            build( rule,
-                   ruleDescr.getLhs() );
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            throw new CheckedDroolsException( e );
-        }
-
-        return rule;
-    }
-
     public Map getInvokers() {
         return this.invokers;
     }
@@ -115,21 +103,75 @@ public class RuleBuilder {
         return this.pkg;
     }
 
+    public synchronized Rule build(Package pkg,
+                                   RuleDescr ruleDescr) throws CheckedDroolsException {
+        this.pkg = pkg;
+        this.methods = new ArrayList();
+        this.invokers = new HashMap();
+        this.declarations = ruleDescr.getDeclarations();
+
+        this.rule = new Rule( ruleDescr.getName() );
+        this.ruleDescr = ruleDescr;
+
+        try {
+            // Build the left hand side
+            // generate invokers, methods
+            build( rule,
+                   ruleDescr.getLhs(),
+                   rule.getLhs() );
+            // Build the consequence and generate it's invokers/methods
+            // generate the main rule from the previously generated methods.
+            build( rule, ruleDescr );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new CheckedDroolsException( e );
+        }
+
+        return rule;
+    }
+
     private void build(Rule rule,
-                       ConditionalElement descr) throws Exception {
+                       ConditionalElementDescr descr,
+                       ConditionalElement ce) throws Exception {
         for ( Iterator it = descr.getDescrs().iterator(); it.hasNext(); ) {
             Object object = it.next();
-            if ( object instanceof ConditionalElement ) {
-                build( rule,
-                       (ConditionalElement) object );
+            if ( object instanceof ConditionalElementDescr ) {
+                if ( object instanceof AndDescr ) {
+                    And and = new And();
+                    ce.addChild( and );
+                    build( rule,
+                           (ConditionalElementDescr) object,
+                           and );
+                } else if ( object instanceof OrDescr ) {
+                    Or or = new Or();
+                    ce.addChild( or );
+                    build( rule,
+                           (ConditionalElementDescr) object,
+                           or );
+                } else if ( object instanceof NotDescr ) {
+                    Not not = new Not();
+                    ce.addChild( not );
+                    build( rule,
+                           (ConditionalElementDescr) object,
+                           not );
+                } else if ( object instanceof ExistsDescr ) {
+                    Exists exists = new Exists();
+                    ce.addChild( exists );
+                    build( rule,
+                           (ConditionalElementDescr) object,
+                           exists );
+                } else if ( object instanceof EvalDescr ) {
+                    build( ce,
+                           (EvalDescr) object );
+                }
             } else if ( object instanceof ColumnDescr ) {
-                build( rule,
+                build( ce,
                        (ColumnDescr) object );
             }
         }
     }
 
-    private void build(Rule rule,
+    private void build(ConditionalElement ce,
                        ColumnDescr columnDescr) throws IOException,
                                                TemplateException,
                                                TokenStreamException,
@@ -167,13 +209,10 @@ public class RuleBuilder {
             } else if ( object instanceof PredicateDescr ) {
                 build( column,
                        (PredicateDescr) object );
-            } else if ( object instanceof EvalDescr ) {
-                build( (EvalDescr) object );
             }
         }
 
-        build( rule,
-               ruleDescr );
+        ce.addChild( column );
     }
 
     private void build(Column column,
@@ -295,7 +334,7 @@ public class RuleBuilder {
         template.process( root,
                           string );
         string.flush();
-        this.invokers.put( ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" ,
+        this.invokers.put( ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker",
                            string.toString() );
     }
 
@@ -319,8 +358,8 @@ public class RuleBuilder {
                   ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
         root.put( "methodName",
                   classMethodName );
-        
-////////////////
+
+        ////////////////
         Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         FieldExtractor extractor = new ClassFieldExtractor( clazz,
@@ -330,8 +369,8 @@ public class RuleBuilder {
                                                          extractor );
 
         this.declarations.put( declaration.getIdentifier(),
-                               declaration );        
-////////////////        
+                               declaration );
+        ////////////////        
 
         List usedDeclarations = this.analyzer.analyze( predicateDescr.getText(),
                                                        this.declarations.keySet() );
@@ -379,7 +418,8 @@ public class RuleBuilder {
                            string.toString() );
     }
 
-    private void build(EvalDescr evalDescr) throws TokenStreamException,
+    private void build(ConditionalElement ce,
+                       EvalDescr evalDescr) throws TokenStreamException,
                                            RecognitionException,
                                            IOException,
                                            TemplateException,
@@ -398,7 +438,7 @@ public class RuleBuilder {
         root.put( "invokerClassName",
                   ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
         root.put( "methodName",
-                  classMethodName);
+                  classMethodName );
 
         List usedDeclarations = this.analyzer.analyze( evalDescr.getText(),
                                                        this.declarations.keySet() );
@@ -421,7 +461,7 @@ public class RuleBuilder {
                   evalDescr.getText() );
 
         EvalCondition eval = new EvalCondition( declarations );
-        rule.addPattern( eval );
+        ce.addChild( eval );
 
         Template template = this.cfg.getTemplate( "evalMethod.ftl" );
         StringWriter string = new StringWriter();
@@ -484,7 +524,7 @@ public class RuleBuilder {
         template.process( root,
                           string );
         string.flush();
-        this.invokers.put( ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" ,
+        this.invokers.put( ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker",
                            string.toString() );
 
         template = this.cfg.getTemplate( "ruleClass.ftl" );

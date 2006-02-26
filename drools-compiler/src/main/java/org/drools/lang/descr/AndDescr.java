@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class AndDescr extends PatternDescr 
-    implements ConditionalElement {
+    implements ConditionalElementDescr {
     private List descrs = Collections.EMPTY_LIST;
     
     public AndDescr() {

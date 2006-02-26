@@ -5,7 +5,7 @@ import java.util.List;
 
 public class NotDescr extends PatternDescr
     implements
-    ConditionalElement {
+    ConditionalElementDescr {
 
     private List list;
 
