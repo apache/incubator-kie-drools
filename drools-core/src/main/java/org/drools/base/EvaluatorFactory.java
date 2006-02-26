@@ -36,6 +36,7 @@ public class EvaluatorFactory {
     public static Evaluator getEvaluator(int type,
                                          int operator) {
         switch ( type ) {
+            case Evaluator.STRING_TYPE :
             case Evaluator.OBJECT_TYPE :
                 return INSTANCE.getObjectEvaluator( operator );
             case Evaluator.SHORT_TYPE :
