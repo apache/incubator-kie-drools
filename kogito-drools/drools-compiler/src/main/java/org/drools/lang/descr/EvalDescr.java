@@ -39,4 +39,8 @@ public class EvalDescr extends PatternDescr
     public List getDescrs() {
         return Collections.EMPTY_LIST;
     }
+
+    public void addDescr(PatternDescr patternDescr) {
+        // do thing, this can have no children        
+    }
 }

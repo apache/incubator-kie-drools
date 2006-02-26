@@ -15,6 +15,7 @@ public class OrDescr extends PatternDescr
         if ( this.descrs == Collections.EMPTY_LIST ) {
             this.descrs = new ArrayList(1);
         }
+        this.descrs.add( patternDescr );
     }
     
     public List getDescrs() {

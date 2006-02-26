@@ -1,45 +1,25 @@
-header 
-{
-		package org.drools.semantics.java.parser;
-}
-
-/** Java 1.3 Recognizer.
- *
- *  This grammar is in the PUBLIC DOMAIN
- * 
- *	@author John Mitchell		johnm@non.net
- *	@author Terence Parr		parrt@magelang.com
- *	@author John Lilley			jlilley@empathy.com
- *	@author Scott Stanchfield	thetick@magelang.com
- *	@author Markus Mohnen       mohnen@informatik.rwth-aachen.de
- *  @author Peter Williams      pete.williams@sun.com
- *  @author Allan Jacobs        Allan.Jacobs@eng.sun.com
- *  @author Steve Messick       messick@redhills.com
- *
+/** A direct copy / modify of the ANTLR 2.x Java grammar.  Still lots
+ *  of ambiguity warnings, but I'm pretty sure they are true ambiguities
+ *  in the grammar.  I will rewrite this completely from the spec when
+ *  I get a chance.  I just slammed this together.
+ *  Terence Parr.
  */
-class JavaRecognizer extends Parser;
-options {
-	k = 2;                           // two token lookahead
-	exportVocab=Java;                // Call its vocabulary "Java"
-	codeGenMakeSwitchThreshold = 2;  // Some optimizations
-	codeGenBitsetTestThreshold = 3;
-	defaultErrorHandler = false;     // Don't generate parser error handlers
-	buildAST = true;
-}
+grammar JavaParser;
 
 tokens {
-	BLOCK; MODIFIERS; OBJBLOCK; SLIST; CTOR_DEF; METHOD_DEF; VARIABLE_DEF; 
-	INSTANCE_INIT; STATIC_INIT; TYPE; CLASS_DEF; INTERFACE_DEF; 
+	BLOCK; MODIFIERS; OBJBLOCK; SLIST; CTOR_DEF; METHOD_DEF; VARIABLE_DEF;
+	INSTANCE_INIT; STATIC_INIT; TYPE; CLASS_DEF; INTERFACE_DEF;
 	PACKAGE_DEF; ARRAY_DECLARATOR; EXTENDS_CLAUSE; IMPLEMENTS_CLAUSE;
-	PARAMETERS; PARAMETER_DEF; LABELED_STAT; TYPECAST; INDEX_OP; 
-	POST_INC; POST_DEC; METHOD_CALL; EXPR; ARRAY_INIT; 
-	IMPORT; UNARY_MINUS; UNARY_PLUS; CASE_GROUP; ELIST; FOR_INIT; FOR_CONDITION; 
-	FOR_ITERATOR; EMPTY_STAT; FINAL="final"; ABSTRACT="abstract";
-	STRICTFP="strictfp"; SUPER_CTOR_CALL; CTOR_CALL;
-
-	RULE_SET="ruleset"; RULE="rule"; WHEN="when"; THEN="then";
+	PARAMETERS; PARAMETER_DEF; LABELED_STAT; TYPECAST; INDEX_OP;
+	POST_INC; POST_DEC; METHOD_CALL; EXPR; ARRAY_INIT;
+	UNARY_MINUS; UNARY_PLUS; CASE_GROUP; ELIST; FOR_INIT; FOR_CONDITION;
+	FOR_ITERATOR; EMPTY_STAT; SUPER_CTOR_CALL; CTOR_CALL;
 }
-	
+
+@members {
+public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
+}
+
 // Compilation Unit: In Java, this is a single file.  This is the start
 //   rule for this parser
 compilationUnit
@@ -55,136 +35,55 @@ compilationUnit
 		//    definitions
 		( typeDefinition )*
 
-		EOF!
+//		EOF
 	;
 
-ruleFile
-	:
-		(	packageDefinition
-		|	/* nothing */
-		)
 
-		( importDefinition )*
-
-		ruleSet
-	;
-
-ruleSet
-	:
-		RULE_SET^ IDENT
-
-		LCURLY!
-			( rule )+
-		RCURLY!
-	;
-
-rule
-	:
-		RULE^ IDENT 
-
-				LPAREN! param:parameterDeclarationList RPAREN!
-
-		LCURLY!
-
-			( parameterDeclaration )*
-
-			whenBlock
-	
-			thenBlock
-
-		RCURLY!
-	;
-
-whenBlock
-	:
-		WHEN^
-
-		LCURLY!
-			(	(	consistentAssignmentExpression 
-				|	inclusiveOrExpression 
-				)	SEMI! 
-			)+
-		RCURLY!
-	;
-
-thenBlock
-	:
-		THEN^
-
-		compoundStatement
-	;
-
-consistentAssignmentExpression
-	:
-		IDENT ASSIGN^ inclusiveOrExpression
-	;
-
-ruleCondition
-	:
-		logicalOrExpression
-	;
-//			consistentAssignmentExpression
-//		|	inclusiveOrExpression
-
-
-// Package statement: "package" followed by an identifier.
+// Package statement: 'package' followed by an identifier.
 packageDefinition
-	options {defaultErrorHandler = true;} // let ANTLR handle errors
-	:	p:"package"^ {#p.setType(PACKAGE_DEF);} identifier SEMI!
+	:	'package'  identifier SEMI
 	;
 
 
 // Import statement: import followed by a package or class name
 importDefinition
-	options {defaultErrorHandler = true;}
-	:	i:"import"^ {#i.setType(IMPORT);} identifierStar SEMI!
+	:	'import'  identifierStar SEMI
 	;
 
 // A type definition in a file is either a class or interface definition.
 typeDefinition
-	options {defaultErrorHandler = true;}
-	:	m:modifiers!
-		( classDefinition[#m]
-		| interfaceDefinition[#m]
+	:	modifiers
+		( classDefinition
+		| interfaceDefinition
 		)
-	|	SEMI!
+	|	SEMI
 	;
 
 /** A declaration is the creation of a reference or primitive-type variable
  *  Create a separate Type/Var tree for each var in the var list.
  */
-declaration!
-	:	m:modifiers t:typeSpec[false] v:variableDefinitions[#m,#t]
-		{#declaration = #v;}
+declaration
+	:	modifiers typeSpec variableDefinitions
+		
 	;
 
 // A type specification is a type name with possible brackets afterwards
 //   (which would make it an array type).
-typeSpec[boolean addImagNode]
-	: classTypeSpec[addImagNode]
-	| builtInTypeSpec[addImagNode]
+typeSpec
+	: classTypeSpec
+	| builtInTypeSpec
 	;
 
 // A class type specification is a class type with possible brackets afterwards
 //   (which would make it an array type).
-classTypeSpec[boolean addImagNode]
-	:	identifier (lb:LBRACK^ {#lb.setType(ARRAY_DECLARATOR);} RBRACK!)*
-		{
-			if ( addImagNode ) {
-				#classTypeSpec = #(#[TYPE,"TYPE"], #classTypeSpec);
-			}
-		}
+classTypeSpec
+	:	identifier (LBRACK  RBRACK)*
 	;
 
 // A builtin type specification is a builtin type with possible brackets
 // afterwards (which would make it an array type).
-builtInTypeSpec[boolean addImagNode]
-	:	builtInType (lb:LBRACK^ {#lb.setType(ARRAY_DECLARATOR);} RBRACK!)*
-		{
-			if ( addImagNode ) {
-				#builtInTypeSpec = #(#[TYPE,"TYPE"], #builtInTypeSpec);
-			}
-		}
+builtInTypeSpec
+	:	builtInType (LBRACK  RBRACK)*
 	;
 
 // A type name. which is either a (possibly qualified) class name or
@@ -196,27 +95,27 @@ type
 
 // The primitive types.
 builtInType
-	:	"void"
-	|	"boolean"
-	|	"byte"
-	|	"char"
-	|	"short"
-	|	"int"
-	|	"float"
-	|	"long"
-	|	"double"
+	:	'void'
+	|	'boolean'
+	|	'byte'
+	|	'char'
+	|	'short'
+	|	'int'
+	|	'float'
+	|	'long'
+	|	'double'
 	;
 
 // A (possibly-qualified) java identifier.  We start with the first IDENT
 //   and expand its name by adding dots and following IDENTS
 identifier
-	:	IDENT  ( DOT^ IDENT )*
+	:	IDENT  ( DOT IDENT )*
 	;
 
 identifierStar
 	:	IDENT
-		( DOT^ IDENT )*
-		( DOT^ STAR  )?
+		( DOT IDENT )*
+		( DOT STAR  )?
 	;
 
 // A list of zero or more modifiers.  We could have used (modifier)* in
@@ -225,173 +124,139 @@ identifierStar
 //   someone so desires
 modifiers
 	:	( modifier )*
-		{#modifiers = #([MODIFIERS, "MODIFIERS"], #modifiers);}
+		
 	;
 
 // modifiers for Java classes, interfaces, class/instance vars and methods
 modifier
-	:	"private"
-	|	"public"
-	|	"protected"
-	|	"static"
-	|	"transient"
-	|	"final"
-	|	"abstract"
-	|	"native"
-	|	"threadsafe"
-	|	"synchronized"
-//	|	"const"			// reserved word, but not valid
-	|	"volatile"
-	|	"strictfp"
+	:	'private'
+	|	'public'
+	|	'protected'
+	|	'static'
+	|	'transient'
+	|	'final'
+	|	'abstract'
+	|	'native'
+	|	'threadsafe'
+	|	'synchronized'
+//	|	'const'			// reserved word, but not valid
+	|	'volatile'
+	|	'strictfp'
 	;
 
 // Definition of a Java class
-classDefinition![AST modifiers]
-	:	"class" IDENT
+classDefinition
+	:	'class' IDENT
 		// it _might_ have a superclass...
-		sc:superClassClause
+		superClassClause
 		// it might implement some interfaces...
-		ic:implementsClause
+		implementsClause
 		// now parse the body of the class
-		cb:classBlock
-		{#classDefinition = #(#[CLASS_DEF,"CLASS_DEF"],
-							   modifiers,IDENT,sc,ic,cb);}
+		classBlock
 	;
 
-superClassClause!
-	:	( "extends" id:identifier )?
-		{#superClassClause = #(#[EXTENDS_CLAUSE,"EXTENDS_CLAUSE"],id);}
+superClassClause
+	:	( 'extends' identifier )?
+		
 	;
 
 // Definition of a Java Interface
-interfaceDefinition![AST modifiers]
-	:	"interface" IDENT
+interfaceDefinition
+	:	'interface' IDENT
 		// it might extend some other interfaces
-		ie:interfaceExtends
+		interfaceExtends
 		// now parse the body of the interface (looks like a class...)
-		cb:classBlock
-		{#interfaceDefinition = #(#[INTERFACE_DEF,"INTERFACE_DEF"],
-									modifiers,IDENT,ie,cb);}
+		classBlock
 	;
 
 
 // This is the body of a class.  You can have fields and extra semicolons,
 // That's about it (until you see what a field is...)
 classBlock
-	:	LCURLY!
-			( field | SEMI! )*
-		RCURLY!
-		{#classBlock = #([OBJBLOCK, "OBJBLOCK"], #classBlock);}
+	:	LCURLY
+			( field | SEMI )*
+		RCURLY
+		
 	;
 
 // An interface can extend several other interfaces...
 interfaceExtends
 	:	(
-		e:"extends"!
-		identifier ( COMMA! identifier )*
+		'extends'
+		identifier ( COMMA identifier )*
 		)?
-		{#interfaceExtends = #(#[EXTENDS_CLAUSE,"EXTENDS_CLAUSE"],
-							#interfaceExtends);}
 	;
 
 // A class can implement several interfaces...
 implementsClause
 	:	(
-			i:"implements"! identifier ( COMMA! identifier )*
+			'implements' identifier ( COMMA identifier )*
 		)?
-		{#implementsClause = #(#[IMPLEMENTS_CLAUSE,"IMPLEMENTS_CLAUSE"],
-								 #implementsClause);}
 	;
 
 // Now the various things that can be defined inside a class or interface...
 // Note that not all of these are really valid in an interface (constructors,
 //   for example), and if this grammar were used for a compiler there would
 //   need to be some semantic checks to make sure we're doing the right thing...
-field!
+field
 	:	// method, constructor, or variable declaration
-		mods:modifiers
-		(	h:ctorHead s:constructorBody // constructor
-			{#field = #(#[CTOR_DEF,"CTOR_DEF"], mods, h, s);}
-
-		|	cd:classDefinition[#mods]       // inner class
-			{#field = #cd;}
+		modifiers
+		(	ctorHead constructorBody // constructor
 			
-		|	id:interfaceDefinition[#mods]   // inner interface
-			{#field = #id;}
 
-		|	t:typeSpec[false]  // method or variable declaration(s)
+		|	classDefinition       // inner class
+			
+
+		|	interfaceDefinition   // inner interface
+			
+
+		|	typeSpec  // method or variable declaration(s)
 			(	IDENT  // the name of the method
 
 				// parse the formal parameter declarations.
-				LPAREN! param:parameterDeclarationList RPAREN!
+				LPAREN parameterDeclarationList RPAREN
 
-				rt:declaratorBrackets[#t]
+				declaratorBrackets
 
 				// get the list of exceptions that this method is
 				// declared to throw
-				(tc:throwsClause)?
+				(throwsClause)?
 
-				( s2:compoundStatement | SEMI )
-				{#field = #(#[METHOD_DEF,"METHOD_DEF"],
-						     mods,
-							 #(#[TYPE,"TYPE"],rt),
-							 IDENT,
-							 param,
-							 tc,
-							 s2);}
-			|	v:variableDefinitions[#mods,#t] SEMI
-//				{#field = #(#[VARIABLE_DEF,"VARIABLE_DEF"], v);}
-				{#field = #v;}
+				( compoundStatement | SEMI )
+			|	variableDefinitions SEMI
+//				
+				
 			)
 		)
 
-    // "static { ... }" class initializer
-	|	"static" s3:compoundStatement
-		{#field = #(#[STATIC_INIT,"STATIC_INIT"], s3);}
+    // 'static { ... }' class initializer
+	|	'static' compoundStatement
+		
 
-    // "{ ... }" instance initializer
-	|	s4:compoundStatement
-		{#field = #(#[INSTANCE_INIT,"INSTANCE_INIT"], s4);}
+    // '{ ... }' instance initializer
+	|	compoundStatement
+		
 	;
 
 constructorBody
-    :   lc:LCURLY^ {#lc.setType(SLIST);}
-		// Predicate might be slow but only checked once per constructor def
-		// not for general methods.
-		(	(explicitConstructorInvocation) => explicitConstructorInvocation
-		|
-		)
-        (statement)*
-        RCURLY!
+    :   LCURLY 
+            ( options {greedy=true;} : explicitConstructorInvocation)?
+            (statement)*
+        RCURLY
     ;
 
+/** Catch obvious constructor calls, but not the expr.super(...) calls */
 explicitConstructorInvocation
-    :   (	options {
-				// this/super can begin a primaryExpression too; with finite
-				// lookahead ANTLR will think the 3rd alternative conflicts
-				// with 1, 2.  I am shutting off warning since ANTLR resolves
-				// the nondeterminism by correctly matching alts 1 or 2 when
-				// it sees this( or super(
-				generateAmbigWarnings=false;
-			}
-		:	"this"! lp1:LPAREN^ argList RPAREN! SEMI!
-			{#lp1.setType(CTOR_CALL);}
-
-	    |   "super"! lp2:LPAREN^ argList RPAREN! SEMI!
-			{#lp2.setType(SUPER_CTOR_CALL);}
-
-			// (new Outer()).super()  (create enclosing instance)
-		|	primaryExpression DOT! "super"! lp3:LPAREN^ argList RPAREN! SEMI!
-			{#lp3.setType(SUPER_CTOR_CALL);}
-		)
+    :   'this' LPAREN argList RPAREN SEMI
+		
+    |   'super' LPAREN argList RPAREN SEMI
+		
     ;
 
-variableDefinitions[AST mods, AST t]
-	:	variableDeclarator[getASTFactory().dupTree(mods),
-						   getASTFactory().dupTree(t)]
-		(	COMMA!
-			variableDeclarator[getASTFactory().dupTree(mods),
-							   getASTFactory().dupTree(t)]
+variableDefinitions
+	:	variableDeclarator
+		(	COMMA
+			variableDeclarator
 		)*
 	;
 
@@ -399,42 +264,38 @@ variableDefinitions[AST mods, AST t]
  *   or a local variable in a method
  * It can also include possible initialization.
  */
-variableDeclarator![AST mods, AST t]
-	:	id:IDENT d:declaratorBrackets[t] v:varInitializer
-		{#variableDeclarator = #(#[VARIABLE_DEF,"VARIABLE_DEF"], mods, #(#[TYPE,"TYPE"],d), id, v);}
+variableDeclarator
+	:	IDENT declaratorBrackets varInitializer
+		
 	;
 
-declaratorBrackets[AST typ]
-	:	{#declaratorBrackets=typ;}
-		(lb:LBRACK^ {#lb.setType(ARRAY_DECLARATOR);} RBRACK!)*
+declaratorBrackets
+	:	
+		(LBRACK  RBRACK)*
 	;
 
 varInitializer
-	:	( ASSIGN^ initializer )?
+	:	( ASSIGN initializer )?
 	;
 
 // This is an initializer used to set up an array.
 arrayInitializer
-	:	lc:LCURLY^ {#lc.setType(ARRAY_INIT);}
+	:	LCURLY 
 			(	initializer
 				(
 					// CONFLICT: does a COMMA after an initializer start a new
 					//           initializer or start the option ',' at end?
 					//           ANTLR generates proper code by matching
 					//			 the comma as soon as possible.
-					options {
-						warnWhenFollowAmbig = false;
-					}
-				:
-					COMMA! initializer
+					COMMA initializer
 				)*
-				(COMMA!)?
+				(COMMA)?
 			)?
-		RCURLY!
+		RCURLY
 	;
 
 
-// The two "things" that can initialize an array element are an expression
+// The two 'things' that can initialize an array element are an expression
 //   and another (nested) array initializer.
 initializer
 	:	expression
@@ -443,12 +304,12 @@ initializer
 
 // This is the header of a method.  It includes the name and parameters
 //   for the method.
-//   This also watches for a list of exception classes in a "throws" clause.
+//   This also watches for a list of exception classes in a 'throws' clause.
 ctorHead
 	:	IDENT  // the name of the method
 
 		// parse the formal parameter declarations.
-		LPAREN! parameterDeclarationList RPAREN!
+		LPAREN parameterDeclarationList RPAREN
 
 		// get the list of exceptions that this method is declared to throw
 		(throwsClause)?
@@ -456,179 +317,176 @@ ctorHead
 
 // This is a list of exception classes that the method is declared to throw
 throwsClause
-	:	"throws"^ identifier ( COMMA! identifier )*
+	:	'throws' identifier ( COMMA identifier )*
 	;
 
 
 // A list of formal parameters
 parameterDeclarationList
-	:	( parameterDeclaration ( COMMA! parameterDeclaration )* )?
-		{#parameterDeclarationList = #(#[PARAMETERS,"PARAMETERS"],
-									#parameterDeclarationList);}
+	:	( parameterDeclaration ( COMMA parameterDeclaration )* )?
 	;
 
 // A formal parameter.
-parameterDeclaration!
-	:	pm:parameterModifier t:typeSpec[false] id:IDENT
-		pd:declaratorBrackets[#t]
-		{#parameterDeclaration = #(#[PARAMETER_DEF,"PARAMETER_DEF"],
-									pm, #([TYPE,"TYPE"],pd), id);}
+parameterDeclaration
+	:	parameterModifier typeSpec IDENT
+		declaratorBrackets
 	;
 
 parameterModifier
-	:	(f:"final")?
-		{#parameterModifier = #(#[MODIFIERS,"MODIFIERS"], f);}
+	:	('final')?
+		
 	;
 
 // Compound statement.  This is used in many contexts:
-//   Inside a class definition prefixed with "static":
+//   Inside a class definition prefixed with 'static':
 //      it is a class initializer
-//   Inside a class definition without "static":
+//   Inside a class definition without 'static':
 //      it is an instance initializer
 //   As the body of a method
 //   As a completely indepdent braced block of code inside a method
 //      it starts a new scope for variable definitions
 
 compoundStatement
-	:	lc:LCURLY^ {#lc.setType(SLIST);}
+	:	LCURLY 
 			// include the (possibly-empty) list of statements
 			(statement)*
-		RCURLY!
+		RCURLY
 	;
 
 
 statement
-	// A list of statements in curly braces -- start a new scope!
+	// A list of statements in curly braces -- start a new scope
 	:	compoundStatement
 
-	// declarations are ambiguous with "ID DOT" relative to expression
+	// declarations are ambiguous with 'ID DOT' relative to expression
 	// statements.  Must backtrack to be sure.  Could use a semantic
 	// predicate to test symbol table to see what the type was coming
 	// up, but that's pretty hard without a symbol table ;)
-	|	(declaration)=> declaration SEMI!
+	// remove (declaration)=>
+	|	declaration SEMI
 
 	// An expression statement.  This could be a method call,
 	// assignment statement, or any other expression evaluated for
 	// side-effects.
-	|	expression SEMI!
+	|	expression SEMI
 
 	// class definition
-	|	m:modifiers! classDefinition[#m]
+	|	modifiers classDefinition
 
 	// Attach a label to the front of a statement
-	|	IDENT c:COLON^ {#c.setType(LABELED_STAT);} statement
+	|	IDENT COLON  statement
 
 	// If-else statement
-	|	"if"^ LPAREN! expression RPAREN! statement
+	|	'if' LPAREN expression RPAREN statement
 		(
 			// CONFLICT: the old "dangling-else" problem...
 			//           ANTLR generates proper code matching
 			//			 as soon as possible.  Hush warning.
-			options {
-				warnWhenFollowAmbig = false;
-			}
-		:
-			"else"! statement
+			'else' statement
 		)?
 
 	// For statement
-	|	"for"^
-			LPAREN!
-				forInit SEMI!   // initializer
-				forCond	SEMI!   // condition test
+	|	'for'
+			LPAREN
+				forInit SEMI   // initializer
+				forCond	SEMI   // condition test
 				forIter         // updater
-			RPAREN!
+			RPAREN
 			statement                     // statement to loop over
 
 	// While statement
-	|	"while"^ LPAREN! expression RPAREN! statement
+	|	'while' LPAREN expression RPAREN statement
 
 	// do-while statement
-	|	"do"^ statement "while"! LPAREN! expression RPAREN! SEMI!
+	|	'do' statement 'while' LPAREN expression RPAREN SEMI
 
 	// get out of a loop (or switch)
-	|	"break"^ (IDENT)? SEMI!
+	|	'break' (IDENT)? SEMI
 
 	// do next iteration of a loop
-	|	"continue"^ (IDENT)? SEMI!
+	|	'continue' (IDENT)? SEMI
 
 	// Return an expression
-	|	"return"^ (expression)? SEMI!
+	|	'return' (expression)? SEMI
 
 	// switch/case statement
-	|	"switch"^ LPAREN! expression RPAREN! LCURLY!
+	|	'switch' LPAREN expression RPAREN LCURLY
 			( casesGroup )*
-		RCURLY!
+		RCURLY
 
 	// exception try-catch block
 	|	tryBlock
 
 	// throw an exception
-	|	"throw"^ expression SEMI!
+	|	'throw' expression SEMI
 
 	// synchronize a statement
-	|	"synchronized"^ LPAREN! expression RPAREN! compoundStatement
+	|	'synchronized' LPAREN expression RPAREN compoundStatement
+
+	// asserts (uncomment if you want 1.4 compatibility)
+	// |	'assert' expression ( COLON expression )? SEMI
 
 	// empty statement
-	|	s:SEMI {#s.setType(EMPTY_STAT);}
+	|	SEMI 
 	;
-
 
 casesGroup
 	:	(	// CONFLICT: to which case group do the statements bind?
 			//           ANTLR generates proper code: it groups the
-			//           many "case"/"default" labels together then
+			//           many 'case'/'default' labels together then
 			//           follows them with the statements
-			options {
-				warnWhenFollowAmbig = false;
-			}
+				options {greedy=true;}
 			:
 			aCase
 		)+
 		caseSList
-		{#casesGroup = #([CASE_GROUP, "CASE_GROUP"], #casesGroup);}
+		
 	;
 
 aCase
-	:	("case"^ expression | "default") COLON!
+	:	('case' expression | 'default') COLON
 	;
 
 caseSList
 	:	(statement)*
-		{#caseSList = #(#[SLIST,"SLIST"],#caseSList);}
+		
 	;
 
 // The initializer for a for loop
 forInit
 		// if it looks like a declaration, it is
-	:	(	(declaration)=> declaration
+        // remove (declaration)=> 
+	:	(	declaration
 		// otherwise it could be an expression list...
 		|	expressionList
 		)?
-		{#forInit = #(#[FOR_INIT,"FOR_INIT"],#forInit);}
+		
 	;
 
 forCond
 	:	(expression)?
-		{#forCond = #(#[FOR_CONDITION,"FOR_CONDITION"],#forCond);}
+		
 	;
 
 forIter
 	:	(expressionList)?
-		{#forIter = #(#[FOR_ITERATOR,"FOR_ITERATOR"],#forIter);}
+		
 	;
 
 // an exception handler try/catch block
 tryBlock
-	:	"try"^ compoundStatement
+	:	'try' compoundStatement
 		(handler)*
-		( "finally"^ compoundStatement )?
+		( finallyClause )?
 	;
 
+finallyClause
+	:	'finally' compoundStatement
+	;
 
 // an exception handler
 handler
-	:	"catch"^ LPAREN! parameterDeclaration RPAREN! compoundStatement
+	:	'catch' LPAREN parameterDeclaration RPAREN compoundStatement
 	;
 
 
@@ -639,19 +497,19 @@ handler
 //           (OPERATOR nextHigherPrecedenceExpression)*
 // which is a standard recursive definition for a parsing an expression.
 // The operators in java have the following precedences:
-//    lowest  (13)  = *= /= %= += -= <<= >>= >>>= &= ^= |=
+//    lowest  (13)  = *= /= %= += -= <<= >>= >>>= &= = |=
 //            (12)  ?:
 //            (11)  ||
 //            (10)  &&
 //            ( 9)  |
-//            ( 8)  ^
+//            ( 8)  
 //            ( 7)  &
-//            ( 6)  == !=
+//            ( 6)  == =
 //            ( 5)  < <= > >=
 //            ( 4)  << >>
 //            ( 3)  +(binary) -(binary)
 //            ( 2)  * / %
-//            ( 1)  ++ -- +(unary) -(unary)  ~  !  (type)
+//            ( 1)  ++ -- +(unary) -(unary)  ~    (type)
 //                  []   () (method call)  . (dot -- identifier qualification)
 //                  new   ()  (explicit parenthesis)
 //
@@ -659,7 +517,7 @@ handler
 // to point out that new has a higher precedence than '.', so you
 // can validy use
 //     new Frame().show()
-// 
+//
 // Note that the above precedence levels map to the rules below...
 // Once you have a precedence chart, writing the appropriate rules as below
 //   is usually very straightfoward
@@ -669,32 +527,32 @@ handler
 // the mother of all expressions
 expression
 	:	assignmentExpression
-		{#expression = #(#[EXPR,"EXPR"],#expression);}
+		
 	;
 
 
 // This is a list of expressions.
 expressionList
-	:	expression (COMMA! expression)*
-		{#expressionList = #(#[ELIST,"ELIST"], expressionList);}
+	:	expression (COMMA expression)*
+		
 	;
 
 
 // assignment expression (level 13)
 assignmentExpression
 	:	conditionalExpression
-		(	(	ASSIGN^
-            |   PLUS_ASSIGN^
-            |   MINUS_ASSIGN^
-            |   STAR_ASSIGN^
-            |   DIV_ASSIGN^
-            |   MOD_ASSIGN^
-            |   SR_ASSIGN^
-            |   BSR_ASSIGN^
-            |   SL_ASSIGN^
-            |   BAND_ASSIGN^
-            |   BXOR_ASSIGN^
-            |   BOR_ASSIGN^
+		(	(	ASSIGN
+            |   PLUS_ASSIGN
+            |   MINUS_ASSIGN
+            |   STAR_ASSIGN
+            |   DIV_ASSIGN
+            |   MOD_ASSIGN
+            |   SR_ASSIGN
+            |   BSR_ASSIGN
+            |   SL_ASSIGN
+            |   BAND_ASSIGN
+            |   BXOR_ASSIGN
+            |   BOR_ASSIGN
             )
 			assignmentExpression
 		)?
@@ -704,188 +562,192 @@ assignmentExpression
 // conditional test (level 12)
 conditionalExpression
 	:	logicalOrExpression
-		( QUESTION^ assignmentExpression COLON! conditionalExpression )?
+		( QUESTION assignmentExpression COLON conditionalExpression )?
 	;
 
 
 // logical or (||)  (level 11)
 logicalOrExpression
-	:	logicalAndExpression (LOR^ logicalAndExpression)*
+	:	logicalAndExpression (LOR logicalAndExpression)*
 	;
 
 
 // logical and (&&)  (level 10)
 logicalAndExpression
-	:	inclusiveOrExpression (LAND^ inclusiveOrExpression)*
+	:	inclusiveOrExpression (LAND inclusiveOrExpression)*
 	;
 
 
 // bitwise or non-short-circuiting or (|)  (level 9)
 inclusiveOrExpression
-	:	exclusiveOrExpression (BOR^ exclusiveOrExpression)*
+	:	exclusiveOrExpression (BOR exclusiveOrExpression)*
 	;
 
 
-// exclusive or (^)  (level 8)
+// exclusive or ()  (level 8)
 exclusiveOrExpression
-	:	andExpression (BXOR^ andExpression)*
+	:	andExpression (BXOR andExpression)*
 	;
 
 
 // bitwise or non-short-circuiting and (&)  (level 7)
 andExpression
-	:	equalityExpression (BAND^ equalityExpression)*
+	:	equalityExpression (BAND equalityExpression)*
 	;
 
 
-// equality/inequality (==/!=) (level 6)
+// equality/inequality (==/=) (level 6)
 equalityExpression
-	:	relationalExpression ((NOT_EQUAL^ | EQUAL^) relationalExpression)*
+	:	relationalExpression ((NOT_EQUAL | EQUAL) relationalExpression)*
 	;
 
 
 // boolean relational expressions (level 5)
 relationalExpression
 	:	shiftExpression
-		(	(	(	LT^
-				|	GT^
-				|	LE^
-				|	GE^
+		(	(	(	LT
+				|	GT
+				|	LE
+				|	GE
 				)
 				shiftExpression
 			)*
-		|	"instanceof"^ typeSpec[true]
+		|	'instanceof' typeSpec
 		)
 	;
 
 
 // bit shift expressions (level 4)
 shiftExpression
-	:	additiveExpression ((SL^ | SR^ | BSR^) additiveExpression)*
+	:	additiveExpression ((SL | SR | BSR) additiveExpression)*
 	;
 
 
 // binary addition/subtraction (level 3)
 additiveExpression
-	:	multiplicativeExpression ((PLUS^ | MINUS^) multiplicativeExpression)*
+	:	multiplicativeExpression ((PLUS | MINUS) multiplicativeExpression)*
 	;
 
 
 // multiplication/division/modulo (level 2)
 multiplicativeExpression
-	:	unaryExpression ((STAR^ | DIV^ | MOD^ ) unaryExpression)*
+	:	unaryExpression ((STAR | DIV | MOD ) unaryExpression)*
 	;
 
 unaryExpression
-	:	INC^ unaryExpression
-	|	DEC^ unaryExpression
-	|	MINUS^ {#MINUS.setType(UNARY_MINUS);} unaryExpression
-	|	PLUS^  {#PLUS.setType(UNARY_PLUS);} unaryExpression
+	:	INC unaryExpression
+	|	DEC unaryExpression
+	|	MINUS  unaryExpression
+	|	PLUS   unaryExpression
 	|	unaryExpressionNotPlusMinus
 	;
 
 unaryExpressionNotPlusMinus
-	:	BNOT^ unaryExpression
-	|	LNOT^ unaryExpression
+	:	BNOT unaryExpression
+	|	LNOT unaryExpression
 
-	|	(	// subrule allows option to shut off warnings
-			options {
-				// "(int" ambig with postfixExpr due to lack of sequence
-				// info in linear approximate LL(k).  It's ok.  Shut up.
-				generateAmbigWarnings=false;
-			}
-		:	// If typecast is built in type, must be numeric operand
-			// Also, no reason to backtrack if type keyword like int, float...
-			lpb:LPAREN^ {#lpb.setType(TYPECAST);} builtInTypeSpec[true] RPAREN!
-			unaryExpression
+    |   LPAREN builtInTypeSpec RPAREN
+        unaryExpression
 
-			// Have to backtrack to see if operator follows.  If no operator
-			// follows, it's a typecast.  No semantic checking needed to parse.
-			// if it _looks_ like a cast, it _is_ a cast; else it's a "(expr)"
-		|	(LPAREN classTypeSpec[true] RPAREN unaryExpressionNotPlusMinus)=>
-			lp:LPAREN^ {#lp.setType(TYPECAST);} classTypeSpec[true] RPAREN!
-			unaryExpressionNotPlusMinus
+        // Have to backtrack to see if operator follows.  If no operator
+        // follows, it's a typecast.  No semantic checking needed to parse.
+        // if it _looks_ like a cast, it _is_ a cast; else it's a '(expr)'
+    |	LPAREN classTypeSpec RPAREN
+        unaryExpressionNotPlusMinus
 
-		|	postfixExpression
-		)
+    |	postfixExpression
 	;
 
 // qualified names, array expressions, method invocation, post inc/dec
 postfixExpression
-	:	primaryExpression // start with a primary
-
-		(	// qualified id (id.id.id.id...) -- build the name
-			DOT^ ( IDENT
-				| "this"
-				| "class"
-				| newExpression
-				| "super" // ClassName.super.field
-				)
-			// the above line needs a semantic check to make sure "class"
-			// is the _last_ qualifier.
-
-			// allow ClassName[].class
-		|	( lbc:LBRACK^ {#lbc.setType(ARRAY_DECLARATOR);} RBRACK! )+
-			DOT^ "class"
-
-			// an array indexing operation
-		|	lb:LBRACK^ {#lb.setType(INDEX_OP);} expression RBRACK!
-
-			// method invocation
-			// The next line is not strictly proper; it allows x(3)(4) or
-			//  x[2](4) which are not valid in Java.  If this grammar were used
-			//  to validate a Java program a semantic check would be needed, or
-			//   this rule would get really ugly...
-			// It also allows ctor invocation like super(3) which is now
-			// handled by the explicit constructor rule, but it would
-			// be hard to syntactically prevent ctor calls here
-		|	lp:LPAREN^ {#lp.setType(METHOD_CALL);}
+	:   primaryExpression
+		(   DOT IDENT
+			(	LPAREN 
 				argList
-			RPAREN!
+				RPAREN
+			)?
+		|	DOT 'this'
+
+		|	DOT 'super'
+            (   // (new Outer()).super()  (create enclosing instance)
+                LPAREN argList RPAREN
+                
+			|   DOT IDENT
+                (	LPAREN 
+                    argList
+                    RPAREN
+                )?
+            )
+		|	DOT newExpression
+		|	LBRACK  expression RBRACK
 		)*
 
-		// possibly add on a post-increment or post-decrement.
-		// allows INC/DEC on too much, but semantics can check
-		(	in:INC^ {#in.setType(POST_INC);}
-	 	|	de:DEC^ {#de.setType(POST_DEC);}
-		|	// nothing
-		)
-	;
+		(   // possibly add on a post-increment or post-decrement.
+            // allows INC/DEC on too much, but semantics can check
+			INC 
+	 	|	DEC 
+		)?
+ 	;
 
 // the basic element of an expression
 primaryExpression
-	:	IDENT
-	|	constant
-	|	"true"
-	|	"false"
-	|	"this"
-	|	"null"
-	|	newExpression
-	|	LPAREN! assignmentExpression RPAREN!
-	|	"super"
+	:	identPrimary ( options {greedy=true;}: DOT 'class' )?
+    |   constant
+	|	'true'
+	|	'false'
+	|	'null'
+    |   newExpression
+	|	'this'
+	|	'super'
+	|	LPAREN assignmentExpression RPAREN
 		// look for int.class and int[].class
-	|	builtInType 
-		( lbt:LBRACK^ {#lbt.setType(ARRAY_DECLARATOR);} RBRACK! )*
-		DOT^ "class"
+	|	builtInType
+		( LBRACK  RBRACK )*
+		DOT 'class'
 	;
+
+/** Match a, a.b.c refs, a.b.c(...) refs, a.b.c[], a.b.c[].class,
+ *  and a.b.c.class refs.  Also this(...) and super(...).  Match
+ *  this or super.
+ */
+identPrimary
+	:	IDENT
+		(
+				// .ident could match here or in postfixExpression.
+				// We do want to match here.  Turn off warning.
+				options {greedy=true; k=2;}
+		:	DOT IDENT
+		)*
+		(
+				// ARRAY_DECLARATOR here conflicts with INDEX_OP in
+				// postfixExpression on LBRACK RBRACK.
+				// We want to match [] here, so greedy.  This overcomes
+                // limitation of linear approximate lookahead.
+				options {greedy=true;}
+		:   ( LPAREN  argList RPAREN )
+		|	( options {greedy=true;} :
+              LBRACK  RBRACK
+            )+
+		)?
+    ;
 
 /** object instantiation.
  *  Trees are built as illustrated by the following input/tree pairs:
- *  
+ *
  *  new T()
- *  
+ *
  *  new
  *   |
  *   T --  ELIST
  *           |
  *          arg1 -- arg2 -- .. -- argn
- *  
+ *
  *  new int[]
  *
  *  new
  *   |
  *  int -- ARRAY_DECLARATOR
- *  
+ *
  *  new int[] {1,2}
  *
  *  new
@@ -895,7 +757,7 @@ primaryExpression
  *                                EXPR -- EXPR
  *                                  |      |
  *                                  1      2
- *  
+ *
  *  new int[3]
  *  new
  *   |
@@ -904,9 +766,9 @@ primaryExpression
  *              EXPR
  *                |
  *                3
- *  
+ *
  *  new int[1][2]
- *  
+ *
  *  new
  *   |
  *  int -- ARRAY_DECLARATOR
@@ -916,11 +778,11 @@ primaryExpression
  *             EXPR             1
  *               |
  *               2
- *  
+ *
  */
 newExpression
-	:	"new"^ type
-		(	LPAREN! argList RPAREN! (classBlock)?
+	:	'new' type
+		(	LPAREN argList RPAREN (classBlock)?
 
 			//java 1.1
 			// Note: This will allow bad constructs like
@@ -937,7 +799,7 @@ newExpression
 argList
 	:	(	expressionList
 		|	/*nothing*/
-			{#argList = #[ELIST,"ELIST"];}
+			
 		)
 	;
 
@@ -948,13 +810,12 @@ newArrayDeclarator
 			// followed by an array index reference.  This is ok,
 			// as the generated code will stay in this loop as
 			// long as it sees an LBRACK (proper behavior)
-			options {
-				warnWhenFollowAmbig = false;
-			}
+				options {k=1;}
+				//options {warnWhenFollowAmbig = false;}
 		:
-			lb:LBRACK^ {#lb.setType(ARRAY_DECLARATOR);}
+			LBRACK 
 				(expression)?
-			RBRACK!
+			RBRACK
 		)+
 	;
 
@@ -967,271 +828,271 @@ constant
 	|	NUM_DOUBLE
 	;
 
-/** Java 1.3 Lexer.
- *
- *  This grammar is in the PUBLIC DOMAIN
- * 
- *	@author John Mitchell		johnm@non.net
- *	@author Terence Parr		parrt@magelang.com
- *	@author John Lilley			jlilley@empathy.com
- *	@author Scott Stanchfield	thetick@magelang.com
- *	@author Markus Mohnen       mohnen@informatik.rwth-aachen.de
- *  @author Peter Williams      pete.williams@sun.com
- *  @author Allan Jacobs        Allan.Jacobs@eng.sun.com
- *  @author Steve Messick       messick@redhills.com
- *
- */
-class JavaLexer extends Lexer;
 
-options {
-	exportVocab=Java;      // call the vocabulary "Java"
-	testLiterals=false;    // don't automatically test for literals
-	k=4;                   // four characters of lookahead
-	charVocabulary='\u0003'..'\uFFFF';
-	// without inlining some bitset tests, couldn't do unicode;
-	// I need to make ANTLR generate smaller bitsets; see
-	// bottom of JavaLexer.java
-	codeGenBitsetTestThreshold=20;
-}
-
-
+//----------------------------------------------------------------------------
+// The Java scanner
+//----------------------------------------------------------------------------
 
 // OPERATORS
+
+
 QUESTION		:	'?'		;
+
+
 LPAREN			:	'('		;
+
+
 RPAREN			:	')'		;
+
+
 LBRACK			:	'['		;
+
+
 RBRACK			:	']'		;
+
+
 LCURLY			:	'{'		;
+
+
 RCURLY			:	'}'		;
+
+
 COLON			:	':'		;
+
+
 COMMA			:	','		;
-//DOT			:	'.'		;
+
+DOT				:	'.'		;
+
 ASSIGN			:	'='		;
-EQUAL			:	"=="	;
+
+
+EQUAL			:	'=='	;
+
+
 LNOT			:	'!'		;
+
+
 BNOT			:	'~'		;
-NOT_EQUAL		:	"!="	;
+
+
+NOT_EQUAL		:	'!='	;
+
+
 DIV				:	'/'		;
-DIV_ASSIGN		:	"/="	;
+
+
+DIV_ASSIGN		:	'/='	;
+
+
 PLUS			:	'+'		;
-PLUS_ASSIGN		:	"+="	;
-INC				:	"++"	;
+
+
+PLUS_ASSIGN		:	'+='	;
+
+
+INC				:	'++'	;
+
+
 MINUS			:	'-'		;
-MINUS_ASSIGN	:	"-="	;
-DEC				:	"--"	;
+
+
+MINUS_ASSIGN	:	'-='	;
+
+
+DEC				:	'--'	;
+
+
 STAR			:	'*'		;
-STAR_ASSIGN		:	"*="	;
+
+
+STAR_ASSIGN		:	'*='	;
+
+
 MOD				:	'%'		;
-MOD_ASSIGN		:	"%="	;
-SR				:	">>"	;
-SR_ASSIGN		:	">>="	;
-BSR				:	">>>"	;
-BSR_ASSIGN		:	">>>="	;
-GE				:	">="	;
-GT				:	">"		;
-SL				:	"<<"	;
-SL_ASSIGN		:	"<<="	;
-LE				:	"<="	;
+
+
+MOD_ASSIGN		:	'%='	;
+
+
+SR				:	'>>'	;
+
+
+SR_ASSIGN		:	'>>='	;
+
+
+BSR				:	'>>>'	;
+
+
+BSR_ASSIGN		:	'>>>='	;
+
+
+GE				:	'>='	;
+
+
+GT				:	'>'		;
+
+
+SL				:	'<<'	;
+
+
+SL_ASSIGN		:	'<<='	;
+
+
+LE				:	'<='	;
+
+
 LT				:	'<'		;
+
+
 BXOR			:	'^'		;
-BXOR_ASSIGN		:	"^="	;
+
+
+BXOR_ASSIGN		:	'^='	;
+
+
 BOR				:	'|'		;
-BOR_ASSIGN		:	"|="	;
-LOR				:	"||"	;
+
+
+BOR_ASSIGN		:	'|='	;
+
+
+LOR				:	'||'	;
+
+
 BAND			:	'&'		;
-BAND_ASSIGN		:	"&="	;
-LAND			:	"&&"	;
+
+
+BAND_ASSIGN		:	'&='	;
+
+
+LAND			:	'&&'	;
+
+
 SEMI			:	';'		;
 
 
 // Whitespace -- ignored
+
+
 WS	:	(	' '
 		|	'\t'
 		|	'\f'
 			// handle newlines
-		|	(	options {generateAmbigWarnings=false;}
-			:	"\r\n"  // Evil DOS
+		|	(	'\r\n'  // Evil DOS
 			|	'\r'    // Macintosh
 			|	'\n'    // Unix (the right way)
 			)
-			{ newline(); }
 		)+
-		{ _ttype = Token.SKIP; }
+		{ channel=99; /*token = JavaParser.IGNORE_TOKEN;*/ }
 	;
 
 // Single-line comments
+
+
 SL_COMMENT
-	:	"//"
-		(~('\n'|'\r'))* ('\n'|'\r'('\n')?)
-		{$setType(Token.SKIP); newline();}
+	:	'//' (options {greedy=false;} : .)* ('\r')? '\n'
+		{channel=99; /*token = JavaParser.IGNORE_TOKEN;*/}
 	;
 
 // multiple-line comments
+
+
 ML_COMMENT
-	:	"/*"
-		(	/*	'\r' '\n' can be matched in one alternative or by matching
-				'\r' in one iteration and '\n' in another.  I am trying to
-				handle any flavor of newline that comes in, but the language
-				that allows both "\r\n" and "\r" and "\n" to all be valid
-				newline is ambiguous.  Consequently, the resulting grammar
-				must be ambiguous.  I'm shutting this warning off.
-			 */
-			options {
-				generateAmbigWarnings=false;
-			}
-		:
-			{ LA(2)!='/' }? '*'
-		|	'\r' '\n'		{newline();}
-		|	'\r'			{newline();}
-		|	'\n'			{newline();}
-		|	~('*'|'\n'|'\r')
-		)*
-		"*/"
-		{$setType(Token.SKIP);}
+	:	'/*'
+		( options {greedy=false;} : . )*
+		'*/'
+		{channel=99;/*token = JavaParser.IGNORE_TOKEN;*/}
 	;
 
-
-// character literals
-CHAR_LITERAL
-	:	'\'' ( ESC | ~'\'' ) '\''
-	;
-
-// string literals
-STRING_LITERAL
-	:	'"' (ESC|~('"'|'\\'))* '"'
-	;
-
-
-// escape sequence -- note that this is protected; it can only be called
-//   from another lexer rule -- it will not ever directly return a token to
-//   the parser
-// There are various ambiguities hushed in this rule.  The optional
-// '0'...'9' digit matches should be matched here rather than letting
-// them go back to STRING_LITERAL to be matched.  ANTLR does the
-// right thing by matching immediately; hence, it's ok to shut off
-// the FOLLOW ambig warnings.
-protected
-ESC
-	:	'\\'
-		(	'n'
-		|	'r'
-		|	't'
-		|	'b'
-		|	'f'
-		|	'"'
-		|	'\''
-		|	'\\'
-		|	('u')+ HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT 
-		|	('0'..'3')
-			(
-				options {
-					warnWhenFollowAmbig = false;
-				}
-			:	('0'..'7')
-				(	
-					options {
-						warnWhenFollowAmbig = false;
-					}
-				:	'0'..'7'
-				)?
-			)?
-		|	('4'..'7')
-			(
-				options {
-					warnWhenFollowAmbig = false;
-				}
-			:	('0'..'9')
-			)?
-		)
-	;
-
-
-// hexadecimal digit (again, note it's protected!)
-protected
-HEX_DIGIT
-	:	('0'..'9'|'A'..'F'|'a'..'f')
-	;
-
-
-// a dummy rule to force vocabulary to be all characters (except special
-//   ones that ANTLR uses internally (0 to 2)
-protected
-VOCAB
-	:	'\3'..'\377'
-	;
-
-
-// an identifier.  Note that testLiterals is set to true!  This means
-// that after we match the rule, we look in the literals table to see
-// if it's a literal or really an identifer
 IDENT
-	options {testLiterals=true;}
 	:	('a'..'z'|'A'..'Z'|'_'|'$') ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'$')*
 	;
 
+// From the java language spec
 
-// a numeric literal
 NUM_INT
-	{boolean isDecimal=false; Token t=null;}
-    :   '.' {_ttype = DOT;}
-            (	('0'..'9')+ (EXPONENT)? (f1:FLOAT_SUFFIX {t=f1;})?
-                {
-				if (t != null && t.getText().toUpperCase().indexOf('D')>=0) {
-                	_ttype = NUM_DOUBLE;
-				}
-				else {
-                	_ttype = NUM_FLOAT;
-				}
-				}
-            )?
+    : DECIMAL_LITERAL 
+    | HEX_LITERAL
+    | OCTAL_LITERAL
+    ;
 
-	|	(	'0' {isDecimal = true;} // special case for just '0'
-			(	('x'|'X')
-				(											// hex
-					// the 'e'|'E' and float suffix stuff look
-					// like hex digits, hence the (...)+ doesn't
-					// know when to stop: ambig.  ANTLR resolves
-					// it correctly by matching immediately.  It
-					// is therefor ok to hush warning.
-					options {
-						warnWhenFollowAmbig=false;
-					}
-				:	HEX_DIGIT
-				)+
-			|	('0'..'7')+									// octal
-			)?
-		|	('1'..'9') ('0'..'9')*  {isDecimal=true;}		// non-zero decimal
-		)
-		(	('l'|'L') { _ttype = NUM_LONG; }
-		
-		// only check to see if it's a float if looks like decimal so far
-		|	{isDecimal}?
-            (   '.' ('0'..'9')* (EXPONENT)? (f2:FLOAT_SUFFIX {t=f2;})?
-            |   EXPONENT (f3:FLOAT_SUFFIX {t=f3;})?
-            |   f4:FLOAT_SUFFIX {t=f4;}
-            )
-            {
-			if (t != null && t.getText().toUpperCase() .indexOf('D') >= 0) {
-                _ttype = NUM_DOUBLE;
-			}
-            else {
-                _ttype = NUM_FLOAT;
-			}
-			}
-        )?
+fragment
+DECIMAL_LITERAL: '1'..'9' ('0'..'9')* ('l'|'L')? ;
+
+fragment
+HEX_LITERAL: '0' ('x'|'X') ('0'..'9'|'a'..'f'|'A'..'F')+ ('l'|'L')? ;
+
+fragment
+OCTAL_LITERAL: '0' ('0'..'7')* ('l'|'L')? ;
+
+NUM_FLOAT
+    :     DIGITS '.' (DIGITS)? (EXPONENT_PART)? (FLOAT_TYPE_SUFFIX)?
+    | '.' DIGITS (EXPONENT_PART)? (FLOAT_TYPE_SUFFIX)?
+    |     DIGITS EXPONENT_PART FLOAT_TYPE_SUFFIX
+    |     DIGITS EXPONENT_PART
+    |     DIGITS FLOAT_TYPE_SUFFIX
+    ;
+
+fragment
+DIGITS : ('0'..'9')+ ;
+
+/*
+fragment
+EXPONENT_PART: ('e'|'E') ('+'|'-')? DIGITS ;
+*/
+
+fragment
+EXPONENT_PART: ('e'|'E') ('+'|'-')? DIGITS ;
+
+fragment
+FLOAT_TYPE_SUFFIX :   ('f'|'F'|'d'|'D') ;
+
+CHAR_LITERAL
+    :
+      '\''
+      ( ~('\''|'\\')
+      | ESCAPE_SEQUENCE
+      )
+      '\''
+    ;
+
+STRING_LITERAL
+    :
+      '\"'
+      ( ~('\"'|'\\')
+      | ESCAPE_SEQUENCE
+      )*
+      '\"'
+        ;
+
+fragment
+ESCAPE_SEQUENCE
+    :	'\\' 'b'
+    |   '\\' 't'
+    |   '\\' 'n'
+    |   '\\' 'f'
+    |   '\\' 'r'
+    |   '\\' '\"'
+    |   '\\' '\''
+    |   '\\' '\\'
+    |	'\\' '0'..'3' OCTAL_DIGIT OCTAL_DIGIT
+    |   '\\' OCTAL_DIGIT OCTAL_DIGIT
+    |   '\\' OCTAL_DIGIT
+	|	UNICODE_CHAR
 	;
 
-
-// a couple protected methods to assist in matching floating point numbers
-protected
-EXPONENT
-	:	('e'|'E') ('+'|'-')? ('0'..'9')+
+fragment
+UNICODE_CHAR
+	:	'\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
 	;
 
-
-protected
-FLOAT_SUFFIX
-	:	'f'|'F'|'d'|'D'
+fragment
+HEX_DIGIT
+	:	'0'..'9'|'a'..'f'|'A'..'F'
 	;
 
+fragment
+OCTAL_DIGIT
+	:	'0'..'7'
+	;
