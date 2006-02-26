@@ -20,8 +20,15 @@ import org.drools.CheckedDroolsException;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
+import org.drools.rule.PredicateConstraint;
+import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
+import org.drools.spi.Consequence;
+import org.drools.spi.EvalExpression;
+import org.drools.spi.PredicateExpression;
+import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.TypeResolver;
 
 public class DroolsCompiler {
@@ -132,10 +139,6 @@ public class DroolsCompiler {
         List attributes = packageDescr.getAttributes();
     }
     
-    void compile(String className, Map ruleClasses, Map invokerClasses) {
-        
-    }
-    
     CompilationResult compile(String className, String text) {              
       src.addFile( className.replace( '.', '/' ) + ".java", text.toCharArray() );                
       CompilationResult result = compiler.compile( new String[] { className }, src, dst );
@@ -167,22 +170,49 @@ public class DroolsCompiler {
         
         RuleBuilder builder = new RuleBuilder();
         builder.build( pkg, ruleDescr );
-        Rule rule = builder.getRule();
-        
-        pkg.addRule( rule );
+        Rule rule = builder.getRule();                        
         
         System.out.println( ruleDescr.getClassName() + ":\n" + builder.getRuleClass() );
         
         compile(  pkg.getName() + "." + ruleDescr.getClassName(), builder.getRuleClass() );
         
-        for( Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {  
+        for( Iterator it = builder.getInvokeables().keySet().iterator(); it.hasNext(); ) {  
             String className = (String) it.next();
-            String text = (String) builder.getInvokers().get( className );
+            String text = (String) builder.getInvokeables().get( className );
             
             System.out.println( className + ":\n" + text );
             
             compile(  pkg.getName() + "." + className, text );              
-        }        
+        }       
+
+        // Wire up invokeables
+        Map lookups = builder.getReferenceLookups();
+        try {
+            for ( Iterator it = lookups.keySet().iterator(); it.hasNext(); ) {
+                String className = ( String ) it.next();
+                Class clazz = this.classLoader.loadClass( className );
+                Object invokeable = lookups.get( className );
+                if ( invokeable instanceof ReturnValueConstraint ) {
+                    ( ( ReturnValueConstraint ) invokeable ).setReturnValueExpression( ( ReturnValueExpression ) clazz.newInstance() );
+                } else if ( invokeable instanceof PredicateConstraint ) {
+                    ( ( PredicateConstraint ) invokeable ).setPredicateExpression( ( PredicateExpression ) clazz.newInstance() );
+                } else if ( invokeable instanceof EvalCondition ) {
+                    ( ( EvalCondition ) invokeable ).setEvalExpression( ( EvalExpression ) clazz.newInstance() );
+                } else if ( invokeable instanceof Rule ) {
+                    ( ( Rule ) invokeable ).setConsequence( ( Consequence ) clazz.newInstance() );
+                }      
+                
+            }
+        } catch ( ClassNotFoundException e ) {
+            throw new CheckedDroolsException( e );
+        } catch ( InstantiationError e ) {
+            throw new CheckedDroolsException( e );
+        } catch ( IllegalAccessException e ) {
+            throw new CheckedDroolsException( e );
+        } catch ( InstantiationException e) {
+            throw new CheckedDroolsException( e );
+        }
+        pkg.addRule( rule );
     }
 
     public Map getPackages() {
