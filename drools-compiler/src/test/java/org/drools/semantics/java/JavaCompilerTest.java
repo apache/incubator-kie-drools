@@ -17,6 +17,7 @@ import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ConsequenceDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueDescr;
@@ -63,10 +64,11 @@ public class JavaCompilerTest extends DroolsTestCase {
         ruleDescr.setConsequence( "drools.modifyObject(m);" );
 
         compiler.addPackage( packageDescr );
-        
-        assertLength( 3, compiler.getErrors().values() );
+
+        assertLength( 3,
+                      compiler.getErrors().values() );
     }
-    
+
     public void testLiteral() throws Exception {
         DroolsCompiler compiler = new DroolsCompiler();
 
@@ -81,28 +83,20 @@ public class JavaCompilerTest extends DroolsTestCase {
                                               "stilton" );
         lhs.addDescr( column );
 
-        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
-                                                                     "x" );
-        column.addDescr( fieldBindingDescr );
-        fieldBindingDescr = new FieldBindingDescr( "price",
-                                                   "y" );
-        column.addDescr( fieldBindingDescr );
+        LiteralDescr listeralDescr = new LiteralDescr( "type",
+                                                       "==",
+                                                       "stilton" );
 
-        packageDescr.addGlobal( "map",
-                                "java.util.Map" );
-
-        ReturnValueDescr returnValue = new ReturnValueDescr( "price",
-                                                             "==",
-                                                             "new  Integer(( ( ( Integer )map.get(x) ).intValue() * y.intValue()))" );
-        column.addDescr( returnValue );
+        column.addDescr( listeralDescr );
 
         ruleDescr.setConsequence( "drools.modifyObject(stilton);" );
 
         compiler.addPackage( packageDescr );
-        
-        assertLength( 0, compiler.getErrors().values() );
-    }    
-    
+
+        assertLength( 0,
+                      compiler.getErrors().values() );
+    }
+
     public void testReturnValue() throws Exception {
         DroolsCompiler compiler = new DroolsCompiler();
 
@@ -135,8 +129,9 @@ public class JavaCompilerTest extends DroolsTestCase {
         ruleDescr.setConsequence( "drools.modifyObject(stilton);" );
 
         compiler.addPackage( packageDescr );
-        
-        assertLength( 0, compiler.getErrors().values() );
+
+        assertLength( 0,
+                      compiler.getErrors().values() );
     }
 
     public void testPredicate() throws CheckedDroolsException,
@@ -162,15 +157,16 @@ public class JavaCompilerTest extends DroolsTestCase {
                                 "java.util.Map" );
 
         PredicateDescr predicate = new PredicateDescr( "price",
-                                                        "y",
-                                                        "( ( Integer )map.get(x) ).intValue() == y.intValue()" );
+                                                       "y",
+                                                       "( ( Integer )map.get(x) ).intValue() == y.intValue()" );
         column.addDescr( predicate );
 
         ruleDescr.setConsequence( "drools.modifyObject(stilton);" );
 
         compiler.addPackage( packageDescr );
-        
-        assertLength( 0, compiler.getErrors().values() );
+
+        assertLength( 0,
+                      compiler.getErrors().values() );
     }
 
     public void testEval() throws Exception {
@@ -203,43 +199,44 @@ public class JavaCompilerTest extends DroolsTestCase {
         ruleDescr.setConsequence( "drools.modifyObject(stilton);" );
 
         compiler.addPackage( packageDescr );
-        
-        assertLength( 0, compiler.getErrors().values() );
-    } 
-    
-    public void testConditionalElements() throws Exception {
-        DroolsCompiler compiler = new DroolsCompiler();
 
-        PackageDescr packageDescr = new PackageDescr( "p1" );
-        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
-        packageDescr.addRule( ruleDescr );
-
-        AndDescr lhs = new AndDescr();
-        ruleDescr.setLhs( lhs );
-
-        ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
-                                              "stilton" );
-        lhs.addDescr( column );
-
-        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
-                                                                     "x" );
-        column.addDescr( fieldBindingDescr );
-        fieldBindingDescr = new FieldBindingDescr( "price",
-                                                   "y" );
-        column.addDescr( fieldBindingDescr );
-
-        packageDescr.addGlobal( "map",
-                                "java.util.Map" );
-
-        EvalDescr eval = new EvalDescr( "( ( Integer )map.get(x) ).intValue() == y.intValue()" );
-        column.addDescr( eval );
-
-        ruleDescr.setConsequence( "drools.modifyObject(stilton);" );
-
-        compiler.addPackage( packageDescr );
-        
-        assertLength( 0, compiler.getErrors().values() );        
+        assertLength( 0,
+                      compiler.getErrors().values() );
     }
+
+    //    public void testConditionalElements() throws Exception {
+    //        DroolsCompiler compiler = new DroolsCompiler();
+    //
+    //        PackageDescr packageDescr = new PackageDescr( "p1" );
+    //        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+    //        packageDescr.addRule( ruleDescr );
+    //
+    //        AndDescr lhs = new AndDescr();
+    //        ruleDescr.setLhs( lhs );
+    //
+    //        ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+    //                                              "stilton" );
+    //        lhs.addDescr( column );
+    //
+    //        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
+    //                                                                     "x" );
+    //        column.addDescr( fieldBindingDescr );
+    //        fieldBindingDescr = new FieldBindingDescr( "price",
+    //                                                   "y" );
+    //        column.addDescr( fieldBindingDescr );
+    //
+    //        packageDescr.addGlobal( "map",
+    //                                "java.util.Map" );
+    //
+    //        EvalDescr eval = new EvalDescr( "( ( Integer )map.get(x) ).intValue() == y.intValue()" );
+    //        column.addDescr( eval );
+    //
+    //        ruleDescr.setConsequence( "drools.modifyObject(stilton);" );
+    //
+    //        compiler.addPackage( packageDescr );
+    //        
+    //        assertLength( 0, compiler.getErrors().values() );        
+    //    }
 
     public class Cheese {
         private String type;
@@ -259,5 +256,5 @@ public class JavaCompilerTest extends DroolsTestCase {
         public String getType() {
             return type;
         }
-    }        
+    }
 }
