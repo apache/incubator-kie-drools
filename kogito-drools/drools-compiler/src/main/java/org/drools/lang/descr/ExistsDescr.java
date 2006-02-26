@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ExistsDescr extends PatternDescr
     implements
-    ConditionalElement {
+    ConditionalElementDescr {
 
     private List list;
 

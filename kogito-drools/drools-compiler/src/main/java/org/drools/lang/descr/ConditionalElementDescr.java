@@ -2,6 +2,6 @@ package org.drools.lang.descr;
 
 import java.util.List;
 
-public interface ConditionalElement {
+public interface ConditionalElementDescr {
     public List getDescrs();
 }

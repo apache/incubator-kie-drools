@@ -67,6 +67,42 @@ public class JavaCompilerTest extends DroolsTestCase {
         assertLength( 3, compiler.getErrors().values() );
     }
     
+    public void testLiteral() throws Exception {
+        DroolsCompiler compiler = new DroolsCompiler();
+
+        PackageDescr packageDescr = new PackageDescr( "p1" );
+        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+        packageDescr.addRule( ruleDescr );
+
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+
+        ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+                                              "stilton" );
+        lhs.addDescr( column );
+
+        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
+                                                                     "x" );
+        column.addDescr( fieldBindingDescr );
+        fieldBindingDescr = new FieldBindingDescr( "price",
+                                                   "y" );
+        column.addDescr( fieldBindingDescr );
+
+        packageDescr.addGlobal( "map",
+                                "java.util.Map" );
+
+        ReturnValueDescr returnValue = new ReturnValueDescr( "price",
+                                                             "==",
+                                                             "new  Integer(( ( ( Integer )map.get(x) ).intValue() * y.intValue()))" );
+        column.addDescr( returnValue );
+
+        ruleDescr.setConsequence( "drools.modifyObject(stilton);" );
+
+        compiler.addPackage( packageDescr );
+        
+        assertLength( 0, compiler.getErrors().values() );
+    }    
+    
     public void testReturnValue() throws Exception {
         DroolsCompiler compiler = new DroolsCompiler();
 
@@ -169,8 +205,41 @@ public class JavaCompilerTest extends DroolsTestCase {
         compiler.addPackage( packageDescr );
         
         assertLength( 0, compiler.getErrors().values() );
-
     } 
+    
+    public void testConditionalElements() throws Exception {
+        DroolsCompiler compiler = new DroolsCompiler();
+
+        PackageDescr packageDescr = new PackageDescr( "p1" );
+        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+        packageDescr.addRule( ruleDescr );
+
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+
+        ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+                                              "stilton" );
+        lhs.addDescr( column );
+
+        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
+                                                                     "x" );
+        column.addDescr( fieldBindingDescr );
+        fieldBindingDescr = new FieldBindingDescr( "price",
+                                                   "y" );
+        column.addDescr( fieldBindingDescr );
+
+        packageDescr.addGlobal( "map",
+                                "java.util.Map" );
+
+        EvalDescr eval = new EvalDescr( "( ( Integer )map.get(x) ).intValue() == y.intValue()" );
+        column.addDescr( eval );
+
+        ruleDescr.setConsequence( "drools.modifyObject(stilton);" );
+
+        compiler.addPackage( packageDescr );
+        
+        assertLength( 0, compiler.getErrors().values() );        
+    }
 
     public class Cheese {
         private String type;
