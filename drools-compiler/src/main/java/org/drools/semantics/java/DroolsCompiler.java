@@ -165,16 +165,11 @@ public class DroolsCompiler {
                                                    "java" );
         ruleDescr.SetClassName( ucFirst( ruleClassName ) );        
         
-//        this.ruleCompiler.compile( pkg,
-//                                   ruleDescr );
-        
         RuleBuilder builder = new RuleBuilder();
         builder.build( pkg, ruleDescr );
         Rule rule = builder.getRule();
-//        
-//        for( Iterator it = methods.iterator(); it.hasNext(); it.next() ) {            
-//            compile(  pkg.getName() + "." + ucFirst( ruleDescr.getClassName() ), (String) it.next() );              
-//        }
+        
+        pkg.addRule( rule );
         
         System.out.println( ruleDescr.getClassName() + ":\n" + builder.getRuleClass() );
         
@@ -188,13 +183,10 @@ public class DroolsCompiler {
             
             compile(  pkg.getName() + "." + className, text );              
         }        
-                
-        //this.compiler.compile(  this.pkg.getName() + "." + ucFirst( this.ruleDescr.getClassName() ), string.toString() );
-        //this.compiler.compile( pkg.getName() + "." + ruleDescr.getClassName(), this.methods, this.invokers);
     }
 
-    public List getPackages() {
-        return new ArrayList( packages.values() );
+    public Map getPackages() {
+        return this.packages;
     }
 
     public MemoryResourceReader getMemoryResourceReader() {
