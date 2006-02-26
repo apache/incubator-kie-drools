@@ -163,7 +163,7 @@ public class Package
      */
     public void addRule(Rule rule) throws DuplicateRuleNameException,
                                   InvalidRuleException {
-        rule.checkValidity();
+        //rule.checkValidity();
 
         String name = rule.getName();
 
