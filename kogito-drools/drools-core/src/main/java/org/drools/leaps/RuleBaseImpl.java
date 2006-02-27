@@ -32,7 +32,6 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.FactHandleFactory;
-import org.drools.spi.RuleBaseContext;
 
 /**
  * This base class for the engine and analogous to Drool's RuleBase class. It
@@ -55,8 +54,6 @@ public class RuleBaseImpl implements RuleBase {
 
 	private Map applicationData;
 
-	private RuleBaseContext ruleBaseContext;
-
 	// @todo: replace this with a weak HashSet
 	/**
 	 * WeakHashMap to keep references of WorkingMemories but allow them to be
@@ -74,8 +71,7 @@ public class RuleBaseImpl implements RuleBase {
 	 *            The rete network.
 	 */
 	public RuleBaseImpl() throws PackageIntegrationException, FactException, InvalidPatternException {
-		this(new HandleFactory(), new HashSet(), new HashMap(),
-				new RuleBaseContext());
+		this(new HandleFactory(), new HashSet(), new HashMap() );
 	}
 
 	/**
@@ -91,14 +87,13 @@ public class RuleBaseImpl implements RuleBase {
 	 * @param applicationData
 	 */
 	public RuleBaseImpl(FactHandleFactory factHandleFactory, Set pkgs,
-			Map applicationData, RuleBaseContext ruleBaseContext)
+			Map applicationData)
 			throws PackageIntegrationException,
 			FactException, InvalidPatternException {
 		// because we can deal only with leaps fact handle factory
 		this.factHandleFactory = (HandleFactory) factHandleFactory;
 		this.pkgs = pkgs;
 		this.applicationData = applicationData;
-		this.ruleBaseContext = ruleBaseContext;
 		this.workingMemories = new WeakHashMap();
 
 		this.pkgs = new HashSet();
@@ -161,13 +156,6 @@ public class RuleBaseImpl implements RuleBase {
 
 	public Map getApplicationData() {
 		return this.applicationData;
-	}
-
-	/**
-	 * @see RuleBase
-	 */
-	public RuleBaseContext getRuleBaseContext() {
-		return this.ruleBaseContext;
 	}
 
 	/**

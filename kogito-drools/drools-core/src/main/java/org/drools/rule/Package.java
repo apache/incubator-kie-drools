@@ -50,7 +50,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.spi.Functions;
-import org.drools.spi.RuleBaseContext;
 import org.drools.spi.TypeResolver;
 
 /**
@@ -80,7 +79,7 @@ public class Package
     private String                name;
 
     /** Set of all rule-names in this <code>RuleSet</code>. */
-    private Set                   ruleNames;
+    private Map                   ruleNames;
 
     /** Ordered list of all <code>Rules</code> in this <code>RuleSet</code>. */
     private List                  rules;
@@ -90,6 +89,8 @@ public class Package
     private Map                   globals;
 
     private Map                   functions;
+    
+    private Map                   attributes;
     
     private TypeResolver          typeResolver;
 
@@ -106,23 +107,7 @@ public class Package
     public Package(String name) {
         this.name = name;
         this.imports = new ArrayList(1);
-        this.ruleNames = new HashSet();
-        this.rules = new ArrayList();
-        this.globals = new HashMap();
-        this.functions = new HashMap();
-    }
-
-    /**
-     * Construct.
-     * 
-     * @param name
-     *            The name of this <code>RuleSet</code>.
-     * @param ruleBaseContext
-     */
-    public Package(String name,
-                   RuleBaseContext ruleBaseContext) {
-        this.name = name;
-        this.ruleNames = new HashSet();
+        this.ruleNames = new HashMap();
         this.rules = new ArrayList();
         this.globals = new HashMap();
         this.functions = new HashMap();
@@ -173,7 +158,8 @@ public class Package
                                                   rule );
         }
 
-        this.ruleNames.add( name );
+        this.ruleNames.put( name, 
+                            rule );
         rule.setLoadOrder( this.rules.size() );
         this.rules.add( rule );
     }
@@ -189,15 +175,7 @@ public class Package
      *         <code>RuleSet</code>.
      */
     public Rule getRule(String name) {
-        Rule[] rules = getRules();
-
-        for ( int i = 0; i < rules.length; ++i ) {
-            if ( rules[i].getName().equals( name ) ) {
-                return rules[i];
-            }
-        }
-
-        return null;
+        return ( Rule ) this.ruleNames.get( name );
     }
 
     /**
@@ -210,7 +188,7 @@ public class Package
      *          <code>Rule</code> with the specified name, else <code>false</code>.
      */
     public boolean containsRule(String name) {
-        return this.ruleNames.contains( name );
+        return this.ruleNames.containsKey( name );
     }
 
     /**
