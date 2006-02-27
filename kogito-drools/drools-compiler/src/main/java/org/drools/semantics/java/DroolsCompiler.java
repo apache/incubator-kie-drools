@@ -1,13 +1,10 @@
 package org.drools.semantics.java;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.JavaCompiler;
@@ -17,6 +14,7 @@ import org.apache.commons.jci.stores.MemoryResourceStore;
 import org.apache.commons.jci.stores.ResourceStore;
 import org.apache.commons.jci.stores.ResourceStoreClassLoader;
 import org.drools.CheckedDroolsException;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -36,13 +34,13 @@ public class DroolsCompiler {
     private final MemoryResourceStore      dst;
     private final ResourceStoreClassLoader classLoader;
 
-    private  JavaCompiler compiler = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
-    
+    private JavaCompiler                   compiler = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
+
     private int                            counter;
 
     private Map                            packages;
-    
-    private Map                            errors = Collections.EMPTY_MAP;
+
+    private Map                            errors   = Collections.EMPTY_MAP;
 
     public DroolsCompiler() {
         this( null );
@@ -54,8 +52,6 @@ public class DroolsCompiler {
 
         this.packages = new HashMap();
 
-        //this.packageName = packageName + "." + pkg.getName().replaceAll( "(^[0-9]|[^\\w$])", "_" ) + "_" + System.currentTimeMillis();
-
         if ( parentClassLoader == null ) {
             parentClassLoader = Thread.currentThread().getContextClassLoader();
             if ( parentClassLoader == null ) {
@@ -63,11 +59,12 @@ public class DroolsCompiler {
             }
         }
 
-        classLoader = new ResourceStoreClassLoader( parentClassLoader,
-                                                    new ResourceStore[]{dst} );
+        this.classLoader = new ResourceStoreClassLoader( parentClassLoader,
+                                                         new ResourceStore[]{dst} );
     }
 
-    public void addPackage(PackageDescr packageDescr) throws CheckedDroolsException, ClassNotFoundException {
+    public void addPackage(PackageDescr packageDescr) throws CheckedDroolsException,
+                                                     ClassNotFoundException {
         if ( this.packages == Collections.EMPTY_MAP ) {
             this.packages = new HashMap();
         }
@@ -75,9 +72,10 @@ public class DroolsCompiler {
         Package pkg = (Package) this.packages.get( packageDescr.getName() );
         if ( pkg != null ) {
             //mergePackage( packageDescr ) ;
-            mergePackage(pkg, packageDescr);
+            mergePackage( pkg,
+                          packageDescr );
         } else {
-            pkg = newPackage(packageDescr);
+            pkg = newPackage( packageDescr );
             this.packages.put( pkg.getName(),
                                pkg );
         }
@@ -98,28 +96,14 @@ public class DroolsCompiler {
     private Package newPackage(PackageDescr packageDescr) throws ClassNotFoundException {
         Package pkg = new Package( packageDescr.getName() );
 
-        List imports = packageDescr.getImports();
-        for ( Iterator it = imports.iterator(); it.hasNext(); ) {
-            pkg.addImport( (String) it.next() );
-        }
-
-        TypeResolver typeResolver = new ClassTypeResolver( imports,
-                                                           this.classLoader );
-
-        Map globals = packageDescr.getGlobals();
-        for ( Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
-            String identifier = (String) it.next();
-            String className = (String) globals.get( identifier );
-            Class clazz = typeResolver.resolveType( className );
-            pkg.addGlobalDeclaration( identifier, clazz );
-        }
-
-        List attributes = packageDescr.getAttributes();
+        mergePackage( pkg, 
+                      packageDescr );
 
         return pkg;
     }
-    
-    private void mergePackage(Package pkg, PackageDescr packageDescr) throws ClassNotFoundException {
+
+    private void mergePackage(Package pkg,
+                              PackageDescr packageDescr) throws ClassNotFoundException {
         List imports = packageDescr.getImports();
         for ( Iterator it = imports.iterator(); it.hasNext(); ) {
             pkg.addImport( (String) it.next() );
@@ -133,27 +117,32 @@ public class DroolsCompiler {
             String identifier = (String) it.next();
             String className = (String) globals.get( identifier );
             Class clazz = typeResolver.resolveType( className );
-            pkg.addGlobalDeclaration( identifier, clazz );
+            pkg.addGlobalDeclaration( identifier,
+                                      clazz );
+        }
+    }
+
+    CompilationResult compile(String className,
+                              String text) {
+        src.addFile( className.replace( '.',
+                                        '/' ) + ".java",
+                     text.toCharArray() );
+        CompilationResult result = compiler.compile( new String[]{className},
+                                                     src,
+                                                     dst );
+        if ( result.getErrors().length > 0 ) {
+            if ( this.errors == Collections.EMPTY_MAP ) {
+                this.errors = new HashMap();
+            }
+            for ( int i = 0, size = result.getErrors().length; i < size; i++ ) {
+                System.out.println( result.getErrors()[i] );
+            }
+
+            this.errors.put( className,
+                             result );
         }
 
-        List attributes = packageDescr.getAttributes();
-    }
-    
-    CompilationResult compile(String className, String text) {              
-      src.addFile( className.replace( '.', '/' ) + ".java", text.toCharArray() );                
-      CompilationResult result = compiler.compile( new String[] { className }, src, dst );
-      if ( result.getErrors().length > 0 ) {
-          if ( this.errors == Collections.EMPTY_MAP ) {
-              this.errors = new HashMap();
-          }
-          for ( int i =0, size = result.getErrors().length; i < size; i++ ) {
-              System.out.println(result.getErrors()[i]);
-          }
-          
-          this.errors.put( className, result );
-      }
-     
-      return result;
+        return result;
     }
 
     public void addFunction(PackageDescr packageDescr,
@@ -166,42 +155,44 @@ public class DroolsCompiler {
         String ruleClassName = getUniqueLegalName( pkg.getName(),
                                                    ruleDescr.getName(),
                                                    "java" );
-        ruleDescr.SetClassName( ucFirst( ruleClassName ) );        
-        
+        ruleDescr.SetClassName( ucFirst( ruleClassName ) );
+
         RuleBuilder builder = new RuleBuilder();
-        builder.build( pkg, ruleDescr );
-        Rule rule = builder.getRule();                        
-        
-        System.out.println( ruleDescr.getClassName() + ":\n" + builder.getRuleClass() );
-        
-        compile(  pkg.getName() + "." + ruleDescr.getClassName(), builder.getRuleClass() );
-        
-        for( Iterator it = builder.getInvokeables().keySet().iterator(); it.hasNext(); ) {  
+        builder.build( pkg,
+                       ruleDescr );
+        Rule rule = builder.getRule();
+
+        //System.out.println( ruleDescr.getClassName() + ":\n" + builder.getRuleClass() );
+
+        compile( pkg.getName() + "." + ruleDescr.getClassName(),
+                 builder.getRuleClass() );
+
+        for ( Iterator it = builder.getInvokeables().keySet().iterator(); it.hasNext(); ) {
             String className = (String) it.next();
             String text = (String) builder.getInvokeables().get( className );
-            
-            System.out.println( className + ":\n" + text );
-            
-            compile(  pkg.getName() + "." + className, text );              
-        }       
+
+            //System.out.println( className + ":\n" + text );
+
+            compile( pkg.getName() + "." + className,
+                     text );
+        }
 
         // Wire up invokeables
         Map lookups = builder.getReferenceLookups();
         try {
             for ( Iterator it = lookups.keySet().iterator(); it.hasNext(); ) {
-                String className = ( String ) it.next();
+                String className = (String) it.next();
                 Class clazz = this.classLoader.loadClass( className );
                 Object invokeable = lookups.get( className );
                 if ( invokeable instanceof ReturnValueConstraint ) {
-                    ( ( ReturnValueConstraint ) invokeable ).setReturnValueExpression( ( ReturnValueExpression ) clazz.newInstance() );
+                    ((ReturnValueConstraint) invokeable).setReturnValueExpression( (ReturnValueExpression) clazz.newInstance() );
                 } else if ( invokeable instanceof PredicateConstraint ) {
-                    ( ( PredicateConstraint ) invokeable ).setPredicateExpression( ( PredicateExpression ) clazz.newInstance() );
+                    ((PredicateConstraint) invokeable).setPredicateExpression( (PredicateExpression) clazz.newInstance() );
                 } else if ( invokeable instanceof EvalCondition ) {
-                    ( ( EvalCondition ) invokeable ).setEvalExpression( ( EvalExpression ) clazz.newInstance() );
+                    ((EvalCondition) invokeable).setEvalExpression( (EvalExpression) clazz.newInstance() );
                 } else if ( invokeable instanceof Rule ) {
-                    ( ( Rule ) invokeable ).setConsequence( ( Consequence ) clazz.newInstance() );
-                }      
-                
+                    ((Rule) invokeable).setConsequence( (Consequence) clazz.newInstance() );
+                }
             }
         } catch ( ClassNotFoundException e ) {
             throw new CheckedDroolsException( e );
@@ -209,11 +200,11 @@ public class DroolsCompiler {
             throw new CheckedDroolsException( e );
         } catch ( IllegalAccessException e ) {
             throw new CheckedDroolsException( e );
-        } catch ( InstantiationException e) {
+        } catch ( InstantiationException e ) {
             throw new CheckedDroolsException( e );
         }
         pkg.addRule( rule );
-    }
+    }   
 
     public Map getPackages() {
         return this.packages;
@@ -246,7 +237,7 @@ public class DroolsCompiler {
     public int getNextInt() {
         return this.counter++;
     }
-    
+
     public Map getErrors() {
         return this.errors;
     }
@@ -260,8 +251,8 @@ public class DroolsCompiler {
      * @return
      */
     public String getUniqueLegalName(String packageName,
-                                          String name,
-                                          String ext) {
+                                     String name,
+                                     String ext) {
         // replaces the first char if its a number and after that all non
         // alphanumeric or $ chars with _
         String newName = name.replaceAll( "(^[0-9]|[^\\w$])",
@@ -285,9 +276,9 @@ public class DroolsCompiler {
 
         return newName;
     }
-    
+
     private String ucFirst(String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
-    }    
+    }
 
 }

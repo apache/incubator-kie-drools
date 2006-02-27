@@ -1,28 +1,19 @@
 package org.drools.lang.descr;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class AttributeDescr extends PatternDescr {
-    private String text;    
-    private List types = Collections.EMPTY_LIST;
-    private List identifiers;
+    private String name;    
+    private String value;
     
-    public AttributeDescr(String text) {
-        this.text = text;
+    public AttributeDescr(String name, String value) {
+        this.name = name;
+        this.value = value;
     }
-    
-    public void AddParatmer(String type, String identifier) {
-        if ( this.types == Collections.EMPTY_LIST ) {
-            this.types = new ArrayList(1);
-            this.identifiers = new ArrayList(1);
-        }
-        this.types.add( type );
-        this.identifiers.add( identifier );
+
+    public String getName() {
+        return name;
     }
-    
-    public String getText() {
-        return this.text;
-    } 
+
+    public String getValue() {
+        return value;
+    }            
 }

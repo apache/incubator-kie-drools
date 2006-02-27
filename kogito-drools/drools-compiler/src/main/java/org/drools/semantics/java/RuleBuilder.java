@@ -2,6 +2,8 @@ package org.drools.semantics.java;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,12 +11,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.antlr.stringtemplate.StringTemplate;
+import org.antlr.stringtemplate.StringTemplateGroup;
+import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.drools.CheckedDroolsException;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorFactory;
 import org.drools.base.FieldFactory;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -62,7 +68,7 @@ public class RuleBuilder {
     public String               ruleClass;
     public List                 methods;
     public Map                  invokeables;
-    
+
     public Map                  referenceLookups;
 
     private Map                 declarations;
@@ -91,7 +97,7 @@ public class RuleBuilder {
     public String getRuleClass() {
         return this.ruleClass;
     }
-    
+
     public Map getReferenceLookups() {
         return this.referenceLookups;
     }
@@ -115,6 +121,10 @@ public class RuleBuilder {
         this.rule = new Rule( ruleDescr.getName() );
         this.ruleDescr = ruleDescr;
 
+        // Assign attributes
+        setAttributes( rule,
+                       ruleDescr.getAttributes() );
+
         try {
             // Build the left hand side
             // generate invokers, methods
@@ -123,13 +133,35 @@ public class RuleBuilder {
                    rule.getLhs() );
             // Build the consequence and generate it's invokers/methods
             // generate the main rule from the previously generated methods.
-            build( rule, ruleDescr );
+            build( rule,
+                   ruleDescr );
         } catch ( Exception e ) {
             e.printStackTrace();
             throw new CheckedDroolsException( e );
         }
 
         return rule;
+    }
+
+    private void setAttributes(Rule rule,
+                               List attributes) {
+        for ( Iterator it = attributes.iterator(); it.hasNext(); ) {
+            AttributeDescr attributeDescr = (AttributeDescr) it.next();
+            String name = attributeDescr.getName();
+            if ( name.equals( "salience" ) ) {
+                rule.setSalience( Integer.parseInt( attributeDescr.getValue() ) );
+            } else if ( name.equals( "no-loop" ) ) {
+                rule.setNoLoop( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+            } else if ( name.equals( "agenda-group" ) ) {
+                rule.setAgendaGroup( attributeDescr.getValue() );
+            } else if ( name.equals( "duration" ) ) {
+                //@todo: need  to do this before the release
+                //duration rules cannot be partitioned into an agenda group
+                rule.setAgendaGroup( "" );
+            } else if ( name.equals( "language" ) ) {
+                //@todo: we don't currently  support multiple languages
+            }
+        }
     }
 
     private void build(Rule rule,
@@ -336,11 +368,12 @@ public class RuleBuilder {
         template.process( root,
                           string );
         string.flush();
-        
-        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker"; 
+
+        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokeables.put( invokerClassName,
-                           string.toString() );
-        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName, returnValueConstraint );
+                              string.toString() );
+        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName,
+                                   returnValueConstraint );
     }
 
     private void build(Column column,
@@ -373,7 +406,7 @@ public class RuleBuilder {
                                                          extractor );
 
         this.declarations.put( declaration.getIdentifier(),
-                               declaration );        
+                               declaration );
 
         List usedDeclarations = this.analyzer.analyze( predicateDescr.getText(),
                                                        this.declarations.keySet() );
@@ -418,10 +451,11 @@ public class RuleBuilder {
                           string );
         string.flush();
 
-        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker"; 
+        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokeables.put( invokerClassName,
-                           string.toString() );
-        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName, predicateConstraint );        
+                              string.toString() );
+        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName,
+                                   predicateConstraint );
     }
 
     private void build(ConditionalElement ce,
@@ -482,11 +516,142 @@ public class RuleBuilder {
                           string );
         string.flush();
 
-        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker"; 
+        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokeables.put( invokerClassName,
-                           string.toString() );
-        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName, eval );        
+                              string.toString() );
+        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName,
+                                   eval );
     }
+
+    //    private void build(ConditionalElement ce,
+    //                       EvalDescr evalDescr) throws TokenStreamException,
+    //                                           RecognitionException,
+    //                                           IOException,
+    //                                           TemplateException,
+    //                                           InvalidRuleException {
+    //        // generate method
+    //        // generate invoker
+    //        Map root = new HashMap();
+    //
+    //        String classMethodName = "eval" + counter++;
+    //        evalDescr.setClassMethodName( classMethodName );
+    //
+    //        root.put( "package",
+    //                  this.pkg.getName() );
+    //        root.put( "ruleClassName",
+    //                  ucFirst( this.ruleDescr.getClassName() ) );
+    //        root.put( "invokerClassName",
+    //                  ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
+    //        root.put( "methodName",
+    //                  classMethodName );
+    //
+    //        List usedDeclarations = this.analyzer.analyze( evalDescr.getText(),
+    //                                                       this.declarations.keySet() );
+    //
+    //        Declaration[] declarations = new Declaration[usedDeclarations.size()];
+    //        for ( int i = 0, size = usedDeclarations.size(); i < size; i++ ) {
+    //            declarations[i] = (Declaration) this.declarations.get( (String) usedDeclarations.get( i ) );
+    //        }
+    //
+    //        root.put( "declarations",
+    //                  declarations );
+    //
+    //        root.put( "globals",
+    //                  getUsedGlobals( evalDescr.getText() ) );
+    //
+    //        root.put( "globalTypes",
+    //                  this.pkg.getGlobals() );
+    //
+    //        root.put( "text",
+    //                  evalDescr.getText() );
+    //
+    //        EvalCondition eval = new EvalCondition( declarations );
+    //        ce.addChild( eval );
+    //
+    //        StringTemplateGroup group = new StringTemplateGroup( new InputStreamReader( getClass().getResourceAsStream( "javaMethods.stg" ) ),
+    //                                                             AngleBracketTemplateLexer.class );
+    //        StringTemplate st = group.getInstanceOf( "evalMethod" );
+    //
+    //        String[] declarationTypes = new String[declarations.length];
+    //        for ( int i = 0, size = declarations.length; i < size; i++ ) {
+    //            declarationTypes[i] = ((ClassObjectType) declarations[i].getObjectType()).getClassType().getName().replace( '$',
+    //                                                                                                                        '.' );
+    //        }
+    //
+    //        List globals = getUsedGlobals( evalDescr.getText() );
+    //        List globalTypes = new ArrayList( globals.size() );
+    //        for ( Iterator it = globals.iterator(); it.hasNext(); ) {
+    //            globalTypes.add( ((Class) this.pkg.getGlobals().get( it.next() )).getName().replace( '$',
+    //                                                                                                 '.' ) );
+    //        }
+    //
+    //        st.setAttribute( "declarations",
+    //                         declarations );
+    //        st.setAttribute( "declarationTypes",
+    //                         declarationTypes );
+    //
+    //        st.setAttribute( "globals",
+    //                         globals );
+    //        st.setAttribute( "globalTypes",
+    //                         globalTypes );
+    //
+    //        st.setAttribute( "methodName",
+    //                         classMethodName );
+    //        st.setAttribute( "text",
+    //                         evalDescr.getText() );
+    //        System.out.println( "stringtemplate : " + st );
+    //
+    //        //        Template template = this.cfg.getTemplate( "evalMethod.ftl" );
+    //        //        StringWriter string = new StringWriter();
+    //        //        template.process( root,
+    //        //                          string );
+    //        //        string.flush();
+    //        //        this.methods.add( string.toString() );
+    //        this.methods.add( st.toString() );
+    //
+    //        //        Template template = this.cfg.getTemplate( "evalInvoker.ftl" );
+    //        //        StringWriter string = new StringWriter();
+    //        //        template.process( root,
+    //        //                          string );
+    //        //        string.flush();
+    //
+    //        group = new StringTemplateGroup( new InputStreamReader( getClass().getResourceAsStream( "javaInvokeables.stg" ) ),
+    //                                         AngleBracketTemplateLexer.class );
+    //
+    //        st = group.getInstanceOf( "evalInvokeable" );
+    //
+    //        st.setAttribute( "package",
+    //                         this.pkg.getName() );
+    //        st.setAttribute( "ruleClassName",
+    //                         ucFirst( this.ruleDescr.getClassName() ) );
+    //        st.setAttribute( "invokeableClassName",
+    //                         ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invokeable" );
+    //        st.setAttribute( "methodName",
+    //                         classMethodName );
+    //
+    //
+    //        st.setAttribute( "declarations",
+    //                         declarations );
+    //        st.setAttribute( "declarationTypes",
+    //                         declarationTypes );
+    //
+    //        st.setAttribute( "globals",
+    //                         globals );
+    //        st.setAttribute( "globalTypes",
+    //                         globalTypes );
+    //
+    //        st.setAttribute( "methodName",
+    //                         classMethodName );
+    //        st.setAttribute( "text",
+    //                         evalDescr.getText() );
+    //        System.out.println( "stringtemplate : " + st );
+    //
+    //        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+    //        this.invokeables.put( invokerClassName,
+    //                              st.toString() );
+    //        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName,
+    //                                   eval );
+    //    }
 
     private void build(Rule rule,
                        RuleDescr ruleDescr) throws IOException,
@@ -534,10 +699,11 @@ public class RuleBuilder {
                           string );
         string.flush();
 
-        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker"; 
+        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokeables.put( invokerClassName,
-                           string.toString() );
-        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName, this.rule );        
+                              string.toString() );
+        this.referenceLookups.put( this.pkg.getName() + "." + invokerClassName,
+                                   this.rule );
 
         template = this.cfg.getTemplate( "ruleClass.ftl" );
         root.put( "imports",
