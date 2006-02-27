@@ -61,7 +61,7 @@ public class Rule
 
     private final And    lhsRoot  = new And();
 
-    private final String agendaGroup;
+    private String agendaGroup;
 
     /** Consequence. */
     private Consequence  consequence;
@@ -244,6 +244,15 @@ public class Rule
     public void setSalience(int salience) {
         this.salience = salience;
     }
+    
+    public String getAgendaGroup() {
+        return this.agendaGroup;
+    }   
+    
+    public void setAgendaGroup(String agendaGroup) {
+        this.agendaGroup= agendaGroup;
+    }
+    
 
     public boolean getNoLoop() {
         return this.noLoop;
@@ -414,10 +423,6 @@ public class Rule
 
     void setLoadOrder(long loadOrder) {
         this.loadOrder = loadOrder;
-    }
-
-    public String getAgendaGroup() {
-        return this.agendaGroup;
     }
     
     public String toString() {

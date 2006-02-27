@@ -90,7 +90,8 @@ public class Package
 
     private Map                   functions;
     
-    private Map                   attributes;
+    // @todo: add attributes to Package
+    //private Map                   attributes;
     
     private TypeResolver          typeResolver;
 
