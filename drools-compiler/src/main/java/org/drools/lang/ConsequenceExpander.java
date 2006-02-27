@@ -13,6 +13,12 @@ import java.util.regex.Pattern;
  */
 class ConsequenceExpander implements Expander {
 
+    static String KNOWLEDGE_HELPER_PFX = ""; //could also be: "drools\\." for "classic" mode.
+    static Pattern MODIFY = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "modify\\s*\\(([^\\)]+)\\)(.*)");
+    static Pattern ASSERT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "assert\\s*\\(([^\\)]+)\\)(.*)");
+    static Pattern RETRACT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "retract\\s*\\(([^\\)]+)\\)(.*)");
+    
+    
     /**
      * This takes a raw consequence, and fixes up the KnowledegeHelper references 
      * to be what SMF requires.
@@ -24,9 +30,9 @@ class ConsequenceExpander implements Expander {
      * Uses some non-tail recursion to ensure that all parts are "expanded". 
      */    
     String knowledgeHelperFixer(String raw) {
-        String result = knowledgeHelperFixer(raw, Parser.MODIFY, "modify");
-        result = knowledgeHelperFixer(result, Parser.ASSERT, "assert");
-        result = knowledgeHelperFixer(result, Parser.RETRACT, "retract");
+        String result = knowledgeHelperFixer(raw, MODIFY, "modify");
+        result = knowledgeHelperFixer(result, ASSERT, "assert");
+        result = knowledgeHelperFixer(result, RETRACT, "retract");
         return result;
     }
     
