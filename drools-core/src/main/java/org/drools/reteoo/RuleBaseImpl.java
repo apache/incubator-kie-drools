@@ -37,7 +37,6 @@ import org.drools.spi.ConflictResolver;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleBaseContext;
 
 /**
  * Implementation of <code>RuleBase</code>.
@@ -64,8 +63,6 @@ public class RuleBaseImpl
     private Set                     pkgs;
 
     private Map                     globalDeclarations;
-
-    private RuleBaseContext         ruleBaseContext;
 
     // @todo: replace this with a weak HashSet
     /**
@@ -95,7 +92,6 @@ public class RuleBaseImpl
         this.factHandleFactory = new DefaultFactHandleFactory();
         this.pkgs = new HashSet();
         this.globalDeclarations = new HashMap();
-        this.ruleBaseContext = new RuleBaseContext();
         this.workingMemories = new WeakHashMap();
     }
     
@@ -201,10 +197,6 @@ public class RuleBaseImpl
 
     public Map getGlobalDeclarations() {
         return this.globalDeclarations;
-    }
-
-    public RuleBaseContext getRuleBaseContext() {
-        return this.ruleBaseContext;
     }
 
     /**

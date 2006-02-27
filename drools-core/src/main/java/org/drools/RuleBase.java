@@ -46,7 +46,6 @@ import java.io.Serializable;
 import org.drools.rule.Package;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.FactHandleFactory;
-import org.drools.spi.RuleBaseContext;
 
 /**
  * Active collection of <code>Rule</code>s.
@@ -92,6 +91,4 @@ public interface RuleBase
     FactHandleFactory getFactHandleFactory();
 
     Package[] getRuleSets();
-
-    RuleBaseContext getRuleBaseContext();
 }
