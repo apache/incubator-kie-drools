@@ -56,6 +56,7 @@ public class JavaCompilerTest extends DroolsTestCase {
                                                              "x" );
         column.addDescr( returnValue );
 
+        // There is no m this should produce errors.
         ruleDescr.setConsequence( "drools.modifyObject(m);" );
 
         compiler.addPackage( packageDescr );
@@ -188,8 +189,8 @@ public class JavaCompilerTest extends DroolsTestCase {
         packageDescr.addGlobal( "map",
                                 "java.util.Map" );
 
-        EvalDescr eval = new EvalDescr( "( ( Integer )map.get(x) ).intValue() == y.intValue()" );
-        column.addDescr( eval );
+        EvalDescr evalDescr = new EvalDescr( "( ( Integer )map.get(x) ).intValue() == y.intValue()" );
+        lhs.addDescr( evalDescr );
 
         ruleDescr.setConsequence( "drools.modifyObject(stilton);" );
 

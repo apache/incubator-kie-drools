@@ -50,6 +50,7 @@ public class RuleDescr extends PatternDescr  {
         if ( this.attributes == Collections.EMPTY_LIST) {
             this.attributes = new ArrayList();
         }
+        this.attributes.add( attribute );
     }      
 
     public AndDescr getLhs() {
