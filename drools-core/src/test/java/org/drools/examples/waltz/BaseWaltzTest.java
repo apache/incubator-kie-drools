@@ -3,6 +3,13 @@ package org.drools.examples.waltz;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
@@ -15,6 +22,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.InvalidRuleException;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
+import org.drools.rule.Or;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -141,8 +149,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					stage.setValue(Stage.DUPLICATE);
 					drools.modifyObject(tuple.get(stageDeclaration), stage);
 
-					drools.assertObject(new Line(0122, 0107));
-					drools.assertObject(new Line(0107, 2207));
+					drools.assertObject(new Line(122, 107));
+					drools.assertObject(new Line(107, 2207));
 					drools.assertObject(new Line(2207, 3204));
 					drools.assertObject(new Line(3204, 6404));
 					drools.assertObject(new Line(2216, 2207));
@@ -156,7 +164,7 @@ public abstract class BaseWaltzTest extends TestCase {
 					drools.assertObject(new Line(7416, 7401));
 					drools.assertObject(new Line(5216, 6413));
 					drools.assertObject(new Line(2216, 5216));
-					drools.assertObject(new Line(0122, 5222));
+					drools.assertObject(new Line(122, 5222));
 					drools.assertObject(new Line(5222, 7416));
 					drools.assertObject(new Line(5222, 5216));
 					System.out.println("Started waltz...");
@@ -175,19 +183,17 @@ public abstract class BaseWaltzTest extends TestCase {
 	// ;and add two edges. One edge runs from p1 to p2 and the other runs from
 	// p2 to
 	// ;p1. We then plot the edge.
-	// (defrule reverse_edges
-	// (stage (value duplicate))
-	// ?f2 <- (line (p1 ?p1) (p2 ?p2))
-	// =>
-	// ; (write draw ?p1 ?p2 (crlf))
-	// (assert (edge (p1 ?p1) (p2 ?p2) (joined false)))
-	// (assert (edge (p1 ?p2) (p2 ?p1) (joined false)))
-	// (retract ?f2))
-
+	// (p reverse_edges
+	// (stage ^value duplicate)
+	// (line ^p1 <p1> ^p2 <p2>)
+	// -->
+	// ; (write draw <p1> <p2> (crlf))
+	// (make edge ^p1 <p1> ^p2 <p2> ^joined false)
+	// (make edge ^p1 <p2> ^p2 <p1> ^joined false)
+	// (remove 2))
 	private Rule getReverseEdgesRule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("reverse_edges");
-		rule.setSalience(10);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -229,25 +235,29 @@ public abstract class BaseWaltzTest extends TestCase {
 		return rule;
 	}
 
-	//	 
 	// ;If the duplicating flag is set, and there are no more lines, then remove
 	// the
 	// ;duplicating flag and set the make junctions flag.
-	// (defrule done_reversing
-	// (declare (salience -10))
-	// ?f1 <- (stage (value duplicate))
-	// =>
-	// (modify ?f1 (value detect_junctions)))
+	// (p done_reversing
+	// (stage ^value duplicate)
+	// - (line)
+	// -->
+	// (modify 1 ^value detect_junctions))
 	private Rule getDoneReversingRule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("done_reversing");
-		rule.setSalience(-10);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
 				new Integer(Stage.DUPLICATE), this.integerEqualEvaluator));
 		rule.addPattern(stageColumn);
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
+
+		Column notLineColumn = new Column(1, lineType);
+		Not notLine = new Not();
+		notLine.addChild(notLineColumn);
+		rule.addPattern(notLine);
+
 		Consequence consequence = new Consequence() {
 			public void invoke(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
@@ -276,24 +286,21 @@ public abstract class BaseWaltzTest extends TestCase {
 	// ;edges joined. This production calls make-3_junction to determine
 	// ;what type of junction it is based on the angles inscribed by the
 	// ;intersecting edges
-	// (defrule make-3_junction
-	// (declare (salience 10))
-	// (stage (value detect_junctions))
-	// ?f2 <- (edge (p1 ?base_point) (p2 ?p1) (joined false))
-	// ?f3 <- (edge (p1 ?base_point) (p2 ?p2&~?p1) (joined false))
-	// ?f4 <- (edge (p1 ?base_point) (p2 ?p3&~?p1&~?p2) (joined false))
-	// =>
-	// (make_3_junction ?base_point ?p1 ?p2 ?p3)
-	// ; (assert (junction
-	// ; (type =(make_3_junction ?base_point ?p1 ?p2 ?p3))
-	// ; (base_point ?base_point)))
-	// (modify ?f2 (joined true))
-	// (modify ?f3 (joined true))
-	// (modify ?f4 (joined true)))
+	// (p make-3_junction
+	// (stage ^value detect_junctions)
+	// (edge ^p1 <base_point> ^p2 <p1> ^joined false)
+	// (edge ^p1 <base_point> ^p2 {<p2> <> <p1>} ^joined false)
+	// (edge ^p1 <base_point> ^p2 {<p3> <> <p1> <> <p2>} ^joined false)
+	// -->
+	// (make junction
+	// ^type (make_3_junction <base_point> <p1> <p2> <p3>)
+	// ^base_point <base_point>)
+	// (modify 2 ^joined true)
+	// (modify 3 ^joined true)
+	// (modify 4 ^joined true))
 	private Rule getMake3JunctionRule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("make-3_junction");
-		rule.setSalience(10);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn
@@ -338,7 +345,6 @@ public abstract class BaseWaltzTest extends TestCase {
 				edge2P2Declaration, integerNotEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-
 			public void invoke(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
@@ -372,23 +378,21 @@ public abstract class BaseWaltzTest extends TestCase {
 		return rule;
 	}
 
-	//	 
 	// ;If two, and only two, edges meet that have not already been joined, then
 	// ;the junction is an "L"
-	// (defrule make_L
-	// (stage (value detect_junctions))
-	// ?f2 <- (edge (p1 ?base_point) (p2 ?p2) (joined false))
-	// ?f3 <- (edge (p1 ?base_point) (p2 ?p3&~?p2) (joined false))
-	// (not (edge (p1 ?base_point) (p2 ~?p2&~?p3)))
-	// =>
-	// (assert (junction
-	// (type L)
-	// (base_point ?base_point)
-	// (p1 ?p2)
-	// (p2 ?p3)))
-	// (modify ?f2 (joined true))
-	// (modify ?f3 (joined true)))
-	//	 
+	// (p make_L
+	// (stage ^value detect_junctions)
+	// (edge ^p1 <base_point> ^p2 <p2> ^joined false)
+	// (edge ^p1 <base_point> ^p2 {<p3> <> <p2>} ^joined false)
+	// - (edge ^p1 <base_point> ^p2 {<> <p2> <> <p3>})
+	// -->
+	// (make junction
+	// ^type L
+	// ^base_point <base_point>
+	// ^p1 <p2>
+	// ^p2 <p3>)
+	// (modify 2 ^joined true)
+	// (modify 3 ^joined true))
 	private Rule getMakeLRule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("make_L");
@@ -458,7 +462,6 @@ public abstract class BaseWaltzTest extends TestCase {
 					throw new ConsequenceException(e);
 				}
 			}
-
 		};
 
 		rule.setConsequence(consequence);
@@ -466,19 +469,18 @@ public abstract class BaseWaltzTest extends TestCase {
 		return rule;
 	}
 
-	//	 
 	// ;If the detect junctions flag is set, and there are no more un_joined
 	// edges,
 	// ;set the find_initial_boundary flag
-	// (defrule done_detecting
-	// (declare (salience -10))
-	// ?f1 <- (stage (value detect_junctions))
-	// =>
-	// (modify ?f1 (value find_initial_boundary)))
+	// (p done_detecting
+	// (stage ^value detect_junctions)
+	// - (edge ^joined false)
+	// -->
+	// (modify 1 ^value find_initial_boundary))
+	//	 
 	private Rule getDoneDetectingRule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("done_detecting");
-		rule.setSalience(-10);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn
@@ -487,6 +489,16 @@ public abstract class BaseWaltzTest extends TestCase {
 						this.integerEqualEvaluator));
 		rule.addPattern(stageColumn);
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
+
+
+		Column notEdgeColumn = new Column(1, edgeType);
+		notEdgeColumn.addConstraint(getLiteralConstraint(
+				notEdgeColumn, "joined", new Boolean(false)
+				, this.booleanEqualEvaluator));
+		Not notEdge = new Not();
+		notEdge.addChild(notEdgeColumn);
+		rule.addPattern(notEdge);
+
 		Consequence consequence = new Consequence() {
 			public void invoke(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
@@ -725,7 +737,7 @@ public abstract class BaseWaltzTest extends TestCase {
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
-				new Integer(Stage.FIND_INITIAL_BOUNDARY),
+				new Integer(Stage.FIND_SECOND_BOUNDARY),
 				this.integerEqualEvaluator));
 		rule.addPattern(stageColumn);
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
@@ -925,17 +937,32 @@ public abstract class BaseWaltzTest extends TestCase {
 		rule.addPattern(stageColumn);
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
 
-		Column edgeColumn1 = new Column(1, edgeType, "edge1");
-		setFieldDeclaration(edgeColumn1, "p1", "edge1p1");
-		setFieldDeclaration(edgeColumn1, "p2", "edge1p2");
-		rule.addPattern(edgeColumn1);
+		Column edgeColumn1plus = new Column(1, edgeType, "edge1");
+		edgeColumn1plus.addConstraint(getLiteralConstraint(edgeColumn1plus, "label",
+				Edge.PLUS, this.objectEqualEvaluator));
+		setFieldDeclaration(edgeColumn1plus, "p1", "edge1p1");
+		setFieldDeclaration(edgeColumn1plus, "p2", "edge1p2");
+		
+		Column edgeColumn1minus = new Column(1, edgeType, "edge1");
+		edgeColumn1minus.addConstraint(getLiteralConstraint(edgeColumn1minus, "label",
+				Edge.MINUS, this.objectEqualEvaluator));
+		setFieldDeclaration(edgeColumn1minus, "p1", "edge1p1");
+		setFieldDeclaration(edgeColumn1minus, "p2", "edge1p2");
+		
+		Column edgeColumn1b = new Column(1, edgeType, "edge1");
+		edgeColumn1b.addConstraint(getLiteralConstraint(edgeColumn1b, "label",
+				Edge.B, this.objectEqualEvaluator));
+		setFieldDeclaration(edgeColumn1b, "p1", "edge1p1");
+		setFieldDeclaration(edgeColumn1b, "p2", "edge1p2");
+		
+		Or or = new Or();
+		or.addChild(edgeColumn1plus);
+		or.addChild(edgeColumn1minus);
+		or.addChild(edgeColumn1b);
+		rule.addPattern(or);
 		final Declaration edge1Declaration = rule.getDeclaration("edge1");
 		final Declaration edge1P1Declaration = rule.getDeclaration("edge1p1");
 		final Declaration edge1P2Declaration = rule.getDeclaration("edge1p2");
-
-		//
-		// or
-		// 
 
 		Column edgeColumn2 = new Column(2, edgeType, "edge2");
 		edgeColumn2.addConstraint(getLiteralConstraint(edgeColumn2, "label",
@@ -943,9 +970,9 @@ public abstract class BaseWaltzTest extends TestCase {
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
-				edge1P1Declaration, integerEqualEvaluator));
-		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
 				edge1P2Declaration, integerEqualEvaluator));
+		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
+				edge1P1Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
 			public void invoke(Activation activation,
@@ -1015,17 +1042,26 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration junctionBasePointDeclaration = rule
 				.getDeclaration("junctionBasePoint");
 
-		Column edgeColumn1 = new Column(2, edgeType, "edge1");
-		setFieldDeclaration(junctionColumn, "p2", "edge1p2");
-		rule.addPattern(edgeColumn1);
+		Column edgeColumn1plus = new Column(2, edgeType, "edge1");
+		edgeColumn1plus.addConstraint(getLiteralConstraint(edgeColumn1plus, "label",
+				Edge.PLUS, this.objectEqualEvaluator));
+		edgeColumn1plus.addConstraint(getBoundVariableConstraint(edgeColumn1plus, "p1",
+				junctionBasePointDeclaration, integerEqualEvaluator));
+		setFieldDeclaration(edgeColumn1plus, "p2", "edge1p2");
+		
+		Column edgeColumn1minus = new Column(2, edgeType, "edge1");
+		edgeColumn1minus.addConstraint(getLiteralConstraint(edgeColumn1minus, "label",
+				Edge.MINUS, this.objectEqualEvaluator));
+		edgeColumn1minus.addConstraint(getBoundVariableConstraint(edgeColumn1minus, "p1",
+				junctionBasePointDeclaration, integerEqualEvaluator));
+		setFieldDeclaration(edgeColumn1minus, "p2", "edge1p2");
+		
+		Or or = new Or();
+		or.addChild(edgeColumn1plus);
+		or.addChild(edgeColumn1minus);
+		rule.addPattern(or);
 		final Declaration edge1Declaration = rule.getDeclaration("edge1");
 		final Declaration edge1P2Declaration = rule.getDeclaration("edge1p2");
-		edgeColumn1.addConstraint(getBoundVariableConstraint(edgeColumn1, "p1",
-				junctionBasePointDeclaration, integerEqualEvaluator));
-
-		//
-		// or
-		// 
 
 		Column edgeColumn2 = new Column(3, edgeType, "edge2");
 		edgeColumn2.addConstraint(getLiteralConstraint(edgeColumn2, "label",
@@ -1153,7 +1189,6 @@ public abstract class BaseWaltzTest extends TestCase {
 	private Rule getLabelTeeBRule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("label_tee_B");
-		rule.setSalience(5);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -1232,7 +1267,6 @@ public abstract class BaseWaltzTest extends TestCase {
 	private Rule getLabelFork1Rule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("label_fork-1");
-		rule.setSalience(5);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -1259,6 +1293,8 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionBasePointDeclaration, integerEqualEvaluator));
 
 		Column edgeColumn2 = new Column(3, edgeType, "edge2");
+		edgeColumn2.addConstraint(getLiteralConstraint(edgeColumn2, "label",
+				Edge.NIL, this.objectEqualEvaluator));
 		setFieldDeclaration(edgeColumn2, "p2", "edge2p2");
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
@@ -1292,8 +1328,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(Edge.PLUS);
 
-					drools.modifyObject(tuple.get(edge1Declaration), edge2);
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge2Declaration), edge2);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -1377,7 +1413,7 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(Edge.B);
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -1462,7 +1498,7 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(Edge.MINUS);
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -1513,7 +1549,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		Column edgeColumn2 = new Column(3, edgeType, "edge2");
 		edgeColumn2.addConstraint(getLiteralConstraint(edgeColumn2, "label",
 				Edge.MINUS, this.objectEqualEvaluator));
-//		setFieldDeclaration(edgeColumn2, "p2", "edge2p2");
+		setFieldDeclaration(edgeColumn2, "p2", "edge2p2");
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
 		final Declaration edge2P2Declaration = rule.getDeclaration("edge2p2");
@@ -1546,7 +1582,7 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(Edge.MINUS);
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -1596,17 +1632,29 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration junctionP3Declaration = rule
 				.getDeclaration("junctionP3");
 
-		Column edgeColumn1 = new Column(2, edgeType, "edge1");
-		rule.addPattern(edgeColumn1);
-		final Declaration edge1Declaration = rule.getDeclaration("edge1");
-		edgeColumn1.addConstraint(getBoundVariableConstraint(edgeColumn1, "p1",
+		Column edgeColumn1minus = new Column(2, edgeType, "edge1");
+		edgeColumn1minus.addConstraint(getLiteralConstraint(edgeColumn1minus, "label",
+				Edge.MINUS, this.objectEqualEvaluator));
+		edgeColumn1minus.addConstraint(getBoundVariableConstraint(edgeColumn1minus, "p1",
 				junctionBasePointDeclaration, integerEqualEvaluator));
-		edgeColumn1.addConstraint(getBoundVariableConstraint(edgeColumn1, "p2",
+		edgeColumn1minus.addConstraint(getBoundVariableConstraint(edgeColumn1minus, "p2",
 				junctionP1Declaration, integerEqualEvaluator));
-
-		//
-		// or (label ?label & B | - ))
-		//
+		setFieldDeclaration(edgeColumn1minus, "label", "edge1label");
+		
+		Column edgeColumn1b = new Column(2, edgeType, "edge1");
+		edgeColumn1b.addConstraint(getLiteralConstraint(edgeColumn1b, "label",
+				Edge.B, this.objectEqualEvaluator));
+		edgeColumn1b.addConstraint(getBoundVariableConstraint(edgeColumn1b, "p1",
+				junctionBasePointDeclaration, integerEqualEvaluator));
+		edgeColumn1b.addConstraint(getBoundVariableConstraint(edgeColumn1b, "p2",
+				junctionP1Declaration, integerEqualEvaluator));
+		setFieldDeclaration(edgeColumn1b, "label", "edge1label");
+		
+		Or or = new Or();
+		or.addChild(edgeColumn1minus);
+		or.addChild(edgeColumn1b);
+		rule.addPattern(or);
+		final Declaration edge1Declaration = rule.getDeclaration("edge1");
 
 		Column edgeColumn2 = new Column(3, edgeType, "edge2");
 		edgeColumn2.addConstraint(getLiteralConstraint(edgeColumn2, "label",
@@ -1642,7 +1690,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(edge1.getLabel());
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge2Declaration), edge2);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -1690,22 +1739,33 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration junctionP3Declaration = rule
 				.getDeclaration("junctionP3");
 
-		Column edgeColumn1 = new Column(2, edgeType, "edge1");
-		rule.addPattern(edgeColumn1);
-		final Declaration edge1Declaration = rule.getDeclaration("edge1");
-		edgeColumn1.addConstraint(getBoundVariableConstraint(edgeColumn1, "p1",
+		Column edgeColumn1minus = new Column(2, edgeType, "edge1");
+		edgeColumn1minus.addConstraint(getLiteralConstraint(edgeColumn1minus, "label",
+				Edge.MINUS, this.objectEqualEvaluator));
+		edgeColumn1minus.addConstraint(getBoundVariableConstraint(edgeColumn1minus, "p1",
 				junctionBasePointDeclaration, integerEqualEvaluator));
-		edgeColumn1.addConstraint(getBoundVariableConstraint(edgeColumn1, "p2",
+		edgeColumn1minus.addConstraint(getBoundVariableConstraint(edgeColumn1minus, "p2",
 				junctionP1Declaration, integerEqualEvaluator));
-
-		//
-		// or (label ?label & B | - ))
-		//
+		setFieldDeclaration(edgeColumn1minus, "label", "edge1label");
+		
+		Column edgeColumn1b = new Column(2, edgeType, "edge1");
+		edgeColumn1b.addConstraint(getLiteralConstraint(edgeColumn1b, "label",
+				Edge.B, this.objectEqualEvaluator));
+		edgeColumn1b.addConstraint(getBoundVariableConstraint(edgeColumn1b, "p1",
+				junctionBasePointDeclaration, integerEqualEvaluator));
+		edgeColumn1b.addConstraint(getBoundVariableConstraint(edgeColumn1b, "p2",
+				junctionP1Declaration, integerEqualEvaluator));
+		setFieldDeclaration(edgeColumn1b, "label", "edge1label");
+		
+		Or or = new Or();
+		or.addChild(edgeColumn1minus);
+		or.addChild(edgeColumn1b);
+		rule.addPattern(or);
+		final Declaration edge1Declaration = rule.getDeclaration("edge1");
 
 		Column edgeColumn2 = new Column(3, edgeType, "edge2");
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
-		final Declaration edge2P2Declaration = rule.getDeclaration("edge2p2");
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
 				junctionBasePointDeclaration, integerEqualEvaluator));
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
@@ -1736,7 +1796,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(edge1.getLabel());
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge2Declaration), edge2);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -1786,24 +1847,37 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration junctionP3Declaration = rule
 				.getDeclaration("junctionP3");
 
-		Column edgeColumn1 = new Column(2, edgeType, "edge1");
-		rule.addPattern(edgeColumn1);
-		final Declaration edge1Declaration = rule.getDeclaration("edge1");
-		edgeColumn1.addConstraint(getBoundVariableConstraint(edgeColumn1, "p1",
-				junctionBasePointDeclaration, integerEqualEvaluator));
-		edgeColumn1.addConstraint(getBoundVariableConstraint(edgeColumn1, "p2",
-				junctionP3Declaration, integerEqualEvaluator));
 
-		//
-		// or (label ?label & B | - ))
-		//
+		Column edgeColumn1minus = new Column(2, edgeType, "edge1");
+		edgeColumn1minus.addConstraint(getLiteralConstraint(edgeColumn1minus, "label",
+				Edge.MINUS, this.objectEqualEvaluator));
+		edgeColumn1minus.addConstraint(getBoundVariableConstraint(edgeColumn1minus, "p1",
+				junctionBasePointDeclaration, integerEqualEvaluator));
+		edgeColumn1minus.addConstraint(getBoundVariableConstraint(edgeColumn1minus, "p2",
+				junctionP3Declaration, integerEqualEvaluator));
+		setFieldDeclaration(edgeColumn1minus, "label", "edge1label");
+		
+		Column edgeColumn1b = new Column(2, edgeType, "edge1");
+		edgeColumn1b.addConstraint(getLiteralConstraint(edgeColumn1b, "label",
+				Edge.B, this.objectEqualEvaluator));
+		edgeColumn1b.addConstraint(getBoundVariableConstraint(edgeColumn1b, "p1",
+				junctionBasePointDeclaration, integerEqualEvaluator));
+		edgeColumn1b.addConstraint(getBoundVariableConstraint(edgeColumn1b, "p2",
+				junctionP3Declaration, integerEqualEvaluator));
+		setFieldDeclaration(edgeColumn1b, "label", "edge1label");
+		
+		Or or = new Or();
+		or.addChild(edgeColumn1minus);
+		or.addChild(edgeColumn1b);
+		rule.addPattern(or);
+		final Declaration edge1Declaration = rule.getDeclaration("edge1");
+		final Declaration edge1LabelDeclaration = rule.getDeclaration("edge1label");
 
 		Column edgeColumn2 = new Column(3, edgeType, "edge2");
 		edgeColumn2.addConstraint(getLiteralConstraint(edgeColumn2, "label",
 				Edge.NIL, this.objectEqualEvaluator));
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
-		final Declaration edge2P2Declaration = rule.getDeclaration("edge2p2");
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
 				junctionBasePointDeclaration, integerEqualEvaluator));
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
@@ -1832,7 +1906,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(edge1.getLabel());
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge2Declaration), edge2);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -1880,22 +1955,35 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration junctionP3Declaration = rule
 				.getDeclaration("junctionP3");
 
-		Column edgeColumn1 = new Column(2, edgeType, "edge1");
-		rule.addPattern(edgeColumn1);
-		final Declaration edge1Declaration = rule.getDeclaration("edge1");
-		edgeColumn1.addConstraint(getBoundVariableConstraint(edgeColumn1, "p1",
-				junctionBasePointDeclaration, integerEqualEvaluator));
-		edgeColumn1.addConstraint(getBoundVariableConstraint(edgeColumn1, "p2",
-				junctionP3Declaration, integerEqualEvaluator));
 
-		//
-		// or (label ?label & B | - ))
-		//
+		Column edgeColumn1minus = new Column(2, edgeType, "edge1");
+		edgeColumn1minus.addConstraint(getLiteralConstraint(edgeColumn1minus, "label",
+				Edge.MINUS, this.objectEqualEvaluator));
+		edgeColumn1minus.addConstraint(getBoundVariableConstraint(edgeColumn1minus, "p1",
+				junctionBasePointDeclaration, integerEqualEvaluator));
+		edgeColumn1minus.addConstraint(getBoundVariableConstraint(edgeColumn1minus, "p2",
+				junctionP3Declaration, integerEqualEvaluator));
+		setFieldDeclaration(edgeColumn1minus, "label", "edge1label");
+		
+		Column edgeColumn1b = new Column(2, edgeType, "edge1");
+		edgeColumn1b.addConstraint(getLiteralConstraint(edgeColumn1b, "label",
+				Edge.B, this.objectEqualEvaluator));
+		edgeColumn1b.addConstraint(getBoundVariableConstraint(edgeColumn1b, "p1",
+				junctionBasePointDeclaration, integerEqualEvaluator));
+		edgeColumn1b.addConstraint(getBoundVariableConstraint(edgeColumn1b, "p2",
+				junctionP3Declaration, integerEqualEvaluator));
+		setFieldDeclaration(edgeColumn1b, "label", "edge1label");
+		
+		Or or = new Or();
+		or.addChild(edgeColumn1minus);
+		or.addChild(edgeColumn1b);
+		rule.addPattern(or);
+		final Declaration edge1Declaration = rule.getDeclaration("edge1");
+		final Declaration edge1LabelDeclaration = rule.getDeclaration("edge1label");
 
 		Column edgeColumn2 = new Column(3, edgeType, "edge2");
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
-		final Declaration edge2P2Declaration = rule.getDeclaration("edge2p2");
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
 				junctionBasePointDeclaration, integerEqualEvaluator));
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
@@ -1926,7 +2014,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(edge1.getLabel());
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge2Declaration), edge2);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -1993,7 +2082,6 @@ public abstract class BaseWaltzTest extends TestCase {
 				Edge.NIL, this.objectEqualEvaluator));
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
-		final Declaration edge2P2Declaration = rule.getDeclaration("edge2p2");
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
 				junctionBasePointDeclaration, integerEqualEvaluator));
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
@@ -2021,7 +2109,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(Edge.PLUS);
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge2Declaration), edge2);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -2082,7 +2171,6 @@ public abstract class BaseWaltzTest extends TestCase {
 		Column edgeColumn2 = new Column(3, edgeType, "edge2");
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
-		final Declaration edge2P2Declaration = rule.getDeclaration("edge2p2");
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
 				junctionBasePointDeclaration, integerEqualEvaluator));
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
@@ -2112,7 +2200,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(Edge.PLUS);
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge2Declaration), edge2);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -2178,7 +2267,6 @@ public abstract class BaseWaltzTest extends TestCase {
 				Edge.NIL, this.objectEqualEvaluator));
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
-		final Declaration edge2P2Declaration = rule.getDeclaration("edge2p2");
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
 				junctionBasePointDeclaration, integerEqualEvaluator));
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
@@ -2206,7 +2294,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(Edge.PLUS);
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge2Declaration), edge2);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -2267,7 +2356,6 @@ public abstract class BaseWaltzTest extends TestCase {
 		Column edgeColumn2 = new Column(3, edgeType, "edge2");
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
-		final Declaration edge2P2Declaration = rule.getDeclaration("edge2p2");
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
 				junctionBasePointDeclaration, integerEqualEvaluator));
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
@@ -2297,7 +2385,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(Edge.PLUS);
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge2Declaration), edge2);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -2361,7 +2450,6 @@ public abstract class BaseWaltzTest extends TestCase {
 		Column edgeColumn2 = new Column(3, edgeType, "edge2");
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
-		final Declaration edge2P2Declaration = rule.getDeclaration("edge2p2");
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
 				junctionBasePointDeclaration, integerEqualEvaluator));
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
@@ -2391,7 +2479,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(Edge.PLUS);
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge2Declaration), edge2);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -2458,7 +2547,6 @@ public abstract class BaseWaltzTest extends TestCase {
 		setFieldDeclaration(edgeColumn2, "p2", "edge2p2");
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
-		final Declaration edge2P2Declaration = rule.getDeclaration("edge2p2");
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
 				junctionBasePointDeclaration, integerEqualEvaluator));
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
@@ -2486,7 +2574,8 @@ public abstract class BaseWaltzTest extends TestCase {
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(Edge.PLUS);
 
-					drools.modifyObject(tuple.get(edge2Declaration), edge3);
+					drools.modifyObject(tuple.get(edge2Declaration), edge2);
+					drools.modifyObject(tuple.get(edge3Declaration), edge3);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new ConsequenceException(e);
@@ -2559,9 +2648,9 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
 
 		Column edgeColumn = new Column(1, edgeType, "edge");
-		stageColumn.addConstraint(getLiteralConstraint(edgeColumn, "plotted",
+		edgeColumn.addConstraint(getLiteralConstraint(edgeColumn, "plotted",
 				Edge.NIL, this.objectEqualEvaluator));
-		stageColumn.addConstraint(getLiteralConstraint(edgeColumn, "label",
+		edgeColumn.addConstraint(getLiteralConstraint(edgeColumn, "label",
 				Edge.NIL, this.objectNotEqualEvaluator));
 		rule.addPattern(edgeColumn);
 		final Declaration edgeDeclaration = rule.getDeclaration("edge");
@@ -2605,7 +2694,7 @@ public abstract class BaseWaltzTest extends TestCase {
 	//	 
 	private Rule getPlotBoudariesRule() throws IntrospectionException,
 			InvalidRuleException {
-		final Rule rule = new Rule("plot_remaining_edges");
+		final Rule rule = new Rule("plot_boundaries");
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -2615,9 +2704,9 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
 
 		Column edgeColumn = new Column(1, edgeType, "edge");
-		stageColumn.addConstraint(getLiteralConstraint(edgeColumn, "plotted",
+		edgeColumn.addConstraint(getLiteralConstraint(edgeColumn, "plotted",
 				Edge.NIL, this.objectEqualEvaluator));
-		stageColumn.addConstraint(getLiteralConstraint(edgeColumn, "label",
+		edgeColumn.addConstraint(getLiteralConstraint(edgeColumn, "label",
 				Edge.NIL, this.objectEqualEvaluator));
 		rule.addPattern(edgeColumn);
 		final Declaration edgeDeclaration = rule.getDeclaration("edge");
@@ -2721,6 +2810,55 @@ public abstract class BaseWaltzTest extends TestCase {
 		return rule;
 	}
 
+	
+
+    /**
+     * Convert the facts from the <code>InputStream</code> to a list of
+     * objects.
+     */
+    protected List getInputObjects(InputStream inputStream) throws IOException {
+        List list = new ArrayList();
+
+        BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );
+
+        String line;
+        while ( (line = br.readLine()) != null ) {
+            if ( line.trim().length() == 0 || line.trim().startsWith( ";" ) ) {
+                continue;
+            }
+            StringTokenizer st = new StringTokenizer( line,
+                                                      "() " );
+            String type = st.nextToken();
+
+            if ( "line".equals( type ) ) {
+                if ( !"p1".equals( st.nextToken() ) ) {
+                    throw new IOException( "expected 'p1' in: " + line );
+                }
+                int p1 = Integer.parseInt(st.nextToken());
+                if ( !"p2".equals( st.nextToken() ) ) {
+                    throw new IOException( "expected 'p2' in: " + line );
+                }
+                int p2 = Integer.parseInt(st.nextToken());
+
+
+                list.add( new Line(p1, p2) );
+            }
+
+            if ( "stage".equals( type ) ) {
+                if ( !"value".equals( st.nextToken() ) ) {
+                    throw new IOException( "expected 'seat' in: " + line );
+                }
+                list.add( new Stage( Stage.resolveStageValue( st.nextToken() )) );
+            }
+        }
+        inputStream.close();
+
+        return list;
+    }
+
+
+	
+	
 	public static int getIndex(Class clazz, String name)
 			throws IntrospectionException {
 		PropertyDescriptor[] descriptors = Introspector.getBeanInfo(clazz)

@@ -17,17 +17,16 @@ package org.drools.leaps;
  */
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
-import org.drools.leaps.RuleHandle;
 import org.drools.leaps.util.Table;
 import org.drools.leaps.util.TableOutOfBoundException;
 
 /**
  * Implementation of a container to store data elements used throughout the
  * leaps. Stores fact handles and companion information - relevant rules
- * 
- * TODO review add rule after fireall was issued already
  * 
  * @author Alexander Bagerman
  * 
@@ -42,7 +41,7 @@ class FactTable extends Table implements Serializable {
 	 * positive rules are not complete rules but rather its conditions that
 	 * relates by type
 	 */
-	private RuleTable rules;
+	private final RuleTable rules;
 
 	/**
 	 * dynamic rule management support. used to push facts on stack again after
@@ -50,6 +49,12 @@ class FactTable extends Table implements Serializable {
 	 */
 	private boolean reseededStack = false;
 
+	/**
+	 * Tuples that are either already on agenda or are very close (missing exists or 
+	 * have not facts matching)
+	 */
+	
+	private final Set tuples;
 	/**
 	 * initializes base LeapsTable with appropriate Comparator and positive and
 	 * negative rules repositories
@@ -60,6 +65,7 @@ class FactTable extends Table implements Serializable {
 	public FactTable(ConflictResolver conflictResolver) {
 		super(conflictResolver.getFactConflictResolver());
 		this.rules = new RuleTable(conflictResolver.getRuleConflictResolver());
+		this.tuples = new HashSet();
 	}
 
 	/**
@@ -72,6 +78,15 @@ class FactTable extends Table implements Serializable {
 		this.rules.add(ruleHandle);
 		// push facts back to stack if needed
 		this.checkAndAddFactsToStack(workingMemory);
+	}
+
+	/**
+	 * Add tuple
+	 * 
+	 * @param tuple
+	 */
+	public void addRule(LeapsTuple tuple) {
+		this.tuples.add(tuple);
 	}
 
 	/**
@@ -131,5 +146,17 @@ class FactTable extends Table implements Serializable {
 		ret = ret + "\n" + this.rules.toString();
 
 		return ret;
+	}
+	
+	Iterator getTuplesIterator() {
+		return this.tuples.iterator();
+	}
+	
+	boolean addTuple(LeapsTuple tuple) {
+		return this.tuples.add(tuple);
+	}
+	
+	void removeTuple(LeapsTuple tuple) {
+		this.tuples.remove(tuple);
 	}
 }

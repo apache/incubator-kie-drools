@@ -159,23 +159,22 @@ public class OrTest extends TestCase {
 	public Rule getNeverGetsToConsequenceRule() throws Exception {
 		final Rule rule = new Rule("NeverGetsToConsequence");
 
-		Column stageColumn1 = new Column(0, stageType, "stage1");
+		Column stageColumn1 = new Column(0, stageType, "stage");
 		stageColumn1
 				.addConstraint(getLiteralConstraint(stageColumn1, "value",
 						new Integer(Stage.DETECT_JUNCTIONS),
 						this.integerEqualEvaluator));
-		final Declaration stage1Declaration = rule.getDeclaration("stage");
 
-		Column stageColumn2 = new Column(1, stageType, "stage");
+		Column stageColumn2 = new Column(0, stageType, "stage");
 		stageColumn2.addConstraint(getLiteralConstraint(stageColumn2, "value",
 				new Integer(Stage.LABELING), this.integerEqualEvaluator));
-		final Declaration stage2Declaration = rule.getDeclaration("stage2");
 		Or or = new Or();
 		or.addChild(stageColumn1);
 		or.addChild(stageColumn2);
 		rule.addPattern(or);
+		final Declaration stageDeclaration = rule.getDeclaration("stage");
 
-		Column edgeColumn1 = new Column(2, edgeType, "edge1");
+		Column edgeColumn1 = new Column(1, edgeType, "edge1");
 		setFieldDeclaration(edgeColumn1, "p1", "edge1p1");
 		setFieldDeclaration(edgeColumn1, "p2", "edge1p2");
 		rule.addPattern(edgeColumn1);
@@ -183,7 +182,7 @@ public class OrTest extends TestCase {
 		final Declaration edge1P1Declaration = rule.getDeclaration("edge1p1");
 		final Declaration edge1P2Declaration = rule.getDeclaration("edge1p2");
 
-		Column edgeColumn2 = new Column(3, edgeType, "edge2");
+		Column edgeColumn2 = new Column(2, edgeType, "edge2");
 		rule.addPattern(edgeColumn2);
 		final Declaration edge2Declaration = rule.getDeclaration("edge2");
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
@@ -200,10 +199,8 @@ public class OrTest extends TestCase {
 					KnowledgeHelper drools = new DefaultKnowledgeHelper(rule,
 							tuple, workingMemory);
 
-					Stage stage = (Stage) drools.get(stage1Declaration);
-					if (stage == null) {
-						stage = (Stage) drools.get(stage2Declaration);
-					}
+					Stage stage = (Stage) drools.get(stageDeclaration);
+
 					markStage = stage;
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -246,16 +243,15 @@ public class OrTest extends TestCase {
 				.addConstraint(getLiteralConstraint(stageColumn1, "value",
 						new Integer(Stage.DETECT_JUNCTIONS),
 						this.integerEqualEvaluator));
-		final Declaration stage1Declaration = rule.getDeclaration("stage");
 
-		Column stageColumn2 = new Column(3, stageType, "stage");
+		Column stageColumn2 = new Column(2, stageType, "stage");
 		stageColumn2.addConstraint(getLiteralConstraint(stageColumn2, "value",
 				new Integer(Stage.LABELING), this.integerEqualEvaluator));
-		final Declaration stage2Declaration = rule.getDeclaration("stage2");
 		Or or = new Or();
 		or.addChild(stageColumn1);
 		or.addChild(stageColumn2);
 		rule.addPattern(or);
+		final Declaration stageDeclaration = rule.getDeclaration("stage");
 
 		Consequence consequence = new Consequence() {
 			public void invoke(Activation activation,
@@ -266,10 +262,7 @@ public class OrTest extends TestCase {
 					KnowledgeHelper drools = new DefaultKnowledgeHelper(rule,
 							tuple, workingMemory);
 
-					Stage stage = (Stage) drools.get(stage1Declaration);
-					if (stage == null) {
-						stage = (Stage) drools.get(stage2Declaration);
-					}
+					Stage stage = (Stage) drools.get(stageDeclaration);
 					markStage = stage;
 				} catch (Exception e) {
 					e.printStackTrace();

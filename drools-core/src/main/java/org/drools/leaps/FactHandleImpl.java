@@ -16,6 +16,12 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
 
@@ -30,6 +36,18 @@ public class FactHandleImpl extends Handle implements InternalFactHandle {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private Set activatedTuples = null;
+
+	private List notTuples = null;
+
+	private List existsTuples = null;
+	
+	private Set logicalJustifiers = null;
+	
+	private boolean logicalyDependent = false;
+
+	private int dependencyCount = 0;
 
 	/**
 	 * actual object that is asserted to the system no getters just a direct
@@ -37,6 +55,48 @@ public class FactHandleImpl extends Handle implements InternalFactHandle {
 	 */
 	public FactHandleImpl(long id, Object object) {
 		super(id, object);
+	}
+
+	void addActivatedTuple(LeapsTuple tuple) {
+		if (this.activatedTuples == null) {
+			this.activatedTuples = new HashSet();
+		}
+		this.activatedTuples.add(tuple);
+	}
+
+	void addNotTuple(LeapsTuple tuple, int index) {
+		if (this.notTuples == null) {
+			this.notTuples = new LinkedList();
+		}
+		this.notTuples.add(new FactHandleTupleAssembly(tuple, index));
+	}
+	
+	void addExistsTuple(LeapsTuple tuple, int index) {
+		if (this.existsTuples == null) {
+			this.existsTuples = new LinkedList();
+		}
+		this.existsTuples.add(new FactHandleTupleAssembly(tuple, index));
+	}
+
+	Iterator getActivatedTuples() {
+		if (this.activatedTuples != null) {
+			return this.activatedTuples.iterator();
+		}
+		return null;
+	}
+
+	Iterator getNotTuples() {
+		if (this.notTuples != null) {
+			return this.notTuples.iterator();
+		}
+		return null;
+	}
+
+	Iterator getExistsTuples() {
+		if (this.existsTuples != null) {
+			return this.existsTuples.iterator();
+		}
+		return null;
 	}
 
 	/**
@@ -53,6 +113,37 @@ public class FactHandleImpl extends Handle implements InternalFactHandle {
 
 	}
 
+	void addLogicalDependency(LeapsTuple tuple){
+		if (this.logicalJustifiers == null) {
+			this.logicalyDependent = true;
+			this.logicalJustifiers = new HashSet();
+		}
+		this.logicalJustifiers.add(tuple);
+
+		this.dependencyCount++;
+	}
+
+	void removeLogicalDependency(LeapsTuple tuple){
+		if(this.dependencyCount > 0) {
+			this.logicalJustifiers.remove(tuple);
+		}
+		this.dependencyCount--;
+	}
+
+	void removeAllLogicalDependencies(){
+		if(this.dependencyCount > 0) {
+			for(Iterator it = this.logicalJustifiers.iterator(); it.hasNext(); ) {
+				this.removeLogicalDependency((LeapsTuple)it.next());
+			}
+		}
+	}
+	
+	boolean isLogicalyValid() {
+		if(this.logicalyDependent) {
+			return this.dependencyCount != 0;
+		}
+		return true;
+	}
 	/**
 	 * @see FactHandle
 	 */

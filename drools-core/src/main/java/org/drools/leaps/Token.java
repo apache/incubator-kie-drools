@@ -21,8 +21,8 @@ import java.util.Iterator;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.TableIterator;
-import org.drools.leaps.util.TableOutOfBoundException;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
@@ -292,8 +292,11 @@ class Token implements Tuple, Serializable {
 	 * 
 	 * @return LeapsTuple
 	 */
-	LeapsTuple getTuple() {
-		return new LeapsTuple(this.currentFactHandles);
+	LeapsTuple getTuple(PropagationContextImpl context) {
+		return new LeapsTuple(this.currentFactHandles, this.currentRuleHandle
+				.getLeapsRule().getNotColumnConstraints(),
+				this.currentRuleHandle.getLeapsRule()
+						.getExistsColumnConstraints(), context);
 	}
 
 	/**
