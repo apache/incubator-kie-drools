@@ -21,25 +21,51 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 
+import org.drools.DroolsTestCase;
+import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
+import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.EvaluatorFactory;
+import org.drools.examples.manners.Chosen;
 import org.drools.examples.manners.Context;
+import org.drools.examples.manners.Guest;
 import org.drools.rule.Column;
+import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
+import org.drools.rule.Rule;
+import org.drools.spi.Activation;
+import org.drools.spi.Consequence;
+import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.MockField;
+import org.drools.spi.Tuple;
+import java.util.*;
 
-import junit.framework.TestCase;
-
-public class ColumnConstraintsTest extends TestCase {
+/**
+ * 
+ * @author Alexander Bagerman
+ *
+ */
+public class ColumnConstraintsTest extends DroolsTestCase {
 
 	Evaluator integerEqualEvaluator;
 
 	Evaluator integerNotEqualEvaluator;
+
+//	RuleBaseImpl ruleBase;
+//	RuleBaseImpl ruleBaseAddRule;
+//
+//	WorkingMemory wm1;
+//
+//	WorkingMemory wm2;
+//
+//	WorkingMemory wm3;
+
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -73,8 +99,9 @@ public class ColumnConstraintsTest extends TestCase {
 
 		columnConstraints = new ColumnConstraints(testColumn, alphas, null);
 
-		assertTrue(columnConstraints.evaluateAlphas(new FactHandleImpl(23,
-				new Context(Context.START_UP)), null, (WorkingMemoryImpl) base
+		LeapsTuple tuple = new LeapsTuple(new FactHandleImpl[0], null, null, null);
+		assertTrue(columnConstraints.isAllowed(new FactHandleImpl(23,
+				new Context(Context.START_UP)), tuple, base
 				.newWorkingMemory()));
 	}
 
@@ -102,9 +129,8 @@ public class ColumnConstraintsTest extends TestCase {
 
 		columnConstraints = new ColumnConstraints(testColumn, alphas, null);
 
-		assertFalse(columnConstraints.evaluateAlphas(new FactHandleImpl(23,
-				new Context(Context.START_UP)), null, (WorkingMemoryImpl) base
-				.newWorkingMemory()));
+		assertFalse(columnConstraints.isAllowed(new FactHandleImpl(23,
+				new Context(Context.START_UP)), null, base.newWorkingMemory()));
 
 	}
 

@@ -107,7 +107,7 @@ abstract public class AbstractWorkingMemory
     protected final FactHandleFactory         handleFactory;
 
     /** Rule-firing agenda. */
-    protected final Agenda                    agenda;
+//	protected final Agenda agenda;
 
     /** Flag to determine if a rule is currently being fired. */
     protected boolean                         firing;
@@ -116,7 +116,7 @@ abstract public class AbstractWorkingMemory
 
 	public AbstractWorkingMemory(RuleBase ruleBase, FactHandleFactory handleFactory) {
 		this.ruleBase = ruleBase;
-		this.agenda = new Agenda(this);
+//		this.agenda = new Agenda(this);
 		this.handleFactory = handleFactory;
 	}
 
@@ -190,9 +190,7 @@ abstract public class AbstractWorkingMemory
     /**
      * Clear the Agenda
      */
-    public void clearAgenda() {
-        this.agenda.clearAgenda();
-    }
+    abstract public void clearAgenda();
 
     /**
      * @see WorkingMemory

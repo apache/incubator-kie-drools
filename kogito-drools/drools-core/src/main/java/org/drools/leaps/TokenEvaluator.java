@@ -16,10 +16,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.drools.base.ClassObjectType;
 import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.TableIterator;
@@ -128,34 +124,36 @@ final class TokenEvaluator {
 				token.setCurrentFactHandleAtPosition(jj,
 						(FactHandleImpl) iterators[jj].current());
 				// check if match found
-				if (TokenEvaluator.evaluatePositiveConditions(token, jj,
-						workingMemory)) {
+				if (token.getCurrentRuleHandle().getLeapsRule()
+						.getColumnConstraintsAtPosition(jj).isAllowed(
+								token.getFactHandleAtPosition(jj), token,
+								workingMemory)) {
 					// start iteratating next iterator
 					// or for the last one check negative conditions and fire
 					// consequence
 					if (jj == (numberOfColumns - 1)) {
 						if (!skip) {
-							List existsEnablingFacts = TokenEvaluator
-									.evaluateExistsConditions(token,
-											workingMemory);
+							LeapsTuple tuple = token
+									.getTuple(new PropagationContextImpl(
+											workingMemory
+													.increamentPropagationIdCounter(),
+											PropagationContext.ASSERTION, token
+													.getCurrentRuleHandle()
+													.getLeapsRule().getRule(),
+											(Activation) null
+											));
+							if (tuple.isExistsConstraintsPresent()) {
+								TokenEvaluator.evaluateExistsConditions(tuple,
+										workingMemory);
+							}
+							if (tuple.isNotConstraintsPresent()) {
+								TokenEvaluator.evaluateNotConditions(tuple,
+										workingMemory);
+							}
 							// check for negative conditions
-							if (existsEnablingFacts == null || existsEnablingFacts.size() > 0) {
-								// event support
-								PropagationContextImpl propagationContext = new PropagationContextImpl(
-										workingMemory
-												.increamentPropagationIdCounter(),
-										PropagationContext.ASSERTION,
-										token
-										.getCurrentRuleHandle()
-										.getLeapsRule().getRule(), (Activation) null);
+							if (tuple.isReadyForActivation()) {
 								// let agenda to do its work
-								workingMemory.assertTuple(token.getTuple(),
-										TokenEvaluator.evaluateNotConditions(
-												token, workingMemory),
-										existsEnablingFacts,
-										propagationContext, token
-												.getCurrentRuleHandle()
-												.getLeapsRule().getRule());
+								workingMemory.assertTuple(tuple, ruleHandle.getLeapsRule().getRule());
 
 								done = true;
 								found = true;
@@ -180,33 +178,6 @@ final class TokenEvaluator {
 	}
 
 	/**
-	 * 
-	 * Check if any conditions with max value of declaration index at this
-	 * position (<code>index</code>) are satisfied
-	 * 
-	 * @param index
-	 *            Position of the iterator that needs condition checking
-	 * @return success Indicator if all conditions at this position were
-	 *         satisfied.
-	 * @throws Exception
-	 */
-	final static private boolean evaluatePositiveConditions(Token token,
-			int index, WorkingMemoryImpl workingMemory) throws Exception {
-		boolean satisfied = false;
-		FactHandleImpl factHandle = token.getFactHandleAtPosition(index);
-		ColumnConstraints constraints = token.getCurrentRuleHandle()
-				.getLeapsRule().getColumnConstraintsAtPosition(index);
-		// check alphas
-		if (constraints.evaluateAlphas(factHandle, token, workingMemory)) {
-			// finaly beta
-			satisfied = constraints.getBeta().isAllowed(factHandle, token,
-					token.getWorkingMemory());
-		}
-		return satisfied;
-
-	}
-
-	/**
 	 * Check if any of the negative conditions are satisfied success when none
 	 * found
 	 * 
@@ -215,79 +186,64 @@ final class TokenEvaluator {
 	 * @return success
 	 * @throws Exception
 	 */
-	final static private List evaluateNotConditions(Token token,
+	final static void evaluateNotConditions(LeapsTuple tuple,
 			WorkingMemoryImpl workingMemory) throws Exception {
-		List blockingFactHandles = new LinkedList();
-		if (token.getCurrentRuleHandle().getLeapsRule().containsNotColumns()) {
-			// get each NOT column spec and check
-			for (Iterator it = token.getCurrentRuleHandle().getLeapsRule()
-					.getNotColumnsIterator(); it.hasNext();) {
-				blockingFactHandles.addAll(TokenEvaluator.getExistsEnablingFacts(
-						token, workingMemory, (ColumnConstraints) it.next()));
-			}
-		}
-
-		return blockingFactHandles;
-	}
-
-	/**
-	 * Check if any of the negative conditions are satisfied success when none
-	 * found
-	 * 
-	 * @param memory
-	 * @param token
-	 * @return success
-	 * @throws Exception
-	 */
-	final static private List evaluateExistsConditions(Token token,
-			WorkingMemoryImpl workingMemory) throws Exception {
-		List enablingFactHandles = null;
-		if (token.getCurrentRuleHandle().getLeapsRule().containsExistsColumns()) {
-			enablingFactHandles = new LinkedList();
-			// get each NOT column spec and check
-			for (Iterator it = token.getCurrentRuleHandle().getLeapsRule()
-					.getExistsColumnsIterator(); it.hasNext();) {
-				enablingFactHandles.addAll(TokenEvaluator.getExistsEnablingFacts(
-						token, workingMemory, (ColumnConstraints) it.next()));
-			}
-		}
-
-		return enablingFactHandles;
-	}
-
-	/**
-	 * return set of all facts that satisfy exists condition including not and
-	 * exists cases
-	 * 
-	 * @param token
-	 * @param workingMemory
-	 * @param constraints
-	 * @return all facts that satisfy exists conditions
-	 * @throws Exception
-	 */
-	final static private List getExistsEnablingFacts(Token token,
-			WorkingMemoryImpl workingMemory, ColumnConstraints constraints)
-			throws Exception {
-		List matchingFactHandles = new LinkedList();
-		TableIterator tableIterator;
-		// scan the whole table
-		tableIterator = workingMemory.getFactTable(
-				((ClassObjectType) constraints.getColumn().getObjectType())
-						.getClassType()).iterator();
-		// fails if exists
 		FactHandleImpl factHandle;
-		while (tableIterator.hasNext()) {
-			factHandle = (FactHandleImpl) tableIterator.next();
-			// check alphas
-			if (constraints.evaluateAlphas(factHandle, token, workingMemory)) {
-				if (constraints.getBeta().isAllowed(factHandle, token,
-						workingMemory)) {
-					// it's blocking based on beta
-					matchingFactHandles.add(factHandle);
+		FactTable factTable;
+		TableIterator tableIterator;
+		ColumnConstraints constraint;
+		ColumnConstraints[] not = tuple.getNotConstraints();
+		for (int i = 0; i < not.length; i++) {
+			constraint = not[i];
+			// scan the whole table
+			factTable = workingMemory
+					.getFactTable(((ClassObjectType) constraint.getColumn()
+							.getObjectType()).getClassType());
+			tableIterator = factTable.iterator();
+			// fails if exists
+			while (tableIterator.hasNext()) {
+				factHandle = (FactHandleImpl) tableIterator.next();
+				// check alphas
+				if (constraint.isAllowed(factHandle, tuple, workingMemory)) {
+					tuple.addNotFactHandle(factHandle, i);
+					factTable.addTuple(tuple);
+					factHandle.addNotTuple(tuple, i);
 				}
 			}
 		}
+	}
 
-		return matchingFactHandles;
+	/**
+	 * Check if any of the exists conditions are satisfied
+	 * 
+	 * @param tuple
+	 * @param memory
+	 * @throws Exception
+	 */
+	final static void evaluateExistsConditions(LeapsTuple tuple,
+			WorkingMemoryImpl workingMemory) throws Exception {
+		FactHandleImpl factHandle;
+		FactTable factTable;
+		TableIterator tableIterator;
+		ColumnConstraints constraint;
+		ColumnConstraints[] exists = tuple.getExistsConstraints();
+		for (int i = 0; i < exists.length; i++) {
+			constraint = exists[i];
+			// scan the whole table
+			factTable = workingMemory
+					.getFactTable(((ClassObjectType) constraint.getColumn()
+							.getObjectType()).getClassType());
+			tableIterator = factTable.iterator();
+			// fails if exists
+			while (tableIterator.hasNext()) {
+				factHandle = (FactHandleImpl) tableIterator.next();
+				// check alphas
+				if (constraint.isAllowed(factHandle, tuple, workingMemory)) {
+					tuple.addExistsFactHandle(factHandle, i);
+					factTable.addTuple(tuple);
+					factHandle.addExistsTuple(tuple, i);
+				}
+			}
+		}
 	}
 }

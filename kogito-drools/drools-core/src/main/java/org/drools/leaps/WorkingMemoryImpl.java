@@ -18,15 +18,12 @@ package org.drools.leaps;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 import org.drools.FactException;
@@ -39,18 +36,16 @@ import org.drools.common.Agenda;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.AgendaItem;
 import org.drools.common.EventSupport;
-import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.leaps.conflict.DefaultConflictResolver;
-import org.drools.leaps.util.TableOutOfBoundException;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
-import org.drools.util.*;
+import org.drools.util.IteratorChain;
 
 /**
  * Followed RETEOO implementation for interfaces.
@@ -67,16 +62,8 @@ import org.drools.util.*;
 class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		PropertyChangeListener {
 	private static final long serialVersionUID = -2524904474925421759L;
-
-	/**
-	 * the following member variables are used to handle retraction we are not
-	 * following original leaps approach that involves shadow fact tables due to
-	 * the fact that objects can mutate and there is no easy way of puting
-	 * original object image into shadow/retracted fact tables
-	 */
-	// 
-	private final PrimitiveLongMap retracts;
-
+	
+	protected final Agenda agenda;
 	/**
 	 * Construct.
 	 * 
@@ -85,7 +72,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	 */
 	public WorkingMemoryImpl(RuleBaseImpl ruleBase) {
 		super(ruleBase, ruleBase.newFactHandleFactory());
-		this.retracts = new PrimitiveLongMap();
+		this.agenda = new LeapsAgenda(this);
 	}
 
 	/**
@@ -118,6 +105,10 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		}
 	}
 
+	public void clearAgenda()  {
+        this.agenda.clearAgenda();
+    }
+	
 	/**
 	 * Returns the fact Object for the given <code>FactHandle</code>. It
 	 * actually returns the value from the handle, before retrieving it from
@@ -214,7 +205,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 			// to cancel them
 			if (logicalState instanceof FactHandleImpl) {
 				handle = (FactHandleImpl) logicalState;
-				removeLogicalDependencies(handle);
+				handle.removeAllLogicalDependencies();
 			} else {
 				handle = (FactHandleImpl) newFactHandle(object);
 			}
@@ -242,8 +233,11 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 
 				this.equalsMap.put(object, handle);
 			}
-			addLogicalDependency(handle, activation, activation
-					.getPropagationContext(), rule);
+			
+			// adding logical dependency
+			LeapsTuple tuple = (LeapsTuple)activation.getTuple();
+			tuple.addLogicalDependency(handle);
+			handle.addLogicalDependency(tuple);
 		}
 
 		// leaps handle already has object attached
@@ -256,14 +250,52 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 
 		// determine what classes it belongs to put it into the "table" on
 		// class name key
-		List tablesList = this.getFactTablesList(object.getClass());
-		for (Iterator it = tablesList.iterator(); it.hasNext();) {
+		Class objectClass = object.getClass();
+		for (Iterator tables = this.getFactTablesList(objectClass).iterator(); tables.hasNext();) {
+			FactTable factTable = (FactTable) tables.next(); 
 			// adding fact to container
-			((FactTable) it.next()).add(handle);
+			factTable.add(handle);
+			// inspect all tuples for exists and not conditions and activate / deactivate
+			// agenda items
+			LeapsTuple tuple;
+			ColumnConstraints constraint;
+			ColumnConstraints[] constraints;
+			for (Iterator tuples = factTable.getTuplesIterator(); tuples
+					.hasNext();) {
+				tuple = (LeapsTuple) tuples.next();
+				// check not constraints
+				constraints = tuple.getNotConstraints();
+				for (int i = 0; i < constraints.length; i++) {
+					constraint = constraints[i];
+					if (objectClass.isAssignableFrom(((ClassObjectType) constraint.getColumn()
+							.getObjectType()).getClassType())
+							&& constraint.isAllowed(handle, tuple, this)) {
+						tuple.addNotFactHandle(handle, i);
+						handle.addNotTuple(tuple, i);
+					}
+				}
+				// check exists constraints
+				constraints = tuple.getExistsConstraints();
+				for (int i = 0; i < constraints.length; i++) {
+					if (constraints[i].isAllowed(handle, tuple, this)) {
+						tuple.addExistsFactHandle(handle, i);
+						handle.addExistsTuple(tuple, i);
+					}
+				}
+				// check and see if we need deactivate / activate
+				if (tuple.isReadyForActivation() && tuple.isActivationNull()) {
+					// ready to activate
+					this.assertTuple(tuple, rule);
+				} else if (!tuple.isReadyForActivation()
+						&& !tuple.isActivationNull()) {
+					// time to pull from agenda
+					this.invalidateActivation(tuple);
+				}
+			}
 		}
-		Token token = new Token(this, handle);
 
-		this.pushTokenOnStack(token);
+		// new leaps stack token
+		this.pushTokenOnStack(new Token(this, handle));
 
 		this.workingMemoryEventSupport.fireObjectAsserted(
 				new PropagationContextImpl(++this.propagationIdCounter,
@@ -306,98 +338,66 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		PropagationContextImpl context = new PropagationContextImpl(
 				++this.propagationIdCounter, PropagationContext.RETRACTION,
 				rule, activation);
-		// this.ruleBase.retractObject( handle,
-		// propagationContext,
-		// this );
+		// this.ruleBase.retractObject( handle, propagationContext, this );
 
-		//
-		// leaps specific actions
-		//
-		Iterator it;
-		RetractAssembly info = (RetractAssembly) this.retracts
-				.remove(((FactHandleImpl) handle).getId());
-		if (info != null) {
-			// we can have three types of facts being retracted
-			// 1. part of the tuple
-			// 2. part of not condition
-			// 3. part of exists condition
-			// each of this conditions can apply to pending agendaItem (waiting
-			// on not facts disappear)
-			// or posted agendaItem
-
-			// pending agendaItem
-			PendingTuple pendingTuple;
-			// first set of iterations to try to invalidate
-			// 1. part of the tuple
-			// 2. part of not condition
-			// 3. part of exists condition
-
-			// first we try invalidate core and exists related tuples
-			for (it = info.getPendingTuples(); it.hasNext();) {
-				pendingTuple = (PendingTuple) it.next();
-				if (pendingTuple.isValid()) {
-					invalidatePendingTuple(pendingTuple);
-				}
-			}
-			for (it = info.getPendingExists(); it.hasNext();) {
-				pendingTuple = (PendingTuple) it.next();
-				if (pendingTuple.isValid()) {
-					pendingTuple.decrementExistsCount();
-					if (!pendingTuple.isValid()) {
-						invalidatePendingTuple(pendingTuple);
-					}
-				}
-			}
-			// then we decrement not and see if we can submit it
-			for (it = info.getPendingNots(); it.hasNext();) {
-				pendingTuple = (PendingTuple) it.next();
-				if (pendingTuple.isValid()) {
-					pendingTuple.decrementNotCount();
-					if (!pendingTuple.isValid()) {
-						invalidatePendingTuple(pendingTuple);
-					} else {
-						assertTuple(pendingTuple.getTuple(), new ArrayList(),
-								pendingTuple.getExistsQualifiers(),
-								pendingTuple.getContext(), pendingTuple
-										.getRule());
-						// and let everybody know that we submited it
-						pendingTuple.setSubmited();
-					}
-				}
-			}
-
-			// posted agendaItem
-			// 1. part of the tuple
-			// 2. part of not condition
-			// 3. part of exists condition
-			PostedActivation postedActivation;
-			for (it = info.getPostedActivations(); it.hasNext();) {
-				postedActivation = (PostedActivation) it.next();
-				if (postedActivation.isValid()) {
-					// no need to take actions. just invalidate
-					invalidatePostedActivation(postedActivation);
-				}
-			}
-			for (it = info.getPostedExists(); it.hasNext();) {
-				postedActivation = (PostedActivation) it.next();
-				if (postedActivation.isValid()) {
-					postedActivation.decrementExistsCount();
-					if (!postedActivation.isValid()) {
-						invalidatePostedActivation(postedActivation);
-					}
-				}
-			}
-			// not is irrelevant for posted activations
-//			for (it = info.getPostedNots(); it.hasNext();) {
-//				postedActivation = (PostedActivation) it.next();
-//				if (postedActivation.isValid()) {
-//					postedActivation.decrementNotCount();
-//					if (!postedActivation.isValid()) {
-//						invalidatePostedActivation(postedActivation);
-//					}
-//				}
-//			}
+		/*
+		 * leaps specific actions
+		 */
+		// remove fact from all relevant fact tables container
+		for (Iterator it = this.getFactTablesList(
+				((FactHandleImpl) handle).getObject().getClass()).iterator(); it
+				.hasNext();) {
+			((FactTable) it.next()).remove(handle);
 		}
+
+		// 0. remove activated tuples
+		Iterator tuples = ((FactHandleImpl)handle).getActivatedTuples();
+		for(; tuples != null && tuples.hasNext();){
+			this.invalidateActivation((LeapsTuple)tuples.next());
+		}
+		
+		// 1. remove fact for nots and exists tuples
+		FactHandleTupleAssembly assembly;
+		Iterator it;
+		it = ((FactHandleImpl) handle).getNotTuples();
+		if (it != null) {
+			for (; it.hasNext();) {
+				assembly = (FactHandleTupleAssembly) it.next();
+				assembly.getTuple().removeNotFactHandle(handle,
+						assembly.getIndex());
+			}
+		}
+		it = ((FactHandleImpl) handle).getExistsTuples();
+		if (it != null) {
+			for (; it.hasNext();) {
+				assembly = (FactHandleTupleAssembly) it.next();
+				assembly.getTuple().removeExistsFactHandle(handle,
+						assembly.getIndex());
+			}
+		}
+		// 2. assert all tuples that are ready for activation or cancel ones
+		// that are no longer
+		LeapsTuple tuple;
+		IteratorChain chain = new IteratorChain();
+		it = ((FactHandleImpl) handle).getNotTuples();
+		if (it != null) {
+			chain.addIterator(it);
+		}
+		it = ((FactHandleImpl) handle).getExistsTuples();
+		if (it != null) {
+			chain.addIterator(it);
+		}
+		for (; chain.hasNext();) {
+			tuple = ((FactHandleTupleAssembly) chain.next()).getTuple();
+			if (tuple.isReadyForActivation() && tuple.isActivationNull()) {
+				// ready to activate
+				this.assertTuple(tuple, rule);
+			} else  {
+				// time to pull from agenda
+				this.invalidateActivation(tuple);
+			}
+		}
+
 		// remove it from stack
 		this.stack.remove(new Token(this, (FactHandleImpl) handle));
 
@@ -408,7 +408,6 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 
 		/* check to see if this was a logical asserted object */
 		if (removeLogical) {
-			removeLogicalDependencies(handle);
 			this.equalsMap.remove(oldObject);
 		}
 
@@ -425,26 +424,31 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		// ((FactHandleImpl) handle).invalidate();
 	}
 
-	private void invalidatePendingTuple(PendingTuple pendingTuple){
-		// invalidate token 
-		pendingTuple.invalidate();
-	}
-
-	private void invalidatePostedActivation(PostedActivation postedActivation){
-		// invalidate token 
-		postedActivation.invalidate();
-		// invalidate agenda agendaItem
-		Activation agendaItem = postedActivation.getAgendaItem();
-		if (!((LeapsTuple) agendaItem.getTuple())
-				.isActivationNull()
-				&& agendaItem.isActivated()) {
-			agendaItem.remove();
-			getAgendaEventSupport().fireActivationCancelled(
-					agendaItem);
+	private void invalidateActivation(LeapsTuple tuple) {
+		if (!tuple.isReadyForActivation() && !tuple.isActivationNull()) {
+			Activation activation = tuple.getActivation();
+			// invalidate agenda agendaItem
+			if (activation.isActivated()) {
+				activation.remove();
+				getAgendaEventSupport().fireActivationCancelled(activation);
+			}
+			//
+			tuple.setActivation(null);
 		}
-		removeLogicalDependencies(agendaItem, agendaItem.getPropagationContext(), agendaItem.getRule());
-
+		// remove logical dependency
+		FactHandleImpl factHandle;
+		Iterator it = tuple.getLogicalDependencies();
+		if (it != null) {
+			for (; it.hasNext();) {
+				factHandle = (FactHandleImpl) it.next();
+				factHandle.removeLogicalDependency(tuple);
+				if (!factHandle.isLogicalyValid()) {
+					this.retractObject(factHandle);
+				}
+			}
+		}
 	}
+
 	/**
 	 * @see WorkingMemory
 	 */
@@ -571,7 +575,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 			try {
 				this.firing = true;
 
-					while (!this.stack.isEmpty()) {
+				while (!this.stack.isEmpty()) {
 					Token token = (Token) this.stack.peek();
 					boolean done = false;
 					while (!done) {
@@ -658,29 +662,11 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	 * @throws AssertionException
 	 *             If an error occurs while asserting.
 	 */
-	public void assertTuple(LeapsTuple tuple, List blockingFactHandles
-			, List existsEnablingFactHandles,
-			PropagationContext context, Rule rule) {
-		FactHandleImpl factHandle;
+	public void assertTuple(LeapsTuple tuple, Rule rule) {
+		PropagationContext context = tuple.getContext();
 		// if the current Rule is no-loop and the origin rule is the same then
 		// return
 		if (rule.getNoLoop() && rule.equals(context.getRuleOrigin())) {
-			return;
-		}
-		// see if there are blocking facts and put it on pending activations
-		// list without submitting to agenda
-		if (blockingFactHandles.size() != 0) {
-			PendingTuple pendingTuple = new PendingTuple(
-					tuple, existsEnablingFactHandles,context, rule,
-					(existsEnablingFactHandles != null)
-							&& (existsEnablingFactHandles.size() > 0),
-					(existsEnablingFactHandles != null)?existsEnablingFactHandles.size():0,
-					(blockingFactHandles != null)
-							&& (blockingFactHandles.size() > 0),
-							(blockingFactHandles != null)?blockingFactHandles.size():0);
-			// exists qualifiers
-			addPendingTuple(pendingTuple, existsEnablingFactHandles, blockingFactHandles);
-			//
 			return;
 		}
 
@@ -688,9 +674,9 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 
 		Activation agendaItem;
 		if (dur != null && dur.getDuration(tuple) > 0) {
-			 agendaItem = new ScheduledAgendaItem(context
+			agendaItem = new ScheduledAgendaItem(context
 					.getPropagationNumber(), tuple, this.agenda, context, rule);
-			this.agenda.scheduleItem((ScheduledAgendaItem)agendaItem);
+			this.agenda.scheduleItem((ScheduledAgendaItem) agendaItem);
 			tuple.setActivation(agendaItem);
 			agendaItem.setActivated(true);
 			this.getAgendaEventSupport().fireActivationCreated(agendaItem);
@@ -728,8 +714,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 
 			ActivationQueue queue = agendaGroup.getActivationQueue(rule
 					.getSalience());
-			agendaItem = new AgendaItem(context.getPropagationNumber(),
-					tuple, context, rule, queue);
+			agendaItem = new AgendaItem(context
+					.getPropagationNumber(), tuple, context, rule, queue);
 
 			queue.add(agendaItem);
 
@@ -740,99 +726,12 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 			tuple.setActivation(agendaItem);
 			agendaItem.setActivated(true);
 			this.getAgendaEventSupport().fireActivationCreated(agendaItem);
-			// added relationships to use during retract
-			
-			PostedActivation postedActivation = new PostedActivation(
-					(AgendaItem) agendaItem,
-					(existsEnablingFactHandles != null)
-							&& (existsEnablingFactHandles.size() > 0),
-					(existsEnablingFactHandles != null) ? existsEnablingFactHandles
-							.size()
-							: -1);
-			// to take agendaItem of the agenda on retraction
-			addPostedActivation(postedActivation, existsEnablingFactHandles);
-		}
-	}
-
-	/**
-	 * add link between exists enabling facts and token/agendaItem depending if
-	 * any not blocking facts are present
-	 * 
-	 * @param agendaItem
-	 * @param enablingFactHandles
-	 */
-	private void addPendingTuple(PendingTuple tuple,
-			List existsFactHandles, List notFactHandles) {
-		long id;
-		RetractAssembly assembly;
-		// 1. core facts
-		FactHandle []factHandles = tuple.getTuple().getFactHandles();
-		for(int i = 0; i < factHandles.length; i++ ){
-			id = ((FactHandleImpl)factHandles[i]).getId();
-			assembly = (RetractAssembly)this.retracts.get(id);
-			if(assembly == null) {
-				assembly = new RetractAssembly();
-				this.retracts.put(id, assembly);
-			}
-			assembly.addPendingTuple(tuple);
-		}
-		// 2. exists
-		if(existsFactHandles != null){
-			for(Iterator it = existsFactHandles.iterator(); it.hasNext();){
-				id = ((FactHandleImpl)it.next()).getId();
-				assembly = (RetractAssembly)this.retracts.get(id);
-				if(assembly == null) {
-					assembly = new RetractAssembly();
-					this.retracts.put(id, assembly);
-				}
-				assembly.addPendingExists(tuple);
-				
+			// retract support
+			FactHandleImpl [] factHandles = (FactHandleImpl[])tuple.getFactHandles();
+			for(int i = 0; i < factHandles.length; i++){
+				factHandles[i].addActivatedTuple(tuple);
 			}
 		}
-		// 3. exists
-		if(notFactHandles != null){
-			for(Iterator it = notFactHandles.iterator(); it.hasNext();){
-				id = ((FactHandleImpl)it.next()).getId();
-				assembly = (RetractAssembly)this.retracts.get(id);
-				if(assembly == null) {
-					assembly = new RetractAssembly();
-					this.retracts.put(id, assembly);
-				}
-				assembly.addPendingNot(tuple);
-				
-			}
-		}
-	}
-
-	private void addPostedActivation(PostedActivation activation,
-			List existsFactHandles) {
-		long id;
-		RetractAssembly assembly;
-		// 1. core facts
-		FactHandle []factHandles = activation.getAgendaItem().getTuple().getFactHandles();
-		for(int i = 0; i < factHandles.length; i++ ){
-			id = ((FactHandleImpl)factHandles[i]).getId();
-			assembly = (RetractAssembly)this.retracts.get(id);
-			if(assembly == null) {
-				assembly = new RetractAssembly();
-				this.retracts.put(id, assembly);
-			}
-			assembly.addPostedActivation(activation);
-		}
-		// 2. exists
-		if(existsFactHandles != null){
-			for(Iterator it = existsFactHandles.iterator(); it.hasNext();){
-				id = ((FactHandleImpl)it.next()).getId();
-				assembly = (RetractAssembly)this.retracts.get(id);
-				if(assembly == null) {
-					assembly = new RetractAssembly();
-					this.retracts.put(id, assembly);
-				}
-				assembly.addPostedExist(activation);
-				
-			}
-		}
-		// 3. (not is irrelevant for posted activations
 	}
 
 	protected long increamentPropagationIdCounter() {
@@ -851,15 +750,5 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	 */
 	protected Agenda getAgenda() {
 		return this.agenda;
-	}
-
-	protected Iterator getFactHandleActivations(FactHandle factHandle) {
-		Iterator ret = null;
-		RetractAssembly assembly = (RetractAssembly) this.retracts
-				.get(((FactHandleImpl) factHandle).getId());
-		if (assembly != null) {
-			ret = assembly.getPostedActivations();
-		}
-		return ret;
 	}
 }

@@ -62,17 +62,17 @@ public class SchedulerTest extends DroolsTestCase {
 		rule.setDuration(duration);
 
 		PropagationContext context = new PropagationContextImpl(0,
-				PropagationContext.ASSERTION, null, null);
+				PropagationContext.ASSERTION, rule, null);
 
 		FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory
 				.assertObject("tuple object");
 		FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
 		factHandlesTuple[0] = tupleFactHandle;
-		LeapsTuple tuple = new LeapsTuple(factHandlesTuple);
+		LeapsTuple tuple = new LeapsTuple(factHandlesTuple, null, null, context);
 
 		assertEquals(0, data.size());
 
-		workingMemory.assertTuple(tuple, new ArrayList(), new ArrayList(), context, rule);
+		workingMemory.assertTuple(tuple, rule);
 
 		// sleep for 2 seconds
 		Thread.sleep(300);
@@ -113,24 +113,23 @@ public class SchedulerTest extends DroolsTestCase {
 							.assertObject("tuple object in");
 					FactHandleImpl[] factHandlesTupleIn = new FactHandleImpl[1];
 					factHandlesTupleIn[0] = tupleFactHandleIn;
-					LeapsTuple tupleIn = new LeapsTuple(factHandlesTupleIn);
-					((WorkingMemoryImpl) workingMemory).assertTuple(tupleIn,
-							new ArrayList(), new ArrayList(), context2, rule);
+					LeapsTuple tupleIn = new LeapsTuple(factHandlesTupleIn, null, null, context2);
+					((WorkingMemoryImpl) workingMemory).assertTuple(tupleIn, rule);
 				}
 				data.add("tested");
 			}
 		});
 
-		PropagationContext context1 = new PropagationContextImpl(0,
-				PropagationContext.ASSERTION, null, null);
+		PropagationContext context = new PropagationContextImpl(0,
+				PropagationContext.ASSERTION, rule, null);
 
 		FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory
 				.assertObject("tuple object");
 		FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
 		factHandlesTuple[0] = tupleFactHandle;
-		LeapsTuple tuple = new LeapsTuple(factHandlesTuple);
+		LeapsTuple tuple = new LeapsTuple(factHandlesTuple, null, null, context);
 
-		workingMemory.assertTuple(tuple, new ArrayList(), new ArrayList(), context1, rule);
+		workingMemory.assertTuple(tuple, rule);
 
 		assertEquals(0, data.size());
 
@@ -169,36 +168,32 @@ public class SchedulerTest extends DroolsTestCase {
 					WorkingMemory workingMemory) {
 				/* on first invoke add another one to the agenda */
 				if (data.size() < 5) {
-					PropagationContext context2 = new PropagationContextImpl(0,
-							0, rule, activation);
-
 					FactHandleImpl tupleFactHandleIn = (FactHandleImpl) workingMemory
 							.assertObject("tuple object in");
 					FactHandleImpl[] factHandlesTupleIn = new FactHandleImpl[1];
 					factHandlesTupleIn[0] = tupleFactHandleIn;
-					LeapsTuple tupleIn = new LeapsTuple(factHandlesTupleIn);
-					((WorkingMemoryImpl) workingMemory).assertTuple(tupleIn,
-							new ArrayList(), new ArrayList(), context2, rule);
+					LeapsTuple tupleIn = new LeapsTuple(factHandlesTupleIn, null, null, activation.getPropagationContext());
+					((WorkingMemoryImpl) workingMemory).assertTuple(tupleIn, rule);
 				}
 				data.add("tested");
 			}
 		});
 
-		PropagationContext context1 = new PropagationContextImpl(0,
+		PropagationContext context = new PropagationContextImpl(0,
 				PropagationContext.ASSERTION, null, null);
 
 		FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory
 				.assertObject("tuple object");
 		FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
 		factHandlesTuple[0] = tupleFactHandle;
-		LeapsTuple tuple = new LeapsTuple(factHandlesTuple);
+		LeapsTuple tuple = new LeapsTuple(factHandlesTuple, null, null, context);
 
-		workingMemory.assertTuple(tuple, new ArrayList(), new ArrayList(), context1, rule);
+		workingMemory.assertTuple(tuple, rule);
 
 		assertEquals(0, data.size());
 
 		// sleep for 0.5 seconds
-		Thread.sleep(500);
+		Thread.sleep(50000);
 
 		// now check for update
 		assertEquals(1, data.size());

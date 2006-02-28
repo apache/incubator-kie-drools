@@ -30,13 +30,13 @@ public class ReteooWaltzTest extends BaseWaltzTest {
         ruleBase.addRuleSet( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-//        InputStream is = getClass().getResourceAsStream( "/manners64.dat" );
+//        InputStream is = getClass().getResourceAsStream( "/waltz12.dat" );
 //        List list = getInputObjects( is );
 //        for ( Iterator it = list.iterator(); it.hasNext(); ) {
 //            Object object = it.next();
 //            workingMemory.assertObject( object );
 //        }
-//
+
         workingMemory.assertObject( new Stage(Stage.START) );
 
         long start = System.currentTimeMillis();
