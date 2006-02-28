@@ -21,6 +21,18 @@ public class NLMappingItem
     
 
     
+    public void setNaturalTemplate(String naturalTemplate) {
+        this.naturalTemplate = naturalTemplate;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public void setTargetTemplate(String targetTemplate) {
+        this.targetTemplate = targetTemplate;
+    }
+
     public NLMappingItem(String naturalTemplate,
                          String targetTemplate,
                          String scope) {

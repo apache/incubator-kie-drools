@@ -116,4 +116,25 @@ public class NLGrammarTest extends TestCase {
         
     }
     
+    public void testAddRemove() {
+        NLMappingItem item = new NLMappingItem("end", "it", "*");
+        NLGrammar g = new NLGrammar();
+        g.addNLItem( new NLMappingItem("This is something", "boo", "then") );
+        g.addNLItem( new NLMappingItem("This is another", "coo", "then") );
+        g.addNLItem( item );
+        g.setDescription( "my description" );
+        
+        item.setNaturalTemplate( "something else" );
+        NLMappingItem item2 = (NLMappingItem) g.getMappings( "*" ).get( 0 );
+        assertEquals(item2, item);
+        assertEquals("something else", item2.getNaturalTemplate());
+        
+        
+        assertEquals(3, g.getMappings().size());
+        g.removeMapping( item );
+        assertEquals(2, g.getMappings().size());
+        assertEquals(0, g.getMappings( "*" ).size());
+        
+    }
+    
 }

@@ -39,8 +39,6 @@ public class NLGrammar
     public NLGrammar() {
     }
     
-
-
     public void addNLItem(NLMappingItem item) {
         this.mappings.add(item);
     }
@@ -57,6 +55,13 @@ public class NLGrammar
     /** Set the human readable description of this language definition. This should just be a comment. */
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    /**
+     * Will remove the mapping from the grammar.
+     */
+    public void removeMapping(NLMappingItem item) {
+        this.mappings.remove( item );
     }
     
 
