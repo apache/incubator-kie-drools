@@ -1,4 +1,8 @@
 package org.drools.util;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -184,4 +188,39 @@ public class LinkedList {
     public int size() {
         return this.size;
     }
+    
+    /**
+     * Returns a list iterator
+     * @return
+     */
+    public Iterator iterator() {
+        return new Iterator() {
+            private LinkedListNode currentNode = null;
+            private LinkedListNode nextNode = getFirst();
+
+            public boolean hasNext() {
+                return (nextNode != null);
+            }
+
+            public Object next() {
+                currentNode = nextNode;
+                if(currentNode != null) {
+                    nextNode = currentNode.getNext();
+                } else {
+                    throw new NoSuchElementException("No more elements to return");
+                }
+                return currentNode;
+            }
+
+            public void remove() {
+                if(currentNode != null) {
+                    LinkedList.this.remove(currentNode);
+                    currentNode = null;
+                } else {
+                    throw new IllegalStateException("No item to remove. Call next() before calling remove().");
+                }
+            }
+        };
+    }
+    
 }

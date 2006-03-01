@@ -63,7 +63,7 @@ import org.drools.util.PrimitiveLongStack;
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
-class WorkingMemoryImpl
+public class WorkingMemoryImpl
     implements
     WorkingMemory,
     EventSupport,

@@ -1,4 +1,3 @@
-package org.drools.reteoo;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,23 +14,18 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+package org.drools.reteoo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.FactHandle;
-import org.drools.NoSuchFactHandleException;
-import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
-import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.AbstractBaseLinkedListNode;
+import org.drools.util.BaseMultiLinkedListNode;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
 
@@ -54,7 +48,7 @@ import org.drools.util.LinkedListNode;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-class ReteTuple extends AbstractBaseLinkedListNode
+public class ReteTuple extends BaseMultiLinkedListNode
     implements
     Tuple,
     Serializable {
@@ -86,7 +80,7 @@ class ReteTuple extends AbstractBaseLinkedListNode
      * @param workingMemory
      *      The <code>WorkingMemory</code> session.
      */
-    ReteTuple(FactHandleImpl handle) {
+    public ReteTuple(FactHandleImpl handle) {
         this.key = new TupleKey( handle );
     }    
     

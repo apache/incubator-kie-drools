@@ -24,7 +24,7 @@ import org.drools.common.InternalFactHandle;
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-class FactHandleImpl
+public class FactHandleImpl
     implements
     InternalFactHandle {
     // ----------------------------------------------------------------------
@@ -113,11 +113,11 @@ class FactHandleImpl
         this.id = -1;
     }
 
-    Object getObject() {
+    public Object getObject() {
         return this.object;
     }
 
-    void setObject(Object object) {
+    public void setObject(Object object) {
         this.object = object;
     }
 

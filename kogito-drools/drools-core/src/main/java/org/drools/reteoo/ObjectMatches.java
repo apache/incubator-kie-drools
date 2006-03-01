@@ -15,6 +15,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import org.drools.util.BaseMultiLinkedListNode;
 import org.drools.util.LinkedList;
 
 /**
@@ -28,7 +29,7 @@ import org.drools.util.LinkedList;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-class ObjectMatches {
+public class ObjectMatches extends BaseMultiLinkedListNode {
     private LinkedList list;
     
     private final FactHandleImpl handle;    
