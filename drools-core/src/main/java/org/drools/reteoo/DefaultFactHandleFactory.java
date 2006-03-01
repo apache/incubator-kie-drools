@@ -18,7 +18,7 @@ package org.drools.reteoo;
 import org.drools.FactHandle;
 import org.drools.spi.FactHandleFactory;
 
-class DefaultFactHandleFactory
+public class DefaultFactHandleFactory
     implements
     FactHandleFactory {
     /** The fact id. */

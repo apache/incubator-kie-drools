@@ -59,6 +59,10 @@ public class BetaNodeBinder {
         return this.constraints.hashCode();
     }
 
+    public FieldConstraint[] getConstraints() {
+        return this.constraints;
+    }
+
     /**
      * Determine if another object is equal to this.
      * 

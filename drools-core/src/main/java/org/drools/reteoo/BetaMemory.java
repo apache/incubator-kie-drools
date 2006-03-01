@@ -1,4 +1,3 @@
-package org.drools.reteoo;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,18 +14,18 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+package org.drools.reteoo;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
 
-import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedList;
+import org.drools.WorkingMemory;
+import org.drools.common.BetaNodeBinder;
+import org.drools.reteoo.beta.BetaLeftMemory;
+import org.drools.reteoo.beta.BetaMemoryFactory;
+import org.drools.reteoo.beta.BetaRightMemory;
 
 /**
  * Memory for left and right inputs of a <code>BetaNode</code>. The LeftMemory is a <code>LinkedList</code> for all incoming 
@@ -48,11 +47,17 @@ class BetaMemory
     // ------------------------------------------------------------
 
     /** Left-side tuples. */
-    private LinkedList leftMemory;
+    private BetaLeftMemory leftMemory;
 
     /** Right-side tuples. */
-    private final Map  rightMemory;
-
+    private BetaRightMemory  rightMemory;
+    
+    /** 
+     * This map is needed to link FactHandles to ObjectMatches specifically to
+     * support random access operations like remove(fact);
+     */ 
+    private Map              rightObjectMap;             
+    
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -61,57 +66,50 @@ class BetaMemory
      * Construct a BetaMemory with a LinkedList for the <code>Tuples</code> and a <code>LinkedHashMap</code> for the 
      * <code>FactHandle</code>s
      */
-    BetaMemory() {
-        this.leftMemory = new LinkedList();
-        this.rightMemory = new LinkedHashMap();
+    BetaMemory(BetaNodeBinder binder) {
+        this.leftMemory = BetaMemoryFactory.newLeftMemory(binder);
+        this.rightMemory = BetaMemoryFactory.newRightMemory(binder);
+        this.rightObjectMap = new HashMap();
     }
     
-    public LinkedList getLeftTupleMemory() {
+    public BetaLeftMemory getLeftTupleMemory() {
     	return this.leftMemory;
     }
     
-    public Map getRightFactHandleMemory() {
+    public BetaRightMemory getRightObjectMemory() {
     	return this.rightMemory;
     }
 
-    
     /**
-     * @return The first <code>Tuple</code>
+     * @return A tuple iterator with possible matches for the handle
      */
-    public ReteTuple getFirstTuple() {
-        return (ReteTuple) this.leftMemory.getFirst();
-    }
-
-    /**
-     * @return The last <code>Tuple</code>
-     */
-    public ReteTuple getLastTuple() {
-        return (ReteTuple) this.leftMemory.getLast();
+    public Iterator leftTupleIterator(WorkingMemory wm, FactHandleImpl handle) {
+        return this.leftMemory.iterator(wm, handle);
     }
     
     /**
      * The iterator iterates the propagated FactHandles in assertion order
      * @return The an Iterator for the right memory
      */    
-    Iterator rightObjectIterator() {
-        return this.rightMemory.values().iterator();
+    Iterator rightObjectIterator(WorkingMemory wm, ReteTuple tuple) {
+        return this.rightMemory.iterator(wm, tuple);
     }
 
 
     /**
-     * Add a <code>ReteTuple</code> to the end of the LinkedList.
+     * Add a <code>ReteTuple</code> to the memory.
      * @param tuple
      */
-    void add(ReteTuple tuple) {
-        this.leftMemory.add( tuple );
+    void add(WorkingMemory wm, ReteTuple tuple) {
+        this.leftMemory.add( wm, tuple );
     }
 
     /**
      * Remove the <code>ReteTuple</code> from the left memory.
      * @param tuple
      */
-    void remove(ReteTuple tuple) {
-        this.leftMemory.remove( tuple );  
+    void remove(WorkingMemory wm, ReteTuple tuple) {
+        this.leftMemory.remove( wm, tuple );  
     }
 
     
@@ -125,10 +123,16 @@ class BetaMemory
      * @return
      *      The ObjectMatches to hold the tuples that match with the <code>FactHandleImpl</code>
      */
-    ObjectMatches add(FactHandleImpl handle) {
+    ObjectMatches add(WorkingMemory wm, FactHandleImpl handle) {
         ObjectMatches objectMatches = new ObjectMatches( handle );
-        this.rightMemory.put( handle,
-                              objectMatches );
+        this.rightObjectMap.put(handle, objectMatches);
+        this.rightMemory.add( wm, objectMatches );
+        return objectMatches;
+    }
+
+    ObjectMatches add(WorkingMemory wm, ObjectMatches objectMatches) {
+        this.rightObjectMap.put(objectMatches.getFactHandle(), objectMatches);
+        this.rightMemory.add( wm, objectMatches );
         return objectMatches;
     }
 
@@ -141,8 +145,10 @@ class BetaMemory
      * @return
      *      The ObjectMatches that held the tuples that match with the <code>FactHandleImpl</code>
      */
-    ObjectMatches remove(FactHandleImpl handle) {
-        return (ObjectMatches) this.rightMemory.remove( handle );
+    ObjectMatches remove(WorkingMemory wm, FactHandleImpl handle) {
+        ObjectMatches matches = (ObjectMatches) this.rightObjectMap.remove(handle);
+        this.rightMemory.remove( wm, matches );
+        return matches;
     }
 
     
@@ -168,5 +174,5 @@ class BetaMemory
         return "[JoinMemory]";
         //return "[JoinMemory \n\tleft=" + this.leftMemory + "\n\tright=" + this.rightMemory + "]";
     }
-
+    
 }

@@ -169,7 +169,7 @@ abstract class BetaNode extends TupleSource
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Object createMemory() {
-        return new BetaMemory();
+        return new BetaMemory(this.getJoinNodeBinder());
     }
 
 }

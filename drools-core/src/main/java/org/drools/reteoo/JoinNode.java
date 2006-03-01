@@ -17,13 +17,10 @@ package org.drools.reteoo;
  */
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.LinkedHashMap;
 
 import org.drools.common.BetaNodeBinder;
 import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedList;
 
 /**
  * <code>JoinNode</code> extends <code>BetaNode</code> to perform
@@ -104,11 +101,11 @@ class JoinNode extends BetaNode {
                             WorkingMemoryImpl workingMemory) {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        memory.add( leftTuple );
+        memory.add( workingMemory, leftTuple );
 
         BetaNodeBinder binder = getJoinNodeBinder();
 
-        for ( Iterator it = memory.rightObjectIterator(); it.hasNext(); ) {
+        for ( Iterator it = memory.rightObjectIterator(workingMemory, leftTuple); it.hasNext(); ) {
             ObjectMatches objectMatches = (ObjectMatches) it.next();
             FactHandleImpl handle = objectMatches.getFactHandle();
             TupleMatch tupleMatch = attemptJoin( leftTuple,
@@ -148,10 +145,11 @@ class JoinNode extends BetaNode {
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        ObjectMatches objectMatches = memory.add( handle );
+        ObjectMatches objectMatches = memory.add( workingMemory, handle );
 
         BetaNodeBinder binder = getJoinNodeBinder();
-        for ( ReteTuple leftTuple = memory.getFirstTuple(); leftTuple != null; leftTuple = (ReteTuple) leftTuple.getNext() ) {
+        for ( Iterator it = memory.leftTupleIterator(workingMemory, handle); it.hasNext(); ) { 
+            ReteTuple leftTuple = (ReteTuple) it.next();
             TupleMatch tupleMatch = attemptJoin( leftTuple,
                                                  handle,
                                                  objectMatches,
@@ -184,7 +182,7 @@ class JoinNode extends BetaNode {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Remove the FactHandle from memory
-        ObjectMatches objectMatches = memory.remove( handle );
+        ObjectMatches objectMatches = memory.remove( workingMemory, handle );
 
         for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
             ReteTuple leftTuple = tupleMatch.getTuple();
@@ -212,7 +210,7 @@ class JoinNode extends BetaNode {
                              WorkingMemoryImpl workingMemory) {
 
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.remove( leftTuple );
+        memory.remove( workingMemory, leftTuple );
 
         Map matches = leftTuple.getTupleMatches();
 
@@ -234,7 +232,7 @@ class JoinNode extends BetaNode {
 
         // We remove the tuple as now its modified it needs to go to the top of
         // the stack, which is added back in else where
-        memory.remove( leftTuple );
+        memory.remove( workingMemory, leftTuple );
 
         Map matches = leftTuple.getTupleMatches();
 
@@ -246,10 +244,10 @@ class JoinNode extends BetaNode {
                          workingMemory );
         } else {
             // ensure the tuple is at the top of the memory
-            memory.add( leftTuple );
+            memory.add( workingMemory, leftTuple );
             BetaNodeBinder binder = getJoinNodeBinder();
             
-            for ( Iterator rightIterator = memory.rightObjectIterator(); rightIterator.hasNext(); ) {                
+            for ( Iterator rightIterator = memory.rightObjectIterator(workingMemory, leftTuple); rightIterator.hasNext(); ) {                
                 ObjectMatches objectMatches = (ObjectMatches) rightIterator.next();
                 FactHandleImpl handle = objectMatches.getFactHandle();
                 
@@ -291,14 +289,14 @@ class JoinNode extends BetaNode {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Remove and re-add the FactHandle from memory, ensures that its the latest on the list
-        ObjectMatches objectMatches = (ObjectMatches) memory.getRightFactHandleMemory().remove( handle );
-        memory.getRightFactHandleMemory().put( handle, objectMatches );
-        
+        ObjectMatches objectMatches = memory.remove( workingMemory, handle );
+        memory.add( workingMemory, objectMatches );
 
         TupleMatch tupleMatch = objectMatches.getFirstTupleMatch();
         BetaNodeBinder binder = getJoinNodeBinder();
         
-        for ( ReteTuple leftTuple = memory.getFirstTuple(); leftTuple != null; leftTuple = (ReteTuple) leftTuple.getNext() ) {
+        for ( Iterator it = memory.leftTupleIterator(workingMemory, handle); it.hasNext(); ) {
+            ReteTuple leftTuple = (ReteTuple) it.next();
             if ( tupleMatch != null && tupleMatch.getTuple() == leftTuple ) {
                 // has previous match so need to decide whether to continue
                 // modify or retract                

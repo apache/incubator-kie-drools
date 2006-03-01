@@ -32,6 +32,14 @@ public class BoundVariableConstraint
         return this.requiredDeclarations;
     }
 
+    public FieldExtractor getFieldExtractor() {
+        return this.fieldExtractor;
+    }
+    
+    public Evaluator getEvaluator() {
+        return this.evaluator;
+    }
+
     public boolean isAllowed(FactHandle handle,
                              Tuple tuple,
                              WorkingMemory workingMemory) {

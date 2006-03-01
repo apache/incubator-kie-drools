@@ -1,27 +1,15 @@
 package org.drools.reteoo;
 
 import java.beans.IntrospectionException;
-import java.util.Iterator;
 
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldExtractor;
-import org.drools.base.ClassObjectType;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.PropagationContextImpl;
-import org.drools.rule.Declaration;
-import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Rule;
-import org.drools.spi.Extractor;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.MockConstraint;
-import org.drools.spi.ObjectType;
-import org.drools.spi.PredicateExpression;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 
 public class NotNodeTest extends DroolsTestCase {
     Rule               rule;
@@ -129,7 +117,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       this.memory.getLeftTupleMemory().size() );
         assertEquals( 1,
-                      this.memory.getRightFactHandleMemory().size() );
+                      this.memory.getRightObjectMemory().size() );
         
         // When this is retracter both tuples should assert
         this.node.retractObject( f1, context, workingMemory );
