@@ -44,13 +44,7 @@
 	    <groupId>commons-lang</groupId>
 	    <artifactId>commons-lang</artifactId>
 	    <version>2.1</version>
-	  </dependency>                 
-    
-    <dependency>
-			<groupId>freemarker</groupId>
-			<artifactId>freemarker</artifactId>    
-			<version>2.3.4</version>
-    </dependency>      
+	  </dependency>                      
            
     <dependency>
 			<groupId>antlr</groupId>
@@ -67,7 +61,7 @@
     <dependency>
 			<groupId>antlr</groupId>
 			<artifactId>stringtemplate</artifactId>    
-			<version>2.2</version>
+			<version>2.2-20060301</version>
     </dependency>      
 
     <dependency>

@@ -1,0 +1,90 @@
+group javaInvokeable;
+
+returnValueInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, globals, globalTypes, text) ::= <<
+package <package>;
+
+public class <invokerClassName> implements org.drools.spi.ReturnValueExpression
+{
+    public Object evaluate(org.drools.spi.Tuple tuple,
+                            org.drools.rule.Declaration[] declarations, 
+                            org.drools.WorkingMemory workingMemory) {                               
+
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( workingMemory.getObject( tuple.get( declarations[<i0>] ) ) );<\n>}>
+        <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
+        
+        return <ruleClassName>.<methodName>( 
+            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
+	        <globals:{ identifier | <identifier>}; separator=",\n"> );
+    }
+}     
+>>
+
+predicateInvoker(package, invokerClassName, ruleClassName, methodName, declaration, declarationType, 
+                 declarations, declarationTypes, globals, globalTypes, text) ::= <<
+package <package>;
+
+public class <invokerClassName> implements org.drools.spi.PredicateExpression
+{
+    public boolean evaluate(org.drools.spi.Tuple tuple,
+                            org.drools.FactHandle factHandle,
+                            org.drools.rule.Declaration declaration,
+                            org.drools.rule.Declaration[] declarations, 
+                            org.drools.WorkingMemory workingMemory) {                               
+		<declarationType> <declaration.identifier> = (<declarationType>) declaration.getValue( workingMemory.getObject( factHandle ) );
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( workingMemory.getObject( tuple.get( declarations[<i0>] ) ) );<\n>}>
+        <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
+        
+        return <ruleClassName>.<methodName>( 
+            <declaration.identifier><if(declarations)>,<endif>
+            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
+	        <globals:{ identifier | <identifier>}; separator=",\n"> );
+    }
+}     
+>>
+
+
+evalInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, globals, globalTypes, text) ::= <<
+package <package>;
+
+public class <invokerClassName> implements org.drools.spi.EvalExpression
+{
+    public boolean evaluate(org.drools.spi.Tuple tuple,
+                            org.drools.rule.Declaration[] declarations, 
+                            org.drools.WorkingMemory workingMemory) {                               
+
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( workingMemory.getObject( tuple.get( declarations[<i0>] ) ) );<\n>}>
+        <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
+        
+        return <ruleClassName>.<methodName>( 
+            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
+	        <globals:{ identifier | <identifier>}; separator=",\n"> );
+    }
+}     
+>>
+
+consequenceInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, globals, globalTypes, text) ::= <<
+package <package>;
+
+public class <invokerClassName> implements org.drools.spi.Consequence
+{
+    public void evaluate(org.drools.spi.Activation activation,
+                           org.drools.WorkingMemory workingMemory) {    
+                       
+        org.drools.spi.Tuple tuple = activation.getTuple();
+        org.drools.rule.Rule rule = activation.getRule();
+        org.drools.spi.KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation.getRule(), tuple, workingMemory );
+        org.drools.rule.Declaration[] declarations = rule.getDeclarations();                                                  
+
+        <declarations:{ declr| org.drools.FactHandle <declr.identifier>__Handle__ = ( org.drools.FactHandle ) tuple.get( declarations[<i0>] );<\n>}>
+
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> )  declarations[<i0>].getValue( workingMemory.getObject( <declr.identifier>__Handle__ ) );<\n>}>
+        
+        <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
+        
+        <ruleClassName>.<methodName>( 
+            knowledgeHelper<if(declarations)>,<endif>
+            <declarations:{ declr | <declr.identifier>, <declr.identifier>__Handle__}; separator=",\n"><if(globals)>,<endif>
+	        <globals:{ identifier | <identifier>}; separator=",\n"> );
+    }
+}     
+>>
