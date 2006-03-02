@@ -406,15 +406,13 @@ public class RuleBuilder {
                                      declarations,
                                      returnValueDescr.getText() );
 
-        st.setAttribute( "methodName",
-                         classMethodName );
         st.setAttribute( "text",
                          returnValueDescr.getText() );
 
-        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        String invokerClassName = pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
-        this.invokerLookups.put( this.pkg.getName() + "." + invokerClassName,
+        this.invokerLookups.put( invokerClassName,
                                  returnValueConstraint );
     }
 
@@ -503,10 +501,10 @@ public class RuleBuilder {
         st.setAttribute( "text",
                          predicateDescr.getText() );
 
-        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        String invokerClassName = pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
-        this.invokerLookups.put( this.pkg.getName() + "." + invokerClassName,
+        this.invokerLookups.put( invokerClassName,
                                  predicateConstraint );
     }
 
@@ -563,10 +561,10 @@ public class RuleBuilder {
         st.setAttribute( "text",
                          evalDescr.getText() );
 
-        String invokerClassName = ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        String invokerClassName = pkg.getName() + "." +  ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
-        this.invokerLookups.put( this.pkg.getName() + "." + invokerClassName,
+        this.invokerLookups.put( invokerClassName,
                                  eval );
     }
 

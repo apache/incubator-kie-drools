@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.JavaCompiler;
 import org.apache.commons.jci.compilers.JavaCompilerFactory;
+import org.apache.commons.jci.problems.CompilationProblem;
 import org.apache.commons.jci.readers.MemoryResourceReader;
 import org.apache.commons.jci.readers.ResourceReader;
 import org.apache.commons.jci.stores.MemoryResourceStore;
@@ -135,6 +136,11 @@ public class RuleBaseManager {
         this.results = compiler.compile( new String[]{className},
                                          src,
                                          dst );
+        System.out.println( "-------------" );
+        CompilationProblem[] problems =  this.results.getErrors();
+        for ( int i = 0, length = problems.length; i < length; i++ ) {
+            System.out.println( problems[i] );
+        }
         
         return results;
     }
