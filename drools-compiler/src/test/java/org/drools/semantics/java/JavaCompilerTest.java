@@ -78,6 +78,10 @@ public class JavaCompilerTest extends DroolsTestCase {
         ruleDescr.setConsequence( "modify(m);" );
 
         manager.addPackage( packageDescr );
+//        Package pkg = manager.getPackag( "p1" );
+//        pkg.removeRule( pkg.getRule( "rule-1" ) );
+//        
+//        manager.addPackage( packageDescr );
 
         assertLength( 2,
                       manager.getCompilationResults().getErrors() );
