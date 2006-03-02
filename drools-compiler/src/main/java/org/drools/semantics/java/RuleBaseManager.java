@@ -10,16 +10,19 @@ import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.JavaCompiler;
 import org.apache.commons.jci.compilers.JavaCompilerFactory;
 import org.apache.commons.jci.readers.MemoryResourceReader;
+import org.apache.commons.jci.readers.ResourceReader;
 import org.apache.commons.jci.stores.MemoryResourceStore;
 import org.apache.commons.jci.stores.ResourceStore;
 import org.apache.commons.jci.stores.ResourceStoreClassLoader;
 import org.drools.CheckedDroolsException;
+import org.drools.RuleBase;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
+import org.drools.rule.PackageCompilationData;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
@@ -29,26 +32,25 @@ import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.TypeResolver;
 
-public class DroolsCompiler {
-    private final MemoryResourceReader     src;
-    private final MemoryResourceStore      dst;
-    private final ResourceStoreClassLoader classLoader;
+public class RuleBaseManager {
+    private final MemoryResourceReader src;
 
-    private JavaCompiler                   compiler = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
+    private JavaCompiler               compiler            = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
 
-    private int                            counter;
+    private int                        counter;
 
-    private Map                            packages;
+    private Map                        packages;
 
-    private Map                            errors   = Collections.EMPTY_MAP;
+    private CompilationResult          results;
 
-    public DroolsCompiler() {
+    private PackageStore               packageStoreWrapper = new PackageStore();
+
+    public RuleBaseManager() {
         this( null );
     }
 
-    public DroolsCompiler(ClassLoader parentClassLoader) {
+    public RuleBaseManager(ClassLoader parentClassLoader) {
         this.src = new MemoryResourceReader();
-        this.dst = new MemoryResourceStore();
 
         this.packages = new HashMap();
 
@@ -59,12 +61,14 @@ public class DroolsCompiler {
             }
         }
 
-        this.classLoader = new ResourceStoreClassLoader( parentClassLoader,
-                                                         new ResourceStore[]{dst} );
+        //        this.classLoader = new ResourceStoreClassLoader( parentClassLoader,
+        //                                                         new ResourceStore[]{dst} );
     }
 
     public void addPackage(PackageDescr packageDescr) throws CheckedDroolsException,
-                                                     ClassNotFoundException {
+                                                     ClassNotFoundException,
+                                                     InstantiationException,
+                                                     IllegalAccessException {
         if ( this.packages == Collections.EMPTY_MAP ) {
             this.packages = new HashMap();
         }
@@ -96,7 +100,7 @@ public class DroolsCompiler {
     private Package newPackage(PackageDescr packageDescr) throws ClassNotFoundException {
         Package pkg = new Package( packageDescr.getName() );
 
-        mergePackage( pkg, 
+        mergePackage( pkg,
                       packageDescr );
 
         return pkg;
@@ -110,7 +114,7 @@ public class DroolsCompiler {
         }
 
         TypeResolver typeResolver = new ClassTypeResolver( imports,
-                                                           this.classLoader );
+                                                           pkg.getPackageCompilationData().getClassLoader() );
 
         Map globals = packageDescr.getGlobals();
         for ( Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
@@ -123,26 +127,16 @@ public class DroolsCompiler {
     }
 
     CompilationResult compile(String className,
-                              String text) {
+                              String text,
+                              ResourceStore dst) {
         src.addFile( className.replace( '.',
                                         '/' ) + ".java",
                      text.toCharArray() );
-        CompilationResult result = compiler.compile( new String[]{className},
-                                                     src,
-                                                     dst );
-        if ( result.getErrors().length > 0 ) {
-            if ( this.errors == Collections.EMPTY_MAP ) {
-                this.errors = new HashMap();
-            }
-            for ( int i = 0, size = result.getErrors().length; i < size; i++ ) {
-                System.out.println( result.getErrors()[i] );
-            }
-
-            this.errors.put( className,
-                             result );
-        }
-
-        return result;
+        this.results = compiler.compile( new String[]{className},
+                                         src,
+                                         dst );
+        
+        return results;
     }
 
     public void addFunction(PackageDescr packageDescr,
@@ -151,7 +145,10 @@ public class DroolsCompiler {
     }
 
     public void addRule(Package pkg,
-                        RuleDescr ruleDescr) throws CheckedDroolsException {
+                        RuleDescr ruleDescr) throws CheckedDroolsException,
+                                            ClassNotFoundException,
+                                            InstantiationException,
+                                            IllegalAccessException {
         String ruleClassName = getUniqueLegalName( pkg.getName(),
                                                    ruleDescr.getName(),
                                                    "java" );
@@ -164,47 +161,36 @@ public class DroolsCompiler {
 
         //System.out.println( ruleDescr.getClassName() + ":\n" + builder.getRuleClass() );
 
+        this.packageStoreWrapper.setPackageCompilationData( pkg.getPackageCompilationData() );
         compile( pkg.getName() + "." + ruleDescr.getClassName(),
-                 builder.getRuleClass() );
+                 builder.getRuleClass(),
+                 this.packageStoreWrapper );
 
-        for ( Iterator it = builder.getInvokeables().keySet().iterator(); it.hasNext(); ) {
+        for ( Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
             String className = (String) it.next();
-            String text = (String) builder.getInvokeables().get( className );
+
+            // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
+            // If so we add it to the PackageCompilationData as it will get wired up on compilation
+            Object invoker = builder.getInvokerLookups().get( className );
+            if ( invoker != null ) {
+                pkg.getPackageCompilationData().putInvoker( className,
+                                                            invoker );
+            }
+            String text = (String) builder.getInvokers().get( className );
 
             //System.out.println( className + ":\n" + text );
 
-            compile( pkg.getName() + "." + className,
-                     text );
+            compile( className,
+                     text,
+                     this.packageStoreWrapper );
         }
 
-        // Wire up invokeables
-        Map lookups = builder.getReferenceLookups();
-        try {
-            for ( Iterator it = lookups.keySet().iterator(); it.hasNext(); ) {
-                String className = (String) it.next();
-                Class clazz = this.classLoader.loadClass( className );
-                Object invokeable = lookups.get( className );
-                if ( invokeable instanceof ReturnValueConstraint ) {
-                    ((ReturnValueConstraint) invokeable).setReturnValueExpression( (ReturnValueExpression) clazz.newInstance() );
-                } else if ( invokeable instanceof PredicateConstraint ) {
-                    ((PredicateConstraint) invokeable).setPredicateExpression( (PredicateExpression) clazz.newInstance() );
-                } else if ( invokeable instanceof EvalCondition ) {
-                    ((EvalCondition) invokeable).setEvalExpression( (EvalExpression) clazz.newInstance() );
-                } else if ( invokeable instanceof Rule ) {
-                    ((Rule) invokeable).setConsequence( (Consequence) clazz.newInstance() );
-                }
-            }
-        } catch ( ClassNotFoundException e ) {
-            throw new CheckedDroolsException( e );
-        } catch ( InstantiationError e ) {
-            throw new CheckedDroolsException( e );
-        } catch ( IllegalAccessException e ) {
-            throw new CheckedDroolsException( e );
-        } catch ( InstantiationException e ) {
-            throw new CheckedDroolsException( e );
-        }
         pkg.addRule( rule );
-    }   
+    }
+
+    public Package getPackag(String packageName) {
+        return (Package) this.packages.get( packageName );
+    }
 
     public Map getPackages() {
         return this.packages;
@@ -212,14 +198,6 @@ public class DroolsCompiler {
 
     public MemoryResourceReader getMemoryResourceReader() {
         return this.src;
-    }
-
-    public MemoryResourceStore getMemoryResourceStore() {
-        return this.dst;
-    }
-
-    public ResourceStoreClassLoader getResourcStoreClassLoader() {
-        return this.classLoader;
     }
 
     public byte[] getSrcJar() {
@@ -238,8 +216,8 @@ public class DroolsCompiler {
         return this.counter++;
     }
 
-    public Map getErrors() {
-        return this.errors;
+    public CompilationResult getCompilationResults() {
+        return this.results;
     }
 
     /**

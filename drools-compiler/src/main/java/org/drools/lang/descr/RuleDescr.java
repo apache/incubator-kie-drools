@@ -13,7 +13,6 @@ public class RuleDescr extends PatternDescr  {
     private AndDescr lhs;
     private String   consequence;
     private List attributes = Collections.EMPTY_LIST;
-    private Map declarations = new HashMap(1);
     
     private String className;
 
@@ -70,9 +69,5 @@ public class RuleDescr extends PatternDescr  {
 
     public void setConsequence(String consequence) {
         this.consequence = consequence;
-    }
-    
-    public Map getDeclarations() {
-        return this.declarations;
     }       
 }
