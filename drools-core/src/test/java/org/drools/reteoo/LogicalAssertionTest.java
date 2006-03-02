@@ -34,7 +34,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation, WorkingMemory workingMemory) {
+            public void evaluate(Activation activation, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -113,7 +113,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation, WorkingMemory workingMemory) {
+            public void evaluate(Activation activation, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -177,7 +177,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation, WorkingMemory workingMemory) {
+            public void evaluate(Activation activation, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -285,7 +285,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation, WorkingMemory workingMemory) {
+            public void evaluate(Activation activation, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -363,7 +363,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation, WorkingMemory workingMemory) {
+            public void evaluate(Activation activation, WorkingMemory workingMemory) {
                 // do nothing
             }
         };

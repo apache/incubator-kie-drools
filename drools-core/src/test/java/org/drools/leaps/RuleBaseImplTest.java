@@ -107,7 +107,7 @@ public class RuleBaseImplTest extends DroolsTestCase {
 		final Declaration contextRule1Declaration = this.rule1
 				.getDeclaration("context1");
 		this.rule1.setConsequence(new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -140,7 +140,7 @@ public class RuleBaseImplTest extends DroolsTestCase {
 		final Declaration contextRule2Declaration = rule2
 				.getDeclaration("context2");
 		this.rule2.setConsequence(new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();

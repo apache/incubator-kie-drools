@@ -130,6 +130,6 @@ public class DuplicateRuleNameException extends RuleConstructionException {
 
     private static String createMessage(Package pkg,
                                         Rule rule) {
-        return "Rule-set " + ((pkg.getName() != null) ? pkg.getName() : "<no-name>") + " already contains rule with name " + rule.getName();
+        return "Package " + ((pkg.getName() != null) ? pkg.getName() : "<no-name>") + " already contains rule with name " + rule.getName();
     }
 }

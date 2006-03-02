@@ -204,9 +204,9 @@ public class WorkingMemoryImpl
         Map applicationDataDefintions = this.ruleBase.getGlobalDeclarations();
         Class type = (Class) applicationDataDefintions.get( name );
         if ( (type == null) ) {
-            throw new RuntimeException( "Unexpected application data [" + name + "]" );
+            throw new RuntimeException( "Unexpected global [" + name + "]" );
         } else if ( !type.isInstance( value ) ) {
-            throw new RuntimeException( "Illegal class for application data. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
+            throw new RuntimeException( "Illegal class for global. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
 
         } else {
             this.globals.put( name,

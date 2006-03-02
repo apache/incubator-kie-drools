@@ -183,7 +183,7 @@ public abstract class BaseMannersTest extends TestCase {
 
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation,
+            public void evaluate(Activation activation,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
@@ -448,7 +448,7 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation,
+            public void evaluate(Activation activation,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
@@ -630,7 +630,7 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation,
+            public void evaluate(Activation activation,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
@@ -723,7 +723,7 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation,
+            public void evaluate(Activation activation,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
@@ -827,7 +827,7 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation,
+            public void evaluate(Activation activation,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
@@ -894,7 +894,7 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation,
+            public void evaluate(Activation activation,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = activation.getRule();
@@ -961,7 +961,7 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void invoke(Activation activation,
+            public void evaluate(Activation activation,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     System.err.println( "all done" );

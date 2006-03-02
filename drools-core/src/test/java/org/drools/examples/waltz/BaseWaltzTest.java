@@ -137,7 +137,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		rule.addPattern(stageColumn);
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -207,7 +207,7 @@ public abstract class BaseWaltzTest extends TestCase {
 
 		Consequence consequence = new Consequence() {
 
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -259,7 +259,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		rule.addPattern(notLine);
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -345,7 +345,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				edge2P2Declaration, integerNotEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -439,7 +439,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		rule.addPattern(notEdge);
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -500,7 +500,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		rule.addPattern(notEdge);
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -583,7 +583,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		rule.addPattern(notJunction);
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -686,7 +686,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		rule.addPattern(notJunction);
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -781,7 +781,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		rule.addPattern(notJunction);
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -883,7 +883,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		rule.addPattern(notJunction);
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -975,7 +975,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				edge1P1Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -1074,7 +1074,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				edge1P2Declaration, integerNotEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -1151,7 +1151,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP3Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -1229,7 +1229,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP3Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -1315,7 +1315,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				edge2P2Declaration, integerNotEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -1402,7 +1402,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				edge2P2Declaration, integerNotEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -1487,7 +1487,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				edge2P2Declaration, integerNotEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -1571,7 +1571,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				edge2P2Declaration, integerNotEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -1676,7 +1676,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP3Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -1782,7 +1782,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP3Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -1892,7 +1892,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP1Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2000,7 +2000,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP1Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2096,7 +2096,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP3Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2187,7 +2187,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP3Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2281,7 +2281,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP1Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2372,7 +2372,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP1Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2466,7 +2466,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP3Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2561,7 +2561,7 @@ public abstract class BaseWaltzTest extends TestCase {
 				junctionP3Declaration, integerEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2607,7 +2607,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2656,7 +2656,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration edgeDeclaration = rule.getDeclaration("edge");
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2712,7 +2712,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration edgeDeclaration = rule.getDeclaration("edge");
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2755,7 +2755,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -2796,7 +2796,7 @@ public abstract class BaseWaltzTest extends TestCase {
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					System.out.println("done.");
