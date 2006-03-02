@@ -47,7 +47,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 		this.workingMemory = (WorkingMemoryImpl) ruleBase
 		.newWorkingMemory();
 		this.consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) {
 				// do nothing
 			}

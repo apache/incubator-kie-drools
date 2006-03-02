@@ -191,7 +191,7 @@ public class OrTest extends TestCase {
 				edge1P2Declaration, integerNotEqualEvaluator));
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();
@@ -254,7 +254,7 @@ public class OrTest extends TestCase {
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
 
 		Consequence consequence = new Consequence() {
-			public void invoke(Activation activation,
+			public void evaluate(Activation activation,
 					WorkingMemory workingMemory) throws ConsequenceException {
 				try {
 					Rule rule = activation.getRule();

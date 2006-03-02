@@ -89,36 +89,14 @@ public interface KnowledgeHelper {
     void assertObject(Object object,
                       boolean dynamic) throws FactException;
 
-    /**
-     * Modifies an object. Notice that the FactHandle is not passed so the
-     * implementation must lookup the FactHandle form the working memory.
-     * 
-     * @param object -
-     *            the object to be modified
-     * @throws FactException -
-     *             Exceptions can be thrown by conditions which are wrapped and
-     *             returned as a FactException
-     */
-    void modifyObject(Object object) throws FactException;
 
     void modifyObject(FactHandle handle,
-                      Object newObject) throws FactException;    
-    
-    /**
-     * Retracts an object from the WorkingMemory. All Activations on the Agenda
-     * that are cancelled should emit ActivationCancelled events.
-     * 
-     * @param object -
-     *            the object to be retracted.
-     * @throws FactException -
-     *             Wraps and returns any exception that may occur.
-     */
-    void retractObject(Object object) throws FactException;
+                      Object newObject) throws FactException;        
     
     void retractObject(FactHandle handle) throws FactException;
-
-    Object get(Declaration declaration);
     
+    public Object get(Declaration declaration);    
+   
     /**
      * @return - The rule name
      */

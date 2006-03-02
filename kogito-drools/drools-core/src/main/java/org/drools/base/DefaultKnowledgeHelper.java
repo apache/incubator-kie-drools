@@ -50,21 +50,10 @@ public class DefaultKnowledgeHelper
                                          dynamic );
     }
 
-    public void modifyObject(Object object) throws FactException {
-        FactHandle handle = this.workingMemory.getFactHandle( object );
-
-        this.workingMemory.modifyObject( handle,
-                                         object );
-    }
-
     public void modifyObject(FactHandle handle,
                              Object newObject) throws FactException {
         this.workingMemory.modifyObject( handle,
                                          newObject );
-    }
-
-    public void retractObject(Object object) throws FactException {
-        retractObject( this.workingMemory.getFactHandle( object ) );
     }
 
     public void retractObject(FactHandle handle) throws FactException {

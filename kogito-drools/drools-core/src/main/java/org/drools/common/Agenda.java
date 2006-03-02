@@ -304,7 +304,7 @@ public class Agenda
         
         eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation );
         
-        activation.getRule().getConsequence().invoke( activation, this.workingMemory );        
+        activation.getRule().getConsequence().evaluate( activation, this.workingMemory );        
 
         eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );
     }

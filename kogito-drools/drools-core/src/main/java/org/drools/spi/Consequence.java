@@ -49,7 +49,7 @@ import org.drools.WorkingMemory;
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public interface Consequence  extends Invokeable {
+public interface Consequence  extends Invoker {
     /**
      * Execute the consequence for the supplied matching <code>Tuple</code>.
      * 
@@ -62,5 +62,5 @@ public interface Consequence  extends Invokeable {
      *             If an error occurs while attempting to invoke the
      *             consequence.
      */
-    void invoke(Activation activation, WorkingMemory workingMemory) throws ConsequenceException;
+    void evaluate(Activation activation, WorkingMemory workingMemory) throws ConsequenceException;
 }

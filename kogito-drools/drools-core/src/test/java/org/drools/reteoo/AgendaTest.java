@@ -62,7 +62,7 @@ public class AgendaTest extends DroolsTestCase {
         // Add consequence. Notice here the context here for the add to ageyunda
         // is itself
         rule1.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation,
+            public void evaluate(Activation activation,
                                WorkingMemory workingMemory) {
                 // do nothing
             }
@@ -100,7 +100,7 @@ public class AgendaTest extends DroolsTestCase {
         final Map results = new HashMap();
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void invoke(Activation activation,
+            public void evaluate(Activation activation,
                                WorkingMemory workingMemory) {
                 results.put( "fired",
                              new Boolean( true ) );
@@ -193,7 +193,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create the consequence
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation,
+            public void evaluate(Activation activation,
                                WorkingMemory workingMemory) {
                 // do nothing
             }
@@ -399,7 +399,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create the consequence
         Consequence consequence = new Consequence() {
-            public void invoke(Activation activation,
+            public void evaluate(Activation activation,
                                WorkingMemory workingMemory) {
                 // do nothing
             }
