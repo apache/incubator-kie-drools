@@ -20,6 +20,7 @@ import org.drools.RuleBase;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
@@ -42,7 +43,7 @@ public class RuleBaseManager {
 
     private Map                        packages;
 
-    private CompilationResult          results;
+    private Map                        results;
 
     private PackageStore               packageStoreWrapper = new PackageStore();
 
@@ -53,6 +54,8 @@ public class RuleBaseManager {
     public RuleBaseManager(ClassLoader parentClassLoader) {
         this.src = new MemoryResourceReader();
 
+        this.results = new HashMap();
+        
         this.packages = new HashMap();
 
         if ( parentClassLoader == null ) {
@@ -133,16 +136,17 @@ public class RuleBaseManager {
         src.addFile( className.replace( '.',
                                         '/' ) + ".java",
                      text.toCharArray() );
-        this.results = compiler.compile( new String[]{className},
+        CompilationResult result = compiler.compile( new String[]{className},
                                          src,
                                          dst );
+        
         System.out.println( "-------------" );
-        CompilationProblem[] problems =  this.results.getErrors();
+        CompilationProblem[] problems =  result.getErrors();
         for ( int i = 0, length = problems.length; i < length; i++ ) {
             System.out.println( problems[i] );
         }
         
-        return results;
+        return result;
     }
 
     public void addFunction(PackageDescr packageDescr,
@@ -164,13 +168,17 @@ public class RuleBaseManager {
         builder.build( pkg,
                        ruleDescr );
         Rule rule = builder.getRule();
+        
+        List results = builder.getResults();
 
         //System.out.println( ruleDescr.getClassName() + ":\n" + builder.getRuleClass() );
 
         this.packageStoreWrapper.setPackageCompilationData( pkg.getPackageCompilationData() );
-        compile( pkg.getName() + "." + ruleDescr.getClassName(),
-                 builder.getRuleClass(),
-                 this.packageStoreWrapper );
+        // The compilation result is for th entire rule, so difficult to associate with any descr
+        CompilationResult result = compile( pkg.getName() + "." + ruleDescr.getClassName(),
+                                            builder.getRuleClass(),
+                                            this.packageStoreWrapper );
+        
 
         for ( Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
             String className = (String) it.next();
@@ -186,12 +194,24 @@ public class RuleBaseManager {
 
             //System.out.println( className + ":\n" + text );
 
-            compile( className,
-                     text,
-                     this.packageStoreWrapper );
+            result = compile( className,
+                              text,
+                              this.packageStoreWrapper );
+            
+            if ( result.getErrors().length > 0 ) {
+                PatternDescr descr = (PatternDescr) builder.getDescrLookups().get( className );
+                results.add( new BuilderResult( descr,
+                                                result.getErrors(),
+                                                "Compilation error for Invoker" ) );                
+                
+            }
+            
         }
 
         pkg.addRule( rule );
+        if ( results.size() > 0 ) {
+            this.results.put( rule, results );
+        }
     }
 
     public Package getPackag(String packageName) {
@@ -222,7 +242,7 @@ public class RuleBaseManager {
         return this.counter++;
     }
 
-    public CompilationResult getCompilationResults() {
+    public Map getResults() {
         return this.results;
     }
 

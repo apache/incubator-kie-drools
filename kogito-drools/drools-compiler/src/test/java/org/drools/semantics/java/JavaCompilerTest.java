@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.CheckedDroolsException;
@@ -78,13 +79,13 @@ public class JavaCompilerTest extends DroolsTestCase {
         ruleDescr.setConsequence( "modify(m);" );
 
         manager.addPackage( packageDescr );
-//        Package pkg = manager.getPackag( "p1" );
-//        pkg.removeRule( pkg.getRule( "rule-1" ) );
-//        
-//        manager.addPackage( packageDescr );
+        Package pkg = manager.getPackag( "p1" );
+        Rule rule = pkg.getRule( "rule-1" );
 
-        assertLength( 2,
-                      manager.getCompilationResults().getErrors() );
+        if ( manager.getResults().get( rule ) != null ) {
+            assertLength( 2,
+                          ((List) manager.getResults().get( rule )) );
+        }
     }
 
     public void testReload() throws Exception {
@@ -104,11 +105,13 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         manager.addPackage( packageDescr );
 
-        assertLength( 0,
-                      manager.getCompilationResults().getErrors() );
-
         Package pkg = (Package) manager.getPackages().get( "p1" );
         Rule rule = pkg.getRule( "rule-1" );
+
+        if ( manager.getResults().get( rule ) != null ) {
+            assertLength( 0,
+                          ((List) manager.getResults().get( rule )) );
+        }
 
         RuleBaseImpl ruleBase = new RuleBaseImpl();
         ruleBase.getGlobalDeclarations().put( "map",
@@ -125,7 +128,7 @@ public class JavaCompilerTest extends DroolsTestCase {
                                                     tuple );
 
         rule.getConsequence().evaluate( activation,
-                                      workingMemory );
+                                        workingMemory );
         assertEquals( new Integer( 1 ),
                       map.get( "value" ) );
 
@@ -134,7 +137,7 @@ public class JavaCompilerTest extends DroolsTestCase {
         manager.addPackage( packageDescr );
 
         rule.getConsequence().evaluate( activation,
-                                      workingMemory );
+                                        workingMemory );
         assertEquals( new Integer( 2 ),
                       map.get( "value" ) );
 
@@ -156,11 +159,13 @@ public class JavaCompilerTest extends DroolsTestCase {
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
 
         manager.addPackage( packageDescr );
+        Package pkg = manager.getPackag( "p1" );
+        Rule rule = pkg.getRule( "rule-1" );
 
-        assertLength( 0,
-                      manager.getCompilationResults().getErrors() );
-
-        Package pkg = (Package) manager.getPackages().get( "p1" );
+        if ( manager.getResults().get( rule ) != null ) {
+            assertLength( 0,
+                          ((List) manager.getResults().get( rule )) );
+        }
 
         // Serialize to a byte array
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -194,7 +199,7 @@ public class JavaCompilerTest extends DroolsTestCase {
                                                     tuple );
 
         newRule.getConsequence().evaluate( activation,
-                                         workingMemory );
+                                           workingMemory );
         assertEquals( new Integer( 1 ),
                       map.get( "value" ) );
     }
@@ -223,8 +228,13 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         manager.addPackage( packageDescr );
 
-        assertLength( 0,
-                      manager.getCompilationResults().getErrors() );
+        Package pkg = manager.getPackag( "p1" );
+        Rule rule = pkg.getRule( "rule-1" );
+
+        if ( manager.getResults().get( rule ) != null ) {
+            assertLength( 0,
+                          ((List) manager.getResults().get( rule )) );
+        }
     }
 
     public void testReturnValue() throws Exception {
@@ -260,8 +270,13 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         manager.addPackage( packageDescr );
 
-        assertLength( 0,
-                      manager.getCompilationResults().getErrors() );
+        Package pkg = (Package) manager.getPackages().get( "p1" );
+        Rule rule = pkg.getRule( "rule-1" );
+
+        if ( manager.getResults().get( rule ) != null ) {
+            assertLength( 0,
+                          ((List) manager.getResults().get( rule )) );
+        }
     }
 
     public void testPredicate() throws Exception {
@@ -294,8 +309,13 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         manager.addPackage( packageDescr );
 
-        assertLength( 0,
-                      manager.getCompilationResults().getErrors() );
+        Package pkg = (Package) manager.getPackages().get( "p1" );
+        Rule rule = pkg.getRule( "rule-1" );
+
+        if ( manager.getResults().get( rule ) != null ) {
+            assertLength( 0,
+                          ((List) manager.getResults().get( rule )) );
+        }
     }
 
     public void testEval() throws Exception {
@@ -329,12 +349,17 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         manager.addPackage( packageDescr );
 
-        assertLength( 0,
-                      manager.getCompilationResults().getErrors() );
+        Package pkg = (Package) manager.getPackages().get( "p1" );
+        Rule rule = pkg.getRule( "rule-1" );
+
+        if ( manager.getResults().get( rule ) != null ) {
+            assertLength( 0,
+                          ((List) manager.getResults().get( rule )) );
+        }
     }
 
     public void testOr() throws Exception {
-        Rule rule = t( new OrDescr() );
+        Rule rule = createRule( new OrDescr() );
 
         And lhs = rule.getLhs();
         assertLength( 1,
@@ -349,7 +374,7 @@ public class JavaCompilerTest extends DroolsTestCase {
     }
 
     public void testAnd() throws Exception {
-        Rule rule = t( new AndDescr() );
+        Rule rule = createRule( new AndDescr() );
 
         And lhs = rule.getLhs();
         assertLength( 1,
@@ -364,7 +389,7 @@ public class JavaCompilerTest extends DroolsTestCase {
     }
 
     public void testNot() throws Exception {
-        Rule rule = t( new NotDescr() );
+        Rule rule = createRule( new NotDescr() );
 
         And lhs = rule.getLhs();
         assertLength( 1,
@@ -379,7 +404,7 @@ public class JavaCompilerTest extends DroolsTestCase {
     }
 
     public void testExists() throws Exception {
-        Rule rule = t( new ExistsDescr() );
+        Rule rule = createRule( new ExistsDescr() );
 
         And lhs = rule.getLhs();
         assertLength( 1,
@@ -393,7 +418,7 @@ public class JavaCompilerTest extends DroolsTestCase {
         LiteralConstraint literalConstarint = (LiteralConstraint) column.getConstraints().get( 0 );
     }
 
-    private Rule t(ConditionalElementDescr ceDescr) throws Exception {
+    private Rule createRule(ConditionalElementDescr ceDescr) throws Exception {
         RuleBaseManager manager = new RuleBaseManager();
 
         PackageDescr packageDescr = new PackageDescr( "p1" );
@@ -419,11 +444,13 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         manager.addPackage( packageDescr );
 
-        assertLength( 0,
-                      manager.getCompilationResults().getErrors() );
-
         Package pkg = (Package) manager.getPackages().get( "p1" );
         Rule rule = pkg.getRule( "rule-1" );
+
+        if ( manager.getResults().get( rule ) != null ) {
+            assertLength( 0,
+                          ((List) manager.getResults().get( rule )) );
+        }
 
         return rule;
     }
