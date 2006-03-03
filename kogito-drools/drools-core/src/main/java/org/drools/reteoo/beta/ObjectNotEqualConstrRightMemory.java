@@ -17,7 +17,6 @@
 package org.drools.reteoo.beta;
 
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -47,17 +46,11 @@ public class ObjectNotEqualConstrRightMemory
     private BetaRightMemory childMemory = null;
     
     private Map             memoryMap        = null;
-    private Map             reverseMap       = null;
     private MultiLinkedList memoryMasterList = null;
     private MultiLinkedList noMatchList      = null;
     
     private FieldExtractor extractor   = null;
     private Declaration    declaration = null;
-    
-    // this are temporary references stored to allow isPossibleMatch() to 
-    // find possible matches
-    private WorkingMemory workingMemory  = null;
-    private Object        leftTupleValue = null;
     
     public ObjectNotEqualConstrRightMemory(FieldExtractor extractor,
                                         Declaration    declaration,
@@ -73,7 +66,6 @@ public class ObjectNotEqualConstrRightMemory
         this.declaration = declaration;
         this.childMemory = childMemory;
         this.memoryMap = new HashMap();
-        this.reverseMap = new IdentityHashMap();
         this.memoryMasterList = new MultiLinkedList();
     }
 
@@ -203,8 +195,7 @@ public class ObjectNotEqualConstrRightMemory
                 if(next == null) {
                     while(it.hasNext()) {
                         next = (ObjectMatches) it.next();
-                        if(( next.getChild().getLinkedList() != noMatchList) ||
-                           ( ! isMatch(workingMemory, next.getFactHandle()))) {
+                        if( next.getChild().getLinkedList() != noMatchList) {
                             if((childMemory == null) || 
                                (childMemory.isPossibleMatch((MultiLinkedListNodeWrapper)next.getChild()))) {
                                  hasnext = true;
@@ -258,10 +249,6 @@ public class ObjectNotEqualConstrRightMemory
                              tuple.get( this.declaration ) ) );
         Integer hash = new Integer(select.hashCode());
         this.noMatchList = (MultiLinkedList) this.memoryMap.get(hash);
-        this.workingMemory = workingMemory;
-        this.leftTupleValue = declaration.getValue( 
-                                  workingMemory.getObject(
-                                  tuple.get( this.declaration ) ) );
         
         if(this.childMemory != null) {
             this.childMemory.selectPossibleMatches(workingMemory, tuple);
@@ -278,9 +265,7 @@ public class ObjectNotEqualConstrRightMemory
         if((matches != null) && 
            (matches.getChild() != null) &&
            (matches.getChild().getLinkedList() != null)) {
-                ObjectMatches om = (ObjectMatches) matches.getNode();
-                ret = (( matches.getChild().getLinkedList() != noMatchList) ||
-                       ( ! isMatch(workingMemory, om.getFactHandle())));
+                ret = ( matches.getChild().getLinkedList() != noMatchList);
     
                 if(ret && (this.childMemory != null)) {
                     ret = this.childMemory.isPossibleMatch((MultiLinkedListNodeWrapper)matches.getChild());
@@ -303,22 +288,12 @@ public class ObjectNotEqualConstrRightMemory
         Integer hash = new Integer(select.hashCode());
         MultiLinkedList list = (MultiLinkedList) this.memoryMap.get(hash);
         if(list == null) {
-            list = new MultiLinkedList();
+            list = new KeyMultiLinkedList(hash);
             this.memoryMap.put(hash, list);
-            this.reverseMap.put(list, hash);
         }
         return list;
     }
     
-    private boolean isMatch(WorkingMemory workingMemory,
-                            FactHandleImpl handle) {
-        Object rightObjectValue = this.extractor.getValue( 
-                                                          workingMemory.getObject( handle ));
-        return (this.leftTupleValue != null) ? 
-                this.leftTupleValue.equals(rightObjectValue) :
-                this.leftTupleValue == rightObjectValue;
-    }
-
     /**
      * 
      * @inheritDoc 
@@ -333,8 +308,7 @@ public class ObjectNotEqualConstrRightMemory
      * @param matches
      */
     private void removeMemoryEntry(MultiLinkedList list) {
-        Object hash = this.reverseMap.remove(list);
-        this.memoryMap.remove(hash);
+        this.memoryMap.remove(((KeyMultiLinkedList)list).getKey());
     }
 
     /**
@@ -354,6 +328,18 @@ public class ObjectNotEqualConstrRightMemory
             }
         }
         return ret;
+    }
+    
+    private static class KeyMultiLinkedList extends MultiLinkedList {
+        private final Object key;
+        
+        public KeyMultiLinkedList(Object key) {
+            this.key = key;
+        }
+        
+        public final Object getKey() {
+            return this.key;
+        }
     }
     
 }
