@@ -17,7 +17,6 @@ package org.drools.leaps;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.drools.base.ClassObjectType;
 import org.drools.rule.Rule;
@@ -32,55 +31,63 @@ import org.drools.rule.Rule;
 class LeapsRule {
 	Rule rule;
 
-	ColumnConstraints[] columns = new ColumnConstraints[0];
+	final ColumnConstraints[] columns;
+
+	final ColumnConstraints[] notColumns;
+
+	final ColumnConstraints[] existsColumns;
 
 	boolean notColumnsPresent;
-
-	Iterator notColumnsIterator;
-
-	Iterator existsColumnsIterator;
 
 	boolean existsColumnsPresent;
 
 	public LeapsRule(Rule rule, ArrayList columns, ArrayList notColumns,
 			ArrayList existsColumns) {
 		this.rule = rule;
-		this.columns = (ColumnConstraints[]) columns.toArray(this.columns);
-		this.notColumnsIterator = notColumns.iterator();
+		this.columns = (ColumnConstraints[]) columns.toArray(new ColumnConstraints[0]);
+		this.notColumns = (ColumnConstraints[]) notColumns.toArray(new ColumnConstraints[0]);
+		this.existsColumns = (ColumnConstraints[]) existsColumns.toArray(new ColumnConstraints[0]);
 		this.notColumnsPresent = (notColumns.size() != 0);
-		this.existsColumnsIterator = existsColumns.iterator();
 		this.existsColumnsPresent = (existsColumns.size() != 0);
 	}
 
-	public Rule getRule() {
+	Rule getRule() {
 		return this.rule;
 	}
 
-	public int getNumberOfColumns() {
+	int getNumberOfColumns() {
 		return this.columns.length;
 	}
 
-	public ClassObjectType getColumnClassObjectTypeAtPosition(int idx) {
+	int getNumberOfNotColumns() {
+		return this.notColumns.length;
+	}
+
+	int getNumberOfExistsColumns() {
+		return this.existsColumns.length;
+	}
+
+	ClassObjectType getColumnClassObjectTypeAtPosition(int idx) {
 		return (ClassObjectType) this.columns[idx].getColumn().getObjectType();
 	}
 
-	public ColumnConstraints getColumnConstraintsAtPosition(int idx) {
+	ColumnConstraints getColumnConstraintsAtPosition(int idx) {
 		return this.columns[idx];
 	}
 
-	public Iterator getNotColumnsIterator() {
-		return this.notColumnsIterator;
+	ColumnConstraints[] getNotColumnConstraints() {
+		return this.notColumns;
 	}
 
-	public Iterator getExistsColumnsIterator() {
-		return this.existsColumnsIterator;
+	ColumnConstraints[] getExistsColumnConstraints() {
+		return this.existsColumns;
 	}
 
-	public boolean containsNotColumns() {
+	boolean containsNotColumns() {
 		return this.notColumnsPresent;
 	}
 
-	public boolean containsExistsColumns() {
+	boolean containsExistsColumns() {
 		return this.existsColumnsPresent;
 	}
 }

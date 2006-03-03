@@ -198,7 +198,7 @@ class Token implements Tuple, Serializable {
 	 */
 	public FactHandle getFactHandleForObject(Object object) {
 		if (this.currentFactHandles != null) {
-			for (int i = 0; i < this.currentFactHandles.length; i++) {
+			for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
 				if (this.currentFactHandles[i].getObject() == object) {
 					return this.getFactHandleAtPosition(i);
 				}
@@ -240,7 +240,7 @@ class Token implements Tuple, Serializable {
 	public long getMostRecentFactTimeStamp() {
 		long recency = -1L;
 		if (this.currentFactHandles != null) {
-			for (int i = 0; i < this.currentFactHandles.length; i++) {
+			for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
 				if (i == 0) {
 					recency = this.currentFactHandles[0].getRecency();
 				} else if (this.currentFactHandles[i].getRecency() > recency) {
@@ -259,7 +259,7 @@ class Token implements Tuple, Serializable {
 	public long getLeastRecentFactTimeStamp() {
 		long recency = -1L;
 		if (this.currentFactHandles != null) {
-			for (int i = 0; i < this.currentFactHandles.length; i++) {
+			for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
 				if (i == 0) {
 					recency = this.currentFactHandles[0].getRecency();
 				} else if (this.currentFactHandles[i].getRecency() < recency) {
@@ -277,7 +277,7 @@ class Token implements Tuple, Serializable {
 		String ret = "TOKEN [" + this.dominantFactHandle + "]\n" + "\tRULE : "
 				+ this.currentRuleHandle + "\n";
 		if (this.currentFactHandles != null) {
-			for (int i = 0; i < this.currentFactHandles.length; i++) {
+			for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
 				ret = ret
 						+ ((i == this.currentRuleHandle.getDominantPosition()) ? "***"
 								: "") + "\t" + i + " -> "
@@ -309,7 +309,7 @@ class Token implements Tuple, Serializable {
 	 *         object, otherwise <code>false</code>.
 	 */
 	public boolean dependsOn(FactHandle handle) {
-		for (int i = 0; i < this.currentFactHandles.length; i++) {
+		for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
 			if (this.currentFactHandles[i].equals(handle)) {
 				return true;
 			}

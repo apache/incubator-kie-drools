@@ -148,7 +148,7 @@ public class FactHandleImpl extends Handle implements InternalFactHandle {
 	 * @see FactHandle
 	 */
 	public String toExternalForm() {
-		return "[fid:" + this.getId() + "]";
+		return "f-" + this.getId();
 	}
 
 	/**

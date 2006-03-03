@@ -50,7 +50,7 @@ class Builder {
 			throws InvalidPatternException {
 		ArrayList leapsRules = new ArrayList();
 		And[] and = rule.getTransformedLhs();
-		for (int i = 0; i < and.length; i++) {
+		for (int i = 0, length = and.length; i < length; i++) {
 			leapsRules.addAll(processRuleForAnd(and[i], rule));
 		}
 		return leapsRules;
@@ -121,18 +121,6 @@ class Builder {
             	betaConstraints.add( fieldConstraint );
             }
         }
-
-		
-		
-		
-//		for (Iterator it = column.getConstraints().iterator(); it.hasNext();) {
-//			Constraint constraint = (Constraint) it.next();
-//			if (constraint instanceof LiteralConstraint) {
-//				alphaConstraints.add(constraint);
-//			} else if (constraint instanceof FieldConstraint) {
-//				betaConstraints.add(constraint);
-//			}
-//		}
 
 		if (!betaConstraints.isEmpty()) {
 			binder = new BetaNodeBinder((FieldConstraint[]) betaConstraints

@@ -16,10 +16,14 @@ package org.drools.leaps.util;
  * limitations under the License.
  */
 
-import java.util.Iterator;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.drools.WorkingMemory;
+import org.drools.leaps.ColumnConstraints;
+
 /**
  * 
  * @author Alexander Bagerman
@@ -147,13 +151,14 @@ public class Table {
 	/**
 	 * @return TableIterator for this Table
 	 * @see org.drools.leaps.util.TableIterator
+	 * @see org.drools.leaps.util.BaseTableIterator
 	 */
 	public TableIterator iterator() {
 		TableIterator ret;
 		if (this.empty) {
-			ret = new TableIterator();
+			ret = new BaseTableIterator(null, null, null);
 		} else {
-			ret = new TableIterator(this.headRecord, this.headRecord,
+			ret = new BaseTableIterator(this.headRecord, this.headRecord,
 					this.tailRecord);
 		}
 		return ret;
@@ -169,14 +174,42 @@ public class Table {
 	 * @return leaps table iterator
 	 * @throws TableOutOfBoundException
 	 */
+	class Markers {
+		TableRecord start;
+		TableRecord current;
+		TableRecord last;
+	}
+
+	public TableIterator tailConstrainedIterator(WorkingMemory workingMemory,
+			ColumnConstraints constraints, Object objectAtStart,
+			Object objectAtPosition) throws TableOutOfBoundException {
+		Markers markers = this.getTailIteratorMarkers(objectAtStart,
+				objectAtPosition);
+		return new ConstrainedFactTableIterator(workingMemory, constraints,
+				markers.start, markers.current, markers.last);
+
+	}
+
 	public TableIterator tailIterator(Object objectAtStart,
 			Object objectAtPosition) throws TableOutOfBoundException {
+		Markers markers = this.getTailIteratorMarkers(objectAtStart, objectAtPosition);
+		return new BaseTableIterator(markers.start, markers.current,
+							markers.last);
+	}
+
+
+	private Markers getTailIteratorMarkers(Object objectAtStart,
+			Object objectAtPosition) throws TableOutOfBoundException {
 		// validate
+		Markers ret = new Markers();
+		ret.start = null;
+		ret.current = null;
+		ret.last = null;
+		//
 		if (this.map.comparator().compare(objectAtStart, objectAtPosition) > 0) {
 			throw new TableOutOfBoundException(
 					"object at position is out of upper bound");
 		}
-		TableIterator iterator = null;
 		TableRecord startRecord = null;
 		TableRecord currentRecord = null;
 		TableRecord lastRecord = this.tailRecord;
@@ -203,22 +236,14 @@ public class Table {
 							currentRecord = startRecord;
 						}
 					}
-					iterator = new TableIterator(startRecord, currentRecord,
-							lastRecord);
-				} else {
-					// empty iterator
-					iterator = new TableIterator();
-				}
-			} else {
-				// empty iterator
-				iterator = new TableIterator();
-			}
-		} else {
-			// empty iterator
-			iterator = new TableIterator();
-		}
+					ret.start = startRecord;
+					ret.current = currentRecord;
+					ret.last = 					lastRecord;
+				} 
+			} 
+		} 
 
-		return iterator;
+		return ret;
 	}
 
 	/**
@@ -249,19 +274,19 @@ public class Table {
 									lastRecord.right.object, objectAtEnd) == 0) {
 						lastRecord = lastRecord.right;
 					}
-					iterator = new TableIterator(startRecord, currentRecord,
+					iterator = new BaseTableIterator(startRecord, currentRecord,
 							lastRecord);
 				} else {
 					// empty iterator
-					iterator = new TableIterator();
+					iterator = new BaseTableIterator(null, null, null);
 				}
 			} else {
 				// empty iterator
-				iterator = new TableIterator();
+				iterator = new BaseTableIterator(null, null, null);
 			}
 		} else {
 			// empty iterator
-			iterator = new TableIterator();
+			iterator = new BaseTableIterator(null, null, null);
 		}
 
 		return iterator;
@@ -295,5 +320,9 @@ public class Table {
 
 	public Object bottom() {
 		return this.tailRecord.object;
+	}
+	
+	public static TableIterator singleItemIterator(Object object){
+		return new BaseTableIterator(new TableRecord(object));
 	}
 }
