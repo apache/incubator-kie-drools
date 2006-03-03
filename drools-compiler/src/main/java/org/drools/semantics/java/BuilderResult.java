@@ -4,15 +4,15 @@ import org.drools.lang.descr.PatternDescr;
 
 public class BuilderResult {
     private PatternDescr descr;
-    private Exception    exception;
+    private Object       object;
     private String       message;
     
     public BuilderResult(PatternDescr descr,
-                         Exception exception,
+                         Object object,
                          String message) {
         super();
         this.descr = descr;
-        this.exception = exception;
+        this.object = object;
         this.message = message;
     }
 
@@ -20,8 +20,8 @@ public class BuilderResult {
         return descr;
     }
 
-    public Exception getException() {
-        return exception;
+    public Object getObject() {
+        return object;
     }
 
     public String getMessage() {

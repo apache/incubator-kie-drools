@@ -59,6 +59,8 @@ public class RuleBuilder {
 
     private Map                        invokerLookups;
 
+    private Map                        descrLookups;
+    
     private Map                        declarations;
 
     private int                        counter;
@@ -89,6 +91,10 @@ public class RuleBuilder {
     public List getMethods() {
         return this.methods;
     }
+    
+    public Map getDescrLookups() {
+        return this.descrLookups;
+    }
 
     public String getRuleClass() {
         return this.ruleClass;
@@ -96,6 +102,10 @@ public class RuleBuilder {
 
     public Map getInvokerLookups() {
         return this.invokerLookups;
+    }
+    
+    public List getResults() {
+        return this.results;
     }
 
     public Rule getRule() {
@@ -113,6 +123,7 @@ public class RuleBuilder {
         this.invokers = new HashMap();
         this.invokerLookups = new HashMap();
         this.declarations = new HashMap();
+        this.descrLookups = new HashMap();
 
         this.rule = new Rule( ruleDescr.getName() );
         this.ruleDescr = ruleDescr;
@@ -345,7 +356,7 @@ public class RuleBuilder {
     private void build(Column column,
                        ReturnValueDescr returnValueDescr) {
         String classMethodName = "returnValue" + counter++;
-        returnValueDescr.setClassMethodName( classMethodName );
+        returnValueDescr.setClassMethodName( classMethodName );               
 
         List usedDeclarations = getUsedDeclarations( returnValueDescr,
                                                      returnValueDescr.getText() );
@@ -414,6 +425,7 @@ public class RuleBuilder {
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
                                  returnValueConstraint );
+        this.descrLookups.put( invokerClassName, returnValueDescr );
     }
 
     private void build(Column column,
@@ -496,8 +508,6 @@ public class RuleBuilder {
                                      declarations,
                                      predicateDescr.getText() );
 
-        st.setAttribute( "methodName",
-                         classMethodName );
         st.setAttribute( "text",
                          predicateDescr.getText() );
 
@@ -506,6 +516,7 @@ public class RuleBuilder {
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
                                  predicateConstraint );
+        this.descrLookups.put( invokerClassName, predicateDescr );
     }
 
     private void build(ConditionalElement ce,
@@ -556,8 +567,6 @@ public class RuleBuilder {
                                      declarations,
                                      evalDescr.getText() );
 
-        st.setAttribute( "methodName",
-                         classMethodName );
         st.setAttribute( "text",
                          evalDescr.getText() );
 
@@ -566,6 +575,7 @@ public class RuleBuilder {
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
                                  eval );
+        this.descrLookups.put( invokerClassName, evalDescr );
     }
 
     private void build(Rule rule,
@@ -632,6 +642,7 @@ public class RuleBuilder {
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
                                  this.rule );
+        this.descrLookups.put( invokerClassName, ruleDescr );
 
         st = ruleGroup.getInstanceOf( "ruleClass" );
 
