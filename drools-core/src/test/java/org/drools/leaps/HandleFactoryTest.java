@@ -18,6 +18,11 @@ package org.drools.leaps;
 
 import junit.framework.TestCase;
 
+/**
+ * 
+ * @author Alexander Bagerman
+ *
+ */
 public class HandleFactoryTest extends TestCase {
 
 	HandleFactory factory;

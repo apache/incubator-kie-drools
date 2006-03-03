@@ -18,6 +18,10 @@ package org.drools.leaps.util;
 
 import junit.framework.TestCase;
 
+/**
+ * @author Alexander Bagerman
+ */
+
 public class TableRecordTest extends TestCase {
 
 	public void testConstractor() {
