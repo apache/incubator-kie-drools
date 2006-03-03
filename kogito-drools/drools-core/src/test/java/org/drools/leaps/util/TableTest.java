@@ -28,6 +28,10 @@ import org.drools.examples.manners.Context;
 import org.drools.leaps.*;
 import org.drools.leaps.conflict.*;
 
+/**
+ * @author Alexander Bagerman
+ */
+
 public class TableTest extends TestCase {
 
 	Handle h1;

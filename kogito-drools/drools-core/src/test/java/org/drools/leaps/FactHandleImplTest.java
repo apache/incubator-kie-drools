@@ -21,6 +21,11 @@ import org.drools.leaps.RuleBaseImpl;
 import org.drools.FactHandle;
 import org.drools.FactException;
 
+/**
+ * 
+ * @author Alexander Bagerman
+ *
+ */
 public class FactHandleImplTest extends TestCase {
 
 	private RuleBaseImpl ruleBase;
