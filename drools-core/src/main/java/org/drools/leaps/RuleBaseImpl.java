@@ -188,7 +188,7 @@ public class RuleBaseImpl implements RuleBase {
 
 		Rule[] rules = pkg.getRules();
 
-		for (int i = 0; i < rules.length; ++i) {
+		for (int i = 0, length = rules.length; i < length; ++i) {
 			addRule(rules[i]);
 		}
 	}

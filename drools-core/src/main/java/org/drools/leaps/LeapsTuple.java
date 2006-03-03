@@ -17,10 +17,14 @@ package org.drools.leaps;
  */
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.drools.FactHandle;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
+import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
 /**
@@ -30,16 +34,56 @@ import org.drools.spi.Tuple;
  */
 class LeapsTuple implements Tuple, Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	private final PropagationContext context;
 
-	private FactHandleImpl[] factHandles;
+	private boolean readyForActivation;
 
+	private final FactHandleImpl[] factHandles;
+
+	private final boolean notConstraintsPresent;
+	
+	private final ColumnConstraints[] notConstraints;
+
+	private Set[] notFactHandles;
+
+	private final boolean existsConstraintsPresent;
+	
+	private final ColumnConstraints[] existsConstraints;
+
+	private Set[] existsFactHandles;
+
+	private Set logicalDependencies;
+	
 	private Activation activation;
 
 	/**
 	 * agendaItem parts
 	 */
-	LeapsTuple(FactHandleImpl factHandles[]) {
+	LeapsTuple(FactHandleImpl factHandles[],
+			ColumnConstraints[] notConstraints,
+			ColumnConstraints[] existsConstraints
+			, PropagationContext context) {
+		this.readyForActivation = true;
 		this.factHandles = factHandles;
+		this.notConstraints = notConstraints;
+		if (this.notConstraints != null && this.notConstraints.length > 0) {
+			this.notConstraintsPresent = true;
+			this.notFactHandles = new HashSet[this.notConstraints.length];
+		}
+		else {
+			this.notConstraintsPresent = false;
+		}
+		this.existsConstraints = existsConstraints;
+		if (this.existsConstraints != null && this.existsConstraints.length > 0) {
+			this.existsConstraintsPresent = true;
+			this.existsFactHandles = new HashSet[this.existsConstraints.length];
+		}
+		else {
+			this.existsConstraintsPresent = false;
+		}
+		
+		this.context = context;
 	}
 
 	/**
@@ -54,7 +98,7 @@ class LeapsTuple implements Tuple, Serializable {
 	 * @see org.drools.spi.Tuple
 	 */
 	public boolean dependsOn(FactHandle handle) {
-		for (int i = 0; i < this.factHandles.length; i++) {
+		for (int i = 0, length = this.factHandles.length; i < length; i++) {
 			if (handle.equals(this.factHandles[i])) {
 				return true;
 			}
@@ -96,8 +140,12 @@ class LeapsTuple implements Tuple, Serializable {
 	 * 
 	 * @return indicator if agendaItem was null'ed
 	 */
-	public boolean isActivationNull() {
+	boolean isActivationNull() {
 		return this.activation == null;
+	}
+
+	Activation getActivation() {
+		return this.activation;
 	}
 
 	/**
@@ -116,8 +164,8 @@ class LeapsTuple implements Tuple, Serializable {
 		if (thatFactHandles.length != this.factHandles.length) {
 			return false;
 		}
-		
-		for (int i = 0; i < this.factHandles.length; i++) {
+
+		for (int i = 0, length = this.factHandles.length; i < length; i++) {
 			if (!this.factHandles[i].equals(thatFactHandles[i])) {
 				return false;
 			}
@@ -127,13 +175,130 @@ class LeapsTuple implements Tuple, Serializable {
 	}
 
 	/**
+	 * indicates if exists conditions complete and there is no blocking facts
+	 * 
+	 * @return
+	 */
+	boolean isReadyForActivation() {
+		return this.readyForActivation;
+	}
+
+	/**
 	 * @see java.lang.Object
 	 */
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < this.factHandles.length; i++) {
-			buffer.append(this.factHandles[i] + ", ");
+		StringBuffer buffer = new StringBuffer("LeapsTuple ["
+				+ this.context.getRuleOrigin().getName() + "] ");
+
+		for (int i = 0, length = this.factHandles.length; i < length; i++) {
+			buffer.append(((i==0)?"":", ") + this.factHandles[i]);
+		}
+
+		if(this.existsFactHandles != null) {
+			buffer.append("\nExists fact handles by position");
+			for (int i = 0, length = this.existsFactHandles.length; i < length; i++) {
+				buffer.append("\nposition " + i);
+				for (Iterator it = this.existsFactHandles[i].iterator(); it
+						.hasNext();) {
+					buffer.append("\n\t" + it.next());
+				}
+			}
+		}
+		if(this.notFactHandles != null) {
+			buffer.append("\nNot fact handles by position");
+			for (int i = 0, length = this.notFactHandles.length; i < length; i++) {
+				buffer.append("\nposition " + i);
+				for (Iterator it = this.notFactHandles[i].iterator(); it
+						.hasNext();) {
+					buffer.append("\n\t" + it.next());
+				}
+			}
 		}
 		return buffer.toString();
+	}
+
+	ColumnConstraints[] getNotConstraints() {
+		return this.notConstraints;
+	}
+
+	ColumnConstraints[] getExistsConstraints() {
+		return this.existsConstraints;
+	}
+
+	void addNotFactHandle(FactHandle factHandle, int index) {
+		this.readyForActivation = false;
+		Set facts = this.notFactHandles[index];
+		if (facts == null) {
+			facts = new HashSet();
+			this.notFactHandles[index] = facts;
+		}
+		facts.add(factHandle);
+	}
+
+	void removeNotFactHandle(FactHandle factHandle, int index) {
+		if (this.notFactHandles[index] != null) {
+			this.notFactHandles[index].remove(factHandle);
+		}
+		this.setReadyForActivation();
+	}
+
+	void addExistsFactHandle(FactHandle factHandle, int index) {
+		Set facts = this.existsFactHandles[index];
+		if (facts == null) {
+			facts = new HashSet();
+			this.existsFactHandles[index] = facts;
+		}
+		facts.add(factHandle);
+		this.setReadyForActivation();
+	}
+
+	void removeExistsFactHandle(FactHandle factHandle, int index) {
+		if (this.existsFactHandles[index] != null) {
+			this.existsFactHandles[index].remove(factHandle);
+		}
+		this.setReadyForActivation();
+	}
+
+	private void setReadyForActivation(){
+		this.readyForActivation = true;
+
+		for (int i = 0, length = this.notFactHandles.length; this.notConstraintsPresent
+				&& i < length && this.readyForActivation; i++) {
+			if (this.notFactHandles[i].size() > 0) {
+				this.readyForActivation = false;
+			}
+		}
+		for (int i = 0, length = this.existsFactHandles.length; this.existsConstraintsPresent
+				&& i < length && this.readyForActivation; i++) {
+			if (this.notFactHandles[i].size() == 0) {
+				this.readyForActivation = false;
+			}
+		}
+	}
+
+	PropagationContext getContext() {
+		return this.context;
+	}
+
+	boolean isExistsConstraintsPresent() {
+		return this.existsConstraintsPresent;
+	}
+
+	boolean isNotConstraintsPresent() {
+		return this.notConstraintsPresent;
+	}
+	
+	void addLogicalDependency(FactHandle handle) {
+		if(this.logicalDependencies == null){
+			this.logicalDependencies = new HashSet();
+		}
+		this.logicalDependencies.add(handle);
+	}
+	
+	Iterator getLogicalDependencies() {
+		if(this.logicalDependencies != null){
+			return this.logicalDependencies.iterator();
+		}
+		return null;
 	}
 }

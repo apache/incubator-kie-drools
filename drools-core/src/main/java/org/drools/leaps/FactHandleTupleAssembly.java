@@ -1,7 +1,7 @@
-package org.drools.leaps.util;
+package org.drools.leaps;
 
 /*
- * Copyright 2005 Alexander Bagerman
+ * Copyright 2006 Alexander Bagerman
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,32 @@ package org.drools.leaps.util;
  * limitations under the License.
  */
 
-import java.util.Iterator;
-
 /**
- * Leaps specific iterator for leaps tables. relies on leaps table double link
- * list structure for navigating
+ * To store all references needed to retract a fact
  * 
  * @author Alexander Bagerman
  * 
+ * @see org.drools.WorkingMemory
+ * @see java.beans.PropertyChangeListener
+ * @see java.io.Serializable
+ * 
  */
-public interface TableIterator extends Iterator {
-	/**
-	 * single object iterator
-	 * 
-	 * @return table iterator
-	 */
-	public boolean isEmpty();
 
-	public void reset();
+class FactHandleTupleAssembly {
+	final LeapsTuple tuple;
 
-	public boolean hasNext();
+	final int index;
 
-	public Object next();
+	FactHandleTupleAssembly(LeapsTuple tuple, int index) {
+		this.tuple = tuple;
+		this.index = index;
+	}
 
-	public Object current();
+	protected int getIndex() {
+		return this.index;
+	}
 
-	public Object peekNext();
-
-	public void remove();
+	protected LeapsTuple getTuple() {
+		return this.tuple;
+	}
 }

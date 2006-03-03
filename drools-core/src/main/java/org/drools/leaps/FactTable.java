@@ -81,15 +81,6 @@ class FactTable extends Table implements Serializable {
 	}
 
 	/**
-	 * Add tuple
-	 * 
-	 * @param tuple
-	 */
-	public void addRule(LeapsTuple tuple) {
-		this.tuples.add(tuple);
-	}
-
-	/**
 	 * checks if rule arrived after working memory fireAll event and if no rules
 	 * where added since then. Iterates through all facts asserted (and not
 	 * retracted, they are not here duh) and adds them to the stack.
@@ -141,11 +132,28 @@ class FactTable extends Table implements Serializable {
 	 * @see java.lang.Object
 	 */
 	public String toString() {
-		String ret = this.toString();
-		ret = ret + "\n" + "POSITIVE RULES :";
-		ret = ret + "\n" + this.rules.toString();
+		StringBuffer ret = new StringBuffer();
 
-		return ret;
+		for (Iterator it = this.iterator(); it.hasNext();) {
+			FactHandleImpl handle = (FactHandleImpl)it.next(); 
+			ret.append("\n" + handle + "[" + handle.getObject()+"]");
+		}
+
+		ret.append("\nTuples :");
+
+		for (Iterator it = this.tuples.iterator(); it.hasNext();) {
+			ret.append("\n" + it.next());
+		}
+
+		ret.append("\nRules :");
+
+		for (Iterator it = this.rules.iterator(); it.hasNext();) {
+			RuleHandle handle = (RuleHandle) it.next();
+			ret.append("\n\t" + handle.getLeapsRule().getRule().getName()
+					+ "[dominant - " + handle.getDominantPosition() + "]");
+		}
+
+		return ret.toString();
 	}
 	
 	Iterator getTuplesIterator() {
