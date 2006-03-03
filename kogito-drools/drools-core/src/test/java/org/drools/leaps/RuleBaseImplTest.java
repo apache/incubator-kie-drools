@@ -16,7 +16,7 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import java.beans.IntrospectionException;
+import java.util.ArrayList;
 
 import org.drools.DroolsTestCase;
 import org.drools.WorkingMemory;
@@ -24,9 +24,7 @@ import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.EvaluatorFactory;
-import org.drools.examples.manners.Chosen;
 import org.drools.examples.manners.Context;
-import org.drools.examples.manners.Guest;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
@@ -35,13 +33,12 @@ import org.drools.spi.Activation;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
+import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.MockField;
 import org.drools.spi.Tuple;
-import java.util.*;
 
 /**
  * 

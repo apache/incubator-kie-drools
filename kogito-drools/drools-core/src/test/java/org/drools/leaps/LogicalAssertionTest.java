@@ -16,18 +16,12 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.PackageIntegrationException;
-import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.common.Agenda;
 import org.drools.common.PropagationContextImpl;
-import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.Consequence;

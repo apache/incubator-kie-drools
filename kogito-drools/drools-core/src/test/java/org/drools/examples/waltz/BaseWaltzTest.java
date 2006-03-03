@@ -1,5 +1,21 @@
 package org.drools.examples.waltz;
 
+/*
+ * Copyright 2006 Alexander Bagerman
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -11,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.drools.DroolsTestCase;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
@@ -35,9 +52,11 @@ import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.MockField;
 import org.drools.spi.Tuple;
 
-import junit.framework.TestCase;
-
-public abstract class BaseWaltzTest extends TestCase {
+/**
+ * @author Alexander Bagerman
+ * 
+ */
+public abstract class BaseWaltzTest extends DroolsTestCase {
 	private ClassObjectType stageType;
 
 	private ClassObjectType lineType;
@@ -71,23 +90,23 @@ public abstract class BaseWaltzTest extends TestCase {
 		this.edgeType = new ClassObjectType(Edge.class);
 		this.junctionType = new ClassObjectType(Junction.class);
 		// evaluators
-		this.integerEqualEvaluator = EvaluatorFactory.getInstance()
+		this.integerEqualEvaluator = EvaluatorFactory
 				.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.EQUAL);
-		this.integerNotEqualEvaluator = EvaluatorFactory.getInstance()
+		this.integerNotEqualEvaluator = EvaluatorFactory
 				.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.NOT_EQUAL);
-		this.integerGreaterEvaluator = EvaluatorFactory.getInstance()
+		this.integerGreaterEvaluator = EvaluatorFactory
 				.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.GREATER);
-		this.integerLessEvaluator = EvaluatorFactory.getInstance()
+		this.integerLessEvaluator = EvaluatorFactory
 				.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.LESS);
 
-		this.objectEqualEvaluator = EvaluatorFactory.getInstance()
+		this.objectEqualEvaluator = EvaluatorFactory
 				.getEvaluator(Evaluator.OBJECT_TYPE, Evaluator.EQUAL);
-		this.objectNotEqualEvaluator = EvaluatorFactory.getInstance()
+		this.objectNotEqualEvaluator = EvaluatorFactory
 				.getEvaluator(Evaluator.OBJECT_TYPE, Evaluator.NOT_EQUAL);
 
-		this.booleanEqualEvaluator = EvaluatorFactory.getInstance()
+		this.booleanEqualEvaluator = EvaluatorFactory
 				.getEvaluator(Evaluator.BOOLEAN_TYPE, Evaluator.EQUAL);
-		this.booleanNotEqualEvaluator = EvaluatorFactory.getInstance()
+		this.booleanNotEqualEvaluator = EvaluatorFactory
 				.getEvaluator(Evaluator.BOOLEAN_TYPE, Evaluator.NOT_EQUAL);
 
 		// rules
@@ -156,7 +175,7 @@ public abstract class BaseWaltzTest extends TestCase {
 					drools.assertObject(new Line(2216, 2207));
 					drools.assertObject(new Line(3213, 3204));
 					drools.assertObject(new Line(2216, 3213));
-					drools.assertObject(new Line(0107, 2601));
+					drools.assertObject(new Line(107, 2601));
 					drools.assertObject(new Line(2601, 7401));
 					drools.assertObject(new Line(6404, 7401));
 					drools.assertObject(new Line(3213, 6413));
@@ -425,17 +444,19 @@ public abstract class BaseWaltzTest extends TestCase {
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
 				edge1P1Declaration, integerEqualEvaluator));
 		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
+				edge1P2Declaration, integerNotEqualEvaluator));
+
+		Column edgeColumn3 = new Column(3, edgeType, "edge3");
+		final Declaration edge3Declaration = rule.getDeclaration("edge3");
+		edgeColumn3.addConstraint(getBoundVariableConstraint(edgeColumn3, "p1",
+				edge1P1Declaration, integerEqualEvaluator));
+		edgeColumn3.addConstraint(getBoundVariableConstraint(edgeColumn3, "p2",
+				edge1P2Declaration, integerNotEqualEvaluator));
+		edgeColumn3.addConstraint(getBoundVariableConstraint(edgeColumn3, "p2",
 				edge2P2Declaration, integerNotEqualEvaluator));
 
-		Column notEdgeColumn = new Column(3, edgeType);
-		notEdgeColumn.addConstraint(getBoundVariableConstraint(notEdgeColumn,
-				"p1", edge1P1Declaration, integerEqualEvaluator));
-		notEdgeColumn.addConstraint(getBoundVariableConstraint(notEdgeColumn,
-				"p2", edge1P2Declaration, integerNotEqualEvaluator));
-		notEdgeColumn.addConstraint(getBoundVariableConstraint(notEdgeColumn,
-				"p2", edge2P2Declaration, integerNotEqualEvaluator));
 		Not notEdge = new Not();
-		notEdge.addChild(notEdgeColumn);
+		notEdge.addChild(edgeColumn3);
 		rule.addPattern(notEdge);
 
 		Consequence consequence = new Consequence() {
@@ -490,7 +511,6 @@ public abstract class BaseWaltzTest extends TestCase {
 		rule.addPattern(stageColumn);
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
 
-
 		Column notEdgeColumn = new Column(1, edgeType);
 		notEdgeColumn.addConstraint(getLiteralConstraint(
 				notEdgeColumn, "joined", new Boolean(false)
@@ -523,16 +543,16 @@ public abstract class BaseWaltzTest extends TestCase {
 
 	//	 
 	// ;If the initial boundary junction is an L, then we know it's labelling
-	// (defrule initial_boundary_junction_L
-	// ?f1 <- (stage (value find_initial_boundary))
-	// (junction (type L) (base_point ?base_point) (p1 ?p1) (p2 ?p2))
-	// ?f3 <- (edge (p1 ?base_point) (p2 ?p1))
-	// ?f4 <- (edge (p1 ?base_point) (p2 ?p2))
-	// (not (junction (base_point ?bp&:(> ?bp ?base_point))))
-	// =>
-	// (modify ?f3 (label B))
-	// (modify ?f4 (label B))
-	// (modify ?f1 (value find_second_boundary)))
+	// (p initial_boundary_junction_L
+	// (stage ^value find_initial_boundary)
+	// (junction ^type L ^base_point <base_point> ^p1 <p1> ^p2 <p2>)
+	// (edge ^p1 <base_point> ^p2 <p1>)
+	// (edge ^p1 <base_point> ^p2 <p2>)
+	// - (junction ^base_point > <base_point>)
+	// -->
+	// (modify 3 ^label B)
+	// (modify 4 ^label B)
+	// (modify 1 ^value find_second_boundary))
 	private Rule getInitialBoundaryJunctionLRule()
 			throws IntrospectionException, InvalidRuleException {
 		final Rule rule = new Rule("initial_boundary_junction_L");
@@ -611,20 +631,19 @@ public abstract class BaseWaltzTest extends TestCase {
 		return rule;
 	}
 
-	//	 
 	// ;Ditto for an arrow
-	// (defrule initial_boundary_junction_arrow
-	// ?f1 <- (stage (value find_initial_boundary))
-	// (junction (type arrow) (base_point ?bp) (p1 ?p1) (p2 ?p2) (p3 ?p3))
-	// ?f3 <- (edge (p1 ?bp) (p2 ?p1))
-	// ?f4 <- (edge (p1 ?bp) (p2 ?p2))
-	// ?f5 <- (edge (p1 ?bp) (p2 ?p3))
-	// (not (junction (base_point ?b &:(> ?b ?bp))))
-	// =>
-	// (modify ?f3 (label B))
-	// (modify ?f4 (label +))
-	// (modify ?f5 (label B))
-	// (modify ?f1 (value find_second_boundary)))
+	// (p initial_boundary_junction_arrow
+	// (stage ^value find_initial_boundary)
+	// (junction ^type arrow ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
+	// (edge ^p1 <bp> ^p2 <p1>)
+	// (edge ^p1 <bp> ^p2 <p2>)
+	// (edge ^p1 <bp> ^p2 <p3>)
+	// - (junction ^base_point > <bp>)
+	// -->
+	// (modify 3 ^label B)
+	// (modify 4 ^label +)
+	// (modify 5 ^label B)
+	// (modify 1 ^value find_second_boundary))
 	private Rule getInitialBoundaryJunctionArrowRule()
 			throws IntrospectionException, InvalidRuleException {
 		final Rule rule = new Rule("initial_boundary_junction_arrow");
@@ -694,14 +713,14 @@ public abstract class BaseWaltzTest extends TestCase {
 					KnowledgeHelper drools = new DefaultKnowledgeHelper(rule,
 							tuple, workingMemory);
 
+					Stage stage = (Stage) drools.get(stageDeclaration);
+					stage.setValue(Stage.FIND_SECOND_BOUNDARY);
 					Edge edge1 = (Edge) drools.get(edge1Declaration);
 					edge1.setLabel(Edge.B);
 					Edge edge2 = (Edge) drools.get(edge2Declaration);
 					edge2.setLabel(Edge.PLUS);
 					Edge edge3 = (Edge) drools.get(edge3Declaration);
 					edge3.setLabel(Edge.B);
-					Stage stage = (Stage) drools.get(stageDeclaration);
-					stage.setValue(Stage.FIND_SECOND_BOUNDARY);
 
 					drools.modifyObject(tuple.get(stageDeclaration), stage);
 					drools.modifyObject(tuple.get(edge1Declaration), edge1);
@@ -1098,19 +1117,17 @@ public abstract class BaseWaltzTest extends TestCase {
 
 	//	 
 	//	 
-	// (defrule label_tee_A
-	// (declare (salience 5))
-	// (stage (value labeling))
-	// (junction (type tee) (base_point ?bp) (p1 ?p1) (p2 ?p2) (p3 ?p3))
-	// ?f3 <- (edge (p1 ?bp) (p2 ?p1) (label nil))
-	// ?f4 <- (edge (p1 ?bp) (p2 ?p3))
-	// =>
-	// (modify ?f3 (label B))
-	// (modify ?f4 (label B)))
+//	(p label_tee_A
+//			(stage ^value labeling)
+//			(junction ^type tee ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
+//			(edge ^p1 <bp> ^p2 <p1> ^label nil)
+//			(edge ^p1 <bp> ^p2 <p3>)
+//			-->
+//			(modify 3 ^label B)
+//			(modify 4 ^label B))
 	private Rule getLabelTeeARule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("label_tee_A");
-		rule.setSalience(5);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -1122,8 +1139,8 @@ public abstract class BaseWaltzTest extends TestCase {
 		junctionColumn.addConstraint(getLiteralConstraint(junctionColumn,
 				"type", Junction.TEE, this.objectEqualEvaluator));
 		setFieldDeclaration(junctionColumn, "basePoint", "junctionBasePoint");
-		setFieldDeclaration(junctionColumn, "p1", "p1");
-		setFieldDeclaration(junctionColumn, "p3", "p3");
+		setFieldDeclaration(junctionColumn, "p1", "junctionP1");
+		setFieldDeclaration(junctionColumn, "p3", "junctionP3");
 		rule.addPattern(junctionColumn);
 		final Declaration junctionBasePointDeclaration = rule
 				.getDeclaration("junctionBasePoint");
@@ -1200,8 +1217,8 @@ public abstract class BaseWaltzTest extends TestCase {
 		junctionColumn.addConstraint(getLiteralConstraint(junctionColumn,
 				"type", Junction.TEE, this.objectEqualEvaluator));
 		setFieldDeclaration(junctionColumn, "basePoint", "junctionBasePoint");
-		setFieldDeclaration(junctionColumn, "p1", "p1");
-		setFieldDeclaration(junctionColumn, "p3", "p3");
+		setFieldDeclaration(junctionColumn, "p1", "junctionP1");
+		setFieldDeclaration(junctionColumn, "p3", "junctionP3");
 		rule.addPattern(junctionColumn);
 		final Declaration junctionBasePointDeclaration = rule
 				.getDeclaration("junctionBasePoint");
@@ -1594,20 +1611,18 @@ public abstract class BaseWaltzTest extends TestCase {
 	}
 
 	//	 
-	// (defrule label_arrow-1A
-	// (declare (salience 5))
-	// (stage (value labeling))
-	// (junction (type arrow) (base_point ?bp) (p1 ?p1) (p2 ?p2) (p3 ?p3))
-	// (edge (p1 ?bp) (p2 ?p1) (label ?label & B | - ))
-	// ?f4 <- (edge (p1 ?bp) (p2 ?p2) (label nil))
-	// ?f5 <- (edge (p1 ?bp) (p2 ?p3))
-	// =>
-	// (modify ?f4 (label +))
-	// (modify ?f5 (label ?label)))
+	// (p label_arrow-1A
+	// (stage ^value labeling)
+	// (junction ^type arrow ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
+	// (edge ^p1 <bp> ^p2 <p1> ^label {<label> << B - >>})
+	// (edge ^p1 <bp> ^p2 <p2> ^label nil)
+	// (edge ^p1 <bp> ^p2 <p3>)
+	// -->
+	// (modify 4 ^label +)
+	// (modify 5 ^label <label>))
 	private Rule getLabelArrow1ARule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("label_arrow-1A");
-		rule.setSalience(5);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -1809,20 +1824,18 @@ public abstract class BaseWaltzTest extends TestCase {
 	}
 
 	//	 
-	// (defrule label_arrow-2A
-	// (declare (salience 5))
-	// (stage (value labeling))
-	// (junction (type arrow) (base_point ?bp) (p1 ?p1) (p2 ?p2) (p3 ?p3))
-	// (edge (p1 ?bp) (p2 ?p3) (label ?label & B | - ))
-	// ?f4 <- (edge (p1 ?bp) (p2 ?p2) (label nil))
-	// ?f5 <- (edge (p1 ?bp) (p2 ?p1))
-	// =>
-	// (modify ?f4 (label +))
-	// (modify ?f5 (label ?label)))
+	// (p label_arrow-2A
+	// (stage ^value labeling)
+	// (junction ^type arrow ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
+	// (edge ^p1 <bp> ^p2 <p3> ^label {<label> << B - >>})
+	// (edge ^p1 <bp> ^p2 <p2> ^label nil)
+	// (edge ^p1 <bp> ^p2 <p1>)
+	// -->
+	// (modify 4 ^label +)
+	// (modify 5 ^label <label>))
 	private Rule getLabelArrow2ARule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("label_arrow-2A");
-		rule.setSalience(5);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -2027,21 +2040,18 @@ public abstract class BaseWaltzTest extends TestCase {
 	}
 
 	//	 
-	//	 
-	// (defrule label_arrow-3A
-	// (declare (salience 5))
-	// (stage (value labeling))
-	// (junction (type arrow) (base_point ?bp) (p1 ?p1) (p2 ?p2) (p3 ?p3))
-	// (edge (p1 ?bp) (p2 ?p1) (label +))
-	// ?f4 <- (edge (p1 ?bp) (p2 ?p2) (label nil))
-	// ?f5 <- (edge (p1 ?bp) (p2 ?p3))
-	// =>
-	// (modify ?f4 (label -))
-	// (modify ?f5 (label +)))
+	// (p label_arrow-3A
+	// (stage ^value labeling)
+	// (junction ^type arrow ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
+	// (edge ^p1 <bp> ^p2 <p1> ^label +)
+	// (edge ^p1 <bp> ^p2 <p2> ^label nil)
+	// (edge ^p1 <bp> ^p2 <p3>)
+	// -->
+	// (modify 4 ^label -)
+	// (modify 5 ^label +))
 	private Rule getLabelArrow3ARule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("label_arrow-3A");
-		rule.setSalience(5);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -2213,20 +2223,18 @@ public abstract class BaseWaltzTest extends TestCase {
 	}
 
 	//	 
-	// (defrule label_arrow-4A
-	// (declare (salience 5))
-	// (stage (value labeling))
-	// (junction (type arrow) (base_point ?bp) (p1 ?p1) (p2 ?p2) (p3 ?p3))
-	// (edge (p1 ?bp) (p2 ?p3) (label +))
-	// ?f4 <- (edge (p1 ?bp) (p2 ?p2) (label nil))
-	// ?f5 <- (edge (p1 ?bp) (p2 ?p1))
-	// =>
-	// (modify ?f4 (label -))
-	// (modify ?f5 (label +)))
+	// (p label_arrow-4A
+	// (stage ^value labeling)
+	// (junction ^type arrow ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
+	// (edge ^p1 <bp> ^p2 <p3> ^label +)
+	// (edge ^p1 <bp> ^p2 <p2> ^label nil)
+	// (edge ^p1 <bp> ^p2 <p1>)
+	// -->
+	// (modify 4 ^label -)
+	// (modify 5 ^label +))
 	private Rule getLabelArrow4ARule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("label_arrow-4A");
-		rule.setSalience(5);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -2398,20 +2406,18 @@ public abstract class BaseWaltzTest extends TestCase {
 	}
 
 	//	 
-	// (defrule label_arrow-5A
-	// (declare (salience 5))
-	// (stage (value labeling))
-	// (junction (type arrow) (base_point ?bp) (p1 ?p1) (p2 ?p2) (p3 ?p3))
-	// (edge (p1 ?bp) (p2 ?p2) (label -))
-	// ?f4 <- (edge (p1 ?bp) (p2 ?p1))
-	// ?f5 <- (edge (p1 ?bp) (p2 ?p3) (label nil))
-	// =>
-	// (modify ?f4 (label +))
-	// (modify ?f5 (label +)))
+	// (p label_arrow-5A
+	// (stage ^value labeling)
+	// (junction ^type arrow ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
+	// (edge ^p1 <bp> ^p2 <p2> ^label -)
+	// (edge ^p1 <bp> ^p2 <p1>)
+	// (edge ^p1 <bp> ^p2 <p3> ^label nil)
+	// -->
+	// (modify 4 ^label +)
+	// (modify 5 ^label +))
 	private Rule getLabelArrow5ARule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("label_arrow-5A");
-		rule.setSalience(5);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -2590,15 +2596,13 @@ public abstract class BaseWaltzTest extends TestCase {
 	// ;productions that are more complicated are satisfied. This production is
 	// ;simple, so all of the above dictionary productions will fire before this
 	// ;change of state production
-	// (defrule done_labeling
-	// (declare (salience -10))
-	// ?f1 <- (stage (value labeling))
-	// =>
-	// (modify ?f1 (value plot_remaining_edges)))
+	// (p done_labeling
+	// (stage ^value labeling)
+	// -->
+	// (modify 1 ^value plot_remaining_edges))
 	private Rule getDoneLabelingRule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("done_labeling");
-		rule.setSalience(-10);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -2736,16 +2740,14 @@ public abstract class BaseWaltzTest extends TestCase {
 	}
 
 	// ;If there is no more work to do, then we are done and flag it.
-	// (defrule done_plotting
-	// (declare (salience -10))
-	// ?f1 <- (stage (value plot_remaining_edges))
-	// =>
-	// (modify ?f1 (value done)))
-	//	 
+	// (p done_plotting
+	// (stage ^value plot_remaining_edges)
+	// - (edge ^plotted nil)
+	// -->
+	// (modify 1 ^value done))
 	private Rule getDonePlotingRule() throws IntrospectionException,
 			InvalidRuleException {
 		final Rule rule = new Rule("done_plotting");
-		rule.setSalience(-10);
 
 		Column stageColumn = new Column(0, stageType, "stage");
 		stageColumn.addConstraint(getLiteralConstraint(stageColumn, "value",
@@ -2753,6 +2755,14 @@ public abstract class BaseWaltzTest extends TestCase {
 				this.integerEqualEvaluator));
 		rule.addPattern(stageColumn);
 		final Declaration stageDeclaration = rule.getDeclaration("stage");
+
+		Column notEdgeColumn = new Column(1, edgeType);
+		notEdgeColumn.addConstraint(getLiteralConstraint(
+				notEdgeColumn, "plotted", Edge.NIL
+				, this.objectEqualEvaluator));
+		Not notEdge = new Not();
+		notEdge.addChild(notEdgeColumn);
+		rule.addPattern(notEdge);
 
 		Consequence consequence = new Consequence() {
 			public void evaluate(Activation activation,
@@ -2834,11 +2844,11 @@ public abstract class BaseWaltzTest extends TestCase {
                 if ( !"p1".equals( st.nextToken() ) ) {
                     throw new IOException( "expected 'p1' in: " + line );
                 }
-                int p1 = Integer.parseInt(st.nextToken());
+                int p1 = Integer.parseInt(st.nextToken(), 10);
                 if ( !"p2".equals( st.nextToken() ) ) {
                     throw new IOException( "expected 'p2' in: " + line );
                 }
-                int p2 = Integer.parseInt(st.nextToken());
+                int p2 = Integer.parseInt(st.nextToken(), 10);
 
 
                 list.add( new Line(p1, p2) );
