@@ -48,6 +48,7 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
+import org.drools.util.LinkedList;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -119,11 +120,13 @@ public interface KnowledgeHelper {
      */
     List getObjects(Class objectClass);
     
-
+    LinkedList getQueryResults( String query );
 
     /**
      * Clears the agenda causing all existing Activations to fire
      * ActivationCancelled events. <br>
      */
     void clearAgenda();
+    
+    
 }
