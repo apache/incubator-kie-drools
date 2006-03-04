@@ -63,6 +63,13 @@
 			<artifactId>stringtemplate</artifactId>    
 			<version>2.2-20060301</version>
     </dependency>      
+    
+    
+	<dependency>
+			<groupId>antlr</groupId>
+			<artifactId>antlr3</artifactId>    
+			<version>3.0ea7</version>
+    </dependency>  
 
     <dependency>
 			<groupId>eclipse</groupId>

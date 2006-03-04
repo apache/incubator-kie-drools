@@ -1,11 +1,6 @@
-/** A direct copy / modify of the ANTLR 2.x Java grammar.  Still lots
- *  of ambiguity warnings, but I'm pretty sure they are true ambiguities
- *  in the grammar.  I will rewrite this completely from the spec when
- *  I get a chance.  I just slammed this together.
- *  Terence Parr.
- */
 grammar JavaParser;
 
+/*
 tokens {
 	BLOCK; MODIFIERS; OBJBLOCK; SLIST; CTOR_DEF; METHOD_DEF; VARIABLE_DEF;
 	INSTANCE_INIT; STATIC_INIT; TYPE; CLASS_DEF; INTERFACE_DEF;
@@ -16,48 +11,30 @@ tokens {
 	FOR_ITERATOR; EMPTY_STAT; SUPER_CTOR_CALL; CTOR_CALL;
 }
 
-@members {
-public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
+*/
+
+@parser::header {
+	package org.drools.semantics.java.parser;
 }
 
-// Compilation Unit: In Java, this is a single file.  This is the start
-//   rule for this parser
-compilationUnit
-	:	// A compilation unit starts with an optional package definition
-		(	packageDefinition
-		|	/* nothing */
-		)
+@parser::members {
+	private List identifiers = new ArrayList();
+	public List getIdentifiers() { return identifiers; }
+	public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
+} 
 
-		// Next we have a series of zero or more import statements
-		( importDefinition )*
+@lexer::header {
+	package org.drools.semantics.java.parser;
+}
 
-		// Wrapping things up with any number of class or interface
-		//    definitions
-		( typeDefinition )*
-
-//		EOF
-	;
+@lexer::members {
+	public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
+}
+ 
 
 
-// Package statement: 'package' followed by an identifier.
-packageDefinition
-	:	'package'  identifier SEMI
-	;
 
 
-// Import statement: import followed by a package or class name
-importDefinition
-	:	'import'  identifierStar SEMI
-	;
-
-// A type definition in a file is either a class or interface definition.
-typeDefinition
-	:	modifiers
-		( classDefinition
-		| interfaceDefinition
-		)
-	|	SEMI
-	;
 
 /** A declaration is the creation of a reference or primitive-type variable
  *  Create a separate Type/Var tree for each var in the var list.
@@ -711,7 +688,7 @@ primaryExpression
  *  this or super.
  */
 identPrimary
-	:	IDENT
+	:	i=IDENT { identifiers.add( i.getText() );  }
 		(
 				// .ident could match here or in postfixExpression.
 				// We do want to match here.  Turn off warning.
@@ -824,8 +801,6 @@ constant
 	|	CHAR_LITERAL
 	|	STRING_LITERAL
 	|	NUM_FLOAT
-	|	NUM_LONG
-	|	NUM_DOUBLE
 	;
 
 
@@ -1033,6 +1008,7 @@ NUM_FLOAT
     |     DIGITS EXPONENT_PART
     |     DIGITS FLOAT_TYPE_SUFFIX
     ;
+
 
 fragment
 DIGITS : ('0'..'9')+ ;

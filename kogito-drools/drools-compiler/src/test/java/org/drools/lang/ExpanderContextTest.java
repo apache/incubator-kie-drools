@@ -26,7 +26,7 @@ public class ExpanderContextTest extends TestCase {
         }
         
         public String expand(String pattern,
-                             Parser context) {
+                             RuleParser context) {
             
             return null;
         }

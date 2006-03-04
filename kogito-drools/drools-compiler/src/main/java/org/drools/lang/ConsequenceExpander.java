@@ -62,7 +62,7 @@ class ConsequenceExpander implements Expander {
 
     /** Expand out the knowledge helper stuff */
     public String expand(String pattern,
-                         Parser context) {
+                         RuleParser context) {
 
         return this.knowledgeHelperFixer(pattern);
         

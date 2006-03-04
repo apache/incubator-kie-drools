@@ -41,21 +41,18 @@ package org.drools.semantics.java;
  *
  */
 
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.rule.Declaration;
-import org.drools.semantics.java.parser.JavaLexer;
-import org.drools.semantics.java.parser.JavaRecognizer;
-import org.drools.semantics.java.parser.JavaTreeParser;
-
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
-import antlr.collections.AST;
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.TokenStream;
+import org.drools.semantics.java.parser.JavaParser;
+import org.drools.semantics.java.parser.JavaParserLexer;
 
 /**
  * Expression analyzer.
@@ -89,27 +86,24 @@ public class JavaExprAnalyzer
      *            Total set of declarations available.
      * 
      * @return The <code>Set</code> of declarations used by the expression.
-     * 
-     * @throws TokenStreamException
-     *             If an error occurs in the lexer.
-     * @throws RecognitionException
+     * @throws RecognitionException 
      *             If an error occurs in the parser.
-     * @throws MissingDeclarationException
-     *             If the expression requires a declaration not present in the available declarations.
      */
     public List analyze(String expr,
-                        Set availDecls) throws TokenStreamException,
-                                        RecognitionException
+                        Set availDecls) throws RecognitionException 
+                                        
     {
-        JavaLexer lexer = new JavaLexer( new StringReader( expr ) );
-        JavaRecognizer parser = new JavaRecognizer( lexer );
+    		CharStream charStream = new ANTLRStringStream( expr );
+        JavaParserLexer lexer = new JavaParserLexer( charStream );
+        TokenStream tokenStream = new CommonTokenStream( lexer );
+        JavaParser parser = new JavaParser( tokenStream );
 
-        parser.ruleCondition();
-
-        AST ast = parser.getAST();
+        parser.logicalOrExpression();
+        
+        List identifiers = parser.getIdentifiers();
 
         return analyze( availDecls,
-                        ast );
+                        identifiers );
     }
 
     /**
@@ -126,32 +120,20 @@ public class JavaExprAnalyzer
      *             If an error occurs in the parser.
      */
     private List analyze(Set availDecls,
-                         AST ast) throws RecognitionException
+                         List identifiers) throws RecognitionException
     {
-        JavaTreeParser treeParser = new JavaTreeParser();
-
-        treeParser.init();
-
-        treeParser.exprCondition( ast );
-
-        Set refs = new HashSet( treeParser.getVariableReferences() );
-
         List decls = new ArrayList();
        
         for ( Iterator declIter = availDecls.iterator(); declIter.hasNext(); )
         {
             String eachDecl = (String) declIter.next();
 
-            if ( refs.contains( eachDecl ) )
+            if ( identifiers.contains( eachDecl ) )
             {
                 decls.add( eachDecl );
-                refs.remove( eachDecl );
             }
         }
 
-        /*
-         * if ( ! refs.isEmpty() ) { throw new MissingDeclarationException( expr, (String) refs.iterator().next() ); }
-         */
         return decls;
     }
 }
