@@ -1,6 +1,7 @@
 package org.drools.reteoo;
 
-import org.drools.Cheese;
+import junit.framework.TestCase;
+
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
@@ -13,8 +14,6 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.MockField;
 import org.drools.util.LinkedList;
-
-import junit.framework.TestCase;
 
 public class QueryTerminalNodeTest extends TestCase {
     public void testQueryTerminalNode() {
@@ -93,36 +92,35 @@ public class QueryTerminalNodeTest extends TestCase {
                       list.size() );
 
         Cheese cheddar = new Cheese( "cheddar",
-                                      55 );
+                                     55 );
         workingMemory.assertObject( cheddar );
 
         list = workingMemory.getQueryResults( "query-1" );
 
         assertEquals( 1,
-                      list.size() );       
-        
+                      list.size() );
+
         stilton = new Cheese( "stilton",
                               5 );
-        
+
         FactHandle handle2 = workingMemory.assertObject( stilton );
 
         list = workingMemory.getQueryResults( "query-1" );
 
         assertEquals( 2,
-                      list.size() );    
-        
+                      list.size() );
+
         workingMemory.retractObject( handle1 );
         list = workingMemory.getQueryResults( "query-1" );
 
         assertEquals( 1,
-                      list.size() );         
-        
+                      list.size() );
+
         workingMemory.retractObject( handle2 );
         list = workingMemory.getQueryResults( "query-1" );
 
-        assertNull( list );         
-        
-       
+        assertNull( list );
+
     }
 
     public class Cheese {
