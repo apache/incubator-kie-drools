@@ -6,7 +6,7 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.drools.lang.Expander;
-import org.drools.lang.Parser;
+import org.drools.lang.RuleParser;
 import org.drools.lang.dsl.template.NLExpressionCompiler;
 import org.drools.lang.dsl.template.NLGrammar;
 import org.drools.lang.dsl.template.NLMappingItem;
@@ -25,7 +25,7 @@ public class DefaultExpander
     private NLExpressionCompiler compiler; 
     
     public String expand(String pattern,
-                         Parser context) {  
+                         RuleParser context) {  
         
         return compiler.compile(pattern, null);
     }

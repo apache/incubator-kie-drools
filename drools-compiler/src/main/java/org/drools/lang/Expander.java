@@ -38,7 +38,7 @@ public interface Expander {
      * If <code>isEnabled()</code> is false then it is not required to 
      * call this method.
      */
-    public String expand(String pattern, Parser context);
+    public String expand(String pattern, RuleParser context);
     
     
     

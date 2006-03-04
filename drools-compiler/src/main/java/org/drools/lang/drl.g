@@ -1,116 +1,211 @@
-grammar RuleParser;
+grammar RuleParser; 
 
-@members {
-	private String packageName="";
-	private RuleDescr rule;
+@parser::header {
+	package org.drools.lang;
+	import java.util.List;
+	import java.util.ArrayList;
+	import org.drools.lang.descr.*;
 }
 
+@parser::members {
+	private String    packageName = "";
+	private List      rules       = new ArrayList();
+	private List      imports     = new ArrayList();
+	
+	public String getPackageName() { return packageName; }
+	public List getImports() { return imports; }
+	public List getRules() { return rules; }
+}
+
+@lexer::header {
+	package org.drools.lang;
+}
+
+opt_eol	:
+		EOL*	
+	;
 
 compilation_unit
 	:	prolog 
-		rule*
+		(r=rule {this.rules.add( r ); })*
 	;
 	
 prolog
-	:	package_statement?
-		import_statement*
+	:	opt_eol
+		( name=package_statement { this.packageName = name; } )?
+		opt_eol
+		( name=import_statement { this.imports.add( name ); } )*
+		opt_eol
 		use_expander?
+		opt_eol
 	;
 	
-package_statement
-	:	'package' id=ID { packageName = id.getText(); } ( '.' id=ID { packageName += "." + id.getText(); } )* ';'?	
+package_statement returns [String packageName]
+	@init{
+		packageName = null;
+	}
+	:	'package' opt_eol id=ID { packageName = id.getText(); } ( '.' id=ID { packageName += "." + id.getText(); } )* ';'? opt_eol	
 	;
 	
-import_statement
-	:	'import' java_package_or_class ';'?	
+import_statement returns [String importStatement]
+	@init {
+		importStatement = null;
+	}
+	:	'import' opt_eol name=java_package_or_class ';'? { importStatement = name; } opt_eol	
 	;
 
 use_expander
-	:	'use' 'expander' ID ';'?
+	:	'use' 'expander' ID ';'? opt_eol
 	;
 
 
-rule
+rule returns [RuleDescr rule]
+	@init {
+		rule = null;
+		String consequence = "";
+	}
 	:
-		'rule' ruleName=word 
-		{ rule = new RuleDescr( packageName + "." + ruleName, null ); }
+		opt_eol
+		'rule' ruleName=word opt_eol 
+		{ rule = new RuleDescr( ruleName, null ); }
 		rule_options?
-		'when' ':'?
-		{ AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); }
-			(l=lhs { rootLhs.addConfiguration( l ); } )*
-		'then' ':'?
-		{ rule.setRhs( null ); }
-		'end' 
+		(	'when' ':'? opt_eol
+			{ AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); }
+				(l=lhs { lhs.addDescr( l ); } )*
+		)?
+		(	'then' ':'?
+			(any=.
+				{
+					consequence = consequence + " " + any.getText();
+				}
+			)*
+			{ rule.setConsequence( consequence ); }
+		)?
+		EOL 'end' opt_eol
 	;
 
 rule_options
-	:	'options' ':'?
-			( salience | no_loop ) ( ','? ( salience | no_loop ) )*
+	:	'options' ':'? opt_eol
+			( salience | no_loop ) opt_eol ( ','? opt_eol ( salience | no_loop ) )* opt_eol
 	;
 	
 salience
 	:	
-		'salience' INT ';'?
+		'salience' INT ';'? opt_eol
 	;
 	
 no_loop
 	:
-		'no-loop' ';'?
+		'no-loop' ';'? opt_eol
 	;
 	
 	
 lhs returns [PatternDescr d]
-	: l=lhs_or { d = l; }
+	@init {
+		d=null;
+	}
+	:	l=lhs_or { d = l; }
 	;
 
 	
-lhs_column returns [ColumnDesc d]
+lhs_column returns [ColumnDescr d]
+	@init {
+		d=null;
+	}
 	:	fact_binding
 	|	fact
 	;
  	
 fact_binding returns [PatternDescr d]
+	@init {
+		d=null;
+	}
  	:
- 		ID '=>' f=fact { d=f; }
+ 		ID opt_eol ':' opt_eol f=fact { d=f; } opt_eol
  	;
  
 fact returns [PatternDescr d] 
- 	:	ID '(' constraints? ')'
+	@init {
+		d=null;
+	}
+ 	:	ID opt_eol '(' opt_eol constraints? opt_eol ')' opt_eol
  	;
  	
 	
 constraints returns [List constraints]
-	:	c=constraint  { constraints = new ArrayList(); constraints.add( c ); }
-		( ',' c=constraint { constraints.add( c ); } )*
+	@init {
+		constraints = new ArrayList();
+	}
+	:	opt_eol
+		c=constraint  { constraints.add( c ); }
+		( opt_eol ',' opt_eol c=constraint { constraints.add( c ); } )*
+		opt_eol
 	;
 	
 constraint returns [PatternDescr d]
-	:	f=ID	op=(	'=='
+	@init {
+		d = null;
+	}
+	:	opt_eol
+		f=ID	opt_eol op=(	'=='
 			|	'>'
 			|	'>='
 			|	'<'
 			|	'<='
 			|	'!='
-			)	(	lc=literal_constraint { d = new LiteralDescr( f.getText(), null, lc ); }
-				|	rvc=retval_constraint { d = new ReturnValueDescr( f.getText(), null, rvc ); } )
+			) opt_eol	(	lc=literal_constraint { d = new LiteralDescr( f.getText(), null, lc ); }
+					|	rvc=retval_constraint { d = new ReturnValueDescr( f.getText(), null, rvc ); } )
+		opt_eol
 	;
 	
 literal_constraint returns [String text]
-	:	(	t=STRING
-		|	t=INT
-		|	t=FLOAT	
-		) { text = t.getText(); }
+	@init {
+		text = null;
+	}
+	:	(	t=STRING { text = t.getText(); text=text.substring( 1, text.length() - 1 ); }
+		|	t=INT    { text = t.getText(); }
+		|	t=FLOAT	 { text = t.getText(); }
+		)
 	;
 	
 retval_constraint returns [String text]
-	:
+	@init {
+		text = null;
+	}
+	:	
+		c=chunk { text = c; }
 	;
+	
+chunk returns [String text]
+	@init {
+		text = null;
+	}
+	:	(	( any=. {
+					if ( text == null ) {
+						text = any.getText();
+					} else {
+						text = text + " " + any.getText(); 
+					} 
+				})
+		|	( '(' c=chunk ')' 	{
+							if ( text == null ) {
+								text = "( " + c + " )";
+							} else {
+								text = text + " ( " + c + " )";
+							}
+						} )
+		)*
+	;
+	
 	
 field_binding
 	:
 	;
 	
 lhs_or returns [PatternDescr d]
+	@init{
+		d = null;
+	}
 	:	
 		{ OrDescr or = null; }
 		left=lhs_and {d = left; }
@@ -119,16 +214,19 @@ lhs_or returns [PatternDescr d]
 			{
 				if ( or == null ) {
 					or = new OrDescr();
-					or.addConfiguration( left );
+					or.addDescr( left );
 					d = or;
 				}
 				
-				or.addConfiguration( right );
+				or.addDescr( right );
 			}
 		)*
 	;
 	
 lhs_and returns [PatternDescr d]
+	@init{
+		d = null;
+	}
 	:
 		{ AndDescr and = null; }
 		left=lhs_unary { d = left; }
@@ -137,16 +235,19 @@ lhs_and returns [PatternDescr d]
 			{
 				if ( and == null ) {
 					and = new AndDescr();
-					and.addConfiguration( left );
+					and.addDescr( left );
 					d = and;
 				}
 				
-				and.addConfiguration( right );
+				and.addDescr( right );
 			}
 		)* 
 	;
 	
 lhs_unary returns [PatternDescr d]
+	@init {
+		d = null;
+	}
 	:	(	u=lhs_exist
 		|	u=lhs_not
 		|	u=lhs_eval
@@ -156,24 +257,39 @@ lhs_unary returns [PatternDescr d]
 	;
 	
 lhs_exist returns [PatternDescr d]
+	@init {
+		d = null;
+	}
 	:	'exists' column=lhs_column { d = new ExistsDescr( column ); }	
 	;
 	
 lhs_not	returns [NotDescr d]
+	@init {
+		d = null;
+	}
 	:	'not' column=lhs_column { d = new NotDescr( column ); }
 	;
 
 lhs_eval returns [PatternDescr d]
+	@init {
+		d = null;
+	}
 	:	'eval' { d = new EvalDescr( "" ); }
 	;
 	
-java_package_or_class
+java_package_or_class returns [String name]
+	@init {
+		name = null;
+	}
 	:	
-		ID ( '.' ID )*
+		id=ID { name=id.getText(); } ( '.' id=ID { name = name + "." + id.getText(); } )*
 	;
 	
 	
 word returns [String word]
+	@init{
+		word = null;
+	}
 	:	id=ID      { word=id.getText(); }
 	|	'import'   { word="import"; }
 	|	'use'      { word="use"; }
@@ -183,23 +299,23 @@ word returns [String word]
 	|	'when'     { word="when"; }
 	|	'then'     { word="then"; }
 	|	'end'      { word="end"; }
+	|	str=STRING { word=str.getText(); word=word.substring( 1, word.length()-1 ); }
 	;
 
 
-WS      :       (       ' '
-                |       '\t'
-                |       '\f'
-                        // handle newlines
-                |       (       '\r\n'  // Evil DOS
-                        |       '\r'    // Macintosh
-                        |       '\n'    // Unix (the right way)
-                        )
-                )+
-                { channel=99;}
-                
+WS      :       (	' '
+                |	'\t'
+                |	'\f'
+                )
+                { channel=99; }
         ;
-            
-
+        
+EOL 	:	     
+   		(       '\r\n'  // Evil DOS
+                |       '\r'    // Macintosh
+                |       '\n'    // Unix (the right way)
+                )
+        ;  
         
 INT	
 	:	('0'..'9')+
@@ -210,11 +326,11 @@ FLOAT
 	;
 	
 STRING
-	:	'"' ( options{greedy=false;} : .)* '"'
+	:	'"' ( options{greedy=false;} : .)* '"' 
 	;
 	
 ID	
-	:	('a'..'z'|'A'..'Z')+ 
+	:	('a'..'z'|'A'..'Z'|'_')+ 
 	;
 
 SH_STYLE_SINGLE_LINE_COMMENT	

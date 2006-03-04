@@ -1,0 +1,5 @@
+
+rule almost_empty 
+  when
+  then
+end
