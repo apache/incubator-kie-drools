@@ -50,6 +50,7 @@ import org.drools.event.ReteooNodeEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
+import org.drools.util.LinkedList;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.
@@ -255,6 +256,8 @@ public interface WorkingMemory
      *             If an error occurs.
      */
     FactHandle assertObject(Object object) throws FactException;
+    
+    public LinkedList getQueryResults( String query );
 
     /**
      * Assert a fact registering JavaBean <code>PropertyChangeListeners</code>
