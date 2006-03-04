@@ -24,17 +24,25 @@ import java.util.Map;
 
 import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
+import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
+import org.drools.base.EvaluatorFactory;
 import org.drools.common.BetaNodeBinder;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Exists;
 import org.drools.rule.InvalidPatternException;
+import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
+import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.AgendaGroup;
+import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
+import org.drools.spi.FieldValue;
+import org.drools.spi.MockField;
 import org.drools.spi.ObjectTypeResolver;
 
 /**
@@ -116,7 +124,7 @@ class Builder {
      */
     void addRule(Rule rule) throws InvalidPatternException {
         And[] and = rule.getTransformedLhs();
-        for ( int i = 0; i < and.length; i++ ) {
+        for ( int i = 0; i < and.length; i++ ) {                   
             addRule( and[i],
                      rule );
         }
@@ -129,15 +137,26 @@ class Builder {
 //            this.ruleBase.addAgendaGroup( agendaGroup );    
 //        }
         
-        TerminalNode node = new TerminalNode( this.id++,
-                                              this.tupleSource,
-                                              rule );
-    }
+        if ( ! ( rule instanceof Query ) ) {        
+            TerminalNode node = new TerminalNode( this.id++,
+                                                  this.tupleSource,
+                                                  rule );
+        } else {
+            QueryTerminalNode node = new QueryTerminalNode( this.id++,
+                                                            this.tupleSource,
+                                                            rule );            
+        }
+    }    
 
     private void addRule(And and,
                          Rule rule) {
         this.objectSource = null;
         this.tupleSource = null;
+        
+        if ( rule instanceof Query ) {        
+            attachQuery(rule.getName());
+        }          
+        
         for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
             Object object = it.next();
 
@@ -206,6 +225,36 @@ class Builder {
             }
         }
     }
+    
+    private void attachQuery(String queryName) {
+        ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
+        ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( this.id++,
+                                                                 queryObjectType,
+                                                                 rete );
+        queryObjectTypeNode.attach();
+
+        ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
+                                                                 "name" );
+
+        FieldValue field = new MockField( queryName );
+
+        Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
+                                                             Evaluator.EQUAL );
+        LiteralConstraint constraint = new LiteralConstraint( field,
+                                                              extractor,
+                                                              evaluator );
+
+        AlphaNode alphaNode = new AlphaNode( this.id++,
+                                             constraint,
+                                             queryObjectTypeNode );
+        alphaNode.attach();
+
+        LeftInputAdapterNode liaNode = new LeftInputAdapterNode( this.id++,
+                                                                 alphaNode );
+        liaNode.attach();       
+        
+        this.tupleSource = liaNode;
+    }    
 
     private BetaNodeBinder attachColumn(Column column,
                                         ConditionalElement parent) {

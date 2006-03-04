@@ -21,10 +21,10 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,8 +35,8 @@ import org.drools.NoSuchFactHandleException;
 import org.drools.NoSuchFactObjectException;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
+import org.drools.base.DroolsQuery;
 import org.drools.common.Agenda;
-import org.drools.common.AgendaItem;
 import org.drools.common.EventSupport;
 import org.drools.common.LogicalDependency;
 import org.drools.common.PropagationContextImpl;
@@ -52,8 +52,8 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 import org.drools.util.IdentityMap;
+import org.drools.util.LinkedList;
 import org.drools.util.PrimitiveLongMap;
 import org.drools.util.PrimitiveLongStack;
 
@@ -85,7 +85,7 @@ public class WorkingMemoryImpl
                                                                                                                   8 );
 
     /** Global values which are associated with this memory. */
-    private final Map                       globals                                  = new HashMap();
+    private final Map                       globals                                        = new HashMap();
 
     /** Handle-to-object mapping. */
     private final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
@@ -98,6 +98,8 @@ public class WorkingMemoryImpl
     private final PrimitiveLongMap          justified                                     = new PrimitiveLongMap( 8,
                                                                                                                   32 );
     private final PrimitiveLongStack        factHandlePool                                = new PrimitiveLongStack();
+    
+    private Map                       queryResults                                  = Collections.EMPTY_MAP;
 
     private static final String             STATED                                        = "STATED";
 
@@ -321,7 +323,7 @@ public class WorkingMemoryImpl
     }
 
     public List getObjects(Class objectClass) {
-        List matching = new LinkedList();
+        List matching = new java.util.LinkedList();
         for ( Iterator objIter = this.objects.values().iterator(); objIter.hasNext(); ) {
             Object obj = objIter.next();
 
@@ -332,6 +334,24 @@ public class WorkingMemoryImpl
 
         return matching;
     }
+    
+    public LinkedList getQueryResults( String query ) {
+        FactHandle handle = assertObject( new DroolsQuery( query ) );
+        QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
+        LinkedList list = null;
+        if ( node != null) {
+            list = (LinkedList)this.nodeMemories.remove( node.getId() );        
+        }
+        retractObject( handle );           
+        return list;       
+    }
+    
+    void setQueryResults( String query, QueryTerminalNode node) {
+        if ( this.queryResults == Collections.EMPTY_MAP ) {
+            this.queryResults = new HashMap();
+        }
+        this.queryResults.put( query, node );
+     }    
 
     /**
      * @see WorkingMemory
@@ -738,7 +758,7 @@ public class WorkingMemoryImpl
 
     public void removeLogicalDependencies(FactHandle handle) throws FactException {
         Set set = (Set) this.justified.remove( ((FactHandleImpl) handle).getId() );
-        if (!set.isEmpty()) {
+        if (set != null && !set.isEmpty()) {
             for( Iterator it = set.iterator(); it.hasNext(); ) {
                 LogicalDependency node = (LogicalDependency) it.next();
                 node.getJustifier().getLogicalDependencies().remove( node );

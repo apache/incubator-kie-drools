@@ -766,4 +766,9 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	protected Agenda getAgenda() {
 		return this.agenda;
 	}
+
+    public org.drools.util.LinkedList getQueryResults(String query) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
