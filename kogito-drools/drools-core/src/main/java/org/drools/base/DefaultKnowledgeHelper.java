@@ -24,6 +24,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
+import org.drools.util.LinkedList;
 
 public class DefaultKnowledgeHelper
     implements
@@ -86,5 +87,9 @@ public class DefaultKnowledgeHelper
 
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
+    }
+
+    public LinkedList getQueryResults(String query) {
+        return this.workingMemory.getQueryResults( query );
     }
 }
