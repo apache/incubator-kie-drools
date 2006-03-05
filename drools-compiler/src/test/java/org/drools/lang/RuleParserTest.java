@@ -10,6 +10,9 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.RuleDescr;
 
 public class RuleParserTest extends TestCase {
@@ -41,10 +44,10 @@ public class RuleParserTest extends TestCase {
 	
 	public void testProlog() throws Exception {
 		parse( "package foo; import com.foo.Bar; import com.foo.Baz;" ).prolog();
-		assertEquals( "foo", parser.getPackageName() );
-		assertEquals( 2, parser.getImports().size() );
-		assertEquals( "com.foo.Bar", parser.getImports().get( 0 ) );
-		assertEquals( "com.foo.Baz", parser.getImports().get( 1 ) );
+		assertEquals( "foo", parser.getPackageDescr().getName() );
+		assertEquals( 2, parser.getPackageDescr().getImports().size() );
+		assertEquals( "com.foo.Bar", parser.getPackageDescr().getImports().get( 0 ) );
+		assertEquals( "com.foo.Baz", parser.getPackageDescr().getImports().get( 1 ) );
 	}
 	
 	public void testEmptyRule() throws Exception {
@@ -86,13 +89,60 @@ public class RuleParserTest extends TestCase {
 	public void testChunkWithParens() throws Exception {
 		String chunk = parse( "fnord()" ).chunk();
 		
-		assertEquals( "fnord ( )", chunk );
+		assertEqualsIgnoreWhitespace( "fnord()", chunk );
 	}
 	
 	public void testChunkWithParensAndQuotedString() throws Exception {
 		String chunk = parse( "fnord(\"cheese\")" ).chunk();
 		
-		assertEquals( "fnord ( \"cheese\" )", chunk );
+		assertEqualsIgnoreWhitespace( "fnord(\"cheese\")", chunk );
+	}
+	
+	public void testChunkWithRandomCharac5ters() throws Exception {
+		String chunk = parse( "%*9dkj" ).chunk();
+		
+		assertEqualsIgnoreWhitespace( "%*9dkj", chunk );
+	}
+	
+	public void testSimpleRule() throws Exception {
+		RuleDescr rule = parseResource( "simple_rule.drl" ).rule();
+		
+		assertNotNull( rule );
+		
+		assertEquals( "simple_rule", rule.getName() );
+		
+		AndDescr lhs = rule.getLhs();
+		
+		assertNotNull( lhs );
+		
+		assertEquals( 2, lhs.getDescrs().size() );
+		
+		ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );
+		ColumnDescr second = (ColumnDescr) lhs.getDescrs().get( 1 );
+		
+		assertEquals( "foo", first.getIdentifier() );
+		assertEquals( "Bar", first.getObjectType() );
+		
+		assertEquals( 1, first.getDescrs().size() );
+		
+		LiteralDescr constraint = (LiteralDescr) first.getDescrs().get( 0 );
+		
+		assertNotNull( constraint );
+		
+		assertEquals( "a", constraint.getFieldName() );
+		assertEquals( "==", constraint.getEvaluator() );
+		assertEquals( "3", constraint.getText() );
+		
+		assertNull( second.getIdentifier() );
+		assertEquals( "Baz", second.getObjectType() );
+		
+		assertEqualsIgnoreWhitespace( 
+				"if ( a == b ) { " +
+				"  assert( foo );" +
+				"} else {" +
+				"  retract( foo );" +
+				"}", 
+				rule.getConsequence() );
 	}
 	
 	private RuleParser parse(String text) throws Exception {
@@ -132,6 +182,13 @@ public class RuleParserTest extends TestCase {
 	
 	private RuleParser newParser(TokenStream tokenStream) {
 		return new RuleParser( tokenStream );
+	}
+	
+	private void assertEqualsIgnoreWhitespace(String expected, String actual) {
+		String cleanExpected = expected.replaceAll( "\\s+", "" );
+		String cleanActual   = actual.replaceAll( "\\s+", "" );
+		
+		assertEquals( cleanExpected, cleanActual );
 	}
 
 }
