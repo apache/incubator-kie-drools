@@ -4,10 +4,17 @@ grammar RuleParser;
 	package org.drools.lang;
 	import java.util.List;
 	import java.util.ArrayList;
+	import java.util.Iterator;
 	import org.drools.lang.descr.*;
 }
 
 @parser::members {
+	private PackageDescr packageDescr;
+	
+	public PackageDescr getPackageDescr() {
+		return packageDescr;
+	}
+/*
 	private String    packageName = "";
 	private List      rules       = new ArrayList();
 	private List      imports     = new ArrayList();
@@ -15,6 +22,7 @@ grammar RuleParser;
 	public String getPackageName() { return packageName; }
 	public List getImports() { return imports; }
 	public List getRules() { return rules; }
+*/
 }
 
 @lexer::header {
@@ -27,14 +35,18 @@ opt_eol	:
 
 compilation_unit
 	:	prolog 
-		(r=rule {this.rules.add( r ); })*
+		(r=rule {this.packageDescr.addRule( r ); })*
 	;
 	
 prolog
+	@init {
+		String packageName = "";
+	}
 	:	opt_eol
-		( name=package_statement { this.packageName = name; } )?
+		( name=package_statement { packageName = name; } )?
 		opt_eol
-		( name=import_statement { this.imports.add( name ); } )*
+		{ this.packageDescr = new PackageDescr( name ); }
+		( name=import_statement { this.packageDescr.addImport( name ); } )*
 		opt_eol
 		use_expander?
 		opt_eol
@@ -112,23 +124,35 @@ lhs_column returns [ColumnDescr d]
 	@init {
 		d=null;
 	}
-	:	fact_binding
-	|	fact
+	:	f=fact_binding	{ d = f; }
+	|	f=fact		{ d = f; }
 	;
  	
-fact_binding returns [PatternDescr d]
+fact_binding returns [ColumnDescr d]
 	@init {
 		d=null;
 	}
  	:
- 		ID opt_eol ':' opt_eol f=fact { d=f; } opt_eol
+ 		id=ID opt_eol ':' opt_eol f=fact { d=f; } opt_eol
+ 		{
+ 			d=f;
+ 			d.setIdentifier( id.getText() );
+ 		}
  	;
  
-fact returns [PatternDescr d] 
+fact returns [ColumnDescr d] 
 	@init {
 		d=null;
 	}
- 	:	ID opt_eol '(' opt_eol constraints? opt_eol ')' opt_eol
+ 	:	id=ID { d = new ColumnDescr( id.getText() ); } opt_eol 
+ 		'(' opt_eol (	c=constraints
+ 				{
+		 			for ( Iterator cIter = c.iterator() ; cIter.hasNext() ; ) {
+ 						d.addDescr( (PatternDescr) cIter.next() );
+ 					}
+ 				}
+ 
+ 				)? opt_eol ')' opt_eol
  	;
  	
 	
@@ -147,14 +171,17 @@ constraint returns [PatternDescr d]
 		d = null;
 	}
 	:	opt_eol
-		f=ID	opt_eol op=(	'=='
-			|	'>'
-			|	'>='
-			|	'<'
-			|	'<='
-			|	'!='
-			) opt_eol	(	lc=literal_constraint { d = new LiteralDescr( f.getText(), null, lc ); }
-					|	rvc=retval_constraint { d = new ReturnValueDescr( f.getText(), null, rvc ); } )
+		f=ID	opt_eol 	op=(	'=='
+					|	'>'
+					|	'>='
+					|	'<'
+					|	'<='
+					|	'!='
+					) opt_eol	
+					
+					(	lc=literal_constraint { d = new LiteralDescr( f.getText(), op.getText(), lc ); }
+					|	rvc=retval_constraint { d = new ReturnValueDescr( f.getText(), op.getText(), rvc ); } 
+					)
 		opt_eol
 	;
 	
@@ -302,6 +329,10 @@ word returns [String word]
 	|	str=STRING { word=str.getText(); word=word.substring( 1, word.length()-1 ); }
 	;
 
+
+MISC 	:
+		'!' | '@' | '$' | '%' | '^' | '&' | '*' | '_' | '-' | '+' | '|' | ',' | '{' | '}' | '[' | ']'
+	;
 
 WS      :       (	' '
                 |	'\t'
