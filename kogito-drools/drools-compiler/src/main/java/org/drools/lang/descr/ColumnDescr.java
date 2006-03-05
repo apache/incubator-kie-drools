@@ -26,6 +26,10 @@ public class ColumnDescr extends PatternDescr {
         this.descrs.add(  patternDescr );
     }
 
+    public void setIdentifier(String identifier) {
+    		this.identifier = identifier;
+    }
+    
     public String getObjectType() {
         return objectType;
     }
