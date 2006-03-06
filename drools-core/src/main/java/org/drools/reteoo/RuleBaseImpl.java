@@ -191,7 +191,7 @@ public class RuleBaseImpl
                                  workingMemory );
     }
 
-    public Package[] getRuleSets() {
+    public Package[] getPackages() {
         return (Package[]) this.pkgs.toArray( new Package[this.pkgs.size()] );
     }
 
@@ -213,7 +213,7 @@ public class RuleBaseImpl
      * @throws FactException
      * @throws InvalidPatternException
      */
-    public void addRuleSet(Package pkg) throws RuleIntegrationException,
+    public void addPackage(Package pkg) throws RuleIntegrationException,
                                            PackageIntegrationException,
                                            FactException,
                                            InvalidPatternException {

@@ -39,13 +39,10 @@ import org.drools.rule.InvalidPatternException;
  */
 public class LeapsWaltzTest extends BaseWaltzTest {
     
-    public void testWaltz() throws PackageIntegrationException,
-                             InvalidPatternException,
-                             FactException,
-                             IOException {
+    public void testWaltz() throws Exception {
 
         final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
-        ruleBase.addRuleSet( this.pkg );
+        ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         InputStream is = getClass().getResourceAsStream( "/waltz12.dat" );
@@ -64,13 +61,12 @@ public class LeapsWaltzTest extends BaseWaltzTest {
 
     }
     
-    public static void main(String[] argv) throws Exception, PackageIntegrationException,
-			InvalidPatternException, FactException {
+    public static void main(String[] argv) throws Exception {
 		LeapsWaltzTest waltz = new LeapsWaltzTest();
 		waltz.setUp();
 
 		final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
-		ruleBase.addRuleSet(waltz.pkg);
+		ruleBase.addPackage(waltz.pkg);
 		WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 		
 		        InputStream is = waltz.getClass().getResourceAsStream( "/waltz12.dat" );

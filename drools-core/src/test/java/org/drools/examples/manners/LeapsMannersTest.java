@@ -16,18 +16,10 @@ import org.drools.rule.InvalidRuleException;
 
 public class LeapsMannersTest extends BaseMannersTest {
     
-    public void testManners() throws DuplicateRuleNameException,
-                             InvalidRuleException,
-                             IntrospectionException,
-                             RuleIntegrationException,
-                             PackageIntegrationException,
-                             InvalidPatternException,
-                             FactException,
-                             IOException,
-                             InterruptedException {
+    public void testManners() throws Exception {
 
         final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
-        ruleBase.addRuleSet( this.pkg );
+        ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         InputStream is = getClass().getResourceAsStream( "/manners64.dat" );

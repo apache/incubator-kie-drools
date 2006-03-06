@@ -27,7 +27,7 @@ public class ReteooMannersTest extends BaseMannersTest {
                              InterruptedException {
 
         final org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
-        ruleBase.addRuleSet( this.pkg );
+        ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         InputStream is = getClass().getResourceAsStream( "/manners64.dat" );

@@ -70,7 +70,7 @@ public class RuleBaseImpl implements RuleBase {
 	 * @param rete
 	 *            The rete network.
 	 */
-	public RuleBaseImpl() throws PackageIntegrationException, FactException, InvalidPatternException {
+	public RuleBaseImpl() throws Exception {
 		this(new HandleFactory(), new HashSet(), new HashMap() );
 	}
 
@@ -88,8 +88,7 @@ public class RuleBaseImpl implements RuleBase {
 	 */
 	public RuleBaseImpl(FactHandleFactory factHandleFactory, Set pkgs,
 			Map applicationData)
-			throws PackageIntegrationException,
-			FactException, InvalidPatternException {
+			throws Exception {
 		// because we can deal only with leaps fact handle factory
 		this.factHandleFactory = (HandleFactory) factHandleFactory;
 		this.pkgs = pkgs;
@@ -98,7 +97,7 @@ public class RuleBaseImpl implements RuleBase {
 
 		this.pkgs = new HashSet();
 		for (Iterator it = pkgs.iterator(); it.hasNext();) {
-			this.addRuleSet((Package) it.next());
+			this.addPackage((Package) it.next());
 		}
 	}
 
@@ -149,7 +148,7 @@ public class RuleBaseImpl implements RuleBase {
 	/**
 	 * @see RuleBase
 	 */
-	public Package[] getRuleSets() {
+	public Package[] getPackages() {
 		return (Package[]) this.pkgs.toArray(new Package[this.pkgs
 				.size()]);
 	}
@@ -169,7 +168,7 @@ public class RuleBaseImpl implements RuleBase {
 	 * @throws FactException
 	 * @throws InvalidPatternException
 	 */
-	public void addRuleSet(Package pkg) throws PackageIntegrationException, FactException, InvalidPatternException {
+	public void addPackage(Package pkg) throws Exception {
 		Map newApplicationData = pkg.getGlobals();
 
 		// Check that the application data is valid, we cannot change the type

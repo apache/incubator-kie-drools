@@ -54,7 +54,7 @@ public class ReteooWaltzTest extends BaseWaltzTest {
                              InterruptedException {
 
         final org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
-        ruleBase.addRuleSet( this.pkg );
+        ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
 //        InputStream is = getClass().getResourceAsStream( "/waltz12.dat" );
