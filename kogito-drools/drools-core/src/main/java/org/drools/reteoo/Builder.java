@@ -28,6 +28,7 @@ import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.EvaluatorFactory;
+import org.drools.base.FieldFactory;
 import org.drools.common.BetaNodeBinder;
 import org.drools.rule.And;
 import org.drools.rule.Column;
@@ -236,7 +237,8 @@ class Builder {
         ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
                                                                  "name" );
 
-        FieldValue field = new MockField( queryName );
+        FieldValue field = FieldFactory.getFieldValue( queryName,
+        								               Evaluator.STRING_TYPE);        
 
         Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
                                                              Evaluator.EQUAL );
