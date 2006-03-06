@@ -39,11 +39,9 @@ import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
-import org.drools.spi.AgendaGroup;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldValue;
-import org.drools.spi.MockField;
 import org.drools.spi.ObjectTypeResolver;
 
 /**
