@@ -47,6 +47,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.TypeResolver;
 
 public class RuleBuilder {
     private Package                    pkg;
@@ -68,6 +69,8 @@ public class RuleBuilder {
     private int                        columnCounter;
 
     private List                       results;
+    
+    private TypeResolver               typeResolver;
 
     private static StringTemplateGroup ruleGroup    = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
                                                                                AngleBracketTemplateLexer.class );
@@ -124,6 +127,9 @@ public class RuleBuilder {
         this.invokerLookups = new HashMap();
         this.declarations = new HashMap();
         this.descrLookups = new HashMap();
+        
+        this.typeResolver = new ClassTypeResolver( pkg.getImports(),
+                                                   pkg.getPackageCompilationData().getClassLoader() );                
 
         this.rule = new Rule( ruleDescr.getName() );
         this.ruleDescr = ruleDescr;
@@ -219,7 +225,8 @@ public class RuleBuilder {
         Class clazz = null;
 
         try {
-            clazz = Class.forName( columnDescr.getObjectType() );
+            //clazz = Class.forName( columnDescr.getObjectType() );
+            clazz = typeResolver.resolveType( columnDescr.getObjectType() );
         } catch ( ClassNotFoundException e ) {
             this.results.add( new BuilderResult( columnDescr,
                                                  null,

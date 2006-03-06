@@ -183,6 +183,20 @@ public class ClassTypeResolver implements TypeResolver {
             {
                 clazz = null;
             }
+            
+            // maybe its a nested class?
+            if ( clazz == null ) {
+                try
+                {
+                    int lastIndex = qualifiedClass.lastIndexOf( '.' ); 
+                    qualifiedClass = qualifiedClass.substring( 0, lastIndex ) + "$" + qualifiedClass.substring( lastIndex + 1 );
+                    clazz = this.classLoader.loadClass( qualifiedClass );
+                }
+                catch ( ClassNotFoundException e )
+                {
+                    clazz = null;
+                }
+            }
         }
 
         if ( clazz != null )

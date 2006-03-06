@@ -79,7 +79,7 @@ public class JavaCompilerTest extends DroolsTestCase {
         ruleDescr.setConsequence( "modify(m);" );
 
         manager.addPackage( packageDescr );
-        Package pkg = manager.getPackag( "p1" );
+        Package pkg = manager.getPackage( "p1" );
         Rule rule = pkg.getRule( "rule-1" );
 
         if ( manager.getResults().get( rule ) != null ) {
@@ -159,7 +159,7 @@ public class JavaCompilerTest extends DroolsTestCase {
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
 
         manager.addPackage( packageDescr );
-        Package pkg = manager.getPackag( "p1" );
+        Package pkg = manager.getPackage( "p1" );
         Rule rule = pkg.getRule( "rule-1" );
 
         if ( manager.getResults().get( rule ) != null ) {
@@ -228,7 +228,7 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         manager.addPackage( packageDescr );
 
-        Package pkg = manager.getPackag( "p1" );
+        Package pkg = manager.getPackage( "p1" );
         Rule rule = pkg.getRule( "rule-1" );
 
         if ( manager.getResults().get( rule ) != null ) {
