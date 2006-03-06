@@ -90,5 +90,11 @@ public interface RuleBase
      */
     FactHandleFactory getFactHandleFactory();
 
-    Package[] getRuleSets();
+    Package[] getPackages();
+    
+    void  addPackage(Package  pkg) throws Exception;
+    
+//    void removePackage(Package pkg);
+//    
+//    void removePackage(String pkg);       
 }

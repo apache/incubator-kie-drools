@@ -81,7 +81,7 @@ public class OrTest extends TestCase {
 		this.pkg.addRule(this.getNeverGetsToConsequenceRule());
 
 		final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
-        ruleBase.addRuleSet( this.pkg );
+        ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage(Stage.LABELING) );
         workingMemory.assertObject( new Edge(1000, 1,false, Edge.NIL, Edge.NIL));
@@ -100,7 +100,7 @@ public class OrTest extends TestCase {
 		this.pkg.addRule(this.getNeverGetsToConsequenceRule());
 
 		final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
-        ruleBase.addRuleSet( this.pkg );
+        ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage(Stage.LABELING) );
         workingMemory.assertObject( new Edge(1000, 1,false, Edge.NIL, Edge.NIL));
@@ -119,7 +119,7 @@ public class OrTest extends TestCase {
 		this.pkg.addRule(this.getWorkingButCanNotResolveOrObjectInConsequenceOrder());
 
 		final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
-        ruleBase.addRuleSet( this.pkg );
+        ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage(Stage.LABELING) );
         workingMemory.assertObject( new Edge(1000, 1,false, Edge.NIL, Edge.NIL));
@@ -138,7 +138,7 @@ public class OrTest extends TestCase {
 		this.pkg.addRule(this.getWorkingButCanNotResolveOrObjectInConsequenceOrder());
 
 		final org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
-        ruleBase.addRuleSet( this.pkg );
+        ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage(Stage.LABELING) );
         workingMemory.assertObject( new Edge(1000, 1,false, Edge.NIL, Edge.NIL));
