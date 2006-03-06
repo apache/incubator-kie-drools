@@ -1,7 +1,7 @@
 package org.drools;
 
 /*
- * $Id: RuleSetIntegrationException.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
+ * $Id: PackageIntegrationException.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  *
  * Copyright 2001-2004 (C) The Werken Company. All Rights Reserved.
  *
@@ -44,11 +44,11 @@ package org.drools;
 import org.drools.rule.Package;
 
 /**
- * Indicates an error integrating a <code>RuleSet</code> into a
+ * Indicates an error integrating a <code>Package</code> into a
  * <code>RuleBase</code>.
  * 
  * @see RuleBase#addRule
- * @see RuleBase#addRuleSet
+ * @see RuleBase#addPackage
  * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  * 
@@ -84,11 +84,11 @@ public class PackageIntegrationException extends IntegrationException {
     }
 
     /**
-     * Retrieve the <code>RuleSet</code>.
+     * Retrieve the <code>Package</code>.
      * 
      * @return The pkg
      */
-    public Package getRuleSet() {
+    public Package getPackage() {
         return this.pkg;
     }
 

@@ -53,7 +53,7 @@ import org.drools.spi.FactHandleFactory;
  * <p>
  * From a <code>RuleBase</code> many <code>WorkingMemory</code> rule
  * sessions may be instantiated. Additionally, it may be inspected to determine
- * which <code>RuleSet</code> s it contains.
+ * which <code>Package</code> s it contains.
  * </p>
  * 
  * @see WorkingMemory

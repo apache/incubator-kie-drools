@@ -1,7 +1,7 @@
 package org.drools.rule;
 
 /*
- * $Id: RuleSet.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
+ * $Id: Package.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  *
  * Copyright 2001-2003 (C) The Werken Company. All Rights Reserved.
  *
@@ -69,7 +69,7 @@ import org.drools.spi.TypeResolver;
  * 
  * @author <a href="mail:bob@werken.com">bob mcwhirter </a>
  * 
- * @version $Id: RuleSet.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
+ * @version $Id: Package.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  */
 public class Package
     implements
@@ -78,7 +78,7 @@ public class Package
     // Constants`
     // ------------------------------------------------------------
 
-    /** Empty <code>RuleSet</code> array. */
+    /** Empty <code>Package</code> array. */
     public static final Package[]  EMPTY_ARRAY = new Package[0];
 
     // ------------------------------------------------------------
@@ -88,10 +88,10 @@ public class Package
     /** Name of the pkg. */
     private String                 name;
 
-    /** Set of all rule-names in this <code>RuleSet</code>. */
+    /** Set of all rule-names in this <code>Package</code>. */
     private Map                    ruleNames;
 
-    /** Ordered list of all <code>Rules</code> in this <code>RuleSet</code>. */
+    /** Ordered list of all <code>Rules</code> in this <code>Package</code>. */
     private List                   rules;
 
     private List                   imports;
@@ -122,7 +122,7 @@ public class Package
      * Construct.
      * 
      * @param name
-     *            The name of this <code>RuleSet</code>.
+     *            The name of this <code>Package</code>.
      */
     public Package(String name) {
         this( name, 
@@ -133,7 +133,7 @@ public class Package
      * Construct.
      * 
      * @param name
-     *            The name of this <code>RuleSet</code>.
+     *            The name of this <code>Package</code>.
      */
     public Package(String name,
                    ClassLoader parentClassLoader) {
@@ -220,9 +220,9 @@ public class Package
     // ------------------------------------------------------------
 
     /**
-     * Retrieve the name of this <code>RuleSet</code>.
+     * Retrieve the name of this <code>Package</code>.
      * 
-     * @return The name of this <code>RuleSet</code>.
+     * @return The name of this <code>Package</code>.
      */
     public String getName() {
         return this.name;
@@ -237,7 +237,7 @@ public class Package
     }
 
     /**
-     * Add a <code>Rule</code> to this <code>RuleSet</code>.
+     * Add a <code>Rule</code> to this <code>Package</code>.
      * 
      * @param rule
      *            The rule to add.
@@ -279,19 +279,19 @@ public class Package
      * 
      * @return The named <code>Rule</code>, or <code>null</code> if not
      *         such <code>Rule</code> has been added to this
-     *         <code>RuleSet</code>.
+     *         <code>Package</code>.
      */
     public Rule getRule(String name) {
         return (Rule) this.ruleNames.get( name );
     }
 
     /**
-     * Determine if this <code>RuleSet</code> contains a <code>Rule</code
+     * Determine if this <code>Package</code> contains a <code>Rule</code
      *  with the specified name.
      *
      *  @param name The name of the <code>Rule</code>.
      *
-     *  @return <code>true</code> if this <code>RuleSet</code> contains a
+     *  @return <code>true</code> if this <code>Package</code> contains a
      *          <code>Rule</code> with the specified name, else <code>false</code>.
      */
     public boolean containsRule(String name) {
@@ -299,9 +299,9 @@ public class Package
     }
 
     /**
-     * Retrieve all <code>Rules</code> in this <code>RuleSet</code>.
+     * Retrieve all <code>Rules</code> in this <code>Package</code>.
      * 
-     * @return An array of all <code>Rules</code> in this <code>RuleSet</code>.
+     * @return An array of all <code>Rules</code> in this <code>Package</code>.
      */
     public Rule[] getRules() {
         return (Rule[]) this.rules.toArray( new Rule[this.rules.size()] );
@@ -343,7 +343,7 @@ public class Package
     }
 
     public String toString() {
-        return "[RuleSet name=" + this.name + "]";
+        return "[Package name=" + this.name + "]";
     }
 
     public boolean equals(Object object) {

@@ -41,7 +41,7 @@ package org.drools.rule;
  */
 
 /**
- * Indicates an attempt to add a <code>Rule</code> to a <code>RuleSet</code>
+ * Indicates an attempt to add a <code>Rule</code> to a <code>Package</code>
  * that already contains a <code>Rule</code> with the same name.
  * 
  * @see Rule
@@ -63,9 +63,9 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      * @see java.lang.Exception#Exception()
      * 
      * @param pkg
-     *            The <code>RuleSet</code>.
+     *            The <code>Package</code>.
      * @param originalRule
-     *            The <code>Rule</code> already in the <code>RuleSet</code>.
+     *            The <code>Rule</code> already in the <code>Package</code>.
      * @param conflictingRule
      *            The new, conflicting <code>Rule</code>.
      */
@@ -83,9 +83,9 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      * @see java.lang.Exception#Exception(Throwable cause)
      * 
      * @param pkg
-     *            The <code>RuleSet</code>.
+     *            The <code>Package</code>.
      * @param originalRule
-     *            The <code>Rule</code> already in the <code>RuleSet</code>.
+     *            The <code>Rule</code> already in the <code>Package</code>.
      * @param conflictingRule
      *            The new, conflicting <code>Rule</code>.
      */
@@ -102,16 +102,16 @@ public class DuplicateRuleNameException extends RuleConstructionException {
     }
 
     /**
-     * Retrieve the <code>RuleSet</code>.
+     * Retrieve the <code>Package</code>.
      * 
-     * @return The <code>RuleSet</code>.
+     * @return The <code>Package</code>.
      */
-    public Package getRuleSet() {
+    public Package getPackage() {
         return this.pkg;
     }
 
     /**
-     * Retrieve the original <code>Rule</code> in the <code>RuleSet</code>.
+     * Retrieve the original <code>Rule</code> in the <code>Package</code>.
      * 
      * @return The <code>Rule</code>.
      */
