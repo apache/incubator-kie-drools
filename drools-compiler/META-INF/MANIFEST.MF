@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.drools.compiler;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: krisv,mic
 Bundle-Localization: plugin
-Eclipse-AutoStart: false
+Eclipse-AutoStart: true
 Export-Package: org.drools.lang,
  org.drools.lang.descr,
  org.drools.lang.dsl,
