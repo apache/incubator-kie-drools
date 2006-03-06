@@ -1,0 +1,10 @@
+package org.drools.test;
+
+import org.drools.semantics.java.RuleBaseManagerTest.Cheese;
+
+rule "test rule"
+    when
+        Cheese( type == "stilton" )
+    then
+        System.out.println("I like cheese");
+end    

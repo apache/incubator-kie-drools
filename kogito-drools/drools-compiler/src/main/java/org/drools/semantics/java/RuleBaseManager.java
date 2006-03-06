@@ -1,11 +1,18 @@
 package org.drools.semantics.java;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.Lexer;
+import org.antlr.runtime.TokenStream;
 import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.JavaCompiler;
 import org.apache.commons.jci.compilers.JavaCompilerFactory;
@@ -17,6 +24,8 @@ import org.apache.commons.jci.stores.ResourceStore;
 import org.apache.commons.jci.stores.ResourceStoreClassLoader;
 import org.drools.CheckedDroolsException;
 import org.drools.RuleBase;
+import org.drools.lang.RuleParser;
+import org.drools.lang.RuleParserLexer;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -35,27 +44,25 @@ import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.TypeResolver;
 
 public class RuleBaseManager {
-    private final MemoryResourceReader src;
+    private JavaCompiler compiler            = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
 
-    private JavaCompiler               compiler            = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
+    private Map          packages;
 
-    private int                        counter;
+    private Map          results;
 
-    private Map                        packages;
+    private PackageStore packageStoreWrapper = new PackageStore();
 
-    private Map                        results;
-
-    private PackageStore               packageStoreWrapper = new PackageStore();
+    private Map          srcs;
 
     public RuleBaseManager() {
         this( null );
     }
 
     public RuleBaseManager(ClassLoader parentClassLoader) {
-        this.src = new MemoryResourceReader();
+        this.srcs = new HashMap();
 
         this.results = new HashMap();
-        
+
         this.packages = new HashMap();
 
         if ( parentClassLoader == null ) {
@@ -64,15 +71,32 @@ public class RuleBaseManager {
                 parentClassLoader = this.getClass().getClassLoader();
             }
         }
-
-        //        this.classLoader = new ResourceStoreClassLoader( parentClassLoader,
-        //                                                         new ResourceStore[]{dst} );
     }
 
-    public void addPackage(PackageDescr packageDescr) throws CheckedDroolsException,
-                                                     ClassNotFoundException,
-                                                     InstantiationException,
-                                                     IllegalAccessException {
+    public void addDrl(InputStream in) throws Exception {
+        InputStreamReader reader = new InputStreamReader( in );
+
+        StringBuffer text = new StringBuffer();
+
+        char[] buf = new char[1024];
+        int len = 0;
+
+        while ( (len = reader.read( buf )) >= 0 ) {
+            text.append( buf,
+                         0,
+                         len );
+        }
+
+        RuleParser parser = new RuleParser( new CommonTokenStream( new RuleParserLexer( new ANTLRStringStream( text.toString() ) ) ) );
+        parser.compilation_unit();
+
+        addPackage( parser.getPackageDescr() );
+    }
+
+    void addPackage(PackageDescr packageDescr) throws CheckedDroolsException,
+                                              ClassNotFoundException,
+                                              InstantiationException,
+                                              IllegalAccessException {
         if ( this.packages == Collections.EMPTY_MAP ) {
             this.packages = new HashMap();
         }
@@ -132,53 +156,63 @@ public class RuleBaseManager {
 
     CompilationResult compile(String className,
                               String text,
+                              MemoryResourceReader src,
                               ResourceStore dst) {
         src.addFile( className.replace( '.',
                                         '/' ) + ".java",
                      text.toCharArray() );
         CompilationResult result = compiler.compile( new String[]{className},
-                                         src,
-                                         dst );
-        
+                                                     src,
+                                                     dst );
+
         System.out.println( "-------------" );
-        CompilationProblem[] problems =  result.getErrors();
+        CompilationProblem[] problems = result.getErrors();
         for ( int i = 0, length = problems.length; i < length; i++ ) {
             System.out.println( problems[i] );
         }
-        
+
         return result;
     }
 
-    public void addFunction(PackageDescr packageDescr,
-                            FunctionDescr rule) {
+    void addFunction(PackageDescr packageDescr,
+                     FunctionDescr rule) {
         //@todo        
     }
 
-    public void addRule(Package pkg,
-                        RuleDescr ruleDescr) throws CheckedDroolsException,
-                                            ClassNotFoundException,
-                                            InstantiationException,
-                                            IllegalAccessException {
+    void addRule(Package pkg,
+                 RuleDescr ruleDescr) throws CheckedDroolsException,
+                                     ClassNotFoundException,
+                                     InstantiationException,
+                                     IllegalAccessException {
+        this.packageStoreWrapper.setPackageCompilationData( pkg.getPackageCompilationData() );
+        
+        MemoryResourceReader src = (MemoryResourceReader) this.srcs.get( pkg );
+        if ( src == null ) {
+            src = new MemoryResourceReader();
+            this.srcs.put( pkg,
+                           src );
+        }
+
         String ruleClassName = getUniqueLegalName( pkg.getName(),
                                                    ruleDescr.getName(),
-                                                   "java" );
+                                                   "java",
+                                                   src );
         ruleDescr.SetClassName( ucFirst( ruleClassName ) );
 
         RuleBuilder builder = new RuleBuilder();
         builder.build( pkg,
                        ruleDescr );
         Rule rule = builder.getRule();
-        
+
         List results = builder.getResults();
 
         //System.out.println( ruleDescr.getClassName() + ":\n" + builder.getRuleClass() );
 
-        this.packageStoreWrapper.setPackageCompilationData( pkg.getPackageCompilationData() );
         // The compilation result is for th entire rule, so difficult to associate with any descr
         CompilationResult result = compile( pkg.getName() + "." + ruleDescr.getClassName(),
                                             builder.getRuleClass(),
+                                            src,
                                             this.packageStoreWrapper );
-        
 
         for ( Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
             String className = (String) it.next();
@@ -196,25 +230,27 @@ public class RuleBaseManager {
 
             result = compile( className,
                               text,
+                              src,
                               this.packageStoreWrapper );
-            
+
             if ( result.getErrors().length > 0 ) {
                 PatternDescr descr = (PatternDescr) builder.getDescrLookups().get( className );
                 results.add( new BuilderResult( descr,
                                                 result.getErrors(),
-                                                "Compilation error for Invoker" ) );                
-                
+                                                "Compilation error for Invoker" ) );
+
             }
-            
+
         }
 
         pkg.addRule( rule );
         if ( results.size() > 0 ) {
-            this.results.put( rule, results );
+            this.results.put( rule,
+                              results );
         }
     }
 
-    public Package getPackag(String packageName) {
+    public Package getPackage(String packageName) {
         return (Package) this.packages.get( packageName );
     }
 
@@ -222,25 +258,17 @@ public class RuleBaseManager {
         return this.packages;
     }
 
-    public MemoryResourceReader getMemoryResourceReader() {
-        return this.src;
-    }
-
-    public byte[] getSrcJar() {
-        return null;
-    }
-
-    public byte[] getBinJar() {
-        return getBinJar( Collections.EMPTY_LIST );
-    }
-
-    public byte[] getBinJar(List objects) {
-        return null;
-    }
-
-    public int getNextInt() {
-        return this.counter++;
-    }
+    //    public byte[] getSrcJar() {
+    //        return null;
+    //    }
+    //
+    //    public byte[] getBinJar() {
+    //        return getBinJar( Collections.EMPTY_LIST );
+    //    }
+    //
+    //    public byte[] getBinJar(List objects) {
+    //        return null;
+    //    }
 
     public Map getResults() {
         return this.results;
@@ -254,9 +282,10 @@ public class RuleBaseManager {
      * @param ext
      * @return
      */
-    public String getUniqueLegalName(String packageName,
-                                     String name,
-                                     String ext) {
+    private String getUniqueLegalName(String packageName,
+                                      String name,
+                                      String ext,
+                                      ResourceReader src) {
         // replaces the first char if its a number and after that all non
         // alphanumeric or $ chars with _
         String newName = name.replaceAll( "(^[0-9]|[^\\w$])",
@@ -271,7 +300,7 @@ public class RuleBaseManager {
             String fileName = packageName.replaceAll( "\\.",
                                                       "/" ) + newName + "_" + counter + ext;
 
-            exists = this.src.isAvailable( fileName );
+            exists = src.isAvailable( fileName );
         }
         // we have duplicate file names so append counter
         if ( counter >= 0 ) {
