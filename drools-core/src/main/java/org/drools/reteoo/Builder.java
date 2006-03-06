@@ -47,7 +47,7 @@ import org.drools.spi.MockField;
 import org.drools.spi.ObjectTypeResolver;
 
 /**
- * Builds the Rete-OO network for a <code>RuleSet</code>.
+ * Builds the Rete-OO network for a <code>Package</code>.
  * 
  * @see org.drools.rule.Package
  * 

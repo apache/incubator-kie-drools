@@ -69,7 +69,7 @@ public class Rule
     /** Truthness duration. */
     private Duration     duration;
 
-    /** Load order in RuleSet */
+    /** Load order in Package */
     private long         loadOrder;
 
     /** Is recursion of this rule allowed */

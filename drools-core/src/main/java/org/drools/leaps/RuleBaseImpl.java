@@ -158,8 +158,8 @@ public class RuleBaseImpl implements RuleBase {
 	}
 
 	/**
-	 * Add a <code>RuleSet</code> to the network. Iterates through the
-	 * <code>RuleSet</code> adding Each individual <code>Rule</code> to the
+	 * Add a <code>Package</code> to the network. Iterates through the
+	 * <code>Package</code> adding Each individual <code>Rule</code> to the
 	 * network.
 	 * 
 	 * @param pkg

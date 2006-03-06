@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: 0 Plug-in
+Bundle-SymbolicName: org.drools.compiler;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: krisv,mic
+Bundle-Localization: plugin
+Eclipse-AutoStart: false
+Export-Package: org.drools.lang,
+ org.drools.lang.descr,
+ org.drools.lang.dsl,
+ org.drools.lang.dsl.template,
+ org.drools.semantics.java,
+ org.drools.semantics.java.parser
+Require-Bundle: org.eclipse.osgi,
+ org.drools.core
+Bundle-ClassPath: lib/antlr-2.7.6.jar,
+ lib/antlr3-3.0ea7.jar,
+ lib/commons-lang-2.1.jar,
+ lib/commons-logging-api-1.0.4.jar,
+ lib/jci-SNAPSHOT-378493.jar,
+ lib/jdtcore-3.1.0.jar,
+ lib/stringtemplate-2.2-20060301.jar

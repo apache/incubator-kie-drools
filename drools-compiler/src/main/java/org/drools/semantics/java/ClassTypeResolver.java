@@ -93,7 +93,7 @@ public class ClassTypeResolver implements TypeResolver {
             clazz = null;
         }
 
-        // Now try the ruleset object type cache 
+        // Now try the package object type cache 
         if ( clazz == null )
         {
             clazz = lookupFromCache( className );

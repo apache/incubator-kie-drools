@@ -44,11 +44,11 @@ package org.drools;
 import org.drools.rule.Rule;
 
 /**
- * Indicates an error integrating a <code>Rule</code> or <code>RuleSet</code>
+ * Indicates an error integrating a <code>Rule</code> or <code>Package</code>
  * into a <code>RuleBase</code>.
  * 
  * @see RuleBase#addRule
- * @see RuleBase#addRuleSet
+ * @see RuleBase#addPackage
  * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  * 
