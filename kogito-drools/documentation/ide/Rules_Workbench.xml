@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
+<article>
+  <title>JBoss Rules Workbench - Quick Start</title>
+
+  <section>
+    <title>Introduction</title>
+
+    <para>The JBoss Rules workbench is delivered as an eclipse plugin, which
+    allows you to author and manage rules from within Eclipse, as well as
+    integrate rules with your application. This is an optional tool, and not
+    all components are required to be used, you can use what components are
+    relevant to you. Other flavours of the workbench will follow, which will
+    be aimed at less technical rule management (such as allowing business
+    analysts to review and manage rules) - all this is based on the Eclipse
+    platform (hence the term "Workbench").</para>
+
+    <para>This guide will cover some of the features of JBoss rules, in as far
+    as the workbench touches on them (it is assumed that the reader has some
+    familiarity with rule engines, and Drools in particular. It is important
+    to note that none of the underlying features of the rule engine are
+    dependent on Eclipse, and integrators are free to use their tools of
+    choice, as always !</para>
+
+    <figure>
+      <title>Overview</title>
+
+      <imagedata align="center" contentwidth="500" fileref="all.jpg"
+                 format="JPG" scalefit="1" />
+    </figure>
+
+    <section>
+      <title>Features outline</title>
+
+      <para>The rules workbench has the following features</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Textual/graphical rule editor</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>An editor that is aware of DRL syntax, and provides
+              content assistance (including an outline view)</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Wizards to accellerate and ...</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Help you quickly create a new "rules" project</para>
+            </listitem>
+
+            <listitem>
+              <para>Create a new rule resource</para>
+            </listitem>
+
+            <listitem>
+              <para>Create a new Domain Specific language</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>A domain specific lanaguage editor</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Create and manage mappings from your users language to the
+              rule language</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Rule validation</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>As rules are entered, the rule is "built" in the
+              background and errors reported via the problem "view" where
+              possible</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>You can see the above features make use of Eclipse infrastructure
+      and features. All of the power of eclipse is available.</para>
+    </section>
+
+    <section>
+      <title>Rule editor</title>
+
+      <para>The rule editor is where rule managers and developers will be
+      spending most of their time. The rule editor follows the pattern of a
+      normal text editor in eclipse, with all the normal features of a text
+      editor. On top of this, the rule editor provides pop up content
+      assistance. You invoke popup content assistance the "normal" way by
+      pressing Control + Space at the same time.</para>
+
+      <figure>
+        <title>The rule editor in action</title>
+
+        <imagedata align="center" fileref="editor1.jpg" format="JPG"
+                   scalefit="1" />
+      </figure>
+
+      <para>The rule editor works on files that have a .drl (or .rule)
+      extension. Rules are generally grouped together as a "package" of rules
+      (like the old ruleset construct). It will also be possible to have rules
+      in individual files (grouped by being in the same package "namespace" if
+      you like). These DRL files are plain text files.</para>
+
+      <para>You can see from the example above that the package is using a
+      domain specific language (note the expander keyword, which tells the
+      rule compiler to look for a dsl file of that name, to resolve the rule
+      language). Even with the domain specific language (DSL) the rules are
+      still stored as plain text as you see on screen, which allows simpler
+      management of rules and versions (comparing versions of rules for
+      instance).</para>
+
+      <para>The editor has an outline view that is kept in sync with the
+      structure of the rules (updated on save). This provides a quick way of
+      navigating around rules by name, in a file which may have hundreds of
+      rules. The items are sorted alphabetically by default.</para>
+
+      <figure>
+        <title>The rule outline view</title>
+
+        <imagedata align="center" fileref="outline.jpg" format="JPG"
+                   scalefit="1" />
+      </figure>
+    </section>
+
+    <section>
+      <title>Creating a new rule and wizards</title>
+
+      <para>You can create a rule simple as an empty text ".drl" file, or use
+      the wizard to do so. The wizard menu can be invoked by Control+N, or
+      choosing it from the toolbar (there will be a menu with the JBoss Rules
+      icon).</para>
+
+      <figure>
+        <title>The wizard menu</title>
+
+        <imagedata align="center" contentwidth="400" fileref="wizards.jpg"
+                   format="JPG" scalefit="1" />
+      </figure>
+
+      <para>The wizard will ask for some basic options for generating a rule
+      resource. These are just hints, you can change your mind later !. In
+      terms of location, typically you would create a top level /rules
+      directory to store your rules if you are creating a rule project, and
+      store it in a sutably named subdirectory. The package name is mandatory,
+      and is similar to a package name in java (ie. its a namespace that
+      groups like rules together).</para>
+
+      <figure>
+        <title>New rule wizard</title>
+
+        <imagedata align="center" contentwidth="400" fileref="new_rule.jpg"
+                   format="JPG" scalefit="1" />
+      </figure>
+
+      <para>This result of this wizard is to generate a rule skeleton to work
+      from. As with all wizards, they are candy: you don't have to use them if
+      you don't want !</para>
+    </section>
+
+    <section>
+      <title>Creating a Rule project</title>
+
+      <para>The aim of the new project wizard is to setup an executable
+      scaffold project to start using rules immediately. This will setup a
+      basic structure, classpath and sample rules and test case to get you
+      started.</para>
+
+      <figure>
+        <title>New rule project scaffolding</title>
+
+        <imagedata align="center" contentwidth="400"
+                   fileref="new_project1.jpg" format="JPG" scalefit="1" />
+      </figure>
+
+      <figure>
+        <title>New rule project result</title>
+
+        <imagedata align="center" fileref="new_project2.jpg" format="JPG"
+                   scalefit="1" />
+      </figure>
+
+      <para>Note that it has setup your dependencies, and created a top level
+      rule directory/source folder. Rules do not have to be kept in "java"
+      projects at all, this is just a convenience for people who are already
+      using eclipse as their Java IDE</para>
+    </section>
+
+    <section>
+      <title>Domain Specific Languages</title>
+
+      <para>Domain Specific Languages (dsl) allow you to create a language
+      that allows your rules to look like, rules ! Most often the domain
+      specific language reads like natural language. Typically you would look
+      at how a business analyst would describe the rule, in their own words,
+      and then map this to your object model via rule constructs. A side
+      benefit of this is that it can provide an insulation layer between your
+      domain objects, and the rules themselves (as we know you like to
+      refactor !). A domain specific language will grow as the rules grow, and
+      works best when there are common terms used over an over, with different
+      parameters.</para>
+
+      <para>To aid with this, the rule workbench provides an editor for domain
+      specific lanaguages (they are stored in a plain text format, so you can
+      use any editor of your choice - it uses a slightly enhanced version of
+      the "Properties" file format, simply). The editor will be invoked on any
+      files with a .dsl extension (there is also a wizard to create a sample
+      DSL).</para>
+
+      <section>
+        <title>Editing languages</title>
+
+        <figure>
+          <title>The Domain Specific Language editor</title>
+
+          <imagedata align="center" fileref="dsl_editor.jpg" format="JPG"
+                     scalefit="1" />
+        </figure>
+
+        <para>The DSL editor provides a table view of Language Expression to
+        Rule Expression mapping. The Language expression is what is used in
+        the rules. This also feeds the content assistance for the rule editor,
+        so that it can suggest Language Expressions from the DSL configuration
+        (the rule editor loads up the DSL configuration when the rule resource
+        is loaded for editing). The Rule language mapping is the "code" for
+        the rules - which the language expression will be compiled to by the
+        rule engine compiler. For form of this Rule language depends if it is
+        for a condition or action part of a rule (it may be a snippet of java,
+        for instance). The "scope" item indicates where the expression is
+        targeted: is it for the "when" part of the rule (LHS)? the "then" part
+        (RHS)? Or anywhere?</para>
+
+        <para>By selecting a mapping item (a row in the table) you can see the
+        expression and mapping in the greyed out fields below. Double clicking
+        or pressing the edit button will open the edit dialog. You can remove
+        items, and add new ones (you should generally only remove when you
+        know that expression is no longer in use).</para>
+
+        <figure>
+          <title>Language Mapping editor dialog</title>
+
+          <imagedata align="center" fileref="mapping_editor.jpg" format="JPG"
+                     scalefit="1" />
+        </figure>
+
+        <para>How it works: the "Language expression" is used to parse the
+        rule language, depending on what the "scope" is set to. When it is
+        found in a rule, the values that are market by the curly braces
+        {value} are extracted from the rule source. These values are then
+        interpolated with the "Rule mapping" expression, based on the names
+        between the curly braces. So in the example above, the natural
+        language expression mapps to 2 contraints on a fact of type Person (ie
+        the person object has the age field as less than {age}, and the
+        location value is the string of {value}, where {age} and {value} are
+        pulled out of the original rule source. The Rule mapping may be a java
+        expression (such as if the scope was "then"). If you did not wish to
+        use a language mapping for a particular rule in a drl, prefix the
+        expression with &gt; and the compiler will not try to translate it
+        according to the language definition. Also note that domain specific
+        languages are optional. When the rule is compiled, the .dsl file will
+        also need to be avilable.</para>
+      </section>
+    </section>
+  </section>
+</article>
