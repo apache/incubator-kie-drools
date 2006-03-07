@@ -188,6 +188,11 @@ class AlphaNode extends ObjectSource
 
         return this.objectSource.equals( other.objectSource ) && this.constraint.equals( other.constraint );
     }
+    
+    public int hashCode() {
+        return this.objectSource.hashCode() * 17 +
+               ((this.constraint != null) ? this.constraint.hashCode() : 0);
+    }
 
     public void remove() {
         // TODO Auto-generated method stub

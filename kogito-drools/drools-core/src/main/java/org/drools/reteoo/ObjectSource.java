@@ -17,10 +17,9 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import org.drools.FactException;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -44,7 +43,7 @@ abstract class ObjectSource extends BaseNode
     // ------------------------------------------------------------
 
     /** The destination for <code>FactHandleImpl</code>. */
-    private List objectSinks = new ArrayList( 1 );
+    private ObjectSinkList objectSinks = ObjectSinkListFactory.newObjectSinkList(this);
 
     // ------------------------------------------------------------
     // Constructors
@@ -103,16 +102,21 @@ abstract class ObjectSource extends BaseNode
                                          PropagationContext context,
                                          WorkingMemoryImpl workingMemory) {
         if ( !this.attachingNewNode ) {
-            for ( int i = 0, size = this.objectSinks.size(); i < size; i++ ) {
-                ((ObjectSink) this.objectSinks.get( i )).assertObject( handle,
-                                                                       context,
-                                                                       workingMemory );
+            for ( Iterator i = this.objectSinks.iterator( workingMemory,
+                                                          handle ); i.hasNext(); ) {
+                ((ObjectSink) i.next()).assertObject( handle,
+                                                      context,
+                                                      workingMemory );
             }
-        }
-        else {
-            ((ObjectSink) this.objectSinks.get( this.objectSinks.size() - 1 )).assertObject( handle,
-                                                                                             context,
-                                                                                             workingMemory );
+        } else {
+            ObjectSink lastNode = this.objectSinks.getLastObjectSink();
+            if ( lastNode != null ) {
+                this.objectSinks.getLastObjectSink().assertObject( handle,
+                                                                   context,
+                                                                   workingMemory );
+            } else {
+                throw new RuntimeException("Possible BUG: trying to propagate an assert to a node that was the last added node");
+            }
         }
     }
 
@@ -131,20 +135,20 @@ abstract class ObjectSource extends BaseNode
     protected void propagateRetractObject(FactHandleImpl handle,
                                           PropagationContext context,
                                           WorkingMemoryImpl workingMemory) {
-        for ( int i = 0, size = this.objectSinks.size(); i < size; i++ ) {
-            ((ObjectSink) this.objectSinks.get( i )).retractObject( handle,
-                                                                    context,
-                                                                    workingMemory );
+        for ( Iterator i = this.objectSinks.iterator(); i.hasNext(); ) {
+            ((ObjectSink) i.next()).retractObject( handle,
+                                                   context,
+                                                   workingMemory );
         }
     }
 
     protected void propagateModifyObject(FactHandleImpl handle,
                                          PropagationContext context,
                                          WorkingMemoryImpl workingMemory) {
-        for ( int i = 0, size = this.objectSinks.size(); i < size; i++ ) {
-            ((ObjectSink) this.objectSinks.get( i )).modifyObject( handle,
-                                                                   context,
-                                                                   workingMemory );
+        for ( Iterator i = this.objectSinks.iterator(); i.hasNext(); ) {
+            ((ObjectSink) i.next()).modifyObject( handle,
+                                                  context,
+                                                  workingMemory );
         }
     }
 
@@ -156,7 +160,7 @@ abstract class ObjectSource extends BaseNode
      *         <code>FactHandles</code>.
      */
     public List getObjectSinks() {
-        return this.objectSinks;
+        return this.objectSinks.getObjectsAsList();
     }
 
 }
