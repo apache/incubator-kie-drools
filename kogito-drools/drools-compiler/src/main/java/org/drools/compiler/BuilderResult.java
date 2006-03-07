@@ -1,4 +1,4 @@
-package org.drools.semantics.java;
+package org.drools.compiler;
 
 import org.drools.lang.descr.PatternDescr;
 

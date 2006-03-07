@@ -1,4 +1,4 @@
-package org.drools.semantics.java;
+package org.drools.compiler;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -44,6 +44,9 @@ import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
+import org.drools.semantics.java.ClassTypeResolver;
+import org.drools.semantics.java.JavaExprAnalyzer;
+import org.drools.semantics.java.KnowledgeHelperFixer;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
