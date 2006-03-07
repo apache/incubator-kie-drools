@@ -30,7 +30,7 @@
     <dependency>
       <groupId>jci</groupId>
       <artifactId>jci</artifactId>
-      <version>SNAPSHOT-378493</version>
+      <version>SNAPSHOT-378493+patch</version>
     </dependency> 
     
     <dependency>
@@ -74,7 +74,7 @@
     <dependency>
 			<groupId>eclipse</groupId>
 			<artifactId>jdtcore</artifactId>    
-			<version>3.1.0</version>
+			<version>3.2.0.v_642</version>
     </dependency>  
 
            
