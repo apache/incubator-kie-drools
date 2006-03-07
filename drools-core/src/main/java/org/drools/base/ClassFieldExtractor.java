@@ -3,8 +3,6 @@ package org.drools.base;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldExtractor;
@@ -84,6 +82,22 @@ public class ClassFieldExtractor
         }
 
         return fieldType;
-
+    }
+    
+    public boolean equals(Object other) {
+        if( this == other) {
+            return true;
+        }
+        if( ! (other instanceof ClassFieldExtractor)) {
+            return false;
+        }
+        ClassFieldExtractor extr = (ClassFieldExtractor) other;
+        return this.objectType.equals( extr.objectType ) &&
+               this.index == extr.index;
+    }
+    
+    public int hashCode() {
+        return this.objectType.hashCode() * 17 +
+               this.index;
     }
 }

@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -151,7 +152,7 @@ class ObjectTypeNode extends ObjectSource
                                 context,
                                 workingMemory );
     }
-    
+
     public void modifyObject(FactHandleImpl handle,
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) {
@@ -160,7 +161,7 @@ class ObjectTypeNode extends ObjectSource
         propagateModifyObject( handle,
                                context,
                                workingMemory );
-    }    
+    }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
@@ -172,7 +173,7 @@ class ObjectTypeNode extends ObjectSource
         PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
 
         for ( Iterator it = memory.values().iterator(); it.hasNext(); ) {
-            FactHandleImpl handle = (FactHandleImpl) it.next(); 
+            FactHandleImpl handle = (FactHandleImpl) it.next();
             propagateAssertObject( handle,
                                    context,
                                    workingMemory );
