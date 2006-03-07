@@ -1,4 +1,4 @@
-package org.drools.semantics.java;
+package org.drools.compiler;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,6 +37,8 @@ import org.drools.rule.PackageCompilationData;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
+import org.drools.semantics.java.ClassTypeResolver;
+import org.drools.semantics.java.PackageStore;
 import org.drools.spi.Consequence;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.PredicateExpression;
