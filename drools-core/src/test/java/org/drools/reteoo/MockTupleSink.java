@@ -65,11 +65,6 @@ public class MockTupleSink extends TupleSource
 
     }
 
-    public void remove() {
-        // TODO Auto-generated method stub
-
-    }
-
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) throws FactException {
         // TODO Auto-generated method stub
@@ -79,6 +74,13 @@ public class MockTupleSink extends TupleSource
     public void modifyTuple(ReteTuple tuple,
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
         // TODO Auto-generated method stub
         
     }

@@ -194,8 +194,15 @@ class AlphaNode extends ObjectSource
                ((this.constraint != null) ? this.constraint.hashCode() : 0);
     }
 
-    public void remove() {
-        // TODO Auto-generated method stub
-
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
+        getObjectSinks().remove( node );
+        removeShare();
+        if ( this.sharedCount < 0 ) {
+            workingMemory.clearNodeMemory( this );
+            this.objectSource.remove( this, workingMemory, context );
+        }
     }
+
 }

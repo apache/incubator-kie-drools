@@ -189,10 +189,16 @@ class ObjectTypeNode extends ObjectSource
         this.rete.addObjectSink( this );
     }
 
-    public void remove() {
-        // this.rete.removeObjectSink( this );
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
+        getObjectSinks().remove( node );
+        removeShare();
+        if ( this.sharedCount < 0 ) {
+            workingMemory.clearNodeMemory( this );
+            this.rete.removeObjectSink( this );
+        }
     }
-
     /**
      * Rete needs to know that this ObjectTypeNode has had new nodes attached to
      * it one one of its ancestors

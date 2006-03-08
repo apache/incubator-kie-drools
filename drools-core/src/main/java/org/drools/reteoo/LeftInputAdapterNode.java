@@ -159,10 +159,17 @@ class LeftInputAdapterNode extends TupleSource
         this.attachingNewNode = false;
     }
 
-    public void remove() {
-        // TODO Auto-generated method stub
-
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
+        getTupleSinks().remove( node );
+        removeShare();
+        if ( this.sharedCount < 0 ) {
+            workingMemory.clearNodeMemory( this );
+            this.objectSource.remove( this, workingMemory, context );
+        }
     }
+
 
     /**
      * LeftInputAdapter uses a HashMap for memory. The key is the received <code>FactHandleImpl</code> and the

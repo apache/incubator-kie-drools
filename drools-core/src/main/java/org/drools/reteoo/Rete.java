@@ -238,6 +238,10 @@ class Rete extends ObjectSource
     protected void addObjectSink(ObjectSink objectSink) {
         addObjectTypeNode( (ObjectTypeNode) objectSink );
     }
+    
+    protected void removeObjectSink(ObjectSink objectSink) {
+        this.objectTypeNodes.remove( objectSink );        
+    }    
 
     public void attach() {
         // do nothing this is the root node
@@ -248,9 +252,12 @@ class Rete extends ObjectSource
         // do nothing this has no data to propagate
     }
 
-    public void remove() {
-        // do nothing the rete node is root and cannot be removed
-
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
+        ObjectTypeNode objectTypeNode = ( ObjectTypeNode ) node;
+        removeObjectSink( objectTypeNode );
+        //@todo: we really should attempt to clear the memory cache for this ObjectTypeNode        
     }
 
     public Object createMemory() {

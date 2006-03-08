@@ -21,11 +21,6 @@ public class MockTupleSource extends TupleSource {
         return this.attached;
     }
 
-    public void remove() {
-        // TODO Auto-generated method stub
-
-    }
-
     public int getUdated() {
         return this.updated;
     }
@@ -33,6 +28,13 @@ public class MockTupleSource extends TupleSource {
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
         this.updated++;
+    }
+
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

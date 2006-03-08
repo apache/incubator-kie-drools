@@ -31,15 +31,18 @@ public class BaseNodeTest extends TestCase {
 
         }
 
-        public void remove() {
-            // TODO Auto-generated method stub
-
-        }
 
         public void updateNewNode(WorkingMemoryImpl workingMemory,
                                   PropagationContext context) {
             // TODO Auto-generated method stub
 
+        }
+
+        public void remove(BaseNode node,
+                           WorkingMemoryImpl workingMemory,
+                           PropagationContext context) {
+            // TODO Auto-generated method stub
+            
         }
 
     }

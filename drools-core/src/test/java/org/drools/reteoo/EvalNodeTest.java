@@ -68,8 +68,8 @@ public class EvalNodeTest extends DroolsTestCase {
         MockTupleSource source = new MockTupleSource( 12 );
 
         EvalConditionNode node = new EvalConditionNode( 18,
-                                      source,
-                                      new MockEvalCondition( true) );
+                                                        source,
+                                                        new MockEvalCondition( true ) );
 
         assertEquals( 18,
                       node.getId() );
@@ -92,8 +92,8 @@ public class EvalNodeTest extends DroolsTestCase {
         MockTupleSource source = new MockTupleSource( 12 );
 
         EvalConditionNode node = new EvalConditionNode( 18,
-                                      source,
-                                      new MockEvalCondition( true ) );
+                                                        source,
+                                                        new MockEvalCondition( true ) );
 
         LinkedList memory = (LinkedList) workingMemory.getNodeMemory( node );
 
@@ -110,8 +110,8 @@ public class EvalNodeTest extends DroolsTestCase {
 
         // Create a test node that always returns true 
         EvalConditionNode node = new EvalConditionNode( 1,
-                                      new MockTupleSource( 15 ),
-                                      new MockEvalCondition( true ) );
+                                                        new MockTupleSource( 15 ),
+                                                        new MockEvalCondition( true ) );
 
         MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
@@ -134,7 +134,9 @@ public class EvalNodeTest extends DroolsTestCase {
                       memory.getFirst() );
 
         // Now test that the fact is retracted correctly
-        node.retractTuple( tuple, context, workingMemory );
+        node.retractTuple( tuple,
+                           context,
+                           workingMemory );
 
         // Now test that the fact is retracted correctly
         assertEquals( 0,
@@ -150,8 +152,8 @@ public class EvalNodeTest extends DroolsTestCase {
     public void testNotAllowed() throws FactException {
         // Create a test node that always returns false 
         EvalConditionNode node = new EvalConditionNode( 1,
-                                      new MockTupleSource( 15 ),
-                                      new MockEvalCondition( false ) );
+                                                        new MockTupleSource( 15 ),
+                                                        new MockEvalCondition( false ) );
 
         MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
@@ -171,81 +173,79 @@ public class EvalNodeTest extends DroolsTestCase {
 
     }
 
+    //    public void testException() throws FactException {
+    //        // Create a eval that will always throw an exception
+    //        MockCondition eval = new MockCondition( true );
+    //        eval.setTestException( true );
+    //
+    //        // Create the TestNode 
+    //        EvalConditionNode node = new EvalConditionNode( 1,
+    //                                      new MockTupleSource( 15 ),
+    //                                      eval );
+    //
+    //        MockTupleSink sink = new MockTupleSink();
+    //        node.addTupleSink( sink );
+    //
+    //        /* Create the Tuple */
+    //        FactHandleImpl f0 = new FactHandleImpl( 0 );
+    //        ReteTuple tuple = new ReteTuple( f0 );
+    //
+    //        /* When asserting the node should throw an exception */
+    //        try {
+    //            node.assertTuple( tuple,
+    //                              this.context,
+    //                              this.workingMemory );
+    //            fail( "Should have thrown TestException" );
+    //        } catch ( TestException e ) {
+    //            // should throw exception
+    //        }
+    //    }
 
-//    public void testException() throws FactException {
-//        // Create a eval that will always throw an exception
-//        MockCondition eval = new MockCondition( true );
-//        eval.setTestException( true );
-//
-//        // Create the TestNode 
-//        EvalConditionNode node = new EvalConditionNode( 1,
-//                                      new MockTupleSource( 15 ),
-//                                      eval );
-//
-//        MockTupleSink sink = new MockTupleSink();
-//        node.addTupleSink( sink );
-//
-//        /* Create the Tuple */
-//        FactHandleImpl f0 = new FactHandleImpl( 0 );
-//        ReteTuple tuple = new ReteTuple( f0 );
-//
-//        /* When asserting the node should throw an exception */
-//        try {
-//            node.assertTuple( tuple,
-//                              this.context,
-//                              this.workingMemory );
-//            fail( "Should have thrown TestException" );
-//        } catch ( TestException e ) {
-//            // should throw exception
-//        }
-//    }
+    public void testUpdateWithMemory() throws FactException {
+        // If no child nodes have children then we need to re-process the left
+        // and right memories
+        // as a joinnode does not store the resulting tuples
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+
+        // Creat the object source so we can detect the alphaNode telling it to
+        // propate its contents
+        MockTupleSource source = new MockTupleSource( 1 );
+
+        /* Create a test node that always returns true */
+        EvalConditionNode node = new EvalConditionNode( 1,
+                                                        new MockTupleSource( 15 ),
+                                                        new MockEvalCondition( true ) );
 
 
-//    public void testUpdateWithMemory() throws FactException {
-//        // If no child nodes have children then we need to re-process the left
-//        // and right memories
-//        // as a joinnode does not store the resulting tuples
-//        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
-//
-//        // Creat the object source so we can detect the alphaNode telling it to
-//        // propate its contents
-//        MockTupleSource source = new MockTupleSource( 1 );
-//
-//        /* Create a test node that always returns true */
-//        TestNode testNode = new TestNode( 1,
-//                                          source,
-//                                          new MockEval( null,
-//                                                             true ) );
-//
-//        // Add the first tuple sink and assert a tuple and object
-//        // The sink has no memory
-//        MockTupleSink sink1 = new MockTupleSink( 2 );
-//        testNode.addTupleSink( sink1 );
-//
-//        FactHandleImpl f0 = new FactHandleImpl( 0 );
-//        workingMemory.putObject( f0,
-//                                 "string0" );
-//
-//        ReteTuple tuple1 = new ReteTuple( f0 );
-//
-//        testNode.assertTuple( tuple1,
-//                              this.context,
-//                              workingMemory );
-//
-//        assertLength( 1,
-//                      sink1.getAsserted() );
-//
-//        // Add the new sink, this should be updated from the re-processed
-//        // joinnode memory
-//        MockTupleSink sink2 = new MockTupleSink( 3 );
-//        testNode.addTupleSink( sink2 );
-//        assertLength( 0,
-//                      sink2.getAsserted() );
-//
-//        testNode.updateNewNode( workingMemory,
-//                                this.context );
-//
-//        assertLength( 1,
-//                      sink2.getAsserted() );
-//    }
+        // Add the first tuple sink and assert a tuple and object
+        // The sink has no memory
+        MockTupleSink sink1 = new MockTupleSink( 2 );
+        node.addTupleSink( sink1 );
+
+        FactHandleImpl f0 = new FactHandleImpl( 0 );
+        workingMemory.putObject( f0,
+                                 "string0" );
+
+        ReteTuple tuple1 = new ReteTuple( f0 );
+
+        node.assertTuple( tuple1,
+                              this.context,
+                              workingMemory );
+
+        assertLength( 1,
+                      sink1.getAsserted() );
+
+        // Add the new sink, this should be updated from the re-processed
+        // joinnode memory
+        MockTupleSink sink2 = new MockTupleSink( 3 );
+        node.addTupleSink( sink2 );
+        assertLength( 0,
+                      sink2.getAsserted() );
+
+        node.updateNewNode( workingMemory,
+                                this.context );
+
+        assertLength( 1,
+                      sink2.getAsserted() );
+    }
 }
