@@ -197,7 +197,7 @@ public class ObjectNotEqualConstrRightMemory
                         next = (ObjectMatches) it.next();
                         if( next.getChild().getLinkedList() != noMatchList) {
                             if((childMemory == null) || 
-                               (childMemory.isPossibleMatch((MultiLinkedListNodeWrapper)next.getChild()))) {
+                               (childMemory.isPossibleMatch((MultiLinkedListNodeWrapper)next.getChild().getChild()))) {
                                  hasnext = true;
                                  break;
                             }
@@ -268,7 +268,7 @@ public class ObjectNotEqualConstrRightMemory
                 ret = ( matches.getChild().getLinkedList() != noMatchList);
     
                 if(ret && (this.childMemory != null)) {
-                    ret = this.childMemory.isPossibleMatch((MultiLinkedListNodeWrapper)matches.getChild());
+                    ret = this.childMemory.isPossibleMatch((MultiLinkedListNodeWrapper)matches.getChild().getChild());
                 }
         }
         return ret;
@@ -329,6 +329,17 @@ public class ObjectNotEqualConstrRightMemory
         }
         return ret;
     }
+    
+    /**
+     * @inheritDoc
+     */
+    public Iterator iterator() {
+        if(this.childMemory == null) {
+            throw new UnsupportedOperationException("Operation not supported by indexed memory");
+        }
+        return this.childMemory.iterator(); 
+    }
+    
     
     private static class KeyMultiLinkedList extends MultiLinkedList {
         private final Object key;

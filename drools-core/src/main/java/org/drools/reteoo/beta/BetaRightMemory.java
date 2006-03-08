@@ -88,6 +88,16 @@ public interface BetaRightMemory {
     public Iterator iterator(WorkingMemory workingMemory, ReteTuple tuple);
     
     /**
+     * Returns an iterator that allows to iterate over all the ObjectMatches
+     * in the beta right memory.
+     * This might not be much efficient for indexed memories, so this shall 
+     * be used only when changing RETE network layoud (adding/removing rules).
+     * 
+     * @return
+     */
+    public Iterator iterator();
+    
+    /**
      * Returns the number of objects currently stored in the right memory
      * 
      * @return the number of objects currently stored in the right memory

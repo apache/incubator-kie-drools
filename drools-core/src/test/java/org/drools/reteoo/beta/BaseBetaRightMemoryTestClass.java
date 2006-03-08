@@ -16,6 +16,8 @@
 
 package org.drools.reteoo.beta;
 
+import java.util.Iterator;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -163,6 +165,29 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
 
         this.memory.remove(this.workingMemory, this.matches1);
         Assert.assertEquals("Memory should have size 0", 0, this.memory.size());
+    }
+    
+    public void testParameterlessIterator() {
+        try {
+            this.memory.add(this.workingMemory, matches0);
+            this.memory.add(this.workingMemory, matches1);
+            Assert.assertEquals("Memory should have size 2", 2, this.memory.size());
+            
+            Iterator i = this.memory.iterator(); 
+            Assert.assertTrue("There should be a next match", i.hasNext());
+            ObjectMatches matches = (ObjectMatches) i.next();
+            Assert.assertSame("Wrong returned match", matches0, matches);
+            
+            Assert.assertTrue("There should be a next match", i.hasNext());
+            matches = (ObjectMatches) i.next();
+            Assert.assertSame("Wrong returned match", matches1, matches);
+            
+            Assert.assertFalse("There should not be a next match", i.hasNext());
+        } catch ( UnsupportedOperationException e ) {
+            Assert.fail("Beta memory was not supposed to throw any exception: "+e.getMessage());
+        } catch ( ClassCastException e ) {
+            Assert.fail("BetaRightMemory was not supposed to throw ClassCastException: "+e.getMessage());
+        }
     }
 
     /*

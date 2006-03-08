@@ -94,23 +94,7 @@ public class DefaultRightMemory
     public Iterator iterator(final WorkingMemory workingMemory,
                              final ReteTuple tuple) {
         this.selectPossibleMatches(workingMemory, tuple);
-        Iterator iterator = new Iterator() {
-            Iterator it = memory.iterator();
-
-            public boolean hasNext() {
-                return it.hasNext();
-            }
-
-            public Object next() {
-                return it.next();
-            }
-
-            public void remove() {
-                throw new UnsupportedOperationException("Iterator.remove() should not be used to remove right side objects from right memory.");
-            }
-            
-        };
-        return iterator;
+        return this.iterator();
     }
 
     /**
@@ -151,6 +135,29 @@ public class DefaultRightMemory
      */
     public int size() {
         return this.memory.size();
+    }
+
+    public Iterator iterator() {
+        return new Iterator() {
+            Iterator it = memory.iterator();
+
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            public Object next() {
+                Object next = it.next();
+                if(next instanceof MultiLinkedListNodeWrapper) {
+                    next = ((MultiLinkedListNodeWrapper)next).getNode();
+                }
+                return next;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException("Iterator.remove() should not be used to remove right side objects from right memory.");
+            }
+            
+        };
     }
 
 }
