@@ -1,6 +1,5 @@
 package org.drools.decisiontable.model;
 
-
 /*
  * Copyright 2005 (C) The Werken Company. All Rights Reserved.
  *
@@ -40,28 +39,21 @@ package org.drools.decisiontable.model;
  *
  */
 
-
-
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  * 
  * Classes that implement this interface should generate DRL fragments according
  * to the drools java semantic module.
  * 
- * TODO: change this to use a stream (optionally) that is injected. This can
- * allow a large chunk of DRL to be written out to a temp file, and then a
- * stream to this returned for input into RuleBaseLoader.
  */
-public interface DRLJavaEmitter
-{
+public interface DRLJavaEmitter {
 
-    /**
-     * 
-     * @return an XML snippet (well formed) for the current object. This should
-     *         NOT be a complete XML document, just well formed.
-     * 
-     */
-    String toXML();
+	/**
+	 * 
+	 * @return an XML snippet (well formed) for the current object. This should
+	 *         NOT be a complete XML document, just well formed.
+	 * 
+	 */
+	String toXML();
 
 }
-

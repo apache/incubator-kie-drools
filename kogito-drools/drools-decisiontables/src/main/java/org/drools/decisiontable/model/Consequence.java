@@ -1,6 +1,5 @@
 package org.drools.decisiontable.model;
 
-
 /*
  * Copyright 2005 (C) The Werken Company. All Rights Reserved.
  *
@@ -40,44 +39,36 @@ package org.drools.decisiontable.model;
  *
  */
 
-
-
 /**
+ * This represents a RHS fragement. A rule may have many of these, or just one.
+ * They are all mushed together.
+ * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
- * 
- * 
  */
-public class Consequence extends DRLElement
-    implements
-    DRLJavaEmitter
-{
+public class Consequence extends DRLElement implements DRLJavaEmitter {
 
-    private String _snippet;
+	private String _snippet;
 
-    /**
-     * @param _snippet
-     *            The _snippet to set.
-     */
-    public void setSnippet(String snippet)
-    {
-        _snippet = snippet;
-    }
+	/**
+	 * @param _snippet
+	 *            The _snippet to set.
+	 */
+	public void setSnippet(String snippet) {
+		_snippet = snippet;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see mdneale.drools.xls.model.DRLJavaEmitter#toXML()
-     */
-    public String toXML()
-    {
-        String xml = "\t\t" + _snippet + "\n";
-        return xml;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mdneale.drools.xls.model.DRLJavaEmitter#toXML()
+	 */
+	public String toXML() {
+		String xml = "\t\t" + _snippet + "\n";
+		return xml;
+	}
 
-    public String getSnippet()
-    {
-        return _snippet;
-    }
+	public String getSnippet() {
+		return _snippet;
+	}
 
 }
-

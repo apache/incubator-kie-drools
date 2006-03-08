@@ -1,6 +1,5 @@
 package org.drools.decisiontable.model;
 
-
 /*
  * Copyright 2005 (C) The Werken Company. All Rights Reserved.
  *
@@ -40,8 +39,6 @@ package org.drools.decisiontable.model;
  *
  */
 
-
-
 import junit.framework.TestCase;
 
 /**
@@ -50,47 +47,41 @@ import junit.framework.TestCase;
  * Test rendering and running a whole sample ruleset, from the model classes
  * down.
  */
-public class RulesetRenderTest extends TestCase
-{
+public class RulesetRenderTest extends TestCase {
 
-    public Rule buildRule()
-    {
-        Rule rule = new Rule( "myrule",
-                              new Integer(42) );
-        rule.setComment( "rule comments" );
+	public Rule buildRule() {
+		Rule rule = new Rule("myrule", new Integer(42), 1);
+		rule.setComment("rule comments");
 
-        Condition cond = new Condition( );
-        cond.setComment( "cond comment" );
-        cond.setSnippet( "cond snippet" );
-        rule.addCondition( cond );
+		Condition cond = new Condition();
+		cond.setComment("cond comment");
+		cond.setSnippet("cond snippet");
+		rule.addCondition(cond);
 
-        Consequence cons = new Consequence( );
-        cons.setComment( "cons comment" );
-        cons.setSnippet( "cons snippet" );
-        rule.addConsequence( cons );
+		Consequence cons = new Consequence();
+		cons.setComment("cons comment");
+		cons.setSnippet("cons snippet");
+		rule.addConsequence(cons);
 
-        return rule;
-    }
+		return rule;
+	}
 
-    public void testRulesetRender()
-    {
-        Ruleset ruleSet = new Ruleset( "myruleset" );
-        ruleSet.addFunctions("a function");
-        ruleSet.addRule( buildRule( ) );
-        Import imp = new Import( );
-        imp.setClassName( "clazz name" );
-        imp.setComment( "import comment" );
+	public void testRulesetRender() {
+		Ruleset ruleSet = new Ruleset("myruleset");
+		ruleSet.addFunctions("a function");
+		ruleSet.addRule(buildRule());
+		Import imp = new Import();
+		imp.setClassName("clazz name");
+		imp.setComment("import comment");
 
-        ruleSet.addImport( imp );
-        String xml = ruleSet.toXML( );
-        assertNotNull( xml );
-        assertTrue(xml.indexOf("condition") > -1);
-        assertTrue(xml.indexOf("consequence") > -1);
-        assertTrue(xml.indexOf("import") > -1);
-        assertTrue(xml.indexOf("functions") > -1);
-        
+		ruleSet.addImport(imp);
+		String xml = ruleSet.toXML();
+		assertNotNull(xml);
+		assertTrue(xml.indexOf("condition") > -1);
+		assertTrue(xml.indexOf("consequence") > -1);
+		assertTrue(xml.indexOf("import") > -1);
+		assertTrue(xml.indexOf("functions") > -1);
 
-    }
+	}
 
 }
-
