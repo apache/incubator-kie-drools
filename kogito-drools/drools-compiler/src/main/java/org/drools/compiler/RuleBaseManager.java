@@ -1,71 +1,64 @@
 package org.drools.compiler;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.Lexer;
-import org.antlr.runtime.TokenStream;
 import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.JavaCompiler;
 import org.apache.commons.jci.compilers.JavaCompilerFactory;
-import org.apache.commons.jci.problems.CompilationProblem;
 import org.apache.commons.jci.readers.MemoryResourceReader;
 import org.apache.commons.jci.readers.ResourceReader;
-import org.apache.commons.jci.stores.MemoryResourceStore;
 import org.apache.commons.jci.stores.ResourceStore;
-import org.apache.commons.jci.stores.ResourceStoreClassLoader;
-import org.drools.CheckedDroolsException;
-import org.drools.RuleBase;
-import org.drools.lang.RuleParser;
-import org.drools.lang.RuleParserLexer;
-import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
-import org.drools.rule.PackageCompilationData;
-import org.drools.rule.PredicateConstraint;
-import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.semantics.java.ClassTypeResolver;
 import org.drools.semantics.java.PackageStore;
-import org.drools.spi.Consequence;
-import org.drools.spi.EvalExpression;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.ReturnValueExpression;
+import org.drools.semantics.java.RuleBuilder;
 import org.drools.spi.TypeResolver;
 
 public class RuleBaseManager {
-    private JavaCompiler compiler            = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
+    private JavaCompiler         compiler = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
 
-    private Map          packages;
+    private Package              pkg;
 
-    private Map          results;
+    private List                 results;
 
-    private PackageStore packageStoreWrapper = new PackageStore();
+    private PackageStore         packageStoreWrapper;
 
-    private Map          srcs;
+    private MemoryResourceReader src;
 
     public RuleBaseManager() {
-        this( null );
+        this( null,
+              null );
+    }
+
+    public RuleBaseManager(Package pkg) {
+        this( pkg,
+              null );
     }
 
     public RuleBaseManager(ClassLoader parentClassLoader) {
-        this.srcs = new HashMap();
+        this( null,
+              parentClassLoader );
+    }
 
-        this.results = new HashMap();
+    public RuleBaseManager(Package pkg,
+                           ClassLoader parentClassLoader) {
+        this.src = new MemoryResourceReader();
 
-        this.packages = new HashMap();
+        this.results = new ArrayList();
+
+        this.pkg = pkg;
+
+        if ( pkg != null) {
+            this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
+        }
 
         if ( parentClassLoader == null ) {
             parentClassLoader = Thread.currentThread().getContextClassLoader();
@@ -75,59 +68,28 @@ public class RuleBaseManager {
         }
     }
 
-    public void addDrl(InputStream in) throws Exception {
-        InputStreamReader reader = new InputStreamReader( in );
+    public void addPackage(PackageDescr packageDescr) {
 
-        StringBuffer text = new StringBuffer();
-
-        char[] buf = new char[1024];
-        int len = 0;
-
-        while ( (len = reader.read( buf )) >= 0 ) {
-            text.append( buf,
-                         0,
-                         len );
-        }
-
-        RuleParser parser = new RuleParser( new CommonTokenStream( new RuleParserLexer( new ANTLRStringStream( text.toString() ) ) ) );
-        parser.compilation_unit();
-
-        addPackage( parser.getPackageDescr() );
-    }
-
-    void addPackage(PackageDescr packageDescr) throws CheckedDroolsException,
-                                              ClassNotFoundException,
-                                              InstantiationException,
-                                              IllegalAccessException {
-        if ( this.packages == Collections.EMPTY_MAP ) {
-            this.packages = new HashMap();
-        }
-
-        Package pkg = (Package) this.packages.get( packageDescr.getName() );
-        if ( pkg != null ) {
+        if ( this.pkg != null ) {
             //mergePackage( packageDescr ) ;
-            mergePackage( pkg,
+            mergePackage( this.pkg,
                           packageDescr );
         } else {
-            pkg = newPackage( packageDescr );
-            this.packages.put( pkg.getName(),
-                               pkg );
+            this.pkg = newPackage( packageDescr );
         }
 
         //iterate and compile
         for ( Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-            addFunction( packageDescr,
-                         (FunctionDescr) it.next() );
+            addFunction( (FunctionDescr) it.next() );
         }
 
         //iterate and compile
         for ( Iterator it = packageDescr.getRules().iterator(); it.hasNext(); ) {
-            addRule( pkg,
-                     (RuleDescr) it.next() );
+            addRule( (RuleDescr) it.next() );
         }
     }
 
-    private Package newPackage(PackageDescr packageDescr) throws ClassNotFoundException {
+    private Package newPackage(PackageDescr packageDescr) {
         Package pkg = new Package( packageDescr.getName() );
 
         mergePackage( pkg,
@@ -137,7 +99,7 @@ public class RuleBaseManager {
     }
 
     private void mergePackage(Package pkg,
-                              PackageDescr packageDescr) throws ClassNotFoundException {
+                              PackageDescr packageDescr) {
         List imports = packageDescr.getImports();
         for ( Iterator it = imports.iterator(); it.hasNext(); ) {
             pkg.addImport( (String) it.next() );
@@ -150,9 +112,15 @@ public class RuleBaseManager {
         for ( Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
             String identifier = (String) it.next();
             String className = (String) globals.get( identifier );
-            Class clazz = typeResolver.resolveType( className );
-            pkg.addGlobalDeclaration( identifier,
-                                      clazz );
+
+            Class clazz;
+            try {
+                clazz = typeResolver.resolveType( className );
+                pkg.addGlobalDeclaration( identifier,
+                                          clazz );
+            } catch ( ClassNotFoundException e ) {
+                new GlobalError( identifier );
+            }
         }
     }
 
@@ -167,46 +135,29 @@ public class RuleBaseManager {
                                                      src,
                                                      dst );
 
-        System.out.println( "-------------" );
-        CompilationProblem[] problems = result.getErrors();
-        for ( int i = 0, length = problems.length; i < length; i++ ) {
-            System.out.println( problems[i] );
-        }
-
         return result;
     }
 
-    void addFunction(PackageDescr packageDescr,
-                     FunctionDescr rule) {
+    void addFunction(FunctionDescr rule) {
         //@todo        
     }
 
-    void addRule(Package pkg,
-                 RuleDescr ruleDescr) throws CheckedDroolsException,
-                                     ClassNotFoundException,
-                                     InstantiationException,
-                                     IllegalAccessException {
-        this.packageStoreWrapper.setPackageCompilationData( pkg.getPackageCompilationData() );
-        
-        MemoryResourceReader src = (MemoryResourceReader) this.srcs.get( pkg );
-        if ( src == null ) {
-            src = new MemoryResourceReader();
-            this.srcs.put( pkg,
-                           src );
-        }
+    void addRule(RuleDescr ruleDescr) {
 
-        String ruleClassName = getUniqueLegalName( pkg.getName(),
+        String ruleClassName = getUniqueLegalName( this.pkg.getName(),
                                                    ruleDescr.getName(),
                                                    "java",
                                                    src );
         ruleDescr.SetClassName( ucFirst( ruleClassName ) );
 
         RuleBuilder builder = new RuleBuilder();
-        builder.build( pkg,
+        
+        builder.build( this.pkg,
                        ruleDescr );
+                
+        this.results.addAll( builder.getErrors() );
+        
         Rule rule = builder.getRule();
-
-        List results = builder.getResults();
 
         //System.out.println( ruleDescr.getClassName() + ":\n" + builder.getRuleClass() );
 
@@ -215,6 +166,13 @@ public class RuleBaseManager {
                                             builder.getRuleClass(),
                                             src,
                                             this.packageStoreWrapper );
+
+        if ( result.getErrors().length > 0 ) {
+            this.results.add( new RuleError( rule,
+                                             null,
+                                             result.getErrors(),
+                                             "Compilation error" ) );
+        }
 
         for ( Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
             String className = (String) it.next();
@@ -237,43 +195,21 @@ public class RuleBaseManager {
 
             if ( result.getErrors().length > 0 ) {
                 PatternDescr descr = (PatternDescr) builder.getDescrLookups().get( className );
-                results.add( new BuilderResult( descr,
-                                                result.getErrors(),
-                                                "Compilation error for Invoker" ) );
-
+                this.results.add( new RuleError( rule,
+                                                 descr,
+                                                 result.getErrors(),
+                                                 "Compilation error for Invoker" ) );
             }
 
         }
-
-        pkg.addRule( rule );
-        if ( results.size() > 0 ) {
-            this.results.put( rule,
-                              results );
-        }
     }
 
-    public Package getPackage(String packageName) {
-        return (Package) this.packages.get( packageName );
+    public Package getPackage() {
+        return this.pkg;
     }
 
-    public Map getPackages() {
-        return this.packages;
-    }
-
-    //    public byte[] getSrcJar() {
-    //        return null;
-    //    }
-    //
-    //    public byte[] getBinJar() {
-    //        return getBinJar( Collections.EMPTY_LIST );
-    //    }
-    //
-    //    public byte[] getBinJar(List objects) {
-    //        return null;
-    //    }
-
-    public Map getResults() {
-        return this.results;
+    public DroolsError[] getErrors() {
+        return (DroolsError[]) this.results.toArray( new DroolsError[this.results.size()] );
     }
 
     /**

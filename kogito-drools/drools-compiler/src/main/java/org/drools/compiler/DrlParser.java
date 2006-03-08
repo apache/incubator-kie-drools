@@ -48,7 +48,7 @@ public class DrlParser {
 	        return parse( text.toString() );
 	}
     
-    public ParserResult[] getResults() {
-        return ( ParserResult[] ) this.results.toArray( new ParserResult[ this.results.size() ] );
+    public ParserError[] getErrors() {
+        return ( ParserError[] ) this.results.toArray( new ParserError[ this.results.size() ] );
     }
 }

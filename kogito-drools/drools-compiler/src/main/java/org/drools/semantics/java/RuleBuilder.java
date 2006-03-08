@@ -1,4 +1,4 @@
-package org.drools.compiler;
+package org.drools.semantics.java;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorFactory;
 import org.drools.base.FieldFactory;
+import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BoundVariableDescr;
@@ -44,50 +45,47 @@ import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
-import org.drools.semantics.java.ClassTypeResolver;
-import org.drools.semantics.java.JavaExprAnalyzer;
-import org.drools.semantics.java.KnowledgeHelperFixer;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.TypeResolver;
 
 public class RuleBuilder {
-    private Package                    pkg;
-    private Rule                       rule;
-    private RuleDescr                  ruleDescr;
+    private Package                     pkg;
+    private Rule                        rule;
+    private RuleDescr                   ruleDescr;
 
-    public String                      ruleClass;
-    public List                        methods;
-    public Map                         invokers;
+    public String                       ruleClass;
+    public List                         methods;
+    public Map                          invokers;
 
-    private Map                        invokerLookups;
+    private Map                         invokerLookups;
 
-    private Map                        descrLookups;
-    
-    private Map                        declarations;
+    private Map                         descrLookups;
 
-    private int                        counter;
+    private Map                         declarations;
 
-    private int                        columnCounter;
+    private int                         counter;
 
-    private List                       results;
-    
-    private TypeResolver               typeResolver;
+    private int                         columnCounter;
 
-    private static StringTemplateGroup ruleGroup    = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
-                                                                               AngleBracketTemplateLexer.class );
+    private List                        errors;
 
-    private static StringTemplateGroup invokerGroup = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaInvokers.stg" ) ),
-                                                                               AngleBracketTemplateLexer.class );
-    
-    private static KnowledgeHelperFixer fixer = new  KnowledgeHelperFixer();
+    private TypeResolver                typeResolver;
+
+    private static StringTemplateGroup  ruleGroup    = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
+                                                                                AngleBracketTemplateLexer.class );
+
+    private static StringTemplateGroup  invokerGroup = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaInvokers.stg" ) ),
+                                                                                AngleBracketTemplateLexer.class );
+
+    private static KnowledgeHelperFixer fixer        = new KnowledgeHelperFixer();
 
     // @todo move to an interface so it can work as a decorator
-    private JavaExprAnalyzer           analyzer     = new JavaExprAnalyzer();
+    private JavaExprAnalyzer            analyzer     = new JavaExprAnalyzer();
 
     public RuleBuilder() {
-        this.results = new ArrayList();
+        this.errors = new ArrayList();
     }
 
     public Map getInvokers() {
@@ -97,7 +95,7 @@ public class RuleBuilder {
     public List getMethods() {
         return this.methods;
     }
-    
+
     public Map getDescrLookups() {
         return this.descrLookups;
     }
@@ -109,9 +107,9 @@ public class RuleBuilder {
     public Map getInvokerLookups() {
         return this.invokerLookups;
     }
-    
-    public List getResults() {
-        return this.results;
+
+    public List getErrors() {
+        return this.errors;
     }
 
     public Rule getRule() {
@@ -130,9 +128,9 @@ public class RuleBuilder {
         this.invokerLookups = new HashMap();
         this.declarations = new HashMap();
         this.descrLookups = new HashMap();
-        
+
         this.typeResolver = new ClassTypeResolver( pkg.getImports(),
-                                                   pkg.getPackageCompilationData().getClassLoader() );                
+                                                   pkg.getPackageCompilationData().getClassLoader() );
 
         this.rule = new Rule( ruleDescr.getName() );
         this.ruleDescr = ruleDescr;
@@ -219,9 +217,10 @@ public class RuleBuilder {
     private void build(ConditionalElement ce,
                        ColumnDescr columnDescr) {
         if ( columnDescr.getObjectType() == null || columnDescr.getObjectType().equals( "" ) ) {
-            this.results.add( new BuilderResult( columnDescr,
-                                                 null,
-                                                 "ObjectType not correctly defined" ) );
+            this.errors.add( new RuleError( this.rule,
+                                             columnDescr,
+                                             null,
+                                             "ObjectType not correctly defined" ) );
             return;
         }
 
@@ -231,9 +230,10 @@ public class RuleBuilder {
             //clazz = Class.forName( columnDescr.getObjectType() );
             clazz = typeResolver.resolveType( columnDescr.getObjectType() );
         } catch ( ClassNotFoundException e ) {
-            this.results.add( new BuilderResult( columnDescr,
-                                                 null,
-                                                 "Unable to resolve ObjectType '" + columnDescr.getObjectType() + "'" ) );
+            this.errors.add( new RuleError( this.rule,
+                                             columnDescr,
+                                             null,
+                                             "Unable to resolve ObjectType '" + columnDescr.getObjectType() + "'" ) );
             return;
         }
 
@@ -293,9 +293,10 @@ public class RuleBuilder {
     private void build(Column column,
                        BoundVariableDescr boundVariableDescr) {
         if ( boundVariableDescr.getDeclarationIdentifier() == null || boundVariableDescr.getDeclarationIdentifier().equals( "" ) ) {
-            this.results.add( new BuilderResult( boundVariableDescr,
-                                                 null,
-                                                 "Identifier not defined for binding field '" + boundVariableDescr.getFieldName() ) + "'" );
+            this.errors.add( new RuleError( this.rule,
+                                             boundVariableDescr,
+                                             null,
+                                             "Identifier not defined for binding field '" + boundVariableDescr.getFieldName() ) + "'" );
             return;
         }
 
@@ -311,9 +312,10 @@ public class RuleBuilder {
         Declaration declaration = (Declaration) this.declarations.get( boundVariableDescr.getDeclarationIdentifier() );
 
         if ( declaration == null ) {
-            this.results.add( new BuilderResult( boundVariableDescr,
-                                                 null,
-                                                 "Unable to return Declaration for identifier '" + boundVariableDescr.getDeclarationIdentifier() ) + "'" );
+            this.errors.add( new RuleError( this.rule,
+                                             boundVariableDescr,
+                                             null,
+                                             "Unable to return Declaration for identifier '" + boundVariableDescr.getDeclarationIdentifier() ) + "'" );
             return;
         }
 
@@ -346,9 +348,10 @@ public class RuleBuilder {
             field = FieldFactory.getFieldValue( literalDescr.getText(),
                                                 extractor.getObjectType().getValueType() );
         } catch ( Exception e ) {
-            this.results.add( new BuilderResult( literalDescr,
-                                                 e,
-                                                 "Unable to create a Field value ofr type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalDescr.getText() + "'" ) );
+            this.errors.add( new RuleError( this.rule,
+                                             literalDescr,
+                                             e,
+                                             "Unable to create a Field value ofr type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalDescr.getText() + "'" ) );
         }
 
         Evaluator evaluator = getEvaluator( literalDescr,
@@ -366,7 +369,7 @@ public class RuleBuilder {
     private void build(Column column,
                        ReturnValueDescr returnValueDescr) {
         String classMethodName = "returnValue" + counter++;
-        returnValueDescr.setClassMethodName( classMethodName );               
+        returnValueDescr.setClassMethodName( classMethodName );
 
         List usedDeclarations = getUsedDeclarations( returnValueDescr,
                                                      returnValueDescr.getText() );
@@ -435,7 +438,8 @@ public class RuleBuilder {
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
                                  returnValueConstraint );
-        this.descrLookups.put( invokerClassName, returnValueDescr );
+        this.descrLookups.put( invokerClassName,
+                               returnValueDescr );
     }
 
     private void build(Column column,
@@ -526,7 +530,8 @@ public class RuleBuilder {
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
                                  predicateConstraint );
-        this.descrLookups.put( invokerClassName, predicateDescr );
+        this.descrLookups.put( invokerClassName,
+                               predicateDescr );
     }
 
     private void build(ConditionalElement ce,
@@ -580,12 +585,13 @@ public class RuleBuilder {
         st.setAttribute( "text",
                          evalDescr.getText() );
 
-        String invokerClassName = pkg.getName() + "." +  ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        String invokerClassName = pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
                                  eval );
-        this.descrLookups.put( invokerClassName, evalDescr );
+        this.descrLookups.put( invokerClassName,
+                               evalDescr );
     }
 
     private void build(Rule rule,
@@ -652,7 +658,8 @@ public class RuleBuilder {
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
                                  this.rule );
-        this.descrLookups.put( invokerClassName, ruleDescr );
+        this.descrLookups.put( invokerClassName,
+                               ruleDescr );
 
         st = ruleGroup.getInstanceOf( "ruleClass" );
 
@@ -664,7 +671,7 @@ public class RuleBuilder {
                          this.pkg.getImports() );
         st.setAttribute( "methods",
                          this.methods );
-        
+
         this.ruleClass = st.toString();
     }
 
@@ -739,9 +746,10 @@ public class RuleBuilder {
             extractor = new ClassFieldExtractor( clazz,
                                                  fieldName );
         } catch ( RuntimeDroolsException e ) {
-            this.results.add( new BuilderResult( descr,
-                                                 e,
-                                                 "Unable to create Field Extractor for '" + fieldName ) + "'" );
+            this.errors.add( new RuleError( this.rule,
+                                             descr,
+                                             e,
+                                             "Unable to create Field Extractor for '" + fieldName ) + "'" );
         }
 
         return extractor;
@@ -754,9 +762,10 @@ public class RuleBuilder {
                                                              evaluatorString );
 
         if ( evaluator == null ) {
-            this.results.add( new BuilderResult( descr,
-                                                 null,
-                                                 "Unable to determine the Evaluator for  '" + valueType + "' and '" + evaluatorString + "'" ) );
+            this.errors.add( new RuleError( this.rule,
+                                             descr,
+                                             null,
+                                             "Unable to determine the Evaluator for  '" + valueType + "' and '" + evaluatorString + "'" ) );
         }
 
         return evaluator;
@@ -769,9 +778,10 @@ public class RuleBuilder {
             usedDeclarations = this.analyzer.analyze( text,
                                                       this.declarations.keySet() );
         } catch ( Exception e ) {
-            this.results.add( new BuilderResult( descr,
-                                                 null,
-                                                 "Unable to determine the used declarations" ) );
+            this.errors.add( new RuleError( this.rule,
+                                             descr,
+                                             null,
+                                             "Unable to determine the used declarations" ) );
         }
         return usedDeclarations;
     }

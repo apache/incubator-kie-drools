@@ -1,5 +1,6 @@
 package org.drools.semantics.java;
 
+
 import junit.framework.TestCase;
 
 public class KnowledgeHelperFixerTest extends TestCase {

@@ -15,6 +15,7 @@ import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.LogicalDependency;
+import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -44,10 +45,10 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
 
-public class JavaCompilerTest extends DroolsTestCase {
+public class PackageBuilderTest extends DroolsTestCase {
 
     public void testErrors() throws Exception {
-        RuleBaseManager manager = new RuleBaseManager();
+        PackageBuilder builder = new PackageBuilder();
 
         PackageDescr packageDescr = new PackageDescr( "p1" );
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
@@ -78,18 +79,14 @@ public class JavaCompilerTest extends DroolsTestCase {
         // There is no m this should produce errors.
         ruleDescr.setConsequence( "modify(m);" );
 
-        manager.addPackage( packageDescr );
-        Package pkg = manager.getPackage( "p1" );
-        Rule rule = pkg.getRule( "rule-1" );
+        builder.addPackage( packageDescr );
 
-        if ( manager.getResults().get( rule ) != null ) {
-            assertLength( 2,
-                          ((List) manager.getResults().get( rule )) );
-        }
+        assertLength( 2,
+                      builder.getErrors() );
     }
 
     public void testReload() throws Exception {
-        RuleBaseManager manager = new RuleBaseManager();
+        PackageBuilder builder = new PackageBuilder();
 
         PackageDescr packageDescr = new PackageDescr( "p1" );
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
@@ -103,15 +100,13 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
 
-        manager.addPackage( packageDescr );
+        builder.addPackage( packageDescr );
 
-        Package pkg = (Package) manager.getPackages().get( "p1" );
+        Package pkg = builder.getPackage();
         Rule rule = pkg.getRule( "rule-1" );
 
-        if ( manager.getResults().get( rule ) != null ) {
-            assertLength( 0,
-                          ((List) manager.getResults().get( rule )) );
-        }
+        assertLength( 0,
+                      builder.getErrors() );
 
         RuleBaseImpl ruleBase = new RuleBaseImpl();
         ruleBase.getGlobalDeclarations().put( "map",
@@ -134,7 +129,7 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(2) );" );
         pkg.removeRule( rule );
-        manager.addPackage( packageDescr );
+        builder.addPackage( packageDescr );
 
         rule.getConsequence().evaluate( activation,
                                         workingMemory );
@@ -144,7 +139,7 @@ public class JavaCompilerTest extends DroolsTestCase {
     }
 
     public void testSerializable() throws Exception {
-        RuleBaseManager manager = new RuleBaseManager();
+        PackageBuilder builder = new PackageBuilder();
 
         PackageDescr packageDescr = new PackageDescr( "p1" );
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
@@ -158,14 +153,12 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
 
-        manager.addPackage( packageDescr );
-        Package pkg = manager.getPackage( "p1" );
+        builder.addPackage( packageDescr );
+        Package pkg = builder.getPackage( );
         Rule rule = pkg.getRule( "rule-1" );
 
-        if ( manager.getResults().get( rule ) != null ) {
-            assertLength( 0,
-                          ((List) manager.getResults().get( rule )) );
-        }
+        assertLength( 0,
+                      builder.getErrors() );
 
         // Serialize to a byte array
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -205,7 +198,7 @@ public class JavaCompilerTest extends DroolsTestCase {
     }
 
     public void testLiteral() throws Exception {
-        RuleBaseManager manager = new RuleBaseManager();
+        PackageBuilder builder = new PackageBuilder();
 
         PackageDescr packageDescr = new PackageDescr( "p1" );
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
@@ -226,19 +219,14 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
-        manager.addPackage( packageDescr );
+        builder.addPackage( packageDescr );
 
-        Package pkg = manager.getPackage( "p1" );
-        Rule rule = pkg.getRule( "rule-1" );
-
-        if ( manager.getResults().get( rule ) != null ) {
-            assertLength( 0,
-                          ((List) manager.getResults().get( rule )) );
-        }
+        assertLength( 0,
+                      builder.getErrors() );
     }
 
     public void testReturnValue() throws Exception {
-        RuleBaseManager manager = new RuleBaseManager();
+        PackageBuilder builder = new PackageBuilder();
 
         PackageDescr packageDescr = new PackageDescr( "p1" );
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
@@ -268,19 +256,14 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
-        manager.addPackage( packageDescr );
+        builder.addPackage( packageDescr );
 
-        Package pkg = (Package) manager.getPackages().get( "p1" );
-        Rule rule = pkg.getRule( "rule-1" );
-
-        if ( manager.getResults().get( rule ) != null ) {
-            assertLength( 0,
-                          ((List) manager.getResults().get( rule )) );
-        }
+        assertLength( 0,
+                      builder.getErrors() );
     }
 
     public void testPredicate() throws Exception {
-        RuleBaseManager manager = new RuleBaseManager();
+        PackageBuilder builder = new PackageBuilder();
 
         PackageDescr packageDescr = new PackageDescr( "p1" );
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
@@ -307,19 +290,14 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
-        manager.addPackage( packageDescr );
+        builder.addPackage( packageDescr );
 
-        Package pkg = (Package) manager.getPackages().get( "p1" );
-        Rule rule = pkg.getRule( "rule-1" );
-
-        if ( manager.getResults().get( rule ) != null ) {
-            assertLength( 0,
-                          ((List) manager.getResults().get( rule )) );
-        }
+        assertLength( 0,
+                      builder.getErrors() );
     }
 
     public void testEval() throws Exception {
-        RuleBaseManager manager = new RuleBaseManager();
+        PackageBuilder builder = new PackageBuilder();
 
         PackageDescr packageDescr = new PackageDescr( "p1" );
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
@@ -347,15 +325,10 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
-        manager.addPackage( packageDescr );
-
-        Package pkg = (Package) manager.getPackages().get( "p1" );
-        Rule rule = pkg.getRule( "rule-1" );
-
-        if ( manager.getResults().get( rule ) != null ) {
-            assertLength( 0,
-                          ((List) manager.getResults().get( rule )) );
-        }
+        builder.addPackage( packageDescr );
+        
+        assertLength( 0,
+                      builder.getErrors() );
     }
 
     public void testOr() throws Exception {
@@ -419,7 +392,7 @@ public class JavaCompilerTest extends DroolsTestCase {
     }
 
     private Rule createRule(ConditionalElementDescr ceDescr) throws Exception {
-        RuleBaseManager manager = new RuleBaseManager();
+        PackageBuilder builder = new PackageBuilder();
 
         PackageDescr packageDescr = new PackageDescr( "p1" );
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
@@ -442,15 +415,13 @@ public class JavaCompilerTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
-        manager.addPackage( packageDescr );
+        builder.addPackage( packageDescr );
 
-        Package pkg = (Package) manager.getPackages().get( "p1" );
+        Package pkg = (Package) builder.getPackage( );
         Rule rule = pkg.getRule( "rule-1" );
 
-        if ( manager.getResults().get( rule ) != null ) {
-            assertLength( 0,
-                          ((List) manager.getResults().get( rule )) );
-        }
+        assertLength( 2,
+                      builder.getErrors() );
 
         return rule;
     }

@@ -21,7 +21,7 @@ public class KnowledgeHelperFixer {
      * 
      * Uses some non-tail recursion to ensure that all parts are "expanded". 
      */    
-    String fix(String raw) {
+    public String fix(String raw) {
         String result = fix(raw, MODIFY, "modifyObject");
         result = fix(result, ASSERT, "assertObject");
         result = fix(result, RETRACT, "retractObject");
@@ -32,7 +32,7 @@ public class KnowledgeHelperFixer {
     /**
      * Recursively apply the pattern, replace the guts of what is matched.
      */
-    String fix(String raw, Pattern pattern, String action) {
+    public String fix(String raw, Pattern pattern, String action) {
         Matcher matcher = pattern.matcher(raw);
         
         if (matcher.matches()) {
