@@ -51,6 +51,10 @@ public class RuleDescr extends PatternDescr  {
         }
         this.attributes.add( attribute );
     }      
+    
+    public void setAttributes(List attributes) {
+    		this.attributes = new ArrayList( attributes );
+    }
 
     public AndDescr getLhs() {
         return lhs;
