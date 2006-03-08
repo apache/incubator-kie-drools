@@ -1,5 +1,8 @@
 package org.drools.compiler;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -73,6 +76,11 @@ public class PackageBuilder {
         }
     }
 
+    public void addPackageFromDrl(Reader reader) throws DroolsParserException, IOException {
+        DrlParser parser = new DrlParser();
+        addPackage( parser.parse( reader ) );        
+    }
+    
     public void addPackage(PackageDescr packageDescr) {
 
         if ( this.pkg != null ) {
