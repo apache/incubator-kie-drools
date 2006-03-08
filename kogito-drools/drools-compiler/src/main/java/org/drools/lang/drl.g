@@ -85,7 +85,11 @@ rule returns [RuleDescr rule]
 			rule = new RuleDescr( ruleName, null ); 
 			rule.setLocation( loc.getLine(), loc.getCharPositionInLine() );
 		}
-		rule_options?
+		(	a=rule_options
+			{
+				rule.setAttributes( a );
+			}
+		)?
 		(	loc='when' ':'? opt_eol
 			{ 
 				AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); 
@@ -104,19 +108,50 @@ rule returns [RuleDescr rule]
 		EOL 'end' opt_eol
 	;
 
-rule_options
+rule_options returns [List options]
+	@init {
+		options = new ArrayList();
+	}
 	:	'options' ':'? opt_eol
-			( salience | no_loop ) opt_eol ( ','? opt_eol ( salience | no_loop ) )* opt_eol
+			(	a=rule_option opt_eol
+				{
+					options.add( a );
+				}
+			)*
 	;
 	
-salience
-	:	
-		'salience' INT ';'? opt_eol
-	;
-	
-no_loop
+rule_option returns [AttributeDescr d]
+	@init {
+		d = null;
+	}
 	:
-		'no-loop' ';'? opt_eol
+			a=salience { d = a; }
+		|	a=no_loop  { d = a; }
+		
+	;
+	
+salience returns [AttributeDescr d ]
+	@init {
+		d = null;
+	}
+	:	
+		loc='salience' opt_eol i=INT ';'? opt_eol
+		{
+			d = new AttributeDescr( "salience", i.getText() );
+			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+		}
+	;
+	
+no_loop returns [AttributeDescr d]
+	@init {
+		d = null;
+	}
+	:
+		loc='no-loop' ';'? opt_eol
+		{
+			d = new AttributeDescr( "no-loop", null );
+			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+		}
 	;
 	
 	
@@ -152,7 +187,11 @@ fact returns [ColumnDescr d]
 	@init {
 		d=null;
 	}
- 	:	id=ID { d = new ColumnDescr( id.getText() ); } opt_eol 
+ 	:	id=ID 
+ 		{ 
+ 			d = new ColumnDescr( id.getText() ); 
+ 			d.setLocation( id.getLine(), id.getCharPositionInLine() );
+ 		} opt_eol 
  		'(' opt_eol (	c=constraints
  				{
 		 			for ( Iterator cIter = c.iterator() ; cIter.hasNext() ; ) {
@@ -187,8 +226,16 @@ constraint returns [PatternDescr d]
 					|	'!='
 					) opt_eol	
 					
-					(	lc=literal_constraint { d = new LiteralDescr( f.getText(), op.getText(), lc ); }
-					|	rvc=retval_constraint { d = new ReturnValueDescr( f.getText(), op.getText(), rvc ); } 
+					(	lc=literal_constraint 
+						{ 
+							d = new LiteralDescr( f.getText(), op.getText(), lc ); 
+							d.setLocation( f.getLine(), f.getCharPositionInLine() );
+						}
+					|	rvc=retval_constraint 
+						{ 
+							d = new ReturnValueDescr( f.getText(), op.getText(), rvc ); 
+							d.setLocation( f.getLine(), f.getCharPositionInLine() );
+						} 
 					)
 		opt_eol
 	;
@@ -295,14 +342,22 @@ lhs_exist returns [PatternDescr d]
 	@init {
 		d = null;
 	}
-	:	'exists' column=lhs_column { d = new ExistsDescr( column ); }	
+	:	loc='exists' column=lhs_column 
+		{ 
+			d = new ExistsDescr( column ); 
+			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+		}	
 	;
 	
 lhs_not	returns [NotDescr d]
 	@init {
 		d = null;
 	}
-	:	'not' column=lhs_column { d = new NotDescr( column ); }
+	:	loc='not' column=lhs_column 
+		{
+			d = new NotDescr( column ); 
+			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+		}
 	;
 
 lhs_eval returns [PatternDescr d]
