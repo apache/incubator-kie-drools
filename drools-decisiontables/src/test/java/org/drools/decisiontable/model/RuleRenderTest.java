@@ -55,7 +55,7 @@ public class RuleRenderTest extends TestCase
     public void testRuleRender()
     {
         Rule rule = new Rule( "myrule",
-                              new Integer(42) );
+                              new Integer(42), 1 );
         rule.setComment( "rule comments" );
 
         Condition cond = new Condition( );
@@ -132,12 +132,12 @@ public class RuleRenderTest extends TestCase
      *
      */
     public void testNilSalience() {
-        Rule rule = new Rule("MyRule", null);
+        Rule rule = new Rule("MyRule", null, 1);
         String xml = rule.toXML();
         int idx = xml.indexOf("salience");
         assertEquals(-1, idx);
         
-        rule = new Rule("MyRule", new Integer(42));
+        rule = new Rule("MyRule", new Integer(42), 1);
         xml = rule.toXML();
         idx = xml.indexOf("salience");
         assertTrue(idx > -1);        

@@ -39,49 +39,38 @@ package org.drools.decisiontable.model;
  *
  */
 
-
-
 /**
+ * This class represents a single LHS item (which will be the same as a line in 
+ * traditional DRL). 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
- * 
  */
-public class Condition extends DRLElement
-    implements
-    DRLJavaEmitter
-{
+public class Condition extends DRLElement implements DRLJavaEmitter {
 
-    public String _snippet;
+	public String _snippet;
 
-    /**
-     * @param snippet
-     *            The snippet to set.
-     */
-    public void setSnippet(String snippet)
-    {
-        _snippet = snippet;
-    }
+	/**
+	 * @param snippet
+	 *            The snippet to set.
+	 */
+	public void setSnippet(String snippet) {
+		_snippet = snippet;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see mdneale.drools.xls.model.DRLJavaEmitter#toXML()
-     * 
-     * TIP: if we want to make combinations unique, can use something like:
-     * 
-     * <java:condition> <![CDATA[ System.identityHashCode(A) >
-     * System.identityHashCode(B) ]]> </java:condition>
-     * 
-     */
-    public String toXML()
-    {
-        String xml = "\t<!--" + getComment( ) + "--> \n\t<java:condition><![CDATA[ " + _snippet + " ]]></java:condition>\n\n";
-        return xml;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mdneale.drools.xls.model.DRLJavaEmitter#toXML()
+	 * 
+	 */
+	public String toXML() {
+		String xml = "\t<!--" + getComment()
+				+ "--> \n\t<java:condition><![CDATA[ " + _snippet
+				+ " ]]></java:condition>\n\n";
+		return xml;
 
-    }
+	}
 
-    public String getSnippet()
-    {
-        return _snippet;
-    }
+	public String getSnippet() {
+		return _snippet;
+	}
 }
-
