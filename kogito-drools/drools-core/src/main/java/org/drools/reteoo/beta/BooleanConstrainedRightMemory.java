@@ -252,4 +252,14 @@ public class BooleanConstrainedRightMemory
         return this.trueList.size() + this.falseList.size();
     }
 
+    /**
+     * @inheritDoc
+     */
+    public Iterator iterator() {
+        if(this.childMemory == null) {
+            throw new UnsupportedOperationException("Operation not supported by indexed memory");
+        }
+        return this.childMemory.iterator(); 
+    }
+
 }

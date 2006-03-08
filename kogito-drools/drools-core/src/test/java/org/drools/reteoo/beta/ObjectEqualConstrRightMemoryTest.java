@@ -53,11 +53,13 @@ public class ObjectEqualConstrRightMemoryTest extends BaseBetaRightMemoryTestCla
         Evaluator           evaluator   = EvaluatorFactory.getEvaluator(
                                 Evaluator.OBJECT_TYPE,
                                 Evaluator.EQUAL);
-         
+        
+        BetaRightMemory defaultMem = new DefaultRightMemory();
         this.memory = new ObjectEqualConstrRightMemory(
                                 extractor,
                                 declaration,
-                                evaluator);
+                                evaluator,
+                                defaultMem);
     }
 
     protected void tearDown() throws Exception {

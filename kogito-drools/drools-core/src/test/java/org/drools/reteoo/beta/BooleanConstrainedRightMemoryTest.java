@@ -53,11 +53,13 @@ public class BooleanConstrainedRightMemoryTest extends BaseBetaRightMemoryTestCl
         Evaluator           evaluator   = EvaluatorFactory.getEvaluator(
                                 Evaluator.BOOLEAN_TYPE,
                                 Evaluator.EQUAL);
-         
+        
+        BetaRightMemory defaultMem = new DefaultRightMemory();
         this.memory = new BooleanConstrainedRightMemory(
                                 extractor,
                                 declaration,
-                                evaluator);
+                                evaluator,
+                                defaultMem);
     }
 
     protected void tearDown() throws Exception {

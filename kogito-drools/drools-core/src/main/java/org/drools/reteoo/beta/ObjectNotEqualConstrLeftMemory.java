@@ -178,7 +178,7 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
                         next = (MultiLinkedListNode) it.next();
                         if(next.getChild().getLinkedList() != noMatchList) {
                             if((innerMemory == null) || 
-                                (innerMemory.isPossibleMatch((MultiLinkedListNodeWrapper) next.getChild()))) {
+                                (innerMemory.isPossibleMatch((MultiLinkedListNodeWrapper) next.getChild().getChild()))) {
                                  hasnext = true;
                                  break;
                             }
@@ -237,7 +237,7 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
            (tuple.getChild().getLinkedList() != null) ) {
                 ret = (tuple.getChild().getLinkedList() != this.noMatchList);
                 if(ret && (this.innerMemory != null)) {
-                    ret = this.innerMemory.isPossibleMatch(tuple);
+                    ret = this.innerMemory.isPossibleMatch((MultiLinkedListNodeWrapper) tuple.getChild().getChild());
                 }
         }
         return ret;
