@@ -1,6 +1,6 @@
 package org.drools.compiler;
 
-public class ParserError {
+public class ParserError extends DroolsError {
     private int    row;
     private int    col;
     private String message;
