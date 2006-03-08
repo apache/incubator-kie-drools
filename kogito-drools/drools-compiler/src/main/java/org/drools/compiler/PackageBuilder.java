@@ -22,7 +22,7 @@ import org.drools.semantics.java.PackageStore;
 import org.drools.semantics.java.RuleBuilder;
 import org.drools.spi.TypeResolver;
 
-public class RuleBaseManager {
+public class PackageBuilder {
     private JavaCompiler         compiler = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
 
     private Package              pkg;
@@ -33,38 +33,43 @@ public class RuleBaseManager {
 
     private MemoryResourceReader src;
 
-    public RuleBaseManager() {
+    private ClassLoader          classLoader;
+
+    public PackageBuilder() {
         this( null,
               null );
     }
 
-    public RuleBaseManager(Package pkg) {
+    public PackageBuilder(Package pkg) {
         this( pkg,
               null );
     }
 
-    public RuleBaseManager(ClassLoader parentClassLoader) {
+    public PackageBuilder(ClassLoader parentClassLoader) {
         this( null,
               parentClassLoader );
     }
 
-    public RuleBaseManager(Package pkg,
-                           ClassLoader parentClassLoader) {
+    public PackageBuilder(Package pkg,
+                          ClassLoader classLoader) {
         this.src = new MemoryResourceReader();
 
         this.results = new ArrayList();
 
         this.pkg = pkg;
 
-        if ( pkg != null) {
+        if ( pkg != null ) {
             this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
         }
 
-        if ( parentClassLoader == null ) {
-            parentClassLoader = Thread.currentThread().getContextClassLoader();
-            if ( parentClassLoader == null ) {
-                parentClassLoader = this.getClass().getClassLoader();
+        if ( classLoader == null ) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+            if ( classLoader == null ) {
+                classLoader = this.getClass().getClassLoader();
             }
+            this.classLoader = classLoader;
+        } else {
+            this.classLoader = classLoader;
         }
     }
 
@@ -90,7 +95,10 @@ public class RuleBaseManager {
     }
 
     private Package newPackage(PackageDescr packageDescr) {
-        Package pkg = new Package( packageDescr.getName() );
+        Package pkg = new Package( packageDescr.getName(),
+                                   this.classLoader );
+        
+        this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
 
         mergePackage( pkg,
                       packageDescr );
@@ -124,7 +132,7 @@ public class RuleBaseManager {
         }
     }
 
-    CompilationResult compile(String className,
+    private  CompilationResult compile(String className,
                               String text,
                               MemoryResourceReader src,
                               ResourceStore dst) {
@@ -133,16 +141,17 @@ public class RuleBaseManager {
                      text.toCharArray() );
         CompilationResult result = compiler.compile( new String[]{className},
                                                      src,
-                                                     dst );
+                                                     dst,
+                                                     pkg.getPackageCompilationData().getClassLoader() );
 
         return result;
     }
 
-    void addFunction(FunctionDescr rule) {
+    private void addFunction(FunctionDescr rule) {
         //@todo        
     }
 
-    void addRule(RuleDescr ruleDescr) {
+    private void addRule(RuleDescr ruleDescr) {
 
         String ruleClassName = getUniqueLegalName( this.pkg.getName(),
                                                    ruleDescr.getName(),
@@ -151,18 +160,18 @@ public class RuleBaseManager {
         ruleDescr.SetClassName( ucFirst( ruleClassName ) );
 
         RuleBuilder builder = new RuleBuilder();
-        
+
         builder.build( this.pkg,
                        ruleDescr );
-                
+
         this.results.addAll( builder.getErrors() );
-        
+
         Rule rule = builder.getRule();
 
         //System.out.println( ruleDescr.getClassName() + ":\n" + builder.getRuleClass() );
 
         // The compilation result is for th entire rule, so difficult to associate with any descr
-        CompilationResult result = compile( pkg.getName() + "." + ruleDescr.getClassName(),
+        CompilationResult result = compile( this.pkg.getName() + "." + ruleDescr.getClassName(),
                                             builder.getRuleClass(),
                                             src,
                                             this.packageStoreWrapper );
@@ -181,7 +190,7 @@ public class RuleBaseManager {
             // If so we add it to the PackageCompilationData as it will get wired up on compilation
             Object invoker = builder.getInvokerLookups().get( className );
             if ( invoker != null ) {
-                pkg.getPackageCompilationData().putInvoker( className,
+                this.pkg.getPackageCompilationData().putInvoker( className,
                                                             invoker );
             }
             String text = (String) builder.getInvokers().get( className );
@@ -199,6 +208,11 @@ public class RuleBaseManager {
                                                  descr,
                                                  result.getErrors(),
                                                  "Compilation error for Invoker" ) );
+            }
+            try {
+                this.pkg.addRule( rule );
+            } catch ( Exception e ) {
+                
             }
 
         }

@@ -1,4 +1,4 @@
-package org.drools.semantics.java;
+package org.drools.compiler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -81,7 +81,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 2,
+        assertLength( 3,
                       builder.getErrors() );
     }
 
@@ -420,7 +420,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         Package pkg = (Package) builder.getPackage( );
         Rule rule = pkg.getRule( "rule-1" );
 
-        assertLength( 2,
+        assertLength( 0,
                       builder.getErrors() );
 
         return rule;
