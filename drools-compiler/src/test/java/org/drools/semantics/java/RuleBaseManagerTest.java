@@ -1,16 +1,17 @@
 package org.drools.semantics.java;
 
 import org.drools.WorkingMemory;
+import org.drools.compiler.PackageBuilder;
 
 import junit.framework.TestCase;
 
 public class RuleBaseManagerTest extends TestCase {
     public void testDrl() throws Exception {
-        RuleBaseManager manager = new RuleBaseManager();
-        manager.addDrl( getClass().getResourceAsStream( "test1.drl" ) );                        
+        PackageBuilder builder = new PackageBuilder();
+        //manager.addDrl( getClass().getResourceAsStream( "test1.drl" ) );                        
         
         org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
-        ruleBase.addPackage( manager.getPackage( "org.drools.test" ) );
+        ruleBase.addPackage( builder.getPackage( ) );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         
         Cheese stilton = new Cheese("stilton", 5);

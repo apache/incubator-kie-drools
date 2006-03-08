@@ -1,11 +1,11 @@
 package org.drools.compiler;
 
-public class ParserResult {
+public class ParserError {
     private int    row;
     private int    col;
     private String message;
 
-    public ParserResult(String message,
+    public ParserError(String message,
                         int row,
                         int col) {
         super();
