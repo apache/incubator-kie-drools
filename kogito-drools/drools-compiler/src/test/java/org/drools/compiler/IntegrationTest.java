@@ -10,7 +10,7 @@ import org.drools.rule.Package;
 
 import junit.framework.TestCase;
 
-public class IntegergrationTest extends TestCase {
+public class IntegrationTest extends TestCase {
     public void testDrl() throws Exception {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test1.drl" ) );
         DrlParser parser = new DrlParser();
