@@ -24,13 +24,17 @@ public class MockObjectSource extends ObjectSource {
         return this.updated;
     }
 
-    public void remove() {
-
-    }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
         this.updated++;
+    }
+
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

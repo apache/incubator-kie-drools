@@ -55,7 +55,7 @@ public class RuleBaseImpl
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private final Rete              rete;
 
-    private final Builder           builder;
+    private final ReteBuilder           reteBuilder;
 
     /** The fact handle factory. */
     private final FactHandleFactory factHandleFactory;
@@ -87,7 +87,7 @@ public class RuleBaseImpl
     public RuleBaseImpl() {        
         ObjectTypeResolver resolver = new ClassObjectTypeResolver();
         this.rete = new Rete( resolver );
-        this.builder = new Builder( this,
+        this.reteBuilder = new ReteBuilder( this,
                                     resolver );
         this.factHandleFactory = new DefaultFactHandleFactory();
         this.pkgs = new HashSet();
@@ -217,18 +217,18 @@ public class RuleBaseImpl
                                            PackageIntegrationException,
                                            FactException,
                                            InvalidPatternException {
-        Map newApplicationData = pkg.getGlobals();
+        Map newGlobals = pkg.getGlobals();
 
         // Check that the global data is valid, we cannot change the type
         // of an already declared global variable
-        for ( Iterator it = newApplicationData.keySet().iterator(); it.hasNext(); ) {
+        for ( Iterator it = newGlobals.keySet().iterator(); it.hasNext(); ) {
             String identifier = (String) it.next();
-            Class type = (Class) newApplicationData.get( identifier );
+            Class type = (Class) newGlobals.get( identifier );
             if ( this.globalDeclarations.containsKey( identifier ) && !this.globalDeclarations.get( identifier ).equals( type ) ) {
                 throw new PackageIntegrationException( pkg );
             }
         }
-        this.globalDeclarations.putAll( newApplicationData );
+        this.globalDeclarations.putAll( newGlobals );
 
         this.pkgs.add( pkg );
 
@@ -239,10 +239,23 @@ public class RuleBaseImpl
         }
     }
 
-    public void addRule(Rule rule) throws FactException,
-                                  RuleIntegrationException,
-                                  InvalidPatternException {
-        this.builder.addRule( rule );
+    public void addRule(Rule rule) throws InvalidPatternException  {
+        this.reteBuilder.addRule( rule );
+        // Iterate each workingMemory and update with new rule
+        for ( Iterator it = this.workingMemories.values().iterator(); it.hasNext(); ) {
+            WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
+            this.rete.updateNewNode( workingMemory, null);
+        }
+    }
+    
+    public void removeRule(Rule rule) {
+        BaseNode[] nodes = this.reteBuilder.getTerminalNodes( rule );
+        for ( Iterator it = this.workingMemories.values().iterator(); it.hasNext(); ) {
+            WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
+            for ( int i = 0, length = nodes.length; i < length; i++) {
+                nodes[i].remove( null, workingMemory, null );
+            }                        
+        }        
     }
 
     public Set getWorkingMemories() {

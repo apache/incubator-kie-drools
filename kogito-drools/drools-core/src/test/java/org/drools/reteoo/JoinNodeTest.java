@@ -123,8 +123,8 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       this.memory.getLeftTupleMemory().size() );
 
-        ReteTuple tuple = (ReteTuple) this.memory.getLeftTupleMemory()
-                                      .iterator(this.workingMemory, f0).next();
+        ReteTuple tuple = (ReteTuple) this.memory.getLeftTupleMemory().iterator( this.workingMemory,
+                                                                                 f0 ).next();
         assertEquals( tuple0,
                       tuple );
         assertEquals( tuple1,
@@ -156,14 +156,17 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       this.memory.getRightObjectMemory().size() );
 
-        BetaRightMemory rightMemory = this.memory.getRightObjectMemory(); 
-        Iterator it = rightMemory.iterator(this.workingMemory, new ReteTuple( f0 ));
-        
+        BetaRightMemory rightMemory = this.memory.getRightObjectMemory();
+        Iterator it = rightMemory.iterator( this.workingMemory,
+                                            new ReteTuple( f0 ) );
+
         FactHandleImpl rf0 = ((ObjectMatches) it.next()).getFactHandle();
         FactHandleImpl rf1 = ((ObjectMatches) it.next()).getFactHandle();
 
-        assertEquals( f0, rf0 );
-        assertEquals( f1, rf1 );
+        assertEquals( f0,
+                      rf0 );
+        assertEquals( f1,
+                      rf1 );
     }
 
     /**
@@ -189,8 +192,8 @@ public class JoinNodeTest extends DroolsTestCase {
         Map map = tuple1.getTupleMatches();
         TupleMatch match = (TupleMatch) map.get( f0 );
 
-        ObjectMatches matches = (ObjectMatches) this.memory
-                                 .rightObjectIterator(this.workingMemory, tuple1).next();
+        ObjectMatches matches = (ObjectMatches) this.memory.rightObjectIterator( this.workingMemory,
+                                                                                 tuple1 ).next();
         assertSame( match,
                     matches.getFirstTupleMatch() );
 
@@ -212,14 +215,14 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node.assertObject( f3,
                                 this.context,
                                 this.workingMemory );
-        
-        matches = getMatchesFor(tuple1, f3);
+
+        matches = getMatchesFor( tuple1,
+                                 f3 );
         assertSame( ((Map) tuple1.getTupleMatches()).get( f3 ),
                     matches.getFirstTupleMatch() );
         assertSame( ((Map) tuple2.getTupleMatches()).get( f3 ),
                     matches.getFirstTupleMatch().getNext() );
     }
-
 
     /**
      * Test Tuple retraction
@@ -274,13 +277,15 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node.retractTuple( tuple2,
                                 this.context,
                                 this.workingMemory );
-        ObjectMatches matches = this.getMatchesFor( tuple2, f3 );
+        ObjectMatches matches = this.getMatchesFor( tuple2,
+                                                    f3 );
         for ( TupleMatch match = matches.getFirstTupleMatch(); match != null; match = (TupleMatch) match.getNext() ) {
             assertNotSame( tuple2,
                            match.getTuple() );
         }
 
-        matches = this.getMatchesFor( tuple2, f4 );
+        matches = this.getMatchesFor( tuple2,
+                                      f4 );
         for ( TupleMatch match = matches.getFirstTupleMatch(); match != null; match = (TupleMatch) match.getNext() ) {
             assertNotSame( tuple2,
                            match.getTuple() );
@@ -315,74 +320,71 @@ public class JoinNodeTest extends DroolsTestCase {
         //assertNull( ((ObjectMatches) this.memory.getRightFactHandleMemory().get( f0 )).getFirstTupleMatch() );
     }
 
-    //
-    // public void testUpdateWithMemory() throws FactException {
-    // WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new
-    // RuleBaseImpl() );
-    //
-    // JoinNode joinNode = new JoinNode( 1,
-    // this.tupleSource,
-    // this.objectSource,
-    // 1 );
-    //
-    // // Add the first tuple sink and assert a tuple and object
-    // // The sink has no memory
-    // MockTupleSink sink1 = new MockTupleSink( 2 );
-    // joinNode.addTupleSink( sink1 );
-    //
-    // FactHandleImpl f0 = new FactHandleImpl( 0 );
-    // workingMemory.putObject( f0,
-    // "string0" );
-    //
-    // ReteTuple tuple1 = new ReteTuple( 0,
-    // f0,
-    // workingMemory );
-    //
-    // joinNode.assertTuple( tuple1,
-    // this.context,
-    // workingMemory );
-    //
-    // String string1 = "string1";
-    // FactHandleImpl string1Handle = new FactHandleImpl( 1 );
-    // workingMemory.putObject( string1Handle,
-    // string1 );
-    //
-    // joinNode.assertObject( string1Handle,
-    // this.context,
-    // workingMemory );
-    //
-    // assertLength( 1,
-    // sink1.getAsserted() );
-    //
-    // // Add the new sink, this should be updated from the re-processed
-    // // joinnode memory
-    // MockTupleSink sink2 = new MockTupleSink( 3 );
-    // joinNode.addTupleSink( sink2 );
-    // assertLength( 0,
-    // sink2.getAsserted() );
-    //
-    // joinNode.updateNewNode( workingMemory,
-    // this.context );
-    //
-    // assertLength( 1,
-    // sink2.getAsserted() );
-    // }
-    
+    public void testUpdateWithMemory() {
+        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+
+        JoinNode joinNode = new JoinNode( 1,
+                                          this.tupleSource,
+                                          this.objectSource );
+
+        // Add the first tuple sink and assert a tuple and object
+        // The sink has no memory
+        MockTupleSink sink1 = new MockTupleSink( 2 );
+        joinNode.addTupleSink( sink1 );
+
+        FactHandleImpl f0 = new FactHandleImpl( 0 );
+        workingMemory.putObject( f0,
+                                 "string0" );
+
+        ReteTuple tuple1 = new ReteTuple( f0 );
+
+        joinNode.assertTuple( tuple1,
+                              this.context,
+                              workingMemory );
+
+        String string1 = "string1";
+        FactHandleImpl string1Handle = new FactHandleImpl( 1 );
+        workingMemory.putObject( string1Handle,
+                                 string1 );
+
+        joinNode.assertObject( string1Handle,
+                               this.context,
+                               workingMemory );
+
+        assertLength( 1,
+                      sink1.getAsserted() );
+
+        // Add the new sink, this should be updated from the re-processed
+        // joinnode memory
+        MockTupleSink sink2 = new MockTupleSink( 3 );
+        joinNode.addTupleSink( sink2 );
+        assertLength( 0,
+                      sink2.getAsserted() );
+
+        joinNode.updateNewNode( workingMemory,
+                                this.context );
+
+        assertLength( 1,
+                      sink2.getAsserted() );
+    }
+
     /**
      * @param tuple1
      * @param matches
      * @param f3
      * @return
      */
-    private ObjectMatches getMatchesFor(ReteTuple tuple1, FactHandleImpl f3) {
-      ObjectMatches matches = null;
-      for(Iterator i = this.memory.rightObjectIterator(this.workingMemory, tuple1); i.hasNext(); ) {
-          matches = (ObjectMatches) i.next();
-          if(matches.getFactHandle().equals( f3 )) {
-            break;
-          }
-      }
-      return matches;
+    private ObjectMatches getMatchesFor(ReteTuple tuple1,
+                                        FactHandleImpl f3) {
+        ObjectMatches matches = null;
+        for ( Iterator i = this.memory.rightObjectIterator( this.workingMemory,
+                                                            tuple1 ); i.hasNext(); ) {
+            matches = (ObjectMatches) i.next();
+            if ( matches.getFactHandle().equals( f3 ) ) {
+                break;
+            }
+        }
+        return matches;
     }
-    
+
 }

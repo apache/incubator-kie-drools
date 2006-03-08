@@ -82,7 +82,9 @@ abstract class BaseNode
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
      *
      */
-    public abstract void remove();
+    public abstract void remove(BaseNode node,
+                                WorkingMemoryImpl workingMemory,
+                                PropagationContext context);
 
     /**
      * When nodes are added to the network that already has data. that existing data must be repropagated to the new node.
@@ -112,10 +114,6 @@ abstract class BaseNode
      */
     public void removeShare() {
         --this.sharedCount;
-
-        if ( this.sharedCount < 0 ) {
-            throw new RuntimeDroolsException( "Shared count for BaseNode should never be less than 0" );
-        }
     }
 
     /**

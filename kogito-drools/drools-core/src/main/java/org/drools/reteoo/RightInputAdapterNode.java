@@ -114,9 +114,14 @@ public class RightInputAdapterNode extends ObjectSource
         this.attachingNewNode = false;
     }
 
-    public void remove() {
-        // TODO Auto-generated method stub
-
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
+        getObjectSinks().remove( node );
+        removeShare();
+        if ( this.sharedCount < 0 ) {
+            this.tupleSource.remove( this, workingMemory, context );
+        }
     }
     
 }

@@ -16,6 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.Iterator;
+
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
@@ -44,10 +46,10 @@ class EvalConditionNode extends TupleSource
     // ------------------------------------------------------------
 
     /** The semantic <code>Test</code>. */
-    private final EvalCondition   condition;
+    private final EvalCondition condition;
 
     /** The source of incoming <code>Tuples</code>. */
-    private final TupleSource tupleSource;
+    private final TupleSource   tupleSource;
 
     // ------------------------------------------------------------
     // Constructors
@@ -63,8 +65,8 @@ class EvalConditionNode extends TupleSource
      * @param eval
      */
     EvalConditionNode(int id,
-             TupleSource tupleSource,
-             EvalCondition eval ) {
+                      TupleSource tupleSource,
+                      EvalCondition eval) {
         super( id );
         this.condition = eval;
         this.tupleSource = tupleSource;
@@ -108,8 +110,9 @@ class EvalConditionNode extends TupleSource
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
-        
-        boolean allowed = this.condition.isAllowed( tuple, workingMemory );
+
+        boolean allowed = this.condition.isAllowed( tuple,
+                                                    workingMemory );
 
         workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
                                                                        tuple,
@@ -118,8 +121,10 @@ class EvalConditionNode extends TupleSource
         if ( allowed ) {
             LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
             memory.add( tuple );
-            
-            propagateAssertTuple( tuple, context, workingMemory );              
+
+            propagateAssertTuple( tuple,
+                                  context,
+                                  workingMemory );
         }
     }
 
@@ -127,58 +132,59 @@ class EvalConditionNode extends TupleSource
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) {
         LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-        
+
         memory.remove( tuple );
-       
-        propagateRetractTuple( tuple, context, workingMemory );           
+
+        propagateRetractTuple( tuple,
+                               context,
+                               workingMemory );
     }
-    
+
     public void modifyTuple(ReteTuple tuple,
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
         LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-        boolean exists = ( tuple.getPrevious() == null && tuple.getNext() == null );
-        if  (exists) {
+        boolean exists = (tuple.getPrevious() == null && tuple.getNext() == null);
+        if ( exists ) {
             // Remove the tuple so it can be readded to the top of the list
             memory.remove( tuple );
         }
-        
-        boolean allowed = this.condition.isAllowed( tuple, workingMemory );
+
+        boolean allowed = this.condition.isAllowed( tuple,
+                                                    workingMemory );
 
         workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
                                                                        tuple,
                                                                        allowed );
 
         if ( allowed ) {
-            memory.add( tuple );   
-            if ( exists ) {         
-                propagateAssertTuple( tuple, context, workingMemory );                
+            memory.add( tuple );
+            if ( exists ) {
+                propagateAssertTuple( tuple,
+                                      context,
+                                      workingMemory );
             } else {
-                propagateModifyTuple( tuple, context, workingMemory );
-            }              
-        } else {            
-            propagateRetractTuple( tuple, context, workingMemory );
-        }                        
-    }    
-    
+                propagateModifyTuple( tuple,
+                                      context,
+                                      workingMemory );
+            }
+        } else {
+            propagateRetractTuple( tuple,
+                                   context,
+                                   workingMemory );
+        }
+    }
+
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
         this.attachingNewNode = true;
-        if ( hasMemory() ) {
-            //            LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-            //            for ( Iterator it = memory.iterator(null, null); it.hasNext(); ) {
-            //                propagateAssertTuple( (ReteTuple) it.next(),
-            //                                      context,
-            //                                      workingMemory );
-            //            }
-        } else {
-            // We need to detach and re-attach to make sure the node is at the
-            // top
-            // for the propagation
-            this.tupleSource.removeTupleSink( this );
-            this.tupleSource.addTupleSink( this );
-            this.tupleSource.updateNewNode( workingMemory,
-                                            context );
+
+        LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+        
+        for ( Iterator it = memory.iterator(); it.hasNext(); ) {
+            propagateAssertTuple( (ReteTuple) it.next(),
+                                  context,
+                                  workingMemory );
         }
 
         this.attachingNewNode = false;
@@ -211,9 +217,17 @@ class EvalConditionNode extends TupleSource
         return this.tupleSource.equals( other.tupleSource ) && this.condition.equals( other.condition );
     }
 
-    public void remove() {
-        // TODO Auto-generated method stub
-
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
+        getTupleSinks().remove( node );
+        removeShare();
+        if ( this.sharedCount < 0 ) {
+            workingMemory.clearNodeMemory( this );
+            this.tupleSource.remove( this,
+                                     workingMemory,
+                                     context );
+        }
     }
 
     public Object createMemory() {

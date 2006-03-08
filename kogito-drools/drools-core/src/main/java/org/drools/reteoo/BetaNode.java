@@ -94,10 +94,8 @@ abstract class BetaNode extends TupleSource
      */
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
-//        this.attachingNewNode = true;
-//
-//        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-//        
+        this.attachingNewNode = true;
+        
 //        for ( Iterator it = memory.rightObjectIterator(); it.hasNext(); ) {
 //            ObjectMatches objectMatches = (ObjectMatches) it.next();
 //            for ( Iterator it2 = objectMatches.iterator( context, workingMemory ); it2.hasNext(); ) {
@@ -108,9 +106,8 @@ abstract class BetaNode extends TupleSource
 //            }
 //
 //        }
-//            
-//
-//        this.attachingNewNode = true;
+            
+        this.attachingNewNode = true;
     }
     
     
@@ -122,8 +119,16 @@ abstract class BetaNode extends TupleSource
         this.rightInput.addObjectSink( this );
     }
 
-    public void remove() {
-
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
+        getTupleSinks().remove( node );
+        removeShare();
+        if ( this.sharedCount < 0 ) {
+            workingMemory.clearNodeMemory( this );
+            this.rightInput.remove( this, workingMemory, context );
+            this.leftInput.remove( this, workingMemory, context );
+        }
     }
 
     /**

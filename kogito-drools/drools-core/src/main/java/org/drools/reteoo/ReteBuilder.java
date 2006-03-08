@@ -55,7 +55,7 @@ import org.drools.spi.ObjectTypeResolver;
  * joins. Currently using forgy's original description of 2-input nodes, which I
  * feel (but don't know for sure, is sub-optimal.
  */
-class Builder {
+class ReteBuilder {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -74,15 +74,14 @@ class Builder {
     /** Nodes that have been attached. */
     private final Map                attachedNodes;
 
-    private final Map                applicationData;
 
     private TupleSource              tupleSource;
 
     private ObjectSource             objectSource;
 
-    private Map                      declarations;
-
     private int                      id;
+    
+    private Map                      rules;
 
     // ------------------------------------------------------------
     // Constructors
@@ -92,15 +91,14 @@ class Builder {
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    Builder(RuleBaseImpl ruleBase,
+    ReteBuilder(RuleBaseImpl ruleBase,
             ObjectTypeResolver resolver) {
         this.ruleBase = ruleBase;
         this.rete = this.ruleBase.getRete();
         this.resolver = resolver;
         this.pkgs = new ArrayList();
         this.attachedNodes = new HashMap();
-        this.applicationData = new HashMap();
-        this.declarations = new HashMap();
+        this.rules = new HashMap();
         
         //Set to 1 as Rete node is set to 0
         this.id = 1;
@@ -127,24 +125,20 @@ class Builder {
             addRule( and[i],
                      rule );
         }
-
-//        AgendaGroup agendaGroup;
-//        if (rule.getAgendaGroup() == null || rule.getAgendaGroup() == "" || rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
-//            agendaGroup = this.ruleBase.getA
-//        } else {            
-//            agendaGroup = new AgendaGroupImpl(rule.getAgendaGroup(), this.ruleBase.getConflictResolver() );
-//            this.ruleBase.addAgendaGroup( agendaGroup );    
-//        }
         
         if ( ! ( rule instanceof Query ) ) {        
             TerminalNode node = new TerminalNode( this.id++,
                                                   this.tupleSource,
                                                   rule );
+            this.rules.put( rule, new BaseNode[] { node } );
+            node.attach();
         } else {
             QueryTerminalNode node = new QueryTerminalNode( this.id++,
                                                             this.tupleSource,
-                                                            rule );            
-        }
+                                                            rule );
+            this.rules.put( rule, new BaseNode[] { node } );
+            node.attach();
+        }        
     }    
 
     private void addRule(And and,
@@ -223,6 +217,10 @@ class Builder {
                                                              binder ) );
             }
         }
+    }
+    
+    public BaseNode[] getTerminalNodes( Rule rule ) {
+        return (BaseNode[]) this.rules.remove( rule );
     }
     
     private void attachQuery(String queryName) {

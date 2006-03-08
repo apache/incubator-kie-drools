@@ -49,7 +49,8 @@ final class TerminalNode extends BaseNode
     // ------------------------------------------------------------
 
     /** The rule to invoke upon match. */
-    private final Rule rule;
+    private final Rule        rule;
+    private final TupleSource tupleSource;
 
     // ------------------------------------------------------------
     // Constructors
@@ -64,12 +65,11 @@ final class TerminalNode extends BaseNode
      *            The rule.
      */
     TerminalNode(int id,
-                 TupleSource inputSource,
+                 TupleSource source,
                  Rule rule) {
         super( id );
         this.rule = rule;
-
-        inputSource.addTupleSink( this );
+        this.tupleSource = source;
     }
 
     // ------------------------------------------------------------
@@ -121,7 +121,7 @@ final class TerminalNode extends BaseNode
             tuple.setActivation( item );
             item.setActivated( true );
             workingMemory.getAgendaEventSupport().fireActivationCreated( item );
-        } else {           
+        } else {
             // -----------------
             // Lazy instantiation and addition to the Agenda of AgendGroup
             // implementations
@@ -173,7 +173,7 @@ final class TerminalNode extends BaseNode
             // If the AgendaGroup is already in the priority queue it just
             // returns.
             agendaGroup.addToAgenda( memory.getLifo() );
-            tuple.setActivation( item );      
+            tuple.setActivation( item );
             item.setActivated( true );
             workingMemory.getAgendaEventSupport().fireActivationCreated( item );
         }
@@ -188,18 +188,22 @@ final class TerminalNode extends BaseNode
             workingMemory.getAgendaEventSupport().fireActivationCancelled( activation );
         }
 
-        workingMemory.removeLogicalDependencies( activation, context, this.rule );
+        workingMemory.removeLogicalDependencies( activation,
+                                                 context,
+                                                 this.rule );
     }
-    
+
     public void modifyTuple(ReteTuple tuple,
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
         if ( tuple.getActivation().isActivated() ) {
             tuple.getActivation().remove();
-        } 
-        assertTuple( tuple, context, workingMemory);
-        
-    }    
+        }
+        assertTuple( tuple,
+                     context,
+                     workingMemory );
+
+    }
 
     public String toString() {
         return "[TerminalNode: rule=" + this.rule.getName() + "]";
@@ -211,18 +215,21 @@ final class TerminalNode extends BaseNode
     }
 
     public void attach() {
-        // TODO Auto-generated method stub
-
+        tupleSource.addTupleSink( this );
     }
 
-    public void remove() {
-        // TODO Auto-generated method stub
-
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
+        workingMemory.clearNodeMemory( this );
+        tupleSource.remove( this,
+                            workingMemory,
+                            context );
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
-        // TODO Auto-generated method stub
+        // There are no child nodes to update, do nothing.
     }
 
     public Object createMemory() {

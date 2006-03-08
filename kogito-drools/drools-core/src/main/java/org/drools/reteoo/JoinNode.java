@@ -332,8 +332,4 @@ class JoinNode extends BetaNode {
         }
     }
 
-    public void remove() {
-        // TODO Auto-generated method stub
-
-    }
 }

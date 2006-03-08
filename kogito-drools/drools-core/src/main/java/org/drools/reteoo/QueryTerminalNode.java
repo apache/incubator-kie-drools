@@ -39,6 +39,7 @@ final class QueryTerminalNode extends BaseNode
 
     /** The rule to invoke upon match. */
     private final Rule rule;
+    private final TupleSource tupleSource;
 
     // ------------------------------------------------------------
     // Constructors
@@ -53,11 +54,11 @@ final class QueryTerminalNode extends BaseNode
      *            The rule.
      */
     QueryTerminalNode(int id,
-                      TupleSource inputSource,
+                      TupleSource source,
                       Rule rule) {
         super( id );
         this.rule = rule;
-        inputSource.addTupleSink( this );
+        this.tupleSource = source;        
     }
 
     // ------------------------------------------------------------
@@ -118,15 +119,21 @@ final class QueryTerminalNode extends BaseNode
     }
 
     public void attach() {
-
+        tupleSource.addTupleSink( this );
     }
 
-    public void remove() {
-
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl workingMemory,
+                       PropagationContext context) {
+        workingMemory.clearNodeMemory( this );
+        tupleSource.remove( this,
+                            workingMemory,
+                            context );
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
+        // There are no child nodes to update, do nothing.
     }
 
     public Object createMemory() {
