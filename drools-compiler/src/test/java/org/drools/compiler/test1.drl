@@ -1,6 +1,6 @@
 package org.drools.test;
 
-import org.drools.semantics.java.RuleBaseManagerTest.Cheese;
+import org.drools.compiler.PackageBuilderTest.Cheese;
 
 rule "test rule"
     when
