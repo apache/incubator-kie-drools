@@ -45,7 +45,9 @@ prolog
 	:	opt_eol
 		( name=package_statement { packageName = name; } )?
 		opt_eol
-		{ this.packageDescr = new PackageDescr( name ); }
+		{ 
+			this.packageDescr = new PackageDescr( name ); 
+		}
 		( name=import_statement { this.packageDescr.addImport( name ); } )*
 		opt_eol
 		use_expander?
@@ -78,11 +80,17 @@ rule returns [RuleDescr rule]
 	}
 	:
 		opt_eol
-		'rule' ruleName=word opt_eol 
-		{ rule = new RuleDescr( ruleName, null ); }
+		loc='rule' ruleName=word opt_eol 
+		{ 
+			rule = new RuleDescr( ruleName, null ); 
+			rule.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+		}
 		rule_options?
-		(	'when' ':'? opt_eol
-			{ AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); }
+		(	loc='when' ':'? opt_eol
+			{ 
+				AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); 
+				lhs.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			}
 				(l=lhs { lhs.addDescr( l ); } )*
 		)?
 		(	'then' ':'?
