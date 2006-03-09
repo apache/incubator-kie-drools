@@ -55,7 +55,7 @@ public class RuleBaseImpl
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private final Rete              rete;
 
-    private final ReteBuilder           reteBuilder;
+    private final ReteBuilder       reteBuilder;
 
     /** The fact handle factory. */
     private final FactHandleFactory factHandleFactory;
@@ -77,24 +77,24 @@ public class RuleBaseImpl
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    
+
     /**
      * Construct.
      * 
      * @param rete
      *            The rete network.
      */
-    public RuleBaseImpl() {        
+    public RuleBaseImpl() {
         ObjectTypeResolver resolver = new ClassObjectTypeResolver();
         this.rete = new Rete( resolver );
         this.reteBuilder = new ReteBuilder( this,
-                                    resolver );
+                                            resolver );
         this.factHandleFactory = new DefaultFactHandleFactory();
         this.pkgs = new HashSet();
         this.globalDeclarations = new HashMap();
         this.workingMemories = new WeakHashMap();
     }
-    
+
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
@@ -163,14 +163,14 @@ public class RuleBaseImpl
                                 context,
                                 workingMemory );
     }
-    
+
     void modifyObject(FactHandle handle,
                       PropagationContext context,
                       WorkingMemoryImpl workingMemory) throws FactException {
         getRete().modifyObject( (FactHandleImpl) handle,
                                 context,
                                 workingMemory );
-    }    
+    }
 
     /**
      * Retract a fact object.
@@ -214,9 +214,9 @@ public class RuleBaseImpl
      * @throws InvalidPatternException
      */
     public void addPackage(Package pkg) throws RuleIntegrationException,
-                                           PackageIntegrationException,
-                                           FactException,
-                                           InvalidPatternException {
+                                       PackageIntegrationException,
+                                       FactException,
+                                       InvalidPatternException {
         Map newGlobals = pkg.getGlobals();
 
         // Check that the global data is valid, we cannot change the type
@@ -239,23 +239,26 @@ public class RuleBaseImpl
         }
     }
 
-    public void addRule(Rule rule) throws InvalidPatternException  {
+    public void addRule(Rule rule) throws InvalidPatternException {
         this.reteBuilder.addRule( rule );
         // Iterate each workingMemory and update with new rule
-        for ( Iterator it = this.workingMemories.values().iterator(); it.hasNext(); ) {
+        for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
             WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
-            this.rete.updateNewNode( workingMemory, null);
+            this.rete.updateNewNode( workingMemory,
+                                     null );
         }
     }
-    
+
     public void removeRule(Rule rule) {
         BaseNode[] nodes = this.reteBuilder.getTerminalNodes( rule );
-        for ( Iterator it = this.workingMemories.values().iterator(); it.hasNext(); ) {
-            WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
-            for ( int i = 0, length = nodes.length; i < length; i++) {
-                nodes[i].remove( null, workingMemory, null );
-            }                        
-        }        
+        for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
+            for ( int i = 0, length = nodes.length; i < length; i++ ) {
+                WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
+                nodes[i].remove( null,
+                                 workingMemory,
+                                 null );
+            }
+        }
     }
 
     public Set getWorkingMemories() {
