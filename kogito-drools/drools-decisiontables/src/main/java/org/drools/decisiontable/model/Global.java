@@ -45,7 +45,7 @@ package org.drools.decisiontable.model;
  * Represents an application-data tag (nominally at the rule-set level). The idea of this can
  * be extended to other ruleset level settings.
  */
-public class Variable extends DRLElement
+public class Global extends DRLElement
     implements
     DRLJavaEmitter
 {
@@ -87,16 +87,9 @@ public class Variable extends DRLElement
         identifier = namez;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see mdneale.drools.xls.model.DRLJavaEmitter#toXML()
-     */
-    public String toXML()
-    {
-        String xml = "<!-- " + getComment( ) + "-->\n \t<application-data identifier=\"" + identifier + "\">" + className + "</application-data>\n";
-        return xml;
 
-    }
+	public void renderDRL(DRLOutput out) {
+		out.writeLine("global " + this.className + " " + this.identifier + ";");
+	}
 }
 

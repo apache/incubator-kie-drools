@@ -1,5 +1,4 @@
-package org.drools.decisiontable;
-
+package org.drools.decisiontable.model;
 
 /*
  * Copyright 2005 (C) The Werken Company. All Rights Reserved.
@@ -40,54 +39,87 @@ package org.drools.decisiontable;
  *
  */
 
-
-
-import java.io.InputStream;
-
-import junit.framework.TestCase;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
+ * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  * 
- * Some basic unit tests for converter utility.
+ * This is the top of the parse tree. Represents a package of rules once it has
+ * been parsed from the spreadsheet. Also is the launching point for dumping out
+ * the DRL.
  */
-public class SpreadsheetDRLConverterUnitTest extends TestCase
-{
+public class Package implements DRLJavaEmitter {
 
-    public void testLoadFromClassPath()
-    {
-        SpreadsheetDRLConverter converter = new SpreadsheetDRLConverter( );
-        String drl = converter.convertToDRL( "/data/MultiSheetDST.xls", InputType.XLS );
-        assertNotNull( drl );
-    }
+	private String _name;
 
-    public void testLoadSpecificWorksheet()
-    {
-        SpreadsheetDRLConverter converter = new SpreadsheetDRLConverter( );
-        InputStream stream = this.getClass( ).getResourceAsStream( "/data/MultiSheetDST.xls" );
-        String drl = converter.convertToDRL( stream,
-                                             "Another Sheet" );
-        assertNotNull( drl );
-    }
-    
-    public void testLoadCsv() {
-        SpreadsheetDRLConverter converter = new SpreadsheetDRLConverter( );
-        InputStream stream = this.getClass( ).getResourceAsStream( "/data/ComplexWorkbook.csv" );
-        String drl = converter.convertToDRL( stream,
-                                             InputType.CSV );
-        assertNotNull( drl );
-        assertTrue(drl.indexOf("myObject.setIsValid(1, 2)") > 0);
-        assertTrue(drl.indexOf("myObject.size () > 50") > 0);
-        //System.out.println(drl);
-    }
-    
-    public void testLoadBasic() {
-        SpreadsheetDRLConverter converter = new SpreadsheetDRLConverter( );
-        InputStream stream = this.getClass( ).getResourceAsStream( "/data/BasicWorkbook.xls" );
-        String drl = converter.convertToDRL( stream,
-                                             InputType.XLS );
-        assertNotNull( drl );        
-    }
+	private List _imports;
+
+	private List _variables; // List of the application data Variable Objects
+
+	private List _rules;
+
+	private Functions _functions;
+
+	public Package(String name) {
+		_name = name;
+		_imports = new LinkedList();
+		_variables = new LinkedList();
+		_rules = new LinkedList();
+		_functions = new Functions();
+	}
+
+	public void addImport(Import imp) {
+		_imports.add(imp);
+	}
+
+	public void addVariable(Global varz) {
+		_variables.add(varz);
+	}
+
+	public void addRule(Rule rule) {
+		_rules.add(rule);
+	}
+
+	public void addFunctions(String listing) {
+		_functions.setFunctionsListing(listing);
+	}
+
+
+
+	public String getName() {
+		return _name;
+	}
+
+	public List getImports() {
+		return _imports;
+	}
+
+	public List getVariables() {
+		return _variables;
+	}
+
+	public List getRules() {
+		return _rules;
+	}
+
+	public void renderDRL(DRLOutput out) {
+		out.writeLine("#generated from Decision Table");
+        out.writeLine( "package " + _name + ";" );
+		renderDRL(_imports, out);
+		renderDRL(_variables, out);
+		_functions.renderDRL(out);
+		renderDRL(_rules, out);
+		
+
+	}
+
+	private void renderDRL(List list, DRLOutput out) {
+		for (Iterator it = list.iterator(); it.hasNext();) {
+			DRLJavaEmitter emitter = (DRLJavaEmitter) it.next();
+			emitter.renderDRL(out);
+		}
+	}
 
 }
-

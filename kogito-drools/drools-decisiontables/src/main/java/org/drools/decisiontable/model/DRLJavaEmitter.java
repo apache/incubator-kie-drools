@@ -48,12 +48,7 @@ package org.drools.decisiontable.model;
  */
 public interface DRLJavaEmitter {
 
-	/**
-	 * 
-	 * @return an XML snippet (well formed) for the current object. This should
-	 *         NOT be a complete XML document, just well formed.
-	 * 
-	 */
-	String toXML();
+	/** Each node can add its contribution to the output */
+	void renderDRL(DRLOutput out);
 
 }

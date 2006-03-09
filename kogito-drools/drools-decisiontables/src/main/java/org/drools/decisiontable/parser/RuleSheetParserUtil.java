@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.drools.decisiontable.model.Import;
-import org.drools.decisiontable.model.Variable;
+import org.drools.decisiontable.model.Global;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
@@ -108,24 +108,28 @@ public class RuleSheetParserUtil
     /**
      * 08 - 18 - 2005
      * Ricardo Rojas
-     * @param importCell
+     * @param variableCell
      *            The cell text for all the application data variables to set.
      * @return A list of Variable classes, which can be added to the ruleset.
      */
-    public static List getVariableList(String importCell)
+    public static List getVariableList(String variableCell)
     {
         List variableList = new LinkedList( );
-        if ( importCell == null )
+        if ( variableCell == null )
         {
             return variableList;
         }
-        StringTokenizer tokens = new StringTokenizer( importCell, "," );
+        StringTokenizer tokens = new StringTokenizer( variableCell, "," );
 		while ( tokens.hasMoreTokens( ) )
 		{
 			String token = tokens.nextToken( );
-			Variable vars = new Variable( );
+			Global vars = new Global( );
 			StringTokenizer paramTokens = new StringTokenizer( token, " " );
 			vars.setClassName( paramTokens.nextToken( ) );
+            if (!paramTokens.hasMoreTokens()) {
+                throw new DecisionTableParseException("The format for global variables is incorrect. " +
+                        "It should be: [Class name, Class otherName]. But it was: [" + variableCell + "]");
+            }
 			vars.setIdentifier( paramTokens.nextToken( ) );
 			variableList.add( vars );
 		}

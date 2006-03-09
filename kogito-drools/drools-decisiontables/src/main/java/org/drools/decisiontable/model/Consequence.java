@@ -57,18 +57,12 @@ public class Consequence extends DRLElement implements DRLJavaEmitter {
 		_snippet = snippet;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mdneale.drools.xls.model.DRLJavaEmitter#toXML()
-	 */
-	public String toXML() {
-		String xml = "\t\t" + _snippet + "\n";
-		return xml;
-	}
-
 	public String getSnippet() {
 		return _snippet;
+	}
+
+	public void renderDRL(DRLOutput out) {
+		out.writeLine("\t\t" + _snippet);
 	}
 
 }

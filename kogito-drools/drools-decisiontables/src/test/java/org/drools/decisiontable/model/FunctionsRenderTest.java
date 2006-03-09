@@ -10,12 +10,17 @@ public class FunctionsRenderTest extends TestCase
 
     public void testFunctionRender() {
         Functions func = new Functions();
-        assertEquals("", func.toXML());
         
-        func.setFunctionsListing("something");
-        String s = func.toXML();
-        assertTrue(s.indexOf("CDATA") > -1);
-        assertTrue(s.indexOf("something") > -1);
+        DRLOutput out = new DRLOutput();
+        func.renderDRL(out);
+        
+        assertEquals("", out.toString());
+        
+        func.setFunctionsListing("function myFunction() {}");
+        out = new DRLOutput();
+        func.renderDRL(out);
+        String s = out.toString();
+        assertEquals("function myFunction() {}\n", s);
     }
     
 }
