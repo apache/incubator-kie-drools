@@ -98,12 +98,18 @@ public class RightInputAdapterNode extends ObjectSource
     public void attach() {
         this.tupleSource.addTupleSink( this );
     }
+    
+    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+        attach();
+        // this node has no memory, no point requesting repropagation     
+    }       
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
+        // this node has no memory, so we need to get the parent node to repropagate. We simulate this be re-attaching
         this.attachingNewNode = true;
         // We need to detach and re-attach to make sure the node is at the top
         // for the propagation

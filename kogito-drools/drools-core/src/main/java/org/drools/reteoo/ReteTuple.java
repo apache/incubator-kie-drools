@@ -32,7 +32,7 @@ import org.drools.util.LinkedListNode;
 /**
  * Rete-OO <code>Tuple</code> implementation. A <code>ReteTuple</code> implements <code>LinkedListNode</code> so that it can referenced
  * in a <code>LinkedList<code>, this allows for fast removal, without searching; as <code>ReteTuple</code>s are add sequentially to a nodes 
- * memoery (<code>LinkedList</code>), but removed randomly. 
+ * memory (<code>LinkedList</code>), but removed randomly. 
  * 
  * Each <code>ReteTuple</code> has a <code>Map</code> of matches. The key is the matching <code>FactHandleImpl</code> and the value
  * is the <code>TupleMatch</code>, which is also referenced in the <code>ObjectMatches</code> <code>LinkedList</code>.

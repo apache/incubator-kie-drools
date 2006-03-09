@@ -217,6 +217,14 @@ final class TerminalNode extends BaseNode
     public void attach() {
         tupleSource.addTupleSink( this );
     }
+    
+    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+        attach();
+        
+        for (int i = 0, length = 0; i < length; i++) { 
+            this.tupleSource.updateNewNode( workingMemories[i], context );
+        }        
+    }       
 
     public void remove(BaseNode node,
                        WorkingMemoryImpl workingMemory,

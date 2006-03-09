@@ -45,6 +45,12 @@ public class BaseNodeTest extends TestCase {
             
         }
 
+        public void attach(WorkingMemoryImpl[] workingMemories,
+                           PropagationContext context) {
+            // TODO Auto-generated method stub
+            
+        }
+
     }
 
 }

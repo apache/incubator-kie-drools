@@ -89,7 +89,7 @@ public class DefaultKnowledgeHelper
         return this.workingMemory;
     }
 
-    public LinkedList getQueryResults(String query) {
+    public List getQueryResults(String query) {
         return this.workingMemory.getQueryResults( query );
     }
 }

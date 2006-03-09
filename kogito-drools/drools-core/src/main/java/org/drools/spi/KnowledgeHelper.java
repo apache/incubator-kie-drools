@@ -120,7 +120,7 @@ public interface KnowledgeHelper {
      */
     List getObjects(Class objectClass);
     
-    LinkedList getQueryResults( String query );
+    List getQueryResults( String query );
 
     /**
      * Clears the agenda causing all existing Activations to fire

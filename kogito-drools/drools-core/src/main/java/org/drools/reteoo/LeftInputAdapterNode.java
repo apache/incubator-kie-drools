@@ -17,6 +17,7 @@ package org.drools.reteoo;
 
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.spi.PropagationContext;
@@ -64,6 +65,14 @@ class LeftInputAdapterNode extends TupleSource
     public void attach() {
         this.objectSource.addObjectSink( this );
     }
+    
+    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+        attach();
+        
+        for (int i = 0, length = 0; i < length; i++) { 
+            this.objectSource.updateNewNode( workingMemories[i], context );
+        }        
+    }     
 
     /**
      * Takes the asserted <code>FactHandleImpl</code> received from the <code>ObjectSource</code> and puts it
@@ -150,12 +159,18 @@ class LeftInputAdapterNode extends TupleSource
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
         this.attachingNewNode = true;
-        // We need to detach and re-attach to make sure the node is at the top
-        // for the propagation
-        this.objectSource.removeObjectSink( this );
-        this.objectSource.addObjectSink( this );
-        this.objectSource.updateNewNode( workingMemory,
-                                         context );
+
+        Map memory = (Map) workingMemory.getNodeMemory( this );
+        for ( Iterator it = memory.values().iterator(); it.hasNext(); ) {
+            LinkedList list = (LinkedList) it.next();
+            int i = 0;
+            for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
+                ((TupleSink) getTupleSinks().get( i++ )).modifyTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
+                                                                      context,
+                                                                      workingMemory );
+            }            
+        }    
+        
         this.attachingNewNode = false;
     }
 
