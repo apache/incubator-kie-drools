@@ -9,20 +9,37 @@ grammar RuleParser;
 }
 
 @parser::members {
+	private ExpanderResolver expanderResolver;
+	private Expander expander;
+
 	private PackageDescr packageDescr;
 	
 	public PackageDescr getPackageDescr() {
 		return packageDescr;
 	}
-/*
-	private String    packageName = "";
-	private List      rules       = new ArrayList();
-	private List      imports     = new ArrayList();
 	
-	public String getPackageName() { return packageName; }
-	public List getImports() { return imports; }
-	public List getRules() { return rules; }
-*/
+	public void setExpanderResolver(ExpanderResolver expanderResolver) {
+		this.expanderResolver = expanderResolver;
+	}
+	
+	public ExpanderResolver getExpanderResolver() {
+		return expanderResolver;
+	}
+	
+	private PatternDescr runExpander(String text) throws RecognitionException {
+		String expanded = expander.expand( text, this );
+		
+		return reparseLhs( text );
+	}
+	
+	private PatternDescr reparseLhs(String text) throws RecognitionException {
+		CharStream charStream = new ANTLRStringStream( text );
+		RuleParserLexer lexer = new RuleParserLexer( charStream );
+		TokenStream tokenStream = new CommonTokenStream( lexer );
+		RuleParser parser = new RuleParser( tokenStream );
+		
+		return parser.lhs();
+	}
 }
 
 @lexer::header {
@@ -69,7 +86,14 @@ import_statement returns [String importStatement]
 	;
 
 use_expander
-	:	'use' 'expander' ID ';'? opt_eol
+	@init {
+		String name=null;
+		String config=null;
+	}
+	:	'expander' (id=ID { name = id.getText(); })? ';'? opt_eol
+		{
+			expander = expanderResolver.get( name, config );
+		}
 	;
 
 
@@ -154,6 +178,41 @@ no_loop returns [AttributeDescr d]
 		}
 	;
 	
+root_lhs returns [PatternDescr d]
+	@init {
+		d = null;
+	}
+	:	{ expander != null }? e=expander_lhs { d = e; }
+		|	l=lhs	{ d = l; }	
+	;
+	
+expander_lhs returns [PatternDescr d]
+	@init {
+		d = null;
+	}
+	:
+		'>' l=lhs { d = l; }
+		| a=.+ EOL
+	;
+expander_text returns [PatternDescr d]
+	@init {
+		d = null;
+		String text = null;
+	}
+	:
+		a=.+ 
+		{
+			if ( text == null ) {
+				text = a.getText();
+			} else {
+				text = text + " " + a.getText();
+			}
+		}
+		EOL
+		{
+			d = runExpander( text );
+		}
+	;
 	
 lhs returns [PatternDescr d]
 	@init {
