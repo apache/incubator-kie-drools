@@ -9,40 +9,38 @@ public class KnowledgeHelperFixerTest extends TestCase {
     
     public void testAdd__Handle__rSimple() {
         String result = fixer.fix("modify(myObject )");
-        assertEquals("drools.modify(myObject__Handle__, myObject)", result);
+        assertEquals("drools.modifyObject(myObject__Handle__, myObject)", result);
         
         result = fixer.fix("modify ( myObject )");
-        assertEquals("drools.modify(myObject__Handle__, myObject)", result);
+        assertEquals("drools.modifyObject(myObject__Handle__, myObject)", result);
     }
     
     public void testAdd__Handle__rComplex() {
         String result = fixer.fix("something modify(myObject ); other");
-        assertEquals("something drools.modify(myObject__Handle__, myObject); other", result);
+        assertEquals("something drools.modifyObject(myObject__Handle__, myObject); other", result);
         
         result = fixer.fix("something modify (myObject )");
-        assertEquals("something drools.modify(myObject__Handle__, myObject)", result);
+        assertEquals("something drools.modifyObject(myObject__Handle__, myObject)", result);
         
         result = fixer.fix(" modify(myObject ) x");
-        assertEquals(" drools.modify(myObject__Handle__, myObject) x", result);
+        assertEquals(" drools.modifyObject(myObject__Handle__, myObject) x", result);
 
         //should not touch, as it is not a stand alone word
         result = fixer.fix("xxmodify(myObject ) x");
-        assertEquals("xxmodify(myObject ) x", result);
-        
-        
+        assertEquals("xxmodify(myObject ) x", result);               
     }
     
     public void testMultipleMatches() {
         String result = fixer.fix("modify(myObject) modify(myObject )");
-        assertEquals("drools.modify(myObject__Handle__, myObject) drools.modify(myObject__Handle__, myObject)", result);
+        assertEquals("drools.modifyObject(myObject__Handle__, myObject) drools.modifyObject(myObject__Handle__, myObject)", result);
         
         result = fixer.fix("xxx modify(myObject ) modify(myObject ) modify(yourObject ) yyy");
-        assertEquals("xxx drools.modify(myObject__Handle__, myObject) drools.modify(myObject__Handle__, myObject) drools.modify(yourObject__Handle__, yourObject) yyy", result);
+        assertEquals("xxx drools.modifyObject(myObject__Handle__, myObject) drools.modifyObject(myObject__Handle__, myObject) drools.modifyObject(yourObject__Handle__, yourObject) yyy", result);
     }
     
     public void testAllActions() {
         String result = fixer.fix("assert(myObject ) modify(ourObject);\t retract(herObject)");
-        assertEquals("drools.assert(myObject__Handle__, myObject) drools.modify(ourObject__Handle__, ourObject);\t drools.retract(herObject__Handle__, herObject)", result);        
+        assertEquals("drools.assertObject(myObject__Handle__, myObject) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__, herObject)", result);        
     }
     
     public void testLeaveLargeAlone() {
