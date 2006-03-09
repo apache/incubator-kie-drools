@@ -1,12 +1,14 @@
 
 rule simple_rule 
   when
-    foo : Bar(a==3)
+    foo3 : Bar(a==3)
+    foo4 : Bar(a4:a==4)
     Baz()
   then
-	if ( a == b ) {
-		assert( foo );
-	} else {
-		retract( foo );
-	}
+  if ( a == b ) {
+    assert( foo3 );
+  } else {
+    retract( foo4 );
+  } 
+  System.out.println( a4 );
 end
