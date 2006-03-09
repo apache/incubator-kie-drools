@@ -1,0 +1,10 @@
+package org.drools.test;
+
+import org.drools.integrationtests.Cheese;
+
+rule "test rule"
+    when
+        Cheese( $type : type == "stilton" )
+    then
+        System.out.println("I like " + $type);
+end    

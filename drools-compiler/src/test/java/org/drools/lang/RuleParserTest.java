@@ -12,6 +12,7 @@ import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.RuleDescr;
 
@@ -115,12 +116,11 @@ public class RuleParserTest extends TestCase {
 		
 		assertNotNull( lhs );
 		
-		assertEquals( 2, lhs.getDescrs().size() );
+		assertEquals( 3, lhs.getDescrs().size() );
 		
-		ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );
-		ColumnDescr second = (ColumnDescr) lhs.getDescrs().get( 1 );
-		
-		assertEquals( "foo", first.getIdentifier() );
+        // Check first column
+		ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );		
+		assertEquals( "foo3", first.getIdentifier() );
 		assertEquals( "Bar", first.getObjectType() );
 		
 		assertEquals( 1, first.getDescrs().size() );
@@ -133,14 +133,37 @@ public class RuleParserTest extends TestCase {
 		assertEquals( "==", constraint.getEvaluator() );
 		assertEquals( "3", constraint.getText() );
 		
+        // Check second column
+        ColumnDescr second = (ColumnDescr) lhs.getDescrs().get( 1 );     
+        assertEquals( "foo4", first.getIdentifier() );
+        assertEquals( "Bar", first.getObjectType() );
+        
+        assertEquals( 2, first.getDescrs().size() );
+        
+        FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) first.getDescrs().get( 1 );
+        assertEquals( "a4", fieldBindingDescr.getIdentifier() );
+        assertEquals( "type", fieldBindingDescr.getFieldName() );
+        
+        constraint = (LiteralDescr) first.getDescrs().get( 1 );
+        
+        assertNotNull( constraint );
+        
+        assertEquals( "a", constraint.getFieldName() );
+        assertEquals( "==", constraint.getEvaluator() );
+        assertEquals( "4", constraint.getText() );
+                
+                
+        // Check third column
+        ColumnDescr third = (ColumnDescr) lhs.getDescrs().get( 1 );
 		assertNull( second.getIdentifier() );
 		assertEquals( "Baz", second.getObjectType() );
 		
 		assertEqualsIgnoreWhitespace( 
 				"if ( a == b ) { " +
-				"  assert( foo );" +
+				"  assert( foo3 );" +
 				"} else {" +
-				"  retract( foo );" +
+				"  retract( foo4 );" +
+                "  System.out.println( a4 );" +
 				"}", 
 				rule.getConsequence() );
 	}
