@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea7 /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g 2006-03-08 21:41:19
+// $ANTLR 3.0ea7 /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g 2006-03-08 21:44:59
 
 	package org.drools.lang;
 	import java.util.List;
@@ -647,7 +647,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start rule
-    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:100:1: rule returns [RuleDescr rule] : opt_eol loc= 'rule' ruleName= word opt_eol (a= rule_options )? (loc= 'when' ( ':' )? opt_eol (l= lhs )* )? ( 'then' ( ':' )? (any= . )* )? EOL 'end' opt_eol ;
+    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:100:1: rule returns [RuleDescr rule] : opt_eol loc= 'rule' ruleName= word opt_eol (a= rule_options )? (loc= 'when' ( ':' )? opt_eol (l= root_lhs )* )? ( 'then' ( ':' )? (any= . )* )? EOL 'end' opt_eol ;
     public RuleDescr rule() throws RecognitionException {   
 
         RuleDescr rule;
@@ -665,8 +665,8 @@ public class RuleParser extends Parser {
         		String consequence = "";
         	
         try {
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:106:17: ( opt_eol loc= 'rule' ruleName= word opt_eol (a= rule_options )? (loc= 'when' ( ':' )? opt_eol (l= lhs )* )? ( 'then' ( ':' )? (any= . )* )? EOL 'end' opt_eol )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:106:17: opt_eol loc= 'rule' ruleName= word opt_eol (a= rule_options )? (loc= 'when' ( ':' )? opt_eol (l= lhs )* )? ( 'then' ( ':' )? (any= . )* )? EOL 'end' opt_eol
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:106:17: ( opt_eol loc= 'rule' ruleName= word opt_eol (a= rule_options )? (loc= 'when' ( ':' )? opt_eol (l= root_lhs )* )? ( 'then' ( ':' )? (any= . )* )? EOL 'end' opt_eol )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:106:17: opt_eol loc= 'rule' ruleName= word opt_eol (a= rule_options )? (loc= 'when' ( ':' )? opt_eol (l= root_lhs )* )? ( 'then' ( ':' )? (any= . )* )? EOL 'end' opt_eol
             {
 
             following.push(FOLLOW_opt_eol_in_rule273);
@@ -728,7 +728,7 @@ public class RuleParser extends Parser {
             }
 
 
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:117:17: (loc= 'when' ( ':' )? opt_eol (l= lhs )* )?
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:117:17: (loc= 'when' ( ':' )? opt_eol (l= root_lhs )* )?
             int alt14=2;
             int LA14_0 = input.LA(1);
             if ( LA14_0==20 ) {
@@ -740,13 +740,13 @@ public class RuleParser extends Parser {
             else {
 
                 NoViableAltException nvae =
-                    new NoViableAltException("117:17: (loc= \'when\' ( \':\' )? opt_eol (l= lhs )* )?", 14, 0, input);
+                    new NoViableAltException("117:17: (loc= \'when\' ( \':\' )? opt_eol (l= root_lhs )* )?", 14, 0, input);
 
                 throw nvae;
             }
             switch (alt14) {
                 case 1 :
-                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:117:25: loc= 'when' ( ':' )? opt_eol (l= lhs )*
+                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:117:25: loc= 'when' ( ':' )? opt_eol (l= root_lhs )*
                     {
 
                     loc=(Token)input.LT(1);
@@ -758,7 +758,7 @@ public class RuleParser extends Parser {
                     if ( LA12_0==21 ) {
                         alt12=1;
                     }
-                    else if ( (LA12_0>=EOL && LA12_0<=ID)||LA12_0==22||LA12_0==28||(LA12_0>=40 && LA12_0<=42) ) {
+                    else if ( (LA12_0>=EOL && LA12_0<=ID)||LA12_0==22||(LA12_0>=27 && LA12_0<=28)||(LA12_0>=40 && LA12_0<=42) ) {
                         alt12=2;
                     }
                     else {
@@ -791,23 +791,31 @@ public class RuleParser extends Parser {
                     				lhs.setLocation( loc.getLine(), loc.getCharPositionInLine() );
                     			
 
-                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:122:33: (l= lhs )*
+                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:122:33: (l= root_lhs )*
                     loop13:
                     do {
                         int alt13=2;
                         int LA13_0 = input.LA(1);
-                        if ( LA13_0==ID||LA13_0==28||(LA13_0>=40 && LA13_0<=42) ) {
+                        if ( LA13_0==EOL ) {
+                            int LA13_2 = input.LA(2);
+                            if ( (LA13_2>=EOL && LA13_2<=ID)||LA13_2==22||(LA13_2>=27 && LA13_2<=28)||(LA13_2>=40 && LA13_2<=42) ) {
+                                alt13=1;
+                            }
+
+
+                        }
+                        else if ( LA13_0==ID||(LA13_0>=27 && LA13_0<=28)||(LA13_0>=40 && LA13_0<=42) ) {
                             alt13=1;
                         }
 
 
                         switch (alt13) {
                     	case 1 :
-                    	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:122:34: l= lhs
+                    	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/drl.g:122:34: l= root_lhs
                     	    {
 
-                    	    following.push(FOLLOW_lhs_in_rule335);
-                    	    l=lhs();
+                    	    following.push(FOLLOW_root_lhs_in_rule335);
+                    	    l=root_lhs();
                     	    following.pop();
 
 
@@ -3224,18 +3232,18 @@ public class RuleParser extends Parser {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s4 = new DFA.State() {{alt=1;}};
-        DFA.State s3 = new DFA.State() {{alt=2;}};
+        DFA.State s4 = new DFA.State() {{alt=2;}};
+        DFA.State s3 = new DFA.State() {{alt=1;}};
         DFA.State s2 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 21:
+                case 28:
                     return s4;
 
                 case EOL:
                     return s2;
 
-                case 28:
+                case 21:
                     return s3;
 
                 default:
@@ -3252,10 +3260,10 @@ public class RuleParser extends Parser {
                 case EOL:
                     return s2;
 
-                case 28:
+                case 21:
                     return s3;
 
-                case 21:
+                case 28:
                     return s4;
 
                 default:
@@ -3283,19 +3291,19 @@ public class RuleParser extends Parser {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s3 = new DFA.State() {{alt=2;}};
         DFA.State s2 = new DFA.State() {{alt=1;}};
+        DFA.State s3 = new DFA.State() {{alt=2;}};
         DFA.State s1 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 29:
-                    return s3;
-
                 case EOL:
                     return s1;
 
                 case ID:
                     return s2;
+
+                case 29:
+                    return s3;
 
                 default:
 
@@ -3330,19 +3338,19 @@ public class RuleParser extends Parser {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s2 = new DFA.State() {{alt=2;}};
         DFA.State s3 = new DFA.State() {{alt=1;}};
+        DFA.State s2 = new DFA.State() {{alt=2;}};
         DFA.State s1 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 29:
-                    return s2;
+                case 30:
+                    return s3;
 
                 case EOL:
                     return s1;
 
-                case 30:
-                    return s3;
+                case 29:
+                    return s2;
 
                 default:
 
@@ -3378,12 +3386,13 @@ public class RuleParser extends Parser {
             return predict(input, s0);
         }
         DFA.State s1 = new DFA.State() {{alt=1;}};
+        DFA.State s4 = new DFA.State() {{alt=1;}};
         DFA.State s22 = new DFA.State() {{alt=1;}};
         DFA.State s18 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA30_18 = input.LA(1);
-                if ( (LA30_18>=ID && LA30_18<=43) ) {return s22;}
                 if ( LA30_18==EOL ) {return s18;}
+                if ( (LA30_18>=ID && LA30_18<=43) ) {return s22;}
 
 
                 NoViableAltException nvae =
@@ -3392,7 +3401,6 @@ public class RuleParser extends Parser {
                 throw nvae;
             }
         };
-        DFA.State s4 = new DFA.State() {{alt=1;}};
         DFA.State s10 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
@@ -3456,9 +3464,6 @@ public class RuleParser extends Parser {
                 case EOL:
                     return s6;
 
-                case ID:
-                    return s10;
-
                 case INT:
                 case STRING:
                 case FLOAT:
@@ -3498,6 +3503,9 @@ public class RuleParser extends Parser {
                 case 42:
                 case 43:
                     return s4;
+
+                case ID:
+                    return s10;
 
                 default:
 
@@ -3661,8 +3669,8 @@ public class RuleParser extends Parser {
     public static final BitSet FOLLOW_rule_options_in_rule298 = new BitSet(new long[]{5242896L});
     public static final BitSet FOLLOW_20_in_rule316 = new BitSet(new long[]{2097170L});
     public static final BitSet FOLLOW_21_in_rule318 = new BitSet(new long[]{18L});
-    public static final BitSet FOLLOW_opt_eol_in_rule321 = new BitSet(new long[]{7696854024240L});
-    public static final BitSet FOLLOW_lhs_in_rule335 = new BitSet(new long[]{7696854024240L});
+    public static final BitSet FOLLOW_opt_eol_in_rule321 = new BitSet(new long[]{7696988241968L});
+    public static final BitSet FOLLOW_root_lhs_in_rule335 = new BitSet(new long[]{7696988241968L});
     public static final BitSet FOLLOW_22_in_rule351 = new BitSet(new long[]{17592186044400L});
     public static final BitSet FOLLOW_21_in_rule353 = new BitSet(new long[]{17592186044400L});
     public static final BitSet FOLLOW_EOL_in_rule388 = new BitSet(new long[]{8388608L});

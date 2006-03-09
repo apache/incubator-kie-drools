@@ -119,7 +119,7 @@ rule returns [RuleDescr rule]
 				AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); 
 				lhs.setLocation( loc.getLine(), loc.getCharPositionInLine() );
 			}
-				(l=lhs { lhs.addDescr( l ); } )*
+				(l=root_lhs { lhs.addDescr( l ); } )*
 		)?
 		(	'then' ':'?
 			(any=.
