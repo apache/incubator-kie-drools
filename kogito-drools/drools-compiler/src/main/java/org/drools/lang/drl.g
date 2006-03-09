@@ -29,7 +29,7 @@ grammar RuleParser;
 	private PatternDescr runExpander(String text) throws RecognitionException {
 		String expanded = expander.expand( text, this );
 		
-		return reparseLhs( text );
+		return reparseLhs( expanded );
 	}
 	
 	private PatternDescr reparseLhs(String text) throws RecognitionException {
@@ -82,15 +82,14 @@ import_statement returns [String importStatement]
 	@init {
 		importStatement = null;
 	}
-	:	'import' opt_eol name=java_package_or_class ';'? { importStatement = name; } opt_eol	
+	:	'import' opt_eol name=dotted_name ';'? { importStatement = name; } opt_eol	
 	;
 
 use_expander
 	@init {
-		String name=null;
 		String config=null;
 	}
-	:	'expander' (id=ID { name = id.getText(); })? ';'? opt_eol
+	:	'expander' (name=dotted_name)? ';'? opt_eol
 		{
 			expander = expanderResolver.get( name, config );
 		}
@@ -119,7 +118,35 @@ rule returns [RuleDescr rule]
 				AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); 
 				lhs.setLocation( loc.getLine(), loc.getCharPositionInLine() );
 			}
-				(l=root_lhs { lhs.addDescr( l ); } )*
+			(
+					{ expander != null }?
+					(
+						'>' l=lhs { lhs.addDescr( l ); }
+					|					
+						{
+							String text = null;
+						}
+						( 	options{greedy=false;}: any=.
+							{
+								System.err.println( "[[" + any.getText() + "]]" );
+								if ( text == null ) {
+									text = any.getText();
+								} else {
+									text = text + " " + any.getText();
+								}
+							}
+						)+ EOL
+					)
+				|	l=lhs { lhs.addDescr( l ); }
+			)*
+			/*
+			(	l=root_lhs 
+				{
+					lhs.addDescr( l ); 
+				} 
+			|
+			)*
+			*/
 		)?
 		(	'then' ':'?
 			(any=.
@@ -192,7 +219,7 @@ expander_lhs returns [PatternDescr d]
 	}
 	:
 		'>' l=lhs { d = l; }
-		| a=.+ EOL
+		| e=expander_text { d = e; }
 	;
 expander_text returns [PatternDescr d]
 	@init {
@@ -200,14 +227,16 @@ expander_text returns [PatternDescr d]
 		String text = null;
 	}
 	:
-		a=.+ 
-		{
-			if ( text == null ) {
-				text = a.getText();
-			} else {
-				text = text + " " + a.getText();
+		(	options{greedy=false;} : a=.
+			{
+				System.err.println( "[" + a.getText() + "]" );
+				if ( text == null ) {
+					text = a.getText();
+				} else {
+					text = text + " " + a.getText();
+				}
 			}
-		}
+		)+
 		EOL
 		{
 			d = runExpander( text );
@@ -267,7 +296,7 @@ constraints returns [List constraints]
 		constraints = new ArrayList();
 	}
 	:	opt_eol
-		c=constraint  { constraints.add( c ); }
+		c=constraint { constraints.add( c ); }
 		( opt_eol ',' opt_eol c=constraint { constraints.add( c ); } )*
 		opt_eol
 	;
@@ -339,8 +368,12 @@ chunk returns [String text]
 	;
 	
 	
-field_binding
+field_binding returns [PatternDescr d]
+	@init {
+		d = null;
+	}
 	:
+		f=ID ':' c=constraint
 	;
 	
 lhs_or returns [PatternDescr d]
@@ -426,7 +459,7 @@ lhs_eval returns [PatternDescr d]
 	:	'eval' { d = new EvalDescr( "" ); }
 	;
 	
-java_package_or_class returns [String name]
+dotted_name returns [String name]
 	@init {
 		name = null;
 	}
@@ -483,7 +516,7 @@ STRING
 	;
 	
 ID	
-	:	('a'..'z'|'A'..'Z'|'_')+ 
+	:	('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'_'|'0'..'9')* 
 	;
 
 SH_STYLE_SINGLE_LINE_COMMENT	
