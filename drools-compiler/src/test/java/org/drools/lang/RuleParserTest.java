@@ -119,6 +119,8 @@ public class RuleParserTest extends TestCase {
 		
 		assertEquals( 3, lhs.getDescrs().size() );
 		
+		System.err.println( lhs.getDescrs() );
+		
         // Check first column
 		ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );		
 		assertEquals( "foo3", first.getIdentifier() );
@@ -136,16 +138,18 @@ public class RuleParserTest extends TestCase {
 		
         // Check second column
         ColumnDescr second = (ColumnDescr) lhs.getDescrs().get( 1 );     
-        assertEquals( "foo4", first.getIdentifier() );
-        assertEquals( "Bar", first.getObjectType() );
+        assertEquals( "foo4", second.getIdentifier() );
+        assertEquals( "Bar", second.getObjectType() );
         
-        assertEquals( 2, first.getDescrs().size() );
+        assertEquals( 2, second.getDescrs().size() );
         
-        FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) first.getDescrs().get( 1 );
+        System.err.println( second.getDescrs() );
+        
+        FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) second.getDescrs().get( 0 );
+        assertEquals( "a", fieldBindingDescr.getFieldName() );
         assertEquals( "a4", fieldBindingDescr.getIdentifier() );
-        assertEquals( "type", fieldBindingDescr.getFieldName() );
         
-        constraint = (LiteralDescr) first.getDescrs().get( 1 );
+        constraint = (LiteralDescr) second.getDescrs().get( 1 );
         
         assertNotNull( constraint );
         
@@ -155,17 +159,17 @@ public class RuleParserTest extends TestCase {
                 
                 
         // Check third column
-        ColumnDescr third = (ColumnDescr) lhs.getDescrs().get( 1 );
-		assertNull( second.getIdentifier() );
-		assertEquals( "Baz", second.getObjectType() );
+        ColumnDescr third = (ColumnDescr) lhs.getDescrs().get( 2 );
+		assertNull( third.getIdentifier() );
+		assertEquals( "Baz", third.getObjectType() );
 		
 		assertEqualsIgnoreWhitespace( 
 				"if ( a == b ) { " +
 				"  assert( foo3 );" +
 				"} else {" +
 				"  retract( foo4 );" +
-                "  System.out.println( a4 );" +
-				"}", 
+				"}" +
+                "  System.out.println( a4 );", 
 				rule.getConsequence() );
 	}
     
