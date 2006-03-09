@@ -14,6 +14,7 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.LiteralDescr;
+import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 
 public class RuleParserTest extends TestCase {
@@ -167,6 +168,27 @@ public class RuleParserTest extends TestCase {
 				"}", 
 				rule.getConsequence() );
 	}
+    
+    public void testSimpleExpander() throws Exception {
+        RuleParser parser = parseResource( "simple_expander.drl" );
+        MockExpanderResolver mockExpanderResolver = new MockExpanderResolver();
+        parser.setExpanderResolver( mockExpanderResolver );
+        parser.compilation_unit();
+        PackageDescr pack = parser.getPackageDescr();
+        assertNotNull(pack);
+        assertEquals(1, pack.getRules().size());
+        
+        //first problem, need to allow dots in DSL name
+        assertTrue(mockExpanderResolver.checkCalled( "foo.dsl"));
+        
+        //just check we get the right number of descrs in the LHS
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals(2, rule.getLhs().getDescrs().size());
+        //Note 2 problems: as runExpander is reparsing original text, not expanded
+        
+        
+        
+    }
 	
 	private RuleParser parse(String text) throws Exception {
 		parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
