@@ -77,6 +77,8 @@ abstract class BaseNode
      * Attaches the node into the network. Usually to the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */
     public abstract void attach();
+    
+    public abstract void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context);    
 
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>

@@ -83,6 +83,14 @@ class AlphaNode extends ObjectSource
     public void attach() {
         this.objectSource.addObjectSink( this );
     }
+    
+    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+        attach();
+        
+        for (int i = 0, length = 0; i < length; i++) { 
+            this.objectSource.updateNewNode( workingMemories[i], context );
+        }        
+    }     
 
     public void assertObject(FactHandleImpl handle,
                              PropagationContext context,

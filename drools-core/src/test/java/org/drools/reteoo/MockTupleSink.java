@@ -85,4 +85,10 @@ public class MockTupleSink extends TupleSource
         
     }
 
+    public void attach(WorkingMemoryImpl[] workingMemories,
+                       PropagationContext context) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

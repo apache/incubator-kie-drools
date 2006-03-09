@@ -16,10 +16,10 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import org.drools.FactHandle;
+import java.util.LinkedList;
+
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedList;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -38,7 +38,7 @@ final class QueryTerminalNode extends BaseNode
     // ------------------------------------------------------------
 
     /** The rule to invoke upon match. */
-    private final Rule rule;
+    private final Rule        rule;
     private final TupleSource tupleSource;
 
     // ------------------------------------------------------------
@@ -58,7 +58,7 @@ final class QueryTerminalNode extends BaseNode
                       Rule rule) {
         super( id );
         this.rule = rule;
-        this.tupleSource = source;        
+        this.tupleSource = source;
     }
 
     // ------------------------------------------------------------
@@ -120,6 +120,16 @@ final class QueryTerminalNode extends BaseNode
 
     public void attach() {
         tupleSource.addTupleSink( this );
+    }
+
+    public void attach(WorkingMemoryImpl[] workingMemories,
+                       PropagationContext context) {
+        attach();
+
+        for ( int i = 0, length = 0; i < length; i++ ) {
+            this.tupleSource.updateNewNode( workingMemories[i],
+                                            context );
+        }
     }
 
     public void remove(BaseNode node,

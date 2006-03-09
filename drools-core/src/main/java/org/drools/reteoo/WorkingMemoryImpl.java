@@ -335,12 +335,12 @@ public class WorkingMemoryImpl
         return matching;
     }
     
-    public LinkedList getQueryResults( String query ) {
+    public List getQueryResults( String query ) {
         FactHandle handle = assertObject( new DroolsQuery( query ) );
         QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
-        LinkedList list = null;
+        List list = null;
         if ( node != null) {
-            list = (LinkedList)this.nodeMemories.remove( node.getId() );        
+            list = (List)this.nodeMemories.remove( node.getId() );        
         }
         retractObject( handle );           
         return list;       

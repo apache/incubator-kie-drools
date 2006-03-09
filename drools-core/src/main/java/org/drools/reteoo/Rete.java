@@ -246,6 +246,10 @@ class Rete extends ObjectSource
     public void attach() {
         // do nothing this is the root node
     }
+    
+    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+        // do nothing this is the root node        
+    }       
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {

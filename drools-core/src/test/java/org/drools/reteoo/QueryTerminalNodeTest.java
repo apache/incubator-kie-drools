@@ -1,5 +1,7 @@
 package org.drools.reteoo;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.drools.FactHandle;
@@ -76,9 +78,11 @@ public class QueryTerminalNodeTest extends TestCase {
         QueryTerminalNode queryNode = new QueryTerminalNode( 7,
                                                              joinNode,
                                                              query );
+        
+        queryNode.attach();
 
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        LinkedList list = workingMemory.getQueryResults( "query-1" );
+        List list = workingMemory.getQueryResults( "query-1" );
 
         assertNull( list );
 

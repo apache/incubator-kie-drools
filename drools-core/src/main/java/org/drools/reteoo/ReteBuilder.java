@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
@@ -64,6 +65,8 @@ class ReteBuilder {
     private final RuleBaseImpl       ruleBase;
 
     private final ObjectTypeResolver resolver;
+    
+    private WorkingMemoryImpl[]          workingMemories;
 
     /** Rete network to build against. */
     private final Rete               rete;
@@ -120,24 +123,32 @@ class ReteBuilder {
      * @throws InvalidPatternException
      */
     void addRule(Rule rule) throws InvalidPatternException {
+        // reset working memories for potential propagation
+        this.workingMemories = ( WorkingMemoryImpl[] ) this.ruleBase.getWorkingMemories().toArray( new WorkingMemoryImpl[ this.ruleBase.getWorkingMemories().size() ] );
+        
         And[] and = rule.getTransformedLhs();
         for ( int i = 0; i < and.length; i++ ) {                   
             addRule( and[i],
                      rule );
         }
         
+        BaseNode node = null;
         if ( ! ( rule instanceof Query ) ) {        
-            TerminalNode node = new TerminalNode( this.id++,
+            node = new TerminalNode( this.id++,
                                                   this.tupleSource,
                                                   rule );
-            this.rules.put( rule, new BaseNode[] { node } );
-            node.attach();
         } else {
-            QueryTerminalNode node = new QueryTerminalNode( this.id++,
+            node = new QueryTerminalNode( this.id++,
                                                             this.tupleSource,
                                                             rule );
-            this.rules.put( rule, new BaseNode[] { node } );
+        }        
+        
+        this.rules.put( rule, new BaseNode[] { node } );
+        
+        if ( this.workingMemories.length == 0) {
             node.attach();
+        } else {
+            node.attach( workingMemories, null );
         }        
     }    
 
@@ -399,7 +410,11 @@ class ReteBuilder {
         TupleSource node = (TupleSource) this.attachedNodes.get( candidate );
 
         if ( node == null ) {
-            candidate.attach();
+            if ( this.workingMemories.length == 0) {
+                candidate.attach();
+            } else {
+                candidate.attach( workingMemories, null );
+            }
 
             this.attachedNodes.put( candidate,
                                     candidate );
@@ -417,7 +432,11 @@ class ReteBuilder {
         ObjectSource node = (ObjectSource) this.attachedNodes.get( candidate );
 
         if ( node == null ) {
-            candidate.attach();
+            if ( this.workingMemories.length == 0) {
+                candidate.attach();
+            } else {
+                candidate.attach( workingMemories, null );
+            }
 
             this.attachedNodes.put( candidate,
                                     candidate );

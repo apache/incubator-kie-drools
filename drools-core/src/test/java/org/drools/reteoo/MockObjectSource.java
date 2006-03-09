@@ -37,4 +37,10 @@ public class MockObjectSource extends ObjectSource {
         
     }
 
+    public void attach(WorkingMemoryImpl[] workingMemories,
+                       PropagationContext context) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
