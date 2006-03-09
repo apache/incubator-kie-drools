@@ -3,7 +3,7 @@ expander foo.dsl
 
 rule simple_rule 
   when
-    The rain in spain falls mainly...
+    The rain in spain falls mainly
     >Baz()
   then
 	if ( a == b ) {

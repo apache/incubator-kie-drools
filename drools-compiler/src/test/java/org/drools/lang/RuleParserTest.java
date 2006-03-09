@@ -183,6 +183,8 @@ public class RuleParserTest extends TestCase {
         
         //just check we get the right number of descrs in the LHS
         RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        
+        System.err.println( rule.getLhs().getDescrs() );
         assertEquals(2, rule.getLhs().getDescrs().size());
         //Note 2 problems: as runExpander is reparsing original text, not expanded
         
