@@ -69,14 +69,20 @@ public class RuleRenderTest extends TestCase
         rule.addConsequence( cons );
         rule.addConsequence( cons );
 
-        
-        String xml = rule.toXML( );
+        DRLOutput out= new DRLOutput();
+        rule.renderDRL(out);
+        String xml = out.getDRL();
         assertNotNull( xml );
 
         assertTrue( xml.indexOf( "cond snippet" ) != -1 );
         assertTrue( xml.indexOf( "cons snippet" ) != -1 );
-        assertTrue( xml.indexOf( "salience=\"42\"" ) != -1 );
-        assertTrue( xml.indexOf( "cons snippet;\n\t\tcons snippet;" ) != -1 );
+        assertTrue( xml.indexOf( "salience 42" ) != -1 );
+        assertTrue( xml.indexOf( "salience 42" ) < xml.indexOf("when") );
+        assertTrue( xml.indexOf( "cond snippet" ) < xml.indexOf("then") );
+        assertTrue( xml.indexOf( "cons snippet;" ) > xml.indexOf("then") );
+        assertTrue( xml.indexOf( "rule" ) != -1 );
+        assertTrue( xml.indexOf("end") > xml.indexOf("rule "));
+        assertTrue( xml.indexOf( "#rule comments" ) > -1);
 
     }
 
@@ -112,17 +118,16 @@ public class RuleRenderTest extends TestCase
 
     }
 
-    public void testEscapeChars()
+    public void testNotEscapeChars()
     {
-        // not needed, as chars should NOT be escaped - using CDATA instead
-        // so now am asserting that it is not escaped !
+    	//bit of a legacy from the olde XML dayes of yesteryeare
         Condition cond = new Condition( );
         cond.setSnippet( "a < b" );
-        assertFalse( cond.toXML( ).indexOf( "a &lt; b" ) != -1 );
-
-        Consequence cons = new Consequence( );
-        cons.setSnippet( "a > b" );
-        assertFalse( cons.toXML( ).indexOf( "a &gt; b" ) != -1 );
+        DRLOutput out = new DRLOutput();
+        cond.renderDRL(out);
+        
+        assertTrue(out.toString().indexOf("a < b") != -1);
+        
     }
     
     /**
@@ -133,12 +138,17 @@ public class RuleRenderTest extends TestCase
      */
     public void testNilSalience() {
         Rule rule = new Rule("MyRule", null, 1);
-        String xml = rule.toXML();
+        
+        DRLOutput out = new DRLOutput();
+        rule.renderDRL(out);
+        String xml = out.toString();
         int idx = xml.indexOf("salience");
         assertEquals(-1, idx);
         
         rule = new Rule("MyRule", new Integer(42), 1);
-        xml = rule.toXML();
+        out = new DRLOutput();
+        rule.renderDRL(out);
+        xml = out.toString();
         idx = xml.indexOf("salience");
         assertTrue(idx > -1);        
     }

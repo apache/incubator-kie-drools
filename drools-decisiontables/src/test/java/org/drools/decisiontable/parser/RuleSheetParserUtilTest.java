@@ -47,7 +47,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.drools.decisiontable.model.Import;
-import org.drools.decisiontable.model.Variable;
+import org.drools.decisiontable.model.Global;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
@@ -120,11 +120,21 @@ public class RuleSheetParserUtilTest extends TestCase
         List varList = RuleSheetParserUtil.getVariableList("Var1 var1, Var2 var2,Var3 var3");
         assertNotNull(varList);
         assertEquals(3, varList.size());
-        Variable var = (Variable) varList.get(0);
+        Global var = (Global) varList.get(0);
         assertEquals("Var1", var.getClassName());
-        var = (Variable) varList.get(2);
+        var = (Global) varList.get(2);
         assertEquals("Var3", var.getClassName());
         assertEquals("var3", var.getIdentifier());
+    }
+    
+    public void testBadVariableFormat() {
+        String bad = "class1, object2";
+        try {
+            RuleSheetParserUtil.getVariableList( bad );
+            fail("should not work");
+        } catch (DecisionTableParseException e) {
+            assertNotNull(e.getMessage());
+        }
     }
 }
 

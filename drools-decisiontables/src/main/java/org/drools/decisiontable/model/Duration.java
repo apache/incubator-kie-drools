@@ -90,26 +90,15 @@ public class Duration extends DRLElement
         _snippet = params;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see mdneale.drools.xls.model.DRLJavaEmitter#toXML()
-     * 
-     * TIP: if we want to make combinations unique, can use something like:
-     * 
-     * <duration weeks="" days="" hours="" minutes="" seconds=""/>
-     * 
-     */
-    public String toXML()
-    {
-        String xml = "\t<!--" + getComment( ) + "--> \n\t<duration" + _snippet + "/>\n\n";
-        return xml;
-
-    }
-
     public String getSnippet()
     {
         return _snippet;
     }
+
+	public void renderDRL(DRLOutput out) {
+		if (isCommented()) out.writeLine("#" + getComment());
+		out.writeLine("\tduration" + _snippet);
+		
+	}
 }
 

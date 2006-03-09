@@ -53,7 +53,7 @@ import org.drools.decisiontable.model.Consequence;
 import org.drools.decisiontable.model.Import;
 
 import org.drools.decisiontable.model.Rule;
-import org.drools.decisiontable.model.Ruleset;
+import org.drools.decisiontable.model.Package;
 
 /**
  * @author Shaun Addison, Michael Neale
@@ -104,7 +104,7 @@ public class RuleWorksheetParseTest extends TestCase
         InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/BasicWorkbook.xls" );
         RuleSheetListener listener = getRuleSheetListener( stream );
 
-        Ruleset ruleset = listener.getRuleSet( );
+        Package ruleset = listener.getRuleSet( );
         assertNotNull( ruleset );
 
         Rule firstRule = (Rule) ruleset.getRules( ).get( 0 );
@@ -158,7 +158,7 @@ public class RuleWorksheetParseTest extends TestCase
         InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/ComplexWorkbook.xls" );
         RuleSheetListener listener = getRuleSheetListener( stream );
 
-        Ruleset ruleset = listener.getRuleSet( );
+        Package ruleset = listener.getRuleSet( );
         assertEquals( 6,
                       ruleset.getRules( ).size( ) );
         assertEquals( 0,

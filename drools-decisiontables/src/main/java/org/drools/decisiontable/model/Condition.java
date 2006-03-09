@@ -56,21 +56,11 @@ public class Condition extends DRLElement implements DRLJavaEmitter {
 		_snippet = snippet;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mdneale.drools.xls.model.DRLJavaEmitter#toXML()
-	 * 
-	 */
-	public String toXML() {
-		String xml = "\t<!--" + getComment()
-				+ "--> \n\t<java:condition><![CDATA[ " + _snippet
-				+ " ]]></java:condition>\n\n";
-		return xml;
-
-	}
-
 	public String getSnippet() {
 		return _snippet;
+	}
+
+	public void renderDRL(DRLOutput out) {
+		out.writeLine("\t\t" + this._snippet);
 	}
 }

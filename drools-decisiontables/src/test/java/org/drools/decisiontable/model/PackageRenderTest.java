@@ -47,7 +47,7 @@ import junit.framework.TestCase;
  * Test rendering and running a whole sample ruleset, from the model classes
  * down.
  */
-public class RulesetRenderTest extends TestCase {
+public class PackageRenderTest extends TestCase {
 
 	public Rule buildRule() {
 		Rule rule = new Rule("myrule", new Integer(42), 1);
@@ -67,20 +67,31 @@ public class RulesetRenderTest extends TestCase {
 	}
 
 	public void testRulesetRender() {
-		Ruleset ruleSet = new Ruleset("myruleset");
-		ruleSet.addFunctions("a function");
+		Package ruleSet = new Package("myruleset");
+		ruleSet.addFunctions("my functions");
 		ruleSet.addRule(buildRule());
+		
+		Rule rule = buildRule();
+		rule.setName("other rule");
+		ruleSet.addRule(rule);
+		
 		Import imp = new Import();
 		imp.setClassName("clazz name");
 		imp.setComment("import comment");
-
 		ruleSet.addImport(imp);
-		String xml = ruleSet.toXML();
-		assertNotNull(xml);
-		assertTrue(xml.indexOf("condition") > -1);
-		assertTrue(xml.indexOf("consequence") > -1);
-		assertTrue(xml.indexOf("import") > -1);
-		assertTrue(xml.indexOf("functions") > -1);
+		
+		DRLOutput out = new DRLOutput();
+		ruleSet.renderDRL(out);
+		
+		String drl = out.getDRL();
+		assertNotNull(drl);
+		System.out.println(drl);
+		assertTrue(drl.indexOf("rule \"myrule\"") > -1);
+		assertTrue(drl.indexOf("salience 42") > -1);
+		assertTrue(drl.indexOf("#rule comments") > -1);
+		assertTrue(drl.indexOf("my functions") > -1);
+		assertTrue(drl.indexOf( "package myruleset;" ) > -1);
+		assertTrue(drl.indexOf("rule \"other rule\"") > drl.indexOf("rule \"myrule\""));
 
 	}
 

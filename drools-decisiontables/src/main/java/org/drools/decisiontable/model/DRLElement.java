@@ -63,6 +63,10 @@ public abstract class DRLElement
     {
         return _comment;
     }
+    
+    boolean isCommented() {
+    	return (_comment != null && !("".equals(_comment)));
+    }
 
     /**
      * This escapes plain snippets into an xml/drl safe format.

@@ -72,16 +72,8 @@ public class Import extends DRLElement
         className = clazz;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see mdneale.drools.xls.model.DRLJavaEmitter#toXML()
-     */
-    public String toXML()
-    {
-        String xml = "<!-- " + getComment( ) + "-->\n \t<import>" + className + "</import>\n";
-        return xml;
-
-    }
+	public void renderDRL(DRLOutput out) {
+		out.writeLine("import " + className + ";");
+	}
 }
 
