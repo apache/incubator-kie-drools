@@ -264,7 +264,12 @@ fact_binding returns [ColumnDescr d]
 		d=null;
 	}
  	:
- 		id=ID opt_eol ':' opt_eol f=fact { d=f; } opt_eol
+ 		id=ID 
+ 		{
+ 			System.err.println( "fact_binding(" + id.getText() + ")" );
+ 		}
+ 		
+ 		opt_eol ':' opt_eol f=fact { d=f; } opt_eol
  		{
  			d=f;
  			d.setIdentifier( id.getText() );
@@ -296,17 +301,30 @@ constraints returns [List constraints]
 		constraints = new ArrayList();
 	}
 	:	opt_eol
-		c=constraint { constraints.add( c ); }
-		( opt_eol ',' opt_eol c=constraint { constraints.add( c ); } )*
+		constraint[constraints]
+		( opt_eol ',' opt_eol constraint[constraints])*
 		opt_eol
 	;
 	
-constraint returns [PatternDescr d]
+constraint[List constraints]
 	@init {
-		d = null;
+		PatternDescr d = null;
 	}
 	:	opt_eol
-		f=ID	opt_eol 	op=(	'=='
+		( fb=ID opt_eol ':' opt_eol )? 
+		f=ID	
+		{
+			if ( fb != null ) {
+				System.err.println( "fb: " + fb.getText() );
+				System.err.println( " f: " + f.getText() );
+				d = new FieldBindingDescr( f.getText(), fb.getText() );
+				System.err.println( "fbd: " + d );
+				
+				d.setLocation( f.getLine(), f.getCharPositionInLine() );
+				constraints.add( d );
+			} 
+		}
+			opt_eol 	op=(	'=='
 					|	'>'
 					|	'>='
 					|	'<'
@@ -318,11 +336,13 @@ constraint returns [PatternDescr d]
 						{ 
 							d = new LiteralDescr( f.getText(), op.getText(), lc ); 
 							d.setLocation( f.getLine(), f.getCharPositionInLine() );
+							constraints.add( d );
 						}
 					|	rvc=retval_constraint 
 						{ 
 							d = new ReturnValueDescr( f.getText(), op.getText(), rvc ); 
 							d.setLocation( f.getLine(), f.getCharPositionInLine() );
+							constraints.add( d );
 						} 
 					)
 		opt_eol
@@ -365,15 +385,6 @@ chunk returns [String text]
 							}
 						} )
 		)*
-	;
-	
-	
-field_binding returns [PatternDescr d]
-	@init {
-		d = null;
-	}
-	:
-		f=ID ':' c=constraint
 	;
 	
 lhs_or returns [PatternDescr d]

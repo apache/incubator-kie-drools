@@ -41,4 +41,8 @@ public class ColumnDescr extends PatternDescr {
     public List getDescrs() {
         return this.descrs;
     }
+    
+    public String toString() {
+    		return "[Column: id=" + identifier + "; objectType=" + objectType + "]";
+    }
 }

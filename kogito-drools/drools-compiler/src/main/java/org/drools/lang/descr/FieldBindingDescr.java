@@ -16,4 +16,9 @@ public class FieldBindingDescr extends PatternDescr {
     public String getIdentifier() {
         return this.identifier;
     }
+    
+    public String toString() {
+    		return "[FieldBinding: field=" + fieldName + "; identifier=" + identifier + "]";
+    }
+    
 }
