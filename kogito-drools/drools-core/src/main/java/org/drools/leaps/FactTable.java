@@ -69,7 +69,7 @@ class FactTable extends Table implements Serializable {
 	}
 
 	/**
-	 * Add rules that
+	 * Add rule
 	 * 
 	 * @param workingMemory
 	 * @param ruleHandle
@@ -78,6 +78,15 @@ class FactTable extends Table implements Serializable {
 		this.rules.add(ruleHandle);
 		// push facts back to stack if needed
 		this.checkAndAddFactsToStack(workingMemory);
+	}
+
+	/**
+	 * Remove rule
+	 * 
+	 * @param ruleHandle
+	 */
+	public void removeRule(RuleHandle ruleHandle) {
+		this.rules.remove(ruleHandle);
 	}
 
 	/**

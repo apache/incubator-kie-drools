@@ -210,6 +210,13 @@ public class RuleBaseImpl implements RuleBase {
 			((WorkingMemoryImpl) it.next()).addLeapsRules(rules);
 		}
 	}
+	   
+    public void removeRule(Rule rule) {
+		for (Iterator it = this.workingMemories.keySet().iterator(); it
+				.hasNext();) {
+			((WorkingMemoryImpl) it.next()).removeRule((List)this.leapsRules.remove(rule));
+		}
+	}
 
     public Set getWorkingMemories() {
         return this.workingMemories.keySet();

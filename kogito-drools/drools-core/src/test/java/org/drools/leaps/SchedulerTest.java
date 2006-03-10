@@ -42,7 +42,7 @@ public class SchedulerTest extends DroolsTestCase {
 		WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase
 				.newWorkingMemory();
 
-		final Rule rule = new Rule("test-rule");
+		final Rule rule = new Rule("scheduled-test-rule");
 		final List data = new ArrayList();
 
 		// add consequence
@@ -88,7 +88,7 @@ public class SchedulerTest extends DroolsTestCase {
 				.newWorkingMemory();
 		final Agenda agenda = workingMemory.getAgenda();
 
-		final Rule rule = new Rule("test-rule");
+		final Rule rule = new Rule("do-loop-scheduled-test-rule");
 		final List data = new ArrayList();
 
 		/* 1/10th of a second */
@@ -138,65 +138,6 @@ public class SchedulerTest extends DroolsTestCase {
 
 		// now check for update
 		assertEquals(4, data.size());
-
-	}
-
-	public void testNoLoopScheduledActivation() throws Exception {
-		RuleBase ruleBase = new RuleBaseImpl();
-
-		final WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase
-				.newWorkingMemory();
-		final Agenda agenda = workingMemory.getAgenda();
-
-		final Rule rule = new Rule("test-rule");
-		final List data = new ArrayList();
-
-		/* 1/10th of a second */
-		Duration duration = new Duration() {
-			public long getDuration(Tuple tuple) {
-				return 100;
-			}
-
-		};
-
-		rule.setDuration(duration);
-		rule.setNoLoop(true);
-
-		// add consequence
-		rule.setConsequence(new org.drools.spi.Consequence() {
-			public void evaluate(Activation activation,
-					WorkingMemory workingMemory) {
-				/* on first invoke add another one to the agenda */
-				if (data.size() < 5) {
-					FactHandleImpl tupleFactHandleIn = (FactHandleImpl) workingMemory
-							.assertObject("tuple object in");
-					FactHandleImpl[] factHandlesTupleIn = new FactHandleImpl[1];
-					factHandlesTupleIn[0] = tupleFactHandleIn;
-					LeapsTuple tupleIn = new LeapsTuple(factHandlesTupleIn, null, null, activation.getPropagationContext());
-					((WorkingMemoryImpl) workingMemory).assertTuple(tupleIn, rule);
-				}
-				data.add("tested");
-			}
-		});
-
-		PropagationContext context = new PropagationContextImpl(0,
-				PropagationContext.ASSERTION, null, null);
-
-		FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory
-				.assertObject("tuple object");
-		FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
-		factHandlesTuple[0] = tupleFactHandle;
-		LeapsTuple tuple = new LeapsTuple(factHandlesTuple, null, null, context);
-
-		workingMemory.assertTuple(tuple, rule);
-
-		assertEquals(0, data.size());
-
-		// sleep for 0.5 seconds
-		Thread.sleep(50000);
-
-		// now check for update
-		assertEquals(1, data.size());
 
 	}
 }

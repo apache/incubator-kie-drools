@@ -20,7 +20,6 @@ import org.drools.base.ClassObjectType;
 import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.Table;
 import org.drools.leaps.util.TableIterator;
-import org.drools.leaps.util.BaseTableIterator;
 import org.drools.rule.InvalidRuleException;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
@@ -30,10 +29,6 @@ import org.drools.spi.PropagationContext;
  * seek. all methods are static
  * 
  * @author Alexander Bagerman
- * 
- */
-/**
- * @author bageale
  * 
  */
 final class TokenEvaluator {
@@ -66,8 +61,9 @@ final class TokenEvaluator {
 					iterators[i] = Table.singleItemIterator(token
 							.getDominantFactHandle());
 				} else {
-					if (i > 0 && leapsRule.getColumnConstraintsAtPosition(i)
-							.isAlphaPresent()) {
+					if (i > 0
+							&& leapsRule.getColumnConstraintsAtPosition(i)
+									.isAlphaPresent()) {
 						iterators[i] = workingMemory
 								.getFactTable(
 										leapsRule
@@ -78,22 +74,21 @@ final class TokenEvaluator {
 										leapsRule
 												.getColumnConstraintsAtPosition(i),
 										token.getDominantFactHandle(),
-										(token.isResume() ? token
-												.getFactHandleAtPosition(i)
+										(token.isResume() ? token.get(i)
 												: token.getDominantFactHandle()));
 					} else {
 						iterators[i] = workingMemory.getFactTable(
 								leapsRule.getColumnClassObjectTypeAtPosition(i)
 										.getClassType()).tailIterator(
 								token.getDominantFactHandle(),
-								(token.isResume() ? token
-										.getFactHandleAtPosition(i) : token
+								(token.isResume() ? token.get(i) : token
 										.getDominantFactHandle()));
 					}
 				}
 			}
 			// check if any iterators are empty to abort
-			// check if we resume and any starting facts disappeared than we do not do skip on resume
+			// check if we resume and any starting facts disappeared than we do
+			// not do skip on resume
 			boolean someIteratorsEmpty = false;
 			boolean doReset = false;
 			boolean skip = token.isResume();
@@ -107,7 +102,7 @@ final class TokenEvaluator {
 						if (skip
 								&& currentIterator.hasNext()
 								&& !currentIterator.peekNext().equals(
-										token.getFactHandleAtPosition(i))) {
+										token.get(i))) {
 							skip = false;
 							doReset = true;
 						}
@@ -134,8 +129,7 @@ final class TokenEvaluator {
 					} else {
 						//                    
 						currentIterator.reset();
-						token.setCurrentFactHandleAtPosition(jj,
-								(FactHandleImpl) null);
+						token.set(jj, (FactHandleImpl) null);
 						jj = jj - 1;
 						if (skip) {
 							skip = false;
@@ -143,24 +137,21 @@ final class TokenEvaluator {
 					}
 				} else {
 					currentIterator.next();
-					token.setCurrentFactHandleAtPosition(jj,
-							(FactHandleImpl) iterators[jj].current());
+					token.set(jj, (FactHandleImpl) iterators[jj].current());
 					// check if match found
 					// we need to check only beta for dominant fact
 					// alpha was already checked
 					boolean localMatch = false;
 					if (jj == 0 && jj != dominantFactPosition) {
 						localMatch = leapsRule.getColumnConstraintsAtPosition(
-								jj).isAllowed(
-								token.getFactHandleAtPosition(jj), token,
+								jj).isAllowed(token.get(jj), token,
 								workingMemory);
 					} else {
 						localMatch = leapsRule.getColumnConstraintsAtPosition(
-								jj).isAllowedBeta(
-								token.getFactHandleAtPosition(jj), token,
+								jj).isAllowedBeta(token.get(jj), token,
 								workingMemory);
 					}
-									
+
 					if (localMatch) {
 						// start iteratating next iterator
 						// or for the last one check negative conditions and
