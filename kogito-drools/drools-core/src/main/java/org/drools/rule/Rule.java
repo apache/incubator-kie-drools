@@ -305,17 +305,17 @@ public class Rule
      *            The <code>Test</code> to add.
      * @throws InvalidRuleException 
      */
-    public void addPattern(ConditionalElement ce) throws InvalidRuleException {
+    public void addPattern(ConditionalElement ce) {
         addDeclarations( ce );
         this.lhsRoot.addChild( ce );
     }
     
-    public  void addPattern(Column column) throws InvalidRuleException {
+    public  void addPattern(Column column) {
         addDeclarations( column );
         this.lhsRoot.addChild( column );
     }       
     
-    private void addDeclarations(Column column) throws InvalidRuleException {
+    private void addDeclarations(Column column)  {
         // Check if the column is bound and if so add it as a declaration
         if ( column.isBound() ) {
             Declaration declaration = column.getDeclaration();
@@ -332,7 +332,7 @@ public class Rule
         }    
     }
     
-    private void addDeclarations(ConditionalElement ce) throws InvalidRuleException {
+    private void addDeclarations(ConditionalElement ce) {
         for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof Column ) {
