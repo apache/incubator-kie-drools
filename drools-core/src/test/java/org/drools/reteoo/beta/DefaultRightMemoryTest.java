@@ -59,12 +59,6 @@ public class DefaultRightMemoryTest extends BaseBetaRightMemoryTestClass {
             ObjectMatches om0 = (ObjectMatches) iterator.next();
             Assert.assertSame("The first object to return should have been matches0", matches0, om0);
             
-            try {
-                iterator.remove();
-                Assert.fail("Right side memory Iterators are not supposed to support remove()");
-            } catch (UnsupportedOperationException uoe) {
-                // working fine
-            }
             Assert.assertEquals("Memory should have size 2", 2, this.memory.size());
 
             Assert.assertTrue("There should be a next element", iterator.hasNext());

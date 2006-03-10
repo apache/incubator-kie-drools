@@ -18,7 +18,6 @@ package org.drools.reteoo.beta;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -49,7 +48,6 @@ public class ObjectEqualConstrLeftMemory
     private BetaLeftMemory childMemory = null;
     
     private Map             memoryMap    = null;
-    private Map             reverseMap   = null;
     private int             size         = 0;
     private MultiLinkedList selectedList = null;
     
@@ -71,7 +69,6 @@ public class ObjectEqualConstrLeftMemory
         this.declaration = declaration;
         this.childMemory = childMemory;
         this.memoryMap = new HashMap();
-        this.reverseMap = new IdentityHashMap();
     }
 
     /**
@@ -248,9 +245,8 @@ public class ObjectEqualConstrLeftMemory
         Integer hash = getTupleHash( workingMemory,tuple );
         MultiLinkedList list = (MultiLinkedList) this.memoryMap.get(hash);
         if(list == null) {
-            list = new MultiLinkedList();
+            list = new KeyMultiLinkedList(hash);
             this.memoryMap.put(hash, list);
-            this.reverseMap.put(list, hash);
         }
         return list;
     }
@@ -280,7 +276,7 @@ public class ObjectEqualConstrLeftMemory
      * @param list
      */
     private void removeMemoryEntry(LinkedList list) {
-        Object hash = this.reverseMap.remove(list);
+        Object hash = ((KeyMultiLinkedList)list).getKey();
         this.memoryMap.remove(hash);
     }
 
@@ -301,6 +297,18 @@ public class ObjectEqualConstrLeftMemory
             }
         }
         return ret;
+    }
+    
+    private static class KeyMultiLinkedList extends MultiLinkedList {
+        private final Object key;
+        
+        public KeyMultiLinkedList(Object key) {
+            this.key = key;
+        }
+        
+        public final Object getKey() {
+            return this.key;
+        }
     }
 
 }
