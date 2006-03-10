@@ -2,6 +2,7 @@ package org.drools.lang;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -172,6 +173,23 @@ public class RuleParserTest extends TestCase {
                 "  System.out.println( a4 );", 
 				rule.getConsequence() );
 	}
+    
+    public void testMultipleRules() throws Exception {
+        RuleParser parser = parseResource( "multiple_rules.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pkg = parser.getPackageDescr();
+        List rules = pkg.getRules();
+        
+        assertEquals( 2, rules.size() );
+        
+        RuleDescr rule0  = (RuleDescr) rules.get( 0 );
+        assertEquals( "Like Stilton", rule0.getName() );
+        
+        RuleDescr rule1  = (RuleDescr) rules.get( 1 );
+        assertEquals( "Like Cheddar", rule1.getName() );
+        
+    }
     
     public void testSimpleExpander() throws Exception {
         RuleParser parser = parseResource( "simple_expander.drl" );
