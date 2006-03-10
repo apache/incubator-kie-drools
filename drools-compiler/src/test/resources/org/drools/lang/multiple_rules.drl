@@ -1,0 +1,17 @@
+package org.drools.test;
+
+import org.drools.integrationtests.Cheese;
+
+rule "Like Stilton"
+    when
+        Cheese( t:type == "stilton" )
+    then
+        System.out.println("I like " + t);
+end    
+
+rule "Like Cheddar"
+    when
+        Cheese( t:type == "cheddar" )
+    then
+        System.out.println("I like " + t );
+end    
