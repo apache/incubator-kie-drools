@@ -141,14 +141,8 @@ public class RuleBuilder {
 
         // Build the left hand side
         // generate invoker, methods
-        build( rule,
-               ruleDescr.getLhs(),
-               rule.getLhs() );
-        // Build the consequence and generate it's invoker/methods
-        // generate the main rule from the previously generated methods.
-        build( rule,
-               ruleDescr );
-
+        build( ruleDescr );
+        
         return rule;
     }
 
@@ -172,6 +166,56 @@ public class RuleBuilder {
             }
         }
     }
+
+    private void build(RuleDescr ruleDescr) {
+        
+        for ( Iterator it = ruleDescr.getLhs().getDescrs().iterator(); it.hasNext(); ) {
+            Object object = it.next();
+            if ( object instanceof ConditionalElementDescr ) {
+                if ( object instanceof AndDescr ) {
+                    And and = new And();                    
+                    //rule.addChild( and );
+                    build( rule,
+                           (ConditionalElementDescr) object,
+                           and );
+                    rule.addPattern( and );
+                } else if ( object instanceof OrDescr ) {
+                    Or or = new Or();
+                    build( rule,
+                           (ConditionalElementDescr) object,
+                           or );
+                    rule.addPattern( or );
+                } else if ( object instanceof NotDescr ) {
+                    Not not = new Not();
+                    build( rule,
+                           (ConditionalElementDescr) object,
+                           not );
+                    rule.addPattern( not );
+                } else if ( object instanceof ExistsDescr ) {
+                    Exists exists = new Exists();
+                    build( rule,
+                           (ConditionalElementDescr) object,
+                           exists );
+                    rule.addPattern( exists );
+                } else if ( object instanceof EvalDescr ) {
+                    EvalCondition eval = build( (EvalDescr) object );
+                    if ( eval != null ) {
+                        rule.addPattern( eval );                        
+                    }                        
+                }
+            } else if ( object instanceof ColumnDescr ) {
+                Column column = build( (ColumnDescr) object );
+                if ( column != null ) {
+                    rule.addPattern( column );
+                }
+            }
+        }
+        
+        // Build the consequence and generate it's invoker/methods
+        // generate the main rule from the previously generated methods.
+        buildConsequence( ruleDescr );
+        buildRule( ruleDescr );        
+    }    
 
     private void build(Rule rule,
                        ConditionalElementDescr descr,
@@ -204,24 +248,27 @@ public class RuleBuilder {
                            (ConditionalElementDescr) object,
                            exists );
                 } else if ( object instanceof EvalDescr ) {
-                    build( ce,
-                           (EvalDescr) object );
+                    EvalCondition eval = build( (EvalDescr) object );
+                    if ( eval != null ) {
+                        ce.addChild( eval );
+                    }
                 }
             } else if ( object instanceof ColumnDescr ) {
-                build( ce,
-                       (ColumnDescr) object );
+                Column column = build( (ColumnDescr) object );
+                if ( column != null ) {
+                    ce.addChild( column );
+                }
             }
         }
     }
 
-    private void build(ConditionalElement ce,
-                       ColumnDescr columnDescr) {
+    private Column build(ColumnDescr columnDescr) {
         if ( columnDescr.getObjectType() == null || columnDescr.getObjectType().equals( "" ) ) {
             this.errors.add( new RuleError( this.rule,
                                              columnDescr,
                                              null,
                                              "ObjectType not correctly defined" ) );
-            return;
+            return null;
         }
 
         Class clazz = null;
@@ -234,7 +281,7 @@ public class RuleBuilder {
                                              columnDescr,
                                              null,
                                              "Unable to resolve ObjectType '" + columnDescr.getObjectType() + "'" ) );
-            return;
+            return null;
         }
 
         Column column;
@@ -268,8 +315,7 @@ public class RuleBuilder {
                        (PredicateDescr) object );
             }
         }
-
-        ce.addChild( column );
+        return column;
     }
 
     private void build(Column column,
@@ -534,17 +580,13 @@ public class RuleBuilder {
                                predicateDescr );
     }
 
-    private void build(ConditionalElement ce,
-                       EvalDescr evalDescr) {
+    private EvalCondition build(EvalDescr evalDescr) {
 
         String classMethodName = "eval" + counter++;
         evalDescr.setClassMethodName( classMethodName );
 
         List usedDeclarations = getUsedDeclarations( evalDescr,
                                                      evalDescr.getText() );
-        if ( usedDeclarations == null ) {
-            return;
-        }
 
         Declaration[] declarations = new Declaration[usedDeclarations.size()];
         for ( int i = 0, size = usedDeclarations.size(); i < size; i++ ) {
@@ -552,7 +594,6 @@ public class RuleBuilder {
         }
 
         EvalCondition eval = new EvalCondition( declarations );
-        ce.addChild( eval );
 
         StringTemplate st = ruleGroup.getInstanceOf( "evalMethod" );
 
@@ -592,33 +633,13 @@ public class RuleBuilder {
                                  eval );
         this.descrLookups.put( invokerClassName,
                                evalDescr );
+        return eval;
     }
-
-    private void build(Rule rule,
-                       RuleDescr ruleDescr) {
+    
+    private void buildConsequence( RuleDescr ruleDescr ) {
         // generate method
         // generate Invoker
-        Map root = new HashMap();
-
         String classMethodName = "consequence";
-
-        root.put( "package",
-                  this.pkg.getName() );
-        root.put( "ruleClassName",
-                  ucFirst( this.ruleDescr.getClassName() ) );
-        root.put( "invokerClassName",
-                  ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
-        root.put( "methodName",
-                  classMethodName );
-
-        root.put( "declarations",
-                  this.declarations.values() );
-
-        root.put( "globals",
-                  getUsedGlobals( ruleDescr.getConsequence() ) );
-
-        root.put( "globalTypes",
-                  this.pkg.getGlobals() );
 
         StringTemplate st = ruleGroup.getInstanceOf( "consequenceMethod" );
 
@@ -659,9 +680,11 @@ public class RuleBuilder {
         this.invokerLookups.put( invokerClassName,
                                  this.rule );
         this.descrLookups.put( invokerClassName,
-                               ruleDescr );
+                               ruleDescr );        
+    }
 
-        st = ruleGroup.getInstanceOf( "ruleClass" );
+    private void buildRule(RuleDescr ruleDescr) {
+        StringTemplate st = ruleGroup.getInstanceOf( "ruleClass" );
 
         st.setAttribute( "package",
                          this.pkg.getName() );
