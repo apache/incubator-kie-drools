@@ -330,14 +330,8 @@ public class ObjectNotEqualConstrRightMemory
         return ret;
     }
     
-    /**
-     * @inheritDoc
-     */
     public Iterator iterator() {
-        if(this.childMemory == null) {
-            throw new UnsupportedOperationException("Operation not supported by indexed memory");
-        }
-        return this.childMemory.iterator(); 
+        return this.memoryMasterList.iterator(); 
     }
     
     

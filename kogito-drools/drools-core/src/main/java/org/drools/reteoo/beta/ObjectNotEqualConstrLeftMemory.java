@@ -44,7 +44,6 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
     private BetaLeftMemory innerMemory = null;
     
     private Map             memoryMap   = null;
-    //private Map             reverseMap  = null;
     private MultiLinkedList memoryMasterList  = null;
     private MultiLinkedList noMatchList = null;
     

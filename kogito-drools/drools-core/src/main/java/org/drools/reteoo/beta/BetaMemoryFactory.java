@@ -100,7 +100,7 @@ public class BetaMemoryFactory {
      * @return the newly created BetaRightMemory 
      */
     public static BetaRightMemory newRightMemory(BetaNodeBinder binder) {
-        BetaRightMemory memory = new DefaultRightMemory();
+        BetaRightMemory memory = null;
         FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
         if((constraints != null) &&
            (! INDEX_DISABLED.equalsIgnoreCase(System.getProperty("org.drools.beta-indexing")))) {
@@ -139,6 +139,9 @@ public class BetaMemoryFactory {
                 }
             }
         } 
+        if(memory == null) {
+            memory = new DefaultRightMemory();
+        }
         return memory;
     }
 }

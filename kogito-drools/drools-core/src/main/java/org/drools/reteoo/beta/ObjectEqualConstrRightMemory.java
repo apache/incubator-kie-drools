@@ -17,11 +17,12 @@
 package org.drools.reteoo.beta;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.TreeSet;
 
 import org.drools.WorkingMemory;
 import org.drools.reteoo.FactHandleImpl;
@@ -48,7 +49,6 @@ public class ObjectEqualConstrRightMemory
     private BetaRightMemory childMemory = null;
     
     private Map memoryMap = null;
-    private Map reverseMap = null;
     private int memorySize = 0;
     
     private MultiLinkedList selectedList = null;
@@ -70,7 +70,6 @@ public class ObjectEqualConstrRightMemory
         this.declaration = declaration;
         this.childMemory = childMemory;
         this.memoryMap = new HashMap();
-        this.reverseMap = new IdentityHashMap();
     }
 
     /**
@@ -102,11 +101,11 @@ public class ObjectEqualConstrRightMemory
         if(this.childMemory != null) {
             this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) matches.getChild());
         }
-        MultiLinkedList list = (MultiLinkedList ) matches.getLinkedList();
+        KeyMultiLinkedList list = (KeyMultiLinkedList) matches.getLinkedList();
         list.remove(matches);
         this.memorySize--;
         if(list.isEmpty()) {
-            Object hash = this.reverseMap.remove(list);
+            Object hash = list.getKey();
             this.memoryMap.remove(hash);
         }
     }
@@ -141,7 +140,7 @@ public class ObjectEqualConstrRightMemory
         if(this.childMemory != null) {
             this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) matches.getChild());
         }
-        MultiLinkedList list = (MultiLinkedList) matches.getLinkedList();
+        KeyMultiLinkedList list = (KeyMultiLinkedList) matches.getLinkedList();
         list.remove(matches);
         this.memorySize--;
         if(list.isEmpty()) {
@@ -253,15 +252,14 @@ public class ObjectEqualConstrRightMemory
         Integer hash = new Integer(select.hashCode());
         MultiLinkedList list = (MultiLinkedList) this.memoryMap.get(hash);
         if(list == null) {
-            list = new MultiLinkedList();
+            list = new KeyMultiLinkedList(hash);
             this.memoryMap.put(hash, list);
-            this.reverseMap.put(list, hash);
         }
         return list;
     }
     
-    private void removeMapEntry(MultiLinkedList list) {
-        Object hash = this.reverseMap.remove(list);
+    private void removeMapEntry(KeyMultiLinkedList list) {
+        Object hash = list.getKey();
         this.memoryMap.remove(hash);
     }
 
@@ -292,10 +290,35 @@ public class ObjectEqualConstrRightMemory
      * @inheritDoc
      */
     public Iterator iterator() {
-        if(this.childMemory == null) {
-            throw new UnsupportedOperationException("Operation not supported by indexed memory");
+        TreeSet set = new TreeSet(new Comparator() {
+            public int compare(Object arg0,
+                               Object arg1) {
+                FactHandleImpl f0 = ((ObjectMatches) arg0).getFactHandle();
+                FactHandleImpl f1 = ((ObjectMatches) arg1).getFactHandle();
+                return (f0.getRecency() == f1.getRecency()) ? 0 :
+                       (f0.getRecency() > f1.getRecency()) ? 1 : -1;
+            }
+            
+        });
+        for(Iterator i = this.memoryMap.values().iterator(); i.hasNext(); ) {
+            MultiLinkedList list = (MultiLinkedList) i.next();
+            for(Iterator j = list.iterator(); j.hasNext(); ) {
+                set.add( j.next() );
+            }
         }
-        return this.childMemory.iterator(); 
+        
+        return set.iterator(); 
     }
     
+    private static class KeyMultiLinkedList extends MultiLinkedList {
+        private final Object key;
+        
+        public KeyMultiLinkedList(Object key) {
+            this.key = key;
+        }
+        
+        public final Object getKey() {
+            return this.key;
+        }
+    }
 }

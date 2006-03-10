@@ -16,8 +16,10 @@
 
 package org.drools.reteoo.beta;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.TreeSet;
 
 import org.drools.WorkingMemory;
 import org.drools.reteoo.FactHandleImpl;
@@ -256,10 +258,24 @@ public class BooleanConstrainedRightMemory
      * @inheritDoc
      */
     public Iterator iterator() {
-        if(this.childMemory == null) {
-            throw new UnsupportedOperationException("Operation not supported by indexed memory");
+        TreeSet set = new TreeSet(new Comparator() {
+            public int compare(Object arg0,
+                               Object arg1) {
+                FactHandleImpl f0 = ((ObjectMatches) arg0).getFactHandle();
+                FactHandleImpl f1 = ((ObjectMatches) arg1).getFactHandle();
+                return (f0.getRecency() == f1.getRecency()) ? 0 :
+                       (f0.getRecency() > f1.getRecency()) ? 1 : -1;
+            }
+            
+        });
+        for(Iterator i = this.trueList.iterator(); i.hasNext(); ) {
+            set.add( i.next() );
         }
-        return this.childMemory.iterator(); 
+        for(Iterator i = this.falseList.iterator(); i.hasNext(); ) {
+            set.add( i.next() );
+        }
+        
+        return set.iterator(); 
     }
 
 }
