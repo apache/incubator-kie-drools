@@ -53,7 +53,6 @@ class Token implements Tuple, Serializable {
 	/**
 	 * agendaItem parts
 	 */
-
 	public Token(WorkingMemoryImpl workingMemory, FactHandleImpl factHandle) {
 		this.workingMemory = workingMemory;
 		this.dominantFactHandle = factHandle;
@@ -66,10 +65,6 @@ class Token implements Tuple, Serializable {
 					.getRulesIterator();
 		}
 		return this.rules;
-	}
-
-	public FactHandleImpl getFactHandleAtPosition(int idx) {
-		return this.currentFactHandles[idx];
 	}
 
 	public RuleHandle nextRuleHandle() {
@@ -120,8 +115,7 @@ class Token implements Tuple, Serializable {
 		return (int) this.dominantFactHandle.getId();
 	}
 
-	public void setCurrentFactHandleAtPosition(int idx,
-			FactHandleImpl factHandle) {
+	public void set(int idx, FactHandleImpl factHandle) {
 		this.currentFactHandles[idx] = factHandle;
 	}
 
@@ -163,7 +157,7 @@ class Token implements Tuple, Serializable {
 	 * @see org.drools.spi.Tuple
 	 */
 	public FactHandle get(int idx) {
-		return this.getFactHandleAtPosition(idx);
+		return this.currentFactHandles[idx];
 	}
 
 	/**
@@ -171,13 +165,6 @@ class Token implements Tuple, Serializable {
 	 */
 	public FactHandle get(Declaration declaration) {
 		return this.get(declaration.getColumn());
-	}
-
-	/**
-	 * @see org.drools.spi.Tuple
-	 */
-	public Object get(FactHandle factHandle) {
-		return ((FactHandleImpl) factHandle).getObject();
 	}
 
 	/**
@@ -200,7 +187,7 @@ class Token implements Tuple, Serializable {
 		if (this.currentFactHandles != null) {
 			for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
 				if (this.currentFactHandles[i].getObject() == object) {
-					return this.getFactHandleAtPosition(i);
+					return this.currentFactHandles[i];
 				}
 			}
 		}
@@ -212,7 +199,7 @@ class Token implements Tuple, Serializable {
 	 * @see org.drools.spi.Tuple
 	 */
 	public FactHandle getFactHandleForDeclaration(Declaration declaration) {
-		return this.getFactHandleAtPosition(declaration.getColumn());
+		return this.currentFactHandles[declaration.getColumn()];
 	}
 
 	/**

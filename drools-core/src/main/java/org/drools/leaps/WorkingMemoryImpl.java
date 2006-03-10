@@ -19,6 +19,7 @@ package org.drools.leaps;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -47,6 +48,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.Tuple;
 import org.drools.util.IteratorChain;
 
 /**
@@ -66,6 +68,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	private static final long serialVersionUID = -2524904474925421759L;
 	
 	protected final Agenda agenda;
+	
+	private final Map queryResults;
 	/**
 	 * Construct.
 	 * 
@@ -75,6 +79,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	public WorkingMemoryImpl(RuleBaseImpl ruleBase) {
 		super(ruleBase, ruleBase.newFactHandleFactory());
 		this.agenda = new LeapsAgenda(this);
+		this.queryResults = new HashMap();
 	}
 
 	/**
@@ -555,8 +560,6 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	 */
 	protected void addLeapsRules(List rules) {
 		synchronized (this.lock) {
-			// this.addedRulesAfterLastFire = true;
-
 			LeapsRule rule;
 			RuleHandle ruleHandle;
 			for (Iterator it = rules.iterator(); it.hasNext();) {
@@ -576,6 +579,9 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		}
 	}
 
+	protected void removeRule(List rules){
+		
+	}
 	/**
 	 * main loop
 	 * 
@@ -767,8 +773,18 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		return this.agenda;
 	}
 
-    public org.drools.util.LinkedList getQueryResults(String query) {
-        // TODO Auto-generated method stub
-        return null;
+    
+    public List getQueryResults( String query ) {
+            return (List)this.queryResults.remove( query );        
     }
+    
+    void addToQueryResults( String query, Tuple tuple) {
+    	LinkedList list = (LinkedList) this.queryResults.get(query);
+    	if (list == null){
+    		list = new LinkedList();
+    		this.queryResults.put(query, list);
+    	}
+        list.add(tuple);
+     }    
+
 }

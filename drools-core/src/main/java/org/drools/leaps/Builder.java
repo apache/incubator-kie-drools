@@ -64,6 +64,7 @@ class Builder {
 	 * @return list of leaps rules for the given And
 	 */
 	final private static List processRuleForAnd(And and, Rule rule) {
+		ColumnConstraints constraints;
 		ArrayList leapsRules = new ArrayList();
 		ArrayList cols = new ArrayList();
 		ArrayList notCols = new ArrayList();
@@ -71,22 +72,22 @@ class Builder {
 		for (Iterator it = and.getChildren().iterator(); it.hasNext();) {
 			Object object = it.next();
 			if (object instanceof Column) {
+				constraints = Builder.processColumn((Column)object);
 				// create column constraints
-				cols.add(Builder.processColumn((Column) object));
 			} else {
 				// NOTS and EXISTS
-				ConditionalElement ce = (ConditionalElement) object;
-				if (!(ce.getChildren().get(0) instanceof Column)) {
+                ConditionalElement ce = (ConditionalElement) object;
+				while (!(ce.getChildren().get(0) instanceof Column)) {
 					ce = (ConditionalElement) ce.getChildren().get(0);
 				}
-				if (object instanceof Not) {
-					notCols.add(Builder.processColumn((Column) ce.getChildren()
-							.get(0)));
-				} else if (object instanceof Exists) {
-					existsCols.add(Builder.processColumn((Column) ce
-							.getChildren().get(0)));
-				} else {
-				}
+				constraints = Builder.processColumn((Column) ce.getChildren().get( 0 ));
+			}
+			if (object instanceof Not) {
+				notCols.add(constraints);
+			} else if (object instanceof Exists) {
+				existsCols.add(constraints);
+			} else {
+				cols.add(constraints);
 			}
 		}
 

@@ -57,16 +57,6 @@ public class ColumnConstraintsTest extends DroolsTestCase {
 
 	Evaluator integerNotEqualEvaluator;
 
-//	RuleBaseImpl ruleBase;
-//	RuleBaseImpl ruleBaseAddRule;
-//
-//	WorkingMemory wm1;
-//
-//	WorkingMemory wm2;
-//
-//	WorkingMemory wm3;
-
-
 	protected void setUp() throws Exception {
 		super.setUp();
 		this.integerEqualEvaluator = EvaluatorFactory.getInstance()
