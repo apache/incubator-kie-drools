@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea7 /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g 2006-03-09 01:28:44
+// $ANTLR 3.0ea7 C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g 2006-03-11 21:58:55
 
 	package org.drools.lang;
 
@@ -77,8 +77,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:6:7: ( 'package' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:6:7: 'package'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:6:7: ( 'package' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:6:7: 'package'
         {
 
         match("package");
@@ -95,8 +95,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:7:7: ( '.' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:7:7: '.'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:7:7: ( '.' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:7:7: '.'
         {
 
         match('.');
@@ -112,8 +112,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:8:7: ( ';' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:8:7: ';'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:8:7: ( ';' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:8:7: ';'
         {
 
         match(';');
@@ -129,8 +129,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:9:7: ( 'import' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:9:7: 'import'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:9:7: ( 'import' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:9:7: 'import'
         {
 
         match("import");
@@ -147,8 +147,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:10:7: ( 'expander' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:10:7: 'expander'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:10:7: ( 'expander' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:10:7: 'expander'
         {
 
         match("expander");
@@ -165,8 +165,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:11:7: ( 'rule' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:11:7: 'rule'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:11:7: ( 'rule' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:11:7: 'rule'
         {
 
         match("rule");
@@ -183,8 +183,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:12:7: ( 'when' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:12:7: 'when'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:12:7: ( 'when' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:12:7: 'when'
         {
 
         match("when");
@@ -201,8 +201,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:13:7: ( ':' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:13:7: ':'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:13:7: ( ':' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:13:7: ':'
         {
 
         match(':');
@@ -218,8 +218,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:14:7: ( '>' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:14:7: '>'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:14:7: ( '>' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:14:7: '>'
         {
 
         match('>');
@@ -235,8 +235,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:15:7: ( 'then' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:15:7: 'then'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:15:7: ( 'then' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:15:7: 'then'
         {
 
         match("then");
@@ -253,8 +253,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:16:7: ( 'end' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:16:7: 'end'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:16:7: ( 'end' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:16:7: 'end'
         {
 
         match("end");
@@ -271,8 +271,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:17:7: ( 'options' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:17:7: 'options'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:17:7: ( 'options' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:17:7: 'options'
         {
 
         match("options");
@@ -289,8 +289,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:18:7: ( 'salience' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:18:7: 'salience'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:18:7: ( 'salience' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:18:7: 'salience'
         {
 
         match("salience");
@@ -307,8 +307,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:19:7: ( 'no-loop' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:19:7: 'no-loop'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:19:7: ( 'no-loop' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:19:7: 'no-loop'
         {
 
         match("no-loop");
@@ -325,8 +325,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:20:7: ( '(' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:20:7: '('
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:20:7: ( '(' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:20:7: '('
         {
 
         match('(');
@@ -342,8 +342,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:21:7: ( ')' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:21:7: ')'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:21:7: ( ')' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:21:7: ')'
         {
 
         match(')');
@@ -359,8 +359,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:22:7: ( ',' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:22:7: ','
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:22:7: ( ',' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:22:7: ','
         {
 
         match(',');
@@ -376,8 +376,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:23:7: ( '==' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:23:7: '=='
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:23:7: ( '==' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:23:7: '=='
         {
 
         match("==");
@@ -394,8 +394,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:24:7: ( '>=' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:24:7: '>='
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:24:7: ( '>=' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:24:7: '>='
         {
 
         match(">=");
@@ -412,8 +412,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:25:7: ( '<' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:25:7: '<'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:25:7: ( '<' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:25:7: '<'
         {
 
         match('<');
@@ -429,8 +429,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:26:7: ( '<=' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:26:7: '<='
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:26:7: ( '<=' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:26:7: '<='
         {
 
         match("<=");
@@ -447,8 +447,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:27:7: ( '!=' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:27:7: '!='
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:27:7: ( '!=' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:27:7: '!='
         {
 
         match("!=");
@@ -465,8 +465,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:28:7: ( 'or' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:28:7: 'or'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:28:7: ( 'or' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:28:7: 'or'
         {
 
         match("or");
@@ -483,8 +483,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:29:7: ( '||' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:29:7: '||'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:29:7: ( '||' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:29:7: '||'
         {
 
         match("||");
@@ -501,8 +501,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:30:7: ( 'and' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:30:7: 'and'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:30:7: ( 'and' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:30:7: 'and'
         {
 
         match("and");
@@ -519,8 +519,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:31:7: ( '&&' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:31:7: '&&'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:31:7: ( '&&' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:31:7: '&&'
         {
 
         match("&&");
@@ -537,8 +537,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:32:7: ( 'exists' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:32:7: 'exists'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:32:7: ( 'exists' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:32:7: 'exists'
         {
 
         match("exists");
@@ -555,8 +555,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:33:7: ( 'not' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:33:7: 'not'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:33:7: ( 'not' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:33:7: 'not'
         {
 
         match("not");
@@ -573,8 +573,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:34:7: ( 'eval' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:34:7: 'eval'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:34:7: ( 'eval' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:34:7: 'eval'
         {
 
         match("eval");
@@ -591,8 +591,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:35:7: ( 'use' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:35:7: 'use'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:35:7: ( 'use' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:35:7: 'use'
         {
 
         match("use");
@@ -609,8 +609,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:37:8: ( ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']'))
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:37:8: ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']')
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:37:8: ( ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']'))
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:37:8: ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']')
         {
 
         if ( input.LA(1)=='!'||(input.LA(1)>='$' && input.LA(1)<='&')||(input.LA(1)>='*' && input.LA(1)<='-')||input.LA(1)=='@'||input.LA(1)=='['||(input.LA(1)>=']' && input.LA(1)<='_')||(input.LA(1)>='{' && input.LA(1)<='}') ) {
@@ -635,8 +635,8 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:39:6: ( (' '|'\t'|'\f'))
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:39:6: (' '|'\t'|'\f')
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:39:6: ( (' '|'\t'|'\f'))
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:39:6: (' '|'\t'|'\f')
         {
 
         if ( input.LA(1)=='\t'||input.LA(1)=='\f'||input.LA(1)==' ' ) {
@@ -663,11 +663,11 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:41:7: ( ( '\r\n' | '\r' | '\n' ) )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:41:7: ( '\r\n' | '\r' | '\n' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:41:7: ( ( '\r\n' | '\r' | '\n' ) )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:41:7: ( '\r\n' | '\r' | '\n' )
         {
 
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:41:7: ( '\r\n' | '\r' | '\n' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:41:7: ( '\r\n' | '\r' | '\n' )
         int alt1=3;
         int LA1_0 = input.LA(1);
         if ( LA1_0=='\r' ) {
@@ -690,7 +690,7 @@ retry:
         }
         switch (alt1) {
             case 1 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:41:8: '\r\n'
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:41:8: '\r\n'
                 {
 
                 match("\r\n");
@@ -699,7 +699,7 @@ retry:
                 }
                 break;
             case 2 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:41:15: '\r'
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:41:15: '\r'
                 {
 
                 match('\r');
@@ -707,7 +707,7 @@ retry:
                 }
                 break;
             case 3 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:41:20: '\n'
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:41:20: '\n'
                 {
 
                 match('\n');
@@ -729,11 +729,11 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:43:7: ( ( '0' .. '9' )+ )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:43:7: ( '0' .. '9' )+
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:43:7: ( ( '0' .. '9' )+ )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:43:7: ( '0' .. '9' )+
         {
 
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:43:7: ( '0' .. '9' )+
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:43:7: ( '0' .. '9' )+
         int cnt2=0;
         loop2:
         do {
@@ -746,7 +746,7 @@ retry:
 
             switch (alt2) {
         	case 1 :
-        	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:43:9: '0' .. '9'
+        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:43:9: '0' .. '9'
         	    {
 
         	    matchRange('0','9');
@@ -775,11 +775,11 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:45:9: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:45:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:45:9: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:45:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
         {
 
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:45:9: ( '0' .. '9' )+
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:45:9: ( '0' .. '9' )+
         int cnt3=0;
         loop3:
         do {
@@ -792,7 +792,7 @@ retry:
 
             switch (alt3) {
         	case 1 :
-        	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:45:11: '0' .. '9'
+        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:45:11: '0' .. '9'
         	    {
 
         	    matchRange('0','9');
@@ -812,7 +812,7 @@ retry:
 
         match('.');
 
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:45:29: ( '0' .. '9' )+
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:45:29: ( '0' .. '9' )+
         int cnt4=0;
         loop4:
         do {
@@ -825,7 +825,7 @@ retry:
 
             switch (alt4) {
         	case 1 :
-        	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:45:31: '0' .. '9'
+        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:45:31: '0' .. '9'
         	    {
 
         	    matchRange('0','9');
@@ -854,13 +854,13 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:47:10: ( '"' ( options {greedy=false; } : . )* '"' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:47:10: '"' ( options {greedy=false; } : . )* '"'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:47:10: ( '"' ( options {greedy=false; } : . )* '"' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:47:10: '"' ( options {greedy=false; } : . )* '"'
         {
 
         match('"');
 
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:47:14: ( options {greedy=false; } : . )*
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:47:14: ( options {greedy=false; } : . )*
         loop5:
         do {
             int alt5=2;
@@ -875,7 +875,7 @@ retry:
 
             switch (alt5) {
         	case 1 :
-        	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:47:43: .
+        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:47:43: .
         	    {
 
         	    matchAny();
@@ -902,11 +902,11 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:49:6: ( ('a'..'z'|'A'..'Z'|'_') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))* )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:49:6: ('a'..'z'|'A'..'Z'|'_') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:49:6: ( ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))* )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:49:6: ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
         {
 
-        if ( (input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+        if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
             input.consume();
             errorRecovery=false;
         }
@@ -917,7 +917,7 @@ retry:
         }
 
 
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:49:30: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:49:34: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
         loop6:
         do {
             int alt6=2;
@@ -929,7 +929,7 @@ retry:
 
             switch (alt6) {
         	case 1 :
-        	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:49:32: ('a'..'z'|'A'..'Z'|'_'|'0'..'9')
+        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:49:36: ('a'..'z'|'A'..'Z'|'_'|'0'..'9')
         	    {
 
         	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
@@ -963,13 +963,13 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:51:32: ( '#' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:51:32: '#' ( options {greedy=false; } : . )* ( '\r' )? '\n'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:51:32: ( '#' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:51:32: '#' ( options {greedy=false; } : . )* ( '\r' )? '\n'
         {
 
         match('#');
 
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:51:36: ( options {greedy=false; } : . )*
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:51:36: ( options {greedy=false; } : . )*
         loop7:
         do {
             int alt7=2;
@@ -987,7 +987,7 @@ retry:
 
             switch (alt7) {
         	case 1 :
-        	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:51:65: .
+        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:51:65: .
         	    {
 
         	    matchAny();
@@ -1001,7 +1001,7 @@ retry:
         } while (true);
 
 
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:51:70: ( '\r' )?
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:51:70: ( '\r' )?
         int alt8=2;
         int LA8_0 = input.LA(1);
         if ( LA8_0=='\r' ) {
@@ -1019,7 +1019,7 @@ retry:
         }
         switch (alt8) {
             case 1 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:51:72: '\r'
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:51:72: '\r'
                 {
 
                 match('\r');
@@ -1043,14 +1043,14 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:53:31: ( '//' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:53:31: '//' ( options {greedy=false; } : . )* ( '\r' )? '\n'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:53:31: ( '//' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:53:31: '//' ( options {greedy=false; } : . )* ( '\r' )? '\n'
         {
 
         match("//");
 
 
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:53:36: ( options {greedy=false; } : . )*
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:53:36: ( options {greedy=false; } : . )*
         loop9:
         do {
             int alt9=2;
@@ -1068,7 +1068,7 @@ retry:
 
             switch (alt9) {
         	case 1 :
-        	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:53:65: .
+        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:53:65: .
         	    {
 
         	    matchAny();
@@ -1082,7 +1082,7 @@ retry:
         } while (true);
 
 
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:53:70: ( '\r' )?
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:53:70: ( '\r' )?
         int alt10=2;
         int LA10_0 = input.LA(1);
         if ( LA10_0=='\r' ) {
@@ -1100,7 +1100,7 @@ retry:
         }
         switch (alt10) {
             case 1 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:53:72: '\r'
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:53:72: '\r'
                 {
 
                 match('\r');
@@ -1124,14 +1124,14 @@ retry:
         int line = getLine();
         int charPosition = getCharPositionInLine();
         int channel = Token.DEFAULT_CHANNEL;
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:55:22: ( '/*' ( options {greedy=false; } : . )* '*/' )
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:55:22: '/*' ( options {greedy=false; } : . )* '*/'
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:55:22: ( '/*' ( options {greedy=false; } : . )* '*/' )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:55:22: '/*' ( options {greedy=false; } : . )* '*/'
         {
 
         match("/*");
 
 
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:55:27: ( options {greedy=false; } : . )*
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:55:27: ( options {greedy=false; } : . )*
         loop11:
         do {
             int alt11=2;
@@ -1154,7 +1154,7 @@ retry:
 
             switch (alt11) {
         	case 1 :
-        	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:55:56: .
+        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:55:56: .
         	    {
 
         	    matchAny();
@@ -1177,12 +1177,12 @@ retry:
     }
 
     public void mTokens() throws RecognitionException {
-        // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:10: ( T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | MISC | WS | EOL | INT | FLOAT | STRING | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:10: ( T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | MISC | WS | EOL | INT | FLOAT | STRING | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT )
         int alt12=40;
         alt12 = dfa12.predict(input);
         switch (alt12) {
             case 1 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:10: T14
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:10: T14
                 {
 
                 mT14();
@@ -1190,7 +1190,7 @@ retry:
                 }
                 break;
             case 2 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:14: T15
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:14: T15
                 {
 
                 mT15();
@@ -1198,7 +1198,7 @@ retry:
                 }
                 break;
             case 3 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:18: T16
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:18: T16
                 {
 
                 mT16();
@@ -1206,7 +1206,7 @@ retry:
                 }
                 break;
             case 4 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:22: T17
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:22: T17
                 {
 
                 mT17();
@@ -1214,7 +1214,7 @@ retry:
                 }
                 break;
             case 5 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:26: T18
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:26: T18
                 {
 
                 mT18();
@@ -1222,7 +1222,7 @@ retry:
                 }
                 break;
             case 6 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:30: T19
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:30: T19
                 {
 
                 mT19();
@@ -1230,7 +1230,7 @@ retry:
                 }
                 break;
             case 7 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:34: T20
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:34: T20
                 {
 
                 mT20();
@@ -1238,7 +1238,7 @@ retry:
                 }
                 break;
             case 8 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:38: T21
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:38: T21
                 {
 
                 mT21();
@@ -1246,7 +1246,7 @@ retry:
                 }
                 break;
             case 9 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:42: T22
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:42: T22
                 {
 
                 mT22();
@@ -1254,7 +1254,7 @@ retry:
                 }
                 break;
             case 10 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:46: T23
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:46: T23
                 {
 
                 mT23();
@@ -1262,7 +1262,7 @@ retry:
                 }
                 break;
             case 11 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:50: T24
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:50: T24
                 {
 
                 mT24();
@@ -1270,7 +1270,7 @@ retry:
                 }
                 break;
             case 12 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:54: T25
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:54: T25
                 {
 
                 mT25();
@@ -1278,7 +1278,7 @@ retry:
                 }
                 break;
             case 13 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:58: T26
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:58: T26
                 {
 
                 mT26();
@@ -1286,7 +1286,7 @@ retry:
                 }
                 break;
             case 14 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:62: T27
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:62: T27
                 {
 
                 mT27();
@@ -1294,7 +1294,7 @@ retry:
                 }
                 break;
             case 15 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:66: T28
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:66: T28
                 {
 
                 mT28();
@@ -1302,7 +1302,7 @@ retry:
                 }
                 break;
             case 16 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:70: T29
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:70: T29
                 {
 
                 mT29();
@@ -1310,7 +1310,7 @@ retry:
                 }
                 break;
             case 17 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:74: T30
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:74: T30
                 {
 
                 mT30();
@@ -1318,7 +1318,7 @@ retry:
                 }
                 break;
             case 18 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:78: T31
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:78: T31
                 {
 
                 mT31();
@@ -1326,7 +1326,7 @@ retry:
                 }
                 break;
             case 19 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:82: T32
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:82: T32
                 {
 
                 mT32();
@@ -1334,7 +1334,7 @@ retry:
                 }
                 break;
             case 20 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:86: T33
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:86: T33
                 {
 
                 mT33();
@@ -1342,7 +1342,7 @@ retry:
                 }
                 break;
             case 21 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:90: T34
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:90: T34
                 {
 
                 mT34();
@@ -1350,7 +1350,7 @@ retry:
                 }
                 break;
             case 22 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:94: T35
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:94: T35
                 {
 
                 mT35();
@@ -1358,7 +1358,7 @@ retry:
                 }
                 break;
             case 23 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:98: T36
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:98: T36
                 {
 
                 mT36();
@@ -1366,7 +1366,7 @@ retry:
                 }
                 break;
             case 24 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:102: T37
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:102: T37
                 {
 
                 mT37();
@@ -1374,7 +1374,7 @@ retry:
                 }
                 break;
             case 25 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:106: T38
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:106: T38
                 {
 
                 mT38();
@@ -1382,7 +1382,7 @@ retry:
                 }
                 break;
             case 26 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:110: T39
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:110: T39
                 {
 
                 mT39();
@@ -1390,7 +1390,7 @@ retry:
                 }
                 break;
             case 27 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:114: T40
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:114: T40
                 {
 
                 mT40();
@@ -1398,7 +1398,7 @@ retry:
                 }
                 break;
             case 28 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:118: T41
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:118: T41
                 {
 
                 mT41();
@@ -1406,7 +1406,7 @@ retry:
                 }
                 break;
             case 29 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:122: T42
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:122: T42
                 {
 
                 mT42();
@@ -1414,7 +1414,7 @@ retry:
                 }
                 break;
             case 30 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:126: T43
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:126: T43
                 {
 
                 mT43();
@@ -1422,7 +1422,7 @@ retry:
                 }
                 break;
             case 31 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:130: MISC
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:130: MISC
                 {
 
                 mMISC();
@@ -1430,7 +1430,7 @@ retry:
                 }
                 break;
             case 32 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:135: WS
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:135: WS
                 {
 
                 mWS();
@@ -1438,7 +1438,7 @@ retry:
                 }
                 break;
             case 33 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:138: EOL
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:138: EOL
                 {
 
                 mEOL();
@@ -1446,7 +1446,7 @@ retry:
                 }
                 break;
             case 34 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:142: INT
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:142: INT
                 {
 
                 mINT();
@@ -1454,7 +1454,7 @@ retry:
                 }
                 break;
             case 35 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:146: FLOAT
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:146: FLOAT
                 {
 
                 mFLOAT();
@@ -1462,7 +1462,7 @@ retry:
                 }
                 break;
             case 36 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:152: STRING
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:152: STRING
                 {
 
                 mSTRING();
@@ -1470,7 +1470,7 @@ retry:
                 }
                 break;
             case 37 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:159: ID
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:159: ID
                 {
 
                 mID();
@@ -1478,7 +1478,7 @@ retry:
                 }
                 break;
             case 38 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:162: SH_STYLE_SINGLE_LINE_COMMENT
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:162: SH_STYLE_SINGLE_LINE_COMMENT
                 {
 
                 mSH_STYLE_SINGLE_LINE_COMMENT();
@@ -1486,7 +1486,7 @@ retry:
                 }
                 break;
             case 39 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:191: C_STYLE_SINGLE_LINE_COMMENT
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:191: C_STYLE_SINGLE_LINE_COMMENT
                 {
 
                 mC_STYLE_SINGLE_LINE_COMMENT();
@@ -1494,7 +1494,7 @@ retry:
                 }
                 break;
             case 40 :
-                // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/java/org/drools/lang/RuleParser.lexer.g:1:219: MULTI_LINE_COMMENT
+                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:219: MULTI_LINE_COMMENT
                 {
 
                 mMULTI_LINE_COMMENT();
@@ -2278,6 +2278,7 @@ retry:
                 case 'u':
                     return s23;
 
+                case '$':
                 case '_':
                     return s24;
 
@@ -2305,7 +2306,6 @@ retry:
                 case '"':
                     return s29;
 
-                case '$':
                 case '%':
                 case '*':
                 case '+':

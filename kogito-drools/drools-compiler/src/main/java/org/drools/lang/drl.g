@@ -527,8 +527,9 @@ STRING
 	;
 	
 ID	
-	:	('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'_'|'0'..'9')* 
+	:	('a'..'z'|'A'..'Z'|'_'|'$')('a'..'z'|'A'..'Z'|'_'|'0'..'9')* 
 	;
+		
 
 SH_STYLE_SINGLE_LINE_COMMENT	
 	:	'#' ( options{greedy=false;} : .)* ('\r')? '\n' 
