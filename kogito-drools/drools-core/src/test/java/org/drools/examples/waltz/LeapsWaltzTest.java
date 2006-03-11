@@ -22,15 +22,11 @@ package org.drools.examples.waltz;
  * 
  */
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.FactException;
-import org.drools.PackageIntegrationException;
 import org.drools.WorkingMemory;
-import org.drools.rule.InvalidPatternException;
 
 /**
  * 
@@ -56,7 +52,7 @@ public class LeapsWaltzTest extends BaseWaltzTest {
 
         long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
-//		System.out.println(workingMemory);
+
         System.out.println( "Elapsed time - " +( ( System.currentTimeMillis() - start ) / 1000.) + " sec.");
 
     }
