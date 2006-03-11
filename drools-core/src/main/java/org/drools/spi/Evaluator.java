@@ -8,7 +8,8 @@ public interface Evaluator {
     public static final int LESS_OR_EQUAL    = 30;
     public static final int GREATER          = 40;
     public static final int GREATER_OR_EQUAL = 50;
-
+    public static final int CONTAINS         = 60;
+    
     // Types
     public static final int CHAR_TYPE        = 100;
     public static final int BYTE_TYPE        = 110;
@@ -23,6 +24,7 @@ public interface Evaluator {
     public static final int ARRAY_TYPE       = 200;
     public static final int OBJECT_TYPE      = 210;
     public static final int NULL_TYPE        = 300;
+    
     
     public int getType();
 
