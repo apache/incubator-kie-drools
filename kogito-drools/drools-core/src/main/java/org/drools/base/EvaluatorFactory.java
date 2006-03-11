@@ -1,5 +1,7 @@
 package org.drools.base;
 
+import java.util.Collection;
+
 import org.drools.spi.Evaluator;
 
 public class EvaluatorFactory {
@@ -20,15 +22,19 @@ public class EvaluatorFactory {
             evaluator = getEvaluator(type, Evaluator.EQUAL);
         } else if ( operator.equals("!=") ) {
             evaluator = getEvaluator(type, Evaluator.NOT_EQUAL);
-        } if ( operator.equals("<") ) {
+        } else if ( operator.equals("<") ) {
             evaluator = getEvaluator(type, Evaluator.LESS);
-        } if ( operator.equals("<=") ) {
+        } else if ( operator.equals("<=") ) {
             evaluator = getEvaluator(type, Evaluator.LESS_OR_EQUAL);
-        } if ( operator.equals(">") ) {
+        } else if ( operator.equals(">") ) {
             evaluator = getEvaluator(type, Evaluator.EQUAL);
-        } if ( operator.equals(">=") ) {
+        } else if ( operator.equals(">=") ) {
             evaluator = getEvaluator(type, Evaluator.GREATER_OR_EQUAL);
-        } 
+        } else if (operator.equals( "contains" ) ) {
+            evaluator = getEvaluator(type, Evaluator.CONTAINS);
+        } else {
+            throw new IllegalArgumentException("Unknown operator: '" + operator + "'");
+        }
         
         return evaluator;
     }
@@ -56,6 +62,8 @@ public class EvaluatorFactory {
                 return ObjectEqualEvaluator.getInstance();
             case Evaluator.NOT_EQUAL :
                 return ObjectNotEqualEvaluator.getInstance();
+            case Evaluator.CONTAINS :
+                return ObjectContainsEvaluator.getInstance();
             default :
                 throw new RuntimeException( "Operator '" + operator + "' does not exist for ObjectEvaluator" );
         }
@@ -110,6 +118,35 @@ public class EvaluatorFactory {
             return "Object !=";
         }        
     }
+    
+    static class ObjectContainsEvaluator extends BaseEvaluator {
+        private static Evaluator INSTANCE;
+
+        public static Evaluator getInstance() {
+            if ( INSTANCE == null ) {
+                INSTANCE = new ObjectContainsEvaluator();
+            }
+            return INSTANCE;
+        }
+
+        private ObjectContainsEvaluator() {
+            super( Evaluator.OBJECT_TYPE,
+                   Evaluator.CONTAINS );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            if (object2 == null) return false;
+            
+            //TODO: add support for hashes, normal arrays etc
+            Collection col = (Collection) object2;
+            return col.contains( object1 );
+        }
+        
+        public String toString() {
+            return "Object !=";
+        }        
+    }    
     
     Evaluator getBooleanEvaluator(int operator) {
         switch ( operator ) {

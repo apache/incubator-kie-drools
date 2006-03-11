@@ -1,0 +1,12 @@
+package HelloWorld
+ 
+import org.drools.integrationtests.helloworld.Message
+ 
+
+rule "Hello World"
+	when
+		$m : Message(list contains "hello")
+		Message(message == "hola")
+	then
+		System.out.println("hello world with collections " + $m.getMessage()); 
+end

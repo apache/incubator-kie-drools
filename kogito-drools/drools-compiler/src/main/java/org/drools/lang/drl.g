@@ -330,6 +330,7 @@ constraint[List constraints]
 					|	'<'
 					|	'<='
 					|	'!='
+					|	'contains'
 					) opt_eol	
 					
 					(	lc=literal_constraint 
