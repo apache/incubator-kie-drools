@@ -79,7 +79,7 @@ public class AlphaNodeSwitch {
     }
 
     public int hashCode() {
-        return this.constraint.getEvaluator().getOperator() * 17 + this.constraint.getFieldExtractor().getIndex() + this.constraint.getField().getValue().hashCode();
+        return this.constraint.getEvaluator().getOperator() * 17 + this.constraint.getFieldExtractor().getIndex();
         
     }
     
