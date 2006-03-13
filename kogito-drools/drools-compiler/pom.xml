@@ -44,13 +44,7 @@
 	    <groupId>commons-lang</groupId>
 	    <artifactId>commons-lang</artifactId>
 	    <version>2.1</version>
-	  </dependency>                      
-           
-	<dependency>
-			<groupId>antlr</groupId>
-			<artifactId>antlr</artifactId>    
-			<version>2.7.6</version>
-    </dependency>                 
+	  </dependency>                                               
            
     <dependency>
 			<groupId>antlr</groupId>
@@ -58,11 +52,17 @@
 			<version>2.3b6</version>
     </dependency>                                            
     
-	<dependency>
+	 <dependency>
 			<groupId>antlr</groupId>
-			<artifactId>antlr</artifactId>    
+			<artifactId>antlr3</artifactId>    
 			<version>3.0ea8</version>
     </dependency>     
+    
+	 <dependency>
+			<groupId>antlr</groupId>
+			<artifactId>antlr</artifactId>    
+			<version>2.7.6</version>
+    </dependency>       
 
     <dependency>
 			<groupId>eclipse</groupId>
