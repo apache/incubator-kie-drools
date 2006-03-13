@@ -16,36 +16,49 @@ def do_dir(start, copyright)
 end
 
 
-#replace the guys of a file
+#replace the guts of a file
 def do_java(f, copyright)
 
   contents = IO.read(f)
-  ex_s = Regexp.escape("/*") + ".*Copyright.*" + Regexp.escape("*/") #regex not quite right, not matching end correctly
-  puts "regex: " + ex_s
-  ex = Regexp.new(ex_s, Regexp::MULTILINE)
-  
-  if ex.match(contents) != nil 
-    then 
-      #clear out the old one
-      puts "replacing in : " + f
-      new_guts = contents.sub(ex, "")      
-    else 
-      puts "adding to : " + f
-      new_guts = contents
-  end
-  puts "NEW: " + new_guts
-  
-  
-  lines = new_guts.split(/\n/)
-  #now insert, after the 2nd line, the new (c) and we are done.
+  exp = Regexp.escape("/*") + ".*Copyright.*?" + Regexp.escape("*/") 
+  existing = Regexp.new(exp, Regexp::MULTILINE)
+  if not contents.include? copyright then
+    if existing.match(contents) != nil 
+      then 
+        #clear out the old one
+        puts "replacing in : " + f
+        contents = contents.sub(existing, "")      
+      else 
+        puts "adding to : " + f
+    end
+    
+    write_to f, put_in(contents, copyright)
+    
+  else 
+    puts "ignoring as it is OK : " + f
+  end    
   
 end
 
+def put_in(contents, copyright) 
+  new_contents = ""
+  line_num = 0
+  contents.split(/\n/).each { |line| 
+    if line_num == 0 then
+      new_contents = line + "\n" + copyright 
+    else 
+      new_contents = new_contents + "\n" + line
+    end
+    line_num = line_num + 1
+  }
+  return new_contents
+end
+
 def write_to(target, guts) 
-      target = File.new(f, "w")
+      target = File.new(target, "w")
       target.write guts
       target.close
 end
 
-do_dir("c:/temp/src/aaa", IO.read("c:/temp/copy.txt"))
+do_dir("c:/temp", IO.read("c:/temp/copy.txt"))
 
