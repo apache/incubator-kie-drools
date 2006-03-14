@@ -149,7 +149,7 @@ rule returns [RuleDescr rule]
 			*/
 		)?
 		(	'then' ':'?
-			(any=.
+			(options{greedy=false;} : any=.
 				{
 					consequence = consequence + " " + any.getText();
 				}
