@@ -55,8 +55,8 @@ public class EvaluatorFactoryTest extends TestCase {
                             {new Integer(42), ">=", new Integer(41), Boolean.TRUE},
                             {new Integer(42), "!=", new Integer(41), Boolean.TRUE},
                             {new Integer(42), ">", new Integer(41), Boolean.TRUE},
-                            {new Integer(42), "<=", new Integer(42), Boolean.TRUE}
-                            
+                            {new Integer(42), "<=", new Integer(42), Boolean.TRUE},
+                            {new Integer(42), ">", new Integer(100), Boolean.FALSE}
                           };
 
         
@@ -83,7 +83,9 @@ public class EvaluatorFactoryTest extends TestCase {
         
         //Test data: Obj1, Operand, Obj2
         Object[][] data = { {new Boolean(true), "==", new Boolean(true), Boolean.TRUE},
-                            {new Boolean(false), "!=", new Boolean(true), Boolean.TRUE}
+                            {new Boolean(false), "!=", new Boolean(true), Boolean.TRUE},
+                            {new Boolean(true), "==", new Boolean(false), Boolean.FALSE},
+                            {new Boolean(true), "!=", new Boolean(false), Boolean.TRUE}
                           };
 
         runEvaluatorTest( data,
@@ -97,7 +99,9 @@ public class EvaluatorFactoryTest extends TestCase {
                             {new Double(42), "!=", new Double(41), Boolean.TRUE},
                             {new Double(42), ">", new Double(41), Boolean.TRUE},
                             {new Double(42), ">=", new Double(41), Boolean.TRUE},
-                            {new Double(42), ">=", new Double(42), Boolean.TRUE}
+                            {new Double(42), ">=", new Double(42), Boolean.TRUE},
+                            {new Double(42), ">=", new Double(100), Boolean.FALSE},
+                            {new Double(42), "<", new Double(1), Boolean.FALSE}
                           };
 
         runEvaluatorTest( data,
