@@ -1,8 +1,12 @@
 package org.drools.base;
 
 import org.drools.base.evaluators.BooleanFactory;
+import org.drools.base.evaluators.ByteFactory;
+import org.drools.base.evaluators.CharacterFactory;
 import org.drools.base.evaluators.DoubleFactory;
+import org.drools.base.evaluators.FloatFactory;
 import org.drools.base.evaluators.IntegerFactory;
+import org.drools.base.evaluators.LongFactory;
 import org.drools.base.evaluators.ObjectFactory;
 import org.drools.base.evaluators.ShortFactory;
 import org.drools.spi.Evaluator;
@@ -12,7 +16,11 @@ import org.drools.spi.Evaluator;
  * in constraints. Uses the helper classes in the evaluators sub package.
  * 
  * eg Person(object<type> opr object)
- * Where valid type's are are defined as contants in Evaluator
+ * Where valid type's are are defined as contants in Evaluator.
+ * 
+ * Adding support for other types or operators is quite easy, just remmeber to add it to the getEvaluator method(s)
+ * below, and also to the unit tests.
+ * TODO: Should this be made dynamic, such that users can add their own types, a-la hibernate?
  */
 public class EvaluatorFactory {
     private static final EvaluatorFactory INSTANCE = new EvaluatorFactory();
@@ -63,6 +71,14 @@ public class EvaluatorFactory {
                 return BooleanFactory.getBooleanEvaluator( operator );  
             case Evaluator.DOUBLE_TYPE :
                 return DoubleFactory.getDoubleEvaluator( operator );
+            case Evaluator.CHAR_TYPE :
+                return CharacterFactory.getCharacterEvaluator( operator );
+            case Evaluator.BYTE_TYPE :
+                return ByteFactory.getByteEvaluator( operator );
+            case Evaluator.FLOAT_TYPE :
+                return FloatFactory.getFloatEvaluator( operator );
+            case Evaluator.LONG_TYPE :
+                return LongFactory.getLongEvaluator( operator );
             default :
                 throw new RuntimeException( "Type '" + type + "' does not exist for BaseEvaluatorFactory" );
         }
