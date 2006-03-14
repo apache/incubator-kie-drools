@@ -400,7 +400,7 @@ public class EvaluatorFactory {
     static class IntegerEqualEvaluator extends BaseEvaluator {
         private static Evaluator INSTANCE;
 
-        public static long count = 0;
+        
         
         public static Evaluator getInstance() {
             if ( INSTANCE == null ) {
@@ -410,13 +410,12 @@ public class EvaluatorFactory {
         }
 
         private IntegerEqualEvaluator() {
-            super( Evaluator.SHORT_TYPE,
+            super( Evaluator.INTEGER_TYPE,
                    Evaluator.EQUAL );
         }
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            count++;
             return ((Number) object1).intValue() == ((Number) object2).intValue();
         }
         
@@ -436,7 +435,7 @@ public class EvaluatorFactory {
         }
 
         private IntegerNotEqualEvaluator() {
-            super( Evaluator.SHORT_TYPE,
+            super( Evaluator.INTEGER_TYPE,
                    Evaluator.NOT_EQUAL );
         }
 
@@ -461,7 +460,7 @@ public class EvaluatorFactory {
         }
 
         private IntegerLessEvaluator() {
-            super( Evaluator.SHORT_TYPE,
+            super( Evaluator.INTEGER_TYPE,
                    Evaluator.LESS );
         }
 
@@ -486,7 +485,7 @@ public class EvaluatorFactory {
         }
 
         private IntegerLessOrEqualEvaluator() {
-            super( Evaluator.SHORT_TYPE,
+            super( Evaluator.INTEGER_TYPE,
                    Evaluator.LESS_OR_EQUAL );
         }
 
@@ -511,7 +510,7 @@ public class EvaluatorFactory {
         }
 
         private IntegerGreaterEvaluator() {
-            super( Evaluator.SHORT_TYPE,
+            super( Evaluator.INTEGER_TYPE,
                    Evaluator.GREATER );
         }
 
@@ -536,7 +535,7 @@ public class EvaluatorFactory {
         }
 
         private IntegerGreaterOrEqualEvaluator() {
-            super( Evaluator.SHORT_TYPE,
+            super( Evaluator.INTEGER_TYPE,
                    Evaluator.GREATER_OR_EQUAL );
         }
 
