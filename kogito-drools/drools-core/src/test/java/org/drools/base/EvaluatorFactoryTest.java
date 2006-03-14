@@ -53,7 +53,10 @@ public class EvaluatorFactoryTest extends TestCase {
         Object[][] data = { {new Integer(42), "==", new Integer(42), Boolean.TRUE},
                             {new Integer(42), "<", new Integer(43), Boolean.TRUE},
                             {new Integer(42), ">=", new Integer(41), Boolean.TRUE},
-                            {new Integer(42), "!=", new Integer(41), Boolean.TRUE}
+                            {new Integer(42), "!=", new Integer(41), Boolean.TRUE},
+                            {new Integer(42), ">", new Integer(41), Boolean.TRUE},
+                            {new Integer(42), "<=", new Integer(42), Boolean.TRUE}
+                            
                           };
 
         
@@ -85,7 +88,21 @@ public class EvaluatorFactoryTest extends TestCase {
 
         runEvaluatorTest( data,
                           Evaluator.BOOLEAN_TYPE );
-    }       
+    }  
+    
+    public void testDouble() {
+        Object[][] data = { {new Double(42), "==", new Double(42), Boolean.TRUE},
+                            {new Double(42), "<", new Double(43), Boolean.TRUE},
+                            {new Double(42), ">=", new Double(41), Boolean.TRUE},
+                            {new Double(42), "!=", new Double(41), Boolean.TRUE},
+                            {new Double(42), ">", new Double(41), Boolean.TRUE},
+                            {new Double(42), ">=", new Double(41), Boolean.TRUE},
+                            {new Double(42), ">=", new Double(42), Boolean.TRUE}
+                          };
+
+        runEvaluatorTest( data,
+                          Evaluator.DOUBLE_TYPE );
+    }      
 
     private void runEvaluatorTest(Object[][] data,
                                   int evalType) {
