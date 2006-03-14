@@ -14,10 +14,6 @@ import junit.framework.TestCase;
  */
 public class EvaluatorFactoryTest extends TestCase {
 
-    public void testFactoryMethod() {
-        assertNotNull(EvaluatorFactory.getInstance());
-    }
-    
     public void testObject() {
 
         List list = new ArrayList();
