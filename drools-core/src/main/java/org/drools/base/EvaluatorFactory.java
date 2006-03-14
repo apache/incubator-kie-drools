@@ -27,7 +27,7 @@ public class EvaluatorFactory {
         } else if ( operator.equals("<=") ) {
             evaluator = getEvaluator(type, Evaluator.LESS_OR_EQUAL);
         } else if ( operator.equals(">") ) {
-            evaluator = getEvaluator(type, Evaluator.EQUAL);
+            evaluator = getEvaluator(type, Evaluator.GREATER);
         } else if ( operator.equals(">=") ) {
             evaluator = getEvaluator(type, Evaluator.GREATER_OR_EQUAL);
         } else if (operator.equals( "contains" ) ) {
@@ -50,7 +50,9 @@ public class EvaluatorFactory {
             case Evaluator.INTEGER_TYPE :
                 return INSTANCE.getIntegerEvaluator( operator );
             case Evaluator.BOOLEAN_TYPE :
-                return INSTANCE.getBooleanEvaluator( operator );                
+                return INSTANCE.getBooleanEvaluator( operator );  
+            case Evaluator.DOUBLE_TYPE :
+                return INSTANCE.getDoubleEvaluator( operator );
             default :
                 throw new RuntimeException( "Type '" + type + "' does not exist for BaseEvaluatorFactory" );
         }
@@ -224,7 +226,7 @@ public class EvaluatorFactory {
             case Evaluator.GREATER_OR_EQUAL :
                 return ShortGreaterOrEqualEvaluator.getInstance();
             default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for BooleanEvaluator" );
+                throw new RuntimeException( "Operator '" + operator + "' does not exist for ShortEvaluator" );
         }
     }
 
@@ -381,33 +383,27 @@ public class EvaluatorFactory {
     Evaluator getIntegerEvaluator(int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
-                return IntegerEqualEvaluator.getInstance();
+                return IntegerEqualEvaluator.INSTANCE;
             case Evaluator.NOT_EQUAL :
-                return IntegerNotEqualEvaluator.getInstance();
+                return IntegerNotEqualEvaluator.INSTANCE;
             case Evaluator.LESS :
-                return IntegerLessEvaluator.getInstance();
+                return IntegerLessEvaluator.INSTANCE;
             case Evaluator.LESS_OR_EQUAL :
-                return IntegerLessOrEqualEvaluator.getInstance();
+                return IntegerLessOrEqualEvaluator.INSTANCE;
             case Evaluator.GREATER :
-                return IntegerGreaterEvaluator.getInstance();
+                return IntegerGreaterEvaluator.INSTANCE;
             case Evaluator.GREATER_OR_EQUAL :
-                return IntegerGreaterOrEqualEvaluator.getInstance();
+                return IntegerGreaterOrEqualEvaluator.INSTANCE;
             default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for BooleanEvaluator" );
+                throw new RuntimeException( "Operator '" + operator + "' does not exist for IntegerEvaluator" );
         }
     }
 
+    
+    
+    
     static class IntegerEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
-
-        
-        
-        public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new IntegerEqualEvaluator();
-            }
-            return INSTANCE;
-        }
+        public final static Evaluator INSTANCE = new IntegerEqualEvaluator();
 
         private IntegerEqualEvaluator() {
             super( Evaluator.INTEGER_TYPE,
@@ -425,14 +421,7 @@ public class EvaluatorFactory {
     }
 
     static class IntegerNotEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new IntegerNotEqualEvaluator();
-            }
-            return INSTANCE;
-        }
+        public final static Evaluator INSTANCE = new IntegerNotEqualEvaluator();
 
         private IntegerNotEqualEvaluator() {
             super( Evaluator.INTEGER_TYPE,
@@ -450,14 +439,7 @@ public class EvaluatorFactory {
     }
 
     static class IntegerLessEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new IntegerLessEvaluator();
-            }
-            return INSTANCE;
-        }
+        public final static Evaluator INSTANCE = new IntegerLessEvaluator();
 
         private IntegerLessEvaluator() {
             super( Evaluator.INTEGER_TYPE,
@@ -475,14 +457,7 @@ public class EvaluatorFactory {
     }
 
     static class IntegerLessOrEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new IntegerLessOrEqualEvaluator();
-            }
-            return INSTANCE;
-        }
+        public final static Evaluator INSTANCE = new IntegerLessOrEqualEvaluator();
 
         private IntegerLessOrEqualEvaluator() {
             super( Evaluator.INTEGER_TYPE,
@@ -500,14 +475,7 @@ public class EvaluatorFactory {
     }
 
     static class IntegerGreaterEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new IntegerGreaterEvaluator();
-            }
-            return INSTANCE;
-        }
+        public final static Evaluator INSTANCE = new IntegerGreaterEvaluator();
 
         private IntegerGreaterEvaluator() {
             super( Evaluator.INTEGER_TYPE,
@@ -525,14 +493,7 @@ public class EvaluatorFactory {
     }
 
     static class IntegerGreaterOrEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new IntegerGreaterOrEqualEvaluator();
-            }
-            return INSTANCE;
-        }
+        private final static Evaluator INSTANCE = new IntegerGreaterOrEqualEvaluator();
 
         private IntegerGreaterOrEqualEvaluator() {
             super( Evaluator.INTEGER_TYPE,
@@ -548,4 +509,135 @@ public class EvaluatorFactory {
             return "Integer >=";
         }         
     }
+    
+    
+    Evaluator getDoubleEvaluator(int operator) {
+        switch ( operator ) {
+            case Evaluator.EQUAL :
+                return DoubleEqualEvaluator.INSTANCE;
+            case Evaluator.NOT_EQUAL :
+                return DoubleNotEqualEvaluator.INSTANCE;
+            case Evaluator.LESS :
+                return DoubleLessEvaluator.INSTANCE;
+            case Evaluator.LESS_OR_EQUAL :
+                return DoubleLessOrEqualEvaluator.INSTANCE;
+            case Evaluator.GREATER :
+                return DoubleGreaterEvaluator.INSTANCE;
+            case Evaluator.GREATER_OR_EQUAL :
+                return DoubleGreaterOrEqualEvaluator.INSTANCE;
+            default :
+                throw new RuntimeException( "Operator '" + operator + "' does not exist for DoubleEvaluator" );
+        }
+    }    
+    
+    
+    static class DoubleEqualEvaluator extends BaseEvaluator {
+        public final static Evaluator INSTANCE = new DoubleEqualEvaluator();
+
+        private DoubleEqualEvaluator() {
+            super( Evaluator.DOUBLE_TYPE,
+                   Evaluator.EQUAL );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            return ((Number) object1).doubleValue() == ((Number) object2).doubleValue();
+        }
+        
+        public String toString() {
+            return "Double ==";
+        }         
+    }
+
+    static class DoubleNotEqualEvaluator extends BaseEvaluator {
+        public final static Evaluator INSTANCE = new DoubleNotEqualEvaluator();
+
+        private DoubleNotEqualEvaluator() {
+            super( Evaluator.DOUBLE_TYPE,
+                   Evaluator.NOT_EQUAL );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            return ((Number) object1).doubleValue() != ((Number) object2).doubleValue();
+        }
+        
+        public String toString() {
+            return "Double !=";
+        }                 
+    }
+
+    static class DoubleLessEvaluator extends BaseEvaluator {
+        public final static Evaluator INSTANCE = new DoubleLessEvaluator();
+
+        private DoubleLessEvaluator() {
+            super( Evaluator.DOUBLE_TYPE,
+                   Evaluator.LESS );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            return ((Number) object1).doubleValue() < ((Number) object2).doubleValue();
+        }
+        
+        public String toString() {
+            return "Double <";
+        }                 
+    }
+
+    static class DoubleLessOrEqualEvaluator extends BaseEvaluator {
+        public final static Evaluator INSTANCE = new DoubleLessOrEqualEvaluator();
+
+        private DoubleLessOrEqualEvaluator() {
+            super( Evaluator.DOUBLE_TYPE,
+                   Evaluator.LESS_OR_EQUAL );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            return ((Number) object1).doubleValue() <= ((Number) object2).doubleValue();
+        }
+        
+        public String toString() {
+            return "Double <=";
+        }         
+    }
+
+    static class DoubleGreaterEvaluator extends BaseEvaluator {
+        public final static Evaluator INSTANCE = new DoubleGreaterEvaluator();
+
+        private DoubleGreaterEvaluator() {
+            super( Evaluator.DOUBLE_TYPE,
+                   Evaluator.GREATER );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            return ((Number) object1).doubleValue() > ((Number) object2).doubleValue();
+        }
+        
+        public String toString() {
+            return "Double >";
+        }         
+    }
+
+    static class DoubleGreaterOrEqualEvaluator extends BaseEvaluator {
+        private final static Evaluator INSTANCE = new DoubleGreaterOrEqualEvaluator();
+
+        private DoubleGreaterOrEqualEvaluator() {
+            super( Evaluator.DOUBLE_TYPE,
+                   Evaluator.GREATER_OR_EQUAL );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            return ((Number) object1).doubleValue() >= ((Number) object2).doubleValue();
+        }
+        
+        public String toString() {
+            return "Double >=";
+        }         
+    }    
+    
+    
 }
