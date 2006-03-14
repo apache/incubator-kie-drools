@@ -61,25 +61,18 @@ public class EvaluatorFactory {
     Evaluator getObjectEvaluator(int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
-                return ObjectEqualEvaluator.getInstance();
+                return ObjectEqualEvaluator.INSTANCE;
             case Evaluator.NOT_EQUAL :
-                return ObjectNotEqualEvaluator.getInstance();
+                return ObjectNotEqualEvaluator.INSTANCE;
             case Evaluator.CONTAINS :
-                return ObjectContainsEvaluator.getInstance();
+                return ObjectContainsEvaluator.INSTANCE;
             default :
                 throw new RuntimeException( "Operator '" + operator + "' does not exist for ObjectEvaluator" );
         }
     }
 
     static class ObjectEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new ObjectEqualEvaluator();
-            }
-            return INSTANCE;
-        }
+        public final static Evaluator INSTANCE = new ObjectEqualEvaluator();
 
         private ObjectEqualEvaluator() {
             super( Evaluator.OBJECT_TYPE,
@@ -97,14 +90,7 @@ public class EvaluatorFactory {
     }
 
     static class ObjectNotEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new ObjectNotEqualEvaluator();
-            }
-            return INSTANCE;
-        }
+        public final static Evaluator INSTANCE = new ObjectNotEqualEvaluator();
 
         private ObjectNotEqualEvaluator() {
             super( Evaluator.OBJECT_TYPE,
@@ -122,14 +108,7 @@ public class EvaluatorFactory {
     }
     
     static class ObjectContainsEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new ObjectContainsEvaluator();
-            }
-            return INSTANCE;
-        }
+        public final static Evaluator INSTANCE = new ObjectContainsEvaluator();
 
         private ObjectContainsEvaluator() {
             super( Evaluator.OBJECT_TYPE,
@@ -153,23 +132,16 @@ public class EvaluatorFactory {
     Evaluator getBooleanEvaluator(int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
-                return ObjectEqualEvaluator.getInstance();
+                return BooleanEqualEvaluator.INSTANCE;
             case Evaluator.NOT_EQUAL :
-                return ObjectNotEqualEvaluator.getInstance();
+                return BooleanNotEqualEvaluator.INSTANCE;
             default :
                 throw new RuntimeException( "Operator '" + operator + "' does not exist for BooleanEvaluator" );
         }
     }      
     
     static class BooleanEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new BooleanEqualEvaluator();
-            }
-            return INSTANCE;
-        }
+        private final static Evaluator INSTANCE = new BooleanEqualEvaluator();
 
         private BooleanEqualEvaluator() {
             super( Evaluator.BOOLEAN_TYPE,
@@ -187,14 +159,7 @@ public class EvaluatorFactory {
     }      
 
     static class BooleanNotEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new BooleanNotEqualEvaluator();
-            }
-            return INSTANCE;
-        }
+        public final static Evaluator INSTANCE = new BooleanNotEqualEvaluator();
 
         private BooleanNotEqualEvaluator() {
             super( Evaluator.BOOLEAN_TYPE,
