@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea7 C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g 2006-03-11 22:09:42
+// $ANTLR 3.0ea8 C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-03-14 20:26:19
 
 	package org.drools.lang;
 
@@ -44,1487 +44,1647 @@ public class RuleParserLexer extends Lexer {
     public static final int T42=42;
     public static final int T40=40;
     public static final int T15=15;
+    public static final int EOF=-1;
     public static final int EOL=4;
+    public static final int Tokens=45;
     public static final int T31=31;
     public static final int MULTI_LINE_COMMENT=13;
     public static final int T27=27;
     public static final int T30=30;
     public static final int C_STYLE_SINGLE_LINE_COMMENT=12;
+    public RuleParserLexer() {;} 
     public RuleParserLexer(CharStream input) {
         super(input);
     }
-    public Token nextToken() {
-        token=null;
-retry:
-        while (true) {
-            if ( input.LA(1)==CharStream.EOF ) {
-                return Token.EOF_TOKEN;
-            }	
-            try {
-                mTokens();
-                break retry;
-            }
-            catch (RecognitionException re) {
-                reportError(re);
-                recover(re);
-            }
-        }
-        return token;
-    }
 
+
+    // $ANTLR start T14
     public void mT14() throws RecognitionException {
-        int type = T14;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:6:7: ( 'package' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:6:7: 'package'
-        {
+        try {
+            int type = T14;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:6:7: ( 'package' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:6:7: 'package'
+            {
+            match("package"); 
 
-        match("package");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T14
 
+
+    // $ANTLR start T15
     public void mT15() throws RecognitionException {
-        int type = T15;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:7:7: ( '.' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:7:7: '.'
-        {
+        try {
+            int type = T15;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:7:7: ( '.' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:7:7: '.'
+            {
+            match('.'); 
 
-        match('.');
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T15
 
+
+    // $ANTLR start T16
     public void mT16() throws RecognitionException {
-        int type = T16;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:8:7: ( ';' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:8:7: ';'
-        {
+        try {
+            int type = T16;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:8:7: ( ';' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:8:7: ';'
+            {
+            match(';'); 
 
-        match(';');
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T16
 
+
+    // $ANTLR start T17
     public void mT17() throws RecognitionException {
-        int type = T17;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:9:7: ( 'import' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:9:7: 'import'
-        {
+        try {
+            int type = T17;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:9:7: ( 'import' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:9:7: 'import'
+            {
+            match("import"); 
 
-        match("import");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T17
 
+
+    // $ANTLR start T18
     public void mT18() throws RecognitionException {
-        int type = T18;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:10:7: ( 'expander' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:10:7: 'expander'
-        {
+        try {
+            int type = T18;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:10:7: ( 'expander' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:10:7: 'expander'
+            {
+            match("expander"); 
 
-        match("expander");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T18
 
+
+    // $ANTLR start T19
     public void mT19() throws RecognitionException {
-        int type = T19;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:11:7: ( 'rule' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:11:7: 'rule'
-        {
+        try {
+            int type = T19;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:11:7: ( 'rule' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:11:7: 'rule'
+            {
+            match("rule"); 
 
-        match("rule");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T19
 
+
+    // $ANTLR start T20
     public void mT20() throws RecognitionException {
-        int type = T20;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:12:7: ( 'when' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:12:7: 'when'
-        {
+        try {
+            int type = T20;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:12:7: ( 'when' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:12:7: 'when'
+            {
+            match("when"); 
 
-        match("when");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T20
 
+
+    // $ANTLR start T21
     public void mT21() throws RecognitionException {
-        int type = T21;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:13:7: ( ':' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:13:7: ':'
-        {
+        try {
+            int type = T21;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:13:7: ( ':' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:13:7: ':'
+            {
+            match(':'); 
 
-        match(':');
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T21
 
+
+    // $ANTLR start T22
     public void mT22() throws RecognitionException {
-        int type = T22;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:14:7: ( '>' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:14:7: '>'
-        {
+        try {
+            int type = T22;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:14:7: ( '>' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:14:7: '>'
+            {
+            match('>'); 
 
-        match('>');
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T22
 
+
+    // $ANTLR start T23
     public void mT23() throws RecognitionException {
-        int type = T23;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:15:7: ( 'then' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:15:7: 'then'
-        {
+        try {
+            int type = T23;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:15:7: ( 'then' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:15:7: 'then'
+            {
+            match("then"); 
 
-        match("then");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T23
 
+
+    // $ANTLR start T24
     public void mT24() throws RecognitionException {
-        int type = T24;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:16:7: ( 'end' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:16:7: 'end'
-        {
+        try {
+            int type = T24;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:16:7: ( 'end' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:16:7: 'end'
+            {
+            match("end"); 
 
-        match("end");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T24
 
+
+    // $ANTLR start T25
     public void mT25() throws RecognitionException {
-        int type = T25;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:17:7: ( 'options' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:17:7: 'options'
-        {
+        try {
+            int type = T25;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:17:7: ( 'options' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:17:7: 'options'
+            {
+            match("options"); 
 
-        match("options");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T25
 
+
+    // $ANTLR start T26
     public void mT26() throws RecognitionException {
-        int type = T26;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:18:7: ( 'salience' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:18:7: 'salience'
-        {
+        try {
+            int type = T26;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:18:7: ( 'salience' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:18:7: 'salience'
+            {
+            match("salience"); 
 
-        match("salience");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T26
 
+
+    // $ANTLR start T27
     public void mT27() throws RecognitionException {
-        int type = T27;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:19:7: ( 'no-loop' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:19:7: 'no-loop'
-        {
+        try {
+            int type = T27;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:19:7: ( 'no-loop' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:19:7: 'no-loop'
+            {
+            match("no-loop"); 
 
-        match("no-loop");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T27
 
+
+    // $ANTLR start T28
     public void mT28() throws RecognitionException {
-        int type = T28;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:20:7: ( '(' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:20:7: '('
-        {
+        try {
+            int type = T28;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:20:7: ( '(' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:20:7: '('
+            {
+            match('('); 
 
-        match('(');
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T28
 
+
+    // $ANTLR start T29
     public void mT29() throws RecognitionException {
-        int type = T29;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:21:7: ( ')' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:21:7: ')'
-        {
+        try {
+            int type = T29;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:21:7: ( ')' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:21:7: ')'
+            {
+            match(')'); 
 
-        match(')');
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T29
 
+
+    // $ANTLR start T30
     public void mT30() throws RecognitionException {
-        int type = T30;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:22:7: ( ',' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:22:7: ','
-        {
+        try {
+            int type = T30;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:22:7: ( ',' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:22:7: ','
+            {
+            match(','); 
 
-        match(',');
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T30
 
+
+    // $ANTLR start T31
     public void mT31() throws RecognitionException {
-        int type = T31;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:23:7: ( '==' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:23:7: '=='
-        {
+        try {
+            int type = T31;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:23:7: ( '==' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:23:7: '=='
+            {
+            match("=="); 
 
-        match("==");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T31
 
+
+    // $ANTLR start T32
     public void mT32() throws RecognitionException {
-        int type = T32;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:24:7: ( '>=' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:24:7: '>='
-        {
+        try {
+            int type = T32;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:24:7: ( '>=' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:24:7: '>='
+            {
+            match(">="); 
 
-        match(">=");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T32
 
+
+    // $ANTLR start T33
     public void mT33() throws RecognitionException {
-        int type = T33;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:25:7: ( '<' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:25:7: '<'
-        {
+        try {
+            int type = T33;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:25:7: ( '<' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:25:7: '<'
+            {
+            match('<'); 
 
-        match('<');
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T33
 
+
+    // $ANTLR start T34
     public void mT34() throws RecognitionException {
-        int type = T34;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:26:7: ( '<=' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:26:7: '<='
-        {
+        try {
+            int type = T34;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:26:7: ( '<=' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:26:7: '<='
+            {
+            match("<="); 
 
-        match("<=");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T34
 
+
+    // $ANTLR start T35
     public void mT35() throws RecognitionException {
-        int type = T35;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:27:7: ( '!=' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:27:7: '!='
-        {
+        try {
+            int type = T35;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:27:7: ( '!=' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:27:7: '!='
+            {
+            match("!="); 
 
-        match("!=");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T35
 
+
+    // $ANTLR start T36
     public void mT36() throws RecognitionException {
-        int type = T36;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:28:7: ( 'contains' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:28:7: 'contains'
-        {
+        try {
+            int type = T36;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:28:7: ( 'contains' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:28:7: 'contains'
+            {
+            match("contains"); 
 
-        match("contains");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T36
 
+
+    // $ANTLR start T37
     public void mT37() throws RecognitionException {
-        int type = T37;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:29:7: ( 'or' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:29:7: 'or'
-        {
+        try {
+            int type = T37;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:29:7: ( 'or' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:29:7: 'or'
+            {
+            match("or"); 
 
-        match("or");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T37
 
+
+    // $ANTLR start T38
     public void mT38() throws RecognitionException {
-        int type = T38;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:30:7: ( '||' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:30:7: '||'
-        {
+        try {
+            int type = T38;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:30:7: ( '||' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:30:7: '||'
+            {
+            match("||"); 
 
-        match("||");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T38
 
+
+    // $ANTLR start T39
     public void mT39() throws RecognitionException {
-        int type = T39;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:31:7: ( 'and' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:31:7: 'and'
-        {
+        try {
+            int type = T39;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:31:7: ( 'and' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:31:7: 'and'
+            {
+            match("and"); 
 
-        match("and");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T39
 
+
+    // $ANTLR start T40
     public void mT40() throws RecognitionException {
-        int type = T40;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:32:7: ( '&&' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:32:7: '&&'
-        {
+        try {
+            int type = T40;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:32:7: ( '&&' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:32:7: '&&'
+            {
+            match("&&"); 
 
-        match("&&");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T40
 
+
+    // $ANTLR start T41
     public void mT41() throws RecognitionException {
-        int type = T41;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:33:7: ( 'exists' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:33:7: 'exists'
-        {
+        try {
+            int type = T41;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:33:7: ( 'exists' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:33:7: 'exists'
+            {
+            match("exists"); 
 
-        match("exists");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T41
 
+
+    // $ANTLR start T42
     public void mT42() throws RecognitionException {
-        int type = T42;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:34:7: ( 'not' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:34:7: 'not'
-        {
+        try {
+            int type = T42;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:34:7: ( 'not' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:34:7: 'not'
+            {
+            match("not"); 
 
-        match("not");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T42
 
+
+    // $ANTLR start T43
     public void mT43() throws RecognitionException {
-        int type = T43;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:35:7: ( 'eval' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:35:7: 'eval'
-        {
+        try {
+            int type = T43;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:35:7: ( 'eval' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:35:7: 'eval'
+            {
+            match("eval"); 
 
-        match("eval");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T43
 
+
+    // $ANTLR start T44
     public void mT44() throws RecognitionException {
-        int type = T44;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:36:7: ( 'use' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:36:7: 'use'
-        {
+        try {
+            int type = T44;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:36:7: ( 'use' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:36:7: 'use'
+            {
+            match("use"); 
 
-        match("use");
 
+            }
 
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end T44
 
+
+    // $ANTLR start MISC
     public void mMISC() throws RecognitionException {
-        int type = MISC;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:38:8: ( ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']'))
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:38:8: ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']')
-        {
+        try {
+            int type = MISC;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:500:9: ( ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']'))
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:501:17: ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']')
+            {
+            if ( input.LA(1)=='!'||(input.LA(1)>='$' && input.LA(1)<='&')||(input.LA(1)>='*' && input.LA(1)<='-')||input.LA(1)=='@'||input.LA(1)=='['||(input.LA(1)>=']' && input.LA(1)<='_')||(input.LA(1)>='{' && input.LA(1)<='}') ) {
+                input.consume();
 
-        if ( input.LA(1)=='!'||(input.LA(1)>='$' && input.LA(1)<='&')||(input.LA(1)>='*' && input.LA(1)<='-')||input.LA(1)=='@'||input.LA(1)=='['||(input.LA(1)>=']' && input.LA(1)<='_')||(input.LA(1)>='{' && input.LA(1)<='}') ) {
-            input.consume();
-            errorRecovery=false;
-        }
-        else {
-            MismatchedSetException mse =
-                new MismatchedSetException(null,input);
-            recover(mse);    throw mse;
-        }
-
-
-        }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
-    }
-
-    public void mWS() throws RecognitionException {
-        int type = WS;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:40:6: ( (' '|'\t'|'\f'))
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:40:6: (' '|'\t'|'\f')
-        {
-
-        if ( input.LA(1)=='\t'||input.LA(1)=='\f'||input.LA(1)==' ' ) {
-            input.consume();
-            errorRecovery=false;
-        }
-        else {
-            MismatchedSetException mse =
-                new MismatchedSetException(null,input);
-            recover(mse);    throw mse;
-        }
-
-
-         channel=99; 
-
-        }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
-    }
-
-    public void mEOL() throws RecognitionException {
-        int type = EOL;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:42:7: ( ( '\r\n' | '\r' | '\n' ) )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:42:7: ( '\r\n' | '\r' | '\n' )
-        {
-
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:42:7: ( '\r\n' | '\r' | '\n' )
-        int alt1=3;
-        int LA1_0 = input.LA(1);
-        if ( LA1_0=='\r' ) {
-            int LA1_1 = input.LA(2);
-            if ( LA1_1=='n' ) {
-                alt1=1;
             }
             else {
-                alt1=2;}
+                MismatchedSetException mse =
+                    new MismatchedSetException(null,input);
+                recover(mse);    throw mse;
+            }
+
+
+            }
+
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-        else if ( LA1_0=='\n' ) {
-            alt1=3;
+        finally {
         }
-        else {
-
-            NoViableAltException nvae =
-                new NoViableAltException("42:7: ( \'\\r\\n\' | \'\\r\' | \'\\n\' )", 1, 0, input);
-
-            throw nvae;
-        }
-        switch (alt1) {
-            case 1 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:42:8: '\r\n'
-                {
-
-                match("\r\n");
-
-
-                }
-                break;
-            case 2 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:42:15: '\r'
-                {
-
-                match('\r');
-
-                }
-                break;
-            case 3 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:42:20: '\n'
-                {
-
-                match('\n');
-
-                }
-                break;
-
-        }
-
-
-        }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
     }
+    // $ANTLR end MISC
 
+
+    // $ANTLR start WS
+    public void mWS() throws RecognitionException {
+        try {
+            int type = WS;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:504:17: ( (' '|'\t'|'\f'))
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:504:17: (' '|'\t'|'\f')
+            {
+            if ( input.LA(1)=='\t'||input.LA(1)=='\f'||input.LA(1)==' ' ) {
+                input.consume();
+
+            }
+            else {
+                MismatchedSetException mse =
+                    new MismatchedSetException(null,input);
+                recover(mse);    throw mse;
+            }
+
+             channel=99; 
+
+            }
+
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        }
+        finally {
+        }
+    }
+    // $ANTLR end WS
+
+
+    // $ANTLR start EOL
+    public void mEOL() throws RecognitionException {
+        try {
+            int type = EOL;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:512:17: ( ( '\r\n' | '\r' | '\n' ) )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:512:17: ( '\r\n' | '\r' | '\n' )
+            {
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:512:17: ( '\r\n' | '\r' | '\n' )
+            int alt1=3;
+            int LA1_0 = input.LA(1);
+            if ( LA1_0=='\r' ) {
+                int LA1_1 = input.LA(2);
+                if ( LA1_1=='\n' ) {
+                    alt1=1;
+                }
+                else {
+                    alt1=2;}
+            }
+            else if ( LA1_0=='\n' ) {
+                alt1=3;
+            }
+            else {
+                NoViableAltException nvae =
+                    new NoViableAltException("512:17: ( \'\\r\\n\' | \'\\r\' | \'\\n\' )", 1, 0, input);
+
+                throw nvae;
+            }
+            switch (alt1) {
+                case 1 :
+                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:512:25: '\r\n'
+                    {
+                    match("\r\n"); 
+
+
+                    }
+                    break;
+                case 2 :
+                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:513:25: '\r'
+                    {
+                    match('\r'); 
+
+                    }
+                    break;
+                case 3 :
+                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:514:25: '\n'
+                    {
+                    match('\n'); 
+
+                    }
+                    break;
+
+            }
+
+
+            }
+
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        }
+        finally {
+        }
+    }
+    // $ANTLR end EOL
+
+
+    // $ANTLR start INT
     public void mINT() throws RecognitionException {
-        int type = INT;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:44:7: ( ( '0' .. '9' )+ )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:44:7: ( '0' .. '9' )+
-        {
+        try {
+            int type = INT;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:519:17: ( ( '0' .. '9' )+ )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:519:17: ( '0' .. '9' )+
+            {
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:519:17: ( '0' .. '9' )+
+            int cnt2=0;
+            loop2:
+            do {
+                int alt2=2;
+                int LA2_0 = input.LA(1);
+                if ( (LA2_0>='0' && LA2_0<='9') ) {
+                    alt2=1;
+                }
 
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:44:7: ( '0' .. '9' )+
-        int cnt2=0;
-        loop2:
-        do {
-            int alt2=2;
-            int LA2_0 = input.LA(1);
-            if ( (LA2_0>='0' && LA2_0<='9') ) {
-                alt2=1;
+
+                switch (alt2) {
+            	case 1 :
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:519:18: '0' .. '9'
+            	    {
+            	    matchRange('0','9'); 
+
+            	    }
+            	    break;
+
+            	default :
+            	    if ( cnt2 >= 1 ) break loop2;
+                        EarlyExitException eee =
+                            new EarlyExitException(2, input);
+                        throw eee;
+                }
+                cnt2++;
+            } while (true);
+
+
             }
 
-
-            switch (alt2) {
-        	case 1 :
-        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:44:9: '0' .. '9'
-        	    {
-
-        	    matchRange('0','9');
-
-        	    }
-        	    break;
-
-        	default :
-        	    if ( cnt2 >= 1 ) break loop2;
-                    EarlyExitException eee =
-                        new EarlyExitException(2, input);
-                    throw eee;
-            }
-            cnt2++;
-        } while (true);
-
-
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end INT
 
+
+    // $ANTLR start FLOAT
     public void mFLOAT() throws RecognitionException {
-        int type = FLOAT;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:46:9: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:46:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
-        {
+        try {
+            int type = FLOAT;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:523:17: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:523:17: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
+            {
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:523:17: ( '0' .. '9' )+
+            int cnt3=0;
+            loop3:
+            do {
+                int alt3=2;
+                int LA3_0 = input.LA(1);
+                if ( (LA3_0>='0' && LA3_0<='9') ) {
+                    alt3=1;
+                }
 
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:46:9: ( '0' .. '9' )+
-        int cnt3=0;
-        loop3:
-        do {
-            int alt3=2;
-            int LA3_0 = input.LA(1);
-            if ( (LA3_0>='0' && LA3_0<='9') ) {
-                alt3=1;
+
+                switch (alt3) {
+            	case 1 :
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:523:18: '0' .. '9'
+            	    {
+            	    matchRange('0','9'); 
+
+            	    }
+            	    break;
+
+            	default :
+            	    if ( cnt3 >= 1 ) break loop3;
+                        EarlyExitException eee =
+                            new EarlyExitException(3, input);
+                        throw eee;
+                }
+                cnt3++;
+            } while (true);
+
+            match('.'); 
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:523:33: ( '0' .. '9' )+
+            int cnt4=0;
+            loop4:
+            do {
+                int alt4=2;
+                int LA4_0 = input.LA(1);
+                if ( (LA4_0>='0' && LA4_0<='9') ) {
+                    alt4=1;
+                }
+
+
+                switch (alt4) {
+            	case 1 :
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:523:34: '0' .. '9'
+            	    {
+            	    matchRange('0','9'); 
+
+            	    }
+            	    break;
+
+            	default :
+            	    if ( cnt4 >= 1 ) break loop4;
+                        EarlyExitException eee =
+                            new EarlyExitException(4, input);
+                        throw eee;
+                }
+                cnt4++;
+            } while (true);
+
+
             }
 
-
-            switch (alt3) {
-        	case 1 :
-        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:46:11: '0' .. '9'
-        	    {
-
-        	    matchRange('0','9');
-
-        	    }
-        	    break;
-
-        	default :
-        	    if ( cnt3 >= 1 ) break loop3;
-                    EarlyExitException eee =
-                        new EarlyExitException(3, input);
-                    throw eee;
-            }
-            cnt3++;
-        } while (true);
-
-
-        match('.');
-
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:46:29: ( '0' .. '9' )+
-        int cnt4=0;
-        loop4:
-        do {
-            int alt4=2;
-            int LA4_0 = input.LA(1);
-            if ( (LA4_0>='0' && LA4_0<='9') ) {
-                alt4=1;
-            }
-
-
-            switch (alt4) {
-        	case 1 :
-        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:46:31: '0' .. '9'
-        	    {
-
-        	    matchRange('0','9');
-
-        	    }
-        	    break;
-
-        	default :
-        	    if ( cnt4 >= 1 ) break loop4;
-                    EarlyExitException eee =
-                        new EarlyExitException(4, input);
-                    throw eee;
-            }
-            cnt4++;
-        } while (true);
-
-
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end FLOAT
 
+
+    // $ANTLR start STRING
     public void mSTRING() throws RecognitionException {
-        int type = STRING;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:48:10: ( '"' ( options {greedy=false; } : . )* '"' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:48:10: '"' ( options {greedy=false; } : . )* '"'
-        {
+        try {
+            int type = STRING;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:527:17: ( '"' ( options {greedy=false; } : . )* '"' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:527:17: '"' ( options {greedy=false; } : . )* '"'
+            {
+            match('"'); 
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:527:21: ( options {greedy=false; } : . )*
+            loop5:
+            do {
+                int alt5=2;
+                int LA5_0 = input.LA(1);
+                if ( LA5_0=='"' ) {
+                    alt5=2;
+                }
+                else if ( (LA5_0>='\u0000' && LA5_0<='!')||(LA5_0>='#' && LA5_0<='\uFFFE') ) {
+                    alt5=1;
+                }
 
-        match('"');
 
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:48:14: ( options {greedy=false; } : . )*
-        loop5:
-        do {
-            int alt5=2;
-            int LA5_0 = input.LA(1);
-            if ( LA5_0=='"' ) {
-                alt5=2;
+                switch (alt5) {
+            	case 1 :
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:527:48: .
+            	    {
+            	    matchAny(); 
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop5;
+                }
+            } while (true);
+
+            match('"'); 
+
             }
-            else if ( (LA5_0>='\u0000' && LA5_0<='!')||(LA5_0>='#' && LA5_0<='\uFFFE') ) {
-                alt5=1;
-            }
 
-
-            switch (alt5) {
-        	case 1 :
-        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:48:43: .
-        	    {
-
-        	    matchAny();
-
-        	    }
-        	    break;
-
-        	default :
-        	    break loop5;
-            }
-        } while (true);
-
-
-        match('"');
-
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end STRING
 
+
+    // $ANTLR start ID
     public void mID() throws RecognitionException {
-        int type = ID;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:50:6: ( ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))* )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:50:6: ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
-        {
+        try {
+            int type = ID;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:531:17: ( ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))* )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:531:17: ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
+            {
+            if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+                input.consume();
 
-        if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
-            input.consume();
-            errorRecovery=false;
-        }
-        else {
-            MismatchedSetException mse =
-                new MismatchedSetException(null,input);
-            recover(mse);    throw mse;
-        }
-
-
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:50:34: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
-        loop6:
-        do {
-            int alt6=2;
-            int LA6_0 = input.LA(1);
-            if ( (LA6_0>='0' && LA6_0<='9')||(LA6_0>='A' && LA6_0<='Z')||LA6_0=='_'||(LA6_0>='a' && LA6_0<='z') ) {
-                alt6=1;
+            }
+            else {
+                MismatchedSetException mse =
+                    new MismatchedSetException(null,input);
+                recover(mse);    throw mse;
             }
 
-
-            switch (alt6) {
-        	case 1 :
-        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:50:36: ('a'..'z'|'A'..'Z'|'_'|'0'..'9')
-        	    {
-
-        	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
-        	        input.consume();
-        	        errorRecovery=false;
-        	    }
-        	    else {
-        	        MismatchedSetException mse =
-        	            new MismatchedSetException(null,input);
-        	        recover(mse);    throw mse;
-        	    }
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:531:44: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
+            loop6:
+            do {
+                int alt6=2;
+                int LA6_0 = input.LA(1);
+                if ( (LA6_0>='0' && LA6_0<='9')||(LA6_0>='A' && LA6_0<='Z')||LA6_0=='_'||(LA6_0>='a' && LA6_0<='z') ) {
+                    alt6=1;
+                }
 
 
-        	    }
-        	    break;
+                switch (alt6) {
+            	case 1 :
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:531:45: ('a'..'z'|'A'..'Z'|'_'|'0'..'9')
+            	    {
+            	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+            	        input.consume();
 
-        	default :
-        	    break loop6;
+            	    }
+            	    else {
+            	        MismatchedSetException mse =
+            	            new MismatchedSetException(null,input);
+            	        recover(mse);    throw mse;
+            	    }
+
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop6;
+                }
+            } while (true);
+
+
             }
-        } while (true);
 
-
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end ID
 
+
+    // $ANTLR start SH_STYLE_SINGLE_LINE_COMMENT
     public void mSH_STYLE_SINGLE_LINE_COMMENT() throws RecognitionException {
-        int type = SH_STYLE_SINGLE_LINE_COMMENT;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:52:32: ( '#' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:52:32: '#' ( options {greedy=false; } : . )* ( '\r' )? '\n'
-        {
-
-        match('#');
-
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:52:36: ( options {greedy=false; } : . )*
-        loop7:
-        do {
-            int alt7=2;
-            int LA7_0 = input.LA(1);
-            if ( LA7_0=='\r' ) {
-                alt7=2;
-            }
-            else if ( LA7_0=='\n' ) {
-                alt7=2;
-            }
-            else if ( (LA7_0>='\u0000' && LA7_0<='\t')||(LA7_0>='\u000B' && LA7_0<='\f')||(LA7_0>='\u000E' && LA7_0<='\uFFFE') ) {
-                alt7=1;
-            }
-
-
-            switch (alt7) {
-        	case 1 :
-        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:52:65: .
-        	    {
-
-        	    matchAny();
-
-        	    }
-        	    break;
-
-        	default :
-        	    break loop7;
-            }
-        } while (true);
-
-
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:52:70: ( '\r' )?
-        int alt8=2;
-        int LA8_0 = input.LA(1);
-        if ( LA8_0=='\r' ) {
-            alt8=1;
-        }
-        else if ( LA8_0=='\n' ) {
-            alt8=2;
-        }
-        else {
-
-            NoViableAltException nvae =
-                new NoViableAltException("52:70: ( \'\\r\' )?", 8, 0, input);
-
-            throw nvae;
-        }
-        switch (alt8) {
-            case 1 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:52:72: '\r'
-                {
-
-                match('\r');
-
+        try {
+            int type = SH_STYLE_SINGLE_LINE_COMMENT;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:17: ( '#' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:17: '#' ( options {greedy=false; } : . )* ( '\r' )? '\n'
+            {
+            match('#'); 
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:21: ( options {greedy=false; } : . )*
+            loop7:
+            do {
+                int alt7=2;
+                int LA7_0 = input.LA(1);
+                if ( LA7_0=='\r' ) {
+                    alt7=2;
                 }
-                break;
+                else if ( LA7_0=='\n' ) {
+                    alt7=2;
+                }
+                else if ( (LA7_0>='\u0000' && LA7_0<='\t')||(LA7_0>='\u000B' && LA7_0<='\f')||(LA7_0>='\u000E' && LA7_0<='\uFFFE') ) {
+                    alt7=1;
+                }
 
+
+                switch (alt7) {
+            	case 1 :
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:48: .
+            	    {
+            	    matchAny(); 
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop7;
+                }
+            } while (true);
+
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:52: ( '\r' )?
+            int alt8=2;
+            int LA8_0 = input.LA(1);
+            if ( LA8_0=='\r' ) {
+                alt8=1;
+            }
+            else if ( LA8_0=='\n' ) {
+                alt8=2;
+            }
+            else {
+                NoViableAltException nvae =
+                    new NoViableAltException("536:52: ( \'\\r\' )?", 8, 0, input);
+
+                throw nvae;
+            }
+            switch (alt8) {
+                case 1 :
+                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:53: '\r'
+                    {
+                    match('\r'); 
+
+                    }
+                    break;
+
+            }
+
+            match('\n'); 
+
+            }
+
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-
-        match('\n');
-
+        finally {
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
     }
+    // $ANTLR end SH_STYLE_SINGLE_LINE_COMMENT
 
+
+    // $ANTLR start C_STYLE_SINGLE_LINE_COMMENT
     public void mC_STYLE_SINGLE_LINE_COMMENT() throws RecognitionException {
-        int type = C_STYLE_SINGLE_LINE_COMMENT;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:54:31: ( '//' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:54:31: '//' ( options {greedy=false; } : . )* ( '\r' )? '\n'
-        {
+        try {
+            int type = C_STYLE_SINGLE_LINE_COMMENT;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:17: ( '//' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:17: '//' ( options {greedy=false; } : . )* ( '\r' )? '\n'
+            {
+            match("//"); 
 
-        match("//");
-
-
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:54:36: ( options {greedy=false; } : . )*
-        loop9:
-        do {
-            int alt9=2;
-            int LA9_0 = input.LA(1);
-            if ( LA9_0=='\r' ) {
-                alt9=2;
-            }
-            else if ( LA9_0=='\n' ) {
-                alt9=2;
-            }
-            else if ( (LA9_0>='\u0000' && LA9_0<='\t')||(LA9_0>='\u000B' && LA9_0<='\f')||(LA9_0>='\u000E' && LA9_0<='\uFFFE') ) {
-                alt9=1;
-            }
-
-
-            switch (alt9) {
-        	case 1 :
-        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:54:65: .
-        	    {
-
-        	    matchAny();
-
-        	    }
-        	    break;
-
-        	default :
-        	    break loop9;
-            }
-        } while (true);
-
-
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:54:70: ( '\r' )?
-        int alt10=2;
-        int LA10_0 = input.LA(1);
-        if ( LA10_0=='\r' ) {
-            alt10=1;
-        }
-        else if ( LA10_0=='\n' ) {
-            alt10=2;
-        }
-        else {
-
-            NoViableAltException nvae =
-                new NoViableAltException("54:70: ( \'\\r\' )?", 10, 0, input);
-
-            throw nvae;
-        }
-        switch (alt10) {
-            case 1 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:54:72: '\r'
-                {
-
-                match('\r');
-
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:22: ( options {greedy=false; } : . )*
+            loop9:
+            do {
+                int alt9=2;
+                int LA9_0 = input.LA(1);
+                if ( LA9_0=='\r' ) {
+                    alt9=2;
                 }
-                break;
+                else if ( LA9_0=='\n' ) {
+                    alt9=2;
+                }
+                else if ( (LA9_0>='\u0000' && LA9_0<='\t')||(LA9_0>='\u000B' && LA9_0<='\f')||(LA9_0>='\u000E' && LA9_0<='\uFFFE') ) {
+                    alt9=1;
+                }
 
+
+                switch (alt9) {
+            	case 1 :
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:49: .
+            	    {
+            	    matchAny(); 
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop9;
+                }
+            } while (true);
+
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:53: ( '\r' )?
+            int alt10=2;
+            int LA10_0 = input.LA(1);
+            if ( LA10_0=='\r' ) {
+                alt10=1;
+            }
+            else if ( LA10_0=='\n' ) {
+                alt10=2;
+            }
+            else {
+                NoViableAltException nvae =
+                    new NoViableAltException("541:53: ( \'\\r\' )?", 10, 0, input);
+
+                throw nvae;
+            }
+            switch (alt10) {
+                case 1 :
+                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:541:54: '\r'
+                    {
+                    match('\r'); 
+
+                    }
+                    break;
+
+            }
+
+            match('\n'); 
+
+            }
+
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-
-        match('\n');
-
+        finally {
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
     }
+    // $ANTLR end C_STYLE_SINGLE_LINE_COMMENT
 
+
+    // $ANTLR start MULTI_LINE_COMMENT
     public void mMULTI_LINE_COMMENT() throws RecognitionException {
-        int type = MULTI_LINE_COMMENT;
-        int start = getCharIndex();
-        int line = getLine();
-        int charPosition = getCharPositionInLine();
-        int channel = Token.DEFAULT_CHANNEL;
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:56:22: ( '/*' ( options {greedy=false; } : . )* '*/' )
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:56:22: '/*' ( options {greedy=false; } : . )* '*/'
-        {
+        try {
+            int type = MULTI_LINE_COMMENT;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:545:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:545:17: '/*' ( options {greedy=false; } : . )* '*/'
+            {
+            match("/*"); 
 
-        match("/*");
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:545:22: ( options {greedy=false; } : . )*
+            loop11:
+            do {
+                int alt11=2;
+                int LA11_0 = input.LA(1);
+                if ( LA11_0=='*' ) {
+                    int LA11_1 = input.LA(2);
+                    if ( LA11_1=='/' ) {
+                        alt11=2;
+                    }
+                    else if ( (LA11_1>='\u0000' && LA11_1<='.')||(LA11_1>='0' && LA11_1<='\uFFFE') ) {
+                        alt11=1;
+                    }
 
 
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:56:27: ( options {greedy=false; } : . )*
-        loop11:
-        do {
-            int alt11=2;
-            int LA11_0 = input.LA(1);
-            if ( LA11_0=='*' ) {
-                int LA11_1 = input.LA(2);
-                if ( LA11_1=='/' ) {
-                    alt11=2;
                 }
-                else if ( (LA11_1>='\u0000' && LA11_1<='.')||(LA11_1>='0' && LA11_1<='\uFFFE') ) {
+                else if ( (LA11_0>='\u0000' && LA11_0<=')')||(LA11_0>='+' && LA11_0<='\uFFFE') ) {
                     alt11=1;
                 }
 
 
+                switch (alt11) {
+            	case 1 :
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:545:48: .
+            	    {
+            	    matchAny(); 
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop11;
+                }
+            } while (true);
+
+            match("*/"); 
+
+
             }
-            else if ( (LA11_0>='\u0000' && LA11_0<=')')||(LA11_0>='+' && LA11_0<='\uFFFE') ) {
-                alt11=1;
-            }
 
-
-            switch (alt11) {
-        	case 1 :
-        	    // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:56:56: .
-        	    {
-
-        	    matchAny();
-
-        	    }
-        	    break;
-
-        	default :
-        	    break loop11;
-            }
-        } while (true);
-
-
-        match("*/");
-
-
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
         }
-
-        if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        finally {
+        }
     }
+    // $ANTLR end MULTI_LINE_COMMENT
 
     public void mTokens() throws RecognitionException {
-        // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:10: ( T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | T44 | MISC | WS | EOL | INT | FLOAT | STRING | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT )
+        // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:10: ( T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | T44 | MISC | WS | EOL | INT | FLOAT | STRING | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT )
         int alt12=41;
-        alt12 = dfa12.predict(input);
+        alt12 = dfa12.predict(input); 
         switch (alt12) {
             case 1 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:10: T14
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:10: T14
                 {
-
-                mT14();
+                mT14(); 
 
                 }
                 break;
             case 2 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:14: T15
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:14: T15
                 {
-
-                mT15();
+                mT15(); 
 
                 }
                 break;
             case 3 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:18: T16
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:18: T16
                 {
-
-                mT16();
+                mT16(); 
 
                 }
                 break;
             case 4 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:22: T17
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:22: T17
                 {
-
-                mT17();
+                mT17(); 
 
                 }
                 break;
             case 5 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:26: T18
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:26: T18
                 {
-
-                mT18();
+                mT18(); 
 
                 }
                 break;
             case 6 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:30: T19
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:30: T19
                 {
-
-                mT19();
+                mT19(); 
 
                 }
                 break;
             case 7 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:34: T20
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:34: T20
                 {
-
-                mT20();
+                mT20(); 
 
                 }
                 break;
             case 8 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:38: T21
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:38: T21
                 {
-
-                mT21();
+                mT21(); 
 
                 }
                 break;
             case 9 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:42: T22
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:42: T22
                 {
-
-                mT22();
+                mT22(); 
 
                 }
                 break;
             case 10 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:46: T23
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:46: T23
                 {
-
-                mT23();
+                mT23(); 
 
                 }
                 break;
             case 11 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:50: T24
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:50: T24
                 {
-
-                mT24();
+                mT24(); 
 
                 }
                 break;
             case 12 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:54: T25
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:54: T25
                 {
-
-                mT25();
+                mT25(); 
 
                 }
                 break;
             case 13 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:58: T26
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:58: T26
                 {
-
-                mT26();
+                mT26(); 
 
                 }
                 break;
             case 14 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:62: T27
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:62: T27
                 {
-
-                mT27();
+                mT27(); 
 
                 }
                 break;
             case 15 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:66: T28
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:66: T28
                 {
-
-                mT28();
+                mT28(); 
 
                 }
                 break;
             case 16 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:70: T29
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:70: T29
                 {
-
-                mT29();
+                mT29(); 
 
                 }
                 break;
             case 17 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:74: T30
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:74: T30
                 {
-
-                mT30();
+                mT30(); 
 
                 }
                 break;
             case 18 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:78: T31
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:78: T31
                 {
-
-                mT31();
+                mT31(); 
 
                 }
                 break;
             case 19 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:82: T32
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:82: T32
                 {
-
-                mT32();
+                mT32(); 
 
                 }
                 break;
             case 20 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:86: T33
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:86: T33
                 {
-
-                mT33();
+                mT33(); 
 
                 }
                 break;
             case 21 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:90: T34
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:90: T34
                 {
-
-                mT34();
+                mT34(); 
 
                 }
                 break;
             case 22 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:94: T35
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:94: T35
                 {
-
-                mT35();
+                mT35(); 
 
                 }
                 break;
             case 23 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:98: T36
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:98: T36
                 {
-
-                mT36();
+                mT36(); 
 
                 }
                 break;
             case 24 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:102: T37
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:102: T37
                 {
-
-                mT37();
+                mT37(); 
 
                 }
                 break;
             case 25 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:106: T38
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:106: T38
                 {
-
-                mT38();
+                mT38(); 
 
                 }
                 break;
             case 26 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:110: T39
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:110: T39
                 {
-
-                mT39();
+                mT39(); 
 
                 }
                 break;
             case 27 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:114: T40
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:114: T40
                 {
-
-                mT40();
+                mT40(); 
 
                 }
                 break;
             case 28 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:118: T41
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:118: T41
                 {
-
-                mT41();
+                mT41(); 
 
                 }
                 break;
             case 29 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:122: T42
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:122: T42
                 {
-
-                mT42();
+                mT42(); 
 
                 }
                 break;
             case 30 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:126: T43
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:126: T43
                 {
-
-                mT43();
+                mT43(); 
 
                 }
                 break;
             case 31 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:130: T44
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:130: T44
                 {
-
-                mT44();
+                mT44(); 
 
                 }
                 break;
             case 32 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:134: MISC
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:134: MISC
                 {
-
-                mMISC();
+                mMISC(); 
 
                 }
                 break;
             case 33 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:139: WS
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:139: WS
                 {
-
-                mWS();
+                mWS(); 
 
                 }
                 break;
             case 34 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:142: EOL
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:142: EOL
                 {
-
-                mEOL();
+                mEOL(); 
 
                 }
                 break;
             case 35 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:146: INT
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:146: INT
                 {
-
-                mINT();
+                mINT(); 
 
                 }
                 break;
             case 36 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:150: FLOAT
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:150: FLOAT
                 {
-
-                mFLOAT();
+                mFLOAT(); 
 
                 }
                 break;
             case 37 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:156: STRING
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:156: STRING
                 {
-
-                mSTRING();
+                mSTRING(); 
 
                 }
                 break;
             case 38 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:163: ID
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:163: ID
                 {
-
-                mID();
+                mID(); 
 
                 }
                 break;
             case 39 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:166: SH_STYLE_SINGLE_LINE_COMMENT
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:166: SH_STYLE_SINGLE_LINE_COMMENT
                 {
-
-                mSH_STYLE_SINGLE_LINE_COMMENT();
+                mSH_STYLE_SINGLE_LINE_COMMENT(); 
 
                 }
                 break;
             case 40 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:195: C_STYLE_SINGLE_LINE_COMMENT
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:195: C_STYLE_SINGLE_LINE_COMMENT
                 {
-
-                mC_STYLE_SINGLE_LINE_COMMENT();
+                mC_STYLE_SINGLE_LINE_COMMENT(); 
 
                 }
                 break;
             case 41 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\java\org\drools\lang\RuleParser.lexer.g:1:223: MULTI_LINE_COMMENT
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:223: MULTI_LINE_COMMENT
                 {
-
-                mMULTI_LINE_COMMENT();
+                mMULTI_LINE_COMMENT(); 
 
                 }
                 break;
@@ -2291,7 +2451,6 @@ retry:
                 if ( LA12_34=='*' ) {return s90;}
                 if ( LA12_34=='/' ) {return s91;}
 
-
                 NoViableAltException nvae =
         	    new NoViableAltException("", 12, 34, input);
 
@@ -2462,7 +2621,6 @@ retry:
                     return s34;
 
                 default:
-
                     NoViableAltException nvae =
                         new NoViableAltException("", 12, 0, input);
 
