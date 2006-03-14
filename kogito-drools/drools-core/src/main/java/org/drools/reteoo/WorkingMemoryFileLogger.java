@@ -45,7 +45,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 	private List events = new ArrayList();
 	private String fileName= "event";
 	private int maxEventsInMemory = 1000;
-	private int maxWritesToFile = 10;
+	private int maxWritesToFile = 1;
 	private int nbOfWriteToFile = 0;
 	private int nbOfFile = 0;
 	
@@ -123,7 +123,9 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 	 * @param maxEventsInMemory The maximum number of consequetive writes to one file.
 	 */
 	public void setMaxWritesToFile(int maxWritesToFile) {
-		this.maxWritesToFile = maxWritesToFile;
+		// TODO this doesn't work yet, since xstream only reads
+		// out the first set of events and ignores subsequent sets
+		// this.maxWritesToFile = maxWritesToFile;
 	}
 
 	/**
