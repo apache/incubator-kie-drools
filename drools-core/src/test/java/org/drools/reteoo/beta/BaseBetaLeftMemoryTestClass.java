@@ -95,6 +95,17 @@ public abstract class BaseBetaLeftMemoryTestClass extends TestCase {
         this.memory.remove(this.workingMemory, this.tuple1);
         Assert.assertEquals("Memory should have size 0", 0, this.memory.size());
     }
+    
+    /*
+     * Test method for 'org.drools.reteoo.beta.BetaLeftMemory.remove(WorkingMemory, ReteTuple)'
+     */
+    public void testRemoveUnexistingTuple() {
+        try {
+            this.memory.remove( this.workingMemory, this.tuple0 );
+        } catch (Exception e) {
+            Assert.fail("Left memory is not supposed to throw exception: " + e.getMessage());
+        }
+    }
 
     /*
      * Test method for 'org.drools.reteoo.beta.BetaLeftMemory.add(WorkingMemory, MultiLinkedListNodeWrapper)'

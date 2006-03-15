@@ -95,13 +95,15 @@ public class ObjectEqualConstrLeftMemory
      */
     public void remove(WorkingMemory workingMemory, ReteTuple tuple) {
         LinkedList list = tuple.getLinkedList(); 
-        list.remove(tuple);
-        this.size--;
-        if(list.isEmpty()) {
-            this.removeMemoryEntry( list );
-        }
-        if(this.childMemory != null) {
-            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
+        if(list != null) {
+            list.remove(tuple);
+            this.size--;
+            if(list.isEmpty()) {
+                this.removeMemoryEntry( list );
+            }
+            if(this.childMemory != null) {
+                this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
+            }
         }
     }
 
@@ -131,15 +133,17 @@ public class ObjectEqualConstrLeftMemory
      */
     public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
         LinkedList list = tuple.getLinkedList();
-        list.remove(tuple);
-        this.size--;
-        
-        if(list.isEmpty()) {
-            this.removeMemoryEntry(list);
-        }
+        if( list != null ) {
+            list.remove(tuple);
+            this.size--;
+            
+            if(list.isEmpty()) {
+                this.removeMemoryEntry(list);
+            }
 
-        if(this.childMemory != null) {
-            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
+            if(this.childMemory != null) {
+                this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
+            }
         }
     }
 

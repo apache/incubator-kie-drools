@@ -101,7 +101,9 @@ public class BooleanConstrainedLeftMemory
         if(this.childMemory != null) {
             this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
         }
-        tuple.getLinkedList().remove(tuple);
+        if(tuple.getLinkedList() != null) {
+            tuple.getLinkedList().remove(tuple);
+        }
     }
 
     /**
@@ -133,7 +135,9 @@ public class BooleanConstrainedLeftMemory
         if(this.childMemory != null) {
             this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
         }
-        tuple.getLinkedList().remove(tuple);
+        if(tuple.getLinkedList() != null) {
+            tuple.getLinkedList().remove(tuple);
+        }
     }
 
     /**

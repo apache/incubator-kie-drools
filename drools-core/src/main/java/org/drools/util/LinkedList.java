@@ -86,12 +86,15 @@ public class LinkedList {
      *      The <code>LinkedListNode</code> to be removed.
      */
     public void remove(LinkedListNode node) {
-        if ( this.firstNode != node && this.lastNode != node ) {
+        if (( this.firstNode != node ) && ( this.lastNode != node ) &&
+            (node.getPrevious() != null) && (node.getNext() != null)) {
+            
             node.getPrevious().setNext( node.getNext() );
             node.getNext().setPrevious( node.getPrevious() );
             this.size--;
             node.setPrevious(null);
             node.setNext(null);
+            
         } else {
             if ( this.firstNode == node ) {
                 removeFirst();
