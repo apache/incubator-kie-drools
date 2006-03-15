@@ -38,9 +38,6 @@ public class DefaultFactHandleFactory
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
     public final FactHandle newFactHandle(long id) {
-        if(id == 37) {
-            System.out.println("Criando fato: " + id+":"+(this.counter+1));
-        }
         return new FactHandleImpl( id,
                                    this.counter++ );
     }
@@ -49,9 +46,6 @@ public class DefaultFactHandleFactory
      * @see org.drools.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)
      */
     public final void increaseFactHandleRecency(FactHandle factHandle) {
-        if(((FactHandleImpl)factHandle).getId() == 37) {
-            System.out.println("Incrementing recency for fact 37 to "+(this.counter+1));
-        }
         ((FactHandleImpl) factHandle).setRecency( ++this.counter );
     }
 
