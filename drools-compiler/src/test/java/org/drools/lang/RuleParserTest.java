@@ -212,7 +212,7 @@ public class RuleParserTest extends TestCase {
         //Note 2 problems: as runExpander is reparsing original text, not expanded                        
     }
     
-    public void testBindings() throws Exception {
+    public void testBoundVariables() throws Exception {
         RuleParser parser = parseResource( "bindings.drl" );
         parser.compilation_unit();
         
