@@ -139,6 +139,23 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
     }
 
     /*
+     * Test method for 'org.drools.reteoo.beta.DefaultRightMemory.remove(WorkingMemory, ObjectMatches)'
+     */
+    public void testRemoveUnexistingObjectMatches() {
+        try {
+            this.memory.remove(this.workingMemory, this.matches0);
+
+            MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper(matches0);
+            this.memory.remove(this.workingMemory, wrapper0);
+            
+            this.memory.remove(this.workingMemory, (ObjectMatches) null);
+            this.memory.remove(this.workingMemory, (MultiLinkedListNodeWrapper) null);
+        } catch (Exception e) {
+            Assert.fail("Remove call should not throw exceptions");
+        }
+    }
+
+    /*
      * Test method for 'org.drools.reteoo.beta.DefaultRightMemory.isEmpty()'
      */
     public void testIsEmpty() {

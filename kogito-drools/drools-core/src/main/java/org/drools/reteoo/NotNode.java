@@ -326,7 +326,6 @@ public class NotNode extends BetaNode {
                                            workingMemory );
                 }
             }
-            System.out.println( "help" );
         }
 
     }

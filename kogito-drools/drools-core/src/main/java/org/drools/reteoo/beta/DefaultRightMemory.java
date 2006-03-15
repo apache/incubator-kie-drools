@@ -61,7 +61,7 @@ public class DefaultRightMemory
      */
     public void remove(WorkingMemory workingMemory,
                        ObjectMatches matches) {
-        if(matches != null) {
+        if((matches != null) && (matches.getLinkedList() != null)) {
             matches.getLinkedList().remove(matches);
         }
     }
@@ -85,7 +85,9 @@ public class DefaultRightMemory
      */
     public void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper wrapper) {
-        wrapper.getLinkedList().remove(wrapper);
+        if((wrapper != null) && (wrapper.getLinkedList() != null)) {
+            wrapper.getLinkedList().remove(wrapper);
+        }
     }
 
     /**
