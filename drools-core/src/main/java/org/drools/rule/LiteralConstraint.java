@@ -52,8 +52,8 @@ public class LiteralConstraint
     public boolean isAllowed(FactHandle handle,
                              Tuple tuple,
                              WorkingMemory workingMemory) {
-        return evaluator.evaluate( this.field.getValue(),
-                                   this.extractor.getValue( workingMemory.getObject( handle ) ) );
+        return evaluator.evaluate( this.extractor.getValue( workingMemory.getObject( handle ) ),
+                                   this.field.getValue());
     }
     
     public boolean equals(Object other) {
