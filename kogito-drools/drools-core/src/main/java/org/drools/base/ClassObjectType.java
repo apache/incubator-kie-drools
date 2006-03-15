@@ -142,6 +142,8 @@ public class ClassObjectType
             this.valueType = Evaluator.BOOLEAN_TYPE;            
         } else if (clazz == java.sql.Date.class) {
             this.valueType = Evaluator.DATE_TYPE;
+        } else if (clazz == java.util.Date.class) {
+            this.valueType = Evaluator.DATE_TYPE;
         } else if (clazz.isAssignableFrom( Object[].class )) {
             this.valueType = Evaluator.ARRAY_TYPE;
         } else if (clazz == String.class) {

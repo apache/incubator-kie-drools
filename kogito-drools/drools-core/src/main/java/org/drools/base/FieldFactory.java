@@ -49,10 +49,12 @@ public class FieldFactory {
                 field = new FieldImpl( value );
                 break;
             case Evaluator.DATE_TYPE:
-                //@todo
+                //MN: I think its fine like this, seems to work !
+                field = new FieldImpl( value );
                 break;
             case Evaluator.ARRAY_TYPE:
-                //@todo
+                //MN: I think its fine like this.
+                field = new FieldImpl( value );
                 break;
             case Evaluator.OBJECT_TYPE:
                 field = new FieldImpl( value );

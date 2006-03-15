@@ -30,6 +30,18 @@ public interface Evaluator {
 
     public int getOperator();
 
+    /**
+     * This method will apply the evaluator on the objects.
+     * 
+     * Typically, they follow this form:
+     * Fact(object1 operator object2)
+     * 
+     * Where operator selects the appropraite concrete evaluator, and object1, and object2
+     * are parameters to this method.
+     * 
+     * So Person(age < 42) will have object1==age field (of the Person fact object)
+     * and "42" will be the object2 value.
+     */
     public boolean evaluate(Object object1,
                             Object object2);
     

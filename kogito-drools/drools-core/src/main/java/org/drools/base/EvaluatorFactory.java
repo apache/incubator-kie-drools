@@ -3,6 +3,7 @@ package org.drools.base;
 import org.drools.base.evaluators.BooleanFactory;
 import org.drools.base.evaluators.ByteFactory;
 import org.drools.base.evaluators.CharacterFactory;
+import org.drools.base.evaluators.DateFactory;
 import org.drools.base.evaluators.DoubleFactory;
 import org.drools.base.evaluators.FloatFactory;
 import org.drools.base.evaluators.IntegerFactory;
@@ -79,6 +80,8 @@ public class EvaluatorFactory {
                 return FloatFactory.getFloatEvaluator( operator );
             case Evaluator.LONG_TYPE :
                 return LongFactory.getLongEvaluator( operator );
+            case Evaluator.DATE_TYPE :
+                return DateFactory.getDateEvaluator( operator );
             default :
                 throw new RuntimeException( "Type '" + type + "' does not exist for BaseEvaluatorFactory" );
         }

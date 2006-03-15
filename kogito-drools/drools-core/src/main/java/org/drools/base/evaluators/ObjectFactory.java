@@ -70,8 +70,8 @@ public class ObjectFactory {
             if (object2 == null) return false;
             
             //TODO: add support for hashes, normal arrays etc
-            Collection col = (Collection) object2;
-            return col.contains( object1 );
+            Collection col = (Collection) object1;
+            return col.contains( object2 );
         }
         
         public String toString() {

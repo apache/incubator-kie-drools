@@ -1,6 +1,10 @@
 package org.drools.base;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.drools.spi.Evaluator;
@@ -22,8 +26,8 @@ public class EvaluatorFactoryTest extends TestCase {
         Object[][] data = { {"foo", "==", "bar", Boolean.FALSE},
                             {"foo", "==", "foo", Boolean.TRUE},
                             {"foo", "!=", "bar", Boolean.TRUE},
-                            {"foo", "contains", list, Boolean.TRUE},
-                            {"bar", "contains", list, Boolean.FALSE}
+                            {list, "contains", "foo", Boolean.TRUE},
+                            {list, "contains", "bar", Boolean.FALSE}
                           };
 
         runEvaluatorTest( data, Evaluator.OBJECT_TYPE );
@@ -149,7 +153,37 @@ public class EvaluatorFactoryTest extends TestCase {
                           };
         runEvaluatorTest( data,
                           Evaluator.CHAR_TYPE );
-    }      
+    }  
+    
+    public void testDate() throws Exception {
+
+        
+        
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        //note that strings are also allowed on the right
+        Object[][] data = { {df.parse( "10-Jul-1974" ), "==", df.parse( "10-Jul-1974" ), Boolean.TRUE},
+                            {df.parse( "10-Jul-1974" ), "<", df.parse( "11-Jul-1974" ), Boolean.TRUE},
+                            {df.parse( "10-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE},
+                            {df.parse( "10-Jul-1974" ), "!=", df.parse( "11-Jul-1974" ), Boolean.TRUE},
+                            {df.parse( "10-Jul-2000" ), ">", df.parse( "10-Jul-1974" ), Boolean.TRUE},
+                            {df.parse( "10-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE},
+                            {df.parse( "11-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE},
+                            {df.parse( "10-Jul-1974" ), ">=", df.parse( "11-Jul-1974" ), Boolean.FALSE},
+                            {df.parse( "10-Jul-2000" ), "<", df.parse( "10-Jul-1974" ), Boolean.FALSE},
+                            {df.parse( "10-Jul-1974" ), "<", "11-Jul-1974" , Boolean.TRUE},
+                            {df.parse( "10-Jul-1974" ), ">=", "10-Jul-1974", Boolean.TRUE},
+                            {df.parse( "10-Jul-1974" ), "!=", "11-Jul-1974", Boolean.TRUE},
+                            {df.parse( "10-Jul-2000" ), ">", "10-Jul-1974", Boolean.TRUE},
+                            {df.parse( "10-Jul-1974" ), ">=", "10-Jul-1974", Boolean.TRUE},
+                            {df.parse( "11-Jul-1974" ), ">=", "10-Jul-1974", Boolean.TRUE},
+                            {df.parse( "10-Jul-1974" ), ">=", "11-Jul-1974", Boolean.FALSE},                            
+                          };
+        runEvaluatorTest( data,
+                          Evaluator.DATE_TYPE );
+    }    
+    
+
     
     public void testByte() {
         Object[][] data = { {new Byte("1"), "==", new Byte("1"), Boolean.TRUE},
