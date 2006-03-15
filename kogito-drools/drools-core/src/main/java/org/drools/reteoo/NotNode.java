@@ -282,6 +282,8 @@ public class NotNode extends BetaNode {
 
         // Remove the FactHandle from memory
         ObjectMatches objectMatches = memory.remove( workingMemory, handle );
+        memory.add( workingMemory, objectMatches );
+        
         TupleMatch tupleMatch = objectMatches.getFirstTupleMatch();
         BetaNodeBinder binder = getJoinNodeBinder();
 

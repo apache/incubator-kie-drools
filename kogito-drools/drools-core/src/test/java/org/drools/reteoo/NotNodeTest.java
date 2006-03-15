@@ -2,6 +2,8 @@ package org.drools.reteoo;
 
 import java.beans.IntrospectionException;
 
+import junit.framework.Assert;
+
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
@@ -190,5 +192,58 @@ public class NotNodeTest extends DroolsTestCase {
 
         assertLength( 0,
                       this.sink.getRetracted() );           
-    }  
+    }
+    
+    /**
+     * Tests memory consistency after assert/modify/retract calls
+     * 
+     * @throws AssertionException
+     */
+    public void testNotMemoryManagement() throws FactException {
+        try {
+            // assert tuple
+            Cheese cheddar = new Cheese( "cheddar", 10 );
+            FactHandleImpl f0 = (FactHandleImpl) workingMemory.assertObject( cheddar );
+            ReteTuple tuple1 = new ReteTuple( f0 );
+            
+            this.node.assertTuple( tuple1,
+                                   this.context,
+                                   this.workingMemory );        
+
+            // assert will match, so propagated tuple should be retracted
+            Cheese brie = new Cheese( "brie", 10 );        
+            FactHandleImpl f1 = (FactHandleImpl) workingMemory.assertObject( brie );
+            
+            // Initially, no objects in right memory
+            assertEquals( 0, this.memory.getRightObjectMemory().size());
+            this.node.assertObject( f1,
+                                    this.context,
+                                    this.workingMemory );        
+
+            // Now, needs to have 1 object in right memory
+            assertEquals( 1,this.memory.getRightObjectMemory().size() );
+            
+            this.node.modifyObject(f1, this.context, this.workingMemory);
+            // Memory should not change
+            assertEquals( 1, this.memory.getRightObjectMemory().size());
+            
+            // When this is retracter both tuples should assert
+            this.node.retractObject( f1, context, workingMemory );
+            assertEquals( 0, this.memory.getRightObjectMemory().size());
+            
+            // check memory sizes
+            assertEquals( 1, this.memory.getLeftTupleMemory().size() );
+            this.node.modifyTuple( tuple1,
+                                   this.context,
+                                   this.workingMemory );        
+            assertEquals( 1, this.memory.getLeftTupleMemory().size() );
+            this.node.retractTuple( tuple1,
+                                   this.context,
+                                   this.workingMemory );        
+            assertEquals( 0, this.memory.getLeftTupleMemory().size() );
+        } catch ( Exception e ) {
+            Assert.fail("No exception should be raised in this procedure, but got: " + e.toString());
+        }
+    }
+    
 }
