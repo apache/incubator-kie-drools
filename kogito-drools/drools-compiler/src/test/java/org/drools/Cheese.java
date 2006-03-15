@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.drools.integrationtests;
+package org.drools;
 
 public class Cheese {
     private String type;
