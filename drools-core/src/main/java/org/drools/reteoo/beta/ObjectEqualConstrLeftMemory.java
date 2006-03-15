@@ -94,8 +94,8 @@ public class ObjectEqualConstrLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
     public void remove(WorkingMemory workingMemory, ReteTuple tuple) {
-        LinkedList list = tuple.getLinkedList(); 
-        if(list != null) {
+        if((tuple != null) && (tuple.getLinkedList() != null)) {
+            LinkedList list = tuple.getLinkedList(); 
             list.remove(tuple);
             this.size--;
             if(list.isEmpty()) {
@@ -132,8 +132,8 @@ public class ObjectEqualConstrLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
     public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
-        LinkedList list = tuple.getLinkedList();
-        if( list != null ) {
+        if((tuple != null) && (tuple.getLinkedList() != null)) {
+            LinkedList list = tuple.getLinkedList();
             list.remove(tuple);
             this.size--;
             

@@ -121,7 +121,7 @@ class AlphaNode extends ObjectSource
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) {
         Set memory = (Set) workingMemory.getNodeMemory( this );
-
+        
         if ( this.constraint.isAllowed( handle,
                                         null,
                                         workingMemory ) ) {

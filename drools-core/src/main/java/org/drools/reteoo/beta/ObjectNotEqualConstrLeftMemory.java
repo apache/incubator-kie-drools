@@ -95,7 +95,7 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
     public void remove(WorkingMemory workingMemory, ReteTuple tuple) {
-        if(tuple.getLinkedList() == this.memoryMasterList) {
+        if((tuple != null) && (tuple.getLinkedList() == this.memoryMasterList)) {
             if(this.innerMemory != null) {
                 this.innerMemory.remove(workingMemory, 
                                         (MultiLinkedListNodeWrapper)tuple.getChild().getChild());
@@ -138,7 +138,7 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
     public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
-        if(tuple.getLinkedList() == this.memoryMasterList) {
+        if((tuple != null) && (tuple.getLinkedList() == this.memoryMasterList)) {
             if(this.innerMemory != null) {
                 this.innerMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild().getChild());
             }

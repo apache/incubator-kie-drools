@@ -102,6 +102,12 @@ public abstract class BaseBetaLeftMemoryTestClass extends TestCase {
     public void testRemoveUnexistingTuple() {
         try {
             this.memory.remove( this.workingMemory, this.tuple0 );
+            
+            MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper(tuple0);
+            this.memory.remove(this.workingMemory, wrapper0);
+            
+            this.memory.remove(this.workingMemory, (ReteTuple) null);
+            this.memory.remove(this.workingMemory, (MultiLinkedListNodeWrapper) null);
         } catch (Exception e) {
             Assert.fail("Left memory is not supposed to throw exception: " + e.getMessage());
         }
