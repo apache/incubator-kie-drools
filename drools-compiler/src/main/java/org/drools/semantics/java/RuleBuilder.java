@@ -338,7 +338,7 @@ public class RuleBuilder {
 
     private void build(Column column,
                        BoundVariableDescr boundVariableDescr) {
-        if ( boundVariableDescr.getDeclarationIdentifier() == null || boundVariableDescr.getDeclarationIdentifier().equals( "" ) ) {
+        if ( boundVariableDescr.getIdentifier() == null || boundVariableDescr.getIdentifier().equals( "" ) ) {
             this.errors.add( new RuleError( this.rule,
                                              boundVariableDescr,
                                              null,
@@ -355,13 +355,13 @@ public class RuleBuilder {
             return;
         }
 
-        Declaration declaration = (Declaration) this.declarations.get( boundVariableDescr.getDeclarationIdentifier() );
+        Declaration declaration = (Declaration) this.declarations.get( boundVariableDescr.getIdentifier() );
 
         if ( declaration == null ) {
             this.errors.add( new RuleError( this.rule,
                                              boundVariableDescr,
                                              null,
-                                             "Unable to return Declaration for identifier '" + boundVariableDescr.getDeclarationIdentifier() ) + "'" );
+                                             "Unable to return Declaration for identifier '" + boundVariableDescr.getIdentifier() ) + "'" );
             return;
         }
 

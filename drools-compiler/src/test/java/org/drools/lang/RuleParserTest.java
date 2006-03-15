@@ -12,6 +12,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.LiteralDescr;
@@ -208,10 +209,40 @@ public class RuleParserTest extends TestCase {
         
         System.err.println( rule.getLhs().getDescrs() );
         assertEquals(2, rule.getLhs().getDescrs().size());
-        //Note 2 problems: as runExpander is reparsing original text, not expanded
+        //Note 2 problems: as runExpander is reparsing original text, not expanded                        
+    }
+    
+    public void testBindings() throws Exception {
+        RuleParser parser = parseResource( "bindings.drl" );
+        parser.compilation_unit();
         
+        PackageDescr pkg = parser.getPackageDescr();
+        RuleDescr ruleDescr = ( RuleDescr ) pkg.getRules().get( 0 );
         
+        AndDescr lhs = ruleDescr.getLhs();
+        assertEquals(2, lhs.getDescrs().size() );
+        ColumnDescr cheese = (ColumnDescr) lhs.getDescrs().get( 0 );
+        assertEquals("Cheese", cheese.getObjectType() );
+        assertEquals(2, lhs.getDescrs().size() );
+        FieldBindingDescr fieldBinding = ( FieldBindingDescr) cheese.getDescrs().get( 0 );
+        assertEquals( "type", fieldBinding.getFieldName());        
+        LiteralDescr literalDescr = ( LiteralDescr) cheese.getDescrs().get( 1 );
+        assertEquals( "type", literalDescr.getFieldName() );
+        assertEquals( "==", literalDescr.getEvaluator() );
+        assertEquals( "stilton", literalDescr.getText() );
         
+        ColumnDescr person = (ColumnDescr) lhs.getDescrs().get( 1 );
+        fieldBinding = ( FieldBindingDescr) person.getDescrs().get( 0 );
+        assertEquals( "name", fieldBinding.getFieldName());        
+        literalDescr = ( LiteralDescr) person.getDescrs().get( 1 );
+        assertEquals( "name", literalDescr.getFieldName() );
+        assertEquals( "==", literalDescr.getEvaluator() );
+        assertEquals( "bob", literalDescr.getText() );        
+        
+        BoundVariableDescr variableDescr = ( BoundVariableDescr ) person.getDescrs().get( 2 );
+        assertEquals( "likes", variableDescr.getFieldName() );
+        assertEquals( "==", variableDescr.getEvaluator() );
+        assertEquals( "$type", variableDescr.getIdentifier() );                   
     }
 	
 	private RuleParser parse(String text) throws Exception {

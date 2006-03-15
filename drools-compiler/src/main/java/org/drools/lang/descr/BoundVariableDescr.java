@@ -21,7 +21,7 @@ public class BoundVariableDescr extends PatternDescr {
         return evaluator;
     }
 
-    public String getDeclarationIdentifier() {
+    public String getIdentifier() {
         return this.declarationIdentifier;
     }
 }

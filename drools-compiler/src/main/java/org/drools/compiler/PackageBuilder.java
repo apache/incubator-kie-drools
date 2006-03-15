@@ -176,8 +176,6 @@ public class PackageBuilder {
 
         Rule rule = builder.getRule();
 
-        //System.out.println( ruleDescr.getClassName() + ":\n" + builder.getRuleClass() );
-
         // The compilation result is for th entire rule, so difficult to associate with any descr
         CompilationResult result = compile( this.pkg.getName() + "." + ruleDescr.getClassName(),
                                             builder.getRuleClass(),
@@ -199,7 +197,7 @@ public class PackageBuilder {
             Object invoker = builder.getInvokerLookups().get( className );
             if ( invoker != null ) {
                 this.pkg.getPackageCompilationData().putInvoker( className,
-                                                            invoker );
+                                                                 invoker );
             }
             String text = (String) builder.getInvokers().get( className );
 
