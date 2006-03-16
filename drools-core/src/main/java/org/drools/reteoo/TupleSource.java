@@ -128,18 +128,20 @@ abstract class TupleSource extends BaseNode
                                         WorkingMemoryImpl workingMemory) {
 
         // we do this one first to avoid an extra clone
-        ((TupleSink) getTupleSinks().get( 0 )).assertTuple( tuple,
-                                                            context,
-                                                            workingMemory );
-
-        tupleMatch.addJoinedTuple( tuple );
-
-        for ( int i = 1, size = getTupleSinks().size(); i < size; i++ ) {
-            ReteTuple clone = new ReteTuple( tuple );
-            tupleMatch.addJoinedTuple( clone );
-            ((TupleSink) getTupleSinks().get( i )).assertTuple( clone,
+        if ( ! getTupleSinks().isEmpty() ) {
+            ((TupleSink) getTupleSinks().get( 0 )).assertTuple( tuple,
                                                                 context,
                                                                 workingMemory );
+    
+            tupleMatch.addJoinedTuple( tuple );
+    
+            for ( int i = 1, size = getTupleSinks().size(); i < size; i++ ) {
+                ReteTuple clone = new ReteTuple( tuple );
+                tupleMatch.addJoinedTuple( clone );
+                ((TupleSink) getTupleSinks().get( i )).assertTuple( clone,
+                                                                    context,
+                                                                    workingMemory );
+            }
         }
     }
 

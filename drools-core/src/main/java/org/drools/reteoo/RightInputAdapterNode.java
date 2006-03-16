@@ -99,7 +99,7 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleSource.addTupleSink( this );
     }
     
-    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+    public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
         // this node has no memory, no point requesting repropagation     
     }       

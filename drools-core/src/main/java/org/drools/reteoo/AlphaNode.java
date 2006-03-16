@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.FactException;
+import org.drools.common.PropagationContextImpl;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
 
@@ -84,11 +85,16 @@ class AlphaNode extends ObjectSource
         this.objectSource.addObjectSink( this );
     }
     
-    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+    public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
         
-        for (int i = 0, length = 0; i < length; i++) { 
-            this.objectSource.updateNewNode( workingMemories[i], context );
+        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+            WorkingMemoryImpl workingMemory = workingMemories[i];
+            PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                PropagationContext.RULE_ADDITION,
+                                                                                null,
+                                                                                null );            
+            this.objectSource.updateNewNode( workingMemory, propagationContext );
         }        
     }     
 
@@ -148,24 +154,14 @@ class AlphaNode extends ObjectSource
                               PropagationContext context) {
         this.attachingNewNode = true;
 
-        if ( hasMemory() ) {
-            Set memory = (Set) workingMemory.getNodeMemory( this );
+        Set memory = (Set) workingMemory.getNodeMemory( this );
 
-            for ( Iterator it = memory.iterator(); it.hasNext(); ) {
-                FactHandleImpl handle = (FactHandleImpl) it.next();
-                Object object = workingMemory.getObject( handle );
-                propagateAssertObject( handle,
-                                       context,
-                                       workingMemory );
-            }
-        } else {
-            // We need to detach and re-attach to make sure the node is at the
-            // top
-            // for the propagation
-            this.objectSource.removeObjectSink( this );
-            this.objectSource.addObjectSink( this );
-            this.objectSource.updateNewNode( workingMemory,
-                                             context );
+        for ( Iterator it = memory.iterator(); it.hasNext(); ) {
+            FactHandleImpl handle = (FactHandleImpl) it.next();
+            Object object = workingMemory.getObject( handle );
+            propagateAssertObject( handle,
+                                   context,
+                                   workingMemory );
         }
 
         this.attachingNewNode = false;

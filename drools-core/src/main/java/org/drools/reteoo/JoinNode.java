@@ -331,5 +331,27 @@ class JoinNode extends BetaNode {
             }
         }
     }
+    
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
+     */
+    public void updateNewNode(WorkingMemoryImpl workingMemory,
+                              PropagationContext context) {
+        this.attachingNewNode = true;
+        
+        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        
+        for ( Iterator it = memory.getRightObjectMemory().iterator(); it.hasNext(); ) {
+            ObjectMatches objectMatches = ( ObjectMatches) it.next();
+            for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = ( TupleMatch ) tupleMatch.getNext() ) {
+                propagateAssertTuple( (ReteTuple) tupleMatch.getTuple(),
+                                      context,
+                                      workingMemory );                    
+            }
+        }       
+            
+        this.attachingNewNode = true;
+    }
+        
 
 }

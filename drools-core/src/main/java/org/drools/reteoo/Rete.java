@@ -247,7 +247,7 @@ class Rete extends ObjectSource
         // do nothing this is the root node
     }
     
-    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+    public void attach(WorkingMemoryImpl[] workingMemories) {
         // do nothing this is the root node        
     }       
 
@@ -256,7 +256,7 @@ class Rete extends ObjectSource
         // do nothing this has no data to propagate
     }
 
-    public void remove(BaseNode node,
+    public void remove(BaseNode node,          
                        WorkingMemoryImpl workingMemory,
                        PropagationContext context) {
         ObjectTypeNode objectTypeNode = ( ObjectTypeNode ) node;

@@ -65,6 +65,18 @@ public class PackageIntegrationException extends IntegrationException {
      * @param pkg
      *            The offending rule.
      */
+    public PackageIntegrationException(String message,
+                                       Package pkg) {
+        super( message );
+        this.pkg = pkg;
+    }    
+    
+    /**
+     * @see java.lang.Exception#Exception()
+     * 
+     * @param pkg
+     *            The offending rule.
+     */
     public PackageIntegrationException(Package pkg) {
         super( createMessage( pkg ) );
         this.pkg = pkg;

@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.util.Iterator;
 
 import org.drools.common.BetaNodeBinder;
+import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -90,30 +91,6 @@ abstract class BetaNode extends TupleSource
         this.joinNodeBinder = joinNodeBinder;
 
     }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
-     */
-    public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) {
-        this.attachingNewNode = true;
-        
-        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        for ( Iterator it = memory.getRightObjectMemory().iterator(); it.hasNext(); ) {
-            ObjectMatches objectMatches = ( ObjectMatches) it.next();
-            for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = ( TupleMatch ) tupleMatch.getNext() ) {
-                for ( Iterator it2 = tupleMatch.getJoinedTuples().iterator(); it2.hasNext(); ) {
-                    propagateAssertTuple( (ReteTuple) it2.next(),
-                                          context,
-                                          workingMemory );                  
-                }                
-            }
-        }       
-            
-        this.attachingNewNode = true;
-    }
-    
     
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#attach()
@@ -123,13 +100,19 @@ abstract class BetaNode extends TupleSource
         this.rightInput.addObjectSink( this );
     }
     
-    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+    public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
         
-        for (int i = 0, length = 0; i < length; i++) { 
-            this.leftInput.updateNewNode( workingMemories[i], context );
-            this.rightInput.updateNewNode(workingMemories[i], context );
-        }        
+        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+            WorkingMemoryImpl workingMemory = workingMemories[i];
+            PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                PropagationContext.RULE_ADDITION,
+                                                                                null,
+                                                                                null );            
+            this.leftInput.updateNewNode( workingMemory, propagationContext );
+            this.rightInput.updateNewNode( workingMemory, propagationContext );
+        }             
+                
     }    
 
     public void remove(BaseNode node,

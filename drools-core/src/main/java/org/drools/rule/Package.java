@@ -98,7 +98,7 @@ public class Package
 
     private Map                    globals;
 
-    private Map                    functions;
+    //private Map                    functions;
 
     // @todo: add attributes to Package
     //private Map                   attributes;
@@ -142,7 +142,7 @@ public class Package
         this.ruleNames = new HashMap();
         this.rules = new ArrayList();
         this.globals = new HashMap();
-        this.functions = new HashMap();
+        //this.functions = new HashMap();
         this.packageCompilationData = new PackageCompilationData( parentClassLoader );
     }    
     
@@ -157,7 +157,7 @@ public class Package
         stream.writeObject( name );
         stream.writeObject( imports );
         stream.writeObject( globals );
-        stream.writeObject( functions );
+        //stream.writeObject( functions );
         
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
         // a byte[]
@@ -180,7 +180,7 @@ public class Package
         this.name = (String) stream.readObject(  );
         this.imports = (List) stream.readObject( );
         this.globals = (Map) stream.readObject( );
-        this.functions = (Map) stream.readObject( );
+        //this.functions = (Map) stream.readObject( );
         
                 
         // Return the rules stored as a byte[]
@@ -317,18 +317,18 @@ public class Package
         return this.globals;
     }
 
-    public void addFunctions(Functions functions) {
-        this.functions.put( functions.getSemantic(),
-                            functions );
-    }
-
-    public Functions getFunctions(String semantic) {
-        return (Functions) this.functions.get( semantic );
-    }
-
-    public Map getFunctions() {
-        return Collections.unmodifiableMap( this.functions );
-    }
+//    public void addFunctions(Functions functions) {
+//        this.functions.put( functions.getSemantic(),
+//                            functions );
+//    }
+//
+//    public Functions getFunctions(String semantic) {
+//        return (Functions) this.functions.get( semantic );
+//    }
+//
+//    public Map getFunctions() {
+//        return Collections.unmodifiableMap( this.functions );
+//    }
 
     public void setTypeSolver(TypeResolver typeResolver) {
         this.typeResolver = typeResolver;
@@ -340,7 +340,7 @@ public class Package
 
     public PackageCompilationData getPackageCompilationData() {
         return this.packageCompilationData;
-    }
+    }   
 
     public String toString() {
         return "[Package name=" + this.name + "]";

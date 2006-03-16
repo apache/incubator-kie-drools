@@ -78,7 +78,7 @@ abstract class BaseNode
      */
     public abstract void attach();
     
-    public abstract void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context);    
+    public abstract void attach(WorkingMemoryImpl[] workingMemories);    
 
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
