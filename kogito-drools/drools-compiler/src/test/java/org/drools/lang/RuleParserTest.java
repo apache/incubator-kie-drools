@@ -20,6 +20,7 @@ import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
 
@@ -495,6 +496,25 @@ public class RuleParserTest extends TestCase {
         assertEquals( "name", retval.getFieldName());
         assertEquals("==", retval.getEvaluator());
     }    
+    
+    public void testWithPredicate() throws Exception {
+        RuleParser parser = parseResource( "with_predicate.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(1, pack.getRules().size());
+        
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals(1, col.getDescrs().size());
+        
+        PredicateDescr pred = (PredicateDescr) col.getDescrs().get( 0 );
+        assertEquals("age", pred.getFieldName());
+        assertEquals("$age2", pred.getDeclaration());
+        assertEqualsIgnoreWhitespace( "$age2 == $age1+2", pred.getText());
+        
+    }       
 	
 	private RuleParser parse(String text) throws Exception {
 		parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
