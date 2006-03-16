@@ -409,9 +409,11 @@ public class RuleParserTest extends TestCase {
         RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
         assertEquals(1, rule.getLhs().getDescrs().size());
         
-        OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
-        assertEquals(1, or.getDescrs().size());
+        assertEquals(1, rule.getLhs().getDescrs().size());
 
+        OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( 2, or.getDescrs().size() );
+        
         //first fact
         ColumnDescr firstFact = (ColumnDescr) or.getDescrs().get( 0 );
         assertEquals("Person", firstFact.getObjectType());

@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea8 /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g 2006-03-16 00:09:51
+// $ANTLR 3.0ea8 /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g 2006-03-16 01:11:21
 
 	package org.drools.lang;
 
@@ -398,10 +398,11 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:20:7: ( '(' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:20:7: '('
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:20:7: ( 'or' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:20:7: 'or'
             {
-            match('('); 
+            match("or"); 
+
 
             }
 
@@ -421,10 +422,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:21:7: ( ')' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:21:7: ')'
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:21:7: ( '(' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:21:7: '('
             {
-            match(')'); 
+            match('('); 
 
             }
 
@@ -444,10 +445,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:22:7: ( ',' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:22:7: ','
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:22:7: ( ')' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:22:7: ')'
             {
-            match(','); 
+            match(')'); 
 
             }
 
@@ -467,11 +468,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:23:7: ( '==' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:23:7: '=='
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:23:7: ( ',' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:23:7: ','
             {
-            match("=="); 
-
+            match(','); 
 
             }
 
@@ -491,10 +491,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:24:7: ( '>=' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:24:7: '>='
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:24:7: ( '==' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:24:7: '=='
             {
-            match(">="); 
+            match("=="); 
 
 
             }
@@ -515,10 +515,11 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:25:7: ( '<' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:25:7: '<'
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:25:7: ( '>=' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:25:7: '>='
             {
-            match('<'); 
+            match(">="); 
+
 
             }
 
@@ -538,11 +539,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:26:7: ( '<=' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:26:7: '<='
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:26:7: ( '<' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:26:7: '<'
             {
-            match("<="); 
-
+            match('<'); 
 
             }
 
@@ -562,10 +562,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:27:7: ( '!=' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:27:7: '!='
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:27:7: ( '<=' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:27:7: '<='
             {
-            match("!="); 
+            match("<="); 
 
 
             }
@@ -586,10 +586,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:28:7: ( 'contains' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:28:7: 'contains'
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:28:7: ( '!=' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:28:7: '!='
             {
-            match("contains"); 
+            match("!="); 
 
 
             }
@@ -610,10 +610,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:29:7: ( 'or' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:29:7: 'or'
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:29:7: ( 'contains' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:29:7: 'contains'
             {
-            match("or"); 
+            match("contains"); 
 
 
             }
@@ -802,8 +802,8 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:473:9: ( ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']'))
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:474:17: ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']')
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:489:9: ( ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']'))
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:490:17: ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']')
             {
             if ( input.LA(1)=='!'||(input.LA(1)>='$' && input.LA(1)<='&')||(input.LA(1)>='*' && input.LA(1)<='-')||input.LA(1)=='@'||input.LA(1)=='['||(input.LA(1)>=']' && input.LA(1)<='_')||(input.LA(1)>='{' && input.LA(1)<='}') ) {
                 input.consume();
@@ -834,8 +834,8 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:477:17: ( (' '|'\t'|'\f'))
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:477:17: (' '|'\t'|'\f')
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:493:17: ( (' '|'\t'|'\f'))
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:493:17: (' '|'\t'|'\f')
             {
             if ( input.LA(1)=='\t'||input.LA(1)=='\f'||input.LA(1)==' ' ) {
                 input.consume();
@@ -867,10 +867,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:485:17: ( ( '\r\n' | '\r' | '\n' ) )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:485:17: ( '\r\n' | '\r' | '\n' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:501:17: ( ( '\r\n' | '\r' | '\n' ) )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:501:17: ( '\r\n' | '\r' | '\n' )
             {
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:485:17: ( '\r\n' | '\r' | '\n' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:501:17: ( '\r\n' | '\r' | '\n' )
             int alt1=3;
             int LA1_0 = input.LA(1);
             if ( LA1_0=='\r' ) {
@@ -886,13 +886,13 @@ public class RuleParserLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("485:17: ( \'\\r\\n\' | \'\\r\' | \'\\n\' )", 1, 0, input);
+                    new NoViableAltException("501:17: ( \'\\r\\n\' | \'\\r\' | \'\\n\' )", 1, 0, input);
 
                 throw nvae;
             }
             switch (alt1) {
                 case 1 :
-                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:485:25: '\r\n'
+                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:501:25: '\r\n'
                     {
                     match("\r\n"); 
 
@@ -900,14 +900,14 @@ public class RuleParserLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:486:25: '\r'
+                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:502:25: '\r'
                     {
                     match('\r'); 
 
                     }
                     break;
                 case 3 :
-                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:487:25: '\n'
+                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:503:25: '\n'
                     {
                     match('\n'); 
 
@@ -935,10 +935,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:492:17: ( ( '0' .. '9' )+ )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:492:17: ( '0' .. '9' )+
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:508:17: ( ( '0' .. '9' )+ )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:508:17: ( '0' .. '9' )+
             {
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:492:17: ( '0' .. '9' )+
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:508:17: ( '0' .. '9' )+
             int cnt2=0;
             loop2:
             do {
@@ -951,7 +951,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt2) {
             	case 1 :
-            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:492:18: '0' .. '9'
+            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:508:18: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -986,10 +986,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:496:17: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:496:17: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:512:17: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:512:17: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
             {
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:496:17: ( '0' .. '9' )+
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:512:17: ( '0' .. '9' )+
             int cnt3=0;
             loop3:
             do {
@@ -1002,7 +1002,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:496:18: '0' .. '9'
+            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:512:18: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1019,7 +1019,7 @@ public class RuleParserLexer extends Lexer {
             } while (true);
 
             match('.'); 
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:496:33: ( '0' .. '9' )+
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:512:33: ( '0' .. '9' )+
             int cnt4=0;
             loop4:
             do {
@@ -1032,7 +1032,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:496:34: '0' .. '9'
+            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:512:34: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1067,11 +1067,11 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:500:17: ( '"' ( options {greedy=false; } : . )* '"' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:500:17: '"' ( options {greedy=false; } : . )* '"'
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:516:17: ( '"' ( options {greedy=false; } : . )* '"' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:516:17: '"' ( options {greedy=false; } : . )* '"'
             {
             match('"'); 
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:500:21: ( options {greedy=false; } : . )*
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:516:21: ( options {greedy=false; } : . )*
             loop5:
             do {
                 int alt5=2;
@@ -1086,7 +1086,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt5) {
             	case 1 :
-            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:500:48: .
+            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:516:48: .
             	    {
             	    matchAny(); 
 
@@ -1118,8 +1118,8 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:504:17: ( ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))* )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:504:17: ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:520:17: ( ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))* )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:520:17: ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
             {
             if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                 input.consume();
@@ -1131,7 +1131,7 @@ public class RuleParserLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:504:44: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:520:44: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
             loop6:
             do {
                 int alt6=2;
@@ -1143,7 +1143,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:504:45: ('a'..'z'|'A'..'Z'|'_'|'0'..'9')
+            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:520:45: ('a'..'z'|'A'..'Z'|'_'|'0'..'9')
             	    {
             	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
             	        input.consume();
@@ -1183,11 +1183,11 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:509:17: ( '#' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:509:17: '#' ( options {greedy=false; } : . )* ( '\r' )? '\n'
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:525:17: ( '#' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:525:17: '#' ( options {greedy=false; } : . )* ( '\r' )? '\n'
             {
             match('#'); 
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:509:21: ( options {greedy=false; } : . )*
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:525:21: ( options {greedy=false; } : . )*
             loop7:
             do {
                 int alt7=2;
@@ -1205,7 +1205,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:509:48: .
+            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:525:48: .
             	    {
             	    matchAny(); 
 
@@ -1217,7 +1217,7 @@ public class RuleParserLexer extends Lexer {
                 }
             } while (true);
 
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:509:52: ( '\r' )?
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:525:52: ( '\r' )?
             int alt8=2;
             int LA8_0 = input.LA(1);
             if ( LA8_0=='\r' ) {
@@ -1228,13 +1228,13 @@ public class RuleParserLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("509:52: ( \'\\r\' )?", 8, 0, input);
+                    new NoViableAltException("525:52: ( \'\\r\' )?", 8, 0, input);
 
                 throw nvae;
             }
             switch (alt8) {
                 case 1 :
-                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:509:53: '\r'
+                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:525:53: '\r'
                     {
                     match('\r'); 
 
@@ -1263,12 +1263,12 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:514:17: ( '//' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:514:17: '//' ( options {greedy=false; } : . )* ( '\r' )? '\n'
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:530:17: ( '//' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:530:17: '//' ( options {greedy=false; } : . )* ( '\r' )? '\n'
             {
             match("//"); 
 
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:514:22: ( options {greedy=false; } : . )*
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:530:22: ( options {greedy=false; } : . )*
             loop9:
             do {
                 int alt9=2;
@@ -1286,7 +1286,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt9) {
             	case 1 :
-            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:514:49: .
+            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:530:49: .
             	    {
             	    matchAny(); 
 
@@ -1298,7 +1298,7 @@ public class RuleParserLexer extends Lexer {
                 }
             } while (true);
 
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:514:53: ( '\r' )?
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:530:53: ( '\r' )?
             int alt10=2;
             int LA10_0 = input.LA(1);
             if ( LA10_0=='\r' ) {
@@ -1309,13 +1309,13 @@ public class RuleParserLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("514:53: ( \'\\r\' )?", 10, 0, input);
+                    new NoViableAltException("530:53: ( \'\\r\' )?", 10, 0, input);
 
                 throw nvae;
             }
             switch (alt10) {
                 case 1 :
-                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:514:54: '\r'
+                    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:530:54: '\r'
                     {
                     match('\r'); 
 
@@ -1344,12 +1344,12 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:518:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:518:17: '/*' ( options {greedy=false; } : . )* '*/'
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:534:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:534:17: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:518:22: ( options {greedy=false; } : . )*
+            // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:534:22: ( options {greedy=false; } : . )*
             loop11:
             do {
                 int alt11=2;
@@ -1372,7 +1372,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt11) {
             	case 1 :
-            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:518:48: .
+            	    // /Users/bob/Documents/workspace/jbossrules/drools-compiler/src/main/resources/org/drools/lang/drl.g:534:48: .
             	    {
             	    matchAny(); 
 
@@ -2063,7 +2063,7 @@ public class RuleParserLexer extends Lexer {
 
             }
         };
-        DFA.State s117 = new DFA.State() {{alt=24;}};
+        DFA.State s117 = new DFA.State() {{alt=15;}};
         DFA.State s55 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_55 = input.LA(1);
@@ -2232,7 +2232,7 @@ public class RuleParserLexer extends Lexer {
 
             }
         };
-        DFA.State s65 = new DFA.State() {{alt=19;}};
+        DFA.State s65 = new DFA.State() {{alt=20;}};
         DFA.State s66 = new DFA.State() {{alt=14;}};
         DFA.State s13 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
@@ -2242,9 +2242,9 @@ public class RuleParserLexer extends Lexer {
 
             }
         };
-        DFA.State s14 = new DFA.State() {{alt=15;}};
-        DFA.State s15 = new DFA.State() {{alt=16;}};
-        DFA.State s67 = new DFA.State() {{alt=17;}};
+        DFA.State s14 = new DFA.State() {{alt=16;}};
+        DFA.State s15 = new DFA.State() {{alt=17;}};
+        DFA.State s67 = new DFA.State() {{alt=18;}};
         DFA.State s16 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_16 = input.LA(1);
@@ -2252,9 +2252,9 @@ public class RuleParserLexer extends Lexer {
 
             }
         };
-        DFA.State s17 = new DFA.State() {{alt=18;}};
-        DFA.State s68 = new DFA.State() {{alt=21;}};
-        DFA.State s69 = new DFA.State() {{alt=20;}};
+        DFA.State s17 = new DFA.State() {{alt=19;}};
+        DFA.State s68 = new DFA.State() {{alt=22;}};
+        DFA.State s69 = new DFA.State() {{alt=21;}};
         DFA.State s18 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_18 = input.LA(1);
@@ -2263,7 +2263,7 @@ public class RuleParserLexer extends Lexer {
 
             }
         };
-        DFA.State s70 = new DFA.State() {{alt=22;}};
+        DFA.State s70 = new DFA.State() {{alt=23;}};
         DFA.State s31 = new DFA.State() {{alt=32;}};
         DFA.State s19 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
@@ -2273,7 +2273,7 @@ public class RuleParserLexer extends Lexer {
 
             }
         };
-        DFA.State s265 = new DFA.State() {{alt=23;}};
+        DFA.State s265 = new DFA.State() {{alt=24;}};
         DFA.State s258 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_258 = input.LA(1);

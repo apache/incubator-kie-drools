@@ -224,7 +224,7 @@ lhs returns [PatternDescr d]
 	;
 
 	
-lhs_column returns [ColumnDescr d]
+lhs_column returns [PatternDescr d]
 	@init {
 		d=null;
 	}
@@ -232,9 +232,10 @@ lhs_column returns [ColumnDescr d]
 	|	f=fact		{ d = f; }
 	;
  	
-fact_binding returns [ColumnDescr d]
+fact_binding returns [PatternDescr d]
 	@init {
 		d=null;
+		boolean multi=false;
 	}
  	:
  		id=ID 
@@ -242,14 +243,29 @@ fact_binding returns [ColumnDescr d]
  			System.err.println( "fact_binding(" + id.getText() + ")" );
  		}
  		
- 		opt_eol ':' opt_eol f=fact { d=f; } opt_eol
+ 		opt_eol ':' opt_eol 
+ 		f=fact opt_eol
  		{
- 			d=f;
- 			d.setIdentifier( id.getText() );
+ 			((ColumnDescr)f).setIdentifier( id.getText() );
+ 			d = f;
  		}
+ 		(	'or'
+ 			{	if ( ! multi ) {
+ 					PatternDescr first = d;
+ 					d = new OrDescr();
+ 					((OrDescr)d).addDescr( first );
+ 					multi=true;
+ 				}
+ 			}
+ 			f=fact
+ 			{
+ 				((ColumnDescr)f).setIdentifier( id.getText() );
+ 				((OrDescr)d).addDescr( f );
+ 			}
+ 		)*	
  	;
  
-fact returns [ColumnDescr d] 
+fact returns [PatternDescr d] 
 	@init {
 		d=null;
 	}
@@ -261,13 +277,13 @@ fact returns [ColumnDescr d]
  		'(' opt_eol (	c=constraints
  				{
 		 			for ( Iterator cIter = c.iterator() ; cIter.hasNext() ; ) {
- 						d.addDescr( (PatternDescr) cIter.next() );
+ 						((ColumnDescr)d).addDescr( (PatternDescr) cIter.next() );
  					}
  				}
  
  				)? opt_eol ')' opt_eol
  	;
- 	
+	
 	
 constraints returns [List constraints]
 	@init {
@@ -421,7 +437,7 @@ lhs_exist returns [PatternDescr d]
 	}
 	:	loc='exists' column=lhs_column 
 		{ 
-			d = new ExistsDescr( column ); 
+			d = new ExistsDescr( (ColumnDescr) column ); 
 			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
 		}	
 	;
@@ -432,7 +448,7 @@ lhs_not	returns [NotDescr d]
 	}
 	:	loc='not' column=lhs_column 
 		{
-			d = new NotDescr( column ); 
+			d = new NotDescr( (ColumnDescr) column ); 
 			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
 		}
 	;
