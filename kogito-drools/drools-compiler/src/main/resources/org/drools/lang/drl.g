@@ -124,15 +124,15 @@ rule returns [RuleDescr rule]
 			)
 					
 		)?
-		(	'then' ':'?
-			(options{greedy=false;} : any=.
-				{
-					consequence = consequence + " " + any.getText();
-				}
-			)*
-			{ rule.setConsequence( consequence ); }
-		)?
-		EOL 'end' opt_eol
+		{ System.err.println( "finished LHS?" ); }
+		'then' ':'? { System.err.println( "matched THEN" ); } opt_eol
+		( options{greedy=false;} : any=.
+			{
+				consequence = consequence + " " + any.getText();
+			}
+		)*
+		{ rule.setConsequence( consequence ); }
+		'end' opt_eol
 	;
 
 rule_options returns [List options]
@@ -360,20 +360,30 @@ chunk returns [String text]
 	@init {
 		text = null;
 	}
-	:	(	( any=. {
-					if ( text == null ) {
-						text = any.getText();
-					} else {
-						text = text + " " + any.getText(); 
-					} 
-				})
-		|	( '(' c=chunk ')' 	{
-							if ( text == null ) {
-								text = "( " + c + " )";
-							} else {
-								text = text + " ( " + c + " )";
-							}
-						} )
+	
+	:
+		(	options{greedy=false;} : 
+			'(' c=chunk ')' 	
+			{
+				System.err.println( "chunk [" + c + "]" );
+				if ( c == null ) {
+					c = "";
+				}
+				if ( text == null ) {
+					text = "( " + c + " )";
+				} else {
+					text = text + " ( " + c + " )";
+				}
+			} 
+		| any=. 
+			{
+				System.err.println( "any [" + any.getText() + "]" );
+				if ( text == null ) {
+					text = any.getText();
+				} else {
+					text = text + " " + any.getText(); 
+				} 
+			}
 		)*
 	;
 	
@@ -456,8 +466,10 @@ lhs_not	returns [NotDescr d]
 lhs_eval returns [PatternDescr d]
 	@init {
 		d = null;
+		String text = "";
 	}
-	:	'eval' { d = new EvalDescr( "" ); }
+	:	'eval' '(' c=chunk ')' 
+		{ d = new EvalDescr( c ); }
 	;
 	
 dotted_name returns [String name]
@@ -487,7 +499,7 @@ word returns [String word]
 
 
 MISC 	:
-		'!' | '@' | '$' | '%' | '^' | '&' | '*' | '_' | '-' | '+' | '|' | ',' | '{' | '}' | '[' | ']'
+		'!' | '@' | '$' | '%' | '^' | '&' | '*' | '_' | '-' | '+' | '|' | ',' | '{' | '}' | '[' | ']' | ';'
 	;
 
 WS      :       (	' '
