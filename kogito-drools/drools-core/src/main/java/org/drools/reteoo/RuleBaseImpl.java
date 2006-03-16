@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -30,6 +31,7 @@ import org.drools.RuleIntegrationException;
 import org.drools.PackageIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.rule.InvalidPatternException;
+import org.drools.rule.PackageCompilationData;
 import org.drools.rule.Rule;
 import org.drools.rule.Package;
 import org.drools.spi.ClassObjectTypeResolver;
@@ -60,7 +62,7 @@ public class RuleBaseImpl
     /** The fact handle factory. */
     private final FactHandleFactory factHandleFactory;
 
-    private Set                     pkgs;
+    private Map                     pkgs;
 
     private Map                     globalDeclarations;
 
@@ -90,7 +92,7 @@ public class RuleBaseImpl
         this.reteBuilder = new ReteBuilder( this,
                                             resolver );
         this.factHandleFactory = new DefaultFactHandleFactory();
-        this.pkgs = new HashSet();
+        this.pkgs = new HashMap();
         this.globalDeclarations = new HashMap();
         this.workingMemories = new WeakHashMap();
     }
@@ -192,7 +194,7 @@ public class RuleBaseImpl
     }
 
     public Package[] getPackages() {
-        return (Package[]) this.pkgs.toArray( new Package[this.pkgs.size()] );
+        return (Package[]) this.pkgs.values().toArray( new Package[this.pkgs.size()] );
     }
 
     public Map getGlobalDeclarations() {
@@ -213,11 +215,19 @@ public class RuleBaseImpl
      * @throws FactException
      * @throws InvalidPatternException
      */
-    public void addPackage(Package pkg) throws RuleIntegrationException,
+    public void addPackage(Package newPkg) throws RuleIntegrationException,
                                        PackageIntegrationException,
                                        FactException,
                                        InvalidPatternException {
-        Map newGlobals = pkg.getGlobals();
+        Package pkg = ( Package ) this.pkgs.get(  newPkg.getName() );
+        if ( pkg != null ) {
+            mergePackage( pkg, newPkg );            
+        } else {
+            this.pkgs.put( newPkg.getName(),
+                           newPkg );
+        }
+        
+        Map newGlobals = newPkg.getGlobals();
 
         // Check that the global data is valid, we cannot change the type
         // of an already declared global variable
@@ -228,24 +238,52 @@ public class RuleBaseImpl
                 throw new PackageIntegrationException( pkg );
             }
         }
-        this.globalDeclarations.putAll( newGlobals );
+        this.globalDeclarations.putAll( newGlobals );        
 
-        this.pkgs.add( pkg );
-
-        Rule[] rules = pkg.getRules();
+        Rule[] rules = newPkg.getRules();
 
         for ( int i = 0; i < rules.length; ++i ) {
             addRule( rules[i] );
         }
     }
+    
+    public void mergePackage(Package pkg, Package newPkg) throws PackageIntegrationException {
+        Map globals = pkg.getGlobals();
+        List imports = pkg.getImports();
+        
+        // First update the binary files
+        // @todo: this probably has issues if you add classes in the incorrect order - functions, rules, invokers.
+        PackageCompilationData compilationData = pkg.getPackageCompilationData();
+        PackageCompilationData newCompilationData = newPkg.getPackageCompilationData();
+        String[] files = newCompilationData.list();
+        for ( int i = 0, length = files.length; i < length; i++ ) {
+            compilationData.write( files[i], newCompilationData.read( files[i] ) );
+        }
+        
+        // Merge imports
+        imports.addAll( newPkg.getImports() );
+        
+        // Add invokers
+        compilationData.putAllInvokers( newCompilationData.getInvokers() );
+        
+        // Add globals
+        for ( Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
+            String identifier = (String) it.next();
+            Class type = (Class) globals.get( identifier );
+            if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
+                throw new PackageIntegrationException( "Unable to merge new Package", newPkg );
+            }
+        }                       
+    }
 
     public void addRule(Rule rule) throws InvalidPatternException {
+        // This adds the rule. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
         this.reteBuilder.addRule( rule );
-        // Iterate each workingMemory and update with new rule
+        
+        // Iterate each workingMemory and attempt to fire any rules, that were activated as a result of the new rule addition
         for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
             WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
-            this.rete.updateNewNode( workingMemory,
-                                     null );
+            workingMemory.fireAllRules();
         }
     }
 

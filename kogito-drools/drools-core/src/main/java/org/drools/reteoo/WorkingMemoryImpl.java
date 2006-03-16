@@ -463,7 +463,7 @@ public class WorkingMemoryImpl
 
         handle.setObject( object );
 
-        PropagationContext propagationContext = new PropagationContextImpl( ++this.propagationIdCounter,
+        PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                             PropagationContext.ASSERTION,
                                                                             rule,
                                                                             activation );
@@ -577,7 +577,7 @@ public class WorkingMemoryImpl
                               Activation activation) throws FactException {
         removePropertyChangeListener( handle );
 
-        PropagationContext propagationContext = new PropagationContextImpl( ++this.propagationIdCounter,
+        PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                             PropagationContext.RETRACTION,
                                                                             rule,
                                                                             activation );
@@ -641,7 +641,7 @@ public class WorkingMemoryImpl
                                 handle );
         }
 
-        PropagationContext propagationContext = new PropagationContextImpl( ++this.propagationIdCounter,
+        PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                             PropagationContext.MODIFICATION,
                                                                             rule,
                                                                             activation );
@@ -784,6 +784,10 @@ public class WorkingMemoryImpl
 
     public PrimitiveLongMap getJustified() {
         return this.justified;
+    }
+    
+    public long getNextPropagationIdCounter() {
+        return this.propagationIdCounter++;
     }
 
     public void dispose() {

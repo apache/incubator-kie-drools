@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
@@ -66,11 +67,16 @@ class LeftInputAdapterNode extends TupleSource
         this.objectSource.addObjectSink( this );
     }
     
-    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+    public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
         
-        for (int i = 0, length = 0; i < length; i++) { 
-            this.objectSource.updateNewNode( workingMemories[i], context );
+        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+            WorkingMemoryImpl workingMemory = workingMemories[i];
+            PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                PropagationContext.RULE_ADDITION,
+                                                                                null,
+                                                                                null );            
+            this.objectSource.updateNewNode( workingMemory, propagationContext );
         }        
     }     
 
@@ -98,16 +104,19 @@ class LeftInputAdapterNode extends TupleSource
 
         list.add( new LinkedListNodeWrapper( tuple ) );
 
-        ((TupleSink) getTupleSinks().get( 0 )).assertTuple( tuple,
-                                                            context,
-                                                            workingMemory );
-
-        for ( int i = 1; i < size; i++ ) {
-            tuple = new ReteTuple( tuple );
-            list.add( new LinkedListNodeWrapper( tuple ) );
-            ((TupleSink) getTupleSinks().get( i )).assertTuple( tuple,
+        if ( ! getTupleSinks().isEmpty() ) {
+            // We do this one seperately so we avoid another tuple replication
+            ((TupleSink) getTupleSinks().get( 0 )).assertTuple( tuple,
                                                                 context,
                                                                 workingMemory );
+    
+            for ( int i = 1; i < size; i++ ) {
+                tuple = new ReteTuple( tuple );
+                list.add( new LinkedListNodeWrapper( tuple ) );
+                ((TupleSink) getTupleSinks().get( i )).assertTuple( tuple,
+                                                                    context,
+                                                                    workingMemory );
+            }
         }
 
         memory.put( handle,
@@ -146,7 +155,7 @@ class LeftInputAdapterNode extends TupleSource
         LinkedList list = (LinkedList) memory.get( handle );
 
         int i = 0;
-        for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
+        for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
             ((TupleSink) getTupleSinks().get( i++ )).modifyTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
                                                                   context,
                                                                   workingMemory );
@@ -160,16 +169,19 @@ class LeftInputAdapterNode extends TupleSource
                               PropagationContext context) {
         this.attachingNewNode = true;
 
+        // Get the newly attached TupleSink
+        TupleSink sink = (TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 );
+        
+        // Iterate the memory and assert all tuples into the newly attached TupleSink
         Map memory = (Map) workingMemory.getNodeMemory( this );
         for ( Iterator it = memory.values().iterator(); it.hasNext(); ) {
             LinkedList list = (LinkedList) it.next();
-            int i = 0;
-            for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
-                ((TupleSink) getTupleSinks().get( i++ )).modifyTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
+            for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
+                sink.assertTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
                                                                       context,
                                                                       workingMemory );
-            }            
-        }    
+            }           
+        }
         
         this.attachingNewNode = false;
     }

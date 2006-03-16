@@ -329,7 +329,28 @@ public class NotNode extends BetaNode {
                 }
             }
         }
-
     }
+    
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
+     */
+    public void updateNewNode(WorkingMemoryImpl workingMemory,
+                              PropagationContext context) {
+        this.attachingNewNode = true;
+        
+        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        //@todo: can we iterate left memory like this?
+        for ( Iterator it = memory.getLeftTupleMemory().iterator(null, null); it.hasNext(); ) {
+            ReteTuple leftTuple = ( ReteTuple ) it.next();
+            if ( leftTuple.matchesSize() == 0 ) {
+                propagateAssertTuple( leftTuple,
+                                      context,
+                                      workingMemory );
+            }            
+        }
+            
+        this.attachingNewNode = true;
+    }
+        
 
 }

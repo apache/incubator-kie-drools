@@ -148,7 +148,7 @@ class ReteBuilder {
         if ( this.workingMemories.length == 0) {
             node.attach();
         } else {
-            node.attach( workingMemories, null );
+            node.attach( workingMemories );
         }        
     }    
 
@@ -413,7 +413,7 @@ class ReteBuilder {
             if ( this.workingMemories.length == 0) {
                 candidate.attach();
             } else {
-                candidate.attach( workingMemories, null );
+                candidate.attach( workingMemories );
             }
 
             this.attachedNodes.put( candidate,
@@ -435,7 +435,7 @@ class ReteBuilder {
             if ( this.workingMemories.length == 0) {
                 candidate.attach();
             } else {
-                candidate.attach( workingMemories, null );
+                candidate.attach( workingMemories );
             }
 
             this.attachedNodes.put( candidate,

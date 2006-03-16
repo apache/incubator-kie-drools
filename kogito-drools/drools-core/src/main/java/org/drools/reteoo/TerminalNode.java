@@ -25,6 +25,7 @@ import org.drools.common.ActivationQueue;
 import org.drools.common.Agenda;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.AgendaItem;
+import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -218,11 +219,16 @@ final class TerminalNode extends BaseNode
         tupleSource.addTupleSink( this );
     }
     
-    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+    public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
         
-        for (int i = 0, length = 0; i < length; i++) { 
-            this.tupleSource.updateNewNode( workingMemories[i], context );
+        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+            WorkingMemoryImpl workingMemory = workingMemories[i];
+            PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                PropagationContext.RULE_ADDITION,
+                                                                                null,
+                                                                                null );            
+            this.tupleSource.updateNewNode( workingMemory, propagationContext );
         }        
     }       
 

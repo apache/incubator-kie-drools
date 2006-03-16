@@ -189,7 +189,7 @@ class ObjectTypeNode extends ObjectSource
         this.rete.addObjectSink( this );
     }
     
-    public void attach(WorkingMemoryImpl[] workingMemories, PropagationContext context) {
+    public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
         // Rete does not hold any data, so no need to propagate
     }     
