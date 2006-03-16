@@ -16,6 +16,7 @@ import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.LiteralDescr;
+import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 
@@ -307,6 +308,65 @@ public class RuleParserTest extends TestCase {
         assertEquals( "likes", variableDescr.getFieldName() );
         assertEquals( "==", variableDescr.getEvaluator() );
         assertEquals( "$type", variableDescr.getIdentifier() );                   
+    }
+    
+    /** Test that explicit "&&", "||" works as expected */
+    public void testAndOrRules() throws Exception {
+        RuleParser parser = parseResource( "and_or_rule.drl");
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertNotNull(pack);
+        assertEquals(1, pack.getRules().size());
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( "simple_rule", rule.getName() );
+        
+        //we will have 2 children under the main And node
+        AndDescr and = rule.getLhs();
+        assertEquals(2, and.getDescrs().size());
+        
+        //check the "&&" part
+        AndDescr join = (AndDescr) and.getDescrs().get( 0 );
+        assertEquals(2, join.getDescrs().size());
+        
+        ColumnDescr left = (ColumnDescr) join.getDescrs().get( 0 );
+        ColumnDescr right = (ColumnDescr) join.getDescrs().get( 1 );
+        assertEquals("Person", left.getObjectType());
+        assertEquals("Cheese", right.getObjectType());
+       
+        assertEquals(1, left.getDescrs().size());
+        LiteralDescr literal = (LiteralDescr) left.getDescrs().get( 0 );
+        assertEquals( "==", literal.getEvaluator());
+        assertEquals( "name", literal.getFieldName() );
+        assertEquals( "mark", literal.getText() );
+
+        assertEquals(1, right.getDescrs().size());
+        literal = (LiteralDescr) right.getDescrs().get( 0 );
+        assertEquals( "==", literal.getEvaluator());
+        assertEquals( "type", literal.getFieldName() );
+        assertEquals( "stilton", literal.getText() );
+        
+        //now the "||" part
+        OrDescr or = (OrDescr) and.getDescrs().get( 1 );
+        assertEquals(2, or.getDescrs().size());
+        left = (ColumnDescr) or.getDescrs().get( 0 );
+        right = (ColumnDescr) or.getDescrs().get( 1 );
+        assertEquals("Person", left.getObjectType());
+        assertEquals("Cheese", right.getObjectType());        
+        assertEquals(1, left.getDescrs().size());
+        literal = (LiteralDescr) left.getDescrs().get( 0 );
+        assertEquals( "==", literal.getEvaluator());
+        assertEquals( "name", literal.getFieldName() );
+        assertEquals( "mark", literal.getText() );
+
+        assertEquals(1, right.getDescrs().size());
+        literal = (LiteralDescr) right.getDescrs().get( 0 );
+        assertEquals( "==", literal.getEvaluator());
+        assertEquals( "type", literal.getFieldName() );
+        assertEquals( "stilton", literal.getText() );        
+        
+        assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" );", rule.getConsequence());
+        
     }
 	
 	private RuleParser parse(String text) throws Exception {
