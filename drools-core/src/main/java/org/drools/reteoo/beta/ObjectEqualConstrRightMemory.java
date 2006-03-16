@@ -98,9 +98,6 @@ public class ObjectEqualConstrRightMemory
      */
     public void remove(WorkingMemory workingMemory,
                        ObjectMatches matches) {
-        if((matches == null) || (matches.getLinkedList() == null)) {
-            return;
-        }
         if(this.childMemory != null) {
             this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) matches.getChild());
         }
@@ -140,9 +137,6 @@ public class ObjectEqualConstrRightMemory
      */
     public void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper matches) {
-        if((matches == null) || (matches.getLinkedList() == null)) {
-            return;
-        }
         if(this.childMemory != null) {
             this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) matches.getChild());
         }

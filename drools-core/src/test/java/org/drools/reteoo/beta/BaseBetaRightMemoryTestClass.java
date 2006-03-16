@@ -144,14 +144,28 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
     public void testRemoveUnexistingObjectMatches() {
         try {
             this.memory.remove(this.workingMemory, this.matches0);
-
+            Assert.fail("Trying to remove an element that does not exist in the memory should throw an exception");
+        } catch (Exception e) {
+            // everything is fine
+        }
+        try {
             MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper(matches0);
             this.memory.remove(this.workingMemory, wrapper0);
-            
-            this.memory.remove(this.workingMemory, (ObjectMatches) null);
-            this.memory.remove(this.workingMemory, (MultiLinkedListNodeWrapper) null);
+            Assert.fail("Trying to remove an element that does not exist in the memory should throw an exception");
         } catch (Exception e) {
-            Assert.fail("Remove call should not throw exceptions");
+            // everything is fine
+        }
+        try {
+            this.memory.remove(this.workingMemory, (ObjectMatches) null);
+            Assert.fail("Trying to remove a null element from memory should throw an exception");
+        } catch (Exception e) {
+            // everything is fine
+        }
+        try {
+            this.memory.remove(this.workingMemory, (MultiLinkedListNodeWrapper) null);
+            Assert.fail("Trying to remove a null element from memory should throw an exception");
+        } catch (Exception e) {
+            // everything is fine
         }
     }
 

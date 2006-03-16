@@ -98,12 +98,10 @@ public class BooleanConstrainedLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
     public void remove(WorkingMemory workingMemory, ReteTuple tuple) {
-        if((tuple != null) && (tuple.getLinkedList() != null)) {
-            if(this.childMemory != null) {
-                this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
-            }
-            tuple.getLinkedList().remove(tuple);
+        if(this.childMemory != null) {
+            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
         }
+        tuple.getLinkedList().remove(tuple);
     }
 
     /**
@@ -132,12 +130,10 @@ public class BooleanConstrainedLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
     public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
-        if((tuple != null) && (tuple.getLinkedList() != null)) {
-            if(this.childMemory != null) {
-                this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
-            }
-            tuple.getLinkedList().remove(tuple);
+        if(this.childMemory != null) {
+            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
         }
+        tuple.getLinkedList().remove(tuple);
     }
 
     /**

@@ -102,14 +102,28 @@ public abstract class BaseBetaLeftMemoryTestClass extends TestCase {
     public void testRemoveUnexistingTuple() {
         try {
             this.memory.remove( this.workingMemory, this.tuple0 );
-            
+            Assert.fail("Trying to remove an element that is not in the memory should throw an exception");
+        } catch (Exception e) {
+            // everything is fine
+        }
+        try {
             MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper(tuple0);
             this.memory.remove(this.workingMemory, wrapper0);
-            
-            this.memory.remove(this.workingMemory, (ReteTuple) null);
-            this.memory.remove(this.workingMemory, (MultiLinkedListNodeWrapper) null);
+            Assert.fail("Trying to remove an element that is not in the memory should throw an exception");
         } catch (Exception e) {
-            Assert.fail("Left memory is not supposed to throw exception: " + e.getMessage());
+            // everything is fine
+        }
+        try {
+            this.memory.remove(this.workingMemory, (ReteTuple) null);
+            Assert.fail("Trying to remove a null element from memory should throw an exception");
+        } catch (Exception e) {
+            // everything is fine
+        }
+        try {
+            this.memory.remove(this.workingMemory, (MultiLinkedListNodeWrapper) null);
+            Assert.fail("Trying to remove a null element from memory should throw an exception");
+        } catch (Exception e) {
+            // everything is fine
         }
     }
 
