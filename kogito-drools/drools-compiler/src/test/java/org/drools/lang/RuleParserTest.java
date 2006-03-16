@@ -368,6 +368,35 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" );", rule.getConsequence());
         
     }
+    
+    /** test basic foo : Fact() || Fact() stuff */
+    public void testOrWithBinding() throws Exception {
+        RuleParser parser = parseResource( "or_binding.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(1, pack.getRules().size());
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        
+        OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals(2, or.getDescrs().size());
+        
+        ColumnDescr leftCol = (ColumnDescr) or.getDescrs().get( 0 );
+        assertEquals("Person", leftCol.getObjectType());
+        assertEquals("foo", leftCol.getIdentifier());
+        
+        AndDescr right = (AndDescr) or.getDescrs().get( 1 );
+        assertEquals(2, right.getDescrs().size());
+        ColumnDescr secondFact = (ColumnDescr) right.getDescrs().get( 0 );
+        assertEquals("Person", secondFact.getObjectType());
+        assertEquals( "foo", secondFact.getIdentifier() );
+        
+        ColumnDescr thirdFact = (ColumnDescr) right.getDescrs().get( 1 );
+        assertEquals("Cheese", thirdFact.getObjectType());
+        
+        assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" + bar );", rule.getConsequence());
+    }
 	
 	private RuleParser parse(String text) throws Exception {
 		parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
