@@ -1,0 +1,10 @@
+
+rule simple_rule 
+  when
+	Foo()
+	Bar()
+	eval(abc("foo");)
+  then
+	Kapow
+	
+end

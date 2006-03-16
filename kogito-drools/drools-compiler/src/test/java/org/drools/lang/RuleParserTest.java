@@ -14,6 +14,7 @@ import org.antlr.runtime.TokenStream;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.OrDescr;
@@ -396,6 +397,18 @@ public class RuleParserTest extends TestCase {
         assertEquals("Cheese", thirdFact.getObjectType());
         
         assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" + bar );", rule.getConsequence());
+    }
+    
+    public void testWithEval() throws Exception {
+        RuleParser parser = parseResource( "with_eval.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(1, pack.getRules().size());
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals(3, rule.getLhs().getDescrs().size());
+        EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get( 2 );
+        assertEqualsIgnoreWhitespace( "abc(\"foo\");", eval.getText());
     }
 	
 	private RuleParser parse(String text) throws Exception {
