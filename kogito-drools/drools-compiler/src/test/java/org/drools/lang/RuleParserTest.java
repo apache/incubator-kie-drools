@@ -175,6 +175,48 @@ public class RuleParserTest extends TestCase {
 				rule.getConsequence() );
 	}
     
+    public void testSimpleQuery() throws Exception {
+        RuleDescr query = parseResource( "simple_query.drl" ).rule();
+        
+        assertNotNull( query );
+        
+        assertEquals( "simple_query", query.getName() );
+        
+        AndDescr lhs = query.getLhs();
+        
+        assertNotNull( lhs );
+        
+        assertEquals( 3, lhs.getDescrs().size() );
+        
+        System.err.println( lhs.getDescrs() );
+        
+        // Check first column
+        ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );     
+        assertEquals( "foo3", first.getIdentifier() );
+        assertEquals( "Bar", first.getObjectType() );
+        
+        assertEquals( 1, first.getDescrs().size() );
+        
+        LiteralDescr constraint = (LiteralDescr) first.getDescrs().get( 0 );
+        
+        assertNotNull( constraint );
+        
+        assertEquals( "a", constraint.getFieldName() );
+        assertEquals( "==", constraint.getEvaluator() );
+        assertEquals( "3", constraint.getText() );
+        
+        // Check second column
+        ColumnDescr second = (ColumnDescr) lhs.getDescrs().get( 1 );     
+        assertEquals( "foo4", second.getIdentifier() );
+        assertEquals( "Bar", second.getObjectType() );
+        
+        assertEquals( 2, second.getDescrs().size() );
+        
+        System.err.println( second.getDescrs() );
+        
+    }
+    
+    
     public void testMultipleRules() throws Exception {
         RuleParser parser = parseResource( "multiple_rules.drl" );
         parser.compilation_unit();
@@ -189,6 +231,28 @@ public class RuleParserTest extends TestCase {
         
         RuleDescr rule1  = (RuleDescr) rules.get( 1 );
         assertEquals( "Like Cheddar", rule1.getName() );
+
+        //checkout the first rule
+        AndDescr lhs = rule1.getLhs();
+        assertNotNull( lhs );        
+        assertEquals( 1, lhs.getDescrs().size() );
+        assertEqualsIgnoreWhitespace( "System.out.println(\"I like \" + t);", rule0.getConsequence());
+        
+        // Check first column
+        ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );     
+        assertEquals( "Cheese", first.getObjectType() );   
+        
+        
+        
+        //checkout the second rule
+        lhs = rule1.getLhs();
+        assertNotNull( lhs );        
+        assertEquals( 1, lhs.getDescrs().size() );
+        assertEqualsIgnoreWhitespace( "System.out.println(\"I like \" + t);", rule1.getConsequence()); 
+        
+        // Check first column
+        first = (ColumnDescr) lhs.getDescrs().get( 0 );     
+        assertEquals( "Cheese", first.getObjectType() );         
         
     }
     
