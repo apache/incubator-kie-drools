@@ -197,6 +197,71 @@ public class BooleanConstrainedLeftMemory
         };
         return iterator;
     }
+    
+    /**
+     * @inheritDoc
+     */
+    public Iterator iterator() {
+        return new Iterator() {
+            Iterator trueIt = trueList.iterator();
+            Iterator falseIt = falseList.iterator();
+            ReteTuple currentTrue = null;
+            ReteTuple currentFalse = null;
+            ReteTuple current = null;
+            ReteTuple next = null;
+
+            public boolean hasNext() {
+                boolean hasnext = false;
+                if(next == null) {
+                    if((currentTrue == null) && (trueIt.hasNext())) {
+                        currentTrue = (ReteTuple) trueIt.next();
+                    }
+                    if((currentFalse == null) && (falseIt.hasNext())) {
+                        currentFalse = (ReteTuple) falseIt.next();
+                    }
+                    if((currentTrue != null) && (currentFalse != null)) {
+                        if(currentTrue.getRecency() <= currentFalse.getRecency()) {
+                            next = currentTrue;
+                            currentTrue = null;
+                        } else {
+                            next = currentFalse;
+                            currentFalse = null;
+                        }
+                        hasnext = true;
+                    } else if (currentTrue != null) {
+                        next = currentTrue;
+                        currentTrue = null;
+                        hasnext = true;
+                    } else if (currentFalse != null) {
+                        next = currentFalse;
+                        currentFalse = null;
+                        hasnext = true;
+                    }
+                    // if no previous condition evaluates to true, 
+                    // than next will be null and hasnext will be false
+                } else {
+                    hasnext = true;
+                }
+                return hasnext;
+            }
+
+            public Object next() {
+                if(this.next == null) {
+                    this.hasNext();
+                }
+                this.current = this.next;
+                this.next = null;
+                if(this.current == null) {
+                    throw new NoSuchElementException("No more elements to return");
+                }
+                return this.current;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException("Not possible to call remove when iterating over all elements");
+            }
+        };
+    }
 
     /**
      * @inheritDoc 

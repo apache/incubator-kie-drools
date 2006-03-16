@@ -119,6 +119,10 @@ public class ReteTuple extends BaseMultiLinkedListNode
     TupleKey getKey() {
         return this.key;
     }
+    
+    public long getRecency() {
+        return this.key.getRecency();
+    }
 
     /* (non-Javadoc)
      * @see org.drools.spi.Tuple#getFactHandles()

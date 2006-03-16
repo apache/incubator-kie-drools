@@ -17,10 +17,12 @@
 package org.drools.reteoo.beta;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.TreeSet;
 
 import org.drools.WorkingMemory;
 import org.drools.reteoo.FactHandleImpl;
@@ -209,6 +211,27 @@ public class ObjectEqualConstrLeftMemory
             iterator = Collections.EMPTY_LIST.iterator();
         }
         return iterator;
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public Iterator iterator() {
+        TreeSet set = new TreeSet(new Comparator() {
+            public int compare(Object arg0,
+                               Object arg1) {
+                ReteTuple t0 = (ReteTuple) arg0;
+                ReteTuple t1 = (ReteTuple) arg1;
+                return (t0.getRecency() <= t1.getRecency()) ? -1 : 1;
+            }
+        });
+        for(Iterator i = this.memoryMap.values().iterator(); i.hasNext(); ) {
+            MultiLinkedList list = (MultiLinkedList) i.next();
+            for(Iterator j = list.iterator(); j.hasNext(); ) {
+                set.add( j.next() );
+            }
+        }
+        return set.iterator(); 
     }
 
     /**
