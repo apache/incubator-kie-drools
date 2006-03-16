@@ -399,6 +399,32 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" + bar );", rule.getConsequence());
     }
     
+    /** test basic foo : Fact() || Fact() stuff binding to an "or"*/
+    public void testOrBindingComplex() throws Exception {
+        RuleParser parser = parseResource( "or_binding_complex.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(1, pack.getRules().size());
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        
+        OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals(1, or.getDescrs().size());
+
+        //first fact
+        ColumnDescr firstFact = (ColumnDescr) or.getDescrs().get( 0 );
+        assertEquals("Person", firstFact.getObjectType());
+        assertEquals("foo", firstFact.getIdentifier());
+        
+        //second "option"
+        ColumnDescr secondFact = (ColumnDescr) or.getDescrs().get( 0 );
+        assertEquals("Person", secondFact.getObjectType());
+        assertEquals( "foo", secondFact.getIdentifier() );
+        
+        assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" + bar );", rule.getConsequence());
+    }    
+    
     public void testWithEval() throws Exception {
         RuleParser parser = parseResource( "with_eval.drl" );
         parser.compilation_unit();
