@@ -94,16 +94,14 @@ public class ObjectEqualConstrLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
     public void remove(WorkingMemory workingMemory, ReteTuple tuple) {
-        if((tuple != null) && (tuple.getLinkedList() != null)) {
-            LinkedList list = tuple.getLinkedList(); 
-            list.remove(tuple);
-            this.size--;
-            if(list.isEmpty()) {
-                this.removeMemoryEntry( list );
-            }
-            if(this.childMemory != null) {
-                this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
-            }
+        if(this.childMemory != null) {
+            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
+        }
+        LinkedList list = tuple.getLinkedList(); 
+        list.remove(tuple);
+        this.size--;
+        if(list.isEmpty()) {
+            this.removeMemoryEntry( list );
         }
     }
 
@@ -132,19 +130,18 @@ public class ObjectEqualConstrLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
     public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
-        if((tuple != null) && (tuple.getLinkedList() != null)) {
-            LinkedList list = tuple.getLinkedList();
-            list.remove(tuple);
-            this.size--;
-            
-            if(list.isEmpty()) {
-                this.removeMemoryEntry(list);
-            }
-
-            if(this.childMemory != null) {
-                this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
-            }
+        if(this.childMemory != null) {
+            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
         }
+
+        LinkedList list = tuple.getLinkedList();
+        list.remove(tuple);
+        this.size--;
+        
+        if(list.isEmpty()) {
+            this.removeMemoryEntry(list);
+        }
+
     }
 
     /**

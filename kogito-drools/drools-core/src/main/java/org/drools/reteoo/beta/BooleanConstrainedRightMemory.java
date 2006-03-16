@@ -97,13 +97,10 @@ public class BooleanConstrainedRightMemory
      */
     public void remove(WorkingMemory workingMemory,
                        ObjectMatches matches) {
-        if((matches != null) && (matches.getLinkedList() != null)) {
-            if(this.childMemory != null) {
-                this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) matches.getChild());
-            }
-            matches.getLinkedList().remove(matches);
+        if(this.childMemory != null) {
+            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) matches.getChild());
         }
-        
+        matches.getLinkedList().remove(matches);
     }
 
     /**
@@ -132,12 +129,10 @@ public class BooleanConstrainedRightMemory
      */
     public void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper wrapper) {
-        if((wrapper != null) && (wrapper.getLinkedList() != null)) {
-            if(this.childMemory != null) {
-                this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) wrapper.getChild());
-            }
-            wrapper.getLinkedList().remove(wrapper);
+        if(this.childMemory != null) {
+            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) wrapper.getChild());
         }
+        wrapper.getLinkedList().remove(wrapper);
     }
 
     /**

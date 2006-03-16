@@ -95,18 +95,16 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
     public void remove(WorkingMemory workingMemory, ReteTuple tuple) {
-        if((tuple != null) && (tuple.getLinkedList() == this.memoryMasterList)) {
-            if(this.innerMemory != null) {
-                this.innerMemory.remove(workingMemory, 
-                                        (MultiLinkedListNodeWrapper)tuple.getChild().getChild());
-            }
-            LinkedList list = tuple.getChild().getLinkedList(); 
-            list.remove(tuple.getChild());
-            if(list.isEmpty()) {
-                removeMemoryEntry( list );
-            }
-            this.memoryMasterList.remove(tuple);
+        if(this.innerMemory != null) {
+            this.innerMemory.remove(workingMemory, 
+                                    (MultiLinkedListNodeWrapper)tuple.getChild().getChild());
         }
+        LinkedList list = tuple.getChild().getLinkedList(); 
+        list.remove(tuple.getChild());
+        if(list.isEmpty()) {
+            removeMemoryEntry( list );
+        }
+        this.memoryMasterList.remove(tuple);
     }
 
     /**
@@ -138,19 +136,17 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
     public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
-        if((tuple != null) && (tuple.getLinkedList() == this.memoryMasterList)) {
-            if(this.innerMemory != null) {
-                this.innerMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild().getChild());
-            }
-
-            LinkedList list = tuple.getChild().getLinkedList();
-            list.remove(tuple.getChild());
-            
-            if(list.isEmpty()) {
-                this.removeMemoryEntry(list);
-            }
-            this.memoryMasterList.remove(tuple);
+        if(this.innerMemory != null) {
+            this.innerMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild().getChild());
         }
+
+        LinkedList list = tuple.getChild().getLinkedList();
+        list.remove(tuple.getChild());
+        
+        if(list.isEmpty()) {
+            this.removeMemoryEntry(list);
+        }
+        this.memoryMasterList.remove(tuple);
     }
 
     /**

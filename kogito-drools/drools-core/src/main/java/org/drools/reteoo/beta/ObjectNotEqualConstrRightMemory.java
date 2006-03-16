@@ -103,9 +103,6 @@ public class ObjectNotEqualConstrRightMemory
      */
     public void remove(WorkingMemory workingMemory,
                                 ObjectMatches matches) {
-        if((matches == null) || (matches.getLinkedList() != this.memoryMasterList)) {
-            return;
-        }
         if(this.childMemory != null) {
             // removing from inner indexes
             this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) matches.getChild().getChild());
@@ -161,9 +158,6 @@ public class ObjectNotEqualConstrRightMemory
      */
     public void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper matches) {
-        if((matches == null) || (matches.getLinkedList() != this.memoryMasterList)) {
-            return;
-        }
         if(this.childMemory != null) {
             // removing from inner indexes
             this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) matches.getChild().getChild());
