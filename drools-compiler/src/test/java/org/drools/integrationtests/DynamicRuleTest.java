@@ -5,6 +5,7 @@ import java.io.Reader;
 
 import junit.framework.TestCase;
 
+import org.drools.Cheese;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;

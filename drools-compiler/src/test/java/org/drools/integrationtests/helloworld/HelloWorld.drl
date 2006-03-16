@@ -7,6 +7,8 @@ rule "Hello World"
 	when
 		$m : Message(list contains "hello")
 		Message(message == "hola")
+		Message(number > 40)
+		Message(birthday > "10-Jul-1974")
 	then
 		System.out.println("hello world with collections " + $m.getMessage()); 
 end
