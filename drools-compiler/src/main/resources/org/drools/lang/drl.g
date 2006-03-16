@@ -322,7 +322,14 @@ constraint[List constraints]
 					|	'contains'
 					) opt_eol	
 					
-					(	lc=literal_constraint 
+					(	bvc=ID
+						{
+							d = new BoundVariableDescr( f.getText(), op.getText(), bvc.getText() );
+							d.setLocation( f.getLine(), f.getCharPositionInLine() );
+							constraints.add( d );
+						}
+					|
+						lc=literal_constraint 
 						{ 
 							d = new LiteralDescr( f.getText(), op.getText(), lc ); 
 							d.setLocation( f.getLine(), f.getCharPositionInLine() );
@@ -337,7 +344,7 @@ constraint[List constraints]
 					)
 		opt_eol
 	;
-	
+		
 literal_constraint returns [String text]
 	@init {
 		text = null;
@@ -353,7 +360,7 @@ retval_constraint returns [String text]
 		text = null;
 	}
 	:	
-		c=chunk { text = c; }
+		'(' c=chunk ')' { text = c; }
 	;
 	
 chunk returns [String text]

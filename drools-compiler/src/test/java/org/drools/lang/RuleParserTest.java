@@ -306,6 +306,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( "==", literalDescr.getEvaluator() );
         assertEquals( "bob", literalDescr.getText() );        
         
+        System.err.println( person.getDescrs() );
+        
         BoundVariableDescr variableDescr = ( BoundVariableDescr ) person.getDescrs().get( 2 );
         assertEquals( "likes", variableDescr.getFieldName() );
         assertEquals( "==", variableDescr.getEvaluator() );

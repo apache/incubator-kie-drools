@@ -43,4 +43,8 @@ public class ReturnValueDescr extends PatternDescr {
     public String[] getDeclarations() {
         return this.declarations;
     }     
+    
+    public String toString() {
+    		return "[ReturnValue: field=" + fieldName + "; evaluator=" + evaluator + "; text=" + text + "]";
+    }
 }
