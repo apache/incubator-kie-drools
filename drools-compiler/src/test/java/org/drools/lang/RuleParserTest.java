@@ -438,21 +438,28 @@ public class RuleParserTest extends TestCase {
         PackageDescr pack = parser.getPackageDescr();
         assertEquals(1, pack.getRules().size());
         RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
-        assertEquals(2, rule.getLhs().getDescrs().size());
         
-        OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
-        assertEquals(2, or.getDescrs().size());
-        NotDescr not = (NotDescr) or.getDescrs().get( 0 );
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        
+        AndDescr rootAnd = (AndDescr) rule.getLhs().getDescrs().get( 0 );
+        
+        assertEquals( 2, rootAnd.getDescrs().size() );
+        
+        OrDescr leftOr = (OrDescr) rootAnd.getDescrs().get( 0 );
+        
+        assertEquals(2, leftOr.getDescrs().size());
+        NotDescr not = (NotDescr) leftOr.getDescrs().get( 0 );
         ColumnDescr foo1 = (ColumnDescr) not.getDescrs().get( 0 );
         assertEquals("Foo", foo1.getObjectType());
-        ColumnDescr foo2 = (ColumnDescr) or.getDescrs().get( 1 );
+        ColumnDescr foo2 = (ColumnDescr) leftOr.getDescrs().get( 1 );
         assertEquals("Foo", foo2.getObjectType());
         
-        OrDescr or2 = (OrDescr) rule.getLhs().getDescrs().get( 1 );
-        assertEquals(2, or2.getDescrs().size());
-        ColumnDescr shoes = (ColumnDescr) or2.getDescrs().get( 0 );
+        OrDescr rightOr = (OrDescr) rootAnd.getDescrs().get( 1 );
+        
+        assertEquals(2, rightOr.getDescrs().size());
+        ColumnDescr shoes = (ColumnDescr) rightOr.getDescrs().get( 0 );
         assertEquals("Shoes", shoes.getObjectType());
-        ColumnDescr butt = (ColumnDescr) or2.getDescrs().get( 1 );
+        ColumnDescr butt = (ColumnDescr) rightOr.getDescrs().get( 1 );
         assertEquals("Butt", butt.getObjectType());
         
 
