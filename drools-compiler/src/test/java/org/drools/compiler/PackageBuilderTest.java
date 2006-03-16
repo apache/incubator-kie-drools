@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.CheckedDroolsException;
+import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -424,26 +425,6 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors() );
 
         return rule;
-    }
-
-    public class Cheese {
-        private String type;
-        private int    price;
-
-        public Cheese(String type,
-                      int price) {
-            super();
-            this.type = type;
-            this.price = price;
-        }
-
-        public int getPrice() {
-            return price;
-        }
-
-        public String getType() {
-            return type;
-        }
     }
 
     class MockActivation
