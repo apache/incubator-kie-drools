@@ -119,34 +119,10 @@ rule returns [RuleDescr rule]
 				lhs.setLocation( loc.getLine(), loc.getCharPositionInLine() );
 			}
 			(
-					{ expander != null }?
-					(
-						'>' l=lhs { lhs.addDescr( l ); }
-					|					
-						{
-							String text = null;
-						}
-						( 	options{greedy=false;}: any=.
-							{
-								System.err.println( "[[" + any.getText() + "]]" );
-								if ( text == null ) {
-									text = any.getText();
-								} else {
-									text = text + " " + any.getText();
-								}
-							}
-						)+ EOL
-					)
-				|	l=lhs { lhs.addDescr( l ); }
-			)*
-			/*
-			(	l=root_lhs 
-				{
-					lhs.addDescr( l ); 
-				} 
-			|
-			)*
-			*/
+				{ expander != null }? expander_lhs_block[lhs]
+				| normal_lhs_block[lhs]
+			)
+					
 		)?
 		(	'then' ':'?
 			(options{greedy=false;} : any=.
@@ -205,43 +181,40 @@ no_loop returns [AttributeDescr d]
 		}
 	;
 	
-root_lhs returns [PatternDescr d]
+expander_lhs_block[AndDescr descrs]
 	@init {
-		d = null;
-	}
-	:	{ expander != null }? e=expander_lhs { d = e; }
-		|	l=lhs	{ d = l; }	
-	;
-	
-expander_lhs returns [PatternDescr d]
-	@init {
-		d = null;
-	}
-	:
-		'>' l=lhs { d = l; }
-		| e=expander_text { d = e; }
-	;
-expander_text returns [PatternDescr d]
-	@init {
-		d = null;
 		String text = null;
 	}
 	:
-		(	options{greedy=false;} : a=.
-			{
-				System.err.println( "[" + a.getText() + "]" );
-				if ( text == null ) {
-					text = a.getText();
-				} else {
-					text = text + " " + a.getText();
+		(	
+			(	options{greedy=false;} : a=.
+				{
+					if ( text == null ) {
+						text = a.getText();
+					} else {
+						text = text + " " + a.getText();
+					}
 				}
-			}
-		)+
-		EOL
-		{
-			d = runExpander( text );
-		}
+				EOL 
+				{
+					d = runExpander( text );
+					descrs.addDescr( d );
+					text = null;
+					d = null;
+				}
+			)
+			| '>' d=lhs { descrs.addDescr( d ); }
+		)*
+
 	;
+	
+normal_lhs_block[AndDescr descrs]
+	:
+		(	d=lhs
+			{ descrs.addDescr( d ); }
+		)*
+	;
+	
 	
 lhs returns [PatternDescr d]
 	@init {
