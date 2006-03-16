@@ -215,6 +215,13 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
     }
 
     /**
+     * @inheritDoc
+     */
+    public Iterator iterator() {
+        return this.memoryMasterList.iterator();
+    }
+
+    /**
      * @inheritDoc 
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)

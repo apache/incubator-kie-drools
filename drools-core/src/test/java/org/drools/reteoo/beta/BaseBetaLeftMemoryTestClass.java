@@ -16,8 +16,11 @@
 
 package org.drools.reteoo.beta;
 
+import java.util.Iterator;
+
 import org.drools.reteoo.DefaultFactHandleFactory;
 import org.drools.reteoo.FactHandleImpl;
+import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
 import org.drools.reteoo.RuleBaseImpl;
 import org.drools.reteoo.WorkingMemoryImpl;
@@ -187,6 +190,40 @@ public abstract class BaseBetaLeftMemoryTestClass extends TestCase {
         this.memory.remove(this.workingMemory, this.tuple1);
         Assert.assertEquals("Memory should have size 0", 0, this.memory.size());
     }
+    
+    public void testParameterlessIterator() {
+        try {
+            DummyValueObject obj2 = new DummyValueObject(false, "string2", 20, "object2");
+            FactHandleImpl f2 = (FactHandleImpl) factory.newFactHandle(2);
+            f2.setObject(obj2);
+            ReteTuple tuple2 = new ReteTuple( f2 );
+
+            this.memory.add(this.workingMemory, this.tuple0);
+            this.memory.add(this.workingMemory, this.tuple1);
+            this.memory.add(this.workingMemory, tuple2);
+            Assert.assertEquals("Memory should have size 3", 3, this.memory.size());
+            
+            Iterator i = this.memory.iterator(); 
+            Assert.assertTrue("There should be a next tuple", i.hasNext());
+            ReteTuple tuple = (ReteTuple) i.next();
+            Assert.assertSame("Wrong returned tuple", tuple0, tuple);
+            
+            Assert.assertTrue("There should be a next tuple", i.hasNext());
+            tuple = (ReteTuple) i.next();
+            Assert.assertSame("Wrong returned tuple", tuple1, tuple);
+            
+            Assert.assertTrue("There should be a next tuple", i.hasNext());
+            tuple = (ReteTuple) i.next();
+            Assert.assertSame("Wrong returned tuple", tuple2, tuple);
+            
+            Assert.assertFalse("There should not be a next tuple", i.hasNext());
+        } catch ( UnsupportedOperationException e ) {
+            Assert.fail("Beta memory was not supposed to throw any exception: "+e.getMessage());
+        } catch ( ClassCastException e ) {
+            Assert.fail("BetaRightMemory was not supposed to throw ClassCastException: "+e.getMessage());
+        }
+    }
+    
     
     public abstract void testIterator();
     

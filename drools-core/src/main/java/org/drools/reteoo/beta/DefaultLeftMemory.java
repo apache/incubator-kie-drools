@@ -53,40 +53,70 @@ public class DefaultLeftMemory
         this.memory.add(tuple);
     }
 
+    /**
+     * @inheritDoc
+     */
     public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
         this.memory.remove(tuple);
     }
 
+    /**
+     * @inheritDoc
+     */
     public void add(WorkingMemory workingMemory,
                     ReteTuple tuple) {
         this.memory.add(tuple);
     }
 
+    /**
+     * @inheritDoc
+     */
     public void remove(WorkingMemory workingMemory, ReteTuple tuple) {
         this.memory.remove(tuple);
     }
 
+    /**
+     * @inheritDoc
+     */
     public Iterator iterator(WorkingMemory workingMemory,
                              FactHandleImpl handle) {
         return this.memory.iterator();
     }
+    
+    /**
+     * @inheritDoc
+     */
+    public Iterator iterator() {
+        return this.memory.iterator();
+    }
 
+    /**
+     * @inheritDoc
+     */
     public boolean isEmpty() {
         return this.memory.isEmpty();
     }
 
+    /**
+     * @inheritDoc
+     */
     public void selectPossibleMatches(WorkingMemory workingMemory,
                                       FactHandleImpl handle) {
         // nothing to do. all tuples are possible matches
     }
 
+    /**
+     * @inheritDoc
+     */
     public boolean isPossibleMatch(MultiLinkedListNodeWrapper tuple) {
         return tuple.getLinkedList() == this.memory;
     }
 
+    /**
+     * @inheritDoc
+     */
     public int size() {
         return this.memory.size();
     }
-
 
 }

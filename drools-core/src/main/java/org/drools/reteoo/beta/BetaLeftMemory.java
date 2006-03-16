@@ -84,6 +84,18 @@ public interface BetaLeftMemory {
      * @return an Iterator over the tuples
      */
     public Iterator iterator(WorkingMemory workingMemory, FactHandleImpl handle);
+    
+    /**
+     * Returns an iterator to iterate over all tuples in the beta left memory
+     * 
+     * This method is much heavier than the iterator(workingMemory, handle) method
+     * as it is not backed by a data structure. Order of elements are dynamically
+     * calculated, so, avoid using it if possible.
+     * 
+     * @return
+     */
+    public Iterator iterator();
+    
 
     /**
      * Returns the number of tuples currently stored in the left memory

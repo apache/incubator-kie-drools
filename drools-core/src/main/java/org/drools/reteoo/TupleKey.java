@@ -38,6 +38,12 @@ class TupleKey
 
     /** Columns. */
     private final FactHandleList handles;
+    
+    /**
+     * The recency of this tuple is given by the 
+     * highest recency of all added fact handles
+     */
+    private long recency = 0;
 
     // ------------------------------------------------------------
     // Constructors
@@ -49,20 +55,23 @@ class TupleKey
     
     public TupleKey(TupleKey key) {
         this.handles = key.handles;
+        this.recency = key.recency;
     }    
 
     public TupleKey(FactHandleImpl handle) {
         this.handles = new FactHandleList( handle );
+        this.recency = handle.getRecency();
     }
     
     public TupleKey(TupleKey left,
                     FactHandleImpl handle) {
         this.handles = new FactHandleList( left.handles,
                                            handle );
+        this.recency = Math.max(left.recency, handle.getRecency());
     }
 
     public String toString() {
-        return "[TupleKey: handles=" + this.handles + "]";
+        return "[TupleKey: recency="+this.recency+" handles=" + this.handles + "]";
     }
 
     // ------------------------------------------------------------
@@ -112,6 +121,10 @@ class TupleKey
     
     public int size() {
         return this.handles.size();
+    }
+    
+    public long getRecency() {
+        return this.recency;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
