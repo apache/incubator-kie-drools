@@ -1,0 +1,8 @@
+
+rule simple_rule 
+  when
+	Foo(name== (a + b))
+  then
+	Kapow
+	
+end

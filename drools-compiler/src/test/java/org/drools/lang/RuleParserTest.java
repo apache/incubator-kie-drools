@@ -20,6 +20,7 @@ import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
 
 public class RuleParserTest extends TestCase {
@@ -476,6 +477,24 @@ public class RuleParserTest extends TestCase {
         EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get( 2 );
         assertEqualsIgnoreWhitespace( "abc(\"foo\");", eval.getText());
     }
+    
+    public void testWithRetval() throws Exception {
+        RuleParser parser = parseResource( "with_retval.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(1, pack.getRules().size());
+        
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals(1, col.getDescrs().size());
+        assertEquals("Foo", col.getObjectType());
+        ReturnValueDescr retval = (ReturnValueDescr) col.getDescrs().get( 0 );
+        assertEquals("a + b", retval.getText());
+        assertEquals( "name", retval.getFieldName());
+        assertEquals("==", retval.getEvaluator());
+    }    
 	
 	private RuleParser parse(String text) throws Exception {
 		parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
