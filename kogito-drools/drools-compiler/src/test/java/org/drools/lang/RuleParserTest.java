@@ -17,6 +17,7 @@ import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.LiteralDescr;
+import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -425,7 +426,35 @@ public class RuleParserTest extends TestCase {
         assertEquals( "foo", secondFact.getIdentifier() );
         
         assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" + bar );", rule.getConsequence());
-    }    
+    }   
+    
+    /** */
+    public void testBracketsPrecedence() throws Exception {
+        RuleParser parser = parseResource( "brackets_precedence.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(1, pack.getRules().size());
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals(2, rule.getLhs().getDescrs().size());
+        
+        OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals(2, or.getDescrs().size());
+        NotDescr not = (NotDescr) or.getDescrs().get( 0 );
+        ColumnDescr foo1 = (ColumnDescr) not.getDescrs().get( 0 );
+        assertEquals("Foo", foo1.getObjectType());
+        ColumnDescr foo2 = (ColumnDescr) or.getDescrs().get( 1 );
+        assertEquals("Foo", foo2.getObjectType());
+        
+        OrDescr or2 = (OrDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals(2, or2.getDescrs().size());
+        ColumnDescr shoes = (ColumnDescr) or2.getDescrs().get( 0 );
+        assertEquals("Shoes", shoes.getObjectType());
+        ColumnDescr butt = (ColumnDescr) or2.getDescrs().get( 1 );
+        assertEquals("Butt", butt.getObjectType());
+        
+
+    }     
     
     public void testWithEval() throws Exception {
         RuleParser parser = parseResource( "with_eval.drl" );
