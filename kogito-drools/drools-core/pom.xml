@@ -79,6 +79,11 @@
         </includes>
         <excludes>
           <exclude>**/LogicTransformerTest.java</exclude>
+          <exclude>**/LeapsMannersTest.java</exclude>          
+          <exclude>**/ReteooMannersTest.java</exclude>                    
+          <exclude>**/LeapsWaltzTest.java</exclude>          
+          <exclude>**/ReteooWaltzTest.java</exclude>             
+          <exclude>**/TableTest.java</exclude>                       
         </excludes>
       </configuration>
     </plugin>      
