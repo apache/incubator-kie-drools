@@ -1,6 +1,6 @@
 package org.drools.test;
 
-import org.drools.integrationtests.Cheese;
+import org.drools.Cheese;
 
 rule "like stilton"
     when

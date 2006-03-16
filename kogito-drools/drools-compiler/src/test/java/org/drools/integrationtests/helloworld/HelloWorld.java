@@ -35,6 +35,7 @@ public class HelloWorld extends TestCase {
             //go !            
             Message message = new Message("hola");
             message.addToList( "hello" );
+            message.setNumber( 42 );
             
             workingMemory.assertObject( message );
             
