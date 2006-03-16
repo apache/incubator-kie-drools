@@ -69,6 +69,19 @@
 	        </dependency>
         </dependencies>
       </plugin>      
+      
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <configuration>
+        <includes>
+          <include>**/*Test.java</include>
+        </includes>
+        <excludes>
+          <exclude>**/LogicTransformerTest.java</exclude>
+        </excludes>
+      </configuration>
+    </plugin>      
     </plugins>
   </build>
 
