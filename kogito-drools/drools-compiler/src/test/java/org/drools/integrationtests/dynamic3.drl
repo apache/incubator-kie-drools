@@ -1,0 +1,10 @@
+package org.drools.test;
+
+import org.drools.Person;
+
+rule "match Person"
+    when
+        $person : Person()
+    then
+        System.out.println("Name is " + $person.getName() );
+end    

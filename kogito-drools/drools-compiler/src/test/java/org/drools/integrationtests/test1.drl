@@ -4,7 +4,7 @@ import org.drools.Cheese;
 
 rule "test rule"
     when
-        Cheese( x: type == "stilton" )
+        Cheese( ?x: type == "stilton" )
     then
-        System.out.println("I like " + x);
+        System.out.println("I like " + ?x);
 end    

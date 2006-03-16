@@ -4,7 +4,7 @@ import org.drools.Cheese;
 
 rule "like stilton"
     when
-        Cheese( type == "stilton" )
+        Cheese( $type:type == "stilton" )
     then
-
-end     
+        System.out.println("I like " + $type);
+end  
