@@ -33,6 +33,7 @@ public class KnowledgeHelperFixer {
      * Recursively apply the pattern, replace the guts of what is matched.
      */
     public String fix(String raw, Pattern pattern, String action) {
+        if (raw == null) return null;
         Matcher matcher = pattern.matcher(raw);
         
         if (matcher.matches()) {
