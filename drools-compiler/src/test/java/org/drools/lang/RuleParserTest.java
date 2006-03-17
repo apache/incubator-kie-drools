@@ -302,15 +302,43 @@ public class RuleParserTest extends TestCase {
         assertNotNull(pack);
         assertEquals(1, pack.getRules().size());
         
-        //first problem, need to allow dots in DSL name
         assertTrue(mockExpanderResolver.checkCalled( "foo.dsl"));
-        
-        //just check we get the right number of descrs in the LHS
         RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals("simple_rule", rule.getName());
         
-        System.err.println( rule.getLhs().getDescrs() );
-        assertEquals(2, rule.getLhs().getDescrs().size());
-        //Note 2 problems: as runExpander is reparsing original text, not expanded                        
+        
+        //now check out the LHS
+        assertEquals(4, rule.getLhs().getDescrs().size());
+        
+        //The rain in spain ... ----> foo : Bar(a==3) (via MockExpander)
+        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Bar", col.getObjectType() );
+        assertEquals( "foo", col.getIdentifier() );
+        assertEquals(1, col.getDescrs().size());
+        LiteralDescr lit = (LiteralDescr) col.getDescrs().get( 0 );
+        assertEquals("==", lit.getEvaluator());
+        assertEquals("a", lit.getFieldName());
+        assertEquals("3", lit.getText());
+        
+        //>Baz() --> not expanded, as it has the magical escape character '>' !!
+        col = (ColumnDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals("Baz", col.getObjectType());
+        
+        //The rain in spain ... ----> foo : Bar(a==3) (via MockExpander), again...
+        col = (ColumnDescr) rule.getLhs().getDescrs().get( 2 );
+        assertEquals( "Bar", col.getObjectType() );
+        assertEquals( "foo", col.getIdentifier() );
+        assertEquals(1, col.getDescrs().size());
+        lit = (LiteralDescr) col.getDescrs().get( 0 );
+        assertEquals("==", lit.getEvaluator());
+        assertEquals("a", lit.getFieldName());
+        assertEquals("3", lit.getText());        
+
+        //>Bar() --> not expanded, as it has the magical escape character '>' !!
+        col = (ColumnDescr) rule.getLhs().getDescrs().get( 3 );
+        assertEquals("Bar", col.getObjectType());
+        
+        
     }
     
     public void testBoundVariables() throws Exception {
