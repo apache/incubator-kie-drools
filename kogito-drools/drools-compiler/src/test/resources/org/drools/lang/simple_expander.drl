@@ -4,11 +4,10 @@ expander foo.dsl
 rule simple_rule 
   when
     The rain in spain falls mainly
-    >Baz()
+    >Baz()    
+    The rain in spain falls mainly
+    >Bar()       
   then
-	if ( a == b ) {
-		assert( foo );
-	} else {
-		retract( foo );
-	}
+	>bar
+	Something else
 end

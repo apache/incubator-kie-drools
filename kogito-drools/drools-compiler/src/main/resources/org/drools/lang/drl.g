@@ -203,21 +203,22 @@ no_loop returns [AttributeDescr d]
 		}
 	;
 	
-expander_lhs_block[AndDescr descrs]
-	@init {
-		String text = null;
-	}
+
+normal_lhs_block[AndDescr descrs]
 	:
-		(	
-			(	options{greedy=false;} : a=.
-				{
-					if ( text == null ) {
-						text = a.getText();
-					} else {
-						text = text + " " + a.getText();
-					}
-				}
-				EOL 
+		(	d=lhs
+			{ descrs.addDescr( d ); }
+		)*
+	;
+	
+expander_lhs_block[AndDescr descrs]
+
+	:
+		(	options{greedy=false;} :
+			'>' d=lhs { descrs.addDescr( d ); } 
+			|
+			(	options{greedy=false;} : 
+				text=chunk EOL 
 				{
 					d = runExpander( text );
 					descrs.addDescr( d );
@@ -225,17 +226,10 @@ expander_lhs_block[AndDescr descrs]
 					d = null;
 				}
 			)
-			| '>' d=lhs { descrs.addDescr( d ); }
 		)*
 
 	;
 	
-normal_lhs_block[AndDescr descrs]
-	:
-		(	d=lhs
-			{ descrs.addDescr( d ); }
-		)*
-	;
 	
 	
 lhs returns [PatternDescr d]
