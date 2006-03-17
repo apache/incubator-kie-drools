@@ -257,8 +257,7 @@ class Rete extends ObjectSource
     }
 
     public void remove(BaseNode node,          
-                       WorkingMemoryImpl workingMemory,
-                       PropagationContext context) {
+                       WorkingMemoryImpl[] workingMemories) {
         ObjectTypeNode objectTypeNode = ( ObjectTypeNode ) node;
         removeObjectSink( objectTypeNode );
         //@todo: we really should attempt to clear the memory cache for this ObjectTypeNode        

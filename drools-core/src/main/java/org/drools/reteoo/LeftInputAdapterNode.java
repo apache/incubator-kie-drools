@@ -187,13 +187,14 @@ class LeftInputAdapterNode extends TupleSource
     }
 
     public void remove(BaseNode node,
-                       WorkingMemoryImpl workingMemory,
-                       PropagationContext context) {
+                       WorkingMemoryImpl[] workingMemories) {
         getTupleSinks().remove( node );
         removeShare();
         if ( this.sharedCount < 0 ) {
-            workingMemory.clearNodeMemory( this );
-            this.objectSource.remove( this, workingMemory, context );
+            for ( int i = 0, length = workingMemories.length; i < length; i++) {
+                workingMemories[i].clearNodeMemory( this );    
+            }
+            this.objectSource.remove( this, workingMemories );
         }
     }
 

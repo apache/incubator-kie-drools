@@ -288,15 +288,7 @@ public class RuleBaseImpl
     }
 
     public void removeRule(Rule rule) {
-        BaseNode[] nodes = this.reteBuilder.getTerminalNodes( rule );
-        for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
-            for ( int i = 0, length = nodes.length; i < length; i++ ) {
-                WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
-                nodes[i].remove( null,
-                                 workingMemory,
-                                 null );
-            }
-        }
+        this.reteBuilder.removeRule( rule );
     }
 
     public Set getWorkingMemories() {

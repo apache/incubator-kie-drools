@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,7 +15,6 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,8 +65,8 @@ class ReteBuilder {
     private final RuleBaseImpl       ruleBase;
 
     private final ObjectTypeResolver resolver;
-    
-    private WorkingMemoryImpl[]          workingMemories;
+
+    private WorkingMemoryImpl[]      workingMemories;
 
     /** Rete network to build against. */
     private final Rete               rete;
@@ -77,13 +77,12 @@ class ReteBuilder {
     /** Nodes that have been attached. */
     private final Map                attachedNodes;
 
-
     private TupleSource              tupleSource;
 
     private ObjectSource             objectSource;
 
     private int                      id;
-    
+
     private Map                      rules;
 
     // ------------------------------------------------------------
@@ -95,14 +94,14 @@ class ReteBuilder {
      * network.
      */
     ReteBuilder(RuleBaseImpl ruleBase,
-            ObjectTypeResolver resolver) {
+                ObjectTypeResolver resolver) {
         this.ruleBase = ruleBase;
         this.rete = this.ruleBase.getRete();
         this.resolver = resolver;
         this.pkgs = new ArrayList();
         this.attachedNodes = new HashMap();
         this.rules = new HashMap();
-        
+
         //Set to 1 as Rete node is set to 0
         this.id = 1;
     }
@@ -124,43 +123,46 @@ class ReteBuilder {
      */
     void addRule(Rule rule) throws InvalidPatternException {
         // reset working memories for potential propagation
-        this.workingMemories = ( WorkingMemoryImpl[] ) this.ruleBase.getWorkingMemories().toArray( new WorkingMemoryImpl[ this.ruleBase.getWorkingMemories().size() ] );
-        
+        this.workingMemories = (WorkingMemoryImpl[]) this.ruleBase.getWorkingMemories().toArray( new WorkingMemoryImpl[this.ruleBase.getWorkingMemories().size()] );
+
+        List nodes = new ArrayList();
         And[] and = rule.getTransformedLhs();
-        for ( int i = 0; i < and.length; i++ ) {                   
+        for ( int i = 0; i < and.length; i++ ) {
             addRule( and[i],
                      rule );
+            BaseNode node = null;
+            if ( !(rule instanceof Query) ) {
+                node = new TerminalNode( this.id++,
+                                         this.tupleSource,
+                                         rule );
+            } else {
+                node = new QueryTerminalNode( this.id++,
+                                              this.tupleSource,
+                                              rule );
+            }
+            
+            nodes.add( node );
+
+            if ( this.workingMemories.length == 0 ) {
+                node.attach();
+            } else {
+                node.attach( workingMemories );
+            }            
         }
         
-        BaseNode node = null;
-        if ( ! ( rule instanceof Query ) ) {        
-            node = new TerminalNode( this.id++,
-                                                  this.tupleSource,
-                                                  rule );
-        } else {
-            node = new QueryTerminalNode( this.id++,
-                                                            this.tupleSource,
-                                                            rule );
-        }        
-        
-        this.rules.put( rule, new BaseNode[] { node } );
-        
-        if ( this.workingMemories.length == 0) {
-            node.attach();
-        } else {
-            node.attach( workingMemories );
-        }        
-    }    
+        this.rules.put( rule,
+                        nodes.toArray() );
+    }
 
     private void addRule(And and,
                          Rule rule) {
         this.objectSource = null;
         this.tupleSource = null;
-        
-        if ( rule instanceof Query ) {        
-            attachQuery(rule.getName());
-        }          
-        
+
+        if ( rule instanceof Query ) {
+            attachQuery( rule.getName() );
+        }
+
         for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
             Object object = it.next();
 
@@ -229,11 +231,11 @@ class ReteBuilder {
             }
         }
     }
-    
-    public BaseNode[] getTerminalNodes( Rule rule ) {
+
+    public BaseNode[] getTerminalNodes(Rule rule) {
         return (BaseNode[]) this.rules.remove( rule );
     }
-    
+
     private void attachQuery(String queryName) {
         ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( this.id++,
@@ -245,7 +247,7 @@ class ReteBuilder {
                                                                  "name" );
 
         FieldValue field = FieldFactory.getFieldValue( queryName,
-        								               Evaluator.STRING_TYPE);        
+                                                       Evaluator.STRING_TYPE );
 
         Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
                                                              Evaluator.EQUAL );
@@ -260,10 +262,10 @@ class ReteBuilder {
 
         LeftInputAdapterNode liaNode = new LeftInputAdapterNode( this.id++,
                                                                  alphaNode );
-        liaNode.attach();       
-        
+        liaNode.attach();
+
         this.tupleSource = liaNode;
-    }    
+    }
 
     private BetaNodeBinder attachColumn(Column column,
                                         ConditionalElement parent) {
@@ -307,10 +309,10 @@ class ReteBuilder {
 
         for ( Iterator it = constraints.iterator(); it.hasNext(); ) {
             Object object = it.next();
-            if (! (object instanceof FieldConstraint ) ) {
+            if ( !(object instanceof FieldConstraint) ) {
                 continue;
             }
-                
+
             FieldConstraint fieldConstraint = (FieldConstraint) object;
             if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
@@ -410,7 +412,7 @@ class ReteBuilder {
         TupleSource node = (TupleSource) this.attachedNodes.get( candidate );
 
         if ( node == null ) {
-            if ( this.workingMemories.length == 0) {
+            if ( this.workingMemories.length == 0 ) {
                 candidate.attach();
             } else {
                 candidate.attach( workingMemories );
@@ -432,7 +434,7 @@ class ReteBuilder {
         ObjectSource node = (ObjectSource) this.attachedNodes.get( candidate );
 
         if ( node == null ) {
-            if ( this.workingMemories.length == 0) {
+            if ( this.workingMemories.length == 0 ) {
                 candidate.attach();
             } else {
                 candidate.attach( workingMemories );
@@ -447,6 +449,17 @@ class ReteBuilder {
         }
 
         return node;
+    }
+    
+    public void removeRule(Rule rule) {
+        // reset working memories for potential propagation
+        this.workingMemories = (WorkingMemoryImpl[]) this.ruleBase.getWorkingMemories().toArray( new WorkingMemoryImpl[this.ruleBase.getWorkingMemories().size()] );
+        
+        BaseNode[] nodes =  ( BaseNode[] ) this.rules.get( rule );
+        for ( int i = 0, length = nodes.length; i < length; i++ ) {
+            BaseNode node = nodes[i];
+            node.remove( null, this.workingMemories );
+        }
     }
 
 }

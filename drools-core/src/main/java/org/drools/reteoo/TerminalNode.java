@@ -32,6 +32,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.Duration;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
+import org.drools.util.LinkedListNode;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -233,12 +234,33 @@ final class TerminalNode extends BaseNode
     }       
 
     public void remove(BaseNode node,
-                       WorkingMemoryImpl workingMemory,
-                       PropagationContext context) {
-        workingMemory.clearNodeMemory( this );
+                       WorkingMemoryImpl[] workingMemories) {
+        for ( int i = 0, length = workingMemories.length; i < length; i++) {
+            WorkingMemoryImpl workingMemory = workingMemories[i];
+            
+            TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
+            
+            ActivationQueue queue = memory.getLifo();
+            for ( AgendaItem item = (AgendaItem) queue.getFirst(); item != null; item = (AgendaItem) item.getNext() ) {
+                if ( item.getRule() == this.rule ) {
+                    if ( item.isActivated() ) {
+                        item.remove();
+                        workingMemory.getAgendaEventSupport().fireActivationCancelled( item );
+                    }
+                    
+                    PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                        PropagationContext.RULE_ADDITION,
+                                                                                        null,
+                                                                                        null );  
+                    workingMemory.removeLogicalDependencies( item,
+                                                             propagationContext,
+                                                             this.rule );                 
+                }
+            }
+            
+        }
         tupleSource.remove( this,
-                            workingMemory,
-                            context );
+                            workingMemories );
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,

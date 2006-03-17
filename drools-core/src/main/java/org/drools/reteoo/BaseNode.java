@@ -85,8 +85,7 @@ abstract class BaseNode
      *
      */
     public abstract void remove(BaseNode node,
-                                WorkingMemoryImpl workingMemory,
-                                PropagationContext context);
+                                WorkingMemoryImpl[] workingMemories);
 
     /**
      * When nodes are added to the network that already has data. that existing data must be repropagated to the new node.

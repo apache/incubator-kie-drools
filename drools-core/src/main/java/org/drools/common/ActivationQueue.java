@@ -134,6 +134,10 @@ public class ActivationQueue
         this.list.remove( (LinkedListNode) activation );
     }
     
+    public LinkedListNode getFirst() {
+        return this.list.getFirst();
+    }
+    
     public Activation[] getActivations() {
         List activations = new ArrayList( this.list.size() );
         for (LinkedListNode node = this.list.getFirst(); node != null; node = node.getNext()) {

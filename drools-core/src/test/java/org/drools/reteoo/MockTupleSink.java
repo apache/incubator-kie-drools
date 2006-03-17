@@ -79,8 +79,7 @@ public class MockTupleSink extends TupleSource
     }
 
     public void remove(BaseNode node,
-                       WorkingMemoryImpl workingMemory,
-                       PropagationContext context) {
+                       WorkingMemoryImpl[] workingMemories) {
         // TODO Auto-generated method stub
         
     }
