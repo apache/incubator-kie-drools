@@ -215,13 +215,12 @@ public class PackageBuilder {
                                                  result.getErrors(),
                                                  "Compilation error for Invoker" ) );
             }
-            try {
-                this.pkg.addRule( rule );
-            } catch ( Exception e ) {
-                
-            }
-
         }
+        try {
+            this.pkg.addRule( rule );
+        } catch ( Exception e ) {
+            
+        }        
     }
 
     public Package getPackage() {

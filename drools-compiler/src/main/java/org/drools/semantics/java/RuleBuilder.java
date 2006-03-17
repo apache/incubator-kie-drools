@@ -29,6 +29,7 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.And;
@@ -43,6 +44,7 @@ import org.drools.rule.Not;
 import org.drools.rule.Or;
 import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
+import org.drools.rule.Query;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.spi.Evaluator;
@@ -132,8 +134,14 @@ public class RuleBuilder {
         this.typeResolver = new ClassTypeResolver( pkg.getImports(),
                                                    pkg.getPackageCompilationData().getClassLoader() );
 
-        this.rule = new Rule( ruleDescr.getName() );
         this.ruleDescr = ruleDescr;
+        
+        if ( ruleDescr instanceof QueryDescr ) {
+            this.rule = new Query( ruleDescr.getName() );
+        } else {
+            this.rule = new Rule( ruleDescr.getName() );            
+        }
+        
 
         // Assign attributes
         setAttributes( rule,
@@ -209,11 +217,14 @@ public class RuleBuilder {
                     rule.addPattern( column );
                 }
             }
-        }
+        }        
         
         // Build the consequence and generate it's invoker/methods
         // generate the main rule from the previously generated methods.
-        buildConsequence( ruleDescr );
+        if ( !( ruleDescr instanceof QueryDescr ) ) {
+            // do not build the consequence if we have a query
+            buildConsequence( ruleDescr );
+        }
         buildRule( ruleDescr );        
     }    
 
