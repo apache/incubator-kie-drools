@@ -52,7 +52,7 @@ opt_eol	:
 
 compilation_unit
 	:	prolog 
-		(r=rule {this.packageDescr.addRule( r ); })*
+		(r=rule {this.packageDescr.addRule( r ); } | q=query {this.packageDescr.addRule( q ); })*
 	;
 	
 prolog
@@ -96,6 +96,27 @@ use_expander
 	;
 
 
+query returns [QueryDescr query]
+	@init {
+		query = null;
+	}
+	:
+		opt_eol
+		loc='query' queryName=word opt_eol 
+		{ 
+			query = new QueryDescr( queryName, null ); 
+			query.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			AndDescr lhs = new AndDescr(); query.setLhs( lhs ); 
+			lhs.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+		}
+		(
+			{ expander != null }? expander_lhs_block[lhs]
+			| normal_lhs_block[lhs]
+		)
+					
+		'end' opt_eol
+	;
+
 rule returns [RuleDescr rule]
 	@init {
 		rule = null;
@@ -134,6 +155,7 @@ rule returns [RuleDescr rule]
 		{ rule.setConsequence( consequence ); }
 		'end' opt_eol
 	;
+	
 
 rule_options returns [List options]
 	@init {
@@ -497,6 +519,7 @@ word returns [String word]
 	|	'import'   { word="import"; }
 	|	'use'      { word="use"; }
 	|	'rule'     { word="rule"; }
+	|	'query'    { word="query"; }
 	|	'salience' { word="salience"; }
  	|	'no-loop'  { word="no-loop"; }
 	|	'when'     { word="when"; }

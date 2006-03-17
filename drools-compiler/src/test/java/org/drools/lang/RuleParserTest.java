@@ -21,6 +21,7 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
 
@@ -181,7 +182,7 @@ public class RuleParserTest extends TestCase {
 	}
     
     public void testSimpleQuery() throws Exception {
-        RuleDescr query = parseResource( "simple_query.drl" ).rule();
+        QueryDescr query = parseResource( "simple_query.drl" ).query();
         
         assertNotNull( query );
         
@@ -216,11 +217,42 @@ public class RuleParserTest extends TestCase {
         assertEquals( "Bar", second.getObjectType() );
         
         assertEquals( 2, second.getDescrs().size() );
+        //check it has field bindings.
+        FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) second.getDescrs().get( 0 );
+        assertEquals( "a", fieldBindingDescr.getFieldName() );
+        assertEquals( "a4", fieldBindingDescr.getIdentifier() );
         
-        System.err.println( second.getDescrs() );
+        constraint = (LiteralDescr) second.getDescrs().get( 1 );
+        
+        assertNotNull( constraint );
+        
+        assertEquals( "a", constraint.getFieldName() );
+        assertEquals( "==", constraint.getEvaluator() );
+        assertEquals( "4", constraint.getText() );        
         
     }
+
     
+    public void testQueryRuleMixed() throws Exception {
+        RuleParser parser = parseResource( "query_and_rule.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(4, pack.getRules().size()); //as queries are rules
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( "bar", rule.getName() );
+
+        QueryDescr query = (QueryDescr) pack.getRules().get( 1 );
+        assertEquals( "simple_query", query.getName() );
+        
+        rule = (RuleDescr) pack.getRules().get( 2 );
+        assertEquals( "bar2", rule.getName() );
+        
+        query = (QueryDescr) pack.getRules().get( 3 );
+        assertEquals( "simple_query2", query.getName() );
+        
+        
+    }
     
     public void testMultipleRules() throws Exception {
         RuleParser parser = parseResource( "multiple_rules.drl" );
