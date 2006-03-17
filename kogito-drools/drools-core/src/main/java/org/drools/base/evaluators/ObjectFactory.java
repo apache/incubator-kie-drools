@@ -6,6 +6,13 @@ import org.drools.base.BaseEvaluator;
 
 import org.drools.spi.Evaluator;
 
+/**
+ * This is the misc "bucket" evaluator factory for objects.
+ * It is fairly limited in operations, 
+ * and what operations are available are dependent on the exact type.
+ * 
+ * @author Michael Neale
+ */
 public class ObjectFactory {
     
     public static Evaluator getObjectEvaluator(int operator) {

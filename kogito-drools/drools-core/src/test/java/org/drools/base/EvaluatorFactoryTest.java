@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.spi.Evaluator;
 
@@ -40,6 +42,10 @@ public class EvaluatorFactoryTest extends TestCase {
         Object[][] data = { {"foo", "==", "bar", Boolean.FALSE},
                             {"foo", "==", "foo", Boolean.TRUE},
                             {"foo", "!=", "bar", Boolean.TRUE},
+                            {"something foo", "matches", ".*foo", Boolean.TRUE},
+                            {"foo", "matches", ".*foo", Boolean.TRUE},
+                            {"foo", "matches", "bar", Boolean.FALSE},
+                            {null, "matches", ".*foo", Boolean.FALSE}
                           };
 
         runEvaluatorTest( data, Evaluator.STRING_TYPE );
@@ -217,14 +223,26 @@ public class EvaluatorFactoryTest extends TestCase {
                 assertFalse( message, result );
             }
             
-            //check the type is being set, Strings are treated as objects for now...
-            if (evalType == Evaluator.STRING_TYPE) {
-                assertEquals("Strings are objects", Evaluator.OBJECT_TYPE, evaluator.getType());
-            } else {
-                assertEquals(evalType, evaluator.getType());
-            }
+            assertEquals(evalType, evaluator.getType());
             
         }
     }
+    
+//    public void testRegexFoo() {
+//        Pattern p = Pattern.compile( ".*foo" );
+//        boolean b;
+//        long start = System.currentTimeMillis();
+//        for (int i = 0; i < 1000000; i++) {
+//            b = ("something foo".matches( ".*foo" ));
+//        }
+//        System.out.println("time: " + (System.currentTimeMillis() - start));
+//        
+//        start = System.currentTimeMillis();
+//        for (int i = 0; i < 1000000; i++) {        
+//            Matcher m = p.matcher( "something foo" );
+//            b = m.matches();
+//        }
+//        System.out.println("time: " + (System.currentTimeMillis() - start));
+//    }
     
 }
