@@ -209,7 +209,7 @@ public class Rule
         //    throw new NoColumnsException( this );
         //}
 
-        if ( this.consequence == null ) {
+        if ( ! ( this instanceof Query ) && this.consequence == null ) {
             throw new NoConsequenceException( this );
         }
     }
