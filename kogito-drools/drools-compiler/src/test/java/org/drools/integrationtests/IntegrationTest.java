@@ -2,6 +2,7 @@ package org.drools.integrationtests;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 
 import org.drools.Cheese;
 import org.drools.WorkingMemory;
@@ -30,4 +31,25 @@ public class IntegrationTest extends TestCase {
         workingMemory.assertObject( stilton );
         workingMemory.fireAllRules();
     }    
+    
+    public void testQuery() throws Exception {
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "simple_query.drl" ) );
+        DrlParser parser = new DrlParser();
+        PackageDescr packageDescr = parser.parse( reader );
+
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackage( packageDescr );
+        Package pkg = builder.getPackage();
+        
+        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        Cheese stilton = new Cheese("stinky", 5);
+        workingMemory.assertObject( stilton );
+        List results = workingMemory.getQueryResults( "simple" );
+        assertEquals(1, results.size());
+        
+    }
+    
 }

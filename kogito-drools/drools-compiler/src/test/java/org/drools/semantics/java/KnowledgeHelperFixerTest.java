@@ -48,5 +48,11 @@ public class KnowledgeHelperFixerTest extends TestCase {
         String result = fixer.fix(original);
         assertEquals(original, result);        
     }
+    
+    public void testWithNull() {
+        String original = null;
+        String result = fixer.fix(original);
+        assertEquals(original, result);
+    }
 
 }
