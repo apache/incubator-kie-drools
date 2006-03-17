@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea8 C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-03-17 11:36:06
+// $ANTLR 3.0ea8 C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-03-17 12:41:33
 
 	package org.drools.lang;
 
@@ -26,6 +26,7 @@ public class RuleParserLexer extends Lexer {
     public static final int T32=32;
     public static final int T17=17;
     public static final int SH_STYLE_SINGLE_LINE_COMMENT=11;
+    public static final int T46=46;
     public static final int T16=16;
     public static final int T38=38;
     public static final int T41=41;
@@ -47,7 +48,7 @@ public class RuleParserLexer extends Lexer {
     public static final int T15=15;
     public static final int EOF=-1;
     public static final int EOL=4;
-    public static final int Tokens=46;
+    public static final int Tokens=47;
     public static final int T31=31;
     public static final int MULTI_LINE_COMMENT=13;
     public static final int T27=27;
@@ -185,10 +186,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:11:7: ( 'rule' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:11:7: 'rule'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:11:7: ( 'query' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:11:7: 'query'
             {
-            match("rule"); 
+            match("query"); 
 
 
             }
@@ -209,10 +210,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:12:7: ( 'when' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:12:7: 'when'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:12:7: ( 'end' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:12:7: 'end'
             {
-            match("when"); 
+            match("end"); 
 
 
             }
@@ -233,10 +234,11 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:13:7: ( ':' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:13:7: ':'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:13:7: ( 'rule' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:13:7: 'rule'
             {
-            match(':'); 
+            match("rule"); 
+
 
             }
 
@@ -256,10 +258,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:14:7: ( 'then' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:14:7: 'then'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:14:7: ( 'when' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:14:7: 'when'
             {
-            match("then"); 
+            match("when"); 
 
 
             }
@@ -280,11 +282,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:15:7: ( 'end' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:15:7: 'end'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:15:7: ( ':' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:15:7: ':'
             {
-            match("end"); 
-
+            match(':'); 
 
             }
 
@@ -304,10 +305,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:16:7: ( 'options' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:16:7: 'options'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:16:7: ( 'then' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:16:7: 'then'
             {
-            match("options"); 
+            match("then"); 
 
 
             }
@@ -328,10 +329,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:17:7: ( 'salience' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:17:7: 'salience'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:17:7: ( 'options' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:17:7: 'options'
             {
-            match("salience"); 
+            match("options"); 
 
 
             }
@@ -352,10 +353,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:18:7: ( 'no-loop' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:18:7: 'no-loop'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:18:7: ( 'salience' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:18:7: 'salience'
             {
-            match("no-loop"); 
+            match("salience"); 
 
 
             }
@@ -376,10 +377,11 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:19:7: ( '>' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:19:7: '>'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:19:7: ( 'no-loop' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:19:7: 'no-loop'
             {
-            match('>'); 
+            match("no-loop"); 
+
 
             }
 
@@ -399,11 +401,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:20:7: ( 'or' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:20:7: 'or'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:20:7: ( '>' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:20:7: '>'
             {
-            match("or"); 
-
+            match('>'); 
 
             }
 
@@ -423,10 +424,11 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:21:7: ( '(' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:21:7: '('
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:21:7: ( 'or' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:21:7: 'or'
             {
-            match('('); 
+            match("or"); 
+
 
             }
 
@@ -446,10 +448,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:22:7: ( ')' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:22:7: ')'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:22:7: ( '(' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:22:7: '('
             {
-            match(')'); 
+            match('('); 
 
             }
 
@@ -469,10 +471,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:23:7: ( ',' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:23:7: ','
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:23:7: ( ')' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:23:7: ')'
             {
-            match(','); 
+            match(')'); 
 
             }
 
@@ -492,11 +494,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:24:7: ( '==' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:24:7: '=='
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:24:7: ( ',' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:24:7: ','
             {
-            match("=="); 
-
+            match(','); 
 
             }
 
@@ -516,10 +517,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:25:7: ( '>=' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:25:7: '>='
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:25:7: ( '==' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:25:7: '=='
             {
-            match(">="); 
+            match("=="); 
 
 
             }
@@ -540,10 +541,11 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:26:7: ( '<' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:26:7: '<'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:26:7: ( '>=' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:26:7: '>='
             {
-            match('<'); 
+            match(">="); 
+
 
             }
 
@@ -563,11 +565,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:27:7: ( '<=' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:27:7: '<='
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:27:7: ( '<' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:27:7: '<'
             {
-            match("<="); 
-
+            match('<'); 
 
             }
 
@@ -587,10 +588,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:28:7: ( '!=' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:28:7: '!='
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:28:7: ( '<=' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:28:7: '<='
             {
-            match("!="); 
+            match("<="); 
 
 
             }
@@ -611,10 +612,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:29:7: ( 'contains' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:29:7: 'contains'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:29:7: ( '!=' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:29:7: '!='
             {
-            match("contains"); 
+            match("!="); 
 
 
             }
@@ -635,10 +636,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:30:7: ( 'matches' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:30:7: 'matches'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:30:7: ( 'contains' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:30:7: 'contains'
             {
-            match("matches"); 
+            match("contains"); 
 
 
             }
@@ -659,10 +660,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:31:7: ( '||' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:31:7: '||'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:31:7: ( 'matches' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:31:7: 'matches'
             {
-            match("||"); 
+            match("matches"); 
 
 
             }
@@ -683,10 +684,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:32:7: ( 'and' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:32:7: 'and'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:32:7: ( '||' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:32:7: '||'
             {
-            match("and"); 
+            match("||"); 
 
 
             }
@@ -707,10 +708,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:33:7: ( '&&' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:33:7: '&&'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:33:7: ( 'and' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:33:7: 'and'
             {
-            match("&&"); 
+            match("and"); 
 
 
             }
@@ -731,10 +732,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:34:7: ( 'exists' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:34:7: 'exists'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:34:7: ( '&&' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:34:7: '&&'
             {
-            match("exists"); 
+            match("&&"); 
 
 
             }
@@ -755,10 +756,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:35:7: ( 'not' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:35:7: 'not'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:35:7: ( 'exists' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:35:7: 'exists'
             {
-            match("not"); 
+            match("exists"); 
 
 
             }
@@ -779,10 +780,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:36:7: ( 'eval' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:36:7: 'eval'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:36:7: ( 'not' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:36:7: 'not'
             {
-            match("eval"); 
+            match("not"); 
 
 
             }
@@ -803,10 +804,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:37:7: ( 'use' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:37:7: 'use'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:37:7: ( 'eval' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:37:7: 'eval'
             {
-            match("use"); 
+            match("eval"); 
 
 
             }
@@ -819,6 +820,30 @@ public class RuleParserLexer extends Lexer {
     // $ANTLR end T45
 
 
+    // $ANTLR start T46
+    public void mT46() throws RecognitionException {
+        try {
+            int type = T46;
+            int start = getCharIndex();
+            int line = getLine();
+            int charPosition = getCharPositionInLine();
+            int channel = Token.DEFAULT_CHANNEL;
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:38:7: ( 'use' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:38:7: 'use'
+            {
+            match("use"); 
+
+
+            }
+
+            if ( token==null ) {emit(type,line,charPosition,channel,start,getCharIndex()-1);}
+        }
+        finally {
+        }
+    }
+    // $ANTLR end T46
+
+
     // $ANTLR start MISC
     public void mMISC() throws RecognitionException {
         try {
@@ -827,8 +852,8 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:509:9: ( ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']'|';'))
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:510:17: ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']'|';')
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:9: ( ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']'|';'))
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:533:17: ('!'|'@'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'|'|','|'{'|'}'|'['|']'|';')
             {
             if ( input.LA(1)=='!'||(input.LA(1)>='$' && input.LA(1)<='&')||(input.LA(1)>='*' && input.LA(1)<='-')||input.LA(1)==';'||input.LA(1)=='@'||input.LA(1)=='['||(input.LA(1)>=']' && input.LA(1)<='_')||(input.LA(1)>='{' && input.LA(1)<='}') ) {
                 input.consume();
@@ -859,8 +884,8 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:513:17: ( (' '|'\t'|'\f'))
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:513:17: (' '|'\t'|'\f')
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:17: ( (' '|'\t'|'\f'))
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:17: (' '|'\t'|'\f')
             {
             if ( input.LA(1)=='\t'||input.LA(1)=='\f'||input.LA(1)==' ' ) {
                 input.consume();
@@ -892,10 +917,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:521:17: ( ( '\r\n' | '\r' | '\n' ) )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:521:17: ( '\r\n' | '\r' | '\n' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:544:17: ( ( '\r\n' | '\r' | '\n' ) )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:544:17: ( '\r\n' | '\r' | '\n' )
             {
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:521:17: ( '\r\n' | '\r' | '\n' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:544:17: ( '\r\n' | '\r' | '\n' )
             int alt1=3;
             int LA1_0 = input.LA(1);
             if ( LA1_0=='\r' ) {
@@ -911,13 +936,13 @@ public class RuleParserLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("521:17: ( \'\\r\\n\' | \'\\r\' | \'\\n\' )", 1, 0, input);
+                    new NoViableAltException("544:17: ( \'\\r\\n\' | \'\\r\' | \'\\n\' )", 1, 0, input);
 
                 throw nvae;
             }
             switch (alt1) {
                 case 1 :
-                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:521:25: '\r\n'
+                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:544:25: '\r\n'
                     {
                     match("\r\n"); 
 
@@ -925,14 +950,14 @@ public class RuleParserLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:522:25: '\r'
+                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:545:25: '\r'
                     {
                     match('\r'); 
 
                     }
                     break;
                 case 3 :
-                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:523:25: '\n'
+                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:546:25: '\n'
                     {
                     match('\n'); 
 
@@ -960,10 +985,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:528:17: ( ( '0' .. '9' )+ )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:528:17: ( '0' .. '9' )+
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:551:17: ( ( '0' .. '9' )+ )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:551:17: ( '0' .. '9' )+
             {
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:528:17: ( '0' .. '9' )+
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:551:17: ( '0' .. '9' )+
             int cnt2=0;
             loop2:
             do {
@@ -976,7 +1001,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt2) {
             	case 1 :
-            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:528:18: '0' .. '9'
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:551:18: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1011,10 +1036,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:17: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:17: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:555:17: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:555:17: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
             {
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:17: ( '0' .. '9' )+
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:555:17: ( '0' .. '9' )+
             int cnt3=0;
             loop3:
             do {
@@ -1027,7 +1052,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:18: '0' .. '9'
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:555:18: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1044,7 +1069,7 @@ public class RuleParserLexer extends Lexer {
             } while (true);
 
             match('.'); 
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:33: ( '0' .. '9' )+
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:555:33: ( '0' .. '9' )+
             int cnt4=0;
             loop4:
             do {
@@ -1057,7 +1082,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:532:34: '0' .. '9'
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:555:34: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1092,11 +1117,11 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:17: ( '"' ( options {greedy=false; } : . )* '"' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:17: '"' ( options {greedy=false; } : . )* '"'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:559:17: ( '"' ( options {greedy=false; } : . )* '"' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:559:17: '"' ( options {greedy=false; } : . )* '"'
             {
             match('"'); 
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:21: ( options {greedy=false; } : . )*
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:559:21: ( options {greedy=false; } : . )*
             loop5:
             do {
                 int alt5=2;
@@ -1111,7 +1136,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt5) {
             	case 1 :
-            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:536:48: .
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:559:48: .
             	    {
             	    matchAny(); 
 
@@ -1143,8 +1168,8 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:540:17: ( ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))* )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:540:17: ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:563:17: ( ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))* )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:563:17: ('a'..'z'|'A'..'Z'|'_'|'$') ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
             {
             if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                 input.consume();
@@ -1156,7 +1181,7 @@ public class RuleParserLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:540:44: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:563:44: ( ('a'..'z'|'A'..'Z'|'_'|'0'..'9'))*
             loop6:
             do {
                 int alt6=2;
@@ -1168,7 +1193,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:540:45: ('a'..'z'|'A'..'Z'|'_'|'0'..'9')
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:563:45: ('a'..'z'|'A'..'Z'|'_'|'0'..'9')
             	    {
             	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
             	        input.consume();
@@ -1208,11 +1233,11 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:545:17: ( '#' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:545:17: '#' ( options {greedy=false; } : . )* ( '\r' )? '\n'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:17: ( '#' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:17: '#' ( options {greedy=false; } : . )* ( '\r' )? '\n'
             {
             match('#'); 
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:545:21: ( options {greedy=false; } : . )*
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:21: ( options {greedy=false; } : . )*
             loop7:
             do {
                 int alt7=2;
@@ -1230,7 +1255,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:545:48: .
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:48: .
             	    {
             	    matchAny(); 
 
@@ -1242,7 +1267,7 @@ public class RuleParserLexer extends Lexer {
                 }
             } while (true);
 
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:545:52: ( '\r' )?
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:52: ( '\r' )?
             int alt8=2;
             int LA8_0 = input.LA(1);
             if ( LA8_0=='\r' ) {
@@ -1253,13 +1278,13 @@ public class RuleParserLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("545:52: ( \'\\r\' )?", 8, 0, input);
+                    new NoViableAltException("568:52: ( \'\\r\' )?", 8, 0, input);
 
                 throw nvae;
             }
             switch (alt8) {
                 case 1 :
-                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:545:53: '\r'
+                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:568:53: '\r'
                     {
                     match('\r'); 
 
@@ -1288,12 +1313,12 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:550:17: ( '//' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:550:17: '//' ( options {greedy=false; } : . )* ( '\r' )? '\n'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:573:17: ( '//' ( options {greedy=false; } : . )* ( '\r' )? '\n' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:573:17: '//' ( options {greedy=false; } : . )* ( '\r' )? '\n'
             {
             match("//"); 
 
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:550:22: ( options {greedy=false; } : . )*
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:573:22: ( options {greedy=false; } : . )*
             loop9:
             do {
                 int alt9=2;
@@ -1311,7 +1336,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt9) {
             	case 1 :
-            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:550:49: .
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:573:49: .
             	    {
             	    matchAny(); 
 
@@ -1323,7 +1348,7 @@ public class RuleParserLexer extends Lexer {
                 }
             } while (true);
 
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:550:53: ( '\r' )?
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:573:53: ( '\r' )?
             int alt10=2;
             int LA10_0 = input.LA(1);
             if ( LA10_0=='\r' ) {
@@ -1334,13 +1359,13 @@ public class RuleParserLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("550:53: ( \'\\r\' )?", 10, 0, input);
+                    new NoViableAltException("573:53: ( \'\\r\' )?", 10, 0, input);
 
                 throw nvae;
             }
             switch (alt10) {
                 case 1 :
-                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:550:54: '\r'
+                    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:573:54: '\r'
                     {
                     match('\r'); 
 
@@ -1369,12 +1394,12 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:554:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:554:17: '/*' ( options {greedy=false; } : . )* '*/'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:577:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:577:17: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:554:22: ( options {greedy=false; } : . )*
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:577:22: ( options {greedy=false; } : . )*
             loop11:
             do {
                 int alt11=2;
@@ -1397,7 +1422,7 @@ public class RuleParserLexer extends Lexer {
 
                 switch (alt11) {
             	case 1 :
-            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:554:48: .
+            	    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:577:48: .
             	    {
             	    matchAny(); 
 
@@ -1422,8 +1447,8 @@ public class RuleParserLexer extends Lexer {
     // $ANTLR end MULTI_LINE_COMMENT
 
     public void mTokens() throws RecognitionException {
-        // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:10: ( T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | T44 | T45 | MISC | WS | EOL | INT | FLOAT | STRING | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT )
-        int alt12=42;
+        // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:10: ( T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | T44 | T45 | T46 | MISC | WS | EOL | INT | FLOAT | STRING | ID | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT )
+        int alt12=43;
         alt12 = dfa12.predict(input); 
         switch (alt12) {
             case 1 :
@@ -1651,70 +1676,77 @@ public class RuleParserLexer extends Lexer {
                 }
                 break;
             case 33 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:138: MISC
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:138: T46
+                {
+                mT46(); 
+
+                }
+                break;
+            case 34 :
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:142: MISC
                 {
                 mMISC(); 
 
                 }
                 break;
-            case 34 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:143: WS
+            case 35 :
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:147: WS
                 {
                 mWS(); 
 
                 }
                 break;
-            case 35 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:146: EOL
+            case 36 :
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:150: EOL
                 {
                 mEOL(); 
 
                 }
                 break;
-            case 36 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:150: INT
+            case 37 :
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:154: INT
                 {
                 mINT(); 
 
                 }
                 break;
-            case 37 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:154: FLOAT
+            case 38 :
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:158: FLOAT
                 {
                 mFLOAT(); 
 
                 }
                 break;
-            case 38 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:160: STRING
+            case 39 :
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:164: STRING
                 {
                 mSTRING(); 
 
                 }
                 break;
-            case 39 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:167: ID
+            case 40 :
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:171: ID
                 {
                 mID(); 
 
                 }
                 break;
-            case 40 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:170: SH_STYLE_SINGLE_LINE_COMMENT
+            case 41 :
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:174: SH_STYLE_SINGLE_LINE_COMMENT
                 {
                 mSH_STYLE_SINGLE_LINE_COMMENT(); 
 
                 }
                 break;
-            case 41 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:199: C_STYLE_SINGLE_LINE_COMMENT
+            case 42 :
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:203: C_STYLE_SINGLE_LINE_COMMENT
                 {
                 mC_STYLE_SINGLE_LINE_COMMENT(); 
 
                 }
                 break;
-            case 42 :
-                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:227: MULTI_LINE_COMMENT
+            case 43 :
+                // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:1:231: MULTI_LINE_COMMENT
                 {
                 mMULTI_LINE_COMMENT(); 
 
@@ -1731,257 +1763,257 @@ public class RuleParserLexer extends Lexer {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s268 = new DFA.State() {{alt=1;}};
-        DFA.State s33 = new DFA.State() {{alt=39;}};
-        DFA.State s246 = new DFA.State() {
+        DFA.State s283 = new DFA.State() {{alt=1;}};
+        DFA.State s34 = new DFA.State() {{alt=40;}};
+        DFA.State s261 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_246 = input.LA(1);
-                if ( (LA12_246>='0' && LA12_246<='9')||(LA12_246>='A' && LA12_246<='Z')||LA12_246=='_'||(LA12_246>='a' && LA12_246<='z') ) {return s33;}
-                return s268;
+                int LA12_261 = input.LA(1);
+                if ( (LA12_261>='0' && LA12_261<='9')||(LA12_261>='A' && LA12_261<='Z')||LA12_261=='_'||(LA12_261>='a' && LA12_261<='z') ) {return s34;}
+                return s283;
 
             }
         };
-        DFA.State s222 = new DFA.State() {
+        DFA.State s235 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_222 = input.LA(1);
-                if ( LA12_222=='e' ) {return s246;}
-                return s33;
+                int LA12_235 = input.LA(1);
+                if ( LA12_235=='e' ) {return s261;}
+                return s34;
 
             }
         };
-        DFA.State s190 = new DFA.State() {
+        DFA.State s200 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_190 = input.LA(1);
-                if ( LA12_190=='g' ) {return s222;}
-                return s33;
+                int LA12_200 = input.LA(1);
+                if ( LA12_200=='g' ) {return s235;}
+                return s34;
 
             }
         };
-        DFA.State s146 = new DFA.State() {
+        DFA.State s153 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_146 = input.LA(1);
-                if ( LA12_146=='a' ) {return s190;}
-                return s33;
+                int LA12_153 = input.LA(1);
+                if ( LA12_153=='a' ) {return s200;}
+                return s34;
 
             }
         };
-        DFA.State s97 = new DFA.State() {
+        DFA.State s101 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_97 = input.LA(1);
-                if ( LA12_97=='k' ) {return s146;}
-                return s33;
+                int LA12_101 = input.LA(1);
+                if ( LA12_101=='k' ) {return s153;}
+                return s34;
 
             }
         };
-        DFA.State s36 = new DFA.State() {
+        DFA.State s37 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_36 = input.LA(1);
-                if ( LA12_36=='c' ) {return s97;}
-                return s33;
+                int LA12_37 = input.LA(1);
+                if ( LA12_37=='c' ) {return s101;}
+                return s34;
 
             }
         };
         DFA.State s1 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_1 = input.LA(1);
-                if ( LA12_1=='a' ) {return s36;}
-                return s33;
+                if ( LA12_1=='a' ) {return s37;}
+                return s34;
 
             }
         };
         DFA.State s2 = new DFA.State() {{alt=2;}};
-        DFA.State s39 = new DFA.State() {{alt=3;}};
+        DFA.State s40 = new DFA.State() {{alt=3;}};
         DFA.State s3 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_3 = input.LA(1);
-                return s39;
+                return s40;
 
             }
         };
-        DFA.State s249 = new DFA.State() {{alt=4;}};
-        DFA.State s225 = new DFA.State() {
+        DFA.State s264 = new DFA.State() {{alt=4;}};
+        DFA.State s238 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_225 = input.LA(1);
-                if ( (LA12_225>='0' && LA12_225<='9')||(LA12_225>='A' && LA12_225<='Z')||LA12_225=='_'||(LA12_225>='a' && LA12_225<='z') ) {return s33;}
-                return s249;
+                int LA12_238 = input.LA(1);
+                if ( (LA12_238>='0' && LA12_238<='9')||(LA12_238>='A' && LA12_238<='Z')||LA12_238=='_'||(LA12_238>='a' && LA12_238<='z') ) {return s34;}
+                return s264;
 
             }
         };
-        DFA.State s193 = new DFA.State() {
+        DFA.State s203 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_193 = input.LA(1);
-                if ( LA12_193=='t' ) {return s225;}
-                return s33;
+                int LA12_203 = input.LA(1);
+                if ( LA12_203=='t' ) {return s238;}
+                return s34;
 
             }
         };
-        DFA.State s149 = new DFA.State() {
+        DFA.State s156 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_149 = input.LA(1);
-                if ( LA12_149=='r' ) {return s193;}
-                return s33;
-
-            }
-        };
-        DFA.State s100 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_100 = input.LA(1);
-                if ( LA12_100=='o' ) {return s149;}
-                return s33;
-
-            }
-        };
-        DFA.State s40 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_40 = input.LA(1);
-                if ( LA12_40=='p' ) {return s100;}
-                return s33;
-
-            }
-        };
-        DFA.State s4 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_4 = input.LA(1);
-                if ( LA12_4=='m' ) {return s40;}
-                return s33;
-
-            }
-        };
-        DFA.State s251 = new DFA.State() {{alt=29;}};
-        DFA.State s228 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_228 = input.LA(1);
-                if ( (LA12_228>='0' && LA12_228<='9')||(LA12_228>='A' && LA12_228<='Z')||LA12_228=='_'||(LA12_228>='a' && LA12_228<='z') ) {return s33;}
-                return s251;
-
-            }
-        };
-        DFA.State s196 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_196 = input.LA(1);
-                if ( LA12_196=='s' ) {return s228;}
-                return s33;
-
-            }
-        };
-        DFA.State s152 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_152 = input.LA(1);
-                if ( LA12_152=='t' ) {return s196;}
-                return s33;
-
-            }
-        };
-        DFA.State s103 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_103 = input.LA(1);
-                if ( LA12_103=='s' ) {return s152;}
-                return s33;
-
-            }
-        };
-        DFA.State s283 = new DFA.State() {{alt=5;}};
-        DFA.State s270 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_270 = input.LA(1);
-                if ( (LA12_270>='0' && LA12_270<='9')||(LA12_270>='A' && LA12_270<='Z')||LA12_270=='_'||(LA12_270>='a' && LA12_270<='z') ) {return s33;}
-                return s283;
-
-            }
-        };
-        DFA.State s253 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_253 = input.LA(1);
-                if ( LA12_253=='r' ) {return s270;}
-                return s33;
-
-            }
-        };
-        DFA.State s231 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_231 = input.LA(1);
-                if ( LA12_231=='e' ) {return s253;}
-                return s33;
-
-            }
-        };
-        DFA.State s199 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_199 = input.LA(1);
-                if ( LA12_199=='d' ) {return s231;}
-                return s33;
-
-            }
-        };
-        DFA.State s155 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_155 = input.LA(1);
-                if ( LA12_155=='n' ) {return s199;}
-                return s33;
+                int LA12_156 = input.LA(1);
+                if ( LA12_156=='r' ) {return s203;}
+                return s34;
 
             }
         };
         DFA.State s104 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_104 = input.LA(1);
-                if ( LA12_104=='a' ) {return s155;}
-                return s33;
+                if ( LA12_104=='o' ) {return s156;}
+                return s34;
 
             }
         };
-        DFA.State s43 = new DFA.State() {
+        DFA.State s41 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case 'i':
-                    return s103;
+                int LA12_41 = input.LA(1);
+                if ( LA12_41=='p' ) {return s104;}
+                return s34;
 
-                case 'p':
-                    return s104;
-
-                default:
-                    return s33;
-        	        }
             }
         };
-        DFA.State s158 = new DFA.State() {{alt=10;}};
+        DFA.State s4 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_4 = input.LA(1);
+                if ( LA12_4=='m' ) {return s41;}
+                return s34;
+
+            }
+        };
+        DFA.State s266 = new DFA.State() {{alt=30;}};
+        DFA.State s241 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_241 = input.LA(1);
+                if ( (LA12_241>='0' && LA12_241<='9')||(LA12_241>='A' && LA12_241<='Z')||LA12_241=='_'||(LA12_241>='a' && LA12_241<='z') ) {return s34;}
+                return s266;
+
+            }
+        };
+        DFA.State s206 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_206 = input.LA(1);
+                if ( LA12_206=='s' ) {return s241;}
+                return s34;
+
+            }
+        };
+        DFA.State s159 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_159 = input.LA(1);
+                if ( LA12_159=='t' ) {return s206;}
+                return s34;
+
+            }
+        };
         DFA.State s107 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_107 = input.LA(1);
-                if ( (LA12_107>='0' && LA12_107<='9')||(LA12_107>='A' && LA12_107<='Z')||LA12_107=='_'||(LA12_107>='a' && LA12_107<='z') ) {return s33;}
-                return s158;
+                if ( LA12_107=='s' ) {return s159;}
+                return s34;
+
+            }
+        };
+        DFA.State s298 = new DFA.State() {{alt=5;}};
+        DFA.State s285 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_285 = input.LA(1);
+                if ( (LA12_285>='0' && LA12_285<='9')||(LA12_285>='A' && LA12_285<='Z')||LA12_285=='_'||(LA12_285>='a' && LA12_285<='z') ) {return s34;}
+                return s298;
+
+            }
+        };
+        DFA.State s268 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_268 = input.LA(1);
+                if ( LA12_268=='r' ) {return s285;}
+                return s34;
+
+            }
+        };
+        DFA.State s244 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_244 = input.LA(1);
+                if ( LA12_244=='e' ) {return s268;}
+                return s34;
+
+            }
+        };
+        DFA.State s209 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_209 = input.LA(1);
+                if ( LA12_209=='d' ) {return s244;}
+                return s34;
+
+            }
+        };
+        DFA.State s162 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_162 = input.LA(1);
+                if ( LA12_162=='n' ) {return s209;}
+                return s34;
+
+            }
+        };
+        DFA.State s108 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_108 = input.LA(1);
+                if ( LA12_108=='a' ) {return s162;}
+                return s34;
 
             }
         };
         DFA.State s44 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_44 = input.LA(1);
-                if ( LA12_44=='d' ) {return s107;}
-                return s33;
+                switch ( input.LA(1) ) {
+                case 'i':
+                    return s107;
 
+                case 'p':
+                    return s108;
+
+                default:
+                    return s34;
+        	        }
             }
         };
-        DFA.State s202 = new DFA.State() {{alt=31;}};
-        DFA.State s160 = new DFA.State() {
+        DFA.State s165 = new DFA.State() {{alt=7;}};
+        DFA.State s111 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_160 = input.LA(1);
-                if ( (LA12_160>='0' && LA12_160<='9')||(LA12_160>='A' && LA12_160<='Z')||LA12_160=='_'||(LA12_160>='a' && LA12_160<='z') ) {return s33;}
-                return s202;
-
-            }
-        };
-        DFA.State s110 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_110 = input.LA(1);
-                if ( LA12_110=='l' ) {return s160;}
-                return s33;
+                int LA12_111 = input.LA(1);
+                if ( (LA12_111>='0' && LA12_111<='9')||(LA12_111>='A' && LA12_111<='Z')||LA12_111=='_'||(LA12_111>='a' && LA12_111<='z') ) {return s34;}
+                return s165;
 
             }
         };
         DFA.State s45 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_45 = input.LA(1);
-                if ( LA12_45=='a' ) {return s110;}
-                return s33;
+                if ( LA12_45=='d' ) {return s111;}
+                return s34;
+
+            }
+        };
+        DFA.State s212 = new DFA.State() {{alt=32;}};
+        DFA.State s167 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_167 = input.LA(1);
+                if ( (LA12_167>='0' && LA12_167<='9')||(LA12_167>='A' && LA12_167<='Z')||LA12_167=='_'||(LA12_167>='a' && LA12_167<='z') ) {return s34;}
+                return s212;
+
+            }
+        };
+        DFA.State s114 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_114 = input.LA(1);
+                if ( LA12_114=='l' ) {return s167;}
+                return s34;
+
+            }
+        };
+        DFA.State s46 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_46 = input.LA(1);
+                if ( LA12_46=='a' ) {return s114;}
+                return s34;
 
             }
         };
@@ -1989,537 +2021,575 @@ public class RuleParserLexer extends Lexer {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 'x':
-                    return s43;
-
-                case 'n':
                     return s44;
 
-                case 'v':
+                case 'n':
                     return s45;
 
+                case 'v':
+                    return s46;
+
                 default:
-                    return s33;
+                    return s34;
         	        }
             }
         };
-        DFA.State s204 = new DFA.State() {{alt=6;}};
-        DFA.State s163 = new DFA.State() {
+        DFA.State s247 = new DFA.State() {{alt=6;}};
+        DFA.State s214 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_163 = input.LA(1);
-                if ( (LA12_163>='0' && LA12_163<='9')||(LA12_163>='A' && LA12_163<='Z')||LA12_163=='_'||(LA12_163>='a' && LA12_163<='z') ) {return s33;}
-                return s204;
+                int LA12_214 = input.LA(1);
+                if ( (LA12_214>='0' && LA12_214<='9')||(LA12_214>='A' && LA12_214<='Z')||LA12_214=='_'||(LA12_214>='a' && LA12_214<='z') ) {return s34;}
+                return s247;
 
             }
         };
-        DFA.State s113 = new DFA.State() {
+        DFA.State s170 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_113 = input.LA(1);
-                if ( LA12_113=='e' ) {return s163;}
-                return s33;
+                int LA12_170 = input.LA(1);
+                if ( LA12_170=='y' ) {return s214;}
+                return s34;
 
             }
         };
-        DFA.State s48 = new DFA.State() {
+        DFA.State s117 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_48 = input.LA(1);
-                if ( LA12_48=='l' ) {return s113;}
-                return s33;
+                int LA12_117 = input.LA(1);
+                if ( LA12_117=='r' ) {return s170;}
+                return s34;
+
+            }
+        };
+        DFA.State s49 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_49 = input.LA(1);
+                if ( LA12_49=='e' ) {return s117;}
+                return s34;
 
             }
         };
         DFA.State s6 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_6 = input.LA(1);
-                if ( LA12_6=='u' ) {return s48;}
-                return s33;
+                if ( LA12_6=='u' ) {return s49;}
+                return s34;
 
             }
         };
-        DFA.State s206 = new DFA.State() {{alt=7;}};
-        DFA.State s166 = new DFA.State() {
+        DFA.State s217 = new DFA.State() {{alt=8;}};
+        DFA.State s173 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_166 = input.LA(1);
-                if ( (LA12_166>='0' && LA12_166<='9')||(LA12_166>='A' && LA12_166<='Z')||LA12_166=='_'||(LA12_166>='a' && LA12_166<='z') ) {return s33;}
-                return s206;
+                int LA12_173 = input.LA(1);
+                if ( (LA12_173>='0' && LA12_173<='9')||(LA12_173>='A' && LA12_173<='Z')||LA12_173=='_'||(LA12_173>='a' && LA12_173<='z') ) {return s34;}
+                return s217;
 
             }
         };
-        DFA.State s116 = new DFA.State() {
+        DFA.State s120 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_116 = input.LA(1);
-                if ( LA12_116=='n' ) {return s166;}
-                return s33;
+                int LA12_120 = input.LA(1);
+                if ( LA12_120=='e' ) {return s173;}
+                return s34;
 
             }
         };
-        DFA.State s51 = new DFA.State() {
+        DFA.State s52 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_51 = input.LA(1);
-                if ( LA12_51=='e' ) {return s116;}
-                return s33;
+                int LA12_52 = input.LA(1);
+                if ( LA12_52=='l' ) {return s120;}
+                return s34;
 
             }
         };
         DFA.State s7 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_7 = input.LA(1);
-                if ( LA12_7=='h' ) {return s51;}
-                return s33;
+                if ( LA12_7=='u' ) {return s52;}
+                return s34;
 
             }
         };
-        DFA.State s8 = new DFA.State() {{alt=8;}};
-        DFA.State s208 = new DFA.State() {{alt=9;}};
-        DFA.State s169 = new DFA.State() {
+        DFA.State s219 = new DFA.State() {{alt=9;}};
+        DFA.State s176 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_169 = input.LA(1);
-                if ( (LA12_169>='0' && LA12_169<='9')||(LA12_169>='A' && LA12_169<='Z')||LA12_169=='_'||(LA12_169>='a' && LA12_169<='z') ) {return s33;}
-                return s208;
+                int LA12_176 = input.LA(1);
+                if ( (LA12_176>='0' && LA12_176<='9')||(LA12_176>='A' && LA12_176<='Z')||LA12_176=='_'||(LA12_176>='a' && LA12_176<='z') ) {return s34;}
+                return s219;
 
             }
         };
-        DFA.State s119 = new DFA.State() {
+        DFA.State s123 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_119 = input.LA(1);
-                if ( LA12_119=='n' ) {return s169;}
-                return s33;
+                int LA12_123 = input.LA(1);
+                if ( LA12_123=='n' ) {return s176;}
+                return s34;
 
             }
         };
-        DFA.State s54 = new DFA.State() {
+        DFA.State s55 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_54 = input.LA(1);
-                if ( LA12_54=='e' ) {return s119;}
-                return s33;
+                int LA12_55 = input.LA(1);
+                if ( LA12_55=='e' ) {return s123;}
+                return s34;
 
             }
         };
-        DFA.State s9 = new DFA.State() {
+        DFA.State s8 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_9 = input.LA(1);
-                if ( LA12_9=='h' ) {return s54;}
-                return s33;
+                int LA12_8 = input.LA(1);
+                if ( LA12_8=='h' ) {return s55;}
+                return s34;
 
             }
         };
-        DFA.State s273 = new DFA.State() {{alt=11;}};
-        DFA.State s256 = new DFA.State() {
+        DFA.State s9 = new DFA.State() {{alt=10;}};
+        DFA.State s221 = new DFA.State() {{alt=11;}};
+        DFA.State s179 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_256 = input.LA(1);
-                if ( (LA12_256>='0' && LA12_256<='9')||(LA12_256>='A' && LA12_256<='Z')||LA12_256=='_'||(LA12_256>='a' && LA12_256<='z') ) {return s33;}
-                return s273;
+                int LA12_179 = input.LA(1);
+                if ( (LA12_179>='0' && LA12_179<='9')||(LA12_179>='A' && LA12_179<='Z')||LA12_179=='_'||(LA12_179>='a' && LA12_179<='z') ) {return s34;}
+                return s221;
 
             }
         };
-        DFA.State s234 = new DFA.State() {
+        DFA.State s126 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_234 = input.LA(1);
-                if ( LA12_234=='s' ) {return s256;}
-                return s33;
+                int LA12_126 = input.LA(1);
+                if ( LA12_126=='n' ) {return s179;}
+                return s34;
 
             }
         };
-        DFA.State s210 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_210 = input.LA(1);
-                if ( LA12_210=='n' ) {return s234;}
-                return s33;
-
-            }
-        };
-        DFA.State s172 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_172 = input.LA(1);
-                if ( LA12_172=='o' ) {return s210;}
-                return s33;
-
-            }
-        };
-        DFA.State s122 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_122 = input.LA(1);
-                if ( LA12_122=='i' ) {return s172;}
-                return s33;
-
-            }
-        };
-        DFA.State s57 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_57 = input.LA(1);
-                if ( LA12_57=='t' ) {return s122;}
-                return s33;
-
-            }
-        };
-        DFA.State s125 = new DFA.State() {{alt=15;}};
         DFA.State s58 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_58 = input.LA(1);
-                if ( (LA12_58>='0' && LA12_58<='9')||(LA12_58>='A' && LA12_58<='Z')||LA12_58=='_'||(LA12_58>='a' && LA12_58<='z') ) {return s33;}
-                return s125;
+                if ( LA12_58=='e' ) {return s126;}
+                return s34;
 
             }
         };
         DFA.State s10 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case 'p':
-                    return s57;
-
-                case 'r':
-                    return s58;
-
-                default:
-                    return s33;
-        	        }
-            }
-        };
-        DFA.State s285 = new DFA.State() {{alt=12;}};
-        DFA.State s275 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_275 = input.LA(1);
-                if ( (LA12_275>='0' && LA12_275<='9')||(LA12_275>='A' && LA12_275<='Z')||LA12_275=='_'||(LA12_275>='a' && LA12_275<='z') ) {return s33;}
-                return s285;
+                int LA12_10 = input.LA(1);
+                if ( LA12_10=='h' ) {return s58;}
+                return s34;
 
             }
         };
-        DFA.State s259 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_259 = input.LA(1);
-                if ( LA12_259=='e' ) {return s275;}
-                return s33;
-
-            }
-        };
-        DFA.State s237 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_237 = input.LA(1);
-                if ( LA12_237=='c' ) {return s259;}
-                return s33;
-
-            }
-        };
-        DFA.State s213 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_213 = input.LA(1);
-                if ( LA12_213=='n' ) {return s237;}
-                return s33;
-
-            }
-        };
-        DFA.State s175 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_175 = input.LA(1);
-                if ( LA12_175=='e' ) {return s213;}
-                return s33;
-
-            }
-        };
-        DFA.State s127 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_127 = input.LA(1);
-                if ( LA12_127=='i' ) {return s175;}
-                return s33;
-
-            }
-        };
+        DFA.State s129 = new DFA.State() {{alt=16;}};
         DFA.State s61 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_61 = input.LA(1);
-                if ( LA12_61=='l' ) {return s127;}
-                return s33;
+                if ( (LA12_61>='0' && LA12_61<='9')||(LA12_61>='A' && LA12_61<='Z')||LA12_61=='_'||(LA12_61>='a' && LA12_61<='z') ) {return s34;}
+                return s129;
+
+            }
+        };
+        DFA.State s288 = new DFA.State() {{alt=12;}};
+        DFA.State s271 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_271 = input.LA(1);
+                if ( (LA12_271>='0' && LA12_271<='9')||(LA12_271>='A' && LA12_271<='Z')||LA12_271=='_'||(LA12_271>='a' && LA12_271<='z') ) {return s34;}
+                return s288;
+
+            }
+        };
+        DFA.State s249 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_249 = input.LA(1);
+                if ( LA12_249=='s' ) {return s271;}
+                return s34;
+
+            }
+        };
+        DFA.State s223 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_223 = input.LA(1);
+                if ( LA12_223=='n' ) {return s249;}
+                return s34;
+
+            }
+        };
+        DFA.State s182 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_182 = input.LA(1);
+                if ( LA12_182=='o' ) {return s223;}
+                return s34;
+
+            }
+        };
+        DFA.State s131 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_131 = input.LA(1);
+                if ( LA12_131=='i' ) {return s182;}
+                return s34;
+
+            }
+        };
+        DFA.State s62 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_62 = input.LA(1);
+                if ( LA12_62=='t' ) {return s131;}
+                return s34;
 
             }
         };
         DFA.State s11 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_11 = input.LA(1);
-                if ( LA12_11=='a' ) {return s61;}
-                return s33;
-
-            }
-        };
-        DFA.State s178 = new DFA.State() {{alt=30;}};
-        DFA.State s130 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_130 = input.LA(1);
-                if ( (LA12_130>='0' && LA12_130<='9')||(LA12_130>='A' && LA12_130<='Z')||LA12_130=='_'||(LA12_130>='a' && LA12_130<='z') ) {return s33;}
-                return s178;
-
-            }
-        };
-        DFA.State s131 = new DFA.State() {{alt=13;}};
-        DFA.State s64 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 't':
-                    return s130;
+                case 'r':
+                    return s61;
 
-                case '-':
-                    return s131;
+                case 'p':
+                    return s62;
 
                 default:
-                    return s33;
+                    return s34;
         	        }
             }
         };
-        DFA.State s12 = new DFA.State() {
+        DFA.State s300 = new DFA.State() {{alt=13;}};
+        DFA.State s290 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_12 = input.LA(1);
-                if ( LA12_12=='o' ) {return s64;}
-                return s33;
+                int LA12_290 = input.LA(1);
+                if ( (LA12_290>='0' && LA12_290<='9')||(LA12_290>='A' && LA12_290<='Z')||LA12_290=='_'||(LA12_290>='a' && LA12_290<='z') ) {return s34;}
+                return s300;
 
             }
         };
-        DFA.State s67 = new DFA.State() {{alt=20;}};
-        DFA.State s68 = new DFA.State() {{alt=14;}};
-        DFA.State s13 = new DFA.State() {
+        DFA.State s274 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_13 = input.LA(1);
-                if ( LA12_13=='=' ) {return s67;}
-                return s68;
+                int LA12_274 = input.LA(1);
+                if ( LA12_274=='e' ) {return s290;}
+                return s34;
 
             }
         };
-        DFA.State s14 = new DFA.State() {{alt=16;}};
-        DFA.State s15 = new DFA.State() {{alt=17;}};
-        DFA.State s69 = new DFA.State() {{alt=18;}};
-        DFA.State s16 = new DFA.State() {
+        DFA.State s252 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_16 = input.LA(1);
-                return s69;
+                int LA12_252 = input.LA(1);
+                if ( LA12_252=='c' ) {return s274;}
+                return s34;
 
             }
         };
-        DFA.State s17 = new DFA.State() {{alt=19;}};
-        DFA.State s70 = new DFA.State() {{alt=22;}};
-        DFA.State s71 = new DFA.State() {{alt=21;}};
-        DFA.State s18 = new DFA.State() {
+        DFA.State s226 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_18 = input.LA(1);
-                if ( LA12_18=='=' ) {return s70;}
-                return s71;
+                int LA12_226 = input.LA(1);
+                if ( LA12_226=='n' ) {return s252;}
+                return s34;
 
             }
         };
-        DFA.State s72 = new DFA.State() {{alt=23;}};
-        DFA.State s32 = new DFA.State() {{alt=33;}};
-        DFA.State s19 = new DFA.State() {
+        DFA.State s185 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_19 = input.LA(1);
-                if ( LA12_19=='=' ) {return s72;}
-                return s32;
-
-            }
-        };
-        DFA.State s287 = new DFA.State() {{alt=24;}};
-        DFA.State s278 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_278 = input.LA(1);
-                if ( (LA12_278>='0' && LA12_278<='9')||(LA12_278>='A' && LA12_278<='Z')||LA12_278=='_'||(LA12_278>='a' && LA12_278<='z') ) {return s33;}
-                return s287;
-
-            }
-        };
-        DFA.State s262 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_262 = input.LA(1);
-                if ( LA12_262=='s' ) {return s278;}
-                return s33;
-
-            }
-        };
-        DFA.State s240 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_240 = input.LA(1);
-                if ( LA12_240=='n' ) {return s262;}
-                return s33;
-
-            }
-        };
-        DFA.State s216 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_216 = input.LA(1);
-                if ( LA12_216=='i' ) {return s240;}
-                return s33;
-
-            }
-        };
-        DFA.State s180 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_180 = input.LA(1);
-                if ( LA12_180=='a' ) {return s216;}
-                return s33;
+                int LA12_185 = input.LA(1);
+                if ( LA12_185=='e' ) {return s226;}
+                return s34;
 
             }
         };
         DFA.State s134 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_134 = input.LA(1);
-                if ( LA12_134=='t' ) {return s180;}
-                return s33;
+                if ( LA12_134=='i' ) {return s185;}
+                return s34;
 
             }
         };
-        DFA.State s74 = new DFA.State() {
+        DFA.State s65 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_74 = input.LA(1);
-                if ( LA12_74=='n' ) {return s134;}
-                return s33;
+                int LA12_65 = input.LA(1);
+                if ( LA12_65=='l' ) {return s134;}
+                return s34;
 
             }
         };
+        DFA.State s12 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_12 = input.LA(1);
+                if ( LA12_12=='a' ) {return s65;}
+                return s34;
+
+            }
+        };
+        DFA.State s137 = new DFA.State() {{alt=14;}};
+        DFA.State s188 = new DFA.State() {{alt=31;}};
+        DFA.State s138 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_138 = input.LA(1);
+                if ( (LA12_138>='0' && LA12_138<='9')||(LA12_138>='A' && LA12_138<='Z')||LA12_138=='_'||(LA12_138>='a' && LA12_138<='z') ) {return s34;}
+                return s188;
+
+            }
+        };
+        DFA.State s68 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case '-':
+                    return s137;
+
+                case 't':
+                    return s138;
+
+                default:
+                    return s34;
+        	        }
+            }
+        };
+        DFA.State s13 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_13 = input.LA(1);
+                if ( LA12_13=='o' ) {return s68;}
+                return s34;
+
+            }
+        };
+        DFA.State s71 = new DFA.State() {{alt=21;}};
+        DFA.State s72 = new DFA.State() {{alt=15;}};
+        DFA.State s14 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_14 = input.LA(1);
+                if ( LA12_14=='=' ) {return s71;}
+                return s72;
+
+            }
+        };
+        DFA.State s15 = new DFA.State() {{alt=17;}};
+        DFA.State s16 = new DFA.State() {{alt=18;}};
+        DFA.State s73 = new DFA.State() {{alt=19;}};
+        DFA.State s17 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_17 = input.LA(1);
+                return s73;
+
+            }
+        };
+        DFA.State s18 = new DFA.State() {{alt=20;}};
+        DFA.State s74 = new DFA.State() {{alt=23;}};
+        DFA.State s75 = new DFA.State() {{alt=22;}};
+        DFA.State s19 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_19 = input.LA(1);
+                if ( LA12_19=='=' ) {return s74;}
+                return s75;
+
+            }
+        };
+        DFA.State s76 = new DFA.State() {{alt=24;}};
+        DFA.State s33 = new DFA.State() {{alt=34;}};
         DFA.State s20 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_20 = input.LA(1);
-                if ( LA12_20=='o' ) {return s74;}
+                if ( LA12_20=='=' ) {return s76;}
                 return s33;
 
             }
         };
-        DFA.State s281 = new DFA.State() {{alt=25;}};
-        DFA.State s265 = new DFA.State() {
+        DFA.State s302 = new DFA.State() {{alt=25;}};
+        DFA.State s293 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_265 = input.LA(1);
-                if ( (LA12_265>='0' && LA12_265<='9')||(LA12_265>='A' && LA12_265<='Z')||LA12_265=='_'||(LA12_265>='a' && LA12_265<='z') ) {return s33;}
-                return s281;
+                int LA12_293 = input.LA(1);
+                if ( (LA12_293>='0' && LA12_293<='9')||(LA12_293>='A' && LA12_293<='Z')||LA12_293=='_'||(LA12_293>='a' && LA12_293<='z') ) {return s34;}
+                return s302;
 
             }
         };
-        DFA.State s243 = new DFA.State() {
+        DFA.State s277 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_243 = input.LA(1);
-                if ( LA12_243=='s' ) {return s265;}
-                return s33;
+                int LA12_277 = input.LA(1);
+                if ( LA12_277=='s' ) {return s293;}
+                return s34;
 
             }
         };
-        DFA.State s219 = new DFA.State() {
+        DFA.State s255 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_219 = input.LA(1);
-                if ( LA12_219=='e' ) {return s243;}
-                return s33;
+                int LA12_255 = input.LA(1);
+                if ( LA12_255=='n' ) {return s277;}
+                return s34;
 
             }
         };
-        DFA.State s183 = new DFA.State() {
+        DFA.State s229 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_183 = input.LA(1);
-                if ( LA12_183=='h' ) {return s219;}
-                return s33;
+                int LA12_229 = input.LA(1);
+                if ( LA12_229=='i' ) {return s255;}
+                return s34;
 
             }
         };
-        DFA.State s137 = new DFA.State() {
+        DFA.State s190 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_137 = input.LA(1);
-                if ( LA12_137=='c' ) {return s183;}
-                return s33;
+                int LA12_190 = input.LA(1);
+                if ( LA12_190=='a' ) {return s229;}
+                return s34;
 
             }
         };
-        DFA.State s77 = new DFA.State() {
+        DFA.State s141 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_77 = input.LA(1);
-                if ( LA12_77=='t' ) {return s137;}
-                return s33;
+                int LA12_141 = input.LA(1);
+                if ( LA12_141=='t' ) {return s190;}
+                return s34;
+
+            }
+        };
+        DFA.State s78 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_78 = input.LA(1);
+                if ( LA12_78=='n' ) {return s141;}
+                return s34;
 
             }
         };
         DFA.State s21 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_21 = input.LA(1);
-                if ( LA12_21=='a' ) {return s77;}
-                return s33;
+                if ( LA12_21=='o' ) {return s78;}
+                return s34;
 
             }
         };
-        DFA.State s80 = new DFA.State() {{alt=26;}};
+        DFA.State s296 = new DFA.State() {{alt=26;}};
+        DFA.State s280 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_280 = input.LA(1);
+                if ( (LA12_280>='0' && LA12_280<='9')||(LA12_280>='A' && LA12_280<='Z')||LA12_280=='_'||(LA12_280>='a' && LA12_280<='z') ) {return s34;}
+                return s296;
+
+            }
+        };
+        DFA.State s258 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_258 = input.LA(1);
+                if ( LA12_258=='s' ) {return s280;}
+                return s34;
+
+            }
+        };
+        DFA.State s232 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_232 = input.LA(1);
+                if ( LA12_232=='e' ) {return s258;}
+                return s34;
+
+            }
+        };
+        DFA.State s193 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_193 = input.LA(1);
+                if ( LA12_193=='h' ) {return s232;}
+                return s34;
+
+            }
+        };
+        DFA.State s144 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_144 = input.LA(1);
+                if ( LA12_144=='c' ) {return s193;}
+                return s34;
+
+            }
+        };
+        DFA.State s81 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_81 = input.LA(1);
+                if ( LA12_81=='t' ) {return s144;}
+                return s34;
+
+            }
+        };
         DFA.State s22 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_22 = input.LA(1);
-                if ( LA12_22=='|' ) {return s80;}
-                return s32;
+                if ( LA12_22=='a' ) {return s81;}
+                return s34;
 
             }
         };
-        DFA.State s186 = new DFA.State() {{alt=27;}};
-        DFA.State s140 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_140 = input.LA(1);
-                if ( (LA12_140>='0' && LA12_140<='9')||(LA12_140>='A' && LA12_140<='Z')||LA12_140=='_'||(LA12_140>='a' && LA12_140<='z') ) {return s33;}
-                return s186;
-
-            }
-        };
-        DFA.State s82 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_82 = input.LA(1);
-                if ( LA12_82=='d' ) {return s140;}
-                return s33;
-
-            }
-        };
+        DFA.State s84 = new DFA.State() {{alt=27;}};
         DFA.State s23 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_23 = input.LA(1);
-                if ( LA12_23=='n' ) {return s82;}
+                if ( LA12_23=='|' ) {return s84;}
                 return s33;
 
             }
         };
-        DFA.State s85 = new DFA.State() {{alt=28;}};
+        DFA.State s196 = new DFA.State() {{alt=28;}};
+        DFA.State s147 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_147 = input.LA(1);
+                if ( (LA12_147>='0' && LA12_147<='9')||(LA12_147>='A' && LA12_147<='Z')||LA12_147=='_'||(LA12_147>='a' && LA12_147<='z') ) {return s34;}
+                return s196;
+
+            }
+        };
+        DFA.State s86 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_86 = input.LA(1);
+                if ( LA12_86=='d' ) {return s147;}
+                return s34;
+
+            }
+        };
         DFA.State s24 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_24 = input.LA(1);
-                if ( LA12_24=='&' ) {return s85;}
-                return s32;
+                if ( LA12_24=='n' ) {return s86;}
+                return s34;
 
             }
         };
-        DFA.State s188 = new DFA.State() {{alt=32;}};
-        DFA.State s143 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_143 = input.LA(1);
-                if ( (LA12_143>='0' && LA12_143<='9')||(LA12_143>='A' && LA12_143<='Z')||LA12_143=='_'||(LA12_143>='a' && LA12_143<='z') ) {return s33;}
-                return s188;
-
-            }
-        };
-        DFA.State s87 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_87 = input.LA(1);
-                if ( LA12_87=='e' ) {return s143;}
-                return s33;
-
-            }
-        };
+        DFA.State s89 = new DFA.State() {{alt=29;}};
         DFA.State s25 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_25 = input.LA(1);
-                if ( LA12_25=='s' ) {return s87;}
+                if ( LA12_25=='&' ) {return s89;}
                 return s33;
+
+            }
+        };
+        DFA.State s198 = new DFA.State() {{alt=33;}};
+        DFA.State s150 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_150 = input.LA(1);
+                if ( (LA12_150>='0' && LA12_150<='9')||(LA12_150>='A' && LA12_150<='Z')||LA12_150=='_'||(LA12_150>='a' && LA12_150<='z') ) {return s34;}
+                return s198;
+
+            }
+        };
+        DFA.State s91 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_91 = input.LA(1);
+                if ( LA12_91=='e' ) {return s150;}
+                return s34;
 
             }
         };
         DFA.State s26 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA12_26 = input.LA(1);
-                if ( (LA12_26>='0' && LA12_26<='9')||(LA12_26>='A' && LA12_26<='Z')||LA12_26=='_'||(LA12_26>='a' && LA12_26<='z') ) {return s33;}
-                return s32;
+                if ( LA12_26=='s' ) {return s91;}
+                return s34;
 
             }
         };
-        DFA.State s27 = new DFA.State() {{alt=34;}};
+        DFA.State s27 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA12_27 = input.LA(1);
+                if ( (LA12_27>='0' && LA12_27<='9')||(LA12_27>='A' && LA12_27<='Z')||LA12_27=='_'||(LA12_27>='a' && LA12_27<='z') ) {return s34;}
+                return s33;
+
+            }
+        };
         DFA.State s28 = new DFA.State() {{alt=35;}};
-        DFA.State s92 = new DFA.State() {{alt=37;}};
-        DFA.State s94 = new DFA.State() {{alt=36;}};
-        DFA.State s30 = new DFA.State() {
+        DFA.State s29 = new DFA.State() {{alt=36;}};
+        DFA.State s96 = new DFA.State() {{alt=37;}};
+        DFA.State s98 = new DFA.State() {{alt=38;}};
+        DFA.State s31 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case '.':
-                    return s92;
-
                 case '0':
                 case '1':
                 case '2':
@@ -2530,25 +2600,28 @@ public class RuleParserLexer extends Lexer {
                 case '7':
                 case '8':
                 case '9':
-                    return s30;
+                    return s31;
+
+                case '.':
+                    return s98;
 
                 default:
-                    return s94;
+                    return s96;
         	        }
             }
         };
-        DFA.State s31 = new DFA.State() {{alt=38;}};
-        DFA.State s34 = new DFA.State() {{alt=40;}};
-        DFA.State s95 = new DFA.State() {{alt=41;}};
-        DFA.State s96 = new DFA.State() {{alt=42;}};
-        DFA.State s35 = new DFA.State() {
+        DFA.State s32 = new DFA.State() {{alt=39;}};
+        DFA.State s35 = new DFA.State() {{alt=41;}};
+        DFA.State s99 = new DFA.State() {{alt=43;}};
+        DFA.State s100 = new DFA.State() {{alt=42;}};
+        DFA.State s36 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA12_35 = input.LA(1);
-                if ( LA12_35=='/' ) {return s95;}
-                if ( LA12_35=='*' ) {return s96;}
+                int LA12_36 = input.LA(1);
+                if ( LA12_36=='*' ) {return s99;}
+                if ( LA12_36=='/' ) {return s100;}
 
                 NoViableAltException nvae =
-        	    new NoViableAltException("", 12, 35, input);
+        	    new NoViableAltException("", 12, 36, input);
 
                 throw nvae;
             }
@@ -2571,78 +2644,81 @@ public class RuleParserLexer extends Lexer {
                 case 'e':
                     return s5;
 
-                case 'r':
+                case 'q':
                     return s6;
 
-                case 'w':
+                case 'r':
                     return s7;
 
-                case ':':
+                case 'w':
                     return s8;
 
-                case 't':
+                case ':':
                     return s9;
 
-                case 'o':
+                case 't':
                     return s10;
 
-                case 's':
+                case 'o':
                     return s11;
 
-                case 'n':
+                case 's':
                     return s12;
 
-                case '>':
+                case 'n':
                     return s13;
 
-                case '(':
+                case '>':
                     return s14;
 
-                case ')':
+                case '(':
                     return s15;
 
-                case ',':
+                case ')':
                     return s16;
 
-                case '=':
+                case ',':
                     return s17;
 
-                case '<':
+                case '=':
                     return s18;
 
-                case '!':
+                case '<':
                     return s19;
 
-                case 'c':
+                case '!':
                     return s20;
 
-                case 'm':
+                case 'c':
                     return s21;
 
-                case '|':
+                case 'm':
                     return s22;
 
-                case 'a':
+                case '|':
                     return s23;
 
-                case '&':
+                case 'a':
                     return s24;
 
-                case 'u':
+                case '&':
                     return s25;
+
+                case 'u':
+                    return s26;
 
                 case '$':
                 case '_':
-                    return s26;
+                    return s27;
 
                 case '\t':
                 case '\f':
                 case ' ':
-                    return s27;
+                    return s28;
 
                 case '\n':
                 case '\r':
-                    return s28;
+                    return s29;
 
                 case '0':
                 case '1':
@@ -2654,10 +2730,10 @@ public class RuleParserLexer extends Lexer {
                 case '7':
                 case '8':
                 case '9':
-                    return s30;
+                    return s31;
 
                 case '"':
-                    return s31;
+                    return s32;
 
                 case '%':
                 case '*':
@@ -2669,7 +2745,7 @@ public class RuleParserLexer extends Lexer {
                 case '^':
                 case '{':
                 case '}':
-                    return s32;
+                    return s33;
 
                 case 'A':
                 case 'B':
@@ -2705,18 +2781,17 @@ public class RuleParserLexer extends Lexer {
                 case 'j':
                 case 'k':
                 case 'l':
-                case 'q':
                 case 'v':
                 case 'x':
                 case 'y':
                 case 'z':
-                    return s33;
-
-                case '#':
                     return s34;
 
-                case '/':
+                case '#':
                     return s35;
+
+                case '/':
+                    return s36;
 
                 default:
                     NoViableAltException nvae =
