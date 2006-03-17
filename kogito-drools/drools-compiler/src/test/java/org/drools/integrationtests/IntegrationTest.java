@@ -15,12 +15,8 @@ import junit.framework.TestCase;
 
 public class IntegrationTest extends TestCase {
     public void testDrl() throws Exception {
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test1.drl" ) );
-        DrlParser parser = new DrlParser();
-        PackageDescr packageDescr = parser.parse( reader );
-        
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test1.drl" ) ) );
         Package pkg = builder.getPackage();
         
         org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
@@ -33,12 +29,8 @@ public class IntegrationTest extends TestCase {
     }    
     
     public void testQuery() throws Exception {
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "simple_query.drl" ) );
-        DrlParser parser = new DrlParser();
-        PackageDescr packageDescr = parser.parse( reader );
-
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query.drl" ) ) );
         Package pkg = builder.getPackage();
         
         org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
