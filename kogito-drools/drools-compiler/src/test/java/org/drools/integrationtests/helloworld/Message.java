@@ -10,9 +10,17 @@ public class Message {
 	private List list = new ArrayList(  );
     private int number = 0;
     private Date birthday = new Date();
+    private boolean fired = false;
     
-    
-	public Date getBirthday() {
+	public boolean isFired() {
+        return fired;
+    }
+
+    public void setFired(boolean fired) {
+        this.fired = fired;
+    }
+
+    public Date getBirthday() {
         return birthday;
     }
 

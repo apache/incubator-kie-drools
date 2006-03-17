@@ -320,6 +320,7 @@ constraint[List constraints]
 					|	'<='
 					|	'!='
 					|	'contains'
+					|	'matches'
 					) opt_eol	
 					
 					(	bvc=ID
