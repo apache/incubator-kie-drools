@@ -43,7 +43,7 @@ abstract class ObjectSource extends BaseNode
     // ------------------------------------------------------------
 
     /** The destination for <code>FactHandleImpl</code>. */
-    private ObjectSinkList objectSinks = ObjectSinkListFactory.newObjectSinkList(this);
+    protected ObjectSinkList objectSinks = ObjectSinkListFactory.newObjectSinkList( this );
 
     // ------------------------------------------------------------
     // Constructors
@@ -101,22 +101,11 @@ abstract class ObjectSource extends BaseNode
     protected void propagateAssertObject(FactHandleImpl handle,
                                          PropagationContext context,
                                          WorkingMemoryImpl workingMemory) {
-        if ( !this.attachingNewNode ) {
-            for ( Iterator i = this.objectSinks.iterator( workingMemory,
-                                                          handle ); i.hasNext(); ) {
-                ((ObjectSink) i.next()).assertObject( handle,
-                                                      context,
-                                                      workingMemory );
-            }
-        } else {
-            ObjectSink lastNode = this.objectSinks.getLastObjectSink();
-            if ( lastNode != null ) {
-                this.objectSinks.getLastObjectSink().assertObject( handle,
-                                                                   context,
-                                                                   workingMemory );
-            } else {
-                throw new RuntimeException("Possible BUG: trying to propagate an assert to a node that was the last added node");
-            }
+        for ( Iterator i = this.objectSinks.iterator( workingMemory,
+                                                      handle ); i.hasNext(); ) {
+            ((ObjectSink) i.next()).assertObject( handle,
+                                                  context,
+                                                  workingMemory );
         }
     }
 

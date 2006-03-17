@@ -343,10 +343,18 @@ class JoinNode extends BetaNode {
         
         for ( Iterator it = memory.getRightObjectMemory().iterator(); it.hasNext(); ) {
             ObjectMatches objectMatches = ( ObjectMatches) it.next();
+            FactHandleImpl handle = objectMatches.getFactHandle();
             for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = ( TupleMatch ) tupleMatch.getNext() ) {
-                propagateAssertTuple( (ReteTuple) tupleMatch.getTuple(),
+                ReteTuple tuple = new ReteTuple( tupleMatch.getTuple(), handle );
+                TupleSink sink = ( TupleSink) this.tupleSinks.get( this.tupleSinks.size() -1 );
+                if ( sink != null ) {
+                    tupleMatch.addJoinedTuple( tuple );
+                    sink.assertTuple( tuple,
                                       context,
-                                      workingMemory );                    
+                                      workingMemory );
+                } else {
+                    throw new RuntimeException("Possible BUG: trying to propagate an assert to a node that was the last added node");
+                }                  
             }
         }       
             
