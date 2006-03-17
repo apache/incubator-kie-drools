@@ -9,6 +9,9 @@ rule "Hello World"
 		Message(message == "hola")
 		Message(number > 40)
 		Message(birthday > "10-Jul-1974")
+		Message(name matches ".*ho.*")
+
 	then
-		System.out.println("hello world with collections " + $m.getMessage()); 
+		System.out.println("hello world with collections " + $m.getMessage());
+		$m.setFired(true); 
 end

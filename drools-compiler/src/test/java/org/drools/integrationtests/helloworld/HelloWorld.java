@@ -40,7 +40,7 @@ public class HelloWorld extends TestCase {
             workingMemory.assertObject( message );
             
             workingMemory.fireAllRules();               
-            
+            assertTrue( message.isFired() );
         } catch (Throwable t) {
             t.printStackTrace();
             fail(t.getMessage());
