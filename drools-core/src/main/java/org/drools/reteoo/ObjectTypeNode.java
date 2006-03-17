@@ -174,9 +174,14 @@ class ObjectTypeNode extends ObjectSource
 
         for ( Iterator it = memory.values().iterator(); it.hasNext(); ) {
             FactHandleImpl handle = (FactHandleImpl) it.next();
-            propagateAssertObject( handle,
+            ObjectSink sink = this.objectSinks.getLastObjectSink();
+            if ( sink != null ) {
+                sink.assertObject( handle,
                                    context,
                                    workingMemory );
+            } else {
+                throw new RuntimeException("Possible BUG: trying to propagate an assert to a node that was the last added node");
+            }
         }
 
         this.attachingNewNode = false;

@@ -340,7 +340,7 @@ public class NotNode extends BetaNode {
         
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         //@todo: can we iterate left memory like this?
-        for ( Iterator it = memory.getLeftTupleMemory().iterator(null, null); it.hasNext(); ) {
+        for ( Iterator it = memory.leftTupleIterator( workingMemory, null ); it.hasNext(); ) {
             ReteTuple leftTuple = ( ReteTuple ) it.next();
             if ( leftTuple.matchesSize() == 0 ) {
                 propagateAssertTuple( leftTuple,
