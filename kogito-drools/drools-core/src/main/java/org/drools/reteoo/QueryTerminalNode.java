@@ -137,12 +137,12 @@ final class QueryTerminalNode extends BaseNode
     }
 
     public void remove(BaseNode node,
-                       WorkingMemoryImpl workingMemory,
-                       PropagationContext context) {
-        workingMemory.clearNodeMemory( this );
+                       WorkingMemoryImpl[] workingMemories) {
+        for ( int i = 0, length = workingMemories.length; i < length; i++) {
+            workingMemories[i].clearNodeMemory( this );    
+        }        
         tupleSource.remove( this,
-                            workingMemory,
-                            context );
+                            workingMemories );
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,

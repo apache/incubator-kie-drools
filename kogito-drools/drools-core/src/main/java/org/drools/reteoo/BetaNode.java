@@ -116,15 +116,19 @@ abstract class BetaNode extends TupleSource
     }    
 
     public void remove(BaseNode node,
-                       WorkingMemoryImpl workingMemory,
-                       PropagationContext context) {
+                       WorkingMemoryImpl[] workingMemories) {
         getTupleSinks().remove( node );
         removeShare();
+        
         if ( this.sharedCount < 0 ) {
-            workingMemory.clearNodeMemory( this );
-            this.rightInput.remove( this, workingMemory, context );
-            this.leftInput.remove( this, workingMemory, context );
+            for ( int i = 0, length = workingMemories.length; i < length; i++) {
+                workingMemories[i].clearNodeMemory( this );    
+            }
+            
+            this.rightInput.remove( this, workingMemories );
+            this.leftInput.remove( this, workingMemories );
         }
+        
     }
 
     /**
