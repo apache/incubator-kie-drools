@@ -10,6 +10,7 @@ import org.drools.base.evaluators.IntegerFactory;
 import org.drools.base.evaluators.LongFactory;
 import org.drools.base.evaluators.ObjectFactory;
 import org.drools.base.evaluators.ShortFactory;
+import org.drools.base.evaluators.StringFactory;
 import org.drools.spi.Evaluator;
 
 /**
@@ -51,6 +52,8 @@ public class EvaluatorFactory {
             evaluator = getEvaluator(type, Evaluator.GREATER_OR_EQUAL);
         } else if (operator.equals( "contains" ) ) {
             evaluator = getEvaluator(type, Evaluator.CONTAINS);
+        } else if (operator.equals( "matches" ) ) {
+            evaluator = getEvaluator(type, Evaluator.MATCHES);
         } else {
             throw new IllegalArgumentException("Unknown operator: '" + operator + "'");
         }
@@ -62,6 +65,7 @@ public class EvaluatorFactory {
                                          int operator) {
         switch ( type ) {
             case Evaluator.STRING_TYPE :
+                return StringFactory.getStringEvaluator( operator );
             case Evaluator.OBJECT_TYPE :
                 return ObjectFactory.getObjectEvaluator( operator );
             case Evaluator.SHORT_TYPE :
