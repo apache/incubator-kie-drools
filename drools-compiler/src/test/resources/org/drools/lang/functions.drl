@@ -2,13 +2,15 @@
 
 import java.lang.String
 
-functions
+function String functionA(String s, Integer i) {
 	
-	public static void log(String string) {
-		System.out.println(string);
-	}
+	foo();
 
-end
+}
+
+function void functionB() {
+	bar();	
+}
 
 
 rule something 
@@ -18,7 +20,7 @@ rule something
 		#nothing
 end
 
-rule one more thing
+rule "one more thing"
 	when
 		#nothing
 	then
