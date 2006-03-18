@@ -623,6 +623,16 @@ public class RuleParserTest extends TestCase {
         
     }   
     
+    public void testComment() throws Exception {
+        RuleParser parser = parseResource( "comment.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertNotNull(pack);
+        
+        assertEquals( "foo.bar", pack.getName() );
+    }
+    
     
 	
 	private RuleParser parse(String text) throws Exception {
