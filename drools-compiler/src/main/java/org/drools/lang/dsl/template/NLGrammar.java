@@ -6,7 +6,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -80,7 +82,7 @@ public class NLGrammar
      * If the "XXX" part if left out, then it will apply to the whole rule when looking for a 
      * match to expand.
      */
-    public void load(InputStreamReader reader) {
+    public void load(Reader reader) {
         BufferedReader buf = new BufferedReader(reader);
         try {
             String line = null;
@@ -104,7 +106,7 @@ public class NLGrammar
     }
     
     /** Save out the grammar configuration */
-    public void save(OutputStreamWriter writer) {
+    public void save(Writer writer) {
         BufferedWriter buffer = new BufferedWriter(writer);
         try {
             buffer.write( "#" + this.description + "\n");
