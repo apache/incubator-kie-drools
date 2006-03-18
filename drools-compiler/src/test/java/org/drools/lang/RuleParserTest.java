@@ -574,7 +574,25 @@ public class RuleParserTest extends TestCase {
         assertEquals("$age2", pred.getDeclaration());
         assertEqualsIgnoreWhitespace( "$age2 == $age1+2", pred.getText());
         
-    }       
+    }    
+    
+    public void testGlobal() throws Exception {
+        RuleParser parser = parseResource( "globals.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(1, pack.getRules().size());
+        
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        
+        assertEquals(1, pack.getImports().size());
+        assertEquals(2, pack.getGlobals().values().size());
+        
+        assertEquals("java.lang.String", pack.getGlobals().get( "foo" ));
+        assertEquals("java.lang.Integer", pack.getGlobals().get( "bar" ));
+        
+    }      
 	
 	private RuleParser parse(String text) throws Exception {
 		parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
