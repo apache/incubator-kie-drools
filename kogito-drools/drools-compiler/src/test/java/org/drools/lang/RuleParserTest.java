@@ -12,6 +12,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
@@ -633,6 +634,34 @@ public class RuleParserTest extends TestCase {
         assertEquals( "foo.bar", pack.getName() );
     }
     
+    
+    public void testAttributes() throws Exception {
+        RuleDescr rule = parseResource( "rule_atributes.drl" ).rule();
+        assertEquals("simple_rule", rule.getName());
+        assertEqualsIgnoreWhitespace( "bar();", rule.getConsequence());
+        
+        List attrs = rule.getAttributes();
+        assertEquals(4, attrs.size());
+        
+        AttributeDescr at = (AttributeDescr) attrs.get( 0 );
+        assertEquals("salience", at.getName());
+        assertEquals("42", at.getValue());
+
+        at = (AttributeDescr) attrs.get( 1 );
+        assertEquals("agenda-group", at.getName());
+        assertEquals("my group", at.getValue());        
+        
+        
+        at = (AttributeDescr) attrs.get( 2 );
+        assertEquals("no-loop", at.getName());
+        assertEquals("true", at.getValue());        
+        
+        at = (AttributeDescr) attrs.get( 3 );
+        assertEquals("duration", at.getName());
+        assertEquals("42", at.getValue());        
+
+        
+    }    
     
 	
 	private RuleParser parse(String text) throws Exception {
