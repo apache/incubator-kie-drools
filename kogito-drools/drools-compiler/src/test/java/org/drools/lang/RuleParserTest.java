@@ -16,6 +16,7 @@ import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
@@ -589,7 +590,40 @@ public class RuleParserTest extends TestCase {
         assertEquals("java.lang.String", pack.getGlobals().get( "foo" ));
         assertEquals("java.lang.Integer", pack.getGlobals().get( "bar" ));
         
-    }      
+    }   
+
+    public void testFunctions() throws Exception {
+        RuleParser parser = parseResource( "functions.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(2, pack.getRules().size());
+
+        List functions = pack.getFunctions();
+        assertEquals(2, functions.size());
+        
+        FunctionDescr func = (FunctionDescr) functions.get( 0 );
+        assertEquals("functionA", func.getName());
+        assertEquals("String", func.getReturnType());
+        assertEquals(2, func.getParameterNames().size());
+        assertEquals(2, func.getParameterTypes().size());
+        
+        assertEquals("String", func.getParameterTypes().get( 0 ));
+        assertEquals("s", func.getParameterNames().get( 0 ));
+
+        assertEquals("Integer", func.getParameterTypes().get( 1 ));
+        assertEquals("i", func.getParameterNames().get( 1 ));
+
+        assertEqualsIgnoreWhitespace( "foo();", func.getText());
+        
+        func = (FunctionDescr) functions.get( 1 );
+        assertEquals("functionB", func.getName());
+        assertEqualsIgnoreWhitespace( "bar();", func.getText());
+
+        
+    }   
+    
+    
 	
 	private RuleParser parse(String text) throws Exception {
 		parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
