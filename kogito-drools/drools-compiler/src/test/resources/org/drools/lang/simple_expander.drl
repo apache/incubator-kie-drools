@@ -10,4 +10,6 @@ rule simple_rule
   then
 	>bar
 	Something else
+	> baz
+	Hey dude
 end

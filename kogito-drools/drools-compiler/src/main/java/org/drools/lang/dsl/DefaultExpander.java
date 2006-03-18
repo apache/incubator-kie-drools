@@ -24,8 +24,9 @@ public class DefaultExpander
 
     private NLExpressionCompiler compiler; 
     
-    public String expand(String pattern,
-                         RuleParser context) {  
+    public String expand(String scope,
+    						String pattern,
+    						RuleParser context) {  
         
         return compiler.compile(pattern, null);
     }
