@@ -53,14 +53,8 @@ opt_eol	:
 compilation_unit
 	:	opt_eol
 		prolog 
-		(	r=rule 
-			{
-				this.packageDescr.addRule( r ); 
-			} 
-		| 	q=query 
-			{
-				this.packageDescr.addRule( q ); 
-			}
+		(	r=rule 	{this.packageDescr.addRule( r ); } 
+		| 	q=query	{this.packageDescr.addRule( q ); }
 		)*
 	;
 	
@@ -76,6 +70,7 @@ prolog
 		import_statement*
 		expander? 
 		global*
+		function*
 		opt_eol
 	;
 	
@@ -115,6 +110,41 @@ global
 		{
 			packageDescr.addGlobal( id.getText(), type );
 		}
+	;
+	
+function
+	@init {
+		FunctionDescr f = null;
+	}
+	:
+		'function' opt_eol (retType=dotted_name)? opt_eol name=ID opt_eol
+		{
+			System.err.println( "function :: " + name.getText() );
+			f = new FunctionDescr( name.getText(), retType );
+		} 
+		'(' opt_eol
+			(	(paramType=dotted_name)? opt_eol paramName=ID opt_eol
+				{
+					f.addParameter( paramType, paramName.getText() );
+				}
+				(	',' opt_eol (paramType=dotted_name)? opt_eol paramName=ID opt_eol 
+					{
+						f.addParameter( paramType, paramName.getText() );
+					}
+				)*
+			)?
+		')'
+		opt_eol
+		'{'
+			body=curly_chunk
+			{
+				f.setText( body );
+			}
+		'}'
+		{
+			packageDescr.addFunction( f );
+		}
+		opt_eol
 	;
 
 
@@ -240,7 +270,7 @@ expander_lhs_block[AndDescr descrs]
 			'>' d=lhs { descrs.addDescr( d ); } 
 			|
 			(	options{greedy=false;} : 
-				text=chunk EOL 
+				text=paren_chunk EOL 
 				{
 					d = runExpander( text );
 					descrs.addDescr( d );
@@ -328,8 +358,8 @@ constraints returns [List constraints]
 		constraints = new ArrayList();
 	}
 	:	opt_eol
-		constraint[constraints]
-		( opt_eol ',' opt_eol constraint[constraints])*
+		(constraint[constraints]|predicate[constraints])
+		( opt_eol ',' opt_eol (constraint[constraints]|predicate[constraints]))*
 		opt_eol
 	;
 	
@@ -399,17 +429,26 @@ retval_constraint returns [String text]
 		text = null;
 	}
 	:	
-		'(' c=chunk ')' { text = c; }
+		'(' c=paren_chunk ')' { text = c; }
+	;
+
+predicate[List constraints]
+	:
+		decl=ID ':' field=ID '->' '(' text=paren_chunk ')'
+		{
+			PredicateDescr d = new PredicateDescr(field.getText(), decl.getText(), text );
+			constraints.add( d );
+		}
 	;
 	
-chunk returns [String text]
+paren_chunk returns [String text]
 	@init {
 		text = null;
 	}
 	
 	:
 		(	options{greedy=false;} : 
-			'(' c=chunk ')' 	
+			'(' c=paren_chunk ')' 	
 			{
 				System.err.println( "chunk [" + c + "]" );
 				if ( c == null ) {
@@ -432,6 +471,37 @@ chunk returns [String text]
 			}
 		)*
 	;
+	
+curly_chunk returns [String text]
+	@init {
+		text = null;
+	}
+	
+	:
+		(	options{greedy=false;} : 
+			'{' c=curly_chunk '}' 	
+			{
+				System.err.println( "chunk [" + c + "]" );
+				if ( c == null ) {
+					c = "";
+				}
+				if ( text == null ) {
+					text = "{ " + c + " }";
+				} else {
+					text = text + " { " + c + " }";
+				}
+			} 
+		| any=. 
+			{
+				System.err.println( "any [" + any.getText() + "]" );
+				if ( text == null ) {
+					text = any.getText();
+				} else {
+					text = text + " " + any.getText(); 
+				} 
+			}
+		)*
+	;	
 	
 lhs_or returns [PatternDescr d]
 	@init{
@@ -514,7 +584,7 @@ lhs_eval returns [PatternDescr d]
 		d = null;
 		String text = "";
 	}
-	:	'eval' '(' c=chunk ')' 
+	:	'eval' '(' c=paren_chunk ')' 
 		{ d = new EvalDescr( c ); }
 	;
 	
@@ -581,14 +651,17 @@ ID
 		
 
 SH_STYLE_SINGLE_LINE_COMMENT	
-	:	'#' ( options{greedy=false;} : .)* ('\r')? '\n' 
+	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
+                { channel=99; }
 	;
         
         
 C_STYLE_SINGLE_LINE_COMMENT	
-	:	'//' ( options{greedy=false;} : .)* ('\r')? '\n' 
+	:	'//' ( options{greedy=false;} : .)* EOL // ('\r')? '\n' 
+                { channel=99; }
 	;
 
 MULTI_LINE_COMMENT
 	:	'/*' (options{greedy=false;} : .)* '*/'
+                { channel=99; }
 	;

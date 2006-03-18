@@ -87,25 +87,25 @@ public class RuleParserTest extends TestCase {
 	}
 	
 	public void testChunkWithoutParens() throws Exception {
-		String chunk = parse( "foo" ).chunk();
+		String chunk = parse( "foo" ).paren_chunk();
 		
 		assertEquals( "foo", chunk );
 	}
 	
 	public void testChunkWithParens() throws Exception {
-		String chunk = parse( "fnord()" ).chunk();
+		String chunk = parse( "fnord()" ).paren_chunk();
 		
 		assertEqualsIgnoreWhitespace( "fnord()", chunk );
 	}
 	
 	public void testChunkWithParensAndQuotedString() throws Exception {
-		String chunk = parse( "fnord(\"cheese\")" ).chunk();
+		String chunk = parse( "fnord(\"cheese\")" ).paren_chunk();
 		
 		assertEqualsIgnoreWhitespace( "fnord(\"cheese\")", chunk );
 	}
 	
 	public void testChunkWithRandomCharac5ters() throws Exception {
-		String chunk = parse( "%*9dkj" ).chunk();
+		String chunk = parse( "%*9dkj" ).paren_chunk();
 		
 		assertEqualsIgnoreWhitespace( "%*9dkj", chunk );
 	}
