@@ -213,7 +213,7 @@ rule_options returns [List options]
 	@init {
 		options = new ArrayList();
 	}
-	:	'options' ':'? opt_eol
+	: opt_eol
 			(	a=rule_option opt_eol
 				{
 					options.add( a );
@@ -228,6 +228,8 @@ rule_option returns [AttributeDescr d]
 	:
 			a=salience { d = a; }
 		|	a=no_loop  { d = a; }
+		|	a=agenda_group  { d = a; }		
+		|	a=duration  { d = a; }				
 		
 	;
 	
@@ -248,9 +250,9 @@ no_loop returns [AttributeDescr d]
 		d = null;
 	}
 	:
-		loc='no-loop' ';'? opt_eol
+		loc='no-loop' opt_eol i=ID ';'? opt_eol
 		{
-			d = new AttributeDescr( "no-loop", null );
+			d = new AttributeDescr( "no-loop", i.getText() );
 			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
 		}
 	;
@@ -262,6 +264,31 @@ normal_lhs_block[AndDescr descrs]
 			{ descrs.addDescr( d ); }
 		)*
 	;
+agenda_group returns [AttributeDescr d]
+	@init {
+		d = null;
+	}
+	:
+		loc='agenda-group' opt_eol i=ID ';'? opt_eol
+		{
+			d = new AttributeDescr( "agenda-group", i.getText() );
+			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+		}
+	;	
+	
+duration returns [AttributeDescr d]
+	@init {
+		d = null;
+	}
+	:
+		loc='duration' opt_eol i=INT ';'? opt_eol
+		{
+			d = new AttributeDescr( "duration", i.getText() );
+			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+		}
+	;		
+	
+
 	
 expander_lhs_block[AndDescr descrs]
 

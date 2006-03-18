@@ -3,7 +3,7 @@
 
 rule simple_rule 
 	salience 42
-	agenda-group "my group"
+	agenda-group my_group
 	no-loop true
 	duration 42
 	when
