@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter>
-  <title>yyyw</title>
+  <title>The Rule Language</title>
+
+  <xi:include href="Section%20-%20Package.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <xi:include href="Section%20-%20Function.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />              
+
+  <xi:include href="Section%20-%20Rule.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <xi:include href="Section%20-%20Query.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />              
 
   <xi:include href="Section%20-%20Field%20Constraints.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <xi:include href="Section%20-%20Conditional%20Elements.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+              
 </chapter>
