@@ -1,0 +1,13 @@
+package foo.bar
+
+
+rule simple_rule 
+	salience 42
+	agenda-group "my group"
+	no-loop true
+	duration 42
+	when
+		Foo()
+	then
+		bar();
+end
