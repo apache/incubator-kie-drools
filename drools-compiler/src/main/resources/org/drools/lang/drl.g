@@ -51,8 +51,17 @@ opt_eol	:
 	;
 
 compilation_unit
-	:	prolog 
-		(r=rule {this.packageDescr.addRule( r ); } | q=query {this.packageDescr.addRule( q ); })*
+	:	opt_eol
+		prolog 
+		(	r=rule 
+			{
+				this.packageDescr.addRule( r ); 
+			} 
+		| 	q=query 
+			{
+				this.packageDescr.addRule( q ); 
+			}
+		)*
 	;
 	
 prolog
@@ -61,13 +70,12 @@ prolog
 	}
 	:	opt_eol
 		( name=package_statement { packageName = name; } )?
-		opt_eol
 		{ 
 			this.packageDescr = new PackageDescr( name ); 
 		}
-		( name=import_statement { this.packageDescr.addImport( name ); } )*
-		opt_eol
-		use_expander?
+		import_statement*
+		expander? 
+		global*
 		opt_eol
 	;
 	
@@ -75,23 +83,37 @@ package_statement returns [String packageName]
 	@init{
 		packageName = null;
 	}
-	:	'package' opt_eol id=ID { packageName = id.getText(); } ( '.' id=ID { packageName += "." + id.getText(); } )* ';'? opt_eol	
+	:	
+		'package' opt_eol name=dotted_name ';'? opt_eol
+		{
+			packageName = name;
+		}
 	;
 	
-import_statement returns [String importStatement]
-	@init {
-		importStatement = null;
-	}
-	:	'import' opt_eol name=dotted_name ';'? { importStatement = name; } opt_eol	
+import_statement
+	:	'import' opt_eol name=dotted_name ';'? opt_eol
+		{
+			packageDescr.addImport( name );
+		}	
 	;
 
-use_expander
+expander
 	@init {
 		String config=null;
 	}
 	:	'expander' (name=dotted_name)? ';'? opt_eol
 		{
 			expander = expanderResolver.get( name, config );
+		}
+	;
+	
+global
+	@init {
+	}
+	:
+		'global' type=dotted_name id=ID ';'? opt_eol
+		{
+			packageDescr.addGlobal( id.getText(), type );
 		}
 	;
 

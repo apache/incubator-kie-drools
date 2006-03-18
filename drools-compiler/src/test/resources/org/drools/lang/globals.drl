@@ -1,9 +1,9 @@
 package org.drools.test;
 
+import org.drools.Cheese;
+
 global java.lang.String foo
 global java.lang.Integer bar
-
-import org.drools.Cheese;
 
 rule baz
     when
