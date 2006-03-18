@@ -40,6 +40,11 @@ grammar RuleParser;
 		
 		return parser.lhs();
 	}
+	
+	private String getString(Token token) {
+		String orig = token.getText();
+		return orig.substring( 1, orig.length() -1 );
+	}
 }
 
 @lexer::header {
@@ -181,10 +186,7 @@ rule returns [RuleDescr rule]
 			rule = new RuleDescr( ruleName, null ); 
 			rule.setLocation( loc.getLine(), loc.getCharPositionInLine() );
 		}
-		(	a=rule_options
-			{
-				rule.setAttributes( a );
-			}
+		(	rule_attributes[rule]
 		)?
 		(	loc='when' ':'? opt_eol
 			{ 
@@ -209,19 +211,17 @@ rule returns [RuleDescr rule]
 	;
 	
 
-rule_options returns [List options]
-	@init {
-		options = new ArrayList();
-	}
-	: opt_eol
-			(	a=rule_option opt_eol
+rule_attributes[RuleDescr rule]
+	: 
+			'attributes' ':'? opt_eol
+			(	','? a=rule_attribute opt_eol
 				{
-					options.add( a );
+					rule.addAttribute( a );
 				}
 			)*
 	;
 	
-rule_option returns [AttributeDescr d]
+rule_attribute returns [AttributeDescr d]
 	@init {
 		d = null;
 	}
@@ -229,7 +229,8 @@ rule_option returns [AttributeDescr d]
 			a=salience { d = a; }
 		|	a=no_loop  { d = a; }
 		|	a=agenda_group  { d = a; }		
-		|	a=duration  { d = a; }				
+		|	a=duration  { d = a; }			
+		|	a=xor_group { d = a; }	
 		
 	;
 	
@@ -250,32 +251,38 @@ no_loop returns [AttributeDescr d]
 		d = null;
 	}
 	:
-		loc='no-loop' opt_eol i=ID ';'? opt_eol
+		loc='no-loop' opt_eol ';'? opt_eol
 		{
-			d = new AttributeDescr( "no-loop", i.getText() );
+			d = new AttributeDescr( "no-loop", null );
 			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
 		}
 	;
 	
-
-normal_lhs_block[AndDescr descrs]
+xor_group returns [AttributeDescr d]
+	@init {
+		d = null;
+	}
 	:
-		(	d=lhs
-			{ descrs.addDescr( d ); }
-		)*
+		loc='xor-group' opt_eol name=STRING ';'? opt_eol
+		{
+			d = new AttributeDescr( "xor-group", getString( name ) );
+			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+		}
 	;
+
 agenda_group returns [AttributeDescr d]
 	@init {
 		d = null;
 	}
 	:
-		loc='agenda-group' opt_eol i=ID ';'? opt_eol
+		loc='agenda-group' opt_eol name=STRING ';'? opt_eol
 		{
-			d = new AttributeDescr( "agenda-group", i.getText() );
+			d = new AttributeDescr( "agenda-group", getString( name ) );
 			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
 		}
-	;	
-	
+	;		
+
+
 duration returns [AttributeDescr d]
 	@init {
 		d = null;
@@ -287,6 +294,15 @@ duration returns [AttributeDescr d]
 			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
 		}
 	;		
+	
+
+normal_lhs_block[AndDescr descrs]
+	:
+		(	d=lhs
+			{ descrs.addDescr( d ); }
+		)*
+	;
+
 	
 
 	
@@ -445,7 +461,7 @@ literal_constraint returns [String text]
 	@init {
 		text = null;
 	}
-	:	(	t=STRING { text = t.getText(); text=text.substring( 1, text.length() - 1 ); }
+	:	(	t=STRING { text = getString( t ); } //t.getText(); text=text.substring( 1, text.length() - 1 ); }
 		|	t=INT    { text = t.getText(); }
 		|	t=FLOAT	 { text = t.getText(); }
 		)
@@ -638,7 +654,7 @@ word returns [String word]
 	|	'when'     { word="when"; }
 	|	'then'     { word="then"; }
 	|	'end'      { word="end"; }
-	|	str=STRING { word=str.getText(); word=word.substring( 1, word.length()-1 ); }
+	|	str=STRING { word=getString(str);} //str.getText(); word=word.substring( 1, word.length()-1 ); }
 	;
 
 

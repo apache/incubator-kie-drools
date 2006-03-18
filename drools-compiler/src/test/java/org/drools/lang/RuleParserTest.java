@@ -641,28 +641,57 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "bar();", rule.getConsequence());
         
         List attrs = rule.getAttributes();
-        assertEquals(4, attrs.size());
+        assertEquals(5, attrs.size());
         
         AttributeDescr at = (AttributeDescr) attrs.get( 0 );
         assertEquals("salience", at.getName());
         assertEquals("42", at.getValue());
-
+        
         at = (AttributeDescr) attrs.get( 1 );
         assertEquals("agenda-group", at.getName());
         assertEquals("my_group", at.getValue());        
         
-        
         at = (AttributeDescr) attrs.get( 2 );
         assertEquals("no-loop", at.getName());
-        assertEquals("true", at.getValue());        
+        assertNull( at.getValue() );
         
         at = (AttributeDescr) attrs.get( 3 );
         assertEquals("duration", at.getName());
         assertEquals("42", at.getValue());        
 
-        
+        at = (AttributeDescr) attrs.get( 4 );
+        assertEquals("xor-group", at.getName());
+        assertEquals("my_xor_group", at.getValue());        
     }    
     
+    public void testAttributes_alternateSyntax() throws Exception {
+        RuleDescr rule = parseResource( "rule_attributes_alt.drl" ).rule();
+        assertEquals("simple_rule", rule.getName());
+        assertEqualsIgnoreWhitespace( "bar();", rule.getConsequence());
+        
+        List attrs = rule.getAttributes();
+        assertEquals(5, attrs.size());
+        
+        AttributeDescr at = (AttributeDescr) attrs.get( 0 );
+        assertEquals("salience", at.getName());
+        assertEquals("42", at.getValue());
+        
+        at = (AttributeDescr) attrs.get( 1 );
+        assertEquals("agenda-group", at.getName());
+        assertEquals("my_group", at.getValue());        
+        
+        at = (AttributeDescr) attrs.get( 2 );
+        assertEquals("no-loop", at.getName());
+        assertNull( at.getValue() );
+        
+        at = (AttributeDescr) attrs.get( 3 );
+        assertEquals("duration", at.getName());
+        assertEquals("42", at.getValue());        
+
+        at = (AttributeDescr) attrs.get( 4 );
+        assertEquals("xor-group", at.getName());
+        assertEquals("my_xor_group", at.getValue());        
+    }    
 	
 	private RuleParser parse(String text) throws Exception {
 		parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
