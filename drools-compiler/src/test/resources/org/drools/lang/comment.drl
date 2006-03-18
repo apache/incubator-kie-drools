@@ -1,0 +1,10 @@
+#this starts with a comment
+package foo.bar
+
+//and another comment
+
+/*
+yet
+	   another
+   				style
+*/
