@@ -636,7 +636,7 @@ public class RuleParserTest extends TestCase {
     
     
     public void testAttributes() throws Exception {
-        RuleDescr rule = parseResource( "rule_atributes.drl" ).rule();
+        RuleDescr rule = parseResource( "rule_attributes.drl" ).rule();
         assertEquals("simple_rule", rule.getName());
         assertEqualsIgnoreWhitespace( "bar();", rule.getConsequence());
         
