@@ -47,11 +47,6 @@ public class RuleParserTest extends TestCase {
 		assertEquals( "foo.bar.baz", packageName );
 	}
 	
-	public void testImportStatement() throws Exception {
-		String name = parse( "import com.foo.Bar;" ).import_statement();
-		assertEquals( "com.foo.Bar", name );
-	}
-	
 	public void testProlog() throws Exception {
 		parse( "package foo; import com.foo.Bar; import com.foo.Baz;" ).prolog();
 		assertEquals( "foo", parser.getPackageDescr().getName() );
@@ -588,6 +583,8 @@ public class RuleParserTest extends TestCase {
         
         assertEquals(1, pack.getImports().size());
         assertEquals(2, pack.getGlobals().values().size());
+        
+        System.err.println( "G: " + pack.getGlobals() );
         
         assertEquals("java.lang.String", pack.getGlobals().get( "foo" ));
         assertEquals("java.lang.Integer", pack.getGlobals().get( "bar" ));
