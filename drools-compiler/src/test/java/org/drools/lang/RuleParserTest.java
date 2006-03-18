@@ -649,7 +649,7 @@ public class RuleParserTest extends TestCase {
 
         at = (AttributeDescr) attrs.get( 1 );
         assertEquals("agenda-group", at.getName());
-        assertEquals("my group", at.getValue());        
+        assertEquals("my_group", at.getValue());        
         
         
         at = (AttributeDescr) attrs.get( 2 );
