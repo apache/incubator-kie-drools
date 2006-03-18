@@ -31,15 +31,11 @@ public interface Expander {
      * appropriate expander is found, it will echo back the same 
      * expression.
      * 
-     * @param expression The "line" or expression to be expanded/pre-compiled.
-     * @param context The context of the current state of parsing. This can help
-     * the expander know if it needs to expand, what to do etc.
-     * 
-     * If <code>isEnabled()</code> is false then it is not required to 
-     * call this method.
+     * @param scope The current scope of the expansion (eg "when" for LHS)
+     * @param expression The line of text to be expanded.
+     * @return A correct expression for the parser to reparse.
      */
-    public String expand(String scope, String pattern, RuleParser context);
-    
+    public String expand(String scope, String pattern);
     
     
 }

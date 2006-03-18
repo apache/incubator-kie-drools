@@ -1,5 +1,8 @@
 package org.drools.lang.dsl;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -16,7 +19,6 @@ import org.drools.lang.dsl.template.NLMappingItem;
  * as well as general DSLs.
  * 
  * For most people, this should do the job just fine. 
- * TODO: refactor out the template stuff into the natural module.
  */
 public class DefaultExpander
     implements
@@ -25,27 +27,24 @@ public class DefaultExpander
     private NLExpressionCompiler compiler; 
     
     public String expand(String scope,
-    						String pattern,
-    						RuleParser context) {  
+    						String pattern) {  
         
-        return compiler.compile(pattern, null);
+        return compiler.compile(pattern, scope);
     }
     
     /**
-     * Properties contain the mapping between the language expressions, and the target expressions.
      * Use {0} style notation to place "holes" where data will be parsed from the natural text input.
      * 
      * @see org.drools.lang.dsl.template.NLExpressionCompiler for details.
      */
-    public DefaultExpander(Properties props) {
+    public DefaultExpander(InputStream stream) {
         NLGrammar grammar = new NLGrammar();
-        for ( Iterator iter = props.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry element = (Map.Entry) iter.next();
-            grammar.addNLItem( new NLMappingItem((String)element.getKey(), (String)element.getValue(), "*"));
-            
-        }
-        //grammar.load(null);
+        grammar.load( new InputStreamReader(stream) );
+    }
+    
+    public DefaultExpander(NLGrammar grammar) {
         compiler = new NLExpressionCompiler(grammar);
     }
+    
 
 }

@@ -336,6 +336,9 @@ public class RuleParserTest extends TestCase {
         assertEquals("Bar", col.getObjectType());
         
         assertEqualsIgnoreWhitespace( "bar foo3 : Bar(a==3) baz foo4 : Bar(a==4)", rule.getConsequence() );
+        assertTrue(mockExpanderResolver.checkExpanded( "when,The rain in spain falls mainly" ));
+        assertTrue(mockExpanderResolver.checkExpanded( "then,Something else" ));
+        assertTrue(mockExpanderResolver.checkExpanded( "then,Hey dude" ));
         
         
     }

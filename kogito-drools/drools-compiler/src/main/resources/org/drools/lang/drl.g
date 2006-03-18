@@ -28,7 +28,7 @@ grammar RuleParser;
 	}
 	
 	private PatternDescr runWhenExpander(String text) throws RecognitionException {
-		String expanded = expander.expand( "when", text, this );
+		String expanded = expander.expand( "when", text );
 		return reparseLhs( expanded );
 	}
 	
@@ -48,7 +48,7 @@ grammar RuleParser;
 					expanded.append( line.substring( 1 ) );
 					expanded.append( eol );
 				} else {
-					expanded.append( expander.expand( "then", text, this ) );
+					expanded.append( expander.expand( "then", line ) );
 					expanded.append( eol );
 				}
 			}
