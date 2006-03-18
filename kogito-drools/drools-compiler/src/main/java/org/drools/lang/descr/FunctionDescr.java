@@ -5,25 +5,39 @@ import java.util.List;
 
 public class FunctionDescr {
     private final String name;    
-    private List paramters;;    
+    
+    private String parameterTypes[] = new String[0];
+    private String parameterNames[] = new String[0];
+    private String returnType = null;
+    
     private final String text;  
 
-    public FunctionDescr(String name, String text) {
-        this( name, Collections.EMPTY_LIST, text);
-    }    
-    
-    public FunctionDescr(String name, List parameters, String text) {
+    public FunctionDescr(String name, String[] parameterTypes, String[] parameterNames, String returnType, String text) {
         this.name = name;
-        this.paramters = parameters;
+        if (parameterTypes != null) {
+            this.parameterTypes = parameterTypes;
+        }
+        if (parameterNames != null) {
+            this.parameterNames = parameterNames;
+        }
         this.text = text;
+        this.returnType = returnType;
     }
     
     public String getName() {
         return name;
     }
 
-    public List getParamters() {
-        return paramters;
+    public String[] getParameterNames() {
+        return parameterNames;
+    }
+
+    public String[] getParameterTypes() {
+        return parameterTypes;
+    }
+
+    public String getReturnType() {
+        return returnType;
     }
 
     public String getText() {
