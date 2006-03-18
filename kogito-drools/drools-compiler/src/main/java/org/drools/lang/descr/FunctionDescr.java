@@ -6,16 +6,16 @@ import java.util.List;
 
 public class FunctionDescr {
     private final String name;    
+    private final String returnType;
     
     private List parameterTypes = Collections.EMPTY_LIST;
     private List parameterNames = Collections.EMPTY_LIST;
-    private String returnType;
     
-    private final String text;  
+    private String text;  
 
-    public FunctionDescr(String name, String returnType, String text) {
+    public FunctionDescr(String name, String returnType) {
         this.name = name;
-        this.text = text;
+        this.returnType = returnType;
     }
     
     public String getName() {
@@ -45,6 +45,10 @@ public class FunctionDescr {
 
     public String getReturnType() {
         return returnType;
+    }
+    
+    public void setText(String text) {
+    		this.text = text;
     }
 
     public String getText() {
