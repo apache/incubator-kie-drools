@@ -37,14 +37,12 @@ public class DefaultExpander
      * 
      * @see org.drools.lang.dsl.template.NLExpressionCompiler for details.
      */
-    public DefaultExpander(InputStream stream) {
+    public DefaultExpander(Reader reader) {
         NLGrammar grammar = new NLGrammar();
-        grammar.load( new InputStreamReader(stream) );
-    }
-    
-    public DefaultExpander(NLGrammar grammar) {
+        grammar.load( reader );
         compiler = new NLExpressionCompiler(grammar);
     }
+    
     
 
 }
