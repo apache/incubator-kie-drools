@@ -1,0 +1,11 @@
+
+
+
+rule simple_rule 
+	attributes: 
+		salience 42, agenda-group "my_group", no-loop,  duration 42, xor-group "my_xor_group"
+	when
+		Foo()
+	then
+		bar();
+end

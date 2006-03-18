@@ -5,6 +5,7 @@ grammar RuleParser;
 	import java.util.List;
 	import java.util.ArrayList;
 	import java.util.Iterator;
+	import java.util.StringTokenizer;
 	import org.drools.lang.descr.*;
 }
 
@@ -26,10 +27,34 @@ grammar RuleParser;
 		return expanderResolver;
 	}
 	
-	private PatternDescr runExpander(String text) throws RecognitionException {
-		String expanded = expander.expand( text, this );
-		
+	private PatternDescr runWhenExpander(String text) throws RecognitionException {
+		String expanded = expander.expand( "when", text, this );
 		return reparseLhs( expanded );
+	}
+	
+	private String runThenExpander(String text) {
+		System.err.println( "expand THEN [" + text + "]" );
+		StringTokenizer lines = new StringTokenizer( text, "\n\r" );
+
+		StringBuffer expanded = new StringBuffer();
+		
+		String eol = System.getProperty( "line.separator" );
+				
+		while ( lines.hasMoreTokens() ) {
+			String line = lines.nextToken();
+			line = line.trim();
+			if ( line.length() > 0 ) {
+				if ( line.startsWith( ">" ) ) {
+					expanded.append( line.substring( 1 ) );
+					expanded.append( eol );
+				} else {
+					expanded.append( expander.expand( "then", text, this ) );
+					expanded.append( eol );
+				}
+			}
+		}
+		
+		return expanded.toString();
 	}
 	
 	private PatternDescr reparseLhs(String text) throws RecognitionException {
@@ -206,7 +231,14 @@ rule returns [RuleDescr rule]
 				consequence = consequence + " " + any.getText();
 			}
 		)*
-		{ rule.setConsequence( consequence ); }
+		{
+			if ( expander != null ) {
+				String expanded = runThenExpander( consequence );
+				rule.setConsequence( expanded );
+			} else { 
+				rule.setConsequence( consequence ); 
+			}
+		}
 		'end' opt_eol
 	;
 	
@@ -315,7 +347,7 @@ expander_lhs_block[AndDescr descrs]
 			(	options{greedy=false;} : 
 				text=paren_chunk EOL 
 				{
-					d = runExpander( text );
+					d = runWhenExpander( text );
 					descrs.addDescr( d );
 					text = null;
 					d = null;
