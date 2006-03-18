@@ -8,11 +8,12 @@ public class MockExpanderResolver
     ExpanderResolver {
 
     private Map resolveCalls = new HashMap();
+    private MockExpander expander = new MockExpander();
     
     public Expander get(String name,
                         String config) {
         resolveCalls.put( name, config );
-        return new MockExpander();
+        return expander;
     }
 
     /**
@@ -24,5 +25,9 @@ public class MockExpanderResolver
     
     public String getConfigFor(String name) {
         return (String) resolveCalls.get( name );
+    }
+    
+    public boolean checkExpanded(String patternOriginal) {
+        return expander.checkPattern( patternOriginal );
     }
 }
