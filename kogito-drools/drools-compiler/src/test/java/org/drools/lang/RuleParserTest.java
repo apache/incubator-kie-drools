@@ -343,6 +343,23 @@ public class RuleParserTest extends TestCase {
         
     }
     
+    public void testBasicBinding() throws Exception {
+        RuleParser parser = parseResource( "basic_binding.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pkg = parser.getPackageDescr();
+        RuleDescr ruleDescr = ( RuleDescr ) pkg.getRules().get( 0 );
+        
+        AndDescr lhs = ruleDescr.getLhs();
+        assertEquals(1, lhs.getDescrs().size() );
+        ColumnDescr cheese = (ColumnDescr) lhs.getDescrs().get( 0 );
+        assertEquals( 1, cheese.getDescrs().size() );
+        assertEquals("Cheese", cheese.getObjectType() );
+        assertEquals(2, lhs.getDescrs().size() );
+        FieldBindingDescr fieldBinding = ( FieldBindingDescr) cheese.getDescrs().get( 0 );
+        assertEquals( "type", fieldBinding.getFieldName());                         
+    }    
+    
     public void testBoundVariables() throws Exception {
         RuleParser parser = parseResource( "bindings.drl" );
         parser.compilation_unit();

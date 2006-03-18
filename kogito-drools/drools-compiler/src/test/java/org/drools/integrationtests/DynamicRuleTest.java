@@ -25,6 +25,7 @@ public class DynamicRuleTest extends TestCase {
             org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
             ruleBase.addPackage( pkg1 );
             WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            workingMemory.setGlobal( "total", new Integer(0) );
             
             Cheese stilton = new Cheese("stilton", 5);
             workingMemory.assertObject( stilton );
