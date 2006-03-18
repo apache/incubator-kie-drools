@@ -1,40 +1,47 @@
 package org.drools.lang.descr;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class FunctionDescr {
     private final String name;    
     
-    private String parameterTypes[] = new String[0];
-    private String parameterNames[] = new String[0];
-    private String returnType = null;
+    private List parameterTypes = Collections.EMPTY_LIST;
+    private List parameterNames = Collections.EMPTY_LIST;
+    private String returnType;
     
     private final String text;  
 
-    public FunctionDescr(String name, String[] parameterTypes, String[] parameterNames, String returnType, String text) {
+    public FunctionDescr(String name, String returnType, String text) {
         this.name = name;
-        if (parameterTypes != null) {
-            this.parameterTypes = parameterTypes;
-        }
-        if (parameterNames != null) {
-            this.parameterNames = parameterNames;
-        }
         this.text = text;
-        this.returnType = returnType;
     }
     
     public String getName() {
         return name;
     }
 
-    public String[] getParameterNames() {
+    public List getParameterNames() {
         return parameterNames;
     }
 
-    public String[] getParameterTypes() {
+    public List getParameterTypes() {
         return parameterTypes;
     }
+    
+    public void addParameter(String type, String name) {
+        if (this.parameterTypes == Collections.EMPTY_LIST) {
+            this.parameterTypes = new ArrayList();
+        }
+        this.parameterTypes.add( type );
+        
+        if (this.parameterNames == Collections.EMPTY_LIST) {
+            this.parameterNames = new ArrayList();
+        }
+        this.parameterNames.add( name );
+    }
+    
 
     public String getReturnType() {
         return returnType;
