@@ -178,6 +178,27 @@ public class RuleParserTest extends TestCase {
 				rule.getConsequence() );
 	}
     
+    public void testNotNode() throws Exception {
+        RuleDescr rule = parseResource( "rule_not.drl" ).rule();
+        
+        assertNotNull( rule );
+        assertEquals( "simple_rule", rule.getName() );
+        
+        AndDescr lhs = rule.getLhs();
+        assertEquals( 1, lhs.getDescrs().size() );
+        NotDescr not = (NotDescr) lhs.getDescrs().get( 0 );
+        assertEquals(1, not.getDescrs().size());
+        ColumnDescr col = (ColumnDescr) not.getDescrs().get( 0 );
+        
+        assertEquals("Cheese", col.getObjectType());
+        assertEquals(1, col.getDescrs().size());
+        LiteralDescr lit = (LiteralDescr) col.getDescrs().get( 0 );
+        assertEquals( "==", lit.getEvaluator());
+        assertEquals("stilton", lit.getText());
+        assertEquals("type", lit.getFieldName());
+        
+    }
+    
     public void testSimpleQuery() throws Exception {
         QueryDescr query = parseResource( "simple_query.drl" ).query();
         
