@@ -456,7 +456,7 @@ constraint[List constraints]
 				constraints.add( d );
 			} 
 		}
-			opt_eol 	op=(	'=='
+			opt_eol (	op=(	'=='
 					|	'>'
 					|	'>='
 					|	'<'
@@ -486,6 +486,7 @@ constraint[List constraints]
 							constraints.add( d );
 						} 
 					)
+				)?					
 		opt_eol
 	;
 		
