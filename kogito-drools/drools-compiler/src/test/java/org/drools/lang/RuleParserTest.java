@@ -555,7 +555,7 @@ public class RuleParserTest extends TestCase {
         RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
         assertEquals(3, rule.getLhs().getDescrs().size());
         EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get( 2 );
-        assertEqualsIgnoreWhitespace( "abc(\"foo\");", eval.getText());
+        assertEqualsIgnoreWhitespace( "abc(\"foo\")", eval.getText());
     }
     
     public void testWithRetval() throws Exception {
