@@ -355,7 +355,7 @@ public class RuleParserTest extends TestCase {
         ColumnDescr cheese = (ColumnDescr) lhs.getDescrs().get( 0 );
         assertEquals( 1, cheese.getDescrs().size() );
         assertEquals("Cheese", cheese.getObjectType() );
-        assertEquals(2, lhs.getDescrs().size() );
+        assertEquals(1, lhs.getDescrs().size() );
         FieldBindingDescr fieldBinding = ( FieldBindingDescr) cheese.getDescrs().get( 0 );
         assertEquals( "type", fieldBinding.getFieldName());                         
     }    
