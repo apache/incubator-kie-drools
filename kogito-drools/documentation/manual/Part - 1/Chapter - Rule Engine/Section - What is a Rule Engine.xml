@@ -113,6 +113,14 @@ List results = workingMemory.getQueryResults( "Find cheeses with a cost of 5" );
 
   <para>When we get the Query Results the List has a size of two and
   references "cheddar" and "mozarella", as expected. If we had used a Rule
-  constructed instead of a Query the Terminal Node's Consequence would have
+  construct instead of a Query the Terminal Node's Consequence would have
   attempted to fire twice, once for "cheddar" and once for "mozarella".</para>
+
+  <para>When a Rule is Fully Matched it does not fire immediately. Instead the
+  Rule plus the matched Facts are <indexterm>
+      <primary>Activated</primary>
+    </indexterm> placed onto the <indexterm>
+      <primary>Agenda</primary>
+    </indexterm>; which is responsible for the scheduling and firing
+  Activations.</para>
 </section>
