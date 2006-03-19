@@ -145,7 +145,7 @@ class ReteooBuilder {
                                          rule );
             } else {
                 // Check there is no consequence
-                if ( rule.getConsequence() == null ) {
+                if ( rule.getConsequence() != null ) {
                     throw new InvalidPatternException( "Query '" + rule.getName() + "' should have no Consequence" );
                 }                
                 node = new QueryTerminalNode( this.id++,
@@ -292,8 +292,10 @@ class ReteooBuilder {
 
     private BetaNodeBinder attachColumn(Column column,
                                         ConditionalElement parent) throws InvalidPatternException {
+        // Check if the Column is bound
         if ( column.getDeclaration() != null ) {
             Declaration declaration = column.getDeclaration();
+            // Add the declaration the map of previously bound declarations
             this.declarations.put(  declaration.getIdentifier(), declaration );
         }
 
@@ -321,9 +323,12 @@ class ReteooBuilder {
 
         for ( Iterator it = constraints.iterator(); it.hasNext(); ) {
             Object object = it.next();
+            // Check if its a declaration
             if (object instanceof Declaration) {
                 Declaration declaration = ( Declaration ) object;
+                // Add the declaration the map of previously bound declarations
                 this.declarations.put( declaration.getIdentifier(), declaration );
+                continue;
             }
 
             FieldConstraint fieldConstraint = (FieldConstraint) object;
