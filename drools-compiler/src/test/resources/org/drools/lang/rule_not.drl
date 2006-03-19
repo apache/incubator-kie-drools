@@ -1,0 +1,7 @@
+
+rule simple_rule 
+  when
+  	not Cheese(type == "stilton")
+  then
+	funky();
+end
