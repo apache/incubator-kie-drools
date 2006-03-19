@@ -2,6 +2,9 @@
 <chapter>
   <title>The Rule Engine</title>
 
+  <xi:include href="Section%20-%20What%20is%20a%20Rule%20Engine.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
   <xi:include href="Section%20-%20Rete%20Algorithm.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
