@@ -3,7 +3,7 @@ rule simple_rule
   when
 	Foo()
 	Bar()
-	eval(abc("foo");)
+	eval(abc("foo"))
   then
 	Kapow
 	
