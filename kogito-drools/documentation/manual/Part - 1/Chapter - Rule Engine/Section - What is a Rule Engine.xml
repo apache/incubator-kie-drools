@@ -1,73 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-  <section>
-    <title>What is a Rule Engine</title>
+<section>
+  <title>What is a Rule Engine</title>
 
-    <para>At the simplest level a Rule Engine executes Consequence when a set
-    of conditions are true.</para>
+  <para>At the simplest level a Rule Engine executes Consequence when a set of
+  conditions are true.</para>
 
-    <programlisting>When
+  <programlisting>When
     Cheese( type == "cheddar" )
 Then
     System.out.println( "cheddar" )</programlisting>
 
-    <para>Each Rule is the codification of business knowledge, known as the
-    Production Memory. The Rule engine is made aware of Business Objects,
-    referrred to as Facts, when they are asserted into the Working Memory. The
-    Working Memory is the Rule Engine's repository of all known Facts.</para>
+  <para>Each Rule is the codification of business knowledge, known as the
+  Production Memory. The Rule engine is made aware of Business Objects,
+  referrred to as Facts, when they are asserted into the Working Memory. The
+  Working Memory is the Rule Engine's repository of all known Facts.</para>
 
-    <para>Rule Engines are much like a database where Rule's define the
-    queries on the Working Memory. The previous rule can be expressed in SQL
-    as:</para>
+  <para>Rule Engines are much like a database where Rule's define the queries
+  on the Working Memory. The previous rule can be expressed in SQL as:</para>
 
-    <programlisting> select * from Cheese where type == "cheddar"</programlisting>
+  <programlisting> select * from Cheese where type == "cheddar"</programlisting>
 
-    <para>A Database executes SQL, on request, where as a Rule Engine will
-    process data against its rules as its asserted; this process is known as
-    Pattern Matching. When added to the Production Memory, Rule's are
-    decomposed into a graph using the Rete algorithm.</para>
+  <para>A Database executes SQL, on request, where as a Rule Engine will
+  process data against its rules, its Production Memory, as its asserted; this
+  process is known as Pattern Matching. When added to the Production Memory,
+  Rule's are decomposed into a graph using the Rete algorithm.</para>
 
-    <figure>
-      <title>A Basic Rete network</title>
+  <figure>
+    <title>A Basic Rete network</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="A%20Basic%20Rete%20Network.gif" />
-        </imageobject>
-      </mediaobject>
-    </figure>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="A%20Basic%20Rete%20Network.gif" />
+      </imageobject>
+    </mediaobject>
+  </figure>
 
-    <para>Each Fact type in our Working Memory, such as <code>Cheese</code>,
-    is represented by an Object Type class, shown as the root node in our
-    graph. When Facts are asserted into the Working Memory the Rule Engine
-    finds the matching Object Type node and propagates the asserted Fact onto
-    the next node. The Object Type node maintains a memory of all matched
-    Facts. in our example the next node in the graph is a Field Constraint,
-    <code>type == "cheddar", </code>its job is to filter Facts using the given
-    constraint; if the type of <code>Cheese</code> is not "cheddar" the Fact
-    progresses no further in the network, if it is "cheddar" it is rememebered
-    in the Alpha Node's memory and propagated onto the next node in the
-    network.. Alpha Node is classic Rete terminology for single input/single
-    output nodes, in that it receives a single Fact of a specified Object Type
-    and propates a single Fact of specified Object Type. </para>
+  <para>Each Fact type in our Working Memory, such as <code>Cheese</code>, is
+  represented by an Object Type class, shown as the root node in our graph.
+  When Facts are asserted into the Working Memory the Rule Engine finds the
+  matching Object Type node and propagates the asserted Fact onto the next
+  node. The Object Type node maintains a memory of all matched Facts. in our
+  example the next node in the graph is a Field Constraint, <code>type ==
+  "cheddar", </code>its job is to filter Facts using the given constraint; if
+  the type of <code>Cheese</code> is not "cheddar" the Fact progresses no
+  further in the network, if it is "cheddar" it is rememebered in the Alpha
+  Node's memory and propagated onto the next node in the network.. Alpha Node
+  is classic Rete terminology for single input/single output nodes, in that it
+  receives a single Fact of a specified Object Type and propates a single Fact
+  of specified Object Type.</para>
 
-    <para>At this point we have what is know as a Partial Match, in that we
-    have matched facts against some, but not all, of the Rule's nodes. Left
-    Input Adapter nodes will be explained later, suffice to say it always
-    propagetes onto the next node, in this case a Terminal Node. The Terminal
-    Node is our end node, now we say the Rule is Fully Matched and ready to
-    fire.</para>
+  <para>At this point we have what is known as a Partial Match, in that we
+  have matched facts against some, but not all, of the Rule's nodes. Left
+  Input Adapter nodes will be explained later, suffice to say it always
+  propagetes onto the next node, in this case a Terminal Node. The Terminal
+  Node is our end node, now we say the Rule is Fully Matched and ready to
+  fire.</para>
 
-    <para>Earlier we mentioned that a Rule Engine is much like a Database, we
-    can prove this by using a Query construct. A Query is Rule with a special
-    Terminal node; instead of executing a Consequence the Terminal node stores
-    matching Facts in a list, which is returned as the result. Lets prove
-    this</para>
+  <para>Earlier we mentioned that a Rule Engine is much like a Database, we
+  can prove this by using a Query construct. A Query is Rule with a special
+  Terminal node; instead of executing a Consequence the Terminal node stores
+  matching Facts in a list, which is returned as the result. Lets prove
+  this</para>
 
-    <programlisting>query "Find cheeses with a cost of 5"
+  <programlisting>query "Find cheeses with a cost of 5"
     Cheese( price == 5 )
 end</programlisting>
 
-    <programlisting>// First create the facts
+  <programlisting>// First create the facts
 Cheese stilton = new Cheese("stilton", 8);     // type, price
 Cheese cheddar = new Cheese("cheddar", 5);     // type, price
 Cheese mozarella = new Cheese("mozarella", 5); // type, price
@@ -79,9 +78,8 @@ workingMemory.assertObject( mozarella );
 
 List results = workingMemory.getQueryResults( "Find cheeses with a cost of 5" );</programlisting>
 
-    <para>When we get the Query Results the List has a size of two and
-    references "cheddar" and "mozarella", as expected. If we had used a Rule
-    constructed instead of a Query the Terminal Node's Consequence would have
-    attempted to fire twice, once for "cheddar" and once for
-    "mozarella".</para>
-  </section>
+  <para>When we get the Query Results the List has a size of two and
+  references "cheddar" and "mozarella", as expected. If we had used a Rule
+  constructed instead of a Query the Terminal Node's Consequence would have
+  attempted to fire twice, once for "cheddar" and once for "mozarella".</para>
+</section>
