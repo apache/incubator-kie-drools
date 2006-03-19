@@ -2,28 +2,51 @@
 <section>
   <title>What is a Rule Engine</title>
 
-  <para>At the simplest level a Rule Engine executes Consequence when a set of
-  conditions are true.</para>
+  <para>At the simplest level a <indexterm>
+      <primary>Rule Engine</primary>
+    </indexterm> executes <indexterm>
+      <primary>Consequence</primary>
+    </indexterm> when a set of conditions are true.</para>
 
   <programlisting>When
     Cheese( type == "cheddar" )
 Then
     System.out.println( "cheddar" )</programlisting>
 
-  <para>Each Rule is the codification of business knowledge, known as the
-  Production Memory. The Rule engine is made aware of Business Objects,
-  referrred to as Facts, when they are asserted into the Working Memory. The
-  Working Memory is the Rule Engine's repository of all known Facts.</para>
+  <para>Each <indexterm>
+      <primary>Rule</primary>
+    </indexterm>is the codification of business knowledge, known as the
+  <indexterm>
+      <primary>Production Memory</primary>
+    </indexterm>. The Rule Enging is made aware of Business Objects, referrred
+  to as <indexterm>
+      <primary>Facts</primary>
+    </indexterm>, when they are asserted into the <indexterm>
+      <primary>Working Memory</primary>
+    </indexterm>. The Working Memory is the Rule Engine's repository of all
+  known Rules.</para>
 
   <para>Rule Engines are much like a database where Rule's define the queries
-  on the Working Memory. The previous rule can be expressed in SQL as:</para>
+  on the Working Memory. The previous rule can be expressed in <indexterm>
+      <primary>SQL</primary>
+    </indexterm> as:</para>
 
   <programlisting> select * from Cheese where type == "cheddar"</programlisting>
 
-  <para>A Database executes SQL, on request, where as a Rule Engine will
-  process data against its rules, its Production Memory, as its asserted; this
-  process is known as Pattern Matching. When added to the Production Memory,
-  Rule's are decomposed into a graph using the Rete algorithm.</para>
+  <para>A <indexterm>
+      <primary>DataBase</primary>
+    </indexterm> executes SQL, on request, where as a Rule Engine will process
+  data against its rules, its Production Memory, as its asserted; this process
+  is known as <indexterm>
+      <primary>Pattern Matching</primary>
+    </indexterm>. When added to the Production Memory, Rule's are decomposed
+  into a graph using the <indexterm>
+      <primary>Rete</primary>
+    </indexterm> algorithm. Rete is one of the standard Rule Engine algorithms
+  developed by <indexterm>
+      <primary>Charles Forgey</primary>
+    </indexterm> in 1979 which is covered in greater detail in further
+  chapters.</para>
 
   <figure>
     <title>A Basic Rete network</title>
@@ -36,31 +59,41 @@ Then
   </figure>
 
   <para>Each Fact type in our Working Memory, such as <code>Cheese</code>, is
-  represented by an Object Type class, shown as the root node in our graph.
-  When Facts are asserted into the Working Memory the Rule Engine finds the
-  matching Object Type node and propagates the asserted Fact onto the next
-  node. The Object Type node maintains a memory of all matched Facts. in our
-  example the next node in the graph is a Field Constraint, <code>type ==
-  "cheddar", </code>its job is to filter Facts using the given constraint; if
-  the type of <code>Cheese</code> is not "cheddar" the Fact progresses no
-  further in the network, if it is "cheddar" it is rememebered in the Alpha
-  Node's memory and propagated onto the next node in the network.. Alpha Node
-  is classic Rete terminology for single input/single output nodes, in that it
-  receives a single Fact of a specified Object Type and propates a single Fact
-  of specified Object Type.</para>
+  represented by an <indexterm>
+      <primary>Object Type</primary>
+    </indexterm> class, shown as the root node in our graph. When Facts are
+  asserted into the Working Memory the Rule Engine finds the matching Object
+  Type node and propagates the asserted Fact onto the next node. The Object
+  Type node maintains a memory of all matched Facts. in our example the next
+  node in the graph is a <indexterm>
+      <primary>Field Constraint</primary>
+    </indexterm>, <code>type == "cheddar", </code>its job is to filter Facts
+  using the given constraint; if the type of <code>Cheese</code> is not
+  "cheddar" the Fact progresses no further in the network, if it is "cheddar"
+  it is rememebered in the <indexterm>
+      <primary>Alpha Node</primary>
+    </indexterm>'s memory and propagated onto the next node in the network..
+  Alpha Node is classic Rete terminology for single input/single output nodes,
+  in that it receives a single Fact of a specified Object Type and propates a
+  single Fact of specified Object Type.</para>
 
-  <para>At this point we have what is known as a Partial Match, in that we
-  have matched facts against some, but not all, of the Rule's nodes. Left
-  Input Adapter nodes will be explained later, suffice to say it always
-  propagetes onto the next node, in this case a Terminal Node. The Terminal
-  Node is our end node, now we say the Rule is Fully Matched and ready to
-  fire.</para>
+  <para>At this point we have what is known as a <indexterm>
+      <primary>Partial Match</primary>
+    </indexterm>, in that we have matched facts against some, but not all, of
+  the Rule's nodes. <indexterm>
+      <primary>Left Input Adapter Node</primary>
+    </indexterm>s will be explained later, suffice to say it always propagetes
+  onto the next node, in this case a <indexterm>
+      <primary>Terminal Node</primary>
+    </indexterm>. The Terminal Node is our end node, now we say the Rule is
+  Fully Matched and ready to fire.</para>
 
   <para>Earlier we mentioned that a Rule Engine is much like a Database, we
-  can prove this by using a Query construct. A Query is Rule with a special
-  Terminal node; instead of executing a Consequence the Terminal node stores
-  matching Facts in a list, which is returned as the result. Lets prove
-  this</para>
+  can prove this by using a <indexterm>
+      <primary>Query</primary>
+    </indexterm> construct. A Query is Rule with a special Terminal node;
+  instead of executing a Consequence the Terminal node stores matching Facts
+  in a list, which is returned as the result. Lets prove this</para>
 
   <programlisting>query "Find cheeses with a cost of 5"
     Cheese( price == 5 )
