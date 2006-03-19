@@ -57,7 +57,7 @@ public class RuleBaseImpl
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private final Rete              rete;
 
-    private final ReteBuilder       reteBuilder;
+    private final ReteooBuilder       reteooBuilder;
 
     /** The fact handle factory. */
     private final FactHandleFactory factHandleFactory;
@@ -89,7 +89,7 @@ public class RuleBaseImpl
     public RuleBaseImpl() {
         ObjectTypeResolver resolver = new ClassObjectTypeResolver();
         this.rete = new Rete( resolver );
-        this.reteBuilder = new ReteBuilder( this,
+        this.reteooBuilder = new ReteooBuilder( this,
                                             resolver );
         this.factHandleFactory = new DefaultFactHandleFactory();
         this.pkgs = new HashMap();
@@ -278,7 +278,7 @@ public class RuleBaseImpl
 
     public void addRule(Rule rule) throws InvalidPatternException {
         // This adds the rule. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
-        this.reteBuilder.addRule( rule );
+        this.reteooBuilder.addRule( rule );
         
         // Iterate each workingMemory and attempt to fire any rules, that were activated as a result of the new rule addition
         for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
@@ -288,7 +288,7 @@ public class RuleBaseImpl
     }
 
     public void removeRule(Rule rule) {
-        this.reteBuilder.removeRule( rule );
+        this.reteooBuilder.removeRule( rule );
     }
 
     public Set getWorkingMemories() {

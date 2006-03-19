@@ -34,6 +34,8 @@ import org.drools.common.BetaNodeBinder;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.ConditionalElement;
+import org.drools.rule.Declaration;
+import org.drools.rule.EvalCondition;
 import org.drools.rule.Exists;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.LiteralConstraint;
@@ -56,7 +58,7 @@ import org.drools.spi.ObjectTypeResolver;
  * joins. Currently using forgy's original description of 2-input nodes, which I
  * feel (but don't know for sure, is sub-optimal.
  */
-class ReteBuilder {
+class ReteooBuilder {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -80,6 +82,8 @@ class ReteBuilder {
     private TupleSource              tupleSource;
 
     private ObjectSource             objectSource;
+    
+    private Map                      declarations;
 
     private int                      id;
 
@@ -93,7 +97,7 @@ class ReteBuilder {
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    ReteBuilder(RuleBaseImpl ruleBase,
+    ReteooBuilder(RuleBaseImpl ruleBase,
                 ObjectTypeResolver resolver) {
         this.ruleBase = ruleBase;
         this.rete = this.ruleBase.getRete();
@@ -132,10 +136,18 @@ class ReteBuilder {
                      rule );
             BaseNode node = null;
             if ( !(rule instanceof Query) ) {
+                // Check a consequence is set
+                if ( rule.getConsequence() == null ) {
+                    throw new InvalidPatternException( "Rule '" + rule.getName() + "' has no Consequence" );
+                }
                 node = new TerminalNode( this.id++,
                                          this.tupleSource,
                                          rule );
             } else {
+                // Check there is no consequence
+                if ( rule.getConsequence() == null ) {
+                    throw new InvalidPatternException( "Query '" + rule.getName() + "' should have no Consequence" );
+                }                
                 node = new QueryTerminalNode( this.id++,
                                               this.tupleSource,
                                               rule );
@@ -155,9 +167,10 @@ class ReteBuilder {
     }
 
     private void addRule(And and,
-                         Rule rule) {
+                         Rule rule) throws InvalidPatternException {
         this.objectSource = null;
         this.tupleSource = null;
+        this.declarations = new HashMap();
 
         if ( rule instanceof Query ) {
             attachQuery( rule.getName() );
@@ -165,6 +178,16 @@ class ReteBuilder {
 
         for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
             Object object = it.next();
+            
+            if ( object instanceof EvalCondition ) {
+                EvalCondition eval = (EvalCondition) object;
+                checkUnboundDeclarations(  eval.getRequiredDeclarations() );
+                this.tupleSource = attachNode( new EvalConditionNode( this.id++,
+                                                                      this.tupleSource,
+                                                                      eval ) );
+                continue;
+            }
+        
 
             BetaNodeBinder binder;
             Column column;
@@ -189,7 +212,7 @@ class ReteBuilder {
                     this.objectSource = null;
                 }
             } else {
-                // If its not a Column then it can either be a Not or an Exists
+                // If its not a Column or EvalCondition then it can either be a Not or an Exists
                 ConditionalElement ce = (ConditionalElement) object;
                 while ( !(ce.getChildren().get( 0 ) instanceof Column) ) {
                     ce = (ConditionalElement) ce.getChildren().get( 0 );
@@ -268,8 +291,11 @@ class ReteBuilder {
     }
 
     private BetaNodeBinder attachColumn(Column column,
-                                        ConditionalElement parent) {
-        //        addDeclarations( column );
+                                        ConditionalElement parent) throws InvalidPatternException {
+        if ( column.getDeclaration() != null ) {
+            Declaration declaration = column.getDeclaration();
+            this.declarations.put(  declaration.getIdentifier(), declaration );
+        }
 
         List predicates = attachAlphaNodes( column );
 
@@ -284,21 +310,7 @@ class ReteBuilder {
         return binder;
     }
 
-    //    private void addDeclarations(Column column) {
-    //        for ( Iterator it = column.getDeclarations().iterator(); it.hasNext(); ) {
-    //            Declaration declaration = (Declaration) it.next();
-    //            this.declarations.put( declaration.getIdentifier(),
-    //                                   declaration );
-    //        }
-    //
-    //        if ( column.getBinding() != null ) {
-    //            Binding binding = column.getBinding();
-    //            this.declarations.put( binding.getIdentifier(),
-    //                                   binding );
-    //        }
-    //    }
-
-    public List attachAlphaNodes(Column column) {
+    public List attachAlphaNodes(Column column) throws InvalidPatternException {
         List constraints = column.getConstraints();
 
         this.objectSource = attachNode( new ObjectTypeNode( this.id++,
@@ -309,16 +321,18 @@ class ReteBuilder {
 
         for ( Iterator it = constraints.iterator(); it.hasNext(); ) {
             Object object = it.next();
-            if ( !(object instanceof FieldConstraint) ) {
-                continue;
+            if (object instanceof Declaration) {
+                Declaration declaration = ( Declaration ) object;
+                this.declarations.put( declaration.getIdentifier(), declaration );
             }
 
             FieldConstraint fieldConstraint = (FieldConstraint) object;
-            if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
+            if ( fieldConstraint instanceof LiteralConstraint ) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
                                                                fieldConstraint,
                                                                objectSource ) );
             } else {
+                checkUnboundDeclarations(  fieldConstraint.getRequiredDeclarations() );
                 predicateConstraints.add( fieldConstraint );
             }
         }
@@ -460,6 +474,33 @@ class ReteBuilder {
             BaseNode node = nodes[i];
             node.remove( null, this.workingMemories );
         }
+    }
+    
+    /**
+     * Make sure the required declarations are previously bound
+     * 
+     * @param declarations
+     * @throws InvalidPatternException
+     */
+    private void checkUnboundDeclarations(Declaration[] declarations) throws InvalidPatternException {
+        List list = new ArrayList();
+        for ( int i = 0, length = declarations.length; i < length; i++ ) {
+          if ( this.declarations.get( declarations[i] ) == null ) {
+              list.add( declarations[i].getIdentifier() );
+          }
+        }
+        
+        // Make sure the required declarations        
+        if ( list.size() != 0 ) {
+            StringBuffer buffer = new StringBuffer();
+            buffer.append( list.get( 0 ) );
+            for ( int i = 1, size = list.size(); i < size; i++ ) {
+                buffer.append( ", " + list.get( i )  );
+            }
+            
+            throw new InvalidPatternException("Required Declarations not bound: '" + buffer );
+        }
+
     }
 
 }
