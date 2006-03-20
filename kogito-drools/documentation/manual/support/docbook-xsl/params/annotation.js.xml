@@ -1,0 +1,27 @@
+<refentry id="annotation.js">
+<refmeta>
+<refentrytitle>annotation.js</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>annotation.js</refname>
+<refpurpose>Enable annotations?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='annotation.js.frag'>
+<xsl:param name="annotation.js"
+   select="'http://docbook.sourceforge.net/release/script/AnchorPosition.js
+            http://docbook.sourceforge.net/release/script/PopupWindow.js'"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If <property>annotation.support</property> is enabled and the
+document contains <sgmltag>annotation</sgmltag>s, then the URIs listed
+in this parameter will be included. These JavaScript files are required
+for popup annotation support.</para>
+
+</refsect1>
+</refentry>

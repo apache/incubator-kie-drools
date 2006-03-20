@@ -1,0 +1,66 @@
+<refentry id="annotation.css">
+<refmeta>
+<refentrytitle>annotation.css</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>annotation.css</refname>
+<refpurpose>Enable annotations?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='annotation.css.frag'>
+<xsl:param name="annotation.css">
+/* ======================================================================
+   Annotations
+*/
+
+div.annotation-list  { visibility: hidden;
+                     }
+
+div.annotation-nocss { position: absolute;
+                       visibility: hidden;
+                     }
+
+div.annotation-popup { position: absolute;
+                       z-index: 4;
+                       visibility: hidden;
+                       padding: 0px;
+                       margin: 2px;
+                       border-style: solid;
+                       border-width: 1px;
+                       width: 200px;
+		       background-color: white;
+                     }
+
+div.annotation-title { padding: 1px;
+                       font-weight: bold;
+                       border-bottom-style: solid;
+                       border-bottom-width: 1px;
+		       color: white;
+		       background-color: black;
+                     }
+
+div.annotation-body  { padding: 2px;
+                     }
+
+div.annotation-body p { margin-top: 0px;
+                        padding-top: 0px;
+                      }
+
+div.annotation-close { position: absolute;
+                       top: 2px;
+                       right: 2px;
+                     }
+</xsl:param>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If <property>annotation.support</property> is enabled and the
+document contains <sgmltag>annotation</sgmltag>s, then the CSS in this
+parameter will be included in the document.</para>
+
+</refsect1>
+</refentry>

@@ -1,0 +1,91 @@
+<refentry id="refentry.source.name.profile">
+<refmeta>
+<refentrytitle>refentry.source.name.profile</refentrytitle>
+<refmiscinfo role="type">string</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>refentry.source.name.profile</refname>
+<refpurpose>Specifies profile for refentry "source name" data</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='refentry.source.name.profile.frag'>
+<xsl:param name="refentry.source.name.profile">
+  ($info/productname
+  |$parentinfo/productname
+  |$info/orgname
+  |$parentinfo/orgname
+  |$info/corpname
+  |$parentinfo/corpname
+  |$info/corpcredit
+  |$parentinfo/corpcredit
+  |$info/corpauthor
+  |$parentinfo/corpauthor
+  |$info/author/orgname
+  |$parentinfo/author/orgname
+  |$info//publishername
+  |$parentinfo//publishername)[1]/node()
+</xsl:param>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>The value of <parameter>refentry.source.name.profile</parameter>
+is a string representing an XPath expression. It is evaluated at
+run-time and used only if
+<parameter>refentry.source.name.profile.enabled</parameter> is
+non-zero. Otherwise, the <tag>refentry</tag> metadata-gathering logic
+"hard coded" into the stylesheets is used.</para>
+
+<para>A "source name" is one part of a (potentially) two-part
+<replaceable>Name</replaceable>&#160;<replaceable>Version</replaceable>
+"source" field. In man pages, it is usually displayed in the left
+footer of the page. The <literal>man(7)</literal> man page describes
+this as "the source of the command", and provides the following
+examples:
+<itemizedlist>
+  <listitem>
+    <para>For binaries, use something like: GNU, NET-2, SLS
+    Distribution, MCC Distribution.</para>
+  </listitem>
+  <listitem>
+    <para>For system calls, use the version of the kernel that you
+    are currently looking at: Linux 0.99.11.</para>
+  </listitem>
+  <listitem>
+    <para>For library calls, use the source of the function: GNU, BSD
+    4.3, Linux DLL 4.4.1.</para>
+  </listitem>
+</itemizedlist>
+</para>
+
+<para>In practice, there are many pages that simply have a Version
+number in the "source" field. So, it looks like what we have is a
+two-part field,
+<replaceable>Name</replaceable>&#160;<replaceable>Version</replaceable>,
+where:
+<variablelist>
+  <varlistentry>
+    <term>Name</term>
+    <listitem>
+      <para>product name (e.g., BSD) or org. name (e.g., GNU)</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>Version</term>
+    <listitem>
+      <para>version number</para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+Each part is optional. If the <replaceable>Name</replaceable> is a
+product name, then the <replaceable>Version</replaceable> is probably
+the version of the product. Or there may be no
+<replaceable>Name</replaceable>, in which case, if there is a
+<replaceable>Version</replaceable>, it is probably the version
+of the item itself, not the product it is part of. Or, if the
+<replaceable>Name</replaceable> is an organization name, then there
+probably will be no <replaceable>Version</replaceable>.</para>
+</refsect1>
+</refentry>

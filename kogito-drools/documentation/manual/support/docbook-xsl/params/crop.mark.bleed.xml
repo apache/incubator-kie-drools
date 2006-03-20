@@ -1,0 +1,21 @@
+<refentry id="crop.mark.bleed">
+<refmeta>
+<refentrytitle>crop.mark.bleed</refentrytitle>
+<refmiscinfo role="type">string</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>crop.mark.bleed</refname>
+<refpurpose>Length of invisible part of crop marks.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='crop.mark.bleed.frag'><xsl:param name="crop.mark.bleed" select="'6pt'"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>Length of invisible part of crop marks. Crop marks are controlled by
+<parameter>crop.marks</parameter> parameter.</para>
+
+</refsect1>
+</refentry>

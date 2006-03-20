@@ -1,0 +1,63 @@
+<refentry id="insert.olink.pdf.frag">
+<refmeta>
+<refentrytitle>insert.olink.pdf.frag</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>insert.olink.pdf.frag</refname>
+<refpurpose>Add fragment identifiers for links into PDF files</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='insert.olink.pdf.frag.frag'>
+<xsl:param name="insert.olink.pdf.frag" select="0"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>The value of this parameter determines whether
+the cross reference URIs to PDF documents made with
+<sgmltag>olink</sgmltag> will 
+include fragment identifiers.
+</para>
+
+<para>When forming a URI to link to a PDF document,
+a fragment identifier (typically a '#' followed by an
+id value) appended to the PDF filename can be used by
+the PDF viewer to open
+the PDF file to a location within the document instead of
+the first page.
+However, not all PDF files have id
+values embedded in them, and not all PDF viewers can
+handle fragment identifiers. 
+</para>
+
+<para>If <parameter>insert.olink.pdf.frag</parameter> is set
+to a non-zero value, then any olink targeting a
+PDF file will have the fragment identifier appended to the URI.
+The URI is formed by concatenating the value of the
+<parameter>olink.base.uri</parameter> parameter, the
+value of the <sgmltag class="attribute">baseuri</sgmltag>
+attribute from the <sgmltag class="element">document</sgmltag>
+element in the olink database with the matching
+<sgmltag class="attribute">targetdoc</sgmltag> value,
+and the value of the <sgmltag class="attribute">href</sgmltag>
+attribute for the targeted element in the olink database.
+The <sgmltag class="attribute">href</sgmltag> attribute
+contains the fragment identifier.
+</para>
+
+<para>If <parameter>insert.olink.pdf.frag</parameter> is set
+to zero (the default value), then 
+the <sgmltag class="attribute">href</sgmltag> attribute
+from the olink database
+is not appended to PDF olinks, so the fragment identifier is left off.
+A PDF olink is any olink for which the
+<sgmltag class="attribute">baseuri</sgmltag> attribute
+from the matching <sgmltag class="element">document</sgmltag>
+element in the olink database ends with '.pdf'.
+Any other olinks will still have the fragment identifier added.
+</para>
+</refsect1>
+</refentry>

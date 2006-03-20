@@ -1,0 +1,49 @@
+<refentry id="variablelist.as.table">
+<refmeta>
+<refentrytitle>variablelist.as.table</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>variablelist.as.table</refname>
+<refpurpose>Format <sgmltag>variablelist</sgmltag>s as tables?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='variablelist.as.table.frag'>
+<xsl:param name="variablelist.as.table" select="0"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If non-zero, <sgmltag>variablelist</sgmltag>s will be formatted as
+tables. A processing instruction exists to specify a particualar width for the 
+column containing the <sgmltag>term</sgmltag>s:   
+<sgmltag class="pi">dbhtml term-width=".25in"</sgmltag></para>
+
+<para>You can override this setting with a processing instruction as the
+child of <sgmltag>variablelist</sgmltag>: <sgmltag class="pi">dbhtml
+list-presentation="table"</sgmltag> or <sgmltag class="pi">dbhtml
+list-presentation="list"</sgmltag>.</para>
+
+<para>This parameter only applys to the HTML transformations. In the
+FO case, proper list markup is robust enough to handle the formatting.
+But see also <parameter>variablelist.as.blocks</parameter>.</para>
+
+<programlisting><![CDATA[  <variablelist>
+        <?dbhtml list-presentation="table"?>
+        <?dbhtml term-width="1.5in"?>
+        <?dbfo list-presentation="list"?>
+        <?dbfo term-width="1in"?>
+        <varlistentry>
+          <term>list</term>
+          <listitem>
+                <para>
+                  Formatted as a table even if variablelist.as.table is set to 0.
+                </para>
+          </listitem>
+        </varlistentry>
+  </variablelist>]]></programlisting>
+
+</refsect1>
+</refentry>
