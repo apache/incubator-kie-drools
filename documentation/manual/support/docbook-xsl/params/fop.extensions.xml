@@ -1,0 +1,31 @@
+<refentry id="fop.extensions">
+<refmeta>
+<refentrytitle>fop.extensions</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>fop.extensions</refname>
+<refpurpose>Enable FOP extensions for version 0.20.5 and earlier</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='fop.extensions.frag'><xsl:param name="fop.extensions" select="0"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If non-zero, extensions intended for
+<ulink url="http://xml.apache.org/fop/">FOP</ulink>
+version 0.20.5 and earlier will be used.
+At present, this consists of PDF bookmarks.
+</para>
+
+<para>This parameter can also affect which graphics file formats
+are supported</para>
+
+<para>If you are using a version of FOP beyond
+version 0.20.5, then use the <parameter>fop1.extensions</parameter>
+instead.
+</para>
+</refsect1>
+</refentry>

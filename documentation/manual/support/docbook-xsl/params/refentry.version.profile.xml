@@ -1,0 +1,39 @@
+<refentry id="refentry.version.profile">
+<refmeta>
+<refentrytitle>refentry.version.profile</refentrytitle>
+<refmiscinfo role="type">string</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>refentry.version.profile</refname>
+<refpurpose>Specifies profile for refentry "version" data</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='refentry.version.profile.frag'>
+<xsl:param name="refentry.version.profile">
+  ($info/productnumber
+  |$parentinfo/productnumber
+  |$info/edition
+  |$parentinfo/edition
+  |$info/releaseinfo
+  |$parentinfo/releaseinfo)[1]/node()
+</xsl:param>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>The value of <parameter>refentry.version.profile</parameter> is
+a string representing an XPath expression. It is evaluated at
+run-time and used only if
+<parameter>refentry.version.profile.enabled</parameter> is
+non-zero. Otherwise, the <tag>refentry</tag> metadata-gathering logic
+"hard coded" into the stylesheets is used.</para>
+
+<para>A "source.name" is one part of a (potentially) two-part
+<replaceable>Name</replaceable>&#160;<replaceable>Version</replaceable>
+"source" field. For more details, see the documentation for the
+<parameter>refentry.source.name.profile</parameter> parameter.</para>
+
+</refsect1>
+</refentry>

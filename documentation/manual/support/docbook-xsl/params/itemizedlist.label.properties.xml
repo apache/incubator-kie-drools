@@ -1,0 +1,17 @@
+<refentry id="itemizedlist.label.properties">
+<refnamediv>
+<refname>itemizedlist.label.properties</refname>
+<refpurpose>Properties that apply to each label inside itemized list.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='itemizedlist.label.properties.frag'><xsl:attribute-set name="itemizedlist.label.properties">
+</xsl:attribute-set></src:fragment>
+</refsynopsisdiv>
+<refsect1><title>Description</title>
+<para>Properties that apply to each label inside itemized list. E.g.:</para>
+<programlisting><![CDATA[<xsl:attribute-set name="itemizedlist.label.properties">
+  <xsl:attribute name="text-align">right</xsl:attribute>
+</xsl:attribute-set>]]></programlisting>
+</refsect1>
+</refentry>

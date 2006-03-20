@@ -1,0 +1,24 @@
+<refentry id="annotation.graphic.open">
+<refmeta>
+<refentrytitle>annotation.graphic.open</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>annotation.graphic.open</refname>
+<refpurpose>Enable annotations?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='annotation.graphic.open.frag'>
+<xsl:param name="annotation.graphic.open"
+   select="'http://docbook.sourceforge.net/release/images/annot-open.png'"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>This image is used inline to identify the location of
+annotations.</para>
+
+</refsect1>
+</refentry>

@@ -1,0 +1,27 @@
+<refentry id="sidebar.title.Properties">
+<refmeta>
+<refentrytitle>sidebar.title.properties</refentrytitle>
+<refmiscinfo role="type">attribute set</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>sidebar.title.properties</refname>
+<refpurpose>Attribute set for sidebar titles</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='sidebar.title.properties.frag'>
+<xsl:attribute-set name="sidebar.title.properties">
+  <xsl:attribute name="font-weight">bold</xsl:attribute>
+  <xsl:attribute name="hyphenate">false</xsl:attribute>
+  <xsl:attribute name="text-align">start</xsl:attribute>
+  <xsl:attribute name="keep-with-next.within-column">always</xsl:attribute>
+</xsl:attribute-set>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>The styling for sidebars titles.</para>
+
+</refsect1>
+</refentry>

@@ -1,0 +1,26 @@
+<refentry id="section.autolabel.max.depth">
+<refmeta>
+<refentrytitle>section.autolabel.max.depth</refentrytitle>
+<refmiscinfo role="type">integer</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>section.autolabel.max.depth</refname>
+<refpurpose>The deepest level of sections that are numbered.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='section.autolabel.max.depth.frag'><xsl:param name="section.autolabel.max.depth" select="8"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>When section numbering is turned on by the
+<literal>section.autolabel</literal> parameter,
+then this parameter controls the depth of section nesting
+that is numbered.
+Sections nested to a level deeper than this value will
+not be numbered.
+</para>
+
+</refsect1>
+</refentry>

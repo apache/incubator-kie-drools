@@ -1,0 +1,34 @@
+<refentry id="process.source.toc">
+<refmeta>
+<refentrytitle>process.source.toc</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>process.source.toc</refname>
+<refpurpose>Process a non-empty <sgmltag>toc</sgmltag> element if it occurs in a source document?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='process.source.toc.frag'><xsl:param name="process.source.toc" select="0"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>Specifies that the contents of a non-empty "hard-coded"
+<sgmltag>toc</sgmltag> element in a source document are processed to
+generate a TOC in output.
+<note>
+  <para>This parameter has no effect on automated generation of
+  TOCs. An automated TOC may still be generated along with the
+  "hard-coded" TOC. To suppress automated TOC generation, adjust the
+  value of the <parameter>generate.toc</parameter> paramameter.</para>
+
+  <para>The <sgmltag>process.source.toc</sgmltag> parameter also has
+  no effect if the <sgmltag>toc</sgmltag> element is empty; handling
+  for empty <sgmltag>toc</sgmltag> is controlled by the
+  <parameter>process.empty.source.toc</parameter> parameter.</para>
+</note>
+</para>
+
+</refsect1>
+</refentry>

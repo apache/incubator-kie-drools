@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Why use a Rule Engine</title>
+
+  <para>Two questions often asked are</para>
+
+  <orderedlist>
+    <listitem>
+      <para>What advantage does this have over hand coded "if ..... then"
+      approaches?</para>
+    </listitem>
+
+    <listitem>
+      <para>Why should I use a Rule Engine instead of a scripting framework,
+      like <indexterm>
+          <primary>BeanShell</primary>
+        </indexterm>?</para>
+    </listitem>
+  </orderedlist>
+
+  <para></para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Declarative Programming</para>
+
+      <para>Rule englines allow you to say "What to do" not "How to do
+      it".</para>
+    </listitem>
+
+    <listitem>
+      <para>Logic and Data Separation</para>
+    </listitem>
+
+    <listitem>
+      <para>Speed and Scalability</para>
+
+      <para>The Rete algorithm, and its descendents such as Drools' Reteoo,
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>Centralisation Knowledge</para>
+    </listitem>
+
+    <listitem>
+      <para>Tool Integration</para>
+    </listitem>
+  </itemizedlist>
+</section>

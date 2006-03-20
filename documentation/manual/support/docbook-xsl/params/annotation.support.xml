@@ -1,0 +1,24 @@
+<refentry id="annotation.support">
+<refmeta>
+<refentrytitle>annotation.support</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>annotation.support</refname>
+<refpurpose>Enable annotations?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='annotation.support.frag'>
+<xsl:param name="annotation.support" select="0"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If non-zero, the stylesheets will attempt to support annotation
+elements in HTML by including some JavaScript (see
+<parameter>annotation.js</parameter>).</para>
+
+</refsect1>
+</refentry>

@@ -1,0 +1,33 @@
+<refentry id="process.empty.source.toc">
+<refmeta>
+<refentrytitle>process.empty.source.toc</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>process.empty.source.toc</refname>
+<refpurpose>Generate automated TOC if <sgmltag>toc</sgmltag> element occurs in a source document?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='process.empty.source.toc.frag'><xsl:param name="process.empty.source.toc" select="0"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>Specifies that if an empty <sgmltag>toc</sgmltag> element is
+found in a source document, an automated TOC is generated.
+<note>
+  <para>Depending on what the value of the
+  <parameter>generate.toc</parameter> parameter is, setting this
+  parameter to <literal>1</literal> could result in generation of
+  duplicate automated TOCs. So the
+  <parameter>process.empty.source.toc</parameter> is primarily useful
+  as an "override": by placing an empty <sgmltag>toc</sgmltag> in your
+  document and setting this parameter to <literal>1</literal>, you can
+  force a TOC to be generated even if <sgmltag>generate.toc</sgmltag>
+  says not to.</para>
+</note>
+</para>
+
+</refsect1>
+</refentry>

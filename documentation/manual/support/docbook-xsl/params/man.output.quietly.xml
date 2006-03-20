@@ -1,0 +1,32 @@
+<refentry id="man.output.quietly">
+<refmeta>
+<refentrytitle>man.output.quietly</refentrytitle>
+
+</refmeta>
+<refnamediv>
+<refname>man.output.quietly</refname>
+<refpurpose>Suppress filename messages emitted when generating output?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='man.output.quietly.frag'>
+<xsl:param name="man.output.quietly" select="0"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If zero (the default), for each man-page file created, a message
+with the name of the file is emitted. If non-zero, the files are
+output "quietly" -- that is, the filename messages are
+suppressed.</para>
+
+<tip>
+  <para>If you are processing a large amount of <tag>refentry</tag>
+  content, you may be able to speed up processing significantly by
+  setting a non-zero value for
+  <parameter>man.output.quietly</parameter>.</para>
+</tip>
+
+</refsect1>
+</refentry>

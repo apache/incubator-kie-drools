@@ -1,0 +1,60 @@
+<refentry id="sidebar.float.type">
+<refmeta>
+<refentrytitle>sidebar.float.type</refentrytitle>
+<refmiscinfo role="type">list</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>sidebar.float.type</refname>
+<refpurpose>Select type of float for sidebar elements</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='sidebar.float.type.frag'>
+<xsl:param name="sidebar.float.type" select="'none'"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>Selects the type of float for sidebar elements.
+</para>
+<itemizedlist>
+<listitem>
+<para>If <parameter>sidebar.float.type</parameter> is
+<quote><literal>none</literal></quote>, then 
+no float is used.
+</para>
+</listitem>
+<listitem>
+<para>If <parameter>sidebar.float.type</parameter> is
+<quote><literal>before</literal></quote>, then 
+the float appears at the top of the page.  On some processors,
+that may be the next page rather than the current page.
+</para>
+</listitem>
+<listitem>
+<para>If <parameter>sidebar.float.type</parameter> is
+<quote><literal>left</literal></quote> or
+<quote><literal>start</literal></quote>, then 
+a left side float is used.
+</para>
+</listitem>
+<listitem>
+<para>If <parameter>sidebar.float.type</parameter> is
+<quote><literal>right</literal></quote> or
+<quote><literal>end</literal></quote>, then 
+a right side float is used.
+</para>
+</listitem>
+<listitem>
+<para>If your XSL-FO processor supports floats positioned on the
+<quote><literal>inside</literal></quote> or
+<quote><literal>outside</literal></quote>
+of double-sided pages, then you have those two 
+options for side floats as well.
+</para>
+</listitem>
+</itemizedlist>
+
+</refsect1>
+</refentry>

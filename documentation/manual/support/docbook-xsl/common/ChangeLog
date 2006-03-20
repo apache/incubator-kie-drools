@@ -1,0 +1,1229 @@
+2006-03-06  <dcramer@users.sourceforge.net>
+
+	* labels.xsl: Number figures, examples, and tables from book if there is no prefix (i.e. if chapter.autolabel is set to 0). This avoids having the list of figures where the figures mysteriously restart their numeration periodically when chapter.autolabel is set to 0.
+
+2006-02-09  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* titles.xsl: Add task template in title.markup mode.
+
+2006-02-08  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Fixed bug #1359008.  If a mediaobject contains only one object, use it
+	even if it is only a textobject.
+
+2005-12-29  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* targets.xsl: Fixed bug # 1364478 xml:id not recognized by olink database.
+
+2005-12-15  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* table.xsl: Fixed attribute inheritance when in entrytbl.
+
+2005-12-13  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* olink.xsl: Clarified missing olink error message.
+
+2005-11-14  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* stripns.xsl: Handle xml:id, version, and xlink:href better; make sure title gets copied even when there's no info
+
+2005-11-05  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* targets.xsl: Add children (with ids) of formal objects to target data.
+
+2005-10-27  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* stripns.xsl: Map info elements to the right *info element when stripping NS. Set xml:base on external references rather than directly changing @fileref. Map xml:id to id.
+
+2005-10-13  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* olink.xsl: Fixed test expression
+
+2005-10-12  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* insertfile.xsl: New file.
+
+2005-10-06  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* stripns.xsl: New file.
+
+2005-10-03  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* make-catalog.xsl: Made make-catalog.xsl general-purpose and moved to releasetools
+	dir so it can be used with other modules.
+
+2005-10-02  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* common.xsl: Added support for case when personname doesn't contain specific name markup (as allowed in DocBook 5.0)
+
+2005-09-25  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* olink.xsl: Moved olink page number reference template to xref.xsl.
+
+2005-09-23  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* olink.xsl: Fixed handling of %p in olink xrefstyle templates.
+
+2005-09-09  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* pi.xsl: Added colon to list of delimiters for parsing datetime strings
+	into tokens. Closes #1285053. Thanks to Jeroen Ruigrok for the bug
+	report, and to Mauritz Jeanson for spotting the cause.
+
+2005-09-02  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* make-catalog.xsl: New file.
+
+2005-07-10  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* gentext.xsl: Added template to process part element in mode object.title.template
+	so it can properly choose gentext template for numbered
+	or unnumbered parts.
+
+	* gentext.xsl, labels.xsl: Added support for specifying number format for auto labels for
+	chapter, appendix, part, preface from patch #1234737
+	to satsify feature request #1178038.
+
+2005-07-08  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* refentry.xsl: Add "date" namespace.
+
+2005-07-05  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* common.xsl: Added evaluate.info.profile template.
+
+	* refentry.xsl: Update header comment.
+
+2005-07-04  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* refentry.xsl: New file.
+
+	* refentry.xsl: Changed title.
+
+2005-06-30  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* labels.xsl: Gave procedure its own label.markup template because it
+	should not count procedures without  title.
+
+2005-06-28  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* Makefile: "clean" target now deletes $(SOURCES) xml files instead of doing a
+	blanket "rm -f *.xml", which was causing hte l10n.xml file to be
+	deleted. That file is under version control, so deleting it was
+	forcing you to do a "cvs update" after you run "make clean". if
+	you forget, it screws up the build.
+
+2005-06-28  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* olink.xsl: Don't add docname to olink when pointing to root element.
+
+2005-06-06  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* .cvsignore, Makefile, l10n.xml: Added Amharic locale file contributed by the The Ge'ez Frontier
+	Foundation.
+
+	* l10n.xml: Added tl.xml
+
+2005-05-28  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* pi.xsl: Context node must be stored/restored in order to get correct language code. (Note that for-each changes current node.)
+
+2005-05-26  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* l10n.xsl: Make language codes RFC compliant (closes #1208931; thanks to
+	Bernd Groh for reporting).
+	
+	::PROBLEM:
+	  Stylesheets output two-part language codes in the form "zh_CN".
+	  But underscores in language codes are actually neither RFC
+	  compliant nor compliant with the HTML 4.0 rec. The separator
+	  should be a hyphen. To quote the specs:
+	
+	    Section 8.1.1, "Language Codes"[1], in the HTML 4.0 Rec.
+	    states that:
+	
+	    [RFC1766] defines and explains the language codes that MUST be
+	    used in HTML documents.
+	
+	    Briefly, language codes consist of a primary code and a
+	    possibly empty series of subcodes:
+	
+	      language-code = primary-code ( "-" subcode )*
+	
+	    And in RFC 1766, "Tags for the Identification of
+	    Languages"[2], the EBNF for "language tag" is given as:
+	
+	      Language-Tag = Primary-tag *( "-" Subtag )
+	      Primary-tag = 1*8ALPHA
+	      Subtag = 1*8ALPHA
+	
+	    [1] http://www.w3.org/TR/REC-html40/struct/dirlang.html#h-8.1.1
+	    [2] http://www.ietf.org/rfc/rfc1766.txt
+	
+	::CAUSE:
+	  Stylesheets simply pass through language codes unaltered. So if
+	  users put "zh_CN" in their source, they will get "zh_CN" in
+	  their HTML output.
+	
+	::FIX:
+	  Added a new boolean config parameter, "l10n.lang.value.rfc.compliant",
+	  set to 1 by default. If it is non-zero, any underscore in a
+	  language code will be converted to a hyphen in HTML output. If
+	  it is zero, the language code will be left as-is.
+	
+	::AFFECTS:
+	  This change affects any HTML output that contains two-part
+	  language codes.
+
+2005-05-24  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* common.xsl: Support generation of choice separator in inline simplelist
+	(closes #1207532)
+	
+	This ehancement enables auto-generation of an appropriate
+	localized "choice separator" (for example, "and" or
+	"or") before the final item in an inline simplelist.
+	
+	To indicate that you want a choice separator generated
+	for a particular list, you need to put a processing
+	instruction (PI) of the form <?dbchoice choice="foo"?>
+	as a child a of the list. For example:
+	
+	  <para>This release adds localiation support for the
+	  following Indic languages:
+	    <simplelist type="inline">
+	      <?dbchoice choice="and" ?>
+	      <member>Hindi</member>
+	      <member>Punjabi</member>
+	      <member>Tamil</member>
+	      <member>Oriya</member>
+	      <member>Gujarati</member>
+	    </simplelist>.
+	  </para>
+	
+	Output (for English):
+	
+	  This release adds localiation support for the
+	  following Indic languages: Hindi, Punjabi, Tamil,
+	  Oriya, and Gujarati.
+	
+	Or if the logical relationship between the items in the
+	list is an "or" relationship, then use choice="or":
+	
+	  <para>Choose from ONE and ONLY ONE of the following:
+	    <simplelist type="inline">
+	      <?dbchoice choice="or" ?>
+	      <member>A</member>
+	      <member>B</member>
+	      <member>C</member>.
+	    </simplelist>
+	  </para>
+	
+	Output (for English):
+	
+	  Choose from ONE and only ONE of the
+	  following choices: A, B, or C.
+	
+	As a temporary workaround for the fact that most of the
+	DocBook non-English locale files don't have a
+	localization for the word "or", you can put in a
+	literal string to be used; example for French:
+	
+	  <para>Choose from ONE and ONLY ONE of the following:
+	    <simplelist type="inline">
+	      <?dbchoice choice="ou" ?>
+	      <member>A</member>
+	      <member>B</member>
+	      <member>C</member>.
+	    </simplelist>
+	  </para>
+	
+	That is, use "ou" instead of "or".
+
+2005-05-23  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* pi.xsl: Minor update to date/time handling.
+
+	* pi.xsl: Make handling of date format strings more robust (closes #1206837).
+	
+	::Problem:
+	  If the "dbtimestamp" PI has words in it that contain any of the
+	  single-letter characters used as date/time formatting
+	  instructions, the output is not what would be expected.
+	
+	  For example, Spanish "long" dates look like this:
+	
+	    23 de mayo de 2005
+	
+	  So you would expect that you could generate a date of that form
+	  using the dbtimestamp PI with a format string like the following:
+	
+	    <?dbtimestamp format="d de B de Y"?>
+	
+	  But if you try that, you get the following output:
+	
+	    23 23e mayo 23e 2005
+	
+	  That is, the "d" in "de" is replaced with the day of the month.
+	
+	::Cause::
+	  The format-string parsing logic works by walking through the
+	  format string character-by-character. So when it gets to the "d"
+	  in "de", it has no way of discerning that it is not the "d"
+	  formatting instruction but is instead part of a word intended to
+	  be included in the output as a literal string.
+	
+	::Fix::
+	  The format-string parsing logic now splits format strings into
+	  tokens and delimiters and evaluates them token-by-token instead
+	  of character-by-character.
+	
+	  For example, it splits the Spanish "long" date format like this:
+	
+	    <token>d</token> <token>de</token> <token>B</token> ...
+	
+	  Thus, in looking for the "d" formatting instruction, the "d"
+	  token matches but the "de" token does not.
+	
+	  As delimiters, it recognizes the following characters:
+	
+	    <space> <tab> <CR> <LF> , . / - ( ) [ ]
+	
+	::Affects:
+	  This change affects output of the "dbtimestamp" PI as well as
+	  output from any customization layers that call the
+	  "datetime.format" template. It affect all formats (HTML, FO, etc.).
+
+2005-05-21  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* .cvsignore, Makefile, l10n.xml: Added Kannada localization (from Siddharudh P T)
+
+	* l10n.xml: Fixed typo.
+
+2005-05-16  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* .cvsignore, Makefile: Added Welsh localization (from Kevin Donnelly)
+
+	* .cvsignore, Makefile, l10n.xml: Added Mongolian localization from Sanlig Badral.
+
+	* l10n.xml: Added missing entity ref for hi.xml
+
+	* l10n.xml: Added all recently added locales.
+
+2005-05-14  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* .cvsignore, Makefile: Added Azerbaijani translation (from Metin Amiroff)
+
+	* .cvsignore, Makefile: Added Irish (Gaelic) localization (from Kevin Patrick Scannell)
+
+	* .cvsignore, Makefile: Added Oriya localization (from Gora Mohanty)
+
+2005-05-13  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* .cvsignore, Makefile: Incorporated Albanian locale file contributed by Laurent Dhima.
+
+	* .cvsignore, Makefile: Added hi.xml file contributed by Bernd Groh. Removed "letters"
+	element from locale files that don't need it.
+
+2005-05-12  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* .cvsignore, Makefile: Added Tamil, Punjabi, and Gujarati locale files contributed by Bernd Groh
+
+	* Makefile: removed build-branch version of Makefile
+
+	* Makefile: Added support for Punjabi, Gujarati, and Tamil (via locale files
+	contributed by Bernd Groh) (ported from build branch)
+
+2005-05-11  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* common.xsl: Code -> Literal (because jrefentry DTD imports on DocBook 4.1.2,
+	which lacks Code)
+
+	* common.xsl: Fixed typo.
+
+2005-05-10  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* common.xsl: Strip whitespace in Manvolnum; closes bug #959805
+	(thanks to Jens Elkner for reporting the problem)
+	
+	::PROBLEM:
+	  Whitespace is preserved in output for Manvolnum. Among other
+	  things, this results in garbled filenames for man pages
+	  generated from the manpages stylesheets.
+	
+	::CAUSE
+	  Manvolnum was not included in the master list of "strip space"
+	  elements.
+	
+	::FIX
+	  Added Manvolnum to master list of "strip space" elements.
+	
+	::AFFECTS
+	  This change affects all output formats.
+
+	* common.xsl: Strip whitespace in Refsection; closes bug #1198766 and #1170315
+	(thanks to Denis Bradford for reporting the problem)
+	
+	::PROBLEM:
+	  Whitespace is preserved in output for Refsection. Among other
+	  things, this results in malformed groff output from the manpages
+	  stylesheets.
+	
+	::CAUSE
+	  Refsection was not included in the master list of "strip space"
+	  elements.
+	
+	::FIX
+	  Added Refsection to master list of "strip space" elements.
+	
+	::AFFECTS
+	  This change affects all output formats.
+
+	* common.xsl: Added template to uppercase strings (closes #1199123)
+	
+	Given a string, this template does a language-aware conversion of
+	that string to all uppercase letters, based on the values of the
+	lowercase.alpha and uppercase.alpha gentext keys for the current
+	locale. It affects only those characters found in the values of
+	lowercase.alpha and uppercase.alpha. All other characters are left
+	unchanged.
+
+2005-05-06  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* olink.xsl: Fix bug in use.local.olink.style.
+
+2005-04-08  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* table.xsl: Applied patches submitted for bug # 1175423.
+
+2005-04-04  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Support xml:id in object.id
+
+2005-03-29  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* targetdatabase.dtd: Added @dir to document, to support Website.
+
+2005-02-21  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* l10n.xsl: Quick hack improving support for dir attribute. However problem is much more complex, support must be added into indexes and headers/footers also.
+
+2005-02-12  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* .cvsignore: fa.xml, ignore
+
+2005-02-11  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* Makefile: fa.xml added; ported from trunk
+
+2005-02-11  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* Makefile, l10n.xml: Added new fa.xml for Farsi language.
+
+2005-01-25  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* labels.xsl: Fixed bug in sect1 label.markup mode that could output the
+	component label without the section label.
+
+2005-01-19  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* titles.xsl: Support refdescriptor
+
+	* titles.xsl: Support title in info for figure, example, and equation. This only occurs in DocBook V5 which is still pretty sporadically supported, but...
+
+2004-12-11  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Minor fixes for itemizedlist symbols.
+
+2004-12-07  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* titles.xsl: Fixed bug #1079453, title attribute being added to non-existant element.
+
+2004-12-02  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* Makefile: New file.
+
+2004-11-18  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* l10n.xsl: Fixed bug in lang selection from ancestor-or-self predicate.
+
+2004-11-17  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Fixed bug in strippath template that stripped leading double dots.
+
+2004-11-16  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* labels.xsl: issue #924251 Wrong numbering of Qandaset entries
+	applied patch from Harald Joerg.
+
+2004-10-28  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* titles.xsl: Fix bug #663552: handle xref correctly when it appears in titles.
+
+2004-10-24  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* table.xsl: Fixed bug #1005990. Column spans are now working also in entrytbl element, not only in table elements. However due to complexity of table code I am not completely sure whether I fixed it on all places.
+
+2004-10-22  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* labels.xsl: Bug #1035656: the label for a listitem in an orderedlist must account for the possibility of continuations or alternate starting numbers
+
+2004-09-22  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* olink.xsl: Fixed bug where olink.base.uri parameter was being used in the wrong place.
+
+2004-09-20  Michael Smith <xmldoc@users.sourceforge.net>
+
+	* .cvsignore: Added bs.xml to ignore list. Also, re-sorted list.
+	(Committed while riding on a train between Yokohama and Tokyo.)
+
+2004-09-18  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* targetdatabase.dtd: Changed the page element to an attribute.
+
+2004-09-17  Peter Eisentraut <petere78@users.sourceforge.net>
+
+	* Makefile: branches:  1.22.2;
+	Bosnian translation by Kemal Skripic
+
+	* l10n.xml: Bosnian translation by Kemal Skripic
+
+2004-09-17  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* l10n.xml: Added &bs; entity reference.
+
+	* pi.xsl: Fix Xalan date-time bug.
+
+2004-09-13  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* olink.xsl: Fixed bug in olink resolution.
+
+2004-09-09  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Fixed bug in xml:base resolution not recursing through the ancestors.
+
+2004-09-06  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* olink.xsl: remove duplicate make.gentext.template and substitute.markup templates.
+
+2004-08-26  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* labels.xsl: Added component.label.includes.part.label parameter to appendices and
+	other component elements.
+
+	* labels.xsl: Add component.label.includes.part.label parameter to add
+	part number to chapter labels when $label.from.part is nonzero.
+
+2004-08-19  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* l10n.xsl: Fixed variable name
+
+2004-08-15  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* l10n.xsl: Another select optimization.
+
+	* l10n.xsl: lang attribute select statement optimized.
+
+2004-08-11  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* titles.xsl: In no.anchor.mode, test for any link descendants and switch to
+	normal formatting if  there are none. This preserves formatting
+	in titleabbrev for TOC and headers.
+
+2004-08-09  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* Makefile: Make each locale file dependent on en.xml to pick up any new items
+	so that all locale files at least have all items, even if not yet
+	translated.
+
+	* gentext.xsl: Added olink docname placeholder to substitute.markup and make.gentext.template.
+
+2004-08-08  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* olink.xsl: New file.
+
+2004-07-20  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* titles.xsl: titleabbrev.markup mode was not getting a book's titleabbrev in bookinfo.
+
+2004-06-26  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Added helper templates to resolve xml:base attributes.
+
+	* common.xsl: Changed @fileref processing to support xml:base.
+
+2004-06-20  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* gentext.xsl, labels.xsl: Added support for new section.autolabel.max.depth to turn off
+	section numbering below a certain depth.
+
+2004-06-16  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Removed 'entry' from xsl:strip-space element list because it
+	can contain #PCDATA.
+
+2004-06-14  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* gentext.xsl: Add support for xrefstyle attrib in olinks.
+
+2004-06-11  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* l10n.xml: Added missing ar.xml and hr.xml.
+
+2004-05-28  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* gentext.xsl, targets.xsl, titles.xsl: Eliminated spurious error messages when collecting olink targets.
+
+2004-05-19  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* gentext.xsl: Fixed misplaced "
+
+2004-04-26  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* gentext.xsl: For procedure object.title.template, use formal only if title
+	actually present.
+
+2004-04-21  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* labels.xsl: Template label.this.section controls whole section label, not only sub-label which corresponds to particular label. Former behaviour was IMHO bug as it was not usable.
+
+2004-04-12  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* table.xsl: Fixed bug #880044 in which rowsep or colsep attributes on the
+	table or informaltable element had no effect.
+
+2004-04-11  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* targets.xsl: Another bad parameter name fixed.
+
+	* targets.xsl: Bug # 907582: incorrect parameter name fixed.
+
+2004-03-10  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* targets.xsl: Fixed bug whereby bibliography entries were not getting into
+	the olink database.
+
+2004-02-18  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* labels.xsl: Turn off procedure number when formal.procedures = 0.
+
+2004-01-29  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* subtitles.xsl, titles.xsl: Support 'info'
+
+2004-01-26  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* targets.xsl: Pass empty doctype parameters to write.chunk so the
+	output can be used as an entity without DOCTYPE.
+
+2003-12-31  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* autoidx-ng.xsl, l10n.dtd: Added support for new i18n friendly indexing method
+
+2003-12-15  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile: Support sr_Latn locale
+
+2003-12-13  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* l10n.xml: Added sr_Latn.xml for Serbian in Latin script.
+
+2003-12-06  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Fixed bug #851603 infinite recursion in copyright.year when
+	no <year> elements at all.
+
+2003-12-05  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: section.level now computes refentry sections relative to container element.
+
+2003-11-30  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* gentext.xsl, labels.xsl, subtitles.xsl, table.xsl, targets.xsl, titles.xsl: 
+	Added CVS $Id$ comment.
+
+2003-11-17  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* labels.xsl: Fixed bug where sect1 generated infinite loop when root element
+	and $section.label.includes.component.label is non zero.
+
+2003-10-12  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* gentext.xsl: Fixed cut-and-paste typo in substitute.markup template.
+
+2003-09-23  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* pi.xsl: Fixed dbdatetime PI, which was using context
+	datetime-abbrev for format "B" rather than datetime-full.
+
+2003-08-27  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* titles.xsl: Support HTML tables
+
+2003-08-18  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore: Ignore generate XML documents for Latin and Bangla
+
+	* Makefile, l10n.xml: Add support for Latin
+
+2003-07-31  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* Makefile: Update Makefile to new gentext mechanism
+
+2003-07-31  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* gentext.xsl: Added template for question in object.xref.markup mode
+	to handle case of defaultlabel = qanda.
+
+	* labels.xsl: Removed processing of @label on qandadiv since that is
+	not an allowed attribute of qandadiv.
+
+2003-07-25  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* Makefile, l10n.xml: Added bn.xml Bangla language.
+
+	* gentext.xsl: Handles new xref contexts and the new xrefstyle attribute
+	on xref elements.
+
+	* pi.xsl: Now uses new datetime-full and datetime-abbrev gentext
+	contexts for certain date components.
+
+2003-07-08  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* l10n.xsl: Removed extraneous variable l10n.name which is not used.
+
+2003-06-24  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* l10n.xsl: Fixed bug in l10n.language template where $target parameter
+	was missing from xpath expression.
+
+2003-06-21  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile: Added Croatian
+
+2003-05-19  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile: Added Arabic
+
+2003-05-08  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* titles.xsl: Support 'title.markup' on glossentry
+
+2003-04-29  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* pi.xsl: Added localization support for datetime PI
+
+2003-04-27  <dcramer@users.sourceforge.net>
+
+	* common.xsl: Added level 6 to test for section depth in section.level template so that section.title.level6.properties will be used for sections that are 6 deep or deeper. This should also cause a h6 to be created in html output.
+
+2003-04-16  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* pi.xsl: Changed PI name from <?timestamp?> to <?dbtimestamp?>
+
+2003-04-14  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* pi.xsl: New file.
+
+2003-04-13  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* table.xsl: A few bug fixes for the colsep/rowsep code
+
+2003-04-12  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Don't use SVG graphics if use.svg=0
+
+	* table.xsl: Support template to find out if there are more columns in the current row of a table
+
+2003-04-05  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* gentext.xsl: Now uses number-and-title-template for sections only
+	if $section.autolabel is not zero.
+
+2003-03-02  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* common.xsl: Fixed several errors related to TeX math processing
+
+2003-02-25  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* l10n.dtd: Added missing 'english-language-name' attribute to the l10n
+	element, and the missing 'style' attribute to the template
+	element so the current gentext documents will validate.
+
+2003-01-30  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Corrected several references to parameter $qanda.defaultlabel
+	that were missing the "$".
+
+2003-01-23  Adam Di Carlo <adicarlo@users.sourceforge.net>
+
+	* Makefile: make use of cvstools/Makefile.incl
+
+2003-01-20  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* gentext.xsl: Support experimental parameter to specify that number-and-title xrefs should be used even when things are numbered
+
+	* gentext.xsl: Added object.titleabbrev.markup for consistency
+
+	* l10n.xsl: Added gentext.template.exists to test if a gentext template exists. Clever name, huh?
+
+	* titles.xsl: Expanded support for obtaining titleabbrevs
+
+2003-01-10  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, l10n.xml: Added bg.xml
+
+	* Makefile: Add Bulgarian
+
+2003-01-02  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* labels.xsl, titles.xsl: Support setindex (there were all sorts of things wrong with it)
+
+2003-01-01  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* table.xsl: CALS says the default for colsep and rowsep is 1.
+
+	* table.xsl: Fix variable scoping problem
+
+	* titles.xsl: Support titleabbrev (outside of info elements anyway)
+
+2002-12-18  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: The select.mediaobject.index template now uses the
+	$stylesheet.result.type parameter to choose the role
+	value, with xhtml falling back to html if needed.
+
+2002-12-17  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Changed selection of mediaobject to be more consistent using
+	a separate select.mediaobject.index template. Also added
+	text-align to block containing external-graphic in fo output.
+
+2002-11-23  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Fixed bug in orderedlist-starting-number test when
+	@continuation not set.
+
+2002-11-14  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Handle nested refsections in section.level
+
+	* gentext.xsl: Pass full xpath name to gentext.template instead of just the local-name
+
+	* l10n.xsl: Make gentext.template search through /-separated names
+
+2002-10-19  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* l10n.xsl: Support output of language attribute
+
+2002-10-09  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* l10n.xsl: Make 3166 language codes work in upper or lowercase
+
+2002-10-02  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Added orderedlist-starting-number and orderedlist-item-number templates
+
+2002-10-01  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Changed the section.level template to return a number that matches
+	the section level (sect1 = 1, etc.).
+
+2002-09-27  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* l10n.xml: Add Thai
+
+2002-09-15  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile, l10n.xml: Added LT and VI localizations
+
+2002-09-04  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Refactor person.name templates so that it's easy to override them
+
+	* l10n.xsl: Move l10n.* parameters into ../params so they can be properly documented; made l10n.gentext.use.xref.language a numeric boolean parameter instead of a proper boolean
+
+2002-09-03  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Remove spurious character on line 432
+
+	* table.xsl: Make sure row-level colsep and rowsep values are 'inherited' onto missing cells
+
+2002-09-02  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Support person-name style from localization data in personal names
+
+2002-08-28  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* table.xsl: Make inherited attributes work for 'missing' table cells
+
+2002-07-29  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* targetdatabase.dtd: Forgot to fix the attribute on the <obj> element
+	as well.
+
+	* targetdatabase.dtd: Changed the targetptr attribute from #REQUIRED to #IMPLIED
+	since it is not required on all objects.
+
+	* targetdatabase.dtd: Replaced targetid attribute on document with targetptr
+	per the decision of the DocBook Technical Committee.
+
+2002-07-17  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* labels.xsl: Fixed thinko
+
+	* labels.xsl: Don't count equations without titles when labelling equations
+
+2002-07-13  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* targets.xsl: Fixed output encoding to utf-8 so a targets database
+	can handle mixed languages.
+	Added omit-xml-declaration to get around the standalone
+	attribute in the XML declaration not being permitted
+	in system entities.
+
+2002-07-09  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* labels.xsl: Bug #558333: use containing section for the label of a bridgehead if section.autolabel is non-zero
+
+2002-07-07  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* common.xsl: Changed the name of the second-order itemizedlist mark
+	from 'round' (not supported in browsers' <ul> 'type' attribute)
+	to 'circle', which is supported.
+	Both are already supported in FO stylesheet.
+
+2002-07-06  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* targets.xsl: The default.encoding parameter has been renamed chunker.output.encoding
+
+2002-07-05  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* labels.xsl, titles.xsl: Added 'verbose' parameter to default templates in
+	title.markup mode and label.markup mode, and made
+	the error message conditional on that parameter.  The
+	default value is 1, so the message will still be
+	there for normal usage.  But the targets.xsl
+	stylesheet sets verbose to 0 when trolling for
+	cross reference targets to eliminate useless noise
+	on elements that have an id attribute but no title or label.
+
+	* targetdatabase.dtd: New file.
+
+	* targets.xsl: New file.
+
+2002-06-11  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Augmented debugging message (commented out)
+
+	* gentext.xsl: Experimental support for xrefstyle; support for %d in templates
+
+	* l10n.xsl: Experimental support for xrefstyle
+
+	* titles.xsl: Support refsynopsisdiv in title.markup mode
+
+2002-05-23  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Support for SVG in HTML
+
+2002-05-21  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* gentext.xsl: Whitespace
+
+	* labels.xsl: Don't generate '. ' after QandA labels
+
+2002-05-12  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Fix bugs in extension checking in mediaobject.filename
+
+	* l10n.xsl: Reworked test in gentext.template; should have no user-visible changes
+
+	* table.xsl: Removed some obsolete templates; reworked inheritance for improved border support (still implements old DocBook semantics which aren't quite CALS)
+
+	* titles.xsl: Improved error message
+
+2002-04-21  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile, l10n.xml: Add support for Hebrew localization
+
+2002-03-24  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Change comment: personname is no longer experimental
+
+2002-03-18  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Replace generate.*.toc and generate.*.lot with single generate.toc parameter.
+
+2002-03-18  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* gentext.xsl: Replaced the substitute-markup template with one
+	using simpler logic.  Added params for the content
+	to be substituted so it can be used with olinks
+	where the content is supplied from a data file.
+
+2002-03-14  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Handle revisionflag a little better on copyrights
+
+	* common.xsl, gentext.xsl, l10n.xsl, labels.xsl, subtitles.xsl, table.xsl, titles.xsl: 
+	Whitespace only: change CR/LF back to LF. Norm was a total moron.
+
+	* common.xsl, gentext.xsl, l10n.xsl, labels.xsl, subtitles.xsl, table.xsl, titles.xsl: 
+	Whitespace changes only: use PC-style CR/LF because Unix clients choke on this far less often than PC clients choke on the reverse. Grrr.
+
+2002-03-07  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* titles.xsl: refentry title in title.markup mode now follows $allow-anchors setting
+	to prevent index entries from appearing in the TOC.
+
+2002-01-28  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* l10n.dtd, l10n.xml: Tweaks to the l10n.dtd to make it as namespace aware as DTDs can be
+
+2002-01-25  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* table.xsl: Fix bug that caused rowsep and colsep to be ignored on empty cells
+
+2002-01-10  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* l10n.xsl: Don't rely on the order of attribute nodes cause they don't have one
+
+2002-01-03  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile: Added Thai localization
+
+	* common.xsl: Calculate itemized list symbol based on depth analagous to orderedlist numeration
+
+	* gentext.xsl: Use unnumbered gentext keys appropriately
+
+2001-12-15  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* common.xsl: Improved support for TeX math inside equations.
+
+2001-12-04  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* labels.xsl: Bug #435320: Poor enumeration of LoTs and LoFs
+
+	* titles.xsl: Bug! Can't put HTML here. But what does this break?
+
+2001-12-02  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* titles.xsl: Make no.anchor.mode 'sticky'. This is really necessary because otherwise title inlines effectively turn it off
+
+2001-12-01  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* labels.xsl: Improve FAQ labeling
+
+2001-11-29  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* l10n.xsl: Fixed error message for missing localization so that if
+	missing in en.xml, it doesn't say 'using en'.
+
+2001-11-28  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Added punct.honorific parameter
+
+	* l10n.xsl: Removed crufty gentext.xref.text template
+
+2001-11-15  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Support experimental personname wrapper
+
+2001-11-14  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile, l10n.xml: Added Basque
+
+2001-11-12  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Support well-formed documents, use key() instead of id()
+
+2001-11-09  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile, l10n.xml: Added Nynorsk
+
+2001-11-06  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* labels.xsl: Why did I assume sections should always be labelled in articles?
+
+2001-11-02  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Support FAMILY Given style personal names
+
+2001-10-30  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile, l10n.xml: Added Xhosa
+
+2001-10-16  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* table.xsl: Table support improvements
+
+2001-10-15  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile, l10n.xml: Added Ukranian
+
+	* table.xsl: Fix calculation of rowsep and colsep; added experimental support for table.borders.with.css in HTML; calculation of alignments needs to be added along the same lines
+
+2001-10-14  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* table.xsl: New file.
+
+2001-09-25  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Support automatic collation of year ranges in copyright
+
+	* l10n.xsl: Fix gentext.nav.* templates
+
+2001-09-22  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* gentext.xsl: Rewrote substitute-markup to support %p
+
+	* gentext.xsl, labels.xsl: Bug #463033: allow xref to list items (in orderedlists) and varlistentrys
+
+	* titles.xsl: Support title.markup for legal notices
+
+2001-08-29  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Fix orderedlist numerations
+
+2001-08-14  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* l10n.xsl: Calculation of the dingbat nodeset was simply broken
+
+2001-08-13  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* Makefile: Added stylesheet as a dependency
+
+2001-08-04  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* l10n.dtd: Rename internationalization to i18n, localization to l10n
+
+	* l10n.xml: Rename internationalization to i18n, localization to l10n, add namespace declaration
+
+	* l10n.xsl: Support a local i18n override, rename internationalization to i18n, localization to l10n, add namespace declaration
+
+	* labels.xsl: PartIntros never get a label
+
+2001-08-01  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* gentext.xsl: Pass allow-anchors through properly
+
+	* labels.xsl: Fix question labelling
+
+	* titles.xsl: Output anchors for titles if the titles have ids
+
+2001-07-31  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* l10n.xsl: Reverted the change from [last()] to [1] back to [last()]
+	because that is the correct code.
+
+	* l10n.xsl: Added code to the "l10n.language" template to fall
+	back to the two-letter lang code if a longer lang
+	does not have a <lang>.xml localization file.
+	And it falls back to the default lang if it can't
+	find that either.
+	
+	Also fixed a bug for finding the lang attribute.
+	It was using the last() function, but in an
+	ancestor-or-self node set you want the first ancestor
+	(closest) with a lang value.
+	
+	49c49
+	<                                |ancestor-or-self::*/@xml:lang)[last()]"/>
+	---
+	>                                |ancestor-or-self::*/@xml:lang)[1]"/>
+
+2001-07-17  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* common.xsl: Fixed bug #442160. Parameter graphic.default.extension is now used also for <graphic> and <inlinegraphic> not only for <imagedata>.
+
+2001-07-08  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* gentext.xsl, titles.xsl: Support xref to bridgehead
+
+2001-07-04  <uid48421@users.sourceforge.net>
+
+	* .cvsignore, Makefile, l10n.xml: Added support for Turkish
+
+	* .cvsignore, Makefile, l10n.xml: Added Afrikaans
+
+	* common.xsl, titles.xsl: Bug #429011, fix xref to qandset elements
+
+	* labels.xsl: Bug #426188, fix question/answer labels
+
+2001-06-21  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl, gentext.xsl, labels.xsl, titles.xsl: Use common code to calculate step numbers; support xref to procedures and steps; added formal.procedures parameter
+
+2001-06-20  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* l10n.xsl: Xalan debugging; harmless changes
+
+2001-06-14  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* subtitles.xsl: Support subtitle on article
+
+2001-05-23  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Fix dup. template bug with is.graphic.*
+
+	* gentext.xsl: Workaround article/appendix formatting bug (HACK)
+
+	* labels.xsl: Label appendixes correctly in books and articles
+
+2001-05-21  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* labels.xsl: Tweak for section labels in articles
+
+2001-05-12  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: Added refsect* to the section.level template
+
+2001-05-04  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile, l10n.xml: Add Serbian localization
+
+2001-04-21  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* common.xsl: My first crude attempts at support for qandaset
+
+2001-04-19  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* gentext.xsl, titles.xsl: Fix bug #417193, make sure allow-anchors is properly propagated through substitute-markup
+
+2001-04-18  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* titles.xsl: Suppress indexterms in no.anchor.mode
+
+2001-04-17  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* labels.xsl: Move label.from.part parameter into param.xsl; default it to 0 so that chapters and appendixes are numbered monotonically throughout a book by default. Moved param.xsl up in the include list, just for good measure
+
+2001-04-16  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* gentext.xsl: Fix bug in processing of subtitle content
+
+	* labels.xsl: Only label.from.part if there actually is a part
+
+	* titles.xsl: Don't put ulink, link, olink, or xref in titles if anchor's aren't allowed
+
+2001-04-15  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* gentext.xsl: Localize the textonly calculations by creating a object.title.markup.textonly mode
+
+2001-04-03  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* gentext.xsl, labels.xsl, titles.xsl: Fix bug 412487, make XSL-generated callout marks honor callout mark parameters
+
+	* titles.xsl: Restore no.anchor.mode and suppress footnotes in no.anchor.mode
+
+2001-04-02  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* .cvsignore, Makefile: Make common files
+
+	* common.xsl, gentext.xsl, l10n.xml, l10n.xsl, labels.xsl, subtitles.xsl, titles.xsl: 
+	New file.
+
+	* gentext.xsl: Commented out debugging messages
+
+	* l10n.dtd: New file.
+

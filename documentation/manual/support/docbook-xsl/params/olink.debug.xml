@@ -1,0 +1,31 @@
+<refentry id="olink.debug">
+<refmeta>
+<refentrytitle>olink.debug</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>olink.debug</refname>
+<refpurpose>Turn on debugging messages for olinks</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='olink.debug.frag'>
+<xsl:param name="olink.debug" select="0"/>
+</src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If non-zero, then each olink will generate several
+messages about how it is being resolved during processing.
+This is useful when an olink does not resolve properly
+and the standard error messages are not sufficient to
+find the problem. 
+</para>
+
+<para>You may need to read through the olink XSL templates
+to understand the context for some of the debug messages.
+</para>
+
+</refsect1>
+</refentry>

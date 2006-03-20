@@ -1,0 +1,21 @@
+<refentry id="simplesect.in.toc">
+<refmeta>
+<refentrytitle>simplesect.in.toc</refentrytitle>
+<refmiscinfo role="type">boolean</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>simplesect.in.toc</refname>
+<refpurpose>Should <sgmltag>simplesect</sgmltag> elements appear in the TOC?</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<src:fragment id='simplesect.in.toc.frag'><xsl:param name="simplesect.in.toc" select="0"/></src:fragment>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para>If non-zero, <sgmltag>simplesect</sgmltag>s appear in the TOC.
+</para>
+
+</refsect1>
+</refentry>

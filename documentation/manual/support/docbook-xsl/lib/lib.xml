@@ -1,0 +1,1193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book
+  PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<book>
+<bookinfo>
+<title>XSL Library Template Reference</title>
+<releaseinfo role="cvs">$Id: lib.xweb,v 1.14 2005/10/24 06:39:31 xmldoc Exp $
+</releaseinfo>
+<corpauthor>DocBook Open Repository Team</corpauthor>
+<copyright>
+  <year>1999</year>
+  <year>2000</year>
+  <year>2001</year>
+  <year>2002</year>
+  <year>2005</year>
+  <holder>Norman Walsh</holder>
+</copyright>
+</bookinfo>
+
+<preface><title>Introduction</title>
+
+<para>This is technical reference documentation for the DocBook XSL
+Stylesheets; it documents (some of) the parameters, templates, and
+other elements of the stylesheets.</para>
+
+<para>This is not intended to be <quote>user</quote> documentation.
+It is provided for developers writing customization layers for the
+stylesheets, and for anyone who's interested in <quote>how it
+works</quote>.</para>
+
+<para>Although I am trying to be thorough, this documentation is known
+to be incomplete. Don't forget to read the source, too :-)</para>
+
+</preface>
+
+<reference>
+<title>General Library Templates</title>
+
+<refentry id="dot.count">
+<refnamediv>
+<refname>dot.count</refname>
+<refpurpose>Returns the number of <quote>.</quote> characters in a string</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<programlisting><programlisting id="dot.count.frag">
+&lt;xsl:template name="dot.count"&gt;
+  &lt;!-- Returns the number of "." characters in a string --&gt;
+  &lt;xsl:param name="string"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="count" select="0"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="contains($string, '.')"&gt;
+      &lt;xsl:call-template name="dot.count"&gt;
+        &lt;xsl:with-param name="string" select="substring-after($string, '.')"&gt;&lt;/xsl:with-param&gt;
+        &lt;xsl:with-param name="count" select="$count+1"&gt;&lt;/xsl:with-param&gt;
+      &lt;/xsl:call-template&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:value-of select="$count"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="copy-string">
+<refnamediv>
+<refname>copy-string</refname>
+<refpurpose>Returns <quote>count</quote> copies of a string</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<programlisting><programlisting id="copy-string.frag">
+&lt;xsl:template name="copy-string"&gt;
+  &lt;!-- returns 'count' copies of 'string' --&gt;
+  &lt;xsl:param name="string"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="count" select="0"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="result"&gt;&lt;/xsl:param&gt;
+
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="$count&gt;0"&gt;
+      &lt;xsl:call-template name="copy-string"&gt;
+        &lt;xsl:with-param name="string" select="$string"&gt;&lt;/xsl:with-param&gt;
+        &lt;xsl:with-param name="count" select="$count - 1"&gt;&lt;/xsl:with-param&gt;
+        &lt;xsl:with-param name="result"&gt;
+          &lt;xsl:value-of select="$result"&gt;&lt;/xsl:value-of&gt;
+          &lt;xsl:value-of select="$string"&gt;&lt;/xsl:value-of&gt;
+        &lt;/xsl:with-param&gt;
+      &lt;/xsl:call-template&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:value-of select="$result"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="string.subst">
+<refnamediv>
+<refname>string.subst</refname>
+<refpurpose>Substitute one text string for another in a string</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>The <function>string.subst</function> template replaces all
+occurances of <parameter>target</parameter> in <parameter>string</parameter>
+with <parameter>replacement</parameter> and returns the result.
+</para>
+
+<programlisting><programlisting id="string.subst.frag">
+&lt;xsl:template name="string.subst"&gt;
+  &lt;xsl:param name="string"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="target"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="replacement"&gt;&lt;/xsl:param&gt;
+
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="contains($string, $target)"&gt;
+      &lt;xsl:variable name="rest"&gt;
+        &lt;xsl:call-template name="string.subst"&gt;
+          &lt;xsl:with-param name="string" select="substring-after($string, $target)"&gt;&lt;/xsl:with-param&gt;
+          &lt;xsl:with-param name="target" select="$target"&gt;&lt;/xsl:with-param&gt;
+          &lt;xsl:with-param name="replacement" select="$replacement"&gt;&lt;/xsl:with-param&gt;
+        &lt;/xsl:call-template&gt;
+      &lt;/xsl:variable&gt;
+      &lt;xsl:value-of select="concat(substring-before($string, $target),                                    $replacement,                                    $rest)"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:value-of select="$string"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="xpointer.idref">
+<refnamediv>
+<refname>xpointer.idref</refname>
+<refpurpose>Extract IDREF from an XPointer</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>The <function>xpointer.idref</function> template returns the
+ID portion of an XPointer which is a pointer to an ID within the current
+document, or the empty string if it is not.</para>
+<para>In other words, <function>xpointer.idref</function> returns
+<quote>foo</quote> when passed either <literal>#foo</literal>
+or <literal>#xpointer(id('foo'))</literal>, otherwise it returns
+the empty string.</para>
+
+<programlisting><programlisting id="xpointer.idref.frag">
+&lt;xsl:template name="xpointer.idref"&gt;
+  &lt;xsl:param name="xpointer"&gt;http://...&lt;/xsl:param&gt;
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="starts-with($xpointer, '#xpointer(id(')"&gt;
+      &lt;xsl:variable name="rest" select="substring-after($xpointer, '#xpointer(id(')"&gt;&lt;/xsl:variable&gt;
+      &lt;xsl:variable name="quote" select="substring($rest, 1, 1)"&gt;&lt;/xsl:variable&gt;
+      &lt;xsl:value-of select="substring-before(substring-after($xpointer, $quote), $quote)"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:when test="starts-with($xpointer, '#')"&gt;
+      &lt;xsl:value-of select="substring-after($xpointer, '#')"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;!-- otherwise it's a pointer to some other document --&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+
+<refentry id="length-magnitude">
+<refnamediv>
+<refname>length-magnitude</refname>
+<refpurpose>Return the unqualified dimension from a length specification</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>The <function>length-magnitude</function> template returns the
+unqualified length ("20" for "20pt") from a dimension.
+</para>
+
+<programlisting><programlisting id="length-magnitude.frag">
+&lt;xsl:template name="length-magnitude"&gt;
+  &lt;xsl:param name="length" select="'0pt'"&gt;&lt;/xsl:param&gt;
+
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="string-length($length) = 0"&gt;&lt;/xsl:when&gt;
+    &lt;xsl:when test="substring($length,1,1) = '0'                     or substring($length,1,1) = '1'                     or substring($length,1,1) = '2'                     or substring($length,1,1) = '3'                     or substring($length,1,1) = '4'                     or substring($length,1,1) = '5'                     or substring($length,1,1) = '6'                     or substring($length,1,1) = '7'                     or substring($length,1,1) = '8'                     or substring($length,1,1) = '9'                     or substring($length,1,1) = '.'"&gt;
+      &lt;xsl:value-of select="substring($length,1,1)"&gt;&lt;/xsl:value-of&gt;
+      &lt;xsl:call-template name="length-magnitude"&gt;
+        &lt;xsl:with-param name="length" select="substring($length,2)"&gt;&lt;/xsl:with-param&gt;
+      &lt;/xsl:call-template&gt;
+    &lt;/xsl:when&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="length-units">
+<refnamediv>
+<refname>length-units</refname>
+<refpurpose>Return the units from a length specification</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>The <function>length-units</function> template returns the
+units ("pt" for "20pt") from a length. If no units are supplied on the
+length, the <parameter>defauilt.units</parameter> are returned.</para>
+
+<programlisting><programlisting id="length-units.frag">
+&lt;xsl:template name="length-units"&gt;
+  &lt;xsl:param name="length" select="'0pt'"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="default.units" select="'px'"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:variable name="magnitude"&gt;
+    &lt;xsl:call-template name="length-magnitude"&gt;
+      &lt;xsl:with-param name="length" select="$length"&gt;&lt;/xsl:with-param&gt;
+    &lt;/xsl:call-template&gt;
+  &lt;/xsl:variable&gt;
+
+  &lt;xsl:variable name="units"&gt;
+    &lt;xsl:value-of select="substring($length, string-length($magnitude)+1)"&gt;&lt;/xsl:value-of&gt;
+  &lt;/xsl:variable&gt;
+
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="$units = ''"&gt;
+      &lt;xsl:value-of select="$default.units"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:value-of select="$units"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="length-spec">
+<refnamediv>
+<refname>length-spec</refname>
+<refpurpose>Return a fully qualified length specification</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>The <function>length-spec</function> template returns the
+qualified length from a dimension. If an unqualified length is given,
+the <parameter>default.units</parameter> will be added to it.
+</para>
+
+<programlisting><programlisting id="length-spec.frag">
+&lt;xsl:template name="length-spec"&gt;
+  &lt;xsl:param name="length" select="'0pt'"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="default.units" select="'px'"&gt;&lt;/xsl:param&gt;
+
+  &lt;xsl:variable name="magnitude"&gt;
+    &lt;xsl:call-template name="length-magnitude"&gt;
+      &lt;xsl:with-param name="length" select="$length"&gt;&lt;/xsl:with-param&gt;
+    &lt;/xsl:call-template&gt;
+  &lt;/xsl:variable&gt;
+
+  &lt;xsl:variable name="units"&gt;
+    &lt;xsl:value-of select="substring($length, string-length($magnitude)+1)"&gt;&lt;/xsl:value-of&gt;
+  &lt;/xsl:variable&gt;
+
+  &lt;xsl:value-of select="$magnitude"&gt;&lt;/xsl:value-of&gt;
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="$units='cm'                     or $units='mm'                     or $units='in'                     or $units='pt'                     or $units='pc'                     or $units='px'                     or $units='em'"&gt;
+      &lt;xsl:value-of select="$units"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:when test="$units = ''"&gt;
+      &lt;xsl:value-of select="$default.units"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:message&gt;
+        &lt;xsl:text&gt;Unrecognized unit of measure: &lt;/xsl:text&gt;
+        &lt;xsl:value-of select="$units"&gt;&lt;/xsl:value-of&gt;
+        &lt;xsl:text&gt;.&lt;/xsl:text&gt;
+      &lt;/xsl:message&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="length-in-points">
+<refnamediv>
+<refname>length-in-points</refname>
+<refpurpose>Returns the size, in points, of a specified length</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>The <function>length-in-points</function> template converts a length
+specification to points and returns that value as an unqualified
+number.
+</para>
+
+<caution>
+<para>There is no way for the template to infer the size of an
+<literal>em</literal>. It relies on the default <parameter>em.size</parameter>
+which is initially <literal>10</literal> (for 10pt).</para>
+
+<para>Similarly, converting pixels to points relies on the
+<parameter>pixels.per.inch</parameter> parameter which is initially
+<literal>90</literal>.
+</para>
+</caution>
+
+<programlisting><programlisting id="length-in-points.frag">
+&lt;xsl:template name="length-in-points"&gt;
+  &lt;xsl:param name="length" select="'0pt'"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="em.size" select="10"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="pixels.per.inch" select="90"&gt;&lt;/xsl:param&gt;
+
+  &lt;xsl:variable name="magnitude"&gt;
+    &lt;xsl:call-template name="length-magnitude"&gt;
+      &lt;xsl:with-param name="length" select="$length"&gt;&lt;/xsl:with-param&gt;
+    &lt;/xsl:call-template&gt;
+  &lt;/xsl:variable&gt;
+
+  &lt;xsl:variable name="units"&gt;
+    &lt;xsl:value-of select="substring($length, string-length($magnitude)+1)"&gt;&lt;/xsl:value-of&gt;
+  &lt;/xsl:variable&gt;
+
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="$units = 'pt'"&gt;
+      &lt;xsl:value-of select="$magnitude"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:when test="$units = 'cm'"&gt;
+      &lt;xsl:value-of select="$magnitude div 2.54 * 72.0"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:when test="$units = 'mm'"&gt;
+      &lt;xsl:value-of select="$magnitude div 25.4 * 72.0"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:when test="$units = 'in'"&gt;
+      &lt;xsl:value-of select="$magnitude * 72.0"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:when test="$units = 'pc'"&gt;
+      &lt;xsl:value-of select="$magnitude * 12.0"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:when test="$units = 'px'"&gt;
+      &lt;xsl:value-of select="$magnitude div $pixels.per.inch * 72.0"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:when test="$units = 'em'"&gt;
+      &lt;xsl:value-of select="$magnitude * $em.size"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:message&gt;
+        &lt;xsl:text&gt;Unrecognized unit of measure: &lt;/xsl:text&gt;
+        &lt;xsl:value-of select="$units"&gt;&lt;/xsl:value-of&gt;
+        &lt;xsl:text&gt;.&lt;/xsl:text&gt;
+      &lt;/xsl:message&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="pi-attribute">
+<refnamediv>
+<refname>pi-attribute</refname>
+<refpurpose>Extract a pseudo-attribute from a PI</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>The <function>pi-attribute</function> template extracts a pseudo-attribute
+from a processing instruction. For example, given the PI
+<quote><literal>&lt;?foo bar="1" baz='red'?&gt;</literal></quote>,</para>
+<programlisting>&lt;xsl:call-template name="pi-attribute"&gt;
+  &lt;xsl:with-param name="pis" select="processing-instruction('foo')"/&gt;
+  &lt;xsl:with-param name="attribute" select="'baz'"/&gt;
+&lt;/xsl:call-template&gt;</programlisting>
+<para>will return <quote>red</quote>. This template returns the first matching
+attribute that it finds. Presented with processing instructions that
+contain badly formed pseudo-attributes (missing or unbalanced quotes,
+for example), the template may silently return erroneous results.</para>
+
+<programlisting><programlisting id="pi-attribute.frag">
+&lt;xsl:template name="pi-attribute"&gt;
+  &lt;xsl:param name="pis" select="processing-instruction('BOGUS_PI')"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="attribute"&gt;filename&lt;/xsl:param&gt;
+  &lt;xsl:param name="count"&gt;1&lt;/xsl:param&gt;
+
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="$count&gt;count($pis)"&gt;
+      &lt;!-- not found --&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:variable name="pi"&gt;
+        &lt;xsl:value-of select="$pis[$count]"&gt;&lt;/xsl:value-of&gt;
+      &lt;/xsl:variable&gt;
+      &lt;xsl:variable name="pivalue"&gt;
+        &lt;xsl:value-of select="concat(' ', normalize-space($pi))"&gt;&lt;/xsl:value-of&gt;
+      &lt;/xsl:variable&gt;
+      &lt;xsl:choose&gt;
+        &lt;xsl:when test="contains($pivalue,concat(' ', $attribute, '='))"&gt;
+          &lt;xsl:variable name="rest" select="substring-after($pivalue,concat(' ', $attribute,'='))"&gt;&lt;/xsl:variable&gt;
+          &lt;xsl:variable name="quote" select="substring($rest,1,1)"&gt;&lt;/xsl:variable&gt;
+          &lt;xsl:value-of select="substring-before(substring($rest,2),$quote)"&gt;&lt;/xsl:value-of&gt;
+        &lt;/xsl:when&gt;
+        &lt;xsl:otherwise&gt;
+          &lt;xsl:call-template name="pi-attribute"&gt;
+            &lt;xsl:with-param name="pis" select="$pis"&gt;&lt;/xsl:with-param&gt;
+            &lt;xsl:with-param name="attribute" select="$attribute"&gt;&lt;/xsl:with-param&gt;
+            &lt;xsl:with-param name="count" select="$count + 1"&gt;&lt;/xsl:with-param&gt;
+          &lt;/xsl:call-template&gt;
+        &lt;/xsl:otherwise&gt;
+      &lt;/xsl:choose&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="lookup.key">
+<refnamediv>
+<refname>lookup.key</refname>
+<refpurpose>Retrieve the value associated with a particular key in a table</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>Given a table of space-delimited key/value pairs,
+the <function>lookup.key</function> template extracts the value associated
+with a particular key.</para>
+
+<programlisting><programlisting id="lookup.key.frag">
+&lt;xsl:template name="lookup.key"&gt;
+  &lt;xsl:param name="key" select="''"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="table" select="''"&gt;&lt;/xsl:param&gt;
+
+  &lt;xsl:if test="contains($table, ' ')"&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test="substring-before($table, ' ') = $key"&gt;
+        &lt;xsl:variable name="rest" select="substring-after($table, ' ')"&gt;&lt;/xsl:variable&gt;
+        &lt;xsl:choose&gt;
+          &lt;xsl:when test="contains($rest, ' ')"&gt;
+            &lt;xsl:value-of select="substring-before($rest, ' ')"&gt;&lt;/xsl:value-of&gt;
+          &lt;/xsl:when&gt;
+          &lt;xsl:otherwise&gt;
+            &lt;xsl:value-of select="$rest"&gt;&lt;/xsl:value-of&gt;
+          &lt;/xsl:otherwise&gt;
+        &lt;/xsl:choose&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:otherwise&gt;
+        &lt;xsl:call-template name="lookup.key"&gt;
+          &lt;xsl:with-param name="key" select="$key"&gt;&lt;/xsl:with-param&gt;
+          &lt;xsl:with-param name="table" select="substring-after(substring-after($table,' '), ' ')"&gt;&lt;/xsl:with-param&gt;
+        &lt;/xsl:call-template&gt;
+      &lt;/xsl:otherwise&gt;
+    &lt;/xsl:choose&gt;
+  &lt;/xsl:if&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="xpath.location">
+<refnamediv>
+<refname>xpath.location</refname>
+<refpurpose>Calculate the XPath child-sequence to the current node</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>The <function>xpath.location</function> template calculates the
+absolute path from the root of the tree to the current element node.
+</para>
+
+<programlisting><programlisting id="xpath.location.frag">
+&lt;xsl:template name="xpath.location"&gt;
+  &lt;xsl:param name="node" select="."&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="path" select="''"&gt;&lt;/xsl:param&gt;
+
+  &lt;xsl:variable name="next.path"&gt;
+    &lt;xsl:value-of select="local-name($node)"&gt;&lt;/xsl:value-of&gt;
+    &lt;xsl:if test="$path != ''"&gt;/&lt;/xsl:if&gt;
+    &lt;xsl:value-of select="$path"&gt;&lt;/xsl:value-of&gt;
+  &lt;/xsl:variable&gt;
+
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="$node/parent::*"&gt;
+      &lt;xsl:call-template name="xpath.location"&gt;
+        &lt;xsl:with-param name="node" select="$node/parent::*"&gt;&lt;/xsl:with-param&gt;
+        &lt;xsl:with-param name="path" select="$next.path"&gt;&lt;/xsl:with-param&gt;
+      &lt;/xsl:call-template&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:text&gt;/&lt;/xsl:text&gt;
+      &lt;xsl:value-of select="$next.path"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="comment-escape-string">
+<refnamediv>
+<refname>comment-escape-string</refname>
+<refpurpose>Prepare a string for inclusion in an XML comment</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>The <function>comment-escape-string</function> template returns a string
+that has been transformed so that it can safely be output as an XML comment.
+Internal occurrences of "--" will be replaced with "- -" and a leading and/or
+trailing space will be added to the string, if necessary.</para>
+
+<programlisting><programlisting id="comment-escape-string">
+&lt;xsl:template name="comment-escape-string"&gt;
+  &lt;xsl:param name="string" select="''"&gt;&lt;/xsl:param&gt;
+
+  &lt;xsl:if test="starts-with($string, '-')"&gt;
+    &lt;xsl:text&gt; &lt;/xsl:text&gt;
+  &lt;/xsl:if&gt;
+
+  &lt;xsl:call-template name="comment-escape-string.recursive"&gt;
+    &lt;xsl:with-param name="string" select="$string"&gt;&lt;/xsl:with-param&gt;
+  &lt;/xsl:call-template&gt;
+
+  &lt;xsl:if test="substring($string, string-length($string), 1) = '-'"&gt;
+    &lt;xsl:text&gt; &lt;/xsl:text&gt;
+  &lt;/xsl:if&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="comment-escape-string.recursive">
+<refnamediv>
+<refname>comment-escape-string.recursive</refname>
+<refpurpose>Internal function used by comment-escape-string</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>The <function>comment-escape-string.recursive</function> template is used
+by <function>comment-escape-string</function>.</para>
+
+<programlisting><programlisting id="comment-escape-string.recursive">
+&lt;xsl:template name="comment-escape-string.recursive"&gt;
+  &lt;xsl:param name="string" select="''"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="contains($string, '--')"&gt;
+      &lt;xsl:value-of select="substring-before($string, '--')"&gt;&lt;/xsl:value-of&gt;
+      &lt;xsl:value-of select="'- -'"&gt;&lt;/xsl:value-of&gt;
+      &lt;xsl:call-template name="comment-escape-string.recursive"&gt;
+        &lt;xsl:with-param name="string" select="substring-after($string, '--')"&gt;&lt;/xsl:with-param&gt;
+      &lt;/xsl:call-template&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:value-of select="$string"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+</refsect1>
+</refentry>
+
+
+
+<refentry id="prepend-pad">
+<refnamediv>
+<refname>prepend-pad</refname>
+<refpurpose>Right-pad a string out to a certain length</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>This function takes string <parameter>padVar</parameter> and
+pads it out to the string-length <parameter>length</parameter>, using
+string <parameter>padChar</parameter> (a space character by default)
+as the padding string (note that <parameter>padChar</parameter> can be
+a string; it is not limited to just being a single character).</para>
+
+  <note>
+    <para>This function is a copy of Nate Austin's
+    <function>prepend-pad</function> function in the <ulink url="http://www.dpawson.co.uk/xsl/sect2/padding.html">Padding
+    Content</ulink> section of Dave Pawson's <ulink url="http://www.dpawson.co.uk/xsl/index.html">XSLT
+    FAQ</ulink>.</para>
+  </note>
+
+<programlisting><programlisting id="prepend-pad.frag">
+  &lt;xsl:template name="prepend-pad"&gt;    
+  &lt;!-- recursive template to right justify and prepend--&gt;
+  &lt;!-- the value with whatever padChar is passed in   --&gt;
+    &lt;xsl:param name="padChar" select="' '"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:param name="padVar"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:param name="length"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test="string-length($padVar) &lt; $length"&gt;
+        &lt;xsl:call-template name="prepend-pad"&gt;
+          &lt;xsl:with-param name="padChar" select="$padChar"&gt;&lt;/xsl:with-param&gt;
+          &lt;xsl:with-param name="padVar" select="concat($padChar,$padVar)"&gt;&lt;/xsl:with-param&gt;
+          &lt;xsl:with-param name="length" select="$length"&gt;&lt;/xsl:with-param&gt;
+        &lt;/xsl:call-template&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:otherwise&gt;
+        &lt;xsl:value-of select="substring($padVar,string-length($padVar) - $length + 1)"&gt;&lt;/xsl:value-of&gt;
+      &lt;/xsl:otherwise&gt;
+    &lt;/xsl:choose&gt;
+  &lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="trim.text">
+<refnamediv>
+<refname>trim.text</refname>
+<refpurpose>Trim leading and trailing whitespace from a text node</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>Given a text node, this function trims leading and trailing
+whitespace from it and returns the trimmed contents.</para>
+
+<programlisting><programlisting id="trim.text.frag">
+
+  &lt;xsl:template name="trim.text"&gt;
+    &lt;xsl:param name="contents" select="."&gt;&lt;/xsl:param&gt;
+    &lt;xsl:variable name="contents-left-trimmed"&gt;
+      &lt;xsl:call-template name="trim-left"&gt;
+        &lt;xsl:with-param name="contents" select="$contents"&gt;&lt;/xsl:with-param&gt;
+      &lt;/xsl:call-template&gt;
+    &lt;/xsl:variable&gt;
+    &lt;xsl:variable name="contents-trimmed"&gt;
+      &lt;xsl:call-template name="trim-right"&gt;
+        &lt;xsl:with-param name="contents" select="$contents-left-trimmed"&gt;&lt;/xsl:with-param&gt;
+      &lt;/xsl:call-template&gt;
+    &lt;/xsl:variable&gt;
+    &lt;xsl:value-of select="$contents-trimmed"&gt;&lt;/xsl:value-of&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template name="trim-left"&gt;
+    &lt;xsl:param name="contents"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test="starts-with($contents,'
+') or                       starts-with($contents,'
+') or                       starts-with($contents,' ') or                       starts-with($contents,'	')"&gt;
+        &lt;xsl:call-template name="trim-left"&gt;
+          &lt;xsl:with-param name="contents" select="substring($contents, 2)"&gt;&lt;/xsl:with-param&gt;
+        &lt;/xsl:call-template&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:otherwise&gt;
+        &lt;xsl:value-of select="$contents"&gt;&lt;/xsl:value-of&gt;
+      &lt;/xsl:otherwise&gt;
+    &lt;/xsl:choose&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template name="trim-right"&gt;
+    &lt;xsl:param name="contents"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:variable name="last-char"&gt;
+      &lt;xsl:value-of select="substring($contents, string-length($contents), 1)"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:variable&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test="($last-char = '
+') or                       ($last-char = '&#xD;') or                       ($last-char = ' ') or                       ($last-char = '	')"&gt;
+        &lt;xsl:call-template name="trim-right"&gt;
+          &lt;xsl:with-param name="contents" select="substring($contents, 1, string-length($contents) - 1)"&gt;&lt;/xsl:with-param&gt;
+        &lt;/xsl:call-template&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:otherwise&gt;
+        &lt;xsl:value-of select="$contents"&gt;&lt;/xsl:value-of&gt;
+      &lt;/xsl:otherwise&gt;
+    &lt;/xsl:choose&gt;
+  &lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="str.tokenize.keep.delimiters">
+<refnamediv>
+<refname>str.tokenize.keep.delimiters</refname>
+<refpurpose>Tokenize a string while preserving any delimiters</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>Based on the occurrence of one or more delimiter characters,
+this function breaks a string into a list of tokens and delimiters,
+marking up each of the tokens with a <sgmltag>token</sgmltag> element
+and preserving the delimiters as text nodes between the tokens.</para>
+
+<note>
+  <para>This function is a very slightly modified version of a
+  function from the <ulink url="http://www.exslt.org/">EXSLT
+  site</ulink>. The original is available at:
+
+  <blockquote><para><ulink url="http://www.exslt.org/str/functions/tokenize/str.tokenize.template.xsl"/></para></blockquote>
+
+  The <function>str.tokenize.keep.delimiters</function> function
+  differs only in that it preserves the delimiters instead of
+  discarding them.</para>
+</note>
+
+<programlisting><programlisting id="str.tokenize.keep.delimiters.frag">
+
+  &lt;xsl:template name="str.tokenize.keep.delimiters"&gt;
+    &lt;xsl:param name="string" select="''"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:param name="delimiters" select="' '"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test="not($string)"&gt;&lt;/xsl:when&gt;
+      &lt;xsl:when test="not($delimiters)"&gt;
+	&lt;xsl:call-template name="str.tokenize.keep.delimiters-characters"&gt;
+	  &lt;xsl:with-param name="string" select="$string"&gt;&lt;/xsl:with-param&gt;
+	&lt;/xsl:call-template&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:otherwise&gt;
+	&lt;xsl:call-template name="str.tokenize.keep.delimiters-delimiters"&gt;
+	  &lt;xsl:with-param name="string" select="$string"&gt;&lt;/xsl:with-param&gt;
+	  &lt;xsl:with-param name="delimiters" select="$delimiters"&gt;&lt;/xsl:with-param&gt;
+	&lt;/xsl:call-template&gt;
+      &lt;/xsl:otherwise&gt;
+    &lt;/xsl:choose&gt;
+  &lt;/xsl:template&gt;
+  
+  &lt;xsl:template name="str.tokenize.keep.delimiters-characters"&gt;
+    &lt;xsl:param name="string"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:if test="$string"&gt;
+      &lt;token&gt;&lt;xsl:value-of select="substring($string, 1, 1)"&gt;&lt;/xsl:value-of&gt;&lt;/token&gt;
+      &lt;xsl:call-template name="str.tokenize.keep.delimiters-characters"&gt;
+	&lt;xsl:with-param name="string" select="substring($string, 2)"&gt;&lt;/xsl:with-param&gt;
+      &lt;/xsl:call-template&gt;
+    &lt;/xsl:if&gt;
+  &lt;/xsl:template&gt;
+  
+  &lt;xsl:template name="str.tokenize.keep.delimiters-delimiters"&gt;
+    &lt;xsl:param name="string"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:param name="delimiters"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:variable name="delimiter" select="substring($delimiters, 1, 1)"&gt;&lt;/xsl:variable&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test="not($delimiter)"&gt;
+	&lt;token&gt;&lt;xsl:value-of select="$string"&gt;&lt;/xsl:value-of&gt;&lt;/token&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:when test="contains($string, $delimiter)"&gt;
+	&lt;xsl:if test="not(starts-with($string, $delimiter))"&gt;
+	  &lt;xsl:call-template name="str.tokenize.keep.delimiters-delimiters"&gt;
+	    &lt;xsl:with-param name="string" select="substring-before($string, $delimiter)"&gt;&lt;/xsl:with-param&gt;
+	    &lt;xsl:with-param name="delimiters" select="substring($delimiters, 2)"&gt;&lt;/xsl:with-param&gt;
+	  &lt;/xsl:call-template&gt;
+	&lt;/xsl:if&gt;
+	&lt;!-- output each delimiter --&gt;
+	&lt;xsl:value-of select="$delimiter"&gt;&lt;/xsl:value-of&gt;
+	&lt;xsl:call-template name="str.tokenize.keep.delimiters-delimiters"&gt;
+	  &lt;xsl:with-param name="string" select="substring-after($string, $delimiter)"&gt;&lt;/xsl:with-param&gt;
+	  &lt;xsl:with-param name="delimiters" select="$delimiters"&gt;&lt;/xsl:with-param&gt;
+	&lt;/xsl:call-template&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:otherwise&gt;
+	&lt;xsl:call-template name="str.tokenize.keep.delimiters-delimiters"&gt;
+	  &lt;xsl:with-param name="string" select="$string"&gt;&lt;/xsl:with-param&gt;
+	  &lt;xsl:with-param name="delimiters" select="substring($delimiters, 2)"&gt;&lt;/xsl:with-param&gt;
+	&lt;/xsl:call-template&gt;
+      &lt;/xsl:otherwise&gt;
+    &lt;/xsl:choose&gt;
+  &lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="apply-string-subst-map">
+  <refnamediv>
+    <refname>apply-string-subst-map</refname>
+    <refpurpose>Apply a string-substitution map</refpurpose>
+  </refnamediv>
+
+  <refsect1><title>Description</title>
+
+  <para>This function applies a "string substitution" map. Use it when
+  you want to do multiple string substitutions on the same target
+  content. It reads in two things: <parameter>content</parameter>, the
+  content on which to perform the substitution, and
+  <parameter>map.contents</parameter>, a node set of
+  elements (the names of the elements don't matter), with each element
+  having the following attributes:
+  <itemizedlist>
+    <listitem>
+      <simpara><tag class="attribute">oldstring</tag>, a string to
+      be replaced</simpara>
+    </listitem>
+    <listitem>
+      <simpara><tag class="attribute">newstring</tag>, a string with
+      which to replace <tag class="attribute">oldstring</tag></simpara>
+    </listitem>
+  </itemizedlist>
+  The function uses <parameter>map.contents</parameter> to
+  do substitution on <parameter>content</parameter>, and then
+  returns the modified contents.</para>
+
+  <note>
+    <para>This function is a very slightly modified version of Jeni
+    Tennison's <function>replace_strings</function> function in the
+    <ulink url="http://www.dpawson.co.uk/xsl/sect2/StringReplace.html#d9351e13">multiple string replacements</ulink> section of Dave Pawson's
+    <ulink url="http://www.dpawson.co.uk/xsl/index.html">XSLT
+    FAQ</ulink>.</para>
+
+    <para>The <function>apply-string-subst-map</function> function is
+    essentially the same function as the
+    <function>apply-character-map</function> function; the only
+    difference is that in the map that
+    <function>apply-string-subst-map</function> expects, <tag class="attribute">oldstring</tag> and <tag class="attribute">newstring</tag> attributes are used instead of
+    <tag class="attribute">character</tag> and <tag class="attribute">string</tag> attributes.</para>
+  </note>
+
+  <programlisting><programlisting id="apply-string-subst-map.frag">
+    &lt;xsl:template name="apply-string-subst-map"&gt;
+      &lt;xsl:param name="content"&gt;&lt;/xsl:param&gt;
+      &lt;xsl:param name="map.contents"&gt;&lt;/xsl:param&gt;
+      &lt;xsl:variable name="replaced_text"&gt;
+        &lt;xsl:call-template name="string.subst"&gt;
+          &lt;xsl:with-param name="string" select="$content"&gt;&lt;/xsl:with-param&gt;
+          &lt;xsl:with-param name="target" select="$map.contents[1]/@oldstring"&gt;&lt;/xsl:with-param&gt;
+          &lt;xsl:with-param name="replacement" select="$map.contents[1]/@newstring"&gt;&lt;/xsl:with-param&gt;
+        &lt;/xsl:call-template&gt;
+      &lt;/xsl:variable&gt;
+      &lt;xsl:choose&gt;
+        &lt;xsl:when test="$map.contents[2]"&gt;
+          &lt;xsl:call-template name="apply-string-subst-map"&gt;
+            &lt;xsl:with-param name="content" select="$replaced_text"&gt;&lt;/xsl:with-param&gt;
+            &lt;xsl:with-param name="map.contents" select="$map.contents[position() &gt; 1]"&gt;&lt;/xsl:with-param&gt;
+          &lt;/xsl:call-template&gt;
+        &lt;/xsl:when&gt;
+        &lt;xsl:otherwise&gt;
+          &lt;xsl:value-of select="$replaced_text"&gt;&lt;/xsl:value-of&gt;
+        &lt;/xsl:otherwise&gt;
+      &lt;/xsl:choose&gt;
+    &lt;/xsl:template&gt;
+
+  </programlisting></programlisting>
+  </refsect1>
+</refentry>
+
+
+
+<refentry id="apply-character-map">
+  <refnamediv>
+    <refname>apply-character-map</refname>
+    <refpurpose>Apply an XSLT character map</refpurpose>
+  </refnamediv>
+
+  <refsect1><title>Description</title>
+
+  <para>This function applies an <ulink url="http://www.w3.org/TR/xslt20/#character-maps">XSLT character
+  map</ulink>; that is, it cause certain individual characters to be
+  substituted with strings of one or more characters. It is useful
+  mainly for replacing multiple "special" chararacters or symbols in
+  the same target content. It reads in two things:
+  <parameter>content</parameter>, the content on which to perform the
+  substitution, and <parameter>map.contents</parameter>, a
+  node set of elements (the names of the elements don't matter), with
+  each element having the following attributes:
+  <itemizedlist>
+    <listitem>
+      <simpara><tag class="attribute">character</tag>, a character to
+      be replaced</simpara>
+    </listitem>
+    <listitem>
+      <simpara><tag class="attribute">string</tag>, a string with
+      which to replace <tag class="attribute">character</tag></simpara>
+    </listitem>
+  </itemizedlist>
+  This function uses <parameter>map.contents</parameter> to
+  do substitution on <parameter>content</parameter>, and then returns
+  the modified contents.</para>
+
+  <note>
+    <para>This function is a very slightly modified version of Jeni
+    Tennison's <function>replace_strings</function> function in the
+    <ulink url="http://www.dpawson.co.uk/xsl/sect2/StringReplace.html#d9351e13">multiple string replacements</ulink> section of Dave Pawson's
+    <ulink url="http://www.dpawson.co.uk/xsl/index.html">XSLT
+    FAQ</ulink>.</para>
+
+    <para>The <function>apply-string-subst-map</function> function is
+    essentially the same function as the
+    <function>apply-character-map</function> function; the only
+    difference is that in the map that
+    <function>apply-string-subst-map</function> expects, <tag class="attribute">oldstring</tag> and <tag class="attribute">newstring</tag> attributes are used instead of
+    <tag class="attribute">character</tag> and <tag class="attribute">string</tag> attributes.</para>
+  </note>
+
+  <programlisting><programlisting id="apply-character-map.frag">
+    &lt;xsl:template name="apply-character-map"&gt;
+      &lt;xsl:param name="content"&gt;&lt;/xsl:param&gt;
+      &lt;xsl:param name="map.contents"&gt;&lt;/xsl:param&gt;
+      &lt;xsl:variable name="replaced_text"&gt;
+        &lt;xsl:call-template name="string.subst"&gt;
+          &lt;xsl:with-param name="string" select="$content"&gt;&lt;/xsl:with-param&gt;
+          &lt;xsl:with-param name="target" select="$map.contents[1]/@character"&gt;&lt;/xsl:with-param&gt;
+          &lt;xsl:with-param name="replacement" select="$map.contents[1]/@string"&gt;&lt;/xsl:with-param&gt;
+        &lt;/xsl:call-template&gt;
+      &lt;/xsl:variable&gt;
+      &lt;xsl:choose&gt;
+        &lt;xsl:when test="$map.contents[2]"&gt;
+          &lt;xsl:call-template name="apply-character-map"&gt;
+            &lt;xsl:with-param name="content" select="$replaced_text"&gt;&lt;/xsl:with-param&gt;
+            &lt;xsl:with-param name="map.contents" select="$map.contents[position() &gt; 1]"&gt;&lt;/xsl:with-param&gt;
+          &lt;/xsl:call-template&gt;
+        &lt;/xsl:when&gt;
+        &lt;xsl:otherwise&gt;
+          &lt;xsl:value-of select="$replaced_text"&gt;&lt;/xsl:value-of&gt;
+        &lt;/xsl:otherwise&gt;
+      &lt;/xsl:choose&gt;
+    &lt;/xsl:template&gt;
+
+  </programlisting></programlisting>
+  </refsect1>
+</refentry>
+
+
+
+<refentry id="read-character-map">
+<refnamediv>
+<refname>read-character-map</refname>
+<refpurpose>Read in all or part of an XSLT character map</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>The XSLT 2.0 specification describes <ulink url="http://www.w3.org/TR/xslt20/#character-maps">character
+maps</ulink> and explains how they may be used to allow a specific
+character appearing in a text or attribute node in a final results
+tree to be substituted by a specified string of characters during
+serialization. The <function>read-character-map</function> function
+provides a means for reading and using character maps with XSLT
+1.0-based tools.</para>
+
+<para>It reads the character-map contents from
+<parameter>uri</parameter> (in full or in part, depending on the value
+of the <parameter>use.subset</parameter> parameter), then passes those
+contents to the <function>apply-character-map</function> function,
+along with <parameter>content</parameter>, the data on which to
+perform the character substition.</para>
+
+<para>Using the character map "in part" means that it uses only those
+<tag>output-character</tag> elements that match the XPATH expression
+given in the value of the <parameter>subset.profile</parameter>
+parameter. The current implementation of that capability here relies
+on the <function>evaluate</function> extension XSLT function.</para>
+
+<programlisting><programlisting id="read-character-map.frag">
+  &lt;xsl:template name="read-character-map"&gt;
+    &lt;xsl:param name="use.subset"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:param name="subset.profile"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:param name="uri"&gt;&lt;/xsl:param&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test="$use.subset != 0"&gt;
+        &lt;!-- use a subset of the character map instead of the full map --&gt;
+        &lt;xsl:choose&gt;
+          &lt;!-- xsltproc and Xalan both support dyn:evaluate() --&gt;
+          &lt;xsl:when test="function-available('dyn:evaluate')"&gt;
+            &lt;xsl:copy-of select="document($uri)//*[local-name()='output-character']                                  [dyn:evaluate($subset.profile)]"&gt;&lt;/xsl:copy-of&gt;
+          &lt;/xsl:when&gt;
+          &lt;!-- Saxon has its own evaluate() &amp; doesn't support dyn:evaluate() --&gt;
+          &lt;xsl:when test="function-available('saxon:evaluate')"&gt;
+            &lt;xsl:copy-of select="document($uri)//*[local-name()='output-character']                                  [saxon:evaluate($subset.profile)]"&gt;&lt;/xsl:copy-of&gt;
+          &lt;/xsl:when&gt;
+          &lt;xsl:otherwise&gt;
+            &lt;xsl:message terminate="yes"&gt;
+Error: To process character-map subsets, you must use an XSLT engine
+that supports the evaluate() XSLT extension function. Your XSLT engine
+does not support it.
+&lt;/xsl:message&gt;
+          &lt;/xsl:otherwise&gt;
+        &lt;/xsl:choose&gt;
+        &lt;/xsl:when&gt;
+        &lt;xsl:otherwise&gt;
+          &lt;!-- value of $use.subset is non-zero, so use the full map --&gt;
+        &lt;xsl:copy-of select="document($uri)//*[local-name()='output-character']"&gt;&lt;/xsl:copy-of&gt;
+      &lt;/xsl:otherwise&gt;
+    &lt;/xsl:choose&gt;
+  &lt;/xsl:template&gt;
+</programlisting></programlisting>
+</refsect1>
+</refentry>
+
+</reference>
+
+
+
+<reference>
+<title>Relative URI Functions</title>
+
+<partintro><title>Introduction</title>
+
+<para>These functions manipulate relative URI references.</para>
+
+<para>The following assumptions must hold true:</para>
+
+<orderedlist>
+<listitem>
+<para>All URIs are relative.</para>
+</listitem>
+<listitem>
+<para>No URI contains the <quote><literal>../</literal></quote> sequence
+which would effectively move <quote>up</quote> the hierarchy.</para>
+</listitem>
+</orderedlist>
+
+<para>If these assumptions do not hold, the results are unpredictable.</para>
+
+</partintro>
+
+
+
+<refentry id="count.uri.path.depth">
+<refnamediv>
+<refname>count.uri.path.depth</refname>
+<refpurpose>Count the number of path components in a relative URI</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>This function counts the number of path components in a relative URI.</para>
+
+<programlisting><programlisting id="count.uri.path.depth.frag">
+&lt;xsl:template name="count.uri.path.depth"&gt;
+  &lt;xsl:param name="filename" select="''"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="count" select="0"&gt;&lt;/xsl:param&gt;
+
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="contains($filename, '/')"&gt;
+      &lt;xsl:call-template name="count.uri.path.depth"&gt;
+        &lt;xsl:with-param name="filename" select="substring-after($filename, '/')"&gt;&lt;/xsl:with-param&gt;
+        &lt;xsl:with-param name="count" select="$count + 1"&gt;&lt;/xsl:with-param&gt;
+      &lt;/xsl:call-template&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:value-of select="$count"&gt;&lt;/xsl:value-of&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+
+
+<refentry id="trim.common.uri.paths">
+<refnamediv>
+<refname>trim.common.uri.paths</refname>
+<refpurpose>Trim common leading path components from a relative URI</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<para>This function trims common leading path components from a relative URI.</para>
+
+<programlisting><programlisting id="trim.common.uri.paths.frag">
+&lt;xsl:template name="trim.common.uri.paths"&gt;
+  &lt;xsl:param name="uriA" select="''"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="uriB" select="''"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="return" select="'A'"&gt;&lt;/xsl:param&gt;
+
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="contains($uriA, '/') and contains($uriB, '/')                     and substring-before($uriA, '/') = substring-before($uriB, '/')"&gt;
+      &lt;xsl:call-template name="trim.common.uri.paths"&gt;
+        &lt;xsl:with-param name="uriA" select="substring-after($uriA, '/')"&gt;&lt;/xsl:with-param&gt;
+        &lt;xsl:with-param name="uriB" select="substring-after($uriB, '/')"&gt;&lt;/xsl:with-param&gt;
+        &lt;xsl:with-param name="return" select="$return"&gt;&lt;/xsl:with-param&gt;
+      &lt;/xsl:call-template&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:choose&gt;
+        &lt;xsl:when test="$return = 'A'"&gt;
+          &lt;xsl:value-of select="$uriA"&gt;&lt;/xsl:value-of&gt;
+        &lt;/xsl:when&gt;
+        &lt;xsl:otherwise&gt;
+          &lt;xsl:value-of select="$uriB"&gt;&lt;/xsl:value-of&gt;
+        &lt;/xsl:otherwise&gt;
+      &lt;/xsl:choose&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:template&gt;
+</programlisting></programlisting>
+
+</refsect1>
+</refentry>
+
+</reference>
+
+
+
+<appendix><title>The Stylesheet</title>
+
+<para>The <filename>lib.xsl</filename> stylesheet is just a wrapper
+around these functions.</para>
+
+<programlisting id="top">
+
+&lt;!-- ********************************************************************
+     $Id: lib.xweb,v 1.14 2005/10/24 06:39:31 xmldoc Exp $
+     ********************************************************************
+
+     This file is part of the XSL DocBook Stylesheet distribution.
+     See ../README or http://nwalsh.com/docbook/xsl/ for copyright
+     and other information.
+
+     This module implements DTD-independent functions
+
+     ******************************************************************** --&gt;
+
+&lt;xsl:stylesheet exclude-result-prefixes="src" version="1.0"&gt;
+
+&lt;src:fragref linkend="dot.count.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="copy-string.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="string.subst.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="xpointer.idref.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="length-magnitude.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="length-units.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="length-spec.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="length-in-points.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="pi-attribute.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="lookup.key.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="xpath.location.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="comment-escape-string"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="comment-escape-string.recursive"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="prepend-pad.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="str.tokenize.keep.delimiters.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="apply-string-subst-map.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="apply-character-map.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="read-character-map.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="count.uri.path.depth.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="trim.common.uri.paths.frag"&gt;&lt;/src:fragref&gt;
+&lt;src:fragref linkend="trim.text.frag"&gt;&lt;/src:fragref&gt;
+
+&lt;/xsl:stylesheet&gt;
+</programlisting>
+
+</appendix>
+</book>
