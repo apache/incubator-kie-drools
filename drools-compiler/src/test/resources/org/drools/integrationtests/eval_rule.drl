@@ -2,12 +2,13 @@ package org.drools.test;
 
 import org.drools.Cheese;
 
-global java.lang.Integer total;
+global java.util.List list;
+global java.util.Integer five;
 
 rule "like stilton"
     when
         $cheese : Cheese( $type:type == "stilton" )
-        eval( $cheese.getPrice() == 5 )
+        eval( $cheese.getPrice() == five.intValue() )
     then
-        System.out.println("I like " + $type + " : " +  total);
+        list.add( $cheese );
 end  

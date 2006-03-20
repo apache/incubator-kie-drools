@@ -2,6 +2,6 @@ package org.drools.test;
 
 import org.drools.Cheese;
 
-query "simple"
+query "simple query"
         Cheese(type == "stinky")
 end 

@@ -2,11 +2,15 @@ package org.drools.test;
 
 import org.drools.Person;
 
-rule "simple rule"
+global java.util.List list;
+global java.lang.Integer two;
+
+rule "predicate rule test"
     when
-        Person( $age1 : age )
+        $person1 : Person( $age1 : age )
         // We have no autoboxing of primtives, so have to do by hand
-        Person( $age2:age -> ( $age2 == new Integer( $age1.intValue() + 2 ) ) )
+        person2 : Person( $age2:age -> ( $age2.intValue() == $age1.intValue() + two.intValue()  ) )
     then
-		System.out.println( "hello" );
+		list.add( $person1 );
+		list.add( person2 );		
 end    
