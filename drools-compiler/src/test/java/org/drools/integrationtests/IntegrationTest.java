@@ -32,28 +32,9 @@ import org.drools.rule.Package;
 import junit.framework.TestCase;
 
 public class IntegrationTest extends TestCase {
-    public void testDrl() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test1.drl" ) ) );
-        Package pkg = builder.getPackage();
-        
-        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );        
-        
-        Cheese stilton = new Cheese("stilton", 5);
-        workingMemory.assertObject( stilton );
-        
-        workingMemory.fireAllRules();
-        
-        assertEquals( new Integer( 5 ), list.get(  0 ) );        
-    }    
-    
     public void testGlobals() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "globals_rule.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "globals_rule_test.drl" ) ) );
         Package pkg = builder.getPackage();
         
         org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
@@ -71,9 +52,28 @@ public class IntegrationTest extends TestCase {
         assertEquals( new Integer( 5 ), list.get(  0 ) );  
     }    
     
+    public void testLiteral() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_rule_test.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
+        
+        Cheese stilton = new Cheese("stilton", 5);
+        workingMemory.assertObject( stilton );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( "stilton", list.get(  0 ) );        
+    }            
+    
     public void testQuery() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query_test.drl" ) ) );
         Package pkg = builder.getPackage();
         
         org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
@@ -109,7 +109,7 @@ public class IntegrationTest extends TestCase {
     
     public void testReturnValue() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "returnvalue_rule.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "returnvalue_rule_test.drl" ) ) );
         Package pkg = builder.getPackage();
         
         org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
@@ -134,7 +134,7 @@ public class IntegrationTest extends TestCase {
     
     public void testPredicate() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_rule.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_rule_test.drl" ) ) );
         Package pkg = builder.getPackage();
         
         org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
@@ -156,5 +156,9 @@ public class IntegrationTest extends TestCase {
         assertEquals( jane, list.get(  0 ) );
         assertEquals( peter, list.get(  1 ) ); 
     }     
+    
+    public void testNot() throws Exception {
+        
+    }
     
 }

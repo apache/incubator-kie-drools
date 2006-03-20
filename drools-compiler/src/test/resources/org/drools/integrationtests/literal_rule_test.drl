@@ -4,10 +4,9 @@ import org.drools.Cheese;
 
 global java.util.List list;
 
-rule "test rule"
+rule "literal test rule"
     when
         Cheese( ?x: type == "stilton" )
     then
-        System.out.println("I like " + ?x);
 		list.add( ?x );        
 end    

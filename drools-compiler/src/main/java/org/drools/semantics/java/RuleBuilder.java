@@ -35,7 +35,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.And;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
-import org.drools.rule.ConditionalElement;
+import org.drools.rule.GroupElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Exists;
@@ -230,7 +230,7 @@ public class RuleBuilder {
 
     private void build(Rule rule,
                        ConditionalElementDescr descr,
-                       ConditionalElement ce) {
+                       GroupElement ce) {
         for ( Iterator it = descr.getDescrs().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof ConditionalElementDescr ) {
