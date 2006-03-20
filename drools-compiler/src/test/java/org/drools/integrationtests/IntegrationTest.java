@@ -88,6 +88,22 @@ public class IntegrationTest extends TestCase {
         Person jane = new Person("jane", null, 10);
         workingMemory.assertObject( peter );        
         workingMemory.fireAllRules();
-    }       
+    }   
+    
+    public void testPredicate() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_rule.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        Person peter = new Person("peter", null, 12);
+        workingMemory.assertObject( peter );
+        Person jane = new Person("jane", null, 10);
+        workingMemory.assertObject( peter );        
+        workingMemory.fireAllRules();
+    }     
     
 }
