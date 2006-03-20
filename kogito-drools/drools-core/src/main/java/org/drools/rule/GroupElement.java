@@ -1,14 +1,10 @@
 package org.drools.rule;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class ConditionalElement
-    implements
-    Serializable,
-    Cloneable {
+public abstract class GroupElement extends ConditionalElement {
     private List children = new ArrayList();
 
     public void addChild(Object child) {
@@ -29,7 +25,7 @@ public abstract class ConditionalElement
      */
     public boolean equals(Object object) {
         // Return false if its null or not an instance of ConditionalElement
-        if ( object == null || !(object instanceof ConditionalElement) ) {
+        if ( object == null || !(object instanceof GroupElement) ) {
             return false;
         }
 
@@ -39,7 +35,7 @@ public abstract class ConditionalElement
         }
 
         // Now try a recurse manual check
-        ConditionalElement e2 = (ConditionalElement) object;
+        GroupElement e2 = (GroupElement) object;
         List e1Children = this.getChildren();
         List e2Children = e2.getChildren();
         if ( e1Children.size() != e2Children.size() ) {
@@ -49,7 +45,7 @@ public abstract class ConditionalElement
         for ( int i = 0; i < e1Children.size(); i++ ) {
             Object e1Object1 = e1Children.get( i );
             Object e2Object1 = e2Children.get( i );
-            if ( e1Object1 instanceof ConditionalElement ) {
+            if ( e1Object1 instanceof GroupElement ) {
                 if ( e1Object1.getClass().isInstance( e2Object1 ) ) {
                     if ( !e1Object1.equals( e2Object1 ) ) {
                         System.out.println( e1Object1.getClass().getName() + " did not have identical children" );
@@ -86,10 +82,10 @@ public abstract class ConditionalElement
      * @return
      */
     public Object clone() {
-        ConditionalElement cloned = null;
+        GroupElement cloned = null;
 
         try {
-            cloned = (ConditionalElement) this.getClass().newInstance();
+            cloned = (GroupElement) this.getClass().newInstance();
         } catch ( InstantiationException e ) {
             throw new RuntimeException( "Could not clone '" + this.getClass().getName() + "'" );
         } catch ( IllegalAccessException e ) {
@@ -98,8 +94,8 @@ public abstract class ConditionalElement
 
         for ( Iterator it = this.children.iterator(); it.hasNext(); ) {
             Object object = it.next();
-            if ( object instanceof ConditionalElement ) {
-                object = ((ConditionalElement) object).clone();
+            if ( object instanceof GroupElement ) {
+                object = ((GroupElement) object).clone();
             }
             cloned.addChild( object );
 

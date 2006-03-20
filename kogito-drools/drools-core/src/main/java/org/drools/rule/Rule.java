@@ -306,7 +306,9 @@ public class Rule
      * @throws InvalidRuleException 
      */
     public void addPattern(ConditionalElement ce) {
-        addDeclarations( ce );
+        if ( ce instanceof GroupElement ) {
+            addDeclarations( (GroupElement) ce );
+        }
         this.lhsRoot.addChild( ce );
     }
     
@@ -332,13 +334,13 @@ public class Rule
         }    
     }
     
-    private void addDeclarations(ConditionalElement ce) {
+    private void addDeclarations(GroupElement ce) {
         for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof Column ) {
                  addDeclarations( (Column) object );                 
-            } else if ( object instanceof ConditionalElement ) {
-                addDeclarations( (ConditionalElement) object );
+            } else if ( object instanceof GroupElement ) {
+                addDeclarations( (GroupElement) object );
             }
         }
     }
@@ -371,14 +373,14 @@ public class Rule
         return getSpecifity( this.lhsRoot );
     }
 
-    private int getSpecifity(ConditionalElement ce) {
+    private int getSpecifity(GroupElement ce) {
         int specificity = 0;        
         for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
         	Object object = it.next();
         	if ( object instanceof Column ) {
         		specificity += getSpecifity((Column) object);	 
-        	} else if ( object instanceof ConditionalElement ) {
-        		specificity += getSpecifity((ConditionalElement) object);
+        	} else if ( object instanceof GroupElement ) {
+        		specificity += getSpecifity((GroupElement) object);
         	}        	
         }
         return specificity;

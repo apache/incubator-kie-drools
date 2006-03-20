@@ -1,5 +1,7 @@
 package org.drools.rule;
 
+import java.util.Iterator;
+
 import org.drools.WorkingMemory;
 import org.drools.spi.Constraint;
 import org.drools.spi.EvalExpression;
@@ -46,4 +48,9 @@ public class EvalCondition extends ConditionalElement {
 
     }
 
+    public Object clone() {
+        EvalCondition eval = new EvalCondition( this.expression, this.requiredDeclarations );
+        return eval;
+    }    
+    
 };
