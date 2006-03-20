@@ -245,7 +245,7 @@ rule returns [RuleDescr rule]
 
 rule_attributes[RuleDescr rule]
 	: 
-			'attributes' ':'? opt_eol
+			'attributes'? ':'? opt_eol
 			(	','? a=rule_attribute opt_eol
 				{
 					rule.addAttribute( a );
