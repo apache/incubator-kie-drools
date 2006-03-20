@@ -26,6 +26,7 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.dsl.DefaultExpanderResolver;
 
 public class RuleParserTest extends TestCase {
 	
@@ -734,7 +735,19 @@ public class RuleParserTest extends TestCase {
         at = (AttributeDescr) attrs.get( 4 );
         assertEquals("xor-group", at.getName());
         assertEquals("my_xor_group", at.getValue());        
-    }    
+    }   
+    
+    public void testExpanderBad() throws Exception {
+        RuleParser parser = parseResource( "bad_expander.drl" );
+        try {
+            parser.compilation_unit();
+            fail("Should have thrown a wobbly.");
+        } catch (IllegalArgumentException e) {
+            assertNotNull(e.getMessage());
+        }
+        
+        
+    }
 	
 	private RuleParser parse(String text) throws Exception {
 		parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );

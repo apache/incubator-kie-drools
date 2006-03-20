@@ -128,6 +128,8 @@ expander
 	}
 	:	'expander' (name=dotted_name)? ';'? opt_eol
 		{
+			if (expanderResolver == null) 
+				throw new IllegalArgumentException("ExpanderResolver was not set. Don't forget to call setExpanderResolver when you are using an expander.");
 			expander = expanderResolver.get( name, config );
 		}
 	;

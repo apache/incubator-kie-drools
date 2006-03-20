@@ -40,4 +40,14 @@ public class DefaultExpanderResolverTest extends TestCase {
         
     }
     
+    public void testFindNone() {
+        DefaultExpanderResolver exp = new DefaultExpanderResolver();
+        try {
+            exp.get( "nothing.dsl", "" );
+            fail("should have thrown an exception when it can't find an expander.");
+        } catch (IllegalArgumentException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
+    
 }
