@@ -490,7 +490,7 @@ class ReteooBuilder {
     private void checkUnboundDeclarations(Declaration[] declarations) throws InvalidPatternException {
         List list = new ArrayList();
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
-          if ( this.declarations.get( declarations[i] ) == null ) {
+          if ( this.declarations.get( declarations[i].getIdentifier() ) == null ) {
               list.add( declarations[i].getIdentifier() );
           }
         }
