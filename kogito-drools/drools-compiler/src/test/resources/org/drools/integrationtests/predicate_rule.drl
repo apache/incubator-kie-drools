@@ -1,10 +1,12 @@
 package org.drools.test;
 
-import org.drools.Cheese;
+import org.drools.Person;
 
-rule simple rule
+rule "simple rule"
     when
-        Cheese( )
+        Person( $age1 : age )
+        // We have no autoboxing of primtives, so have to do by hand
+        Person( $age2:age -> ( $age2 == new Integer( $age1.intValue() + 2 ) ) )
     then
-
+		System.out.println( "hello" );
 end    
