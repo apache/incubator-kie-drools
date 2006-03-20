@@ -5,7 +5,8 @@ import org.drools.Person;
 rule "simple rule"
     when
         Person( $age1 : age )
-        Person( age == ( $age1 + 2 ) )
+        // We have no autoboxing of primtives, so have to do by hand
+        Person( age == ( new Integer( $age1.intValue() + 2 ) ) )
     then
 		System.out.println( "hello" );
 end    
