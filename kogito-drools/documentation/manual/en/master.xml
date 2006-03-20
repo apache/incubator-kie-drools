@@ -18,7 +18,7 @@
 
     <title>Drools Manual</title>
 
-		<part>
+		<!--part-->
 		    <title>Reference Manual</title>
 
 						<chapter>
@@ -55,7 +55,7 @@
 						
 						  <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Conditional%20Elements.xml" />
 						</chapter>						
-		</part>  
+		<!--/part-->  
 
   <index></index>
 </book>
