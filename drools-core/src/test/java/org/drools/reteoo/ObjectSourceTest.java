@@ -170,48 +170,4 @@ public class ObjectSourceTest extends DroolsTestCase {
         assertSame( workingMemory,
                     list[2] );
     }
-
-    public void testAttachNewNode() throws FactException {
-        Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.RETRACTION,
-                                                                 null,
-                                                                 null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
-
-        MockObjectSource source = new MockObjectSource( 15 );
-
-        // Add two ObjectSinks
-        MockObjectSink sink1 = new MockObjectSink();
-        source.addObjectSink( sink1 );
-
-        MockObjectSink sink2 = new MockObjectSink();
-        source.addObjectSink( sink2 );
-
-        // Only the last added ObjectSink should receive facts
-        source.attachingNewNode = true;
-
-        source.propagateAssertObject( new FactHandleImpl( 1 ),
-                                      context,
-                                      workingMemory );
-
-        assertLength( 0,
-                      sink1.getAsserted() );
-
-        assertLength( 1,
-                      sink2.getAsserted() );
-
-        // Now all sinks should receive values
-        source.attachingNewNode = false;
-
-        source.propagateAssertObject( new FactHandleImpl( 2 ),
-                                      context,
-                                      workingMemory );
-
-        assertLength( 1,
-                      sink1.getAsserted() );
-
-        assertLength( 2,
-                      sink2.getAsserted() );
-    }
 }
