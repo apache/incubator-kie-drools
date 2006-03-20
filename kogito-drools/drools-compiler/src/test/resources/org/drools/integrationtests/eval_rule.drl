@@ -3,9 +3,9 @@ package org.drools.test;
 import org.drools.Cheese;
 
 global java.util.List list;
-global java.util.Integer five;
+global java.lang.Integer five;
 
-rule "like stilton"
+rule "eval rule test"
     when
         $cheese : Cheese( $type:type == "stilton" )
         eval( $cheese.getPrice() == five.intValue() )
