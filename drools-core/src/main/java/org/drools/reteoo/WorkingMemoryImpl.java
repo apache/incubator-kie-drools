@@ -212,7 +212,7 @@ public class WorkingMemoryImpl
 
         } else {
             this.globals.put( name,
-                                      value );
+                              value );
         }
     }
 

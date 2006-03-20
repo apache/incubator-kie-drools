@@ -33,7 +33,7 @@ import org.drools.base.FieldFactory;
 import org.drools.common.BetaNodeBinder;
 import org.drools.rule.And;
 import org.drools.rule.Column;
-import org.drools.rule.ConditionalElement;
+import org.drools.rule.GroupElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Exists;
@@ -213,9 +213,9 @@ class ReteooBuilder {
                 }
             } else {
                 // If its not a Column or EvalCondition then it can either be a Not or an Exists
-                ConditionalElement ce = (ConditionalElement) object;
+                GroupElement ce = (GroupElement) object;
                 while ( !(ce.getChildren().get( 0 ) instanceof Column) ) {
-                    ce = (ConditionalElement) ce.getChildren().get( 0 );
+                    ce = (GroupElement) ce.getChildren().get( 0 );
                 }
                 column = (Column) ce.getChildren().get( 0 );
                 binder = attachColumn( column,
@@ -291,7 +291,7 @@ class ReteooBuilder {
     }
 
     private BetaNodeBinder attachColumn(Column column,
-                                        ConditionalElement parent) throws InvalidPatternException {
+                                        GroupElement parent) throws InvalidPatternException {
         // Check if the Column is bound
         if ( column.getDeclaration() != null ) {
             Declaration declaration = column.getDeclaration();

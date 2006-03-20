@@ -23,7 +23,7 @@ import java.util.List;
 import org.drools.common.BetaNodeBinder;
 import org.drools.rule.And;
 import org.drools.rule.Column;
-import org.drools.rule.ConditionalElement;
+import org.drools.rule.GroupElement;
 import org.drools.rule.Exists;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Not;
@@ -76,9 +76,9 @@ class Builder {
 				// create column constraints
 			} else {
 				// NOTS and EXISTS
-                ConditionalElement ce = (ConditionalElement) object;
+                GroupElement ce = (GroupElement) object;
 				while (!(ce.getChildren().get(0) instanceof Column)) {
-					ce = (ConditionalElement) ce.getChildren().get(0);
+					ce = (GroupElement) ce.getChildren().get(0);
 				}
 				constraints = Builder.processColumn((Column) ce.getChildren().get( 0 ));
 			}

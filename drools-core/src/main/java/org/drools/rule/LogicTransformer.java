@@ -100,7 +100,7 @@ class LogicTransformer {
             Object object = it.next();
             if ( object instanceof Or ) {
                 or = (Or) applyOrTransformation( cloned,
-                                                 (ConditionalElement) object );
+                                                 (GroupElement) object );
                 break;
             }
         }
@@ -135,13 +135,13 @@ class LogicTransformer {
      * 
      * @param ce
      */
-    void processTree(ConditionalElement ce) throws InvalidPatternException {
+    void processTree(GroupElement ce) throws InvalidPatternException {
         List newChildren = new ArrayList();
 
         for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
             Object object = it.next();
-            if ( object instanceof ConditionalElement ) {
-                ConditionalElement parent = (ConditionalElement) object;
+            if ( object instanceof GroupElement ) {
+                GroupElement parent = (GroupElement) object;
 
                 processTree( parent );
 
@@ -153,7 +153,7 @@ class LogicTransformer {
                     Object object2 = orIter.next();
                     if ( object2 instanceof Or ) {
                         newChildren.add( applyOrTransformation( parent,
-                                                                (ConditionalElement) object2 ) );
+                                                                (GroupElement) object2 ) );
                         it.remove();
                         break;
                     }
@@ -174,8 +174,8 @@ class LogicTransformer {
      * @param child
      * @return
      */
-    boolean removeDuplicate(ConditionalElement parent,
-                            ConditionalElement child) {
+    boolean removeDuplicate(GroupElement parent,
+                            GroupElement child) {
         if ( this.duplicateTransformations.get( parent.getClass() ) != null ) {
             return ((HashSet) this.duplicateTransformations.get( parent.getClass() )).contains( child.getClass() );
         }
@@ -188,7 +188,7 @@ class LogicTransformer {
      * duplicate child is removed by the parent method.
      * 
      */
-    void checkForAndRemoveDuplicates(ConditionalElement parent) {
+    void checkForAndRemoveDuplicates(GroupElement parent) {
         List newChildren = new ArrayList();
 
         for ( Iterator it = parent.getChildren().iterator(); it.hasNext(); ) {
@@ -196,8 +196,8 @@ class LogicTransformer {
             // Remove the duplicate if the classes are the same and
             // removeDuplicate method returns true
             if ( parent.getClass().isInstance( object ) && removeDuplicate( parent,
-                                                                            (ConditionalElement) object ) ) {
-                ConditionalElement child = (ConditionalElement) object;
+                                                                            (GroupElement) object ) ) {
+                GroupElement child = (GroupElement) object;
                 for ( Iterator childIter = child.getChildren().iterator(); childIter.hasNext(); ) {
                     newChildren.add( childIter.next() );
                 }
@@ -207,8 +207,8 @@ class LogicTransformer {
         parent.getChildren().addAll( newChildren );
     }
 
-    ConditionalElement applyOrTransformation(ConditionalElement parent,
-                                             ConditionalElement child) throws InvalidPatternException {
+    GroupElement applyOrTransformation(GroupElement parent,
+                                             GroupElement child) throws InvalidPatternException {
         OrTransformation transformation = null;
         Map map = (HashMap) this.orTransformations.get( parent.getClass() );
         if ( map != null ) {
@@ -223,7 +223,7 @@ class LogicTransformer {
     }
 
     interface OrTransformation {
-        ConditionalElement transform(ConditionalElement element) throws InvalidPatternException;
+        GroupElement transform(GroupElement element) throws InvalidPatternException;
     }
 
     /**
@@ -257,7 +257,7 @@ class LogicTransformer {
         implements
         OrTransformation {
 
-        public ConditionalElement transform(ConditionalElement and) throws InvalidPatternException {
+        public GroupElement transform(GroupElement and) throws InvalidPatternException {
             Or or = new Or();
             determinePermutations( 0,
                                    (And) and,
@@ -364,7 +364,7 @@ class LogicTransformer {
         implements
         OrTransformation {
 
-        public ConditionalElement transform(ConditionalElement exist) throws InvalidPatternException {
+        public GroupElement transform(GroupElement exist) throws InvalidPatternException {
             throw new InvalidPatternException( "You cannot nest an OR within an Exists" );
         }
     }
@@ -387,7 +387,7 @@ class LogicTransformer {
         implements
         OrTransformation {
 
-        public ConditionalElement transform(ConditionalElement not) throws InvalidPatternException {
+        public GroupElement transform(GroupElement not) throws InvalidPatternException {
             throw new InvalidPatternException( "You cannot nest an OR within an Not" );
         }
     }
