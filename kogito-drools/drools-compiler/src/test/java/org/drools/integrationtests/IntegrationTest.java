@@ -18,6 +18,7 @@ package org.drools.integrationtests;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.Cheese;
@@ -39,10 +40,35 @@ public class IntegrationTest extends TestCase {
         org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
         
         Cheese stilton = new Cheese("stilton", 5);
         workingMemory.assertObject( stilton );
+        
         workingMemory.fireAllRules();
+        
+        assertEquals( new Integer( 5 ), list.get(  0 ) );        
+    }    
+    
+    public void testGlobals() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "globals_rule.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
+        
+        Cheese stilton = new Cheese("stilton", 5);
+        workingMemory.assertObject( stilton );       
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( new Integer( 5 ), list.get(  0 ) );  
     }    
     
     public void testQuery() throws Exception {
@@ -56,7 +82,7 @@ public class IntegrationTest extends TestCase {
         
         Cheese stilton = new Cheese("stinky", 5);
         workingMemory.assertObject( stilton );
-        List results = workingMemory.getQueryResults( "simple" );
+        List results = workingMemory.getQueryResults( "simple query" );
         assertEquals(1, results.size());        
     }
     
@@ -69,9 +95,16 @@ public class IntegrationTest extends TestCase {
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         
+        workingMemory.setGlobal( "five", new Integer( 5 ) );
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );  
+        
         Cheese stilton = new Cheese("stilton", 5);
         workingMemory.assertObject( stilton );
         workingMemory.fireAllRules();
+        
+        assertEquals( stilton, list.get(  0 ) );  
     }      
     
     public void testReturnValue() throws Exception {
@@ -83,11 +116,20 @@ public class IntegrationTest extends TestCase {
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         
+        workingMemory.setGlobal( "two", new Integer( 2 ) );
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );         
+        
         Person peter = new Person("peter", null, 12);
         workingMemory.assertObject( peter );
         Person jane = new Person("jane", null, 10);
-        workingMemory.assertObject( peter );        
+        workingMemory.assertObject( jane );    
+                
         workingMemory.fireAllRules();
+        
+        assertEquals( jane, list.get(  0 ) );
+        assertEquals( peter, list.get(  1 ) );
     }   
     
     public void testPredicate() throws Exception {
@@ -99,11 +141,20 @@ public class IntegrationTest extends TestCase {
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         
+        workingMemory.setGlobal( "two", new Integer( 2 ) );
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );         
+        
         Person peter = new Person("peter", null, 12);
         workingMemory.assertObject( peter );
         Person jane = new Person("jane", null, 10);
-        workingMemory.assertObject( peter );        
+        workingMemory.assertObject( jane );    
+                
         workingMemory.fireAllRules();
+        
+        assertEquals( jane, list.get(  0 ) );
+        assertEquals( peter, list.get(  1 ) ); 
     }     
     
 }
