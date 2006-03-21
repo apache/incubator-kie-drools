@@ -578,7 +578,7 @@ public class RuleParserTest extends TestCase {
         assertEquals(3, rule.getLhs().getDescrs().size());
         EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get( 2 );
         assertEqualsIgnoreWhitespace( "abc(\"foo\")", eval.getText());
-    }
+    }      
     
     public void testWithRetval() throws Exception {
         RuleParser parser = parseResource( "with_retval.drl" );
@@ -615,7 +615,29 @@ public class RuleParserTest extends TestCase {
         assertEquals("$age2", pred.getDeclaration());
         assertEqualsIgnoreWhitespace( "$age2 == $age1+2", pred.getText());
         
-    }    
+    }
+    
+    public void testNotWithConstraint() throws Exception {
+        RuleParser parser = parseResource( "not_with_constraint.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(1, pack.getRules().size());
+        
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        NotDescr not = (NotDescr) rule.getLhs().getDescrs().get( 0 );
+        ColumnDescr column = (ColumnDescr) not.getDescrs().get( 0 );
+        assertEquals( 1, column.getDescrs().size() );
+        
+        BoundVariableDescr boundVariable = (BoundVariableDescr) column.getDescrs().get( 0 );
+        assertEquals( "price", boundVariable.getFieldName() );
+        assertEquals( "==", boundVariable.getEvaluator() );
+        assertEquals( "five", boundVariable.getIdentifier() );
+        
+        
+    }     
     
     public void testGlobal() throws Exception {
         RuleParser parser = parseResource( "globals.drl" );

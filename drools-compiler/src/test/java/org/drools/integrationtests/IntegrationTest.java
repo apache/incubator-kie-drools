@@ -17,20 +17,17 @@ package org.drools.integrationtests;
  */
 
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.Person;
 import org.drools.WorkingMemory;
-import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
-import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-
-import junit.framework.TestCase;
 
 public class IntegrationTest extends TestCase {
     public void testGlobals() throws Exception {
@@ -123,7 +120,7 @@ public class IntegrationTest extends TestCase {
     
     public void testEval() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
         Package pkg = builder.getPackage();
         
         org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
@@ -193,7 +190,30 @@ public class IntegrationTest extends TestCase {
     }     
     
     public void testNot() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_rule_test.drl" ) ) );
+        Package pkg = builder.getPackage();
         
+        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();       
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );                  
+        
+        Cheese stilton = new Cheese("stilton", 5);
+        FactHandle stiltonHandle = workingMemory.assertObject( stilton );
+        Cheese cheddar = new Cheese("cheddar", 7);
+        FactHandle cheddarHandle = workingMemory.assertObject( cheddar );        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 0, list.size() );  
+        
+        workingMemory.retractObject( stiltonHandle );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 1, list.size() );              
     }
     
 }

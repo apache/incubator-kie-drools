@@ -1,0 +1,12 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list;
+
+rule "not rule test"
+    when
+        not Cheese( price == 5 )
+    then
+		list.add( new Integer( 5 ) );
+end    
