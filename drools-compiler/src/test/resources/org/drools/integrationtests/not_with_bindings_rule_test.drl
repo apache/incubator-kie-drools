@@ -1,0 +1,15 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list;
+
+rule "not rule test"
+    when
+        $person : Person( $likes:like )
+        not Cheese( type == $likes )
+    then
+        System.out.println( "help" );    
+		list.add( $person );
+end    
+
