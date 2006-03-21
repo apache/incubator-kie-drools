@@ -52,11 +52,9 @@ import org.drools.spi.ObjectTypeResolver;
  * 
  * @see org.drools.rule.Package
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  * 
- * TODO Make joinForCondition actually be intelligent enough to build optimal
- * joins. Currently using forgy's original description of 2-input nodes, which I
- * feel (but don't know for sure, is sub-optimal.
  */
 class ReteooBuilder {
     // ------------------------------------------------------------
