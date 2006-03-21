@@ -394,7 +394,7 @@ public class RuleParserTest extends TestCase {
         ColumnDescr cheese = (ColumnDescr) lhs.getDescrs().get( 0 );
         assertEquals("Cheese", cheese.getObjectType() );
         assertEquals(2, lhs.getDescrs().size() );
-        FieldBindingDescr fieldBinding = ( FieldBindingDescr) cheese.getDescrs().get( 0 );
+        FieldBindingDescr fieldBinding = ( FieldBindingDescr ) cheese.getDescrs().get( 0 );
         assertEquals( "type", fieldBinding.getFieldName());        
         LiteralDescr literalDescr = ( LiteralDescr) cheese.getDescrs().get( 1 );
         assertEquals( "type", literalDescr.getFieldName() );
@@ -625,16 +625,19 @@ public class RuleParserTest extends TestCase {
         assertEquals(1, pack.getRules().size());
         
         RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals(2, rule.getLhs().getDescrs().size());
         
-        assertEquals(1, rule.getLhs().getDescrs().size());
-        NotDescr not = (NotDescr) rule.getLhs().getDescrs().get( 0 );
-        ColumnDescr column = (ColumnDescr) not.getDescrs().get( 0 );
-        assertEquals( 1, column.getDescrs().size() );
         
+        ColumnDescr column = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        FieldBindingDescr fieldBinding = (FieldBindingDescr) column.getDescrs().get( 0 );
+        assertEquals( "$likes", fieldBinding.getIdentifier() );
+        
+        NotDescr not = (NotDescr) rule.getLhs().getDescrs().get( 1 );
+        column = (ColumnDescr) not.getDescrs().get( 0 );
         BoundVariableDescr boundVariable = (BoundVariableDescr) column.getDescrs().get( 0 );
-        assertEquals( "price", boundVariable.getFieldName() );
+        assertEquals( "type", boundVariable.getFieldName() );
         assertEquals( "==", boundVariable.getEvaluator() );
-        assertEquals( "five", boundVariable.getIdentifier() );
+        assertEquals( "$likes", boundVariable.getIdentifier() );
         
         
     }     
