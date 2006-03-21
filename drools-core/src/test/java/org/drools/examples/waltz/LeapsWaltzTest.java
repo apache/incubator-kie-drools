@@ -41,14 +41,14 @@ public class LeapsWaltzTest extends BaseWaltzTest {
         ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        InputStream is = getClass().getResourceAsStream( "/waltz12.dat" );
-        List list = getInputObjects( is );
-        for ( Iterator it = list.iterator(); it.hasNext(); ) {
-            Object object = it.next();
-            workingMemory.assertObject( object );
-        }
+//        InputStream is = getClass().getResourceAsStream( "/waltz12.dat" );
+//        List list = getInputObjects( is );
+//        for ( Iterator it = list.iterator(); it.hasNext(); ) {
+//            Object object = it.next();
+//            workingMemory.assertObject( object );
+//        }
 
-//        workingMemory.assertObject( new Stage(Stage.START) );
+        workingMemory.assertObject( new Stage(Stage.START) );
 
         long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
