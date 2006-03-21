@@ -117,6 +117,7 @@ public class RuleBaseImpl
             this.workingMemories.put( workingMemory,
                                       RuleBaseImpl.PRESENT );
         }
+        workingMemory.assertObject( InitialFactImpl.getInstance() );
         return workingMemory;
     }
 

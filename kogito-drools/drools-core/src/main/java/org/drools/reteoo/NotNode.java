@@ -176,7 +176,7 @@ public class NotNode extends BetaNode {
                               WorkingMemoryImpl workingMemory) {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         ObjectMatches objectMatches = memory.remove( workingMemory, handle );
-        int k = 0;
+
         for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
             ReteTuple leftTuple = tupleMatch.getTuple();
             int previousSize = leftTuple.matchesSize();
