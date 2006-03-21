@@ -22,11 +22,7 @@ package org.drools;
  * @author Michael Neale
  */
 public class RuleBaseFactory {
-
-    public static final int RETEOO = 1;
-    public static final int LEAPS = 2;
-    
-    
+      
     private static RuleBaseFactory INSTANCE = new RuleBaseFactory();
     
     private RuleBaseFactory() {
@@ -38,15 +34,15 @@ public class RuleBaseFactory {
     
     /** Create a new default rule base (RETEOO type engine) */
     public RuleBase newRuleBase() {
-        return newRuleBase(RETEOO);
+        return newRuleBase(RuleBase.RETEOO);
     }
 
     /** Create a new RuleBase of the appropriate type */
     public RuleBase newRuleBase(int type) {
         switch ( type ) {
-            case RETEOO :
+            case RuleBase.RETEOO :
                 return new org.drools.reteoo.RuleBaseImpl();
-            case LEAPS :
+            case RuleBase.LEAPS :
                 try {
                     return new org.drools.leaps.RuleBaseImpl();
                 } catch ( PackageIntegrationException e ) {

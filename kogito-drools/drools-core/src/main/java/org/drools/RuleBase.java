@@ -40,6 +40,10 @@ import org.drools.spi.FactHandleFactory;
 public interface RuleBase
     extends
     Serializable {
+
+    public static final int RETEOO = 1;
+    public static final int LEAPS = 2;    
+    
     /**
      * Create a new <code>WorkingMemory</code> session for this
      * <code>RuleBase</code>.
