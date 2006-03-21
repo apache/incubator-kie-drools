@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.Cheese;
+import org.drools.FactHandle;
 import org.drools.Person;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
@@ -69,7 +70,41 @@ public class IntegrationTest extends TestCase {
         workingMemory.fireAllRules();
         
         assertEquals( "stilton", list.get(  0 ) );        
-    }            
+    }        
+    
+    public void testOr() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "or_test.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
+        
+        Cheese cheddar = new Cheese("cheddar", 5);
+        FactHandle h = workingMemory.assertObject( cheddar );
+        
+        workingMemory.fireAllRules();
+        
+        //just one added
+        assertEquals( "got cheese", list.get(  0 ) );
+        assertEquals(1, list.size());
+        
+        workingMemory.retractObject( h );
+        workingMemory.fireAllRules();
+        
+        //still just one
+        assertEquals(1, list.size());
+        
+        workingMemory.assertObject( new Cheese("stilton", 5) );
+        workingMemory.fireAllRules();
+        
+        //now have one more
+        assertEquals(2, list.size());
+        
+    }      
     
     public void testQuery() throws Exception {
         PackageBuilder builder = new PackageBuilder();

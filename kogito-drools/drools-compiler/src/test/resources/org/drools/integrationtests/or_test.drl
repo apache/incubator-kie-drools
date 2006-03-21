@@ -1,0 +1,12 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list;
+
+rule "literal test rule"
+    when
+        Cheese(type == "stilton" ) || Cheese(type == "cheddar")
+    then
+		list.add("got cheese");
+end   
