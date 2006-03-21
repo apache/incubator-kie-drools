@@ -33,7 +33,7 @@ grammar RuleParser;
 	}
 	
 	private String runThenExpander(String text) {
-		System.err.println( "expand THEN [" + text + "]" );
+		//System.err.println( "expand THEN [" + text + "]" );
 		StringTokenizer lines = new StringTokenizer( text, "\n\r" );
 
 		StringBuffer expanded = new StringBuffer();
@@ -151,7 +151,7 @@ function
 	:
 		'function' opt_eol (retType=dotted_name)? opt_eol name=ID opt_eol
 		{
-			System.err.println( "function :: " + name.getText() );
+			//System.err.println( "function :: " + name.getText() );
 			f = new FunctionDescr( name.getText(), retType );
 		} 
 		'(' opt_eol
@@ -215,6 +215,7 @@ rule returns [RuleDescr rule]
 		}
 		(	rule_attributes[rule]
 		)?
+		opt_eol
 		(	loc='when' ':'? opt_eol
 			{ 
 				AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); 
@@ -226,8 +227,7 @@ rule returns [RuleDescr rule]
 			)
 					
 		)?
-		{ System.err.println( "finished LHS?" ); }
-		'then' ':'? { System.err.println( "matched THEN" ); } opt_eol
+		'then' ':'?  opt_eol
 		( options{greedy=false;} : any=.
 			{
 				consequence = consequence + " " + any.getText();
@@ -384,9 +384,6 @@ fact_binding returns [PatternDescr d]
 	}
  	:
  		id=ID 
- 		{
- 			System.err.println( "fact_binding(" + id.getText() + ")" );
- 		}
  		
  		opt_eol ':' opt_eol 
  		f=fact opt_eol
@@ -449,10 +446,10 @@ constraint[List constraints]
 		f=ID	
 		{
 			if ( fb != null ) {
-				System.err.println( "fb: " + fb.getText() );
-				System.err.println( " f: " + f.getText() );
+				//System.err.println( "fb: " + fb.getText() );
+				//System.err.println( " f: " + f.getText() );
 				d = new FieldBindingDescr( f.getText(), fb.getText() );
-				System.err.println( "fbd: " + d );
+				//System.err.println( "fbd: " + d );
 				
 				d.setLocation( f.getLine(), f.getCharPositionInLine() );
 				constraints.add( d );
@@ -528,7 +525,7 @@ paren_chunk returns [String text]
 		(	options{greedy=false;} : 
 			'(' c=paren_chunk ')' 	
 			{
-				System.err.println( "chunk [" + c + "]" );
+				//System.err.println( "chunk [" + c + "]" );
 				if ( c == null ) {
 					c = "";
 				}
@@ -540,7 +537,7 @@ paren_chunk returns [String text]
 			} 
 		| any=. 
 			{
-				System.err.println( "any [" + any.getText() + "]" );
+				//System.err.println( "any [" + any.getText() + "]" );
 				if ( text == null ) {
 					text = any.getText();
 				} else {
@@ -559,7 +556,7 @@ curly_chunk returns [String text]
 		(	options{greedy=false;} : 
 			'{' c=curly_chunk '}' 	
 			{
-				System.err.println( "chunk [" + c + "]" );
+				//System.err.println( "chunk [" + c + "]" );
 				if ( c == null ) {
 					c = "";
 				}
@@ -571,7 +568,7 @@ curly_chunk returns [String text]
 			} 
 		| any=. 
 			{
-				System.err.println( "any [" + any.getText() + "]" );
+				//System.err.println( "any [" + any.getText() + "]" );
 				if ( text == null ) {
 					text = any.getText();
 				} else {
