@@ -1,0 +1,18 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+#error 1) missing a person import
+
+
+global java.util.List list;
+
+rule "not rule test"
+    when
+    	#error 2) incorrect field
+        $person : Person( $likes:likeypooh )
+        not Cheese( type == $likes )
+    then
+        System.out.println( "help" );    
+		list.add( $person );
+end    

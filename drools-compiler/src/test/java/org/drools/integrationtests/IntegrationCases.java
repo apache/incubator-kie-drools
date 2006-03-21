@@ -29,6 +29,7 @@ import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
 
 /**
  * This contains the test cases for each engines implementation to execute.
@@ -231,7 +232,10 @@ public abstract class IntegrationCases extends TestCase {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_with_bindings_rule_test.drl" ) ) );
         Package pkg = builder.getPackage();
-        
+         
+        Rule rule = pkg.getRules()[0];
+        assertTrue(rule.isValid());
+        assertEquals(0, builder.getErrors().length);
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();       
@@ -255,6 +259,26 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
 //        
         assertEquals( 1, list.size() );              
-    }    
+    }   
+    
+    public void testWithInvalidRule() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "invalid_rule.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        Rule badBoy = pkg.getRules()[0];
+        assertFalse(badBoy.isValid());
+        
+        //this should ralph all over the place.
+        RuleBase ruleBase = getRuleBase();
+        try {
+            ruleBase.addPackage( pkg );
+            fail("Should have thrown an exception as the rule is NOT VALID.");
+        } catch (RuntimeException e) {
+            assertNotNull(e.getMessage());
+        }
+        assertTrue(builder.getErrors().length > 0);
+
+    }
     
 }

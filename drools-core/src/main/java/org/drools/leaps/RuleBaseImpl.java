@@ -205,6 +205,8 @@ public class RuleBaseImpl implements RuleBase {
 	 */
 	public void addRule(Rule rule) throws FactException,
 			InvalidPatternException {
+        if (!rule.isValid())
+            throw new IllegalArgumentException("The rule called " + rule.getName() + " is not valid. Check for compile errors reported.");
 		List rules = Builder.processRule(rule);
 
 		this.leapsRules.put(rule, rules);

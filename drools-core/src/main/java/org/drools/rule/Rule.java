@@ -77,6 +77,9 @@ public class Rule
 
     /** makes the rule's much the current focus */
     private boolean      autoFocus;
+    
+    /** indicates that the rule is semantically correct. */
+    private boolean      semanticallyValid = true;
 
     // ------------------------------------------------------------
     // Constructors
@@ -161,6 +164,8 @@ public class Rule
 
     /**
      * Determine if this rule is internally consistent and valid.
+     * This will include checks to make sure the rules semantic components (actions and predicates)
+     * are valid.
      * 
      * No exception is thrown.
      * <p>
@@ -176,7 +181,7 @@ public class Rule
         //    return false;
         //}
 
-        if ( this.consequence == null ) {
+        if ( this.consequence == null || !isSemanticallyValid() ) {
             return false;
         }
 
@@ -447,6 +452,20 @@ public class Rule
     
     public int hashCode() {
         return this.name.hashCode();
+    }
+
+    public void setSemanticallyValid(boolean valid) {
+        this.semanticallyValid = valid;
+    }
+
+    /** 
+     * This will return if the semantic actions or predicates in the rules
+     * are valid.
+     * This is provided so that lists of rules can be provided even if their semantic actions
+     * do not "compile" etc.
+     */
+    public boolean isSemanticallyValid() {
+        return semanticallyValid;
     }
     
 
