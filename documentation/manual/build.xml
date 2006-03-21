@@ -96,9 +96,9 @@
             <arg value="${build.dir}/${lang}/pdf/docbook_fop.tmp"/>
             <arg value="${build.dir}/${lang}/pdf/${docname}.pdf"/>
         </java>
-        <delete>
+        <!--delete>
             <fileset dir="${build.dir}/${lang}/pdf" excludes="**/*.pdf"/>
-        </delete>        
+        </delete-->        
     </target>
 
     <target name="lang.dochtml"
