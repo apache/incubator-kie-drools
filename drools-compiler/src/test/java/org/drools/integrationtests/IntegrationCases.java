@@ -205,7 +205,7 @@ public abstract class IntegrationCases extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_rule_test.drl" ) ) );
         Package pkg = builder.getPackage();
         
-        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();       
         
@@ -232,7 +232,7 @@ public abstract class IntegrationCases extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_with_bindings_rule_test.drl" ) ) );
         Package pkg = builder.getPackage();
         
-        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();       
         
@@ -249,9 +249,9 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
         
         assertEquals( 0, list.size() );  
-//        
+        
         workingMemory.retractObject( stiltonHandle );
-//        
+        
         workingMemory.fireAllRules();
 //        
         assertEquals( 1, list.size() );              
