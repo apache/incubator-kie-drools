@@ -53,7 +53,8 @@ Then
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="A%20Basic%20Rete%20Network.gif" />
+        <imagedata fileref="A%20Basic%20Rete%20Network.gif" scalefit="1"
+                   width="100%" />
       </imageobject>
     </mediaobject>
   </figure>
