@@ -23,7 +23,7 @@ import org.drools.rule.Package;
 /**
  * This is a sample file to launch a rule package from a rule source file.
  */
-public class HelloWorld extends TestCase {
+public class HelloWorldTest extends TestCase {
 
     public void testSomething() {
         try {
@@ -52,7 +52,7 @@ public class HelloWorld extends TestCase {
      */
     private static RuleBase readRule() throws IOException, DroolsParserException, RuleIntegrationException, PackageIntegrationException, InvalidPatternException {
         //read in the source
-        Reader reader = new InputStreamReader( HelloWorld.class.getResourceAsStream( "HelloWorld.drl" ) );
+        Reader reader = new InputStreamReader( HelloWorldTest.class.getResourceAsStream( "HelloWorld.drl" ) );
         DrlParser parser = new DrlParser();
         PackageDescr packageDescr = parser.parse( reader );
         
