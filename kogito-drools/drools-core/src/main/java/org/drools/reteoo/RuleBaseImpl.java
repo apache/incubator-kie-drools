@@ -278,6 +278,8 @@ public class RuleBaseImpl
     }
 
     public void addRule(Rule rule) throws InvalidPatternException {
+        if (!rule.isValid())
+            throw new IllegalArgumentException("The rule called " + rule.getName() + " is not valid. Check for compile errors reported.");
         // This adds the rule. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
         this.reteooBuilder.addRule( rule );
         

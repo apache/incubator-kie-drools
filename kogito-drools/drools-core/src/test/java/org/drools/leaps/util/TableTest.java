@@ -191,7 +191,7 @@ public class TableTest extends TestCase {
 			Handle fh1 = new Handle(1, new Guest("1", Sex.resolve("m"), Hobby
 					.resolve("h2")));
 			Handle fh2 = new Handle(2, new Guest("1", Sex.resolve("m"), Hobby
-					.resolve("this.h1")));
+					.resolve("h1")));
 			Handle fh3 = new Handle(3, new Guest("1", Sex.resolve("m"), Hobby
 					.resolve("h3")));
 			Handle fh4 = new Handle(4, new Guest("3", Sex.resolve("f"), Hobby

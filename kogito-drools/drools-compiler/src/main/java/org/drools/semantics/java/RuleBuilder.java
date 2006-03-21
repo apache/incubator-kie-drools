@@ -115,6 +115,9 @@ public class RuleBuilder {
     }
 
     public Rule getRule() {
+        if (!this.errors.isEmpty()) {
+            this.rule.setSemanticallyValid( false );
+        }
         return this.rule;
     }
 
@@ -372,7 +375,7 @@ public class RuleBuilder {
             this.errors.add( new RuleError( this.rule,
                                              boundVariableDescr,
                                              null,
-                                             "Unable to return Declaration for identifier '" + boundVariableDescr.getIdentifier() ) + "'" );
+                                             "Unable to return Declaration for identifier '" + boundVariableDescr.getIdentifier() + "'" ) );
             return;
         }
 
