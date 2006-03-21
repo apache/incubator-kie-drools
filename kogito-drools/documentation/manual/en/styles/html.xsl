@@ -14,4 +14,6 @@
     <xsl:param name="img.src.path">../shared/images/</xsl:param>
     <xsl:param name="keep.relative.image.uris">0</xsl:param>
     
+    <xsl:param name="html.stylesheet">../shared/css/html.css</xsl:param>
+    
 </xsl:stylesheet>
