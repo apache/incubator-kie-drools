@@ -221,6 +221,7 @@ public class RuleBaseImpl
                                        PackageIntegrationException,
                                        FactException,
                                        InvalidPatternException {
+        newPkg.checkValidity();
         Package pkg = ( Package ) this.pkgs.get(  newPkg.getName() );
         if ( pkg != null ) {
             mergePackage( pkg, newPkg );            

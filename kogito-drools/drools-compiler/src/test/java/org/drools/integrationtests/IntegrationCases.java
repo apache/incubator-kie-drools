@@ -272,6 +272,7 @@ public abstract class IntegrationCases extends TestCase {
         Rule badBoy = pkg.getRules()[0];
         assertFalse(badBoy.isValid());
         
+        RuntimeException runtime = null;
         //this should ralph all over the place.
         RuleBase ruleBase = getRuleBase();
         try {
@@ -279,11 +280,14 @@ public abstract class IntegrationCases extends TestCase {
             fail("Should have thrown an exception as the rule is NOT VALID.");
         } catch (RuntimeException e) {
             assertNotNull(e.getMessage());
+            runtime = e;
         }
         assertTrue(builder.getErrors().length > 0);
 
         String pretty = builder.printErrors();
         assertFalse(pretty.equals( "" ));
+        assertEquals(pretty, runtime.getMessage());
+        
         System.err.println(pretty);
         
     }
@@ -296,7 +300,8 @@ public abstract class IntegrationCases extends TestCase {
         
         //the compiled package
         Package pkg = builder.getPackage();
-
+        assertTrue( pkg.isValid() );
+        assertEquals(null, pkg.getErrorSummary());
         //Check errors
         String err = builder.printErrors();
         assertEquals("", err);
