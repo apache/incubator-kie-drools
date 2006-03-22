@@ -1,0 +1,105 @@
+<project>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+    <version>3.0-beta-1</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>drools-jsr94</artifactId>
+
+  <name>Drools :: JSR-94 API Module</name>
+  <version>3.0-beta-1</version>
+  
+  <repositories>
+    <repository>
+      <id>basedir</id>
+      <url>file://${basedir}/../repository</url>
+    </repository>
+  </repositories>  
+  
+  <dependencies>  
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jsr94</groupId>
+            <artifactId>jsr94</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jsr94</groupId>
+            <artifactId>jsr94-tck</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jsr94</groupId>
+            <artifactId>jsr94-sigtest</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>2.0.2</version>
+        </dependency>    
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+            <execution>
+                <id>package</id>
+                <phase>package</phase>
+                <configuration>
+                    <tasks>
+                        <echo message="Copying file ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging} to ../drools-ide/lib/${project.artifactId}.${project.packaging}" />
+                        <copy file="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" tofile="../drools-ide/lib/${project.artifactId}.${project.packaging}" />
+                    </tasks>
+                </configuration>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+            </execution>
+        </executions>
+        <dependencies>
+	        <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant-antlr</artifactId>
+                <version>1.6.5</version>
+	        </dependency>
+        </dependencies>
+      </plugin>      
+      
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <configuration>
+        <includes>
+          <include>**/*Test.java</include>
+		<include>**/org/drools/jsr94/AllTests.java</include>
+                <include>**/org/jcp/jsr94/tck/AllTests.java</include>
+        </includes>
+        <excludes>
+          <exclude>**/LogicTransformerTest.java</exclude>
+          <exclude>**/LeapsMannersTest.java</exclude>          
+          <exclude>**/ReteooMannersTest.java</exclude>                    
+          <exclude>**/LeapsWaltzTest.java</exclude>          
+          <exclude>**/ReteooWaltzTest.java</exclude>             
+          <exclude>**/TableTest.java</exclude>                       
+        </excludes>
+      </configuration>
+    </plugin>      
+    </plugins>
+  </build>
+
+
+</project>
