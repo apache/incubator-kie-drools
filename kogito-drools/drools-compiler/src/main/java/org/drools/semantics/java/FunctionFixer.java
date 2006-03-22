@@ -8,8 +8,8 @@ public class FunctionFixer {
     static Pattern FUNCTION = Pattern.compile("(.*)\\b([^.][\\S]+)\\s*\\(([^)]*)\\)(.*)", Pattern.DOTALL);
             
     public String fix(String raw) {
-        return raw;
-        //return fix(raw, FUNCTION);
+        //return raw;
+        return fix(raw, FUNCTION);
     }
     
     public String fix(String raw, Pattern pattern) {
@@ -19,8 +19,17 @@ public class FunctionFixer {
         if (matcher.matches()) {
             String pre = matcher.group(1);
             if (matcher.group(1) != null) {
-                pre = fix(pre, pattern);
+                String trimmedPre = pre.trim();
+                if (trimmedPre.endsWith( "." ) || trimmedPre.endsWith( "new" )) {
+                    //leave alone
+                    return raw;
+                 } else {
+                     //recurse
+                    pre = fix(pre, pattern);
+                 }                
+                 //pre = fix(pre, pattern);
             }
+            
             String function = matcher.group(2).trim();
             
             String params = matcher.group(3).trim();
