@@ -11,4 +11,9 @@ public class GlobalError extends DroolsError {
         return this.global;
     }
 
+    public String getMessage() {
+        return global;
+    }
+    
+
 }

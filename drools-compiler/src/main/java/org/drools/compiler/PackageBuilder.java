@@ -287,14 +287,8 @@ public class PackageBuilder {
         StringBuffer buf = new StringBuffer();
         for ( Iterator iter = this.results.iterator(); iter.hasNext(); ) {
             DroolsError err = (DroolsError) iter.next();
-            if (err instanceof RuleError) {
-                RuleError ruleErr = (RuleError) err;
-                buf.append(ruleErr.getMessage());
-                buf.append( "\n" );
-            } else {
-                buf.append( err );
-                buf.append( "\n" );
-            }
+            buf.append(err.getMessage());
+            buf.append( "\n" );
         }
         return buf.toString();
     }

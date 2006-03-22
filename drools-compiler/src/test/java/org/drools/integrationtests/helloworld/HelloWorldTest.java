@@ -38,7 +38,7 @@ public class HelloWorldTest extends TestCase {
             message.setNumber( 42 );
             
             workingMemory.assertObject( message );
-            
+            workingMemory.assertObject( "boo" );
             workingMemory.fireAllRules();               
             assertTrue( message.isFired() );
         } catch (Throwable t) {

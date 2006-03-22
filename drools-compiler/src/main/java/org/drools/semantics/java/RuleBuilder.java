@@ -357,7 +357,7 @@ public class RuleBuilder {
             this.errors.add( new RuleError( this.rule,
                                              boundVariableDescr,
                                              null,
-                                             "Identifier not defined for binding field '" + boundVariableDescr.getFieldName() ) + "'" );
+                                             "Identifier not defined for binding field '" + boundVariableDescr.getFieldName() + "'" )  );
             return;
         }
 
@@ -783,7 +783,7 @@ public class RuleBuilder {
             this.errors.add( new RuleError( this.rule,
                                              descr,
                                              e,
-                                             "Unable to create Field Extractor for '" + fieldName ) + "'" );
+                                             "Unable to create Field Extractor for '" + fieldName + "'")  );
         }
 
         return extractor;
