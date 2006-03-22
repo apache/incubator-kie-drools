@@ -42,6 +42,7 @@ import org.drools.common.EventSupport;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.leaps.conflict.DefaultConflictResolver;
+import org.drools.leaps.util.TableIterator;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
@@ -66,10 +67,15 @@ import org.drools.util.IteratorChain;
 class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		PropertyChangeListener {
 	private static final long serialVersionUID = -2524904474925421759L;
-	
+
 	protected final Agenda agenda;
-	
+
 	private final Map queryResults;
+
+	// rules consisting only of not and exists
+	private final RuleTable noRequiredColumnsLeapsRules = new RuleTable(
+			DefaultConflictResolver.getInstance().getRuleConflictResolver());
+
 	/**
 	 * Construct.
 	 * 
@@ -112,10 +118,10 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		}
 	}
 
-	public void clearAgenda()  {
-        this.agenda.clearAgenda();
-    }
-	
+	public void clearAgenda() {
+		this.agenda.clearAgenda();
+	}
+
 	/**
 	 * Returns the fact Object for the given <code>FactHandle</code>. It
 	 * actually returns the value from the handle, before retrieving it from
@@ -240,9 +246,9 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 
 				this.equalsMap.put(object, handle);
 			}
-			
+
 			// adding logical dependency
-			LeapsTuple tuple = (LeapsTuple)activation.getTuple();
+			LeapsTuple tuple = (LeapsTuple) activation.getTuple();
 			tuple.addLogicalDependency(handle);
 			handle.addLogicalDependency(tuple);
 		}
@@ -258,8 +264,9 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		// determine what classes it belongs to put it into the "table" on
 		// class name key
 		Class objectClass = object.getClass();
-		for (Iterator tables = this.getFactTablesList(objectClass).iterator(); tables.hasNext();) {
-			FactTable factTable = (FactTable) tables.next(); 
+		for (Iterator tables = this.getFactTablesList(objectClass).iterator(); tables
+				.hasNext();) {
+			FactTable factTable = (FactTable) tables.next();
 			// adding fact to container
 			factTable.add(handle);
 			// inspect all tuples for exists and not conditions and activate / deactivate
@@ -275,8 +282,10 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 				constraints = tuple.getNotConstraints();
 				for (int i = 0, length = constraints.length; i < length; i++) {
 					constraint = constraints[i];
-					if (objectClass.isAssignableFrom(((ClassObjectType) constraint.getColumn()
-							.getObjectType()).getClassType())
+					if (objectClass
+							.isAssignableFrom(((ClassObjectType) constraint
+									.getColumn().getObjectType())
+									.getClassType())
 							&& constraint.isAllowed(handle, tuple, this)) {
 						tuple.addNotFactHandle(handle, i);
 						handle.addNotTuple(tuple, i);
@@ -295,7 +304,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 					// ready to activate
 					this.assertTuple(tuple, rule);
 					// and need to remove tuple from fact table but iterator fail fast
-					if(assertedTuples == null) {
+					if (assertedTuples == null) {
 						assertedTuples = new HashSet();
 					}
 					assertedTuples.add(tuple);
@@ -354,12 +363,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	public void retractObject(FactHandle handle, boolean removeLogical,
 			boolean updateEqualsMap, Rule rule, Activation activation)
 			throws FactException {
+		//
 		removePropertyChangeListener(handle);
-		PropagationContextImpl context = new PropagationContextImpl(
-				++this.propagationIdCounter, PropagationContext.RETRACTION,
-				rule, activation);
-		// this.ruleBase.retractObject( handle, propagationContext, this );
-
 		/*
 		 * leaps specific actions
 		 */
@@ -371,11 +376,11 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		}
 
 		// 0. remove activated tuples
-		Iterator tuples = ((FactHandleImpl)handle).getActivatedTuples();
-		for(; tuples != null && tuples.hasNext();){
-			this.invalidateActivation((LeapsTuple)tuples.next());
+		Iterator tuples = ((FactHandleImpl) handle).getActivatedTuples();
+		for (; tuples != null && tuples.hasNext();) {
+			this.invalidateActivation((LeapsTuple) tuples.next());
 		}
-		
+
 		// 1. remove fact for nots and exists tuples
 		FactHandleTupleAssembly assembly;
 		Iterator it;
@@ -411,8 +416,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 			tuple = ((FactHandleTupleAssembly) chain.next()).getTuple();
 			if (tuple.isReadyForActivation() && tuple.isActivationNull()) {
 				// ready to activate
-				this.assertTuple(tuple, rule);
-			} else  {
+				this.assertTuple(tuple, tuple.getContext().getRuleOrigin());
+			} else {
 				// time to pull from agenda
 				this.invalidateActivation(tuple);
 			}
@@ -437,6 +442,9 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 
 		// not applicable to leaps implementation
 		// this.factHandlePool.push( ((FactHandleImpl) handle).getId() );
+		PropagationContextImpl context = new PropagationContextImpl(
+				++this.propagationIdCounter, PropagationContext.RETRACTION,
+				rule, activation);
 
 		this.workingMemoryEventSupport.fireObjectRetracted(context, handle,
 				oldObject);
@@ -564,24 +572,37 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 			RuleHandle ruleHandle;
 			for (Iterator it = rules.iterator(); it.hasNext();) {
 				rule = (LeapsRule) it.next();
-				for (int i = 0; i < rule.getNumberOfColumns(); i++) {
-					ruleHandle = new RuleHandle(
-							((HandleFactory) this.handleFactory).getNextId(),
-							rule, i);
+				// some times rules do not have "normal" constraints and only
+				// not and exists
+				if (rule.getNumberOfColumns() > 0) {
+					for (int i = 0; i < rule.getNumberOfColumns(); i++) {
+						ruleHandle = new RuleHandle(
+								((HandleFactory) this.handleFactory)
+										.getNextId(), rule, i);
 
-					this.getFactTable(
-							((ClassObjectType) (rule
-									.getColumnConstraintsAtPosition(i))
-									.getColumn().getObjectType())
-									.getClassType()).addRule(this, ruleHandle);
+						this.getFactTable(
+								((ClassObjectType) (rule
+										.getColumnConstraintsAtPosition(i))
+										.getColumn().getObjectType())
+										.getClassType()).addRule(this,
+								ruleHandle);
+					}
+				} else {
+					ruleHandle = new RuleHandle(
+							((HandleFactory) this.handleFactory)
+									.getNextId(), rule, -1);
+					this.noRequiredColumnsLeapsRules.add(ruleHandle);
 				}
 			}
 		}
 	}
 
-	protected void removeRule(List rules){
-		
+	protected void removeRule(List rules) {
+		for (Iterator it = rules.iterator(); it.hasNext();) {
+			this.noRequiredColumnsLeapsRules.remove(it.next());
+		}
 	}
+
 	/**
 	 * main loop
 	 * 
@@ -595,7 +616,9 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		if (!this.firing) {
 			try {
 				this.firing = true;
-
+				// to pick up rules that do not require columns, only not and exists
+				this.pushTokenOnStack(new Token(this, null));
+				// normal rules with required columns
 				while (!this.stack.isEmpty()) {
 					Token token = (Token) this.stack.peek();
 					boolean done = false;
@@ -621,8 +644,10 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 								TokenEvaluator.evaluate(token);
 								// something was found so set marks for
 								// resume processing
-								token.setResume(true);
-								done = true;
+								if (token.getDominantFactHandle() != null) {
+									token.setResume(true);
+									done = true;
+								}
 							} catch (NoMatchesFoundException ex) {
 								token.setResume(false);
 							} catch (Exception e) {
@@ -651,7 +676,6 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 			}
 		}
 	}
-
 	protected long getIdLastFireAllAt() {
 		return this.idLastFireAllAt;
 	}
@@ -695,8 +719,9 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 
 		Activation agendaItem;
 		if (dur != null && dur.getDuration(tuple) > 0) {
-			agendaItem = new ScheduledAgendaItem(context
-					.getPropagationNumber(), tuple, this.agenda, context, rule);
+			agendaItem = new ScheduledAgendaItem(
+					context.getPropagationNumber(), tuple, this.agenda,
+					context, rule);
 			this.agenda.scheduleItem((ScheduledAgendaItem) agendaItem);
 			tuple.setActivation(agendaItem);
 			agendaItem.setActivated(true);
@@ -735,8 +760,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 
 			ActivationQueue queue = agendaGroup.getActivationQueue(rule
 					.getSalience());
-			agendaItem = new AgendaItem(context
-					.getPropagationNumber(), tuple, context, rule, queue);
+			agendaItem = new AgendaItem(context.getPropagationNumber(), tuple,
+					context, rule, queue);
 
 			queue.add(agendaItem);
 
@@ -748,8 +773,9 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 			agendaItem.setActivated(true);
 			this.getAgendaEventSupport().fireActivationCreated(agendaItem);
 			// retract support
-			FactHandleImpl [] factHandles = (FactHandleImpl[])tuple.getFactHandles();
-			for(int i = 0; i < factHandles.length; i++){
+			FactHandleImpl[] factHandles = (FactHandleImpl[]) tuple
+					.getFactHandles();
+			for (int i = 0; i < factHandles.length; i++) {
 				factHandles[i].addActivatedTuple(tuple);
 			}
 		}
@@ -773,18 +799,21 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		return this.agenda;
 	}
 
-    
-    public List getQueryResults( String query ) {
-            return (List)this.queryResults.remove( query );        
-    }
-    
-    void addToQueryResults( String query, Tuple tuple) {
-    	LinkedList list = (LinkedList) this.queryResults.get(query);
-    	if (list == null){
-    		list = new LinkedList();
-    		this.queryResults.put(query, list);
-    	}
-        list.add(tuple);
-     }    
+	public List getQueryResults(String query) {
+		return (List) this.queryResults.remove(query);
+	}
+
+	void addToQueryResults(String query, Tuple tuple) {
+		LinkedList list = (LinkedList) this.queryResults.get(query);
+		if (list == null) {
+			list = new LinkedList();
+			this.queryResults.put(query, list);
+		}
+		list.add(tuple);
+	}
+
+	protected TableIterator getNoRequiredColumnsLeapsRules() {
+		return noRequiredColumnsLeapsRules.iterator();
+	}
 
 }
