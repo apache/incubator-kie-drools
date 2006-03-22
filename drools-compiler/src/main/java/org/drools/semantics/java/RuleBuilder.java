@@ -665,8 +665,6 @@ public class RuleBuilder {
         setStringTemplateAttributes( st,
                                      declarations,
                                      ruleDescr.getConsequence() );
-
-        System.out.println( functionFixer.fix( knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );
         
         st.setAttribute( "text",
                          functionFixer.fix( knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );

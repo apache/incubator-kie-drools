@@ -266,7 +266,7 @@ public abstract class IntegrationCases extends TestCase {
     
     public void testExists() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_rule_test.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "exists_rule_test.drl" ) ) );
         Package pkg = builder.getPackage();
         
         RuleBase ruleBase = getRuleBase();
@@ -276,17 +276,22 @@ public abstract class IntegrationCases extends TestCase {
         List list = new ArrayList();
         workingMemory.setGlobal( "list", list );                  
         
-        Cheese stilton = new Cheese("stilton", 5);
-        FactHandle stiltonHandle = workingMemory.assertObject( stilton );
+
         Cheese cheddar = new Cheese("cheddar", 7);
         FactHandle cheddarHandle = workingMemory.assertObject( cheddar );        
         workingMemory.fireAllRules();
         
         assertEquals( 0, list.size() );  
         
-        workingMemory.retractObject( stiltonHandle );
-        
+        Cheese stilton = new Cheese("stilton", 5);
+        FactHandle stiltonHandle = workingMemory.assertObject( stilton );
         workingMemory.fireAllRules();
+        
+        assertEquals( 1, list.size() );  
+        
+        Cheese brie = new Cheese("brie", 5);
+        FactHandle brieHandle = workingMemory.assertObject( brie );
+        workingMemory.fireAllRules();    
         
         assertEquals( 1, list.size() );          
     }    
