@@ -242,8 +242,23 @@ public class PackageBuilder {
         }        
     }
 
+    /**
+     * @return The compiled package. The package may contain errors, which you can report on
+     * by calling getErrors or printErrors. If you try to add an invalid package (or rule)
+     * to a RuleBase, you will get a runtime exception.
+     * 
+     * Compiled packages are serializable.
+     */
     public Package getPackage() {
+        if (hasErrors()) {
+            this.pkg.setError( this.printErrors() );
+        }
         return this.pkg;
+    }
+
+    /** This will return true if there were errors in the package building and compiling phase */
+    public boolean hasErrors() {
+        return this.results.size() > 0;
     }
 
     /**

@@ -173,6 +173,7 @@ public class RuleBaseImpl implements RuleBase {
 	 * @throws InvalidPatternException
 	 */
 	public void addPackage(Package pkg) throws PackageIntegrationException  {
+        pkg.checkValidity();
 		Map newApplicationData = pkg.getGlobals();
 
 		// Check that the application data is valid, we cannot change the type

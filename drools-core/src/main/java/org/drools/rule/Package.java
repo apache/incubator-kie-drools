@@ -107,6 +107,11 @@ public class Package
 
     private PackageCompilationData packageCompilationData;
 
+    /** This is to indicate the the package has no errors during the compilation/building phase */
+    private boolean                valid = true;
+    
+    /** This will keep a summary error message as to why this package is not valid */
+    private String                 errorSummary;
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -344,6 +349,32 @@ public class Package
 
     public String toString() {
         return "[Package name=" + this.name + "]";
+    }
+    
+    /** Once this is called, the package will be marked as invalid */
+    public void setError(String summary) {
+        this.errorSummary = summary;
+        this.valid = false;
+    }
+    
+    /**
+     * @return true (default) if there are no build/structural problems.
+     */
+    public boolean isValid() {
+        return this.valid;
+    }
+    
+    /** This will throw an exception if the package is not valid */
+    public void checkValidity() {
+        if (!isValid()) 
+            throw new IllegalArgumentException(this.getErrorSummary());
+    }
+    
+    /**
+     * This will return the error summary (if any) if the package is invalid.
+     */
+    public String getErrorSummary() {
+        return this.errorSummary;
     }
 
     public boolean equals(Object object) {
