@@ -1,0 +1,10 @@
+package Engine2;
+
+import java.lang.Object;
+
+rule "debug"
+    when
+    	$obj : Object ( )
+    then
+    	System.out.println("Engine 2 Asserted object: " + $obj);
+end

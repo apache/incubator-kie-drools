@@ -1,0 +1,40 @@
+package org.drools.jsr94.rules;
+
+/*
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * This class provides a list of constant values which can be used as keys in
+ * the various property maps that are passed around between the javax.rules and
+ * javax.rules.admin objects.
+ * <p/>
+ * This helps us enforce proper key values at compile time and eliminate the
+ * risk of spelling errors.
+ *
+ * @author N. Alex Rupp (n_alex <at>codehaus.org)
+ */
+public final class Constants {
+    /** Private constructor because all public access is static. */
+    private Constants() {
+        // hidden constructor
+    }
+
+    /** <code>RuleExecutionSet</code> name constant. */
+    public static final String RES_NAME        = "javax.rules.admin.RuleExecutionSet.name";
+
+    /** <code>RuleExecutionSet</code> description constant. */
+    public static final String RES_DESCRIPTION = "javax.rules.admin.RuleExecutionSet.description";
+}

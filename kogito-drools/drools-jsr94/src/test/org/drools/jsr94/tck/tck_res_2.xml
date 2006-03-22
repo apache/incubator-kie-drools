@@ -1,0 +1,15 @@
+package org.drools.test;
+
+import org.jcp.jsr94.tck.model.CustomerImpl;
+import org.jcp.jsr94.tck.model.InvoiceImpl;
+
+rule "credit limit greater than invoice"
+    when
+    	$invoice1 : InvoiceImpl ( $amount1 : amount )
+    	$customer1 : CustomerImpl ( creditLimit > ( new Integer( $amount1.intValue() ) )
+    then
+    	$customer1.setCreditLimit($customer1.getCreditLimit() - $invoice1.getAmount());
+        $invoice1.setStatus("paid");
+        System.out.println("The credit limit of the customer is " + $customer1.getCreditLimit());
+        System.out.println("The status of the invoice is " + $invoice1.getStatus());
+end  

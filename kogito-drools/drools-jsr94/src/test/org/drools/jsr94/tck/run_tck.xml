@@ -1,0 +1,109 @@
+<project default="tck.run" basedir=".">
+
+<!-- Pattern sets -->
+
+   <patternset id="org.jcp.jsr94.tck.junit">
+       <include name="org/jcp/jsr94/tck/**/*Test.java"/>
+       <exclude name="org/jcp/jsr94/tck/**/ClassLoaderTest.java"/>
+       <exclude name="org/jcp/jsr94/tck/**/AllTests.java"/>
+   </patternset>
+
+   <patternset id="org.jcp.jsr94.tck.junit.classloader">
+       <include name="org/jcp/jsr94/tck/**/ClassLoaderTest.java"/>
+   </patternset>
+
+<!-- Properties -->
+
+  <property name="name"            value="JSR 94 API"/>
+  <property name="version"         value="1.1"/>
+  <property name="copyright.owner"  value="Java Community Process"/>
+  <property name="copyright.year"   value="2004"/>
+
+  <property name="lib.dir" value="lib"/>
+  <property name="doc.dir" value="doc"/>
+  <property name="src.dir"  value="src"/>
+  <property name="report.dir"  value="reports"/>
+
+  <property name="jsr94.jar.name" value="jsr94"/>
+  <property name="tck.jar.name" value="jsr94-tck"/>
+  <property name="ri.jar.name" value="jsr94-ri"/>
+
+<!-- Targets -->
+
+<!-- Generic init target -->
+  <target name="init">
+    <tstamp/>
+    <echo message="${name} -- ${version}"/>
+    <echo message="Copyright ${copyright.year} by ${copyright.owner}"/>
+    <mkdir dir="${report.dir}"/>
+  </target>
+
+<!-- TCK Run -->
+
+  <target name="tck.run.tests">
+    <junit printsummary="yes" haltonfailure="no">
+      <formatter type="xml"/>
+      <classpath>
+        <pathelement location="${lib.dir}/${jsr94.jar.name}.jar"/>
+        <pathelement location="${lib.dir}/${tck.jar.name}.jar"/>
+   <!-- <pathelement location="${lib.dir}/${ri.jar.name}.jar"/> -->
+        <pathelement location="${lib.dir}/xerces.jar"/>
+        <pathelement location="${lib.dir}/sigtest.jar"/>
+   <!-- <pathelement location="${lib.dir}/jess.jar"/> -->
+        <pathelement location="${lib.dir}/drools-base-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/drools-core-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/drools-io-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/drools-java-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/drools-jsr94-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/drools-smf-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/janino-2.0.5.jar"/>
+        <pathelement location="${lib.dir}/antlr-2.7.2.jar"/>
+        <pathelement path="${java.class.path}"/>
+      </classpath>
+      <batchtest fork="yes" todir="${report.dir}">
+        <fileset dir="${src.dir}">
+          <patternset refid="org.jcp.jsr94.tck.junit"/>
+        </fileset>
+      </batchtest>
+    </junit>
+    <junit printsummary="yes" haltonfailure="no">
+      <formatter type="xml"/>
+      <classpath>
+        <pathelement location="${lib.dir}/${jsr94.jar.name}.jar"/>
+        <pathelement location="${lib.dir}/${tck.jar.name}.jar"/>
+        <pathelement location="${lib.dir}/xerces.jar"/>
+        <pathelement location="${lib.dir}/sigtest.jar"/>
+   <!-- <pathelement location="${lib.dir}/jess.jar"/> -->
+        <pathelement location="${lib.dir}/drools-base-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/drools-core-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/drools-io-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/drools-java-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/drools-jsr94-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/drools-smf-2.0-beta-17.jar"/>
+        <pathelement location="${lib.dir}/janino-2.0.5.jar"/>
+        <pathelement location="${lib.dir}/antlr-2.7.2.jar"/>
+      </classpath>
+      <batchtest fork="yes" todir="${report.dir}">
+        <fileset dir="${src.dir}">
+          <patternset refid="org.jcp.jsr94.tck.junit.classloader"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="tck.run.report">
+	<junitreport todir="${report.dir}">
+		<fileset dir="${report.dir}">
+			<include name="TEST-*.xml"/>
+		</fileset>
+		<report format="frames" todir="${report.dir}"/>
+	</junitreport>
+  </target>
+
+  <target name="tck.run">
+    <antcall target="init"></antcall>
+    <antcall target="tck.run.tests"></antcall>
+    <antcall target="tck.run.report"></antcall>
+  </target>
+  
+</project>

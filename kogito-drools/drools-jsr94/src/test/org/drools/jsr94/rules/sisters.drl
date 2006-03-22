@@ -1,0 +1,12 @@
+package SistersRules;
+
+import org.drools.jsr94.rules.Person;
+
+rule FindSisters
+    when
+    	$person1 : Person ( )
+    	$person2 : Person (  )
+    then
+    	System.out.println("found sisters");
+    	assert( $person1 );
+end

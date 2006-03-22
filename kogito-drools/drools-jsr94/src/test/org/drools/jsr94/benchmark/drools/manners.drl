@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+The definition of a RuleExecutionSet is not within the scope of the JSR 94.
+The implementation given in this file is written for the reference
+implementation. A rule engine vendor verifying their rule engine should
+modify this file to their specific needs.
+
+Miss Manners is a program which handles the problem of finding an acceptable
+seating arrangement for guests at a dinner party.  It will attempt to match
+people with the same hobbies, and to seat everyone next to a member of the
+opposite sex.  Manners is a small program, which has only few rules, and
+employs a depth-first search approach to the problem.
+
+-->
+<rule-set name="Miss Manners"
+          xmlns="http://drools.org/rules"
+          xmlns:java="http://drools.org/semantics/java"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+          xs:schemaLocation="http://drools.org/rules rules.xsd
+                             http://drools.org/semantics/java java.xsd">
+
+       <!--
+       Initialize the root seating element.
+       -->
+        <rule name="find first seat" salience="40">
+           <parameter identifier="context">
+               <class>org.drools.jsr94.benchmark.Context</class>
+           </parameter>
+           <parameter identifier="guest">
+               <class>org.drools.jsr94.benchmark.Guest</class>
+           </parameter>
+
+           <java:condition>
+              context.isState("start")
+           </java:condition>
+
+            <java:consequence>
+               import org.drools.jsr94.benchmark.drools.Seating;
+
+               System.out.println("FIRE: find first seat: " + guest);
+
+               drools.assertObject(new Seating(1, guest, null));
+
+               context.setState("find_seating");
+               drools.modifyObject(context);
+            </java:consequence>
+        </rule>
+
+       <!--
+       Find guest for empty seat.
+       -->
+       <rule name="find seating" salience="30">
+          <parameter identifier="context">
+              <class>org.drools.jsr94.benchmark.Context</class>
+          </parameter>
+          <parameter identifier="guest">
+              <class>org.drools.jsr94.benchmark.Guest</class>
+          </parameter>
+          <parameter identifier="seating">
+              <class>org.drools.jsr94.benchmark.drools.Seating</class>
+          </parameter>
+
+          <java:condition>
+             context.isState("find_seating")
+          </java:condition>
+
+          <java:condition>
+             seating.getGuest2() == null
+          </java:condition>
+
+          <java:condition>
+             !seating.getTabooList().contains(guest)
+          </java:condition>
+
+          <java:condition>
+             seating.getGuest1().hasOpositeSex(guest)
+          </java:condition>
+
+          <java:condition>
+             seating.getGuest1().hasSameHobby(guest)
+          </java:condition>
+
+          <java:consequence>
+             System.out.println("FIRE: find seating: " + seating + " " + guest);
+
+             Seating nextSeat = new Seating(seating.getSeat2(), guest, seating);
+             drools.assertObject(nextSeat);
+
+             seating.setGuest2(guest);
+             seating.getTabooList().add(guest);
+             seating.setNextSeat(nextSeat);
+             drools.modifyObject(seating);
+
+          </java:consequence>
+       </rule>
+
+       <!--
+       Reached dead end, try another path.
+       -->
+       <rule name="try another path" salience="20">
+          <parameter identifier="context">
+              <class>org.drools.jsr94.benchmark.Context</class>
+          </parameter>
+          <parameter identifier="lastSeat">
+              <class>org.drools.jsr94.benchmark.LastSeat</class>
+          </parameter>
+          <parameter identifier="seating">
+              <class>org.drools.jsr94.benchmark.drools.Seating</class>
+          </parameter>
+
+          <java:condition>
+             context.isState("find_seating")
+          </java:condition>
+
+          <java:condition>
+             lastSeat.getSeat() > seating.getSeat1()
+          </java:condition>
+
+          <java:condition>
+             seating.getGuest2() == null
+          </java:condition>
+
+          <java:consequence>
+             System.out.println("FIRE: try another path: " + seating);
+
+             Seating prevSeat = seating.getPrevSeat();
+             prevSeat.setGuest2(null);
+             drools.modifyObject(prevSeat);
+
+             drools.retractObject(seating);
+          </java:consequence>
+       </rule>
+
+       <!--
+       All seats are taken.
+       -->
+       <rule name="we are done" salience="10">
+          <parameter identifier="context">
+              <class>org.drools.jsr94.benchmark.Context</class>
+          </parameter>
+          <parameter identifier="lastSeat">
+              <class>org.drools.jsr94.benchmark.LastSeat</class>
+          </parameter>
+          <parameter identifier="seating">
+              <class>org.drools.jsr94.benchmark.drools.Seating</class>
+          </parameter>
+
+          <java:condition>
+             context.isState("find_seating")
+          </java:condition>
+
+          <java:condition>
+             lastSeat.getSeat() == seating.getSeat1()
+          </java:condition>
+
+          <java:consequence>
+             import org.drools.jsr94.benchmark.Seat;
+             import java.util.List;
+             import java.util.ArrayList;
+
+             System.out.println("FIRE: we are done");
+
+             List list = new ArrayList();
+             while(seating != null) {
+                Seat seat = new Seat(seating.getSeat1(), seating.getGuest1().getName());
+                seating = seating.getPrevSeat();
+                list.add(seat);
+             }
+
+             for (int i = list.size(); i > 0; i--) {
+                Seat seat = (Seat)list.get(i-1);
+                System.out.println(seat);
+                drools.assertObject(seat);
+             }
+
+             context.setState("all_done");
+             drools.modifyObject(context);
+          </java:consequence>
+       </rule>
+
+</rule-set>
+
