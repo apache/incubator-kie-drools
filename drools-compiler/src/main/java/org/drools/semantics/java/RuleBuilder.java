@@ -81,7 +81,8 @@ public class RuleBuilder {
     private static StringTemplateGroup  invokerGroup = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaInvokers.stg" ) ),
                                                                                 AngleBracketTemplateLexer.class );
 
-    private static KnowledgeHelperFixer fixer        = new KnowledgeHelperFixer();
+    private static KnowledgeHelperFixer knowledgeHelperFixer        = new KnowledgeHelperFixer();
+    private static FunctionFixer functionFixer                      = new FunctionFixer();
 
     // @todo move to an interface so it can work as a decorator
     private JavaExprAnalyzer            analyzer     = new JavaExprAnalyzer();
@@ -491,7 +492,7 @@ public class RuleBuilder {
                                      returnValueDescr.getText() );
 
         st.setAttribute( "text",
-                         returnValueDescr.getText() );
+                         functionFixer.fix( returnValueDescr.getText() ) );
 
         String invokerClassName = pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
@@ -557,7 +558,7 @@ public class RuleBuilder {
         st.setAttribute( "methodName",
                          classMethodName );
         st.setAttribute( "text",
-                         predicateDescr.getText() );
+                         functionFixer.fix( predicateDescr.getText() ) );
 
         this.methods.add( st.toString() );
 
@@ -618,7 +619,7 @@ public class RuleBuilder {
         st.setAttribute( "methodName",
                          classMethodName );
         st.setAttribute( "text",
-                         evalDescr.getText() );
+                         functionFixer.fix( evalDescr.getText() ) );
 
         this.methods.add( st.toString() );
 
@@ -665,8 +666,10 @@ public class RuleBuilder {
                                      declarations,
                                      ruleDescr.getConsequence() );
 
+        System.out.println( functionFixer.fix( knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );
+        
         st.setAttribute( "text",
-                         fixer.fix( ruleDescr.getConsequence() ) );
+                         functionFixer.fix( knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );
 
         this.methods.add( st.toString() );
 
@@ -769,10 +772,6 @@ public class RuleBuilder {
 
     private String ucFirst(String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
-    }
-
-    private String lcFirst(String name) {
-        return name.toLowerCase().charAt( 0 ) + name.substring( 1 );
     }
 
     private FieldExtractor getFieldExtractor(PatternDescr descr,
