@@ -10,7 +10,7 @@
   <artifactId>drools-core</artifactId>
 
   <name>Drools :: Rete-OO Core</name>
-  <version>3.0-M1-dev</version>
+  <version>3.0-beta-1</version>
   
   <repositories>
     <repository>
