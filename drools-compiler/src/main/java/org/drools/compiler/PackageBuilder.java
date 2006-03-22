@@ -76,10 +76,29 @@ public class PackageBuilder {
         }
     }
 
+    /**
+     * Load a rule package from DRL source.
+     * @param reader
+     * @throws DroolsParserException
+     * @throws IOException
+     */
     public void addPackageFromDrl(Reader reader) throws DroolsParserException, IOException {
         DrlParser parser = new DrlParser();
         addPackage( parser.parse( reader ) );        
     }
+    
+    /**
+     * Load a rule package from DRL source using the supplied DSL configuration.
+     * @param source The source of the rules.
+     * @param dsl The source of the domain specific language configuration.
+     * @throws DroolsParserException
+     * @throws IOException
+     */
+    public void addPackageFromDrl(Reader source,
+                                  Reader dsl) throws DroolsParserException, IOException {
+        DrlParser parser = new DrlParser();
+        addPackage( parser.parse( source, dsl ) );
+    }    
     
     public void addPackage(PackageDescr packageDescr) {
 
@@ -227,10 +246,33 @@ public class PackageBuilder {
         return this.pkg;
     }
 
+    /**
+     * @return A list of Error objects that resulted from building and compiling the package. 
+     */
     public DroolsError[] getErrors() {
         return (DroolsError[]) this.results.toArray( new DroolsError[this.results.size()] );
     }
 
+    /**
+     * This will pretty print the errors (from getErrors())
+     * into lines.
+     */
+    public String printErrors() {
+        StringBuffer buf = new StringBuffer();
+        for ( Iterator iter = this.results.iterator(); iter.hasNext(); ) {
+            DroolsError err = (DroolsError) iter.next();
+            if (err instanceof RuleError) {
+                RuleError ruleErr = (RuleError) err;
+                buf.append(ruleErr.getMessage());
+                buf.append( "\n" );
+            } else {
+                buf.append( err );
+                buf.append( "\n" );
+            }
+        }
+        return buf.toString();
+    }
+    
     /**
      * Takes a given name and makes sure that its legal and doesn't already exist. If the file exists it increases counter appender untill it is unique.
      * 
@@ -270,5 +312,7 @@ public class PackageBuilder {
     private String ucFirst(String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
+
+
 
 }

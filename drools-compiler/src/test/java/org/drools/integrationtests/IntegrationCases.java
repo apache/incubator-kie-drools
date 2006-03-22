@@ -17,6 +17,7 @@ package org.drools.integrationtests;
  */
 
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,9 @@ import org.drools.FactHandle;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.RuleError;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
@@ -279,6 +282,42 @@ public abstract class IntegrationCases extends TestCase {
         }
         assertTrue(builder.getErrors().length > 0);
 
+        String pretty = builder.printErrors();
+        assertFalse(pretty.equals( "" ));
+        System.err.println(pretty);
+        
+    }
+    
+    public void testWithExpanderDSL() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new InputStreamReader(getClass().getResourceAsStream( "rule_with_expander_dsl.drl" ));
+        Reader dsl = new InputStreamReader(getClass().getResourceAsStream( "test_expander.dsl" ));
+        builder.addPackageFromDrl( source, dsl );
+        
+        //the compiled package
+        Package pkg = builder.getPackage();
+
+        //Check errors
+        String err = builder.printErrors();
+        assertEquals("", err);
+        
+        assertEquals(0, builder.getErrors().length);
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        
+        WorkingMemory wm = ruleBase.newWorkingMemory();
+        wm.assertObject( new Person("Bob", "stilton") );
+        wm.assertObject( new Cheese("stilton", 42) );
+        
+        
+        List messages = new ArrayList();
+        wm.setGlobal( "messages", messages );
+        wm.fireAllRules();
+        
+
+        assertEquals(1, messages.size());
+        
     }
     
 }
