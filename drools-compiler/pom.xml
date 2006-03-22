@@ -73,6 +73,7 @@
            
   </dependencies>
 
+  <!-- This is needed to copy the generated jars into the IDE/Plugs lib directory -->
   <build>
     <plugins>
       <plugin>
