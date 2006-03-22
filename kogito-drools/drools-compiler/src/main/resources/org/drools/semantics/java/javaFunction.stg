@@ -1,0 +1,14 @@
+group javaFunction;
+
+function(package, imports, className, methodName, returnType, parameterTypes, parameterNames, text) ::= <<
+package <package>;
+
+<imports:{ importEntry | import <importEntry>;<\n>}>   
+
+public class <className>
+{
+    public static <returnType> <methodName>(<parameterTypes, parameterNames:{ type, name | <type> <name>}; separator=",\n">) {
+        <text>
+    }
+}     
+>>

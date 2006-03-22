@@ -6,7 +6,8 @@ import junit.framework.TestCase;
 public class KnowledgeHelperFixerTest extends TestCase {
     
     private static KnowledgeHelperFixer fixer = new  KnowledgeHelperFixer();
-    
+  
+        
     public void testAdd__Handle__rSimple() {
         String result = fixer.fix("modify(myObject )");
         assertEquals("drools.modifyObject(myObject__Handle__, myObject)", result);
@@ -14,6 +15,11 @@ public class KnowledgeHelperFixerTest extends TestCase {
         result = fixer.fix("modify ( myObject )");
         assertEquals("drools.modifyObject(myObject__Handle__, myObject)", result);
     }
+    
+    public void testAdd__Handle__withNewLines() {
+        String result = fixer.fix("\n\t\n\tmodify(myObject )");
+        assertEquals("\n\t\n\tdrools.modifyObject(myObject__Handle__, myObject)", result);        
+    }    
     
     public void testAdd__Handle__rComplex() {
         String result = fixer.fix("something modify(myObject ); other");

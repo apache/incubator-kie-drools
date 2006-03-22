@@ -260,9 +260,36 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.retractObject( stiltonHandle );
         
         workingMemory.fireAllRules();
-//        
+        
         assertEquals( 1, list.size() );              
     }   
+    
+    public void testExists() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_rule_test.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();       
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );                  
+        
+        Cheese stilton = new Cheese("stilton", 5);
+        FactHandle stiltonHandle = workingMemory.assertObject( stilton );
+        Cheese cheddar = new Cheese("cheddar", 7);
+        FactHandle cheddarHandle = workingMemory.assertObject( cheddar );        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 0, list.size() );  
+        
+        workingMemory.retractObject( stiltonHandle );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 1, list.size() );          
+    }    
     
     public void testWithInvalidRule() throws Exception {
         PackageBuilder builder = new PackageBuilder();
@@ -290,6 +317,26 @@ public abstract class IntegrationCases extends TestCase {
         
         System.err.println(pretty);
         
+    }
+    
+    public void testFunction() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "function_in_consequence_rule_test.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
+        
+        Cheese stilton = new Cheese("stilton", 5);
+        workingMemory.assertObject( stilton );       
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( new Integer( 5 ), list.get(  0 ) );          
     }
     
     public void testWithExpanderDSL() throws Exception {

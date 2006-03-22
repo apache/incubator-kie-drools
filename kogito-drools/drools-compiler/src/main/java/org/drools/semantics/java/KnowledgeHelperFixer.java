@@ -6,10 +6,9 @@ import java.util.regex.Pattern;
 public class KnowledgeHelperFixer {
 
     static String KNOWLEDGE_HELPER_PFX = ""; //could also be: "drools\\." for "classic" mode.
-    static Pattern MODIFY = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "modify\\s*\\(([^\\)]+)\\)(.*)");
-    static Pattern ASSERT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "assert\\s*\\(([^\\)]+)\\)(.*)");
-    static Pattern RETRACT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "retract\\s*\\(([^\\)]+)\\)(.*)");
-    
+    static Pattern MODIFY = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "modify\\s*\\(([^)]+)\\)(.*)", Pattern.DOTALL);
+    static Pattern ASSERT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "assert\\s*\\(([^)]+)\\)(.*)", Pattern.DOTALL);
+    static Pattern RETRACT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "retract\\s*\\(([^)]+)\\)(.*)", Pattern.DOTALL);   
     
     /**
      * This takes a raw consequence, and fixes up the KnowledegeHelper references 

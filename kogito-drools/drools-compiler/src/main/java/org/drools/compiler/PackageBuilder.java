@@ -21,6 +21,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.semantics.java.ClassTypeResolver;
+import org.drools.semantics.java.FunctionBuilder;
 import org.drools.semantics.java.PackageStore;
 import org.drools.semantics.java.RuleBuilder;
 import org.drools.spi.TypeResolver;
@@ -84,9 +85,9 @@ public class PackageBuilder {
      */
     public void addPackageFromDrl(Reader reader) throws DroolsParserException, IOException {
         DrlParser parser = new DrlParser();
-        addPackage( parser.parse( reader ) );        
+        addPackage( parser.parse( reader ) );
     }
-    
+
     /**
      * Load a rule package from DRL source using the supplied DSL configuration.
      * @param source The source of the rules.
@@ -124,7 +125,7 @@ public class PackageBuilder {
     private Package newPackage(PackageDescr packageDescr) {
         Package pkg = new Package( packageDescr.getName(),
                                    this.classLoader );
-        
+
         this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
 
         mergePackage( pkg,
@@ -159,10 +160,10 @@ public class PackageBuilder {
         }
     }
 
-    private  CompilationResult compile(String className,
-                              String text,
-                              MemoryResourceReader src,
-                              ResourceStore dst) {
+    private CompilationResult compile(String className,
+                                      String text,
+                                      MemoryResourceReader src,
+                                      ResourceStore dst) {
         src.addFile( className.replace( '.',
                                         '/' ) + ".java",
                      text.toCharArray() );
@@ -174,8 +175,18 @@ public class PackageBuilder {
         return result;
     }
 
-    private void addFunction(FunctionDescr rule) {
-        //@todo        
+    private void addFunction(FunctionDescr functionDescr) {
+        FunctionBuilder buidler = new FunctionBuilder();
+        CompilationResult result = compile( this.pkg.getName() + "." + ucFirst( functionDescr.getName() ),
+                                            buidler.build( this.pkg, functionDescr ),
+                                            src,
+                                            this.packageStoreWrapper );
+        
+        if ( result.getErrors().length > 0 ) {
+            this.results.add( new FunctionError( functionDescr,
+                                                 result.getErrors(),
+                                                 "Function Compilation error" ) );
+        }        
     }
 
     private void addRule(RuleDescr ruleDescr) {
@@ -205,7 +216,7 @@ public class PackageBuilder {
             this.results.add( new RuleError( rule,
                                              null,
                                              result.getErrors(),
-                                             "Compilation error" ) );
+                                             "Rule Compilation error" ) );
         }
 
         for ( Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
@@ -232,14 +243,14 @@ public class PackageBuilder {
                 this.results.add( new RuleError( rule,
                                                  descr,
                                                  result.getErrors(),
-                                                 "Compilation error for Invoker" ) );
+                                                 "Rule Compilation error for Invoker" ) );
             }
         }
         try {
             this.pkg.addRule( rule );
         } catch ( Exception e ) {
-            
-        }        
+
+        }
     }
 
     /**
