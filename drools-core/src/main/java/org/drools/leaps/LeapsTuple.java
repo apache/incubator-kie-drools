@@ -64,7 +64,6 @@ class LeapsTuple implements Tuple, Serializable {
 			ColumnConstraints[] notConstraints,
 			ColumnConstraints[] existsConstraints
 			, PropagationContext context) {
-		this.readyForActivation = true;
 		this.factHandles = factHandles;
 		this.notConstraints = notConstraints;
 		if (this.notConstraints != null && this.notConstraints.length > 0) {
@@ -84,6 +83,7 @@ class LeapsTuple implements Tuple, Serializable {
 		}
 		
 		this.context = context;
+		this.readyForActivation = !this.existsConstraintsPresent;
 	}
 
 	/**
@@ -262,16 +262,20 @@ class LeapsTuple implements Tuple, Serializable {
 	private void setReadyForActivation(){
 		this.readyForActivation = true;
 
-		for (int i = 0, length = this.notFactHandles.length; this.notConstraintsPresent
-				&& i < length && this.readyForActivation; i++) {
-			if (this.notFactHandles[i].size() > 0) {
-				this.readyForActivation = false;
+		if (this.notFactHandles != null) {
+			for (int i = 0, length = this.notFactHandles.length; this.notConstraintsPresent
+					&& i < length && this.readyForActivation; i++) {
+				if (this.notFactHandles[i].size() > 0) {
+					this.readyForActivation = false;
+				}
 			}
 		}
-		for (int i = 0, length = this.existsFactHandles.length; this.existsConstraintsPresent
-				&& i < length && this.readyForActivation; i++) {
-			if (this.notFactHandles[i].size() == 0) {
-				this.readyForActivation = false;
+		if (this.existsFactHandles != null) {
+			for (int i = 0, length = this.existsFactHandles.length; this.existsConstraintsPresent
+					&& i < length && this.readyForActivation; i++) {
+				if (this.existsFactHandles[i].size() == 0) {
+					this.readyForActivation = false;
+				}
 			}
 		}
 	}
@@ -287,7 +291,7 @@ class LeapsTuple implements Tuple, Serializable {
 	boolean isNotConstraintsPresent() {
 		return this.notConstraintsPresent;
 	}
-	
+
 	void addLogicalDependency(FactHandle handle) {
 		if(this.logicalDependencies == null){
 			this.logicalDependencies = new HashSet();

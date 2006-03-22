@@ -23,6 +23,9 @@ import java.util.List;
 import org.drools.common.BetaNodeBinder;
 import org.drools.rule.And;
 import org.drools.rule.Column;
+import org.drools.rule.ConditionalElement;
+import org.drools.rule.Declaration;
+import org.drools.rule.EvalCondition;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Exists;
 import org.drools.rule.InvalidPatternException;
@@ -69,32 +72,73 @@ class Builder {
 		ArrayList cols = new ArrayList();
 		ArrayList notCols = new ArrayList();
 		ArrayList existsCols = new ArrayList();
+		ArrayList evalConditions = new ArrayList();
 		for (Iterator it = and.getChildren().iterator(); it.hasNext();) {
 			Object object = it.next();
-			if (object instanceof Column) {
-				constraints = Builder.processColumn((Column)object);
-				// create column constraints
-			} else {
-				// NOTS and EXISTS
-                GroupElement ce = (GroupElement) object;
-				while (!(ce.getChildren().get(0) instanceof Column)) {
-					ce = (GroupElement) ce.getChildren().get(0);
+            if ( object instanceof EvalCondition ) {
+                EvalCondition eval = (EvalCondition) object;
+                evalConditions.add(eval);
+            }
+            else {
+				if (object instanceof Column) {
+					constraints = Builder.processColumn((Column) object);
+					// create column constraints
+				} else {
+					// NOTS and EXISTS
+					GroupElement ce = (GroupElement) object;
+					while (!(ce.getChildren().get(0) instanceof Column)) {
+						ce = (GroupElement) ce.getChildren().get(0);
+					}
+					constraints = Builder.processColumn((Column) ce
+							.getChildren().get(0));
 				}
-				constraints = Builder.processColumn((Column) ce.getChildren().get( 0 ));
-			}
-			if (object instanceof Not) {
-				notCols.add(constraints);
-			} else if (object instanceof Exists) {
-				existsCols.add(constraints);
-			} else {
-				cols.add(constraints);
+				if (object instanceof Not) {
+					notCols.add(constraints);
+				} else if (object instanceof Exists) {
+					existsCols.add(constraints);
+				} else {
+					cols.add(constraints);
+				}
 			}
 		}
 
-		leapsRules.add(new LeapsRule(rule, cols, notCols, existsCols));
+		// check eval for presence of required declarations
+		checkEvalUnboundDeclarations(rule, evalConditions);
+		//
+		leapsRules.add(new LeapsRule(rule, cols, notCols, existsCols, evalConditions));
 
 		return leapsRules;
 	}
+
+    /**
+     * Make sure the required declarations are previously bound
+     * 
+     * @param declarations
+     * @throws InvalidPatternException
+     */
+    static void checkEvalUnboundDeclarations(Rule rule, ArrayList evals) throws InvalidPatternException {
+		List list = new ArrayList();
+		for (Iterator it = evals.iterator(); it.hasNext();) {
+			EvalCondition ec = (EvalCondition) it.next();
+			Declaration[] declarations = ec.getRequiredDeclarations();
+			for (int i = 0, length = declarations.length; i < length; i++) {
+				if (rule.getDeclaration(declarations[i].getIdentifier()) == null) {
+					list.add(declarations[i].getIdentifier());
+				}
+			}
+		}
+        
+        // Make sure the required declarations
+        if ( list.size() != 0 ) {
+            StringBuffer buffer = new StringBuffer();
+            buffer.append( list.get( 0 ) );
+            for ( int i = 1, size = list.size(); i < size; i++ ) {
+                buffer.append( ", " + list.get( i )  );
+            }
+            
+            throw new InvalidPatternException("Required Declarations not bound: '" + buffer );
+        }
+    }
 
 	/**
 	 * extracts column specific constraints and packages it into

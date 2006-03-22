@@ -19,6 +19,8 @@ package org.drools.leaps;
 import java.util.ArrayList;
 
 import org.drools.base.ClassObjectType;
+import org.drools.rule.ConditionalElement;
+import org.drools.rule.EvalCondition;
 import org.drools.rule.Rule;
 
 /**
@@ -37,18 +39,24 @@ class LeapsRule {
 
 	final ColumnConstraints[] existsColumns;
 
+	final EvalCondition[] evalConditions;
+	
 	boolean notColumnsPresent;
 
 	boolean existsColumnsPresent;
+	
+	boolean evalCoditionsPresent;
 
 	public LeapsRule(Rule rule, ArrayList columns, ArrayList notColumns,
-			ArrayList existsColumns) {
+			ArrayList existsColumns, ArrayList evalConditions) {
 		this.rule = rule;
 		this.columns = (ColumnConstraints[]) columns.toArray(new ColumnConstraints[0]);
 		this.notColumns = (ColumnConstraints[]) notColumns.toArray(new ColumnConstraints[0]);
 		this.existsColumns = (ColumnConstraints[]) existsColumns.toArray(new ColumnConstraints[0]);
 		this.notColumnsPresent = (notColumns.size() != 0);
 		this.existsColumnsPresent = (existsColumns.size() != 0);
+		this.evalConditions = (EvalCondition[]) evalConditions.toArray(new EvalCondition[0]);
+		this.evalCoditionsPresent = (evalConditions.size() != 0);
 	}
 
 	Rule getRule() {
@@ -67,6 +75,10 @@ class LeapsRule {
 		return this.existsColumns.length;
 	}
 
+	int getNumberOfEvalConditions() {
+		return this.evalConditions.length;
+	}
+	
 	ClassObjectType getColumnClassObjectTypeAtPosition(int idx) {
 		return (ClassObjectType) this.columns[idx].getColumn().getObjectType();
 	}
@@ -83,11 +95,19 @@ class LeapsRule {
 		return this.existsColumns;
 	}
 
+	EvalCondition[] getEvalConditions() {
+		return this.evalConditions;
+	}
+
 	boolean containsNotColumns() {
 		return this.notColumnsPresent;
 	}
 
 	boolean containsExistsColumns() {
 		return this.existsColumnsPresent;
+	}
+	
+	boolean containsEvalConditions() {
+		return this.evalCoditionsPresent;
 	}
 }

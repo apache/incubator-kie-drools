@@ -60,9 +60,14 @@ class Token implements Tuple, Serializable {
 
 	private Iterator rulesIterator() {
 		if (this.rules == null) {
-			this.rules = this.workingMemory.getFactTable(
-					this.dominantFactHandle.getObject().getClass())
-					.getRulesIterator();
+			if (this.dominantFactHandle != null) {
+				this.rules = this.workingMemory.getFactTable(
+						this.dominantFactHandle.getObject().getClass())
+						.getRulesIterator();
+			} else {
+				this.rules = this.workingMemory
+						.getNoRequiredColumnsLeapsRules();
+			}
 		}
 		return this.rules;
 	}
@@ -86,7 +91,8 @@ class Token implements Tuple, Serializable {
 			// starting with calling rulesIterator() to make sure that we picks
 			// rules because fact can be asserted before rules added
 			long levelId = this.workingMemory.getIdLastFireAllAt();
-			if (this.dominantFactHandle.getId() >= levelId) {
+			if (this.dominantFactHandle == null
+					|| this.dominantFactHandle.getId() >= levelId) {
 				ret = this.rules.hasNext();
 			} else {
 				// then we need to skip rules that have id lower than
@@ -112,7 +118,11 @@ class Token implements Tuple, Serializable {
 	}
 
 	public int hashCode() {
-		return (int) this.dominantFactHandle.getId();
+		if (this.dominantFactHandle != null) {
+			return (int) this.dominantFactHandle.getId();
+		} else {
+			return 0;
+		}
 	}
 
 	public void set(int idx, FactHandleImpl factHandle) {
@@ -145,8 +155,13 @@ class Token implements Tuple, Serializable {
 			return true;
 		if (!(that instanceof Token))
 			return false;
+		if(this.dominantFactHandle != null){
 		return this.dominantFactHandle.getId() == ((Token) that).dominantFactHandle
 				.getId();
+		}
+		else {
+			return ((Token) that).dominantFactHandle == null;
+		}
 	}
 
 	/**
