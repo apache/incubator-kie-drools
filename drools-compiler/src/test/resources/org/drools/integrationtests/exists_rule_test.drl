@@ -6,7 +6,7 @@ global java.util.List list;
 
 rule "exists rule test"
     when       
-        exist Cheese( price == 5 )
+        exists Cheese( price == 5 )
     then
 		list.add( new Integer( 5 ) );
 end    
