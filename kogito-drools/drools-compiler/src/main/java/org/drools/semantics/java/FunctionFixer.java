@@ -7,8 +7,9 @@ public class FunctionFixer {
     
     static Pattern FUNCTION = Pattern.compile("(.*)\\b([^.][\\S]+)\\s*\\(([^)]*)\\)(.*)", Pattern.DOTALL);
             
-    public String fix(String raw) {        
-        return fix(raw, FUNCTION);
+    public String fix(String raw) {
+        return raw;
+        //return fix(raw, FUNCTION);
     }
     
     public String fix(String raw, Pattern pattern) {
