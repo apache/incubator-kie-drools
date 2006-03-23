@@ -6,11 +6,11 @@
 
   <mediaobject>
     <imageobject>
-      <imagedata fileref="package.gif" format="GIF" role="html" width="" />
+      <imagedata fileref="package.svg" format="SVG" role="" width="" />
     </imageobject>
 
     <imageobject>
-      <imagedata fileref="package.svg" format="SVG" role="fo" width="" />
+      <imagedata fileref="package.gif" format="GIF" role="" width="" />
     </imageobject>
   </mediaobject>
 

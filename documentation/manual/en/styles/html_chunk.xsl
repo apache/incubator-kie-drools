@@ -9,11 +9,12 @@
                 xmlns="http://www.w3.org/TR/xhtml1/transitional"
                 exclude-result-prefixes="#default">
                 
-    <xsl:import href="&db_xsl_path;/html/profile-chunk.xsl"/>
+    <xsl:import href="&db_xsl_path;/html/chunk.xsl"/>
 
 
     <xsl:param name="img.src.path">../shared/images/</xsl:param>
     <xsl:param name="keep.relative.image.uris">0</xsl:param>
+    <xsl:param name="use.svg">0</xsl:param> 
     
     
 <!--###################################################
