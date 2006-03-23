@@ -1,0 +1,10 @@
+package SamplePackage
+ 
+import org.drools.Cheese
+
+rule "Using Predicate as first column"
+  when
+    cheese: Cheese( type == "Mussarela", $price:price -> ($price.intValue() < 30))
+  then
+    cheese.setPrice(40);
+end 

@@ -21,6 +21,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
@@ -28,9 +29,7 @@ import org.drools.FactHandle;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
-import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.RuleError;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
@@ -422,5 +421,25 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals(1, messages.size());
         
     }
+    
+    public void testPredicateAsFirstColumn() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_as_first_column.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        Cheese mussarela = new Cheese("Mussarela", 35);
+        workingMemory.assertObject( mussarela );
+        Cheese provolone = new Cheese("Provolone", 20);
+        workingMemory.assertObject( provolone );
+                
+        workingMemory.fireAllRules();
+        
+        Assert.assertEquals( "The rule is being incorrectly fired", 35, mussarela.getPrice( ) );
+        Assert.assertEquals( "Rule is incorrectly being fired", 20, provolone.getPrice( ) ); 
+    }     
     
 }
