@@ -4,6 +4,16 @@
 
   <para>uuuere</para>
 
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="package.gif" format="GIF" role="html" width="" />
+    </imageobject>
+
+    <imageobject>
+      <imagedata fileref="package.svg" format="SVG" role="fo" width="" />
+    </imageobject>
+  </mediaobject>
+
   <section>
     <title>import</title>
 

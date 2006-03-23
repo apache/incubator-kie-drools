@@ -14,7 +14,7 @@
       <para>Why should I use a Rule Engine instead of a scripting framework,
       like <indexterm>
           <primary>BeanShell</primary>
-        </indexterm>?</para>
+        </indexterm> Beanshell?</para>
     </listitem>
   </orderedlist>
 
@@ -35,8 +35,8 @@
     <listitem>
       <para>Speed and Scalability</para>
 
-      <para>The Rete algorithm, and its descendents such as Drools' Reteoo,
-      </para>
+      <para>The Rete algorithm, and its descendents such as Drools'
+      Reteoo,</para>
     </listitem>
 
     <listitem>
