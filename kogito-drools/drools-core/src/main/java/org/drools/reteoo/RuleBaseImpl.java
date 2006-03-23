@@ -88,15 +88,25 @@ public class RuleBaseImpl
      *            The rete network.
      */
     public RuleBaseImpl() {
+        this( new DefaultFactHandleFactory() );
+    }
+    
+    /**
+     * Construct.
+     * 
+     * @param rete
+     *            The rete network.
+     */
+    public RuleBaseImpl(FactHandleFactory factHandleFactory) {
         ObjectTypeResolver resolver = new ClassObjectTypeResolver();
         this.rete = new Rete( resolver );
         this.reteooBuilder = new ReteooBuilder( this,
                                             resolver );
-        this.factHandleFactory = new DefaultFactHandleFactory();
+        this.factHandleFactory = factHandleFactory;
         this.pkgs = new HashMap();
         this.globalDeclarations = new HashMap();
         this.workingMemories = new WeakHashMap();
-    }
+    }    
 
     // ------------------------------------------------------------
     // Instance methods
