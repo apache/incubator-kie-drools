@@ -344,7 +344,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( new Integer( 5 ), list.get(  0 ) );          
     }
     
-    public void xxxtestAssertRetract() throws Exception {
+    public void testAssertRetract() throws Exception {
         //postponed while I sort out KnowledgeHelperFixer
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "assert_retract.drl" ) ) );
@@ -356,17 +356,19 @@ public abstract class IntegrationCases extends TestCase {
         
         List list = new ArrayList();
         workingMemory.setGlobal( "list", list );        
-        workingMemory.fireAllRules();
-        assertTrue(list.contains( "third" ));
-
-        Cheese stilton = new Cheese("stilton", 5);
-        workingMemory.assertObject( stilton );
+        
+        Person person = new Person("michael", "cheese");
+        person.setStatus( "start" );
+        workingMemory.assertObject( person );
         workingMemory.fireAllRules();
         
+        assertEquals(5, list.size());
         assertTrue(list.contains( "first" ));
         assertTrue(list.contains( "second" ));
-        
-        assertEquals( new Integer( 5 ), list.get(  0 ) );          
+        assertTrue(list.contains( "third" ));
+        assertTrue(list.contains( "fourth" ));
+        assertTrue(list.contains( "fifth" ));
+                  
     }    
     
     public void testWithExpanderDSL() throws Exception {

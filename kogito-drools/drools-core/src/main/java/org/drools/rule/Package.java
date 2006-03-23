@@ -367,7 +367,7 @@ public class Package
     /** This will throw an exception if the package is not valid */
     public void checkValidity() {
         if (!isValid()) 
-            throw new IllegalArgumentException(this.getErrorSummary());
+            throw new InvalidRulePackage(this.getErrorSummary());
     }
     
     /**

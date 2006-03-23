@@ -4,6 +4,7 @@ public class Person {
     private final String name;
     private final String likes;
     private final int age;
+    private String status;
     
     public Person( String name, String likes ) {
         this( name, likes, 0 );
@@ -13,6 +14,14 @@ public class Person {
         this.name = name;
         this.likes = likes;
         this.age = age;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getLikes() {
