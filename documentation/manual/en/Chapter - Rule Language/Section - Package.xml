@@ -17,17 +17,47 @@
   <section>
     <title>import</title>
 
-    <para></para>
-  </section>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="import.svg" format="SVG" role="" width="" />
+      </imageobject>
 
-  <section>
-    <title>global</title>
+      <imageobject>
+        <imagedata fileref="import.gif" format="GIF" role="" width="" />
+      </imageobject>
+    </mediaobject>
 
     <para></para>
   </section>
 
   <section>
     <title>expander</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="expander.svg" format="SVG" role="" width="" />
+      </imageobject>
+
+      <imageobject>
+        <imagedata fileref="expander.gif" format="GIF" role="" width="" />
+      </imageobject>
+    </mediaobject>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>global</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="global.svg" format="SVG" role="" width="" />
+      </imageobject>
+
+      <imageobject>
+        <imagedata fileref="global.gif" format="GIF" role="" width="" />
+      </imageobject>
+    </mediaobject>
 
     <para></para>
   </section>

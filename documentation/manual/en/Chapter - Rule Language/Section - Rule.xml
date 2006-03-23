@@ -2,5 +2,25 @@
 <section>
   <title>Rule</title>
 
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="rule.svg" format="SVG" role="" width="" />
+    </imageobject>
+
+    <imageobject>
+      <imagedata fileref="rule.gif" format="GIF" role="" width="" />
+    </imageobject>
+  </mediaobject>
+
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="rule_attributes.svg" format="SVG" role="" width="" />
+    </imageobject>
+
+    <imageobject>
+      <imagedata fileref="rule_attributes.gif" format="GIF" role="" width="" />
+    </imageobject>
+  </mediaobject>
+
   <para>uuuere</para>
 </section>

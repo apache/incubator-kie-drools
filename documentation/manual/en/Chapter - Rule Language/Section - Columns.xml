@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>Function</title>
+  <title>Column</title>
 
   <mediaobject>
     <imageobject>
-      <imagedata fileref="function.svg" format="SVG" role="" width="" />
+      <imagedata fileref="column.svg" format="SVG" role="" width="" />
     </imageobject>
 
     <imageobject>
-      <imagedata fileref="function.gif" format="GIF" role="" width="" />
+      <imagedata fileref="column.gif" format="GIF" role="" width="" />
     </imageobject>
   </mediaobject>
 
