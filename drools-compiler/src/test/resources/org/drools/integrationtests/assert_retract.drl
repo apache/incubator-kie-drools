@@ -1,0 +1,31 @@
+package org.drools.test
+
+import org.drools.Cheese
+import java.lang.String
+
+global java.util.List list
+
+rule "first"
+    when
+       	c : Cheese(type=="stilton")
+    then
+    	list.add("first");
+	   	drools.assertObject("hello");
+end    
+
+rule "second"	
+	when
+		s : String()
+		eval( s.equals("hello") )
+		c : Cheese(type=="stilton")
+	then
+		list.add("second");
+		drools.retractObject(c__Handle__);		
+end
+
+rule "third"
+	when
+		not Cheese(type=="stilton")
+	then
+		list.add("third");
+end

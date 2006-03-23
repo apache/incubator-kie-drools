@@ -344,6 +344,30 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( new Integer( 5 ), list.get(  0 ) );          
     }
     
+    public void xxxtestAssertRetract() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "assert_retract.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
+        workingMemory.fireAllRules();
+        assertTrue(list.contains( "third" ));
+
+        Cheese stilton = new Cheese("stilton", 5);
+        workingMemory.assertObject( stilton );
+        workingMemory.fireAllRules();
+        
+        assertTrue(list.contains( "first" ));
+        assertTrue(list.contains( "second" ));
+        
+        assertEquals( new Integer( 5 ), list.get(  0 ) );          
+    }    
+    
     public void testWithExpanderDSL() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new InputStreamReader(getClass().getResourceAsStream( "rule_with_expander_dsl.drl" ));

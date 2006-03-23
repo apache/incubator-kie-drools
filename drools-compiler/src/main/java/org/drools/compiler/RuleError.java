@@ -1,5 +1,6 @@
 package org.drools.compiler;
 
+import org.apache.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.Rule;
 
@@ -33,7 +34,15 @@ public class RuleError extends DroolsError {
     }
 
     public String getMessage() {
-        return message;
+        String summary = message;
+        if (object instanceof CompilationProblem[]) {
+            CompilationProblem[] problem = (CompilationProblem[]) object;
+            for ( int i = 0; i < problem.length; i++ ) {
+                summary = summary + " " + problem[i].getMessage();
+            }
+            
+        }
+        return summary;
     }
             
 }
