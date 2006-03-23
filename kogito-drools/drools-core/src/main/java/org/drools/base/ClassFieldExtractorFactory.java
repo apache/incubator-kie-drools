@@ -29,9 +29,9 @@ import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
 
 /**
- * 
+ * This is an alternative to FieldAccessorGenerator.
  * @author Alexander Bagerman
- * 
+ * TODO: Use this instead of FieldAccessorGenerator - it should be able to be more efficient.
  */
 
 public class ClassFieldExtractorFactory {
@@ -55,7 +55,7 @@ public class ClassFieldExtractorFactory {
 			String typeName = getTypeName(fieldType);
 			// generating byte array to create target class
 			byte[] bytes = dump(originalClassName, className, getterName,
-					typeName, fieldType);
+					typeName, fieldType, clazz.isInterface());
 			// use bytes to get a class 
 			ByteArrayClassLoader classLoader = new ByteArrayClassLoader(Thread
 					.currentThread().getContextClassLoader());
@@ -86,7 +86,7 @@ public class ClassFieldExtractorFactory {
 	}
 
 	private static byte[] dump(String originalClassName, String className,
-			String getterName, String typeName, Class fieldType)
+			String getterName, String typeName, Class fieldType, boolean isInterface)
 			throws Exception {
 
 		ClassWriter cw = new ClassWriter(false);
@@ -142,8 +142,15 @@ public class ClassFieldExtractorFactory {
 			mv.visitInsn(Opcodes.DUP);
 			mv.visitVarInsn(Opcodes.ALOAD, 1);
 			mv.visitTypeInsn(Opcodes.CHECKCAST, originalClassName);
-			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, originalClassName,
-					getterName, "()" + primitiveTypeTag);
+            
+            if (isInterface) {
+                mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, originalClassName,
+                                    getterName, "()" + primitiveTypeTag);
+                
+            } else {
+    			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, originalClassName,
+    					getterName, "()" + primitiveTypeTag);
+            }
 			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, typeName, "<init>", "("
 					+ primitiveTypeTag + ")V");
 			mv.visitInsn(Opcodes.ARETURN);
@@ -164,8 +171,13 @@ public class ClassFieldExtractorFactory {
 			mv.visitLineNumber(15, l0);
 			mv.visitVarInsn(Opcodes.ALOAD, 1);
 			mv.visitTypeInsn(Opcodes.CHECKCAST, originalClassName);
-			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, originalClassName,
-					getterName, "()L" + typeName + ";");
+            if (isInterface) {
+                mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, originalClassName,
+                                    getterName, "()L" + typeName + ";");
+            } else {
+    			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, originalClassName,
+    					getterName, "()L" + typeName + ";");
+            }
 			mv.visitInsn(Opcodes.ARETURN);
 			Label l1 = new Label();
 			mv.visitLabel(l1);

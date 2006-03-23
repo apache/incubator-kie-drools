@@ -99,14 +99,14 @@ public class ClassFieldInspector {
                                          String[] exceptions) {
             //only want public methods that start with 'get' or 'is'
             //and have no args, and return a value
-            if (access == Opcodes.ACC_PUBLIC) {
+            if ((access & Opcodes.ACC_PUBLIC) > 0) {
                 if (desc.startsWith( "()" ) && ( name.startsWith("get") || name.startsWith("is") ) ) {
                     try {
                         Method method = clazz.getMethod(name, null);
                         if (method.getReturnType() != void.class) {
                             int fieldIndex = methodList.size();
-                            methodList.add(method);
-                            addToMapping(method, fieldIndex);
+                            methodList.add(method);                                
+                            addToMapping(method.getName(), fieldIndex);
                         }
                     } catch (NoSuchMethodException e) {
                         throw new IllegalStateException("Error in getting field access method.");
@@ -186,8 +186,8 @@ public class ClassFieldInspector {
 
 
 
-        private void addToMapping(Method method, int index) {
-            String name = method.getName();
+        private void addToMapping(String name, int index) {
+
             if (name.startsWith("is")) {
                 this.fieldNameMap.put(calcFieldName( name, 2 ), new Integer(index));
             } else {

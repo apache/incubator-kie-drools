@@ -23,6 +23,37 @@ public class ClassFieldInspectorTest extends TestCase {
         
     }
     
+
+    public void testInterface() throws Exception {
+        ClassFieldInspector ext = new ClassFieldInspector( TestInterface.class );
+        assertEquals(2, ext.getPropertyGetters().size());
+        assertEquals("getSomething", ((Method) ext.getPropertyGetters().get(0)).getName());
+        assertEquals("getAnother", ((Method) ext.getPropertyGetters().get(1)).getName());
+        
+      
+        
+        Map names = ext.getFieldNames();
+        assertNotNull(names);
+        assertEquals(2, names.size());
+        assertEquals(0, ((Integer)names.get("something")).intValue());
+        assertEquals(1, ((Integer)names.get("another")).intValue());
+        
+    }
+    
+    public void testAbstract() throws Exception {
+        ClassFieldInspector ext = new ClassFieldInspector( TestAbstract.class );
+        assertEquals(2, ext.getPropertyGetters().size());
+        assertEquals("getSomething", ((Method) ext.getPropertyGetters().get(0)).getName());
+        assertEquals("getAnother", ((Method) ext.getPropertyGetters().get(1)).getName());
+        
+        Map names = ext.getFieldNames();
+        assertNotNull(names);
+        assertEquals(2, names.size());
+        assertEquals(0, ((Integer)names.get("something")).intValue());
+        assertEquals(1, ((Integer)names.get("another")).intValue());
+        
+    }    
+    
     static class Person {
         private boolean happy;
         private String name;

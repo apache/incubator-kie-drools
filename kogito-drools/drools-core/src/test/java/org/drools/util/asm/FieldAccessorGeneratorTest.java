@@ -46,4 +46,45 @@ public class FieldAccessorGeneratorTest extends TestCase {
         assertEquals(ac, ac2);
     }
     
+    public void testInterface() throws Exception {
+        FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
+        FieldAccessorMap map = gen.newInstanceFor(TestInterface.class);
+        FieldAccessor ac = map.getFieldAccessor();
+        assertNotNull(ac);
+        
+        TestInterface obj = new TestInterfaceImpl();
+        
+        assertEquals("foo", (String)ac.getFieldByIndex(obj, 0));
+        assertEquals(42, ((Integer)ac.getFieldByIndex(obj, 1)).intValue());
+        
+        Integer index = (Integer) map.getFieldNameMap().get("something");
+        assertEquals(0, index.intValue());
+        
+        index = (Integer) map.getFieldNameMap().get("another");
+        assertEquals(1, index.intValue());
+        
+        
+    }    
+    
+    public void testAbstract() throws Exception {
+        FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
+        FieldAccessorMap map = gen.newInstanceFor(TestAbstract.class);
+        FieldAccessor ac = map.getFieldAccessor();
+        assertNotNull(ac);
+        
+        TestAbstract obj = new TestAbstractImpl();
+        
+        assertEquals(42, ((Integer)ac.getFieldByIndex(obj, 1)).intValue());
+        assertEquals("foo", (String)ac.getFieldByIndex(obj, 0));
+        
+        
+        Integer index = (Integer) map.getFieldNameMap().get("something");
+        assertEquals(0, index.intValue());
+        
+        index = (Integer) map.getFieldNameMap().get("another");
+        assertEquals(1, index.intValue());
+        
+        
+    }     
+    
 }
