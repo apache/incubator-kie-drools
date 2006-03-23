@@ -154,6 +154,25 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( stilton, list.get(  0 ) );  
     }      
     
+    public void testEvalMore() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test_more.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );  
+        
+        workingMemory.assertObject( "foo" );
+        workingMemory.fireAllRules();
+        
+        assertEquals( "foo", list.get(  0 ) );  
+    }        
+    
     public void testReturnValue() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "returnvalue_rule_test.drl" ) ) );
