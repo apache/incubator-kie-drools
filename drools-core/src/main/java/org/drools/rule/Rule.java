@@ -190,7 +190,8 @@ public class Rule
 
     /**
      * Check the validity of this rule, and throw exceptions if it fails
-     * validity tests.
+     * validity tests. This does NOT include checking the semantic actions or predicates.
+     * {@link #isValid()} provides a check that includes the semantic validity.
      * 
      * <p>
      * Possibly exceptions include:

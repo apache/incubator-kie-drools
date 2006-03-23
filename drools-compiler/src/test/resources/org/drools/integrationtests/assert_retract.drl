@@ -1,31 +1,47 @@
 package org.drools.test
 
+import org.drools.Person
 import org.drools.Cheese
-import java.lang.String
 
 global java.util.List list
 
 rule "first"
     when
-       	c : Cheese(type=="stilton")
+       	p : Person(status=="start")
     then
     	list.add("first");
-	   	drools.assertObject("hello");
+    	p.setStatus("next");
+	   	modify(p);
 end    
 
 rule "second"	
 	when
-		s : String()
-		eval( s.equals("hello") )
-		c : Cheese(type=="stilton")
+		p : Person(status == "next")
 	then
 		list.add("second");
-		drools.retractObject(c__Handle__);		
+		p.setStatus("final");
+		modify(p);
 end
 
 rule "third"
 	when
-		not Cheese(type=="stilton")
+		p :	Person(status == "final")
 	then
 		list.add("third");
+		retract(p);
+end
+
+rule "fourth"
+	when 
+		not Person()
+	then
+		list.add("fourth");
+		assert(new Cheese("stilton", 42));
+end
+
+rule "fifth"
+	when
+		Cheese(type == "stilton")
+	then
+		list.add("fifth");			
 end
