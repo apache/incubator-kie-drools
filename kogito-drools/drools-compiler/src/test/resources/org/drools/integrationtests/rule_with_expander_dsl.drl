@@ -18,6 +18,7 @@ rule "my rule"
 		#Cheese(type=="stilton")
 		There is a person with the name of Bob who likes stilton
 		There is some stilton cheese available
+		
 	then
 		Add the message "We have a winner"
 		#messages.add("We have a winner");

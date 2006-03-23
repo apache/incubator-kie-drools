@@ -347,7 +347,7 @@ expander_lhs_block[AndDescr descrs]
 			'>' d=lhs { descrs.addDescr( d ); } 
 			|
 			(	options{greedy=false;} : 
-				text=paren_chunk EOL 
+				text=paren_chunk EOL {text != null}?
 				{
 					d = runWhenExpander( text );
 					descrs.addDescr( d );

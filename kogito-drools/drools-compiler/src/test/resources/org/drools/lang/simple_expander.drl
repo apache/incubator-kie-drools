@@ -6,7 +6,10 @@ rule simple_rule
     The rain in spain falls mainly
     >Baz()    
     The rain in spain falls mainly
-    >Bar()       
+    >Bar()   
+    
+    
+
   then
 	>bar
 	Something else
