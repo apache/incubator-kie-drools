@@ -66,15 +66,9 @@ public class RuleHandle extends Handle {
 	 * @see java.lang.Object
 	 */
 	public boolean equals(Object that) {
-		if (this == that)
-			return true;
-		if (!(that instanceof RuleHandle))
-			return false;
-		return (this.getId() == ((RuleHandle) that).getId()
-				&& this.getLeapsRule().equals(
-						((RuleHandle) that).getLeapsRule()) && (this
-				.getDominantPosition() == ((RuleHandle) that)
-				.getDominantPosition()));
+		return super.equals(that)
+				&& (this.getDominantPosition() == ((RuleHandle) that)
+						.getDominantPosition());
 	}
 
 	/**

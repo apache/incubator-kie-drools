@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
 
 /**
  * Leaps specific iterator for leaps tables. relies on leaps table double link
- * list structure for navigating
+ * list structure for navigation
  * 
  * @author Alexander Bagerman
  * 

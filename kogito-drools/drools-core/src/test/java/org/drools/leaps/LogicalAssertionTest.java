@@ -20,7 +20,6 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.common.Agenda;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -55,7 +54,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
 		// MockObjectSink so we can detect assertions and retractions
 
 		final Rule rule1 = new Rule("test-rule1");
-		final Agenda agenda = this.workingMemory.getAgenda();
 
 		rule1.setConsequence(this.consequence);
 
@@ -70,7 +68,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 				rule1, null);
 		factHandles[0] = (FactHandleImpl) handle1;
 		tuple1 = new LeapsTuple(factHandles, null, null, context1);
-		this.workingMemory.assertTuple(tuple1, rule1);
+		this.workingMemory.assertTuple(tuple1);
 		FactHandle logicalHandle1 = this.workingMemory.assertObject(
 				logicalString1, false, true, null, this.workingMemory
 						.getAgenda().getActivations()[0]);
@@ -81,7 +79,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 						.getAgenda().getActivations()[0]);
 		factHandles[0] = (FactHandleImpl) logicalHandle2;
 		tuple1 = new LeapsTuple(factHandles, null, null, context1);
-		this.workingMemory.assertTuple(tuple1, rule1);
+		this.workingMemory.assertTuple(tuple1);
 
 		assertSame(logicalHandle1, logicalHandle2);
 
@@ -100,8 +98,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
 	public void testStatedOverride() throws Exception {
 		final Rule rule1 = new Rule("test-rule1");
 
-		final Agenda agenda = this.workingMemory.getAgenda();
-
 		rule1.setConsequence(this.consequence);
 
 		FactHandleImpl[] factHandles = new FactHandleImpl[1];
@@ -115,7 +111,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 				rule1, null);
 		factHandles[0] = (FactHandleImpl) handle1;
 		tuple1 = new LeapsTuple(factHandles, null, null, context1);
-		this.workingMemory.assertTuple(tuple1, rule1);
+		this.workingMemory.assertTuple(tuple1);
 		FactHandle logicalHandle1 = this.workingMemory.assertObject(
 				logicalString1, false, true, null, this.workingMemory
 						.getAgenda().getActivations()[0]);
@@ -137,7 +133,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 		// Test that a logical assertion cannot override a STATED assertion
 		factHandles[0] = (FactHandleImpl) logicalHandle2;
 		tuple1 = new LeapsTuple(factHandles, null, null, context1);
-		this.workingMemory.assertTuple(tuple1, rule1);
+		this.workingMemory.assertTuple(tuple1);
 
 		logicalString2 = new String("logical");
 		logicalHandle2 = this.workingMemory.assertObject(logicalString2);
@@ -192,7 +188,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 				context);
 		LeapsTuple tuple2 = new LeapsTuple(factHandlesTuple2, null, null,
 				context);
-		this.workingMemory.assertTuple(tuple1, rule1);
+		this.workingMemory.assertTuple(tuple1);
 		Activation activation1 = this.workingMemory.getAgenda()
 				.getActivations()[0];
 
@@ -208,7 +204,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 		PropagationContext context2 = new PropagationContextImpl(0,
 				PropagationContext.ASSERTION, rule2, null);
 		tuple1 = new LeapsTuple(factHandlesTuple2, null, null, context2);
-		this.workingMemory.assertTuple(tuple1, rule2);
+		this.workingMemory.assertTuple(tuple1);
 		Activation activation2 = this.workingMemory.getAgenda()
 				.getActivations()[1];
 		//
@@ -242,7 +238,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 		PropagationContext context1 = new PropagationContextImpl(0,
 				PropagationContext.ASSERTION, rule1, null);
 		LeapsTuple tuple1 = new LeapsTuple(tuple1Handles, null, null, context1);
-		this.workingMemory.assertTuple(tuple1, rule1);
+		this.workingMemory.assertTuple(tuple1);
 		Activation activation1 = this.workingMemory.getAgenda()
 				.getActivations()[0];
 
@@ -257,7 +253,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 		PropagationContext context2 = new PropagationContextImpl(0,
 				PropagationContext.ASSERTION, rule2, null);
 		LeapsTuple tuple2 = new LeapsTuple(tuple2Handles, null, null, context2);
-		this.workingMemory.assertTuple(tuple2, rule2);
+		this.workingMemory.assertTuple(tuple2);
 		// "logical" should only appear once
 		Activation activation2 = this.workingMemory.getAgenda()
 				.getActivations()[1];

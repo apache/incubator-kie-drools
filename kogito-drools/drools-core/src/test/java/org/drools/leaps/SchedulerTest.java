@@ -17,13 +17,11 @@ package org.drools.leaps;
  */
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
-import org.drools.common.Agenda;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -72,7 +70,7 @@ public class SchedulerTest extends DroolsTestCase {
 
 		assertEquals(0, data.size());
 
-		workingMemory.assertTuple(tuple, rule);
+		workingMemory.assertTuple(tuple);
 
 		// sleep for 2 seconds
 		Thread.sleep(300);
@@ -86,7 +84,6 @@ public class SchedulerTest extends DroolsTestCase {
 
 		final WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase
 				.newWorkingMemory();
-		final Agenda agenda = workingMemory.getAgenda();
 
 		final Rule rule = new Rule("do-loop-scheduled-test-rule");
 		final List data = new ArrayList();
@@ -114,7 +111,7 @@ public class SchedulerTest extends DroolsTestCase {
 					FactHandleImpl[] factHandlesTupleIn = new FactHandleImpl[1];
 					factHandlesTupleIn[0] = tupleFactHandleIn;
 					LeapsTuple tupleIn = new LeapsTuple(factHandlesTupleIn, null, null, context2);
-					((WorkingMemoryImpl) workingMemory).assertTuple(tupleIn, rule);
+					((WorkingMemoryImpl) workingMemory).assertTuple(tupleIn);
 				}
 				data.add("tested");
 			}
@@ -129,7 +126,7 @@ public class SchedulerTest extends DroolsTestCase {
 		factHandlesTuple[0] = tupleFactHandle;
 		LeapsTuple tuple = new LeapsTuple(factHandlesTuple, null, null, context);
 
-		workingMemory.assertTuple(tuple, rule);
+		workingMemory.assertTuple(tuple);
 
 		assertEquals(0, data.size());
 

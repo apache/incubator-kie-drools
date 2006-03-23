@@ -119,7 +119,7 @@ class Token implements Tuple, Serializable {
 
 	public int hashCode() {
 		if (this.dominantFactHandle != null) {
-			return (int) this.dominantFactHandle.getId();
+			return this.dominantFactHandle.hashCode();
 		} else {
 			return 0;
 		}
@@ -155,11 +155,14 @@ class Token implements Tuple, Serializable {
 			return true;
 		if (!(that instanceof Token))
 			return false;
-		if(this.dominantFactHandle != null){
-		return this.dominantFactHandle.getId() == ((Token) that).dominantFactHandle
-				.getId();
-		}
-		else {
+		if (this.dominantFactHandle != null) {
+			if (((Token) that).dominantFactHandle != null) {
+				return this.dominantFactHandle.getId() == ((Token) that).dominantFactHandle
+						.getId();
+			} else {
+				return false;
+			}
+		} else {
 			return ((Token) that).dominantFactHandle == null;
 		}
 	}

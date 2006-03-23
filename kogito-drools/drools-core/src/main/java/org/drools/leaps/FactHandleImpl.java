@@ -99,20 +99,6 @@ public class FactHandleImpl extends Handle implements InternalFactHandle {
 		return null;
 	}
 
-	/**
-	 * Leaps fact handles considered equal if ids match and content points to
-	 * the same object.
-	 */
-	public boolean equals(Object that) {
-		if (this == that)
-			return true;
-		if (!(that instanceof FactHandleImpl))
-			return false;
-		return this.getId() == ((FactHandleImpl) that).getId()
-				&& this.getObject() == ((FactHandleImpl) that).getObject();
-
-	}
-
 	void addLogicalDependency(LeapsTuple tuple){
 		if (this.logicalJustifiers == null) {
 			this.logicalyDependent = true;

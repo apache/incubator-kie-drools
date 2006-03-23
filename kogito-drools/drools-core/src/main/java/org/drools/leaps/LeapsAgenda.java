@@ -66,6 +66,19 @@ public class LeapsAgenda extends Agenda {
 					factTable.removeTuple(tuple);
 				}
 			}
+
+			if (tuple.isExistsConstraintsPresent()) {
+				constraints = tuple.getExistsConstraints();
+				// remove from not related fact tables
+				for (int i = 0, length = constraints.length; i < length; i++) {
+					FactTable factTable = this.workingMemory
+							.getFactTable(((ClassObjectType) constraints[i]
+									.getColumn().getObjectType())
+									.getClassType());
+					// remove tuple from container
+					factTable.removeTuple(tuple);
+				}
+			}
 		}
 	}
 }

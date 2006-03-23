@@ -22,29 +22,17 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 
 import org.drools.DroolsTestCase;
-import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
-import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.EvaluatorFactory;
-import org.drools.examples.manners.Chosen;
 import org.drools.examples.manners.Context;
-import org.drools.examples.manners.Guest;
 import org.drools.rule.Column;
-import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
-import org.drools.rule.Rule;
-import org.drools.spi.Activation;
-import org.drools.spi.Consequence;
-import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.spi.FieldValue;
 import org.drools.spi.MockField;
-import org.drools.spi.Tuple;
-import java.util.*;
 
 /**
  * 
@@ -59,9 +47,9 @@ public class ColumnConstraintsTest extends DroolsTestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		this.integerEqualEvaluator = EvaluatorFactory.getInstance()
+		this.integerEqualEvaluator = EvaluatorFactory
 				.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.EQUAL);
-		this.integerNotEqualEvaluator = EvaluatorFactory.getInstance()
+		this.integerNotEqualEvaluator = EvaluatorFactory
 				.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.NOT_EQUAL);
 	}
 
@@ -128,8 +116,6 @@ public class ColumnConstraintsTest extends DroolsTestCase {
 			String fieldName, Object fieldValue, Evaluator evaluator)
 			throws IntrospectionException {
 		Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-
-		int index = getIndex(clazz, fieldName);
 
 		FieldValue field = new MockField(fieldValue);
 

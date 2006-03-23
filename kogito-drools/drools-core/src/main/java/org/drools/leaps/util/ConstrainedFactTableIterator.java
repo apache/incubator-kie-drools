@@ -23,7 +23,7 @@ import org.drools.WorkingMemory;
 import org.drools.leaps.ColumnConstraints;
 
 /**
- * this class is for multi pass iterations to sort out fact that do not satisfy
+ * this class is for multi pass iterations to sort out facts that do not satisfy
  * alpha nodes
  * 
  * previous to the left
@@ -52,34 +52,6 @@ public class ConstrainedFactTableIterator implements TableIterator {
 	private TableRecord currentTableRecord;
 	
 	private TableRecord lastTableRecord;
-//
-//	/**
-//	 * constracts an leaps iterator to iterate over a single record. Used for
-//	 * Dominant fact dimention iteration
-//	 * 
-//	 * @param record
-//	 *            to iterate over
-//	 */
-//	protected ConstrainedFactTableIterator(WorkingMemory workingMemory, ColumnConstraints constraints) {
-//		this.workingMemory = workingMemory;
-//		this.constraints = constraints;
-//	}
-//
-//	/**
-//	 * constracts an leaps iterator to iterate over a single record. Used for
-//	 * Dominant fact dimention iteration
-//	 * 
-//	 * @param record
-//	 *            to iterate over
-//	 */
-//	protected ConstrainedFactTableIterator(WorkingMemory workingMemory, ColumnConstraints constraints,
-//			TableRecord record) {
-//		this.workingMemory = workingMemory;
-//		this.constraints = constraints;
-//		if (this.constraints.isAllowedAlpha((FactHandle)record.object, null, this.workingMemory)) {
-//			this.add(record.object);
-//		}
-//	}
 
 	protected ConstrainedFactTableIterator(WorkingMemory workingMemory,
 			ColumnConstraints constraints, TableRecord startRecord,

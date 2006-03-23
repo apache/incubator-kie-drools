@@ -49,6 +49,13 @@ public class Handle {
 	}
 
 	/**
+	 * Leaps handles considered equal if ids match and content points to
+	 * the same object.
+	 */
+	public boolean equals (Object that) {
+		return this.id == ((Handle)that).id && this.object == ((Handle)that).object;
+	}
+	/**
 	 * @return object being handled
 	 */
 	public Object getObject() {
