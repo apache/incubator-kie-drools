@@ -112,14 +112,14 @@ public class FieldAccessorGenerator {
 
             doConstructor( cw );
             
-            doMethods( cw, Type.getInternalName(targetClass), getters );
+            doMethods( cw, Type.getInternalName(targetClass), getters, targetClass.isInterface());
 
             cw.visitEnd();
 
             return cw.toByteArray();
         }
 
-        private static void doMethods(ClassWriter cw, String targetType, Method[] getters) {
+        private static void doMethods(ClassWriter cw, String targetType, Method[] getters, boolean isInterface) {
             
              
             
@@ -162,12 +162,13 @@ public class FieldAccessorGenerator {
             
             //START switch items
             for (int i= 0; i < getters.length; i++) {
+                
                 Method method = getters[i];
                 if (method.getReturnType().isPrimitive()) {
                     doSwitchItemBoxed( mv, switchItems[i],
-                                       target, targetType, method.getName(), method.getReturnType());                    
+                                       target, targetType, method.getName(), method.getReturnType(), isInterface);                    
                 } else {
-                    doSwitchItemObject(mv, switchItems[i], target, targetType, method.getName(), method.getReturnType());
+                    doSwitchItemObject(mv, switchItems[i], target, targetType, method.getName(), method.getReturnType(), isInterface);
                 }
             }            
             
@@ -186,7 +187,7 @@ public class FieldAccessorGenerator {
         /** a switch item that requires autoboxing */
         private static void doSwitchItemBoxed(MethodVisitor mv, Label switchItem,
                                               int target, String targetType, String targetMethod,
-                                              Class scalarType) {
+                                              Class scalarType, boolean isInterface) {
             Class boxType = null;
             boxType = getBoxType( scalarType );
             String scalarDescriptor = Type.getDescriptor(scalarType);
@@ -197,10 +198,19 @@ public class FieldAccessorGenerator {
             mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD,
                              target );
-            mv.visitMethodInsn( INVOKEVIRTUAL,
-                                targetType,
-                                targetMethod,
-                                "()" + scalarDescriptor );
+            if (isInterface) {
+                mv.visitMethodInsn( INVOKEINTERFACE,
+                                    targetType,
+                                    targetMethod,
+                                    "()" + scalarDescriptor );
+                
+            } else {
+                mv.visitMethodInsn( INVOKEVIRTUAL,
+                                    targetType,
+                                    targetMethod,
+                                    "()" + scalarDescriptor );
+                
+            }
             mv.visitMethodInsn( INVOKESPECIAL,
                                 internalBoxName,
                                 "<init>",
@@ -237,16 +247,24 @@ public class FieldAccessorGenerator {
 
         /** A regular switch item, which doesn't require boxing */
         private static void doSwitchItemObject(MethodVisitor mv, Label label,
-                                         int target, String targetType, String targetMethod, Class returnClass) {
+                                         int target, String targetType, 
+                                         String targetMethod, Class returnClass, boolean isInterface) {
             
             String returnType = "()" + Type.getDescriptor(returnClass);
             mv.visitLabel( label );            
             mv.visitVarInsn( ALOAD,
                              target );
-            mv.visitMethodInsn( INVOKEVIRTUAL,
-                                targetType,
-                                targetMethod,
-                                returnType );
+            if (isInterface) {
+                mv.visitMethodInsn( INVOKEINTERFACE,
+                                    targetType,
+                                    targetMethod,
+                                    returnType );
+            } else {
+                mv.visitMethodInsn( INVOKEVIRTUAL,
+                                    targetType,
+                                    targetMethod,
+                                    returnType );
+            }
             mv.visitInsn( ARETURN );
         }
 
