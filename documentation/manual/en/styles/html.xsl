@@ -9,7 +9,7 @@
                 xmlns="http://www.w3.org/TR/xhtml1/transitional"
                 exclude-result-prefixes="#default">
                 
-    <xsl:import href="&db_xsl_path;/html/docbook.xsl"/>
+    <xsl:import href="&db_xsl_path;/html/profile-docbook.xsl"/>
 
     <xsl:param name="img.src.path">../shared/images/</xsl:param>
     <xsl:param name="keep.relative.image.uris">0</xsl:param>    

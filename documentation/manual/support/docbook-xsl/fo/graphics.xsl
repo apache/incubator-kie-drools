@@ -152,7 +152,7 @@
       <xsl:when test="@width or @depth">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
-  </xsl:variable> 
+  </xsl:variable>
 
   <xsl:variable name="scale">
     <xsl:choose>
@@ -163,7 +163,7 @@
       </xsl:when>
       <xsl:otherwise>1.0</xsl:otherwise>
     </xsl:choose>
-  </xsl:variable>      
+  </xsl:variable>
 
   <xsl:variable name="filename">
     <xsl:choose>
@@ -181,7 +181,7 @@
         </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:variable>  
+  </xsl:variable>
 
   <xsl:variable name="content-type">
     <xsl:if test="@format">
