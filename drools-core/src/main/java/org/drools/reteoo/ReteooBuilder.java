@@ -201,7 +201,8 @@ class ReteooBuilder {
                 // a TupleSource using LeftInputAdapterNode
                 if ( this.tupleSource == null ) {
                     this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
-                                                                             this.objectSource ) );
+                                                                             this.objectSource,
+                                                                             binder) );
 
                     // objectSource is created by the attachColumn method, if we
                     // adapt this to
