@@ -8,7 +8,7 @@ public class KnowledgeHelperFixerTest extends TestCase {
     private static KnowledgeHelperFixer fixer = new  KnowledgeHelperFixer();
   
         
-    public void testAdd__Handle__rSimple() {
+    public void testAdd__Handle__Simple() {
         String result = fixer.fix("modify(myObject )");
         assertEquals("drools.modifyObject(myObject__Handle__, myObject)", result);
         
@@ -42,11 +42,21 @@ public class KnowledgeHelperFixerTest extends TestCase {
         
         result = fixer.fix("xxx modify(myObject ) modify(myObject ) modify(yourObject ) yyy");
         assertEquals("xxx drools.modifyObject(myObject__Handle__, myObject) drools.modifyObject(myObject__Handle__, myObject) drools.modifyObject(yourObject__Handle__, yourObject) yyy", result);
+        
     }
     
-    public void testAllActions() {
+    public void testAssert() {
+        String raw = "some code; assert(new String(\"foo\"));\n More();";
+        String result = "some code; drools.assertObject(new String(\"foo\"));\n More();";
+        assertEquals(result, fixer.fix( raw ));
+    }
+    
+    public void testAllActionsMushedTogether() {
         String result = fixer.fix("assert(myObject ) modify(ourObject);\t retract(herObject)");
-        assertEquals("drools.assertObject(myObject__Handle__, myObject) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__, herObject)", result);        
+        assertEquals("drools.assertObject(myObject) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)", result);        
+        
+        result = fixer.fix("assert(myObject ) modify(ourObject);\t retract(herObject)\nassert(myObject ) modify(ourObject);\t retract(herObject)");
+        assertEquals("drools.assertObject(myObject) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)\ndrools.assertObject(myObject) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)", result);        
     }
     
     public void testLeaveLargeAlone() {

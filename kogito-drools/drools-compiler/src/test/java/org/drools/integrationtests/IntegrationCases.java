@@ -345,6 +345,7 @@ public abstract class IntegrationCases extends TestCase {
     }
     
     public void xxxtestAssertRetract() throws Exception {
+        //postponed while I sort out KnowledgeHelperFixer
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "assert_retract.drl" ) ) );
         Package pkg = builder.getPackage();
