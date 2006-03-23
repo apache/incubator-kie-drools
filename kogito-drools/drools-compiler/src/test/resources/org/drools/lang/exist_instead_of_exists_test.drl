@@ -1,0 +1,9 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+rule "exists rule test"
+    when       
+        exist Cheese( price == 5 )
+    then
+end    

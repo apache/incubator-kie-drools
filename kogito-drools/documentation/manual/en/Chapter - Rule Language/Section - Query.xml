@@ -2,5 +2,15 @@
 <section>
   <title>Query</title>
 
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="query.svg" format="SVG" role="" width="" />
+    </imageobject>
+
+    <imageobject>
+      <imagedata fileref="query.gif" format="GIF" role="" width="" />
+    </imageobject>
+  </mediaobject>
+
   <para>uuuere</para>
 </section>

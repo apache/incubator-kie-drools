@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Comments</title>
+
+  <para>uuuere</para>
+
+  <section>
+    <title>Single line comment</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="single_line_comment.svg" format="SVG" role=""
+                   width="" />
+      </imageobject>
+
+      <imageobject>
+        <imagedata fileref="single_line_comment.gif" format="GIF" role=""
+                   width="" />
+      </imageobject>
+    </mediaobject>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>Multi line comment</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="multi_line_comment.svg" format="SVG" role=""
+                   width="" />
+      </imageobject>
+
+      <imageobject>
+        <imagedata fileref="multi_line_comment.gif" format="GIF" role=""
+                   width="" />
+      </imageobject>
+    </mediaobject>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>Documentation</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="documentation.svg" format="SVG" role="" width="" />
+      </imageobject>
+
+      <imageobject>
+        <imagedata fileref="documentation.gif" format="GIF" role="" width="" />
+      </imageobject>
+    </mediaobject>
+
+    <para></para>
+  </section>
+</section>

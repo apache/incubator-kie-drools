@@ -48,6 +48,8 @@
     <chapter>
       <title>The Rule Language</title>
 
+			<xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Comments.xml" />
+
       <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Package.xml" />
 
       <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Function.xml" />
@@ -55,6 +57,8 @@
       <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Rule.xml" />
 
       <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Query.xml" />
+
+			<xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Column.xml" />
 
       <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Field%20Constraints.xml" />
 
