@@ -83,8 +83,8 @@ public class QueryTest extends DroolsTestCase {
 		this.workingMemory = this.ruleBaseAddRule.newWorkingMemory();
 		// rules
 		ClassObjectType contextType = new ClassObjectType(Context.class);
-		Evaluator integerEqualEvaluator = EvaluatorFactory.getInstance()
-				.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.EQUAL);
+		Evaluator integerEqualEvaluator = EvaluatorFactory.getEvaluator(
+				Evaluator.INTEGER_TYPE, Evaluator.EQUAL);
 		// rule 1
 		// fires on context.state == integer(1)
 		this.rule1 = new Query("query-to-execute");
@@ -93,8 +93,6 @@ public class QueryTest extends DroolsTestCase {
 				contextColumnRule1, "state", new Integer(1),
 				integerEqualEvaluator));
 		this.rule1.addPattern(contextColumnRule1);
-		final Declaration contextRule1Declaration = this.rule1
-				.getDeclaration("context1");
 
 		this.rule2 = new Rule("rule2");
 		Column contextColumnRule2 = new Column(0, contextType, "context2");

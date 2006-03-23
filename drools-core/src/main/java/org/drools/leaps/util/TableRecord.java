@@ -36,5 +36,18 @@ public class TableRecord {
 		this.right = null;
 		this.object = o;
 	}
+	
+	public int hashCode() {
+		return this.object.hashCode();
+	}
+	
+	public boolean equals(Object that) {
+		if(this.object != null) {
+			return this.object.equals(that);
+		}
+		else {
+			return that == null;
+		}
+	}
 
 }

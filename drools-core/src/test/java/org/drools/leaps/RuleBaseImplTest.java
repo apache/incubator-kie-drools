@@ -91,7 +91,7 @@ public class RuleBaseImplTest extends DroolsTestCase {
 		this.workingMemory = this.ruleBaseAddRule.newWorkingMemory();
 		// rules
 		ClassObjectType contextType = new ClassObjectType(Context.class);
-		Evaluator integerEqualEvaluator = EvaluatorFactory.getInstance()
+		Evaluator integerEqualEvaluator = EvaluatorFactory
 				.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.EQUAL);
 		// rule 1
 		// fires on context.state == integer(1)

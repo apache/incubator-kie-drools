@@ -37,10 +37,6 @@ public class Table {
 
 	protected TableRecord tailRecord;
 
-	protected final static int EQUAL_OR_LESS = -1;
-
-	protected final static int EQUAL_OR_GREATER = 1;
-
 	private boolean empty = true;
 
 	private int count = 0;

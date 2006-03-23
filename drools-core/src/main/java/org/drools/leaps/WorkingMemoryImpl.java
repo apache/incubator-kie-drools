@@ -50,6 +50,7 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.drools.util.IdentityMap;
 import org.drools.util.IteratorChain;
 
 /**
@@ -75,6 +76,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	// rules consisting only of not and exists
 	private final RuleTable noRequiredColumnsLeapsRules = new RuleTable(
 			DefaultConflictResolver.getInstance().getRuleConflictResolver());
+	
+	private final IdentityMap leapsRulesToHandlesMap = new IdentityMap(); 
 
 	/**
 	 * Construct.
@@ -86,6 +89,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		super(ruleBase, ruleBase.newFactHandleFactory());
 		this.agenda = new LeapsAgenda(this);
 		this.queryResults = new HashMap();
+		// to pick up rules that do not require columns, only not and exists
+		this.pushTokenOnStack(new Token(this, null));
 	}
 
 	/**
@@ -294,7 +299,12 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 				// check exists constraints
 				constraints = tuple.getExistsConstraints();
 				for (int i = 0, length = constraints.length; i < length; i++) {
-					if (constraints[i].isAllowed(handle, tuple, this)) {
+					constraint = constraints[i];
+					if (objectClass
+							.isAssignableFrom(((ClassObjectType) constraint
+									.getColumn().getObjectType())
+									.getClassType())
+							&& constraint.isAllowed(handle, tuple, this)) {
 						tuple.addExistsFactHandle(handle, i);
 						handle.addExistsTuple(tuple, i);
 					}
@@ -302,7 +312,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 				// check and see if we need deactivate / activate
 				if (tuple.isReadyForActivation() && tuple.isActivationNull()) {
 					// ready to activate
-					this.assertTuple(tuple, rule);
+					this.assertTuple(tuple);
 					// and need to remove tuple from fact table but iterator fail fast
 					if (assertedTuples == null) {
 						assertedTuples = new HashSet();
@@ -416,7 +426,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 			tuple = ((FactHandleTupleAssembly) chain.next()).getTuple();
 			if (tuple.isReadyForActivation() && tuple.isActivationNull()) {
 				// ready to activate
-				this.assertTuple(tuple, tuple.getContext().getRuleOrigin());
+				this.assertTuple(tuple);
 			} else {
 				// time to pull from agenda
 				this.invalidateActivation(tuple);
@@ -500,7 +510,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	 * leaps section
 	 */
 
-	private final String lock = new String("lock");
+	private final Object lock = new Object();
 
 	// private long idsSequence;
 
@@ -568,6 +578,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	 */
 	protected void addLeapsRules(List rules) {
 		synchronized (this.lock) {
+			ArrayList ruleHandlesList;
 			LeapsRule rule;
 			RuleHandle ruleHandle;
 			for (Iterator it = rules.iterator(); it.hasNext();) {
@@ -575,31 +586,60 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 				// some times rules do not have "normal" constraints and only
 				// not and exists
 				if (rule.getNumberOfColumns() > 0) {
+					ruleHandlesList = new ArrayList();
 					for (int i = 0; i < rule.getNumberOfColumns(); i++) {
 						ruleHandle = new RuleHandle(
 								((HandleFactory) this.handleFactory)
 										.getNextId(), rule, i);
-
+						// 
 						this.getFactTable(
 								((ClassObjectType) (rule
 										.getColumnConstraintsAtPosition(i))
 										.getColumn().getObjectType())
 										.getClassType()).addRule(this,
 								ruleHandle);
+						//
+						ruleHandlesList.add(ruleHandle);
 					}
+					this.leapsRulesToHandlesMap.put(rule, ruleHandlesList);
 				} else {
 					ruleHandle = new RuleHandle(
 							((HandleFactory) this.handleFactory)
 									.getNextId(), rule, -1);
 					this.noRequiredColumnsLeapsRules.add(ruleHandle);
+					this.leapsRulesToHandlesMap.put(rule, ruleHandle);
 				}
 			}
 		}
 	}
 
 	protected void removeRule(List rules) {
+		synchronized (this.lock) {
+		ArrayList ruleHandlesList;
+		LeapsRule rule;
+		RuleHandle ruleHandle;
 		for (Iterator it = rules.iterator(); it.hasNext();) {
-			this.noRequiredColumnsLeapsRules.remove(it.next());
+			rule = (LeapsRule) it.next();
+			// some times rules do not have "normal" constraints and only
+			// not and exists
+			if (rule.getNumberOfColumns() > 0) {
+				ruleHandlesList = (ArrayList) this.leapsRulesToHandlesMap
+						.remove(rule);
+				for (int i = 0; i < ruleHandlesList.size();i++) {
+					ruleHandle = (RuleHandle)ruleHandlesList.get(i);
+					// 
+					this.getFactTable(
+							((ClassObjectType) (rule
+										.getColumnConstraintsAtPosition(i))
+										.getColumn().getObjectType())
+										.getClassType()).removeRule(ruleHandle);
+				}
+			} else {
+				ruleHandle = (RuleHandle) this.leapsRulesToHandlesMap
+						.remove(rule);
+				this.noRequiredColumnsLeapsRules.remove(ruleHandle);
+			}
+		}
 		}
 	}
 
@@ -616,8 +656,6 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 		if (!this.firing) {
 			try {
 				this.firing = true;
-				// to pick up rules that do not require columns, only not and exists
-				this.pushTokenOnStack(new Token(this, null));
 				// normal rules with required columns
 				while (!this.stack.isEmpty()) {
 					Token token = (Token) this.stack.peek();
@@ -663,6 +701,12 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 						}
 					}
 				}
+				// pick activations generated by retraction 
+				// retraction does not put tokens on stack but 
+				// can generate activations off exists and not pending tuples
+				while (this.agenda.fireNextItem(agendaFilter)) {
+					;
+				}
 				// mark when method was called last time
 				this.idLastFireAllAt = ((HandleFactory) this.handleFactory)
 						.getNextId();
@@ -707,8 +751,9 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 	 * @throws AssertionException
 	 *             If an error occurs while asserting.
 	 */
-	public void assertTuple(LeapsTuple tuple, Rule rule) {
+	public void assertTuple(LeapsTuple tuple) {
 		PropagationContext context = tuple.getContext();
+		Rule rule = context.getRuleOrigin();
 		// if the current Rule is no-loop and the origin rule is the same then
 		// return
 		if (rule.getNoLoop() && rule.equals(context.getRuleOrigin())) {

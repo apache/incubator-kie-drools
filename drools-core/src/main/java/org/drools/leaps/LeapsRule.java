@@ -19,7 +19,6 @@ package org.drools.leaps;
 import java.util.ArrayList;
 
 import org.drools.base.ClassObjectType;
-import org.drools.rule.ConditionalElement;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Rule;
 
@@ -53,10 +52,10 @@ class LeapsRule {
 		this.columns = (ColumnConstraints[]) columns.toArray(new ColumnConstraints[0]);
 		this.notColumns = (ColumnConstraints[]) notColumns.toArray(new ColumnConstraints[0]);
 		this.existsColumns = (ColumnConstraints[]) existsColumns.toArray(new ColumnConstraints[0]);
-		this.notColumnsPresent = (notColumns.size() != 0);
-		this.existsColumnsPresent = (existsColumns.size() != 0);
 		this.evalConditions = (EvalCondition[]) evalConditions.toArray(new EvalCondition[0]);
-		this.evalCoditionsPresent = (evalConditions.size() != 0);
+		this.notColumnsPresent = (this.notColumns.length != 0);
+		this.existsColumnsPresent = (this.existsColumns.length != 0);
+		this.evalCoditionsPresent = (this.evalConditions.length != 0);
 	}
 
 	Rule getRule() {
@@ -109,5 +108,13 @@ class LeapsRule {
 	
 	boolean containsEvalConditions() {
 		return this.evalCoditionsPresent;
+	}
+	
+	public int hashCode() {
+		return this.rule.hashCode();
+	}
+	
+	public boolean equals (Object that){
+		return this == that;
 	}
 }
