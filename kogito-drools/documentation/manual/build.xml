@@ -84,7 +84,6 @@
             <arg value="${build.dir}/${lang}/pdf/drools.fo"/>
             <arg value="${basedir}/${lang}/master.xml"/>
             <arg value="${basedir}/${lang}/styles/${db.style.fopdf}"/>
-            <arg value='"profile.role=fo"'/>
         </java>
 
     </target> 
@@ -116,7 +115,6 @@
 				                 value="org.apache.xerces.parsers.XIncludeParserConfiguration"  />             
             <arg value="${basedir}/${lang}/master.xml"/>
             <arg value="${basedir}/${lang}/styles/${db.style.html}"/>
-            <arg value='"profile.role=html"'/>
         </java>
     </target>
 
@@ -137,7 +135,6 @@
             <arg value="${build.dir}/${lang}/html_single/index.html"/>
             <arg value="${basedir}/${lang}/master.xml"/>
             <arg value="${basedir}/${lang}/styles/${db.style.htmlsingle}"/>
-            <arg value='"profile.role=html"'/>
         </java>
     </target>
 

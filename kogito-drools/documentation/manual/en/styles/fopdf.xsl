@@ -11,11 +11,12 @@
     xmlns:fo="http://www.w3.org/1999/XSL/Format"
     exclude-result-prefixes="#default">
                 
-    <xsl:import href="&db_xsl_path;/fo/profile-docbook.xsl"/>
+    <xsl:import href="&db_xsl_path;/fo/docbook.xsl"/>
     
     <xsl:param name="img.src.path">../shared/images/</xsl:param>
        
 		<xsl:param name="keep.relative.image.uris">0</xsl:param>     
+		<xsl:param name="use.svg">1</xsl:param>     
     
 
     <!-- Prevent blank pages in output -->
