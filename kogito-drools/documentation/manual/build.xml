@@ -84,7 +84,7 @@
             <arg value="${build.dir}/${lang}/pdf/drools.fo"/>
             <arg value="${basedir}/${lang}/master.xml"/>
             <arg value="${basedir}/${lang}/styles/${db.style.fopdf}"/>
-            <arg value='"profile.role=html"'/>
+            <arg value='"profile.role=fo"'/>
         </java>
 
     </target> 
