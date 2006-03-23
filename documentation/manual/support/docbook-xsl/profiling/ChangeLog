@@ -1,0 +1,50 @@
+2006-03-06  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* profile-mode.xsl, xsl2profile.xsl: Profiling now works together with namespace stripping (V5 documents). Namespace striping should work with all stylesheets named profile-, even if they are not supporting namespace stripping in a non-profiling variant.
+
+2006-01-10  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* profile.xsl: Do not output !DOCTYPE for profiled content. Different users have needs for different versions of DTD.
+
+2005-12-28  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* xsl2profile.xsl: More tweaks improving profiling of HTML Help
+
+2005-12-06  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* profile-mode.xsl, profile.xsl: An attemp to fix base URIs when profiling is done and document is not in the current directory. This seems to work on my Windows machine, but I would be interested how it behaves in unix environment. URL handling in Java is very sensitive to such things.
+
+	* xsl2profile.xsl: Moved profiling stage out of templates. This make possible to reuse profiled content by several templates and still maintaing node indentity (needed for example for HTML Help where content is processed multiple times).
+	
+	I don't know why this was not on the top level before. Maybe some XSLT processors choked on it. I hope this will be OK now.
+
+2003-09-28  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* xsl2profile.xsl: Fixed tool name in comment
+
+2003-04-01  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* profile.xsl: Generated <!DOCTYPE> now refers to version 4.2 of DTD
+
+2002-08-02  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* xsl2profile.xsl: Fixed bug #590074. Profiling should work with FO again.
+
+2002-05-15  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* xsl2profile.xsl: Hopefully fixed bug #549736. Single-pass profiling should also work in FO stylesheet from now.
+
+2002-03-18  Norman Walsh <nwalsh@users.sourceforge.net>
+
+	* strip-attributes.xsl: New file.
+
+2002-03-03  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* profile-mode.xsl: Added new stylesheet parameters for profiling.
+
+	* profile.xsl: New file.
+
+2002-03-01  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* profile-mode.xsl, xsl2profile.xsl: New file.
+
