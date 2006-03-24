@@ -37,6 +37,25 @@ public class EvaluatorFactoryTest extends TestCase {
         
     }
     
+    public void testArrayType() {
+
+        
+        Object[] field = new Object[] {"foo", "bar"};
+         
+
+        Object[][] data = { {field, "==", new Object[] {"foo"}, Boolean.FALSE},
+                            {field, "==", field, Boolean.TRUE},
+                            {field, "!=", new Object[] {"foo"}, Boolean.TRUE},
+                            {field, "contains", "foo", Boolean.TRUE},
+                            {field, "!=", null, Boolean.TRUE}
+                          };
+
+        runEvaluatorTest( data, Evaluator.ARRAY_TYPE );
+        
+        
+    }
+    
+    
     public void testString() {
 
         Object[][] data = { {"foo", "==", "bar", Boolean.FALSE},
