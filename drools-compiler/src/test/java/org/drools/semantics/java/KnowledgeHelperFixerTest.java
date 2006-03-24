@@ -53,10 +53,10 @@ public class KnowledgeHelperFixerTest extends TestCase {
     
     public void testAllActionsMushedTogether() {
         String result = fixer.fix("assert(myObject ) modify(ourObject);\t retract(herObject)");
-        assertEquals("drools.assertObject(myObject) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)", result);        
+        assertEquals("drools.assertObject(myObject ) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)", result);        
         
-        result = fixer.fix("assert(myObject ) modify(ourObject);\t retract(herObject)\nassert(myObject ) modify(ourObject);\t retract(herObject)");
-        assertEquals("drools.assertObject(myObject) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)\ndrools.assertObject(myObject) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)", result);        
+        result = fixer.fix("assert(myObject ) modify(ourObject);\t retract(herObject)\nassert(myObject) modify(ourObject);\t retract(herObject)");
+        assertEquals("drools.assertObject(myObject ) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)\ndrools.assertObject(myObject) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)", result);        
     }
     
     public void testLeaveLargeAlone() {
@@ -69,6 +69,27 @@ public class KnowledgeHelperFixerTest extends TestCase {
         String original = null;
         String result = fixer.fix(original);
         assertEquals(original, result);
+    }
+    
+    public void testLeaveAlone() {
+        String original = "drools.assertObject(foo)";
+        assertEquals(original, fixer.fix( original ));
+    }
+    
+    public void testWackyAssert() {
+        String raw = "System.out.println($person1.getName() + \" and \" + $person2.getName() +\" are sisters\");\n" +
+            "assert($person1.getName(\"foo\") + \" and \" + $person2.getName() +\" are sisters\"); yeah();";
+        String expected = "System.out.println($person1.getName() + \" and \" + $person2.getName() +\" are sisters\");\n" +
+        "drools.assertObject($person1.getName(\"foo\") + \" and \" + $person2.getName() +\" are sisters\"); yeah();";
+        
+        assertEquals( expected, fixer.fix( raw ) );
+        
+        
+    }
+    
+    public void testMoreAssertCraziness() {
+        String raw = "foobar(); (assert(new String(\"blah\").get()); bangBangYudoHono();)";
+        assertEquals("foobar(); (drools.assertObject(new String(\"blah\").get()); bangBangYudoHono();)", fixer.fix( raw ));
     }
 
 }

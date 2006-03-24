@@ -7,7 +7,7 @@ public class KnowledgeHelperFixer {
 
     static String KNOWLEDGE_HELPER_PFX = ""; //could also be: "drools\\." for "classic" mode.
     static Pattern MODIFY = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "modify\\s*\\(([^)]+)\\)(.*)", Pattern.DOTALL);
-    static Pattern ASSERT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "assert\\s*\\(([^)]+)\\)(.*)", Pattern.DOTALL);
+    static Pattern ASSERT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "assert\\s*\\((.*)\\)(.*)", Pattern.DOTALL);
     static Pattern RETRACT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "retract\\s*\\(([^)]+)\\)(.*)", Pattern.DOTALL);   
     
     /**
@@ -47,9 +47,22 @@ public class KnowledgeHelperFixer {
                 post = fix(post, replacer);
             }
             
-            return pre + matcher.replaceAll(replacer.getReplacement( obj )) + post;
+            String replacement = escapeDollarSigns( replacer, obj );
+            return pre + matcher.replaceAll(replacement) + post;
+            
+        } else {
+            return raw;
         }
-        return raw;
+    }
+
+
+    /** 
+     * This is needed to escape "$" so that matches doesn't try and pull out groups that don't exist.
+     * "$" may just be used in variable name etc... 
+     */
+    private String escapeDollarSigns(Replacer replacer,
+                                 String obj) {
+        return this.replace( replacer.getReplacement( obj ), "$", "\\$", 256 );
     }
 
     static interface Replacer {
@@ -97,6 +110,41 @@ public class KnowledgeHelperFixer {
             return "drools.retractObject(" + guts.trim() + "__Handle__)";
         }
         
-    }        
+    }      
+    
+    
+    /**
+     * Simple replacer. 
+     * jakarta commons provided the inspiration for this.
+     */
+    private String replace(String text,
+                                  String repl,
+                                  String with,
+                                  int max)
+    {
+        if ( text == null || repl == null || repl.equals( "" ) || with == null || max == 0 )
+        {
+            return text;
+        }
+
+        StringBuffer buf = new StringBuffer( text.length( ) );
+        int start = 0, end = 0;
+        while ( (end = text.indexOf( repl,
+                                     start )) != -1 )
+        {
+            buf.append( text.substring( start,
+                                        end ) ).append( with );
+            start = end + repl.length( );
+
+            if ( --max == 0 )
+            {
+                break;
+            }
+        }
+        buf.append( text.substring( start ) );
+        return buf.toString( );
+    }    
+    
+  
     
 }
