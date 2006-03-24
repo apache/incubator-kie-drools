@@ -30,43 +30,43 @@
     <chapter>
       <title>The Rule Engine</title>
 
-      <xi:include href="Chapter%20-%20Rule%20Engine/Section%20-%20What%20is%20a%20Rule%20Engine.xml" />
+      <xi:include href="Chapter-Rule_Engine/Section-What_is_a_Rule_Engine.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Engine/Section%20-%20Why%20use%20a%20Rule%20Engine.xml" />
+      <xi:include href="Chapter-Rule_Engine/Section-Why_use_a_Rule_Engine.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Engine/Section%20-%20Rete%20Algorithm.xml" />
+      <xi:include href="Chapter-Rule_Engine/Section-Rete_Algorithm.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Engine/Section%20-%20Rule%20Base.xml" />
+      <xi:include href="Chapter-Rule_Engine/Section-Rule_Base.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Engine/Section%20-%20Working%20Memory.xml" />
+      <xi:include href="Chapter-Rule_Engine/Section-Working_Memory.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Engine/Section%20-%20Agenda.xml" />
+      <xi:include href="Chapter-Rule_Engine/Section-Agenda.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Engine/Section%20-%20Event%20Model.xml" />
+      <xi:include href="Chapter-Rule_Engine/Section-Event_Model.xml" />
     </chapter>
 
     <chapter>
       <title>The Rule Language</title>
 
-			<xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Comments.xml" />
+			<xi:include href="Chapter-Rule_Language/Section-Comments.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Package.xml" />
+      <xi:include href="Chapter-Rule_Language/Section-Package.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Function.xml" />
+      <xi:include href="Chapter-Rule_Language/Section-Function.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Rule.xml" />
+      <xi:include href="Chapter-Rule_Language/Section-Rule.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Query.xml" />
+      <xi:include href="Chapter-Rule_Language/Section-Query.xml" />
 
-			<xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Column.xml" />
+			<xi:include href="Chapter-Rule_Language/Section-Column.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Field%20Constraints.xml" />
+      <xi:include href="Chapter-Rule_Language/Section-Field_Constraints.xml" />
 
-      <xi:include href="Chapter%20-%20Rule%20Language/Section%20-%20Conditional%20Elements.xml" />
+      <xi:include href="Chapter-Rule_Language/Section-Conditional_Elements.xml" />
     </chapter>
     <chapter>
 	      <title>The Rule Workbench (IDE)</title>
-	      <xi:include href="Chapter%20-%20IDE/Section%20-%20QuickStart.xml" />
+	      <xi:include href="Chapter-IDE/Section-QuickStart.xml" />
     </chapter>
 
   </part>

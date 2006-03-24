@@ -15,6 +15,11 @@
     <xsl:param name="img.src.path">../shared/images/</xsl:param>
     <xsl:param name="keep.relative.image.uris">0</xsl:param>
     <xsl:param name="use.svg">0</xsl:param> 
+    <xsl:param name="target.window" select="'body'"/>
+    
+    <xsl:template name="user.head.content">
+         <base  target="{$target.window}"/>
+    </xsl:template>    
     
     
 <!--###################################################
