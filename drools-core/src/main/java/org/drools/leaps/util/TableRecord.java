@@ -1,5 +1,7 @@
 package org.drools.leaps.util;
 
+import java.io.Serializable;
+
 /*
  * Copyright 2006 Alexander Bagerman
  * 
@@ -21,7 +23,7 @@ package org.drools.leaps.util;
  * @author Alexander Bagerman
  * 
  */
-public class TableRecord {
+public class TableRecord  implements Serializable{
 	// left neigbor
 	TableRecord left;
 

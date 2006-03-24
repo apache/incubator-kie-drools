@@ -77,7 +77,7 @@ public class ColumnConstraintsTest extends DroolsTestCase {
 
 		columnConstraints = new ColumnConstraints(testColumn, alphas, null);
 
-		LeapsTuple tuple = new LeapsTuple(new FactHandleImpl[0], null, null, null);
+		LeapsTuple tuple = new LeapsTuple(new FactHandleImpl[0], null, null);
 		assertTrue(columnConstraints.isAllowed(new FactHandleImpl(23,
 				new Context(Context.START_UP)), tuple, base
 				.newWorkingMemory()));

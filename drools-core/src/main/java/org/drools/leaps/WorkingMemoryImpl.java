@@ -20,19 +20,16 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassObjectType;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.ActivationQueue;
 import org.drools.common.Agenda;
@@ -268,6 +265,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 
 		// determine what classes it belongs to put it into the "table" on
 		// class name key
+		LeapsTuple tuple;
+		LeapsRule leapsRule;
 		Class objectClass = object.getClass();
 		for (Iterator tables = this.getFactTablesList(objectClass).iterator(); tables
 				.hasNext();) {
@@ -276,34 +275,27 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 			factTable.add(handle);
 			// inspect all tuples for exists and not conditions and activate / deactivate
 			// agenda items
-			LeapsTuple tuple;
 			ColumnConstraints constraint;
 			ColumnConstraints[] constraints;
-			Set assertedTuples = null;
 			for (Iterator tuples = factTable.getTuplesIterator(); tuples
 					.hasNext();) {
 				tuple = (LeapsTuple) tuples.next();
+				leapsRule = tuple.getLeapsRule();
 				// check not constraints
-				constraints = tuple.getNotConstraints();
+				constraints = leapsRule.getNotColumnConstraints();
 				for (int i = 0, length = constraints.length; i < length; i++) {
 					constraint = constraints[i];
-					if (objectClass
-							.isAssignableFrom(((ClassObjectType) constraint
-									.getColumn().getObjectType())
-									.getClassType())
+					if (objectClass.isAssignableFrom(constraint.getClassType())
 							&& constraint.isAllowed(handle, tuple, this)) {
 						tuple.addNotFactHandle(handle, i);
 						handle.addNotTuple(tuple, i);
 					}
 				}
 				// check exists constraints
-				constraints = tuple.getExistsConstraints();
+				constraints = leapsRule.getExistsColumnConstraints();
 				for (int i = 0, length = constraints.length; i < length; i++) {
 					constraint = constraints[i];
-					if (objectClass
-							.isAssignableFrom(((ClassObjectType) constraint
-									.getColumn().getObjectType())
-									.getClassType())
+					if (objectClass.isAssignableFrom(constraint.getClassType())
 							&& constraint.isAllowed(handle, tuple, this)) {
 						tuple.addExistsFactHandle(handle, i);
 						handle.addExistsTuple(tuple, i);
@@ -313,22 +305,11 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 				if (tuple.isReadyForActivation() && tuple.isActivationNull()) {
 					// ready to activate
 					this.assertTuple(tuple);
-					// and need to remove tuple from fact table but iterator fail fast
-					if (assertedTuples == null) {
-						assertedTuples = new HashSet();
-					}
-					assertedTuples.add(tuple);
-				} else if (!tuple.isReadyForActivation()
-						&& !tuple.isActivationNull()) {
+					// remove tuple from fact table
+					tuples.remove();
+				} else if (!tuple.isReadyForActivation() && !tuple.isActivationNull()) {
 					// time to pull from agenda
 					this.invalidateActivation(tuple);
-				}
-			}
-			// remove activated tuples for the fact table staging area
-			if (assertedTuples != null) {
-				for (Iterator tuples = assertedTuples.iterator(); tuples
-						.hasNext();) {
-					factTable.removeTuple((LeapsTuple) tuples.next());
 				}
 			}
 		}
@@ -593,11 +574,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 										.getNextId(), rule, i);
 						// 
 						this.getFactTable(
-								((ClassObjectType) (rule
-										.getColumnConstraintsAtPosition(i))
-										.getColumn().getObjectType())
-										.getClassType()).addRule(this,
-								ruleHandle);
+								rule.getColumnClassObjectTypeAtPosition(i))
+								.addRule(this, ruleHandle);
 						//
 						ruleHandlesList.add(ruleHandle);
 					}
@@ -628,11 +606,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 				for (int i = 0; i < ruleHandlesList.size();i++) {
 					ruleHandle = (RuleHandle)ruleHandlesList.get(i);
 					// 
-					this.getFactTable(
-							((ClassObjectType) (rule
-										.getColumnConstraintsAtPosition(i))
-										.getColumn().getObjectType())
-										.getClassType()).removeRule(ruleHandle);
+					this.getFactTable(rule.getColumnClassObjectTypeAtPosition(i)).removeRule(ruleHandle);
 				}
 			} else {
 				ruleHandle = (RuleHandle) this.leapsRulesToHandlesMap

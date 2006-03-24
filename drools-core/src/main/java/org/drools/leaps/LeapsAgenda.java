@@ -17,7 +17,6 @@ package org.drools.leaps;
  */
 
 
-import org.drools.base.ClassObjectType;
 import org.drools.common.Agenda;
 import org.drools.rule.Query;
 import org.drools.spi.Activation;
@@ -51,33 +50,9 @@ public class LeapsAgenda extends Agenda {
 			super.fireActivation(activation);
 			// and remove tuple from
 			LeapsTuple tuple = (LeapsTuple) activation.getTuple();
-			// fact handles
-			ColumnConstraints[] constraints;
-
-			if (tuple.isNotConstraintsPresent()) {
-				constraints = tuple.getNotConstraints();
-				// remove from not related fact tables
-				for (int i = 0, length = constraints.length; i < length; i++) {
-					FactTable factTable = this.workingMemory
-							.getFactTable(((ClassObjectType) constraints[i]
-									.getColumn().getObjectType())
-									.getClassType());
-					// remove tuple from container
-					factTable.removeTuple(tuple);
-				}
-			}
-
-			if (tuple.isExistsConstraintsPresent()) {
-				constraints = tuple.getExistsConstraints();
-				// remove from not related fact tables
-				for (int i = 0, length = constraints.length; i < length; i++) {
-					FactTable factTable = this.workingMemory
-							.getFactTable(((ClassObjectType) constraints[i]
-									.getColumn().getObjectType())
-									.getClassType());
-					// remove tuple from container
-					factTable.removeTuple(tuple);
-				}
+			Class[] classes = tuple.getLeapsRule().getExistsNotColumnsClasses();
+			for (int i = 0, length = classes.length; i < length; i++) {
+				workingMemory.getFactTable(classes[i]).removeTuple(tuple);
 			}
 		}
 	}

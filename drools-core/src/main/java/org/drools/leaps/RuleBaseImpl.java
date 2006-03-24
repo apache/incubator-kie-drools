@@ -50,7 +50,7 @@ public class RuleBaseImpl implements RuleBase {
 	 */
 	private final HandleFactory factHandleFactory;
 
-	private Set pkgs;
+	private Set rulesPackages;
 
 	private Map applicationData;
 
@@ -94,11 +94,11 @@ public class RuleBaseImpl implements RuleBase {
 			Map applicationData) throws PackageIntegrationException {
 		// because we can deal only with leaps fact handle factory
 		this.factHandleFactory = (HandleFactory) factHandleFactory;
-		this.pkgs = pkgs;
+		this.rulesPackages = pkgs;
 		this.applicationData = applicationData;
 		this.workingMemories = new WeakHashMap();
 
-		this.pkgs = new HashSet();
+		this.rulesPackages = new HashSet();
 		for (Iterator it = pkgs.iterator(); it.hasNext();) {
 			this.addPackage((Package) it.next());
 		}
@@ -152,7 +152,7 @@ public class RuleBaseImpl implements RuleBase {
 	 * @see RuleBase
 	 */
 	public Package[] getPackages() {
-		return (Package[]) this.pkgs.toArray(new Package[this.pkgs
+		return (Package[]) this.rulesPackages.toArray(new Package[this.rulesPackages
 				.size()]);
 	}
 
@@ -165,16 +165,16 @@ public class RuleBaseImpl implements RuleBase {
 	 * <code>Package</code> adding Each individual <code>Rule</code> to the
 	 * network.
 	 * 
-	 * @param pkg
+	 * @param rulesPackage
 	 *            The rule-set to add.
 	 * @throws PackageIntegrationException 
 	 * 
 	 * @throws FactException
 	 * @throws InvalidPatternException
 	 */
-	public void addPackage(Package pkg) throws PackageIntegrationException  {
-        pkg.checkValidity();
-		Map newApplicationData = pkg.getGlobals();
+	public void addPackage(Package rulesPackage) throws PackageIntegrationException  {
+        rulesPackage.checkValidity();
+		Map newApplicationData = rulesPackage.getGlobals();
 
 		// Check that the application data is valid, we cannot change the type
 		// of an already declared application data variable
@@ -183,14 +183,14 @@ public class RuleBaseImpl implements RuleBase {
 			Class type = (Class) newApplicationData.get(identifier);
 			if (this.applicationData.containsKey(identifier)
 					&& !this.applicationData.get(identifier).equals(type)) {
-				throw new PackageIntegrationException(pkg);
+				throw new PackageIntegrationException(rulesPackage);
 			}
 		}
 		this.applicationData.putAll(newApplicationData);
 
-		this.pkgs.add(pkg);
+		this.rulesPackages.add(rulesPackage);
 
-		Rule[] rules = pkg.getRules();
+		Rule[] rules = rulesPackage.getRules();
 
 		for (int i = 0, length = rules.length; i < length; ++i) {
 			addRule(rules[i]);
@@ -206,8 +206,11 @@ public class RuleBaseImpl implements RuleBase {
 	 */
 	public void addRule(Rule rule) throws FactException,
 			InvalidPatternException {
-        if (!rule.isValid())
-            throw new IllegalArgumentException("The rule called " + rule.getName() + " is not valid. Check for compile errors reported.");
+		if (!rule.isValid()) {
+			throw new IllegalArgumentException("The rule called "
+					+ rule.getName()
+					+ " is not valid. Check for compile errors reported.");
+		}
 		List rules = Builder.processRule(rule);
 
 		this.leapsRules.put(rule, rules);
@@ -217,15 +220,16 @@ public class RuleBaseImpl implements RuleBase {
 			((WorkingMemoryImpl) it.next()).addLeapsRules(rules);
 		}
 	}
-	   
-    public void removeRule(Rule rule) {
+
+	public void removeRule(Rule rule) {
 		for (Iterator it = this.workingMemories.keySet().iterator(); it
 				.hasNext();) {
-			((WorkingMemoryImpl) it.next()).removeRule((List)this.leapsRules.remove(rule));
+			((WorkingMemoryImpl) it.next()).removeRule((List) this.leapsRules
+					.remove(rule));
 		}
 	}
 
-    public Set getWorkingMemories() {
+	public Set getWorkingMemories() {
         return this.workingMemories.keySet();
     }
 }

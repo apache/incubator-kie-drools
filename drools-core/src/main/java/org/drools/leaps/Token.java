@@ -186,41 +186,6 @@ class Token implements Tuple, Serializable {
 	}
 
 	/**
-	 * Retrieve the <code>FactHandle</code> for a given object.
-	 * 
-	 * <p>
-	 * Within a consequence of a rule, if the desire is to retract or modify a
-	 * root fact this method provides a way to retrieve the
-	 * <code>FactHandle</code>. Facts that are <b>not </b> root fact objects
-	 * have no handle.
-	 * </p>
-	 * 
-	 * @param object
-	 *            The object.
-	 * 
-	 * @return The fact-handle or <code>null</code> if the supplied object is
-	 *         not a root fact object.
-	 */
-	public FactHandle getFactHandleForObject(Object object) {
-		if (this.currentFactHandles != null) {
-			for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
-				if (this.currentFactHandles[i].getObject() == object) {
-					return this.currentFactHandles[i];
-				}
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * @see org.drools.spi.Tuple
-	 */
-	public FactHandle getFactHandleForDeclaration(Declaration declaration) {
-		return this.currentFactHandles[declaration.getColumn()];
-	}
-
-	/**
 	 * @see org.drools.spi.Tuple
 	 */
 	public FactHandle[] getFactHandles() {
@@ -235,44 +200,6 @@ class Token implements Tuple, Serializable {
 	 */
 	public WorkingMemory getWorkingMemory() {
 		return this.workingMemory;
-	}
-
-	/**
-	 * does not matter at all for leaps.
-	 * 
-	 * @see org.drools.spi.Tuple
-	 */
-	public long getMostRecentFactTimeStamp() {
-		long recency = -1L;
-		if (this.currentFactHandles != null) {
-			for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
-				if (i == 0) {
-					recency = this.currentFactHandles[0].getRecency();
-				} else if (this.currentFactHandles[i].getRecency() > recency) {
-					recency = this.currentFactHandles[i].getRecency();
-				}
-			}
-		}
-		return recency;
-	}
-
-	/**
-	 * does not matter at all for leaps.
-	 * 
-	 * @see org.drools.spi.Tuple
-	 */
-	public long getLeastRecentFactTimeStamp() {
-		long recency = -1L;
-		if (this.currentFactHandles != null) {
-			for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
-				if (i == 0) {
-					recency = this.currentFactHandles[0].getRecency();
-				} else if (this.currentFactHandles[i].getRecency() < recency) {
-					recency = this.currentFactHandles[i].getRecency();
-				}
-			}
-		}
-		return recency;
 	}
 
 	/**
@@ -299,9 +226,7 @@ class Token implements Tuple, Serializable {
 	 */
 	LeapsTuple getTuple(PropagationContextImpl context) {
 		return new LeapsTuple(this.currentFactHandles, this.currentRuleHandle
-				.getLeapsRule().getNotColumnConstraints(),
-				this.currentRuleHandle.getLeapsRule()
-						.getExistsColumnConstraints(), context);
+				.getLeapsRule(), context);
 	}
 
 	/**

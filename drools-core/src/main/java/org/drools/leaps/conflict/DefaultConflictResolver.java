@@ -42,8 +42,7 @@ public class DefaultConflictResolver extends CompositeConflictResolver {
 
 	private static final Comparator[] RULE_CONFLICT_RESOLVERS = new Comparator[] {
 			RuleSalienceConflictResolver.getInstance(),
-			RuleComplexityConflictResolver.getInstance(),
-			RuleLoadOrderConflictResolver.getInstance() };
+			RuleComplexityConflictResolver.getInstance() };
 
 	/** Singleton instance. */
 	private static final DefaultConflictResolver INSTANCE = new DefaultConflictResolver();

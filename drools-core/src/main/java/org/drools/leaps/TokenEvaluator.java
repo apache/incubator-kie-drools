@@ -16,7 +16,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import org.drools.base.ClassObjectType;
 import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.Table;
 import org.drools.leaps.util.TableIterator;
@@ -48,13 +47,13 @@ final class TokenEvaluator {
 				.getWorkingMemory();
 		LeapsRule leapsRule = token.getCurrentRuleHandle().getLeapsRule();
 		// sometimes there is no normal conditions, only not and exists
-		if (leapsRule.getNumberOfColumns() > 0) {
+		int numberOfColumns = leapsRule.getNumberOfColumns();
+		if (numberOfColumns > 0) {
 			int dominantFactPosition = token.getCurrentRuleHandle()
 					.getDominantPosition();
 			if (leapsRule.getColumnConstraintsAtPosition(dominantFactPosition)
 					.isAllowedAlpha(token.getDominantFactHandle(), token,
 							workingMemory)) {
-				int numberOfColumns = leapsRule.getNumberOfColumns();
 				TableIterator[] iterators = new TableIterator[numberOfColumns];
 				// getting iterators first
 				for (int i = 0; i < numberOfColumns; i++) {
@@ -68,8 +67,7 @@ final class TokenEvaluator {
 							iterators[i] = workingMemory
 									.getFactTable(
 											leapsRule
-													.getColumnClassObjectTypeAtPosition(
-															i).getClassType())
+													.getColumnClassObjectTypeAtPosition(i))
 									.tailConstrainedIterator(
 											workingMemory,
 											leapsRule
@@ -82,8 +80,7 @@ final class TokenEvaluator {
 							iterators[i] = workingMemory
 									.getFactTable(
 											leapsRule
-													.getColumnClassObjectTypeAtPosition(
-															i).getClassType())
+													.getColumnClassObjectTypeAtPosition(i))
 									.tailIterator(
 											token.getDominantFactHandle(),
 											(token.isResume() ? token.get(i)
@@ -219,13 +216,19 @@ final class TokenEvaluator {
 				return false;
 			}
 		}
-		if (tuple.isExistsConstraintsPresent()) {
-			TokenEvaluator.evaluateExistsConditions(tuple, workingMemory);
+		if (leapsRule.containsExistsColumns()) {
+			TokenEvaluator.evaluateExistsConditions(tuple, leapsRule, workingMemory);
 		}
-		if (tuple.isNotConstraintsPresent()) {
-			TokenEvaluator.evaluateNotConditions(tuple, workingMemory);
+		if (leapsRule.containsNotColumns()) {
+			TokenEvaluator.evaluateNotConditions(tuple, leapsRule, workingMemory);
 		}
-		// check for negative conditions
+		//
+		Class[] classes = leapsRule.getExistsNotColumnsClasses();
+		for (int i = 0, length = classes.length; i < length; i++) {
+			workingMemory.getFactTable(classes[i]).addTuple(tuple);
+		}
+
+		// 
 		if (tuple.isReadyForActivation()) {
 			// let agenda to do its work
 			workingMemory.assertTuple(tuple);
@@ -233,7 +236,6 @@ final class TokenEvaluator {
 		} else {
 			return false;
 		}
-
 	}
 
 	/**
@@ -245,15 +247,17 @@ final class TokenEvaluator {
 	 * @return
 	 * @throws Exception
 	 */
-	final static boolean evaluateEvalConditions(LeapsRule leapsRule, LeapsTuple tuple, WorkingMemoryImpl workingMemory) throws Exception {
-		EvalCondition [] evals = leapsRule.getEvalConditions();
-		for(int i = 0; i < evals.length; i++) {
-			if(!evals[i].isAllowed(tuple, workingMemory)){
+	final static boolean evaluateEvalConditions(LeapsRule leapsRule,
+			LeapsTuple tuple, WorkingMemoryImpl workingMemory) throws Exception {
+		EvalCondition[] evals = leapsRule.getEvalConditions();
+		for (int i = 0; i < evals.length; i++) {
+			if (!evals[i].isAllowed(tuple, workingMemory)) {
 				return false;
 			}
 		}
 		return true;
 	}
+
 	/**
 	 * Check if any of the negative conditions are satisfied success when none
 	 * found
@@ -263,20 +267,17 @@ final class TokenEvaluator {
 	 * @return success
 	 * @throws Exception
 	 */
-	final static void evaluateNotConditions(LeapsTuple tuple,
+	final static void evaluateNotConditions(LeapsTuple tuple, LeapsRule rule,
 			WorkingMemoryImpl workingMemory) throws Exception {
 		FactHandleImpl factHandle;
-		FactTable factTable;
 		TableIterator tableIterator;
 		ColumnConstraints constraint;
-		ColumnConstraints[] not = tuple.getNotConstraints();
+		ColumnConstraints[] not = rule.getNotColumnConstraints();
 		for (int i = 0, length = not.length; i < length; i++) {
 			constraint = not[i];
 			// scan the whole table
-			factTable = workingMemory
-					.getFactTable(((ClassObjectType) constraint.getColumn()
-							.getObjectType()).getClassType());
-			tableIterator = factTable.iterator();
+			tableIterator = workingMemory.getFactTable(
+					constraint.getClassType()).iterator();
 			// fails if exists
 			while (tableIterator.hasNext()) {
 				factHandle = (FactHandleImpl) tableIterator.next();
@@ -285,7 +286,6 @@ final class TokenEvaluator {
 					tuple.addNotFactHandle(factHandle, i);
 					factHandle.addNotTuple(tuple, i);
 				}
-				factTable.addTuple(tuple);
 			}
 		}
 	}
@@ -297,20 +297,17 @@ final class TokenEvaluator {
 	 * @param memory
 	 * @throws Exception
 	 */
-	final static void evaluateExistsConditions(LeapsTuple tuple,
+	final static void evaluateExistsConditions(LeapsTuple tuple,LeapsRule rule,
 			WorkingMemoryImpl workingMemory) throws Exception {
 		FactHandleImpl factHandle;
-		FactTable factTable;
 		TableIterator tableIterator;
 		ColumnConstraints constraint;
-		ColumnConstraints[] exists = tuple.getExistsConstraints();
+		ColumnConstraints[] exists = rule.getExistsColumnConstraints();
 		for (int i = 0, length = exists.length; i < length; i++) {
 			constraint = exists[i];
 			// scan the whole table
-			factTable = workingMemory
-					.getFactTable(((ClassObjectType) constraint.getColumn()
-							.getObjectType()).getClassType());
-			tableIterator = factTable.iterator();
+			tableIterator = workingMemory
+					.getFactTable(constraint.getClassType()).iterator();
 			// fails if exists
 			while (tableIterator.hasNext()) {
 				factHandle = (FactHandleImpl) tableIterator.next();
@@ -319,7 +316,6 @@ final class TokenEvaluator {
 					tuple.addExistsFactHandle(factHandle, i);
 					factHandle.addExistsTuple(tuple, i);
 				}
-				factTable.addTuple(tuple);
 			}
 		}
 	}

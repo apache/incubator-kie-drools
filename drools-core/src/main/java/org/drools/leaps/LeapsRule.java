@@ -18,7 +18,6 @@ package org.drools.leaps;
 
 import java.util.ArrayList;
 
-import org.drools.base.ClassObjectType;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Rule;
 
@@ -32,11 +31,11 @@ import org.drools.rule.Rule;
 class LeapsRule {
 	Rule rule;
 
-	final ColumnConstraints[] columns;
+	final ColumnConstraints[] columnConstraints;
 
-	final ColumnConstraints[] notColumns;
+	final ColumnConstraints[] notColumnConstraints;
 
-	final ColumnConstraints[] existsColumns;
+	final ColumnConstraints[] existsColumnConstraints;
 
 	final EvalCondition[] evalConditions;
 	
@@ -46,16 +45,32 @@ class LeapsRule {
 	
 	boolean evalCoditionsPresent;
 
+	final Class[] existsNotsClasses;
+
 	public LeapsRule(Rule rule, ArrayList columns, ArrayList notColumns,
 			ArrayList existsColumns, ArrayList evalConditions) {
 		this.rule = rule;
-		this.columns = (ColumnConstraints[]) columns.toArray(new ColumnConstraints[0]);
-		this.notColumns = (ColumnConstraints[]) notColumns.toArray(new ColumnConstraints[0]);
-		this.existsColumns = (ColumnConstraints[]) existsColumns.toArray(new ColumnConstraints[0]);
+		this.columnConstraints = (ColumnConstraints[]) columns.toArray(new ColumnConstraints[0]);
+		this.notColumnConstraints = (ColumnConstraints[]) notColumns.toArray(new ColumnConstraints[0]);
+		this.existsColumnConstraints = (ColumnConstraints[]) existsColumns.toArray(new ColumnConstraints[0]);
 		this.evalConditions = (EvalCondition[]) evalConditions.toArray(new EvalCondition[0]);
-		this.notColumnsPresent = (this.notColumns.length != 0);
-		this.existsColumnsPresent = (this.existsColumns.length != 0);
+		this.notColumnsPresent = (this.notColumnConstraints.length != 0);
+		this.existsColumnsPresent = (this.existsColumnConstraints.length != 0);
 		this.evalCoditionsPresent = (this.evalConditions.length != 0);
+
+		ArrayList classes = new ArrayList();
+		for (int i = 0; i < this.notColumnConstraints.length; i++) {
+			if (classes.contains(this.notColumnConstraints[i].getClassType())) {
+				classes.add(this.notColumnConstraints[i].getClassType());
+			}
+		}
+		for (int i = 0; i < this.existsColumnConstraints.length; i++) {
+			if (!classes.contains(this.existsColumnConstraints[i].getClassType())) {
+				classes.add(this.existsColumnConstraints[i].getClassType());
+			}
+		}
+
+		this.existsNotsClasses = (Class[]) classes.toArray(new Class[0]);
 	}
 
 	Rule getRule() {
@@ -63,35 +78,35 @@ class LeapsRule {
 	}
 
 	int getNumberOfColumns() {
-		return this.columns.length;
+		return this.columnConstraints.length;
 	}
 
 	int getNumberOfNotColumns() {
-		return this.notColumns.length;
+		return this.notColumnConstraints.length;
 	}
 
 	int getNumberOfExistsColumns() {
-		return this.existsColumns.length;
+		return this.existsColumnConstraints.length;
 	}
 
 	int getNumberOfEvalConditions() {
 		return this.evalConditions.length;
 	}
 	
-	ClassObjectType getColumnClassObjectTypeAtPosition(int idx) {
-		return (ClassObjectType) this.columns[idx].getColumn().getObjectType();
+	Class getColumnClassObjectTypeAtPosition(int idx) {
+		return this.columnConstraints[idx].getClassType();
 	}
 
 	ColumnConstraints getColumnConstraintsAtPosition(int idx) {
-		return this.columns[idx];
+		return this.columnConstraints[idx];
 	}
 
 	ColumnConstraints[] getNotColumnConstraints() {
-		return this.notColumns;
+		return this.notColumnConstraints;
 	}
 
 	ColumnConstraints[] getExistsColumnConstraints() {
-		return this.existsColumns;
+		return this.existsColumnConstraints;
 	}
 
 	EvalCondition[] getEvalConditions() {
@@ -113,8 +128,12 @@ class LeapsRule {
 	public int hashCode() {
 		return this.rule.hashCode();
 	}
-	
-	public boolean equals (Object that){
+
+	public boolean equals(Object that) {
 		return this == that;
+	}
+
+	Class[] getExistsNotColumnsClasses() {
+		return this.existsNotsClasses;
 	}
 }

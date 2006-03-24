@@ -16,7 +16,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -31,12 +30,7 @@ import org.drools.leaps.util.TableOutOfBoundException;
  * @author Alexander Bagerman
  * 
  */
-class FactTable extends Table implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+class FactTable extends Table {
 	/**
 	 * positive rules are not complete rules but rather its conditions that
 	 * relates by type

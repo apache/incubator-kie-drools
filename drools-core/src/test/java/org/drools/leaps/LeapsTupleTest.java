@@ -45,7 +45,7 @@ public class LeapsTupleTest extends TestCase {
 		this.h3 = new FactHandleImpl(3, "three");
 		this.h4 = new FactHandleImpl(4, "four");
 		FactHandleImpl arr[] = { this.h1, this.h2, this.h3, this.h4 };
-		this.tuple = new LeapsTuple(arr, null, null, null);
+		this.tuple = new LeapsTuple(arr, null, null);
 
 		this.hOutsider = new FactHandleImpl(9876, "outsider");
 	}
@@ -102,7 +102,7 @@ public class LeapsTupleTest extends TestCase {
 	 */
 	public void testEqualsObject() {
 		FactHandleImpl arr[] = { this.h1, this.h2, this.h3, this.h4 };
-		LeapsTuple tupleToCompare = new LeapsTuple(arr, null, null, null);
+		LeapsTuple tupleToCompare = new LeapsTuple(arr, null, null);
 		assertEquals(this.tuple, tupleToCompare);
 
 	}

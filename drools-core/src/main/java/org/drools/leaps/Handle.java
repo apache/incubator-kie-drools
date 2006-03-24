@@ -16,15 +16,20 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
+import java.io.Serializable;
+
 import org.drools.FactHandle;
 
 /**
- * Leaps handle for use with facts and rules. Is used extensively by leaps tables.
+ * Leaps handle for use with facts and rules. Is used extensively by leaps
+ * tables.
  * 
  * @author Alexander Bagerman
  * 
  */
-public class Handle {
+public class Handle implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	// object to handle
 	final private Object object;
 
@@ -33,8 +38,10 @@ public class Handle {
 	/**
 	 * creates a handle for object
 	 * 
-	 * @param id that is used to identify the object
-	 * @param object to handle
+	 * @param id
+	 *            that is used to identify the object
+	 * @param object
+	 *            to handle
 	 */
 	public Handle(long id, Object object) {
 		this.id = id;
@@ -49,12 +56,14 @@ public class Handle {
 	}
 
 	/**
-	 * Leaps handles considered equal if ids match and content points to
-	 * the same object.
+	 * Leaps handles considered equal if ids match and content points to the
+	 * same object.
 	 */
-	public boolean equals (Object that) {
-		return this.id == ((Handle)that).id && this.object == ((Handle)that).object;
+	public boolean equals(Object that) {
+		return this.id == ((Handle) that).id
+				&& this.object == ((Handle) that).object;
 	}
+
 	/**
 	 * @return object being handled
 	 */
