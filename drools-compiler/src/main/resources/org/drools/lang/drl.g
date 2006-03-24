@@ -28,7 +28,9 @@ grammar RuleParser;
 	}
 	
 	private PatternDescr runWhenExpander(String text) throws RecognitionException {
+		//System.out.println("EXPANDING: " + text);
 		String expanded = expander.expand( "when", text );
+		//System.out.println("GOT BACK FROM EXPANDER: " + expanded);
 		return reparseLhs( expanded );
 	}
 	
@@ -129,7 +131,7 @@ expander
 	:	'expander' (name=dotted_name)? ';'? opt_eol
 		{
 			if (expanderResolver == null) 
-				throw new IllegalArgumentException("ExpanderResolver was not set. Don't forget to call setExpanderResolver when you are using an expander.");
+				throw new IllegalArgumentException("Unable to use expander. Make sure a expander or dsl config is being passed to the parser. [ExpanderResolver was not set].");
 			expander = expanderResolver.get( name, config );
 		}
 	;
