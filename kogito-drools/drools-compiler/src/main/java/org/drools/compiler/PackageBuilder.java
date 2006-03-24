@@ -217,34 +217,36 @@ public class PackageBuilder {
                                              null,
                                              result.getErrors(),
                                              "Rule Compilation error" ) );
-        }
-
-        for ( Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
-            String className = (String) it.next();
-
-            // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
-            // If so we add it to the PackageCompilationData as it will get wired up on compilation
-            Object invoker = builder.getInvokerLookups().get( className );
-            if ( invoker != null ) {
-                this.pkg.getPackageCompilationData().putInvoker( className,
-                                                                 invoker );
-            }
-            String text = (String) builder.getInvokers().get( className );
-
-            //System.out.println( className + ":\n" + text );
-
-            result = compile( className,
-                              text,
-                              src,
-                              this.packageStoreWrapper );
-
-            if ( result.getErrors().length > 0 ) {
-                PatternDescr descr = (PatternDescr) builder.getDescrLookups().get( className );
-                this.results.add( new RuleError( rule,
-                                                 descr,
-                                                 result.getErrors(),
-                                                 "Rule Compilation error for Invoker" ) );
-            }
+        } else {
+	
+	        for ( Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
+	            String className = (String) it.next();
+	
+	            // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
+	            // If so we add it to the PackageCompilationData as it will get wired up on compilation
+	            Object invoker = builder.getInvokerLookups().get( className );
+	            if ( invoker != null ) {
+	                this.pkg.getPackageCompilationData().putInvoker( className,
+	                                                                 invoker );
+	            }
+	            String text = (String) builder.getInvokers().get( className );
+	
+	            //System.out.println( className + ":\n" + text );
+	
+	            result = compile( className,
+	                              text,
+	                              src,
+	                              this.packageStoreWrapper );
+	
+	            if ( result.getErrors().length > 0 ) {
+	                PatternDescr descr = (PatternDescr) builder.getDescrLookups().get( className );
+	                this.results.add( new RuleError( rule,
+	                                                 descr,
+	                                                 result.getErrors(),
+	                                                 "Rule Compilation error for Invoker" ) );
+	            }
+	        }
+	        
         }
         try {
             this.pkg.addRule( rule );
