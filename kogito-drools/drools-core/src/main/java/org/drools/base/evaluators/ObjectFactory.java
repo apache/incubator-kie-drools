@@ -82,7 +82,7 @@ public class ObjectFactory {
         }
         
         public String toString() {
-            return "Object !=";
+            return "Object contains";
         }        
     }    
 

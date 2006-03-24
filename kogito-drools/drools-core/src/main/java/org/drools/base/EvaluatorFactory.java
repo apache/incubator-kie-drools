@@ -1,5 +1,6 @@
 package org.drools.base;
 
+import org.drools.base.evaluators.ArrayFactory;
 import org.drools.base.evaluators.BooleanFactory;
 import org.drools.base.evaluators.ByteFactory;
 import org.drools.base.evaluators.CharacterFactory;
@@ -86,6 +87,8 @@ public class EvaluatorFactory {
                 return LongFactory.getLongEvaluator( operator );
             case Evaluator.DATE_TYPE :
                 return DateFactory.getDateEvaluator( operator );
+            case Evaluator.ARRAY_TYPE :
+                return ArrayFactory.getArrayEvaluator( operator ); 
             default :
                 throw new RuntimeException( "Type '" + type + "' does not exist for BaseEvaluatorFactory" );
         }
