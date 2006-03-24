@@ -23,6 +23,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.BetaNodeBinder;
 import org.drools.rule.Column;
 import org.drools.rule.LiteralConstraint;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.Tuple;
 
 /**
@@ -34,7 +35,7 @@ import org.drools.spi.Tuple;
 public class ColumnConstraints {
 	private Column column;
 
-	private final LiteralConstraint[] alphaConstraints;
+	private final FieldConstraint[] alphaConstraints;
 
 	private final boolean alphaPresent;
 
@@ -53,8 +54,8 @@ public class ColumnConstraints {
 			this.betaPresent = false;
 		}
 		if (alpha != null && alpha.size() > 0) {
-			this.alphaConstraints = (LiteralConstraint[]) alpha
-					.toArray(new LiteralConstraint[0]);
+			this.alphaConstraints = (FieldConstraint[]) alpha
+					.toArray(new FieldConstraint[0]);
 			this.alphaPresent = true;
 		} else {
 			this.alphaConstraints = null;
