@@ -347,12 +347,15 @@ expander_lhs_block[AndDescr descrs]
 			'>' d=lhs { descrs.addDescr( d ); } 
 			|
 			(	options{greedy=false;} : 
-				text=paren_chunk EOL {text != null}?
+				text=paren_chunk EOL 
 				{
-					d = runWhenExpander( text );
-					descrs.addDescr( d );
-					text = null;
-					d = null;
+					//only expand non null
+					if (text != null) {
+						d = runWhenExpander( text );
+						descrs.addDescr( d );
+						text = null;
+						d = null;
+					}
 				}
 			)
 		)*
