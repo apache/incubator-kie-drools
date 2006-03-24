@@ -16,7 +16,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.drools.leaps.util.Table;
@@ -28,12 +27,7 @@ import org.drools.leaps.util.Table;
  * @author Alexander Bagerman
  * 
  */
-class RuleTable extends Table implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+class RuleTable extends Table {
 	public RuleTable(Comparator ruleConflictResolver) {
 		super(ruleConflictResolver);
 	}

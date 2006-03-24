@@ -81,9 +81,11 @@ public class BaseTableIterator implements TableIterator {
 		return this.nextRecord != null;
 	}
 
-	protected TableRecord nextRecord() {
+	public Object next() {
 		this.currentRecord = this.nextRecord;
 		if (this.currentRecord != null) {
+			// need to check on last record because we iterate of subset of
+			// all data limited by last record
 			if(this.currentRecord == this.lastRecord) {
 				this.nextRecord = null;
 			}
@@ -93,11 +95,7 @@ public class BaseTableIterator implements TableIterator {
 		} else {
 			throw new NoSuchElementException("No more elements to return");
 		}
-		return this.currentRecord;
-	}
-
-	public Object next() {
-		return this.nextRecord().object;
+		return this.currentRecord.object;
 	}
 
 	public Object current() {

@@ -32,11 +32,6 @@ import org.drools.common.InternalFactHandle;
  * 
  */
 public class FactHandleImpl extends Handle implements InternalFactHandle {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	private Set activatedTuples = null;
 
 	private List notTuples = null;

@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.base.ClassObjectType;
 import org.drools.common.BetaNodeBinder;
 import org.drools.rule.Column;
-import org.drools.rule.LiteralConstraint;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.Tuple;
 
@@ -33,7 +33,7 @@ import org.drools.spi.Tuple;
  * 
  */
 public class ColumnConstraints {
-	private Column column;
+	private Class classType;
 
 	private final FieldConstraint[] alphaConstraints;
 
@@ -44,7 +44,7 @@ public class ColumnConstraints {
 	private final boolean betaPresent;
 
 	public ColumnConstraints(Column column, List alpha, BetaNodeBinder beta) {
-		this.column = column;
+		this.classType = ((ClassObjectType) column.getObjectType()).getClassType();
 
 		if (beta != null) {
 			this.beta = beta;
@@ -63,8 +63,8 @@ public class ColumnConstraints {
 		}
 	}
 
-	public Column getColumn() {
-		return this.column;
+	public Class getClassType() {
+		return this.classType;
 	}
 
 	boolean isAllowed(FactHandle factHandle, Tuple tuple,

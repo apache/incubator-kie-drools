@@ -41,51 +41,43 @@ class LeapsTuple implements Tuple, Serializable {
 
 	private final FactHandleImpl[] factHandles;
 
-	private final boolean notConstraintsPresent;
-	
-	private final ColumnConstraints[] notConstraints;
-
 	private Set[] notFactHandles;
-
-	private final boolean existsConstraintsPresent;
-	
-	private final ColumnConstraints[] existsConstraints;
 
 	private Set[] existsFactHandles;
 
 	private Set logicalDependencies;
 	
 	private Activation activation;
+	
+	private final LeapsRule leapsRule;
 
 	/**
 	 * agendaItem parts
 	 */
-	LeapsTuple(FactHandleImpl factHandles[],
-			ColumnConstraints[] notConstraints,
-			ColumnConstraints[] existsConstraints
-			, PropagationContext context) {
+	LeapsTuple(FactHandleImpl factHandles[], LeapsRule leapsRule, PropagationContext context) {
 		this.factHandles = factHandles;
-		this.notConstraints = notConstraints;
-		if (this.notConstraints != null && this.notConstraints.length > 0) {
-			this.notConstraintsPresent = true;
-			this.notFactHandles = new HashSet[this.notConstraints.length];
-		}
-		else {
-			this.notConstraintsPresent = false;
-		}
-		this.existsConstraints = existsConstraints;
-		if (this.existsConstraints != null && this.existsConstraints.length > 0) {
-			this.existsConstraintsPresent = true;
-			this.existsFactHandles = new HashSet[this.existsConstraints.length];
-		}
-		else {
-			this.existsConstraintsPresent = false;
+		this.leapsRule = leapsRule;
+		this.context = context;
+
+		if (this.leapsRule != null && this.leapsRule.containsNotColumns()) {
+			this.notFactHandles = new HashSet[this.leapsRule.getNotColumnConstraints().length];
+		} 
+		if (this.leapsRule != null && this.leapsRule.containsExistsColumns()) {
+			this.existsFactHandles = new HashSet[this.leapsRule.getExistsColumnConstraints().length];
 		}
 		
-		this.context = context;
-		this.readyForActivation = !this.existsConstraintsPresent;
+		this.readyForActivation = (this.leapsRule == null || !this.leapsRule.containsExistsColumns());
 	}
 
+	/**
+	 * get rule that caused this tuple to be generated
+	 * 
+	 * @return rule 
+	 */
+	LeapsRule getLeapsRule() {
+		return this.leapsRule;
+	}
+	
 	/**
 	 * Determine if this tuple depends upon a specified object.
 	 * 
@@ -191,7 +183,7 @@ class LeapsTuple implements Tuple, Serializable {
 				+ this.context.getRuleOrigin().getName() + "] ");
 
 		for (int i = 0, length = this.factHandles.length; i < length; i++) {
-			buffer.append(((i==0)?"":", ") + this.factHandles[i]);
+			buffer.append(((i == 0) ? "" : ", ") + this.factHandles[i]);
 		}
 
 		if(this.existsFactHandles != null) {
@@ -215,14 +207,6 @@ class LeapsTuple implements Tuple, Serializable {
 			}
 		}
 		return buffer.toString();
-	}
-
-	ColumnConstraints[] getNotConstraints() {
-		return this.notConstraints;
-	}
-
-	ColumnConstraints[] getExistsConstraints() {
-		return this.existsConstraints;
 	}
 
 	void addNotFactHandle(FactHandle factHandle, int index) {
@@ -259,20 +243,20 @@ class LeapsTuple implements Tuple, Serializable {
 		this.setReadyForActivation();
 	}
 
-	private void setReadyForActivation(){
+	private void setReadyForActivation() {
 		this.readyForActivation = true;
 
 		if (this.notFactHandles != null) {
-			for (int i = 0, length = this.notFactHandles.length; this.notConstraintsPresent
-					&& i < length && this.readyForActivation; i++) {
+			for (int i = 0, length = this.notFactHandles.length; i < length
+					&& this.readyForActivation; i++) {
 				if (this.notFactHandles[i].size() > 0) {
 					this.readyForActivation = false;
 				}
 			}
 		}
 		if (this.existsFactHandles != null) {
-			for (int i = 0, length = this.existsFactHandles.length; this.existsConstraintsPresent
-					&& i < length && this.readyForActivation; i++) {
+			for (int i = 0, length = this.existsFactHandles.length; i < length
+					&& this.readyForActivation; i++) {
 				if (this.existsFactHandles[i].size() == 0) {
 					this.readyForActivation = false;
 				}
@@ -284,16 +268,8 @@ class LeapsTuple implements Tuple, Serializable {
 		return this.context;
 	}
 
-	boolean isExistsConstraintsPresent() {
-		return this.existsConstraintsPresent;
-	}
-
-	boolean isNotConstraintsPresent() {
-		return this.notConstraintsPresent;
-	}
-
 	void addLogicalDependency(FactHandle handle) {
-		if(this.logicalDependencies == null){
+		if (this.logicalDependencies == null) {
 			this.logicalDependencies = new HashSet();
 		}
 		this.logicalDependencies.add(handle);

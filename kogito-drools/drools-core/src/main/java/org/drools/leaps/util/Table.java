@@ -16,6 +16,7 @@ package org.drools.leaps.util;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.SortedMap;
@@ -29,7 +30,7 @@ import org.drools.leaps.ColumnConstraints;
  * @author Alexander Bagerman
  *
  */
-public class Table {
+public class Table implements Serializable {
 
 	private final TreeMap map;
 
