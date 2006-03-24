@@ -1,0 +1,23 @@
+package test
+
+#must be in the following order.
+import java.lang.Integer
+import java.lang.String
+
+#refer to test_expander.dsl
+expander test_expander.dsl
+
+global java.util.List messages;
+
+
+
+
+rule "my rule"
+	when
+		#both of these should stop it from firing
+		string with eval		
+		>num : Integer() eval(num.equals(new Integer(42)))
+	then
+		>messages.add("fired");
+end
+

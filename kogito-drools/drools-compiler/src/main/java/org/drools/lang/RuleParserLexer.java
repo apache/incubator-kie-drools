@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea8 C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-03-24 16:56:10
+// $ANTLR 3.0ea8 C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-03-24 20:19:59
 
 	package org.drools.lang;
 
@@ -621,10 +621,11 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:29:7: ( '>' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:29:7: '>'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:29:7: ( 'or' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:29:7: 'or'
             {
-            match('>'); 
+            match("or"); 
+
 
             }
 
@@ -644,10 +645,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:30:7: ( 'or' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:30:7: 'or'
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:30:7: ( '==' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:30:7: '=='
             {
-            match("or"); 
+            match("=="); 
 
 
             }
@@ -668,11 +669,10 @@ public class RuleParserLexer extends Lexer {
             int line = getLine();
             int charPosition = getCharPositionInLine();
             int channel = Token.DEFAULT_CHANNEL;
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:31:7: ( '==' )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:31:7: '=='
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:31:7: ( '>' )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:31:7: '>'
             {
-            match("=="); 
-
+            match('>'); 
 
             }
 
@@ -2854,34 +2854,34 @@ public class RuleParserLexer extends Lexer {
 
             }
         };
-        DFA.State s94 = new DFA.State() {{alt=27;}};
-        DFA.State s95 = new DFA.State() {{alt=24;}};
-        DFA.State s22 = new DFA.State() {
+        DFA.State s181 = new DFA.State() {{alt=24;}};
+        DFA.State s94 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA10_22 = input.LA(1);
-                if ( LA10_22=='=' ) {return s94;}
-                return s95;
-
-            }
-        };
-        DFA.State s181 = new DFA.State() {{alt=25;}};
-        DFA.State s96 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA10_96 = input.LA(1);
-                if ( (LA10_96>='0' && LA10_96<='9')||(LA10_96>='A' && LA10_96<='Z')||LA10_96=='_'||(LA10_96>='a' && LA10_96<='z') ) {return s41;}
+                int LA10_94 = input.LA(1);
+                if ( (LA10_94>='0' && LA10_94<='9')||(LA10_94>='A' && LA10_94<='Z')||LA10_94=='_'||(LA10_94>='a' && LA10_94<='z') ) {return s41;}
                 return s181;
 
             }
         };
-        DFA.State s23 = new DFA.State() {
+        DFA.State s22 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA10_23 = input.LA(1);
-                if ( LA10_23=='r' ) {return s96;}
+                int LA10_22 = input.LA(1);
+                if ( LA10_22=='r' ) {return s94;}
                 return s41;
 
             }
         };
-        DFA.State s24 = new DFA.State() {{alt=26;}};
+        DFA.State s23 = new DFA.State() {{alt=25;}};
+        DFA.State s97 = new DFA.State() {{alt=27;}};
+        DFA.State s98 = new DFA.State() {{alt=26;}};
+        DFA.State s24 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA10_24 = input.LA(1);
+                if ( LA10_24=='=' ) {return s97;}
+                return s98;
+
+            }
+        };
         DFA.State s99 = new DFA.State() {{alt=29;}};
         DFA.State s100 = new DFA.State() {{alt=28;}};
         DFA.State s25 = new DFA.State() {
@@ -3194,13 +3194,13 @@ public class RuleParserLexer extends Lexer {
                 case 'd':
                     return s21;
 
-                case '>':
+                case 'o':
                     return s22;
 
-                case 'o':
+                case '=':
                     return s23;
 
-                case '=':
+                case '>':
                     return s24;
 
                 case '<':

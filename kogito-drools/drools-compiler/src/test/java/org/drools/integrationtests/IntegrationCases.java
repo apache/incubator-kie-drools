@@ -417,10 +417,55 @@ public abstract class IntegrationCases extends TestCase {
         wm.setGlobal( "messages", messages );
         wm.fireAllRules();
         
-
+        //should have fired
         assertEquals(1, messages.size());
         
     }
+    
+    public void testWithExpanderMore() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new InputStreamReader(getClass().getResourceAsStream( "rule_with_expander_dsl_more.drl" ));
+        Reader dsl = new InputStreamReader(getClass().getResourceAsStream( "test_expander.dsl" ));
+        builder.addPackageFromDrl( source, dsl );
+        
+        //the compiled package
+        Package pkg = builder.getPackage();
+        assertTrue( pkg.isValid() );
+        assertEquals(null, pkg.getErrorSummary());
+        //Check errors
+        String err = builder.printErrors();
+        assertEquals("", err);
+        assertEquals(0, builder.getErrors().length);
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        
+        WorkingMemory wm = ruleBase.newWorkingMemory();
+        wm.assertObject( "rage" );
+        wm.assertObject( new Integer(66) );
+        
+        
+        List messages = new ArrayList();
+        wm.setGlobal( "messages", messages );
+        wm.fireAllRules();
+        
+        //should have NONE, as both conditions should be false.
+        assertEquals(0, messages.size());
+        
+        wm.assertObject( "fire" );
+        wm.fireAllRules();
+        
+        //still no firings
+        assertEquals(0, messages.size());
+        
+        wm.assertObject( new Integer(42) );
+        
+        wm.fireAllRules();
+        
+        //YOUR FIRED
+        assertEquals(1, messages.size());        
+        
+    }    
     
     public void testPredicateAsFirstColumn() throws Exception {
         PackageBuilder builder = new PackageBuilder();
