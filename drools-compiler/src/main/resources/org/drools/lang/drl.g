@@ -27,11 +27,23 @@ grammar RuleParser;
 		return expanderResolver;
 	}
 	
-	private PatternDescr runWhenExpander(String text) throws RecognitionException {
-		//System.out.println("EXPANDING: " + text);
-		String expanded = expander.expand( "when", text );
-		//System.out.println("GOT BACK FROM EXPANDER: " + expanded);
-		return reparseLhs( expanded );
+	private void runWhenExpander(String text, AndDescr descrs) throws RecognitionException {
+		String expanded = text.trim();
+		if (expanded.startsWith(">")) {
+			expanded = expanded.substring(1);  //escape !!
+		} else {
+			expanded = expander.expand( "when", text );			
+		}
+		reparseLhs( expanded, descrs );
+	}
+
+	private void reparseLhs(String text, AndDescr descrs) throws RecognitionException {
+		CharStream charStream = new ANTLRStringStream( text );
+		RuleParserLexer lexer = new RuleParserLexer( charStream );
+		TokenStream tokenStream = new CommonTokenStream( lexer );
+		RuleParser parser = new RuleParser( tokenStream );
+		
+		parser.normal_lhs_block(descrs);
 	}
 	
 	private String runThenExpander(String text) {
@@ -59,14 +71,7 @@ grammar RuleParser;
 		return expanded.toString();
 	}
 	
-	private PatternDescr reparseLhs(String text) throws RecognitionException {
-		CharStream charStream = new ANTLRStringStream( text );
-		RuleParserLexer lexer = new RuleParserLexer( charStream );
-		TokenStream tokenStream = new CommonTokenStream( lexer );
-		RuleParser parser = new RuleParser( tokenStream );
-		
-		return parser.lhs();
-	}
+
 	
 	private String getString(Token token) {
 		String orig = token.getText();
@@ -345,21 +350,16 @@ normal_lhs_block[AndDescr descrs]
 expander_lhs_block[AndDescr descrs]
 
 	:
-		(	options{greedy=false;} :
-			'>' d=lhs { descrs.addDescr( d ); } 
-			|
-			(	options{greedy=false;} : 
-				text=paren_chunk EOL 
-				{
-					//only expand non null
-					if (text != null) {
-						d = runWhenExpander( text );
-						descrs.addDescr( d );
-						text = null;
-						d = null;
-					}
+		(options{greedy=false;} : 
+			text=paren_chunk EOL 
+			{
+				//only expand non null
+				if (text != null) {
+					runWhenExpander( text, descrs);
+					text = null;
 				}
-			)
+			}
+			
 		)*
 
 	;
