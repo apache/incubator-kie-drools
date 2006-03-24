@@ -105,6 +105,16 @@
 
         <mkdir dir="${build.dir}/${lang}/html/"/>
 
+				<copy file="${basedir}/${lang}/frames_index.html" todir="${build.dir}/${lang}/html/frames_index.html"/>
+
+        <copy todir="${build.dir}/${lang}/shared/images">
+            <fileset dir="${basedir}/${lang}">
+                <include name="**/*.png"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.gif"/>
+            </fileset>
+        </copy>				
+
         <java classname="com.icl.saxon.StyleSheet" fork="true" dir="${build.dir}/${lang}/html">            
             <classpath refid="lib.classpath"/>
 				    <sysproperty key="javax.xml.parsers.DocumentBuilderFactory"
@@ -144,6 +154,7 @@
         <copy todir="${build.dir}/${lang}/shared/images">
             <fileset dir="${basedir}/${lang}">
                 <include name="**/*.png"/>
+                <include name="**/*.jpg"/>
                 <include name="**/*.gif"/>
             </fileset>
         </copy>

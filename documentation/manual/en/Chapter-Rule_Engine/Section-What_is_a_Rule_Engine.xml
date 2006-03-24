@@ -53,12 +53,12 @@ Then
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="A%20Basic%20Rete%20Network.svg" format="SVG"
+        <imagedata fileref="A_Basic_Rete_Network.svg" format="SVG"
                    role="" scalefit="" width="" />
       </imageobject>
 
       <imageobject>
-        <imagedata fileref="A%20Basic%20Rete%20Network.gif" format="GIF"
+        <imagedata fileref="A_Basic_Rete_Network.gif" format="GIF"
                    role="" scalefit="" width="" />
       </imageobject>
     </mediaobject>
