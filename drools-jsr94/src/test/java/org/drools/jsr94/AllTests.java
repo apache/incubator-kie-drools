@@ -75,9 +75,9 @@ public class AllTests
 
         suite.addTestSuite(RuleServiceProviderTestCase.class);
 
-//        suite.addTestSuite(StatefulRuleSessionTestCase.class);
+        suite.addTestSuite(StatefulRuleSessionTestCase.class);
 
-//        suite.addTestSuite(StatelessRuleSessionTestCase.class);
+        suite.addTestSuite(StatelessRuleSessionTestCase.class);
 
 
         suite.addTestSuite(LocalRuleExecutionSetProviderTestCase.class);

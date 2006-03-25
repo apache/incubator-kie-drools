@@ -29,6 +29,7 @@ import javax.rules.StatefulRuleSession;
 import javax.rules.StatelessRuleSession;
 import javax.rules.admin.RuleExecutionSet;
 
+import org.drools.InitialFact;
 import org.drools.WorkingMemory;
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
 import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
@@ -222,8 +223,11 @@ abstract class AbstractRuleSessionImpl implements RuleSession
             for ( Iterator objectIter = objects.iterator( );
                   objectIter.hasNext( ); )
             {
-                if ( objectFilter.filter( objectIter.next( ) ) == null )
+                Object object = objectIter.next( );
+                if ( objectFilter.filter( object ) == null )
                 {
+                    objectIter.remove( );
+                } else if ( object.getClass() == InitialFact.class ) {
                     objectIter.remove( );
                 }
             }
