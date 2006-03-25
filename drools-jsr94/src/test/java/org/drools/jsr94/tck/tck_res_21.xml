@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	/*
+	* J A V A  C O M M U N I T Y  P R O C E S S
+	*
+	* J S R  9 4
+	*
+	* Technology Compatibility Kit
+	*
+	*/
+-->
+<rule-execution-set>
+
+	<name>RuleExecutionSet1</name>
+	<description>
+		Stateless RuleExecutionSet for the TCK for Drools
+	</description>
+
+	<code>
+		package org.drools.test;
+
+		import org.drools.Cheese;
+
+		global java.lang.Integer total;
+
+		rule "like stilton" when Cheese( $type:type == "stilton" ) then
+		System.out.println("I like " + $type + " : " + total); end
+
+	</code>
+</rule-execution-set>

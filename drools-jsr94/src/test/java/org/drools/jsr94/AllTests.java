@@ -22,7 +22,6 @@ package org.drools.jsr94;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.drools.jsr94.benchmark.drools.DroolsBenchmarkTestCase;
 import org.drools.jsr94.rules.MultipleRepositoryTestCase;
 import org.drools.jsr94.rules.RuleRuntimeTestCase;
 import org.drools.jsr94.rules.RuleServiceProviderTestCase;
