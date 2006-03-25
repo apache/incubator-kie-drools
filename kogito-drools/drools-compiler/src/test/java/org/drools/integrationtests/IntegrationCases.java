@@ -487,4 +487,27 @@ public abstract class IntegrationCases extends TestCase {
         Assert.assertEquals( "Rule is incorrectly being fired", 20, provolone.getPrice( ) ); 
     }     
     
+    public void testSalience() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "salience_rule_test.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
+        
+        Person person = new Person("Edson", "cheese");
+        workingMemory.assertObject( person );       
+        
+        workingMemory.fireAllRules();
+        
+        Assert.assertEquals( "Two rules should have been fired", 2, list.size() );
+        Assert.assertEquals( "Rule 3 should have been fired first", "Rule 3", list.get(0) );
+        Assert.assertEquals( "Rule 2 should have been fired second", "Rule 2", list.get(1) );
+        
+    }    
+    
 }
