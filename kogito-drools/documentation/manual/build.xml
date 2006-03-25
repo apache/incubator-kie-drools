@@ -105,7 +105,7 @@
 
         <mkdir dir="${build.dir}/${lang}/html/"/>
 
-				<copy file="${basedir}/${lang}/frames_index.html" todir="${build.dir}/${lang}/html/frames_index.html"/>
+				<copy file="${basedir}/${lang}/index.html" todir="${build.dir}/${lang}/html"/>
 
         <copy todir="${build.dir}/${lang}/shared/images">
             <fileset dir="${basedir}/${lang}">
