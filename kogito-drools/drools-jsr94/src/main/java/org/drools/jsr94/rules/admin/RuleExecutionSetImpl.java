@@ -28,6 +28,7 @@ import org.drools.IntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
+import org.drools.jsr94.rules.Jsr94FactHandleFactory;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
@@ -112,7 +113,7 @@ public class RuleExecutionSetImpl
         this.pkg = pkg;
         this.description = pkg.getName();//..getDocumentation( );
 
-        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl(new Jsr94FactHandleFactory());
         ruleBase.addPackage( pkg );
 
         this.ruleBase = ruleBase;

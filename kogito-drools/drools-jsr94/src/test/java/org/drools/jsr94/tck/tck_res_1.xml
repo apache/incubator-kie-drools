@@ -1,30 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-	/*
-	* J A V A  C O M M U N I T Y  P R O C E S S
-	*
-	* J S R  9 4
-	*
-	* Technology Compatibility Kit
-	*
-	*/
--->
-<rule-execution-set>
+package RuleExecutionSet1;
 
-	<name>RuleExecutionSet1</name>
-	<description>
-		Stateless RuleExecutionSet for the TCK for Drools
-	</description>
+import org.jcp.jsr94.tck.model.Customer;
+import org.jcp.jsr94.tck.model.Invoice;
 
-	<code>
-		package org.drools.test;
-
-		import org.drools.Cheese;
-
-		global java.lang.Integer total;
-
-		rule "like stilton" when Cheese( $type:type == "stilton" ) then
-		System.out.println("I like " + $type + " : " + total); end
-
-	</code>
-</rule-execution-set>
+rule "credit limit greater than invoice"
+    when
+    	$invoice1 : Invoice ( $amount1 : amount )
+    	$customer1 : Customer ( creditLimit > ( new Integer( $amount1.intValue() ) )
+    then
+    	$customer1.setCreditLimit($customer1.getCreditLimit() - $invoice1.getAmount());
+        $invoice1.setStatus("paid");
+        System.out.println("The credit limit of the customer is " + $customer1.getCreditLimit());
+        System.out.println("The status of the invoice is " + $invoice1.getStatus());
+end  
