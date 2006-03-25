@@ -16,6 +16,7 @@ package org.drools.common;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,11 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.spi.Activation;
-import org.drools.spi.ConflictResolver;
 import org.drools.spi.AgendaGroup;
 import org.drools.util.PriorityQueue;
-
-import java.util.Arrays;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -59,7 +57,8 @@ public class AgendaGroupImpl
      */
     public AgendaGroupImpl(String name) {
         this.name = name;
-        this.priorityQueue = new PriorityQueue( );
+        // Reverse order
+        this.priorityQueue = new PriorityQueue( false );
     }
 
     /* (non-Javadoc)
