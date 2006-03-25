@@ -37,7 +37,7 @@ public class ClassFieldInspector {
      */
     public ClassFieldInspector(Class clazz) throws IOException {
         String name = getResourcePath( clazz );
-        InputStream stream = this.getClass().getResourceAsStream(name);
+        InputStream stream = clazz.getResourceAsStream(name);
         ClassReader reader = new ClassReader(stream);
         ClassFieldVisitor visitor = new ClassFieldVisitor(clazz);
         reader.accept(visitor, false);
