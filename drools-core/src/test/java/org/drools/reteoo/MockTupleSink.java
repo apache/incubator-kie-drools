@@ -13,6 +13,7 @@ public class MockTupleSink extends TupleSource
     NodeMemory {
     private List asserted  = new ArrayList();
     private List retracted = new ArrayList();
+    private List modified  = new ArrayList();
 
     public MockTupleSink() {
         super( 0 );
@@ -35,6 +36,12 @@ public class MockTupleSink extends TupleSource
         this.retracted.add( new Object[]{tuple, context, workingMemory} );
 
     }
+    
+    public void modifyTuple(ReteTuple tuple,
+                            PropagationContext context,
+                            WorkingMemoryImpl workingMemory) {
+        this.modified.add( new Object[]{tuple, context, workingMemory} );        
+    }    
 
     public List getAsserted() {
         return this.asserted;
@@ -42,6 +49,10 @@ public class MockTupleSink extends TupleSource
 
     public List getRetracted() {
         return this.retracted;
+    }
+    
+    public List getModified() {
+        return this.modified;
     }
 
     public void ruleAttached() {
@@ -69,13 +80,6 @@ public class MockTupleSink extends TupleSource
                               PropagationContext context) throws FactException {
         // TODO Auto-generated method stub
 
-    }
-
-    public void modifyTuple(ReteTuple tuple,
-                            PropagationContext context,
-                            WorkingMemoryImpl workingMemory) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void remove(BaseNode node,

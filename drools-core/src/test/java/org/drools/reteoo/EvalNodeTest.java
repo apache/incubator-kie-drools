@@ -172,6 +172,110 @@ public class EvalNodeTest extends DroolsTestCase {
                       sink.getAsserted().size() );
 
     }
+    
+    public void testRetractNotAllowed() throws Exception {
+        // Create a test node that always returns false 
+        EvalConditionNode node = new EvalConditionNode( 1,
+                                                        new MockTupleSource( 15 ),
+                                                        new MockEvalCondition( false ) );
+
+        MockTupleSink sink = new MockTupleSink();
+        node.addTupleSink( sink );
+
+        // Create the Tuple
+        FactHandleImpl f0 = new FactHandleImpl( 0 );
+        ReteTuple tuple = new ReteTuple( f0 );
+
+        // Tuple should pass and propagate 
+        node.assertTuple( tuple,
+                          this.context,
+                          this.workingMemory );
+        
+        node.retractTuple( tuple, context, workingMemory );
+
+        // make sure no assertions were propagated
+        assertEquals( 0,
+                      sink.getRetracted().size() );        
+    }
+    
+    public void testRetractAllowed() throws Exception {
+        // Create a test node that always returns false 
+        EvalConditionNode node = new EvalConditionNode( 1,
+                                                        new MockTupleSource( 15 ),
+                                                        new MockEvalCondition( true ) );
+
+        MockTupleSink sink = new MockTupleSink();
+        node.addTupleSink( sink );
+
+        // Create the Tuple
+        FactHandleImpl f0 = new FactHandleImpl( 0 );
+        ReteTuple tuple = new ReteTuple( f0 );
+
+        // Tuple should pass and propagate 
+        node.assertTuple( tuple,
+                          this.context,
+                          this.workingMemory );
+        
+        node.retractTuple( tuple, context, workingMemory );
+
+        // make sure no assertions were propagated
+        assertEquals( 1,
+                      sink.getRetracted().size() );        
+    }    
+    
+    public void testModifyNotAllowed() throws Exception {
+        // Create a test node that always returns false 
+        EvalConditionNode node = new EvalConditionNode( 1,
+                                                        new MockTupleSource( 15 ),
+                                                        new MockEvalCondition( false ) );
+
+        MockTupleSink sink = new MockTupleSink();
+        node.addTupleSink( sink );
+
+        // Create the Tuple
+        FactHandleImpl f0 = new FactHandleImpl( 0 );
+        ReteTuple tuple = new ReteTuple( f0 );
+
+        // Tuple should pass and propagate 
+        node.assertTuple( tuple,
+                          this.context,
+                          this.workingMemory );
+        
+        node.modifyTuple( tuple, context, workingMemory );
+
+        // make sure no assertions were propagated
+        assertEquals( 0,
+                      sink.getRetracted().size() );    
+        assertEquals( 0,
+                      sink.getModified().size() );
+        assertEquals( 0,
+                      sink.getAsserted().size() );        
+    }
+    
+    public void testModifyAllowed() throws Exception {
+        // Create a test node that always returns false 
+        EvalConditionNode node = new EvalConditionNode( 1,
+                                                        new MockTupleSource( 15 ),
+                                                        new MockEvalCondition( true ) );
+
+        MockTupleSink sink = new MockTupleSink();
+        node.addTupleSink( sink );
+
+        // Create the Tuple
+        FactHandleImpl f0 = new FactHandleImpl( 0 );
+        ReteTuple tuple = new ReteTuple( f0 );
+
+        // Tuple should pass and propagate 
+        node.assertTuple( tuple,
+                          this.context,
+                          this.workingMemory );
+        
+        node.modifyTuple( tuple, context, workingMemory );
+
+        // make sure no assertions were propagated
+        assertEquals( 0,
+                      sink.getModified().size() );      
+    }        
 
     //    public void testException() throws FactException {
     //        // Create a eval that will always throw an exception

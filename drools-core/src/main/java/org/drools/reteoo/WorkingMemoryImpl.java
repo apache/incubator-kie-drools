@@ -85,7 +85,7 @@ public class WorkingMemoryImpl
                                                                                                                   8 );
 
     /** Global values which are associated with this memory. */
-    private final Map                       globals                                        = new HashMap();
+    private final Map                       globals                                       = new HashMap();
 
     /** Handle-to-object mapping. */
     private final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
@@ -98,8 +98,8 @@ public class WorkingMemoryImpl
     private final PrimitiveLongMap          justified                                     = new PrimitiveLongMap( 8,
                                                                                                                   32 );
     private final PrimitiveLongStack        factHandlePool                                = new PrimitiveLongStack();
-    
-    private Map                       queryResults                                  = Collections.EMPTY_MAP;
+
+    private Map                             queryResults                                  = Collections.EMPTY_MAP;
 
     private static final String             STATED                                        = "STATED";
 
@@ -334,24 +334,26 @@ public class WorkingMemoryImpl
 
         return matching;
     }
-    
-    public List getQueryResults( String query ) {
+
+    public List getQueryResults(String query) {
         FactHandle handle = assertObject( new DroolsQuery( query ) );
         QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
         List list = null;
-        if ( node != null) {
-            list = (List)this.nodeMemories.remove( node.getId() );        
+        if ( node != null ) {
+            list = (List) this.nodeMemories.remove( node.getId() );
         }
-        retractObject( handle );           
-        return list;       
+        retractObject( handle );
+        return list;
     }
-    
-    void setQueryResults( String query, QueryTerminalNode node) {
+
+    void setQueryResults(String query,
+                         QueryTerminalNode node) {
         if ( this.queryResults == Collections.EMPTY_MAP ) {
             this.queryResults = new HashMap();
         }
-        this.queryResults.put( query, node );
-     }    
+        this.queryResults.put( query,
+                               node );
+    }
 
     /**
      * @see WorkingMemory
@@ -458,7 +460,10 @@ public class WorkingMemoryImpl
                 this.equalsMap.put( object,
                                     handle );
             }
-            addLogicalDependency( handle, activation, activation.getPropagationContext(), rule );
+            addLogicalDependency( handle,
+                                  activation,
+                                  activation.getPropagationContext(),
+                                  rule );
         }
 
         handle.setObject( object );
@@ -592,7 +597,7 @@ public class WorkingMemoryImpl
         if ( removeLogical ) {
             removeLogicalDependencies( handle );
             this.equalsMap.remove( oldObject );
-        }                    
+        }
 
         if ( updateEqualsMap ) {
             this.equalsMap.remove( oldObject );
@@ -751,15 +756,15 @@ public class WorkingMemoryImpl
                                false,
                                true,
                                context.getRuleOrigin(),
-                               context.getActivationOrigin() );                
-            }            
+                               context.getActivationOrigin() );
+            }
         }
     }
 
     public void removeLogicalDependencies(FactHandle handle) throws FactException {
         Set set = (Set) this.justified.remove( ((FactHandleImpl) handle).getId() );
-        if (set != null && !set.isEmpty()) {
-            for( Iterator it = set.iterator(); it.hasNext(); ) {
+        if ( set != null && !set.isEmpty() ) {
+            for ( Iterator it = set.iterator(); it.hasNext(); ) {
                 LogicalDependency node = (LogicalDependency) it.next();
                 node.getJustifier().getLogicalDependencies().remove( node );
             }
@@ -785,7 +790,7 @@ public class WorkingMemoryImpl
     public PrimitiveLongMap getJustified() {
         return this.justified;
     }
-    
+
     public long getNextPropagationIdCounter() {
         return this.propagationIdCounter++;
     }

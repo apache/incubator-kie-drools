@@ -40,6 +40,10 @@ public class FactHandleImpl
     // Constructors
     // ----------------------------------------------------------------------
 
+    protected FactHandleImpl() {
+        
+    }
+    
     protected FactHandleImpl(long id) {
         this.id = id;
         this.recency = id;

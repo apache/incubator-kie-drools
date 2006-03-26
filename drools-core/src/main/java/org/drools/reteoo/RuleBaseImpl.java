@@ -30,6 +30,7 @@ import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
 import org.drools.PackageIntegrationException;
 import org.drools.WorkingMemory;
+import org.drools.common.PropagationContextImpl;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.PackageCompilationData;
 import org.drools.rule.Rule;
@@ -128,7 +129,19 @@ public class RuleBaseImpl
             this.workingMemories.put( workingMemory,
                                       RuleBaseImpl.PRESENT );
         }
-        workingMemory.assertObject( InitialFactImpl.getInstance() );
+        
+        InitialFactHandle handle = new InitialFactHandle( (FactHandleImpl) workingMemory.newFactHandle() );
+        
+        PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                            PropagationContext.ASSERTION,
+                                                                            null,
+                                                                            null );
+                        
+        assertObject(handle,
+                     handle.getObject(),
+                     propagationContext,
+                     workingMemory);
+        
         return workingMemory;
     }
 

@@ -185,6 +185,7 @@ public class PrimitiveLongMap
     public Collection values() {
         CompositeCollection collection = new CompositeCollection();
         Page page = this.firstPage;
+        
         while ( page != null && page.getPageId() <= this.lastPageId ) {
             collection.addComposited( Arrays.asList( page.getValues() ) );
             page = page.getNextSibling();
@@ -413,6 +414,7 @@ public class PrimitiveLongMap
                     value = this.tables[i][j];
                     if ( value != null ) {
                         // swap NULL out placeholder
+                        // Also filter out InitialFact
                         if ( value == PrimitiveLongMap.NULL ) {
                             value = null;
                         }
