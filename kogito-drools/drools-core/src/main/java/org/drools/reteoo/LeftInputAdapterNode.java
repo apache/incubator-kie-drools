@@ -117,10 +117,10 @@ class LeftInputAdapterNode extends TupleSource
         Map memory = (Map) workingMemory.getNodeMemory( this );
         
         if((this.binder == null) || (this.binder.isAllowed( handle, null, workingMemory )) ) {
-            this.createAndAssertTuple( handle,
-                                       context,
-                                       workingMemory,
-                                       memory );
+            createAndAssertTuple( handle,
+                                  context,
+                                  workingMemory,
+                                  memory );
         }
     }
 

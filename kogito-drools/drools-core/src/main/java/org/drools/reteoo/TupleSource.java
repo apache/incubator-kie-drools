@@ -48,6 +48,7 @@ abstract class TupleSource extends BaseNode
 
     /** The destination for <code>Tuples</code>. */
     protected List tupleSinks = new ArrayList( 1 );
+    
 
     // ------------------------------------------------------------
     // Constructors
