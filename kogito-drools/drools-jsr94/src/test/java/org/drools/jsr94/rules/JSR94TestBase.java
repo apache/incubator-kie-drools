@@ -76,7 +76,7 @@ public abstract class JSR94TestBase extends TestCase
         super.setUp( );
         engine = new ExampleRuleEngineFacade( );
         engine.addRuleExecutionSet( bindUri,
-            StatelessRuleSessionTestCase.class.getResourceAsStream( bindUri ) );
+            StatelessRuleSessionTest.class.getResourceAsStream( bindUri ) );
 
         this.ruleServiceProvider = engine.getRuleServiceProvider( );
         this.statelessSession = engine.getStatelessRuleSession( bindUri );

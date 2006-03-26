@@ -56,7 +56,7 @@ import junit.framework.TestCase;
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  * @see StatelessRuleSession
  */
-public class StatelessRuleSessionTestCase extends TestCase
+public class StatelessRuleSessionTest extends TestCase
 {
     private StatelessRuleSession statelessSession;
 
@@ -72,7 +72,7 @@ public class StatelessRuleSessionTestCase extends TestCase
         super.setUp( );
         sessionBuilder = new ExampleRuleEngineFacade( );
         sessionBuilder.addRuleExecutionSet( bindUri,
-            StatelessRuleSessionTestCase.class.getResourceAsStream( bindUri ) );
+            StatelessRuleSessionTest.class.getResourceAsStream( bindUri ) );
         this.statelessSession =
             sessionBuilder.getStatelessRuleSession( bindUri );
     }

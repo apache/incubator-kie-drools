@@ -54,7 +54,7 @@ import javax.rules.ObjectFilter;
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  * @see javax.rules.StatefulRuleSession
  */
-public class StatefulRuleSessionTestCase extends RuleEngineTestBase
+public class StatefulRuleSessionTest extends RuleEngineTestBase
 {
     /**
      * Setup the test case.

@@ -31,7 +31,7 @@ import org.drools.jsr94.rules.RuleEngineTestBase;
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
-public class RuleExecutionSetTestCase extends RuleEngineTestBase {
+public class RuleExecutionSetTest extends RuleEngineTestBase {
 
     private RuleAdministrator             ruleAdministrator;
 

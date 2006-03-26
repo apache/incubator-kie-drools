@@ -227,8 +227,6 @@ abstract class AbstractRuleSessionImpl implements RuleSession
                 if ( objectFilter.filter( object ) == null )
                 {
                     objectIter.remove( );
-                } else if ( object.getClass() == InitialFact.class ) {
-                    objectIter.remove( );
                 }
             }
         }
