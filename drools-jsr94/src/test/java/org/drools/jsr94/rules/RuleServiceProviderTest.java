@@ -50,7 +50,7 @@ import javax.rules.admin.RuleAdministrator;
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
-public class RuleServiceProviderTestCase extends RuleEngineTestBase
+public class RuleServiceProviderTest extends RuleEngineTestBase
 {
     /**
      * Test getRuleRuntime.

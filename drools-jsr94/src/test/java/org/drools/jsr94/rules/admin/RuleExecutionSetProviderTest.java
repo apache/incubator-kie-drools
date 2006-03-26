@@ -42,7 +42,7 @@ import org.drools.rule.Package;
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
-public class RuleExecutionSetProviderTestCase extends RuleEngineTestBase
+public class RuleExecutionSetProviderTest extends RuleEngineTestBase
 {
     private RuleAdministrator ruleAdministrator;
 

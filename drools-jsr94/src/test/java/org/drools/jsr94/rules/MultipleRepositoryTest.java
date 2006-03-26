@@ -22,9 +22,9 @@ import junit.framework.TestSuite;
  * @author jgilbert
  * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
-public class MultipleRepositoryTestCase extends TestCase {
+public class MultipleRepositoryTest extends TestCase {
 
-	public MultipleRepositoryTestCase(String name) {
+	public MultipleRepositoryTest(String name) {
 		super(name);
 	}
 

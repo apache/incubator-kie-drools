@@ -36,7 +36,7 @@ import org.drools.rule.Package;
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
-public class LocalRuleExecutionSetProviderTestCase extends RuleEngineTestBase {
+public class LocalRuleExecutionSetProviderTest extends RuleEngineTestBase {
     private RuleAdministrator             ruleAdministrator;
 
     private LocalRuleExecutionSetProvider ruleSetProvider;

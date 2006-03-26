@@ -30,7 +30,7 @@ import org.drools.jsr94.rules.RuleEngineTestBase;
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
-public class RuleAdministratorTestCase extends RuleEngineTestBase {
+public class RuleAdministratorTest extends RuleEngineTestBase {
     private RuleAdministrator ruleAdministrator;
 
     /**

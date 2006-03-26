@@ -59,7 +59,7 @@ import javax.rules.admin.RuleExecutionSet;
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
-public class RuleRuntimeTestCase extends RuleEngineTestBase
+public class RuleRuntimeTest extends RuleEngineTestBase
 {
     private LocalRuleExecutionSetProvider ruleSetProvider;
 
@@ -102,7 +102,7 @@ public class RuleRuntimeTestCase extends RuleEngineTestBase
 
         // read rules and register with administrator
         Reader ruleReader = new InputStreamReader(
-            RuleRuntimeTestCase.class.getResourceAsStream( RULES_RESOURCE ) );
+            RuleRuntimeTest.class.getResourceAsStream( RULES_RESOURCE ) );
         RuleExecutionSet ruleSet =
             ruleSetProvider.createRuleExecutionSet( ruleReader, null );
         ruleAdministrator.registerRuleExecutionSet(
@@ -140,7 +140,7 @@ public class RuleRuntimeTestCase extends RuleEngineTestBase
 
         // read rules and register with administrator
         Reader ruleReader = new InputStreamReader(
-            RuleRuntimeTestCase.class.getResourceAsStream( RULES_RESOURCE ) );
+            RuleRuntimeTest.class.getResourceAsStream( RULES_RESOURCE ) );
         RuleExecutionSet ruleSet =
             ruleSetProvider.createRuleExecutionSet( ruleReader, null );
         ruleAdministrator.registerRuleExecutionSet(
@@ -166,7 +166,7 @@ public class RuleRuntimeTestCase extends RuleEngineTestBase
 
         // read rules and register with administrator
         Reader ruleReader = new InputStreamReader(
-            RuleRuntimeTestCase.class.getResourceAsStream( RULES_RESOURCE ) );
+            RuleRuntimeTest.class.getResourceAsStream( RULES_RESOURCE ) );
         RuleExecutionSet ruleSet =
             ruleSetProvider.createRuleExecutionSet( ruleReader, null );
         ruleAdministrator.registerRuleExecutionSet(
