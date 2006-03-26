@@ -1,10 +1,7 @@
 <projectDescription>
   <name>drools-jsr94</name>
   <comment/>
-  <projects>
-    <project>drools-compiler</project>
-    <project>drools-core</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
