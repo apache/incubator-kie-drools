@@ -25,7 +25,7 @@ public class AllTests
    public static Test suite()
    {
        System.setProperty(
-           "jsr94.tck.configuration", "drools-jsr94/src/test/org/drools/jsr94/tck");
+           "jsr94.tck.configuration", "drools-jsr94/src/test/resources/org/drools/jsr94/tck");
        
        TestSuite suite = new TestSuite( "JSR 94 Test Compatability Kit" );
 

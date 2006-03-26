@@ -25,6 +25,7 @@
             <artifactId>drools-compiler</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>jsr94</groupId>
             <artifactId>jsr94</artifactId>
@@ -35,19 +36,15 @@
             <groupId>jsr94</groupId>
             <artifactId>jsr94-tck</artifactId>
             <version>1.1</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>jsr94</groupId>
             <artifactId>jsr94-sigtest</artifactId>
             <version>1.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>2.0.2</version>
-        </dependency>    
+            <scope>test</scope>
+        </dependency>  
   </dependencies>
   
   <build>
@@ -79,25 +76,16 @@
         </dependencies>
       </plugin>      
       
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-surefire-plugin</artifactId>
-      <configuration>
-        <includes>
-          <include>**/*Test.java</include>
-		<include>**/org/drools/jsr94/AllTests.java</include>
-                <include>**/org/jcp/jsr94/tck/AllTests.java</include>
-        </includes>
-        <excludes>
-          <exclude>**/LogicTransformerTest.java</exclude>
-          <exclude>**/LeapsMannersTest.java</exclude>          
-          <exclude>**/ReteooMannersTest.java</exclude>                    
-          <exclude>**/LeapsWaltzTest.java</exclude>          
-          <exclude>**/ReteooWaltzTest.java</exclude>             
-          <exclude>**/TableTest.java</exclude>                       
-        </excludes>
-      </configuration>
-    </plugin>      
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-surefire-plugin</artifactId>
+	      <configuration>
+	        <includes>
+	          <include>**/*Test.java</include>
+	          <include>org/jcp/jsr94/tck/AllTests.java</include>
+	        </includes>
+	      </configuration>
+	    </plugin>      
     </plugins>
   </build>
 
