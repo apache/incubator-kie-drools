@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rule-set 
+    name="JavaRules.org Test Agent Drools Port"
+    description="Some rules for the JavaOne demo"
+    xmlns="http://drools.org/rules"
+    xmlns:java="http://drools.org/semantics/java"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+        xs:schemaLocation="http://drools.org/rules rules.xsd
+                           http://drools.org/semantics/java java.xsd">
+
+<!-- Rules -->
+  <rule name="Say hello if Mozilla User">
+    <parameter identifier="s">
+      <class>java.lang.String</class>
+    </parameter>
+    <java:condition> s.startsWith("Gecko") </java:condition>
+    <java:consequence> assertObject("Hello Mozilla user!"); </java:consequence>
+  </rule>
+    
+  <rule name="Say hello if IE user">
+    <parameter identifier="s">
+        <class>java.lang.String</class>
+    </parameter>
+    <java:condition> s.startsWith("MSIE") </java:condition>
+    <java:consequence> assertObject("Hello IE user!"); </java:consequence>
+  </rule>
+
+</rule-set>
+
