@@ -30,6 +30,12 @@ import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
+import org.drools.event.ActivationCancelledEvent;
+import org.drools.event.ActivationCreatedEvent;
+import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.AgendaEventListener;
+import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.DefaultAgendaEventListener;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
@@ -70,6 +76,28 @@ public abstract class IntegrationCases extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        AgendaEventListener listener =  new DefaultAgendaEventListener() {
+            
+            public void activationCreated(ActivationCreatedEvent event) {
+                System.out.println( event );
+            }
+    
+            public void activationCancelled(ActivationCancelledEvent event) {
+                System.out.println( event );
+            }
+    
+            public void beforeActivationFired(BeforeActivationFiredEvent event) {
+                System.out.println( event );
+            }
+            
+            public void afterActivationFired(AfterActivationFiredEvent event) {
+                System.out.println( event );
+            }
+        };
+        
+        workingMemory.addEventListener( listener );
+        
         List list = new ArrayList();
         workingMemory.setGlobal( "list", list );        
         
