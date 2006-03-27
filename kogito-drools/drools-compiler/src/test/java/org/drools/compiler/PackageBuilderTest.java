@@ -82,7 +82,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 3,
+        assertLength( 1,
                       builder.getErrors() );
     }
 
