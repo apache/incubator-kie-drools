@@ -166,7 +166,8 @@ public class RuleBuilder {
             if ( name.equals( "salience" ) ) {
                 rule.setSalience( Integer.parseInt( attributeDescr.getValue() ) );
             } else if ( name.equals( "no-loop" ) ) {
-                rule.setNoLoop( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+                //rule.setNoLoop( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+                rule.setNoLoop( true );
             } else if ( name.equals( "agenda-group" ) ) {
                 rule.setAgendaGroup( attributeDescr.getValue() );
             } else if ( name.equals( "duration" ) ) {

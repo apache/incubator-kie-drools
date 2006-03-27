@@ -558,4 +558,25 @@ public abstract class IntegrationCases extends TestCase {
         
     }    
     
+    public void testNoLoop() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "no-loop.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
+        
+        Cheese brie = new Cheese( "brie", 12 );
+        workingMemory.assertObject( brie );       
+        
+        workingMemory.fireAllRules();
+        
+        Assert.assertEquals( "Should not loop  and thus size should be 1", 1, list.size() );
+        
+    }        
+    
 }
