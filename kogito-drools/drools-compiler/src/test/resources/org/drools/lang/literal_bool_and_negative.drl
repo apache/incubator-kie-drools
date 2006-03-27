@@ -1,0 +1,9 @@
+#check that it can handle true/false literals, and 
+#negative numbers
+rule simple_rule 
+  when
+	Foo(bar == false)
+	Foo(boo > -42)
+  then
+	cons();
+end
