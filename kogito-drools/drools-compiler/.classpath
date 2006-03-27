@@ -19,7 +19,7 @@
   <classpathentry kind="var" path="M2_REPO/drools-asm/drools-asm/2.2.1/drools-asm-2.2.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/antlr/antlr3/3.0ea8/antlr3-3.0ea8.jar"/>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/eclipse/jdtcore/3.2.0.v_642/jdtcore-3.2.0.v_642.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging-api/1.0.4/commons-logging-api-1.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/eclipse/jdtcore/3.2.0.v_642/jdtcore-3.2.0.v_642.jar"/>
   <classpathentry kind="var" path="M2_REPO/jci/jci/SNAPSHOT-378493+patch/jci-SNAPSHOT-378493+patch.jar"/>
 </classpath>

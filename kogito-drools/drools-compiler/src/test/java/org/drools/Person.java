@@ -4,6 +4,11 @@ public class Person {
     private final String name;
     private final String likes;
     private final int age;
+    
+    private char sex;
+    
+    private boolean alive;
+    
     private String status;
     
     public Person( String name, String likes ) {
@@ -36,6 +41,24 @@ public class Person {
         return this.age;
     }
     
+    
+    
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public char getSex() {
+        return sex;
+    }
+
+    public void setSex(char sex) {
+        this.sex = sex;
+    }
+
     public String toString() {
         return "[Person name='" + this.name + "']";
     }
