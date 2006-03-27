@@ -7,7 +7,7 @@ package <package>;
 
 public class <className>
 {
-    public static <returnType> <methodName>(<parameterTypes, parameterNames:{ type, name | <type> <name>}; separator=",\n">) {
+    public static <returnType> <methodName>(<parameterTypes, parameterNames:{ type, name | <type> <name>}; separator=",\n">) throws Exception {
         <text>
     }
 }     
