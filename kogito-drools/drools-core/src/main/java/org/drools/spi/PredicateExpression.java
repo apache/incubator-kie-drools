@@ -9,5 +9,5 @@ public interface PredicateExpression  extends Invoker  {
                             FactHandle factHandle,
                             Declaration declaration, 
                             Declaration[] requiredDeclarations, 
-                            WorkingMemory workingMemory);
+                            WorkingMemory workingMemory) throws Exception;
 }

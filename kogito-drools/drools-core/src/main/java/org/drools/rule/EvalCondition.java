@@ -2,6 +2,7 @@ package org.drools.rule;
 
 import java.util.Iterator;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.spi.Constraint;
 import org.drools.spi.EvalExpression;
@@ -41,11 +42,13 @@ public class EvalCondition extends ConditionalElement {
 
     public boolean isAllowed(Tuple tuple,
                              WorkingMemory workingMemory) {
-
-        return expression.evaluate( tuple, 
-                              this.requiredDeclarations, 
-                             workingMemory);
-
+        try {
+            return expression.evaluate( tuple, 
+                                  this.requiredDeclarations, 
+                                 workingMemory);
+        } catch ( Exception e ) {
+            throw new  RuntimeDroolsException( e );
+        }
     }
 
     public Object clone() {

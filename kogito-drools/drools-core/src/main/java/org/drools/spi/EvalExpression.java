@@ -6,5 +6,5 @@ import org.drools.rule.Declaration;
 public interface EvalExpression extends Invoker {
     public boolean evaluate(Tuple tuple,
                             Declaration[] requiredDeclarations, 
-                            WorkingMemory workingMemory);
+                            WorkingMemory workingMemory) throws Exception;
 }

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
@@ -304,7 +305,11 @@ public class Agenda
         
         eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation );
         
-        activation.getRule().getConsequence().evaluate( activation, this.workingMemory );        
+        try {
+            activation.getRule().getConsequence().evaluate( activation, this.workingMemory );
+        } catch ( Exception e ) {
+            throw new  ConsequenceException( e );
+        }            
 
         eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );
     }
