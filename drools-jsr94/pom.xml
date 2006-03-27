@@ -45,6 +45,13 @@
             <version>1.1</version>
             <scope>test</scope>
         </dependency>  
+        
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.0.b2</version>
+            <scope>test</scope>
+        </dependency>          
   </dependencies>
   
   <build>
@@ -80,19 +87,14 @@
 	      <groupId>org.apache.maven.plugins</groupId>
 	      <artifactId>maven-surefire-plugin</artifactId>
 	      <configuration>
-	      <systemProperties>
-          <property>
-            <name>jsr94.tck.configuration</name>
-            <value>target/test-classes/org/drools/jsr94/tck</value>
-          </property>
-        </systemProperties>
 	        <includes>
-	          <include>**/jsr94/tck/**/*Test.java</include>
+	          <include>**/*Tests.java</include>
+	          <include>**/*Test.java</include>	          
 	        </includes>
 	        <excludes>
-	        <exclude>**/ClassLoaderTest.java</exclude>
-          <exclude>**/RuleExecutionSetProviderTest.java</exclude>
-        </excludes>
+	          <exclude>**/ClassLoaderTest.java</exclude>
+              <exclude>**/RuleExecutionSetProviderTest.java</exclude>
+            </excludes>
 	      </configuration>
 	    </plugin>      
     </plugins>
