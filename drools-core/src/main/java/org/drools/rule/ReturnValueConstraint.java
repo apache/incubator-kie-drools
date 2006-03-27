@@ -1,6 +1,7 @@
 package org.drools.rule;
 
 import org.drools.FactHandle;
+import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.Evaluator;
@@ -59,9 +60,13 @@ public class ReturnValueConstraint
     public boolean isAllowed(FactHandle handle,
                              Tuple tuple,
                              WorkingMemory workingMemory) {
-        return evaluator.evaluate( this.fieldExtractor.getValue( workingMemory.getObject( handle ) ),
-                                   this.returnValueExpression.evaluate( tuple,
-                                                                        this.requiredDeclarations,
-                                                                        workingMemory ) );
+        try {
+            return evaluator.evaluate( this.fieldExtractor.getValue( workingMemory.getObject( handle ) ),
+                                       this.returnValueExpression.evaluate( tuple,
+                                                                            this.requiredDeclarations,
+                                                                            workingMemory ) );
+        } catch ( Exception e ) {
+            throw new  RuntimeDroolsException( e );
+        }
     }
 }
