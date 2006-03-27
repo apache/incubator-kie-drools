@@ -1,0 +1,10 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+rule "Throw Consequence Exception"
+    when
+    	cheese : Cheese( )
+    then
+    	throw new Exception( "this should throw an exception" );
+end  
