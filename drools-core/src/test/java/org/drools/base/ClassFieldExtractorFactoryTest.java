@@ -1,6 +1,7 @@
 package org.drools.base;
 
 import org.drools.spi.FieldExtractor;
+import org.drools.util.asm.BeanInherit;
 import org.drools.util.asm.TestAbstract;
 import org.drools.util.asm.TestAbstractImpl;
 import org.drools.util.asm.TestInterface;
@@ -31,6 +32,11 @@ public class ClassFieldExtractorFactoryTest extends TestCase {
         assertEquals(0, ex.getIndex());
         assertEquals("foo", ex.getValue( new TestAbstractImpl() ));
     }   
+    
+    public void testInherited() throws Exception {
+        FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( BeanInherit.class, "text" );
+        assertEquals("hola", ex.getValue( new BeanInherit() ));
+    }
     
     
 

@@ -29,20 +29,28 @@ import org.drools.asm.Opcodes;
  */
 public class ClassFieldInspector {
 
-    private List methods;
-    private Map fieldNames;
+    private List methods = new ArrayList(); 
+    private Map fieldNames = new HashMap();
     /**
      * @param clazz The class that the fields to be shadowed are extracted for.
      * @throws IOException
      */
     public ClassFieldInspector(Class clazz) throws IOException {
+        processClass( clazz );
+    }
+
+    /** Walk up the inheritance hierarchy recursively, reading in fields */
+    private void processClass(Class clazz) throws IOException {
         String name = getResourcePath( clazz );
         InputStream stream = clazz.getResourceAsStream(name);
         ClassReader reader = new ClassReader(stream);
         ClassFieldVisitor visitor = new ClassFieldVisitor(clazz);
         reader.accept(visitor, false);
-        this.methods = visitor.getPropertyGetters();
-        this.fieldNames = visitor.getFieldNameMap();
+        this.methods.addAll( visitor.getPropertyGetters() );
+        this.fieldNames.putAll( visitor.getFieldNameMap() );
+        if (clazz.getSuperclass() != null) {
+            processClass(clazz.getSuperclass());
+        }
     }
 
     /**

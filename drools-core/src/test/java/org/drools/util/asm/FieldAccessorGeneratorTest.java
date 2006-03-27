@@ -87,4 +87,18 @@ public class FieldAccessorGeneratorTest extends TestCase {
         
     }     
     
+    public void testInherited() throws Exception {
+        FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
+        FieldAccessorMap map = gen.newInstanceFor(BeanInherit.class);
+        FieldAccessor ac = map.getFieldAccessor();
+        assertNotNull(ac);
+        
+        BeanInherit obj = new BeanInherit();
+        
+        
+        assertEquals(42, ((Integer)ac.getFieldByIndex(obj, map.getIndex( "number" ))).intValue());
+        assertEquals("hola", (String)ac.getFieldByIndex(obj, map.getIndex( "text" )));
+        
+    }
+    
 }
