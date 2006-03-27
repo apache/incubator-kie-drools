@@ -473,7 +473,7 @@ public class RuleBuilder {
         st.setAttribute( "methodName",
                          classMethodName );
         st.setAttribute( "text",
-                         returnValueDescr.getText() );
+                         functionFixer.fix( returnValueDescr.getText() ) );
 
         this.methods.add( st.toString() );
 
@@ -493,7 +493,7 @@ public class RuleBuilder {
                                      returnValueDescr.getText() );
 
         st.setAttribute( "text",
-                         functionFixer.fix( returnValueDescr.getText() ) );
+                         returnValueDescr.getText() );
 
         String invokerClassName = pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,

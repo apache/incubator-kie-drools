@@ -579,4 +579,100 @@ public abstract class IntegrationCases extends TestCase {
         
     }        
     
+    public void testConsequenceException() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+               
+        Cheese brie = new Cheese( "brie", 12 );
+        workingMemory.assertObject( brie );       
+        
+        try  {
+            workingMemory.fireAllRules();
+            fail( "Should throw an Exception from the Consequence" );
+        } catch ( Exception e ) {
+            assertEquals( "this should throw an exception", e.getCause().getMessage() );
+        }               
+    }     
+    
+    public void testFunctionException() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionException.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+               
+        Cheese brie = new Cheese( "brie", 12 );
+        workingMemory.assertObject( brie );       
+        
+        try  {
+            workingMemory.fireAllRules();
+            fail( "Should throw an Exception from the Function" );
+        } catch ( Exception e ) {
+            assertEquals( "this should throw an exception", e.getCause().getMessage() );
+        }               
+    }     
+    
+    public void testEvalException() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalException.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+               
+        Cheese brie = new Cheese( "brie", 12 );       
+        
+        try  {
+            workingMemory.assertObject( brie );
+            fail( "Should throw an Exception from the Eval" );
+        } catch ( Exception e ) {
+            assertEquals( "this should throw an exception", e.getCause().getMessage() );
+        }               
+    }  
+    
+    public void testPredicateException() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PredicateException.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+               
+        Cheese brie = new Cheese( "brie", 12 );       
+        
+        try  {
+            workingMemory.assertObject( brie );
+            fail( "Should throw an Exception from the Predicate" );
+        } catch ( Exception e ) {
+            assertEquals( "this should throw an exception", e.getCause().getMessage() );
+        }               
+    }
+    
+    public void testReturnValueException() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueException.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+               
+        Cheese brie = new Cheese( "brie", 12 );       
+        
+        try  {
+            workingMemory.assertObject( brie );
+            fail( "Should throw an Exception from the ReturnValue" );
+        } catch ( Exception e ) {
+            assertEquals( "this should throw an exception", e.getCause().getMessage() );
+        }               
+    }      
 }
