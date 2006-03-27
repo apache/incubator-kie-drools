@@ -18,7 +18,7 @@
   <classpathentry kind="var" path="M2_REPO/jsr94/jsr94/1.1/jsr94-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/drools-asm/drools-asm/2.2.1/drools-asm-2.2.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/jsr94/jsr94-tck/1.1/jsr94-tck-1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jsr94/jsr94-tck/1.0.2/jsr94-tck-1.0.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/antlr/antlr3/3.0ea8/antlr3-3.0ea8.jar"/>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/eclipse/jdtcore/3.2.0.v_642/jdtcore-3.2.0.v_642.jar"/>
