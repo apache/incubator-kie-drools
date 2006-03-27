@@ -80,6 +80,26 @@ public abstract class IntegrationCases extends TestCase {
         
         assertEquals( "stilton", list.get(  0 ) );        
     }
+    
+    public void testLiteralWithBoolean() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_with_boolean.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();                
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );         
+        
+        Person bill = new Person("bill", null, 12);
+        bill.setAlive( true );
+        workingMemory.assertObject( bill );                
+        workingMemory.fireAllRules();
+        
+        assertEquals( bill, list.get(  1 ) );
+    }
 
     
     
