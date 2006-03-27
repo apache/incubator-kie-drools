@@ -87,6 +87,34 @@ public class RuleParserTest extends TestCase {
 		assertNotNull( rule.getLhs() );
 		assertEquals( "", rule.getConsequence().trim() );
 	}
+    
+    public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
+        RuleDescr rule = parseResource( "literal_bool_and_negative.drl" ).rule();
+        
+        assertNotNull( rule );
+        
+        assertEquals( "simple_rule", rule.getName() );
+        assertNotNull( rule.getLhs() );
+        assertEqualsIgnoreWhitespace( "cons();", rule.getConsequence() );
+        
+        AndDescr lhs = rule.getLhs();
+        assertEquals(2, lhs.getDescrs().size());
+        
+        ColumnDescr col = (ColumnDescr) lhs.getDescrs().get( 0 );
+        assertEquals(1, col.getDescrs().size());
+        LiteralDescr lit = (LiteralDescr) col.getDescrs().get( 0 );
+        assertEquals("==", lit.getEvaluator());
+        assertEquals("false", lit.getText());
+        assertEquals("bar", lit.getFieldName());
+        
+        col = (ColumnDescr) lhs.getDescrs().get( 1 );
+        assertEquals( 1, col.getDescrs().size() );
+        lit = (LiteralDescr) col.getDescrs().get( 0 );
+        assertEquals(">", lit.getEvaluator());
+        assertEquals( "-42", lit.getText() );
+        assertEquals( "boo", lit.getFieldName() );
+        
+    }    
 	
 	public void testChunkWithoutParens() throws Exception {
 		String chunk = parse( "foo" ).paren_chunk();

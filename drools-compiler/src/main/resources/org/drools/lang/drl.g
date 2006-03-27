@@ -501,6 +501,7 @@ literal_constraint returns [String text]
 	:	(	t=STRING { text = getString( t ); } //t.getText(); text=text.substring( 1, text.length() - 1 ); }
 		|	t=INT    { text = t.getText(); }
 		|	t=FLOAT	 { text = t.getText(); }
+		|	t=BOOL 	 { text = t.getText(); }
 		)
 	;
 	
@@ -714,7 +715,7 @@ EOL 	:
         ;  
         
 INT	
-	:	('0'..'9')+
+	:	('-')?('0'..'9')+
 	;
 
 FLOAT
@@ -724,6 +725,10 @@ FLOAT
 STRING
 	:	'"' ( options{greedy=false;} : .)* '"' 
 	;
+	
+BOOL
+	:	('true'|'false') 
+	;	
 	
 ID	
 	:	('a'..'z'|'A'..'Z'|'_'|'$')('a'..'z'|'A'..'Z'|'_'|'0'..'9')* 

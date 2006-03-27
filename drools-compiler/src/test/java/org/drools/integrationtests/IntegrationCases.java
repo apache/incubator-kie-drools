@@ -98,7 +98,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.assertObject( bill );                
         workingMemory.fireAllRules();
         
-        assertEquals( bill, list.get(  1 ) );
+        assertEquals( bill, list.get(  0 ) );
     }
 
     
