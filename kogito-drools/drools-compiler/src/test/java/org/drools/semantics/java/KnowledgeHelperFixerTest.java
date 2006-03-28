@@ -51,6 +51,13 @@ public class KnowledgeHelperFixerTest extends TestCase {
         assertEquals(result, fixer.fix( raw ));
     }
     
+    public void testAssertLogical() {
+        String raw = "some code; assertLogical(new String(\"foo\"));\n More();";
+        String result = "some code; drools.assertLogical(new String(\"foo\"));\n More();";
+        assertEquals(result, fixer.fix( raw ));
+    }
+    
+    
     public void testAllActionsMushedTogether() {
         String result = fixer.fix("assert(myObject ) modify(ourObject);\t retract(herObject)");
         assertEquals("drools.assertObject(myObject ) drools.modifyObject(ourObject__Handle__, ourObject);\t drools.retractObject(herObject__Handle__)", result);        
