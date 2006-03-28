@@ -1,8 +1,12 @@
 package org.drools.util.asm;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class ClassFieldInspectorTest extends TestCase {
@@ -59,6 +63,28 @@ public class ClassFieldInspectorTest extends TestCase {
         assertEquals(3, ext.getPropertyGetters().size());
     }
     
+    public void testFieldIndexCalculation() {
+        try {
+            ClassFieldInspector ext = new ClassFieldInspector( SubPerson.class );
+            Map map = ext.getFieldNames();
+            String[] fields = new String[map.size()];
+            for(Iterator i = map.entrySet().iterator(); i.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) i.next();
+                String fieldName = (String) entry.getKey();
+                int    fieldIndex = ((Integer) entry.getValue()).intValue();
+                if(fields[fieldIndex] == null) {
+                    fields[fieldIndex] = fieldName;
+                } else {
+                    Assert.fail( "Duplicate index found for 2 fields: index["+fieldIndex+
+                                 "] = ["+fields[fieldIndex]+"] and ["+fieldName+"]" );
+                }
+            }
+        } catch ( IOException e ) {
+            e.printStackTrace();
+            Assert.fail( "Unexpected exception thrown" );
+        }
+    }
+    
     static class Person {
         private boolean happy;
         private String name;
@@ -96,8 +122,24 @@ public class ClassFieldInspectorTest extends TestCase {
         public String getAlsoBad(String s) {
             return "ignored";
         }
-        
-        
+    }
+    
+    static class SubPerson {
+        private int childField;
+
+        /**
+         * @return the childField
+         */
+        public int getChildField() {
+            return childField;
+        }
+
+        /**
+         * @param childField the childField to set
+         */
+        public void setChildField(int childField) {
+            this.childField = childField;
+        }
         
     }
     
