@@ -60,6 +60,16 @@ public class DefaultKnowledgeHelper
                                          this.rule,
                                          this.activation );
     }
+    
+    public void assertLogical(Object object) {
+        assertLogical( object, 
+                       false );
+    }
+    
+    public void assertLogical(Object object,
+                              boolean dynamic) {
+        
+    }
 
     public void modifyObject(FactHandle handle,
                              Object newObject) throws FactException {
@@ -123,5 +133,5 @@ public class DefaultKnowledgeHelper
     
     public void setFocus(AgendaGroup focus) {
         this.workingMemory.setFocus( focus );
-    }    
+    }        
 }
