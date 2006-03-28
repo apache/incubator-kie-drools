@@ -709,4 +709,62 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 8, list.size() );
         assertEquals( "group2", list.get( 7 ) );
     }         
+    
+    public void testLogicalAssertions() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );   
+               
+        Cheese brie = new Cheese( "brie", 12 );       
+        FactHandle brieHandle = workingMemory.assertObject( brie );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 2, list.size() );        
+        
+        assertEquals( 2, 
+                      workingMemory.getObjects().size() );
+        
+        workingMemory.retractObject( brieHandle );
+        
+        assertEquals( 0, 
+                      workingMemory.getObjects().size() );        
+    }        
+    
+    public void testDuration() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );   
+               
+        Cheese brie = new Cheese( "brie", 12 );       
+        FactHandle brieHandle = workingMemory.assertObject( brie );
+        
+        workingMemory.fireAllRules();
+        
+        // now check for update
+        assertEquals( 0,
+                      list.size() );        
+        
+        // sleep for 300ms
+        Thread.sleep( 300 );
+
+        // now check for update
+        assertEquals( 1,
+                      list.size() );
+        
+    }    
 }
