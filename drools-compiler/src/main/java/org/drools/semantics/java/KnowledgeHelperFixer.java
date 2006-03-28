@@ -8,6 +8,7 @@ public class KnowledgeHelperFixer {
     static String KNOWLEDGE_HELPER_PFX = ""; //could also be: "drools\\." for "classic" mode.
     static Pattern MODIFY = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "modify\\s*\\(([^)]+)\\)(.*)", Pattern.DOTALL);
     static Pattern ASSERT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "assert\\s*\\((.*)\\)(.*)", Pattern.DOTALL);
+    static Pattern ASSERT_LOGICAL = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "assertLogical\\s*\\((.*)\\)(.*)", Pattern.DOTALL);
     static Pattern RETRACT = Pattern.compile("(.*)\\b" + KNOWLEDGE_HELPER_PFX + "retract\\s*\\(([^)]+)\\)(.*)", Pattern.DOTALL);   
     
     /**
@@ -24,6 +25,7 @@ public class KnowledgeHelperFixer {
     public String fix(String raw) {
         String result = fix(raw, ModifyReplacer.INSTANCE);
         result = fix(result, AssertReplacer.INSTANCE);
+        result = fix(result, AssertLogicalReplacer.INSTANCE);
         result = fix(result, RetractReplacer.INSTANCE);
         return result;
     }
@@ -83,6 +85,20 @@ public class KnowledgeHelperFixer {
         }
         
     }
+    
+    static class AssertLogicalReplacer implements Replacer {
+        
+        static Replacer INSTANCE = new AssertLogicalReplacer();
+        
+        public Pattern getPattern() {
+            return ASSERT_LOGICAL;
+        }
+
+        public String getReplacement(String guts) {
+            return "drools.assertLogical(" + guts + ")";
+        }
+        
+    }    
     
     static class ModifyReplacer implements Replacer {
         
