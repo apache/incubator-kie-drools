@@ -112,9 +112,8 @@ public class ClassFieldInspector {
                     try {
                         Method method = clazz.getMethod(name, null);
                         if (method.getReturnType() != void.class) {
-                            int fieldIndex = methodList.size();
-                            methodList.add(method);                                
-                            addToMapping(method.getName(), fieldIndex);
+                            int fieldIndex = methodList.size();                                                           
+                            addToMapping(method, fieldIndex);
                         }
                     } catch (NoSuchMethodException e) {
                         throw new IllegalStateException("Error in getting field access method.");
@@ -194,14 +193,22 @@ public class ClassFieldInspector {
 
 
 
-        private void addToMapping(String name, int index) {
-
+        private void addToMapping(Method method, int index) {
+            String name = method.getName();
+            int offset;
             if (name.startsWith("is")) {
-                this.fieldNameMap.put(calcFieldName( name, 2 ), new Integer(index));
+                offset = 2;
             } else {
-                this.fieldNameMap.put(calcFieldName( name, 3 ), new Integer(index));
+                offset = 3;
             }
-            
+            String fieldName = calcFieldName( name, offset );
+            if (fieldNameMap.containsKey( fieldName )) {
+                //only want it once, the first one thats found
+                return; 
+            } else {
+                this.fieldNameMap.put(fieldName, new Integer(index));
+                methodList.add(method);
+            }
         }
 
 
