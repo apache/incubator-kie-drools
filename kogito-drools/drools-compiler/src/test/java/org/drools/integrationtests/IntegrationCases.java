@@ -703,5 +703,10 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( "group1", list.get( 5 ) );
         assertEquals( "MAIN", list.get( 6 ) );
         
+        workingMemory.setFocus( "group2" );        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 8, list.size() );
+        assertEquals( "group2", list.get( 7 ) );
     }         
 }
