@@ -99,7 +99,23 @@ public class RuleParserTest extends TestCase {
         assertEquals("no-loop", att.getName());
         
         
+    }
+    
+    //TODO: uncomment this when antlr bug resolved
+    public void XXXtestConsequenceWithDeclaration() throws Exception {
+        RuleDescr rule = parseResource( "declaration-in-consequence.drl" ).rule();
+        
+        assertNotNull( rule );
+        
+        assertEquals( "myrule", rule.getName() );
+
+        String expected = "int i = 0;    System.out.println(i + 1);";
+        assertEqualsIgnoreWhitespace( expected, rule.getConsequence() );
+        
+
+        
     }    
+    
     
     public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
         RuleDescr rule = parseResource( "literal_bool_and_negative.drl" ).rule();

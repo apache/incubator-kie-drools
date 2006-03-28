@@ -1,0 +1,8 @@
+
+
+rule myrule 
+  when
+  then
+	int i = 0;
+	System.out.println(i + 1);
+end
