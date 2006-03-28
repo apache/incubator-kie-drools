@@ -11,6 +11,11 @@ public class Person {
     
     private String status;
     
+    public Person( String name  ) {
+        this( name, "", 0 );
+    }
+    
+    
     public Person( String name, String likes ) {
         this( name, likes, 0 );
     }

@@ -1,0 +1,21 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+import org.drools.Person;
+
+global java.util.List list;
+
+rule justifier
+    when
+        cheese : Cheese( )
+    then
+		drools.assertLogical( new  Person( "jane" ) );
+		list.add( cheese );
+end   
+
+rule justified
+    when
+        person : Person( )
+    then
+		list.add( person );
+end 

@@ -180,8 +180,7 @@ public class RuleBuilder {
             } else if ( name.equals( "agenda-group" ) ) {
                 rule.setAgendaGroup( attributeDescr.getValue() );
             } else if ( name.equals( "duration" ) ) {
-                //@todo: need  to do this before the release
-                //duration rules cannot be partitioned into an agenda group
+                rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
                 rule.setAgendaGroup( "" );
             } else if ( name.equals( "language" ) ) {
                 //@todo: we don't currently  support multiple languages
