@@ -61,14 +61,18 @@ public class DefaultKnowledgeHelper
                                          this.activation );
     }
     
-    public void assertLogical(Object object) {
+    public void assertLogical(Object object) throws FactException {
         assertLogical( object, 
                        false );
     }
     
     public void assertLogical(Object object,
-                              boolean dynamic) {
-        
+                              boolean dynamic) throws FactException {
+            this.workingMemory.assertObject( object,
+                                             dynamic,
+                                             true,
+                                             this.rule,
+                                             this.activation );        
     }
 
     public void modifyObject(FactHandle handle,

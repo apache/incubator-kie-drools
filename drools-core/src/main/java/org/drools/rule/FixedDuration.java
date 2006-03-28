@@ -80,8 +80,8 @@ public class FixedDuration
      * @param seconds
      *            Number of seconds.
      */
-    public FixedDuration(long seconds) {
-        this.duration = seconds * 1000;
+    public FixedDuration(long ms) {
+        this.duration = ms;
     }
 
     // ------------------------------------------------------------

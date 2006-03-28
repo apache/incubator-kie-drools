@@ -100,7 +100,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         node.assertTuple( tuple, context, (WorkingMemoryImpl) workingMemory ); 
 
-        // sleep for 2 seconds
+        // sleep for 300ms
         Thread.sleep( 300 );
 
         // now check for update
