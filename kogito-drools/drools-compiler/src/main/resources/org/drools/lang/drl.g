@@ -292,11 +292,23 @@ no_loop returns [AttributeDescr d]
 		d = null;
 	}
 	:
-		loc='no-loop' opt_eol ';'? opt_eol
-		{
-			d = new AttributeDescr( "no-loop", null );
-			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
-		}
+		(
+			loc='no-loop' opt_eol ';'? opt_eol
+			{
+				d = new AttributeDescr( "no-loop", "true" );
+				d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			}
+		) 
+		|
+		(
+			loc='no-loop' t=BOOL opt_eol ';'? opt_eol
+			{
+				d = new AttributeDescr( "no-loop", t.getText() );
+				d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			}
+		
+		)
+		
 	;
 	
 xor_group returns [AttributeDescr d]
