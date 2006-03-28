@@ -166,8 +166,11 @@ public class RuleBuilder {
             if ( name.equals( "salience" ) ) {
                 rule.setSalience( Integer.parseInt( attributeDescr.getValue() ) );
             } else if ( name.equals( "no-loop" ) ) {
-                //rule.setNoLoop( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
-                rule.setNoLoop( true );
+                if ( attributeDescr.getValue() == null ) {
+                    rule.setNoLoop( true );
+                } else {
+                    rule.setNoLoop( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+                }
             } else if ( name.equals( "agenda-group" ) ) {
                 rule.setAgendaGroup( attributeDescr.getValue() );
             } else if ( name.equals( "duration" ) ) {
