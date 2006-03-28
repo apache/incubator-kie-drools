@@ -1,0 +1,8 @@
+
+rule rule1 
+  no-loop false
+  when
+  	not Cheese(type == "stilton")
+  then
+	funky();
+end

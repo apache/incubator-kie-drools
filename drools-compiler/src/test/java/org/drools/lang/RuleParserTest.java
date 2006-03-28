@@ -88,6 +88,19 @@ public class RuleParserTest extends TestCase {
 		assertEquals( "", rule.getConsequence().trim() );
 	}
     
+    public void testNoLoop() throws Exception {
+        RuleDescr rule = parseResource( "no-loop.drl" ).rule();
+        
+        assertNotNull( rule );
+        
+        assertEquals( "rule1", rule.getName() );
+        AttributeDescr att = (AttributeDescr) rule.getAttributes().get( 0 );
+        assertEquals("false", att.getValue());
+        assertEquals("no-loop", att.getName());
+        
+        
+    }    
+    
     public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
         RuleDescr rule = parseResource( "literal_bool_and_negative.drl" ).rule();
         
@@ -750,7 +763,7 @@ public class RuleParserTest extends TestCase {
         
         at = (AttributeDescr) attrs.get( 2 );
         assertEquals("no-loop", at.getName());
-        assertNull( at.getValue() );
+        assertEquals("true", at.getValue() );
         
         at = (AttributeDescr) attrs.get( 3 );
         assertEquals("duration", at.getName());
@@ -779,7 +792,7 @@ public class RuleParserTest extends TestCase {
         
         at = (AttributeDescr) attrs.get( 2 );
         assertEquals("no-loop", at.getName());
-        assertNull( at.getValue() );
+        assertEquals("true",  at.getValue() );
         
         at = (AttributeDescr) attrs.get( 3 );
         assertEquals("duration", at.getName());
