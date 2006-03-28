@@ -44,6 +44,7 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
+import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
@@ -258,7 +259,7 @@ abstract public class AbstractWorkingMemory
         }
 
         return matching;
-    }
+    }      
 
     /**
      * @see WorkingMemory

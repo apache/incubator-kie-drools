@@ -50,6 +50,7 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
+import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
@@ -357,6 +358,18 @@ public class WorkingMemoryImpl
                                node );
     }
 
+    public AgendaGroup getFocus() {
+        return this.agenda.getFocus();
+    }
+    
+    public void setFocus(String focus) {
+        this.agenda.setFocus( focus );
+    }
+    
+    public void setFocus(AgendaGroup focus) {
+        this.agenda.setFocus( focus );
+    }
+    
     /**
      * @see WorkingMemory
      */

@@ -23,6 +23,7 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.ReteooNodeEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.AgendaFilter;
+import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.util.LinkedList;
 
@@ -189,6 +190,13 @@ public interface WorkingMemory
      * @return The list of all known objects.
      */
     List getObjects();
+    
+    public AgendaGroup getFocus();
+    
+    void setFocus(String focus);
+    
+    void setFocus(AgendaGroup focus);
+    
 
     /**
      * Retrieve all known objects of the specified class.
