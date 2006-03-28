@@ -89,6 +89,11 @@ public interface KnowledgeHelper {
      */
     void assertObject(Object object,
                       boolean dynamic) throws FactException;
+    
+    public void assertLogical(Object object) throws FactException;
+    
+    public void assertLogical(Object object,
+                              boolean dynamic) throws FactException;    
 
 
     void modifyObject(FactHandle handle,

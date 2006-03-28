@@ -137,8 +137,8 @@ public class Rule
      *            The number of seconds the rule must hold true in order to
      *            fire.
      */
-    public void setDuration(long seconds) {
-        this.duration = new FixedDuration( seconds );
+    public void setDuration(long ms) {
+        this.duration = new FixedDuration( ms );
     }
 
     /**

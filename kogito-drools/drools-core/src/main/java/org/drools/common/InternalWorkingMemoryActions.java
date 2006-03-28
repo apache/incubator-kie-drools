@@ -23,4 +23,7 @@ public interface InternalWorkingMemoryActions extends WorkingMemory {
                             boolean logical,
                             Rule rule,
                             Activation activation) throws FactException;    
+    
+    public FactHandle assertLogicalObject(Object object,
+                                          boolean dynamic) throws FactException;
 }
