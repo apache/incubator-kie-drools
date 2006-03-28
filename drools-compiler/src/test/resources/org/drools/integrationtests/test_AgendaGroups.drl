@@ -1,0 +1,45 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list;
+
+rule "test MAIN 1"
+	salience  10
+    when
+    	Cheese( )
+    then
+		list.add( "MAIN" );
+		drools.setFocus( "group1" );
+end 
+
+rule "test main 2"
+    when
+    	Cheese( )
+    then
+		list.add( "MAIN" );
+end 
+
+rule "test group1 1"
+	agenda-group "group1"
+    when
+    	Cheese( )
+    then
+		list.add( "group1" );
+end  
+
+rule "test group1 2"
+	agenda-group "group1"
+    when
+    	Cheese( )
+    then
+		list.add( "group1" );
+end  
+
+rule "test group2"
+	agenda-group "group2"
+    when
+    	Cheese( )
+    then
+		list.add( "group2" );
+end  
