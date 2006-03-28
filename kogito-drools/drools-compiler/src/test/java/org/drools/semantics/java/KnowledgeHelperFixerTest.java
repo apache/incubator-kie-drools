@@ -53,7 +53,7 @@ public class KnowledgeHelperFixerTest extends TestCase {
     
     public void testAssertLogical() {
         String raw = "some code; assertLogical(new String(\"foo\"));\n More();";
-        String result = "some code; drools.assertLogical(new String(\"foo\"));\n More();";
+        String result = "some code; drools.assertLogicalObject(new String(\"foo\"));\n More();";
         assertEquals(result, fixer.fix( raw ));
     }
     
@@ -78,10 +78,15 @@ public class KnowledgeHelperFixerTest extends TestCase {
         assertEquals(original, result);
     }
     
-    public void testLeaveAlone() {
+    public void testLeaveAssertAlone() {
         String original = "drools.assertObject(foo)";
         assertEquals(original, fixer.fix( original ));
     }
+    
+    public void testLeaveAssertLogicalAlone() {
+        String original = "drools.assertLogicalObject(foo)";
+        assertEquals(original, fixer.fix( original ));
+    }    
     
     public void testWackyAssert() {
         String raw = "System.out.println($person1.getName() + \" and \" + $person2.getName() +\" are sisters\");\n" +
