@@ -9,7 +9,7 @@ rule justifier
     when
         cheese : Cheese( )
     then
-		drools.assertLogical( new  Person( "jane" ) );
+		assertLogical( new  Person( "jane" ) );
 		list.add( cheese );
 end   
 

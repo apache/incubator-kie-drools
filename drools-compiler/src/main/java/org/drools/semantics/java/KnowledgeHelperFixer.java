@@ -95,7 +95,7 @@ public class KnowledgeHelperFixer {
         }
 
         public String getReplacement(String guts) {
-            return "drools.assertLogical(" + guts + ")";
+            return "drools.assertLogicalObject(" + guts + ")";
         }
         
     }    
