@@ -42,6 +42,7 @@ import org.drools.rule.Or;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
@@ -123,7 +124,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         Activation activation = new MockActivation( rule,
                                                     tuple );
 
-        rule.getConsequence().evaluate( activation,
+        KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation, workingMemory ); 
+        rule.getConsequence().evaluate( knowledgeHelper,
                                         workingMemory );
         assertEquals( new Integer( 1 ),
                       map.get( "value" ) );
@@ -131,8 +133,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(2) );" );
         pkg.removeRule( rule );
         builder.addPackage( packageDescr );
-
-        rule.getConsequence().evaluate( activation,
+        
+        knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation, workingMemory );        
+        rule.getConsequence().evaluate( knowledgeHelper,
                                         workingMemory );
         assertEquals( new Integer( 2 ),
                       map.get( "value" ) );
@@ -192,7 +195,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         Activation activation = new MockActivation( newRule,
                                                     tuple );
 
-        newRule.getConsequence().evaluate( activation,
+        KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation, workingMemory );
+        newRule.getConsequence().evaluate( knowledgeHelper,
                                            workingMemory );
         assertEquals( new Integer( 1 ),
                       map.get( "value" ) );

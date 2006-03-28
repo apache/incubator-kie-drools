@@ -67,12 +67,11 @@ package <package>;
 
 public class <invokerClassName> implements org.drools.spi.Consequence
 {
-    public void evaluate(org.drools.spi.Activation activation,
-                           org.drools.WorkingMemory workingMemory) throws Exception {    
+    public void evaluate(org.drools.spi.KnowledgeHelper knowledgeHelper,
+                         org.drools.WorkingMemory workingMemory) throws Exception {    
                        
-        org.drools.spi.Tuple tuple = activation.getTuple();
-        org.drools.rule.Rule rule = activation.getRule();
-        org.drools.spi.KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation.getRule(), tuple, workingMemory );
+        org.drools.spi.Tuple tuple = knowledgeHelper.getTuple();
+        org.drools.rule.Rule rule = knowledgeHelper.getRule();
         org.drools.rule.Declaration[] declarations = rule.getDeclarations();                                                  
 
         <declarations:{ declr| org.drools.FactHandle <declr.identifier>__Handle__ = ( org.drools.FactHandle ) tuple.get( declarations[<i0>] );<\n>}>
