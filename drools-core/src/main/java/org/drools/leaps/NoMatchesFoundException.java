@@ -25,17 +25,17 @@ package org.drools.leaps;
 
 class NoMatchesFoundException extends Exception {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-	public NoMatchesFoundException() {
-		super();
-	}
+    public NoMatchesFoundException() {
+        super();
+    }
 
-	public NoMatchesFoundException(String msg) {
-		super(msg);
-	}
+    public NoMatchesFoundException(String msg) {
+        super( msg );
+    }
 
 }

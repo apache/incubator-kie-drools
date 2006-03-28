@@ -28,7 +28,7 @@ import org.drools.leaps.util.Table;
  * 
  */
 class RuleTable extends Table {
-	public RuleTable(Comparator ruleConflictResolver) {
-		super(ruleConflictResolver);
-	}
+    public RuleTable(Comparator ruleConflictResolver) {
+        super( ruleConflictResolver );
+    }
 }

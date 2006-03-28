@@ -27,6 +27,7 @@ import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.EvaluatorFactory;
+import org.drools.common.AgendaItem;
 import org.drools.examples.waltz.Edge;
 import org.drools.examples.waltz.Stage;
 import org.drools.spi.Activation;
@@ -39,6 +40,7 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.MockField;
 import org.drools.spi.Tuple;
+
 /**
  * This test demonstrate the following failures:
  * 1. Or constraint to produce matches when Or constraint is specified at the beging. 
@@ -52,273 +54,363 @@ import org.drools.spi.Tuple;
  */
 public class OrTest extends TestCase {
 
-	private Evaluator integerEqualEvaluator;
-	private Evaluator integerNotEqualEvaluator;
+    private Evaluator       integerEqualEvaluator;
+    private Evaluator       integerNotEqualEvaluator;
 
-	private ClassObjectType stageType;
+    private ClassObjectType stageType;
 
-	private ClassObjectType edgeType;
+    private ClassObjectType edgeType;
 
-	protected Package pkg;
+    protected Package       pkg;
 
-	private Stage markStage;
-	
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.stageType = new ClassObjectType(Stage.class);
-		this.edgeType = new ClassObjectType(Edge.class);
-		this.integerEqualEvaluator = EvaluatorFactory.getInstance()
-				.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.EQUAL);
-		this.integerNotEqualEvaluator = EvaluatorFactory.getInstance()
-		.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.NOT_EQUAL);
-		this.pkg = new Package("or");
-	}
+    private Stage           markStage;
 
-	/*
-	 */
-	public void testLeapsNeverGetsToConsequenceOrder() throws Exception {
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.stageType = new ClassObjectType( Stage.class );
+        this.edgeType = new ClassObjectType( Edge.class );
+        this.integerEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.INTEGER_TYPE,
+                                                                                  Evaluator.EQUAL );
+        this.integerNotEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.INTEGER_TYPE,
+                                                                                     Evaluator.NOT_EQUAL );
+        this.pkg = new Package( "or" );
+    }
 
-		this.pkg.addRule(this.getNeverGetsToConsequenceRule());
+    /*
+     */
+    public void testLeapsNeverGetsToConsequenceOrder() throws Exception {
 
-		final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
+        this.pkg.addRule( this.getNeverGetsToConsequenceRule() );
+
+        final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
         ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        workingMemory.assertObject( new Stage(Stage.LABELING) );
-        workingMemory.assertObject( new Edge(1000, 1,false, Edge.NIL, Edge.NIL));
-        workingMemory.assertObject( new Edge(1000, 2,false, Edge.NIL, Edge.NIL));
-        workingMemory.assertObject( new Edge(5555, 3,false, Edge.NIL, Edge.NIL));
+        workingMemory.assertObject( new Stage( Stage.LABELING ) );
+        workingMemory.assertObject( new Edge( 1000,
+                                              1,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
+        workingMemory.assertObject( new Edge( 1000,
+                                              2,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
+        workingMemory.assertObject( new Edge( 5555,
+                                              3,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
         workingMemory.fireAllRules();
-        workingMemory.assertObject( new Stage(Stage.DETECT_JUNCTIONS) );
+        workingMemory.assertObject( new Stage( Stage.DETECT_JUNCTIONS ) );
 
         workingMemory.fireAllRules();
-	}
+    }
 
-	/*
-	 */
-	public void testReteooNeverGetsToConsequenceOrder() throws Exception {
+    /*
+     */
+    public void testReteooNeverGetsToConsequenceOrder() throws Exception {
 
-		this.pkg.addRule(this.getNeverGetsToConsequenceRule());
+        this.pkg.addRule( this.getNeverGetsToConsequenceRule() );
 
-		final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
+        final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
         ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        workingMemory.assertObject( new Stage(Stage.LABELING) );
-        workingMemory.assertObject( new Edge(1000, 1,false, Edge.NIL, Edge.NIL));
-        workingMemory.assertObject( new Edge(1000, 2,false, Edge.NIL, Edge.NIL));
-        workingMemory.assertObject( new Edge(5555, 3,false, Edge.NIL, Edge.NIL));
+        workingMemory.assertObject( new Stage( Stage.LABELING ) );
+        workingMemory.assertObject( new Edge( 1000,
+                                              1,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
+        workingMemory.assertObject( new Edge( 1000,
+                                              2,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
+        workingMemory.assertObject( new Edge( 5555,
+                                              3,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
         workingMemory.fireAllRules();
-        workingMemory.assertObject( new Stage(Stage.DETECT_JUNCTIONS) );
+        workingMemory.assertObject( new Stage( Stage.DETECT_JUNCTIONS ) );
 
         workingMemory.fireAllRules();
-	}
+    }
 
-	/*
-	 */
-	public void testLeapsWorkingButCanNotResolveOrObjectInConsequenceOrder() throws Exception {
+    /*
+     */
+    public void testLeapsWorkingButCanNotResolveOrObjectInConsequenceOrder() throws Exception {
 
-		this.pkg.addRule(this.getWorkingButCanNotResolveOrObjectInConsequenceOrder());
+        this.pkg.addRule( this.getWorkingButCanNotResolveOrObjectInConsequenceOrder() );
 
-		final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
+        final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
         ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        workingMemory.assertObject( new Stage(Stage.LABELING) );
-        workingMemory.assertObject( new Edge(1000, 1,false, Edge.NIL, Edge.NIL));
-        workingMemory.assertObject( new Edge(1000, 2,false, Edge.NIL, Edge.NIL));
-        workingMemory.assertObject( new Edge(5555, 3,false, Edge.NIL, Edge.NIL));
+        workingMemory.assertObject( new Stage( Stage.LABELING ) );
+        workingMemory.assertObject( new Edge( 1000,
+                                              1,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
+        workingMemory.assertObject( new Edge( 1000,
+                                              2,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
+        workingMemory.assertObject( new Edge( 5555,
+                                              3,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
         workingMemory.fireAllRules();
-        workingMemory.assertObject( new Stage(Stage.DETECT_JUNCTIONS) );
+        workingMemory.assertObject( new Stage( Stage.DETECT_JUNCTIONS ) );
 
         workingMemory.fireAllRules();
-	}
+    }
 
-	/*
-	 */
-	public void testReteooWorkingButCanNotResolveOrObjectInConsequenceOrder() throws Exception {
+    /*
+     */
+    public void testReteooWorkingButCanNotResolveOrObjectInConsequenceOrder() throws Exception {
 
-		this.pkg.addRule(this.getWorkingButCanNotResolveOrObjectInConsequenceOrder());
+        this.pkg.addRule( this.getWorkingButCanNotResolveOrObjectInConsequenceOrder() );
 
-		final org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        final org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
         ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        workingMemory.assertObject( new Stage(Stage.LABELING) );
-        workingMemory.assertObject( new Edge(1000, 1,false, Edge.NIL, Edge.NIL));
-        workingMemory.assertObject( new Edge(1000, 2,false, Edge.NIL, Edge.NIL));
-        workingMemory.assertObject( new Edge(5555, 3,false, Edge.NIL, Edge.NIL));
+        workingMemory.assertObject( new Stage( Stage.LABELING ) );
+        workingMemory.assertObject( new Edge( 1000,
+                                              1,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
+        workingMemory.assertObject( new Edge( 1000,
+                                              2,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
+        workingMemory.assertObject( new Edge( 5555,
+                                              3,
+                                              false,
+                                              Edge.NIL,
+                                              Edge.NIL ) );
         workingMemory.fireAllRules();
-        workingMemory.assertObject( new Stage(Stage.DETECT_JUNCTIONS) );
+        workingMemory.assertObject( new Stage( Stage.DETECT_JUNCTIONS ) );
 
         workingMemory.fireAllRules();
-	}
+    }
 
+    /*
+     * Test method for
+     * 'org.drools.leaps.ColumnConstraints.evaluateAlphas(FactHandleImpl, Token,
+     * WorkingMemoryImpl)'
+     */
+    public Rule getNeverGetsToConsequenceRule() throws Exception {
+        final Rule rule = new Rule( "NeverGetsToConsequence" );
 
-	/*
-	 * Test method for
-	 * 'org.drools.leaps.ColumnConstraints.evaluateAlphas(FactHandleImpl, Token,
-	 * WorkingMemoryImpl)'
-	 */
-	public Rule getNeverGetsToConsequenceRule() throws Exception {
-		final Rule rule = new Rule("NeverGetsToConsequence");
+        Column stageColumn1 = new Column( 0,
+                                          stageType,
+                                          "stage" );
+        stageColumn1.addConstraint( getLiteralConstraint( stageColumn1,
+                                                          "value",
+                                                          new Integer( Stage.DETECT_JUNCTIONS ),
+                                                          this.integerEqualEvaluator ) );
 
-		Column stageColumn1 = new Column(0, stageType, "stage");
-		stageColumn1
-				.addConstraint(getLiteralConstraint(stageColumn1, "value",
-						new Integer(Stage.DETECT_JUNCTIONS),
-						this.integerEqualEvaluator));
+        Column stageColumn2 = new Column( 0,
+                                          stageType,
+                                          "stage" );
+        stageColumn2.addConstraint( getLiteralConstraint( stageColumn2,
+                                                          "value",
+                                                          new Integer( Stage.LABELING ),
+                                                          this.integerEqualEvaluator ) );
+        Or or = new Or();
+        or.addChild( stageColumn1 );
+        or.addChild( stageColumn2 );
+        rule.addPattern( or );
+        final Declaration stageDeclaration = rule.getDeclaration( "stage" );
 
-		Column stageColumn2 = new Column(0, stageType, "stage");
-		stageColumn2.addConstraint(getLiteralConstraint(stageColumn2, "value",
-				new Integer(Stage.LABELING), this.integerEqualEvaluator));
-		Or or = new Or();
-		or.addChild(stageColumn1);
-		or.addChild(stageColumn2);
-		rule.addPattern(or);
-		final Declaration stageDeclaration = rule.getDeclaration("stage");
+        Column edgeColumn1 = new Column( 1,
+                                         edgeType,
+                                         "edge1" );
+        setFieldDeclaration( edgeColumn1,
+                             "p1",
+                             "edge1p1" );
+        setFieldDeclaration( edgeColumn1,
+                             "p2",
+                             "edge1p2" );
+        rule.addPattern( edgeColumn1 );
+        final Declaration edge1Declaration = rule.getDeclaration( "edge1" );
+        final Declaration edge1P1Declaration = rule.getDeclaration( "edge1p1" );
+        final Declaration edge1P2Declaration = rule.getDeclaration( "edge1p2" );
 
-		Column edgeColumn1 = new Column(1, edgeType, "edge1");
-		setFieldDeclaration(edgeColumn1, "p1", "edge1p1");
-		setFieldDeclaration(edgeColumn1, "p2", "edge1p2");
-		rule.addPattern(edgeColumn1);
-		final Declaration edge1Declaration = rule.getDeclaration("edge1");
-		final Declaration edge1P1Declaration = rule.getDeclaration("edge1p1");
-		final Declaration edge1P2Declaration = rule.getDeclaration("edge1p2");
+        Column edgeColumn2 = new Column( 2,
+                                         edgeType,
+                                         "edge2" );
+        rule.addPattern( edgeColumn2 );
+        final Declaration edge2Declaration = rule.getDeclaration( "edge2" );
+        edgeColumn2.addConstraint( getBoundVariableConstraint( edgeColumn2,
+                                                               "p1",
+                                                               edge1P1Declaration,
+                                                               integerEqualEvaluator ) );
+        edgeColumn2.addConstraint( getBoundVariableConstraint( edgeColumn2,
+                                                               "p2",
+                                                               edge1P2Declaration,
+                                                               integerNotEqualEvaluator ) );
 
-		Column edgeColumn2 = new Column(2, edgeType, "edge2");
-		rule.addPattern(edgeColumn2);
-		final Declaration edge2Declaration = rule.getDeclaration("edge2");
-		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
-				edge1P1Declaration, integerEqualEvaluator));
-		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
-				edge1P2Declaration, integerNotEqualEvaluator));
+        Consequence consequence = new Consequence() {
+            public void evaluate(KnowledgeHelper drools,
+                                 WorkingMemory workingMemory) throws ConsequenceException {
+                try {
+                    Rule rule = drools.getRule();
+                    Tuple tuple = drools.getTuple();
 
-		Consequence consequence = new Consequence() {
-			public void evaluate(Activation activation,
-					WorkingMemory workingMemory) throws ConsequenceException {
-				try {
-					Rule rule = activation.getRule();
-					Tuple tuple = activation.getTuple();
-					KnowledgeHelper drools = new DefaultKnowledgeHelper(rule,
-							tuple, workingMemory);
+                    Stage stage = (Stage) drools.get( stageDeclaration );
 
-					Stage stage = (Stage) drools.get(stageDeclaration);
+                    markStage = stage;
+                } catch ( Exception e ) {
+                    e.printStackTrace();
+                    throw new ConsequenceException( e );
+                }
+            }
 
-					markStage = stage;
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new ConsequenceException(e);
-				}
-			}
+        };
+        rule.setConsequence( consequence );
 
-		};
-		rule.setConsequence(consequence);
+        return rule;
+    }
 
-		return rule;
-	}
+    /*
+     * Test method for
+     * 'org.drools.leaps.ColumnConstraints.evaluateAlphas(FactHandleImpl, Token,
+     * WorkingMemoryImpl)'
+     */
+    public Rule getWorkingButCanNotResolveOrObjectInConsequenceOrder() throws Exception {
+        final Rule rule = new Rule( "WorkingButCanNotResolveOrObjectInConsequence" );
 
-	/*
-	 * Test method for
-	 * 'org.drools.leaps.ColumnConstraints.evaluateAlphas(FactHandleImpl, Token,
-	 * WorkingMemoryImpl)'
-	 */
-	public Rule getWorkingButCanNotResolveOrObjectInConsequenceOrder() throws Exception {
-		final Rule rule = new Rule("WorkingButCanNotResolveOrObjectInConsequence");
+        Column edgeColumn1 = new Column( 0,
+                                         edgeType,
+                                         "edge1" );
+        setFieldDeclaration( edgeColumn1,
+                             "p1",
+                             "edge1p1" );
+        setFieldDeclaration( edgeColumn1,
+                             "p2",
+                             "edge1p2" );
+        rule.addPattern( edgeColumn1 );
+        final Declaration edge1Declaration = rule.getDeclaration( "edge1" );
+        final Declaration edge1P1Declaration = rule.getDeclaration( "edge1p1" );
+        final Declaration edge1P2Declaration = rule.getDeclaration( "edge1p2" );
 
-		Column edgeColumn1 = new Column(0, edgeType, "edge1");
-		setFieldDeclaration(edgeColumn1, "p1", "edge1p1");
-		setFieldDeclaration(edgeColumn1, "p2", "edge1p2");
-		rule.addPattern(edgeColumn1);
-		final Declaration edge1Declaration = rule.getDeclaration("edge1");
-		final Declaration edge1P1Declaration = rule.getDeclaration("edge1p1");
-		final Declaration edge1P2Declaration = rule.getDeclaration("edge1p2");
+        Column edgeColumn2 = new Column( 1,
+                                         edgeType,
+                                         "edge2" );
+        rule.addPattern( edgeColumn2 );
+        final Declaration edge2Declaration = rule.getDeclaration( "edge2" );
+        edgeColumn2.addConstraint( getBoundVariableConstraint( edgeColumn2,
+                                                               "p1",
+                                                               edge1P1Declaration,
+                                                               integerEqualEvaluator ) );
+        edgeColumn2.addConstraint( getBoundVariableConstraint( edgeColumn2,
+                                                               "p2",
+                                                               edge1P2Declaration,
+                                                               integerNotEqualEvaluator ) );
 
-		Column edgeColumn2 = new Column(1, edgeType, "edge2");
-		rule.addPattern(edgeColumn2);
-		final Declaration edge2Declaration = rule.getDeclaration("edge2");
-		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p1",
-				edge1P1Declaration, integerEqualEvaluator));
-		edgeColumn2.addConstraint(getBoundVariableConstraint(edgeColumn2, "p2",
-				edge1P2Declaration, integerNotEqualEvaluator));
+        Column stageColumn1 = new Column( 2,
+                                          stageType,
+                                          "stage1" );
+        stageColumn1.addConstraint( getLiteralConstraint( stageColumn1,
+                                                          "value",
+                                                          new Integer( Stage.DETECT_JUNCTIONS ),
+                                                          this.integerEqualEvaluator ) );
 
-		Column stageColumn1 = new Column(2, stageType, "stage1");
-		stageColumn1
-				.addConstraint(getLiteralConstraint(stageColumn1, "value",
-						new Integer(Stage.DETECT_JUNCTIONS),
-						this.integerEqualEvaluator));
+        Column stageColumn2 = new Column( 2,
+                                          stageType,
+                                          "stage" );
+        stageColumn2.addConstraint( getLiteralConstraint( stageColumn2,
+                                                          "value",
+                                                          new Integer( Stage.LABELING ),
+                                                          this.integerEqualEvaluator ) );
+        Or or = new Or();
+        or.addChild( stageColumn1 );
+        or.addChild( stageColumn2 );
+        rule.addPattern( or );
+        final Declaration stageDeclaration = rule.getDeclaration( "stage" );
 
-		Column stageColumn2 = new Column(2, stageType, "stage");
-		stageColumn2.addConstraint(getLiteralConstraint(stageColumn2, "value",
-				new Integer(Stage.LABELING), this.integerEqualEvaluator));
-		Or or = new Or();
-		or.addChild(stageColumn1);
-		or.addChild(stageColumn2);
-		rule.addPattern(or);
-		final Declaration stageDeclaration = rule.getDeclaration("stage");
+        Consequence consequence = new Consequence() {
+            public void evaluate(KnowledgeHelper drools,
+                                 WorkingMemory workingMemory) throws ConsequenceException {
+                try {
+                    Rule rule = drools.getRule();
+                    Tuple tuple = drools.getTuple();
 
-		Consequence consequence = new Consequence() {
-			public void evaluate(Activation activation,
-					WorkingMemory workingMemory) throws ConsequenceException {
-				try {
-					Rule rule = activation.getRule();
-					Tuple tuple = activation.getTuple();
-					KnowledgeHelper drools = new DefaultKnowledgeHelper(rule,
-							tuple, workingMemory);
+                    Stage stage = (Stage) drools.get( stageDeclaration );
+                    markStage = stage;
+                } catch ( Exception e ) {
+                    e.printStackTrace();
+                    throw new ConsequenceException( e );
+                }
+            }
 
-					Stage stage = (Stage) drools.get(stageDeclaration);
-					markStage = stage;
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new ConsequenceException(e);
-				}
-			}
+        };
+        rule.setConsequence( consequence );
 
-		};
-		rule.setConsequence(consequence);
+        return rule;
+    }
 
-		return rule;
-	}
+    private void setFieldDeclaration(Column column,
+                                     String fieldName,
+                                     String identifier) throws IntrospectionException {
+        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-	private void setFieldDeclaration(Column column, String fieldName,
-			String identifier) throws IntrospectionException {
-		Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                            fieldName );
 
-		FieldExtractor extractor = new ClassFieldExtractor(clazz, fieldName);
+        column.addDeclaration( identifier,
+                               extractor );
+    }
 
-		column.addDeclaration(identifier, extractor);
-	}
+    private FieldConstraint getLiteralConstraint(Column column,
+                                                 String fieldName,
+                                                 Object fieldValue,
+                                                 Evaluator evaluator) throws IntrospectionException {
+        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-	private FieldConstraint getLiteralConstraint(Column column,
-			String fieldName, Object fieldValue, Evaluator evaluator)
-			throws IntrospectionException {
-		Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        int index = getIndex( clazz,
+                              fieldName );
 
-		int index = getIndex(clazz, fieldName);
+        FieldValue field = new MockField( fieldValue );
 
-		FieldValue field = new MockField(fieldValue);
+        FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                            fieldName );
 
-		FieldExtractor extractor = new ClassFieldExtractor(clazz, fieldName);
+        return new LiteralConstraint( field,
+                                      extractor,
+                                      evaluator );
+    }
 
-		return new LiteralConstraint(field, extractor, evaluator);
-	}
+    private FieldConstraint getBoundVariableConstraint(Column column,
+                                                       String fieldName,
+                                                       Declaration declaration,
+                                                       Evaluator evaluator) throws IntrospectionException {
+        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-	private FieldConstraint getBoundVariableConstraint(Column column,
-			String fieldName, Declaration declaration, Evaluator evaluator)
-			throws IntrospectionException {
-		Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                            fieldName );
 
-		FieldExtractor extractor = new ClassFieldExtractor(clazz, fieldName);
+        return new BoundVariableConstraint( extractor,
+                                            declaration,
+                                            evaluator );
+    }
 
-		return new BoundVariableConstraint(extractor, declaration, evaluator);
-	}
-
-	public static int getIndex(Class clazz, String name)
-			throws IntrospectionException {
-		PropertyDescriptor[] descriptors = Introspector.getBeanInfo(clazz)
-				.getPropertyDescriptors();
-		for (int i = 0; i < descriptors.length; i++) {
-			if (descriptors[i].getName().equals(name)) {
-				return i;
-			}
-		}
-		return -1;
-	}
+    public static int getIndex(Class clazz,
+                               String name) throws IntrospectionException {
+        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
+        for ( int i = 0; i < descriptors.length; i++ ) {
+            if ( descriptors[i].getName().equals( name ) ) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
 }

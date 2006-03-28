@@ -24,6 +24,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.Consequence;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -42,8 +43,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 		this.ruleBase = new RuleBaseImpl();
 		this.workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
 		this.consequence = new Consequence() {
-			public void evaluate(Activation activation,
-					WorkingMemory workingMemory) {
+			public void evaluate(KnowledgeHelper knowledgeHelper,
+			                     WorkingMemory workingMemory) {
 				// do nothing
 			}
 		};

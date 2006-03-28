@@ -32,6 +32,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceException;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.util.LinkedListNode;
 import org.drools.util.PriorityQueue;
 
@@ -306,7 +307,8 @@ public class Agenda
         eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation );
         
         try {
-            activation.getRule().getConsequence().evaluate( activation, this.workingMemory );
+            KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation, workingMemory );
+            activation.getRule().getConsequence().evaluate( knowledgeHelper, this.workingMemory );
         } catch ( Exception e ) {
             throw new  ConsequenceException( e );
         }            

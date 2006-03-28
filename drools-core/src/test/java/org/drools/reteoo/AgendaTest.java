@@ -32,6 +32,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -62,8 +63,8 @@ public class AgendaTest extends DroolsTestCase {
         // Add consequence. Notice here the context here for the add to ageyunda
         // is itself
         rule1.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(Activation activation,
-                               WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
                 // do nothing
             }
         } );
@@ -100,8 +101,8 @@ public class AgendaTest extends DroolsTestCase {
         final Map results = new HashMap();
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(Activation activation,
-                               WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
                 results.put( "fired",
                              new Boolean( true ) );
             }
@@ -193,8 +194,8 @@ public class AgendaTest extends DroolsTestCase {
 
         // create the consequence
         Consequence consequence = new Consequence() {
-            public void evaluate(Activation activation,
-                               WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -399,8 +400,8 @@ public class AgendaTest extends DroolsTestCase {
 
         // create the consequence
         Consequence consequence = new Consequence() {
-            public void evaluate(Activation activation,
-                               WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
                 // do nothing
             }
         };

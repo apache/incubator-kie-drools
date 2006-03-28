@@ -34,227 +34,220 @@ import org.drools.spi.Tuple;
  * @author Alexander Bagerman
  * 
  */
-class Token implements Tuple, Serializable {
+class Token
+    implements
+    Tuple,
+    Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long    serialVersionUID   = 1L;
 
-	private WorkingMemoryImpl workingMemory;
+    private WorkingMemoryImpl    workingMemory;
 
-	private final FactHandleImpl dominantFactHandle;
+    private final FactHandleImpl dominantFactHandle;
 
-	private RuleHandle currentRuleHandle = null;
+    private RuleHandle           currentRuleHandle  = null;
 
-	private FactHandleImpl[] currentFactHandles = new FactHandleImpl[0];
+    private FactHandleImpl[]     currentFactHandles = new FactHandleImpl[0];
 
-	boolean resume = false;
+    boolean                      resume             = false;
 
-	private Iterator rules = null;
+    private Iterator             rules              = null;
 
-	/**
-	 * agendaItem parts
-	 */
-	public Token(WorkingMemoryImpl workingMemory, FactHandleImpl factHandle) {
-		this.workingMemory = workingMemory;
-		this.dominantFactHandle = factHandle;
-	}
+    /**
+     * agendaItem parts
+     */
+    public Token(WorkingMemoryImpl workingMemory,
+                 FactHandleImpl factHandle) {
+        this.workingMemory = workingMemory;
+        this.dominantFactHandle = factHandle;
+    }
 
-	private Iterator rulesIterator() {
-		if (this.rules == null) {
-			if (this.dominantFactHandle != null) {
-				this.rules = this.workingMemory.getFactTable(
-						this.dominantFactHandle.getObject().getClass())
-						.getRulesIterator();
-			} else {
-				this.rules = this.workingMemory
-						.getNoRequiredColumnsLeapsRules();
-			}
-		}
-		return this.rules;
-	}
+    private Iterator rulesIterator() {
+        if ( this.rules == null ) {
+            if ( this.dominantFactHandle != null ) {
+                this.rules = this.workingMemory.getFactTable( this.dominantFactHandle.getObject().getClass() ).getRulesIterator();
+            } else {
+                this.rules = this.workingMemory.getNoRequiredColumnsLeapsRules();
+            }
+        }
+        return this.rules;
+    }
 
-	public RuleHandle nextRuleHandle() {
-		this.currentRuleHandle = (RuleHandle) this.rules.next();
-		this.currentFactHandles = new FactHandleImpl[this.currentRuleHandle
-				.getLeapsRule().getNumberOfColumns()];
-		return this.currentRuleHandle;
-	}
+    public RuleHandle nextRuleHandle() {
+        this.currentRuleHandle = (RuleHandle) this.rules.next();
+        this.currentFactHandles = new FactHandleImpl[this.currentRuleHandle.getLeapsRule().getNumberOfColumns()];
+        return this.currentRuleHandle;
+    }
 
-	/**
-	 * 
-	 * @param memory
-	 * @return indicator if there are more rules
-	 */
+    /**
+     * 
+     * @param memory
+     * @return indicator if there are more rules
+     */
 
-	public boolean hasNextRuleHandle() {
-		boolean ret = false;
-		if (this.rulesIterator() != null) {
-			// starting with calling rulesIterator() to make sure that we picks
-			// rules because fact can be asserted before rules added
-			long levelId = this.workingMemory.getIdLastFireAllAt();
-			if (this.dominantFactHandle == null
-					|| this.dominantFactHandle.getId() >= levelId) {
-				ret = this.rules.hasNext();
-			} else {
-				// then we need to skip rules that have id lower than
-				// workingMemory.idLastFireAllAt
-				boolean done = false;
-				while (!done) {
-					if (this.rules.hasNext()) {
-						if (((RuleHandle) ((TableIterator) this.rules)
-								.peekNext()).getId() > levelId) {
-							ret = true;
-							done = true;
-						} else {
-							this.rules.next();
-						}
-					} else {
-						ret = false;
-						done = true;
-					}
-				}
-			}
-		}
-		return ret;
-	}
+    public boolean hasNextRuleHandle() {
+        boolean ret = false;
+        if ( this.rulesIterator() != null ) {
+            // starting with calling rulesIterator() to make sure that we picks
+            // rules because fact can be asserted before rules added
+            long levelId = this.workingMemory.getIdLastFireAllAt();
+            if ( this.dominantFactHandle == null || this.dominantFactHandle.getId() >= levelId ) {
+                ret = this.rules.hasNext();
+            } else {
+                // then we need to skip rules that have id lower than
+                // workingMemory.idLastFireAllAt
+                boolean done = false;
+                while ( !done ) {
+                    if ( this.rules.hasNext() ) {
+                        if ( ((RuleHandle) ((TableIterator) this.rules).peekNext()).getId() > levelId ) {
+                            ret = true;
+                            done = true;
+                        } else {
+                            this.rules.next();
+                        }
+                    } else {
+                        ret = false;
+                        done = true;
+                    }
+                }
+            }
+        }
+        return ret;
+    }
 
-	public int hashCode() {
-		if (this.dominantFactHandle != null) {
-			return this.dominantFactHandle.hashCode();
-		} else {
-			return 0;
-		}
-	}
+    public int hashCode() {
+        if ( this.dominantFactHandle != null ) {
+            return this.dominantFactHandle.hashCode();
+        } else {
+            return 0;
+        }
+    }
 
-	public void set(int idx, FactHandleImpl factHandle) {
-		this.currentFactHandles[idx] = factHandle;
-	}
+    public void set(int idx,
+                    FactHandleImpl factHandle) {
+        this.currentFactHandles[idx] = factHandle;
+    }
 
-	public FactHandleImpl getDominantFactHandle() {
-		return this.dominantFactHandle;
-	}
+    public FactHandleImpl getDominantFactHandle() {
+        return this.dominantFactHandle;
+    }
 
-	public RuleHandle getCurrentRuleHandle() {
-		return this.currentRuleHandle;
-	}
+    public RuleHandle getCurrentRuleHandle() {
+        return this.currentRuleHandle;
+    }
 
-	public boolean isResume() {
-		return this.resume;
-	}
+    public boolean isResume() {
+        return this.resume;
+    }
 
-	public void setResume(boolean resume) {
-		this.resume = resume;
-	}
+    public void setResume(boolean resume) {
+        this.resume = resume;
+    }
 
-	/**
-	 * We always have only one Tuple per fact handle hence match on handle id
-	 * 
-	 * @see Object
-	 */
-	public boolean equals(Object that) {
-		if (this == that)
-			return true;
-		if (!(that instanceof Token))
-			return false;
-		if (this.dominantFactHandle != null) {
-			if (((Token) that).dominantFactHandle != null) {
-				return this.dominantFactHandle.getId() == ((Token) that).dominantFactHandle
-						.getId();
-			} else {
-				return false;
-			}
-		} else {
-			return ((Token) that).dominantFactHandle == null;
-		}
-	}
+    /**
+     * We always have only one Tuple per fact handle hence match on handle id
+     * 
+     * @see Object
+     */
+    public boolean equals(Object that) {
+        if ( this == that ) return true;
+        if ( !(that instanceof Token) ) return false;
+        if ( this.dominantFactHandle != null ) {
+            if ( ((Token) that).dominantFactHandle != null ) {
+                return this.dominantFactHandle.getId() == ((Token) that).dominantFactHandle.getId();
+            } else {
+                return false;
+            }
+        } else {
+            return ((Token) that).dominantFactHandle == null;
+        }
+    }
 
-	/**
-	 * Retrieve the value at position
-	 * 
-	 * @param position
-	 * @return The currently bound <code>Object</code> value.
-	 * @see org.drools.spi.Tuple
-	 */
-	public FactHandle get(int idx) {
-		return this.currentFactHandles[idx];
-	}
+    /**
+     * Retrieve the value at position
+     * 
+     * @param position
+     * @return The currently bound <code>Object</code> value.
+     * @see org.drools.spi.Tuple
+     */
+    public FactHandle get(int idx) {
+        return this.currentFactHandles[idx];
+    }
 
-	/**
-	 * @see org.drools.spi.Tuple
-	 */
-	public FactHandle get(Declaration declaration) {
-		return this.get(declaration.getColumn());
-	}
+    /**
+     * @see org.drools.spi.Tuple
+     */
+    public FactHandle get(Declaration declaration) {
+        return this.get( declaration.getColumn() );
+    }
 
-	/**
-	 * @see org.drools.spi.Tuple
-	 */
-	public FactHandle[] getFactHandles() {
-		return this.currentFactHandles;
-	}
+    /**
+     * @see org.drools.spi.Tuple
+     */
+    public FactHandle[] getFactHandles() {
+        return this.currentFactHandles;
+    }
 
-	/**
-	 * Returns a reference to the <code>WorkingMemory</code> associated with
-	 * this object.
-	 * 
-	 * @return WorkingMemory
-	 */
-	public WorkingMemory getWorkingMemory() {
-		return this.workingMemory;
-	}
+    /**
+     * Returns a reference to the <code>WorkingMemory</code> associated with
+     * this object.
+     * 
+     * @return WorkingMemory
+     */
+    public WorkingMemory getWorkingMemory() {
+        return this.workingMemory;
+    }
 
-	/**
-	 * @see java.lang.Object
-	 */
-	public String toString() {
-		String ret = "TOKEN [" + this.dominantFactHandle + "]\n" + "\tRULE : "
-				+ this.currentRuleHandle + "\n";
-		if (this.currentFactHandles != null) {
-			for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
-				ret = ret
-						+ ((i == this.currentRuleHandle.getDominantPosition()) ? "***"
-								: "") + "\t" + i + " -> "
-						+ this.currentFactHandles[i].getObject() + "\n";
-			}
-		}
-		return ret;
-	}
+    /**
+     * @see java.lang.Object
+     */
+    public String toString() {
+        String ret = "TOKEN [" + this.dominantFactHandle + "]\n" + "\tRULE : " + this.currentRuleHandle + "\n";
+        if ( this.currentFactHandles != null ) {
+            for ( int i = 0, length = this.currentFactHandles.length; i < length; i++ ) {
+                ret = ret + ((i == this.currentRuleHandle.getDominantPosition()) ? "***" : "") + "\t" + i + " -> " + this.currentFactHandles[i].getObject() + "\n";
+            }
+        }
+        return ret;
+    }
 
-	/**
-	 * creates lightweight tuple suitable for agendaItem
-	 * 
-	 * @return LeapsTuple
-	 */
-	LeapsTuple getTuple(PropagationContextImpl context) {
-		return new LeapsTuple(this.currentFactHandles, this.currentRuleHandle
-				.getLeapsRule(), context);
-	}
+    /**
+     * creates lightweight tuple suitable for agendaItem
+     * 
+     * @return LeapsTuple
+     */
+    LeapsTuple getTuple(PropagationContextImpl context) {
+        return new LeapsTuple( this.currentFactHandles,
+                               this.currentRuleHandle.getLeapsRule(),
+                               context );
+    }
 
-	/**
-	 * Determine if this tuple depends upon a specified object.
-	 * 
-	 * @param handle
-	 *            The object handle to test.
-	 * 
-	 * @return <code>true</code> if this tuple depends upon the specified
-	 *         object, otherwise <code>false</code>.
-	 */
-	public boolean dependsOn(FactHandle handle) {
-		for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
-			if (this.currentFactHandles[i].equals(handle)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Determine if this tuple depends upon a specified object.
+     * 
+     * @param handle
+     *            The object handle to test.
+     * 
+     * @return <code>true</code> if this tuple depends upon the specified
+     *         object, otherwise <code>false</code>.
+     */
+    public boolean dependsOn(FactHandle handle) {
+        for ( int i = 0, length = this.currentFactHandles.length; i < length; i++ ) {
+            if ( this.currentFactHandles[i].equals( handle ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Do nothing because this tuple never gets to agendaItem stage. Another one -
-	 * LeapsTuple - is created to take part in agendaItem processing
-	 * 
-	 * @see getTuple()
-	 * @see org.drools.spi.Tuple
-	 */
-	public void setActivation(Activation activation) {
-		// do nothing
-	}
+    /**
+     * Do nothing because this tuple never gets to agendaItem stage. Another one -
+     * LeapsTuple - is created to take part in agendaItem processing
+     * 
+     * @see getTuple()
+     * @see org.drools.spi.Tuple
+     */
+    public void setActivation(Activation activation) {
+        // do nothing
+    }
 }

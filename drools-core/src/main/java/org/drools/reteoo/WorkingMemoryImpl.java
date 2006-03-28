@@ -38,6 +38,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.DroolsQuery;
 import org.drools.common.Agenda;
 import org.drools.common.EventSupport;
+import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.LogicalDependency;
 import org.drools.common.PropagationContextImpl;
 import org.drools.event.AgendaEventListener;
@@ -66,6 +67,7 @@ import org.drools.util.PrimitiveLongStack;
 public class WorkingMemoryImpl
     implements
     WorkingMemory,
+    InternalWorkingMemoryActions,
     EventSupport,
     PropertyChangeListener {
     // ------------------------------------------------------------
@@ -402,11 +404,11 @@ public class WorkingMemoryImpl
                              null );
     }
 
-    FactHandle assertObject(Object object,
-                            boolean dynamic,
-                            boolean logical,
-                            Rule rule,
-                            Activation activation) throws FactException {
+    public FactHandle assertObject(Object object,
+                                   boolean dynamic,
+                                   boolean logical,
+                                   Rule rule,
+                                   Activation activation) throws FactException {
         // check if the object already exists in the WM
         FactHandleImpl handle = (FactHandleImpl) this.identityMap.get( object );
 

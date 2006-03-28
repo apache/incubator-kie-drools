@@ -29,111 +29,114 @@ import org.drools.rule.Rule;
  * 
  */
 class LeapsRule {
-	Rule rule;
+    Rule                      rule;
 
-	final ColumnConstraints[] columnConstraints;
+    final ColumnConstraints[] columnConstraints;
 
-	final ColumnConstraints[] notColumnConstraints;
+    final ColumnConstraints[] notColumnConstraints;
 
-	final ColumnConstraints[] existsColumnConstraints;
+    final ColumnConstraints[] existsColumnConstraints;
 
-	final EvalCondition[] evalConditions;
-	
-	boolean notColumnsPresent;
+    final EvalCondition[]     evalConditions;
 
-	boolean existsColumnsPresent;
-	
-	boolean evalCoditionsPresent;
+    boolean                   notColumnsPresent;
 
-	final Class[] existsNotsClasses;
+    boolean                   existsColumnsPresent;
 
-	public LeapsRule(Rule rule, ArrayList columns, ArrayList notColumns,
-			ArrayList existsColumns, ArrayList evalConditions) {
-		this.rule = rule;
-		this.columnConstraints = (ColumnConstraints[]) columns.toArray(new ColumnConstraints[0]);
-		this.notColumnConstraints = (ColumnConstraints[]) notColumns.toArray(new ColumnConstraints[0]);
-		this.existsColumnConstraints = (ColumnConstraints[]) existsColumns.toArray(new ColumnConstraints[0]);
-		this.evalConditions = (EvalCondition[]) evalConditions.toArray(new EvalCondition[0]);
-		this.notColumnsPresent = (this.notColumnConstraints.length != 0);
-		this.existsColumnsPresent = (this.existsColumnConstraints.length != 0);
-		this.evalCoditionsPresent = (this.evalConditions.length != 0);
+    boolean                   evalCoditionsPresent;
 
-		ArrayList classes = new ArrayList();
-		for (int i = 0; i < this.notColumnConstraints.length; i++) {
-			if (classes.contains(this.notColumnConstraints[i].getClassType())) {
-				classes.add(this.notColumnConstraints[i].getClassType());
-			}
-		}
-		for (int i = 0; i < this.existsColumnConstraints.length; i++) {
-			if (!classes.contains(this.existsColumnConstraints[i].getClassType())) {
-				classes.add(this.existsColumnConstraints[i].getClassType());
-			}
-		}
+    final Class[]             existsNotsClasses;
 
-		this.existsNotsClasses = (Class[]) classes.toArray(new Class[0]);
-	}
+    public LeapsRule(Rule rule,
+                     ArrayList columns,
+                     ArrayList notColumns,
+                     ArrayList existsColumns,
+                     ArrayList evalConditions) {
+        this.rule = rule;
+        this.columnConstraints = (ColumnConstraints[]) columns.toArray( new ColumnConstraints[0] );
+        this.notColumnConstraints = (ColumnConstraints[]) notColumns.toArray( new ColumnConstraints[0] );
+        this.existsColumnConstraints = (ColumnConstraints[]) existsColumns.toArray( new ColumnConstraints[0] );
+        this.evalConditions = (EvalCondition[]) evalConditions.toArray( new EvalCondition[0] );
+        this.notColumnsPresent = (this.notColumnConstraints.length != 0);
+        this.existsColumnsPresent = (this.existsColumnConstraints.length != 0);
+        this.evalCoditionsPresent = (this.evalConditions.length != 0);
 
-	Rule getRule() {
-		return this.rule;
-	}
+        ArrayList classes = new ArrayList();
+        for ( int i = 0; i < this.notColumnConstraints.length; i++ ) {
+            if ( classes.contains( this.notColumnConstraints[i].getClassType() ) ) {
+                classes.add( this.notColumnConstraints[i].getClassType() );
+            }
+        }
+        for ( int i = 0; i < this.existsColumnConstraints.length; i++ ) {
+            if ( !classes.contains( this.existsColumnConstraints[i].getClassType() ) ) {
+                classes.add( this.existsColumnConstraints[i].getClassType() );
+            }
+        }
 
-	int getNumberOfColumns() {
-		return this.columnConstraints.length;
-	}
+        this.existsNotsClasses = (Class[]) classes.toArray( new Class[0] );
+    }
 
-	int getNumberOfNotColumns() {
-		return this.notColumnConstraints.length;
-	}
+    Rule getRule() {
+        return this.rule;
+    }
 
-	int getNumberOfExistsColumns() {
-		return this.existsColumnConstraints.length;
-	}
+    int getNumberOfColumns() {
+        return this.columnConstraints.length;
+    }
 
-	int getNumberOfEvalConditions() {
-		return this.evalConditions.length;
-	}
-	
-	Class getColumnClassObjectTypeAtPosition(int idx) {
-		return this.columnConstraints[idx].getClassType();
-	}
+    int getNumberOfNotColumns() {
+        return this.notColumnConstraints.length;
+    }
 
-	ColumnConstraints getColumnConstraintsAtPosition(int idx) {
-		return this.columnConstraints[idx];
-	}
+    int getNumberOfExistsColumns() {
+        return this.existsColumnConstraints.length;
+    }
 
-	ColumnConstraints[] getNotColumnConstraints() {
-		return this.notColumnConstraints;
-	}
+    int getNumberOfEvalConditions() {
+        return this.evalConditions.length;
+    }
 
-	ColumnConstraints[] getExistsColumnConstraints() {
-		return this.existsColumnConstraints;
-	}
+    Class getColumnClassObjectTypeAtPosition(int idx) {
+        return this.columnConstraints[idx].getClassType();
+    }
 
-	EvalCondition[] getEvalConditions() {
-		return this.evalConditions;
-	}
+    ColumnConstraints getColumnConstraintsAtPosition(int idx) {
+        return this.columnConstraints[idx];
+    }
 
-	boolean containsNotColumns() {
-		return this.notColumnsPresent;
-	}
+    ColumnConstraints[] getNotColumnConstraints() {
+        return this.notColumnConstraints;
+    }
 
-	boolean containsExistsColumns() {
-		return this.existsColumnsPresent;
-	}
-	
-	boolean containsEvalConditions() {
-		return this.evalCoditionsPresent;
-	}
-	
-	public int hashCode() {
-		return this.rule.hashCode();
-	}
+    ColumnConstraints[] getExistsColumnConstraints() {
+        return this.existsColumnConstraints;
+    }
 
-	public boolean equals(Object that) {
-		return this == that;
-	}
+    EvalCondition[] getEvalConditions() {
+        return this.evalConditions;
+    }
 
-	Class[] getExistsNotColumnsClasses() {
-		return this.existsNotsClasses;
-	}
+    boolean containsNotColumns() {
+        return this.notColumnsPresent;
+    }
+
+    boolean containsExistsColumns() {
+        return this.existsColumnsPresent;
+    }
+
+    boolean containsEvalConditions() {
+        return this.evalCoditionsPresent;
+    }
+
+    public int hashCode() {
+        return this.rule.hashCode();
+    }
+
+    public boolean equals(Object that) {
+        return this == that;
+    }
+
+    Class[] getExistsNotColumnsClasses() {
+        return this.existsNotsClasses;
+    }
 }

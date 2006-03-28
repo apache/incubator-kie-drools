@@ -27,65 +27,67 @@ import org.drools.FactHandle;
  * @author Alexander Bagerman
  * 
  */
-public class Handle implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Handle
+    implements
+    Serializable {
+    private static final long serialVersionUID = 1L;
 
-	// object to handle
-	final private Object object;
+    // object to handle
+    final private Object      object;
 
-	final private long id;
+    final private long        id;
 
-	/**
-	 * creates a handle for object
-	 * 
-	 * @param id
-	 *            that is used to identify the object
-	 * @param object
-	 *            to handle
-	 */
-	public Handle(long id, Object object) {
-		this.id = id;
-		this.object = object;
-	}
+    /**
+     * creates a handle for object
+     * 
+     * @param id
+     *            that is used to identify the object
+     * @param object
+     *            to handle
+     */
+    public Handle(long id,
+                  Object object) {
+        this.id = id;
+        this.object = object;
+    }
 
-	/**
-	 * @return id of the object
-	 */
-	public long getId() {
-		return this.id;
-	}
+    /**
+     * @return id of the object
+     */
+    public long getId() {
+        return this.id;
+    }
 
-	/**
-	 * Leaps handles considered equal if ids match and content points to the
-	 * same object.
-	 */
-	public boolean equals(Object that) {
-		return this.id == ((Handle) that).id
-				&& this.object == ((Handle) that).object;
-	}
+    /**
+     * Leaps handles considered equal if ids match and content points to the
+     * same object.
+     */
+    public boolean equals(Object that) {
+        return this.id == ((Handle) that).id && this.object == ((Handle) that).object;
+    }
 
-	/**
-	 * @return object being handled
-	 */
-	public Object getObject() {
-		return this.object;
-	}
+    /**
+     * @return object being handled
+     */
+    public Object getObject() {
+        return this.object;
+    }
 
-	public int hashCode() {
-		return (int) this.id;
-	}
+    public int hashCode() {
+        return (int) this.id;
+    }
 
-	/**
-	 * @see FactHandle
-	 */
-	public long getRecency() {
-		return this.id;
-	}
+    /**
+     * @see FactHandle
+     */
+    public long getRecency() {
+        return this.id;
+    }
 
-	/**
-	 * @see java.lang.Object
-	 */
-	public String toString() {
-		return "id=" + this.id + " [" + this.object + "]";
-	}
+    /**
+     * @see java.lang.Object
+     */
+    public String toString() {
+        return "id=" + this.id + " [" + this.object + "]";
+    }
 }

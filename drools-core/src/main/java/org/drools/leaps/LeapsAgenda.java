@@ -16,7 +16,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
 import org.drools.common.Agenda;
 import org.drools.rule.Query;
 import org.drools.spi.Activation;
@@ -27,33 +26,32 @@ import org.drools.spi.ConsequenceException;
  * 
  */
 public class LeapsAgenda extends Agenda {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7985611305408622557L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7985611305408622557L;
 
-	private WorkingMemoryImpl workingMemory;
+    private WorkingMemoryImpl workingMemory;
 
-	public LeapsAgenda(WorkingMemoryImpl workingMemory) {
-		super(workingMemory);
-		this.workingMemory = workingMemory;
-	}
+    public LeapsAgenda(WorkingMemoryImpl workingMemory) {
+        super( workingMemory );
+        this.workingMemory = workingMemory;
+    }
 
-	public synchronized void fireActivation(Activation activation)
-			throws ConsequenceException {
-		if (activation.getRule() instanceof Query) {
-			// put query results to the working memory location
-			this.workingMemory.addToQueryResults(
-					activation.getRule().getName(), activation.getTuple());
-		} else {
-			// fire regular rule
-			super.fireActivation(activation);
-			// and remove tuple from
-			LeapsTuple tuple = (LeapsTuple) activation.getTuple();
-			Class[] classes = tuple.getLeapsRule().getExistsNotColumnsClasses();
-			for (int i = 0, length = classes.length; i < length; i++) {
-				workingMemory.getFactTable(classes[i]).removeTuple(tuple);
-			}
-		}
-	}
+    public synchronized void fireActivation(Activation activation) throws ConsequenceException {
+        if ( activation.getRule() instanceof Query ) {
+            // put query results to the working memory location
+            this.workingMemory.addToQueryResults( activation.getRule().getName(),
+                                                  activation.getTuple() );
+        } else {
+            // fire regular rule
+            super.fireActivation( activation );
+            // and remove tuple from
+            LeapsTuple tuple = (LeapsTuple) activation.getTuple();
+            Class[] classes = tuple.getLeapsRule().getExistsNotColumnsClasses();
+            for ( int i = 0, length = classes.length; i < length; i++ ) {
+                workingMemory.getFactTable( classes[i] ).removeTuple( tuple );
+            }
+        }
+    }
 }

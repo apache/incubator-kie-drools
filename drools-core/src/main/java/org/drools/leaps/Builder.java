@@ -41,73 +41,77 @@ import org.drools.spi.FieldConstraint;
  * 
  */
 class Builder {
-	/**
-	 * follows RETEOO logic flow but returns leaps rules list
-	 * 
-	 * @param rule
-	 * @return list of leaps rule
-	 * @throws InvalidPatternException
-	 */
-	final protected static List processRule(Rule rule)
-			throws InvalidPatternException {
-		ArrayList leapsRules = new ArrayList();
-		And[] and = rule.getTransformedLhs();
-		for (int i = 0, length = and.length; i < length; i++) {
-			leapsRules.addAll(processRuleForAnd(and[i], rule));
-		}
-		return leapsRules;
-	}
+    /**
+     * follows RETEOO logic flow but returns leaps rules list
+     * 
+     * @param rule
+     * @return list of leaps rule
+     * @throws InvalidPatternException
+     */
+    final protected static List processRule(Rule rule) throws InvalidPatternException {
+        ArrayList leapsRules = new ArrayList();
+        And[] and = rule.getTransformedLhs();
+        for ( int i = 0, length = and.length; i < length; i++ ) {
+            leapsRules.addAll( processRuleForAnd( and[i],
+                                                  rule ) );
+        }
+        return leapsRules;
+    }
 
-	/**
-	 * Creates list of leaps rules for each individual And
-	 * 
-	 * @param and
-	 * @param rule
-	 * @return list of leaps rules for the given And
-	 */
-	final private static List processRuleForAnd(And and, Rule rule) {
-		ColumnConstraints constraints;
-		ArrayList leapsRules = new ArrayList();
-		ArrayList cols = new ArrayList();
-		ArrayList notCols = new ArrayList();
-		ArrayList existsCols = new ArrayList();
-		ArrayList evalConditions = new ArrayList();
-		for (Iterator it = and.getChildren().iterator(); it.hasNext();) {
-			Object object = it.next();
+    /**
+     * Creates list of leaps rules for each individual And
+     * 
+     * @param and
+     * @param rule
+     * @return list of leaps rules for the given And
+     */
+    final private static List processRuleForAnd(And and,
+                                                Rule rule) {
+        ColumnConstraints constraints;
+        ArrayList leapsRules = new ArrayList();
+        ArrayList cols = new ArrayList();
+        ArrayList notCols = new ArrayList();
+        ArrayList existsCols = new ArrayList();
+        ArrayList evalConditions = new ArrayList();
+        for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
+            Object object = it.next();
             if ( object instanceof EvalCondition ) {
                 EvalCondition eval = (EvalCondition) object;
-                evalConditions.add(eval);
+                evalConditions.add( eval );
+            } else {
+                if ( object instanceof Column ) {
+                    constraints = Builder.processColumn( (Column) object );
+                    // create column constraints
+                } else {
+                    // NOTS and EXISTS
+                    GroupElement ce = (GroupElement) object;
+                    while ( !(ce.getChildren().get( 0 ) instanceof Column) ) {
+                        ce = (GroupElement) ce.getChildren().get( 0 );
+                    }
+                    constraints = Builder.processColumn( (Column) ce.getChildren().get( 0 ) );
+                }
+                if ( object instanceof Not ) {
+                    notCols.add( constraints );
+                } else if ( object instanceof Exists ) {
+                    existsCols.add( constraints );
+                } else {
+                    cols.add( constraints );
+                }
             }
-            else {
-				if (object instanceof Column) {
-					constraints = Builder.processColumn((Column) object);
-					// create column constraints
-				} else {
-					// NOTS and EXISTS
-					GroupElement ce = (GroupElement) object;
-					while (!(ce.getChildren().get(0) instanceof Column)) {
-						ce = (GroupElement) ce.getChildren().get(0);
-					}
-					constraints = Builder.processColumn((Column) ce
-							.getChildren().get(0));
-				}
-				if (object instanceof Not) {
-					notCols.add(constraints);
-				} else if (object instanceof Exists) {
-					existsCols.add(constraints);
-				} else {
-					cols.add(constraints);
-				}
-			}
-		}
+        }
 
-		// check eval for presence of required declarations
-		checkEvalUnboundDeclarations(rule, evalConditions);
-		//
-		leapsRules.add(new LeapsRule(rule, cols, notCols, existsCols, evalConditions));
+        // check eval for presence of required declarations
+        checkEvalUnboundDeclarations( rule,
+                                      evalConditions );
+        //
+        leapsRules.add( new LeapsRule( rule,
+                                       cols,
+                                       notCols,
+                                       existsCols,
+                                       evalConditions ) );
 
-		return leapsRules;
-	}
+        return leapsRules;
+    }
 
     /**
      * Make sure the required declarations are previously bound
@@ -115,64 +119,66 @@ class Builder {
      * @param declarations
      * @throws InvalidPatternException
      */
-    static void checkEvalUnboundDeclarations(Rule rule, ArrayList evals) throws InvalidPatternException {
-		List list = new ArrayList();
-		for (Iterator it = evals.iterator(); it.hasNext();) {
-			EvalCondition ec = (EvalCondition) it.next();
-			Declaration[] declarations = ec.getRequiredDeclarations();
-			for (int i = 0, length = declarations.length; i < length; i++) {
-				if (rule.getDeclaration(declarations[i].getIdentifier()) == null) {
-					list.add(declarations[i].getIdentifier());
-				}
-			}
-		}
-        
+    static void checkEvalUnboundDeclarations(Rule rule,
+                                             ArrayList evals) throws InvalidPatternException {
+        List list = new ArrayList();
+        for ( Iterator it = evals.iterator(); it.hasNext(); ) {
+            EvalCondition ec = (EvalCondition) it.next();
+            Declaration[] declarations = ec.getRequiredDeclarations();
+            for ( int i = 0, length = declarations.length; i < length; i++ ) {
+                if ( rule.getDeclaration( declarations[i].getIdentifier() ) == null ) {
+                    list.add( declarations[i].getIdentifier() );
+                }
+            }
+        }
+
         // Make sure the required declarations
         if ( list.size() != 0 ) {
             StringBuffer buffer = new StringBuffer();
             buffer.append( list.get( 0 ) );
             for ( int i = 1, size = list.size(); i < size; i++ ) {
-                buffer.append( ", " + list.get( i )  );
+                buffer.append( ", " + list.get( i ) );
             }
-            
-            throw new InvalidPatternException("Required Declarations not bound: '" + buffer );
+
+            throw new InvalidPatternException( "Required Declarations not bound: '" + buffer );
         }
     }
 
-	/**
-	 * extracts column specific constraints and packages it into
-	 * <code>ColumnConstraints</code>
-	 * 
-	 * @param column
-	 * @param and
-	 * @return leaps packaged ColumnConstraints
-	 */
-	final private static ColumnConstraints processColumn(Column column) {
-		BetaNodeBinder binder;
-		List alphaConstraints = new ArrayList();
-		List betaConstraints = new ArrayList();
+    /**
+     * extracts column specific constraints and packages it into
+     * <code>ColumnConstraints</code>
+     * 
+     * @param column
+     * @param and
+     * @return leaps packaged ColumnConstraints
+     */
+    final private static ColumnConstraints processColumn(Column column) {
+        BetaNodeBinder binder;
+        List alphaConstraints = new ArrayList();
+        List betaConstraints = new ArrayList();
 
-		for (Iterator it = column.getConstraints().iterator(); it.hasNext();) {
+        for ( Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
             Object object = it.next();
-            if (! (object instanceof FieldConstraint ) ) {
+            if ( !(object instanceof FieldConstraint) ) {
                 continue;
             }
-                
+
             FieldConstraint fieldConstraint = (FieldConstraint) object;
             if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
-				alphaConstraints.add(fieldConstraint);
+                alphaConstraints.add( fieldConstraint );
             } else {
-            	betaConstraints.add( fieldConstraint );
+                betaConstraints.add( fieldConstraint );
             }
         }
 
-		if (!betaConstraints.isEmpty()) {
-			binder = new BetaNodeBinder((FieldConstraint[]) betaConstraints
-					.toArray(new FieldConstraint[betaConstraints.size()]));
-		} else {
-			binder = new BetaNodeBinder();
-		}
+        if ( !betaConstraints.isEmpty() ) {
+            binder = new BetaNodeBinder( (FieldConstraint[]) betaConstraints.toArray( new FieldConstraint[betaConstraints.size()] ) );
+        } else {
+            binder = new BetaNodeBinder();
+        }
 
-		return new ColumnConstraints(column, alphaConstraints, binder);
-	}
+        return new ColumnConstraints( column,
+                                      alphaConstraints,
+                                      binder );
+    }
 }

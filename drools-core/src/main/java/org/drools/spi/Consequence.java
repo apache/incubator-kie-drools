@@ -62,5 +62,5 @@ public interface Consequence  extends Invoker {
      *             If an error occurs while attempting to invoke the
      *             consequence.
      */
-    void evaluate(Activation activation, WorkingMemory workingMemory) throws Exception;
+    void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) throws Exception;
 }
