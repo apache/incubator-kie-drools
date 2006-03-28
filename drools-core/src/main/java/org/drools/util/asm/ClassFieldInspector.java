@@ -44,7 +44,7 @@ public class ClassFieldInspector {
         String name = getResourcePath( clazz );
         InputStream stream = clazz.getResourceAsStream(name);
         ClassReader reader = new ClassReader(stream);
-        ClassFieldVisitor visitor = new ClassFieldVisitor(clazz);
+        ClassFieldVisitor visitor = new ClassFieldVisitor(clazz, methods.size());
         reader.accept(visitor, false);
         this.methods.addAll( visitor.getPropertyGetters() );
         this.fieldNames.putAll( visitor.getFieldNameMap() );
@@ -85,9 +85,11 @@ public class ClassFieldInspector {
         private List methodList = new ArrayList();
         private Class clazz;
         private Map fieldNameMap = new HashMap();
+        private int startingIndex = 0;
         
-        ClassFieldVisitor(Class cls) {
+        ClassFieldVisitor(Class cls, int startingIndex) {
             this.clazz = cls;
+            this.startingIndex = startingIndex;
         }
         
         
@@ -110,9 +112,9 @@ public class ClassFieldInspector {
             if ((access & Opcodes.ACC_PUBLIC) > 0) {
                 if (desc.startsWith( "()" ) && ( name.startsWith("get") || name.startsWith("is") ) ) {
                     try {
-                        Method method = clazz.getMethod(name, null);
+                        Method method = clazz.getMethod(name, (Class[]) null);
                         if (method.getReturnType() != void.class) {
-                            int fieldIndex = methodList.size();                                                           
+                            int fieldIndex = this.methodList.size()+this.startingIndex;                                                           
                             addToMapping(method, fieldIndex);
                         }
                     } catch (NoSuchMethodException e) {
