@@ -674,5 +674,31 @@ public abstract class IntegrationCases extends TestCase {
         } catch ( Exception e ) {
             assertEquals( "this should throw an exception", e.getCause().getMessage() );
         }               
-    }      
+    }
+    
+    public void testAgendaGroups() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AgendaGroups.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );   
+               
+        Cheese brie = new Cheese( "brie", 12 );       
+        workingMemory.assertObject( brie );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 4, list.size() );
+        
+        assertEquals( "MAIN", list.get( 0 ) );
+        assertEquals( "group1", list.get( 1 ) );
+        assertEquals( "group1", list.get( 2 ) );
+        assertEquals( "MAIN", list.get( 3 ) );
+        
+    }         
 }
