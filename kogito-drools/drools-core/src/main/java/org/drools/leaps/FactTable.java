@@ -31,143 +31,144 @@ import org.drools.leaps.util.TableOutOfBoundException;
  * 
  */
 class FactTable extends Table {
-	/**
-	 * positive rules are not complete rules but rather its conditions that
-	 * relates by type
-	 */
-	private final RuleTable rules;
+    /**
+     * positive rules are not complete rules but rather its conditions that
+     * relates by type
+     */
+    private final RuleTable rules;
 
-	/**
-	 * dynamic rule management support. used to push facts on stack again after
-	 * fireAllRules by working memory and adding of a new rule after that
-	 */
-	private boolean reseededStack = false;
+    /**
+     * dynamic rule management support. used to push facts on stack again after
+     * fireAllRules by working memory and adding of a new rule after that
+     */
+    private boolean         reseededStack = false;
 
-	/**
-	 * Tuples that are either already on agenda or are very close (missing exists or 
-	 * have not facts matching)
-	 */
-	
-	private final Set tuples;
-	/**
-	 * initializes base LeapsTable with appropriate Comparator and positive and
-	 * negative rules repositories
-	 * 
-	 * @param factConflictResolver
-	 * @param ruleConflictResolver
-	 */
-	public FactTable(ConflictResolver conflictResolver) {
-		super(conflictResolver.getFactConflictResolver());
-		this.rules = new RuleTable(conflictResolver.getRuleConflictResolver());
-		this.tuples = new HashSet();
-	}
+    /**
+     * Tuples that are either already on agenda or are very close (missing exists or 
+     * have not facts matching)
+     */
 
-	/**
-	 * Add rule
-	 * 
-	 * @param workingMemory
-	 * @param ruleHandle
-	 */
-	public void addRule(WorkingMemoryImpl workingMemory, RuleHandle ruleHandle) {
-		this.rules.add(ruleHandle);
-		// push facts back to stack if needed
-		this.checkAndAddFactsToStack(workingMemory);
-	}
+    private final Set       tuples;
 
-	/**
-	 * Remove rule
-	 * 
-	 * @param ruleHandle
-	 */
-	public void removeRule(RuleHandle ruleHandle) {
-		this.rules.remove(ruleHandle);
-	}
+    /**
+     * initializes base LeapsTable with appropriate Comparator and positive and
+     * negative rules repositories
+     * 
+     * @param factConflictResolver
+     * @param ruleConflictResolver
+     */
+    public FactTable(ConflictResolver conflictResolver) {
+        super( conflictResolver.getFactConflictResolver() );
+        this.rules = new RuleTable( conflictResolver.getRuleConflictResolver() );
+        this.tuples = new HashSet();
+    }
 
-	/**
-	 * checks if rule arrived after working memory fireAll event and if no rules
-	 * where added since then. Iterates through all facts asserted (and not
-	 * retracted, they are not here duh) and adds them to the stack.
-	 * 
-	 * @param working
-	 *            memory
-	 * 
-	 */
-	private void checkAndAddFactsToStack(WorkingMemoryImpl workingMemory) {
-		if (this.reseededStack) {
-			this.setReseededStack(false);
-			// let's only add facts below waterline - added before rule is added
-			// rest would be added to stack automatically
-			Handle factHandle = new FactHandleImpl(workingMemory
-					.getIdLastFireAllAt(), null);
-			try {
-				for (Iterator it = this.tailIterator(factHandle, factHandle); it
-						.hasNext();) {
-					workingMemory.pushTokenOnStack(new Token(workingMemory,
-							(FactHandleImpl) it.next()));
-				}
-			} catch (TableOutOfBoundException e) {
-				// should never get here
-			}
-		}
-	}
+    /**
+     * Add rule
+     * 
+     * @param workingMemory
+     * @param ruleHandle
+     */
+    public void addRule(WorkingMemoryImpl workingMemory,
+                        RuleHandle ruleHandle) {
+        this.rules.add( ruleHandle );
+        // push facts back to stack if needed
+        this.checkAndAddFactsToStack( workingMemory );
+    }
 
-	/**
-	 * set indicator if rule was added already after fire all completed
-	 * 
-	 * @param new
-	 *            value
-	 */
-	public void setReseededStack(boolean reseeded) {
-		this.reseededStack = reseeded;
-	}
+    /**
+     * Remove rule
+     * 
+     * @param ruleHandle
+     */
+    public void removeRule(RuleHandle ruleHandle) {
+        this.rules.remove( ruleHandle );
+    }
 
-	/**
-	 * returns an iterator of rule handles to the regular(positive) CEs portions
-	 * of rules were type matches this fact table underlying type
-	 * 
-	 * @return iterator of positive rule handles
-	 */
-	public Iterator getRulesIterator() {
-		return this.rules.iterator();
-	}
+    /**
+     * checks if rule arrived after working memory fireAll event and if no rules
+     * where added since then. Iterates through all facts asserted (and not
+     * retracted, they are not here duh) and adds them to the stack.
+     * 
+     * @param working
+     *            memory
+     * 
+     */
+    private void checkAndAddFactsToStack(WorkingMemoryImpl workingMemory) {
+        if ( this.reseededStack ) {
+            this.setReseededStack( false );
+            // let's only add facts below waterline - added before rule is added
+            // rest would be added to stack automatically
+            Handle factHandle = new FactHandleImpl( workingMemory.getIdLastFireAllAt(),
+                                                    null );
+            try {
+                for ( Iterator it = this.tailIterator( factHandle,
+                                                       factHandle ); it.hasNext(); ) {
+                    workingMemory.pushTokenOnStack( new Token( workingMemory,
+                                                               (FactHandleImpl) it.next() ) );
+                }
+            } catch ( TableOutOfBoundException e ) {
+                // should never get here
+            }
+        }
+    }
 
-	/**
-	 * @see java.lang.Object
-	 */
-	public String toString() {
-		StringBuffer ret = new StringBuffer();
+    /**
+     * set indicator if rule was added already after fire all completed
+     * 
+     * @param new
+     *            value
+     */
+    public void setReseededStack(boolean reseeded) {
+        this.reseededStack = reseeded;
+    }
 
-		for (Iterator it = this.iterator(); it.hasNext();) {
-			FactHandleImpl handle = (FactHandleImpl)it.next(); 
-			ret.append("\n" + handle + "[" + handle.getObject()+"]");
-		}
+    /**
+     * returns an iterator of rule handles to the regular(positive) CEs portions
+     * of rules were type matches this fact table underlying type
+     * 
+     * @return iterator of positive rule handles
+     */
+    public Iterator getRulesIterator() {
+        return this.rules.iterator();
+    }
 
-		ret.append("\nTuples :");
+    /**
+     * @see java.lang.Object
+     */
+    public String toString() {
+        StringBuffer ret = new StringBuffer();
 
-		for (Iterator it = this.tuples.iterator(); it.hasNext();) {
-			ret.append("\n" + it.next());
-		}
+        for ( Iterator it = this.iterator(); it.hasNext(); ) {
+            FactHandleImpl handle = (FactHandleImpl) it.next();
+            ret.append( "\n" + handle + "[" + handle.getObject() + "]" );
+        }
 
-		ret.append("\nRules :");
+        ret.append( "\nTuples :" );
 
-		for (Iterator it = this.rules.iterator(); it.hasNext();) {
-			RuleHandle handle = (RuleHandle) it.next();
-			ret.append("\n\t" + handle.getLeapsRule().getRule().getName()
-					+ "[dominant - " + handle.getDominantPosition() + "]");
-		}
+        for ( Iterator it = this.tuples.iterator(); it.hasNext(); ) {
+            ret.append( "\n" + it.next() );
+        }
 
-		return ret.toString();
-	}
-	
-	Iterator getTuplesIterator() {
-		return this.tuples.iterator();
-	}
-	
-	boolean addTuple(LeapsTuple tuple) {
-		return this.tuples.add(tuple);
-	}
-	
-	void removeTuple(LeapsTuple tuple) {
-		this.tuples.remove(tuple);
-	}
+        ret.append( "\nRules :" );
+
+        for ( Iterator it = this.rules.iterator(); it.hasNext(); ) {
+            RuleHandle handle = (RuleHandle) it.next();
+            ret.append( "\n\t" + handle.getLeapsRule().getRule().getName() + "[dominant - " + handle.getDominantPosition() + "]" );
+        }
+
+        return ret.toString();
+    }
+
+    Iterator getTuplesIterator() {
+        return this.tuples.iterator();
+    }
+
+    boolean addTuple(LeapsTuple tuple) {
+        return this.tuples.add( tuple );
+    }
+
+    void removeTuple(LeapsTuple tuple) {
+        this.tuples.remove( tuple );
+    }
 }

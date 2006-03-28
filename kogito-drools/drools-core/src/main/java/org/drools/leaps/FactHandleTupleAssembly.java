@@ -28,20 +28,21 @@ package org.drools.leaps;
  */
 
 class FactHandleTupleAssembly {
-	final LeapsTuple tuple;
+    final LeapsTuple tuple;
 
-	final int index;
+    final int        index;
 
-	FactHandleTupleAssembly(LeapsTuple tuple, int index) {
-		this.tuple = tuple;
-		this.index = index;
-	}
+    FactHandleTupleAssembly(LeapsTuple tuple,
+                            int index) {
+        this.tuple = tuple;
+        this.index = index;
+    }
 
-	protected int getIndex() {
-		return this.index;
-	}
+    protected int getIndex() {
+        return this.index;
+    }
 
-	protected LeapsTuple getTuple() {
-		return this.tuple;
-	}
+    protected LeapsTuple getTuple() {
+        return this.tuple;
+    }
 }

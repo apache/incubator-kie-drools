@@ -53,6 +53,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Duration;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
@@ -72,8 +73,8 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(Activation activation,
-                               WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
                 data.add( "tested" );
             }
         } );
@@ -129,14 +130,14 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(Activation activation,
+            public void evaluate(KnowledgeHelper knowledgeHelper,
                                WorkingMemory workingMemory) {
                 /* on first invoke add another one to the agenda */
                 if ( data.size() < 3 ) {
                     PropagationContext context2 = new PropagationContextImpl( 0,
                                                                               0,
                                                                               rule,
-                                                                              activation );
+                                                                              knowledgeHelper.getActivation() );
                     ReteTuple tuple2 = new ReteTuple( new FactHandleImpl( 2 ) );
                     node.assertTuple( tuple2, context2, (WorkingMemoryImpl) workingMemory );
                 }
@@ -189,14 +190,14 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(Activation activation,
-                               WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
                 /* on first invoke add another one to the agenda */
                 if ( data.size() < 5 ) {
                     PropagationContext context2 = new PropagationContextImpl( 0,
                                                                               0,
                                                                               rule,
-                                                                              activation );
+                                                                              knowledgeHelper.getActivation() );
                     ReteTuple tuple2 = new ReteTuple( new FactHandleImpl( 2 ) );
                     node.assertTuple( tuple2, context2, (WorkingMemoryImpl) workingMemory );
                 }

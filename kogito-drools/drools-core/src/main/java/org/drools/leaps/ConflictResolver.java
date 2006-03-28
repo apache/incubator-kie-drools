@@ -25,7 +25,7 @@ import java.util.Comparator;
  * 
  */
 public interface ConflictResolver {
-	public Comparator getFactConflictResolver();
+    public Comparator getFactConflictResolver();
 
-	public Comparator getRuleConflictResolver();
+    public Comparator getRuleConflictResolver();
 }

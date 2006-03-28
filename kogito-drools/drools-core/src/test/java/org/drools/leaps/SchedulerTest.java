@@ -26,6 +26,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.Duration;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
@@ -34,112 +35,123 @@ import org.drools.spi.Tuple;
  */
 
 public class SchedulerTest extends DroolsTestCase {
-	public void testScheduledActivation() throws Exception {
-		RuleBase ruleBase = new RuleBaseImpl();
+    public void testScheduledActivation() throws Exception {
+        RuleBase ruleBase = new RuleBaseImpl();
 
-		WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase
-				.newWorkingMemory();
+        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
 
-		final Rule rule = new Rule("scheduled-test-rule");
-		final List data = new ArrayList();
+        final Rule rule = new Rule( "scheduled-test-rule" );
+        final List data = new ArrayList();
 
-		// add consequence
-		rule.setConsequence(new org.drools.spi.Consequence() {
-			public void evaluate(Activation activation,
-					WorkingMemory workingMemory) {
-				data.add("tested");
-			}
-		});
+        // add consequence
+        rule.setConsequence( new org.drools.spi.Consequence() {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
+                data.add( "tested" );
+            }
+        } );
 
-		/* 1/10th of a second */
-		Duration duration = new Duration() {
-			public long getDuration(Tuple tuple) {
-				return 100;
-			}
-		};
-		rule.setDuration(duration);
+        /* 1/10th of a second */
+        Duration duration = new Duration() {
+            public long getDuration(Tuple tuple) {
+                return 100;
+            }
+        };
+        rule.setDuration( duration );
 
-		PropagationContext context = new PropagationContextImpl(0,
-				PropagationContext.ASSERTION, rule, null);
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
+                                                                 rule,
+                                                                 null );
 
-		FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory
-				.assertObject("tuple object");
-		FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
-		factHandlesTuple[0] = tupleFactHandle;
-		
-		ArrayList leapsRules = (ArrayList)Builder.processRule(rule);
-		LeapsTuple tuple = new LeapsTuple(factHandlesTuple, (LeapsRule)leapsRules.get(0), context);
+        FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory.assertObject( "tuple object" );
+        FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
+        factHandlesTuple[0] = tupleFactHandle;
 
-		assertEquals(0, data.size());
+        ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
+        LeapsTuple tuple = new LeapsTuple( factHandlesTuple,
+                                           (LeapsRule) leapsRules.get( 0 ),
+                                           context );
 
-		workingMemory.assertTuple(tuple);
+        assertEquals( 0,
+                      data.size() );
 
-		// sleep for 2 seconds
-		Thread.sleep(300);
+        workingMemory.assertTuple( tuple );
 
-		// now check for update
-		assertEquals(1, data.size());
-	}
+        // sleep for 2 seconds
+        Thread.sleep( 300 );
 
-	public void testDoLoopScheduledActivation() throws Exception {
-		RuleBase ruleBase = new RuleBaseImpl();
+        // now check for update
+        assertEquals( 1,
+                      data.size() );
+    }
 
-		final WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase
-				.newWorkingMemory();
+    public void testDoLoopScheduledActivation() throws Exception {
+        RuleBase ruleBase = new RuleBaseImpl();
 
-		final Rule rule = new Rule("do-loop-scheduled-test-rule");
-		final List data = new ArrayList();
+        final WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
 
-		/* 1/10th of a second */
-		Duration duration = new Duration() {
-			public long getDuration(Tuple tuple) {
-				return 100;
-			}
-		};
+        final Rule rule = new Rule( "do-loop-scheduled-test-rule" );
+        final List data = new ArrayList();
 
-		rule.setDuration(duration);
+        /* 1/10th of a second */
+        Duration duration = new Duration() {
+            public long getDuration(Tuple tuple) {
+                return 100;
+            }
+        };
 
-		// add consequence
-		rule.setConsequence(new org.drools.spi.Consequence() {
-			public void evaluate(Activation activation,
-					WorkingMemory workingMemory) {
-				/* on first invoke add another one to the agenda */
-				if (data.size() < 3) {
-					PropagationContext context2 = new PropagationContextImpl(0,
-							0, rule, activation);
+        rule.setDuration( duration );
 
-					FactHandleImpl tupleFactHandleIn = (FactHandleImpl) workingMemory
-							.assertObject("tuple object in");
-					FactHandleImpl[] factHandlesTupleIn = new FactHandleImpl[1];
-					factHandlesTupleIn[0] = tupleFactHandleIn;
-					ArrayList leapsRules = (ArrayList)Builder.processRule(rule);
-					LeapsTuple tupleIn = new LeapsTuple(factHandlesTupleIn, (LeapsRule)leapsRules.get(0), context2);
-					((WorkingMemoryImpl) workingMemory).assertTuple(tupleIn);
-				}
-				data.add("tested");
-			}
-		});
+        // add consequence
+        rule.setConsequence( new org.drools.spi.Consequence() {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
+                /* on first invoke add another one to the agenda */
+                if ( data.size() < 3 ) {
+                    PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                              0,
+                                                                              rule,
+                                                                              knowledgeHelper.getActivation() );
 
-		PropagationContext context = new PropagationContextImpl(0,
-				PropagationContext.ASSERTION, rule, null);
+                    FactHandleImpl tupleFactHandleIn = (FactHandleImpl) workingMemory.assertObject( "tuple object in" );
+                    FactHandleImpl[] factHandlesTupleIn = new FactHandleImpl[1];
+                    factHandlesTupleIn[0] = tupleFactHandleIn;
+                    ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
+                    LeapsTuple tupleIn = new LeapsTuple( factHandlesTupleIn,
+                                                         (LeapsRule) leapsRules.get( 0 ),
+                                                         context2 );
+                    ((WorkingMemoryImpl) workingMemory).assertTuple( tupleIn );
+                }
+                data.add( "tested" );
+            }
+        } );
 
-		FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory
-				.assertObject("tuple object");
-		FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
-		factHandlesTuple[0] = tupleFactHandle;
-		
-		ArrayList leapsRules = (ArrayList)Builder.processRule(rule);
-		LeapsTuple tuple = new LeapsTuple(factHandlesTuple, (LeapsRule)leapsRules.get(0), context);
+        PropagationContext context = new PropagationContextImpl( 0,
+                                                                 PropagationContext.ASSERTION,
+                                                                 rule,
+                                                                 null );
 
-		workingMemory.assertTuple(tuple);
+        FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory.assertObject( "tuple object" );
+        FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
+        factHandlesTuple[0] = tupleFactHandle;
 
-		assertEquals(0, data.size());
+        ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
+        LeapsTuple tuple = new LeapsTuple( factHandlesTuple,
+                                           (LeapsRule) leapsRules.get( 0 ),
+                                           context );
 
-		// sleep for 0.5 seconds
-		Thread.sleep(500);
+        workingMemory.assertTuple( tuple );
 
-		// now check for update
-		assertEquals(4, data.size());
+        assertEquals( 0,
+                      data.size() );
 
-	}
+        // sleep for 0.5 seconds
+        Thread.sleep( 500 );
+
+        // now check for update
+        assertEquals( 4,
+                      data.size() );
+
+    }
 }

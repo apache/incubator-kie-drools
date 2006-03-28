@@ -26,56 +26,56 @@ package org.drools.leaps;
  * 
  */
 public class RuleHandle extends Handle {
-	// ce position for which handle is created
-	private final int dominantPosition;
+    // ce position for which handle is created
+    private final int dominantPosition;
 
-	public RuleHandle(long id, LeapsRule rule, int dominantPosition) {
-		super(id, rule);
-		this.dominantPosition = dominantPosition;
-	}
+    public RuleHandle(long id,
+                      LeapsRule rule,
+                      int dominantPosition) {
+        super( id,
+               rule );
+        this.dominantPosition = dominantPosition;
+    }
 
-	/**
-	 * @return leaps wrapped rule
-	 */
-	public LeapsRule getLeapsRule() {
-		return (LeapsRule) this.getObject();
-	}
+    /**
+     * @return leaps wrapped rule
+     */
+    public LeapsRule getLeapsRule() {
+        return (LeapsRule) this.getObject();
+    }
 
-	/**
-	 * @return base column / ce position
-	 */
-	public int getDominantPosition() {
-		return this.dominantPosition;
-	}
+    /**
+     * @return base column / ce position
+     */
+    public int getDominantPosition() {
+        return this.dominantPosition;
+    }
 
-	/**
-	 * @see org.drools.rule.Rule
-	 */
-	public int getRuleComplexity() {
-		return this.getLeapsRule().getRule().getDeclarations().length;
-	}
+    /**
+     * @see org.drools.rule.Rule
+     */
+    public int getRuleComplexity() {
+        return this.getLeapsRule().getRule().getDeclarations().length;
+    }
 
-	/**
-	 * @see org.drools.rule.Rule
-	 */
-	public int getSalience() {
-		return this.getLeapsRule().getRule().getSalience();
-	}
+    /**
+     * @see org.drools.rule.Rule
+     */
+    public int getSalience() {
+        return this.getLeapsRule().getRule().getSalience();
+    }
 
-	/**
-	 * @see java.lang.Object
-	 */
-	public boolean equals(Object that) {
-		return super.equals(that)
-				&& (this.getDominantPosition() == ((RuleHandle) that)
-						.getDominantPosition());
-	}
+    /**
+     * @see java.lang.Object
+     */
+    public boolean equals(Object that) {
+        return super.equals( that ) && (this.getDominantPosition() == ((RuleHandle) that).getDominantPosition());
+    }
 
-	/**
-	 * @see java.lang.Object
-	 */
-	public String toString() {
-		return "R-" + this.getId() + " \"" + this.getLeapsRule().toString()
-				+ "\" [pos - " + this.dominantPosition + "]";
-	}
+    /**
+     * @see java.lang.Object
+     */
+    public String toString() {
+        return "R-" + this.getId() + " \"" + this.getLeapsRule().toString() + "\" [pos - " + this.dominantPosition + "]";
+    }
 }

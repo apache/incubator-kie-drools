@@ -105,6 +105,8 @@ public interface KnowledgeHelper {
     
     Tuple getTuple();
     
+    Activation getActivation();
+    
     WorkingMemory getWorkingMemory();
 
     /** @return - A List of the objects in the WorkingMemory */

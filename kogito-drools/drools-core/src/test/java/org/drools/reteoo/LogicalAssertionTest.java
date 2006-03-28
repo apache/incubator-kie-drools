@@ -11,6 +11,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.Consequence;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 
 public class LogicalAssertionTest extends DroolsTestCase {
@@ -34,7 +35,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void evaluate(Activation activation, WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -113,7 +114,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void evaluate(Activation activation, WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -177,7 +178,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void evaluate(Activation activation, WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -285,7 +286,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
 
         Consequence consequence = new Consequence() {
-            public void evaluate(Activation activation, WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -363,7 +364,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void evaluate(Activation activation, WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
                 // do nothing
             }
         };

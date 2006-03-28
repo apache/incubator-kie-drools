@@ -32,253 +32,257 @@ import org.drools.spi.Tuple;
  * 
  * @author Alexander Bagerman
  */
-class LeapsTuple implements Tuple, Serializable {
-	private static final long serialVersionUID = 1L;
-	
-	private final PropagationContext context;
+class LeapsTuple
+    implements
+    Tuple,
+    Serializable {
+    private static final long        serialVersionUID = 1L;
 
-	private boolean readyForActivation;
+    private final PropagationContext context;
 
-	private final FactHandleImpl[] factHandles;
+    private boolean                  readyForActivation;
 
-	private Set[] notFactHandles;
+    private final FactHandleImpl[]   factHandles;
 
-	private Set[] existsFactHandles;
+    private Set[]                    notFactHandles;
 
-	private Set logicalDependencies;
-	
-	private Activation activation;
-	
-	private final LeapsRule leapsRule;
+    private Set[]                    existsFactHandles;
 
-	/**
-	 * agendaItem parts
-	 */
-	LeapsTuple(FactHandleImpl factHandles[], LeapsRule leapsRule, PropagationContext context) {
-		this.factHandles = factHandles;
-		this.leapsRule = leapsRule;
-		this.context = context;
+    private Set                      logicalDependencies;
 
-		if (this.leapsRule != null && this.leapsRule.containsNotColumns()) {
-			this.notFactHandles = new HashSet[this.leapsRule.getNotColumnConstraints().length];
-		} 
-		if (this.leapsRule != null && this.leapsRule.containsExistsColumns()) {
-			this.existsFactHandles = new HashSet[this.leapsRule.getExistsColumnConstraints().length];
-		}
-		
-		this.readyForActivation = (this.leapsRule == null || !this.leapsRule.containsExistsColumns());
-	}
+    private Activation               activation;
 
-	/**
-	 * get rule that caused this tuple to be generated
-	 * 
-	 * @return rule 
-	 */
-	LeapsRule getLeapsRule() {
-		return this.leapsRule;
-	}
-	
-	/**
-	 * Determine if this tuple depends upon a specified object.
-	 * 
-	 * @param handle
-	 *            The object handle to test.
-	 * 
-	 * @return <code>true</code> if this tuple depends upon the specified
-	 *         object, otherwise <code>false</code>.
-	 * 
-	 * @see org.drools.spi.Tuple
-	 */
-	public boolean dependsOn(FactHandle handle) {
-		for (int i = 0, length = this.factHandles.length; i < length; i++) {
-			if (handle.equals(this.factHandles[i])) {
-				return true;
-			}
-		}
-		return false;
-	}
+    private final LeapsRule          leapsRule;
 
-	/**
-	 * @see org.drools.spi.Tuple
-	 */
-	public FactHandle get(int col) {
-		return this.factHandles[col];
-	}
+    /**
+     * agendaItem parts
+     */
+    LeapsTuple(FactHandleImpl factHandles[],
+               LeapsRule leapsRule,
+               PropagationContext context) {
+        this.factHandles = factHandles;
+        this.leapsRule = leapsRule;
+        this.context = context;
 
-	/**
-	 * @see org.drools.spi.Tuple
-	 */
-	public FactHandle get(Declaration declaration) {
-		return this.get(declaration.getColumn());
-	}
+        if ( this.leapsRule != null && this.leapsRule.containsNotColumns() ) {
+            this.notFactHandles = new HashSet[this.leapsRule.getNotColumnConstraints().length];
+        }
+        if ( this.leapsRule != null && this.leapsRule.containsExistsColumns() ) {
+            this.existsFactHandles = new HashSet[this.leapsRule.getExistsColumnConstraints().length];
+        }
 
-	/**
-	 * @see org.drools.spi.Tuple
-	 */
-	public FactHandle[] getFactHandles() {
-		return this.factHandles;
-	}
+        this.readyForActivation = (this.leapsRule == null || !this.leapsRule.containsExistsColumns());
+    }
 
-	/**
-	 * @see org.drools.spi.Tuple
-	 */
-	public void setActivation(Activation activation) {
-		this.activation = activation;
-	}
+    /**
+     * get rule that caused this tuple to be generated
+     * 
+     * @return rule 
+     */
+    LeapsRule getLeapsRule() {
+        return this.leapsRule;
+    }
 
-	/**
-	 * to determine if "active" agendaItem needs to be valid from the queue on
-	 * fact retraction
-	 * 
-	 * @return indicator if agendaItem was null'ed
-	 */
-	boolean isActivationNull() {
-		return this.activation == null;
-	}
+    /**
+     * Determine if this tuple depends upon a specified object.
+     * 
+     * @param handle
+     *            The object handle to test.
+     * 
+     * @return <code>true</code> if this tuple depends upon the specified
+     *         object, otherwise <code>false</code>.
+     * 
+     * @see org.drools.spi.Tuple
+     */
+    public boolean dependsOn(FactHandle handle) {
+        for ( int i = 0, length = this.factHandles.length; i < length; i++ ) {
+            if ( handle.equals( this.factHandles[i] ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	Activation getActivation() {
-		return this.activation;
-	}
+    /**
+     * @see org.drools.spi.Tuple
+     */
+    public FactHandle get(int col) {
+        return this.factHandles[col];
+    }
 
-	/**
-	 * @see java.lang.Object
-	 */
-	public boolean equals(Object object) {
-		if (this == object) {
-			return true;
-		}
+    /**
+     * @see org.drools.spi.Tuple
+     */
+    public FactHandle get(Declaration declaration) {
+        return this.get( declaration.getColumn() );
+    }
 
-		if (object == null || !(object instanceof LeapsTuple)) {
-			return false;
-		}
+    /**
+     * @see org.drools.spi.Tuple
+     */
+    public FactHandle[] getFactHandles() {
+        return this.factHandles;
+    }
 
-		FactHandle[] thatFactHandles = ((LeapsTuple) object).getFactHandles();
-		if (thatFactHandles.length != this.factHandles.length) {
-			return false;
-		}
+    /**
+     * @see org.drools.spi.Tuple
+     */
+    public void setActivation(Activation activation) {
+        this.activation = activation;
+    }
 
-		for (int i = 0, length = this.factHandles.length; i < length; i++) {
-			if (!this.factHandles[i].equals(thatFactHandles[i])) {
-				return false;
-			}
+    /**
+     * to determine if "active" agendaItem needs to be valid from the queue on
+     * fact retraction
+     * 
+     * @return indicator if agendaItem was null'ed
+     */
+    boolean isActivationNull() {
+        return this.activation == null;
+    }
 
-		}
-		return true;
-	}
+    Activation getActivation() {
+        return this.activation;
+    }
 
-	/**
-	 * indicates if exists conditions complete and there is no blocking facts
-	 * 
-	 * @return
-	 */
-	boolean isReadyForActivation() {
-		return this.readyForActivation;
-	}
+    /**
+     * @see java.lang.Object
+     */
+    public boolean equals(Object object) {
+        if ( this == object ) {
+            return true;
+        }
 
-	/**
-	 * @see java.lang.Object
-	 */
-	public String toString() {
-		StringBuffer buffer = new StringBuffer("LeapsTuple ["
-				+ this.context.getRuleOrigin().getName() + "] ");
+        if ( object == null || !(object instanceof LeapsTuple) ) {
+            return false;
+        }
 
-		for (int i = 0, length = this.factHandles.length; i < length; i++) {
-			buffer.append(((i == 0) ? "" : ", ") + this.factHandles[i]);
-		}
+        FactHandle[] thatFactHandles = ((LeapsTuple) object).getFactHandles();
+        if ( thatFactHandles.length != this.factHandles.length ) {
+            return false;
+        }
 
-		if(this.existsFactHandles != null) {
-			buffer.append("\nExists fact handles by position");
-			for (int i = 0, length = this.existsFactHandles.length; i < length; i++) {
-				buffer.append("\nposition " + i);
-				for (Iterator it = this.existsFactHandles[i].iterator(); it
-						.hasNext();) {
-					buffer.append("\n\t" + it.next());
-				}
-			}
-		}
-		if(this.notFactHandles != null) {
-			buffer.append("\nNot fact handles by position");
-			for (int i = 0, length = this.notFactHandles.length; i < length; i++) {
-				buffer.append("\nposition " + i);
-				for (Iterator it = this.notFactHandles[i].iterator(); it
-						.hasNext();) {
-					buffer.append("\n\t" + it.next());
-				}
-			}
-		}
-		return buffer.toString();
-	}
+        for ( int i = 0, length = this.factHandles.length; i < length; i++ ) {
+            if ( !this.factHandles[i].equals( thatFactHandles[i] ) ) {
+                return false;
+            }
 
-	void addNotFactHandle(FactHandle factHandle, int index) {
-		this.readyForActivation = false;
-		Set facts = this.notFactHandles[index];
-		if (facts == null) {
-			facts = new HashSet();
-			this.notFactHandles[index] = facts;
-		}
-		facts.add(factHandle);
-	}
+        }
+        return true;
+    }
 
-	void removeNotFactHandle(FactHandle factHandle, int index) {
-		if (this.notFactHandles[index] != null) {
-			this.notFactHandles[index].remove(factHandle);
-		}
-		this.setReadyForActivation();
-	}
+    /**
+     * indicates if exists conditions complete and there is no blocking facts
+     * 
+     * @return
+     */
+    boolean isReadyForActivation() {
+        return this.readyForActivation;
+    }
 
-	void addExistsFactHandle(FactHandle factHandle, int index) {
-		Set facts = this.existsFactHandles[index];
-		if (facts == null) {
-			facts = new HashSet();
-			this.existsFactHandles[index] = facts;
-		}
-		facts.add(factHandle);
-		this.setReadyForActivation();
-	}
+    /**
+     * @see java.lang.Object
+     */
+    public String toString() {
+        StringBuffer buffer = new StringBuffer( "LeapsTuple [" + this.context.getRuleOrigin().getName() + "] " );
 
-	void removeExistsFactHandle(FactHandle factHandle, int index) {
-		if (this.existsFactHandles[index] != null) {
-			this.existsFactHandles[index].remove(factHandle);
-		}
-		this.setReadyForActivation();
-	}
+        for ( int i = 0, length = this.factHandles.length; i < length; i++ ) {
+            buffer.append( ((i == 0) ? "" : ", ") + this.factHandles[i] );
+        }
 
-	private void setReadyForActivation() {
-		this.readyForActivation = true;
+        if ( this.existsFactHandles != null ) {
+            buffer.append( "\nExists fact handles by position" );
+            for ( int i = 0, length = this.existsFactHandles.length; i < length; i++ ) {
+                buffer.append( "\nposition " + i );
+                for ( Iterator it = this.existsFactHandles[i].iterator(); it.hasNext(); ) {
+                    buffer.append( "\n\t" + it.next() );
+                }
+            }
+        }
+        if ( this.notFactHandles != null ) {
+            buffer.append( "\nNot fact handles by position" );
+            for ( int i = 0, length = this.notFactHandles.length; i < length; i++ ) {
+                buffer.append( "\nposition " + i );
+                for ( Iterator it = this.notFactHandles[i].iterator(); it.hasNext(); ) {
+                    buffer.append( "\n\t" + it.next() );
+                }
+            }
+        }
+        return buffer.toString();
+    }
 
-		if (this.notFactHandles != null) {
-			for (int i = 0, length = this.notFactHandles.length; i < length
-					&& this.readyForActivation; i++) {
-				if (this.notFactHandles[i].size() > 0) {
-					this.readyForActivation = false;
-				}
-			}
-		}
-		if (this.existsFactHandles != null) {
-			for (int i = 0, length = this.existsFactHandles.length; i < length
-					&& this.readyForActivation; i++) {
-				if (this.existsFactHandles[i].size() == 0) {
-					this.readyForActivation = false;
-				}
-			}
-		}
-	}
+    void addNotFactHandle(FactHandle factHandle,
+                          int index) {
+        this.readyForActivation = false;
+        Set facts = this.notFactHandles[index];
+        if ( facts == null ) {
+            facts = new HashSet();
+            this.notFactHandles[index] = facts;
+        }
+        facts.add( factHandle );
+    }
 
-	PropagationContext getContext() {
-		return this.context;
-	}
+    void removeNotFactHandle(FactHandle factHandle,
+                             int index) {
+        if ( this.notFactHandles[index] != null ) {
+            this.notFactHandles[index].remove( factHandle );
+        }
+        this.setReadyForActivation();
+    }
 
-	void addLogicalDependency(FactHandle handle) {
-		if (this.logicalDependencies == null) {
-			this.logicalDependencies = new HashSet();
-		}
-		this.logicalDependencies.add(handle);
-	}
-	
-	Iterator getLogicalDependencies() {
-		if(this.logicalDependencies != null){
-			return this.logicalDependencies.iterator();
-		}
-		return null;
-	}
+    void addExistsFactHandle(FactHandle factHandle,
+                             int index) {
+        Set facts = this.existsFactHandles[index];
+        if ( facts == null ) {
+            facts = new HashSet();
+            this.existsFactHandles[index] = facts;
+        }
+        facts.add( factHandle );
+        this.setReadyForActivation();
+    }
+
+    void removeExistsFactHandle(FactHandle factHandle,
+                                int index) {
+        if ( this.existsFactHandles[index] != null ) {
+            this.existsFactHandles[index].remove( factHandle );
+        }
+        this.setReadyForActivation();
+    }
+
+    private void setReadyForActivation() {
+        this.readyForActivation = true;
+
+        if ( this.notFactHandles != null ) {
+            for ( int i = 0, length = this.notFactHandles.length; i < length && this.readyForActivation; i++ ) {
+                if ( this.notFactHandles[i].size() > 0 ) {
+                    this.readyForActivation = false;
+                }
+            }
+        }
+        if ( this.existsFactHandles != null ) {
+            for ( int i = 0, length = this.existsFactHandles.length; i < length && this.readyForActivation; i++ ) {
+                if ( this.existsFactHandles[i].size() == 0 ) {
+                    this.readyForActivation = false;
+                }
+            }
+        }
+    }
+
+    PropagationContext getContext() {
+        return this.context;
+    }
+
+    void addLogicalDependency(FactHandle handle) {
+        if ( this.logicalDependencies == null ) {
+            this.logicalDependencies = new HashSet();
+        }
+        this.logicalDependencies.add( handle );
+    }
+
+    Iterator getLogicalDependencies() {
+        if ( this.logicalDependencies != null ) {
+            return this.logicalDependencies.iterator();
+        }
+        return null;
+    }
 }

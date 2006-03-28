@@ -31,111 +31,120 @@ import org.drools.common.InternalFactHandle;
  * @author Alexander Bagerman
  * 
  */
-public class FactHandleImpl extends Handle implements InternalFactHandle {
-	private Set activatedTuples = null;
+public class FactHandleImpl extends Handle
+    implements
+    InternalFactHandle {
+    private Set     activatedTuples   = null;
 
-	private List notTuples = null;
+    private List    notTuples         = null;
 
-	private List existsTuples = null;
-	
-	private Set logicalJustifiers = null;
-	
-	private boolean logicalyDependent = false;
+    private List    existsTuples      = null;
 
-	private int dependencyCount = 0;
+    private Set     logicalJustifiers = null;
 
-	/**
-	 * actual object that is asserted to the system no getters just a direct
-	 * access to speed things up
-	 */
-	public FactHandleImpl(long id, Object object) {
-		super(id, object);
-	}
+    private boolean logicalyDependent = false;
 
-	void addActivatedTuple(LeapsTuple tuple) {
-		if (this.activatedTuples == null) {
-			this.activatedTuples = new HashSet();
-		}
-		this.activatedTuples.add(tuple);
-	}
+    private int     dependencyCount   = 0;
 
-	void addNotTuple(LeapsTuple tuple, int index) {
-		if (this.notTuples == null) {
-			this.notTuples = new LinkedList();
-		}
-		this.notTuples.add(new FactHandleTupleAssembly(tuple, index));
-	}
-	
-	void addExistsTuple(LeapsTuple tuple, int index) {
-		if (this.existsTuples == null) {
-			this.existsTuples = new LinkedList();
-		}
-		this.existsTuples.add(new FactHandleTupleAssembly(tuple, index));
-	}
+    /**
+     * actual object that is asserted to the system no getters just a direct
+     * access to speed things up
+     */
+    public FactHandleImpl(long id,
+                          Object object) {
+        super( id,
+               object );
+    }
 
-	Iterator getActivatedTuples() {
-		if (this.activatedTuples != null) {
-			return this.activatedTuples.iterator();
-		}
-		return null;
-	}
+    void addActivatedTuple(LeapsTuple tuple) {
+        if ( this.activatedTuples == null ) {
+            this.activatedTuples = new HashSet();
+        }
+        this.activatedTuples.add( tuple );
+    }
 
-	Iterator getNotTuples() {
-		if (this.notTuples != null) {
-			return this.notTuples.iterator();
-		}
-		return null;
-	}
+    void addNotTuple(LeapsTuple tuple,
+                     int index) {
+        if ( this.notTuples == null ) {
+            this.notTuples = new LinkedList();
+        }
+        this.notTuples.add( new FactHandleTupleAssembly( tuple,
+                                                         index ) );
+    }
 
-	Iterator getExistsTuples() {
-		if (this.existsTuples != null) {
-			return this.existsTuples.iterator();
-		}
-		return null;
-	}
+    void addExistsTuple(LeapsTuple tuple,
+                        int index) {
+        if ( this.existsTuples == null ) {
+            this.existsTuples = new LinkedList();
+        }
+        this.existsTuples.add( new FactHandleTupleAssembly( tuple,
+                                                            index ) );
+    }
 
-	void addLogicalDependency(LeapsTuple tuple){
-		if (this.logicalJustifiers == null) {
-			this.logicalyDependent = true;
-			this.logicalJustifiers = new HashSet();
-		}
-		this.logicalJustifiers.add(tuple);
+    Iterator getActivatedTuples() {
+        if ( this.activatedTuples != null ) {
+            return this.activatedTuples.iterator();
+        }
+        return null;
+    }
 
-		this.dependencyCount++;
-	}
+    Iterator getNotTuples() {
+        if ( this.notTuples != null ) {
+            return this.notTuples.iterator();
+        }
+        return null;
+    }
 
-	void removeLogicalDependency(LeapsTuple tuple){
-		if(this.dependencyCount > 0) {
-			this.logicalJustifiers.remove(tuple);
-		}
-		this.dependencyCount--;
-	}
+    Iterator getExistsTuples() {
+        if ( this.existsTuples != null ) {
+            return this.existsTuples.iterator();
+        }
+        return null;
+    }
 
-	void removeAllLogicalDependencies(){
-		if(this.dependencyCount > 0) {
-			for(Iterator it = this.logicalJustifiers.iterator(); it.hasNext(); ) {
-				this.removeLogicalDependency((LeapsTuple)it.next());
-			}
-		}
-	}
-	
-	boolean isLogicalyValid() {
-		if(this.logicalyDependent) {
-			return this.dependencyCount != 0;
-		}
-		return true;
-	}
-	/**
-	 * @see FactHandle
-	 */
-	public String toExternalForm() {
-		return "f-" + this.getId();
-	}
+    void addLogicalDependency(LeapsTuple tuple) {
+        if ( this.logicalJustifiers == null ) {
+            this.logicalyDependent = true;
+            this.logicalJustifiers = new HashSet();
+        }
+        this.logicalJustifiers.add( tuple );
 
-	/**
-	 * @see Object
-	 */
-	public String toString() {
-		return toExternalForm();
-	}
+        this.dependencyCount++;
+    }
+
+    void removeLogicalDependency(LeapsTuple tuple) {
+        if ( this.dependencyCount > 0 ) {
+            this.logicalJustifiers.remove( tuple );
+        }
+        this.dependencyCount--;
+    }
+
+    void removeAllLogicalDependencies() {
+        if ( this.dependencyCount > 0 ) {
+            for ( Iterator it = this.logicalJustifiers.iterator(); it.hasNext(); ) {
+                this.removeLogicalDependency( (LeapsTuple) it.next() );
+            }
+        }
+    }
+
+    boolean isLogicalyValid() {
+        if ( this.logicalyDependent ) {
+            return this.dependencyCount != 0;
+        }
+        return true;
+    }
+
+    /**
+     * @see FactHandle
+     */
+    public String toExternalForm() {
+        return "f-" + this.getId();
+    }
+
+    /**
+     * @see Object
+     */
+    public String toString() {
+        return toExternalForm();
+    }
 }

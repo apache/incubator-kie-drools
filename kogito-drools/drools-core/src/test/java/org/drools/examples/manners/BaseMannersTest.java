@@ -183,14 +183,12 @@ public abstract class BaseMannersTest extends TestCase {
 
         Consequence consequence = new Consequence() {
 
-            public void evaluate(Activation activation,
-                               WorkingMemory workingMemory) throws ConsequenceException {
+            public void evaluate(KnowledgeHelper drools,
+                                 WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    Rule rule = activation.getRule();
-                    Tuple tuple = activation.getTuple();
-                    KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple,
-                                                                         workingMemory );
+                    Rule rule = drools.getRule();
+                    Tuple tuple = drools.getTuple();
+
 
                     Guest guest = (Guest) drools.get( guestDeclaration );
                     Context context = (Context) drools.get( contextDeclaration );
@@ -448,14 +446,12 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void evaluate(Activation activation,
+            public void evaluate(KnowledgeHelper drools,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    Rule rule = activation.getRule();
-                    Tuple tuple = activation.getTuple();
-                    KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple,
-                                                                         workingMemory );
+                    Rule rule = drools.getRule();
+                    Tuple tuple = drools.getTuple();
+
 
                     Context context = (Context) drools.get( contextDeclaration );
                     Count count = (Count) drools.get( countDeclaration );
@@ -630,14 +626,12 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void evaluate(Activation activation,
+            public void evaluate(KnowledgeHelper drools,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    Rule rule = activation.getRule();
-                    Tuple tuple = activation.getTuple();
-                    KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple,
-                                                                         workingMemory );
+                    Rule rule = drools.getRule();
+                    Tuple tuple = drools.getTuple();
+
 
                     int id = ((Integer) drools.get( seatingIdDeclaration )).intValue();
                     int seat = ((Integer) drools.get( pathSeatDeclaration )).intValue();
@@ -723,14 +717,12 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void evaluate(Activation activation,
+            public void evaluate(KnowledgeHelper drools,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    Rule rule = activation.getRule();
-                    Tuple tuple = activation.getTuple();
-                    KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple,
-                                                                         workingMemory );
+                    Rule rule = drools.getRule();
+                    Tuple tuple = drools.getTuple();
+
 
                     Context context = (Context) drools.get( contextDeclaration );
                     Seating seating = (Seating) drools.get( seatingDeclaration );
@@ -827,14 +819,12 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void evaluate(Activation activation,
+            public void evaluate(KnowledgeHelper drools,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    Rule rule = activation.getRule();
-                    Tuple tuple = activation.getTuple();
-                    KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple,
-                                                                         workingMemory );
+                    Rule rule = drools.getRule();
+                    Tuple tuple = drools.getTuple();
+
 
                     Context context = (Context) drools.get( contextDeclaration );
                     context.setState( Context.PRINT_RESULTS );
@@ -894,14 +884,12 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void evaluate(Activation activation,
+            public void evaluate(KnowledgeHelper drools,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
-                    Rule rule = activation.getRule();
-                    Tuple tuple = activation.getTuple();
-                    KnowledgeHelper drools = new DefaultKnowledgeHelper( rule,
-                                                                         tuple,
-                                                                         workingMemory );
+                    Rule rule = drools.getRule();
+                    Tuple tuple = drools.getTuple();
+
 
                     Context context = (Context) drools.get( contextDeclaration );
                     context.setState( Context.ASSIGN_SEATS );
@@ -961,7 +949,7 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         Consequence consequence = new Consequence() {
 
-            public void evaluate(Activation activation,
+            public void evaluate(KnowledgeHelper drools,
                                WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     System.err.println( "all done" );

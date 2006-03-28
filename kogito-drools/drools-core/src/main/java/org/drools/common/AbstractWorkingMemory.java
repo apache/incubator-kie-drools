@@ -61,12 +61,13 @@ import org.drools.util.PrimitiveLongStack;
 abstract public class AbstractWorkingMemory
     implements
     WorkingMemory,
+    InternalWorkingMemoryActions,
     EventSupport,
     PropertyChangeListener {
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
-    private static final Class[]            ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+    private static final Class[]              ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
 
     // ------------------------------------------------------------
     // Instance members
@@ -76,49 +77,49 @@ abstract public class AbstractWorkingMemory
     protected final Object[]                  addRemovePropertyChangeListenerArgs           = new Object[]{this};
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    private final PrimitiveLongMap          nodeMemories                                  = new PrimitiveLongMap( 32,
-                                                                                                                  8 );
+    private final PrimitiveLongMap            nodeMemories                                  = new PrimitiveLongMap( 32,
+                                                                                                                    8 );
 
     /** Application data which is associated with this memory. */
     protected final Map                       applicationData                               = new HashMap();
 
     /** Handle-to-object mapping. */
     protected final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
-                                                                                                                  8 );
+                                                                                                                    8 );
 
     /** Object-to-handle mapping. */
     protected final Map                       identityMap                                   = new IdentityMap();
     protected final Map                       equalsMap                                     = new HashMap();
 
     protected final PrimitiveLongMap          justified                                     = new PrimitiveLongMap( 8,
-                                                                                                                  32 );
-    private final PrimitiveLongStack        factHandlePool                                = new PrimitiveLongStack();
+                                                                                                                    32 );
+    private final PrimitiveLongStack          factHandlePool                                = new PrimitiveLongStack();
 
     protected static final String             STATED                                        = "STATED";
 
     /** The eventSupport */
     protected final WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( this );
     protected final AgendaEventSupport        agendaEventSupport                            = new AgendaEventSupport( this );
-    private final ReteooNodeEventSupport    reteooNodeEventSupport                        = new ReteooNodeEventSupport( this );
+    private final ReteooNodeEventSupport      reteooNodeEventSupport                        = new ReteooNodeEventSupport( this );
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected final RuleBase              ruleBase;
+    protected final RuleBase                  ruleBase;
 
     protected final FactHandleFactory         handleFactory;
 
     /** Rule-firing agenda. */
-//	protected final Agenda agenda;
-
+    //	protected final Agenda agenda;
     /** Flag to determine if a rule is currently being fired. */
     protected boolean                         firing;
 
     protected long                            propagationIdCounter;
 
-	public AbstractWorkingMemory(RuleBase ruleBase, FactHandleFactory handleFactory) {
-		this.ruleBase = ruleBase;
-//		this.agenda = new Agenda(this);
-		this.handleFactory = handleFactory;
-	}
+    public AbstractWorkingMemory(RuleBase ruleBase,
+                                 FactHandleFactory handleFactory) {
+        this.ruleBase = ruleBase;
+        //		this.agenda = new Agenda(this);
+        this.handleFactory = handleFactory;
+    }
 
     // ------------------------------------------------------------
     // Instance methods
@@ -199,7 +200,7 @@ abstract public class AbstractWorkingMemory
         return this.ruleBase;
     }
 
-    abstract public void fireAllRules(AgendaFilter agendaFilter) throws FactException ;
+    abstract public void fireAllRules(AgendaFilter agendaFilter) throws FactException;
 
     /**
      * @see WorkingMemory
@@ -221,7 +222,7 @@ abstract public class AbstractWorkingMemory
      * 
      */
     abstract public Object getObject(FactHandle handle);
-    
+
     /**
      * @see WorkingMemory
      */
@@ -262,7 +263,7 @@ abstract public class AbstractWorkingMemory
     /**
      * @see WorkingMemory
      */
-    abstract public boolean containsObject(FactHandle handle) ;
+    abstract public boolean containsObject(FactHandle handle);
 
     protected void addPropertyChangeListener(Object object) {
         try {
@@ -315,7 +316,7 @@ abstract public class AbstractWorkingMemory
                                 + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
         }
     }
-    
+
     public void retractObject(FactHandle handle) throws FactException {
         retractObject( handle,
                        true,
@@ -328,11 +329,11 @@ abstract public class AbstractWorkingMemory
      * @see WorkingMemory
      */
     abstract public void retractObject(FactHandle handle,
-                              boolean removeLogical,
-                              boolean updateEqualsMap,
-                              Rule rule,
-                              Activation activation) throws FactException ;
-    
+                                       boolean removeLogical,
+                                       boolean updateEqualsMap,
+                                       Rule rule,
+                                       Activation activation) throws FactException;
+
     public void modifyObject(FactHandle handle,
                              Object object) throws FactException {
         modifyObject( handle,
@@ -345,9 +346,9 @@ abstract public class AbstractWorkingMemory
      * @see WorkingMemory
      */
     abstract public void modifyObject(FactHandle handle,
-                             Object object,
-                             Rule rule,
-                             Activation activation) throws FactException ;
+                                      Object object,
+                                      Rule rule,
+                                      Activation activation) throws FactException;
 
     public WorkingMemoryEventSupport getWorkingMemoryEventSupport() {
         return this.workingMemoryEventSupport;
@@ -390,49 +391,53 @@ abstract public class AbstractWorkingMemory
         return this.justified;
     }
 
-    abstract public void dispose() ;
+    abstract public void dispose();
 
-    
-	public void addLogicalDependency(FactHandle handle, Activation activation,
-			PropagationContext context, Rule rule) throws FactException {
-		LogicalDependency node = new LogicalDependency(activation, handle);
-		activation.addLogicalDependency(node);
-		Set set = (Set) this.justified.get(((InternalFactHandle) handle).getId());
-		if (set == null) {
-			set = new HashSet();
-			this.justified.put(((InternalFactHandle) handle).getId(), set);
-		}
-		set.add(node);
-	}
+    public void addLogicalDependency(FactHandle handle,
+                                     Activation activation,
+                                     PropagationContext context,
+                                     Rule rule) throws FactException {
+        LogicalDependency node = new LogicalDependency( activation,
+                                                        handle );
+        activation.addLogicalDependency( node );
+        Set set = (Set) this.justified.get( ((InternalFactHandle) handle).getId() );
+        if ( set == null ) {
+            set = new HashSet();
+            this.justified.put( ((InternalFactHandle) handle).getId(),
+                                set );
+        }
+        set.add( node );
+    }
 
-	public void removeLogicalDependencies(Activation activation,
-			PropagationContext context, Rule rule) throws FactException {
-		org.drools.util.LinkedList list = activation.getLogicalDependencies();
-		if (list == null || list.isEmpty()) {
-			return;
-		}
-		for (LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node
-				.getNext()) {
-			InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
-			Set set = (Set) this.justified.get(handle.getId());
-			set.remove(node);
-			if (set.isEmpty()) {
-				this.justified.remove(handle.getId());
-				retractObject(handle, false, true, context.getRuleOrigin(),
-						context.getActivationOrigin());
-			}
-		}
-	}
+    public void removeLogicalDependencies(Activation activation,
+                                          PropagationContext context,
+                                          Rule rule) throws FactException {
+        org.drools.util.LinkedList list = activation.getLogicalDependencies();
+        if ( list == null || list.isEmpty() ) {
+            return;
+        }
+        for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
+            InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
+            Set set = (Set) this.justified.get( handle.getId() );
+            set.remove( node );
+            if ( set.isEmpty() ) {
+                this.justified.remove( handle.getId() );
+                retractObject( handle,
+                               false,
+                               true,
+                               context.getRuleOrigin(),
+                               context.getActivationOrigin() );
+            }
+        }
+    }
 
-	public void removeLogicalDependencies(FactHandle handle)
-			throws FactException {
-		Set set = (Set) this.justified
-				.remove(((InternalFactHandle) handle).getId());
-		if (set != null && !set.isEmpty()) {
-			for (Iterator it = set.iterator(); it.hasNext();) {
-				LogicalDependency node = (LogicalDependency) it.next();
-				node.getJustifier().getLogicalDependencies().remove(node);
-			}
-		}
-	}
+    public void removeLogicalDependencies(FactHandle handle) throws FactException {
+        Set set = (Set) this.justified.remove( ((InternalFactHandle) handle).getId() );
+        if ( set != null && !set.isEmpty() ) {
+            for ( Iterator it = set.iterator(); it.hasNext(); ) {
+                LogicalDependency node = (LogicalDependency) it.next();
+                node.getJustifier().getLogicalDependencies().remove( node );
+            }
+        }
+    }
 }

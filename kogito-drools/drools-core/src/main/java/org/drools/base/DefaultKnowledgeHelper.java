@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -20,8 +21,11 @@ import java.util.List;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.common.AgendaItem;
+import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
+import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
@@ -29,36 +33,47 @@ import org.drools.util.LinkedList;
 public class DefaultKnowledgeHelper
     implements
     KnowledgeHelper {
-    private final Rule          rule;
-    private final Tuple         tuple;
-    private final WorkingMemory workingMemory;
+    private final Rule                         rule;
+    private final Activation                   activation;
+    private final Tuple                        tuple;
+    private final InternalWorkingMemoryActions workingMemory;
 
-    public DefaultKnowledgeHelper(Rule rule,
-                                  Tuple tuple,
+    public DefaultKnowledgeHelper(Activation agendaItem,
                                   WorkingMemory workingMemory) {
-        this.rule = rule;
-        this.tuple = tuple;
-        this.workingMemory = workingMemory;
+        this.rule = agendaItem.getRule();
+        this.activation = agendaItem;
+        this.tuple = agendaItem.getTuple();
+        this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
     }
 
     public void assertObject(Object object) throws FactException {
-        this.workingMemory.assertObject( object );
+        assertObject( object,
+                      false );
     }
 
     public void assertObject(Object object,
                              boolean dynamic) throws FactException {
         this.workingMemory.assertObject( object,
-                                         dynamic );
+                                         dynamic,
+                                         false,
+                                         this.rule,
+                                         this.activation );
     }
 
     public void modifyObject(FactHandle handle,
                              Object newObject) throws FactException {
         this.workingMemory.modifyObject( handle,
-                                         newObject );
+                                         newObject,
+                                         this.rule,
+                                         this.activation );
     }
 
     public void retractObject(FactHandle handle) throws FactException {
-        this.workingMemory.retractObject( handle );
+        this.workingMemory.retractObject( handle,
+                                          true,
+                                          true,
+                                          this.rule,
+                                          this.activation );
     }
 
     public Rule getRule() {
@@ -87,6 +102,10 @@ public class DefaultKnowledgeHelper
 
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
+    }
+    
+    public Activation getActivation() {
+        return this.activation;
     }
 
     public List getQueryResults(String query) {

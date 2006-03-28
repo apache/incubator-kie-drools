@@ -33,73 +33,82 @@ import org.drools.spi.Tuple;
  * 
  */
 public class ColumnConstraints {
-	private Class classType;
+    private Class                   classType;
 
-	private final FieldConstraint[] alphaConstraints;
+    private final FieldConstraint[] alphaConstraints;
 
-	private final boolean alphaPresent;
+    private final boolean           alphaPresent;
 
-	private final BetaNodeBinder beta;
+    private final BetaNodeBinder    beta;
 
-	private final boolean betaPresent;
+    private final boolean           betaPresent;
 
-	public ColumnConstraints(Column column, List alpha, BetaNodeBinder beta) {
-		this.classType = ((ClassObjectType) column.getObjectType()).getClassType();
+    public ColumnConstraints(Column column,
+                             List alpha,
+                             BetaNodeBinder beta) {
+        this.classType = ((ClassObjectType) column.getObjectType()).getClassType();
 
-		if (beta != null) {
-			this.beta = beta;
-			this.betaPresent = true;
-		} else {
-			this.beta = null;
-			this.betaPresent = false;
-		}
-		if (alpha != null && alpha.size() > 0) {
-			this.alphaConstraints = (FieldConstraint[]) alpha
-					.toArray(new FieldConstraint[0]);
-			this.alphaPresent = true;
-		} else {
-			this.alphaConstraints = null;
-			this.alphaPresent = false;
-		}
-	}
+        if ( beta != null ) {
+            this.beta = beta;
+            this.betaPresent = true;
+        } else {
+            this.beta = null;
+            this.betaPresent = false;
+        }
+        if ( alpha != null && alpha.size() > 0 ) {
+            this.alphaConstraints = (FieldConstraint[]) alpha.toArray( new FieldConstraint[0] );
+            this.alphaPresent = true;
+        } else {
+            this.alphaConstraints = null;
+            this.alphaPresent = false;
+        }
+    }
 
-	public Class getClassType() {
-		return this.classType;
-	}
+    public Class getClassType() {
+        return this.classType;
+    }
 
-	boolean isAllowed(FactHandle factHandle, Tuple tuple,
-			WorkingMemory workingMemory) {
-		return this.isAllowedAlpha(factHandle, tuple, workingMemory)
-				&& this.isAllowedBeta(factHandle, tuple, workingMemory);
-	}
+    boolean isAllowed(FactHandle factHandle,
+                      Tuple tuple,
+                      WorkingMemory workingMemory) {
+        return this.isAllowedAlpha( factHandle,
+                                    tuple,
+                                    workingMemory ) && this.isAllowedBeta( factHandle,
+                                                                           tuple,
+                                                                           workingMemory );
+    }
 
-	public boolean isAllowedAlpha(FactHandle factHandle, Tuple tuple,
-			WorkingMemory workingMemory) {
-		boolean found = true;
-		if (this.alphaPresent) {
-			for (int i = 0, length = this.alphaConstraints.length; i < length && found; i++) {
-				// escape immediately if some condition does not match
-				found = this.alphaConstraints[i].isAllowed(factHandle, tuple,
-						workingMemory);
-			}
-			return found;
-		}
+    public boolean isAllowedAlpha(FactHandle factHandle,
+                                  Tuple tuple,
+                                  WorkingMemory workingMemory) {
+        boolean found = true;
+        if ( this.alphaPresent ) {
+            for ( int i = 0, length = this.alphaConstraints.length; i < length && found; i++ ) {
+                // escape immediately if some condition does not match
+                found = this.alphaConstraints[i].isAllowed( factHandle,
+                                                            tuple,
+                                                            workingMemory );
+            }
+            return found;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	boolean isAllowedBeta(FactHandle factHandle, Tuple tuple,
-			WorkingMemory workingMemory) {
-		if (this.betaPresent) {
-			return this.beta.isAllowed(factHandle, tuple, workingMemory);
-		}
+    boolean isAllowedBeta(FactHandle factHandle,
+                          Tuple tuple,
+                          WorkingMemory workingMemory) {
+        if ( this.betaPresent ) {
+            return this.beta.isAllowed( factHandle,
+                                        tuple,
+                                        workingMemory );
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	protected boolean isAlphaPresent() {
-		return alphaPresent;
-	}
-	
-	
+    protected boolean isAlphaPresent() {
+        return alphaPresent;
+    }
+
 }

@@ -23,65 +23,69 @@ import org.drools.spi.FactHandleFactory;
  * @author Alexander Bagerman
  * 
  */
-class HandleFactory implements FactHandleFactory {
-	private static final long serialVersionUID = 8510623248591449450L;
+class HandleFactory
+    implements
+    FactHandleFactory {
+    private static final long serialVersionUID = 8510623248591449450L;
 
-	private long counter;
+    private long              counter;
 
-	HandleFactory() {
-		this.counter = 0L;
-	}
+    HandleFactory() {
+        this.counter = 0L;
+    }
 
-	/**
-	 * fact handle with no object
-	 * 
-	 * @see org.drools.reteoo.FactHandleFactory
-	 */
-	public final FactHandle newFactHandle() {
-		return new FactHandleImpl(this.getNextId(), null);
-	}
+    /**
+     * fact handle with no object
+     * 
+     * @see org.drools.reteoo.FactHandleFactory
+     */
+    public final FactHandle newFactHandle() {
+        return new FactHandleImpl( this.getNextId(),
+                                   null );
+    }
 
-	/**
-	 * leaps handle 
-	 * 
-	 * @param object
-	 * @return leaps handle
-	 */
-	public final FactHandle newFactHandle(Object object) {
-		return new FactHandleImpl(this.getNextId(), object);
-	}
+    /**
+     * leaps handle 
+     * 
+     * @param object
+     * @return leaps handle
+     */
+    public final FactHandle newFactHandle(Object object) {
+        return new FactHandleImpl( this.getNextId(),
+                                   object );
+    }
 
-	/**
-	 * 
-	 * @return incremented id
-	 */
-	protected synchronized long getNextId() {
-		return ++this.counter;
-	}
+    /**
+     * 
+     * @return incremented id
+     */
+    protected synchronized long getNextId() {
+        return ++this.counter;
+    }
 
-	/**
-	 * it does not make sense in leaps context. so we generate fact handle as we
-	 * did with no counter supplied
-	 * 
-	 * @see org.drools.reteoo.FactHandleFactory
-	 */
-	public final FactHandle newFactHandle(long newId) {
-		return this.newFactHandle();
-	}
+    /**
+     * it does not make sense in leaps context. so we generate fact handle as we
+     * did with no counter supplied
+     * 
+     * @see org.drools.reteoo.FactHandleFactory
+     */
+    public final FactHandle newFactHandle(long newId) {
+        return this.newFactHandle();
+    }
 
-	/**
-	 * does nothing in leaps context
-	 * 
-	 * @see org.drools.reteoo.FactHandleFactory
-	 */
-	public final void increaseFactHandleRecency(FactHandle factHandle) {
-		;
-	}
+    /**
+     * does nothing in leaps context
+     * 
+     * @see org.drools.reteoo.FactHandleFactory
+     */
+    public final void increaseFactHandleRecency(FactHandle factHandle) {
+        ;
+    }
 
-	/**
-	 * @see org.drools.reteoo.FactHandleFactory
-	 */
-	public FactHandleFactory newInstance() {
-		return new HandleFactory();
-	}
+    /**
+     * @see org.drools.reteoo.FactHandleFactory
+     */
+    public FactHandleFactory newInstance() {
+        return new HandleFactory();
+    }
 }
