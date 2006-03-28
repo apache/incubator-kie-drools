@@ -100,6 +100,20 @@ public class RuleParserTest extends TestCase {
         
         
     }
+
+    public void testAutofocus() throws Exception {
+        RuleDescr rule = parseResource( "autofocus.drl" ).rule();
+        
+        assertNotNull( rule );
+        
+        assertEquals( "rule1", rule.getName() );
+        AttributeDescr att = (AttributeDescr) rule.getAttributes().get( 0 );
+        assertEquals("true", att.getValue());
+        assertEquals("auto-focus", att.getName());
+        
+        
+    }
+    
     
     //TODO: uncomment this when antlr bug resolved
     public void XXXtestConsequenceWithDeclaration() throws Exception {

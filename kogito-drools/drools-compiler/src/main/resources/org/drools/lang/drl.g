@@ -272,6 +272,7 @@ rule_attribute returns [AttributeDescr d]
 		|	a=agenda_group  { d = a; }		
 		|	a=duration  { d = a; }			
 		|	a=xor_group { d = a; }	
+		|	a=auto_focus { d = a; }	
 		
 	;
 	
@@ -310,6 +311,30 @@ no_loop returns [AttributeDescr d]
 		)
 		
 	;
+	
+auto_focus returns [AttributeDescr d]
+	@init {
+		d = null;
+	}
+	:
+		(
+			loc='auto-focus' opt_eol ';'? opt_eol
+			{
+				d = new AttributeDescr( "auto-focus", "true" );
+				d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			}
+		) 
+		|
+		(
+			loc='auto-focus' t=BOOL opt_eol ';'? opt_eol
+			{
+				d = new AttributeDescr( "auto-focus", t.getText() );
+				d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			}
+		
+		)
+		
+	;	
 	
 xor_group returns [AttributeDescr d]
 	@init {
