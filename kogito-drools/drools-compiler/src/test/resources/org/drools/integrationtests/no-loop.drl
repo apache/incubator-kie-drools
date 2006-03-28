@@ -5,7 +5,7 @@ import org.drools.Cheese;
 global java.util.List list
 
 rule "Do  not loop  forever"
-	no-loop
+	no-loop true
     when
     	cheese : Cheese( )
     then     
