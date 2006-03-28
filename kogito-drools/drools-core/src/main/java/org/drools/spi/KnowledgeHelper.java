@@ -130,5 +130,11 @@ public interface KnowledgeHelper {
      */
     void clearAgenda();
     
+    public AgendaGroup getFocus();
+    
+    void setFocus(String focus);
+    
+    void setFocus(AgendaGroup focus);
+    
     
 }

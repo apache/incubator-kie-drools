@@ -873,4 +873,15 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
         return noRequiredColumnsLeapsRules.iterator();
     }
 
+    public AgendaGroup getFocus() {
+        return this.agenda.getFocus();
+    }
+    
+    public void setFocus(String focus) {
+        this.agenda.setFocus( focus );
+    }
+    
+    public void setFocus(AgendaGroup focus) {
+        this.agenda.setFocus( focus );
+    } 
 }

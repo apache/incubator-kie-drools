@@ -26,6 +26,7 @@ import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.AgendaGroup;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
@@ -111,4 +112,16 @@ public class DefaultKnowledgeHelper
     public List getQueryResults(String query) {
         return this.workingMemory.getQueryResults( query );
     }
+    
+    public AgendaGroup getFocus() {
+        return this.workingMemory.getFocus();
+    }
+    
+    public void setFocus(String focus) {
+        this.workingMemory.setFocus( focus );
+    }
+    
+    public void setFocus(AgendaGroup focus) {
+        this.workingMemory.setFocus( focus );
+    }    
 }
