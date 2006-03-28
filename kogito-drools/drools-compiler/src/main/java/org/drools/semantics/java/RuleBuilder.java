@@ -171,6 +171,12 @@ public class RuleBuilder {
                 } else {
                     rule.setNoLoop( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
                 }
+            } else if ( name.equals( "auto-focus" ) ) {
+                if ( attributeDescr.getValue() == null ) {
+                    rule.setAutoFocus( true );
+                } else {
+                    rule.setAutoFocus( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+                }                
             } else if ( name.equals( "agenda-group" ) ) {
                 rule.setAgendaGroup( attributeDescr.getValue() );
             } else if ( name.equals( "duration" ) ) {

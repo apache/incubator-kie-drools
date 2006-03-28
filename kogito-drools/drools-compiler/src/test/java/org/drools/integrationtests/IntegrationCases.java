@@ -693,12 +693,15 @@ public abstract class IntegrationCases extends TestCase {
         
         workingMemory.fireAllRules();
         
-        assertEquals( 4, list.size() );
+        assertEquals( 7, list.size() );
         
-        assertEquals( "MAIN", list.get( 0 ) );
-        assertEquals( "group1", list.get( 1 ) );
-        assertEquals( "group1", list.get( 2 ) );
+        assertEquals( "group3", list.get( 0 ) );
+        assertEquals( "group4", list.get( 1 ) );
+        assertEquals( "group3", list.get( 2 ) );
         assertEquals( "MAIN", list.get( 3 ) );
+        assertEquals( "group1", list.get( 4 ) );
+        assertEquals( "group1", list.get( 5 ) );
+        assertEquals( "MAIN", list.get( 6 ) );
         
     }         
 }
