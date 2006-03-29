@@ -135,43 +135,85 @@
           </mediaobject>
         </figure>
 
-        <para></para>
+        <para>The most basic of Field Constraints is the <indexterm>
+            <primary>Literal Constraint</primary>
+          </indexterm>Literal Constraint</para>
 
-        <figure>
+        <example>
           <title>String Literal Constraint</title>
 
           <programlisting>Cheese( type == "stilton" )</programlisting>
-        </figure>
+        </example>
 
-        <figure>
+        <example>
           <title>Numeric Literal Constraint</title>
 
           <programlisting>Cheese( quantity == 5 )</programlisting>
-        </figure>
+        </example>
 
-        <figure>
+        <example>
           <title>Numeric Literal Constraint</title>
 
           <programlisting>Cheese( smelly == true )</programlisting>
-        </figure>
+        </example>
 
-        <figure>
+        <example>
           <title>Date Literal Constraint</title>
 
           <programlisting>Cheese( bestBefore &lt; "27/10/2007" )</programlisting>
-        </figure>
+        </example>
 
-        <figure>
+        <example>
           <title>Regular Expression Constraint</title>
 
           <programlisting>Cheese( type matches "(Buffulo)\\S*Mozerella" )</programlisting>
-        </figure>
+        </example>
 
-        <figure>
+        <example>
           <title>Literal Cosntraints with Collections</title>
 
           <programlisting>CheeseCounter( cheeses contains "stilton" )</programlisting>
+        </example>
+      </section>
+
+      <section>
+        <title>Bound Variable Constraint</title>
+
+        <figure>
+          <title>Operators</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="boundvariable_constraints.svg" format="SVG"
+                         role="" width="" />
+            </imageobject>
+
+            <imageobject>
+              <imagedata align="center"
+                         fileref="boundvariable_constraints.gif" format="GIF"
+                         role="" width="" />
+            </imageobject>
+          </mediaobject>
         </figure>
+
+        <para>Variables can be found to Facts and and Fields and then used in
+        subsequent Field Constraints. A bound variable is called a
+        Declaration.</para>
+
+        <example>
+          <title>Bound Field using '==' operator</title>
+
+          <programlisting>Person( likes : favouriteCheese )
+Cheese( type == likes )</programlisting>
+        </example>
+
+        <example>
+          <title>Bound Fact using 'contains' operator</title>
+
+          <programlisting>stilton : Cheese( type == "stilton" )
+Cheesery( cheeses contains stilton )</programlisting>
+        </example>
       </section>
 
       <section>
