@@ -22,6 +22,7 @@
 
     <!-- Set DocBook stylesheets. -->
     <property name="db.style.fopdf"        value="fopdf.xsl"/>
+    <property name="db.style.eclipse"      value="eclipse.xsl"/>
     <property name="db.style.html"         value="html_chunk.xsl"/>
     <property name="db.style.htmlsingle"   value="html.xsl"/>
 
@@ -58,7 +59,7 @@
     <target name="clean">
 
         <!-- Delete build directory. -->
-        <delete dir="${build.dir}"/>
+        <!--delete dir="${build.dir}"/-->
 
     </target>
 
@@ -68,6 +69,7 @@
         <antcall target="lang.docpdf"/>
         <antcall target="lang.dochtml"/>
         <antcall target="lang.dochtmlsingle"/>        
+        <antcall target="lang.doceclipse"/>  
     </target>       
 
     <target name="lang.docpdf.prepare">
@@ -147,6 +149,24 @@
             <arg value="${basedir}/${lang}/styles/${db.style.htmlsingle}"/>
         </java>
     </target>
+    
+    <target name="lang.doceclipse"
+        description="Generates the single-page HTML documentation only for a language (set lang)">
+
+        <mkdir dir="${build.dir}/${lang}/eclipse/"/>
+
+        <java classname="com.icl.saxon.StyleSheet" fork="true"  dir="${build.dir}/${lang}/eclipse">
+            <classpath refid="lib.classpath"/>
+				    <sysproperty key="javax.xml.parsers.DocumentBuilderFactory"
+				                 value="org.apache.xerces.jaxp.DocumentBuilderFactoryImpl" />
+				    <sysproperty key="javax.xml.parsers.SAXParserFactory"
+				                 value="org.apache.xerces.jaxp.SAXParserFactoryImpl"  />
+				    <sysproperty key="org.apache.xerces.xni.parser.XMLParserConfiguration"
+				                 value="org.apache.xerces.parsers.XIncludeParserConfiguration"  />            
+            <arg value="${basedir}/${lang}/master.xml"/>
+            <arg value="${basedir}/${lang}/styles/${db.style.eclipse}"/>
+        </java>
+    </target>    
 
     <target name="lang.misc">
 
