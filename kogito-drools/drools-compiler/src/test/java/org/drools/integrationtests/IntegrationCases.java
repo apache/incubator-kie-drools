@@ -25,6 +25,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
+import org.drools.Cheesery;
 import org.drools.FactHandle;
 import org.drools.Person;
 import org.drools.RuleBase;
@@ -794,7 +795,34 @@ public abstract class IntegrationCases extends TestCase {
 
         // now check for update
         assertEquals( 1,
-                      list.size() );
-        
+                      list.size() );        
     }       
+    
+    public void testContainsCheese() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ContainsCheese.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );   
+               
+        Cheese stilton = new Cheese( "stilton", 12 );       
+        FactHandle brieHandle = workingMemory.assertObject( stilton );
+        
+        Cheesery cheesery = new Cheesery();
+        cheesery.getCheeses().add( stilton );
+        workingMemory.assertObject( cheesery );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 1,
+                      list.size() );        
+        
+        assertEquals( stilton,
+                      list.get(0 ) );        
+    }  
 }
