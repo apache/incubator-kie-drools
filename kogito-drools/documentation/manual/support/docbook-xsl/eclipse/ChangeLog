@@ -1,0 +1,12 @@
+2005-04-10  Robert Stayton <bobstayton@users.sourceforge.net>
+
+	* eclipse.xsl: Added support for generating olink database.
+
+2003-09-23  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* eclipse.xsl: Added new parameter manifest.in.base.dir which can be used to place manifest file and also project files for HTML Help and Eclipse Help into base.dir. This improvement also fixes bug (feature) #662955.
+
+2003-07-22  Jirka Kosek <kosek@users.sourceforge.net>
+
+	* eclipse.xsl: New file.
+
