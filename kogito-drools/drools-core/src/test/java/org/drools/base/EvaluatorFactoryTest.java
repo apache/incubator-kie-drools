@@ -64,7 +64,8 @@ public class EvaluatorFactoryTest extends TestCase {
                             {"something foo", "matches", ".*foo", Boolean.TRUE},
                             {"foo", "matches", ".*foo", Boolean.TRUE},
                             {"foo", "matches", "bar", Boolean.FALSE},
-                            {null, "matches", ".*foo", Boolean.FALSE}
+                            {null, "matches", ".*foo", Boolean.FALSE},
+                            {"foo", "==", null, Boolean.FALSE}
                           };
 
         runEvaluatorTest( data, Evaluator.STRING_TYPE );
@@ -81,7 +82,8 @@ public class EvaluatorFactoryTest extends TestCase {
                             {new Integer(42), "!=", new Integer(41), Boolean.TRUE},
                             {new Integer(42), ">", new Integer(41), Boolean.TRUE},
                             {new Integer(42), "<=", new Integer(42), Boolean.TRUE},
-                            {new Integer(42), ">", new Integer(100), Boolean.FALSE}
+                            {new Integer(42), ">", new Integer(100), Boolean.FALSE},
+                            {new Integer(42), "==", null, Boolean.FALSE}
                           };
 
         
