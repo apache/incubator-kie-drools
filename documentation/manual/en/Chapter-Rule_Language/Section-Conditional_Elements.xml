@@ -19,17 +19,65 @@
   <section>
     <title>'eval'</title>
 
+    <figure>
+      <title>eval</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="eval.svg" format="SVG" role=""
+                     width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="eval.gif" format="GIF" role=""
+                     width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
     <para></para>
   </section>
 
   <section>
     <title>'not'</title>
 
+    <figure>
+      <title>eval</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="notl.svg" format="SVG" role=""
+                     width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="not.gif" format="GIF" role=""
+                     width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
     <para></para>
   </section>
 
   <section>
     <title>'exists'</title>
+
+    <figure>
+      <title>eval</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="existsl.svg" format="SVG" role=""
+                     width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="exists.gif" format="GIF" role=""
+                     width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
     <para></para>
   </section>

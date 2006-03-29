@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>Package</title>
+  <title>package</title>
 
   <para>uuuere</para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="package.svg" format="SVG" role="" width="" />
-    </imageobject>
+  <figure>
+    <title>package</title>
 
-    <imageobject>
-      <imagedata fileref="package.gif" format="GIF" role="" width="" />
-    </imageobject>
-  </mediaobject>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="package.svg" format="SVG" role=""
+                   width="" />
+      </imageobject>
+
+      <imageobject>
+        <imagedata align="center" fileref="package.gif" format="GIF" role=""
+                   width="" />
+      </imageobject>
+    </mediaobject>
+  </figure>
 
   <section>
     <title>import</title>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="import.svg" format="SVG" role="" width="" />
-      </imageobject>
+    <figure>
+      <title>import</title>
 
-      <imageobject>
-        <imagedata fileref="import.gif" format="GIF" role="" width="" />
-      </imageobject>
-    </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="import.svg" format="SVG" role="" width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="import.gif" format="GIF" role="" width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
     <para></para>
   </section>
@@ -33,15 +43,19 @@
   <section>
     <title>expander</title>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="expander.svg" format="SVG" role="" width="" />
-      </imageobject>
+    <figure>
+      <title>expander</title>
 
-      <imageobject>
-        <imagedata fileref="expander.gif" format="GIF" role="" width="" />
-      </imageobject>
-    </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="expander.svg" format="SVG" role="" width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="expander.gif" format="GIF" role="" width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
     <para></para>
   </section>
@@ -49,15 +63,19 @@
   <section>
     <title>global</title>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="global.svg" format="SVG" role="" width="" />
-      </imageobject>
+    <figure>
+      <title>global</title>
 
-      <imageobject>
-        <imagedata fileref="global.gif" format="GIF" role="" width="" />
-      </imageobject>
-    </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="global.svg" format="SVG" role="" width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="global.gif" format="GIF" role="" width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
     <para></para>
   </section>
