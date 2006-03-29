@@ -1,0 +1,22 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list;
+
+rule delayed
+	duration 100
+    when
+        cheese : Cheese( $type:type == "brie" )
+    then
+		list.add( cheese );
+		assert(new Cheese("stilton", 42));
+		retract(cheese);
+end
+
+rule after_delayed
+    when
+        cheese : Cheese( $type:type == "stilton" )
+    then
+		list.add( cheese );
+end  

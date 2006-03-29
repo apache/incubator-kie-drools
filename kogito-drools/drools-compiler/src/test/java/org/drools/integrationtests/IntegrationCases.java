@@ -798,6 +798,38 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );        
     }       
     
+    public void testFireRuleAfterDuration() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FireRuleAfterDuration.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );   
+               
+        Cheese brie = new Cheese( "brie", 12 );       
+        FactHandle brieHandle = workingMemory.assertObject( brie );
+
+        workingMemory.fireAllRules();
+        
+        // now check for update
+        assertEquals( 0,
+                      list.size() );        
+        
+        // sleep for 300ms
+        Thread.sleep( 300 );
+        
+        workingMemory.fireAllRules();
+
+        // now check for update
+        assertEquals( 2,
+                      list.size() );
+        
+    }     
+    
     public void testContainsCheese() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ContainsCheese.drl" ) ) );
