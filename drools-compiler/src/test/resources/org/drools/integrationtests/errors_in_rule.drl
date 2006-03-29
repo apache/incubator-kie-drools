@@ -1,0 +1,17 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list;
+global java.lang.Integer five;
+
+rule "eval rule test"
+    when
+    	#some bad stuff here
+        Stilton()
+		Cheese()
+		Poison()
+    then
+    	#this is an error
+        list.add( ;
+end  
