@@ -116,14 +116,14 @@ public class RuleParserTest extends TestCase {
     
     
     //TODO: uncomment this when antlr bug resolved
-    public void XXXtestConsequenceWithDeclaration() throws Exception {
+    public void testConsequenceWithDeclaration() throws Exception {
         RuleDescr rule = parseResource( "declaration-in-consequence.drl" ).rule();
         
         assertNotNull( rule );
         
         assertEquals( "myrule", rule.getName() );
 
-        String expected = "int i = 0;    System.out.println(i + 1);";
+        String expected = "int i = 0; i = 1; i / 1; i == 1; i(i); i = 'i'; i.i.i; i\\i; i<i; i>i; i=\"i\";";
         assertEqualsIgnoreWhitespace( expected, rule.getConsequence() );
         
 
