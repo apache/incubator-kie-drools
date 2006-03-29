@@ -58,11 +58,11 @@
 
       <xi:include href="Chapter-Rule_Language/Section-Query.xml" />
 
-			<xi:include href="Chapter-Rule_Language/Section-Column.xml" />
+			<!--xi:include href="Chapter-Rule_Language/Section-Column.xml" />
 
       <xi:include href="Chapter-Rule_Language/Section-Field_Constraints.xml" />
 
-      <xi:include href="Chapter-Rule_Language/Section-Conditional_Elements.xml" />
+      <xi:include href="Chapter-Rule_Language/Section-Conditional_Elements.xml" /-->
     </chapter>
     <chapter>
 	      <title>The Rule Workbench (IDE)</title>

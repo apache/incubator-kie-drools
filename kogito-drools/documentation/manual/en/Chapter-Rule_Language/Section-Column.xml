@@ -2,15 +2,21 @@
 <section>
   <title>Column</title>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="column.svg" format="SVG" role="" width="" />
-    </imageobject>
+  <figure>
+    <title>Column</title>
 
-    <imageobject>
-      <imagedata fileref="column.gif" format="GIF" role="" width="" />
-    </imageobject>
-  </mediaobject>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="column.svg" format="SVG" role=""
+                   width="" />
+      </imageobject>
+
+      <imageobject>
+        <imagedata align="center" fileref="column.gif" format="GIF" role=""
+                   width="" />
+      </imageobject>
+    </mediaobject>
+  </figure>
 
   <para>uuuere</para>
 </section>

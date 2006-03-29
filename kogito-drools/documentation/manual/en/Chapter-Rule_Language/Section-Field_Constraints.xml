@@ -5,7 +5,45 @@
   <para>uuuere</para>
 
   <section>
+    <title>Operators</title>
+
+    <figure>
+      <title>Operators</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="operator.svg" format="SVG"
+                     role="" width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="operator.gif" format="GIF"
+                     role="" width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para></para>
+  </section>
+
+  <section>
     <title>Literal Constraints</title>
+
+    <figure>
+      <title>Operators</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="literal_constraints.svg"
+                     format="SVG" role="" width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="literal_constraints.gif"
+                     format="GIF" role="" width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
     <para></para>
   </section>
@@ -13,11 +51,43 @@
   <section>
     <title>Return Value Constraints</title>
 
+    <figure>
+      <title>Operators</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="returnvalue_constraints.svg"
+                     format="SVG" role="" width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="returnvalue_constraints.gif"
+                     format="GIF" role="" width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
     <para></para>
   </section>
 
   <section>
     <title>Predicate Constraints</title>
+
+    <figure>
+      <title>Operators</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="predicate_constraints.svg"
+                     format="SVG" role="" width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="predicate_constraints.gif"
+                     format="GIF" role="" width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
     <para></para>
   </section>
