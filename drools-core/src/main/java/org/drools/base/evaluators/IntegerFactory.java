@@ -33,7 +33,7 @@ public class IntegerFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Number) object1).intValue() == ((Number) object2).intValue();
+            return ((Number) object1).equals( object2 );
         }
         
         public String toString() {
@@ -51,7 +51,7 @@ public class IntegerFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Number) object1).intValue() != ((Number) object2).intValue();
+            return !((Number) object1).equals( object2 );
         }
         
         public String toString() {
