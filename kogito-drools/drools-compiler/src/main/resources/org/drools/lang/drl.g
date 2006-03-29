@@ -514,6 +514,13 @@ constraint[List constraints]
 							constraints.add( d );
 						}
 					|
+						lc=enum_constraint 
+						{ 
+							d = new LiteralDescr( f.getText(), op.getText(), lc, true ); 
+							d.setLocation( f.getLine(), f.getCharPositionInLine() );
+							constraints.add( d );
+						}						
+					|
 						lc=literal_constraint 
 						{ 
 							d = new LiteralDescr( f.getText(), op.getText(), lc ); 
@@ -541,6 +548,13 @@ literal_constraint returns [String text]
 		|	t=BOOL 	 { text = t.getText(); }
 		)
 	;
+	
+enum_constraint returns [String text]
+	@init {
+		text = null;
+	}
+	:	(cls=ID '.' enum=ID) { text = cls.getText() + "." + enum.getText(); }
+	;	
 	
 retval_constraint returns [String text]
 	@init {

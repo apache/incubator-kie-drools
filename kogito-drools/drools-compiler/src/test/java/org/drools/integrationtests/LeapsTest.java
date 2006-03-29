@@ -36,5 +36,29 @@ public class LeapsTest extends IntegrationCases {
         List results = workingMemory.getQueryResults( "simple query" );
         assertEquals(1, results.size());        
     }
+    
+    public void testAgendaGroups() throws Exception {
+        //not implemented yet
+    }
+
+    public void testEvalException() throws Exception {
+        //not implemented yet
+    }
+
+    public void testPredicateException() throws Exception {
+        //not implemented yet
+    }
+
+    public void testReturnValueException() throws Exception {
+        //not implemented yet
+    }
+
+    public void testDurationWithNoLoop() {
+        //not implemented yet
+    }
+
+    public void testNoLoop() throws Exception {
+        //not implemented yet
+    }
 
 }

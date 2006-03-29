@@ -387,8 +387,14 @@ public abstract class IntegrationCases extends TestCase {
         assertFalse(pretty.equals( "" ));
         assertEquals(pretty, runtime.getMessage());
         
-        System.err.println(pretty);
-        
+    }
+    
+    public void testErrorLineNumbers() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "errors_in_rule.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        assertTrue(builder.getErrors().length > 0);
     }
     
     public void testFunction() throws Exception {
@@ -559,7 +565,7 @@ public abstract class IntegrationCases extends TestCase {
         
     }    
     
-    public void xxxtestNoLoop() throws Exception {
+    public void testNoLoop() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "no-loop.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -620,7 +626,7 @@ public abstract class IntegrationCases extends TestCase {
         }               
     }     
     
-    public void xxxtestEvalException() throws Exception {
+    public void testEvalException() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalException.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -639,7 +645,7 @@ public abstract class IntegrationCases extends TestCase {
         }               
     }  
     
-    public void xxxtestPredicateException() throws Exception {
+    public void testPredicateException() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PredicateException.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -658,7 +664,7 @@ public abstract class IntegrationCases extends TestCase {
         }               
     }
     
-    public void xxxtestReturnValueException() throws Exception {
+    public void testReturnValueException() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueException.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -677,7 +683,7 @@ public abstract class IntegrationCases extends TestCase {
         }               
     }
     
-    public void xxxtestAgendaGroups() throws Exception {
+    public void testAgendaGroups() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AgendaGroups.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -769,7 +775,7 @@ public abstract class IntegrationCases extends TestCase {
         
     }    
     
-    public void xxxtestDurationWithNoLoop() throws Exception {
+    public void testDurationWithNoLoop() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration_with_NoLoop.drl" ) ) );
         Package pkg = builder.getPackage();

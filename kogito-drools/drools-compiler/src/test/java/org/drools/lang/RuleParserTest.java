@@ -149,6 +149,7 @@ public class RuleParserTest extends TestCase {
         assertEquals("==", lit.getEvaluator());
         assertEquals("false", lit.getText());
         assertEquals("bar", lit.getFieldName());
+        assertEquals(false, lit.isStaticFieldValue());
         
         col = (ColumnDescr) lhs.getDescrs().get( 1 );
         assertEquals( 1, col.getDescrs().size() );
@@ -832,6 +833,21 @@ public class RuleParserTest extends TestCase {
         assertEquals("xor-group", at.getName());
         assertEquals("my_xor_group", at.getValue());        
     }   
+    
+    public void testEnumeration() throws Exception {
+        RuleDescr rule = parseResource( "enumeration.drl" ).rule();
+        assertEquals("simple_rule", rule.getName());
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals("Foo", col.getObjectType());
+        assertEquals(1, col.getDescrs().size());
+        LiteralDescr lit = (LiteralDescr) col.getDescrs().get( 0 );
+        assertEquals("bar", lit.getFieldName());
+        assertEquals("==", lit.getEvaluator());
+        assertEquals("Foo.BAR", lit.getText());
+        assertTrue(lit.isStaticFieldValue());
+        
+    }
     
     public void testExpanderBad() throws Exception {
         RuleParser parser = parseResource( "bad_expander.drl" );
