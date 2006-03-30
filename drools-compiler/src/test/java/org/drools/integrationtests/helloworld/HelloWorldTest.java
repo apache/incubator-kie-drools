@@ -25,8 +25,7 @@ import org.drools.rule.Package;
  */
 public class HelloWorldTest extends TestCase {
 
-    public void testSomething() {
-        try {
+    public void testSomething() throws Exception {
             
             //load up the rulebase
             RuleBase ruleBase = readRule();
@@ -41,10 +40,7 @@ public class HelloWorldTest extends TestCase {
             workingMemory.assertObject( "boo" );
             workingMemory.fireAllRules();               
             assertTrue( message.isFired() );
-        } catch (Throwable t) {
-            t.printStackTrace();
-            fail(t.getMessage());
-        }
+
     }
 
     /**

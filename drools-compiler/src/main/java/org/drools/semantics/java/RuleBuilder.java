@@ -390,7 +390,7 @@ public class RuleBuilder {
         }
 
         Evaluator evaluator = getEvaluator( boundVariableDescr,
-                                            declaration.getObjectType().getValueType(),
+                                            extractor.getObjectType().getValueType(),
                                             boundVariableDescr.getEvaluator() );
         if ( evaluator == null ) {
             return;
