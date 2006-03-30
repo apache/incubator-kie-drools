@@ -115,19 +115,25 @@ public class RuleParserTest extends TestCase {
     }
     
     
-    //TODO: uncomment this when antlr bug resolved
     public void testConsequenceWithDeclaration() throws Exception {
         RuleDescr rule = parseResource( "declaration-in-consequence.drl" ).rule();
         
         assertNotNull( rule );
         
         assertEquals( "myrule", rule.getName() );
+        int i = 0;
+        
+       String expected = "int i = 0; i = 1; i / 1; i == 1; i(i); i = 'i'; i.i.i; i\\i; i<i; i>i; i=\"i\";  ++i;" +
+                           "i++; --i; i--; i += i; i -= i; i *= i; i /= i;" +
+                           "int i = 5;" +
+                           "for(int j; j<i; ++j) {" +
+                           "System.out.println(j);}" +
+                           "Object o = new String(\"Hello\");" +
+                           "String s = (String) o;";
 
-        String expected = "int i = 0; i = 1; i / 1; i == 1; i(i); i = 'i'; i.i.i; i\\i; i<i; i>i; i=\"i\";";
         assertEqualsIgnoreWhitespace( expected, rule.getConsequence() );
         
-
-        
+        //note, need to assert that "i++" is preserved as is, no extra spaces.
     }    
     
     
