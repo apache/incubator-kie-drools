@@ -7,4 +7,5 @@ rule "match Person"
         $person : Person()
     then
         System.out.println("Name is " + $person.getName() );
+        $person.setStatus("match Person ok");
 end    

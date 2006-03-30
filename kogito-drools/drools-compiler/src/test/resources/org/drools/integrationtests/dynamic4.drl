@@ -9,4 +9,5 @@ rule "Who likes Stilton"
         $person:Person( likes == $type )
     then
         System.out.println( $person.getName() + " likes " + $type);
+        $person.setStatus("Who likes Stilton ok");
 end    

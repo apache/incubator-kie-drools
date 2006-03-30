@@ -23,8 +23,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.FactException;
+import org.drools.base.ClassObjectType;
 import org.drools.rule.And;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
@@ -63,6 +65,7 @@ class Rete extends ObjectSource
 
     /** The <code>Map</code> of <code>ObjectTypeNodes</code>. */
     private final Map                objectTypeNodes = new HashMap();
+    private       ObjectTypeNode     lastAddedNode = null;
     
     private final ObjectTypeResolver resolver;       
 
@@ -223,6 +226,7 @@ class Rete extends ObjectSource
      *            The node to add.
      */
     private void addObjectTypeNode(ObjectTypeNode node) {
+        this.lastAddedNode = node;
         this.objectTypeNodes.put( node.getObjectType(),
                                   node );
     }
@@ -251,9 +255,22 @@ class Rete extends ObjectSource
         // do nothing this is the root node        
     }       
 
+    // when a new ObjectTypeNode is added, check for possible 
+    // propagations into the new node
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
-        // do nothing this has no data to propagate
+        if(this.lastAddedNode != null) {
+            ObjectType objType = this.lastAddedNode.getObjectType(); 
+            for(Iterator i = workingMemory.getFactHandleMap().entrySet().iterator(); i.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) i.next();
+                if(objType.matches( entry.getKey() )) {
+                    this.lastAddedNode.assertObject( (FactHandleImpl) entry.getValue(), 
+                                                     context, 
+                                                     workingMemory );
+                }
+            }
+            this.lastAddedNode = null;
+        }
     }
 
     public void remove(BaseNode node,          
