@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import org.drools.common.PropagationContextImpl;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.PrimitiveLongMap;
@@ -196,7 +197,18 @@ class ObjectTypeNode extends ObjectSource
     
     public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
-        // Rete does not hold any data, so no need to propagate
+        
+        // we need to call updateNewNode on Rete, because someone 
+        // might have already added facts matching this ObjectTypeNode 
+        // to working memories
+        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+            WorkingMemoryImpl workingMemory = workingMemories[i];
+            PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                PropagationContext.RULE_ADDITION,
+                                                                                null,
+                                                                                null );            
+            this.rete.updateNewNode( workingMemory, propagationContext );
+        }        
     }     
 
     public void remove(BaseNode node,

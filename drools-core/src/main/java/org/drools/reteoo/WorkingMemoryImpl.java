@@ -317,6 +317,17 @@ public class WorkingMemoryImpl
     public List getFactHandles() {
         return new ArrayList( this.identityMap.values() );
     }
+    
+    /**
+     * A helper method used to avoid lookups when iterating over facthandles and 
+     * objects at once. 
+     * DO NOT MAKE THIS METHOD PUBLIC UNLESS YOU KNOW WHAT YOU ARE DOING
+     * 
+     * @return
+     */
+    Map getFactHandleMap() {
+        return Collections.unmodifiableMap( this.identityMap );
+    }
 
     /**
      * @see WorkingMemory
