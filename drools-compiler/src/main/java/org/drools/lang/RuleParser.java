@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea8 C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-03-29 18:10:00
+// $ANTLR 3.0ea8 C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-03-30 11:10:31
 
 	package org.drools.lang;
 	import java.util.List;
@@ -3364,31 +3364,31 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start enum_constraint
-    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:552:1: enum_constraint returns [String text] : (cls= ID '.' enum= ID ) ;
+    // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:552:1: enum_constraint returns [String text] : (cls= ID '.' en= ID ) ;
     public String enum_constraint() throws RecognitionException {   
         String text;
         Token cls=null;
-        Token enum=null;
+        Token en=null;
 
         
         		text = null;
         	
         try {
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:556:17: ( (cls= ID '.' enum= ID ) )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:556:17: (cls= ID '.' enum= ID )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:556:17: ( (cls= ID '.' en= ID ) )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:556:17: (cls= ID '.' en= ID )
             {
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:556:17: (cls= ID '.' enum= ID )
-            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:556:18: cls= ID '.' enum= ID
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:556:17: (cls= ID '.' en= ID )
+            // C:\Projects\jboss-rules\drools-compiler\src\main\resources\org\drools\lang\drl.g:556:18: cls= ID '.' en= ID
             {
             cls=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_enum_constraint1895); 
             match(input,48,FOLLOW_48_in_enum_constraint1897); 
-            enum=(Token)input.LT(1);
+            en=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_enum_constraint1901); 
 
             }
 
-             text = cls.getText() + "." + enum.getText(); 
+             text = cls.getText() + "." + en.getText(); 
 
             }
 
