@@ -27,7 +27,8 @@ public class BooleanFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Boolean)object1).booleanValue() == ((Boolean)object2).booleanValue();
+            if (object1 == null) return object2 == null;
+            return ((Boolean)object1).equals( object2 );
         }
         
         public String toString() {
@@ -45,8 +46,10 @@ public class BooleanFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Boolean)object1).booleanValue() != ((Boolean)object2).booleanValue();
+            if (object1 == null) return object2 != null;
+            return !((Boolean)object1).equals( object2 );
         }
+        
         
         public String toString() {
             return "Boolean !=";

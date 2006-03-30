@@ -34,7 +34,8 @@ public class CharacterFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Character) object1).charValue() == ((Character) object2).charValue();
+            if (object1 == null) return object2 == null;
+            return ((Character) object1).equals( object2 );
         }
         
         public String toString() {
@@ -52,7 +53,8 @@ public class CharacterFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Character) object1).charValue() != ((Character) object2).charValue();
+            if (object1 == null) return object2 != null;
+            return !((Character) object1).equals(object2);
         }
         
         public String toString() {

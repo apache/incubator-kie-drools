@@ -36,7 +36,8 @@ public class DoubleFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Number) object1).doubleValue() == ((Number) object2).doubleValue();
+            if (object1 == null) return object2 == null;
+            return ((Number) object1).equals(object2);
         }
         
         public String toString() {
@@ -54,7 +55,8 @@ public class DoubleFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Number) object1).doubleValue() != ((Number) object2).doubleValue();
+            if (object1 == null) return object2 != null;
+            return !((Number) object1).equals(object2);
         }
         
         public String toString() {

@@ -29,7 +29,10 @@ public class EvaluatorFactoryTest extends TestCase {
                             {"foo", "==", "foo", Boolean.TRUE},
                             {"foo", "!=", "bar", Boolean.TRUE},
                             {list, "contains", "foo", Boolean.TRUE},
-                            {list, "contains", "bar", Boolean.FALSE}
+                            {list, "contains", "bar", Boolean.FALSE},
+                            {list, "==", null, Boolean.FALSE},
+                            {list, "!=", null, Boolean.TRUE},
+                            {null, "==", null, Boolean.TRUE}
                           };
 
         runEvaluatorTest( data, Evaluator.OBJECT_TYPE );
@@ -47,7 +50,8 @@ public class EvaluatorFactoryTest extends TestCase {
                             {field, "==", field, Boolean.TRUE},
                             {field, "!=", new Object[] {"foo"}, Boolean.TRUE},
                             {field, "contains", "foo", Boolean.TRUE},
-                            {field, "!=", null, Boolean.TRUE}
+                            {field, "!=", null, Boolean.TRUE},
+                            {field, "==", null, Boolean.FALSE}
                           };
 
         runEvaluatorTest( data, Evaluator.ARRAY_TYPE );
@@ -65,7 +69,13 @@ public class EvaluatorFactoryTest extends TestCase {
                             {"foo", "matches", ".*foo", Boolean.TRUE},
                             {"foo", "matches", "bar", Boolean.FALSE},
                             {null, "matches", ".*foo", Boolean.FALSE},
-                            {"foo", "==", null, Boolean.FALSE}
+                            {"foo", "==", null, Boolean.FALSE},
+                            {"foo", "!=", null, Boolean.TRUE},
+                            {null, "==", null, Boolean.TRUE},
+                            {"foo", "!=", null, Boolean.TRUE},
+                            {null, "!=", "foo", Boolean.TRUE},
+                            {null, "!=", null, Boolean.FALSE}
+                            
                           };
 
         runEvaluatorTest( data, Evaluator.STRING_TYPE );
@@ -83,7 +93,10 @@ public class EvaluatorFactoryTest extends TestCase {
                             {new Integer(42), ">", new Integer(41), Boolean.TRUE},
                             {new Integer(42), "<=", new Integer(42), Boolean.TRUE},
                             {new Integer(42), ">", new Integer(100), Boolean.FALSE},
-                            {new Integer(42), "==", null, Boolean.FALSE}
+                            {new Integer(42), "==", null, Boolean.FALSE},
+                            {new Integer(42), "!=", null, Boolean.TRUE},
+                            {null, "==", new Integer(42), Boolean.FALSE},
+                            {null, "!=", new Integer(42), Boolean.TRUE}
                           };
 
         
@@ -99,7 +112,8 @@ public class EvaluatorFactoryTest extends TestCase {
         Object[][] data = { {new Short( (short) 42), "==", new Short((short)42), Boolean.TRUE},
                             {new Short( (short) 42), "<", new Short((short)43), Boolean.TRUE},
                             {new Short( (short) 42), ">=", new Short((short)41), Boolean.TRUE},
-                            {new Short( (short) 42), "!=", new Short((short)41), Boolean.TRUE}
+                            {new Short( (short) 42), "!=", new Short((short)41), Boolean.TRUE},
+                            {new Short( (short) 42), "!=", null, Boolean.TRUE}
                           };
 
         runEvaluatorTest( data,
@@ -112,7 +126,11 @@ public class EvaluatorFactoryTest extends TestCase {
         Object[][] data = { {new Boolean(true), "==", new Boolean(true), Boolean.TRUE},
                             {new Boolean(false), "!=", new Boolean(true), Boolean.TRUE},
                             {new Boolean(true), "==", new Boolean(false), Boolean.FALSE},
-                            {new Boolean(true), "!=", new Boolean(false), Boolean.TRUE}
+                            {new Boolean(true), "!=", new Boolean(false), Boolean.TRUE},
+                            {new Boolean(true), "==", null, Boolean.FALSE},
+                            {new Boolean(true), "!=", null, Boolean.TRUE},
+                            {null, "==", null, Boolean.TRUE}
+                            
                           };
 
         runEvaluatorTest( data,
@@ -128,7 +146,9 @@ public class EvaluatorFactoryTest extends TestCase {
                             {new Double(42), ">=", new Double(41), Boolean.TRUE},
                             {new Double(42), ">=", new Double(42), Boolean.TRUE},
                             {new Double(42), ">=", new Double(100), Boolean.FALSE},
-                            {new Double(42), "<", new Double(1), Boolean.FALSE}
+                            {new Double(42), "<", new Double(1), Boolean.FALSE},
+                            {new Double(42), "==", null, Boolean.FALSE},
+                            {null, "!=", new Double(1), Boolean.TRUE}
                           };
 
         runEvaluatorTest( data,
@@ -144,7 +164,9 @@ public class EvaluatorFactoryTest extends TestCase {
                             {new Float(42), ">=", new Float(41), Boolean.TRUE},
                             {new Float(42), ">=", new Float(42), Boolean.TRUE},
                             {new Float(42), ">=", new Float(100), Boolean.FALSE},
-                            {new Float(42), "<", new Float(1), Boolean.FALSE}
+                            {new Float(42), "<", new Float(1), Boolean.FALSE},
+                            {new Float(42), "==", null, Boolean.FALSE},
+                            {null, "!=", new Float(1), Boolean.TRUE}
                           };
 
         runEvaluatorTest( data,
@@ -160,7 +182,9 @@ public class EvaluatorFactoryTest extends TestCase {
                             {new Long(42), ">=", new Long(41), Boolean.TRUE},
                             {new Long(42), ">=", new Long(42), Boolean.TRUE},
                             {new Long(42), ">=", new Long(100), Boolean.FALSE},
-                            {new Long(42), "<", new Long(1), Boolean.FALSE}
+                            {new Long(42), "<", new Long(1), Boolean.FALSE},
+                            {new Long(42), "==", null, Boolean.FALSE},
+                            {null, "!=", new Long(1), Boolean.TRUE}
                           };
 
         runEvaluatorTest( data,
@@ -176,7 +200,9 @@ public class EvaluatorFactoryTest extends TestCase {
                             {new Character('z'), ">=", new Character('z'), Boolean.TRUE},
                             {new Character('z'), ">=", new Character('a'), Boolean.TRUE},
                             {new Character('a'), ">=", new Character('z'), Boolean.FALSE},
-                            {new Character('z'), "<", new Character('a'), Boolean.FALSE}
+                            {new Character('z'), "<", new Character('a'), Boolean.FALSE},
+                            {new Character('z'), "==", null, Boolean.FALSE},
+                            {null, "!=", new Character('a'), Boolean.TRUE}
                           };
         runEvaluatorTest( data,
                           Evaluator.CHAR_TYPE );
@@ -204,7 +230,9 @@ public class EvaluatorFactoryTest extends TestCase {
                             {df.parse( "10-Jul-2000" ), ">", "10-Jul-1974", Boolean.TRUE},
                             {df.parse( "10-Jul-1974" ), ">=", "10-Jul-1974", Boolean.TRUE},
                             {df.parse( "11-Jul-1974" ), ">=", "10-Jul-1974", Boolean.TRUE},
-                            {df.parse( "10-Jul-1974" ), ">=", "11-Jul-1974", Boolean.FALSE},                            
+                            {df.parse( "10-Jul-1974" ), ">=", "11-Jul-1974", Boolean.FALSE},   
+                            {df.parse( "10-Jul-1974" ), "==", null, Boolean.FALSE},
+                            {null, "!=", "11-Jul-1974", Boolean.TRUE}
                           };
         runEvaluatorTest( data,
                           Evaluator.DATE_TYPE );
@@ -217,7 +245,9 @@ public class EvaluatorFactoryTest extends TestCase {
                             {new Byte("1"), "==", new Byte("2"), Boolean.FALSE},
                             {new Byte("1"), "!=", new Byte("2"), Boolean.TRUE},
                             {new Byte("1"), "!=", new Byte("1"), Boolean.FALSE},
-                            {new Byte("1"), "<=", new Byte("1"), Boolean.TRUE}
+                            {new Byte("1"), "<=", new Byte("1"), Boolean.TRUE},
+                            {new Byte("1"), "==", null, Boolean.FALSE},
+                            {null, "!=", new Byte("1"), Boolean.TRUE}
                           };
         runEvaluatorTest( data,
                           Evaluator.BYTE_TYPE );
