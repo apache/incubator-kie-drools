@@ -553,7 +553,7 @@ enum_constraint returns [String text]
 	@init {
 		text = null;
 	}
-	:	(cls=ID '.' enum=ID) { text = cls.getText() + "." + enum.getText(); }
+	:	(cls=ID '.' en=ID) { text = cls.getText() + "." + en.getText(); }
 	;	
 	
 retval_constraint returns [String text]
