@@ -33,6 +33,7 @@ public class IntegerFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
+            if (object1 == null) return object2 == null;
             return ((Number) object1).equals( object2 );
         }
         
@@ -51,6 +52,7 @@ public class IntegerFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
+            if (object1 == null) return (object2 != null);
             return !((Number) object1).equals( object2 );
         }
         
@@ -68,7 +70,7 @@ public class IntegerFactory {
         }
 
         public boolean evaluate(Object object1,
-                                Object object2) {
+                                Object object2) {            
             return ((Number) object1).intValue() < ((Number) object2).intValue();
         }
         

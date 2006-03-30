@@ -41,7 +41,8 @@ public class ShortFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Number) object1).shortValue() == ((Number) object2).shortValue();
+            if (object1 == null) return object2 == null;
+            return ((Number) object1).equals( object2 );
         }
         
         public String toString() {
@@ -66,7 +67,8 @@ public class ShortFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Number) object1).shortValue() != ((Number) object2).shortValue();
+            if (object1 == null) return !(object2 == null);
+            return !((Number) object1).equals( object2 );
         }
         
         public String toString() {

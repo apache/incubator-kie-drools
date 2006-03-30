@@ -34,7 +34,8 @@ public class ByteFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Byte) object1).byteValue() == ((Byte) object2).byteValue();
+            if (object1 == null) return object2 == null;
+            return ((Byte) object1).equals(object2);
         }
         
         public String toString() {
@@ -52,7 +53,8 @@ public class ByteFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return ((Byte) object1).byteValue() != ((Byte) object2).byteValue();
+            if (object1 == null) return object2 != null;
+            return !((Byte) object1).equals(object2);
         }
         
         public String toString() {

@@ -331,9 +331,9 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 1, list.size() );              
     }
     
-    public void xxxtestNullBehaviour() throws Exception {
+    public void testNullBehaviour() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_rule_test.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_behaviour.drl" ) ) );
         Package pkg = builder.getPackage();
         
         RuleBase ruleBase = getRuleBase();

@@ -53,6 +53,8 @@ public class DateFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
+            if (object1 == null) return object2 == null;
+            if (object2 == null) return false;
             Date left = (Date) object1;
             
             if (left.compareTo( getRightDate( object2 ) ) == 0) 
@@ -78,6 +80,8 @@ public class DateFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
+            if (object1 == null) return object2 != null;
+            if (object2 == null) return true;
             Date left = (Date) object1;
             if (left.compareTo( getRightDate( object2 ) ) != 0)
                 return true;
@@ -192,6 +196,7 @@ public class DateFactory {
     
     /** Converts the right hand side date as appropriate */
     private static Date getRightDate(Object object2) {
+        if (object2 == null) return null;
         if (object2 instanceof String) 
             return parseDate((String)object2);
         else if (object2 instanceof Date)
