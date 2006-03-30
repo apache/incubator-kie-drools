@@ -121,7 +121,9 @@ public class RuleParserTest extends TestCase {
         assertNotNull( rule );
         
         assertEquals( "myrule", rule.getName() );
-        int i = 0;
+        
+        
+        
         
        String expected = "int i = 0; i = 1; i / 1; i == 1; i(i); i = 'i'; i.i.i; i\\i; i<i; i>i; i=\"i\";  ++i;" +
                            "i++; --i; i--; i += i; i -= i; i *= i; i /= i;" +
@@ -132,7 +134,12 @@ public class RuleParserTest extends TestCase {
                            "String s = (String) o;";
 
         assertEqualsIgnoreWhitespace( expected, rule.getConsequence() );
+        assertTrue(rule.getConsequence().indexOf( "++" ) > 0);
+        assertTrue(rule.getConsequence().indexOf( "--" ) > 0);
+        assertTrue(rule.getConsequence().indexOf( "+=" ) > 0);
+        assertTrue(rule.getConsequence().indexOf( "==" ) > 0);
         
+        System.out.println(rule.getConsequence());
         //note, need to assert that "i++" is preserved as is, no extra spaces.
     }    
     

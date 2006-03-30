@@ -1,0 +1,11 @@
+package org.drools.test;
+
+import org.drools.Person;
+
+rule "pair with same name (or null name)"
+  when
+    p1 : Person($name : name)
+    p2 : Person(name == $name)
+  then
+    System.out.println("Persons detected: ");
+end

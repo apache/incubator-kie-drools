@@ -329,7 +329,25 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
         
         assertEquals( 1, list.size() );              
-    }   
+    }
+    
+    public void xxxtestNullBehaviour() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_rule_test.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();       
+        
+        Person p1 = new Person("michael", "food", 40);
+        Person p2 = new Person(null, "drink", 30);
+        workingMemory.assertObject( p1 );
+        workingMemory.assertObject( p2 );
+        
+        workingMemory.fireAllRules();
+        
+    }
     
     public void testExists() throws Exception {
         PackageBuilder builder = new PackageBuilder();
