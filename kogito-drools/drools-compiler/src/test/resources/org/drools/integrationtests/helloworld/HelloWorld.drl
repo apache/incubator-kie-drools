@@ -5,7 +5,7 @@ import org.drools.integrationtests.helloworld.Message
 rule "Hello World"
 	when
 		$m : Message(list contains "hello")
-		Message(message == "hola")
+		Message(text:message == "hola")
 		Message(number > 40)
 		Message(birthday > "10-Jul-1974")
 		Message(message matches ".*ho.*")
