@@ -128,10 +128,6 @@ class EvalConditionNode extends TupleSource
         boolean allowed = this.condition.isAllowed( tuple,
                                                     workingMemory );
 
-        workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
-                                                                       tuple,
-                                                                       allowed );
-
         if ( allowed ) {
             LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
             memory.add( tuple );
@@ -170,10 +166,6 @@ class EvalConditionNode extends TupleSource
 
         boolean allowed = this.condition.isAllowed( tuple,
                                                     workingMemory );
-
-        workingMemory.getReteooNodeEventSupport().propagateReteooNode( this,
-                                                                       tuple,
-                                                                       allowed );
 
         if ( allowed ) {
             memory.add( tuple );

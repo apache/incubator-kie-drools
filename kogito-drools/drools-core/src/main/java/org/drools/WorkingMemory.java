@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.event.AgendaEventListener;
-import org.drools.event.ReteooNodeEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -80,29 +79,6 @@ public interface WorkingMemory
      * @return listeners The listeners.
      */
     public List getAgendaEventListeners();
-
-    /**
-     * Add an event listener.
-     * 
-     * @param listener
-     *            The listener to add.
-     */
-    public void addEventListener(ReteooNodeEventListener listener);
-
-    /**
-     * Remove an event listener.
-     * 
-     * @param listener
-     *            The listener to remove.
-     */
-    public void removeEventListener(ReteooNodeEventListener listener);
-
-    /**
-     * Returns all event listeners.
-     * 
-     * @return listeners The listeners.
-     */
-    public List getReteooNodeEventListeners();
 
     /**
      * Retrieve all of the set application data in this memory
