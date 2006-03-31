@@ -37,8 +37,6 @@ import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
-import org.drools.event.ReteooNodeEventListener;
-import org.drools.event.ReteooNodeEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.rule.Rule;
@@ -101,7 +99,6 @@ abstract public class AbstractWorkingMemory
     /** The eventSupport */
     protected final WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( this );
     protected final AgendaEventSupport        agendaEventSupport                            = new AgendaEventSupport( this );
-    private final ReteooNodeEventSupport      reteooNodeEventSupport                        = new ReteooNodeEventSupport( this );
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     protected final RuleBase                  ruleBase;
@@ -148,18 +145,6 @@ abstract public class AbstractWorkingMemory
 
     public List getAgendaEventListeners() {
         return this.agendaEventSupport.getEventListeners();
-    }
-
-    public void addEventListener(ReteooNodeEventListener listener) {
-        this.reteooNodeEventSupport.addEventListener( listener );
-    }
-
-    public void removeEventListener(ReteooNodeEventListener listener) {
-        this.reteooNodeEventSupport.removeEventListener( listener );
-    }
-
-    public List getReteooNodeEventListeners() {
-        return this.reteooNodeEventSupport.getEventListeners();
     }
 
     /**
