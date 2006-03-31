@@ -104,9 +104,9 @@ public class Package implements DRLJavaEmitter {
 		return _rules;
 	}
 
-	public void renderDRL(DRLOutput out) {
-		out.writeLine("#generated from Decision Table");
-        out.writeLine( "package " + _name + ";" );
+	public void renderDRL(DRLOutput out) {		
+        out.writeLine( "package " + _name.replace( ' ', '_' ) + ";" );
+        out.writeLine("#generated from Decision Table");
 		renderDRL(_imports, out);
 		renderDRL(_variables, out);
 		_functions.renderDRL(out);
