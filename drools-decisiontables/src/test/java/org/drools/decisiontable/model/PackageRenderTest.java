@@ -67,7 +67,7 @@ public class PackageRenderTest extends TestCase {
 	}
 
 	public void testRulesetRender() {
-		Package ruleSet = new Package("myruleset");
+		Package ruleSet = new Package("my ruleset");
 		ruleSet.addFunctions("my functions");
 		ruleSet.addRule(buildRule());
 		
@@ -90,7 +90,7 @@ public class PackageRenderTest extends TestCase {
 		assertTrue(drl.indexOf("salience 42") > -1);
 		assertTrue(drl.indexOf("#rule comments") > -1);
 		assertTrue(drl.indexOf("my functions") > -1);
-		assertTrue(drl.indexOf( "package myruleset;" ) > -1);
+		assertTrue(drl.indexOf( "package my_ruleset;" ) > -1);
 		assertTrue(drl.indexOf("rule \"other rule\"") > drl.indexOf("rule \"myrule\""));
 		
 	}
