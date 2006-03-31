@@ -1,14 +1,14 @@
-package org.drools.spi;
+/**
+ * 
+ */
+package org.drools.base;
 
 import org.drools.spi.FieldValue;
 
-public final class MockField
-    implements
-    FieldValue {
-
-    private final Object value;  
-
-    public MockField(Object value) {
+public class FieldImpl implements FieldValue {
+    private Object value;
+    
+    public FieldImpl(Object value) {
         this.value = value;
     }
 
@@ -20,10 +20,10 @@ public final class MockField
         if(this == other) {
             return true;
         }
-        if(!(other instanceof MockField)) {
+        if(!(other instanceof FieldImpl)) {
             return false;
         }
-        MockField field = (MockField) other;
+        FieldImpl field = (FieldImpl) other;
         
         return (((this.value == null ) && (field.value == null)) ||
                 ((this.value != null ) && (this.value.equals(field.value))));
@@ -32,5 +32,4 @@ public final class MockField
     public int hashCode() {
         return this.value.hashCode();
     }
-    
 }
