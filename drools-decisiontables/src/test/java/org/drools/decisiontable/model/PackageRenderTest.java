@@ -92,7 +92,7 @@ public class PackageRenderTest extends TestCase {
 		assertTrue(drl.indexOf("my functions") > -1);
 		assertTrue(drl.indexOf( "package myruleset;" ) > -1);
 		assertTrue(drl.indexOf("rule \"other rule\"") > drl.indexOf("rule \"myrule\""));
-
+		
 	}
 
 }

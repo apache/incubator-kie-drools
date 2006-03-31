@@ -58,36 +58,7 @@ public class Duration extends DRLElement
      */
     public void setSnippet(String snippet)
     {
-    	// The snippet parameters are separated by ":"
-        StringTokenizer tokens = new StringTokenizer( snippet, "," );
-        String params = "";
-		while ( tokens.hasMoreTokens( ) )
-		{
-			String token = tokens.nextToken( );
-			if (token.trim().toUpperCase().startsWith("W"))
-			{
-				params += " weeks=";
-			}
-    		else if ( token.trim().toUpperCase().startsWith("D") )
-    		{
-    			params += " days=";
-    		}
-    		else if ( token.trim().toUpperCase().startsWith("H") )
-    		{
-    			params += " hours=";
-    		}
-    		else if ( token.trim().toUpperCase().startsWith("M") )
-    		{
-    			params += " minutes=";
-    		}
-    		else if ( token.trim().toUpperCase().startsWith("S") )
-    		{
-    			params += " seconds=";
-    		}
-    		params +=  "\"" + token.substring(1) + "\"";
-		}
-			
-        _snippet = params;
+        _snippet = snippet;
     }
 
     public String getSnippet()
@@ -97,7 +68,7 @@ public class Duration extends DRLElement
 
 	public void renderDRL(DRLOutput out) {
 		if (isCommented()) out.writeLine("#" + getComment());
-		out.writeLine("\tduration" + _snippet);
+		out.writeLine("\tduration " + _snippet);
 		
 	}
 }

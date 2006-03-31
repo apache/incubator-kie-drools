@@ -95,7 +95,7 @@ public class SpreadsheetCompilerUnitTest extends TestCase
         assertNotNull( drl );
         assertTrue(drl.indexOf( "This is a function block" ) > -1);
         assertTrue(drl.indexOf( "global Class1 obj1;" ) > -1);
-        
+        //System.out.println(drl);
     }
 
 }

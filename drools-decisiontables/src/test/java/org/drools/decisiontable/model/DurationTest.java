@@ -13,17 +13,13 @@ public class DurationTest extends TestCase
      */
     public void testDurationRender() {
         Duration duration = new Duration();
-        duration.setSnippet("H2,M30,S30");
+        duration.setSnippet("1234");
         DRLOutput out = new DRLOutput();
         duration.renderDRL(out);
         String res = out.getDRL();
-        assertTrue(res.indexOf("duration hours=\"2\" minutes=\"30\" seconds=\"30\"") > 0);
+        System.out.println(res);
+        assertEquals("\tduration 1234\n", res);
 
-        duration.setSnippet("M30");
-        out = new DRLOutput();
-        duration.renderDRL(out);
-        res = out.getDRL();        
-        assertTrue(res.indexOf("duration minutes=\"30\"") > 0);
     }
     
 }
