@@ -881,4 +881,29 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( stilton,
                       list.get(0 ) );        
     }  
+    
+    public void testStaticFieldReference() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_StaticField.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );   
+        
+        Cheesery cheesery = new Cheesery();
+        cheesery.setStatus( Cheesery.SELLING_CHEESE );
+        workingMemory.assertObject( cheesery );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 1,
+                      list.size() );        
+        
+        assertEquals( cheesery,
+                      list.get(0 ) );        
+    }      
 }

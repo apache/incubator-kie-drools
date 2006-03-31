@@ -1,0 +1,12 @@
+package org.drools.test
+
+import org.drools.Cheesery
+
+global java.util.List list
+
+rule "test static field reference"
+    when
+       	c : Cheesery( status == Cheesery.SELLING_CHEESE )
+    then
+    	list.add( c );
+end   

@@ -15,6 +15,7 @@ import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorFactory;
 import org.drools.base.FieldFactory;
+import org.drools.base.FieldImpl;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -414,16 +415,32 @@ public class RuleBuilder {
         }
 
         FieldValue field = null;
-        try {
-            field = FieldFactory.getFieldValue( literalDescr.getText(),
-                                                extractor.getObjectType().getValueType() );
-        } catch ( Exception e ) {
-            this.errors.add( new RuleError( this.rule,
-                                             literalDescr,
-                                             e,
-                                             "Unable to create a Field value ofr type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalDescr.getText() + "'" ) );
+        if ( literalDescr.isStaticFieldValue() ) {
+            int lastDot = literalDescr.getText().lastIndexOf( '.' );
+            String className = literalDescr.getText().substring( 0, lastDot );
+            String fieldName = literalDescr.getText().substring( lastDot + 1 );
+            try {
+                Class staticClass = this.typeResolver.resolveType( className );
+                field = new FieldImpl( staticClass.getField( fieldName ).get( null ) );
+            } catch ( Exception e ) {
+                this.errors.add( new RuleError( this.rule,
+                                                literalDescr,
+                                                e,
+                                                "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalDescr.getText() + "'" ) );                
+            }
+          
+        } else {
+            try {
+                field = FieldFactory.getFieldValue( literalDescr.getText(),
+                                                    extractor.getObjectType().getValueType() );
+            } catch ( Exception e ) {
+                this.errors.add( new RuleError( this.rule,
+                                                 literalDescr,
+                                                 e,
+                                                 "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalDescr.getText() + "'" ) );
+            }
         }
-
+        
         Evaluator evaluator = getEvaluator( literalDescr,
                                             extractor.getObjectType().getValueType(),
                                             literalDescr.getEvaluator() );
