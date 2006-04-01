@@ -285,7 +285,7 @@ public class ObjectNotEqualConstrRightMemory
     private MultiLinkedList getFactList(WorkingMemory workingMemory,
                                      FactHandleImpl handle) {
         Object select = this.extractor.getValue( workingMemory.getObject( handle ));
-        Integer hash = new Integer(select.hashCode());
+        Integer hash = (select != null) ? new Integer(select.hashCode()) : Integer.valueOf( 0 );
         MultiLinkedList list = (MultiLinkedList) this.memoryMap.get(hash);
         if(list == null) {
             list = new KeyMultiLinkedList(hash);
