@@ -44,13 +44,17 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
     protected BetaRightMemory  memory;
     protected DummyValueObject obj0;
     protected DummyValueObject obj1;
+    protected DummyValueObject obj2;
     protected FactHandleFactory factory;
     protected FactHandleImpl f0;
     protected FactHandleImpl f1;
+    protected FactHandleImpl f2;
     protected ObjectMatches matches0;
     protected ObjectMatches matches1;
+    protected ObjectMatches matches2;
     protected ReteTuple tuple0;
     protected ReteTuple tuple1;
+    protected ReteTuple tuple2;
     
     public BaseBetaRightMemoryTestClass() {
         this.memory = null;
@@ -61,6 +65,7 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
         this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
         obj0 = new DummyValueObject(true, "string1", 10, "object1");
         obj1 = new DummyValueObject(true, "string2", 20, "object2");
+        obj2 = new DummyValueObject(true, null, 20, null);
         
         factory = new DefaultFactHandleFactory();
         f0 = (FactHandleImpl) factory.newFactHandle(0);
@@ -69,11 +74,16 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
         f1 = (FactHandleImpl) factory.newFactHandle(1);
         f1.setObject(obj1);
         
+        f2 = (FactHandleImpl) factory.newFactHandle(2);
+        f2.setObject(obj2);
+        
         matches0 = new ObjectMatches( f0 );
         matches1 = new ObjectMatches( f1 );
+        matches2 = new ObjectMatches( f2 );
         
         tuple0 = new ReteTuple(f0);
         tuple1 = new ReteTuple(f1);
+        tuple2 = new ReteTuple(f2);
     }
 
     protected void tearDown() throws Exception {
@@ -89,6 +99,9 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
         
         this.memory.add(this.workingMemory, matches1);
         Assert.assertEquals("Memory should have size 2", 2, this.memory.size());
+
+        this.memory.add(this.workingMemory, matches2);
+        Assert.assertEquals("Memory should have size 3", 3, this.memory.size());
     }
 
     /*
@@ -97,9 +110,13 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
     public void testRemoveWorkingMemoryObjectMatches() {
         this.memory.add(this.workingMemory, matches0);
         this.memory.add(this.workingMemory, matches1);
-        Assert.assertEquals("Memory should have size 2", 2, this.memory.size());
+        this.memory.add(this.workingMemory, matches2);
+        Assert.assertEquals("Memory should have size 3", 3, this.memory.size());
         
         this.memory.remove(this.workingMemory, this.matches0);
+        Assert.assertEquals("Memory should have size 2", 2, this.memory.size());
+
+        this.memory.remove(this.workingMemory, this.matches2);
         Assert.assertEquals("Memory should have size 1", 1, this.memory.size());
 
         this.memory.remove(this.workingMemory, this.matches1);
@@ -112,12 +129,16 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
     public void testAddWorkingMemoryMultiLinkedListNodeWrapper() {
         MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper(matches0);
         MultiLinkedListNodeWrapper wrapper1 = new MultiLinkedListNodeWrapper(matches1);
+        MultiLinkedListNodeWrapper wrapper2 = new MultiLinkedListNodeWrapper(matches2);
         
         this.memory.add(this.workingMemory, wrapper0);
         Assert.assertEquals("Memory should have size 1", 1, this.memory.size());
         
-        this.memory.add(this.workingMemory, wrapper1);
+        this.memory.add(this.workingMemory, wrapper2);
         Assert.assertEquals("Memory should have size 2", 2, this.memory.size());
+        
+        this.memory.add(this.workingMemory, wrapper1);
+        Assert.assertEquals("Memory should have size 3", 3, this.memory.size());
     }
 
     /*
@@ -126,12 +147,17 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
     public void testRemoveWorkingMemoryMultiLinkedListNodeWrapper() {
         MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper(matches0);
         MultiLinkedListNodeWrapper wrapper1 = new MultiLinkedListNodeWrapper(matches1);
+        MultiLinkedListNodeWrapper wrapper2 = new MultiLinkedListNodeWrapper(matches2);
         
         this.memory.add(this.workingMemory, wrapper0);
         this.memory.add(this.workingMemory, wrapper1);
-        Assert.assertEquals("Memory should have size 2", 2, this.memory.size());
+        this.memory.add(this.workingMemory, wrapper2);
+        Assert.assertEquals("Memory should have size 3", 3, this.memory.size());
         
         this.memory.remove(this.workingMemory, wrapper1);
+        Assert.assertEquals("Memory should have size 2", 2, this.memory.size());
+        
+        this.memory.remove(this.workingMemory, wrapper2);
         Assert.assertEquals("Memory should have size 1", 1, this.memory.size());
         
         this.memory.remove(this.workingMemory, wrapper0);
@@ -202,7 +228,8 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
         try {
             this.memory.add(this.workingMemory, matches0);
             this.memory.add(this.workingMemory, matches1);
-            Assert.assertEquals("Memory should have size 2", 2, this.memory.size());
+            this.memory.add(this.workingMemory, matches2);
+            Assert.assertEquals("Memory should have size 3", 3, this.memory.size());
             
             Iterator i = this.memory.iterator(); 
             Assert.assertTrue("There should be a next match", i.hasNext());
@@ -212,6 +239,10 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
             Assert.assertTrue("There should be a next match", i.hasNext());
             matches = (ObjectMatches) i.next();
             Assert.assertSame("Wrong returned match", matches1, matches);
+            
+            Assert.assertTrue("There should be a next match", i.hasNext());
+            matches = (ObjectMatches) i.next();
+            Assert.assertSame("Wrong returned match", matches2, matches);
             
             Assert.assertFalse("There should not be a next match", i.hasNext());
         } catch ( UnsupportedOperationException e ) {
