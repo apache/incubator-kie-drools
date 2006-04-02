@@ -2,10 +2,12 @@ package org.drools.test;
 
 import org.drools.Person;
 
+global java.util.List list
+
 rule "match Person"
     when
         $person : Person()
     then
-        System.out.println("Name is " + $person.getName() );
-        $person.setStatus("match Person ok");
+		list.add( $person );
+        $person.setStatus("match Person ok");		
 end    
