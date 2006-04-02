@@ -441,8 +441,67 @@ public abstract class IntegrationCases extends TestCase {
         
         workingMemory.fireAllRules();
         
-        assertEquals( new Integer( 5 ), list.get(  0 ) );          
+        assertEquals( new Integer( 5 ), list.get(  0 ) );             
     }
+    
+    public void testDynamicFunction() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction1.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
+        
+        Cheese stilton = new Cheese("stilton", 5);
+        workingMemory.assertObject( stilton );       
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( new Integer( 5 ), list.get(  0 ) );     
+        
+        // Check a function can be removed from a package.
+        // Once removed any efforts to use it should throw an Exception
+        pkg.removeFunction( "addFive" );
+        
+        Cheese cheddar = new Cheese("cheddar", 5);
+        workingMemory.assertObject( cheddar );       
+        
+        try {
+            workingMemory.fireAllRules();
+            fail( "Function should have been removed and NoClassDefFoundError thrown from the Consequence");
+        } catch ( NoClassDefFoundError e) {
+        }
+        
+        // Check a new function can be added to replace an old function
+        builder = new PackageBuilder( );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction2.drl" ) ) );        
+        
+        ruleBase.addPackage( builder.getPackage() );
+        
+        Cheese brie = new Cheese("brie", 5);
+        workingMemory.assertObject( brie );  
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( new Integer( 6 ), list.get(  1 ) ); 
+        
+        builder = new PackageBuilder( );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction3.drl" ) ) );        
+        
+        ruleBase.addPackage( builder.getPackage() );
+        
+        Cheese feta = new Cheese("feta", 5);
+        workingMemory.assertObject( feta );  
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( new Integer( 5 ), list.get( 2 ) );         
+        
+    }    
     
     public void testAssertRetract() throws Exception {
         //postponed while I sort out KnowledgeHelperFixer
