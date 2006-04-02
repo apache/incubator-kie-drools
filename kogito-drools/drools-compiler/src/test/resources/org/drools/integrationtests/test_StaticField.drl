@@ -7,8 +7,8 @@ global java.util.List list
 
 rule "first"
     when
-       	p : Cheesery(status == Cheesery.MAKING_CHEESE)
+       	p : Cheesery(status == Cheesery.SELLING_CHEESE)
     then
-    	list.add("first");
+    	list.add( p );
 
 end   
