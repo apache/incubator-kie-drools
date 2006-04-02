@@ -987,6 +987,9 @@ public abstract class IntegrationCases extends TestCase {
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.setGlobal( "total", new Integer(0) );
         
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );           
+        
         // Adding person in advance. There is no Person() object
         // type node in memory yet, but the rule engine is supposed
         // to handle that correctly
@@ -1001,11 +1004,30 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.assertObject( cheddar );            
         workingMemory.fireAllRules();
         
+        assertEquals( 1,
+                      list.size() );
+        
+        assertEquals( "stilton",
+                      list.get( 0 ) );
+        
         reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) );
         builder = new PackageBuilder();
         builder.addPackageFromDrl( reader );
         Package pkg2 = builder.getPackage();
         ruleBase.addPackage( pkg2 );
+
+        assertEquals( 3,
+                      list.size() );
+        assertEquals( "stilton",
+                      list.get( 0 ) );
+        
+        assertEquals( "cheddar",
+                      list.get( 1 ) );
+
+        assertEquals( "stilton",
+                      list.get( 2 ) );
+        
+        list.clear();
         
         reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) );
         builder = new PackageBuilder();
@@ -1019,6 +1041,8 @@ public abstract class IntegrationCases extends TestCase {
         
         Assert.assertEquals( "Rule from package 3 should have been fired", 
                              "match Person ok", bob.getStatus() );
+        
+        assertEquals( bob, list.get( 0 ) );
         
         reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) );
         builder = new PackageBuilder();
