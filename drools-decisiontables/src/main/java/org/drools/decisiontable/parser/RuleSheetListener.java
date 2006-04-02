@@ -126,7 +126,7 @@ public class RuleSheetListener
     }
 
     private Package buildRuleSet() {
-        String rulesetName = getProperties().getProperty( RULESET_TAG );
+        String rulesetName = getProperties().getProperty( RULESET_TAG, "rule_table" );
         Package ruleset = new Package( rulesetName );
         for ( Iterator it = _ruleList.iterator(); it.hasNext(); ) {
             ruleset.addRule( (Rule) it.next() );
