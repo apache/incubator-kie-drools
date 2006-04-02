@@ -89,10 +89,7 @@ public class Package
     private String                 name;
 
     /** Set of all rule-names in this <code>Package</code>. */
-    private Map                    ruleNames;
-
-    /** Ordered list of all <code>Rules</code> in this <code>Package</code>. */
-    private List                   rules;
+    private Map                    rules;
 
     private List                   imports;
 
@@ -144,8 +141,7 @@ public class Package
                    ClassLoader parentClassLoader) {
         this.name = name;
         this.imports = new ArrayList( 1 );
-        this.ruleNames = new HashMap();
-        this.rules = new ArrayList();
+        this.rules = new HashMap();
         this.globals = new HashMap();
         //this.functions = new HashMap();
         this.packageCompilationData = new PackageCompilationData( parentClassLoader );
@@ -168,8 +164,7 @@ public class Package
         // a byte[]
         ByteArrayOutputStream bos = new ByteArrayOutputStream( );
         ObjectOutput out = new ObjectOutputStream( bos );
-        out.writeObject( this.rules );
-        out.writeObject( this.ruleNames );        
+        out.writeObject( this.rules );     
         stream.writeObject( bos.toByteArray() );
     }
 
@@ -195,8 +190,7 @@ public class Package
         ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( new ByteArrayInputStream( bytes ),
                                                                                         this.packageCompilationData.getClassLoader() );
 
-        this.rules = (List) streamWithLoader.readObject();
-        this.ruleNames = (Map) streamWithLoader.readObject();        
+        this.rules = (Map) streamWithLoader.readObject();      
     }
     
     private static class ObjectInputStreamWithLoader extends ObjectInputStream {
@@ -236,9 +230,32 @@ public class Package
     public void addImport(String importEntry) {
         this.imports.add( importEntry );
     }
+    
+    public void  removeImport(String importEntry) {
+        this.imports.remove( importEntry );
+    }
 
     public List getImports() {
         return this.imports;
+    }
+    
+
+    public void addGlobal(String identifier,
+                          Class clazz) {
+        this.globals.put( identifier,
+                          clazz );
+    }
+    
+    public void removeGlobal( String identifier ) {
+        this.globals.remove( identifier );
+    }
+
+    public Map getGlobals() {
+        return this.globals;
+    }    
+    
+    public void removeFunction(String functionName) {        
+        this.packageCompilationData.remove( this.name + "." +  ucFirst ( functionName ) );        
     }
 
     /**
@@ -259,21 +276,13 @@ public class Package
 
         String name = rule.getName();
 
-        if ( containsRule( name ) ) {
-            throw new DuplicateRuleNameException( this,
-                                                  getRule( name ),
-                                                  rule );
-        }
-
-        this.ruleNames.put( name,
-                            rule );
+        this.rules.put( name,
+                        rule );
         rule.setLoadOrder( this.rules.size() );
-        this.rules.add( rule );
     }
     
     public void removeRule(Rule rule) {
-        this.ruleNames.remove( rule.getName() );
-        this.rules.remove( rule );
+        this.rules.remove( rule.getName() );
     }
 
     /**
@@ -287,20 +296,7 @@ public class Package
      *         <code>Package</code>.
      */
     public Rule getRule(String name) {
-        return (Rule) this.ruleNames.get( name );
-    }
-
-    /**
-     * Determine if this <code>Package</code> contains a <code>Rule</code
-     *  with the specified name.
-     *
-     *  @param name The name of the <code>Rule</code>.
-     *
-     *  @return <code>true</code> if this <code>Package</code> contains a
-     *          <code>Rule</code> with the specified name, else <code>false</code>.
-     */
-    public boolean containsRule(String name) {
-        return this.ruleNames.containsKey( name );
+        return (Rule) this.rules.get( name );
     }
 
     /**
@@ -309,31 +305,8 @@ public class Package
      * @return An array of all <code>Rules</code> in this <code>Package</code>.
      */
     public Rule[] getRules() {
-        return (Rule[]) this.rules.toArray( new Rule[this.rules.size()] );
+        return (Rule[]) this.rules.values().toArray( new Rule[this.rules.size()] );
     }
-
-    public void addGlobalDeclaration(String identifier,
-                                     Class clazz) {
-        this.globals.put( identifier,
-                          clazz );
-    }
-
-    public Map getGlobals() {
-        return this.globals;
-    }
-
-//    public void addFunctions(Functions functions) {
-//        this.functions.put( functions.getSemantic(),
-//                            functions );
-//    }
-//
-//    public Functions getFunctions(String semantic) {
-//        return (Functions) this.functions.get( semantic );
-//    }
-//
-//    public Map getFunctions() {
-//        return Collections.unmodifiableMap( this.functions );
-//    }
 
     public void setTypeSolver(TypeResolver typeResolver) {
         this.typeResolver = typeResolver;
@@ -394,4 +367,8 @@ public class Package
     public int hashCode() {
         return this.name.hashCode();
     }
+    
+    private String ucFirst(String name) {
+        return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
+    }    
 }
