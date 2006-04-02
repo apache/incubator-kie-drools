@@ -1,12 +1,14 @@
 package org.drools.test
 
+import org.drools.Person
 import org.drools.Cheesery
 
 global java.util.List list
 
-rule "test static field reference"
+rule "first"
     when
-       	c : Cheesery( status == Cheesery.SELLING_CHEESE )
+       	p : Cheesery(status == Cheesery.MAKING_CHEESE)
     then
-    	list.add( c );
+    	list.add("first");
+
 end   
