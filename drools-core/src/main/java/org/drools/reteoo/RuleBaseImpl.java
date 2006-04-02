@@ -314,12 +314,20 @@ public class RuleBaseImpl
             workingMemory.fireAllRules();
         }
     }
-
-    public void removeRule(Rule rule) {
+    
+    public void removePackage(String packageName) {
+        
+    }       
+    
+    public void removeRule(String packageName, String ruleName) {
+        
+    }        
+    
+    private void removeRule(Rule rule) {
         this.reteooBuilder.removeRule( rule );
     }
 
     public Set getWorkingMemories() {
         return this.workingMemories.keySet();
-    }
+    }    
 }
