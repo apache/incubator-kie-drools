@@ -30,7 +30,9 @@ import org.drools.FactHandle;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.RuleError;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -412,6 +414,13 @@ public abstract class IntegrationCases extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "errors_in_rule.drl" ) ) );
         Package pkg = builder.getPackage();
 
+        DroolsError err = builder.getErrors()[0];
+        RuleError ruleErr = (RuleError) err;
+        assertNotNull(ruleErr.getDescr());
+        assertTrue(ruleErr.getLine() != -1);
+        
+        //check that its getting it from the ruleDescr
+        assertEquals(ruleErr.getLine(), ruleErr.getDescr().getLine());
         assertTrue(builder.getErrors().length > 0);
     }
     
