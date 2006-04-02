@@ -214,7 +214,7 @@ public class PackageBuilder {
 
         if ( result.getErrors().length > 0 ) {
             this.results.add( new RuleError( rule,
-                                             null,
+                                             ruleDescr,
                                              result.getErrors(),
                                              "Rule Compilation error" ) );
         } else {

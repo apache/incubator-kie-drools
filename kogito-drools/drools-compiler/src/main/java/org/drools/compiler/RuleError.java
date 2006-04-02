@@ -32,6 +32,18 @@ public class RuleError extends DroolsError {
     public Object getObject() {
         return object;
     }
+    
+    /** 
+     * This will return the line number of the error, if possible
+     * Otherwise it will be -1
+     */
+    public int getLine() {
+        if (this.descr != null) {
+            return this.descr.getLine();
+        } else {
+            return -1;
+        }
+    }
 
     public String getMessage() {
         String summary = message;
