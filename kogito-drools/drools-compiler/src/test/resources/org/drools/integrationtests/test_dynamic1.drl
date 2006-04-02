@@ -3,10 +3,11 @@ package org.drools.test;
 import org.drools.Cheese;
 
 global java.lang.Integer total;
+global java.util.List list
 
 rule "like stilton"
     when
-        Cheese( $type:type == "stilton" )
+        Cheese( type:type == "stilton" )
     then
-        System.out.println("I like " + $type + " : " +  total);
+		list.add( type );
 end  

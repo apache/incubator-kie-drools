@@ -3,7 +3,6 @@ package org.drools.test;
 import java.util.List;
 import org.drools.Cheese;
 
-
 global java.util.List list
 
 function void addFive(List list) {
