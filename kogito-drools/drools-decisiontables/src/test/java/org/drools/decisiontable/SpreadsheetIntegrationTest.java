@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import org.drools.Cheese;
-import org.drools.Person;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -31,8 +30,10 @@ public class SpreadsheetIntegrationTest extends TestCase {
         builder.addPackageFromDrl( new StringReader(drl) );
         
         Package pkg = builder.getPackage();
-        assertNotNull(pkg);
+        assertNotNull(pkg);    
+        System.out.println(pkg.getErrorSummary());
         assertEquals(0, builder.getErrors().length);
+        
         
         //BUILD RULEBASE
         RuleBase rb = RuleBaseFactory.getInstance().newRuleBase();
