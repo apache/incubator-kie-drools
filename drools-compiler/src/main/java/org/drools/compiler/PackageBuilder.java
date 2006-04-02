@@ -152,7 +152,7 @@ public class PackageBuilder {
             Class clazz;
             try {
                 clazz = typeResolver.resolveType( className );
-                pkg.addGlobalDeclaration( identifier,
+                pkg.addGlobal( identifier,
                                           clazz );
             } catch ( ClassNotFoundException e ) {
                 new GlobalError( identifier );
