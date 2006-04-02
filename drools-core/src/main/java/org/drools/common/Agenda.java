@@ -310,7 +310,7 @@ public class Agenda
             KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation, workingMemory );
             activation.getRule().getConsequence().evaluate( knowledgeHelper, this.workingMemory );
         } catch ( Exception e ) {
-            throw new  ConsequenceException( e );
+            throw new  ConsequenceException( e, activation.getRule() );
         }            
 
         eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );
