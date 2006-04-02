@@ -287,7 +287,7 @@ public class ObjectEqualConstrLeftMemory
         Object select = declaration.getValue( 
                              workingMemory.getObject(
                              tuple.get( this.declaration ) ) );
-        Integer hash = (select != null) ? new Integer(select.hashCode()) : Integer.valueOf( 0 );
+        Integer hash = (select != null) ? new Integer(select.hashCode()) : new Integer( 0 );
         return hash;
     }
 
