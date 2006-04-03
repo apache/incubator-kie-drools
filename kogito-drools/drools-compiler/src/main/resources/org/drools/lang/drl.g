@@ -15,6 +15,18 @@ grammar RuleParser;
 
 	private PackageDescr packageDescr;
 	
+	private List errors = new ArrayList();
+	
+	private String source = "unknown";
+	
+	public void setSource(String source) {
+		this.source = source;
+	}
+	
+	public String getSource() {
+		return this.source;
+	}
+	
 	public PackageDescr getPackageDescr() {
 		return packageDescr;
 	}
@@ -77,6 +89,90 @@ grammar RuleParser;
 		String orig = token.getText();
 		return orig.substring( 1, orig.length() -1 );
 	}
+	
+	public void reportError(RecognitionException ex) {
+	        // if we've already reported an error and have not matched a token
+                // yet successfully, don't report any errors.
+                if ( errorRecovery ) {
+                        //System.err.print("[SPURIOUS] ");
+                        return;
+                }
+                errorRecovery = true;
+
+		errors.add( ex ); 
+	}
+     	
+     	public List getErrors() {
+     		return errors;
+     	}
+     	
+     	public List getErrorMessages() {
+     		List messages = new ArrayList();
+ 		for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
+     	     		messages.add( createErrorMessage( (RecognitionException) errorIter.next() ) );
+     	     	}
+     	     	return messages;
+     	}
+     	
+     	public boolean hasErrors() {
+  		return ! errors.isEmpty();
+     	}
+     	
+     	public String createErrorMessage(RecognitionException e)
+        {
+		StringBuffer message = new StringBuffer();
+                message.append( source + ":"+e.line+":"+e.charPositionInLine+" ");
+                if ( e instanceof MismatchedTokenException ) {
+                        MismatchedTokenException mte = (MismatchedTokenException)e;
+                        message.append("mismatched token: "+
+                                                           e.token+
+                                                           "; expecting type "+
+                                                           tokenNames[mte.expecting]);
+                }
+                else if ( e instanceof MismatchedTreeNodeException ) {
+                        MismatchedTreeNodeException mtne = (MismatchedTreeNodeException)e;
+                        message.append("mismatched tree node: "+
+                                                           mtne.foundNode+
+                                                           "; expecting type "+
+                                                           tokenNames[mtne.expecting]);
+                }
+                else if ( e instanceof NoViableAltException ) {
+                        NoViableAltException nvae = (NoViableAltException)e;
+			message.append( "Unexpected token '" + e.token.getText() + "'" );
+                        /*
+                        message.append("decision=<<"+nvae.grammarDecisionDescription+">>"+
+                                                           " state "+nvae.stateNumber+
+                                                           " (decision="+nvae.decisionNumber+
+                                                           ") no viable alt; token="+
+                                                           e.token);
+                                                           */
+                }
+                else if ( e instanceof EarlyExitException ) {
+                        EarlyExitException eee = (EarlyExitException)e;
+                        message.append("required (...)+ loop (decision="+
+                                                           eee.decisionNumber+
+                                                           ") did not match anything; token="+
+                                                           e.token);
+                }
+                else if ( e instanceof MismatchedSetException ) {
+                        MismatchedSetException mse = (MismatchedSetException)e;
+                        message.append("mismatched token '"+
+                                                           e.token+
+                                                           "' expecting set "+mse.expecting);
+                }
+                else if ( e instanceof MismatchedNotSetException ) {
+                        MismatchedNotSetException mse = (MismatchedNotSetException)e;
+                        message.append("mismatched token '"+
+                                                           e.token+
+                                                           "' expecting set "+mse.expecting);
+                }
+                else if ( e instanceof FailedPredicateException ) {
+                        FailedPredicateException fpe = (FailedPredicateException)e;
+                        message.append("rule "+fpe.ruleName+" failed predicate: {"+
+                                                           fpe.predicateText+"}?");
+                }
+               	return message.toString();
+        }   
 }
 
 @lexer::header {
@@ -84,7 +180,7 @@ grammar RuleParser;
 }
 
 opt_eol	:
-		EOL*	
+		(';'|EOL)*	
 	;
 
 compilation_unit
@@ -92,6 +188,7 @@ compilation_unit
 		prolog 
 		(	r=rule 	{this.packageDescr.addRule( r ); } 
 		| 	q=query	{this.packageDescr.addRule( q ); }
+		|	extra_statement 
 		)*
 	;
 	
@@ -104,10 +201,10 @@ prolog
 		{ 
 			this.packageDescr = new PackageDescr( name ); 
 		}
-		import_statement*
-		expander? 
-		global*
-		function*
+		(	extra_statement
+		|	expander
+		)*
+		
 		opt_eol
 	;
 	
@@ -137,6 +234,8 @@ expander
 		{
 			if (expanderResolver == null) 
 				throw new IllegalArgumentException("Unable to use expander. Make sure a expander or dsl config is being passed to the parser. [ExpanderResolver was not set].");
+			if ( expander != null )
+				throw new IllegalArgumentException( "Only one 'expander' statement per file is allowed" );
 			expander = expanderResolver.get( name, config );
 		}
 	;
@@ -223,7 +322,7 @@ rule returns [RuleDescr rule]
 		(	rule_attributes[rule]
 		)?
 		opt_eol
-		(	loc='when' ':'? opt_eol
+		((	loc='when' ':'? opt_eol
 			{ 
 				AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); 
 				lhs.setLocation( loc.getLine(), loc.getCharPositionInLine() );
@@ -234,7 +333,7 @@ rule returns [RuleDescr rule]
 			)
 					
 		)?
-		'then' ':'?  opt_eol
+		( opt_eol 'then' ':'?  opt_eol
 		( options{greedy=false;} : any=.
 			{
 				consequence = consequence + " " + any.getText();
@@ -247,10 +346,17 @@ rule returns [RuleDescr rule]
 			} else { 
 				rule.setConsequence( consequence ); 
 			}
-		}
-		'end' opt_eol
+		})?)?
+		'end' opt_eol 
 	;
 	
+extra_statement
+	:
+	(	import_statement
+	|	global
+	|	function
+	)
+	;
 
 rule_attributes[RuleDescr rule]
 	: 
@@ -376,9 +482,9 @@ duration returns [AttributeDescr d]
 
 normal_lhs_block[AndDescr descrs]
 	:
-		(	d=lhs
+		(	d=lhs 
 			{ descrs.addDescr( d ); }
-		)*
+		)* opt_eol
 	;
 
 	
@@ -407,7 +513,7 @@ lhs returns [PatternDescr d]
 	@init {
 		d=null;
 	}
-	:	l=lhs_or { d = l; }
+	:	l=lhs_or { d = l; } 
 	;
 
 	
@@ -716,7 +822,7 @@ lhs_eval returns [PatternDescr d]
 		d = null;
 		String text = "";
 	}
-	:	'eval' '(' c=paren_chunk ')' 
+	:	'eval' '(' opt_eol c=paren_chunk ')' 
 		{ d = new EvalDescr( c ); }
 	;
 	
@@ -749,7 +855,7 @@ word returns [String word]
 
 MISC 	:
 		'!' | '@' | '$' | '%' | '^' | '&' | '*' | '_' | '-' | '+' 
-		| '|' | ',' | '{' | '}' | '[' | ']' | ';'  | '=' | '/' | '(' | ')' | '\'' | '\\'
+		| '|' | ',' | '{' | '}' | '[' | ']' | '=' | '/' | '(' | ')' | '\'' | '\\'
 		| '||' | '&&' | '<<<' | '++' | '--' | '>>>' | '==' | '+=' | '=+' | '-=' | '=-' |'*=' | '=*' 
 		| '/=' | '=/'
 		
@@ -763,7 +869,7 @@ WS      :       (	' '
         ;
         
 EOL 	:	     
-   		(       '\r\n'  // Evil DOS
+   		(       ( '\r\n' )=> '\r\n'  // Evil DOS
                 |       '\r'    // Macintosh
                 |       '\n'    // Unix (the right way)
                 )
