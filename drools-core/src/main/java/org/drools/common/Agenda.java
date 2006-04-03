@@ -72,6 +72,8 @@ public class Agenda
     private final LinkedList        focusStack;
 
     private AgendaGroupImpl         currentModule;
+    
+    private AgendaGroup             main;
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -90,11 +92,12 @@ public class Agenda
         this.focusStack = new LinkedList();
 
         // MAIN should always be the first AgendaGroup and can never be removed
-        AgendaGroupImpl main = new AgendaGroupImpl( AgendaGroup.MAIN );
+        this.main = new AgendaGroupImpl( AgendaGroup.MAIN );
+        
         this.agendaGroups.put( AgendaGroup.MAIN,
-                               main );
+                               this.main );
 
-        this.focusStack.add( main );
+        this.focusStack.add( this.main );
 
     }
 
@@ -171,7 +174,14 @@ public class Agenda
     }
 
     public void setFocus(String name) {
-        setFocus( (AgendaGroup) this.agendaGroups.get( name ) );
+        AgendaGroup agendaGroup = (AgendaGroup) this.agendaGroups.get( name );
+        
+        // Agenda may not have been created yet, if not create it.
+        if ( agendaGroup == null) {
+            agendaGroup = new AgendaGroupImpl( name );
+            workingMemory.getAgenda().addAgendaGroup( agendaGroup );            
+        }
+        setFocus( agendaGroup );
     }
 
     public AgendaGroup getFocus() {
@@ -192,7 +202,7 @@ public class Agenda
             boolean empty = agendaGroup.isEmpty(); 
             
             // No populated queus found so pop the focusStack and repeat            
-            if (  empty && (this.focusStack.size() > 1 ) ) {
+            if ( empty && (this.focusStack.size() > 1 ) ) {
                 this.focusStack.removeLast();
             } else {
                 agendaGroup =  (empty)? null : agendaGroup;

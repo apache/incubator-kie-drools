@@ -850,7 +850,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
      * 
      * @return The <code>Agenda</code>.
      */
-    protected Agenda getAgenda() {
+    public Agenda getAgenda() {
         return this.agenda;
     }
 

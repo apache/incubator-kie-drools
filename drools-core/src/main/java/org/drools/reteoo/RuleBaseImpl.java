@@ -316,11 +316,21 @@ public class RuleBaseImpl
     }
     
     public void removePackage(String packageName) {
+        Package pkg = ( Package ) this.pkgs.get( packageName );
+        Rule[] rules = pkg.getRules();
+
+        for ( int i = 0; i < rules.length; ++i ) {
+            removeRule( rules[i] );
+        }          
         
+        pkg.clear();
     }       
     
     public void removeRule(String packageName, String ruleName) {
-        
+        Package pkg = ( Package ) this.pkgs.get( packageName );
+        Rule rule = pkg.getRule( ruleName );
+        removeRule( rule );
+        pkg.removeRule( rule );
     }        
     
     private void removeRule(Rule rule) {

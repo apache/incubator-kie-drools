@@ -161,7 +161,7 @@ class ReteooBuilder {
         }
         
         this.rules.put( rule,
-                        nodes.toArray() );
+                        ( BaseNode[] )nodes.toArray( new BaseNode[ nodes.size() ] ) );
     }
 
     private void addRule(And and,
@@ -473,7 +473,9 @@ class ReteooBuilder {
         // reset working memories for potential propagation
         this.workingMemories = (WorkingMemoryImpl[]) this.ruleBase.getWorkingMemories().toArray( new WorkingMemoryImpl[this.ruleBase.getWorkingMemories().size()] );
         
-        BaseNode[] nodes =  ( BaseNode[] ) this.rules.get( rule );
+        Object object = this.rules.get( rule );
+        
+        BaseNode[] nodes =  ( BaseNode[] ) object;
         for ( int i = 0, length = nodes.length; i < length; i++ ) {
             BaseNode node = nodes[i];
             node.remove( null, this.workingMemories );
