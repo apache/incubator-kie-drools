@@ -1,0 +1,30 @@
+
+package com.foo;
+
+import im.one
+
+expander
+
+import im.two
+
+rule foo
+  when
+  then
+end
+
+function cheeseIt() {
+
+}
+
+import im.three;
+
+rule bar
+  when
+  then
+end
+
+function uncheeseIt() {
+
+}
+
+import im.four;

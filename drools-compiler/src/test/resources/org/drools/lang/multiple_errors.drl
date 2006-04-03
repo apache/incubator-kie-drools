@@ -1,0 +1,12 @@
+rule one
+  when
+    exists Foo()
+    exits Bar()
+  then
+end
+
+rule two 
+  when
+    ford = ford = ford
+  then
+end

@@ -1,0 +1,10 @@
+
+rule "another test"
+    when
+        s : String()
+        eval(s.equals("foo") && s.startsWith("f"))
+        
+        
+    then
+        list.add( s );
+end 
