@@ -422,6 +422,11 @@ public class RuleBuilder {
             try {
                 Class staticClass = this.typeResolver.resolveType( className );
                 field = new FieldImpl( staticClass.getField( fieldName ).get( null ) );
+            } catch ( ClassNotFoundException e ) {
+                this.errors.add( new RuleError( this.rule,
+                                                literalDescr,
+                                                e,
+                                                e.getMessage() ) );                                               
             } catch ( Exception e ) {
                 this.errors.add( new RuleError( this.rule,
                                                 literalDescr,

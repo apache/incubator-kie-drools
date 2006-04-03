@@ -1018,6 +1018,7 @@ public abstract class IntegrationCases extends TestCase {
 
         assertEquals( 3,
                       list.size() );
+        
         assertEquals( "stilton",
                       list.get( 0 ) );
         
@@ -1042,7 +1043,10 @@ public abstract class IntegrationCases extends TestCase {
         Assert.assertEquals( "Rule from package 3 should have been fired", 
                              "match Person ok", bob.getStatus() );
         
-        assertEquals( bob, list.get( 0 ) );
+        assertEquals( 1,
+                      list.size() );   
+        
+        assertEquals( bob, list.get( 0 ) );     
         
         reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) );
         builder = new PackageBuilder();
@@ -1051,61 +1055,66 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg4 );
         
         Assert.assertEquals( "Rule from package 4 should have been fired", 
-                             "Who likes Stilton ok", bob.getStatus() );        
+                             "Who likes Stilton ok", bob.getStatus() );
+        
+        assertEquals( 2,
+                      list.size() );
+        
+        assertEquals( bob, list.get( 1 ) );        
+        
     }    
     
     public void testDynamicRuleRemovals() throws Exception {
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) );
         
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( reader );            
-        Package pkg1 = builder.getPackage();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );    
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) ) );    
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) ) );    
+        Package pkg = builder.getPackage();
         
         org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
-        ruleBase.addPackage( pkg1 );
+        ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        workingMemory.setGlobal( "total", new Integer(0) );
         
-        // Adding person in advance. There is no Person() object
-        // type node in memory yet, but the rule engine is supposed
-        // to handle that correctly
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );                   
+
         Person bob = new Person("bob", "stilton");
         bob.setStatus( "Not evaluated" );
         workingMemory.assertObject( bob );  
 
-        Cheese stilton = new Cheese("stilton", 5);
-        workingMemory.assertObject( stilton );
+        Cheese stilton1 = new Cheese("stilton", 5);
+        workingMemory.assertObject( stilton1 );
+        
+        Cheese stilton2 = new Cheese("stilton", 3);
+        workingMemory.assertObject( stilton2 );
+        
+        Cheese stilton3 = new Cheese("stilton", 1);
+        workingMemory.assertObject( stilton3 );        
         
         Cheese cheddar = new Cheese("cheddar", 5);
-        workingMemory.assertObject( cheddar );            
-        workingMemory.fireAllRules();
+        workingMemory.assertObject( cheddar );    
+//        
+//        workingMemory.get
+//        
+//        workingMemory.fireAllRules();
+                
         
-        reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) );
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl( reader );
-        Package pkg2 = builder.getPackage();
-        ruleBase.addPackage( pkg2 );
+       assertEquals( 11, workingMemory.getAgenda().getActivations().length );
+       
+       ruleBase.removeRule( "org.drools.test", "Who likes Stilton");
         
-        reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) );
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl( reader );
-        Package pkg3 = builder.getPackage();
-        ruleBase.addPackage( pkg3 );      
+       assertEquals( 8, workingMemory.getAgenda().getActivations().length );
+       
+       ruleBase.removeRule( "org.drools.test", "like cheese" );
+
+       assertEquals( 4, workingMemory.getAgenda().getActivations().length );
+       
+       ruleBase.removePackage( "org.drools.test" );
+       
+       assertEquals( 0, workingMemory.getAgenda().getActivations().length );
+       
         
-        // Package 3 has a rule working on Person instances.
-        // As we added person instance in advance, rule should fire now
-        workingMemory.fireAllRules();
-        
-        Assert.assertEquals( "Rule from package 3 should have been fired", 
-                             "match Person ok", bob.getStatus() );
-        
-        reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) );
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl( reader );
-        Package pkg4 = builder.getPackage();
-        ruleBase.addPackage( pkg4 );
-        
-        Assert.assertEquals( "Rule from package 4 should have been fired", 
-                             "Who likes Stilton ok", bob.getStatus() );         
     }        
 }
