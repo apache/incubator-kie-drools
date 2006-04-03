@@ -217,7 +217,7 @@ public class WorkingMemoryImpl
      * 
      * @return The <code>Agenda</code>.
      */
-    protected Agenda getAgenda() {
+    public Agenda getAgenda() {
         return this.agenda;
     }
 

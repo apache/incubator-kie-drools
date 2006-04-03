@@ -279,7 +279,7 @@ public class Package
         this.rules.put( name,
                         rule );
         rule.setLoadOrder( this.rules.size() );
-    }
+    }    
     
     public void removeRule(Rule rule) {
         this.rules.remove( rule.getName() );
@@ -371,4 +371,9 @@ public class Package
     private String ucFirst(String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }    
+    
+    public void clear() {
+        this.rules.clear();
+        this.packageCompilationData.clear();
+    }
 }

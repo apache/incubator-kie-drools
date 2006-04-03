@@ -241,12 +241,13 @@ final class TerminalNode extends BaseNode
             TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
             
             ActivationQueue queue = memory.getLifo();
-            for ( AgendaItem item = (AgendaItem) queue.getFirst(); item != null; item = (AgendaItem) item.getNext() ) {
-                if ( item.getRule() == this.rule ) {
+            for ( AgendaItem item = (AgendaItem) queue.getFirst(); item != null;  ) {
+                AgendaItem nextItem = ( AgendaItem ) item.getNext();
+                if ( item.getRule() == this.rule ) {                    
                     if ( item.isActivated() ) {
                         item.remove();
                         workingMemory.getAgendaEventSupport().fireActivationCancelled( item );
-                    }
+                    }    
                     
                     PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                         PropagationContext.RULE_ADDITION,
@@ -254,8 +255,9 @@ final class TerminalNode extends BaseNode
                                                                                         null );  
                     workingMemory.removeLogicalDependencies( item,
                                                              propagationContext,
-                                                             this.rule );                 
+                                                             this.rule );                                                    
                 }
+                item = nextItem;
             }
             
         }

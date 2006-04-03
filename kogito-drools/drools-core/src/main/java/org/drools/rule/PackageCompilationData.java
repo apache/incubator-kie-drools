@@ -195,6 +195,13 @@ public class PackageCompilationData
             throw new RuntimeDroolsException( e );
         }
     }
+    
+    public void clear() {
+        this.store.clear();
+        this.invokerLookups.clear();
+        this.AST = null;
+        reload();
+    }
 
     public void wire(String className) throws ClassNotFoundException,
                                       InstantiationException,

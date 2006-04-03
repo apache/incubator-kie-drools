@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.common.Agenda;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.AgendaFilter;
@@ -79,6 +80,8 @@ public interface WorkingMemory
      * @return listeners The listeners.
      */
     public List getAgendaEventListeners();
+    
+    public Agenda getAgenda();
 
     /**
      * Retrieve all of the set application data in this memory
