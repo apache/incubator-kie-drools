@@ -149,7 +149,36 @@
       </mediaobject>
     </figure>
 
+    <example>
+      <title>Column</title>
+
+      <programlisting>Cheese( )
+Cheese( type == "stilton", price &lt; 10 )</programlisting>
+    </example>
+
     <para>A Column is what Drools refers to</para>
+
+    <figure>
+      <title>Column</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="bound_column.svg" format="SVG"
+                     role="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="bound_column.png" format="PNG"
+                     role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <example>
+      <title> Bound Column</title>
+
+      <programlisting>cheapStilton : Cheese( type == "stilton", price &lt; 10 )</programlisting>
+    </example>
 
     <section>
       <title>Field Constraints</title>
@@ -512,7 +541,14 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         </mediaobject>
       </figure>
 
-      <para></para>
+      <para>valid children : and, or, not, exists, column</para>
+
+      <example>
+        <title>Column</title>
+
+        <programlisting>Cheese( cheeseType : type ) &amp;&amp; Person( favouriteCheese == cheeseType )
+Cheese( cheeseType : type ) and Person( favouriteCheese == cheeseType )</programlisting>
+      </example>
     </section>
 
     <section>
@@ -532,6 +568,16 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         </mediaobject>
       </figure>
 
+      <para>valid children : and, or, not, exists, column</para>
+
+      <example>
+        <title>or</title>
+
+        <programlisting>Person( sex == "f", age &gt; 60 ) || Person( sex == "m", age &gt; 65 )
+Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 )
+</programlisting>
+      </example>
+
       <figure>
         <title>or</title>
 
@@ -547,6 +593,13 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
           </imageobject>
         </mediaobject>
       </figure>
+
+      <example>
+        <title>or with binding</title>
+
+        <programlisting>pensioner : ( Person( sex == "f", age &gt; 60 ) || Person( sex == "m", age &gt; 65 ) )
+pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 ) )</programlisting>
+      </example>
 
       <para></para>
     </section>
@@ -568,7 +621,18 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         </mediaobject>
       </figure>
 
-      <para></para>
+      <para>valid children : none</para>
+
+      <para>Evals cannot be indexed and thus are not as optimal as using Field
+      Constraints. However this makes them ideal for being used when functions
+      return values that change over time, which is not allowed within Field
+      Constraints.</para>
+
+      <example>
+        <title>or</title>
+
+        <programlisting></programlisting>
+      </example>
     </section>
 
     <section>
@@ -588,7 +652,22 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         </mediaobject>
       </figure>
 
-      <para></para>
+      <para>valid children: Column</para>
+
+      <para>Future versions of Drools will allow 'and' and 'or' to be nested
+      in 'not'</para>
+
+      <example>
+        <title>No Busses</title>
+
+        <programlisting>not Bus()</programlisting>
+      </example>
+
+      <example>
+        <title>No red Busses</title>
+
+        <programlisting>not Bus(color == "red")</programlisting>
+      </example>
     </section>
 
     <section>
@@ -608,7 +687,22 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         </mediaobject>
       </figure>
 
-      <para></para>
+      <para>valid children: Column</para>
+
+      <para>Future versions of Drools will allow 'and' and 'or' to be nested
+      in 'not'</para>
+
+      <example>
+        <title>Atleast one Busses</title>
+
+        <programlisting>exists Bus()</programlisting>
+      </example>
+
+      <example>
+        <title>Atleast one red Busses</title>
+
+        <programlisting>exists Bus(color == "red")</programlisting>
+      </example>
     </section>
 
     <section>
