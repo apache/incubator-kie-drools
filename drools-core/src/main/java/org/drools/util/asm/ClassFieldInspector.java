@@ -178,7 +178,7 @@ public class ClassFieldInspector {
         public AnnotationVisitor visitAnnotation(String arg0,
                                                  boolean arg1) {
             
-            return null;
+            return new ClassFieldAnnotationVisitor();
         }
 
 
@@ -221,6 +221,37 @@ public class ClassFieldInspector {
             return name;
         }
         
+        
+    }
+    
+    /** 
+     * This is required for POJOs that have annotations. 
+     * It may also come in handy if we want to allow custom annotations for marking field numbers etc.
+     */
+    static class ClassFieldAnnotationVisitor implements AnnotationVisitor {
+
+        public void visit(String arg0,
+                          Object arg1) {
+        }
+
+        public void visitEnum(String arg0,
+                              String arg1,
+                              String arg2) {
+        }
+
+        public AnnotationVisitor visitAnnotation(String arg0,
+                                                 String arg1) {
+            return new ClassFieldAnnotationVisitor();
+        }
+
+        public AnnotationVisitor visitArray(String arg0) {
+            return new ClassFieldAnnotationVisitor();
+        }
+
+        public void visitEnd() {
+            
+            
+        }
         
     }
 }
