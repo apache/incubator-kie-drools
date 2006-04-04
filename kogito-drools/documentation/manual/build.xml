@@ -97,9 +97,9 @@
             <arg value="${build.dir}/${lang}/pdf/drools.fo"/>
             <arg value="${build.dir}/${lang}/pdf/${docname}.pdf"/>
         </java>
-        <delete>
+        <!--delete>
             <fileset dir="${build.dir}/${lang}/pdf" excludes="**/*.pdf"/>
-        </delete>        
+        </delete-->        
     </target>
 
     <target name="lang.dochtml"
@@ -113,7 +113,7 @@
             <fileset dir="${basedir}/${lang}">
                 <include name="**/*.png"/>
                 <include name="**/*.jpg"/>
-                <include name="**/*.gif"/>
+                <include name="**/*.png"/>
             </fileset>
         </copy>				
 
@@ -175,7 +175,7 @@
             <fileset dir="${basedir}/${lang}">
                 <include name="**/*.png"/>
                 <include name="**/*.jpg"/>
-                <include name="**/*.gif"/>
+                <include name="**/*.png"/>
             </fileset>
         </copy>
         <copy todir="${build.dir}/${lang}/shared/css">

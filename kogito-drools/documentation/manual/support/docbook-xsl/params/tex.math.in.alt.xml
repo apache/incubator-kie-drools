@@ -27,7 +27,7 @@ value means that you are not using TeX math at all.</para>
 <programlisting><![CDATA[<inlineequation>
 <inlinemediaobject>
 <imageobject>
-<imagedata fileref="eq1.gif"/>
+<imagedata fileref="eq1.png"/>
 </imageobject>
 <textobject><phrase>E=mc squared</phrase></textobject>
 <textobject role="tex"><phrase>E=mc^2</phrase></textobject>
@@ -39,7 +39,7 @@ store TeX inside <sgmltag>alt</sgmltag> element:</para>
 
 <programlisting><![CDATA[<inlineequation>
 <alt role="tex">a^2+b^2=c^2</alt>
-<graphic fileref="a2b2c2.gif"/>  
+<graphic fileref="a2b2c2.png"/>  
 </inlineequation>]]></programlisting>
 
 <para>If you want use this feature, you should process your FO with

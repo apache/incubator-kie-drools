@@ -9,7 +9,7 @@
 </refnamediv>
 
 <refsynopsisdiv>
-<src:fragment id='navig.graphics.extension.frag'><xsl:param name="navig.graphics.extension" select="'.gif'"/></src:fragment>
+<src:fragment id='navig.graphics.extension.frag'><xsl:param name="navig.graphics.extension" select="'.png'"/></src:fragment>
 </refsynopsisdiv>
 
 <refsect1><title>Description</title>

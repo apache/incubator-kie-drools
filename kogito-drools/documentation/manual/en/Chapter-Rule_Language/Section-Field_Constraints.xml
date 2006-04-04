@@ -13,12 +13,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="operator.svg" format="SVG"
-                     role="" width="" />
+                      />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="operator.gif" format="GIF"
-                     role="" width="" />
+          <imagedata align="center" fileref="operator.png" format="PNG"
+                      />
         </imageobject>
       </mediaobject>
     </figure>
@@ -35,12 +35,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="literal_constraints.svg"
-                     format="SVG" role="" width="" />
+                     format="SVG"  />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="literal_constraints.gif"
-                     format="GIF" role="" width="" />
+          <imagedata align="center" fileref="literal_constraints.png"
+                     format="PNG"  />
         </imageobject>
       </mediaobject>
     </figure>
@@ -57,12 +57,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="returnvalue_constraints.svg"
-                     format="SVG" role="" width="" />
+                     format="SVG"  />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="returnvalue_constraints.gif"
-                     format="GIF" role="" width="" />
+          <imagedata align="center" fileref="returnvalue_constraints.png"
+                     format="PNG"  />
         </imageobject>
       </mediaobject>
     </figure>
@@ -79,12 +79,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="predicate_constraints.svg"
-                     format="SVG" role="" width="" />
+                     format="SVG"  />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="predicate_constraints.gif"
-                     format="GIF" role="" width="" />
+          <imagedata align="center" fileref="predicate_constraints.png"
+                     format="PNG"  />
         </imageobject>
       </mediaobject>
     </figure>

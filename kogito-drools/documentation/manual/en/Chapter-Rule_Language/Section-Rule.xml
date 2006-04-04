@@ -8,12 +8,12 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center" fileref="rule.svg" format="SVG" role=""
-                   width="" />
+                    />
       </imageobject>
 
       <imageobject>
-        <imagedata align="center" fileref="rule.gif" format="GIF" role=""
-                   width="" />
+        <imagedata align="center" fileref="rule.png" format="PNG" role=""
+                    />
       </imageobject>
     </mediaobject>
   </figure>
@@ -31,12 +31,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="lhs.svg" format="SVG" role=""
-                     width="" />
+                      />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="lhs.gif" format="GIF" role=""
-                     width="" />
+          <imagedata align="center" fileref="lhs.png" format="PNG" role=""
+                      />
         </imageobject>
       </mediaobject>
     </figure>
@@ -47,12 +47,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="pattern.svg" format="SVG" role=""
-                     width="" />
+                      />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="pattern.gif" format="GIF" role=""
-                     width="" />
+          <imagedata align="center" fileref="pattern.png" format="PNG" role=""
+                      />
         </imageobject>
       </mediaobject>
     </figure>
@@ -69,12 +69,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="rule_attributes.svg" format="SVG"
-                     role="" width="" />
+                      />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="rule_attributes.gif" format="GIF"
-                     role="" width="" />
+          <imagedata align="center" fileref="rule_attributes.png" format="PNG"
+                      />
         </imageobject>
       </mediaobject>
     </figure>
@@ -149,12 +149,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="column.svg" format="SVG" role=""
-                     width="" />
+                      />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="column.gif" format="GIF" role=""
-                     width="" />
+          <imagedata align="center" fileref="column.png" format="PNG" role=""
+                      />
         </imageobject>
       </mediaobject>
     </figure>
@@ -175,12 +175,12 @@
           <mediaobject>
             <imageobject>
               <imagedata align="center" fileref="operator.svg" format="SVG"
-                         role="" width="" />
+                          />
             </imageobject>
 
             <imageobject>
-              <imagedata align="center" fileref="operator.gif" format="GIF"
-                         role="" width="" />
+              <imagedata align="center" fileref="operator.png" format="PNG"
+                          />
             </imageobject>
           </mediaobject>
         </figure>
@@ -207,12 +207,12 @@
           <mediaobject>
             <imageobject>
               <imagedata align="center" fileref="literal_constraints.svg"
-                         format="SVG" role="" width="" />
+                         format="SVG"  />
             </imageobject>
 
             <imageobject>
-              <imagedata align="center" fileref="literal_constraints.gif"
-                         format="GIF" role="" width="" />
+              <imagedata align="center" fileref="literal_constraints.png"
+                         format="PNG"  />
             </imageobject>
           </mediaobject>
         </figure>
@@ -388,13 +388,13 @@
             <imageobject>
               <imagedata align="center"
                          fileref="boundvariable_constraints.svg" format="SVG"
-                         role="" width="" />
+                          />
             </imageobject>
 
             <imageobject>
               <imagedata align="center"
-                         fileref="boundvariable_constraints.gif" format="GIF"
-                         role="" width="" />
+                         fileref="boundvariable_constraints.png" format="PNG"
+                          />
             </imageobject>
           </mediaobject>
         </figure>
@@ -431,12 +431,12 @@ Cheesery( cheeses contains stilton )</programlisting>
           <mediaobject>
             <imageobject>
               <imagedata align="center" fileref="predicate_constraints.svg"
-                         format="SVG" role="" width="" />
+                         format="SVG"  />
             </imageobject>
 
             <imageobject>
-              <imagedata align="center" fileref="predicate_constraints.gif"
-                         format="GIF" role="" width="" />
+              <imagedata align="center" fileref="predicate_constraints.png"
+                         format="PNG"  />
             </imageobject>
           </mediaobject>
         </figure>
@@ -469,12 +469,12 @@ Person( boyAge : age -&gt; ( girlAge == boyAge + 2 ), sex = 'M' )
           <mediaobject>
             <imageobject>
               <imagedata align="center" fileref="returnvalue_constraints.svg"
-                         format="SVG" role="" width="" />
+                         format="SVG"  />
             </imageobject>
 
             <imageobject>
-              <imagedata align="center" fileref="returnvalue_constraints.gif"
-                         format="GIF" role="" width="" />
+              <imagedata align="center" fileref="returnvalue_constraints.png"
+                         format="PNG"  />
             </imageobject>
           </mediaobject>
         </figure>
@@ -518,12 +518,12 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="and.svg" format="SVG" role=""
-                       width="" />
+                        />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="and.gif" format="GIF" role=""
-                       width="" />
+            <imagedata align="center" fileref="and.png" format="PNG" role=""
+                        />
           </imageobject>
         </mediaobject>
       </figure>
@@ -540,12 +540,12 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="or.svg" format="SVG" role=""
-                       width="" />
+                        />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="or.gif" format="GIF" role=""
-                       width="" />
+            <imagedata align="center" fileref="or.png" format="PNG" role=""
+                        />
           </imageobject>
         </mediaobject>
       </figure>
@@ -556,12 +556,12 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="or_with_binding.svg"
-                       format="SVG" role="" width="" />
+                       format="SVG"  />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="or_with_binding.gif"
-                       format="GIF" role="" width="" />
+            <imagedata align="center" fileref="or_with_binding.png"
+                       format="PNG"  />
           </imageobject>
         </mediaobject>
       </figure>
@@ -578,12 +578,12 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="eval.svg" format="SVG" role=""
-                       width="" />
+                        />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="eval.gif" format="GIF" role=""
-                       width="" />
+            <imagedata align="center" fileref="eval.png" format="PNG" role=""
+                        />
           </imageobject>
         </mediaobject>
       </figure>
@@ -600,12 +600,12 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="notl.svg" format="SVG" role=""
-                       width="" />
+                        />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="not.gif" format="GIF" role=""
-                       width="" />
+            <imagedata align="center" fileref="not.png" format="PNG" role=""
+                        />
           </imageobject>
         </mediaobject>
       </figure>
@@ -622,12 +622,12 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="existsl.svg" format="SVG"
-                       role="" width="" />
+                        />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="exists.gif" format="GIF"
-                       role="" width="" />
+            <imagedata align="center" fileref="exists.png" format="PNG"
+                        />
           </imageobject>
         </mediaobject>
       </figure>
@@ -644,12 +644,12 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="group.svg" format="SVG" role=""
-                       width="" />
+                        />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="group.gif" format="GIF" role=""
-                       width="" />
+            <imagedata align="center" fileref="group.png" format="PNG" role=""
+                        />
           </imageobject>
         </mediaobject>
       </figure>
