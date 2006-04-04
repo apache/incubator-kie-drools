@@ -60,5 +60,9 @@ public class LeapsTest extends IntegrationCases {
     public void testNoLoop() throws Exception {
         //not implemented yet
     }
+    
+    public void testDynamicFunction() {
+        //ERRROR HERE !
+    }
 
 }
