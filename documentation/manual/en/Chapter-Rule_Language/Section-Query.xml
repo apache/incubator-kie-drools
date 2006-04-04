@@ -8,12 +8,12 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center" fileref="query.svg" format="SVG" role=""
-                   width="" />
+                    />
       </imageobject>
 
       <imageobject>
-        <imagedata align="center" fileref="query.gif" format="GIF" role=""
-                   width="" />
+        <imagedata align="center" fileref="query.png" format="PNG" role=""
+                    />
       </imageobject>
     </mediaobject>
   </figure>

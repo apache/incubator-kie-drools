@@ -5185,7 +5185,7 @@ value means that you are not using TeX math at all.</para>
 <programlisting>&lt;inlineequation&gt;
 &lt;inlinemediaobject&gt;
 &lt;imageobject&gt;
-&lt;imagedata fileref="eq1.gif"/&gt;
+&lt;imagedata fileref="eq1.png"/&gt;
 &lt;/imageobject&gt;
 &lt;textobject&gt;&lt;phrase&gt;E=mc squared&lt;/phrase&gt;&lt;/textobject&gt;
 &lt;textobject role="tex"&gt;&lt;phrase&gt;E=mc^2&lt;/phrase&gt;&lt;/textobject&gt;
@@ -5197,7 +5197,7 @@ store TeX inside <sgmltag>alt</sgmltag> element:</para>
 
 <programlisting>&lt;inlineequation&gt;
 &lt;alt role="tex"&gt;a^2+b^2=c^2&lt;/alt&gt;
-&lt;graphic fileref="a2b2c2.gif"/&gt;  
+&lt;graphic fileref="a2b2c2.png"/&gt;  
 &lt;/inlineequation&gt;</programlisting>
 
 <para>If you want use this feature, you should process your FO with
@@ -6745,7 +6745,7 @@ Default graphics are provided in the distribution.
 </refnamediv>
 
 <refsynopsisdiv>
-<programlisting id="navig.graphics.extension.frag">&lt;xsl:param name="navig.graphics.extension" select="'.gif'"&gt;&lt;/xsl:param&gt;</programlisting>
+<programlisting id="navig.graphics.extension.frag">&lt;xsl:param name="navig.graphics.extension" select="'.png'"&gt;&lt;/xsl:param&gt;</programlisting>
 </refsynopsisdiv>
 
 <refsect1><title>Description</title>

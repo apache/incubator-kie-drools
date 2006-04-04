@@ -33,7 +33,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="drools_logo.gif" />
+        <imagedata fileref="drools_logo.png" />
       </imageobject>
     </mediaobject>
 
@@ -43,6 +43,8 @@
   <title>Drools Manual</title>
 
   <part>
+    <title>Reference Manual</title>
+    
     <chapter>
       <title>Installation and Setup</title>
 
@@ -54,8 +56,6 @@
 
       <xi:include href="Chapter-Install/Section-Eclipse.xml" />
     </chapter>
-
-    <title>Reference Manual</title>
 
     <chapter>
       <title>The Rule Engine</title>
@@ -106,6 +106,12 @@
 
       <xi:include href="Chapter-Examples/Section-State_Example.xml" />
     </chapter>
+
+    <chapter>
+      <title>Papers</title>      
+      <xi:include href="Chapter-Papers/Section-Manners.xml" />
+    </chapter>    
+
   </part>
 
   <index />

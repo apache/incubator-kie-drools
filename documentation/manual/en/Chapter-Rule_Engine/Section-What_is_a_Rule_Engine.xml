@@ -80,12 +80,12 @@ then
     <mediaobject>
       <imageobject>
         <imagedata align="center" fileref="A_Basic_Rete_Network.svg"
-                   format="SVG" role="" scalefit="" width="" />
+                   format="SVG"   />
       </imageobject>
 
       <imageobject>
-        <imagedata align="center" fileref="A_Basic_Rete_Network.gif"
-                   format="GIF" role="" scalefit="" width="" />
+        <imagedata align="center" fileref="A_Basic_Rete_Network.png"
+                   format="PNG"   />
       </imageobject>
     </mediaobject>
   </figure>

@@ -13,12 +13,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="single_line_comment.svg"
-                     format="SVG" role="" width="" />
+                     format="SVG"  />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="single_line_comment.gif"
-                     format="GIF" role="" width="" />
+          <imagedata align="center" fileref="single_line_comment.png"
+                     format="PNG"  />
         </imageobject>
       </mediaobject>
     </figure>
@@ -35,12 +35,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="multi_line_comment.svg"
-                     format="SVG" role="" width="" />
+                     format="SVG"  />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="multi_line_comment.gif"
-                     format="GIF" role="" width="" />
+          <imagedata align="center" fileref="multi_line_comment.png"
+                     format="PNG"  />
         </imageobject>
       </mediaobject>
     </figure>
@@ -57,12 +57,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="documentation.svg" format="SVG"
-                     role="" width="" />
+                      />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="documentation.gif" format="GIF"
-                     role="" width="" />
+          <imagedata align="center" fileref="documentation.png" format="PNG"
+                      />
         </imageobject>
       </mediaobject>
     </figure>

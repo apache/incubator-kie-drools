@@ -116,7 +116,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="new_project2.gif" format="JPG" />
+          <imagedata align="center" fileref="new_project2.png" format="JPG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -261,7 +261,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="workingMemory.gif" />
+          <imagedata fileref="workingMemory.png" />
         </imageobject>
       </mediaobject>
 
@@ -286,7 +286,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="agenda.gif" />
+          <imagedata fileref="agenda.png" />
         </imageobject>
       </mediaobject>
 
@@ -313,7 +313,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="globals.gif" />
+          <imagedata fileref="globals.png" />
         </imageobject>
       </mediaobject>
 
@@ -338,7 +338,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="audit.jpg" />
+          <imagedata fileref="audit.jpg" scalefit="1" width="100%" />
         </imageobject>
       </mediaobject>
 
