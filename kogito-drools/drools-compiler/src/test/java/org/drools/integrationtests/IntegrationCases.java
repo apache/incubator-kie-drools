@@ -1115,6 +1115,30 @@ public abstract class IntegrationCases extends TestCase {
        
        assertEquals( 0, workingMemory.getAgenda().getActivations().length );
        
+    }
+    
+    public void testNullValuesIndexing() throws Exception {
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NullValuesIndexing.drl" ) );
+                                            
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( reader );            
+        Package pkg1 = builder.getPackage();
         
-    }        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg1 );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        // Adding person with null name and likes attributes
+        Person bob = new Person(null, null);
+        bob.setStatus( "Not evaluated" );
+        workingMemory.assertObject( bob );  
+
+        workingMemory.fireAllRules();
+        
+        Assert.assertEquals( "Indexing with null values is not working correctly.", bob.getStatus(),
+                      "OK" );
+        
+    }    
+    
+    
 }
