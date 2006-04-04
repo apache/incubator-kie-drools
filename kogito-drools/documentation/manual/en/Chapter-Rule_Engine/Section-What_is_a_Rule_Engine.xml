@@ -8,26 +8,52 @@
       <primary>Consequence</primary>
     </indexterm>Consequence when a set of conditions are true.</para>
 
-  <programlisting>When
+  <programlisting>when
     Cheese( type == "cheddar" )
-Then
+then
     System.out.println( "cheddar" )</programlisting>
+
+  <para>The example above is similar to : </para>
+
+  <programlisting>if ( cheese.getType().equals("cheddar") {
+    System.out.println( "cheddar" )
+}</programlisting>
+
+  <para>Each Rule consists of a Left Hand Side (LHS) and a Right Hand Side
+  (RHS)</para>
+
+  <programlisting>when
+    LHS
+then
+    RHS</programlisting>
+
+  <para>The RHS is the Consequence, This is the part of the rule that executes
+  when all the Patterns in the LHS are matched and true. Pattern is the
+  terminology used for the various rule constructs that be used to define when
+  a Rule is true and can fire.</para>
 
   <para>Each <indexterm>
       <primary>Rule</primary>
-    </indexterm>Ruleis the codification of business knowledge, known as the
+    </indexterm>Rule is the codification of business knowledge known as the
   <indexterm>
       <primary>Production Memory</primary>
-    </indexterm>Production Memory. The Rule Enging is made aware of Business
-  Objects, referrred to as <indexterm>
+    </indexterm>Production Memory. The Rule Engine is made aware of Business
+  Objects when they are asserted, as <indexterm>
       <primary>Fact</primary>
-    </indexterm>Facts, when they are asserted into the <indexterm>
+    </indexterm>Facts, into the <indexterm>
       <primary>Working Memory</primary>
-    </indexterm>Working Memory. The Working Memory is the Rule Engine's
-  repository of all known Rules.</para>
+    </indexterm>Working Memory . The Working Memory is the Rule Engine's
+  repository of all known Facts.</para>
 
-  <para>Rule Engines are much like a database where Rule's define the queries
-  on the Working Memory. The previous rule can be expressed in <indexterm>
+  <para>Rule engines are a complete de-coupling of data from the logic. Rules
+  cannot be called directly as they are not methods or functions instead Rules
+  fire in response to changes in Working Memory's data, It may help to think
+  of this de-coupling as a specialised event sytem. The Consequence is the
+  Listener to the full matching of the LHS event.</para>
+
+  <para>Rule Engines are much like a database where Rule's LHS define the
+  queries on the Working Memory. The previous rule can be expressed in
+  <indexterm>
       <primary>SQL</primary>
     </indexterm>SQL as:</para>
 
@@ -36,8 +62,8 @@ Then
   <para>A <indexterm>
       <primary>DataBase</primary>
     </indexterm>Database executes SQL, on request, where as a Rule Engine will
-  process data against its rules, its Production Memory, as its asserted; this
-  process is known as <indexterm>
+  process data against its rules, its Production Memory, as it's asserted;
+  this process is known as <indexterm>
       <primary>Pattern Matching</primary>
     </indexterm>Pattern Matching. When added to the Production Memory, Rule's
   are decomposed into a graph using the <indexterm>

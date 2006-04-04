@@ -94,6 +94,85 @@
   </section>
 
   <section>
+    <title>Creating a Rule project</title>
+
+    <para>The aim of the new project wizard is to setup an executable scaffold
+    project to start using rules immediately. This will setup a basic
+    structure, classpath and sample rules and test case to get you
+    started.</para>
+
+    <figure>
+      <title>New rule project scaffolding</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="new_project1.jpg" format="JPG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>New rule project result</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="new_project2.gif" format="JPG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The newly created project contains an example rule file (Sample.drl)
+    in the src/rules dir and an example java file (DroolsTest.java) that can
+    be used to execute the rules in a Drools engine in the folder src/java, in
+    the com.sample package. All the others jars that are necessary during
+    execution are also added to the classpath in a custom classpath container
+    called Drools Library [3.0]. Rules do not have to be kept in "java"
+    projects at all, this is just a convenience for people who are already
+    using eclipse as their Java IDE</para>
+  </section>
+
+  <section>
+    <title>Creating a new rule and wizards</title>
+
+    <para>You can create a rule simple as an empty text ".drl" file, or use
+    the wizard to do so. The wizard menu can be invoked by Control+N, or
+    choosing it from the toolbar (there will be a menu with the JBoss Rules
+    icon).</para>
+
+    <figure>
+      <title>The wizard menu</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="wizards.jpg" format="JPG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The wizard will ask for some basic options for generating a rule
+    resource. These are just hints, you can change your mind later !. In terms
+    of location, typically you would create a top level /rules directory to
+    store your rules if you are creating a rule project, and store it in a
+    sutably named subdirectory. The package name is mandatory, and is similar
+    to a package name in java (ie. its a namespace that groups like rules
+    together).</para>
+
+    <figure>
+      <title>New rule wizard</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="new_rule.jpg" format="JPG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>This result of this wizard is to generate a rule skeleton to work
+    from. As with all wizards, they are candy: you don't have to use them if
+    you don't want !</para>
+  </section>
+
+  <section>
     <title>Rule editor</title>
 
     <para>The rule editor is where rule managers and developers will be
@@ -144,78 +223,199 @@
   </section>
 
   <section>
-    <title>Creating a new rule and wizards</title>
+    <title>Views</title>
 
-    <para>You can create a rule simple as an empty text ".drl" file, or use
-    the wizard to do so. The wizard menu can be invoked by Control+N, or
-    choosing it from the toolbar (there will be a menu with the JBoss Rules
-    icon).</para>
+    <para>When debugging an application using a Drools engine, three new views
+    can be used to check the state of the Drools engine itself: the Working
+    Memory View, the Agenda View and the Global Data View. To be able to use
+    these views, create breakpoints in your code invoking the working memory.
+    For example, the line where you call workingMemory.fireAllRules() is a
+    good candidate. If the debugger halts at that joinpoint, you should select
+    the working memory variable in the debug variables view. The following
+    rules can then be used to show the details of the selected working
+    memory:</para>
 
-    <figure>
-      <title>The wizard menu</title>
+    <itemizedlist>
+      <listitem>
+        <para>The Working Memory shows all elements in the working memory of
+        the Drools working memory.</para>
+      </listitem>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="wizards.jpg" format="JPG" />
-        </imageobject>
-      </mediaobject>
-    </figure>
+      <listitem>
+        <para>The Agenda View shows all elements on the agenda. For each rule
+        on the agenda, the rule name and bound variables are shown.</para>
+      </listitem>
 
-    <para>The wizard will ask for some basic options for generating a rule
-    resource. These are just hints, you can change your mind later !. In terms
-    of location, typically you would create a top level /rules directory to
-    store your rules if you are creating a rule project, and store it in a
-    sutably named subdirectory. The package name is mandatory, and is similar
-    to a package name in java (ie. its a namespace that groups like rules
-    together).</para>
+      <listitem>
+        <para>The Global Data View shows all global data currently defined in
+        the Drools working memory.</para>
+      </listitem>
+    </itemizedlist>
 
-    <figure>
-      <title>New rule wizard</title>
+    <para>The Audit view can be used to show audit logs that contain events
+    that were logged during the execution of a rules engine in a tree
+    view.</para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="new_rule.jpg" format="JPG" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>This result of this wizard is to generate a rule skeleton to work
-    from. As with all wizards, they are candy: you don't have to use them if
-    you don't want !</para>
-  </section>
-
-  <section>
-    <title>Creating a Rule project</title>
-
-    <para>The aim of the new project wizard is to setup an executable scaffold
-    project to start using rules immediately. This will setup a basic
-    structure, classpath and sample rules and test case to get you
-    started.</para>
-
-    <figure>
-      <title>New rule project scaffolding</title>
+    <section>
+      <title>The Working Memory View</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="new_project1.jpg" format="JPG" />
+          <imagedata fileref="workingMemory.gif" />
         </imageobject>
       </mediaobject>
-    </figure>
 
-    <figure>
-      <title>New rule project result</title>
+      <para>The Working Memory shows all elements in the working memory of the
+      Drools engine.</para>
+
+      <para>An action is added to the right of the view, to customize what is
+      shown:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>The Show Logical Structure toggles showing the logical
+          structure of the elements in the working memory, or all their
+          details. Logical structures allow for example visualizing sets of
+          elements in a more obvious way.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>The Agenda View</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="new_project2.jpg" format="JPG" />
+          <imagedata fileref="agenda.gif" />
         </imageobject>
       </mediaobject>
-    </figure>
 
-    <para>Note that it has setup your dependencies, and created a top level
-    rule directory/source folder. Rules do not have to be kept in "java"
-    projects at all, this is just a convenience for people who are already
-    using eclipse as their Java IDE</para>
+      <para>The Agenda View shows all elements on the agenda. For each rule on
+      the agenda, the rule name and bound variables are shown.</para>
+
+      <para>An action is added to the right of the view, to customize what is
+      shown:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>The Show Logical Structure toggles showing the logical
+          structure of the agenda item, or all their details. Logical
+          structures allow for example visualizing sets of elements in a more
+          obvious way. The logical structure of AgendaItems shows the rule
+          that is represented by the AgendaItem, and the values of all the
+          parameters used in the rule.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>The Global Data View</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="globals.gif" />
+        </imageobject>
+      </mediaobject>
+
+      <para>The Global Data View shows all global data currently defined in
+      the Drools engine.</para>
+
+      <para>An action is added to the right of the view, to customize what is
+      shown:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>The Show Logical Structure toggles showing the logical
+          structure of the elements in the working memory, or all their
+          details. Logical structures allow for example visualizing sets of
+          elements in a more obvious way.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>The Audit View</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="audit.jpg" />
+        </imageobject>
+      </mediaobject>
+
+      <para>The audit view can be used to visualize an audit log that can be
+      created when executing the rules engine. To create an audit log, use the
+      following code:</para>
+
+      <programlisting>    WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+    // create a new Working Memory Logger, that logs to file.
+    WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
+    // an event.log file is created in the log dir (which must exist)
+    // in the working directory
+    logger.setFileName("log/event");
+
+    workingMemory.assertObject( ... );
+    workingMemory.fireAllRules();
+
+    // stop logging
+    logger.writeToDisk();</programlisting>
+
+      <para>Open the log by clicking the Open Log action (first action in the
+      Audit View) and select the file. The Audit view now shows all events
+      that where logged during the executing of the rules. There are five
+      types of events (each with a different icon):</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Object asserted (green square)</para>
+        </listitem>
+
+        <listitem>
+          <para>Object modified (yellow square)</para>
+        </listitem>
+
+        <listitem>
+          <para>Object retracted (red square)</para>
+        </listitem>
+
+        <listitem>
+          <para>Activation created (arrow to the right)</para>
+        </listitem>
+
+        <listitem>
+          <para>Activation cancelled (arrow to the left)</para>
+        </listitem>
+
+        <listitem>
+          <para>Activation executed (blue diamond)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>All these events show extra information concerning the event, like
+      the id and toString representation of the object in case of working
+      memory events (assert, modify and retract), the name of the rule and all
+      the variables bound in the activation in case of an activation event
+      (created, cancelled or executed). If an event occurs when executing an
+      activation, it is shown as a child of the activation executed event. For
+      some events, you can retrieve the "cause":</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>The cause of an object modified or retracted event is the last
+          object event for that object. This is either the object asserted
+          event, or the last object modified event for that object.</para>
+        </listitem>
+
+        <listitem>
+          <para>The cause of an activation cancelled or executed event is the
+          corresponding activation created event.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>When selecting an event, the cause of that event is shown in green
+      in the audit view (if visible of course). You can also right click the
+      action and select the "Show Cause" menu item. This will scroll you to
+      the cause of the selected event.</para>
+    </section>
   </section>
 
   <section>

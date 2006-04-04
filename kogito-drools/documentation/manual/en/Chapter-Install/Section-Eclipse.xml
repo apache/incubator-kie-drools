@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Eclipse</title>
+
+  <section>
+    <title>Generating Eclipse Projects</title>
+
+    <para><indexterm>
+        <primary>maven</primary>
+      </indexterm>Maven is able to generate standard <indexterm>
+        <primary>eclipse</primary>
+      </indexterm>Eclipse projects, but it is not able to generate Eclipse
+    plugin projects. To generate the Eclipse projects for drools-core,
+    drools-compiler and drools-jsr94 type <literal>'mvn
+    eclipse:eclipse'</literal>.</para>
+
+    <screenshot>
+      <screeninfo>Start Maven Eclipse project generation</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="mvn_eclipse1.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Finished Maven Eclipse project generation</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="mvn_eclipse2.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
+
+  <section>
+    <title>Importing Eclipse Projects</title>
+
+    <para>With the <indexterm>
+        <primary>eclipse</primary>
+      </indexterm>Eclispe project files generated they can now be imported
+    into eclipse. When starting Eclipse open the workspace in the root of your
+    subversion checkout.</para>
+
+    <screenshot>
+      <screeninfo>Open Eclipse Workspace</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_import1.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Select Import</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_import2.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Import Existing Projects</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_import3.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Select all ticked projects</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_import4.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>When calling <literal>'maven install'</literal> all the project
+    dependencies were downloaded and added to the local Maven repository.
+    Eclipse cannot find those depenencies unless you tell it where that
+    repository is. To do this setup an M2_REPO claspath variable.</para>
+
+    <screenshot>
+      <screeninfo>Open the Preferences dialogue window</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_import6.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Select New Classpath Variable</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_import7.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Set the M2_REPO location</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_import8.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>M2_REPO is now set</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_import9.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
+
+  <section>
+    <title>Exporting the IDE Plugin</title>
+
+    <para>The drools-ide project was checked out out using subversion and is
+    ready for exporting.</para>
+
+    <screenshot>
+      <screeninfo>Select Export on the drools-ide project</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_plugin1.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Select Deployable plug-ins and fragments</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_plugin2.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Only select org.drools.ide</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_plugin3.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Wait while the plugin is built and exported</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_plugin4.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>Once the plugin has been built open the output directory and copy
+    the jar to the Eclipse plugin directory.</para>
+
+    <screenshot>
+      <screeninfo>Open the direcotry with the build jar</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_plugin5.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Copy the jar to the Eclipse plugin directory</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_plugin6.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>At this point if Eclipse is already open it will need to be
+    restarted. At which point you show now see the new Drools menu icon and
+    drl's should have icons and be provided with syntax highlighting and
+    intellisense.</para>
+
+    <screenshot>
+      <screeninfo>The new Drools menu icon</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_plugin7.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Drls with icons and syntax highlighting</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="eclipse_plugin8.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
+</section>

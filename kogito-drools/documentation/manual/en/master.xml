@@ -6,6 +6,24 @@
     <subtitle>Drools Documentation</subtitle>
 
     <releaseinfo>3.0 beta 1</releaseinfo>
+
+    <author>
+      <firstname>Mark</firstname>
+
+      <surname>Proctor</surname>
+    </author>
+
+    <author>
+      <firstname>Michael</firstname>
+
+      <surname>Neale</surname>
+    </author>
+
+    <author>
+      <firstname>Peter</firstname>
+
+      <surname>Lin</surname>
+    </author>
   </bookinfo>
 
   <toc />
@@ -19,12 +37,24 @@
       </imageobject>
     </mediaobject>
 
-    <para>xxxx</para>
+    <para />
   </preface>
 
   <title>Drools Manual</title>
 
   <part>
+    <chapter>
+      <title>Installation and Setup</title>
+
+      <xi:include href="Chapter-Install/Section-Setup.xml" />
+
+      <xi:include href="Chapter-Install/Section-Checkout.xml" />
+
+      <xi:include href="Chapter-Install/Section-Maven_build.xml" />
+
+      <xi:include href="Chapter-Install/Section-Eclipse.xml" />
+    </chapter>
+
     <title>Reference Manual</title>
 
     <chapter>
@@ -48,7 +78,7 @@
     <chapter>
       <title>The Rule Language</title>
 
-			<xi:include href="Chapter-Rule_Language/Section-Comments.xml" />
+      <xi:include href="Chapter-Rule_Language/Section-Comments.xml" />
 
       <xi:include href="Chapter-Rule_Language/Section-Package.xml" />
 
@@ -58,17 +88,24 @@
 
       <xi:include href="Chapter-Rule_Language/Section-Query.xml" />
 
-			<!--xi:include href="Chapter-Rule_Language/Section-Column.xml" />
+      <!--xi:include href="Chapter-Rule_Language/Section-Column.xml" />
 
       <xi:include href="Chapter-Rule_Language/Section-Field_Constraints.xml" />
 
       <xi:include href="Chapter-Rule_Language/Section-Conditional_Elements.xml" /-->
     </chapter>
+
     <chapter>
-	      <title>The Rule Workbench (IDE)</title>
-	      <xi:include href="Chapter-IDE/Section-QuickStart.xml" />
+      <title>The Rule Workbench (IDE)</title>
+
+      <xi:include href="Chapter-IDE/Section-QuickStart.xml" />
     </chapter>
 
+    <chapter>
+      <title>Examples</title>
+
+      <xi:include href="Chapter-Examples/Section-State_Example.xml" />
+    </chapter>
   </part>
 
   <index />
