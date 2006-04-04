@@ -18,55 +18,127 @@
     </mediaobject>
   </figure>
 
-  <figure>
-    <title>rule attributes</title>
+  <para>uuuere</para>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="rule_attributes.svg" format="SVG"
-                   role="" width="" />
-      </imageobject>
-
-      <imageobject>
-        <imagedata align="center" fileref="rule_attributes.gif" format="GIF"
-                   role="" width="" />
-      </imageobject>
-    </mediaobject>
-  </figure>
-
-  <figure>
+  <section>
     <title>Left Hand Side</title>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="lhs.svg" format="SVG" role=""
-                   width="" />
-      </imageobject>
+    <para></para>
 
-      <imageobject>
-        <imagedata align="center" fileref="lhs.gif" format="GIF" role=""
-                   width="" />
-      </imageobject>
-    </mediaobject>
-  </figure>
+    <figure>
+      <title>Left Hand Side</title>
 
-  <figure>
-    <title>pattern</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="lhs.svg" format="SVG" role=""
+                     width="" />
+        </imageobject>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="pattern.svg" format="SVG" role=""
-                   width="" />
-      </imageobject>
+        <imageobject>
+          <imagedata align="center" fileref="lhs.gif" format="GIF" role=""
+                     width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
-      <imageobject>
-        <imagedata align="center" fileref="pattern.gif" format="GIF" role=""
-                   width="" />
-      </imageobject>
-    </mediaobject>
-  </figure>
+    <figure>
+      <title>pattern</title>
 
-  <para>uuuere</para>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="pattern.svg" format="SVG" role=""
+                     width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="pattern.gif" format="GIF" role=""
+                     width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+
+  <section>
+    <title>Rule Attriutes</title>
+
+    <para></para>
+
+    <figure>
+      <title>rule attributes</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="rule_attributes.svg" format="SVG"
+                     role="" width="" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="rule_attributes.gif" format="GIF"
+                     role="" width="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <section>
+      <title>no-loop</title>
+
+      <para>default value : false</para>
+
+      <para>type : Boolean</para>
+
+      <para>When the Rule's consequence modifies a fact it may cause the Rule
+      to activate again, causing recursion. Setting no-loop to true means the
+      attempt to create the Activation will be ignored.</para>
+    </section>
+
+    <section>
+      <title>salience</title>
+
+      <para>default value : 0</para>
+
+      <para>type : integer</para>
+
+      <para>Each rule has a salience attribute that can be assigned an Integer
+      number, defaults to zero, the Integer and can be negative or positive.
+      Salience is a form of priority where rules with higher salience values
+      are given higher priority when ordered in the Activation queue. </para>
+    </section>
+
+    <section>
+      <title>agenda-group</title>
+
+      <para>default value : MAIN</para>
+
+      <para>type : String</para>
+
+      <para>Agenda group's allow the user to partition the Agenda providing
+      more execution control. Only rules in the focus group are allowed to
+      fire.</para>
+    </section>
+
+    <section>
+      <title>auto-focus</title>
+
+      <para>default value false</para>
+
+      <para>type : Boolean</para>
+
+      <para>When a rule is activated if the <literal>auto-focus value is true
+      and the Rule's </literal> <literal>agenda-group</literal> does not have
+      focus then it is given focus, allowing the rule to potentially
+      fire.</para>
+    </section>
+
+    <section>
+      <title>duration</title>
+
+      <para>default value : no default value</para>
+
+      <para>type : long</para>
+
+      <para></para>
+    </section>
+  </section>
 
   <section>
     <title>Column</title>
@@ -87,7 +159,7 @@
       </mediaobject>
     </figure>
 
-    <para>uuuere</para>
+    <para>A Column is what Drools refers to</para>
 
     <section>
       <title>Field Constraints</title>
@@ -113,14 +185,24 @@
           </mediaobject>
         </figure>
 
-        <para></para>
+        <para>There are a number of <indexterm>
+            <primary>operatorst</primary>
+          </indexterm>opreators that can be used with the various <indexterm>
+            <primary>Field Constraint</primary>
+          </indexterm>Field Constraints. Valid operators are dependent on the
+        field type.</para>
       </section>
 
       <section>
         <title>Literal Constraints</title>
 
+        <para>The most basic of Field Constraints is the <indexterm>
+            <primary>Literal Constraint</primary>
+          </indexterm>Literal Constraint which allows the user to constrain a
+        field to a given value.</para>
+
         <figure>
-          <title>Operators</title>
+          <title>Literal Constraints</title>
 
           <mediaobject>
             <imageobject>
@@ -135,52 +217,172 @@
           </mediaobject>
         </figure>
 
-        <para>The most basic of Field Constraints is the <indexterm>
-            <primary>Literal Constraint</primary>
-          </indexterm>Literal Constraint</para>
+        <simplesect>
+          <title>Numeric</title>
 
-        <example>
-          <title>String Literal Constraint</title>
+          <para>All standard java numeric primitives are supported</para>
 
-          <programlisting>Cheese( type == "stilton" )</programlisting>
-        </example>
+          <para>Valid operators:</para>
 
-        <example>
-          <title>Numeric Literal Constraint</title>
+          <itemizedlist>
+            <listitem>
+              <para>==</para>
+            </listitem>
 
-          <programlisting>Cheese( quantity == 5 )</programlisting>
-        </example>
+            <listitem>
+              <para>!=</para>
+            </listitem>
 
-        <example>
-          <title>Numeric Literal Constraint</title>
+            <listitem>
+              <para>&gt;</para>
+            </listitem>
 
-          <programlisting>Cheese( smelly == true )</programlisting>
-        </example>
+            <listitem>
+              <para>&lt;</para>
+            </listitem>
 
-        <example>
-          <title>Date Literal Constraint</title>
+            <listitem>
+              <para>&gt;=</para>
+            </listitem>
 
-          <programlisting>Cheese( bestBefore &lt; "27/10/2007" )</programlisting>
-        </example>
+            <listitem>
+              <para>&lt;=</para>
+            </listitem>
+          </itemizedlist>
 
-        <example>
-          <title>Regular Expression Constraint</title>
+          <example>
+            <title>Numeric Literal Constraint</title>
 
-          <programlisting>Cheese( type matches "(Buffulo)\\S*Mozerella" )</programlisting>
-        </example>
+            <programlisting>Cheese( quantity == 5 )</programlisting>
+          </example>
+        </simplesect>
 
-        <example>
-          <title>Literal Cosntraints with Collections</title>
+        <simplesect>
+          <title>Date</title>
 
-          <programlisting>CheeseCounter( cheeses contains "stilton" )</programlisting>
-        </example>
+          <para>Currently only "dd/mm/yyyy" date format is supported. There
+          are plans to make this configurable in the future.</para>
+
+          <para>Valid operators:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>==</para>
+            </listitem>
+
+            <listitem>
+              <para>!=</para>
+            </listitem>
+
+            <listitem>
+              <para>&gt;</para>
+            </listitem>
+
+            <listitem>
+              <para>&lt;</para>
+            </listitem>
+
+            <listitem>
+              <para>&gt;=</para>
+            </listitem>
+
+            <listitem>
+              <para>&lt;=</para>
+            </listitem>
+          </itemizedlist>
+
+          <example>
+            <title>Date Literal Constraint</title>
+
+            <programlisting>Cheese( bestBefore &lt; "27/10/2007" )</programlisting>
+          </example>
+        </simplesect>
+
+        <simplesect>
+          <title>String</title>
+
+          <para>Any valid Java String is allowed.</para>
+
+          <para>Valid operators:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>==</para>
+            </listitem>
+
+            <listitem>
+              <para>!=</para>
+            </listitem>
+          </itemizedlist>
+
+          <example>
+            <title>String Literal Constraint</title>
+
+            <programlisting>Cheese( type == "stilton" )</programlisting>
+          </example>
+        </simplesect>
+
+        <simplesect>
+          <title>Boolean</title>
+
+          <para>only true or false can be used. 0 and 1 are not recognised,
+          nor is <literal>Cheese ( smelly )</literal> is not allowed</para>
+
+          <para>Valid operators:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>true</para>
+            </listitem>
+
+            <listitem>
+              <para>false</para>
+            </listitem>
+          </itemizedlist>
+
+          <example>
+            <title>Boolean Literal Constraint</title>
+
+            <programlisting>Cheese( smelly = true )</programlisting>
+          </example>
+        </simplesect>
+
+        <simplesect>
+          <title>Matches Operator</title>
+
+          <para>Any valid Java <indexterm>
+              <primary>regular expression</primary>
+            </indexterm>Regular Expression can be used to match String
+          fields.</para>
+
+          <example>
+            <title>Regular Expression Constraint</title>
+
+            <programlisting>Cheese( type matches "(Buffulo)?\\S*Mozerella" )</programlisting>
+          </example>
+        </simplesect>
+
+        <simplesect>
+          <title>Contains Operator</title>
+
+          <para><literal>'contains' </literal>is a special operator that can
+          be used to check if a field's <indexterm>
+              <primary>Collection</primary>
+            </indexterm>Collection contains a String literal.</para>
+
+          <example>
+            <title>Literal Cosntraints with Collections</title>
+
+            <programlisting>CheeseCounter( cheeses contains "stilton" )</programlisting>
+          </example>
+        </simplesect>
       </section>
 
       <section>
         <title>Bound Variable Constraint</title>
 
         <figure>
-          <title>Operators</title>
+          <title>Bound Variable Declaration</title>
 
           <mediaobject>
             <imageobject>
@@ -198,8 +400,12 @@
         </figure>
 
         <para>Variables can be found to Facts and and Fields and then used in
-        subsequent Field Constraints. A bound variable is called a
-        Declaration.</para>
+        subsequent Field Constraints. A bound variable is called a <indexterm>
+            <primary>declaration</primary>
+          </indexterm>Declaration. Declarations cannot be used with
+        <literal>'matches'</literal>, although it works with
+        <literal>'contains'</literal>. Valid operators are determined by the
+        type of the field being constrained.</para>
 
         <example>
           <title>Bound Field using '==' operator</title>
@@ -217,32 +423,10 @@ Cheesery( cheeses contains stilton )</programlisting>
       </section>
 
       <section>
-        <title>Return Value Constraints</title>
-
-        <figure>
-          <title>Operators</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="returnvalue_constraints.svg"
-                         format="SVG" role="" width="" />
-            </imageobject>
-
-            <imageobject>
-              <imagedata align="center" fileref="returnvalue_constraints.gif"
-                         format="GIF" role="" width="" />
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <para></para>
-      </section>
-
-      <section>
         <title>Predicate Constraints</title>
 
         <figure>
-          <title>Operators</title>
+          <title>Predicate expression</title>
 
           <mediaobject>
             <imageobject>
@@ -257,7 +441,65 @@ Cheesery( cheeses contains stilton )</programlisting>
           </mediaobject>
         </figure>
 
-        <para></para>
+        <para>A <indexterm>
+            <primary>Predicate</primary>
+          </indexterm>Predicate constraint can use any valid Java expression
+        as long as it evaluated to a primitive boolean. Previously bound
+        declarations can be used in the expression. All bound primitive
+        declarations are boxed, there is currently no auto-unboxing.</para>
+
+        <para>This example will find all pairs of male/femal people where the
+        male is 2 years older than the female.</para>
+
+        <example>
+          <title>Return Value operator</title>
+
+          <programlisting>Person( girlAge : age, sex = "F" )
+Person( boyAge : age -&gt; ( girlAge == boyAge + 2 ), sex = 'M' )
+</programlisting>
+        </example>
+      </section>
+
+      <section>
+        <title>Return Value Constraints</title>
+
+        <figure>
+          <title>Return Value expression</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="returnvalue_constraints.svg"
+                         format="SVG" role="" width="" />
+            </imageobject>
+
+            <imageobject>
+              <imagedata align="center" fileref="returnvalue_constraints.gif"
+                         format="GIF" role="" width="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>A <indexterm>
+            <primary>Return Value</primary>
+          </indexterm>Return Value constraint can use any valid Java
+        expression as long as it returns an object, it cannot return
+        primitives. Previously bound declarations can be used in the
+        expression. All bound primitive declarations are boxed, there is
+        currently no auto-unboxing. The returned value must be boxed if its a
+        primitive.</para>
+
+        <para>Like the Predicate example this will find all pairs of
+        male/femal people where the male is 2 years older than the female.
+        Notice here we didn't have to bind the boyAge, making it a little
+        simpler to read.</para>
+
+        <example>
+          <title>Return Value operator</title>
+
+          <programlisting>Person( girlAge : age, sex = "F" )
+Person( age == ( girlAge + 2 ), sex = 'M' )
+</programlisting>
+        </example>
       </section>
     </section>
   </section>

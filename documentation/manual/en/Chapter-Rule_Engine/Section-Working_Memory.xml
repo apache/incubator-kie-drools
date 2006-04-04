@@ -43,7 +43,15 @@
   <section>
     <title>Shadow Facts</title>
 
-    <para></para>
+    <para>A shadow fact is a shallow copy of an asserted object. Shadow facts
+    are cached version of a given object asserted to the working memory. The
+    term shadow facts is common known as a feature of JESS (Java Expert System
+    Shell). The origins of shadow facts trace back to Truth maintenance
+    concepts. A running system may alter a fact during evaluation. When this
+    occurs, the rule engine must know a modification occurred and handle the
+    change appropriately. One way to handle changes in an orderly fashion is
+    to cache a shallow copy of an object. As of Drools 3.0, shadow facts
+    hasn't been implemented, but it is planned for the future.</para>
   </section>
 
   <section>

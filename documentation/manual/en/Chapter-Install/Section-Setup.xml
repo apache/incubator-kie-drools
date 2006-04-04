@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Setup</title>
+
+  <para>Drools works with JDK1.4 and above. you will need also need to have
+  the following tools installed. Minimum requirement version numbers
+  provided.</para>
+
+  <itemizedlist>
+    <listitem>
+      <para><indexterm>
+          <primary>eclipse</primary>
+        </indexterm>Eclipse 3.2M5</para>
+
+      <para>http://www.eclipse.org/</para>
+    </listitem>
+
+    <listitem>
+      <para><indexterm>
+          <primary>subversion</primary>
+        </indexterm>Subversion Client 1.3</para>
+
+      <para>http://subversion.tigris.org</para>
+
+      <para><indexterm>
+          <primary>TortoiseSVN</primary>
+        </indexterm>http://tortoisesvn.tigris.org - recommended win32
+      client</para>
+    </listitem>
+
+    <listitem>
+      <para><indexterm>
+          <primary>ant</primary>
+        </indexterm>Ant 1.6</para>
+
+      <para>http://ant.apache.org</para>
+    </listitem>
+
+    <listitem>
+      <para><indexterm>
+          <primary>naven</primary>
+        </indexterm>Maven 2</para>
+
+      <para>http://maven.apache.org</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>Ensure the executeables for ant, maven and java are in your <indexterm>
+      <primary>path</primary>
+    </indexterm>path. The examples given illustrative and are for a win32
+  system:</para>
+
+  <literallayout>Path=D:\java\j2sdk1.4.2_10\bin;C:\bin;D:\java\maven-2.0.3\bin;D:\java\apache-ant-1.6.5\bin;</literallayout>
+
+  <para>Following environment variables will also need to be set. The examples
+  given illustrative and are for a win32 system::</para>
+
+  <literallayout>JAVA_HOME=D:\java\j2sdk1.4.2_10
+M2_HOME=D:\java\maven-2.0.1
+M2_REPO=&lt;your home directory&gt;\.m2\repository
+ANT_HOME=D:\java\apache-ant-1.6.5
+</literallayout>
+</section>
