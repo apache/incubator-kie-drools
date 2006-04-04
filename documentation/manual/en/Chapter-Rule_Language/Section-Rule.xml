@@ -7,13 +7,11 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="rule.svg" format="SVG" role=""
-                    />
+        <imagedata align="center" fileref="rule.svg" format="SVG" role="" />
       </imageobject>
 
       <imageobject>
-        <imagedata align="center" fileref="rule.png" format="PNG" role=""
-                    />
+        <imagedata align="center" fileref="rule.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -30,13 +28,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="lhs.svg" format="SVG" role=""
-                      />
+          <imagedata align="center" fileref="lhs.svg" format="SVG" role="" />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="lhs.png" format="PNG" role=""
-                      />
+          <imagedata align="center" fileref="lhs.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -46,13 +42,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="pattern.svg" format="SVG" role=""
-                      />
+          <imagedata align="center" fileref="pattern.svg" format="SVG" role="" />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="pattern.png" format="PNG" role=""
-                      />
+          <imagedata align="center" fileref="pattern.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -68,13 +62,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="rule_attributes.svg" format="SVG"
-                      />
+          <imagedata align="center" fileref="rule_attributes.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="rule_attributes.png" format="PNG"
-                      />
+          <imagedata align="center" fileref="rule_attributes.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -101,7 +93,7 @@
       <para>Each rule has a salience attribute that can be assigned an Integer
       number, defaults to zero, the Integer and can be negative or positive.
       Salience is a form of priority where rules with higher salience values
-      are given higher priority when ordered in the Activation queue. </para>
+      are given higher priority when ordered in the Activation queue.</para>
     </section>
 
     <section>
@@ -148,13 +140,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="column.svg" format="SVG" role=""
-                      />
+          <imagedata align="center" fileref="column.svg" format="SVG" role="" />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="column.png" format="PNG" role=""
-                      />
+          <imagedata align="center" fileref="column.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -174,13 +164,11 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="operator.svg" format="SVG"
-                          />
+              <imagedata align="center" fileref="operator.svg" format="SVG" />
             </imageobject>
 
             <imageobject>
-              <imagedata align="center" fileref="operator.png" format="PNG"
-                          />
+              <imagedata align="center" fileref="operator.png" format="PNG" />
             </imageobject>
           </mediaobject>
         </figure>
@@ -207,12 +195,12 @@
           <mediaobject>
             <imageobject>
               <imagedata align="center" fileref="literal_constraints.svg"
-                         format="SVG"  />
+                         format="SVG" />
             </imageobject>
 
             <imageobject>
               <imagedata align="center" fileref="literal_constraints.png"
-                         format="PNG"  />
+                         format="PNG" />
             </imageobject>
           </mediaobject>
         </figure>
@@ -387,14 +375,12 @@
           <mediaobject>
             <imageobject>
               <imagedata align="center"
-                         fileref="boundvariable_constraints.svg" format="SVG"
-                          />
+                         fileref="boundvariable_constraints.svg" format="SVG" />
             </imageobject>
 
             <imageobject>
               <imagedata align="center"
-                         fileref="boundvariable_constraints.png" format="PNG"
-                          />
+                         fileref="boundvariable_constraints.png" format="PNG" />
             </imageobject>
           </mediaobject>
         </figure>
@@ -431,12 +417,12 @@ Cheesery( cheeses contains stilton )</programlisting>
           <mediaobject>
             <imageobject>
               <imagedata align="center" fileref="predicate_constraints.svg"
-                         format="SVG"  />
+                         format="SVG" />
             </imageobject>
 
             <imageobject>
               <imagedata align="center" fileref="predicate_constraints.png"
-                         format="PNG"  />
+                         format="PNG" />
             </imageobject>
           </mediaobject>
         </figure>
@@ -469,12 +455,12 @@ Person( boyAge : age -&gt; ( girlAge == boyAge + 2 ), sex = 'M' )
           <mediaobject>
             <imageobject>
               <imagedata align="center" fileref="returnvalue_constraints.svg"
-                         format="SVG"  />
+                         format="SVG" />
             </imageobject>
 
             <imageobject>
               <imagedata align="center" fileref="returnvalue_constraints.png"
-                         format="PNG"  />
+                         format="PNG" />
             </imageobject>
           </mediaobject>
         </figure>
@@ -517,13 +503,11 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="and.svg" format="SVG" role=""
-                        />
+            <imagedata align="center" fileref="and.svg" format="SVG" role="" />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="and.png" format="PNG" role=""
-                        />
+            <imagedata align="center" fileref="and.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -539,13 +523,11 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="or.svg" format="SVG" role=""
-                        />
+            <imagedata align="center" fileref="or.svg" format="SVG" role="" />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="or.png" format="PNG" role=""
-                        />
+            <imagedata align="center" fileref="or.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -556,12 +538,12 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="or_with_binding.svg"
-                       format="SVG"  />
+                       format="SVG" />
           </imageobject>
 
           <imageobject>
             <imagedata align="center" fileref="or_with_binding.png"
-                       format="PNG"  />
+                       format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -577,13 +559,11 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="eval.svg" format="SVG" role=""
-                        />
+            <imagedata align="center" fileref="eval.svg" format="SVG" role="" />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="eval.png" format="PNG" role=""
-                        />
+            <imagedata align="center" fileref="eval.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -595,17 +575,15 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
       <title>'not'</title>
 
       <figure>
-        <title>eval</title>
+        <title>not</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="notl.svg" format="SVG" role=""
-                        />
+            <imagedata align="center" fileref="not.svg" format="SVG" role="" />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="not.png" format="PNG" role=""
-                        />
+            <imagedata align="center" fileref="not.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -617,17 +595,15 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
       <title>'exists'</title>
 
       <figure>
-        <title>eval</title>
+        <title>exists</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="existsl.svg" format="SVG"
-                        />
+            <imagedata align="center" fileref="exists.svg" format="SVG" />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="exists.png" format="PNG"
-                        />
+            <imagedata align="center" fileref="exists.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -639,17 +615,15 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
       <title>'group'</title>
 
       <figure>
-        <title>eval</title>
+        <title>group</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="group.svg" format="SVG" role=""
-                        />
+            <imagedata align="center" fileref="group.svg" format="SVG" role="" />
           </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="group.png" format="PNG" role=""
-                        />
+            <imagedata align="center" fileref="group.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
