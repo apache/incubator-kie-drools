@@ -25,8 +25,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="all.jpg" format="JPG" scalefit="1"
-                   width="100%" />
+        <imagedata align="center" fileref="all.jpg" format="JPG" scalefit="1" />
       </imageobject>
     </mediaobject>
   </figure>

@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>  
+<?xml version="1.0" encoding="UTF-8"?>
 <section>
+  <title>Miss Manners and Benchmarking</title>
+
   <section>
     <title>Introduction</title>
 
@@ -479,8 +481,8 @@
 
     <itemizedlist>
       <listitem>
-        <para>A single extra not in one rule can increase speed 15 to 20 times
-        </para>
+        <para>A single extra not in one rule can increase speed 15 to 20
+        times</para>
       </listitem>
 
       <listitem>
@@ -666,5 +668,5 @@
 =&gt;[fid:31:48]:[Path id=5, seat=5, guest=n1]
 =&gt;[fid:32:49]:[Chosen id=4, name=n1, hobbies=h1]
 </literallayout>
-</section>
+  </section>
 </section>
