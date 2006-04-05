@@ -191,7 +191,9 @@ public class Package
         ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( new ByteArrayInputStream( bytes ),
                                                                                         this.packageCompilationData.getClassLoader() );
 
-        this.rules = (Map) streamWithLoader.readObject();      
+        this.rules = (Map) streamWithLoader.readObject();     
+        
+        System.out.println( "done package" );
     }
     
     private static class ObjectInputStreamWithLoader extends ObjectInputStream {

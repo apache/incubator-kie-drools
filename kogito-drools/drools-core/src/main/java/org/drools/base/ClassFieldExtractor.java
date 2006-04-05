@@ -30,7 +30,6 @@ public class ClassFieldExtractor
                                String fieldName) {
         this.clazz = clazz;
         this.fieldName = fieldName;
-        
         init();
     }
 
