@@ -56,6 +56,8 @@ public class RuleBaseImpl
     // Instance members
     // ------------------------------------------------------------
 
+    private Map                     pkgs;    
+    
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private final Rete              rete;
 
@@ -63,8 +65,6 @@ public class RuleBaseImpl
 
     /** The fact handle factory. */
     private final FactHandleFactory factHandleFactory;
-
-    private Map                     pkgs;
 
     private Map                     globalDeclarations;
 

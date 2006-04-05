@@ -1,6 +1,8 @@
 package org.drools.spi;
 
-public interface Evaluator {
+import java.io.Serializable;
+
+public interface Evaluator extends Serializable {
     // Operators
     public static final int EQUAL            = 1;
     public static final int NOT_EQUAL        = 10;

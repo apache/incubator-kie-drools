@@ -16,6 +16,7 @@
 
 package org.drools.reteoo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,7 +40,8 @@ import org.drools.spi.FieldConstraint;
  */
 public class HashedObjectSinkList
     implements
-    ObjectSinkList {
+    ObjectSinkList,
+    Serializable {
 
     /** A switch map for hashed alpha nodes */
     private Map        alphaSwitch = new HashMap();

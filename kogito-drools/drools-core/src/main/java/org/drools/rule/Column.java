@@ -1,5 +1,6 @@
 package org.drools.rule;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +11,7 @@ import org.drools.spi.Extractor;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.ObjectType;
 
-public class Column {
+public class Column implements Serializable {
     private final ObjectType    objectType;
     private List                constraints  = Collections.EMPTY_LIST;   
     final Declaration           declaration;

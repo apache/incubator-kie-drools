@@ -16,6 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,7 +57,7 @@ import org.drools.spi.ObjectTypeResolver;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  * 
  */
-class ReteooBuilder {
+class ReteooBuilder implements Serializable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -96,7 +97,7 @@ class ReteooBuilder {
      * network.
      */
     ReteooBuilder(RuleBaseImpl ruleBase,
-                ObjectTypeResolver resolver) {
+                  ObjectTypeResolver resolver) {
         this.ruleBase = ruleBase;
         this.rete = this.ruleBase.getRete();
         this.resolver = resolver;

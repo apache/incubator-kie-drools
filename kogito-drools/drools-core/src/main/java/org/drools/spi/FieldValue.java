@@ -1,6 +1,8 @@
 package org.drools.spi;
 
-public interface FieldValue {
+import java.io.Serializable;
+
+public interface FieldValue extends Serializable {
 
     Object getValue();
     
