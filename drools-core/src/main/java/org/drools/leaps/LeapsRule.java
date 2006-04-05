@@ -18,6 +18,8 @@ package org.drools.leaps;
 
 import java.util.ArrayList;
 
+import org.drools.common.ActivationQueue;
+import org.drools.common.AgendaGroupImpl;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Rule;
 
@@ -29,7 +31,7 @@ import org.drools.rule.Rule;
  * 
  */
 class LeapsRule {
-    Rule                      rule;
+    Rule rule;
 
     final ColumnConstraints[] columnConstraints;
 
@@ -37,43 +39,45 @@ class LeapsRule {
 
     final ColumnConstraints[] existsColumnConstraints;
 
-    final EvalCondition[]     evalConditions;
+    final EvalCondition[] evalConditions;
 
-    boolean                   notColumnsPresent;
+    boolean notColumnsPresent;
 
-    boolean                   existsColumnsPresent;
+    boolean existsColumnsPresent;
 
-    boolean                   evalCoditionsPresent;
+    boolean evalCoditionsPresent;
 
-    final Class[]             existsNotsClasses;
+    final Class[] existsNotsClasses;
 
-    public LeapsRule(Rule rule,
-                     ArrayList columns,
-                     ArrayList notColumns,
-                     ArrayList existsColumns,
-                     ArrayList evalConditions) {
+    public LeapsRule(Rule rule, ArrayList columns, ArrayList notColumns,
+            ArrayList existsColumns, ArrayList evalConditions) {
         this.rule = rule;
-        this.columnConstraints = (ColumnConstraints[]) columns.toArray( new ColumnConstraints[0] );
-        this.notColumnConstraints = (ColumnConstraints[]) notColumns.toArray( new ColumnConstraints[0] );
-        this.existsColumnConstraints = (ColumnConstraints[]) existsColumns.toArray( new ColumnConstraints[0] );
-        this.evalConditions = (EvalCondition[]) evalConditions.toArray( new EvalCondition[0] );
+        this.columnConstraints = (ColumnConstraints[]) columns
+                .toArray(new ColumnConstraints[0]);
+        this.notColumnConstraints = (ColumnConstraints[]) notColumns
+                .toArray(new ColumnConstraints[0]);
+        this.existsColumnConstraints = (ColumnConstraints[]) existsColumns
+                .toArray(new ColumnConstraints[0]);
+        this.evalConditions = (EvalCondition[]) evalConditions
+                .toArray(new EvalCondition[0]);
         this.notColumnsPresent = (this.notColumnConstraints.length != 0);
         this.existsColumnsPresent = (this.existsColumnConstraints.length != 0);
         this.evalCoditionsPresent = (this.evalConditions.length != 0);
 
         ArrayList classes = new ArrayList();
-        for ( int i = 0; i < this.notColumnConstraints.length; i++ ) {
-            if ( classes.contains( this.notColumnConstraints[i].getClassType() ) ) {
-                classes.add( this.notColumnConstraints[i].getClassType() );
+        for (int i = 0; i < this.notColumnConstraints.length; i++) {
+            if (classes.contains(this.notColumnConstraints[i].getClassType())) {
+                classes.add(this.notColumnConstraints[i].getClassType());
             }
         }
-        for ( int i = 0; i < this.existsColumnConstraints.length; i++ ) {
-            if ( !classes.contains( this.existsColumnConstraints[i].getClassType() ) ) {
-                classes.add( this.existsColumnConstraints[i].getClassType() );
+        for (int i = 0; i < this.existsColumnConstraints.length; i++) {
+            if (!classes.contains(this.existsColumnConstraints[i]
+                    .getClassType())) {
+                classes.add(this.existsColumnConstraints[i].getClassType());
             }
         }
 
-        this.existsNotsClasses = (Class[]) classes.toArray( new Class[0] );
+        this.existsNotsClasses = (Class[]) classes.toArray(new Class[0]);
     }
 
     Rule getRule() {
@@ -139,4 +143,30 @@ class LeapsRule {
     Class[] getExistsNotColumnsClasses() {
         return this.existsNotsClasses;
     }
+
+    /** 
+     * to simulate terminal node memory we introduce 
+     * TerminalNodeMemory type attributes here
+     * 
+     */
+    private AgendaGroupImpl agendaGroup;
+
+    private ActivationQueue lifo;
+
+    public ActivationQueue getLifo() {
+        return this.lifo;
+    }
+
+    public void setLifo(ActivationQueue lifo) {
+        this.lifo = lifo;
+    }
+
+    public AgendaGroupImpl getAgendaGroup() {
+        return this.agendaGroup;
+    }
+
+    public void setAgendaGroup(AgendaGroupImpl agendaGroup) {
+        this.agendaGroup = agendaGroup;
+    }
+
 }
