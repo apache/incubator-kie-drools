@@ -356,7 +356,10 @@ public class PackageBuilderTest extends DroolsTestCase {
     }
 
     public void testOr() throws Exception {
-        Rule rule = createRule( new OrDescr() );
+        PackageBuilder builder = new PackageBuilder();
+        Rule rule = createRule( new OrDescr(), builder,  "modify(stilton);" );
+        assertLength( 0,
+                      builder.getErrors() );
 
         And lhs = rule.getLhs();
         assertLength( 1,
@@ -371,7 +374,10 @@ public class PackageBuilderTest extends DroolsTestCase {
     }
 
     public void testAnd() throws Exception {
-        Rule rule = createRule( new AndDescr() );
+        PackageBuilder builder = new PackageBuilder();
+        Rule rule = createRule( new AndDescr(), builder,  "modify(stilton);" );
+        assertLength( 0,
+                      builder.getErrors() );
 
         And lhs = rule.getLhs();
         assertLength( 1,
@@ -386,7 +392,15 @@ public class PackageBuilderTest extends DroolsTestCase {
     }
 
     public void testNot() throws Exception {
-        Rule rule = createRule( new NotDescr() );
+        PackageBuilder builder = new PackageBuilder();
+        
+        // Make sure we can't accessa  variable bound inside the not node
+        Rule rule = createRule( new NotDescr(), builder, "modify(stilton);" );
+        assertEquals( 1, builder.getErrors().length);
+        
+        builder = new PackageBuilder();
+        rule = createRule( new NotDescr(), builder, "" );
+        assertEquals( 0, builder.getErrors().length);
 
         And lhs = rule.getLhs();
         assertLength( 1,
@@ -401,7 +415,15 @@ public class PackageBuilderTest extends DroolsTestCase {
     }
 
     public void testExists() throws Exception {
-        Rule rule = createRule( new ExistsDescr() );
+        PackageBuilder builder = new PackageBuilder();
+        
+        // Make sure we can't accessa  variable bound inside the not node
+        Rule rule = createRule( new ExistsDescr(), builder, "modify(stilton);" );
+        assertEquals( 1, builder.getErrors().length);
+        
+        builder = new PackageBuilder();
+        rule = createRule( new ExistsDescr(), builder, "" );
+        assertEquals( 0, builder.getErrors().length);
 
         And lhs = rule.getLhs();
         assertLength( 1,
@@ -415,9 +437,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         LiteralConstraint literalConstarint = (LiteralConstraint) column.getConstraints().get( 0 );
     }
 
-    private Rule createRule(ConditionalElementDescr ceDescr) throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-
+    private Rule createRule(ConditionalElementDescr ceDescr, PackageBuilder builder, String consequence) throws Exception {
         PackageDescr packageDescr = new PackageDescr( "p1" );
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
@@ -437,15 +457,12 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         ceDescr.addDescr( columnDescr );
 
-        ruleDescr.setConsequence( "modify(stilton);" );
+        ruleDescr.setConsequence( consequence );
 
         builder.addPackage( packageDescr );
 
         Package pkg = (Package) builder.getPackage( );
         Rule rule = pkg.getRule( "rule-1" );
-
-        assertLength( 0,
-                      builder.getErrors() );
 
         return rule;
     }
