@@ -225,11 +225,19 @@ public class RuleBuilder {
                     
                     this.notDeclarations = null;
                 } else if ( object instanceof ExistsDescr ) {
+                    // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
+                    this.notDeclarations = new HashMap();                    
                     Exists exists = new Exists();
                     build( rule,
                            (ConditionalElementDescr) object,
                            exists );
-                    rule.addPattern( exists );
+                    // remove declarations bound inside not node
+                    for ( Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
+                        this.declarations.remove( notIt.next() );
+                    }
+                    
+                    this.notDeclarations = null;                    
+                    rule.addPattern( exists );                    
                 } else if ( object instanceof EvalDescr ) {
                     EvalCondition eval = build( (EvalDescr) object );
                     if ( eval != null ) {
