@@ -1,0 +1,37 @@
+package org.drools.test;
+
+import org.drools.Person;
+import org.drools.Cheese;
+import org.drools.Cheesery;
+
+global java.util.List list
+
+rule "match Person 1"
+	salience 10
+    when
+        $person : Person()
+    then
+		list.add( $person );
+        $person.setStatus("match Person ok");		
+end    
+
+rule "match Person 2"
+	agenda-group "xxx"	
+    when
+        $person : Person(name=="mark", $age1 : age )
+            Cheesery( cheeses contains $person )                
+        Person( age < ( $age1 ) )
+        Person( $age2 : age -> ( $age1 == $age2 ) )      
+        eval( $age1 == $age2 )
+    then
+		list.add( $person );
+        $person.setStatus("match Person ok");		
+end   
+
+rule "match Person 3"
+	agenda-group "xxx"	
+    when
+       not Person( name == "mark" )
+       exists Person( name == "mark" )       
+    then
+end 

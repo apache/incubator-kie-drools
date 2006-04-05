@@ -779,6 +779,9 @@ public class RuleBuilder {
     }
 
     private List getUsedGlobals(String text) {
+        if ( text == null || text.trim().equals( "" ) ) {
+            return new ArrayList( 0 );
+        }
         List list = new ArrayList( 1 );
         Map globals = this.pkg.getGlobals();
         for ( Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
