@@ -16,6 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,9 +74,6 @@ class ReteooBuilder implements Serializable {
     /** Rete network to build against. */
     private final Rete               rete;
 
-    /** Rule-sets added. */
-    private final List               pkgs;
-
     /** Nodes that have been attached. */
     private final Map                attachedNodes;
 
@@ -101,13 +100,12 @@ class ReteooBuilder implements Serializable {
         this.ruleBase = ruleBase;
         this.rete = this.ruleBase.getRete();
         this.resolver = resolver;
-        this.pkgs = new ArrayList();
         this.attachedNodes = new HashMap();
         this.rules = new HashMap();
 
         //Set to 1 as Rete node is set to 0
         this.id = 1;
-    }
+    }    
 
     // ------------------------------------------------------------
     // Instance methods

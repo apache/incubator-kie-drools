@@ -16,6 +16,8 @@ package org.drools.reteoo;
  */
 
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,6 +86,7 @@ class Rete extends ObjectSource
         super( 0 );
         this.resolver = resolver;
     }
+       
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------

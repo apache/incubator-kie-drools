@@ -16,6 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TimerTask;
@@ -51,7 +53,7 @@ final class TerminalNode extends BaseNode
     // ------------------------------------------------------------
 
     /** The rule to invoke upon match. */
-    private final Rule        rule;
+    private Rule        rule;
     private final TupleSource tupleSource;
 
     // ------------------------------------------------------------
@@ -72,8 +74,8 @@ final class TerminalNode extends BaseNode
         super( id );
         this.rule = rule;
         this.tupleSource = source;
-    }
-
+    }   
+    
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
