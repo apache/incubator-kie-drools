@@ -3,6 +3,7 @@ package org.drools.compiler;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRStringStream;
@@ -36,11 +37,25 @@ public class DrlParser {
     private void compile(RuleParser parser) throws DroolsParserException {
         try {
             parser.compilation_unit();
+            
+            makeErrorList( parser );
         } catch ( RecognitionException e ) {
             throw new DroolsParserException( e );
         }
     }
 
+    /** Convert the antlr exceptions to drools parser exceptions */
+    private void makeErrorList(RuleParser parser) {
+        for ( Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
+            RecognitionException recogErr = (RecognitionException) iter.next();
+            ParserError err = new ParserError(parser.createErrorMessage( recogErr ), recogErr.line, recogErr.charPositionInLine);
+            this.results.add( err );
+        }
+    }
+
+    /**
+     * @return An instance of a RuleParser should you need one (most folks will not).
+     */
     private RuleParser getParser(String text) {
         return new RuleParser( new CommonTokenStream( new RuleParserLexer( new ANTLRStringStream( text ) ) ) );
     }
@@ -91,7 +106,17 @@ public class DrlParser {
         return text;
     }
     
-    public ParserError[] getErrors() {
-        return ( ParserError[] ) this.results.toArray( new ParserError[ this.results.size() ] );
+    /**
+     * @return true if there were parser errors.
+     */
+    public boolean hasErrors() {
+        return this.results.size() > 0;
+    }
+    
+    /**
+     * @return a list of ParserError's.
+     */
+    public List getErrors() {
+        return this.results;
     }
 }

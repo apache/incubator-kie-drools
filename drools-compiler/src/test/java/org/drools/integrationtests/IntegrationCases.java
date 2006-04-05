@@ -30,8 +30,10 @@ import org.drools.FactHandle;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
+import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.ParserError;
 import org.drools.compiler.RuleError;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
@@ -422,6 +424,18 @@ public abstract class IntegrationCases extends TestCase {
         //check that its getting it from the ruleDescr
         assertEquals(ruleErr.getLine(), ruleErr.getDescr().getLine());
         assertTrue(builder.getErrors().length > 0);
+    }
+    
+    public void testErrorsParser() throws Exception {
+        DrlParser parser = new DrlParser();
+        assertEquals(0, parser.getErrors().size());
+        parser.parse( new InputStreamReader( getClass().getResourceAsStream( "errors_parser_multiple.drl" ) ) );
+        assertTrue(parser.hasErrors());
+        assertTrue(parser.getErrors().size() > 0);
+        assertTrue(parser.getErrors().get( 0 ) instanceof ParserError);
+        ParserError first = ((ParserError)parser.getErrors().get( 0 ));
+        assertTrue(first.getMessage() != null);
+        assertFalse(first.getMessage().equals( "" ));
     }
     
     public void testFunction() throws Exception {
