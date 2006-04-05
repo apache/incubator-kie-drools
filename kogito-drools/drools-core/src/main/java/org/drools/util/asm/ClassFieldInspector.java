@@ -51,6 +51,12 @@ public class ClassFieldInspector {
         if (clazz.getSuperclass() != null) {
             processClass(clazz.getSuperclass());
         }
+        if (clazz.isInterface()) {
+            Class[] interfaces = clazz.getInterfaces();
+            for ( int i = 0; i < interfaces.length; i++ ) {
+                processClass(interfaces[i]);
+            }
+        }
     }
 
     /**

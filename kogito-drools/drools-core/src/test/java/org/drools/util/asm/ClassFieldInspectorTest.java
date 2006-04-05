@@ -63,6 +63,14 @@ public class ClassFieldInspectorTest extends TestCase {
         assertEquals(3, ext.getPropertyGetters().size());
     }
     
+    public void testIntefaceInheritance() throws Exception {
+        ClassFieldInspector ext = new ClassFieldInspector( InterfaceChild.class );
+        Map fields = ext.getFieldNames();
+        assertTrue(fields.containsKey( "foo" ));
+        assertTrue(fields.containsKey( "bar" ));
+        assertTrue(fields.containsKey( "baz" ));
+    }
+    
     public void testFieldIndexCalculation() {
         try {
             ClassFieldInspector ext = new ClassFieldInspector( SubPerson.class );
