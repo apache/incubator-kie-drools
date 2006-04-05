@@ -84,7 +84,7 @@
       </mediaobject>
     </screenshot>
 
-    <para>When calling <literal>'maven install'</literal> all the project
+    <para>When calling <literal>'mvn install'</literal> all the project
     dependencies were downloaded and added to the local Maven repository.
     Eclipse cannot find those depenencies unless you tell it where that
     repository is. To do this setup an M2_REPO claspath variable.</para>
