@@ -85,7 +85,9 @@ public class PackageBuilder {
      */
     public void addPackageFromDrl(Reader reader) throws DroolsParserException, IOException {
         DrlParser parser = new DrlParser();
-        addPackage( parser.parse( reader ) );
+        PackageDescr pkg = parser.parse( reader );
+        this.results.addAll( parser.getErrors() );
+        addPackage( pkg );
     }
 
     /**
@@ -98,7 +100,9 @@ public class PackageBuilder {
     public void addPackageFromDrl(Reader source,
                                   Reader dsl) throws DroolsParserException, IOException {
         DrlParser parser = new DrlParser();
-        addPackage( parser.parse( source, dsl ) );
+        PackageDescr pkg = parser.parse( source, dsl );
+        this.results.addAll( parser.getErrors() );
+        addPackage( pkg );
     }    
     
     public void addPackage(PackageDescr packageDescr) {

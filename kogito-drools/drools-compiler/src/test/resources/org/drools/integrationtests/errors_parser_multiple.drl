@@ -1,0 +1,28 @@
+package org.drools.test;
+
+impot org.drools.Cheese;
+
+
+rulex "eval rule test"
+    when
+    	#some bad stuff here
+        Stilton()
+		Cheese()
+		Poison()
+    hen
+    	#this is an error
+        list.add( ;
+end 
+
+
+rule "eval rule test"
+    when
+    	#some bad stuff here
+        Stilton()
+		Cheese()
+		Poison()
+    then
+    	#this is an error
+        list.add( ;
+    
+end 
