@@ -1,8 +1,15 @@
 package org.drools.lang.descr;
 
-public class PatternDescr {
+import java.io.Serializable;
+
+/**
+ * This is the super type for all pattern AST nodes.
+ */
+public class PatternDescr implements Serializable {
 	
-	private int line;
+    private static final long serialVersionUID = 8250082341310416977L;
+    
+    private int line;
 	private int column;
 
 	public void setLocation(int line, int column) {
