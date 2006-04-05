@@ -299,8 +299,10 @@ public abstract class IntegrationCases extends TestCase {
         
         workingMemory.fireAllRules();
         
-        assertEquals( 1, list.size() );          
-    }
+        assertEquals( 2, list.size() );
+        assertEquals( new Integer ( 5 ), list.get( 0 ) );
+        assertEquals( new Integer ( 6 ), list.get( 1 ) );
+    } 
     
     public void testNotWithBindings() throws Exception {
         PackageBuilder builder = new PackageBuilder();
@@ -1150,7 +1152,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
         
         Assert.assertEquals( "Indexing with null values is not working correctly.", bob.getStatus(),
-                      "OK" );
+                              "OK" );
         
     }    
     
