@@ -74,7 +74,9 @@ public class RuleBuilder {
 
     private List                        errors;
 
-    private TypeResolver                typeResolver;
+    private TypeResolver                typeResolver;    
+    
+    private Map                         notDeclarations;
 
     private static StringTemplateGroup  ruleGroup    = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
                                                                                 AngleBracketTemplateLexer.class );
@@ -208,11 +210,20 @@ public class RuleBuilder {
                            or );
                     rule.addPattern( or );
                 } else if ( object instanceof NotDescr ) {
+                    // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
+                    this.notDeclarations = new HashMap();
                     Not not = new Not();
                     build( rule,
                            (ConditionalElementDescr) object,
                            not );
                     rule.addPattern( not );
+                    
+                    // remove declarations bound inside not node
+                    for ( Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
+                        this.declarations.remove( notIt.next() );
+                    }
+                    
+                    this.notDeclarations = null;
                 } else if ( object instanceof ExistsDescr ) {
                     Exists exists = new Exists();
                     build( rule,
@@ -316,6 +327,11 @@ public class RuleBuilder {
                                  columnDescr.getIdentifier() );;
             this.declarations.put( column.getDeclaration().getIdentifier(),
                                    column.getDeclaration() );
+            
+            if ( this.notDeclarations != null ) {
+                this.notDeclarations.put( column.getDeclaration().getIdentifier(), 
+                                          column.getDeclaration() );
+            }            
         } else {
             column = new Column( columnCounter++,
                                  new ClassObjectType( clazz ) );
@@ -359,6 +375,11 @@ public class RuleBuilder {
 
         this.declarations.put( declaration.getIdentifier(),
                                declaration );
+        
+        if ( this.notDeclarations != null ) {
+            this.notDeclarations.put( declaration.getIdentifier(), 
+                                      declaration );
+        }
     }
 
     private void build(Column column,
@@ -555,6 +576,11 @@ public class RuleBuilder {
 
         this.declarations.put( declaration.getIdentifier(),
                                declaration );
+        
+        if ( this.notDeclarations != null ) {
+            this.notDeclarations.put( declaration.getIdentifier(), 
+                                      declaration );
+        }        
 
         List usedDeclarations = getUsedDeclarations( predicateDescr,
                                                      predicateDescr.getText() );

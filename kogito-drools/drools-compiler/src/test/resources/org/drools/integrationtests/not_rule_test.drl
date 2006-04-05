@@ -5,6 +5,7 @@ import org.drools.Cheese;
 global java.util.List list;
 
 rule "not rule test"
+	salience 10
     when       
         not Cheese( price == 5 )
     then
@@ -15,5 +16,5 @@ rule "not rule with bound variable"
     when
         not Cheese( $price:price -> ( $price.intValue() == 5 ) )
     then
-        System.out.println("It is working, but please replace this sysout for something that junit can check against");
+		list.add( new Integer( 6 ) );
 end
