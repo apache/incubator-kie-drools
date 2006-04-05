@@ -1,5 +1,7 @@
 package org.drools.spi;
 
+import java.io.Serializable;
+
 /*
  * $Id: ObjectType.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
  * 
@@ -47,7 +49,7 @@ package org.drools.spi;
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public interface ObjectType {
+public interface ObjectType extends  Serializable {
     /**
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.

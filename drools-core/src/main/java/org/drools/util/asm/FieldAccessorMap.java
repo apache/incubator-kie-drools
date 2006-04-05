@@ -1,6 +1,7 @@
 package org.drools.util.asm;
 
 import java.util.Map;
+import java.io.Serializable;
 
 /**
  * This class holds a dynamically generated instance of a FieldAccessor, 

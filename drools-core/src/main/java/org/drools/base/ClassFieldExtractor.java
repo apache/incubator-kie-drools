@@ -3,6 +3,8 @@ package org.drools.base;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldExtractor;
@@ -18,22 +20,40 @@ import org.drools.util.asm.FieldAccessorMap;
 public class ClassFieldExtractor
     implements
     FieldExtractor {
-    private ClassObjectType objectType;
-    private int             index;
-    private FieldAccessor   accessor;
+    private ClassObjectType         objectType;    
+    private String                  fieldName;
+    private Class                    clazz;
+    private int                     index;
+    private transient FieldAccessor accessor;
 
     public ClassFieldExtractor(Class clazz,
                                String fieldName) {
-        try {
-            FieldAccessorMap accessorMap = FieldAccessorGenerator.getInstance().getInstanceFor( clazz );
-            this.accessor = accessorMap.getFieldAccessor();
-            this.index = accessorMap.getIndex( fieldName );
+        this.clazz = clazz;
+        this.fieldName = fieldName;
+        
+        init();
+    }
 
-            this.objectType = new ClassObjectType( getClassType( clazz,
-                                                                 fieldName ) );
+    private void readObject(ObjectInputStream is) throws ClassNotFoundException,
+                                                           IOException, Exception {
+        //always perform the default de-serialization first
+        is.defaultReadObject();
+        
+        init();       
+        
+    }
+    
+    public void init() {
+        try {
+            FieldAccessorMap accessorMap = FieldAccessorGenerator.getInstance().getInstanceFor( this.clazz );
+            this.accessor = accessorMap.getFieldAccessor();
+            this.index = accessorMap.getIndex( this.fieldName );
+
+            this.objectType = new ClassObjectType( getClassType( this.clazz,
+                                                                 this.fieldName ) );
         } catch ( Exception e ) {
             throw new RuntimeDroolsException( e );
-        }
+        }        
     }
 
     public int getIndex() {
@@ -58,11 +78,11 @@ public class ClassFieldExtractor
                 fieldType = descriptors[i].getPropertyType();
                 break;
             }
-        }        
+        }
 
         // autobox primitives
         if ( fieldType.isPrimitive() ) {
-            if (fieldType == char.class ) {
+            if ( fieldType == char.class ) {
                 fieldType = Character.class;
             } else if ( fieldType == byte.class ) {
                 fieldType = Byte.class;
@@ -83,21 +103,19 @@ public class ClassFieldExtractor
 
         return fieldType;
     }
-    
+
     public boolean equals(Object other) {
-        if( this == other) {
+        if ( this == other ) {
             return true;
         }
-        if( ! (other instanceof ClassFieldExtractor)) {
+        if ( !(other instanceof ClassFieldExtractor) ) {
             return false;
         }
         ClassFieldExtractor extr = (ClassFieldExtractor) other;
-        return this.objectType.equals( extr.objectType ) &&
-               this.index == extr.index;
+        return this.objectType.equals( extr.objectType ) && this.index == extr.index;
     }
-    
+
     public int hashCode() {
-        return this.objectType.hashCode() * 17 +
-               this.index;
+        return this.objectType.hashCode() * 17 + this.index;
     }
 }

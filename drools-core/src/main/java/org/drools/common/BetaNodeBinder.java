@@ -1,5 +1,6 @@
 package org.drools.common;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +10,7 @@ import org.drools.rule.Declaration;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.Tuple;
 
-public class BetaNodeBinder {
+public class BetaNodeBinder implements Serializable  {
     
     public final static BetaNodeBinder simpleBinder = new BetaNodeBinder();
     

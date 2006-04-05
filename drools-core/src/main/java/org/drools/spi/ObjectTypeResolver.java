@@ -1,5 +1,7 @@
 package org.drools.spi;
 
-public interface ObjectTypeResolver {
+import java.io.Serializable;
+
+public interface ObjectTypeResolver extends Serializable {
     ObjectType resolve(Object object);    
 }

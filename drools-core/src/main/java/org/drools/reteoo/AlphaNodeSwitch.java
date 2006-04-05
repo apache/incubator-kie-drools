@@ -16,6 +16,7 @@
 
 package org.drools.reteoo;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +32,7 @@ import org.drools.rule.LiteralConstraint;
  *
  * Created: 04/03/2006
  */
-public class AlphaNodeSwitch {
+public class AlphaNodeSwitch implements Serializable {
     private final LiteralConstraint constraint;
     private final Map alphaSwitch; 
 
