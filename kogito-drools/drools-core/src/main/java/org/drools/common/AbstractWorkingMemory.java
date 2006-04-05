@@ -78,13 +78,11 @@ abstract public class AbstractWorkingMemory
     /** The actual memory for the <code>JoinNode</code>s. */
     private final PrimitiveLongMap            nodeMemories                                  = new PrimitiveLongMap( 32,
                                                                                                                     8 );
-
-    /** Application data which is associated with this memory. */
-    protected final Map                       applicationData                               = new HashMap();
-
     /** Handle-to-object mapping. */
     protected final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
                                                                                                                     8 );
+    /** Global values which are associated with this memory. */
+    private final Map                       globals                                       = new HashMap();
 
     /** Object-to-handle mapping. */
     protected final Map                       identityMap                                   = new IdentityMap();
@@ -164,14 +162,14 @@ abstract public class AbstractWorkingMemory
      * @see WorkingMemory
      */
     public Map getGlobals() {
-        return this.applicationData;
+        return this.globals;
     }
 
     /**
      * @see WorkingMemory
      */
     public Object getGlobal(String name) {
-        return this.applicationData.get( name );
+        return this.globals.get( name );
     }
 
     /**

@@ -32,52 +32,51 @@ import org.drools.spi.Tuple;
  * 
  * @author Alexander Bagerman
  */
-class LeapsTuple
-    implements
-    Tuple,
-    Serializable {
-    private static final long        serialVersionUID = 1L;
+class LeapsTuple implements Tuple, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final PropagationContext context;
 
-    private boolean                  readyForActivation;
+    private boolean readyForActivation;
 
-    private final FactHandleImpl[]   factHandles;
+    private final FactHandleImpl[] factHandles;
 
-    private Set[]                    notFactHandles;
+    private Set[] notFactHandles;
 
-    private Set[]                    existsFactHandles;
+    private Set[] existsFactHandles;
 
-    private Set                      logicalDependencies;
+    private Set logicalDependencies;
 
-    private Activation               activation;
+    private Activation activation;
 
-    private final LeapsRule          leapsRule;
+    private final LeapsRule leapsRule;
 
     /**
      * agendaItem parts
      */
-    LeapsTuple(FactHandleImpl factHandles[],
-               LeapsRule leapsRule,
-               PropagationContext context) {
+    LeapsTuple(FactHandleImpl factHandles[], LeapsRule leapsRule,
+            PropagationContext context) {
         this.factHandles = factHandles;
         this.leapsRule = leapsRule;
         this.context = context;
 
-        if ( this.leapsRule != null && this.leapsRule.containsNotColumns() ) {
-            this.notFactHandles = new HashSet[this.leapsRule.getNotColumnConstraints().length];
+        if (this.leapsRule != null && this.leapsRule.containsNotColumns()) {
+            this.notFactHandles = new HashSet[this.leapsRule
+                    .getNotColumnConstraints().length];
         }
-        if ( this.leapsRule != null && this.leapsRule.containsExistsColumns() ) {
-            this.existsFactHandles = new HashSet[this.leapsRule.getExistsColumnConstraints().length];
+        if (this.leapsRule != null && this.leapsRule.containsExistsColumns()) {
+            this.existsFactHandles = new HashSet[this.leapsRule
+                    .getExistsColumnConstraints().length];
         }
 
-        this.readyForActivation = (this.leapsRule == null || !this.leapsRule.containsExistsColumns());
+        this.readyForActivation = (this.leapsRule == null || !this.leapsRule
+                .containsExistsColumns());
     }
 
     /**
      * get rule that caused this tuple to be generated
      * 
-     * @return rule 
+     * @return rule
      */
     LeapsRule getLeapsRule() {
         return this.leapsRule;
@@ -95,8 +94,8 @@ class LeapsTuple
      * @see org.drools.spi.Tuple
      */
     public boolean dependsOn(FactHandle handle) {
-        for ( int i = 0, length = this.factHandles.length; i < length; i++ ) {
-            if ( handle.equals( this.factHandles[i] ) ) {
+        for (int i = 0, length = this.factHandles.length; i < length; i++) {
+            if (handle.equals(this.factHandles[i])) {
                 return true;
             }
         }
@@ -114,7 +113,7 @@ class LeapsTuple
      * @see org.drools.spi.Tuple
      */
     public FactHandle get(Declaration declaration) {
-        return this.get( declaration.getColumn() );
+        return this.get(declaration.getColumn());
     }
 
     /**
@@ -149,21 +148,21 @@ class LeapsTuple
      * @see java.lang.Object
      */
     public boolean equals(Object object) {
-        if ( this == object ) {
+        if (this == object) {
             return true;
         }
 
-        if ( object == null || !(object instanceof LeapsTuple) ) {
+        if (object == null || !(object instanceof LeapsTuple)) {
             return false;
         }
 
         FactHandle[] thatFactHandles = ((LeapsTuple) object).getFactHandles();
-        if ( thatFactHandles.length != this.factHandles.length ) {
+        if (thatFactHandles.length != this.factHandles.length) {
             return false;
         }
 
-        for ( int i = 0, length = this.factHandles.length; i < length; i++ ) {
-            if ( !this.factHandles[i].equals( thatFactHandles[i] ) ) {
+        for (int i = 0, length = this.factHandles.length; i < length; i++) {
+            if (!this.factHandles[i].equals(thatFactHandles[i])) {
                 return false;
             }
 
@@ -184,67 +183,66 @@ class LeapsTuple
      * @see java.lang.Object
      */
     public String toString() {
-        StringBuffer buffer = new StringBuffer( "LeapsTuple [" + this.context.getRuleOrigin().getName() + "] " );
+        StringBuffer buffer = new StringBuffer("LeapsTuple ["
+                + this.leapsRule.getRule().getName() + "] ");
 
-        for ( int i = 0, length = this.factHandles.length; i < length; i++ ) {
-            buffer.append( ((i == 0) ? "" : ", ") + this.factHandles[i] );
+        for (int i = 0, length = this.factHandles.length; i < length; i++) {
+            buffer.append(((i == 0) ? "" : ", ") + this.factHandles[i]);
         }
 
-        if ( this.existsFactHandles != null ) {
-            buffer.append( "\nExists fact handles by position" );
-            for ( int i = 0, length = this.existsFactHandles.length; i < length; i++ ) {
-                buffer.append( "\nposition " + i );
-                for ( Iterator it = this.existsFactHandles[i].iterator(); it.hasNext(); ) {
-                    buffer.append( "\n\t" + it.next() );
+        if (this.existsFactHandles != null) {
+            buffer.append("\nExists fact handles by position");
+            for (int i = 0, length = this.existsFactHandles.length; i < length; i++) {
+                buffer.append("\nposition " + i);
+                for (Iterator it = this.existsFactHandles[i].iterator(); it
+                        .hasNext();) {
+                    buffer.append("\n\t" + it.next());
                 }
             }
         }
-        if ( this.notFactHandles != null ) {
-            buffer.append( "\nNot fact handles by position" );
-            for ( int i = 0, length = this.notFactHandles.length; i < length; i++ ) {
-                buffer.append( "\nposition " + i );
-                for ( Iterator it = this.notFactHandles[i].iterator(); it.hasNext(); ) {
-                    buffer.append( "\n\t" + it.next() );
+        if (this.notFactHandles != null) {
+            buffer.append("\nNot fact handles by position");
+            for (int i = 0, length = this.notFactHandles.length; i < length; i++) {
+                buffer.append("\nposition " + i);
+                for (Iterator it = this.notFactHandles[i].iterator(); it
+                        .hasNext();) {
+                    buffer.append("\n\t" + it.next());
                 }
             }
         }
         return buffer.toString();
     }
 
-    void addNotFactHandle(FactHandle factHandle,
-                          int index) {
+    void addNotFactHandle(FactHandle factHandle, int index) {
         this.readyForActivation = false;
         Set facts = this.notFactHandles[index];
-        if ( facts == null ) {
+        if (facts == null) {
             facts = new HashSet();
             this.notFactHandles[index] = facts;
         }
-        facts.add( factHandle );
+        facts.add(factHandle);
     }
 
-    void removeNotFactHandle(FactHandle factHandle,
-                             int index) {
-        if ( this.notFactHandles[index] != null ) {
-            this.notFactHandles[index].remove( factHandle );
+    void removeNotFactHandle(FactHandle factHandle, int index) {
+        if (this.notFactHandles[index] != null) {
+            this.notFactHandles[index].remove(factHandle);
         }
         this.setReadyForActivation();
     }
 
-    void addExistsFactHandle(FactHandle factHandle,
-                             int index) {
+    void addExistsFactHandle(FactHandle factHandle, int index) {
         Set facts = this.existsFactHandles[index];
-        if ( facts == null ) {
+        if (facts == null) {
             facts = new HashSet();
             this.existsFactHandles[index] = facts;
         }
-        facts.add( factHandle );
+        facts.add(factHandle);
         this.setReadyForActivation();
     }
 
-    void removeExistsFactHandle(FactHandle factHandle,
-                                int index) {
-        if ( this.existsFactHandles[index] != null ) {
-            this.existsFactHandles[index].remove( factHandle );
+    void removeExistsFactHandle(FactHandle factHandle, int index) {
+        if (this.existsFactHandles[index] != null) {
+            this.existsFactHandles[index].remove(factHandle);
         }
         this.setReadyForActivation();
     }
@@ -252,16 +250,18 @@ class LeapsTuple
     private void setReadyForActivation() {
         this.readyForActivation = true;
 
-        if ( this.notFactHandles != null ) {
-            for ( int i = 0, length = this.notFactHandles.length; i < length && this.readyForActivation; i++ ) {
-                if ( this.notFactHandles[i].size() > 0 ) {
+        if (this.notFactHandles != null) {
+            for (int i = 0, length = this.notFactHandles.length; i < length
+                    && this.readyForActivation; i++) {
+                if (this.notFactHandles[i].size() > 0) {
                     this.readyForActivation = false;
                 }
             }
         }
-        if ( this.existsFactHandles != null ) {
-            for ( int i = 0, length = this.existsFactHandles.length; i < length && this.readyForActivation; i++ ) {
-                if ( this.existsFactHandles[i].size() == 0 ) {
+        if (this.existsFactHandles != null) {
+            for (int i = 0, length = this.existsFactHandles.length; i < length
+                    && this.readyForActivation; i++) {
+                if (this.existsFactHandles[i].size() == 0) {
                     this.readyForActivation = false;
                 }
             }
@@ -273,14 +273,14 @@ class LeapsTuple
     }
 
     void addLogicalDependency(FactHandle handle) {
-        if ( this.logicalDependencies == null ) {
+        if (this.logicalDependencies == null) {
             this.logicalDependencies = new HashSet();
         }
-        this.logicalDependencies.add( handle );
+        this.logicalDependencies.add(handle);
     }
 
     Iterator getLogicalDependencies() {
-        if ( this.logicalDependencies != null ) {
+        if (this.logicalDependencies != null) {
             return this.logicalDependencies.iterator();
         }
         return null;

@@ -171,43 +171,39 @@ public class TableTest extends TestCase {
 		this.testTable.add(this.h1000);
 		this.testTable.add(this.h100);
 		this.testTable.add(this.h10);
-		try {
-			TableIterator it = this.testTable.tailIterator(this.h100, this.h10);
-			assertTrue(it.hasNext());
-			assertEquals(it.next(), this.h10);
-			assertTrue(it.hasNext());
-			assertEquals(it.next(), this.h1);
-			assertFalse(it.hasNext());
-			it.reset();
-			assertTrue(it.hasNext());
-			assertEquals(it.next(), this.h100);
-			assertTrue(it.hasNext());
-			assertEquals(it.next(), this.h10);
-			assertTrue(it.hasNext());
-			assertEquals(it.next(), this.h1);
-			assertFalse(it.hasNext());
 
-			this.testTable.clear();
-			Handle fh1 = new Handle(1, new Guest("1", Sex.resolve("m"), Hobby
-					.resolve("h2")));
-			Handle fh2 = new Handle(2, new Guest("1", Sex.resolve("m"), Hobby
-					.resolve("h1")));
-			Handle fh3 = new Handle(3, new Guest("1", Sex.resolve("m"), Hobby
-					.resolve("h3")));
-			Handle fh4 = new Handle(4, new Guest("3", Sex.resolve("f"), Hobby
-					.resolve("h2")));
-			Handle fhC = new Handle(5, new Context("start"));
-			this.testTable.add(fh1);
-			this.testTable.add(fh2);
-			this.testTable.add(fh3);
-			this.testTable.add(fh4);
-			it = this.testTable.tailIterator(fhC, fhC);
-			assertTrue(it.hasNext());
-			assertEquals(it.next(), fh4);
+		TableIterator it = this.testTable.tailIterator(this.h100, this.h10);
+		assertTrue(it.hasNext());
+		assertEquals(it.next(), this.h10);
+		assertTrue(it.hasNext());
+		assertEquals(it.next(), this.h1);
+		assertFalse(it.hasNext());
+		it.reset();
+		assertTrue(it.hasNext());
+		assertEquals(it.next(), this.h100);
+		assertTrue(it.hasNext());
+		assertEquals(it.next(), this.h10);
+		assertTrue(it.hasNext());
+		assertEquals(it.next(), this.h1);
+		assertFalse(it.hasNext());
 
-		} catch (TableOutOfBoundException ex) {
-
-		}
+		this.testTable.clear();
+		Handle fh1 = new Handle(1, new Guest("1", Sex.resolve("m"), Hobby
+				.resolve("h2")));
+		Handle fh2 = new Handle(2, new Guest("1", Sex.resolve("m"), Hobby
+				.resolve("h1")));
+		Handle fh3 = new Handle(3, new Guest("1", Sex.resolve("m"), Hobby
+				.resolve("h3")));
+		Handle fh4 = new Handle(4, new Guest("3", Sex.resolve("f"), Hobby
+				.resolve("h2")));
+		Handle fhC = new Handle(5, new Context("start"));
+		this.testTable.add(fh1);
+		this.testTable.add(fh2);
+		this.testTable.add(fh3);
+		this.testTable.add(fh4);
+		it = this.testTable.tailIterator(fhC, fhC);
+		assertTrue(it.hasNext());
+		assertEquals(it.next(), fh4);
 	}
 
 	public void testHeadIterator() {

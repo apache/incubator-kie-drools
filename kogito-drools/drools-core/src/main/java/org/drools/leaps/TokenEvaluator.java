@@ -16,13 +16,10 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.Table;
 import org.drools.leaps.util.TableIterator;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.InvalidRuleException;
-import org.drools.spi.Activation;
-import org.drools.spi.PropagationContext;
 
 /**
  * helper class that does condition evaluation on token when working memory does
@@ -41,32 +38,51 @@ final class TokenEvaluator {
      * @throws Exception
      * @throws InvalidRuleException
      */
-    final static protected void evaluate(Token token) throws NoMatchesFoundException,
-                                                     Exception,
-                                                     InvalidRuleException {
-        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) token.getWorkingMemory();
+    final static protected void evaluate(Token token)
+            throws NoMatchesFoundException, InvalidRuleException {
+        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) token
+                .getWorkingMemory();
         LeapsRule leapsRule = token.getCurrentRuleHandle().getLeapsRule();
         // sometimes there is no normal conditions, only not and exists
         int numberOfColumns = leapsRule.getNumberOfColumns();
-        if ( numberOfColumns > 0 ) {
-            int dominantFactPosition = token.getCurrentRuleHandle().getDominantPosition();
-            if ( leapsRule.getColumnConstraintsAtPosition( dominantFactPosition ).isAllowedAlpha( token.getDominantFactHandle(),
-                                                                                                  token,
-                                                                                                  workingMemory ) ) {
+        if (numberOfColumns > 0) {
+            int dominantFactPosition = token.getCurrentRuleHandle()
+                    .getDominantPosition();
+            if (leapsRule.getColumnConstraintsAtPosition(dominantFactPosition)
+                    .isAllowedAlpha(token.getDominantFactHandle(), token,
+                            workingMemory)) {
                 TableIterator[] iterators = new TableIterator[numberOfColumns];
                 // getting iterators first
-                for ( int i = 0; i < numberOfColumns; i++ ) {
-                    if ( i == dominantFactPosition ) {
-                        iterators[i] = Table.singleItemIterator( token.getDominantFactHandle() );
+                for (int i = 0; i < numberOfColumns; i++) {
+                    if (i == dominantFactPosition) {
+                        iterators[i] = Table.singleItemIterator(token
+                                .getDominantFactHandle());
                     } else {
-                        if ( i > 0 && leapsRule.getColumnConstraintsAtPosition( i ).isAlphaPresent() ) {
-                            iterators[i] = workingMemory.getFactTable( leapsRule.getColumnClassObjectTypeAtPosition( i ) ).tailConstrainedIterator( workingMemory,
-                                                                                                                                                    leapsRule.getColumnConstraintsAtPosition( i ),
-                                                                                                                                                    token.getDominantFactHandle(),
-                                                                                                                                                    (token.isResume() ? token.get( i ) : token.getDominantFactHandle()) );
+                        if (i > 0
+                                && leapsRule.getColumnConstraintsAtPosition(i)
+                                        .isAlphaPresent()) {
+                            iterators[i] = workingMemory
+                                    .getFactTable(
+                                            leapsRule
+                                                    .getColumnClassObjectTypeAtPosition(i))
+                                    .tailConstrainedIterator(
+                                            workingMemory,
+                                            leapsRule
+                                                    .getColumnConstraintsAtPosition(i),
+                                            token.getDominantFactHandle(),
+                                            (token.isResume() ? token.get(i)
+                                                    : token
+                                                            .getDominantFactHandle()));
                         } else {
-                            iterators[i] = workingMemory.getFactTable( leapsRule.getColumnClassObjectTypeAtPosition( i ) ).tailIterator( token.getDominantFactHandle(),
-                                                                                                                                         (token.isResume() ? token.get( i ) : token.getDominantFactHandle()) );
+                            iterators[i] = workingMemory
+                                    .getFactTable(
+                                            leapsRule
+                                                    .getColumnClassObjectTypeAtPosition(i))
+                                    .tailIterator(
+                                            token.getDominantFactHandle(),
+                                            (token.isResume() ? token.get(i)
+                                                    : token
+                                                            .getDominantFactHandle()));
                         }
                     }
                 }
@@ -78,13 +94,16 @@ final class TokenEvaluator {
                 boolean doReset = false;
                 boolean skip = token.isResume();
                 TableIterator currentIterator;
-                for ( int i = 0; i < numberOfColumns && !someIteratorsEmpty; i++ ) {
+                for (int i = 0; i < numberOfColumns && !someIteratorsEmpty; i++) {
                     currentIterator = iterators[i];
-                    if ( currentIterator.isEmpty() ) {
+                    if (currentIterator.isEmpty()) {
                         someIteratorsEmpty = true;
                     } else {
-                        if ( !doReset ) {
-                            if ( skip && currentIterator.hasNext() && !currentIterator.peekNext().equals( token.get( i ) ) ) {
+                        if (!doReset) {
+                            if (skip
+                                    && currentIterator.hasNext()
+                                    && !currentIterator.peekNext().equals(
+                                            token.get(i))) {
                                 skip = false;
                                 doReset = true;
                             }
@@ -95,7 +114,7 @@ final class TokenEvaluator {
 
                 }
                 // check if one of them is empty and immediate return
-                if ( someIteratorsEmpty ) {
+                if (someIteratorsEmpty) {
                     throw new NoMatchesFoundException();
                     // "some of tables do not have facts");
                 }
@@ -103,49 +122,48 @@ final class TokenEvaluator {
                 // column position in the nested loop
                 int jj = 0;
                 boolean done = false;
-                while ( !done ) {
+                while (!done) {
                     currentIterator = iterators[jj];
-                    if ( !currentIterator.hasNext() ) {
-                        if ( jj == 0 ) {
+                    if (!currentIterator.hasNext()) {
+                        if (jj == 0) {
                             done = true;
                         } else {
                             //                    
                             currentIterator.reset();
-                            token.set( jj,
-                                       (FactHandleImpl) null );
+                            token.set(jj, (FactHandleImpl) null);
                             jj = jj - 1;
-                            if ( skip ) {
+                            if (skip) {
                                 skip = false;
                             }
                         }
                     } else {
                         currentIterator.next();
-                        token.set( jj,
-                                   (FactHandleImpl) iterators[jj].current() );
+                        token.set(jj, (FactHandleImpl) iterators[jj].current());
                         // check if match found
                         // we need to check only beta for dominant fact
                         // alpha was already checked
                         boolean localMatch = false;
-                        if ( jj == 0 && jj != dominantFactPosition ) {
-                            localMatch = leapsRule.getColumnConstraintsAtPosition( jj ).isAllowed( token.get( jj ),
-                                                                                                   token,
-                                                                                                   workingMemory );
+                        if (jj == 0 && jj != dominantFactPosition) {
+                            localMatch = leapsRule
+                                    .getColumnConstraintsAtPosition(jj)
+                                    .isAllowed(token.get(jj), token,
+                                            workingMemory);
                         } else {
-                            localMatch = leapsRule.getColumnConstraintsAtPosition( jj ).isAllowedBeta( token.get( jj ),
-                                                                                                       token,
-                                                                                                       workingMemory );
+                            localMatch = leapsRule
+                                    .getColumnConstraintsAtPosition(jj)
+                                    .isAllowedBeta(token.get(jj), token,
+                                            workingMemory);
                         }
 
-                        if ( localMatch ) {
+                        if (localMatch) {
                             // start iteratating next iterator
                             // or for the last one check negative conditions and
                             // fire
                             // consequence
-                            if ( jj == (numberOfColumns - 1) ) {
-                                if ( !skip ) {
-                                    if ( processAfterAllPositiveConstraintOk( token,
-                                                                              leapsRule,
-                                                                              workingMemory ) ) {
+                            if (jj == (numberOfColumns - 1)) {
+                                if (!skip) {
+                                    if (processAfterAllPositiveConstraintOk(
+                                            token, leapsRule, workingMemory)) {
                                         return;
                                     }
                                 } else {
@@ -155,7 +173,7 @@ final class TokenEvaluator {
                                 jj = jj + 1;
                             }
                         } else {
-                            if ( skip ) {
+                            if (skip) {
                                 skip = false;
                             }
                         }
@@ -163,9 +181,8 @@ final class TokenEvaluator {
                 }
             }
         } else {
-            if ( processAfterAllPositiveConstraintOk( token,
-                                                      leapsRule,
-                                                      workingMemory ) ) {
+            if (processAfterAllPositiveConstraintOk(token, leapsRule,
+                    workingMemory)) {
                 return;
             }
         }
@@ -174,8 +191,8 @@ final class TokenEvaluator {
     }
 
     /**
-     * Makes final check on eval, exists and not conditions after all column values
-     * isAllowed by column constraints
+     * Makes final check on eval, exists and not conditions after all column
+     * values isAllowed by column constraints
      * 
      * @param token
      * @param leapsRule
@@ -184,39 +201,32 @@ final class TokenEvaluator {
      * @throws Exception
      */
     final static boolean processAfterAllPositiveConstraintOk(Token token,
-                                                             LeapsRule leapsRule,
-                                                             WorkingMemoryImpl workingMemory) throws Exception {
-        LeapsTuple tuple = token.getTuple( new PropagationContextImpl( workingMemory.increamentPropagationIdCounter(),
-                                                                       PropagationContext.ASSERTION,
-                                                                       leapsRule.getRule(),
-                                                                       (Activation) null ) );
-        if ( leapsRule.containsEvalConditions() ) {
-            if ( !TokenEvaluator.evaluateEvalConditions( leapsRule,
-                                                         tuple,
-                                                         workingMemory ) ) {
+            LeapsRule leapsRule, WorkingMemoryImpl workingMemory) {
+        LeapsTuple tuple = token.getTuple();
+        if (leapsRule.containsEvalConditions()) {
+            if (!TokenEvaluator.evaluateEvalConditions(leapsRule, tuple,
+                    workingMemory)) {
                 return false;
             }
         }
-        if ( leapsRule.containsExistsColumns() ) {
-            TokenEvaluator.evaluateExistsConditions( tuple,
-                                                     leapsRule,
-                                                     workingMemory );
+        if (leapsRule.containsExistsColumns()) {
+            TokenEvaluator.evaluateExistsConditions(tuple, leapsRule,
+                    workingMemory);
         }
-        if ( leapsRule.containsNotColumns() ) {
-            TokenEvaluator.evaluateNotConditions( tuple,
-                                                  leapsRule,
-                                                  workingMemory );
+        if (leapsRule.containsNotColumns()) {
+            TokenEvaluator.evaluateNotConditions(tuple, leapsRule,
+                    workingMemory);
         }
         //
         Class[] classes = leapsRule.getExistsNotColumnsClasses();
-        for ( int i = 0, length = classes.length; i < length; i++ ) {
-            workingMemory.getFactTable( classes[i] ).addTuple( tuple );
+        for (int i = 0, length = classes.length; i < length; i++) {
+            workingMemory.getFactTable(classes[i]).addTuple(tuple);
         }
 
         // 
-        if ( tuple.isReadyForActivation() ) {
+        if (tuple.isReadyForActivation()) {
             // let agenda to do its work
-            workingMemory.assertTuple( tuple );
+            workingMemory.assertTuple(tuple);
             return true;
         } else {
             return false;
@@ -233,12 +243,10 @@ final class TokenEvaluator {
      * @throws Exception
      */
     final static boolean evaluateEvalConditions(LeapsRule leapsRule,
-                                                LeapsTuple tuple,
-                                                WorkingMemoryImpl workingMemory) throws Exception {
+            LeapsTuple tuple, WorkingMemoryImpl workingMemory) {
         EvalCondition[] evals = leapsRule.getEvalConditions();
-        for ( int i = 0; i < evals.length; i++ ) {
-            if ( !evals[i].isAllowed( tuple,
-                                      workingMemory ) ) {
+        for (int i = 0; i < evals.length; i++) {
+            if (!evals[i].isAllowed(tuple, workingMemory)) {
                 return false;
             }
         }
@@ -254,28 +262,24 @@ final class TokenEvaluator {
      * @return success
      * @throws Exception
      */
-    final static void evaluateNotConditions(LeapsTuple tuple,
-                                            LeapsRule rule,
-                                            WorkingMemoryImpl workingMemory) throws Exception {
+    final static void evaluateNotConditions(LeapsTuple tuple, LeapsRule rule,
+            WorkingMemoryImpl workingMemory) {
         FactHandleImpl factHandle;
         TableIterator tableIterator;
         ColumnConstraints constraint;
         ColumnConstraints[] not = rule.getNotColumnConstraints();
-        for ( int i = 0, length = not.length; i < length; i++ ) {
+        for (int i = 0, length = not.length; i < length; i++) {
             constraint = not[i];
             // scan the whole table
-            tableIterator = workingMemory.getFactTable( constraint.getClassType() ).iterator();
+            tableIterator = workingMemory.getFactTable(
+                    constraint.getClassType()).iterator();
             // fails if exists
-            while ( tableIterator.hasNext() ) {
+            while (tableIterator.hasNext()) {
                 factHandle = (FactHandleImpl) tableIterator.next();
                 // check constraint condition
-                if ( constraint.isAllowed( factHandle,
-                                           tuple,
-                                           workingMemory ) ) {
-                    tuple.addNotFactHandle( factHandle,
-                                            i );
-                    factHandle.addNotTuple( tuple,
-                                            i );
+                if (constraint.isAllowed(factHandle, tuple, workingMemory)) {
+                    tuple.addNotFactHandle(factHandle, i);
+                    factHandle.addNotTuple(tuple, i);
                 }
             }
         }
@@ -289,27 +293,23 @@ final class TokenEvaluator {
      * @throws Exception
      */
     final static void evaluateExistsConditions(LeapsTuple tuple,
-                                               LeapsRule rule,
-                                               WorkingMemoryImpl workingMemory) throws Exception {
+            LeapsRule rule, WorkingMemoryImpl workingMemory) {
         FactHandleImpl factHandle;
         TableIterator tableIterator;
         ColumnConstraints constraint;
         ColumnConstraints[] exists = rule.getExistsColumnConstraints();
-        for ( int i = 0, length = exists.length; i < length; i++ ) {
+        for (int i = 0, length = exists.length; i < length; i++) {
             constraint = exists[i];
             // scan the whole table
-            tableIterator = workingMemory.getFactTable( constraint.getClassType() ).iterator();
+            tableIterator = workingMemory.getFactTable(
+                    constraint.getClassType()).iterator();
             // fails if exists
-            while ( tableIterator.hasNext() ) {
+            while (tableIterator.hasNext()) {
                 factHandle = (FactHandleImpl) tableIterator.next();
                 // check constraint conditions
-                if ( constraint.isAllowed( factHandle,
-                                           tuple,
-                                           workingMemory ) ) {
-                    tuple.addExistsFactHandle( factHandle,
-                                               i );
-                    factHandle.addExistsTuple( tuple,
-                                               i );
+                if (constraint.isAllowed(factHandle, tuple, workingMemory)) {
+                    tuple.addExistsFactHandle(factHandle, i);
+                    factHandle.addExistsTuple(tuple, i);
                 }
             }
         }

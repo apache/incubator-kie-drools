@@ -20,8 +20,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.Table;
-import org.drools.leaps.util.TableOutOfBoundException;
+import org.drools.spi.PropagationContext;
 
 /**
  * Implementation of a container to store data elements used throughout the
@@ -41,14 +42,13 @@ class FactTable extends Table {
      * dynamic rule management support. used to push facts on stack again after
      * fireAllRules by working memory and adding of a new rule after that
      */
-    private boolean         reseededStack = false;
+    private boolean reseededStack = false;
 
     /**
-     * Tuples that are either already on agenda or are very close (missing exists or 
-     * have not facts matching)
+     * Tuples that are either already on agenda or are very close (missing
+     * exists or have not facts matching)
      */
-
-    private final Set       tuples;
+    private final Set tuples;
 
     /**
      * initializes base LeapsTable with appropriate Comparator and positive and
@@ -58,8 +58,8 @@ class FactTable extends Table {
      * @param ruleConflictResolver
      */
     public FactTable(ConflictResolver conflictResolver) {
-        super( conflictResolver.getFactConflictResolver() );
-        this.rules = new RuleTable( conflictResolver.getRuleConflictResolver() );
+        super(conflictResolver.getFactConflictResolver());
+        this.rules = new RuleTable(conflictResolver.getRuleConflictResolver());
         this.tuples = new HashSet();
     }
 
@@ -69,11 +69,10 @@ class FactTable extends Table {
      * @param workingMemory
      * @param ruleHandle
      */
-    public void addRule(WorkingMemoryImpl workingMemory,
-                        RuleHandle ruleHandle) {
-        this.rules.add( ruleHandle );
+    public void addRule(WorkingMemoryImpl workingMemory, RuleHandle ruleHandle) {
+        this.rules.add(ruleHandle);
         // push facts back to stack if needed
-        this.checkAndAddFactsToStack( workingMemory );
+        this.checkAndAddFactsToStack(workingMemory);
     }
 
     /**
@@ -82,7 +81,7 @@ class FactTable extends Table {
      * @param ruleHandle
      */
     public void removeRule(RuleHandle ruleHandle) {
-        this.rules.remove( ruleHandle );
+        this.rules.remove(ruleHandle);
     }
 
     /**
@@ -95,20 +94,21 @@ class FactTable extends Table {
      * 
      */
     private void checkAndAddFactsToStack(WorkingMemoryImpl workingMemory) {
-        if ( this.reseededStack ) {
-            this.setReseededStack( false );
+        if (this.reseededStack) {
+            this.setReseededStack(false);
+
+            PropagationContextImpl context = new PropagationContextImpl(
+                    workingMemory.nextPropagationIdCounter(),
+                    PropagationContext.ASSERTION, null, null);
+
             // let's only add facts below waterline - added before rule is added
             // rest would be added to stack automatically
-            Handle factHandle = new FactHandleImpl( workingMemory.getIdLastFireAllAt(),
-                                                    null );
-            try {
-                for ( Iterator it = this.tailIterator( factHandle,
-                                                       factHandle ); it.hasNext(); ) {
-                    workingMemory.pushTokenOnStack( new Token( workingMemory,
-                                                               (FactHandleImpl) it.next() ) );
-                }
-            } catch ( TableOutOfBoundException e ) {
-                // should never get here
+            Handle factHandle = new FactHandleImpl(workingMemory
+                    .getIdLastFireAllAt(), null);
+            for (Iterator it = this.tailIterator(factHandle, factHandle); it
+                    .hasNext();) {
+                workingMemory.pushTokenOnStack(new Token(workingMemory,
+                        (FactHandleImpl) it.next(), context));
             }
         }
     }
@@ -139,22 +139,23 @@ class FactTable extends Table {
     public String toString() {
         StringBuffer ret = new StringBuffer();
 
-        for ( Iterator it = this.iterator(); it.hasNext(); ) {
+        for (Iterator it = this.iterator(); it.hasNext();) {
             FactHandleImpl handle = (FactHandleImpl) it.next();
-            ret.append( "\n" + handle + "[" + handle.getObject() + "]" );
+            ret.append("\n" + handle + "[" + handle.getObject() + "]");
         }
 
-        ret.append( "\nTuples :" );
+        ret.append("\nTuples :");
 
-        for ( Iterator it = this.tuples.iterator(); it.hasNext(); ) {
-            ret.append( "\n" + it.next() );
+        for (Iterator it = this.tuples.iterator(); it.hasNext();) {
+            ret.append("\n" + it.next());
         }
 
-        ret.append( "\nRules :" );
+        ret.append("\nRules :");
 
-        for ( Iterator it = this.rules.iterator(); it.hasNext(); ) {
+        for (Iterator it = this.rules.iterator(); it.hasNext();) {
             RuleHandle handle = (RuleHandle) it.next();
-            ret.append( "\n\t" + handle.getLeapsRule().getRule().getName() + "[dominant - " + handle.getDominantPosition() + "]" );
+            ret.append("\n\t" + handle.getLeapsRule().getRule().getName()
+                    + "[dominant - " + handle.getDominantPosition() + "]");
         }
 
         return ret.toString();
@@ -165,10 +166,10 @@ class FactTable extends Table {
     }
 
     boolean addTuple(LeapsTuple tuple) {
-        return this.tuples.add( tuple );
+        return this.tuples.add(tuple);
     }
 
     void removeTuple(LeapsTuple tuple) {
-        this.tuples.remove( tuple );
+        this.tuples.remove(tuple);
     }
 }
