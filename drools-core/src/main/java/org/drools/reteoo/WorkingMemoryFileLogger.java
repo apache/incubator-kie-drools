@@ -32,6 +32,8 @@ import com.thoughtworks.xstream.XStream;
  * All the events logged are written to the file when the
  * writeToDisk() method is invoked.  The log will contain all
  * the events logged serialized to XML using XStream.
+ * Every time a new logger is created, the old event log will
+ * be overwritten.
  * 
  * TODO: make this class more scalable, for example
  *  - logging to several files if log becomes too large
@@ -45,8 +47,6 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 	private List events = new ArrayList();
 	private String fileName= "event";
 	private int maxEventsInMemory = 1000;
-	private int maxWritesToFile = 1;
-	private int nbOfWriteToFile = 0;
 	private int nbOfFile = 0;
 	
 	/**
@@ -80,14 +80,10 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 		try {
 			XStream xstream = new XStream();
 			ObjectOutputStream out = xstream.createObjectOutputStream(
-				new FileWriter(fileName + (nbOfFile == 0 ? ".log" : nbOfFile + ".log"), true));
+				new FileWriter(fileName + (nbOfFile == 0 ? ".log" : nbOfFile + ".log"), false));
 			out.writeObject(events);
 			out.close();
-			;
-			if (++nbOfWriteToFile == maxWritesToFile) {
-				nbOfWriteToFile = 0;
-				nbOfFile++;
-			}
+			nbOfFile++;
 			clear();
 		} catch (Throwable t) {
 			t.printStackTrace(System.err);
@@ -110,22 +106,6 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 	 */
 	public void setMaxEventsInMemory(int maxEventsInMemory) {
 		this.maxEventsInMemory = maxEventsInMemory;
-	}
-
-	/**
-	 * Sets the maximum number of consequetive writes to one file.
-	 * If this number is reached, a new log file is created (which
-	 * is the file name appended with the number of the log).
-	 * The default is 10.
-	 * This means that the maximum number of events in a log is
-	 * maxWritesToFile * maxEventsInMemory.
-	 * 
-	 * @param maxEventsInMemory The maximum number of consequetive writes to one file.
-	 */
-	public void setMaxWritesToFile(int maxWritesToFile) {
-		// TODO this doesn't work yet, since xstream only reads
-		// out the first set of events and ignores subsequent sets
-		// this.maxWritesToFile = maxWritesToFile;
 	}
 
 	/**
