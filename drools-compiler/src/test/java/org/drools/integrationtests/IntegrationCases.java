@@ -867,6 +867,7 @@ public abstract class IntegrationCases extends TestCase {
 
         try {
             workingMemory.assertObject( brie );
+            workingMemory.fireAllRules();
             fail( "Should throw an Exception from the Eval" );
         } catch ( Exception e ) {
             assertEquals( "this should throw an exception",
@@ -888,6 +889,7 @@ public abstract class IntegrationCases extends TestCase {
 
         try {
             workingMemory.assertObject( brie );
+            workingMemory.fireAllRules();
             fail( "Should throw an Exception from the Predicate" );
         } catch ( Exception e ) {
             assertEquals( "this should throw an exception",
@@ -909,6 +911,7 @@ public abstract class IntegrationCases extends TestCase {
 
         try {
             workingMemory.assertObject( brie );
+            workingMemory.fireAllRules();
             fail( "Should throw an Exception from the ReturnValue" );
         } catch ( Exception e ) {
             assertEquals( "this should throw an exception",
@@ -1153,7 +1156,7 @@ public abstract class IntegrationCases extends TestCase {
         builder.addPackageFromDrl( reader );
         Package pkg1 = builder.getPackage();
 
-        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.setGlobal( "total",
@@ -1253,7 +1256,7 @@ public abstract class IntegrationCases extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) ) );
         Package pkg = builder.getPackage();
 
-        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl(); 
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
@@ -1343,7 +1346,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 0,
                       builder.getErrors().length );
         
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        RuleBase ruleBase = getRuleBase();//RuleBaseFactory.newRuleBase();
         
         ruleBase.addPackage( pkg );
         

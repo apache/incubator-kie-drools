@@ -16,6 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,21 +61,21 @@ public class RuleBaseImpl
     private Map                     pkgs;    
     
     /** The root Rete-OO for this <code>RuleBase</code>. */
-    private final Rete              rete;
+    private transient Rete              rete;
 
-    private final ReteooBuilder       reteooBuilder;
+    private transient ReteooBuilder       reteooBuilder;
 
     /** The fact handle factory. */
     private final FactHandleFactory factHandleFactory;
 
-    private Map                     globalDeclarations;
+    private transient Map                     globalDeclarations;
 
     // @todo: replace this with a weak HashSet
     /**
      * WeakHashMap to keep references of WorkingMemories but allow them to be
      * garbage collected
      */
-    private final transient Map     workingMemories;
+    private transient Map     workingMemories;
 
     /** Special value when adding to the underlying map. */
     private static final Object     PRESENT = new Object();
@@ -339,5 +341,29 @@ public class RuleBaseImpl
 
     public Set getWorkingMemories() {
         return this.workingMemories.keySet();
+    }
+    
+    /**
+     * This is to allow the RuleBase to be serializable.
+     */
+    private void readObject(ObjectInputStream is) throws ClassNotFoundException, 
+                                                         IOException, 
+                                                         Exception {
+        //always perform the default de-serialization first
+        is.defaultReadObject();
+
+        ObjectTypeResolver resolver = new ClassObjectTypeResolver();
+        this.rete = new Rete( resolver );
+        this.reteooBuilder = new ReteooBuilder( this,
+                                            resolver );
+        this.globalDeclarations = new HashMap();
+        this.workingMemories = new WeakHashMap();
+        
+        Package[] packages = this.getPackages();
+        this.pkgs.clear();
+        for ( int i = 0; i < packages.length; i++ ) {
+            this.addPackage( packages[i] );
+        }
     }    
+    
 }
