@@ -1,4 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
   <title>Rete Algorithm</title>
+
+  <para>The RETE algorithm was invented by Dr. Charles Forgy and documented in
+  his PHd thesis in 1978-79. A simplified version of the paper was published
+  in 1982 (<ulink
+  url="http://citeseer.ist.psu.edu/context/505087/0">http://citeseer.ist.psu.edu/context/505087/0</ulink>).
+  The word RETE is latin for "net" meaning network. RETE algorithm can be
+  broken into 2 parts: rule compilation and runtime execution. The first part
+  describes how to compile a rule, so it produces a descrimination network. In
+  non-technical terms, a descrimination network is used to filter data. The
+  idea is to filter data as it propogates through the network. At the top, the
+  nodes would have many matches. As we go down the network, there would be
+  fewer matches. At the very bottom of the network are the terminal nodes. In
+  Dr Forgy's 1982 paper, he described 4 basic nodes: root, 1-input, 2-input
+  and terminal. The root node is where all objects enter the network. From
+  there, it immediately goes to the ObjectTypeNode. The purpose of the
+  ObjectTypeNode is to make sure the engine doesn't do more work than it needs
+  to. For example, say we have 2 objects: Account and Order. If the rule
+  engine tried to evaluate every single node against every object, it would
+  waste a lot of cycles. To make things efficient, the engine should only pass
+  the object to the nodes that match the object type. The easiest way to do
+  this is to create an ObjectTypeNode and have all 1-input and 2-input nodes
+  descend from it. This way, if an application asserts a new account, it won't
+  propogate to nodes for the Order object. One input nodes are commonly called
+  AlphaNodes. AlphaNodes are used to evaluate literal conditions. Although the
+  1982 paper only covers equality conditions, many RETE implementations
+  support other operations. For example, Account.name == "Mark" is a literal
+  conditions. When a rule has multiple literal conditions for a single object
+  type, they are linked together. This means that if I assert an account
+  object, it must first satisfy the first literal condition before it can
+  proceed to the next AlphaNode. In Dr. Forgy's paper, he refers to these as
+  IntraElement conditions. Two input nodes are commonly called BetaNodes.
+  BetaNodes are use to compare 2 objects to each other. The objects may be the
+  same or different types. The left input for a BetaNode is generally a list
+  of objects. The right input is a single object. In some cases, a rule engine
+  may implement several BetaNodes to handle existential conditions and negated
+  conditional element. Terminal nodes are used to indicate a single rule has
+  matched all its conditions.</para>
 </section>
