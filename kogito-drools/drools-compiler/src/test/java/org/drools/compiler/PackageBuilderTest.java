@@ -2,6 +2,7 @@ package org.drools.compiler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
@@ -154,9 +155,14 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         packageDescr.addGlobal( "map",
                                 "java.util.Map" );
-
+        
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
-
+        //check that packageDescr is serializable
+        byte[] ast = serializeOut( packageDescr );
+        PackageDescr back = (PackageDescr) serializeIn( ast );
+        assertNotNull(back);
+        assertEquals("p1", back.getName());
+        
         builder.addPackage( packageDescr );
         Package pkg = builder.getPackage( );
         Rule rule = pkg.getRule( "rule-1" );
@@ -164,20 +170,13 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors() );
 
-        // Serialize to a byte array
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutput out = new ObjectOutputStream( bos );
-        out.writeObject( pkg );
-        out.close();
-
-        // Get the bytes of the serialized object
-        byte[] bytes = bos.toByteArray();
-
+        byte[] bytes = serializeOut( pkg );
+      
+        
+        
         // Deserialize from a byte array
 
-        ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
-        Package newPkg = (Package) in.readObject();
-        in.close();
+        Package newPkg = (Package) serializeIn( bytes );
 
         Rule newRule = newPkg.getRule( "rule-1" );
 
@@ -200,6 +199,26 @@ public class PackageBuilderTest extends DroolsTestCase {
                                            workingMemory );
         assertEquals( new Integer( 1 ),
                       map.get( "value" ) );
+    }
+
+    private Object serializeIn(byte[] bytes) throws IOException,
+                                             ClassNotFoundException {
+        ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
+        Object obj =  in.readObject();
+        in.close();
+        return obj;
+    }
+
+    private byte[] serializeOut(Object obj) throws IOException {
+        // Serialize to a byte array
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutput out = new ObjectOutputStream( bos );
+        out.writeObject( obj );
+        out.close();
+
+        // Get the bytes of the serialized object
+        byte[] bytes = bos.toByteArray();
+        return bytes;
     }
 
     public void testLiteral() throws Exception {
