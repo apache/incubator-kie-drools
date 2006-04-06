@@ -12,14 +12,14 @@ rule "begin waltz"
 	when
 		$stage : Stage(value == Stage.START)
 	then 
-	    assert (new Line(0122, 0107));
-	    assert (new Line(0107, 2207));
+	    assert (new Line( 122,  107));
+	    assert (new Line( 107, 2207));
     	assert (new Line(2207, 3204));
     	assert (new Line(3204, 6404));
     	assert (new Line(2216, 2207));
     	assert (new Line(3213, 3204));
     	assert (new Line(2216, 3213));
-    	assert (new Line(0107, 2601));
+    	assert (new Line( 107, 2601));
     	assert (new Line(2601, 7401));
     	assert (new Line(6404, 7401));
     	assert (new Line(3213, 6413));
@@ -27,12 +27,13 @@ rule "begin waltz"
     	assert (new Line(7416, 7401));
     	assert (new Line(5216, 6413));
     	assert (new Line(2216, 5216));
-    	assert (new Line(0122, 5222));
+    	assert (new Line( 122, 5222));
     	assert (new Line(5222, 7416));
     	assert (new Line(5222, 5216));
     	$stage.setValue(Stage.DUPLICATE);
     	modify ( $stage );
     	System.out.println("Waltz started");
+    	System.out.println("Stage: duplicate");
 end
 
 #If the duplicate flag is set, and there is still a line in WM, delete the line
@@ -57,6 +58,7 @@ rule "reversing done" salience -10
 	then
         $stage.setValue ( Stage.DETECT_JUNCTIONS );
         modify($stage);
+    	System.out.println("Stage: detect junctions");
 end
 
 #If three edges meet at a point and none of them have already been joined in
@@ -105,6 +107,7 @@ rule "detecting done" salience -10
  	then
  	    $stage.setValue( Stage.FIND_INITIAL_BOUNDARY );
  	    modify( $stage );
+    	System.out.println("Stage: find initial boundary");
 end
 
 #If the initial boundary junction is an L, then we know it's labelling
@@ -122,6 +125,7 @@ rule "initial boundary junction L"
 	    modify( $edge1 );
 	    modify( $edge2 );
 	    modify( $stage );
+    	System.out.println("Stage: find second boundary");
 end
 
 # Ditto for an arrow
@@ -142,6 +146,7 @@ rule "initial boundary junction arrow"
 	    modify( $edge2 );
 	    modify( $edge3 );
 	    modify( $stage );
+    	System.out.println("Stage: find second boundary");
 end
 
 # If we have already found the first boundary point, then find the second
@@ -160,6 +165,7 @@ rule "second boundary junction L"
 	    modify( $edge1 );
 	    modify( $edge2 );
 	    modify( $stage );
+    	System.out.println("Stage: labeling");
 end
 
 # Ditto for arrow
@@ -180,6 +186,7 @@ rule "second boundary junction arrow"
 	    modify( $edge2 );
 	    modify( $edge3 );
 	    modify( $stage );
+    	System.out.println("Stage: labeling");
 end
  
 # If we have an edge whose label we already know definitely, then
@@ -443,6 +450,7 @@ rule "done labeling" salience -10
 	then
         $stage.setValue( Stage.PLOT_REMAINING_EDGES );
         modify( $stage );
+    	System.out.println("Stage: plot remaining edges");
 end
 
 # At this point, some labellings may have not been plotted, so plot them
@@ -476,5 +484,6 @@ rule "done plotting" salience -10
 	then
 	    $stage.setValue( Stage.DONE );
 	    modify( $stage );
+    	System.out.println("Stage: done");
 end
  
