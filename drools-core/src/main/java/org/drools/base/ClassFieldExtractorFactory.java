@@ -21,17 +21,22 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.asm.ClassWriter;
 import org.drools.asm.Label;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
+import org.drools.util.asm.ClassFieldInspector;
 
 /**
- * This is an alternative to FieldAccessorGenerator.
+ * This generates subclasses of BaseClassFieldExtractor to provide field extractors.
+ * This should not be used directly, but via ClassFieldExtractor (which ensures that it is 
+ * all nicely serializable).
+ * 
  * @author Alexander Bagerman
- * TODO: Use this instead of FieldAccessorGenerator - it should be able to be more efficient.
+ * @author Michael Neale
  */
 
 public class ClassFieldExtractorFactory {
@@ -47,9 +52,10 @@ public class ClassFieldExtractorFactory {
 	public static BaseClassFieldExtractor getClassFieldExtractor(Class clazz,
 			String fieldName) {
 		try {
-			Class fieldType = getFieldType(clazz, fieldName);
+            ClassFieldInspector inspector = new ClassFieldInspector(clazz);
+			Class fieldType = (Class) inspector.getFieldTypes().get( fieldName );
 			String originalClassName = clazz.getName().replace('.', '/');
-			String getterName = getGetterName(clazz, fieldName);
+			String getterName = ((Method)inspector.getGetterMethods().get( fieldName )).getName();
 			String className = BASE_PACKAGE + "/" + originalClassName + "$"
 					+ getterName;
 			String typeName = getTypeName(fieldType);
@@ -70,20 +76,7 @@ public class ClassFieldExtractorFactory {
 		}
 	}
 
-	protected static Class getFieldType(Class clazz, String name)
-			throws IntrospectionException {
-		Class fieldType = null;
-		PropertyDescriptor[] descriptors = Introspector.getBeanInfo(clazz)
-				.getPropertyDescriptors();
-		for (int i = 0; i < descriptors.length; i++) {
-			if (descriptors[i].getName().equals(name)) {
-				fieldType = descriptors[i].getPropertyType();
-				break;
-			}
-		}
 
-		return fieldType;
-	}
 
 	private static byte[] dump(String originalClassName, String className,
 			String getterName, String typeName, Class fieldType, boolean isInterface)
@@ -193,48 +186,10 @@ public class ClassFieldExtractorFactory {
 		return cw.toByteArray();
 	}
 
-	private static String getGetterName(Class clazz, String fieldName) {
-		try {
-			String getterName = null;
-			boolean found = false;
-			String pName = null;
-			Method[] methods = clazz.getMethods();
-			for (int i = 0; i < methods.length && !found; i++) {
-				if ((methods[i].getModifiers() & Modifier.PUBLIC) != 0) {
-					if (methods[i].getName().startsWith(GETTER)
-							&& methods[i].getReturnType() != void.class
-							&& methods[i].getParameterTypes().length == 0) {
-						pName = Introspector.decapitalize(methods[i].getName()
-								.substring(3));
 
-						found = true;
-					} else if (methods[i].getName().startsWith(BOOLEAN_GETTER)
-							&& methods[i].getReturnType() == boolean.class
-							&& methods[i].getParameterTypes().length == 0) {
-						pName = Introspector.decapitalize(methods[i].getName()
-								.substring(2));
-						found = true;
-					}
-				}
-				if (found && pName.equals(fieldName)) {
-					getterName = methods[i].getName();
-				} else {
-					found = false;
-				}
-
-			}
-			if (!found) {
-				throw new RuntimeDroolsException(
-						"Can not find name for the getter " + clazz.getName()
-								+ "." + fieldName);
-			}
-			return getterName;
-
-		} catch (Exception e) {
-			throw new RuntimeDroolsException(e);
-		}
-	}
-
+    /**
+     * Return the classObjectType, allowing for the fact that it will be autoboxed if it is a primitive.
+     */
 	protected static ClassObjectType getClassObjectType(Class fieldType)
 			throws IntrospectionException {
 		Class returnClass = null;

@@ -93,6 +93,25 @@ public class ClassFieldInspectorTest extends TestCase {
         }
     }
     
+    public void testGetReturnTypes() throws Exception {
+        ClassFieldInspector ext = new ClassFieldInspector( Person.class );
+        Map types = ext.getFieldTypes();
+        assertNotNull(types);
+        assertEquals(boolean.class, types.get( "happy" ) );
+        assertEquals(int.class, types.get( "age" ) );
+        assertEquals(String.class, types.get( "name" ) );
+    }
+    
+    public void testGetMethodForField() throws Exception {
+        ClassFieldInspector ext = new ClassFieldInspector( Person.class );
+        Map methods = ext.getGetterMethods();
+        assertNotNull(methods);
+        assertEquals("isHappy", ((Method)methods.get( "happy" )).getName() );
+        assertEquals("getName", ((Method)methods.get( "name" )).getName() );
+        assertEquals("getAge", ((Method)methods.get( "age" )).getName() );
+        
+    }
+    
     static class Person {
         private boolean happy;
         private String name;

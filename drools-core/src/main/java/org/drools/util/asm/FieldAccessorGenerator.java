@@ -18,6 +18,7 @@ import org.drools.asm.Type;
  * 
  * Uses ASM to generate a implementation of a FieldAccessor. 
  * Uses tableswitch so it is as fast as humanly possible.
+ * @deprecated Use ClassFieldExtractor instead.
  * @author Michael Neale
  * @author "Jeff Brown" <brown_j@ociweb.com>
  */
