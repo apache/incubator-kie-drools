@@ -31,6 +31,9 @@ public class ClassFieldInspector {
 
     private List methods = new ArrayList(); 
     private Map fieldNames = new HashMap();
+    private Map fieldTypes = new HashMap();
+    private Map methodNames = new HashMap();
+    
     /**
      * @param clazz The class that the fields to be shadowed are extracted for.
      * @throws IOException
@@ -48,6 +51,8 @@ public class ClassFieldInspector {
         reader.accept(visitor, false);
         this.methods.addAll( visitor.getPropertyGetters() );
         this.fieldNames.putAll( visitor.getFieldNameMap() );
+        this.fieldTypes.putAll( visitor.getFieldTypeMap() );
+        this.methodNames.putAll( visitor.getMethodNameMap() );
         if (clazz.getSuperclass() != null) {
             processClass(clazz.getSuperclass());
         }
@@ -83,6 +88,20 @@ public class ClassFieldInspector {
     }
     
     /**
+     * @return A mapping of field types (unboxed).
+     */
+    public Map getFieldTypes() {
+        return fieldTypes;
+    }
+    
+    /** 
+     * @return A mapping of methods for the getters. 
+     */
+    public Map getGetterMethods() {
+        return methodNames;
+    }
+    
+    /**
      * Using the ASM classfield extractor to pluck it out in the order they appear in the class file.
      * @author Michael Neale
      */
@@ -91,6 +110,8 @@ public class ClassFieldInspector {
         private List methodList = new ArrayList();
         private Class clazz;
         private Map fieldNameMap = new HashMap();
+        private Map fieldTypeMap = new HashMap();
+        private Map methodNameMap = new HashMap();
         private int startingIndex = 0;
         
         ClassFieldVisitor(Class cls, int startingIndex) {
@@ -107,6 +128,13 @@ public class ClassFieldInspector {
             return fieldNameMap;
         }
         
+        public Map getFieldTypeMap() {
+            return fieldTypeMap;
+        }
+        
+        public Map getMethodNameMap() {
+            return methodNameMap;
+        }
         
         public MethodVisitor visitMethod(int access,
                                          String name,
@@ -215,6 +243,8 @@ public class ClassFieldInspector {
                 return; 
             } else {
                 this.fieldNameMap.put(fieldName, new Integer(index));
+                this.fieldTypeMap.put( fieldName, method.getReturnType() );
+                this.methodNameMap.put( fieldName, method );
                 methodList.add(method);
             }
         }

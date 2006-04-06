@@ -19,13 +19,13 @@ package org.drools.base;
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.ObjectType;
+import org.drools.util.asm.ClassFieldInspector;
 import org.drools.util.asm.FieldAccessorGenerator;
 import org.drools.util.asm.FieldAccessorMap;
 
 /**
- * 
+ * This is the supertype for the ASM generated classes for accessing a field.
  * @author Alexander Bagerman
- *
  */
 abstract public class BaseClassFieldExtractor implements FieldExtractor {
 	private final ClassObjectType objectType;
@@ -36,10 +36,9 @@ abstract public class BaseClassFieldExtractor implements FieldExtractor {
 
 	public BaseClassFieldExtractor(Class clazz, String fieldName) {
 		try {
-			FieldAccessorMap accessorMap = FieldAccessorGenerator.getInstance()
-					.getInstanceFor(clazz);
-			this.index = accessorMap.getIndex(fieldName);
-			this.fieldType = ClassFieldExtractorFactory.getFieldType(clazz, fieldName);
+            ClassFieldInspector inspector = new ClassFieldInspector(clazz);
+            this.index = ((Integer)inspector.getFieldNames().get( fieldName )).intValue();
+            this.fieldType = (Class) inspector.getFieldTypes().get( fieldName );
 			this.objectType = ClassFieldExtractorFactory.getClassObjectType(this.fieldType);
 		} catch (Exception e) {
 			throw new RuntimeDroolsException(e);
@@ -54,6 +53,7 @@ abstract public class BaseClassFieldExtractor implements FieldExtractor {
 		return this.fieldType;
 	}
 
+    /** This will be implemented by the dynamic classes */
 	abstract public Object getValue(Object object);
 
 	public ObjectType getObjectType() {

@@ -6,7 +6,7 @@ import java.io.Serializable;
  * This provides "field" access to getters on a given class.
  * Implementations are generated into byte code (using a switchtable) 
  * when a new class is encountered.
- * 
+ * @deprecated use ClassFieldExtractor instead
  * @author Michael Neale
  * @author "Jeff Brown" <brown_j@ociweb.com>
  */
