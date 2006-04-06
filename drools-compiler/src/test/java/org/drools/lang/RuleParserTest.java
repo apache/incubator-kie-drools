@@ -752,6 +752,25 @@ public class RuleParserTest extends TestCase {
     		assertFalse( parser.hasErrors() );
     }     
     
+    public void FIXME_testEvalMultiple() throws Exception {
+        RuleParser parser = parseResource( "eval_multiple.drl" );
+        parser.compilation_unit();
+        
+        assertFalse( parser.hasErrors() );
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(1, pack.getRules().size());
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals(4, rule.getLhs().getDescrs().size());
+        
+        EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEqualsIgnoreWhitespace( "abc(\"foo\") + 5", eval.getText());
+        
+        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals("Foo", col.getObjectType());
+        
+    }        
+    
     public void testWithEval() throws Exception {
         RuleParser parser = parseResource( "with_eval.drl" );
         parser.compilation_unit();
@@ -760,10 +779,16 @@ public class RuleParserTest extends TestCase {
         assertEquals(1, pack.getRules().size());
         RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
         assertEquals(3, rule.getLhs().getDescrs().size());
+        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals("Foo", col.getObjectType());
+        col = (ColumnDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals("Bar", col.getObjectType());
+        
         EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get( 2 );
         assertEqualsIgnoreWhitespace( "abc(\"foo\")", eval.getText());
-
-    		assertFalse( parser.hasErrors() );
+        assertEqualsIgnoreWhitespace( "Kapow", rule.getConsequence() );
+    	
+        assertFalse( parser.hasErrors() );
     }      
     
     public void testWithRetval() throws Exception {
