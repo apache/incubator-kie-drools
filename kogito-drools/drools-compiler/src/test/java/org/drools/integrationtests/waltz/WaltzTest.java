@@ -32,10 +32,10 @@ public class WaltzTest extends TestCase {
             RuleBase ruleBase = readRule();
             WorkingMemory workingMemory = ruleBase.newWorkingMemory();
             
-//            DebugWorkingMemoryEventListener wmListener = new DebugWorkingMemoryEventListener();
-//            DebugAgendaEventListener agendaListener = new DebugAgendaEventListener();
-//            workingMemory.addEventListener( wmListener );
-//            workingMemory.addEventListener( agendaListener );
+            DebugWorkingMemoryEventListener wmListener = new DebugWorkingMemoryEventListener();
+            DebugAgendaEventListener agendaListener = new DebugAgendaEventListener();
+            workingMemory.addEventListener( wmListener );
+            workingMemory.addEventListener( agendaListener );
             
             //go !            
             Stage stage = new Stage(Stage.START);

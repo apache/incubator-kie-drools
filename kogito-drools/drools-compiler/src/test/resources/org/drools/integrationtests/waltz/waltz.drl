@@ -68,8 +68,8 @@ rule "make 3 junction" salience 10
 	when
         Stage ( value == Stage.DETECT_JUNCTIONS )
         $edge1: Edge( $basePoint:p1, $edge1P2:p2, joined==false )
-        $edge2: Edge( p1==$basePoint, $edge2P2:p2 -> ( $edge2P2.intValue() != $edge1P2.intValue() ), joined == false )
-        $edge3: Edge( p1==$basePoint, $edge3P2:p2 -> ( $edge3P2.intValue() != $edge1P2.intValue() && $edge3P2.intValue() != $edge1P2.intValue() ), joined == false )
+        $edge2: Edge( p1==$basePoint, $edge2P2:p2 != $edge1P2, joined == false )
+        $edge3: Edge( p1==$basePoint, $edge3P2:p2 != $edge1P2, p2 != $edge2P2, joined == false )
 	then
 	    Junction junction = WaltzUtil.make_3_junction ( $basePoint.intValue(), $edge1P2.intValue(), $edge2P2.intValue(), $edge3P2.intValue() );
 	    assert( junction );
@@ -87,8 +87,8 @@ rule "make L"
 	when
         Stage ( value == Stage.DETECT_JUNCTIONS )
         $edge1: Edge( $basePoint:p1, $edge1P2:p2, joined==false )
-        $edge2: Edge( p1==$basePoint, $edge2P2:p2 -> ( $edge2P2 != $edge1P2 ), joined == false )
-        not Edge( p1==$basePoint, $edge3P2:p2 -> ( $edge3P2 != $edge1P2 && $edge3P2 != $edge1P2 ) )
+        $edge2: Edge( p1==$basePoint, $edge2P2:p2 != $edge1P2, joined == false )
+        not Edge( p1==$basePoint, p2 != $edge1P2, p2 != $edge2P2 )
 	then
 	    assert( new Junction($edge1P2.intValue(), $edge2P2.intValue(), 0, $basePoint.intValue(), Junction.L) );
 	    $edge1.setJoined(true);
@@ -114,7 +114,7 @@ rule "initial boundary junction L"
 	             Junction( type == Junction.L, $basePoint:basePoint, $p1:p1, $p2:p2 )
 	    $edge1 : Edge ( p1 == $basePoint, p2 == $p1 )
 	    $edge2 : Edge ( p1 == $basePoint, p2 == $p2 )
-        not Junction( $bp:basePoint -> ( $bp.intValue() > $basePoint.intValue() ) )
+        not Junction( $bp:basePoint > $basePoint )
 	then
 	    $edge1.setLabel( Edge.B );
 	    $edge2.setLabel( Edge.B );
@@ -132,7 +132,7 @@ rule "initial boundary junction arrow"
 	    $edge1 : Edge ( p1 == $basePoint, p2 == $p1 )
 	    $edge2 : Edge ( p1 == $basePoint, p2 == $p2 )
 	    $edge3 : Edge ( p1 == $basePoint, p2 == $p3 )
-        not Junction( $bp:basePoint -> ( $bp.intValue() > $basePoint.intValue() ) )
+        not Junction( $bp:basePoint > $basePoint )
 	then
 	    $edge1.setLabel( Edge.B );
 	    $edge2.setLabel( Edge.PLUS );
@@ -152,7 +152,7 @@ rule "second boundary junction L"
 	             Junction( type == Junction.L, $basePoint:basePoint, $p1:p1, $p2:p2 )
 	    $edge1 : Edge ( p1 == $basePoint, p2 == $p1 )
 	    $edge2 : Edge ( p1 == $basePoint, p2 == $p2 )
-        not Junction( $bp:basePoint -> ( $bp.intValue() < $basePoint.intValue() ) )
+        not Junction( $bp:basePoint < $basePoint )
 	then
 	    $edge1.setLabel( Edge.B );
 	    $edge2.setLabel( Edge.B );
@@ -170,7 +170,7 @@ rule "second boundary junction arrow"
 	    $edge1 : Edge ( p1 == $basePoint, p2 == $p1 )
 	    $edge2 : Edge ( p1 == $basePoint, p2 == $p2 )
 	    $edge3 : Edge ( p1 == $basePoint, p2 == $p3 )
-        not Junction( $bp:basePoint -> ( $bp.intValue() < $basePoint.intValue() ) )
+        not Junction( $bp:basePoint < $basePoint )
 	then
 	    $edge1.setLabel( Edge.B );
 	    $edge2.setLabel( Edge.PLUS );
@@ -187,7 +187,7 @@ end
 rule "match edge"
 	when
 	    Stage( value == Stage.LABELING )
-        $edge1: Edge( $p1:p1, $p2:p2, $label:label -> ( ! $label.equals(Edge.NIL) ) )
+        $edge1: Edge( $p1:p1, $p2:p2, $label:label != Edge.NIL )
         $edge2: Edge( p1 == $p2, p2 == $p1, label == Edge.NIL )
 	then
 	    $edge1.setPlotted( true );
@@ -248,8 +248,8 @@ rule "label fork 1"
         Stage( value == Stage.LABELING )
         Junction( type == Junction.FORK, $bp:basePoint )
         Edge( p1 == $bp, $p1:p2, label == Edge.PLUS )
-        $edge1: Edge( p1 == $bp, $p2:p2 -> ( $p2.intValue() != $p1.intValue() ), label == Edge.NIL )
-        $edge2: Edge( p1 == $bp, $p3:p2 -> ( $p3.intValue() != $p1.intValue() && $p3.intValue() != $p2.intValue() ) )
+        $edge1: Edge( p1 == $bp, $p2:p2 != $p1, label == Edge.NIL )
+        $edge2: Edge( p1 == $bp, $p3:p2 != $p1, p2 != $p2 )
 	then
 	    $edge1.setLabel( Edge.PLUS );
 	    $edge2.setLabel( Edge.PLUS );
@@ -262,8 +262,8 @@ rule "label fork 2"
         Stage( value == Stage.LABELING )
         Junction( type == Junction.FORK, $bp:basePoint )
         Edge( p1 == $bp, $p1:p2, label == Edge.B )
-        Edge( p1 == $bp, $p2:p2 -> ( $p2.intValue() != $p1.intValue() ), label == Edge.MINUS )
-        $edge: Edge( p1 == $bp, $p3:p2 -> ( $p3.intValue() != $p1.intValue() && $p3.intValue() != $p2.intValue() ), label == Edge.NIL )
+        Edge( p1 == $bp, $p2:p2 != $p1, label == Edge.MINUS )
+        $edge: Edge( p1 == $bp, $p3:p2 != $p1, p2 != $p2, label == Edge.NIL )
 	then
 	    $edge.setLabel( Edge.B );
 	    modify( $edge );
@@ -274,8 +274,8 @@ rule "label fork 3"
         Stage( value == Stage.LABELING )
         Junction( type == Junction.FORK, $bp:basePoint )
         Edge( p1 == $bp, $p1:p2, label == Edge.B )
-        Edge( p1 == $bp, $p2:p2 -> ( $p2.intValue() != $p1.intValue() ), label == Edge.B )
-        $edge: Edge( p1 == $bp, $p3:p2 -> ( $p3.intValue() != $p1.intValue() && $p3.intValue() != $p2.intValue() ), label == Edge.NIL )
+        Edge( p1 == $bp, $p2:p2 != $p1, label == Edge.B )
+        $edge: Edge( p1 == $bp, $p3:p2 != $p1, p2 != $p2, label == Edge.NIL )
 	then
 	    $edge.setLabel( Edge.MINUS );
 	    modify( $edge );
@@ -286,8 +286,8 @@ rule "label fork 4"
         Stage( value == Stage.LABELING )
         Junction( type == Junction.FORK, $bp:basePoint )
         Edge( p1 == $bp, $p1:p2, label == Edge.MINUS )
-        Edge( p1 == $bp, $p2:p2 -> ( $p2.intValue() != $p1.intValue() ), label == Edge.MINUS )
-        $edge: Edge( p1 == $bp, $p3:p2 -> ( $p3.intValue() != $p1.intValue() && $p3.intValue() != $p2.intValue() ), label == Edge.NIL )
+        Edge( p1 == $bp, $p2:p2 != $p1, label == Edge.MINUS )
+        $edge: Edge( p1 == $bp, $p3:p2 != $p1, p2 != $p2, label == Edge.NIL )
 	then
 	    $edge.setLabel( Edge.MINUS );
 	    modify( $edge );
@@ -449,7 +449,7 @@ end
 rule "plot remaining"
 	when
 	    Stage( value == Stage.PLOT_REMAINING_EDGES )
-	    $edge: Edge( plotted == false, $label:label -> ( ! $label.equals( Edge.NIL ) ), $p1:p1, $p2:p2 )
+	    $edge: Edge( plotted == false, $label:label != Edge.NIL, $p1:p1, $p2:p2 )
 	then
 	    System.out.println("Plot "+$label+" "+$p1+" "+$p2);
 	    $edge.setPlotted( true );
