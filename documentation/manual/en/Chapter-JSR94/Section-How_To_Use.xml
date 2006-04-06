@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>How To Use</title>
+
+  <para>This section explains not yet in detail the use of the Java Rule
+  Engine API with the implementation for JBoss Rules.</para>
+
+  <section>
+    <title>J2SE Environment</title>
+
+    <para>This section shows you, how to use JBoss Rules over the Java Rule
+    Engine API in your java applications.</para>
+  </section>
+
+  <section>
+    <title>J2EE Environment</title>
+
+    <para>If you are using JBoss Rules in a container managed environment, you
+    might want to use it as a service. This section presents, how to use the
+    rule engine with the JNDI (Java Naming and Directory Interface) or using
+    it inside of an enterprise application such as web archive (WAR), java
+    archive (JAR) or enterprise archive (EAR), which is deployed into the
+    server.</para>
+  </section>
+</section>

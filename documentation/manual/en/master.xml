@@ -24,6 +24,12 @@
 
       <surname>Lin</surname>
     </author>
+    
+    <author>
+      <firstname>Michael</firstname>
+
+      <surname>Frandsen</surname>
+    </author>
   </bookinfo>
 
   <toc />
@@ -111,6 +117,19 @@
       <title>Papers</title>
 
       <xi:include href="Chapter-Papers/Section-Manners.xml" />
+    </chapter>
+    
+    <chapter>
+      <title>The Java Rule Engine API</title>
+      
+      <xi:include href="Chapter-JSR94/Section-Introduction.xml" />
+
+      <xi:include href="Chapter-JSR94/Section-Specification.xml" />
+      
+      <xi:include href="Chapter-JSR94/Section-How_To_Use.xml" />
+      
+      <xi:include href="Chapter-JSR94/Section-References.xml" />
+      
     </chapter>
   </part>
 
