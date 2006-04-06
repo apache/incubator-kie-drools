@@ -31,6 +31,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
@@ -153,6 +154,23 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
+    public void FIXME_testCell() throws Exception {
+        Cell cell1 = new Cell(9);
+        Cell cell = new Cell(0);
+        
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "evalmodify.drl" )) );
+        
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        
+        WorkingMemory memory = ruleBase.newWorkingMemory();
+        memory.assertObject(cell1);
+        memory.assertObject(cell);
+        memory.fireAllRules();
+        assertEquals(9, cell.getValue());        
+    }
+    
     public void testOr() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "or_test.drl" ) ) );
