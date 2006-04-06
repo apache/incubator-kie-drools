@@ -273,7 +273,7 @@ public class EvalNodeTest extends DroolsTestCase {
         node.modifyTuple( tuple, context, workingMemory );
 
         // make sure no assertions were propagated
-        assertEquals( 0,
+        assertEquals( 1,
                       sink.getModified().size() );      
     }        
 
