@@ -154,7 +154,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void FIXME_testCell() throws Exception {
+    public void testCell() throws Exception {
         Cell cell1 = new Cell(9);
         Cell cell = new Cell(0);
         

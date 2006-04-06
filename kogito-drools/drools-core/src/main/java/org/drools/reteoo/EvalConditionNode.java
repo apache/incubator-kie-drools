@@ -169,7 +169,7 @@ class EvalConditionNode extends TupleSource
 
         if ( allowed ) {
             memory.add( tuple );
-            if ( exists ) {
+            if ( !exists ) {
                 propagateAssertTuple( tuple,
                                       context,
                                       workingMemory );
