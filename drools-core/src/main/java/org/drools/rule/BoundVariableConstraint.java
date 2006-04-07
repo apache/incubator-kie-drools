@@ -43,7 +43,13 @@ public class BoundVariableConstraint
     public boolean isAllowed(FactHandle handle,
                              Tuple tuple,
                              WorkingMemory workingMemory) {
-        return evaluator.evaluate( this.fieldExtractor.getValue( workingMemory.getObject( handle ) ),
-                                   declaration.getValue( workingMemory.getObject( tuple.get( this.declaration ) ) ) );
+        Object left = workingMemory.getObject( tuple.get( this.declaration ) );
+        Object right = workingMemory.getObject( handle );
+        if ( left == right ) {
+            return  false;
+        } else {
+            return evaluator.evaluate( this.fieldExtractor.getValue( right ),
+                                       declaration.getValue( left ) );                
+        }
     }
 }
