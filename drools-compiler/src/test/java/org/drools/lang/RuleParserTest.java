@@ -2,7 +2,6 @@ package org.drools.lang;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -11,6 +10,7 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
+import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -27,7 +27,6 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.dsl.DefaultExpanderResolver;
 
 public class RuleParserTest extends TestCase {
 	
@@ -540,6 +539,30 @@ public class RuleParserTest extends TestCase {
         assertTrue(mockExpanderResolver.checkExpanded( "then,Hey dude" ));
         
     		assertFalse( parser.hasErrors() );
+    }
+    
+    public void testExpanderErrorsAfterExpansion() throws Exception {
+        
+        ExpanderResolver res = new ExpanderResolver() {
+            public Expander get(String name,
+                                String config) {
+                return new Expander() {
+                    public String expand(String scope,
+                                         String pattern) {
+                        return pattern;
+                    }
+                };
+            }
+        };
+        
+        RuleParser parser = parseResource( "expander_post_errors.drl" );
+        parser.setExpanderResolver( res );
+        parser.compilation_unit();
+        assertTrue(parser.hasErrors());
+        RecognitionException err = (RecognitionException) parser.getErrors().get( 0 );
+        assertEquals(5, err.line);
+        
+                
     }
     
     public void testBasicBinding() throws Exception {

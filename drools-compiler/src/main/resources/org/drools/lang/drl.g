@@ -49,14 +49,22 @@ grammar RuleParser;
 		reparseLhs( expanded, descrs );
 	}
 
-	private void reparseLhs(String text, AndDescr descrs) throws RecognitionException {
-		CharStream charStream = new ANTLRStringStream( text );
-		RuleParserLexer lexer = new RuleParserLexer( charStream );
-		TokenStream tokenStream = new CommonTokenStream( lexer );
-		RuleParser parser = new RuleParser( tokenStream );
-		
-		parser.normal_lhs_block(descrs);
-	}
+    	private void reparseLhs(String text, AndDescr descrs) throws RecognitionException {
+    		CharStream charStream = new ANTLRStringStream( text );
+    		RuleParserLexer lexer = new RuleParserLexer( charStream );
+    		TokenStream tokenStream = new CommonTokenStream( lexer );
+    		RuleParser parser = new RuleParser( tokenStream );
+    		parser.normal_lhs_block(descrs);
+            
+                if (parser.hasErrors()) {
+		        //add the offset of the error 
+        	        for ( Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
+                	    RecognitionException err = (RecognitionException) iter.next();
+                    	err.line = err.line + descrs.getLine();
+                	}
+    			this.errors.addAll(parser.getErrors());
+    		}
+    	}
 	
 	private String runThenExpander(String text) {
 		//System.err.println( "expand THEN [" + text + "]" );
@@ -102,10 +110,12 @@ grammar RuleParser;
 		errors.add( ex ); 
 	}
      	
+     	/** return the raw RecognitionException errors */
      	public List getErrors() {
      		return errors;
      	}
      	
+     	/** Return a list of pretty strings summarising the errors */
      	public List getErrorMessages() {
      		List messages = new ArrayList();
  		for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
@@ -114,10 +124,12 @@ grammar RuleParser;
      	     	return messages;
      	}
      	
+     	/** return true if any parser errors were accumulated */
      	public boolean hasErrors() {
   		return ! errors.isEmpty();
      	}
      	
+     	/** This will take a RecognitionException, and create a sensible error message out of it */
      	public String createErrorMessage(RecognitionException e)
         {
 		StringBuffer message = new StringBuffer();
