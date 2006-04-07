@@ -1218,12 +1218,12 @@ public abstract class IntegrationCases extends TestCase {
 
         assertEquals( "stilton",
                       list.get( 0 ) );
-
-        assertEquals( "cheddar",
-                      list.get( 1 ) );
-
-        assertEquals( "stilton",
-                      list.get( 2 ) );
+        
+        assertTrue("cheddar".equals(list.get(1))
+                || "cheddar".equals(list.get(2)));
+        
+        assertTrue("stilton".equals(list.get(1))
+                || "stilton".equals(list.get(2)));
 
         list.clear();
 
@@ -1399,3 +1399,8 @@ public abstract class IntegrationCases extends TestCase {
     }
 
 }
+
+
+
+
+

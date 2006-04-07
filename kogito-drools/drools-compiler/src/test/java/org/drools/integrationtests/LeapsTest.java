@@ -60,6 +60,7 @@ public class LeapsTest extends IntegrationCases {
      * group is empty. This also affects module / focus behaviour
      */
     public void testAgendaGroups() throws Exception {
+        
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl(new InputStreamReader(getClass()
                 .getResourceAsStream("test_AgendaGroups.drl")));
@@ -97,18 +98,9 @@ public class LeapsTest extends IntegrationCases {
         assertEquals(4, list.size());
         assertEquals("group2", list.get(3));
     }
-
-    public void testDynamicRuleAdditions() throws Exception {
-        //not implemented yet in LEAPS
-    }
-
-    public void testDynamicRuleRemovals() throws Exception {
-        //not implemented yet in LEAPS - appears like it will require an interface change to 
-        //RuleBase
-    }
-
-    public void testSerializable() throws Exception {
-        //not implemented yet in LEAPS
-    }
-
 }
+
+
+
+
+

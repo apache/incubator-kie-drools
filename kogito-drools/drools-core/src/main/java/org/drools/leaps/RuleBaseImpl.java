@@ -16,6 +16,8 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,22 +45,22 @@ import org.drools.spi.FactHandleFactory;
 public class RuleBaseImpl implements RuleBase {
     private static final long serialVersionUID = 1487738104393155409L;
 
-    private HashMap leapsRules = new HashMap();
+    private transient Map leapsRules;
 
     /**
      * The fact handle factory.
      */
     private final FactHandleFactory factHandleFactory;
 
-    private Map globalDeclarations;
+    private transient Map globalDeclarations;
 
-    private Map rulesPackages;
+    private final Map rulesPackages;
 
     /**
      * WeakHashMap to keep references of WorkingMemories but allow them to be
      * garbage collected
      */
-    private final transient Map workingMemories;
+    private transient Map workingMemories;
 
     /** Special value when adding to the underlying map. */
     private static final Object PRESENT = new Object();
@@ -95,6 +97,7 @@ public class RuleBaseImpl implements RuleBase {
         this.workingMemories = new WeakHashMap();
 
         this.rulesPackages = new HashMap();
+        this.leapsRules = new HashMap();
     }
 
     /**
@@ -275,4 +278,34 @@ public class RuleBaseImpl implements RuleBase {
     public Set getWorkingMemories() {
         return this.workingMemories.keySet();
     }
+    
+    
+    /**
+     * This is to allow the RuleBase to be serializable.
+     */
+    private void readObject(ObjectInputStream is) throws ClassNotFoundException, 
+                                                         IOException, 
+                                                         Exception {
+        //always perform the default de-serialization first
+        is.defaultReadObject();
+
+        this.leapsRules = new HashMap();
+        this.globalDeclarations = new HashMap();
+        this.workingMemories = new WeakHashMap();
+        
+        Package[] packages = this.getPackages();
+        this.rulesPackages.clear();
+        for ( int i = 0; i < packages.length; i++ ) {
+            this.addPackage( packages[i] );
+            Rule[] rules = packages[i].getRules();
+
+            for (int k = 0; k < rules.length; k++) {
+                addRule(rules[k]);
+            }
+        }
+    }    
 }
+
+
+
+
