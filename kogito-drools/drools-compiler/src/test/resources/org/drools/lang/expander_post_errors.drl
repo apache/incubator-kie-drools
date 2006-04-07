@@ -1,0 +1,9 @@
+#this will show error line numbers post expansion
+expander foo.dsl
+
+rule simple_rule 
+  when
+	Foo() bar
+  then
+  	baz
+end
