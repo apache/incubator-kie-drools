@@ -54,6 +54,8 @@
     <chapter>
       <title>Installation and Setup</title>
 
+      <xi:include href="Chapter-Install/Section-Install.xml" />
+
       <xi:include href="Chapter-Install/Section-Setup.xml" />
 
       <xi:include href="Chapter-Install/Section-Checkout.xml" />

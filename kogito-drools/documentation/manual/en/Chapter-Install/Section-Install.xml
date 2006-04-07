@@ -8,21 +8,98 @@
   <para>A simple way to get started is to download and install the eclipse
   plug in. This will provide you with all the dependencies you need to get
   going: you can simply create a new rule project and everything will be done
-  for you. Use of the eclipse plug in is not required. Rule files are just
+  for you. Refer to the chapter on the Rule Workbench and IDE for detailed
+  instructions on this.</para>
+
+  <para>Use of the eclipse plug in is not required. Rule files are just
   textual input (or spreadsheets as the case may be) and the IDE (also known
-  as the Rule Workbench) is just a convenience.</para>
+  as the Rule Workbench) is just a convenience. People have integrated the
+  rule engine in many ways, there is no "one size fits all".</para>
 
   <para>Alternatively, you can download the binary distribution, and include
-  the relevant jars in your projects classpath. </para>
+  the relevant jars in your projects classpath.</para>
 
-  <para>Drools is broken down into a few modules, some are required during
-  rule development/compiling, and some are required at runtime. In many cases,
-  people will simply want to include all the dependencies at runtime, and this
-  is fine. It allows you to have the most flexibility. However, some may
-  prefer to have their "runtime" stripped down to the bare minimum, as they
-  will be deploying rules in binary form - this is also possible. The core
-  runtime engine can be quite compact, and only require a few 100 kilobytes
-  across 2 jar files. </para>
+  <para />
+
+  <section>
+    <title>Dependencies and jars</title>
+
+    <para>Drools is broken down into a few modules, some are required during
+    rule development/compiling, and some are required at runtime. In many
+    cases, people will simply want to include all the dependencies at runtime,
+    and this is fine. It allows you to have the most flexibility. However,
+    some may prefer to have their "runtime" stripped down to the bare minimum,
+    as they will be deploying rules in binary form - this is also possible.
+    The core runtime engine can be quite compact, and only require a few 100
+    kilobytes across 2 jar files.</para>
+
+    <para>The following is a description of the important libraries that make
+    up JBoss Rules</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>drools-core.jar - this is the core engine, runtime component.
+        Contains both the RETE engine and the LEAPS engine.</para>
+      </listitem>
+
+      <listitem>
+        <para>drools-compiler.jar - this contains the compiler/builder
+        components to take rule source, and build executable rule bases. This
+        is often a runtime dependency of your application, but it need not be
+        if you are pre-compiling your rules. This depends on
+        drools-core</para>
+      </listitem>
+
+      <listitem>
+        <para>drools-asm.jar - this is a localised version of the ASM utility
+        for bytecode generation. Bytecodes are generated to provide fast
+        access directly to the objects that are used in the engine. This has
+        been localised using 'jarjar-links' to avoid collisions with other asm
+        version that may be in your application. This is required by
+        drools-core.</para>
+      </listitem>
+
+      <listitem>
+        <para>drools-jsr94.jar - this is the JSR-94 compliant implementation,
+        this is essentially a layer over the drools-compiler component. Note
+        that due to the nature of the JSR-94 specification, not all features
+        are easily exposed via this interface. In some cases, it will be
+        easier to go direct to the drools API, but in some environments the
+        JSR-94 is mandated.</para>
+      </listitem>
+
+      <listitem>
+        <para>drools-decisiontables.jar - this is the decision tables
+        'compiler' component, which uses the drools-compiler component. This
+        supports both excel and CSV input formats.</para>
+      </listitem>
+
+      
+    </itemizedlist>
+
+    <para>There are quite a few other dependencies which the above components
+    require, most of which are for the drools-compiler, drools-jsr94 or
+    drools-decisiontables module. Some of these (such as the XML libraries)
+    may not be required if you run in a Java 1.5 environment. Some key ones to
+    note are "JCI" - which is the apache Java Compiler Interface utility which
+    provides runtime compiling capability, "POI" which provides the
+    spreadsheet parsing ability, and "antlr" which provides the parsing for
+    the rule language itself.</para>
+  </section>
+
+  <section>
+    <title>Runtime</title>
+
+    <para>The "runtime" requirements mentioned here are if you are deploying
+    rules as their binary form (either as Package objects, or RuleBase objects
+    etc). This is an optional feature that allows you to keep your runtime
+    very light. You may use drools-compiler to produce rule packages "out of
+    process", and then deploy them to a runtime system. This runtime system
+    only requires drools-core.jar and drools-asm.jar for execution. This is an
+    optional deployment pattern, and many people do not need to "trim" their
+    application this much, but it is an ideal option for certain
+    environments.</para>
+  </section>
 
   <literallayout>
 </literallayout>
