@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>Setup</title>
+  <title>Setup from source</title>
 
-  <para>The following are instructions in building from source. You can also
-  download the IDE or the binary zip, which will provide all the required
-  dependencies and core libraries.</para>
+  <para>As Drools is an open source project, instructions for building from
+  source are part of the manual ! Building from source means you can stay on
+  top with the latest features. Whilst aspects of Drools are quite
+  complicated, many users have found ways to become contributors. </para>
 
   <para>Drools works with JDK1.4 and above. you will need also need to have
   the following tools installed. Minimum requirement version numbers
