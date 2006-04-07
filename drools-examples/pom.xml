@@ -1,0 +1,32 @@
+<project>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+    <version>3.0-RC-1</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>drools-examples</artifactId>
+
+  <name>Drools :: Examples</name>
+  <version>3.0-RC-1</version>
+  
+  <repositories>
+    <repository>
+      <id>basedir</id>
+      <url>file://${basedir}/../repository</url>
+    </repository>
+  </repositories>  
+  
+  <dependencies>  
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <version>${project.version}</version>
+    </dependency>  
+    
+  </dependencies>
+
+
+</project>
