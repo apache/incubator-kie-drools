@@ -1,7 +1,6 @@
 package org.drools.compiler;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
