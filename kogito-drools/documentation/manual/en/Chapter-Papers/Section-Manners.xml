@@ -481,8 +481,8 @@
 
     <itemizedlist>
       <listitem>
-        <para>A single extra not in one rule can increase speed 15 to 20
-        times</para>
+        <para>Using arrays for a guests hobbies, instead of asserting each one
+        as a single fact. This massively reduces the cross products.</para>
       </listitem>
 
       <listitem>
@@ -491,8 +491,26 @@
       </listitem>
 
       <listitem>
-        <para>Using arrays for a guests hobbies, instead of asserting each one
-        as a single fact. This massively reduces the cross products.</para>
+        <para>Changing NOT CE (conditional element) such that the test
+        algorithm only uses the "first-best-match". Basically, changing the
+        test algorithm to backward chaining. the results are only comparable
+        to other backward chaining rule engines or ports of Manners.</para>
+      </listitem>
+
+      <listitem>
+        <para>Removing the context so the rule engine matches the guests and
+        seats pre-maturely. A proper port will prevent facts from matching
+        using the context start.</para>
+      </listitem>
+
+      <listitem>
+        <para>Any change which prevents the rule engine from performing
+        combinatorial pattern matching</para>
+      </listitem>
+
+      <listitem>
+        <para>If no facts are retracted in the reasoning cycle, as a result of
+        NOT CE, the port is incorrect.</para>
       </listitem>
     </itemizedlist>
 

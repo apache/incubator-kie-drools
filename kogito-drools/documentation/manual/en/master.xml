@@ -112,12 +112,6 @@
     </chapter>
 
     <chapter>
-      <title>Examples</title>
-
-      <xi:include href="Chapter-Examples/Section-State_Example.xml" />
-    </chapter>
-
-    <chapter>
       <title>The Java Rule Engine API</title>
       
       <xi:include href="Chapter-JSR94/Section-Introduction.xml" />
@@ -129,13 +123,20 @@
       <xi:include href="Chapter-JSR94/Section-References.xml" />
       
     </chapter>
-  </part>
 
+    <chapter>
+      <title>Examples</title>
+
+      <xi:include href="Chapter-Examples/Section-State_Example.xml" />
+    </chapter>
+    
     <chapter>
       <title>Papers</title>
 
       <xi:include href="Chapter-Papers/Section-Manners.xml" />
     </chapter>    
 
+    
+  </part>
   <index />
 </book>
