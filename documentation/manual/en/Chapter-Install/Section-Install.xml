@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Installing and using</title>
+
+  <para>Drools provides an eclipse based IDE (which is optional), but at its
+  core only Java 1.4 (J2SE) is required.</para>
+
+  <para>A simple way to get started is to download and install the eclipse
+  plug in. This will provide you with all the dependencies you need to get
+  going: you can simply create a new rule project and everything will be done
+  for you. Use of the eclipse plug in is not required. Rule files are just
+  textual input (or spreadsheets as the case may be) and the IDE (also known
+  as the Rule Workbench) is just a convenience.</para>
+
+  <para>Alternatively, you can download the binary distribution, and include
+  the relevant jars in your projects classpath. </para>
+
+  <para>Drools is broken down into a few modules, some are required during
+  rule development/compiling, and some are required at runtime. In many cases,
+  people will simply want to include all the dependencies at runtime, and this
+  is fine. It allows you to have the most flexibility. However, some may
+  prefer to have their "runtime" stripped down to the bare minimum, as they
+  will be deploying rules in binary form - this is also possible. The core
+  runtime engine can be quite compact, and only require a few 100 kilobytes
+  across 2 jar files. </para>
+
+  <literallayout>
+</literallayout>
+</section>
