@@ -241,7 +241,7 @@ public class ObjectEqualConstrLeftMemory
      */
     public void selectPossibleMatches(WorkingMemory workingMemory, FactHandleImpl handle) {
         Object select = this.extractor.getValue( workingMemory.getObject( handle ));
-        Integer hash = new Integer(select.hashCode());
+        Integer hash = (select != null) ? new Integer(select.hashCode()) : new Integer( 0 );
         this.selectedList = (MultiLinkedList) this.memoryMap.get(hash);
     }
 

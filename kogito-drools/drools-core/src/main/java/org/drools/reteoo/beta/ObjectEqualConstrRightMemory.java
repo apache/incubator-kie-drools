@@ -220,7 +220,7 @@ public class ObjectEqualConstrRightMemory
                                       ReteTuple tuple) {
         Object select = declaration.getValue( workingMemory.getObject( 
                              tuple.get( this.declaration ) ) );
-        Integer hash = new Integer(select.hashCode());
+        Integer hash = (select != null) ? new Integer(select.hashCode()) : new Integer( 0 );
         this.selectedList = (MultiLinkedList) this.memoryMap.get(hash);
         
         if(this.childMemory != null) {
