@@ -247,7 +247,7 @@ public class ObjectNotEqualConstrRightMemory
                                       ReteTuple tuple) {
         Object select = declaration.getValue( workingMemory.getObject( 
                              tuple.get( this.declaration ) ) );
-        Integer hash = new Integer(select.hashCode());
+        Integer hash = (select != null) ? new Integer(select.hashCode()) : new Integer( 0 );
         this.noMatchList = (MultiLinkedList) this.memoryMap.get(hash);
         
         if(this.childMemory != null) {
