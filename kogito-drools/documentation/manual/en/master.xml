@@ -86,6 +86,8 @@
     <chapter>
       <title>The Rule Language</title>
 
+      <xi:include href="Chapter-Rule_Language/Section-Overview.xml" />
+
       <xi:include href="Chapter-Rule_Language/Section-Comments.xml" />
 
       <xi:include href="Chapter-Rule_Language/Section-Package.xml" />
