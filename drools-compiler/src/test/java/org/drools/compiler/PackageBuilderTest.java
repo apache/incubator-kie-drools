@@ -15,6 +15,7 @@ import org.drools.CheckedDroolsException;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
+import org.drools.Primitives;
 import org.drools.WorkingMemory;
 import org.drools.common.LogicalDependency;
 import org.drools.compiler.PackageBuilder;
@@ -133,13 +134,13 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(2) );" );
         pkg.removeRule( rule );
-        
+
         // Make sure the compiled classes are also removed
-        assertEquals( 0, 
+        assertEquals( 0,
                       pkg.getPackageCompilationData().list().length );
-        
+
         builder.addPackage( packageDescr );
-        
+
         rule = pkg.getRule( "rule-1" );
 
         knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
@@ -461,6 +462,154 @@ public class PackageBuilderTest extends DroolsTestCase {
         LiteralConstraint literalConstarint = (LiteralConstraint) column.getConstraints().get( 0 );
     }
 
+    public void testNumbers() throws Exception {
+        // test boolean
+        createLiteralRule( new LiteralDescr( "booleanPrimitive",
+                                             "==",
+                                             "true" ) );       
+        
+        // test boolean
+        createLiteralRule( new LiteralDescr( "booleanPrimitive",
+                                             "==",
+                                             "false" ) );           
+        
+        // test char
+        createLiteralRule( new LiteralDescr( "charPrimitive",
+                                             "==",
+                                             "a" ) );         
+        
+        // test byte
+        createLiteralRule( new LiteralDescr( "bytePrimitive",
+                                             "==",
+                                             "1" ) );
+        
+        createLiteralRule( new LiteralDescr( "bytePrimitive",
+                                             "==",
+                                             "0" ) );    
+        
+        createLiteralRule( new LiteralDescr( "bytePrimitive",
+                                             "==",
+                                             "-1" ) );          
+        
+        // test short
+        createLiteralRule( new LiteralDescr( "shortPrimitive",
+                                             "==",
+                                             "1" ) );
+        
+        createLiteralRule( new LiteralDescr( "shortPrimitive",
+                                             "==",
+                                             "0" ) );    
+        
+        createLiteralRule( new LiteralDescr( "shortPrimitive",
+                                             "==",
+                                             "-1" ) );          
+                
+        
+        // test int
+        createLiteralRule( new LiteralDescr( "intPrimitive",
+                                             "==",
+                                             "1" ) );
+        
+        createLiteralRule( new LiteralDescr( "intPrimitive",
+                                             "==",
+                                             "0" ) );    
+        
+        createLiteralRule( new LiteralDescr( "intPrimitive",
+                                             "==",
+                                             "-1" ) );     
+        
+//        // test long
+//        createLiteralRule( new LiteralDescr( "longPrimitive",
+//                                             "==",
+//                                             "1" ) );
+//        
+//        createLiteralRule( new LiteralDescr( "longPrimitive",
+//                                             "==",
+//                                             "0" ) );    
+//        
+//        createLiteralRule( new LiteralDescr( "longPrimitive",
+//                                             "==",
+//                                             "-1" ) );          
+        
+        // test float
+        createLiteralRule( new LiteralDescr( "floatPrimitive",
+                                             "==",
+                                             "1.1" ) );
+        
+        createLiteralRule( new LiteralDescr( "floatPrimitive",
+                                             "==",
+                                             "0" ) );    
+        
+        createLiteralRule( new LiteralDescr( "floatPrimitive",
+                                             "==",
+                                             "-1.1" ) );    
+        
+        // test double
+        createLiteralRule( new LiteralDescr( "doublePrimitive",
+                                             "==",
+                                             "1.1" ) );
+        
+        createLiteralRule( new LiteralDescr( "doublePrimitive",
+                                             "==",
+                                             "0" ) );    
+        
+        createLiteralRule( new LiteralDescr( "doublePrimitive",
+                                             "==",
+                                             "-1.1" ) );          
+    }
+    
+    public void testNull() {
+        PackageBuilder builder = new PackageBuilder();
+        
+        PackageDescr packageDescr = new PackageDescr( "p1" );
+        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+        packageDescr.addRule( ruleDescr );
+
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+
+        ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
+                                                   "stilton" );
+
+        LiteralDescr literalDescr = new LiteralDescr( "type",
+                                                      "==",
+                                                      null );
+        columnDescr.addDescr( literalDescr );        
+
+        ruleDescr.setConsequence( "" );
+
+        builder.addPackage( packageDescr );
+
+        Package pkg = (Package) builder.getPackage();
+        Rule rule = pkg.getRule( "rule-1" ); 
+        
+        assertLength( 0,
+                      builder.getErrors() );        
+    }    
+
+    private void createLiteralRule(LiteralDescr literalDescr) {
+        PackageBuilder builder = new PackageBuilder();
+
+        PackageDescr packageDescr = new PackageDescr( "p1" );
+        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+        packageDescr.addRule( ruleDescr );
+
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+
+        ColumnDescr column = new ColumnDescr( Primitives.class.getName() );
+        lhs.addDescr( column );
+
+        column.addDescr( literalDescr );
+
+        ruleDescr.setConsequence( "" );
+
+        builder.addPackage( packageDescr );
+
+        assertLength( 0,
+                      builder.getErrors() );
+    }   
+
     private Rule createRule(ConditionalElementDescr ceDescr,
                             PackageBuilder builder,
                             String consequence) throws Exception {
@@ -489,6 +638,9 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         Package pkg = (Package) builder.getPackage();
         Rule rule = pkg.getRule( "rule-1" );
+        
+        assertEquals( "rule-1", 
+                       rule.getName() );
 
         return rule;
     }
