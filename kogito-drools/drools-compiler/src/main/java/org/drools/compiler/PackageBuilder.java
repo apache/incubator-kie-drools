@@ -26,7 +26,7 @@ import org.drools.semantics.java.RuleBuilder;
 import org.drools.spi.TypeResolver;
 
 public class PackageBuilder {
-    private JavaCompiler         compiler = JavaCompilerFactory.getInstance().createCompiler( JavaCompilerFactory.ECLIPSE );
+    private JavaCompiler         compiler;
 
     private Package              pkg;
 
@@ -36,7 +36,7 @@ public class PackageBuilder {
 
     private MemoryResourceReader src;
 
-    private ClassLoader          classLoader;
+    private PackageBuilderConfiguration configuration;
 
     public PackageBuilder() {
         this( null,
@@ -48,32 +48,26 @@ public class PackageBuilder {
               null );
     }
 
-    public PackageBuilder(ClassLoader parentClassLoader) {
-        this( null,
-              parentClassLoader );
-    }
-
     public PackageBuilder(Package pkg,
-                          ClassLoader classLoader) {
+                          PackageBuilderConfiguration configuration) {
+        if ( configuration == null ) {
+            configuration = new PackageBuilderConfiguration();
+        }
+        
+        this.compiler = JavaCompilerFactory.getInstance().createCompiler( configuration.getCompiler() );
+        
+        this.configuration = configuration;        
+        
         this.src = new MemoryResourceReader();
 
         this.results = new ArrayList();
 
         this.pkg = pkg;
+        
 
         if ( pkg != null ) {
             this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
-        }
-
-        if ( classLoader == null ) {
-            classLoader = Thread.currentThread().getContextClassLoader();
-            if ( classLoader == null ) {
-                classLoader = this.getClass().getClassLoader();
-            }
-            this.classLoader = classLoader;
-        } else {
-            this.classLoader = classLoader;
-        }
+        }                
     }
 
     /**
@@ -127,7 +121,7 @@ public class PackageBuilder {
 
     private Package newPackage(PackageDescr packageDescr) {
         Package pkg = new Package( packageDescr.getName(),
-                                   this.classLoader );
+                                   this.configuration.getClassLoader() );
 
         this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
 
