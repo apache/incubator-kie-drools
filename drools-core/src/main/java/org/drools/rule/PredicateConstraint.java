@@ -54,6 +54,10 @@ public class PredicateConstraint
     public void setPredicateExpression(PredicateExpression expression) {
         this.expression = expression;
     }
+    
+    public PredicateExpression getPredicateExpression() {
+        return this.expression;
+    }
 
     public boolean isAllowed(FactHandle handle,
                              Tuple tuple,

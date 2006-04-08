@@ -188,37 +188,7 @@ public class Rule
         return true;
     }
 
-    /**
-     * Check the validity of this rule, and throw exceptions if it fails
-     * validity tests. This does NOT include checking the semantic actions or predicates.
-     * {@link #isValid()} provides a check that includes the semantic validity.
-     * 
-     * <p>
-     * Possibly exceptions include:
-     * </p>
-     * 
-     * <pre>
-     *     NoParameterDeclarationException
-     *     NoConsequenceException
-     * </pre>
-     * 
-     * <p>
-     * A <code>Rule</code> must include at least one parameter declaration and
-     * one condition.
-     * </p>
-     * 
-     * @throws InvalidRuleException
-     *             if this rule is in any way invalid.
-     */
-    public void checkValidity() throws InvalidRuleException {
-        //if ( this.columns.isEmpty() ) {
-        //    throw new NoColumnsException( this );
-        //}
 
-        if ( ! ( this instanceof Query ) && this.consequence == null ) {
-            throw new NoConsequenceException( this );
-        }
-    }
 
     public String getPackage() {
         return this.pkg;

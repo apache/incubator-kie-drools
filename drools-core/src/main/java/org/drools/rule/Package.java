@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -273,10 +274,7 @@ public class Package
      * @throws InvalidRuleException
      *             If the <code>Rule</code> is not valid.
      */
-    public void addRule(Rule rule) throws DuplicateRuleNameException,
-                                  InvalidRuleException {
-        rule.checkValidity();
-
+    public void addRule(Rule rule)  {
         String name = rule.getName();
 
         this.rules.put( name,
@@ -286,6 +284,40 @@ public class Package
     
     public void removeRule(Rule rule) {
         this.rules.remove( rule.getName() );
+        String consequenceName = rule.getConsequence().getClass().getName();
+        this.packageCompilationData.remove( consequenceName );
+        
+        removeClasses( rule.getLhs() );
+        
+        // Now remove the rule class - the name is a subset of the consequence name
+        this.packageCompilationData.remove( consequenceName.substring( 0, consequenceName.indexOf( "ConsequenceInvoker" ) ) ); 
+    }
+    
+    private void removeClasses(ConditionalElement ce) {
+        if ( ce instanceof GroupElement ) {
+            GroupElement group = ( GroupElement ) ce;
+            for ( Iterator it = group.getChildren().iterator(); it.hasNext(); ) {
+                Object object = it.next();
+                if ( object instanceof ConditionalElement ) {
+                    removeClasses( ( ConditionalElement ) object );
+                } else if ( object instanceof Column ) {
+                    removeClasses( ( Column ) object );
+                }
+            }
+        } else if ( ce instanceof EvalCondition ) { 
+            this.packageCompilationData.remove( ( ( EvalCondition ) ce ).getEvalExpression().getClass().getName() );
+        } 
+    }
+    
+    private void removeClasses(Column column) {
+        for ( Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
+            Object object = it.next();
+            if ( object instanceof PredicateConstraint ) {
+                this.packageCompilationData.remove( ( ( PredicateConstraint ) object ).getPredicateExpression().getClass().getName() );
+            } else if ( object instanceof ReturnValueConstraint ) {
+                this.packageCompilationData.remove( ( ( ReturnValueConstraint ) object ).getReturnValueExpression().getClass().getName() );
+            }
+        }
     }
 
     /**

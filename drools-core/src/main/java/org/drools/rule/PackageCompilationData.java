@@ -143,13 +143,14 @@ public class PackageCompilationData
             try {
                 wire( resourceName );
             } catch ( Exception e ) {
-
+                throw new RuntimeDroolsException( e );
             }
         }
 
     }
 
     public void remove(final String resourceName) throws RuntimeDroolsException {
+        this.invokerLookups.remove( resourceName );
         if ( store.remove( resourceName.replace( '.',
                                                  '/' ) + ".class" ) != null ) {
             // we need to make sure the class is removed from the classLoader

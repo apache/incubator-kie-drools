@@ -56,6 +56,10 @@ public class ReturnValueConstraint
     public void setReturnValueExpression(ReturnValueExpression expression) {
         this.returnValueExpression = expression;
     }
+    
+    public ReturnValueExpression getReturnValueExpression() {
+        return this.returnValueExpression;
+    }
 
     public boolean isAllowed(FactHandle handle,
                              Tuple tuple,
