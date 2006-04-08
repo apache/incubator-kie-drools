@@ -112,12 +112,11 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors() );
 
         RuleBaseImpl ruleBase = new RuleBaseImpl();
-        ruleBase.getGlobalDeclarations().put( "map",
-                                              Map.class );
+        ruleBase.getGlobals().put( "map",
+                                   Map.class );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         HashMap map = new HashMap();
-
         workingMemory.setGlobal( "map",
                                  map );
 
@@ -125,7 +124,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         Activation activation = new MockActivation( rule,
                                                     tuple );
 
-        KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation, workingMemory ); 
+        KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
+                                                                                      workingMemory );
         rule.getConsequence().evaluate( knowledgeHelper,
                                         workingMemory );
         assertEquals( new Integer( 1 ),
@@ -133,9 +133,17 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(2) );" );
         pkg.removeRule( rule );
+        
+        // Make sure the compiled classes are also removed
+        assertEquals( 0, 
+                      pkg.getPackageCompilationData().list().length );
+        
         builder.addPackage( packageDescr );
         
-        knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation, workingMemory );        
+        rule = pkg.getRule( "rule-1" );
+
+        knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
+                                                                      workingMemory );
         rule.getConsequence().evaluate( knowledgeHelper,
                                         workingMemory );
         assertEquals( new Integer( 2 ),
@@ -155,25 +163,24 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         packageDescr.addGlobal( "map",
                                 "java.util.Map" );
-        
+
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
         //check that packageDescr is serializable
         byte[] ast = serializeOut( packageDescr );
         PackageDescr back = (PackageDescr) serializeIn( ast );
-        assertNotNull(back);
-        assertEquals("p1", back.getName());
-        
+        assertNotNull( back );
+        assertEquals( "p1",
+                      back.getName() );
+
         builder.addPackage( packageDescr );
-        Package pkg = builder.getPackage( );
+        Package pkg = builder.getPackage();
         Rule rule = pkg.getRule( "rule-1" );
 
         assertLength( 0,
                       builder.getErrors() );
 
         byte[] bytes = serializeOut( pkg );
-      
-        
-        
+
         // Deserialize from a byte array
 
         Package newPkg = (Package) serializeIn( bytes );
@@ -181,8 +188,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         Rule newRule = newPkg.getRule( "rule-1" );
 
         RuleBaseImpl ruleBase = new RuleBaseImpl();
-        ruleBase.getGlobalDeclarations().put( "map",
-                                              Map.class );
+        ruleBase.getGlobals().put( "map",
+                                   Map.class );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         HashMap map = new HashMap();
@@ -194,7 +201,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         Activation activation = new MockActivation( newRule,
                                                     tuple );
 
-        KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation, workingMemory );
+        KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
+                                                                                      workingMemory );
         newRule.getConsequence().evaluate( knowledgeHelper,
                                            workingMemory );
         assertEquals( new Integer( 1 ),
@@ -202,9 +210,9 @@ public class PackageBuilderTest extends DroolsTestCase {
     }
 
     private Object serializeIn(byte[] bytes) throws IOException,
-                                             ClassNotFoundException {
+                                            ClassNotFoundException {
         ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
-        Object obj =  in.readObject();
+        Object obj = in.readObject();
         in.close();
         return obj;
     }
@@ -350,14 +358,16 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setConsequence( "modify(stilton);" );
 
         builder.addPackage( packageDescr );
-        
+
         assertLength( 0,
                       builder.getErrors() );
     }
 
     public void testOr() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        Rule rule = createRule( new OrDescr(), builder,  "modify(stilton);" );
+        Rule rule = createRule( new OrDescr(),
+                                builder,
+                                "modify(stilton);" );
         assertLength( 0,
                       builder.getErrors() );
 
@@ -375,7 +385,9 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     public void testAnd() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        Rule rule = createRule( new AndDescr(), builder,  "modify(stilton);" );
+        Rule rule = createRule( new AndDescr(),
+                                builder,
+                                "modify(stilton);" );
         assertLength( 0,
                       builder.getErrors() );
 
@@ -393,14 +405,20 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     public void testNot() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        
+
         // Make sure we can't accessa  variable bound inside the not node
-        Rule rule = createRule( new NotDescr(), builder, "modify(stilton);" );
-        assertEquals( 1, builder.getErrors().length);
-        
+        Rule rule = createRule( new NotDescr(),
+                                builder,
+                                "modify(stilton);" );
+        assertEquals( 1,
+                      builder.getErrors().length );
+
         builder = new PackageBuilder();
-        rule = createRule( new NotDescr(), builder, "" );
-        assertEquals( 0, builder.getErrors().length);
+        rule = createRule( new NotDescr(),
+                           builder,
+                           "" );
+        assertEquals( 0,
+                      builder.getErrors().length );
 
         And lhs = rule.getLhs();
         assertLength( 1,
@@ -416,14 +434,20 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     public void testExists() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        
+
         // Make sure we can't accessa  variable bound inside the not node
-        Rule rule = createRule( new ExistsDescr(), builder, "modify(stilton);" );
-        assertEquals( 1, builder.getErrors().length);
-        
+        Rule rule = createRule( new ExistsDescr(),
+                                builder,
+                                "modify(stilton);" );
+        assertEquals( 1,
+                      builder.getErrors().length );
+
         builder = new PackageBuilder();
-        rule = createRule( new ExistsDescr(), builder, "" );
-        assertEquals( 0, builder.getErrors().length);
+        rule = createRule( new ExistsDescr(),
+                           builder,
+                           "" );
+        assertEquals( 0,
+                      builder.getErrors().length );
 
         And lhs = rule.getLhs();
         assertLength( 1,
@@ -437,7 +461,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         LiteralConstraint literalConstarint = (LiteralConstraint) column.getConstraints().get( 0 );
     }
 
-    private Rule createRule(ConditionalElementDescr ceDescr, PackageBuilder builder, String consequence) throws Exception {
+    private Rule createRule(ConditionalElementDescr ceDescr,
+                            PackageBuilder builder,
+                            String consequence) throws Exception {
         PackageDescr packageDescr = new PackageDescr( "p1" );
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
@@ -461,7 +487,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        Package pkg = (Package) builder.getPackage( );
+        Package pkg = (Package) builder.getPackage();
         Rule rule = pkg.getRule( "rule-1" );
 
         return rule;

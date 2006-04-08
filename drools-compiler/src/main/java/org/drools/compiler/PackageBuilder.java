@@ -251,11 +251,8 @@ public class PackageBuilder {
 	        }
 	        
         }
-        try {
-            this.pkg.addRule( rule );
-        } catch ( Exception e ) {
 
-        }
+        this.pkg.addRule( rule );
     }
 
     /**
