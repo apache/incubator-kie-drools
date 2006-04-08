@@ -64,14 +64,4 @@ public class InstrumentedRule extends Rule {
         return this.isValid.booleanValue();
     }
 
-    public void checkValidity() throws InvalidRuleException {
-        if ( this.isValid == null ) {
-            super.checkValidity();
-            return;
-        } else if ( this.isValid.booleanValue() ) {
-            return;
-        } else {
-            throw new InvalidRuleException( this );
-        }
-    }
 }

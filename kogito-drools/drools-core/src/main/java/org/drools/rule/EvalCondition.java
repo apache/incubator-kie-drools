@@ -32,6 +32,10 @@ public class EvalCondition extends ConditionalElement {
         }
     }
     
+    public EvalExpression getEvalExpression() {
+        return this.expression;
+    }
+    
     public void setEvalExpression(EvalExpression expression) {
         this.expression = expression;
     }

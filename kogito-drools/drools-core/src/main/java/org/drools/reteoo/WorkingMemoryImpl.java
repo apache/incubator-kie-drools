@@ -191,7 +191,7 @@ public class WorkingMemoryImpl
     public void setGlobal(String name,
                           Object value) {
         // Make sure the application data has been declared in the RuleBase
-        Map applicationDataDefintions = this.ruleBase.getGlobalDeclarations();
+        Map applicationDataDefintions = this.ruleBase.getGlobals();
         Class type = (Class) applicationDataDefintions.get( name );
         if ( (type == null) ) {
             throw new RuntimeException( "Unexpected global [" + name + "]" );
