@@ -82,7 +82,7 @@ public class ClassFieldExtractorFactory {
 			String getterName, String typeName, Class fieldType, boolean isInterface)
 			throws Exception {
 
-		ClassWriter cw = new ClassWriter(false);
+		ClassWriter cw = new ClassWriter(true);
 		MethodVisitor mv;
 
 		cw.visit(Opcodes.V1_2, Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
