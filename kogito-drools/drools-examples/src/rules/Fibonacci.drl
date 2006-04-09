@@ -1,0 +1,43 @@
+package com.sample
+
+import com.sample.FibonacciExample.Fibonacci;
+
+rule Bootstrap1
+	salience 20
+	when
+		f : Fibonacci( sequence == 1, value == -1 )
+	then 
+		f.setValue( 1 );		
+		modify( f );
+		System.out.println( f.getSequence() + " == " + f.getValue() );
+end
+
+rule Bootstrap2
+	when
+		f : Fibonacci( sequence == 2, value == -1 )
+	then 
+		f.setValue( 1 );		
+		modify( f );
+		System.out.println( f.getSequence() + "==" + f.getValue() );		
+end
+
+rule Recurse
+	salience 10
+	when
+		f : Fibonacci ( value == -1 )
+	then
+		assert( new Fibonacci( f.getSequence() - 1 ) );
+		System.out.println( "recurse for " + f.getSequence() );
+end
+
+rule Calculate
+	when
+		f1 : Fibonacci( s1 : sequence, value != -1 )
+		f2 : Fibonacci( s2 : sequence == (new Integer( s1.intValue() + 1  ) ), value != -1 )
+ 		f3 : Fibonacci( sequence == (new Integer( s2.intValue() + 1 ) ), value == -1 )				
+	then	
+		f3.setValue( f1.getValue() + f2.getValue() );
+		modify( f3 );
+		retract( f1 );
+		System.out.println( f3.getSequence() + " == " + f3.getValue() );
+end	
