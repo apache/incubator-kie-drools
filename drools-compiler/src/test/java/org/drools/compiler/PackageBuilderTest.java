@@ -519,17 +519,17 @@ public class PackageBuilderTest extends DroolsTestCase {
                                              "-1" ) );     
         
 //        // test long
-//        createLiteralRule( new LiteralDescr( "longPrimitive",
-//                                             "==",
-//                                             "1" ) );
-//        
-//        createLiteralRule( new LiteralDescr( "longPrimitive",
-//                                             "==",
-//                                             "0" ) );    
-//        
-//        createLiteralRule( new LiteralDescr( "longPrimitive",
-//                                             "==",
-//                                             "-1" ) );          
+        createLiteralRule( new LiteralDescr( "longPrimitive",
+                                             "==",
+                                             "1" ) );
+        
+        createLiteralRule( new LiteralDescr( "longPrimitive",
+                                             "==",
+                                             "0" ) );    
+        
+        createLiteralRule( new LiteralDescr( "longPrimitive",
+                                             "==",
+                                             "-1" ) );          
         
         // test float
         createLiteralRule( new LiteralDescr( "floatPrimitive",
