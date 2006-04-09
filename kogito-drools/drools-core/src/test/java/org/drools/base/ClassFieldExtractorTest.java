@@ -20,6 +20,9 @@ public class ClassFieldExtractorTest extends TestCase {
         ClassFieldExtractor ext = new ClassFieldExtractor(TestBean.class, "blah");
         assertEquals(false, ((Boolean)ext.getValue( obj )).booleanValue());
         
+        ClassFieldExtractor ext2 = new ClassFieldExtractor(TestBean.class, "fooBar");
+        assertEquals("fooBar", ext2.getValue( obj ));
+        
     }
     
     public void testInterface() throws Exception {
@@ -50,6 +53,12 @@ public class ClassFieldExtractorTest extends TestCase {
         ConcreteChild obj = new ConcreteChild();
         ClassFieldExtractor ext = new ClassFieldExtractor(InterfaceChild.class, "foo");
         assertEquals(42, ((Integer)ext.getValue( obj )).intValue());
+    }
+    
+    public void testLong() throws Exception {
+        ClassFieldExtractor ext = new ClassFieldExtractor(TestBean.class, "longField");
+        TestBean bean = new TestBean();
+        assertEquals(424242, ((Long)ext.getValue( bean )).longValue());
     }
     
 }

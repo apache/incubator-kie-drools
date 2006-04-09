@@ -5,6 +5,8 @@ public class TestBean {
     private String something;
     private int number;
     private boolean blah;
+    
+    
     public boolean isBlah() {
         return blah;
     }
@@ -24,6 +26,16 @@ public class TestBean {
         this.something = something;
     }
     
+    public String fooBar() {
+        return "fooBar";
+    }
     
+    public long getLongField() {
+        return 424242;
+    }
+    
+    public Long getOtherLongField() {
+        return new Long(42424242);
+    }
     
 }
