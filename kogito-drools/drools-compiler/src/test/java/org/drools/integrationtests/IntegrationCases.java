@@ -37,7 +37,6 @@ import org.drools.Cheesery;
 import org.drools.FactHandle;
 import org.drools.Person;
 import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
@@ -50,7 +49,6 @@ import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.DefaultAgendaEventListener;
-import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
@@ -1329,7 +1327,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void xxxtestNullValuesIndexing() throws Exception {
+    public void testNullValuesIndexing() throws Exception {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NullValuesIndexing.drl" ) );
 
         PackageBuilder builder = new PackageBuilder();
@@ -1343,14 +1341,19 @@ public abstract class IntegrationCases extends TestCase {
         // Adding person with null name and likes attributes
         Person bob = new Person( null,
                                  null );
-        bob.setStatus( "Not evaluated" );
+        bob.setStatus( "P1" );
+        Person pete = new Person( null,
+                                 null );
+        bob.setStatus( "P2" );
         workingMemory.assertObject( bob );
+        workingMemory.assertObject( pete );
 
         workingMemory.fireAllRules();
 
         Assert.assertEquals( "Indexing with null values is not working correctly.",
-                             bob.getStatus(),
-                             "OK" );
+                             "OK", bob.getStatus() );
+        Assert.assertEquals( "Indexing with null values is not working correctly.",
+                             "OK", pete.getStatus() );
 
     }
 

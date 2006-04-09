@@ -8,4 +8,5 @@ rule "Test Null Values"
 		person2: Person( name == $name )
 	then
 		person1.setStatus("OK"); 
+		person2.setStatus("OK");
 end
