@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.asm.AnnotationVisitor;
 import org.drools.asm.Attribute;
@@ -33,6 +35,8 @@ public class ClassFieldInspector {
     private Map fieldNames = new HashMap();
     private Map fieldTypes = new HashMap();
     private Map methodNames = new HashMap();
+    private Set nonGetters  = new HashSet();
+    
     
     /**
      * @param clazz The class that the fields to be shadowed are extracted for.
@@ -47,12 +51,8 @@ public class ClassFieldInspector {
         String name = getResourcePath( clazz );
         InputStream stream = clazz.getResourceAsStream(name);
         ClassReader reader = new ClassReader(stream);
-        ClassFieldVisitor visitor = new ClassFieldVisitor(clazz, methods.size());
+        ClassFieldVisitor visitor = new ClassFieldVisitor(clazz, this);
         reader.accept(visitor, false);
-        this.methods.addAll( visitor.getPropertyGetters() );
-        this.fieldNames.putAll( visitor.getFieldNameMap() );
-        this.fieldTypes.putAll( visitor.getFieldTypeMap() );
-        this.methodNames.putAll( visitor.getMethodNameMap() );
         if (clazz.getSuperclass() != null) {
             processClass(clazz.getSuperclass());
         }
@@ -107,33 +107,12 @@ public class ClassFieldInspector {
      */
     static class ClassFieldVisitor implements ClassVisitor {
 
-        private List methodList = new ArrayList();
         private Class clazz;
-        private Map fieldNameMap = new HashMap();
-        private Map fieldTypeMap = new HashMap();
-        private Map methodNameMap = new HashMap();
-        private int startingIndex = 0;
+        private ClassFieldInspector inspector;
         
-        ClassFieldVisitor(Class cls, int startingIndex) {
+        ClassFieldVisitor(Class cls, ClassFieldInspector inspector) {
             this.clazz = cls;
-            this.startingIndex = startingIndex;
-        }
-        
-        
-        public List getPropertyGetters() {
-            return methodList;
-        }
-        
-        public Map getFieldNameMap() {
-            return fieldNameMap;
-        }
-        
-        public Map getFieldTypeMap() {
-            return fieldTypeMap;
-        }
-        
-        public Map getMethodNameMap() {
-            return methodNameMap;
+            this.inspector = inspector;
         }
         
         public MethodVisitor visitMethod(int access,
@@ -144,11 +123,11 @@ public class ClassFieldInspector {
             //only want public methods that start with 'get' or 'is'
             //and have no args, and return a value
             if ((access & Opcodes.ACC_PUBLIC) > 0) {
-                if (desc.startsWith( "()" ) && ( name.startsWith("get") || name.startsWith("is") ) ) {
+                if (desc.startsWith( "()" ) && !(name.equals("<init>"))) {// && ( name.startsWith("get") || name.startsWith("is") ) ) {
                     try {
                         Method method = clazz.getMethod(name, (Class[]) null);
                         if (method.getReturnType() != void.class) {
-                            int fieldIndex = this.methodList.size()+this.startingIndex;                                                           
+                            int fieldIndex = inspector.methods.size();                                                           
                             addToMapping(method, fieldIndex);
                         }
                     } catch (NoSuchMethodException e) {
@@ -234,19 +213,45 @@ public class ClassFieldInspector {
             int offset;
             if (name.startsWith("is")) {
                 offset = 2;
-            } else {
+            } else if (name.startsWith( "get" )) {
                 offset = 3;
+            } else {
+                offset = 0;
             }
             String fieldName = calcFieldName( name, offset );
-            if (fieldNameMap.containsKey( fieldName )) {
+            if (inspector.fieldNames.containsKey( fieldName )) {
                 //only want it once, the first one thats found
-                return; 
+                if (offset != 0 && inspector.nonGetters.contains( fieldName )) {
+                    //replace the non getter method with the getter one
+                    removeOldField( fieldName );
+                    storeField( method, index, fieldName );
+                    inspector.nonGetters.remove( fieldName );
+                }
             } else {
-                this.fieldNameMap.put(fieldName, new Integer(index));
-                this.fieldTypeMap.put( fieldName, method.getReturnType() );
-                this.methodNameMap.put( fieldName, method );
-                methodList.add(method);
+                storeField( method,
+                            index,
+                            fieldName );
+                if (offset == 0) {
+                    inspector.nonGetters.add( fieldName );
+                }
             }
+        }
+
+        private void removeOldField(String fieldName) {
+            inspector.fieldNames.remove( fieldName );
+            inspector.fieldTypes.remove( fieldName );
+            inspector.methods.remove( inspector.methodNames.get( fieldName ) );
+            inspector.methodNames.remove( fieldName );
+            
+        }
+
+        private void storeField(Method method,
+                                int index,
+                                String fieldName) {
+            inspector.fieldNames.put(fieldName, new Integer(index));
+            inspector.fieldTypes.put( fieldName, method.getReturnType() );
+            inspector.methodNames.put( fieldName, method );
+            inspector.methods.add(method);
         }
 
 
