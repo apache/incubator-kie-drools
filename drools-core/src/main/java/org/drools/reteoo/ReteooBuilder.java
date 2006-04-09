@@ -34,6 +34,7 @@ import org.drools.base.DroolsQuery;
 import org.drools.base.EvaluatorFactory;
 import org.drools.base.FieldFactory;
 import org.drools.common.BetaNodeBinder;
+import org.drools.common.InstanceEqualsConstraint;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.GroupElement;
@@ -48,6 +49,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldValue;
+import org.drools.spi.ObjectType;
 import org.drools.spi.ObjectTypeResolver;
 
 /**
@@ -86,6 +88,8 @@ class ReteooBuilder implements Serializable {
     private int                      id;
 
     private Map                      rules;
+    
+    private List                     objectType;
 
     // ------------------------------------------------------------
     // Constructors
@@ -168,6 +172,7 @@ class ReteooBuilder implements Serializable {
         this.objectSource = null;
         this.tupleSource = null;
         this.declarations = new HashMap();
+        this.objectType = new ArrayList();
 
         if ( rule instanceof Query ) {
             attachQuery( rule.getName() );
@@ -313,11 +318,25 @@ class ReteooBuilder implements Serializable {
     public List attachAlphaNodes(Column column) throws InvalidPatternException {
         List constraints = column.getConstraints();
 
+        Class thisClass = ( ( ClassObjectType ) column.getObjectType() ).getClassType();
+        
         this.objectSource = attachNode( new ObjectTypeNode( this.id++,
                                                             column.getObjectType(),
-                                                            this.rete ) );
-
+                                                            this.rete ) );                
+        
         List predicateConstraints = new ArrayList();
+        
+        // Check if this object type exists before
+        // If it does we need stop instance equals cross product
+        for ( int i = 0, size = this.objectType.size(); i < size; i++ ) {
+            Class previousClass = ( ( ClassObjectType ) this.objectType.get( i ) ).getClassType();
+            if ( thisClass.isAssignableFrom( previousClass ) ) {
+                predicateConstraints.add( new InstanceEqualsConstraint( i ) );
+            }
+        }
+        
+        // Must be added after the checking, otherwise it matches against itself
+        this.objectType.add( column.getObjectType() );
 
         for ( Iterator it = constraints.iterator(); it.hasNext(); ) {
             Object object = it.next();
