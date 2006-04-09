@@ -678,7 +678,7 @@ public abstract class IntegrationCases extends TestCase {
 
         WorkingMemory wm = ruleBase.newWorkingMemory();
         wm.assertObject( new Person( "Bob",
-                                     "stilton" ) );
+                                     "http://foo.bar" ) );
         wm.assertObject( new Cheese( "stilton",
                                      42 ) );
 

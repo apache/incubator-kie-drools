@@ -16,7 +16,7 @@ rule "my rule"
 	when
 		#Person(name=="Bob", likes=="stilton")
 		#Cheese(type=="stilton")
-		There is a person with the name of Bob who likes stilton
+		There is a person with the name of Bob who likes "http://foo.bar"
 		There is some stilton cheese available
 		
 	then
