@@ -510,7 +510,7 @@ duration returns [AttributeDescr d]
 
 normal_lhs_block[AndDescr descrs]
 	:
-		(	d=lhs 
+		(	d=lhs opt_eol
 			{ descrs.addDescr( d ); }
 		)* opt_eol
 	;
@@ -713,7 +713,7 @@ paren_chunk returns [String text]
 	}
 	
 	:
-		(	options{greedy=false;} : 
+		 (	options{greedy=false;} : 
 			'(' c=paren_chunk ')' 	
 			{
 				//System.err.println( "chunk [" + c + "]" );
@@ -735,7 +735,7 @@ paren_chunk returns [String text]
 					text = text + " " + any.getText(); 
 				} 
 			}
-		)*
+		)* 
 	;
 	
 curly_chunk returns [String text]

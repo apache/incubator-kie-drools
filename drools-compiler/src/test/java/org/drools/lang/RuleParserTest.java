@@ -820,9 +820,11 @@ public class RuleParserTest extends TestCase {
     		assertFalse( parser.hasErrors() );
     }     
     
-    public void FIXME_testEvalMultiple() throws Exception {
+    public void testEvalMultiple() throws Exception {
         RuleParser parser = parseResource( "eval_multiple.drl" );
         parser.compilation_unit();
+        
+        System.err.println( parser.getErrorMessages() );
         
         assertFalse( parser.hasErrors() );
         
