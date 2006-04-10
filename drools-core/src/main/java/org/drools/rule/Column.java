@@ -3,6 +3,7 @@ package org.drools.rule;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.spi.ColumnExtractor;
@@ -19,8 +20,8 @@ public class Column
     private final int        index;
 
     // this is the negative offset of the related fact inside a tuple. i.e:
-    // tuple_fact_index = column_index - offset; 
-    private final int        offset;
+    // tuple_fact_index = column_index + offset; 
+    private       int        offset;
 
     public Column(int index,
                   ObjectType objectType) {
@@ -105,7 +106,25 @@ public class Column
     }
     
     public int getFactIndex() {
-        return this.index - this.offset;
+        return this.index + this.offset;
+    }
+    
+    /**
+     * A simple method to adjust offset of all declarations using the specified value
+     * @param adjust
+     */
+    public void adjustOffset(int adjust) {
+        this.offset += adjust;
+        
+        if( this.declaration != null ) {
+            this.declaration.setColumn( this.getFactIndex() );
+        }
+        for( Iterator i = this.constraints.iterator(); i.hasNext(); ) {
+            Object constr = i.next();
+            if(constr instanceof Declaration) {
+                ((Declaration)constr).setColumn( this.getFactIndex() );
+            }
+        }
     }
 
     public String toString() {

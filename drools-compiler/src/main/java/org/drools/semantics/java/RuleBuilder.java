@@ -270,7 +270,7 @@ public class RuleBuilder {
     private void build(Rule rule,
                        ConditionalElementDescr descr,
                        GroupElement ce,
-                       boolean incrementOffset) {
+                       boolean decrementOffset) {
         for ( Iterator it = descr.getDescrs().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof ConditionalElementDescr ) {
@@ -280,14 +280,14 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            and,
-                           incrementOffset );
+                           decrementOffset );
                 } else if ( object instanceof OrDescr ) {
                     Or or = new Or();
                     ce.addChild( or );
                     build( rule,
                            (ConditionalElementDescr) object,
                            or,
-                           incrementOffset );
+                           decrementOffset );
                 } else if ( object instanceof NotDescr ) {
                     Not not = new Not();
                     ce.addChild( not );
@@ -309,10 +309,8 @@ public class RuleBuilder {
                     }
                 }
             } else if ( object instanceof ColumnDescr ) {
-                // if it is the first column, don't increment, as an initial
-                // fact column will be automatically created
-                if(( incrementOffset ) && ( this.columnCounter > 0)) {
-                    this.columnOffset++;
+                if( decrementOffset ) {
+                    this.columnOffset--;
                 }
                 Column column = build( (ColumnDescr) object );
                 if ( column != null ) {

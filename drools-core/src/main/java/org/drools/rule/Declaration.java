@@ -79,7 +79,7 @@ public class Declaration
 
     private final Extractor  extractor;
 
-    private final int        column;
+    private       int        column;
 
     // ------------------------------------------------------------
     // Constructors
@@ -133,7 +133,11 @@ public class Declaration
     public int getColumn() {
         return this.column;
     }
-
+    
+    public void setColumn(int column) {
+        this.column = column;
+    }
+ 
     /**
      * Returns the Extractor expression
      * 
