@@ -15,12 +15,112 @@ tokens {
 
 @parser::header {
 	package org.drools.semantics.java.parser;
+	import java.util.Iterator;
 }
 
 @parser::members {
 	private List identifiers = new ArrayList();
 	public List getIdentifiers() { return identifiers; }
 	public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
+	private List errors = new ArrayList();
+	
+	private String source = "unknown";
+	
+	public void setSource(String source) {
+		this.source = source;
+	}
+	
+	public String getSource() {
+		return this.source;
+	}
+		
+	public void reportError(RecognitionException ex) {
+	        // if we've already reported an error and have not matched a token
+                // yet successfully, don't report any errors.
+                if ( errorRecovery ) {
+                        //System.err.print("[SPURIOUS] ");
+                        return;
+                }
+                errorRecovery = true;
+
+		errors.add( ex ); 
+	}
+     	
+     	/** return the raw RecognitionException errors */
+     	public List getErrors() {
+     		return errors;
+     	}
+     	
+     	/** Return a list of pretty strings summarising the errors */
+     	public List getErrorMessages() {
+     		List messages = new ArrayList();
+ 		for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
+     	     		messages.add( createErrorMessage( (RecognitionException) errorIter.next() ) );
+     	     	}
+     	     	return messages;
+     	}
+     	
+     	/** return true if any parser errors were accumulated */
+     	public boolean hasErrors() {
+  		return ! errors.isEmpty();
+     	}
+     	
+     	/** This will take a RecognitionException, and create a sensible error message out of it */
+     	public String createErrorMessage(RecognitionException e)
+        {
+		StringBuffer message = new StringBuffer();		
+                message.append( source + ":"+e.line+":"+e.charPositionInLine+" ");
+                if ( e instanceof MismatchedTokenException ) {
+                        MismatchedTokenException mte = (MismatchedTokenException)e;
+                        message.append("mismatched token: "+
+                                                           e.token+
+                                                           "; expecting type "+
+                                                           tokenNames[mte.expecting]);
+                }
+                else if ( e instanceof MismatchedTreeNodeException ) {
+                        MismatchedTreeNodeException mtne = (MismatchedTreeNodeException)e;
+                        message.append("mismatched tree node: "+
+                                                           mtne.foundNode+
+                                                           "; expecting type "+
+                                                           tokenNames[mtne.expecting]);
+                }
+                else if ( e instanceof NoViableAltException ) {
+                        NoViableAltException nvae = (NoViableAltException)e;
+			message.append( "Unexpected token '" + e.token.getText() + "'" );
+                        /*
+                        message.append("decision=<<"+nvae.grammarDecisionDescription+">>"+
+                                                           " state "+nvae.stateNumber+
+                                                           " (decision="+nvae.decisionNumber+
+                                                           ") no viable alt; token="+
+                                                           e.token);
+                                                           */
+                }
+                else if ( e instanceof EarlyExitException ) {
+                        EarlyExitException eee = (EarlyExitException)e;
+                        message.append("required (...)+ loop (decision="+
+                                                           eee.decisionNumber+
+                                                           ") did not match anything; token="+
+                                                           e.token);
+                }
+                else if ( e instanceof MismatchedSetException ) {
+                        MismatchedSetException mse = (MismatchedSetException)e;
+                        message.append("mismatched token '"+
+                                                           e.token+
+                                                           "' expecting set "+mse.expecting);
+                }
+                else if ( e instanceof MismatchedNotSetException ) {
+                        MismatchedNotSetException mse = (MismatchedNotSetException)e;
+                        message.append("mismatched token '"+
+                                                           e.token+
+                                                           "' expecting set "+mse.expecting);
+                }
+                else if ( e instanceof FailedPredicateException ) {
+                        FailedPredicateException fpe = (FailedPredicateException)e;
+                        message.append("rule "+fpe.ruleName+" failed predicate: {"+
+                                                           fpe.predicateText+"}?");
+		}
+               	return message.toString();
+        }   
 } 
 
 @lexer::header {
