@@ -24,5 +24,9 @@ public class InstanceEqualsConstraint implements FieldConstraint {
                              WorkingMemory workingMemory) {
         return ! (workingMemory.getObject( tuple.get( this.otherColumn ) )== workingMemory.getObject( handle ) );
     }
+    
+    public String toString() {
+        return this.getClass().getSimpleName()+"[ otherColumn == "+this.otherColumn+" ]";
+    }
 
 }

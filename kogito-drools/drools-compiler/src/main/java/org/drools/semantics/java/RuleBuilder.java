@@ -72,6 +72,8 @@ public class RuleBuilder {
 
     private int                         columnCounter;
 
+    private int                         columnOffset;
+
     private List                        errors;
 
     private TypeResolver                typeResolver;    
@@ -201,13 +203,15 @@ public class RuleBuilder {
                     //rule.addChild( and );
                     build( rule,
                            (ConditionalElementDescr) object,
-                           and );
+                           and,
+                           false );
                     rule.addPattern( and );
                 } else if ( object instanceof OrDescr ) {
                     Or or = new Or();
                     build( rule,
                            (ConditionalElementDescr) object,
-                           or );
+                           or,
+                           false );
                     rule.addPattern( or );
                 } else if ( object instanceof NotDescr ) {
                     // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
@@ -215,7 +219,8 @@ public class RuleBuilder {
                     Not not = new Not();
                     build( rule,
                            (ConditionalElementDescr) object,
-                           not );
+                           not,
+                           true );
                     rule.addPattern( not );
                     
                     // remove declarations bound inside not node
@@ -230,7 +235,8 @@ public class RuleBuilder {
                     Exists exists = new Exists();
                     build( rule,
                            (ConditionalElementDescr) object,
-                           exists );
+                           exists,
+                           true );
                     // remove declarations bound inside not node
                     for ( Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
                         this.declarations.remove( notIt.next() );
@@ -263,7 +269,8 @@ public class RuleBuilder {
 
     private void build(Rule rule,
                        ConditionalElementDescr descr,
-                       GroupElement ce) {
+                       GroupElement ce,
+                       boolean incrementOffset) {
         for ( Iterator it = descr.getDescrs().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof ConditionalElementDescr ) {
@@ -272,25 +279,29 @@ public class RuleBuilder {
                     ce.addChild( and );
                     build( rule,
                            (ConditionalElementDescr) object,
-                           and );
+                           and,
+                           incrementOffset );
                 } else if ( object instanceof OrDescr ) {
                     Or or = new Or();
                     ce.addChild( or );
                     build( rule,
                            (ConditionalElementDescr) object,
-                           or );
+                           or,
+                           incrementOffset );
                 } else if ( object instanceof NotDescr ) {
                     Not not = new Not();
                     ce.addChild( not );
                     build( rule,
                            (ConditionalElementDescr) object,
-                           not );
+                           not,
+                           true );
                 } else if ( object instanceof ExistsDescr ) {
                     Exists exists = new Exists();
                     ce.addChild( exists );
                     build( rule,
                            (ConditionalElementDescr) object,
-                           exists );
+                           exists,
+                           true );
                 } else if ( object instanceof EvalDescr ) {
                     EvalCondition eval = build( (EvalDescr) object );
                     if ( eval != null ) {
@@ -298,6 +309,11 @@ public class RuleBuilder {
                     }
                 }
             } else if ( object instanceof ColumnDescr ) {
+                // if it is the first column, don't increment, as an initial
+                // fact column will be automatically created
+                if(( incrementOffset ) && ( this.columnCounter > 0)) {
+                    this.columnOffset++;
+                }
                 Column column = build( (ColumnDescr) object );
                 if ( column != null ) {
                     ce.addChild( column );
@@ -331,6 +347,7 @@ public class RuleBuilder {
         Column column;
         if ( columnDescr.getIdentifier() != null && !columnDescr.getIdentifier().equals( "" ) ) {
             column = new Column( columnCounter++,
+                                 this.columnOffset,
                                  new ClassObjectType( clazz ),
                                  columnDescr.getIdentifier() );;
             this.declarations.put( column.getDeclaration().getIdentifier(),
@@ -342,7 +359,9 @@ public class RuleBuilder {
             }            
         } else {
             column = new Column( columnCounter++,
-                                 new ClassObjectType( clazz ) );
+                                 this.columnOffset,
+                                 new ClassObjectType( clazz ),
+                                 null);
         }
 
         for ( Iterator it = columnDescr.getDescrs().iterator(); it.hasNext(); ) {

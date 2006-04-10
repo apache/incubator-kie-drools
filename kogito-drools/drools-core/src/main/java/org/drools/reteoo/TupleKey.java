@@ -67,7 +67,7 @@ class TupleKey
                     FactHandleImpl handle) {
         this.handles = new FactHandleList( left.handles,
                                            handle );
-        this.recency = Math.max(left.recency, handle.getRecency());
+        this.recency = left.recency + handle.getRecency();
     }
 
     public String toString() {
