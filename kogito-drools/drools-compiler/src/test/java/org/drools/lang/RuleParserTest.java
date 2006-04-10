@@ -2,6 +2,7 @@ package org.drools.lang;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -564,6 +565,50 @@ public class RuleParserTest extends TestCase {
         
                 
     }
+    
+    public void testExpanderUnExpandableErrorLines() throws Exception {
+        
+        //stubb expander
+        ExpanderResolver res = new ExpanderResolver() {
+            public Expander get(String name,
+                                String config) {
+                return new Expander() {
+                    public String expand(String scope,
+                                         String pattern) {
+                        if (pattern.startsWith("Good")) {
+                            return pattern;
+                        } else {
+                            throw new IllegalArgumentException("whoops");
+                        }
+                        
+                    }
+                };
+            }
+        };        
+        
+        RuleParser parser = parseResource( "expander_line_errors.drl" );
+        parser.setExpanderResolver( res );
+        parser.compilation_unit();
+        assertTrue( parser.hasErrors() );
+        
+        List messages = parser.getErrorMessages();
+        assertEquals(messages.size(), parser.getErrors().size());
+
+        
+        assertEquals(4, parser.getErrors().size());
+        assertEquals(ExpanderException.class, parser.getErrors().get( 0 ).getClass());
+        assertEquals(8, ( (RecognitionException)parser.getErrors().get( 0 )).line);
+        assertEquals(10, ( (RecognitionException)parser.getErrors().get( 1 )).line);
+        assertEquals(12, ( (RecognitionException)parser.getErrors().get( 2 )).line);        
+        assertEquals(13, ( (RecognitionException)parser.getErrors().get( 3 )).line);
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertNotNull(pack);
+        
+        ExpanderException ex = (ExpanderException) parser.getErrors().get( 0 );
+        assertTrue(ex.getMessage().indexOf( "whoops" ) > -1);
+        
+    }    
     
     public void testBasicBinding() throws Exception {
         RuleParser parser = parseResource( "basic_binding.drl" );
