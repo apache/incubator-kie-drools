@@ -4,7 +4,7 @@ import org.drools.Cheese;
 
 global java.util.List list;
 
-rule "exists rule test"
+rule "42. exists rule test"
     when       
         exists Cheese( price == 5 )
     then
