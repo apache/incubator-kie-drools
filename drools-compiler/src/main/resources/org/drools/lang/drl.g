@@ -39,16 +39,24 @@ grammar RuleParser;
 		return expanderResolver;
 	}
 	
-	private void runWhenExpander(String text, AndDescr descrs) throws RecognitionException {
+	/** Expand the LHS */
+	private void runWhenExpander(String text, AndDescr descrs, int line) throws RecognitionException {
 		String expanded = text.trim();
 		if (expanded.startsWith(">")) {
 			expanded = expanded.substring(1);  //escape !!
 		} else {
-			expanded = expander.expand( "when", text );			
+			try {
+				expanded = expander.expand( "when", text );			
+			} catch (Exception e) {
+				this.errors.add(new ExpanderException("Unable to expand: " + text + ". Due to " + e.getMessage(), line));
+				return;
+			}
 		}
-		reparseLhs( expanded, descrs );
+		reparseLhs( expanded, descrs );		
+		
 	}
 
+        /** Reparse the results of the expansion */
     	private void reparseLhs(String text, AndDescr descrs) throws RecognitionException {
     		CharStream charStream = new ANTLRStringStream( text );
     		RuleParserLexer lexer = new RuleParserLexer( charStream );
@@ -66,7 +74,8 @@ grammar RuleParser;
     		}
     	}
 	
-	private String runThenExpander(String text) {
+	/** Expand a line on the RHS */
+	private String runThenExpander(String text, int startLine) {
 		//System.err.println( "expand THEN [" + text + "]" );
 		StringTokenizer lines = new StringTokenizer( text, "\n\r" );
 
@@ -75,6 +84,7 @@ grammar RuleParser;
 		String eol = System.getProperty( "line.separator" );
 				
 		while ( lines.hasMoreTokens() ) {
+			startLine++;
 			String line = lines.nextToken();
 			line = line.trim();
 			if ( line.length() > 0 ) {
@@ -82,8 +92,12 @@ grammar RuleParser;
 					expanded.append( line.substring( 1 ) );
 					expanded.append( eol );
 				} else {
-					expanded.append( expander.expand( "then", line ) );
-					expanded.append( eol );
+					try {
+						expanded.append( expander.expand( "then", line ) );
+						expanded.append( eol );
+					} catch (Exception e) {
+						this.errors.add(new ExpanderException("Unable to expand: " + line + ". Due to " + e.getMessage(), startLine));			
+					}
 				}
 			}
 		}
@@ -132,7 +146,7 @@ grammar RuleParser;
      	/** This will take a RecognitionException, and create a sensible error message out of it */
      	public String createErrorMessage(RecognitionException e)
         {
-		StringBuffer message = new StringBuffer();
+		StringBuffer message = new StringBuffer();		
                 message.append( source + ":"+e.line+":"+e.charPositionInLine+" ");
                 if ( e instanceof MismatchedTokenException ) {
                         MismatchedTokenException mte = (MismatchedTokenException)e;
@@ -182,7 +196,9 @@ grammar RuleParser;
                         FailedPredicateException fpe = (FailedPredicateException)e;
                         message.append("rule "+fpe.ruleName+" failed predicate: {"+
                                                            fpe.predicateText+"}?");
-                }
+                } else if (e instanceof ExpanderException) {
+			message.append(" " + e.getMessage());
+		}
                	return message.toString();
         }   
 }
@@ -345,7 +361,7 @@ rule returns [RuleDescr rule]
 			)
 					
 		)?
-		( opt_eol 'then' ':'?  opt_eol
+		( opt_eol loc='then' ':'?  opt_eol
 		( options{greedy=false;} : any=.
 			{
 				consequence = consequence + " " + any.getText();
@@ -353,7 +369,7 @@ rule returns [RuleDescr rule]
 		)*
 		{
 			if ( expander != null ) {
-				String expanded = runThenExpander( consequence );
+				String expanded = runThenExpander( consequence, loc.getLine() );
 				rule.setConsequence( expanded );
 			} else { 
 				rule.setConsequence( consequence ); 
@@ -506,11 +522,11 @@ expander_lhs_block[AndDescr descrs]
 
 	:
 		(options{greedy=false;} : 
-			text=paren_chunk EOL 
+			text=paren_chunk loc=EOL 
 			{
 				//only expand non null
 				if (text != null) {
-					runWhenExpander( text, descrs);
+					runWhenExpander( text, descrs, loc.getLine());
 					text = null;
 				}
 			}

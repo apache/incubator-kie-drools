@@ -1,0 +1,15 @@
+#this will show error line numbers due to failure to expand
+package expanderFoo
+
+expander foo.dsl
+
+rule nonsense 
+  when
+	blah blah
+	Good()
+	wee wee
+  then
+  	yabba yabba
+  	goo goo
+  	Good()
+end
