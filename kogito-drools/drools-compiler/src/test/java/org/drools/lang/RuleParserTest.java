@@ -1087,7 +1087,6 @@ public class RuleParserTest extends TestCase {
     public void testMultipleErrors() throws Exception {
     		parseResource( "multiple_errors.drl" ).compilation_unit();
     		assertTrue( parser.hasErrors() );
-    		System.err.println( parser.getErrorMessages() );
     		assertEquals( 2, parser.getErrors().size() );
     }
     
@@ -1123,7 +1122,20 @@ public class RuleParserTest extends TestCase {
     		assertFalse( parser.hasErrors() );
     }
     
-    public void XXX_testEvalWithNewline() throws Exception {
+    public void testRuleNamesStartingWithNumbers() throws Exception {
+    		parseResource( "rule_names_number_prefix.drl" ).compilation_unit();
+    		
+    		assertFalse( parser.hasErrors() );
+    		
+    		PackageDescr pkg = parser.getPackageDescr();
+    		
+    		assertEquals( 2, pkg.getRules().size() );
+    		
+    		assertEquals( "1. Do Stuff!", ((RuleDescr)pkg.getRules().get( 0 )).getName() );
+    		assertEquals( "2. Do More Stuff!", ((RuleDescr)pkg.getRules().get( 1 )).getName() );
+    }
+    
+    public void FIXME_testEvalWithNewline() throws Exception {
     		parseResource( "eval_with_newline.drl" ).compilation_unit();
     		
     		System.err.println( parser.getErrorMessages() );
