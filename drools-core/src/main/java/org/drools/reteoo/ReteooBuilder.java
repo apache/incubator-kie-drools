@@ -16,15 +16,13 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
@@ -37,10 +35,10 @@ import org.drools.common.BetaNodeBinder;
 import org.drools.common.InstanceEqualsConstraint;
 import org.drools.rule.And;
 import org.drools.rule.Column;
-import org.drools.rule.GroupElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Exists;
+import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
@@ -49,7 +47,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldValue;
-import org.drools.spi.ObjectType;
 import org.drools.spi.ObjectTypeResolver;
 
 /**
@@ -89,7 +86,7 @@ class ReteooBuilder implements Serializable {
 
     private Map                      rules;
     
-    private List                     objectType;
+    private Map                      objectType;
 
     // ------------------------------------------------------------
     // Constructors
@@ -172,7 +169,7 @@ class ReteooBuilder implements Serializable {
         this.objectSource = null;
         this.tupleSource = null;
         this.declarations = new HashMap();
-        this.objectType = new ArrayList();
+        this.objectType = new LinkedHashMap();
 
         if ( rule instanceof Query ) {
             attachQuery( rule.getName() );
@@ -198,7 +195,8 @@ class ReteooBuilder implements Serializable {
                 column = (Column) object;
 
                 binder = attachColumn( (Column) object,
-                                       and );
+                                       and,
+                                       true );
 
                 // If a tupleSource does not exist then we need to adapt this
                 // into
@@ -222,7 +220,8 @@ class ReteooBuilder implements Serializable {
                 }
                 column = (Column) ce.getChildren().get( 0 );
                 binder = attachColumn( column,
-                                       and );
+                                       and, 
+                                       false );
 
                 // If a tupleSource does not exist then we need to adapt an
                 // InitialFact into a a TupleSource using LeftInputAdapterNode
@@ -294,7 +293,8 @@ class ReteooBuilder implements Serializable {
     }
 
     private BetaNodeBinder attachColumn(Column column,
-                                        GroupElement parent) throws InvalidPatternException {
+                                        GroupElement parent,
+                                        boolean removeIdentities) throws InvalidPatternException {
         // Check if the Column is bound
         if ( column.getDeclaration() != null ) {
             Declaration declaration = column.getDeclaration();
@@ -302,7 +302,7 @@ class ReteooBuilder implements Serializable {
             this.declarations.put(  declaration.getIdentifier(), declaration );
         }
 
-        List predicates = attachAlphaNodes( column );
+        List predicates = attachAlphaNodes( column, removeIdentities );
 
         BetaNodeBinder binder;
 
@@ -315,7 +315,7 @@ class ReteooBuilder implements Serializable {
         return binder;
     }
 
-    public List attachAlphaNodes(Column column) throws InvalidPatternException {
+    public List attachAlphaNodes( Column column, boolean removeIdentities ) throws InvalidPatternException {
         List constraints = column.getConstraints();
 
         Class thisClass = ( ( ClassObjectType ) column.getObjectType() ).getClassType();
@@ -326,17 +326,20 @@ class ReteooBuilder implements Serializable {
         
         List predicateConstraints = new ArrayList();
         
-        // Check if this object type exists before
-        // If it does we need stop instance equals cross product
-        for ( int i = 0, size = this.objectType.size(); i < size; i++ ) {
-            Class previousClass = ( ( ClassObjectType ) this.objectType.get( i ) ).getClassType();
-            if ( thisClass.isAssignableFrom( previousClass ) ) {
-                predicateConstraints.add( new InstanceEqualsConstraint( i ) );
+        if( removeIdentities ) {
+            // Check if this object type exists before
+            // If it does we need stop instance equals cross product
+            for ( Iterator it = this.objectType.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) it.next();
+                Class previousClass = ( ( ClassObjectType ) entry.getKey() ).getClassType();
+                if ( thisClass.isAssignableFrom( previousClass ) ) {
+                    predicateConstraints.add( new InstanceEqualsConstraint( ((Integer)entry.getValue()).intValue() ) );
+                }
             }
+            
+            // Must be added after the checking, otherwise it matches against itself
+            this.objectType.put( column.getObjectType(), new Integer(column.getFactIndex()) );
         }
-        
-        // Must be added after the checking, otherwise it matches against itself
-        this.objectType.add( column.getObjectType() );
 
         for ( Iterator it = constraints.iterator(); it.hasNext(); ) {
             Object object = it.next();
@@ -374,7 +377,7 @@ class ReteooBuilder implements Serializable {
         if ( not.getChild() instanceof Not ) {
 
             RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                                           column.getIndex(),
+                                                                                                           column.getFactIndex(),
                                                                                                            notNode ) );
             attachNot( tupleSource,
                        (Not) not.getChild(),
@@ -383,7 +386,7 @@ class ReteooBuilder implements Serializable {
                        column );
         } else if ( not.getChild() instanceof Exists ) {
             RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                                           column.getIndex(),
+                                                                                                           column.getFactIndex(),
                                                                                                            notNode ) );
             attachExists( tupleSource,
                           (Exists) not.getChild(),
@@ -405,7 +408,7 @@ class ReteooBuilder implements Serializable {
                                                              ObjectSource,
                                                              binder ) );
         RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                                       column.getIndex(),
+                                                                                                       column.getFactIndex(),
                                                                                                        notNode ) );
         notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                      tupleSource,
@@ -414,7 +417,7 @@ class ReteooBuilder implements Serializable {
 
         if ( exists.getChild() instanceof Not ) {
             adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                     column.getIndex(),
+                                                                                     column.getFactIndex(),
                                                                                      notNode ) );
             attachNot( tupleSource,
                        (Not) exists.getChild(),
@@ -423,7 +426,7 @@ class ReteooBuilder implements Serializable {
                        column );
         } else if ( exists.getChild() instanceof Exists ) {
             adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                     column.getIndex(),
+                                                                                     column.getFactIndex(),
                                                                                      notNode ) );
             attachExists( tupleSource,
                           (Exists) exists.getChild(),

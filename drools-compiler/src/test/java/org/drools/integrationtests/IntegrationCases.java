@@ -366,12 +366,12 @@ public abstract class IntegrationCases extends TestCase {
 
         workingMemory.fireAllRules();
 
-        assertEquals( 2,
+        assertEquals( 4,
                       list.size() );
-        assertEquals( new Integer( 5 ),
-                      list.get( 0 ) );
-        assertEquals( new Integer( 6 ),
-                      list.get( 1 ) );
+        Assert.assertTrue( list.contains( new Integer( 5 ) ) );
+        Assert.assertTrue( list.contains( new Integer( 6 ) ) );
+        Assert.assertTrue( list.contains( new Integer( 7 ) ) );
+        Assert.assertTrue( list.contains( new Integer( 8 ) ) );
     }
 
     public void testNotWithBindings() throws Exception {
