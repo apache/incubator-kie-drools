@@ -4,6 +4,7 @@ rule simple_rule
   when
 	Foo(bar == false)
 	Foo(boo > -42)
+	Foo(boo > -42.42)
   then
 	cons();
 end

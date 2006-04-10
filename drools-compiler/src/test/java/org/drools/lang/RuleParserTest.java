@@ -168,7 +168,9 @@ public class RuleParserTest extends TestCase {
     
     
     public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
-        RuleDescr rule = parseResource( "literal_bool_and_negative.drl" ).rule();
+        RuleParser parser = parseResource( "literal_bool_and_negative.drl" ); 
+        RuleDescr rule = parser.rule();
+        assertFalse(parser.hasErrors());
         
         assertNotNull( rule );
         
@@ -177,7 +179,7 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "cons();", rule.getConsequence() );
         
         AndDescr lhs = rule.getLhs();
-        assertEquals(2, lhs.getDescrs().size());
+        assertEquals(3, lhs.getDescrs().size());
         
         ColumnDescr col = (ColumnDescr) lhs.getDescrs().get( 0 );
         assertEquals(1, col.getDescrs().size());
@@ -193,6 +195,13 @@ public class RuleParserTest extends TestCase {
         assertEquals(">", lit.getEvaluator());
         assertEquals( "-42", lit.getText() );
         assertEquals( "boo", lit.getFieldName() );
+        
+        col = (ColumnDescr) lhs.getDescrs().get( 2 );
+        assertEquals( 1, col.getDescrs().size() );
+        lit = (LiteralDescr) col.getDescrs().get( 0 );
+        assertEquals(">", lit.getEvaluator());
+        assertEquals( "-42.42", lit.getText() );
+        assertEquals( "boo", lit.getFieldName() );        
         
     		assertFalse( parser.hasErrors() );
     }    
