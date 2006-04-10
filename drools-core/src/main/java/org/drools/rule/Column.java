@@ -51,7 +51,7 @@ public class Column
         if ( identifier != null ) {
             this.declaration = new Declaration( identifier,
                                                 new ColumnExtractor( objectType ),
-                                                index-offset );
+                                                this.getFactIndex() );
         } else {
             this.declaration = null;
         }
@@ -79,7 +79,7 @@ public class Column
         }
         Declaration declaration = new Declaration( identifier,
                                                    extractor,
-                                                   index-offset );
+                                                   this.getFactIndex() );
         this.constraints.add( declaration );
         return declaration;
 
