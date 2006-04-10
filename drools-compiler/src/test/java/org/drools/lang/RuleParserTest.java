@@ -73,6 +73,18 @@ public class RuleParserTest extends TestCase {
 		
     		assertFalse( parser.hasErrors() );
 	}
+    
+    public void FIXME_testNewLinesFunnyBusiness() throws Exception {
+        RuleParser parser = parseResource( "eol_funny_business.drl" );
+        
+        parser.compilation_unit();
+        PackageDescr pkg = parser.getPackageDescr();
+
+        assertEquals(1, pkg.getRules().size());
+        
+        assertFalse(parser.hasErrors());
+        
+    }    
 	
 	public void testAlmostEmptyRule() throws Exception {
 		RuleDescr rule = parseResource( "almost_empty_rule.drl" ).rule();
