@@ -87,6 +87,8 @@ class ReteooBuilder implements Serializable {
     private Map                      rules;
     
     private Map                      objectType;
+    
+    private int                      currentOffsetAdjustment;
 
     // ------------------------------------------------------------
     // Constructors
@@ -126,6 +128,7 @@ class ReteooBuilder implements Serializable {
     void addRule(Rule rule) throws InvalidPatternException {
         // reset working memories for potential propagation
         this.workingMemories = (WorkingMemoryImpl[]) this.ruleBase.getWorkingMemories().toArray( new WorkingMemoryImpl[this.ruleBase.getWorkingMemories().size()] );
+        this.currentOffsetAdjustment = 0;
 
         List nodes = new ArrayList();
         And[] and = rule.getTransformedLhs();
@@ -219,21 +222,24 @@ class ReteooBuilder implements Serializable {
                     ce = (GroupElement) ce.getChildren().get( 0 );
                 }
                 column = (Column) ce.getChildren().get( 0 );
-                binder = attachColumn( column,
-                                       and, 
-                                       false );
 
                 // If a tupleSource does not exist then we need to adapt an
                 // InitialFact into a a TupleSource using LeftInputAdapterNode
                 if ( this.tupleSource == null ) {
+                    // adjusting offset as all tuples will now contain initial-fact at index 0
+                    this.currentOffsetAdjustment = 1;
+                    
                     ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
                                                                                 new ClassObjectType( InitialFact.class ),
                                                                                 this.rete ) );
 
                     this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
                                                                              objectSource ) );
-
                 }
+                
+                binder = attachColumn( column,
+                                       and, 
+                                       false );
             }
 
             if ( object instanceof Not ) {
@@ -295,6 +301,9 @@ class ReteooBuilder implements Serializable {
     private BetaNodeBinder attachColumn(Column column,
                                         GroupElement parent,
                                         boolean removeIdentities) throws InvalidPatternException {
+        // Adjusting offset in case a previous Initial-Fact was added to the network
+        column.adjustOffset( this.currentOffsetAdjustment );
+        
         // Check if the Column is bound
         if ( column.getDeclaration() != null ) {
             Declaration declaration = column.getDeclaration();
