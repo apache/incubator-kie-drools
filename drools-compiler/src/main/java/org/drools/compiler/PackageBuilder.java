@@ -301,10 +301,8 @@ public class PackageBuilder {
                                       String name,
                                       String ext,
                                       ResourceReader src) {
-        // replaces the first char if its a number and after that all non
-        // alphanumeric or $ chars with _
-        String newName = name.replaceAll( "(^[0-9]|[^\\w$])",
-                                          "_" );
+        // replaces all non alphanumeric or $ chars with _
+        String newName = "Rule_" + name.replaceAll( "[^\\w$]", "_" );
 
         // make sure the class name does not exist, if it does increase the counter
         int counter = -1;
