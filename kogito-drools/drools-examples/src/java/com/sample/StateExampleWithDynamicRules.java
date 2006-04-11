@@ -8,7 +8,7 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.reteoo.WorkingMemoryFileLogger;
 
-public class StateExample {
+public class StateExampleWithDynamicRules {
 
     /**
      * @param args
@@ -16,7 +16,7 @@ public class StateExample {
     public static void main(String[] args) throws  Exception {
         
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( StateExample.class.getResourceAsStream( "/State.drl" )) );        
+        builder.addPackageFromDrl( new InputStreamReader( StateExampleWithDynamicRules.class.getResourceAsStream( "/StateExampleUsingSalience.drl" )) );        
         
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
@@ -30,6 +30,7 @@ public class StateExample {
         State b = new State( "B" );
         State c = new State( "C" );
         State d = new State( "D" );
+        State e = new State( "E" );
 
         // By setting dynamic to TRUE, Drools will use JavaBean
         // PropertyChangeListeners so you don't have to call modifyObject().
@@ -39,7 +40,14 @@ public class StateExample {
         workingMemory.assertObject( b, dynamic );
         workingMemory.assertObject( c, dynamic );
         workingMemory.assertObject( d, dynamic );
+        workingMemory.assertObject( e, dynamic );
 
+        workingMemory.fireAllRules( );
+        
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( StateExampleWithDynamicRules.class.getResourceAsStream( "/StateExampleDynamicRule.drl" )) );
+        ruleBase.addPackage( builder.getPackage() );
+        
         workingMemory.fireAllRules( );
         
         logger.writeToDisk();

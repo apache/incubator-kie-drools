@@ -13,7 +13,7 @@ end
  
 rule "A to B"
 	when
-		a : State(name == "A", state == State.FINISHED )
+		State(name == "A", state == State.FINISHED )
 		b : State(name == "B", state == State.NOTRUN )		
 	then
 		System.out.println(b.getName() + " finished" );
@@ -23,7 +23,7 @@ end
 rule "B to C"
 	salience 10
 	when
-		b : State(name == "B", state == State.FINISHED )			
+		State(name == "B", state == State.FINISHED )			
 		c : State(name == "C", state == State.NOTRUN )
 	then
 		System.out.println(c.getName() + " finished" );
@@ -32,7 +32,7 @@ end
 
 rule "B to D"
 	when
-		b : State(name == "B", state == State.FINISHED )			
+		State(name == "B", state == State.FINISHED )			
 		d : State(name == "D", state == State.NOTRUN )
 	then
 		System.out.println(d.getName() + " finished" );
