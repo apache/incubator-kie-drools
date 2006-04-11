@@ -204,13 +204,15 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            and,
-                           false );
+                           false,
+                           false);
                     rule.addPattern( and );
                 } else if ( object instanceof OrDescr ) {
                     Or or = new Or();
                     build( rule,
                            (ConditionalElementDescr) object,
                            or,
+                           true,
                            false );
                     rule.addPattern( or );
                 } else if ( object instanceof NotDescr ) {
@@ -220,6 +222,7 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            not,
+                           true,
                            true );
                     rule.addPattern( not );
                     
@@ -236,6 +239,7 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            exists,
+                           true,
                            true );
                     // remove declarations bound inside not node
                     for ( Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
@@ -270,7 +274,8 @@ public class RuleBuilder {
     private void build(Rule rule,
                        ConditionalElementDescr descr,
                        GroupElement ce,
-                       boolean decrementOffset) {
+                       boolean decrementOffset,
+                       boolean decrementFirst) {
         for ( Iterator it = descr.getDescrs().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof ConditionalElementDescr ) {
@@ -280,28 +285,32 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            and,
-                           decrementOffset );
+                           false,
+                           false);
                 } else if ( object instanceof OrDescr ) {
                     Or or = new Or();
                     ce.addChild( or );
                     build( rule,
                            (ConditionalElementDescr) object,
                            or,
-                           decrementOffset );
+                           true,
+                           false);
                 } else if ( object instanceof NotDescr ) {
                     Not not = new Not();
                     ce.addChild( not );
                     build( rule,
                            (ConditionalElementDescr) object,
                            not,
-                           true );
+                           true,
+                           true);
                 } else if ( object instanceof ExistsDescr ) {
                     Exists exists = new Exists();
                     ce.addChild( exists );
                     build( rule,
                            (ConditionalElementDescr) object,
                            exists,
-                           true );
+                           true, 
+                           true);
                 } else if ( object instanceof EvalDescr ) {
                     EvalCondition eval = build( (EvalDescr) object );
                     if ( eval != null ) {
@@ -309,8 +318,10 @@ public class RuleBuilder {
                     }
                 }
             } else if ( object instanceof ColumnDescr ) {
-                if( decrementOffset ) {
+                if( decrementOffset && decrementFirst) {
                     this.columnOffset--;
+                } else {
+                    decrementFirst = true;
                 }
                 Column column = build( (ColumnDescr) object );
                 if ( column != null ) {
