@@ -48,41 +48,37 @@ final class TokenEvaluator {
         if (numberOfColumns > 0) {
             int dominantFactPosition = token.getCurrentRuleHandle()
                     .getDominantPosition();
+            FactHandleImpl dominantFactHandle = token.getDominantFactHandle();
             if (leapsRule.getColumnConstraintsAtPosition(dominantFactPosition)
-                    .isAllowedAlpha(token.getDominantFactHandle(), token,
-                            workingMemory)) {
+                    .isAllowedAlpha(dominantFactHandle, token, workingMemory)) {
+                FactHandleImpl interatorStartFactHandle;
+                FactTable factTable;
+                Class dominantClass = leapsRule.getColumnClassObjectTypeAtPosition(dominantFactPosition);
+                Class columnClass;
                 TableIterator[] iterators = new TableIterator[numberOfColumns];
                 // getting iterators first
                 for (int i = 0; i < numberOfColumns; i++) {
                     if (i == dominantFactPosition) {
-                        iterators[i] = Table.singleItemIterator(token
-                                .getDominantFactHandle());
+                        iterators[i] = Table.singleItemIterator(dominantFactHandle);
                     } else {
-                        if (i > 0
-                                && leapsRule.getColumnConstraintsAtPosition(i)
-                                        .isAlphaPresent()) {
-                            iterators[i] = workingMemory
-                                    .getFactTable(
-                                            leapsRule
-                                                    .getColumnClassObjectTypeAtPosition(i))
-                                    .tailConstrainedIterator(
+                        columnClass = leapsRule.getColumnClassObjectTypeAtPosition(i);
+                        factTable = workingMemory.getFactTable(columnClass);
+                        interatorStartFactHandle = new FactHandleImpl(
+                                dominantFactHandle.getId()
+                                        - (dominantClass == columnClass ? 1 : 0),
+                                null); 
+                        if (i > 0 && leapsRule.getColumnConstraintsAtPosition(i).isAlphaPresent()) {
+                            iterators[i] = factTable.tailConstrainedIterator(
                                             workingMemory,
-                                            leapsRule
-                                                    .getColumnConstraintsAtPosition(i),
-                                            token.getDominantFactHandle(),
-                                            (token.isResume() ? token.get(i)
-                                                    : token
-                                                            .getDominantFactHandle()));
+                                            leapsRule.getColumnConstraintsAtPosition(i),
+                                            interatorStartFactHandle,
+                                            (token.isResume() ? (FactHandleImpl)token.get(i) 
+                                                    : interatorStartFactHandle));
                         } else {
-                            iterators[i] = workingMemory
-                                    .getFactTable(
-                                            leapsRule
-                                                    .getColumnClassObjectTypeAtPosition(i))
-                                    .tailIterator(
-                                            token.getDominantFactHandle(),
-                                            (token.isResume() ? token.get(i)
-                                                    : token
-                                                            .getDominantFactHandle()));
+                            iterators[i] = factTable.tailIterator(
+                                    interatorStartFactHandle,
+                                            (token.isResume() ? (FactHandleImpl)token.get(i) 
+                                                    : interatorStartFactHandle));
                         }
                     }
                 }
@@ -100,10 +96,8 @@ final class TokenEvaluator {
                         someIteratorsEmpty = true;
                     } else {
                         if (!doReset) {
-                            if (skip
-                                    && currentIterator.hasNext()
-                                    && !currentIterator.peekNext().equals(
-                                            token.get(i))) {
+                            if (skip && currentIterator.hasNext()
+                                    && !currentIterator.peekNext().equals(token.get(i))) {
                                 skip = false;
                                 doReset = true;
                             }
@@ -146,13 +140,11 @@ final class TokenEvaluator {
                         if (jj == 0 && jj != dominantFactPosition) {
                             localMatch = leapsRule
                                     .getColumnConstraintsAtPosition(jj)
-                                    .isAllowed(token.get(jj), token,
-                                            workingMemory);
+                                    .isAllowed(token.get(jj), token, workingMemory);
                         } else {
                             localMatch = leapsRule
                                     .getColumnConstraintsAtPosition(jj)
-                                    .isAllowedBeta(token.get(jj), token,
-                                            workingMemory);
+                                    .isAllowedBeta(token.get(jj), token, workingMemory);
                         }
 
                         if (localMatch) {
