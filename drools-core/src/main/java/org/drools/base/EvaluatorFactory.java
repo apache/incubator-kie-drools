@@ -93,9 +93,5 @@ public class EvaluatorFactory {
                 throw new RuntimeException( "Type '" + type + "' does not exist for BaseEvaluatorFactory" );
         }
     }
-
-    
-    
-    
     
 }
