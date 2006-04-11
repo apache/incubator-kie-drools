@@ -63,7 +63,6 @@ import javax.rules.admin.RuleExecutionSet;
  */
 public class ExampleRuleEngineFacade
 {
-
     public static final String RULE_SERVICE_PROVIDER = "http://drools.org/";
 
     private RuleAdministrator ruleAdministrator;
@@ -104,7 +103,33 @@ public class ExampleRuleEngineFacade
         ruleAdministrator.registerRuleExecutionSet(
             bindUri, ruleExecutionSet, null );
     }
+    
+    public void addRuleExecutionSet(
+            String bindUri, InputStream resourceAsStream, java.util.Map properties ) throws Exception
+        {
+            Reader ruleReader = new InputStreamReader( resourceAsStream );
 
+            RuleExecutionSet ruleExecutionSet =
+                ruleSetProvider.createRuleExecutionSet( ruleReader, properties );
+
+            ruleAdministrator.registerRuleExecutionSet(
+                bindUri, ruleExecutionSet, properties );
+        }
+    /**
+     * Returns a named <code>StatelessRuleSession</code>.
+     *
+     * 
+     * @return StatelessRuleSession
+     * @throws Exception
+     */
+    public StatelessRuleSession getStatelessRuleSession( String key, java.util.Map properties)
+        throws Exception
+    {
+        ruleRuntime = ruleServiceProvider.getRuleRuntime( );
+
+        return ( StatelessRuleSession ) ruleRuntime.createRuleSession(
+            key, properties, RuleRuntime.STATELESS_SESSION_TYPE );
+    }
     /**
      * Returns a named <code>StatelessRuleSession</code>.
      *
@@ -112,23 +137,26 @@ public class ExampleRuleEngineFacade
      * @return StatelessRuleSession
      * @throws Exception
      */
-    public StatelessRuleSession getStatelessRuleSession( String key)
+    public StatelessRuleSession getStatelessRuleSession( String key )
         throws Exception
     {
-        ruleRuntime = ruleServiceProvider.getRuleRuntime( );
-
-        return ( StatelessRuleSession ) ruleRuntime.createRuleSession(
-            key, null, RuleRuntime.STATELESS_SESSION_TYPE );
+        return this.getStatelessRuleSession( key, null );
     }
 
     public StatefulRuleSession getStatefulRuleSession( String key )
         throws Exception
     {
-        ruleRuntime = ruleServiceProvider.getRuleRuntime( );
-
-        return ( StatefulRuleSession ) ruleRuntime.createRuleSession(
-            key, null, RuleRuntime.STATEFUL_SESSION_TYPE );
+        return this.getStatefulRuleSession(key, null);
     }
+    
+    public StatefulRuleSession getStatefulRuleSession( String key, java.util.Map properties )
+    throws Exception
+{
+    ruleRuntime = ruleServiceProvider.getRuleRuntime( );
+
+    return ( StatefulRuleSession ) ruleRuntime.createRuleSession(
+        key, properties, RuleRuntime.STATEFUL_SESSION_TYPE );
+}
 
     public RuleServiceProvider getRuleServiceProvider( )
     {
