@@ -128,8 +128,9 @@ public class ScheduledAgendaItem extends TimerTask
     /**
      * Handle the firing of an alarm.
      */
-    public void run() {
+    public void run() { 
         this.agenda.fireActivation( this );
+        this.agenda.getWorkingMemory().fireAllRules();
     }
 
     public long getActivationNumber() {

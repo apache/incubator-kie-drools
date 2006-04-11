@@ -100,6 +100,10 @@ public class Agenda
         this.focusStack.add( this.main );
 
     }
+    
+    public WorkingMemory getWorkingMemory() {
+        return this.workingMemory;
+    }
 
     /**
      * Clears all Activations from the Agenda

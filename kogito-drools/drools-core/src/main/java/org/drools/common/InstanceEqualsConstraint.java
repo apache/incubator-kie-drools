@@ -26,7 +26,7 @@ public class InstanceEqualsConstraint implements FieldConstraint {
     }
     
     public String toString() {
-        return this.getClass().getSimpleName()+"[ otherColumn == "+this.otherColumn+" ]";
+        return this.getClass().getName()+"[ otherColumn == "+this.otherColumn+" ]";
     }
 
 }

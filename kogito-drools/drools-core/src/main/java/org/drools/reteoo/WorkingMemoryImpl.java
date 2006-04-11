@@ -235,7 +235,7 @@ public class WorkingMemoryImpl
         return this.ruleBase;
     }
 
-    public void fireAllRules(AgendaFilter agendaFilter) throws FactException {
+    public synchronized void fireAllRules(AgendaFilter agendaFilter) throws FactException {
         // If we're already firing a rule, then it'll pick up
         // the firing for any other assertObject(..) that get
         // nested inside, avoiding concurrent-modification
