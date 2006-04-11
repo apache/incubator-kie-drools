@@ -1,0 +1,12 @@
+package com.sample
+ 
+import com.sample.State;
+
+rule "D to E"
+	when
+		State(name == "D", state == State.FINISHED )			
+		e : State(name == "E", state == State.NOTRUN )
+	then
+		System.out.println(e.getName() + " finished" );
+		e.setState( State.FINISHED );
+end

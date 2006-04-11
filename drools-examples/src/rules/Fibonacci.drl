@@ -2,6 +2,15 @@ package com.sample
 
 import com.sample.FibonacciExample.Fibonacci;
 
+rule Recurse
+	salience 10
+	when
+		f : Fibonacci ( value == -1 )
+	then
+		assert( new Fibonacci( f.getSequence() - 1 ) );
+		System.out.println( "recurse for " + f.getSequence() );
+end
+
 rule Bootstrap1
 	salience 20
 	when
@@ -18,16 +27,7 @@ rule Bootstrap2
 	then 
 		f.setValue( 1 );		
 		modify( f );
-		System.out.println( f.getSequence() + "==" + f.getValue() );		
-end
-
-rule Recurse
-	salience 10
-	when
-		f : Fibonacci ( value == -1 )
-	then
-		assert( new Fibonacci( f.getSequence() - 1 ) );
-		System.out.println( "recurse for " + f.getSequence() );
+		System.out.println( f.getSequence() + " == " + f.getValue() );		
 end
 
 rule Calculate
