@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <section>
   <title>WorkingMemory</title>
 
@@ -43,15 +43,9 @@
   <section>
     <title>Shadow Facts</title>
 
-    <para>A shadow fact is a shallow copy of an asserted object. Shadow facts
-    are cached version of a given object asserted to the working memory. The
-    term shadow facts is common known as a feature of JESS (Java Expert System
-    Shell). The origins of shadow facts trace back to Truth maintenance
-    concepts. A running system may alter a fact during evaluation. When this
-    occurs, the rule engine must know a modification occurred and handle the
-    change appropriately. One way to handle changes in an orderly fashion is
-    to cache a shallow copy of an object. As of Drools 3.0, shadow facts
-    hasn't been implemented, but it is planned for the future.</para>
+    <para>A shadow fact is a shallow copy of an asserted object. Shadow facts are cached copies of object asserted to the working memory. The term shadow facts is commonly known as a feature of JESS (Java Expert System Shell).</para> 
+    <para>The origins of shadow facts traces back to the concept of truth maintenance. The basic idea is that an expert system should gaurantee the derived conclusions are accurate. A running system may alter a fact during evaluation. When this occurs, the rule engine must know a modification occurred and handle the change appropriately. There's generally two ways to gaurantee truthfullness. The first is to lock all the facts during the inference process. The second is to make a cache copy of an object and force all modifications to go through the rule engine. This way, the changes are processed in an orderly fashion. Shadow facts are particularly important in multi-threaded environments, where an engine is shared by multiple sessions. Without truth maintenance, a system has a difficult time proving the results are accurate. The primary benefit of shadow facts is it makes development easier. When developers are forced to keep track of fact modifications, it can lead to errors, which are difficult to debug. Building a moderately complex system using a rule engine is hard enough without adding the burden of tracking changes to facts and when they should notify the rule engine.</para>
+    <para>As of Drools 3.0, shadow facts hasn't been implemented, but it is planned for the future.</para>
   </section>
 
   <section>
