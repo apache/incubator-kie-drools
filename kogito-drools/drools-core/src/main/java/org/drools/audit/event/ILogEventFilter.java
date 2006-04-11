@@ -1,4 +1,4 @@
-package org.drools.reteoo.event;
+package org.drools.audit.event;
 
 /*
  * Copyright 2005 JBoss Inc

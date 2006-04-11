@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.audit;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -22,6 +22,11 @@ import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.audit.event.ActivationLogEvent;
+import org.drools.audit.event.ILogEventFilter;
+import org.drools.audit.event.LogEvent;
+import org.drools.audit.event.ObjectLogEvent;
+import org.drools.common.InternalFactHandle;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -31,10 +36,6 @@ import org.drools.event.ObjectAssertedEvent;
 import org.drools.event.ObjectModifiedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.WorkingMemoryEventListener;
-import org.drools.reteoo.event.ActivationLogEvent;
-import org.drools.reteoo.event.ILogEventFilter;
-import org.drools.reteoo.event.LogEvent;
-import org.drools.reteoo.event.ObjectLogEvent;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
@@ -56,6 +57,7 @@ import org.drools.spi.Tuple;
 public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener, AgendaEventListener {
 
 	private List filters = new ArrayList();
+	private WorkingMemory workingMemory;
 	
 	/**
 	 * Creates a new working memory logger for the given working memory.
@@ -63,6 +65,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	 * @param workingMemory
 	 */
 	public WorkingMemoryLogger(WorkingMemory workingMemory) {
+		this.workingMemory = workingMemory;
 		workingMemory.addEventListener((WorkingMemoryEventListener) this);
 		workingMemory.addEventListener((AgendaEventListener) this);
 	}
@@ -134,7 +137,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	public void objectAsserted(ObjectAssertedEvent event) {
 		filterLogEvent(new ObjectLogEvent(
 			LogEvent.OBJECT_ASSERTED,
-			((FactHandleImpl) event.getFactHandle()).getId(), 
+			((InternalFactHandle) event.getFactHandle()).getId(), 
 			event.getObject().toString()));
 	}
 
@@ -144,7 +147,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	public void objectModified(ObjectModifiedEvent event) {
 		filterLogEvent(new ObjectLogEvent(
 			LogEvent.OBJECT_MODIFIED,
-			((FactHandleImpl) event.getFactHandle()).getId(), 
+			((InternalFactHandle) event.getFactHandle()).getId(), 
 			event.getObject().toString()));
 	}
 
@@ -154,7 +157,7 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	public void objectRetracted(ObjectRetractedEvent event) {
 		filterLogEvent(new ObjectLogEvent(
 			LogEvent.OBJECT_RETRACTED,
-			((FactHandleImpl) event.getFactHandle()).getId(), 
+			((InternalFactHandle) event.getFactHandle()).getId(), 
 			event.getOldObject().toString()));
 	}
 	
@@ -212,16 +215,16 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	 * @param activation The activation from which the declarations should be extracted
 	 * @return A String represetation of the declarations of the activation.
 	 */
-	private static String extractDeclarations(Activation activation) {
+	private String extractDeclarations(Activation activation) {
 		StringBuffer result = new StringBuffer();
 		Tuple tuple = activation.getTuple();
         Declaration[] declarations = activation.getRule().getDeclarations(); 
         for ( int i = 0, length = declarations.length; i < length; i++  ) {
 			Declaration declaration = declarations[i];
 			FactHandle handle = tuple.get(declaration);
-			if (handle instanceof FactHandleImpl) {
-				FactHandleImpl handleImpl = (FactHandleImpl) handle;
-				Object value = handleImpl.getObject();
+			if (handle instanceof InternalFactHandle) {
+				InternalFactHandle handleImpl = (InternalFactHandle) handle;
+				Object value = workingMemory.getObject(handle);
 				result.append(declaration.getIdentifier());
 				result.append("=");
 				if (value == null) {
@@ -254,10 +257,10 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 	private static String getActivationId(Activation activation) {
 		StringBuffer result = new StringBuffer(activation.getRule().getName());
 		result.append(" [");
-		ReteTuple tuple = (ReteTuple) activation.getTuple();
-		FactHandle[] handles = tuple.getKey().getFactHandles();
+		Tuple tuple = activation.getTuple();
+		FactHandle[] handles = tuple.getFactHandles();
 		for (int i = 0; i < handles.length; i++) {
-			result.append(((FactHandleImpl) handles[i]).getId());
+			result.append(((InternalFactHandle) handles[i]).getId());
 			if (i < handles.length - 1) {
 				result.append(", ");
 			}
