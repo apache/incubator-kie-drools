@@ -224,7 +224,8 @@ public abstract class WorkingMemoryLogger implements WorkingMemoryEventListener,
 			FactHandle handle = tuple.get(declaration);
 			if (handle instanceof InternalFactHandle) {
 				InternalFactHandle handleImpl = (InternalFactHandle) handle;
-				Object value = workingMemory.getObject(handle);
+				Object value = declaration.getValue(workingMemory.getObject(handle));
+				
 				result.append(declaration.getIdentifier());
 				result.append("=");
 				if (value == null) {
