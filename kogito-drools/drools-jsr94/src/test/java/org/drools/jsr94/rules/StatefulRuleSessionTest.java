@@ -42,16 +42,19 @@ package org.drools.jsr94.rules;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.rules.Handle;
 import javax.rules.ObjectFilter;
+import javax.rules.StatelessRuleSession;
 
 /**
  * Test the <code>StatefulRuleSession</code> implementation.
  *
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
+ * @author <a href="mailto:michael.frandsen@syngenio.de">Michael Frandsen </a>
  * @see javax.rules.StatefulRuleSession
  */
 public class StatefulRuleSessionTest extends RuleEngineTestBase
@@ -69,6 +72,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase
      */
     public void testContainsObject( ) throws Exception
     {
+        this.statefulSession = engine.getStatefulRuleSession( bindUri );
         Person bob = new Person( "bob" );
         Handle handle = statefulSession.addObject( bob );
         assertTrue( "where is bob", statefulSession.containsObject( handle ) );
@@ -94,6 +98,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase
      */
     public void testAddObjects( ) throws Exception
     {
+        this.statefulSession = engine.getStatefulRuleSession( bindUri );
         List inObjects = new ArrayList( );
 
         Person bob = new Person( "bob" );
@@ -130,6 +135,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase
      */
     public void testUpdateObject( ) throws Exception
     {
+        this.statefulSession = engine.getStatefulRuleSession( bindUri );
         Person bob = new Person( "bob" );
         Handle handle = statefulSession.addObject( bob );
         statefulSession.updateObject( handle, bob = new Person( "boby" ) );
@@ -142,6 +148,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase
      */
     public void testRemoveObject( ) throws Exception
     {
+        this.statefulSession = engine.getStatefulRuleSession( bindUri );
         Person bob = new Person( "bob" );
         Handle handle = statefulSession.addObject( bob );
         assertTrue( "where is bob", statefulSession.containsObject( handle ) );
@@ -156,6 +163,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase
      */
     public void testGetObjects( ) throws Exception
     {
+        this.statefulSession = engine.getStatefulRuleSession( bindUri );
 
         Person bob = new Person( "bob" );
         statefulSession.addObject( bob );
@@ -188,6 +196,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase
      */
     public void testGetObjectsWithFilter( ) throws Exception
     {
+        this.statefulSession = engine.getStatefulRuleSession( bindUri );
 
         Person bob = new Person( "bob" );
         statefulSession.addObject( bob );
@@ -225,6 +234,8 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase
      */
     public void testReset( ) throws Exception
     {
+        this.statefulSession = engine.getStatefulRuleSession( bindUri );
+        
         Person bob = new Person( "bob" );
         Handle handle = statefulSession.addObject( bob );
         assertTrue( "where is bob", statefulSession.containsObject( handle ) );
@@ -233,7 +244,106 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase
         assertTrue(
             "bob still there", !statefulSession.containsObject( handle ) );
     }
+    
+    /**
+     * Test executeRules with globals.
+     */
+    public void testExecuteRulesGlobals( ) throws Exception
+    {
+        java.util.Map map = new HashMap();
+        java.util.Vector v = new java.util.Vector( );
+        map.put("vector",  v);
+        this.statefulSession = engine.getStatefulRuleSession( bindUri_globals, map );
+        
+        Person bob = new Person( "bob" );
+        statefulSession.addObject( bob );
 
+        Person rebecca = new Person( "rebecca" );
+        rebecca.addSister( "jeannie" );
+        statefulSession.addObject( rebecca );
+
+        Person jeannie = new Person( "jeannie" );
+        jeannie.addSister( "rebecca" );
+        statefulSession.addObject( jeannie );
+
+        // execute the rules
+        statefulSession.executeRules( );
+        
+        List outList = statefulSession.getObjects( );
+
+        assertEquals( "incorrect size", 5, outList.size( ) );
+
+        assertContains( outList, bob );
+
+        assertContains( outList, rebecca );
+
+        assertContains( outList, jeannie );
+
+        assertContains( outList, "rebecca and jeannie are sisters" );
+
+        assertContains( outList, "jeannie and rebecca are sisters" );
+        
+        v = (java.util.Vector)map.get("vector");
+        
+        assertNotNull("Global Vector null", v );
+        
+        assertContains( v, "rebecca and jeannie are sisters" );
+        
+        assertContains( v, "jeannie and rebecca are sisters" );
+        
+        assertEquals("Vector v incorrect size", 2, v.size());
+
+        statefulSession.release( );
+    }
+    
+    /**
+     * Test executeRules drl with dsl.
+     */
+    public void testExecuteRules_dsl( ) throws Exception
+    {
+        this.statefulSession = engine.getStatefulRuleSession( bindUri_drl );
+
+        Person bob = new Person( "bob" );
+        statefulSession.addObject( bob );
+
+        Person rebecca = new Person( "rebecca" );
+        rebecca.addSister( "jeannie" );
+        statefulSession.addObject( rebecca );
+
+        Person jeannie = new Person( "jeannie" );
+        jeannie.addSister( "rebecca" );
+        statefulSession.addObject( jeannie );
+
+        // execute the rules
+        statefulSession.executeRules( );
+        
+        List outList = statefulSession.getObjects( );
+
+        assertEquals( "incorrect size", 5, outList.size( ) );
+
+        assertContains( outList, bob );
+
+        assertContains( outList, rebecca );
+
+        assertContains( outList, jeannie );
+
+        assertContains( outList, "rebecca and jeannie are sisters" );
+
+        assertContains( outList, "jeannie and rebecca are sisters" );
+
+        statefulSession.release( );
+    }
+
+    protected void assertContains( List expected, Object object )
+    {
+        if ( expected.contains( object ) )
+        {
+            return;
+        }
+
+        fail( object + " not in " + expected );
+    }
+    
     /**
      * Filter accepts only objects of type Person.
      */
@@ -249,4 +359,5 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase
             // nothing to reset
         }
     }
+    
 }

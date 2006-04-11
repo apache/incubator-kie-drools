@@ -41,8 +41,13 @@ package org.drools.jsr94.rules;
  *
  */
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.rules.RuleServiceProvider;
 import javax.rules.StatefulRuleSession;
@@ -55,6 +60,7 @@ import junit.framework.TestCase;
  *
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
+ * @author <a href="mailto:michael.frandsen@syngenio.de">Michael Frandsen </a>
  */
 public abstract class RuleEngineTestBase extends TestCase
 {
@@ -65,6 +71,9 @@ public abstract class RuleEngineTestBase extends TestCase
     protected ExampleRuleEngineFacade engine;
 
     protected String bindUri = "sisters.drl";
+    protected String bindUri_drl = "sisters_expander.drl";
+    protected String bindUri_dsl = "sisters_expander.dsl";
+    protected String bindUri_globals = "sisters_globals.drl";
 
     protected RuleServiceProvider ruleServiceProvider;
 
@@ -76,11 +85,43 @@ public abstract class RuleEngineTestBase extends TestCase
         super.setUp( );
         engine = new ExampleRuleEngineFacade( );
         engine.addRuleExecutionSet( bindUri,
-            StatelessRuleSessionTest.class.getResourceAsStream( bindUri ) );
+                                    RuleEngineTestBase.class.getResourceAsStream( bindUri ) );
+        
+        Map map = new HashMap(); 
+        Reader reader = new InputStreamReader(RuleEngineTestBase.class.getResourceAsStream( bindUri_dsl ) );
+        
+        
+        map.put("dsl",this.getDSLText(reader).toString());
+        engine.addRuleExecutionSet( bindUri_drl,
+                                    RuleEngineTestBase.class.getResourceAsStream( bindUri_drl ), map );
+        
+        engine.addRuleExecutionSet( bindUri_globals,
+                                    RuleEngineTestBase.class.getResourceAsStream( bindUri_globals ) );
+        
+        
 
         this.ruleServiceProvider = engine.getRuleServiceProvider( );
-        this.statelessSession = engine.getStatelessRuleSession( bindUri );
-        this.statefulSession = engine.getStatefulRuleSession( bindUri );
+//        this.statelessSession = engine.getStatelessRuleSession( bindUri );
+//        this.statefulSession = engine.getStatefulRuleSession( bindUri );
+        
+        
+    }
+    
+    /*
+     * Taken from DRLParser
+     */
+    private StringBuffer getDSLText(Reader reader) throws IOException {
+        StringBuffer text = new StringBuffer();
+
+            char[] buf = new char[1024];
+            int len = 0;
+
+            while ( (len = reader.read( buf )) >= 0 ) {
+                text.append( buf,
+                             0,
+                             len );
+            }
+        return text;
     }
 
     /**
