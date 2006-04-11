@@ -70,9 +70,11 @@ class FactTable extends Table {
      * @param ruleHandle
      */
     public void addRule(WorkingMemoryImpl workingMemory, RuleHandle ruleHandle) {
-        this.rules.add(ruleHandle);
-        // push facts back to stack if needed
-        this.checkAndAddFactsToStack(workingMemory);
+        if (!this.rules.contains(ruleHandle)) {
+            this.rules.add(ruleHandle);
+            // push facts back to stack if needed
+            this.checkAndAddFactsToStack(workingMemory);
+        }
     }
 
     /**

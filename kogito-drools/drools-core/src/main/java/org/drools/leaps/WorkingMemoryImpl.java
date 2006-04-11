@@ -18,6 +18,7 @@ package org.drools.leaps;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -523,6 +524,12 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
      */
     protected List getFactTablesList(Class c) {
         ArrayList list = new ArrayList();
+        // interfaces
+        Class[] interfaces = c.getInterfaces();
+        for (int i = 0; i < interfaces.length; i++) {
+            list.add(this.getFactTable(interfaces[i]));
+        }
+        // classes
         Class bufClass = c;
         while (bufClass != null) {
             //
@@ -556,6 +563,22 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
         } else {
             table = new FactTable(DefaultConflictResolver.getInstance());
             this.factTables.put(c, table);
+            // review existing rules and assign to the fact table if needed
+            for (Iterator iter = this.leapsRulesToHandlesMap.keySet().iterator(); iter.hasNext();) {
+                LeapsRule leapsRule = (LeapsRule) iter.next();
+                if(leapsRule.getNumberOfColumns() > 0) {
+                    List rulesHandles = (List)this.leapsRulesToHandlesMap.get(leapsRule);
+                    for(Iterator handles = rulesHandles.iterator(); handles.hasNext();) {
+                        RuleHandle handle = (RuleHandle) handles.next();
+                        if (leapsRule.getColumnClassObjectTypeAtPosition(
+                                handle.getDominantPosition()).isAssignableFrom(
+                                c)) {
+                            table.addRule(this, handle);
+                        }
+                    }
+                }
+                
+            }
         }
 
         return table;
