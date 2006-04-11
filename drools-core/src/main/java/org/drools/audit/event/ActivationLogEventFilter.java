@@ -1,4 +1,4 @@
-package org.drools.reteoo.event;
+package org.drools.audit.event;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -40,7 +40,7 @@ public class ActivationLogEventFilter implements ILogEventFilter {
 	}
 	
 	/**
-	 * @see org.drools.reteoo.event.ILogEventFilter
+	 * @see org.drools.audit.event.ILogEventFilter
 	 */
 	public boolean acceptEvent(LogEvent event) {
 		switch (event.getType()) {
