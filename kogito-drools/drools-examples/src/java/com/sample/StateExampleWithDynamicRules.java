@@ -5,8 +5,8 @@ import java.io.InputStreamReader;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
-import org.drools.reteoo.WorkingMemoryFileLogger;
 
 public class StateExampleWithDynamicRules {
 
