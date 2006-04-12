@@ -32,56 +32,25 @@
     content of your dsl file as a String with the key "dsl" into the Map. The
     excerpt shows how it works:</para>
 
-    <para>...</para>
-
-    <para><code>Reader reader = new FileReader( "jsr94.dsl" );</code></para>
-
-    <para><code>StringBuffer text = new StringBuffer(); </code></para>
-
-    <para><code>char[] buf = new char[1024]; int len = 0;</code></para>
-
-    <para><code>//Writes the file content in the StringBuffer </code></para>
-
-    <para><code>while ( ( len = reader.read( buf ) ) &gt;= 0 ) </code></para>
-
-    <para><code>{ </code></para>
-
-    <para><code> text.append( buf, 0, len ); </code></para>
-
-    <para><code>}</code></para>
-
-    <para><code>HashMap properties = new java.util.HashMap( ); </code></para>
-
-    <para><code>properties.put( "name" , "JSR94_Example" ); </code></para>
-
-    <para><code>properties.put( "description", "no description" );
-    </code></para>
-
-    <para><code>//Put the dsl as a String, use the key "dsl"</code></para>
-
-    <para><code>properties.put( "dsl", text.toString( ) );</code></para>
-
-    <para><code>reader = new FileReader( "jsr94.drl" );</code></para>
-
-    <para><code>RuleServiceProviderManager.registerRuleServiceProvider(
-    "http://drools.org", Class.forName(
-    "org.drools.jsr94.rules.RuleServiceProviderImpl" ) );</code></para>
-
-    <para><code>RuleServiceProvider ruleServiceProvider =
-    RuleServiceProviderManager.getRuleServiceProvider( "http://drools.org"
-    );</code></para>
-
-    <para><code>RuleExecutionSet ruleExecutionSet =
-    ruleSetProvider.createRuleExecutionSet( reader, properties
-    );</code></para>
-
-    <para><code>RuleAdministrator ruleAdministrator =
-    ruleServiceProvider.getRuleAdministrator( );</code></para>
-
-    <para><code>ruleAdministrator.registerRuleExecutionSet( "JSR94_Example",
-    ruleExecutionSet, properties );</code></para>
-
-    <para>...</para>
+    <programlisting>Reader reader = new FileReader( "jsr94.dsl" );
+StringBuffer text = new StringBuffer();
+char[] buf = new char[1024]; int len = 0;
+//Writes the file content in the StringBuffer 
+while ( ( len = reader.read( buf ) ) &gt;= 0 ) 
+{ 
+ text.append( buf, 0, len );
+}
+HashMap properties = new java.util.HashMap( ); 
+properties.put( "name" , "JSR94_Example" ); 
+properties.put( "description", "no description" ); 
+//Put the dsl as a String, use the key "dsl"
+properties.put( "dsl", text.toString( ) );
+reader = new FileReader( "jsr94.drl" );
+RuleServiceProviderManager.registerRuleServiceProvider( "http://drools.org", Class.forName( "org.drools.jsr94.rules.RuleServiceProviderImpl" ) );
+RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider( "http://drools.org" );
+RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( reader, properties );
+RuleAdministrator ruleAdministrator = ruleServiceProvider.getRuleAdministrator( );
+ruleAdministrator.registerRuleExecutionSet( "JSR94_Example", ruleExecutionSet, properties );</programlisting>
 
     <para>Do not forget to declare the expander -in this case "jsr94.dsl"- in
     your rule file (drl).</para>
@@ -99,58 +68,30 @@
     results are collected in an java.util.Vector which is used as
     global:</para>
 
-    <para><code>java.util.Vector globalVector = new java.util.Vector(
-    );</code></para>
-
-    <para><code>java.util.Map map = new java.util.HashMap( );</code></para>
-
-    <para><code>map.put( "vector", globalVector ); </code></para>
-
-    <para><code>//Open a stateless Session StatelessRuleSession srs =
-    (StatelessRuleSession) runtime.createRuleSession( "SistersRules", map,
-    RuleRuntime.STATELESS_SESSION_TYPE );</code></para>
-
-    <para>...</para>
-
-    <para><code>// Persons added to List</code></para>
-
-    <para><code>// List given to Rule Engine as parameter of executeRules(
-    )</code></para>
-
-    <para><code>// fetch the vector from the map</code></para>
-
-    <para><code>v = (java.util.Vector)map.get("vector");</code></para>
-
-    <para></para>
+    <programlisting>java.util.Vector globalVector = new java.util.Vector( );
+java.util.Map map = new java.util.HashMap( );
+map.put( "vector", globalVector ); 
+//Open a stateless Session StatelessRuleSession srs = (StatelessRuleSession) runtime.createRuleSession( "SistersRules", map, RuleRuntime.STATELESS_SESSION_TYPE );
+...
+// Persons added to List
+// call executeRules( ) giving a List of Objects as parameter
+// There are rules which will put Objects in the Vector
+// fetch the vector from the map
+v = (java.util.Vector)map.get("vector");</programlisting>
 
     <para>Do not forget to declare the global "vector" in your DRL:</para>
 
-    <para></para>
-
-    <para><code>package SistersRules; </code></para>
-
-    <para><code>import org.drools.jsr94.rules.Person; </code></para>
-
-    <para><code>global java.util.Vector vector </code></para>
-
-    <para><code>rule FindSisters </code></para>
-
-    <para><code> when </code></para>
-
-    <para><code> $person1 : Person ( $name1:name ) </code></para>
-
-    <para><code> $person2 : Person ( $name2:name ) </code></para>
-
-    <para><code> eval( $person1.hasSister($person2) ) </code></para>
-
-    <para><code> then </code></para>
-
-    <para><code> vector.add($person1.getName() + " and " + $person2.getName()
-    +" are sisters"); </code></para>
-
-    <para><code> assert( $person1.getName() + " and " + $person2.getName() +"
-    are sisters"); </code></para>
-
-    <para><code>end</code></para>
+    <programlisting>package SistersRules; 
+import org.drools.jsr94.rules.Person; 
+global java.util.Vector vector 
+rule FindSisters 
+when 
+$person1 : Person ( $name1:name ) 
+$person2 : Person ( $name2:name ) 
+eval( $person1.hasSister($person2) ) 
+then 
+vector.add($person1.getName() + " and " + $person2.getName() +" are sisters"); 
+assert( $person1.getName() + " and " + $person2.getName() +" are sisters"); 
+end</programlisting>
   </section>
 </section>
