@@ -43,9 +43,7 @@ public class ColumnConstraints {
 
     private final boolean           betaPresent;
 
-    public ColumnConstraints(Column column,
-                             List alpha,
-                             BetaNodeBinder beta) {
+    public ColumnConstraints(Column column, List alpha, BetaNodeBinder beta) {
         this.classType = ((ClassObjectType) column.getObjectType()).getClassType();
 
         if ( beta != null ) {
@@ -68,40 +66,29 @@ public class ColumnConstraints {
         return this.classType;
     }
 
-    boolean isAllowed(FactHandle factHandle,
-                      Tuple tuple,
-                      WorkingMemory workingMemory) {
-        return this.isAllowedAlpha( factHandle,
-                                    tuple,
-                                    workingMemory ) && this.isAllowedBeta( factHandle,
-                                                                           tuple,
-                                                                           workingMemory );
+    boolean isAllowed(FactHandle factHandle, Tuple tuple, WorkingMemory workingMemory) {
+        return this.isAllowedAlpha(factHandle, tuple, workingMemory)
+                && this.isAllowedBeta(factHandle, tuple, workingMemory);
     }
 
     public boolean isAllowedAlpha(FactHandle factHandle,
                                   Tuple tuple,
                                   WorkingMemory workingMemory) {
-        boolean found = true;
         if ( this.alphaPresent ) {
-            for ( int i = 0, length = this.alphaConstraints.length; i < length && found; i++ ) {
+            for (int i = 0, length = this.alphaConstraints.length; i < length; i++) {
                 // escape immediately if some condition does not match
-                found = this.alphaConstraints[i].isAllowed( factHandle,
-                                                            tuple,
-                                                            workingMemory );
+                if (!this.alphaConstraints[i].isAllowed(factHandle, tuple, workingMemory)) {
+                    return false;
+                }
             }
-            return found;
         }
 
         return true;
     }
 
-    boolean isAllowedBeta(FactHandle factHandle,
-                          Tuple tuple,
-                          WorkingMemory workingMemory) {
-        if ( this.betaPresent ) {
-            return this.beta.isAllowed( factHandle,
-                                        tuple,
-                                        workingMemory );
+    boolean isAllowedBeta(FactHandle factHandle, Tuple tuple, WorkingMemory workingMemory) {
+        if (this.betaPresent) {
+            return this.beta.isAllowed(factHandle, tuple, workingMemory);
         }
 
         return true;
