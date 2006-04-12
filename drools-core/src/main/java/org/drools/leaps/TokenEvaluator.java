@@ -38,143 +38,142 @@ final class TokenEvaluator {
      * @throws Exception
      * @throws InvalidRuleException
      */
-    final static protected void evaluate(Token token)
-            throws NoMatchesFoundException, InvalidRuleException {
-        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) token
-                .getWorkingMemory();
+    final static protected void evaluate(Token token) throws NoMatchesFoundException,
+            InvalidRuleException {
+        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) token.getWorkingMemory();
         LeapsRule leapsRule = token.getCurrentRuleHandle().getLeapsRule();
         // sometimes there is no normal conditions, only not and exists
         int numberOfColumns = leapsRule.getNumberOfColumns();
         if (numberOfColumns > 0) {
-            int dominantFactPosition = token.getCurrentRuleHandle()
-                    .getDominantPosition();
+            int dominantFactPosition = token.getCurrentRuleHandle().getDominantPosition();
             FactHandleImpl dominantFactHandle = token.getDominantFactHandle();
             if (leapsRule.getColumnConstraintsAtPosition(dominantFactPosition)
                     .isAllowedAlpha(dominantFactHandle, token, workingMemory)) {
-                FactHandleImpl interatorStartFactHandle;
-                FactTable factTable;
-                Class dominantClass = leapsRule.getColumnClassObjectTypeAtPosition(dominantFactPosition);
-                Class columnClass;
+                Class dominantClass = leapsRule
+                        .getColumnClassObjectTypeAtPosition(dominantFactPosition);
                 TableIterator[] iterators = new TableIterator[numberOfColumns];
                 // getting iterators first
                 for (int i = 0; i < numberOfColumns; i++) {
                     if (i == dominantFactPosition) {
                         iterators[i] = Table.singleItemIterator(dominantFactHandle);
-                    } else {
-                        columnClass = leapsRule.getColumnClassObjectTypeAtPosition(i);
-                        factTable = workingMemory.getFactTable(columnClass);
-                        interatorStartFactHandle = new FactHandleImpl(
-                                dominantFactHandle.getId()
-                                        - (dominantClass == columnClass ? 1 : 0),
-                                null); 
-                        if (i > 0 && leapsRule.getColumnConstraintsAtPosition(i).isAlphaPresent()) {
-                            iterators[i] = factTable.tailConstrainedIterator(
-                                            workingMemory,
-                                            leapsRule.getColumnConstraintsAtPosition(i),
-                                            interatorStartFactHandle,
-                                            (token.isResume() ? (FactHandleImpl)token.get(i) 
-                                                    : interatorStartFactHandle));
-                        } else {
-                            iterators[i] = factTable.tailIterator(
-                                    interatorStartFactHandle,
-                                            (token.isResume() ? (FactHandleImpl)token.get(i) 
-                                                    : interatorStartFactHandle));
+                    }
+                    else {
+                        Class columnClass = leapsRule.getColumnClassObjectTypeAtPosition(i);
+                        ColumnConstraints constraints = leapsRule
+                                .getColumnConstraintsAtPosition(i);
+                        FactTable factTable = workingMemory.getFactTable(columnClass);
+                        // JBRULES-189
+                        FactHandleImpl startFactHandle = (dominantClass == columnClass) ? new FactHandleImpl(
+                                dominantFactHandle.getId() - 1, null)
+                                : dominantFactHandle;
+                        //
+                        if (i > 0 && constraints.isAlphaPresent()) {
+                            iterators[i] = factTable.tailConstrainedIterator(workingMemory,
+                                    constraints, startFactHandle,
+                                    (token.isResume() ? (FactHandleImpl) token.get(i)
+                                            : startFactHandle));
+                        }
+                        else {
+                            iterators[i] = factTable.tailIterator(startFactHandle, (token
+                                    .isResume() ? (FactHandleImpl) token.get(i)
+                                    : startFactHandle));
                         }
                     }
                 }
+                
                 // check if any iterators are empty to abort
                 // check if we resume and any starting facts disappeared than we
-                // do
-                // not do skip on resume
-                boolean someIteratorsEmpty = false;
+                // do not do skip on resume
                 boolean doReset = false;
                 boolean skip = token.isResume();
                 TableIterator currentIterator;
-                for (int i = 0; i < numberOfColumns && !someIteratorsEmpty; i++) {
+                for (int i = 0; i < numberOfColumns; i++) {
                     currentIterator = iterators[i];
+                    // check if one of them is empty and immediate return
                     if (currentIterator.isEmpty()) {
-                        someIteratorsEmpty = true;
-                    } else {
+                        throw new NoMatchesFoundException();
+                    }
+                    else {
                         if (!doReset) {
                             if (skip && currentIterator.hasNext()
                                     && !currentIterator.peekNext().equals(token.get(i))) {
+                                // we tried to resume but our fact handle at marker disappear
+                                // no need to resume just reset all interators positioned
+                                // at the marker where we stoped last time
                                 skip = false;
                                 doReset = true;
                             }
-                        } else {
+                        }
+                        else {
                             currentIterator.reset();
                         }
                     }
+                }
 
-                }
-                // check if one of them is empty and immediate return
-                if (someIteratorsEmpty) {
-                    throw new NoMatchesFoundException();
-                    // "some of tables do not have facts");
-                }
                 // iterating is done in nested loop
                 // column position in the nested loop
                 int jj = 0;
                 boolean done = false;
+                int stopIteratingCount = numberOfColumns - 1; 
                 while (!done) {
                     currentIterator = iterators[jj];
                     if (!currentIterator.hasNext()) {
                         if (jj == 0) {
                             done = true;
-                        } else {
-                            //                    
+                        }
+                        else {
+                            // nothing for this column, go back and check next 
+                            // on the one level up in nested loop
                             currentIterator.reset();
-                            token.set(jj, (FactHandleImpl) null);
                             jj = jj - 1;
                             if (skip) {
                                 skip = false;
                             }
                         }
-                    } else {
-                        currentIterator.next();
-                        token.set(jj, (FactHandleImpl) iterators[jj].current());
-                        // check if match found
-                        // we need to check only beta for dominant fact
+                    }
+                    else {
+                        FactHandleImpl currentFactHandle = (FactHandleImpl) currentIterator
+                                .next();
+                        // check if match found we need to check only beta for
+                        // dominant fact
                         // alpha was already checked
                         boolean localMatch = false;
-                        if (jj == 0 && jj != dominantFactPosition) {
-                            localMatch = leapsRule
-                                    .getColumnConstraintsAtPosition(jj)
-                                    .isAllowed(token.get(jj), token, workingMemory);
-                        } else {
-                            localMatch = leapsRule
-                                    .getColumnConstraintsAtPosition(jj)
-                                    .isAllowedBeta(token.get(jj), token, workingMemory);
+                        if (!skip) {
+                            if (jj != 0 || jj == dominantFactPosition) {
+                                localMatch = leapsRule.getColumnConstraintsAtPosition(jj)
+                                        .isAllowedBeta(currentFactHandle, token,
+                                                workingMemory);
+                            }
+                            else {
+                                localMatch = leapsRule.getColumnConstraintsAtPosition(jj)
+                                        .isAllowed(currentFactHandle, token, workingMemory);
+                            }
                         }
-
-                        if (localMatch) {
-                            // start iteratating next iterator
-                            // or for the last one check negative conditions and
-                            // fire
-                            // consequence
-                            if (jj == (numberOfColumns - 1)) {
+                        if (localMatch || skip) {
+                            token.set(jj, currentFactHandle);
+                            // start iteratating next iterator or for the last
+                            // one check negative conditions and fire consequence
+                            if (jj == stopIteratingCount) {
                                 if (!skip) {
-                                    if (processAfterAllPositiveConstraintOk(
-                                            token, leapsRule, workingMemory)) {
+                                    if (processAfterAllPositiveConstraintOk(token,
+                                            leapsRule, workingMemory)) {
                                         return;
                                     }
-                                } else {
+                                }
+                                else {
                                     skip = false;
                                 }
-                            } else {
-                                jj = jj + 1;
                             }
-                        } else {
-                            if (skip) {
-                                skip = false;
+                            else {
+                                jj = jj + 1;
                             }
                         }
                     }
                 }
             }
-        } else {
-            if (processAfterAllPositiveConstraintOk(token, leapsRule,
-                    workingMemory)) {
+        }
+        else {
+            if (processAfterAllPositiveConstraintOk(token, leapsRule, workingMemory)) {
                 return;
             }
         }
@@ -195,19 +194,15 @@ final class TokenEvaluator {
     final static boolean processAfterAllPositiveConstraintOk(Token token,
             LeapsRule leapsRule, WorkingMemoryImpl workingMemory) {
         LeapsTuple tuple = token.getTuple();
-        if (leapsRule.containsEvalConditions()) {
-            if (!TokenEvaluator.evaluateEvalConditions(leapsRule, tuple,
-                    workingMemory)) {
-                return false;
-            }
+        if (leapsRule.containsEvalConditions()
+                && !TokenEvaluator.evaluateEvalConditions(leapsRule, tuple, workingMemory)) {
+            return false;
         }
         if (leapsRule.containsExistsColumns()) {
-            TokenEvaluator.evaluateExistsConditions(tuple, leapsRule,
-                    workingMemory);
+            TokenEvaluator.evaluateExistsConditions(tuple, leapsRule, workingMemory);
         }
         if (leapsRule.containsNotColumns()) {
-            TokenEvaluator.evaluateNotConditions(tuple, leapsRule,
-                    workingMemory);
+            TokenEvaluator.evaluateNotConditions(tuple, leapsRule, workingMemory);
         }
         //
         Class[] classes = leapsRule.getExistsNotColumnsClasses();
@@ -220,7 +215,8 @@ final class TokenEvaluator {
             // let agenda to do its work
             workingMemory.assertTuple(tuple);
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -263,8 +259,8 @@ final class TokenEvaluator {
         for (int i = 0, length = not.length; i < length; i++) {
             constraint = not[i];
             // scan the whole table
-            tableIterator = workingMemory.getFactTable(
-                    constraint.getClassType()).iterator();
+            tableIterator = workingMemory.getFactTable(constraint.getClassType())
+                    .iterator();
             // fails if exists
             while (tableIterator.hasNext()) {
                 factHandle = (FactHandleImpl) tableIterator.next();
@@ -284,8 +280,8 @@ final class TokenEvaluator {
      * @param memory
      * @throws Exception
      */
-    final static void evaluateExistsConditions(LeapsTuple tuple,
-            LeapsRule rule, WorkingMemoryImpl workingMemory) {
+    final static void evaluateExistsConditions(LeapsTuple tuple, LeapsRule rule,
+            WorkingMemoryImpl workingMemory) {
         FactHandleImpl factHandle;
         TableIterator tableIterator;
         ColumnConstraints constraint;
@@ -293,8 +289,8 @@ final class TokenEvaluator {
         for (int i = 0, length = exists.length; i < length; i++) {
             constraint = exists[i];
             // scan the whole table
-            tableIterator = workingMemory.getFactTable(
-                    constraint.getClassType()).iterator();
+            tableIterator = workingMemory.getFactTable(constraint.getClassType())
+                    .iterator();
             // fails if exists
             while (tableIterator.hasNext()) {
                 factHandle = (FactHandleImpl) tableIterator.next();

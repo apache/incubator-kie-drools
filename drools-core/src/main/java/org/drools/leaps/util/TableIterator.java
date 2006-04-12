@@ -39,8 +39,6 @@ public interface TableIterator extends Iterator {
 
 	public Object next();
 
-	public Object current();
-
 	public Object peekNext();
 
 	public void remove();
