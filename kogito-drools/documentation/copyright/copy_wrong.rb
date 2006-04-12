@@ -9,7 +9,8 @@ def do_dir(start, copyright)
         if not File.directory? sub and sub.include? ".java" then
           do_java(sub, copyright)
         else 
-          if File.directory? sub then do_dir(sub, copyright) end
+          if File.directory? sub and not sub.include? ".svn" 
+	  then do_dir(sub, copyright) end
         end        
       end
     }
@@ -60,5 +61,5 @@ def write_to(target, guts)
       target.close
 end
 
-do_dir("c:/temp", IO.read("c:/temp/copy.txt"))
+do_dir("c:/temp/tryagain", IO.read ("c:/temp/copyright.txt")) 
 
