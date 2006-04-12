@@ -1,11 +1,4 @@
 package com.sample
- 
-import com.sample.TroubleTicketExample.Customer;
-import com.sample.TroubleTicketExample.Ticket;
-
-function void sendEscalationEmail( Customer customer, Ticket ticket ) {
-	System.out.println( "Email : " + ticket );
-}
 
 rule "New Ticket"
 	salience 10
@@ -62,3 +55,11 @@ rule "Done"
 	then
 		System.out.println( "Done : " + ticket );		
 end
+
+function void sendEscalationEmail( Customer customer, Ticket ticket ) {
+	System.out.println( "Email : " + ticket );
+}
+
+import com.sample.TroubleTicketExample.Customer;
+import com.sample.TroubleTicketExample.Ticket;
+
