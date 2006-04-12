@@ -498,4 +498,43 @@
       avilable.</para>
     </section>
   </section>
+
+  <section>
+    <title>The Rete View</title>
+
+    <para>The Rete Tree View shows you the current Rete Network for your drl
+    file. Just click on the tab "Rete Tree" below on the DRL Editor.
+    Afterwards you can generate the current Rete Network visualisation. You
+    can push and pull the nodes to arrange your optimal network overview. If
+    you got hundreds of nodes, select some of them with a frame. Then you can
+    pull groups of them. You can zoom in and out, in case not all nodes are
+    shown in the current view. For this press the button "+" oder "-".</para>
+
+    <para>There is no export function, which creates a gif or jpeg picture, in
+    the current release. Please use ctrl + alt + print to create a copy of
+    your current eclipse window and cut it off.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="thereteview.jpg" />
+      </imageobject>
+    </mediaobject>
+
+    <para>The graph is created with the Java Universal Network/Graph Framework
+    (<ulink url="http://jung.sourceforge.net/">JUNG</ulink>). The Rete View is
+    an advanced feature which is still in experimental state. It uses Swing
+    inside eclipse. In future it will maybe improved using SWT or GEF.</para>
+
+    <para>The Rete view works only in Drools Rule Projects, where the Drools
+    Builder is set in the project´s properties.</para>
+
+    <para>If you are using Drools in an other type of project, where you are
+    not having a Drools Rule Project with the appropiate Drools Builder, you
+    can create a little workaround:</para>
+
+    <para>Set up a little Drools Rule Project next to it, putting needed
+    libraries into it and the drls you want to inspect with the Rete View.
+    Just click on the right tab below in the DRL Editor, followed by a click
+    on "Generate Rete View".</para>
+  </section>
 </section>
