@@ -22,4 +22,135 @@
     archive (JAR) or enterprise archive (EAR), which is deployed into the
     server.</para>
   </section>
+
+  <section>
+    <title>Domain Specific Languages (DSL)</title>
+
+    <para>It is possible to use Domain Specific Languages together with the
+    Java Rule Engine API. The DSL is shipped to the Rule Engine with the Map
+    of properties, when you are creating a RuleExecutionSet. Just insert the
+    content of your dsl file as a String with the key "dsl" into the Map. The
+    excerpt shows how it works:</para>
+
+    <para>...</para>
+
+    <para><code>Reader reader = new FileReader( "jsr94.dsl" );</code></para>
+
+    <para><code>StringBuffer text = new StringBuffer(); </code></para>
+
+    <para><code>char[] buf = new char[1024]; int len = 0;</code></para>
+
+    <para><code>//Writes the file content in the StringBuffer </code></para>
+
+    <para><code>while ( ( len = reader.read( buf ) ) &gt;= 0 ) </code></para>
+
+    <para><code>{ </code></para>
+
+    <para><code> text.append( buf, 0, len ); </code></para>
+
+    <para><code>}</code></para>
+
+    <para><code>HashMap properties = new java.util.HashMap( ); </code></para>
+
+    <para><code>properties.put( "name" , "JSR94_Example" ); </code></para>
+
+    <para><code>properties.put( "description", "no description" );
+    </code></para>
+
+    <para><code>//Put the dsl as a String, use the key "dsl"</code></para>
+
+    <para><code>properties.put( "dsl", text.toString( ) );</code></para>
+
+    <para><code>reader = new FileReader( "jsr94.drl" );</code></para>
+
+    <para><code>RuleServiceProviderManager.registerRuleServiceProvider(
+    "http://drools.org", Class.forName(
+    "org.drools.jsr94.rules.RuleServiceProviderImpl" ) );</code></para>
+
+    <para><code>RuleServiceProvider ruleServiceProvider =
+    RuleServiceProviderManager.getRuleServiceProvider( "http://drools.org"
+    );</code></para>
+
+    <para><code>RuleExecutionSet ruleExecutionSet =
+    ruleSetProvider.createRuleExecutionSet( reader, properties
+    );</code></para>
+
+    <para><code>RuleAdministrator ruleAdministrator =
+    ruleServiceProvider.getRuleAdministrator( );</code></para>
+
+    <para><code>ruleAdministrator.registerRuleExecutionSet( "JSR94_Example",
+    ruleExecutionSet, properties );</code></para>
+
+    <para>...</para>
+
+    <para>Do not forget to declare the expander -in this case "jsr94.dsl"- in
+    your rule file (drl).</para>
+  </section>
+
+  <section>
+    <title>Globals</title>
+
+    <para>You do not need to dispense with globals using Drools through the
+    Java Rule Enige API. They are as usual defined in your rule file (drl).
+    You need to ship them with the Map of properties to the Rule Engine
+    creating a stateful or stateless RuleSession. It works like the Domain
+    Specific Language for creating a RuleExecutionSet. The key you put in the
+    Map will be the identifier in the drl file. In the following example the
+    results are collected in an java.util.Vector which is used as
+    global:</para>
+
+    <para><code>java.util.Vector globalVector = new java.util.Vector(
+    );</code></para>
+
+    <para><code>java.util.Map map = new java.util.HashMap( );</code></para>
+
+    <para><code>map.put( "vector", globalVector ); </code></para>
+
+    <para><code>//Open a stateless Session StatelessRuleSession srs =
+    (StatelessRuleSession) runtime.createRuleSession( "SistersRules", map,
+    RuleRuntime.STATELESS_SESSION_TYPE );</code></para>
+
+    <para>...</para>
+
+    <para><code>// Persons added to List</code></para>
+
+    <para><code>// List given to Rule Engine as parameter of executeRules(
+    )</code></para>
+
+    <para><code>// fetch the vector from the map</code></para>
+
+    <para><code>v = (java.util.Vector)map.get("vector");</code></para>
+
+    <para></para>
+
+    <para>Do not forget to declare the global "vector" in your DRL:</para>
+
+    <para></para>
+
+    <para><code>package SistersRules; </code></para>
+
+    <para><code>import org.drools.jsr94.rules.Person; </code></para>
+
+    <para><code>global java.util.Vector vector </code></para>
+
+    <para><code>rule FindSisters </code></para>
+
+    <para><code> when </code></para>
+
+    <para><code> $person1 : Person ( $name1:name ) </code></para>
+
+    <para><code> $person2 : Person ( $name2:name ) </code></para>
+
+    <para><code> eval( $person1.hasSister($person2) ) </code></para>
+
+    <para><code> then </code></para>
+
+    <para><code> vector.add($person1.getName() + " and " + $person2.getName()
+    +" are sisters"); </code></para>
+
+    <para><code> assert( $person1.getName() + " and " + $person2.getName() +"
+    are sisters"); </code></para>
+
+    <para><code>end</code></para>
+  </section>
 </section>
