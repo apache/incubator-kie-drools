@@ -349,46 +349,96 @@ class LogicTransformer {
     }
 
     /**
-     * This data structure is not valid (Exists (OR (A B)
+     * (Exist (OR (A B)
      * 
      * <pre>
-     *             Exists
-     *              | 
-     *             or   
-     *            /  \
-     *           a    b
+     *         Exist
+     *          | 
+     *         or   
+     *        /  \
+     *       a    b
      * </pre>
      * 
+     * (Exist ( Not (a) Not (b)) )
+     * 
+     * <pre>
+     *        Exist   
+     *        /   \
+     *       Not  Not
+     *       |     |
+     *       a     b
+     * </pre>
      */
     class ExistOrTransformation
         implements
         OrTransformation {
 
         public GroupElement transform(GroupElement exist) throws InvalidPatternException {
-            throw new InvalidPatternException( "You cannot nest an OR within an Exists" );
+            if ( !(exist.getChildren( ).get( 0 ) instanceof Or) )
+            {
+                throw new RuntimeException( "ExistOrTransformation expected '" + Or.class.getName( ) + "' but instead found '" + exist.getChildren( ).get( 0 ).getClass( ).getName( ) + "'" );
+            }
+
+            /*
+             * we know a Not only ever has one child, and the previous algorithm
+             * has confirmed the child is an OR
+             */
+            Or or = (Or) exist.getChildren( ).get( 0 );
+            And and = new And( );
+            for ( Iterator it = or.getChildren( ).iterator( ); it.hasNext( ); )
+            {
+                Exists newExist = new Exists( );
+                newExist.addChild( it.next( ) );
+                and.addChild( newExist );
+            }
+            return and;
         }
     }
 
     /**
-     * This data structure is now valid
-     * 
      * (Not (OR (A B)
      * 
      * <pre>
-     *             Not
-     *              | 
-     *             or   
-     *            /  \
-     *           a    b
+     *         Not
+     *          | 
+     *         or   
+     *        /  \
+     *       a    b
      * </pre>
      * 
-     */
-    class NotOrTransformation
+     * (And ( Not (a) Exist (b)) )
+     * 
+     * <pre>
+     *         And   
+     *        /   \
+     *       Not  Not
+     *       |     |
+     *       a     b
+     * </pre>
+     */ 
+     public class NotOrTransformation
         implements
         OrTransformation {
 
         public GroupElement transform(GroupElement not) throws InvalidPatternException {
-            throw new InvalidPatternException( "You cannot nest an OR within an Not" );
+            if ( !(not.getChildren( ).get( 0 ) instanceof Or) )
+            {
+                throw new RuntimeException( "NotOrTransformation expected '" + Or.class.getName( ) + "' but instead found '" + not.getChildren( ).get( 0 ).getClass( ).getName( ) + "'" );
+            }
+
+            /*
+             * we know a Not only ever has one child, and the previous algorithm
+             * has confirmed the child is an OR
+             */
+            Or or = (Or) not.getChildren( ).get( 0 );
+            And and = new And( );
+            for ( Iterator it = or.getChildren( ).iterator( ); it.hasNext( ); )
+            {
+                Not newNot = new Not( );
+                newNot.addChild( it.next( ) );
+                and.addChild( newNot );
+            }
+            return and;
         }
     }
 
