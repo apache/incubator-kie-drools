@@ -12,6 +12,9 @@ public class RuleDescr extends PatternDescr  {
     
     private AndDescr lhs;
     private String   consequence;
+    private int consequenceLine;
+    private int consequenceColumn;    
+    private int offset;
     private List attributes = Collections.EMPTY_LIST;
     
     private String className;
@@ -73,5 +76,26 @@ public class RuleDescr extends PatternDescr  {
 
     public void setConsequence(String consequence) {
         this.consequence = consequence;
-    }       
+    }
+    
+    public void setConsequenceLocation(int line, int column) {
+        this.consequenceLine   = line;
+        this.consequenceColumn = column;
+    }
+    
+    public void setConsequenceOffset(int offset) {
+        this.offset = offset;
+    }
+    
+    public int getConsequenceOffset() {
+        return this.offset;
+    }
+    
+    public int getConsequenceLine() {
+        return this.consequenceLine;
+    }
+    
+    public int getConsequenceColumn() {
+        return this.consequenceColumn;
+    }    
 }

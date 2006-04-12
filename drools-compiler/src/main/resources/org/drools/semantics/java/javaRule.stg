@@ -1,45 +1,25 @@
 group javaMethods;
 
 returnValueMethod(declarations, declarationTypes, globals, globalTypes, methodName, text) ::= <<
-public static Object <methodName>(
-    <declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
-    <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=",\n"> ) throws Exception {
-        return ( <text> );            
-    }                        
->>    
+public static Object <methodName>(<declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)>,<endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
+    return ( <text> );
+}
+>>
 
 predicateMethod(declaration, declarationType, declarations, declarationTypes, globals, globalTypes, methodName, text) ::= <<
-public static boolean <methodName>(
-    <declarationType> <declaration.identifier><if(declarations)>,<endif>
-    <declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
-    <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=",\n"> ) throws Exception {
-        return ( <text> );            
-    }                        
->>    
+public static boolean <methodName>(<declarationType> <declaration.identifier><if(declarations)>,<endif> <declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)>,<endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
+    return ( <text> );
+}
+>>
 
 evalMethod(declarations, declarationTypes, globals, globalTypes, methodName, text) ::= <<
-public static boolean <methodName>(
-    <declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
-    <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=",\n"> ) throws Exception {
-        return ( <text> );            
-    }                        
->>    
+public static boolean <methodName>(<declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)>,<endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
+    return ( <text> );
+}
+>>
 
 consequenceMethod(declarations, declarationTypes, globals, globalTypes, methodName, text) ::= <<
-public static void <methodName>(
-    org.drools.spi.KnowledgeHelper drools<if(declarations)>,<\n><endif>
-    <declarationTypes, declarations:{ type, declr | <type> <declr.identifier>, org.drools.FactHandle <declr.identifier>__Handle__}; separator=",\n"><if(globals)>,<endif>
-    <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=",\n"> ) throws Exception {
-        <text> 
-    }                        
->>      
-
-ruleClass(package, imports, ruleClassName, methods) ::= <<
-package <package>;
-
-<imports:{ importEntry | import <importEntry>;<\n>}>    
-
-public class <ruleClassName> {
-    <methods:{ method| <method>}>
-}     
+public static void <methodName>(org.drools.spi.KnowledgeHelper drools<if(declarations)>,<endif> <declarationTypes, declarations:{ type, declr | <type> <declr.identifier>, org.drools.FactHandle <declr.identifier>__Handle__}; separator=","><if(globals)>,<endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
+    <text>
+}
 >>

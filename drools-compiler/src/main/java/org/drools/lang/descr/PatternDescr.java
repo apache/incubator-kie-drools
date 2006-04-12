@@ -18,10 +18,10 @@ public class PatternDescr implements Serializable {
 	}
 	
 	public int getLine() {
-		return line;
+		return this.line;
 	}
 	
 	public int getColumn() {
-		return column;
+		return this.column;
 	}
 }
