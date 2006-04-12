@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
@@ -76,21 +77,21 @@ public class RuleBuilder {
 
     private List                        errors;
 
-    private TypeResolver                typeResolver;    
-    
+    private TypeResolver                typeResolver;
+
     private Map                         notDeclarations;
 
-    private static StringTemplateGroup  ruleGroup    = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
-                                                                                AngleBracketTemplateLexer.class );
+    private static StringTemplateGroup  ruleGroup            = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
+                                                                                        AngleBracketTemplateLexer.class );
 
-    private static StringTemplateGroup  invokerGroup = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaInvokers.stg" ) ),
-                                                                                AngleBracketTemplateLexer.class );
+    private static StringTemplateGroup  invokerGroup         = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaInvokers.stg" ) ),
+                                                                                        AngleBracketTemplateLexer.class );
 
-    private static KnowledgeHelperFixer knowledgeHelperFixer        = new KnowledgeHelperFixer();
-    private static FunctionFixer functionFixer                      = new FunctionFixer();
+    private static KnowledgeHelperFixer knowledgeHelperFixer = new KnowledgeHelperFixer();
+    private static FunctionFixer        functionFixer        = new FunctionFixer();
 
     // @todo move to an interface so it can work as a decorator
-    private JavaExprAnalyzer            analyzer     = new JavaExprAnalyzer();
+    private JavaExprAnalyzer            analyzer             = new JavaExprAnalyzer();
 
     public RuleBuilder() {
         this.errors = new ArrayList();
@@ -98,10 +99,6 @@ public class RuleBuilder {
 
     public Map getInvokers() {
         return this.invokers;
-    }
-
-    public List getMethods() {
-        return this.methods;
     }
 
     public Map getDescrLookups() {
@@ -121,7 +118,7 @@ public class RuleBuilder {
     }
 
     public Rule getRule() {
-        if (!this.errors.isEmpty()) {
+        if ( !this.errors.isEmpty() ) {
             this.rule.setSemanticallyValid( false );
         }
         return this.rule;
@@ -144,13 +141,12 @@ public class RuleBuilder {
                                                    pkg.getPackageCompilationData().getClassLoader() );
 
         this.ruleDescr = ruleDescr;
-        
+
         if ( ruleDescr instanceof QueryDescr ) {
             this.rule = new Query( ruleDescr.getName() );
         } else {
-            this.rule = new Rule( ruleDescr.getName() );            
+            this.rule = new Rule( ruleDescr.getName() );
         }
-        
 
         // Assign attributes
         setAttributes( rule,
@@ -159,7 +155,7 @@ public class RuleBuilder {
         // Build the left hand side
         // generate invoker, methods
         build( ruleDescr );
-        
+
         return rule;
     }
 
@@ -181,7 +177,7 @@ public class RuleBuilder {
                     rule.setAutoFocus( true );
                 } else {
                     rule.setAutoFocus( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
-                }                
+                }
             } else if ( name.equals( "agenda-group" ) ) {
                 rule.setAgendaGroup( attributeDescr.getValue() );
             } else if ( name.equals( "duration" ) ) {
@@ -194,12 +190,12 @@ public class RuleBuilder {
     }
 
     private void build(RuleDescr ruleDescr) {
-        
+
         for ( Iterator it = ruleDescr.getLhs().getDescrs().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof ConditionalElementDescr ) {
                 if ( object instanceof AndDescr ) {
-                    And and = new And();                    
+                    And and = new And();
                     //rule.addChild( and );
                     build( rule,
                            (ConditionalElementDescr) object,
@@ -225,16 +221,16 @@ public class RuleBuilder {
                            true,
                            true );
                     rule.addPattern( not );
-                    
+
                     // remove declarations bound inside not node
                     for ( Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
                         this.declarations.remove( notIt.next() );
                     }
-                    
+
                     this.notDeclarations = null;
                 } else if ( object instanceof ExistsDescr ) {
                     // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
-                    this.notDeclarations = new HashMap();                    
+                    this.notDeclarations = new HashMap();
                     Exists exists = new Exists();
                     build( rule,
                            (ConditionalElementDescr) object,
@@ -245,14 +241,14 @@ public class RuleBuilder {
                     for ( Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
                         this.declarations.remove( notIt.next() );
                     }
-                    
-                    this.notDeclarations = null;                    
-                    rule.addPattern( exists );                    
+
+                    this.notDeclarations = null;
+                    rule.addPattern( exists );
                 } else if ( object instanceof EvalDescr ) {
                     EvalCondition eval = build( (EvalDescr) object );
                     if ( eval != null ) {
-                        rule.addPattern( eval );                        
-                    }                        
+                        rule.addPattern( eval );
+                    }
                 }
             } else if ( object instanceof ColumnDescr ) {
                 Column column = build( (ColumnDescr) object );
@@ -260,16 +256,16 @@ public class RuleBuilder {
                     rule.addPattern( column );
                 }
             }
-        }        
-        
+        }
+
         // Build the consequence and generate it's invoker/methods
         // generate the main rule from the previously generated methods.
-        if ( !( ruleDescr instanceof QueryDescr ) ) {
+        if ( !(ruleDescr instanceof QueryDescr) ) {
             // do not build the consequence if we have a query
             buildConsequence( ruleDescr );
         }
-        buildRule( ruleDescr );        
-    }    
+        buildRule( ruleDescr );
+    }
 
     private void build(Rule rule,
                        ConditionalElementDescr descr,
@@ -334,9 +330,9 @@ public class RuleBuilder {
     private Column build(ColumnDescr columnDescr) {
         if ( columnDescr.getObjectType() == null || columnDescr.getObjectType().equals( "" ) ) {
             this.errors.add( new RuleError( this.rule,
-                                             columnDescr,
-                                             null,
-                                             "ObjectType not correctly defined" ) );
+                                            columnDescr,
+                                            null,
+                                            "ObjectType not correctly defined" ) );
             return null;
         }
 
@@ -347,9 +343,9 @@ public class RuleBuilder {
             clazz = typeResolver.resolveType( columnDescr.getObjectType() );
         } catch ( ClassNotFoundException e ) {
             this.errors.add( new RuleError( this.rule,
-                                             columnDescr,
-                                             null,
-                                             "Unable to resolve ObjectType '" + columnDescr.getObjectType() + "'" ) );
+                                            columnDescr,
+                                            null,
+                                            "Unable to resolve ObjectType '" + columnDescr.getObjectType() + "'" ) );
             return null;
         }
 
@@ -361,11 +357,11 @@ public class RuleBuilder {
                                  columnDescr.getIdentifier() );;
             this.declarations.put( column.getDeclaration().getIdentifier(),
                                    column.getDeclaration() );
-            
+
             if ( this.notDeclarations != null ) {
-                this.notDeclarations.put( column.getDeclaration().getIdentifier(), 
+                this.notDeclarations.put( column.getDeclaration().getIdentifier(),
                                           column.getDeclaration() );
-            }            
+            }
         } else {
             column = new Column( columnCounter++,
                                  this.columnOffset,
@@ -411,9 +407,9 @@ public class RuleBuilder {
 
         this.declarations.put( declaration.getIdentifier(),
                                declaration );
-        
+
         if ( this.notDeclarations != null ) {
-            this.notDeclarations.put( declaration.getIdentifier(), 
+            this.notDeclarations.put( declaration.getIdentifier(),
                                       declaration );
         }
     }
@@ -422,9 +418,9 @@ public class RuleBuilder {
                        BoundVariableDescr boundVariableDescr) {
         if ( boundVariableDescr.getIdentifier() == null || boundVariableDescr.getIdentifier().equals( "" ) ) {
             this.errors.add( new RuleError( this.rule,
-                                             boundVariableDescr,
-                                             null,
-                                             "Identifier not defined for binding field '" + boundVariableDescr.getFieldName() + "'" )  );
+                                            boundVariableDescr,
+                                            null,
+                                            "Identifier not defined for binding field '" + boundVariableDescr.getFieldName() + "'" ) );
             return;
         }
 
@@ -441,9 +437,9 @@ public class RuleBuilder {
 
         if ( declaration == null ) {
             this.errors.add( new RuleError( this.rule,
-                                             boundVariableDescr,
-                                             null,
-                                             "Unable to return Declaration for identifier '" + boundVariableDescr.getIdentifier() + "'" ) );
+                                            boundVariableDescr,
+                                            null,
+                                            "Unable to return Declaration for identifier '" + boundVariableDescr.getIdentifier() + "'" ) );
             return;
         }
 
@@ -474,7 +470,8 @@ public class RuleBuilder {
         FieldValue field = null;
         if ( literalDescr.isStaticFieldValue() ) {
             int lastDot = literalDescr.getText().lastIndexOf( '.' );
-            String className = literalDescr.getText().substring( 0, lastDot );
+            String className = literalDescr.getText().substring( 0,
+                                                                 lastDot );
             String fieldName = literalDescr.getText().substring( lastDot + 1 );
             try {
                 Class staticClass = this.typeResolver.resolveType( className );
@@ -483,26 +480,26 @@ public class RuleBuilder {
                 this.errors.add( new RuleError( this.rule,
                                                 literalDescr,
                                                 e,
-                                                e.getMessage() ) );                                               
+                                                e.getMessage() ) );
             } catch ( Exception e ) {
                 this.errors.add( new RuleError( this.rule,
                                                 literalDescr,
                                                 e,
-                                                "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalDescr.getText() + "'" ) );                
+                                                "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalDescr.getText() + "'" ) );
             }
-          
+
         } else {
             try {
                 field = FieldFactory.getFieldValue( literalDescr.getText(),
                                                     extractor.getObjectType().getValueType() );
             } catch ( Exception e ) {
                 this.errors.add( new RuleError( this.rule,
-                                                 literalDescr,
-                                                 e,
-                                                 "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalDescr.getText() + "'" ) );
+                                                literalDescr,
+                                                e,
+                                                "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalDescr.getText() + "'" ) );
             }
         }
-        
+
         Evaluator evaluator = getEvaluator( literalDescr,
                                             extractor.getObjectType().getValueType(),
                                             literalDescr.getEvaluator() );
@@ -612,11 +609,11 @@ public class RuleBuilder {
 
         this.declarations.put( declaration.getIdentifier(),
                                declaration );
-        
+
         if ( this.notDeclarations != null ) {
-            this.notDeclarations.put( declaration.getIdentifier(), 
+            this.notDeclarations.put( declaration.getIdentifier(),
                                       declaration );
-        }        
+        }
 
         List usedDeclarations = getUsedDeclarations( predicateDescr,
                                                      predicateDescr.getText() );
@@ -743,8 +740,8 @@ public class RuleBuilder {
                                evalDescr );
         return eval;
     }
-    
-    private void buildConsequence( RuleDescr ruleDescr ) {
+
+    private void buildConsequence(RuleDescr ruleDescr) {
         // generate method
         // generate Invoker
         String classMethodName = "consequence";
@@ -758,7 +755,7 @@ public class RuleBuilder {
         setStringTemplateAttributes( st,
                                      declarations,
                                      ruleDescr.getConsequence() );
-        
+
         st.setAttribute( "text",
                          functionFixer.fix( knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );
 
@@ -788,22 +785,42 @@ public class RuleBuilder {
         this.invokerLookups.put( invokerClassName,
                                  this.rule );
         this.descrLookups.put( invokerClassName,
-                               ruleDescr );        
+                               ruleDescr );
     }
 
     private void buildRule(RuleDescr ruleDescr) {
-        StringTemplate st = ruleGroup.getInstanceOf( "ruleClass" );
+        // If there is no compiled code, return
+        if ( this.methods.isEmpty() ) {
+            this.ruleClass = null;
+            return;
+        }
+        String lineSeparator = System.getProperty( "line.separator" );
+        
+        StringBuffer buffer = new StringBuffer();
+        buffer.append( "package "  + this.pkg.getName() + ";" + lineSeparator );
+        
+            
+        for ( Iterator it = this.pkg.getImports().iterator(); it.hasNext(); ) {
+            buffer.append(  "import " + it.next() +";" + lineSeparator);
+        }
+        
+        buffer.append( "public class " +  ucFirst( this.ruleDescr.getClassName() ) +" {" + lineSeparator );
+        
+        for ( int i = 0, size = this.methods.size() - 1; i < size; i++ ) {
+            buffer.append( this.methods.get( i ) + lineSeparator );
+        }
+        
+               
+        String[] lines = buffer.toString().split( lineSeparator );
+                
+        this.ruleDescr.setConsequenceOffset( lines.length + 2 );
+        //To get the error position in the DRL
+        //error.getLine() - this.ruleDescr.getConsequenceOffset() + this.ruleDescr.getConsequenceLine()
+        
+        buffer.append( this.methods.get( this.methods.size() - 1 ) + lineSeparator );
+        buffer.append(  "}" );
 
-        st.setAttribute( "package",
-                         this.pkg.getName() );
-        st.setAttribute( "ruleClassName",
-                         ucFirst( this.ruleDescr.getClassName() ) );
-        st.setAttribute( "imports",
-                         this.pkg.getImports() );
-        st.setAttribute( "methods",
-                         this.methods );
-
-        this.ruleClass = st.toString();
+        this.ruleClass = buffer.toString();        
     }
 
     private List getUsedGlobals(String text) {
@@ -877,9 +894,9 @@ public class RuleBuilder {
                                                  fieldName );
         } catch ( RuntimeDroolsException e ) {
             this.errors.add( new RuleError( this.rule,
-                                             descr,
-                                             e,
-                                             "Unable to create Field Extractor for '" + fieldName + "'")  );
+                                            descr,
+                                            e,
+                                            "Unable to create Field Extractor for '" + fieldName + "'" ) );
         }
 
         return extractor;
@@ -893,9 +910,9 @@ public class RuleBuilder {
 
         if ( evaluator == null ) {
             this.errors.add( new RuleError( this.rule,
-                                             descr,
-                                             null,
-                                             "Unable to determine the Evaluator for  '" + valueType + "' and '" + evaluatorString + "'" ) );
+                                            descr,
+                                            null,
+                                            "Unable to determine the Evaluator for  '" + valueType + "' and '" + evaluatorString + "'" ) );
         }
 
         return evaluator;
@@ -909,9 +926,9 @@ public class RuleBuilder {
                                                       this.declarations.keySet() );
         } catch ( Exception e ) {
             this.errors.add( new RuleError( this.rule,
-                                             descr,
-                                             null,
-                                             "Unable to determine the used declarations" ) );
+                                            descr,
+                                            null,
+                                            "Unable to determine the used declarations" ) );
         }
         return usedDeclarations;
     }
