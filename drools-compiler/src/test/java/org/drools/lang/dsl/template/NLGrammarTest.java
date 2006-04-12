@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class NLGrammarTest extends TestCase {
@@ -134,7 +135,38 @@ public class NLGrammarTest extends TestCase {
         g.removeMapping( item );
         assertEquals(2, g.getMappings().size());
         assertEquals(0, g.getMappings( "*" ).size());
+    }
+    
+    public void testValidate() {
+        NLGrammar g = new NLGrammar();
+        NLMappingItem item = new NLMappingItem("This is a {valid} mapping", "because {valid} is used", "*");
         
+        List errors = g.validateMapping( item );
+        Assert.assertTrue( "Error list should be empty", errors.isEmpty() );
+        
+        item = new NLMappingItem("Unused {token}", "token not used", "*");
+        errors = g.validateMapping( item );
+        Assert.assertEquals( "Error list should have 1 error", 1, errors.size() );
+        MappingError error = (MappingError) errors.get( 0 );
+        Assert.assertEquals( "Wrong reported error", MappingError.ERROR_UNUSED_TOKEN, error.getErrorCode());
+        
+        item = new NLMappingItem("Undeclared token", "as {token} is used", "*");
+        errors = g.validateMapping( item );
+        Assert.assertEquals( "Error list should have 1 error", 1, errors.size() );
+        error = (MappingError) errors.get( 0 );
+        Assert.assertEquals( "Wrong reported error", MappingError.ERROR_UNDECLARED_TOKEN, error.getErrorCode());
+        
+        item = new NLMappingItem("Invalid {tok en", "as token does not have closing braces", "*");
+        errors = g.validateMapping( item );
+        Assert.assertEquals( "Error list should have 1 error", 1, errors.size() );
+        error = (MappingError) errors.get( 0 );
+        Assert.assertEquals( "Wrong reported error", MappingError.ERROR_INVALID_TOKEN, error.getErrorCode());
+
+        item = new NLMappingItem("Unmatched braces token}", "as token does not have starting braces", "*");
+        errors = g.validateMapping( item );
+        Assert.assertEquals( "Error list should have 1 error", 1, errors.size() );
+        error = (MappingError) errors.get( 0 );
+        Assert.assertEquals( "Wrong reported error", MappingError.ERROR_UNMATCHED_BRACES, error.getErrorCode());
     }
     
 }
