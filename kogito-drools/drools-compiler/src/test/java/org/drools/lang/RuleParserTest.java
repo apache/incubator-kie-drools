@@ -245,6 +245,9 @@ public class RuleParserTest extends TestCase {
 		
 		assertEquals( "simple_rule", rule.getName() );
 		
+        assertEquals(7, rule.getConsequenceLine());
+        assertEquals(2, rule.getConsequenceColumn());
+        
 		AndDescr lhs = rule.getLhs();
 		
 		assertNotNull( lhs );
