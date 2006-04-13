@@ -17,6 +17,10 @@ public class FieldFactory {
     public static FieldValue getFieldValue(String value,
                                            int valueType) {
         FieldValue field = null;
+        if (value == null) {
+            valueType = Evaluator.NULL_TYPE;
+        }
+        
         switch (valueType) {
             case Evaluator.NULL_TYPE:
                 field = new FieldImpl(null);

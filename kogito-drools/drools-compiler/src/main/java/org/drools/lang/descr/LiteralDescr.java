@@ -24,8 +24,8 @@ public class LiteralDescr extends PatternDescr {
         this.text = text;
         this.evaluator = evaluator;
         this.staticFieldValue = staticFieldValue;
-    }    
-
+    }
+    
     public boolean isStaticFieldValue() {
         return staticFieldValue;
     }

@@ -1,0 +1,12 @@
+package org.drools.test
+
+import org.drools.Person
+
+global java.util.List messages
+
+rule "person with a null name"
+  when
+    Person(name == null)
+  then
+    messages.add("Null name found");
+end
