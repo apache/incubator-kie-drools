@@ -30,6 +30,10 @@ public class FieldImpl implements FieldValue {
     }
     
     public int hashCode() {
-        return this.value.hashCode();
+        if (this.value != null) {
+            return this.value.hashCode();
+        } else {
+            return super.hashCode();
+        }
     }
 }

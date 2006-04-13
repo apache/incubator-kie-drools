@@ -436,6 +436,29 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
 
     }
+    
+    public void testNullConstraint() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_constraint.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        List foo = new ArrayList();
+        workingMemory.setGlobal( "messages", foo );
+        
+        Person p1 = new Person( null,
+                                "food",
+                                40 );
+
+        workingMemory.assertObject( p1 );
+
+        workingMemory.fireAllRules();
+        assertEquals(1, foo.size());
+
+
+    }    
 
     public void testExists() throws Exception {
         PackageBuilder builder = new PackageBuilder();

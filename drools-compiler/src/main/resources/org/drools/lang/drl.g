@@ -680,6 +680,7 @@ literal_constraint returns [String text]
 		|	t=INT    { text = t.getText(); }
 		|	t=FLOAT	 { text = t.getText(); }
 		|	t=BOOL 	 { text = t.getText(); }
+		|	t='null' { text = null; }
 		)
 	;
 	
