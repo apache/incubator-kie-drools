@@ -96,14 +96,14 @@ public class NLMappingItem
                 result.add( new MappingError(MappingError.ERROR_UNUSED_TOKEN,
                                              MappingError.TEMPLATE_NATURAL,
                                              item.getNaturalTemplate().indexOf( token ), 
-                                             token) );
+                                             token, this.naturalTemplate) );
             }
             for(Iterator i = targetSet.iterator(); i.hasNext() ; ) {
                 String token = (String) i.next();
                 result.add( new MappingError(MappingError.ERROR_UNDECLARED_TOKEN,
                                              MappingError.TEMPLATE_TARGET,
                                              item.getTargetTemplate().indexOf( token ),
-                                             token ) );
+                                             token, this.naturalTemplate ) );
             }
         }
         return result;
@@ -129,7 +129,7 @@ public class NLMappingItem
             result.add( new MappingError( MappingError.ERROR_INVALID_TOKEN,
                                           MappingError.TEMPLATE_NATURAL,
                                           natural1.start(),
-                                          token));
+                                          token, this.naturalTemplate));
         }
         
         while(natural2.find()) {
@@ -137,7 +137,7 @@ public class NLMappingItem
             result.add( new MappingError( MappingError.ERROR_UNMATCHED_BRACES,
                                           MappingError.TEMPLATE_NATURAL,
                                           natural2.start(),
-                                          token));
+                                          token, this.naturalTemplate));
         }
         
         while(target1.find()) {
@@ -145,7 +145,7 @@ public class NLMappingItem
             result.add( new MappingError( MappingError.ERROR_INVALID_TOKEN,
                                           MappingError.TEMPLATE_TARGET,
                                           target1.start(),
-                                          token));
+                                          token, this.naturalTemplate));
         }
         
         while(target2.find()) {
@@ -153,7 +153,7 @@ public class NLMappingItem
             result.add( new MappingError( MappingError.ERROR_UNMATCHED_BRACES,
                                           MappingError.TEMPLATE_TARGET,
                                           target2.start(),
-                                          token));
+                                          token, this.naturalTemplate));
         }
         
         return result;

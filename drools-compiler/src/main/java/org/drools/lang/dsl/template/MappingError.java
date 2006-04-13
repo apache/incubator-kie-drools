@@ -41,15 +41,18 @@ public class MappingError extends DroolsError {
     private final int       template;
     private final int       offset;
     private final String    token;
+    private String templateText;
 
     public MappingError(int errorCode,
                         int template,
                         int offset,
-                        String token) {
+                        String token,
+                        String templateText) {
         this.errorCode = errorCode;
         this.template = template;
         this.token = token;
         this.offset = offset;
+        this.templateText = templateText;
     }
 
     /**
@@ -72,6 +75,13 @@ public class MappingError extends DroolsError {
      */
     public int getTemplate() {
         return template;
+    }
+    
+    /**
+     * @return the original content.
+     */
+    public String getTemplateText() {
+        return templateText;
     }
 
     /**
