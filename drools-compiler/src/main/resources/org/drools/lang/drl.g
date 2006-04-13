@@ -362,19 +362,21 @@ rule returns [RuleDescr rule]
 					
 		)?
 		( opt_eol loc='then' ':'?  opt_eol
-		( options{greedy=false;} : any=.
+			( options{greedy=false;} : any=.
+				{
+					consequence = consequence + " " + any.getText();
+				}
+			)*
 			{
-				consequence = consequence + " " + any.getText();
-			}
-		)*
-		{
-			if ( expander != null ) {
-				String expanded = runThenExpander( consequence, loc.getLine() );
-				rule.setConsequence( expanded );
-			} else { 
-				rule.setConsequence( consequence ); 
-			}
-		})?)?
+				if ( expander != null ) {
+					String expanded = runThenExpander( consequence, loc.getLine() );
+					rule.setConsequence( expanded );
+				} else { 
+					rule.setConsequence( consequence ); 
+				}
+				rule.setConsequenceLocation(loc.getLine(), loc.getCharPositionInLine());
+			})?
+		)?
 		'end' opt_eol 
 	;
 	
