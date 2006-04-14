@@ -33,7 +33,7 @@ public class FieldImpl implements FieldValue {
         if (this.value != null) {
             return this.value.hashCode();
         } else {
-            return super.hashCode();
+            return 0;
         }
     }
 }
