@@ -217,6 +217,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         in.close();
         return obj;
     }
+    
+    
 
     private byte[] serializeOut(Object obj) throws IOException {
         // Serialize to a byte array
@@ -228,6 +230,25 @@ public class PackageBuilderTest extends DroolsTestCase {
         // Get the bytes of the serialized object
         byte[] bytes = bos.toByteArray();
         return bytes;
+    }
+    
+    public void testNoPackageName() {
+        PackageBuilder builder = new PackageBuilder();
+        try {
+            builder.addPackage( new PackageDescr(null) );
+            fail("should have errored here.");
+        } catch (RuntimeException e) {
+            assertNotNull(e.getMessage());
+        }
+        try {
+            builder.addPackage( new PackageDescr("") );
+            fail("should have errored here.");
+        } catch (RuntimeException e) {
+            assertNotNull(e.getMessage());
+        }
+        
+        
+        
     }
 
     public void testLiteral() throws Exception {
