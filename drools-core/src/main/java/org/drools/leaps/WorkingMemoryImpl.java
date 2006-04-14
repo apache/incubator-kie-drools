@@ -88,12 +88,6 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
         this.agenda.setFocus(AgendaGroup.MAIN);
         //
         this.queryResults = new HashMap();
-        // to pick up rules that do not require columns, only not and exists
-        PropagationContextImpl context = new PropagationContextImpl(
-                nextPropagationIdCounter(), PropagationContext.ASSERTION, null,
-                null);
-
-        this.pushTokenOnStack(new Token(this, null, context));
     }
 
     /**
@@ -261,18 +255,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
             handle.addLogicalDependency(tuple);
         }
 
-        // leaps handle already has object attached
-        // handle.setObject( object );
-
-        // this.ruleBase.assertObject( handle,
-        // object,
-        // propagationContext,
-        // this );
-
         // determine what classes it belongs to put it into the "table" on
         // class name key
-        LeapsTuple tuple;
-        LeapsRule leapsRule;
         Class objectClass = object.getClass();
         for (Iterator tables = this.getFactTablesList(objectClass).iterator(); tables
                 .hasNext();) {
@@ -280,44 +264,44 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
             // adding fact to container
             factTable.add(handle);
             // inspect all tuples for exists and not conditions and activate /
-            // deactivate
-            // agenda items
-            ColumnConstraints constraint;
-            ColumnConstraints[] constraints;
+            // deactivate agenda items
             for (Iterator tuples = factTable.getTuplesIterator(); tuples
                     .hasNext();) {
-                tuple = (LeapsTuple) tuples.next();
-                leapsRule = tuple.getLeapsRule();
-                // check not constraints
-                constraints = leapsRule.getNotColumnConstraints();
-                for (int i = 0, length = constraints.length; i < length; i++) {
-                    constraint = constraints[i];
-                    if (objectClass.isAssignableFrom(constraint.getClassType())
-                            && constraint.isAllowed(handle, tuple, this)) {
-                        tuple.addNotFactHandle(handle, i);
-                        handle.addNotTuple(tuple, i);
+                LeapsTuple tuple = (LeapsTuple) tuples.next();
+                if (!tuple.isActivationNull()) {
+                    // check not constraints only on activated tuples to see if
+                    // we need to deactivate
+                    ColumnConstraints[] not = tuple.getLeapsRule().getNotColumnConstraints();
+                    for (int i = 0, length = not.length; i < length; i++) {
+                        ColumnConstraints constraint = not[i];
+                        if (constraint.isAllowed(handle, tuple, this)) {
+                            tuple.setBlockingNotFactHandle(handle, i);
+                            handle.addNotTuple(tuple, i);
+                        }
+                    }
+                    // check and see if we need de-activate
+                    if (!tuple.isReadyForActivation()) {
+                        // time to pull from agenda
+                        this.invalidateActivation(tuple);
                     }
                 }
-                // check exists constraints
-                constraints = leapsRule.getExistsColumnConstraints();
-                for (int i = 0, length = constraints.length; i < length; i++) {
-                    constraint = constraints[i];
-                    if (objectClass.isAssignableFrom(constraint.getClassType())
-                            && constraint.isAllowed(handle, tuple, this)) {
-                        tuple.addExistsFactHandle(handle, i);
-                        handle.addExistsTuple(tuple, i);
+                else {
+                    // check exists constraints and activate constraints
+                    ColumnConstraints[] exists = tuple.getLeapsRule().getExistsColumnConstraints();
+                    for (int i = 0, length = exists.length; i < length; i++) {
+                        ColumnConstraints constraint = exists[i];
+                        if (constraint.getClassType().isAssignableFrom(objectClass)) {
+                            if (constraint.isAllowed(handle, tuple, this)) {
+                                tuple.setExistsFactHandle(handle, i);
+                                handle.addExistsTuple(tuple, i);
+                            }
+                        }
                     }
-                }
-                // check and see if we need deactivate / activate
-                if (tuple.isReadyForActivation() && tuple.isActivationNull()) {
-                    // ready to activate
-                    this.assertTuple(tuple);
-                    // remove tuple from fact table
-                    tuples.remove();
-                } else if (!tuple.isReadyForActivation()
-                        && !tuple.isActivationNull()) {
-                    // time to pull from agenda
-                    this.invalidateActivation(tuple);
+                    // check and see if we need activate
+                    if (tuple.isReadyForActivation()) {
+                        // ready to activate
+                        this.assertTuple(tuple);
+                    } 
                 }
             }
         }
@@ -385,32 +369,37 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
 
         // 1. remove fact for nots and exists tuples
         FactHandleTupleAssembly assembly;
+        LeapsTuple tuple;
         Iterator it;
-        it = ((FactHandleImpl) handle).getNotTuples();
+        it = ((FactHandleImpl) handle).getNotTupleAssemblies();
         if (it != null) {
             for (; it.hasNext();) {
                 assembly = (FactHandleTupleAssembly) it.next();
-                assembly.getTuple().removeNotFactHandle(handle,
-                        assembly.getIndex());
+                tuple = assembly.getTuple();
+                tuple.removeBlockingNotFactHandle(assembly.getIndex());
+                TokenEvaluator.evaluateNotCondition(new FactHandleImpl(
+                        ((FactHandleImpl) handle).getId() + 1, null), assembly.getIndex(), tuple, this);
             }
         }
-        it = ((FactHandleImpl) handle).getExistsTuples();
+        it = ((FactHandleImpl) handle).getExistsTupleAssemblies();
         if (it != null) {
             for (; it.hasNext();) {
                 assembly = (FactHandleTupleAssembly) it.next();
-                assembly.getTuple().removeExistsFactHandle(handle,
-                        assembly.getIndex());
+                tuple = assembly.getTuple();
+                tuple.removeExistsFactHandle(assembly.getIndex());
+                TokenEvaluator.evaluateExistsCondition(new FactHandleImpl(
+                        ((FactHandleImpl) handle).getId() + 1, null), assembly.getIndex(),
+                        tuple, this);
             }
         }
         // 2. assert all tuples that are ready for activation or cancel ones
         // that are no longer
-        LeapsTuple tuple;
         IteratorChain chain = new IteratorChain();
-        it = ((FactHandleImpl) handle).getNotTuples();
+        it = ((FactHandleImpl) handle).getNotTupleAssemblies();
         if (it != null) {
             chain.addIterator(it);
         }
-        it = ((FactHandleImpl) handle).getExistsTuples();
+        it = ((FactHandleImpl) handle).getExistsTupleAssemblies();
         if (it != null) {
             chain.addIterator(it);
         }
@@ -443,15 +432,12 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
         }
 
         // not applicable to leaps implementation
-        // this.factHandlePool.push( ((FactHandleImpl) handle).getId() );
         PropagationContextImpl context = new PropagationContextImpl(
                 nextPropagationIdCounter(), PropagationContext.RETRACTION,
                 rule, activation);
 
         this.workingMemoryEventSupport.fireObjectRetracted(context, handle,
                 oldObject);
-        // not applicable to leaps fact handle
-        // ((FactHandleImpl) handle).invalidate();
     }
 
     private void invalidateActivation(LeapsTuple tuple) {
@@ -576,7 +562,6 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
                         }
                     }
                 }
-                
             }
         }
 
@@ -611,12 +596,16 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
                         ruleHandlesList.add(ruleHandle);
                     }
                     this.leapsRulesToHandlesMap.put(rule, ruleHandlesList);
-                } else {
-                    ruleHandle = new RuleHandle(
-                            ((HandleFactory) this.handleFactory).getNextId(),
-                            rule, -1);
-                    this.noRequiredColumnsLeapsRules.add(ruleHandle);
-                    this.leapsRulesToHandlesMap.put(rule, ruleHandle);
+                } 
+                else {
+                    // to pick up rules that do not require columns, only not
+                    // and exists
+                    PropagationContextImpl context = new PropagationContextImpl(
+                            nextPropagationIdCounter(), PropagationContext.ASSERTION, null,
+                            null);
+
+                    TokenEvaluator.processAfterAllPositiveConstraintOk(
+                            new LeapsTuple(new FactHandleImpl[0], rule, context), rule, this);
                 }
             }
         }
@@ -705,8 +694,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
                         }
                     }
                 }
-                // pick activations generated by retraction
-                // retraction does not put tokens on stack but
+                // pick activations generated by retraction or assert
                 // can generate activations off exists and not pending tuples
                 while (this.agenda.fireNextItem(agendaFilter)) {
                     ;
@@ -882,3 +870,6 @@ class WorkingMemoryImpl extends AbstractWorkingMemory implements EventSupport,
     }
 
 }
+
+
+

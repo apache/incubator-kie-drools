@@ -36,19 +36,19 @@ import org.drools.spi.Tuple;
  */
 class Token implements Tuple, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long            serialVersionUID   = 1L;
 
-    private WorkingMemoryImpl workingMemory;
+    private WorkingMemoryImpl            workingMemory;
 
-    private final FactHandleImpl dominantFactHandle;
+    private final FactHandleImpl         dominantFactHandle;
 
-    private RuleHandle currentRuleHandle = null;
+    private RuleHandle                   currentRuleHandle  = null;
 
-    private FactHandleImpl[] currentFactHandles = new FactHandleImpl[0];
+    private FactHandleImpl[]             currentFactHandles = new FactHandleImpl[0];
 
-    boolean resume = false;
+    boolean                              resume             = false;
 
-    private Iterator rules = null;
+    private Iterator                     rules              = null;
 
     private final PropagationContextImpl propagationContext;
 
@@ -66,11 +66,10 @@ class Token implements Tuple, Serializable {
         if (this.rules == null) {
             if (this.dominantFactHandle != null) {
                 this.rules = this.workingMemory.getFactTable(
-                        this.dominantFactHandle.getObject().getClass())
-                        .getRulesIterator();
-            } else {
-                this.rules = this.workingMemory
-                        .getNoRequiredColumnsLeapsRules();
+                        this.dominantFactHandle.getObject().getClass()).getRulesIterator();
+            }
+            else {
+                this.rules = this.workingMemory.getNoRequiredColumnsLeapsRules();
             }
         }
         return this.rules;
@@ -78,8 +77,8 @@ class Token implements Tuple, Serializable {
 
     public RuleHandle nextRuleHandle() {
         this.currentRuleHandle = (RuleHandle) this.rules.next();
-        this.currentFactHandles = new FactHandleImpl[this.currentRuleHandle
-                .getLeapsRule().getNumberOfColumns()];
+        this.currentFactHandles = new FactHandleImpl[this.currentRuleHandle.getLeapsRule()
+                .getNumberOfColumns()];
         return this.currentRuleHandle;
     }
 
@@ -98,20 +97,22 @@ class Token implements Tuple, Serializable {
             if (this.dominantFactHandle == null
                     || this.dominantFactHandle.getId() >= levelId) {
                 ret = this.rules.hasNext();
-            } else {
+            }
+            else {
                 // then we need to skip rules that have id lower than
                 // workingMemory.idLastFireAllAt
                 boolean done = false;
                 while (!done) {
                     if (this.rules.hasNext()) {
-                        if (((RuleHandle) ((TableIterator) this.rules)
-                                .peekNext()).getId() > levelId) {
+                        if (((RuleHandle) ((TableIterator) this.rules).peekNext()).getId() > levelId) {
                             ret = true;
                             done = true;
-                        } else {
+                        }
+                        else {
                             this.rules.next();
                         }
-                    } else {
+                    }
+                    else {
                         ret = false;
                         done = true;
                     }
@@ -124,7 +125,8 @@ class Token implements Tuple, Serializable {
     public int hashCode() {
         if (this.dominantFactHandle != null) {
             return this.dominantFactHandle.hashCode();
-        } else {
+        }
+        else {
             return 0;
         }
     }
@@ -155,20 +157,7 @@ class Token implements Tuple, Serializable {
      * @see Object
      */
     public boolean equals(Object that) {
-        if (this == that)
-            return true;
-        if (!(that instanceof Token))
-            return false;
-        if (this.dominantFactHandle != null) {
-            if (((Token) that).dominantFactHandle != null) {
-                return this.dominantFactHandle.getId() == ((Token) that).dominantFactHandle
-                        .getId();
-            } else {
-                return false;
-            }
-        } else {
-            return ((Token) that).dominantFactHandle == null;
-        }
+        return this.dominantFactHandle.getId() == ((Token) that).dominantFactHandle.getId();
     }
 
     /**
@@ -215,9 +204,8 @@ class Token implements Tuple, Serializable {
         if (this.currentFactHandles != null) {
             for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
                 ret = ret
-                        + ((i == this.currentRuleHandle.getDominantPosition()) ? "***"
-                                : "") + "\t" + i + " -> "
-                        + this.currentFactHandles[i].getObject() + "\n";
+                        + ((i == this.currentRuleHandle.getDominantPosition()) ? "***" : "")
+                        + "\t" + i + " -> " + this.currentFactHandles[i].getObject() + "\n";
             }
         }
         return ret;
@@ -266,3 +254,6 @@ class Token implements Tuple, Serializable {
         return propagationContext;
     }
 }
+
+
+

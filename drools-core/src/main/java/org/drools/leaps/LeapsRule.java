@@ -31,7 +31,7 @@ import org.drools.rule.Rule;
  * 
  */
 class LeapsRule {
-    Rule rule;
+    Rule                      rule;
 
     final ColumnConstraints[] columnConstraints;
 
@@ -39,11 +39,11 @@ class LeapsRule {
 
     final ColumnConstraints[] existsColumnConstraints;
 
-    final EvalCondition[] evalConditions;
+    final EvalCondition[]     evalConditions;
 
-    boolean notColumnsPresent;
+    boolean                   notColumnsPresent;
 
-    boolean existsColumnsPresent;
+    boolean                   existsColumnsPresent;
 
     boolean evalCoditionsPresent;
 
@@ -66,7 +66,7 @@ class LeapsRule {
 
         ArrayList classes = new ArrayList();
         for (int i = 0; i < this.notColumnConstraints.length; i++) {
-            if (classes.contains(this.notColumnConstraints[i].getClassType())) {
+            if (!classes.contains(this.notColumnConstraints[i].getClassType())) {
                 classes.add(this.notColumnConstraints[i].getClassType());
             }
         }
@@ -168,5 +168,7 @@ class LeapsRule {
     public void setAgendaGroup(AgendaGroupImpl agendaGroup) {
         this.agendaGroup = agendaGroup;
     }
-
 }
+
+
+

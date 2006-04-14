@@ -26,20 +26,20 @@ import java.util.Iterator;
  * 
  */
 public interface TableIterator extends Iterator {
-	/**
-	 * single object iterator
-	 * 
-	 * @return table iterator
-	 */
-	public boolean isEmpty();
+    /**
+     * single object iterator
+     * 
+     * @return table iterator
+     */
+    public boolean isEmpty();
 
-	public void reset();
+    public void reset();
 
-	public boolean hasNext();
+    public boolean hasNext();
 
-	public Object next();
+    public Object next();
 
-	public Object peekNext();
+    public Object peekNext();
 
-	public void remove();
+    public void remove();
 }
