@@ -89,6 +89,8 @@ rule
 end
 contains
 matches
+and
+or
 modify
 retract
 assert
