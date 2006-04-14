@@ -28,6 +28,7 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.dsl.DefaultExpanderResolver;
 
 public class RuleParserTest extends TestCase {
 	
@@ -589,6 +590,36 @@ public class RuleParserTest extends TestCase {
         
                 
     }
+    
+    public void testExpanderLineSpread() throws Exception {
+        
+        
+        RuleParser parser = parseResource( "expander_spread_lines.drl" );
+        DefaultExpanderResolver res = new DefaultExpanderResolver(new InputStreamReader(this.getClass().getResourceAsStream( "complex.dsl" )));
+        parser.setExpanderResolver( res );
+        parser.setExpanderDebug( true );
+        parser.compilation_unit();
+//        List errorMessages = parser.getErrorMessages();
+//        for ( Iterator iter = errorMessages.iterator(); iter.hasNext(); ) {
+//            String element = (String) iter.next();
+//            System.out.println(element);
+//            
+//        }        
+        
+        assertFalse(parser.hasErrors());
+        
+
+        
+        PackageDescr pkg = parser.getPackageDescr();
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        
+        OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals(2, or.getDescrs().size());
+        assertNotNull(rule.getConsequence());
+        
+                
+    }    
     
     public void testExpanderUnExpandableErrorLines() throws Exception {
         
