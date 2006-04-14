@@ -100,6 +100,11 @@ public class PackageBuilder {
     
     public void addPackage(PackageDescr packageDescr) {
 
+        if (packageDescr.getName() == null || "".equals(packageDescr.getName())) {
+            
+            throw new MissingPackageNameException("Missing package name for rule package.");
+        }
+        
         if ( this.pkg != null ) {
             //mergePackage( packageDescr ) ;
             mergePackage( this.pkg,
@@ -336,6 +341,12 @@ public class PackageBuilder {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 
+    public static class MissingPackageNameException extends IllegalArgumentException {
 
+        public MissingPackageNameException(String message) {
+            super(message);
+        }
+        
+    }
 
 }
