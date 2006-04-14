@@ -1,9 +1,7 @@
 <projectDescription>
   <name>drools-compiler</name>
   <comment/>
-  <projects>
-    <project>drools-core</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.wst.common.modulecore.ComponentStructuralBuilder</name>

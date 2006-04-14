@@ -12,17 +12,22 @@ grammar RuleParser;
 @parser::members {
 	private ExpanderResolver expanderResolver;
 	private Expander expander;
-
+	private boolean expanderDebug = false;
 	private PackageDescr packageDescr;
-	
 	private List errors = new ArrayList();
-	
 	private String source = "unknown";
 	
 	public void setSource(String source) {
 		this.source = source;
 	}
-	
+
+	/**
+	 * This may be set to enable debuggin of DSLs/expanders.
+	 * If set to true, expander stuff will be sent to the Std out.
+	 */	
+	public void setExpanderDebug(boolean status) {
+		expanderDebug = status;
+	}
 	public String getSource() {
 		return this.source;
 	}
@@ -40,7 +45,7 @@ grammar RuleParser;
 	}
 	
 	/** Expand the LHS */
-	private void runWhenExpander(String text, AndDescr descrs, int line) throws RecognitionException {
+	private String runWhenExpander(String text, int line) throws RecognitionException {
 		String expanded = text.trim();
 		if (expanded.startsWith(">")) {
 			expanded = expanded.substring(1);  //escape !!
@@ -49,10 +54,13 @@ grammar RuleParser;
 				expanded = expander.expand( "when", text );			
 			} catch (Exception e) {
 				this.errors.add(new ExpanderException("Unable to expand: " + text + ". Due to " + e.getMessage(), line));
-				return;
+				return "";
 			}
 		}
-		reparseLhs( expanded, descrs );		
+		if (expanderDebug) {
+			System.out.println("Expanding LHS: " + text + " ----> " + expanded + " --> from line: " + line);
+		}
+		return expanded;	
 		
 	}
 
@@ -72,6 +80,10 @@ grammar RuleParser;
                 	}
     			this.errors.addAll(parser.getErrors());
     		}
+		if (expanderDebug) {
+			System.out.println("Reparsing LHS: " + text + " --> successful:" + !parser.hasErrors());
+		}    		
+    		
     	}
 	
 	/** Expand a line on the RHS */
@@ -101,6 +113,10 @@ grammar RuleParser;
 				}
 			}
 		}
+		
+		if (expanderDebug) {
+			System.out.println("Expanding RHS: " + text + " ----> " + expanded.toString() + " --> from line starting: " + startLine);
+		}		
 		
 		return expanded.toString();
 	}
@@ -521,19 +537,32 @@ normal_lhs_block[AndDescr descrs]
 
 	
 expander_lhs_block[AndDescr descrs]
-
+	@init {
+		String lhsBlock = null;
+		String eol = System.getProperty( "line.separator" );
+	}
 	:
 		(options{greedy=false;} : 
 			text=paren_chunk loc=EOL 
 			{
 				//only expand non null
 				if (text != null) {
-					runWhenExpander( text, descrs, loc.getLine());
+					if (lhsBlock == null) {					
+						lhsBlock = runWhenExpander( text, loc.getLine());
+					} else {
+						lhsBlock = lhsBlock + eol + runWhenExpander( text, loc.getLine());
+					}
 					text = null;
 				}
 			}
 			
-		)*
+		)* 
+		
+		{
+			if (lhsBlock != null) {
+				reparseLhs(lhsBlock, descrs);
+			}
+		}
 
 	;
 	
@@ -779,7 +808,7 @@ lhs_or returns [PatternDescr d]
 	:	
 		{ OrDescr or = null; }
 		left=lhs_and {d = left; }
-		( 	('or'|'||') 
+		( ('or'|'||') opt_eol
 			right=lhs_and 
 			{
 				if ( or == null ) {
@@ -800,7 +829,7 @@ lhs_and returns [PatternDescr d]
 	:
 		{ AndDescr and = null; }
 		left=lhs_unary { d = left; }
-		(	('and'|'&&') 
+		( ('and'|'&&') opt_eol
 			right=lhs_unary 
 			{
 				if ( and == null ) {
