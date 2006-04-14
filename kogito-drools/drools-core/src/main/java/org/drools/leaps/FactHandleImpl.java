@@ -31,9 +31,7 @@ import org.drools.common.InternalFactHandle;
  * @author Alexander Bagerman
  * 
  */
-public class FactHandleImpl extends Handle
-    implements
-    InternalFactHandle {
+public class FactHandleImpl extends Handle implements InternalFactHandle {
     private Set     activatedTuples   = null;
 
     private List    notTuples         = null;
@@ -50,85 +48,79 @@ public class FactHandleImpl extends Handle
      * actual object that is asserted to the system no getters just a direct
      * access to speed things up
      */
-    public FactHandleImpl(long id,
-                          Object object) {
-        super( id,
-               object );
+    public FactHandleImpl(long id, Object object) {
+        super(id, object);
     }
 
     void addActivatedTuple(LeapsTuple tuple) {
-        if ( this.activatedTuples == null ) {
+        if (this.activatedTuples == null) {
             this.activatedTuples = new HashSet();
         }
-        this.activatedTuples.add( tuple );
+        this.activatedTuples.add(tuple);
     }
 
-    void addNotTuple(LeapsTuple tuple,
-                     int index) {
-        if ( this.notTuples == null ) {
+    void addNotTuple(LeapsTuple tuple, int index) {
+        if (this.notTuples == null) {
             this.notTuples = new LinkedList();
         }
-        this.notTuples.add( new FactHandleTupleAssembly( tuple,
-                                                         index ) );
+        this.notTuples.add(new FactHandleTupleAssembly(tuple, index));
     }
 
-    void addExistsTuple(LeapsTuple tuple,
-                        int index) {
-        if ( this.existsTuples == null ) {
+    void addExistsTuple(LeapsTuple tuple, int index) {
+        if (this.existsTuples == null) {
             this.existsTuples = new LinkedList();
         }
-        this.existsTuples.add( new FactHandleTupleAssembly( tuple,
-                                                            index ) );
+        this.existsTuples.add(new FactHandleTupleAssembly(tuple, index));
     }
 
     Iterator getActivatedTuples() {
-        if ( this.activatedTuples != null ) {
+        if (this.activatedTuples != null) {
             return this.activatedTuples.iterator();
         }
         return null;
     }
 
-    Iterator getNotTuples() {
-        if ( this.notTuples != null ) {
+    Iterator getNotTupleAssemblies() {
+        if (this.notTuples != null) {
             return this.notTuples.iterator();
         }
         return null;
     }
 
-    Iterator getExistsTuples() {
-        if ( this.existsTuples != null ) {
+    Iterator getExistsTupleAssemblies() {
+        if (this.existsTuples != null) {
             return this.existsTuples.iterator();
         }
         return null;
     }
 
     void addLogicalDependency(LeapsTuple tuple) {
-        if ( this.logicalJustifiers == null ) {
+        if (this.logicalJustifiers == null) {
             this.logicalyDependent = true;
             this.logicalJustifiers = new HashSet();
         }
-        this.logicalJustifiers.add( tuple );
+        this.logicalJustifiers.add(tuple);
 
         this.dependencyCount++;
     }
 
     void removeLogicalDependency(LeapsTuple tuple) {
-        if ( this.dependencyCount > 0 ) {
-            this.logicalJustifiers.remove( tuple );
+        if (this.dependencyCount > 0) {
+            this.logicalJustifiers.remove(tuple);
         }
         this.dependencyCount--;
     }
 
     void removeAllLogicalDependencies() {
-        if ( this.dependencyCount > 0 ) {
-            for ( Iterator it = this.logicalJustifiers.iterator(); it.hasNext(); ) {
-                this.removeLogicalDependency( (LeapsTuple) it.next() );
+        if (this.dependencyCount > 0) {
+            for (Iterator it = this.logicalJustifiers.iterator(); it.hasNext();) {
+                this.removeLogicalDependency((LeapsTuple) it.next());
             }
         }
     }
 
     boolean isLogicalyValid() {
-        if ( this.logicalyDependent ) {
+        if (this.logicalyDependent) {
             return this.dependencyCount != 0;
         }
         return true;
@@ -148,3 +140,6 @@ public class FactHandleImpl extends Handle
         return toExternalForm();
     }
 }
+
+
+

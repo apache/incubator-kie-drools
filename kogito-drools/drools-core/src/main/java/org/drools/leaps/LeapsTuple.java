@@ -33,42 +33,48 @@ import org.drools.spi.Tuple;
  * @author Alexander Bagerman
  */
 class LeapsTuple implements Tuple, Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long        serialVersionUID       = 1L;
 
     private final PropagationContext context;
 
-    private boolean readyForActivation;
+    private boolean                  readyForActivation;
 
-    private final FactHandleImpl[] factHandles;
+    private final FactHandleImpl[]   factHandles;
 
-    private Set[] notFactHandles;
+    private FactHandleImpl[]         blockingNotFactHandles = null;
 
-    private Set[] existsFactHandles;
+    private FactHandleImpl[]         existsFactHandles      = null;
 
-    private Set logicalDependencies;
+    private Set                      logicalDependencies;
 
-    private Activation activation;
+    private Activation               activation;
 
-    private final LeapsRule leapsRule;
+    private final LeapsRule          leapsRule;
 
     /**
      * agendaItem parts
      */
-    LeapsTuple(FactHandleImpl factHandles[], LeapsRule leapsRule,
-            PropagationContext context) {
+    LeapsTuple(FactHandleImpl factHandles[], LeapsRule leapsRule, PropagationContext context) {
         this.factHandles = factHandles;
         this.leapsRule = leapsRule;
         this.context = context;
 
-        if (this.leapsRule != null && this.leapsRule.containsNotColumns()) {
-            this.notFactHandles = new HashSet[this.leapsRule
-                    .getNotColumnConstraints().length];
+        if (this.leapsRule != null) {
+            if (this.leapsRule.containsNotColumns()) {
+                this.blockingNotFactHandles = new FactHandleImpl[this.leapsRule
+                        .getNotColumnConstraints().length];
+                for (int i = 0; i < this.blockingNotFactHandles.length; i++) {
+                    this.blockingNotFactHandles[i] = null;
+                }
+            }
+            if (this.leapsRule.containsExistsColumns()) {
+                this.existsFactHandles = new FactHandleImpl[this.leapsRule
+                        .getExistsColumnConstraints().length];
+                for (int i = 0; i < this.existsFactHandles.length; i++) {
+                    this.existsFactHandles[i] = null;
+                }
+            }
         }
-        if (this.leapsRule != null && this.leapsRule.containsExistsColumns()) {
-            this.existsFactHandles = new HashSet[this.leapsRule
-                    .getExistsColumnConstraints().length];
-        }
-
         this.readyForActivation = (this.leapsRule == null || !this.leapsRule
                 .containsExistsColumns());
     }
@@ -193,76 +199,56 @@ class LeapsTuple implements Tuple, Serializable {
         if (this.existsFactHandles != null) {
             buffer.append("\nExists fact handles by position");
             for (int i = 0, length = this.existsFactHandles.length; i < length; i++) {
-                buffer.append("\nposition " + i);
-                for (Iterator it = this.existsFactHandles[i].iterator(); it
-                        .hasNext();) {
-                    buffer.append("\n\t" + it.next());
-                }
+                buffer.append("\nposition " + i).append(this.existsFactHandles[i]);
             }
         }
-        if (this.notFactHandles != null) {
-            buffer.append("\nNot fact handles by position");
-            for (int i = 0, length = this.notFactHandles.length; i < length; i++) {
-                buffer.append("\nposition " + i);
-                for (Iterator it = this.notFactHandles[i].iterator(); it
-                        .hasNext();) {
-                    buffer.append("\n\t" + it.next());
-                }
+        if (this.blockingNotFactHandles != null) {
+            buffer.append("\nblockingNot fact handles by position");
+            for (int i = 0, length = this.blockingNotFactHandles.length; i < length; i++) {
+                buffer.append("\nposition " + i).append(this.blockingNotFactHandles[i]);
             }
         }
+
         return buffer.toString();
     }
 
-    void addNotFactHandle(FactHandle factHandle, int index) {
+    void setBlockingNotFactHandle(FactHandleImpl factHandle, int index) {
         this.readyForActivation = false;
-        Set facts = this.notFactHandles[index];
-        if (facts == null) {
-            facts = new HashSet();
-            this.notFactHandles[index] = facts;
-        }
-        facts.add(factHandle);
+        this.blockingNotFactHandles[index] = factHandle;
     }
 
-    void removeNotFactHandle(FactHandle factHandle, int index) {
-        if (this.notFactHandles[index] != null) {
-            this.notFactHandles[index].remove(factHandle);
-        }
+    void removeBlockingNotFactHandle(int index) {
+        this.blockingNotFactHandles[index] = null;
         this.setReadyForActivation();
     }
 
-    void addExistsFactHandle(FactHandle factHandle, int index) {
-        Set facts = this.existsFactHandles[index];
-        if (facts == null) {
-            facts = new HashSet();
-            this.existsFactHandles[index] = facts;
-        }
-        facts.add(factHandle);
+    void setExistsFactHandle(FactHandleImpl factHandle, int index) {
+        this.existsFactHandles[index] = factHandle;
         this.setReadyForActivation();
     }
 
-    void removeExistsFactHandle(FactHandle factHandle, int index) {
-        if (this.existsFactHandles[index] != null) {
-            this.existsFactHandles[index].remove(factHandle);
-        }
+    void removeExistsFactHandle(int index) {
+        this.existsFactHandles[index] = null;
         this.setReadyForActivation();
     }
 
     private void setReadyForActivation() {
         this.readyForActivation = true;
 
-        if (this.notFactHandles != null) {
-            for (int i = 0, length = this.notFactHandles.length; i < length
-                    && this.readyForActivation; i++) {
-                if (this.notFactHandles[i].size() > 0) {
+        if (this.blockingNotFactHandles != null) {
+            for (int i = 0, length = this.blockingNotFactHandles.length; i < length; i++) {
+                if (this.blockingNotFactHandles[i] != null) {
                     this.readyForActivation = false;
+                    return;
                 }
             }
         }
+
         if (this.existsFactHandles != null) {
-            for (int i = 0, length = this.existsFactHandles.length; i < length
-                    && this.readyForActivation; i++) {
-                if (this.existsFactHandles[i].size() == 0) {
+            for (int i = 0, length = this.existsFactHandles.length; i < length; i++) {
+                if (this.existsFactHandles[i] == null) {
                     this.readyForActivation = false;
+                    return;
                 }
             }
         }
@@ -286,3 +272,6 @@ class LeapsTuple implements Tuple, Serializable {
         return null;
     }
 }
+
+
+
