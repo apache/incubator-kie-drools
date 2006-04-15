@@ -5,21 +5,21 @@
   <classpathentry kind="src" path="src/test/resources" output="target/test-classes"/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/concurrent/concurrent/1.3.4/concurrent-1.3.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/jung/jung/1.7.2/jung-1.7.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/xstream/xstream/1.1.3/xstream-1.1.3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/jci/jci/SNAPSHOT-378493+patch3/jci-SNAPSHOT-378493+patch3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/xpp3/xpp3/1.1.3.3/xpp3-1.1.3.3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/eclipse/jdtcore/3.2.0.v_653/jdtcore-3.2.0.v_653.jar"/>
-  <classpathentry kind="var" path="M2_REPO/antlr/stringtemplate/2.3b6/stringtemplate-2.3b6.jar"/>
-  <classpathentry kind="var" path="M2_REPO/colt/colt/1.2.0/colt-1.2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.1/commons-lang-2.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.6/antlr-2.7.6.jar"/>
-  <classpathentry kind="src" path="/drools-core"/>
-  <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/drools-asm/drools-asm/2.2.1/drools-asm-2.2.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/antlr/antlr3/3.0ea8/antlr3-3.0ea8.jar"/>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.6/antlr-2.7.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.1/commons-lang-2.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/xstream/xstream/1.1.3/xstream-1.1.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/drools-asm/drools-asm/2.2.1/drools-asm-2.2.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging-api/1.0.4/commons-logging-api-1.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/xpp/xpp/3-1.1.3.4.O/xpp-3-1.1.3.4.O.jar"/>
+  <classpathentry kind="var" path="M2_REPO/antlr/stringtemplate/2.3b6/stringtemplate-2.3b6.jar"/>
+  <classpathentry kind="src" path="/drools-core"/>
+  <classpathentry kind="var" path="M2_REPO/jci/jci/SNAPSHOT-378493+patch3/jci-SNAPSHOT-378493+patch3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/colt/colt/1.2.0/colt-1.2.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jung/jung/1.7.2/jung-1.7.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/antlr/antlr3/3.0ea8/antlr3-3.0ea8.jar"/>
+  <classpathentry kind="var" path="M2_REPO/eclipse/jdtcore/3.2.0.v_653/jdtcore-3.2.0.v_653.jar"/>
 </classpath>
