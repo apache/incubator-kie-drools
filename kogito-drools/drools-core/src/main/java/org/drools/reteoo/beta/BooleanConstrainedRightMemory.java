@@ -35,7 +35,7 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  * BooleanConstrainedRightMemory
  * A boolean constrained right memory
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 19/02/2006
  */

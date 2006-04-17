@@ -28,7 +28,7 @@ import org.drools.rule.LiteralConstraint;
  * AlphaNodeSwitch
  * A LiteralConstraint wrapper to be used on alpha node hashing algorithm
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 04/03/2006
  */

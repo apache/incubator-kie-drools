@@ -38,7 +38,7 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  * ObjectEqualConstrRightMemory
  * An Equal Constrained Right Memory
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 22/02/2006
  */

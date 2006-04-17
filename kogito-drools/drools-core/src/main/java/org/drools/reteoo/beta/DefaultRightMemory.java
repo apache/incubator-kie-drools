@@ -29,7 +29,7 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  * 
  * A default implementation for BetaRightMemory.
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 12/02/2006
  */
