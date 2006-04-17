@@ -41,9 +41,7 @@ package org.drools.conflict;
  *
  */
 
-import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.FactHandleImpl;
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 
@@ -111,10 +109,9 @@ public class RecencyConflictResolver extends AbstractConflictResolver {
                 rightMostRecent = getMostRecentFact( rFacts, rightMostRecent );
                 if ( leftMostRecent == null || rightMostRecent == null ) {
                     if( leftMostRecent == null && rightMostRecent != null ) {
-                        return leftMostRecent.getRecency();
-                    }
-                }
-                if ( leftMostRecent.getRecency() != rightMostRecent.getRecency() ) {
+                        return (int) rightMostRecent.getRecency();
+                    } 
+                } else if ( leftMostRecent.getRecency() != rightMostRecent.getRecency() ) {
                     return (int) ( rightMostRecent.getRecency() - leftMostRecent.getRecency() );
                 }
             }
