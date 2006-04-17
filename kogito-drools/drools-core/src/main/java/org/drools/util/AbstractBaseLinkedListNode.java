@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,7 +16,6 @@ package org.drools.util;
  * limitations under the License.
  */
 
-
 /**
  * Provides a abstract base implementation that an object can extend so that it can be used in a LinkedList.
  * 
@@ -24,17 +24,18 @@ package org.drools.util;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public class AbstractBaseLinkedListNode implements LinkedListNode {
-    private LinkedListNode               previous;
+public class AbstractBaseLinkedListNode
+    implements
+    LinkedListNode {
+    private LinkedListNode previous;
 
-    private LinkedListNode               next;  
-    
+    private LinkedListNode next;
+
     /**
      * Empty Constructor
      */
     public AbstractBaseLinkedListNode() {
-    }        
-    
+    }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LinkedListNode#getNext()
@@ -62,5 +63,5 @@ public class AbstractBaseLinkedListNode implements LinkedListNode {
      */
     public void setPrevious(LinkedListNode previous) {
         this.previous = previous;
-    }    
+    }
 }

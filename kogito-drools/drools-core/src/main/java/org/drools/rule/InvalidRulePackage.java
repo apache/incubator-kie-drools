@@ -8,11 +8,11 @@ package org.drools.rule;
  * @author Michael Neale
  */
 public class InvalidRulePackage extends RuntimeException {
-    
+
     private static final long serialVersionUID = 7244017661666655680L;
 
     public InvalidRulePackage(String summary) {
         super( summary );
     }
-    
+
 }

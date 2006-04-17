@@ -56,6 +56,3 @@ public class LeapsAgenda extends Agenda {
         }
     }
 }
-
-
-

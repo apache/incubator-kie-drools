@@ -57,7 +57,8 @@ public class ObjectModifiedEvent extends WorkingMemoryEvent {
                                FactHandle handle,
                                Object oldObject,
                                Object object) {
-        super( workingMemory, propagationContext );
+        super( workingMemory,
+               propagationContext );
         this.handle = handle;
         this.oldObject = oldObject;
         this.object = object;

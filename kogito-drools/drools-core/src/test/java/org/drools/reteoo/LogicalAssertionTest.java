@@ -9,7 +9,6 @@ import org.drools.base.ClassObjectType;
 import org.drools.common.Agenda;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
@@ -29,13 +28,16 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.addObjectSink( sink );
 
         final Rule rule1 = new Rule( "test-rule1" );
-        final TerminalNode node = new TerminalNode(2, new MockTupleSource(2), rule1);
+        final TerminalNode node = new TerminalNode( 2,
+                                                    new MockTupleSource( 2 ),
+                                                    rule1 );
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
-                
+
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -51,8 +53,10 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
 
         // Test single activation for a single logical assertions
-        node.assertTuple( tuple1, context1, workingMemory );
-        
+        node.assertTuple( tuple1,
+                          context1,
+                          workingMemory );
+
         String logicalString = new String( "logical" );
         FactHandle logicalHandle = workingMemory.assertObject( logicalString,
                                                                false,
@@ -60,7 +64,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                rule1,
                                                                tuple1.getActivation() );
         // Retract the tuple and test the logically asserted fact was also retracted
-        node.retractTuple( tuple1, context1, workingMemory );
+        node.retractTuple( tuple1,
+                           context1,
+                           workingMemory );
 
         assertLength( 1,
                       sink.getRetracted() );
@@ -73,7 +79,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // Test single activation for a single logical assertions. This also
         // tests that logical assertions live on after the related Activation
         // has fired.
-        node.assertTuple( tuple1, context1, workingMemory );
+        node.assertTuple( tuple1,
+                          context1,
+                          workingMemory );
         logicalHandle = workingMemory.assertObject( logicalString,
                                                     false,
                                                     true,
@@ -82,7 +90,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         agenda.fireNextItem( null );
 
-        node.retractTuple( tuple1, context1, workingMemory );
+        node.retractTuple( tuple1,
+                           context1,
+                           workingMemory );
 
         assertLength( 2,
                       sink.getRetracted() );
@@ -97,7 +107,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so w can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
-        
+
         Rete rete = new Rete();
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                             new ClassObjectType( String.class ),
@@ -105,16 +115,19 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.attach();
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        
-        final TerminalNode node = new TerminalNode(2, new MockTupleSource(2), rule1);
-        
+
+        final TerminalNode node = new TerminalNode( 2,
+                                                    new MockTupleSource( 2 ),
+                                                    rule1 );
+
         RuleBase ruleBase = new RuleBaseImpl();
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
 
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -129,7 +142,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
 
         // Test single activation for a single logical assertions
-        node.assertTuple( tuple1, context1, workingMemory );
+        node.assertTuple( tuple1,
+                          context1,
+                          workingMemory );
 
         String logicalString1 = new String( "logical" );
         FactHandle logicalHandle1 = workingMemory.assertObject( logicalString1,
@@ -164,21 +179,24 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
-        Rete rete = new Rete();        
+        Rete rete = new Rete();
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                             new ClassObjectType( String.class ),
                                                             rete );
         objectTypeNode.attach();
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        final TerminalNode node = new TerminalNode(2, new MockTupleSource(2), rule1);
+        final TerminalNode node = new TerminalNode( 2,
+                                                    new MockTupleSource( 2 ),
+                                                    rule1 );
         RuleBase ruleBase = new RuleBaseImpl();
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
 
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -193,7 +211,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
 
         // Test that a STATED assertion overrides a logical assertion
-        node.assertTuple( tuple1, context1, workingMemory );
+        node.assertTuple( tuple1,
+                          context1,
+                          workingMemory );
 
         String logicalString1 = new String( "logical" );
         FactHandle logicalHandle1 = workingMemory.assertObject( logicalString1,
@@ -202,12 +222,14 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 rule1,
                                                                 tuple1.getActivation() );
 
-         // This assertion is stated and should override any previous justified
-         // "equals" objects.
+        // This assertion is stated and should override any previous justified
+        // "equals" objects.
         String logicalString2 = new String( "logical" );
         FactHandle logicalHandle2 = workingMemory.assertObject( logicalString2 );
 
-        node.retractTuple( tuple1, context1, workingMemory );
+        node.retractTuple( tuple1,
+                           context1,
+                           workingMemory );
 
         assertLength( 0,
                       sink.getRetracted() );
@@ -224,7 +246,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                        workingMemory.getObject( logicalHandle2 ) );
 
         // Test that a logical assertion cannot override a STATED assertion
-        node.assertTuple( tuple1, context1, workingMemory );
+        node.assertTuple( tuple1,
+                          context1,
+                          workingMemory );
 
         logicalString2 = new String( "logical" );
         logicalHandle2 = workingMemory.assertObject( logicalString2 );
@@ -251,7 +275,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         assertSame( logicalHandle2,
                     logicalHandle1 );
 
-        node.retractTuple( tuple1, context1, workingMemory );
+        node.retractTuple( tuple1,
+                           context1,
+                           workingMemory );
 
         assertLength( 0,
                       sink.getRetracted() );
@@ -281,12 +307,15 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.attach();
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        final TerminalNode node = new TerminalNode(2, new MockTupleSource(2), rule1);
+        final TerminalNode node = new TerminalNode( 2,
+                                                    new MockTupleSource( 2 ),
+                                                    rule1 );
         RuleBase ruleBase = new RuleBaseImpl();
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
 
         Consequence consequence = new Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -302,7 +331,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                  null,
                                                                  null );
 
-        node.assertTuple( tuple1, context, workingMemory );
+        node.assertTuple( tuple1,
+                          context,
+                          workingMemory );
 
         // Assert the logical "logical" fact
         String logicalString1 = new String( "logical" );
@@ -314,16 +345,22 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // create the second activation to justify the "logical" fact
         final Rule rule2 = new Rule( "test-rule2" );
-        final TerminalNode node2 = new TerminalNode(4, new MockTupleSource(3), rule2);
+        final TerminalNode node2 = new TerminalNode( 4,
+                                                     new MockTupleSource( 3 ),
+                                                     rule2 );
         rule2.setConsequence( consequence );
 
         FactHandleImpl handle2 = new FactHandleImpl( 2 );
         ReteTuple tuple2 = new ReteTuple( handle2 );
 
-        node.assertTuple( tuple2, context, workingMemory );
-        
-        node2.assertTuple( tuple2, context, workingMemory );
-       
+        node.assertTuple( tuple2,
+                          context,
+                          workingMemory );
+
+        node2.assertTuple( tuple2,
+                           context,
+                           workingMemory );
+
         // Assert the logical "logical" fact
         String logicalString2 = new String( "logical" );
         FactHandle logicalHandle2 = workingMemory.assertObject( logicalString2,
@@ -358,13 +395,16 @@ public class LogicalAssertionTest extends DroolsTestCase {
         objectTypeNode.attach();
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        final TerminalNode node = new TerminalNode(2, new MockTupleSource(2), rule1);
+        final TerminalNode node = new TerminalNode( 2,
+                                                    new MockTupleSource( 2 ),
+                                                    rule1 );
         WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
 
         final Agenda agenda = workingMemory.getAgenda();
 
         Consequence consequence = new Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -380,11 +420,15 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null,
                                                                         null );
         // get the activation onto the agenda
-        node.assertTuple( tuple1, context1, workingMemory );
-        
+        node.assertTuple( tuple1,
+                          context1,
+                          workingMemory );
+
         // Create the second justifer
         final Rule rule2 = new Rule( "test-rule2" );
-        final TerminalNode node2 = new TerminalNode(4, new MockTupleSource(3), rule2);
+        final TerminalNode node2 = new TerminalNode( 4,
+                                                     new MockTupleSource( 3 ),
+                                                     rule2 );
         rule2.setConsequence( consequence );
 
         FactHandleImpl handle2 = new FactHandleImpl( 2 );
@@ -396,30 +440,34 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
 
         // get the activations onto the agenda
-        node2.assertTuple( tuple2, context2, workingMemory );
+        node2.assertTuple( tuple2,
+                           context2,
+                           workingMemory );
 
         // Create the first justifieable relationship
         String logicalString1 = new String( "logical" );
         FactHandle logicalHandle1 = workingMemory.assertObject( logicalString1,
                                                                 false,
                                                                 true,
-                                                                rule1, 
+                                                                rule1,
                                                                 tuple1.getActivation() );
 
         // Create the second justifieable relationship
-        String logicalString2 = new String ( "logical" );
+        String logicalString2 = new String( "logical" );
         FactHandle logicalHandle2 = workingMemory.assertObject( logicalString2,
                                                                 false,
                                                                 true,
                                                                 rule2,
-                                                                tuple2.getActivation());
+                                                                tuple2.getActivation() );
 
         // "logical" should only appear once
         assertLength( 1,
                       workingMemory.getJustified().values() );
 
         // Now lets cancel the first activation
-        node2.retractTuple( tuple2, context2, workingMemory );
+        node2.retractTuple( tuple2,
+                            context2,
+                            workingMemory );
 
         // because this logical fact has two relationships it shouldn't retract yet
         assertLength( 0,
@@ -430,7 +478,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                       workingMemory.getJustified().values() );
 
         // now remove that final justification
-        node.retractTuple( tuple1, context1, workingMemory );
+        node.retractTuple( tuple1,
+                           context1,
+                           workingMemory );
 
         // Should cause the logical fact to be retracted
         assertLength( 1,

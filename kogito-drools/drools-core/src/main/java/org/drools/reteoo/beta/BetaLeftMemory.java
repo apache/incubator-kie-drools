@@ -42,38 +42,42 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  * Created: 12/02/2006
  */
 public interface BetaLeftMemory {
-    
+
     /**
      * Adds the given tuple to the memory
      * 
      * @param workingMemory the working memory reference
      * @param tuple the tuple to add
      */
-    public void add(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple);
-    
+    public void add(WorkingMemory workingMemory,
+                    MultiLinkedListNodeWrapper tuple);
+
     /**
      * Remove the given tuple from the memory
      * 
      * @param workingMemory the working memory reference
      * @param tuple the tuple to remove
      */
-    public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple);
-    
+    public void remove(WorkingMemory workingMemory,
+                       MultiLinkedListNodeWrapper tuple);
+
     /**
      * Adds the given tuple to the memory
      * 
      * @param workingMemory the working memory reference
      * @param tuple the tuple to add
      */
-    public void add(WorkingMemory workingMemory, ReteTuple tuple);
-    
+    public void add(WorkingMemory workingMemory,
+                    ReteTuple tuple);
+
     /**
      * Remove the given tuple from the memory
      * 
      * @param tuple the tuple to remove
      */
-    public void remove(WorkingMemory workingMemory, ReteTuple tuple);
-    
+    public void remove(WorkingMemory workingMemory,
+                       ReteTuple tuple);
+
     /**
      * Returns an iterator to iterate over tuples that attend the binder/handle
      * constraints 
@@ -83,8 +87,9 @@ public interface BetaLeftMemory {
      * 
      * @return an Iterator over the tuples
      */
-    public Iterator iterator(WorkingMemory workingMemory, FactHandleImpl handle);
-    
+    public Iterator iterator(WorkingMemory workingMemory,
+                             FactHandleImpl handle);
+
     /**
      * Returns an iterator to iterate over all tuples in the beta left memory
      * 
@@ -95,7 +100,6 @@ public interface BetaLeftMemory {
      * @return
      */
     public Iterator iterator();
-    
 
     /**
      * Returns the number of tuples currently stored in the left memory
@@ -103,14 +107,14 @@ public interface BetaLeftMemory {
      * @return the number of tuples currently stored in the left memory
      */
     public int size();
-    
+
     /**
      * Checks if this memory is empty
      * 
      * @return true if the memory is empty, false otherwise
      */
     public boolean isEmpty();
-    
+
     /**
      * Prepares the left memory for subsequent calls of isPossibleMatch()
      * based on the constraints applied to the handle.
@@ -121,8 +125,9 @@ public interface BetaLeftMemory {
      * @param workingMemory the working memory reference
      * @param handle the handle whose tuples shall match
      */
-    public void selectPossibleMatches(WorkingMemory workingMemory, FactHandleImpl handle);
-    
+    public void selectPossibleMatches(WorkingMemory workingMemory,
+                                      FactHandleImpl handle);
+
     /**
      * Returns true if the tuple is a possible match to the handle
      * passed to the previous selectPossibleMatches() call
@@ -132,4 +137,3 @@ public interface BetaLeftMemory {
      */
     public boolean isPossibleMatch(MultiLinkedListNodeWrapper tuple);
 }
-

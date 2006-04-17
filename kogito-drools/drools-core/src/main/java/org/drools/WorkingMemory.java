@@ -25,7 +25,6 @@ import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
-import org.drools.util.LinkedList;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.
@@ -80,7 +79,7 @@ public interface WorkingMemory
      * @return listeners The listeners.
      */
     public List getAgendaEventListeners();
-    
+
     public Agenda getAgenda();
 
     /**
@@ -99,7 +98,7 @@ public interface WorkingMemory
      *            the application data
      */
     void setGlobal(String name,
-                            Object value);
+                   Object value);
 
     /**
      * Retrieve a specific piece of application data by name
@@ -169,13 +168,12 @@ public interface WorkingMemory
      * @return The list of all known objects.
      */
     List getObjects();
-    
+
     public AgendaGroup getFocus();
-    
+
     void setFocus(String focus);
-    
+
     void setFocus(AgendaGroup focus);
-    
 
     /**
      * Retrieve all known objects of the specified class.
@@ -217,8 +215,8 @@ public interface WorkingMemory
      *             If an error occurs.
      */
     FactHandle assertObject(Object object) throws FactException;
-    
-    public List getQueryResults( String query );
+
+    public List getQueryResults(String query);
 
     /**
      * Assert a fact registering JavaBean <code>PropertyChangeListeners</code>

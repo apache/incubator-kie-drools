@@ -37,8 +37,8 @@ public class BetaMemoryFactoryTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        FieldConstraint[] constraints = new FieldConstraint[] { new MockConstraint() };
-        binder = new BetaNodeBinder(constraints);
+        FieldConstraint[] constraints = new FieldConstraint[]{new MockConstraint()};
+        binder = new BetaNodeBinder( constraints );
     }
 
     protected void tearDown() throws Exception {
@@ -50,18 +50,19 @@ public class BetaMemoryFactoryTest extends TestCase {
      */
     public void testNewLeftMemory() {
         try {
-            BetaLeftMemory memory = BetaMemoryFactory.newLeftMemory(null);
-            
-            Assert.assertNotNull("BetaMemoryFactory should not return null", memory);
-            Assert.assertTrue("Without constraints, BetaMemoryFactory should " +
-                              "return an instance of DefaultLeftMemory", 
-                              memory instanceof DefaultLeftMemory);
-            
-            memory = BetaMemoryFactory.newLeftMemory(binder);
-            Assert.assertNotNull("BetaMemoryFactory should not return null", memory);
-            
+            BetaLeftMemory memory = BetaMemoryFactory.newLeftMemory( null );
+
+            Assert.assertNotNull( "BetaMemoryFactory should not return null",
+                                  memory );
+            Assert.assertTrue( "Without constraints, BetaMemoryFactory should " + "return an instance of DefaultLeftMemory",
+                               memory instanceof DefaultLeftMemory );
+
+            memory = BetaMemoryFactory.newLeftMemory( binder );
+            Assert.assertNotNull( "BetaMemoryFactory should not return null",
+                                  memory );
+
         } catch ( Exception e ) {
-            Assert.fail("BetaLeftMemory is not supposed to throw exceptions");
+            Assert.fail( "BetaLeftMemory is not supposed to throw exceptions" );
         }
     }
 
@@ -70,18 +71,19 @@ public class BetaMemoryFactoryTest extends TestCase {
      */
     public void testNewRightMemory() {
         try {
-            BetaRightMemory memory = BetaMemoryFactory.newRightMemory(null);
-            
-            Assert.assertNotNull("BetaMemoryFactory should not return null", memory);
-            Assert.assertTrue("Without constraints, BetaMemoryFactory should " +
-                              "return an instance of DefaultRightMemory", 
-                              memory instanceof DefaultRightMemory);
-            
-            memory = BetaMemoryFactory.newRightMemory(binder);
-            Assert.assertNotNull("BetaMemoryFactory should not return null", memory);
-            
+            BetaRightMemory memory = BetaMemoryFactory.newRightMemory( null );
+
+            Assert.assertNotNull( "BetaMemoryFactory should not return null",
+                                  memory );
+            Assert.assertTrue( "Without constraints, BetaMemoryFactory should " + "return an instance of DefaultRightMemory",
+                               memory instanceof DefaultRightMemory );
+
+            memory = BetaMemoryFactory.newRightMemory( binder );
+            Assert.assertNotNull( "BetaMemoryFactory should not return null",
+                                  memory );
+
         } catch ( Exception e ) {
-            Assert.fail("BetaLeftMemory is not supposed to throw exceptions");
+            Assert.fail( "BetaLeftMemory is not supposed to throw exceptions" );
         }
     }
 

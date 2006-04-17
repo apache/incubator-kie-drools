@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.drools.DroolsTestCase;
 import org.drools.common.PropagationContextImpl;
-import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNodeWrapper;
@@ -71,9 +70,8 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
         Object string1 = "cheese";
 
-        
         // assert object
-        FactHandleImpl f0 = (FactHandleImpl) workingMemory.assertObject( string1 ); 
+        FactHandleImpl f0 = (FactHandleImpl) workingMemory.assertObject( string1 );
         liaNode.assertObject( f0,
                               context,
                               workingMemory );
@@ -84,29 +82,34 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         ReteTuple tuple0 = (ReteTuple) ((Object[]) asserted.get( 0 ))[0];
         assertSame( string1,
                     workingMemory.getObject( tuple0.get( 0 ) ) );
-        
+
         // check node memory
-        Map map = (Map) workingMemory.getNodeMemory( liaNode );        
-        LinkedList list0 = (LinkedList) (LinkedList)map.get( f0 ); 
-        assertEquals( 1, list0.size() );
-        assertSame( tuple0, ((LinkedListNodeWrapper)list0.getFirst()).getNode() );
-        
+        Map map = (Map) workingMemory.getNodeMemory( liaNode );
+        LinkedList list0 = (LinkedList) (LinkedList) map.get( f0 );
+        assertEquals( 1,
+                      list0.size() );
+        assertSame( tuple0,
+                    ((LinkedListNodeWrapper) list0.getFirst()).getNode() );
+
         // check memory stacks correctly
-        FactHandleImpl f1 = (FactHandleImpl) workingMemory.assertObject( "test1" ); 
+        FactHandleImpl f1 = (FactHandleImpl) workingMemory.assertObject( "test1" );
         liaNode.assertObject( f1,
                               context,
                               workingMemory );
-        
+
         assertLength( 2,
                       asserted );
-        ReteTuple tuple1 = (ReteTuple) ((Object[]) asserted.get( 1 ))[0];        
-        
-        LinkedList list1 = (LinkedList) (LinkedList)map.get( f1 );         
-        assertEquals( 1, list1.size() );
-        assertSame( tuple1, ((LinkedListNodeWrapper)list1.getFirst()).getNode() );
-        
-        assertNotSame( tuple0, tuple1 );
-        
+        ReteTuple tuple1 = (ReteTuple) ((Object[]) asserted.get( 1 ))[0];
+
+        LinkedList list1 = (LinkedList) (LinkedList) map.get( f1 );
+        assertEquals( 1,
+                      list1.size() );
+        assertSame( tuple1,
+                    ((LinkedListNodeWrapper) list1.getFirst()).getNode() );
+
+        assertNotSame( tuple0,
+                       tuple1 );
+
     }
 
     /**
@@ -136,16 +139,19 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         liaNode.assertObject( f0,
                               context,
                               workingMemory );
-        
+
         ReteTuple tuple = (ReteTuple) ((Object[]) sink.getAsserted().get( 0 ))[0];
 
-        liaNode.retractObject( f0, context, workingMemory );
+        liaNode.retractObject( f0,
+                               context,
+                               workingMemory );
 
-        Map map = (Map) workingMemory.getNodeMemory( liaNode );        
-        assertNull( map.get( f0 ) );     
-        
-        assertSame( tuple, (ReteTuple) ((Object[]) sink.getRetracted().get( 0 ))[0] );
-        
+        Map map = (Map) workingMemory.getNodeMemory( liaNode );
+        assertNull( map.get( f0 ) );
+
+        assertSame( tuple,
+                    (ReteTuple) ((Object[]) sink.getRetracted().get( 0 ))[0] );
+
     }
 
 }

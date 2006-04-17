@@ -10,6 +10,6 @@ public interface AgendaEventListener
     void activationCancelled(ActivationCancelledEvent event);
 
     void beforeActivationFired(BeforeActivationFiredEvent event);
-    
+
     void afterActivationFired(AfterActivationFiredEvent event);
 }

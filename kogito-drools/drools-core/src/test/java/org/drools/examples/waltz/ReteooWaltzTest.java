@@ -16,7 +16,6 @@ package org.drools.examples.waltz;
  * limitations under the License.
  */
 
-
 /**
  * @author Alexander Bagerman
  * 
@@ -24,9 +23,6 @@ package org.drools.examples.waltz;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.List;
 
 import org.drools.FactException;
 import org.drools.PackageIntegrationException;
@@ -42,29 +38,29 @@ import org.drools.rule.InvalidRuleException;
  *
  */
 public class ReteooWaltzTest extends BaseWaltzTest {
-    
+
     public void testWaltz() throws DuplicateRuleNameException,
-                             InvalidRuleException,
-                             IntrospectionException,
-                             RuleIntegrationException,
-                             PackageIntegrationException,
-                             InvalidPatternException,
-                             FactException,
-                             IOException,
-                             InterruptedException {
+                              InvalidRuleException,
+                              IntrospectionException,
+                              RuleIntegrationException,
+                              PackageIntegrationException,
+                              InvalidPatternException,
+                              FactException,
+                              IOException,
+                              InterruptedException {
 
         final org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
         ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-//        InputStream is = getClass().getResourceAsStream( "/waltz12.dat" );
-//        List list = getInputObjects( is );
-//        for ( Iterator it = list.iterator(); it.hasNext(); ) {
-//            Object object = it.next();
-//            workingMemory.assertObject( object );
-//        }
+        //        InputStream is = getClass().getResourceAsStream( "/waltz12.dat" );
+        //        List list = getInputObjects( is );
+        //        for ( Iterator it = list.iterator(); it.hasNext(); ) {
+        //            Object object = it.next();
+        //            workingMemory.assertObject( object );
+        //        }
 
-        workingMemory.assertObject( new Stage(Stage.START) );
+        workingMemory.assertObject( new Stage( Stage.START ) );
 
         long start = System.currentTimeMillis();
         workingMemory.fireAllRules();

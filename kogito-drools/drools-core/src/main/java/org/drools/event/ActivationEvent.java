@@ -43,12 +43,10 @@ package org.drools.event;
 
 import java.util.EventObject;
 
-import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
-import org.drools.spi.PropagationContext;
 
 public class ActivationEvent extends EventObject {
-    
+
     public ActivationEvent(Activation activation) {
         super( activation );
     }
@@ -56,5 +54,5 @@ public class ActivationEvent extends EventObject {
     public Activation getActivation() {
         return (Activation) getSource();
     }
-    
+
 }

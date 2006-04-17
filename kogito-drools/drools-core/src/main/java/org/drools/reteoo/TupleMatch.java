@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.spi.PropagationContext;
 import org.drools.util.AbstractBaseLinkedListNode;
 
 /**
@@ -37,10 +37,10 @@ import org.drools.util.AbstractBaseLinkedListNode;
  *
  */
 public class TupleMatch extends AbstractBaseLinkedListNode {
-    private ReteTuple tuple;
+    private ReteTuple     tuple;
 
-    private List joined = Collections.EMPTY_LIST;
-    
+    private List          joined = Collections.EMPTY_LIST;
+
     private ObjectMatches objectMatches;
 
     /**
@@ -50,7 +50,8 @@ public class TupleMatch extends AbstractBaseLinkedListNode {
      * @param tuple
      * @param objectMatches
      */
-    public TupleMatch(ReteTuple tuple, ObjectMatches objectMatches) {
+    public TupleMatch(ReteTuple tuple,
+                      ObjectMatches objectMatches) {
         this.tuple = tuple;
         this.objectMatches = objectMatches;
     }
@@ -63,8 +64,7 @@ public class TupleMatch extends AbstractBaseLinkedListNode {
     public ReteTuple getTuple() {
         return this.tuple;
     }
-    
-    
+
     /**
      * Returns the referenced <code>ObjectMatches</code> which provides the 
      * <code>FactHandleImpl</code> the <code>ReteTuple</code> is joined with.
@@ -74,15 +74,14 @@ public class TupleMatch extends AbstractBaseLinkedListNode {
     public ObjectMatches getObjectMatches() {
         return this.objectMatches;
     }
-    
-    
+
     /**
      * Adds a resulting join to the <code>List</code>. A join is made for each <code>TupleSink</code>.
      * 
      * @param tuple
      */
     public void addJoinedTuple(ReteTuple tuple) {
-        if (this.joined == Collections.EMPTY_LIST) {
+        if ( this.joined == Collections.EMPTY_LIST ) {
             this.joined = new ArrayList( 1 );
         }
         this.joined.add( tuple );
@@ -96,5 +95,5 @@ public class TupleMatch extends AbstractBaseLinkedListNode {
     public List getJoinedTuples() {
         return this.joined;
     }
-        
+
 }

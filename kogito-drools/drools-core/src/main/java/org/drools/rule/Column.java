@@ -21,7 +21,7 @@ public class Column
 
     // this is the negative offset of the related fact inside a tuple. i.e:
     // tuple_fact_index = column_index + offset; 
-    private       int        offset;
+    private int              offset;
 
     public Column(int index,
                   ObjectType objectType) {
@@ -33,8 +33,7 @@ public class Column
 
     public Column(int index,
                   ObjectType objectType,
-                  String identifier)
-    {
+                  String identifier) {
         this( index,
               0,
               objectType,
@@ -44,8 +43,7 @@ public class Column
     public Column(int index,
                   int offset,
                   ObjectType objectType,
-                  String identifier)
-    {
+                  String identifier) {
         this.index = index;
         this.offset = offset;
         this.objectType = objectType;
@@ -104,25 +102,25 @@ public class Column
     public int getOffset() {
         return offset;
     }
-    
+
     public int getFactIndex() {
         return this.index + this.offset;
     }
-    
+
     /**
      * A simple method to adjust offset of all declarations using the specified value
      * @param adjust
      */
     public void adjustOffset(int adjust) {
         this.offset += adjust;
-        
-        if( this.declaration != null ) {
+
+        if ( this.declaration != null ) {
             this.declaration.setColumn( this.getFactIndex() );
         }
-        for( Iterator i = this.constraints.iterator(); i.hasNext(); ) {
+        for ( Iterator i = this.constraints.iterator(); i.hasNext(); ) {
             Object constr = i.next();
-            if(constr instanceof Declaration) {
-                ((Declaration)constr).setColumn( this.getFactIndex() );
+            if ( constr instanceof Declaration ) {
+                ((Declaration) constr).setColumn( this.getFactIndex() );
             }
         }
     }

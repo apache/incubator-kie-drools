@@ -42,8 +42,6 @@ package org.drools.spi;
 
 import java.io.Serializable;
 
-import org.drools.rule.Rule;
-
 /**
  * Semantic component marker.
  * 
@@ -53,7 +51,6 @@ import org.drools.rule.Rule;
  */
 public interface RuleComponent
     extends
-    Serializable
-{   
-        
+    Serializable {
+
 }

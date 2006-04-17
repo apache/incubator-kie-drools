@@ -41,11 +41,6 @@ package org.drools.base;
  *
  */
 
-import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Date;
-
 import org.drools.spi.Evaluator;
 import org.drools.spi.ObjectType;
 
@@ -65,8 +60,8 @@ public class ClassObjectType
 
     /** Java object class. */
     protected Class objectTypeClass;
-    
-    protected int valueType;
+
+    protected int   valueType;
 
     // ------------------------------------------------------------
     // Constructors
@@ -113,10 +108,10 @@ public class ClassObjectType
     public boolean matches(Object object) {
         return getClassType().isInstance( object );
     }
-    
+
     public int getValueType() {
         return this.valueType;
-    }    
+    }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // java.lang.Object
@@ -127,36 +122,36 @@ public class ClassObjectType
             this.valueType = Evaluator.NULL_TYPE;
         } else if ( clazz == Character.class ) {
             this.valueType = Evaluator.CHAR_TYPE;
-        } else if ( clazz == Byte.class ) { 
+        } else if ( clazz == Byte.class ) {
             this.valueType = Evaluator.BYTE_TYPE;
-        } else if (clazz == Short.class ) {
+        } else if ( clazz == Short.class ) {
             this.valueType = Evaluator.SHORT_TYPE;
-        } else if (clazz == Integer.class ) {
+        } else if ( clazz == Integer.class ) {
             this.valueType = Evaluator.INTEGER_TYPE;
-        } else if (clazz == Long.class) {
+        } else if ( clazz == Long.class ) {
             this.valueType = Evaluator.LONG_TYPE;
-        } else if (clazz == Float.class) {
+        } else if ( clazz == Float.class ) {
             this.valueType = Evaluator.FLOAT_TYPE;
-        } else if (clazz == Double.class) {
+        } else if ( clazz == Double.class ) {
             this.valueType = Evaluator.DOUBLE_TYPE;
-        } else if (clazz == Boolean.class) {
-            this.valueType = Evaluator.BOOLEAN_TYPE;            
-        } else if (clazz == java.sql.Date.class) {
+        } else if ( clazz == Boolean.class ) {
+            this.valueType = Evaluator.BOOLEAN_TYPE;
+        } else if ( clazz == java.sql.Date.class ) {
             this.valueType = Evaluator.DATE_TYPE;
-        } else if (clazz == java.util.Date.class) {
+        } else if ( clazz == java.util.Date.class ) {
             this.valueType = Evaluator.DATE_TYPE;
-        } else if (clazz.isAssignableFrom( Object[].class )) {
+        } else if ( clazz.isAssignableFrom( Object[].class ) ) {
             this.valueType = Evaluator.ARRAY_TYPE;
-        } else if (clazz == String.class) {
+        } else if ( clazz == String.class ) {
             this.valueType = Evaluator.STRING_TYPE;
-        }   else if (clazz instanceof Object) {
+        } else if ( clazz instanceof Object ) {
             this.valueType = Evaluator.OBJECT_TYPE;
-        }              
+        }
     }
-    
+
     public String toString() {
         return "[ClassObjectType class=" + getClassType().getName() + "]";
-    }    
+    }
 
     /**
      * Determine if another object is equal to this.
@@ -176,12 +171,11 @@ public class ClassObjectType
             return false;
         }
 
-        return this.objectTypeClass == ( (ClassObjectType) object).objectTypeClass;
+        return this.objectTypeClass == ((ClassObjectType) object).objectTypeClass;
     }
-    
+
     public int hashCode() {
         return this.objectTypeClass.hashCode();
     }
-
 
 }

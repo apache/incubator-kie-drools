@@ -40,27 +40,29 @@ import org.drools.util.MultiLinkedListNodeWrapper;
 public class BooleanConstrainedLeftMemory
     implements
     BetaLeftMemory {
-    
-    private BetaLeftMemory childMemory = null;
-    
-    private MultiLinkedList trueList = null;
-    private MultiLinkedList falseList = null;
+
+    private BetaLeftMemory  childMemory  = null;
+
+    private MultiLinkedList trueList     = null;
+    private MultiLinkedList falseList    = null;
     private MultiLinkedList selectedList = null;
-    
-    private FieldExtractor extractor   = null;
-    private Declaration    declaration = null;
-    private Evaluator      evaluator   = null;
-    
-    
+
+    private FieldExtractor  extractor    = null;
+    private Declaration     declaration  = null;
+    private Evaluator       evaluator    = null;
+
     public BooleanConstrainedLeftMemory(FieldExtractor extractor,
-                                        Declaration    declaration,
-                                        Evaluator      evaluator) {
-        this(extractor, declaration, evaluator, null);
+                                        Declaration declaration,
+                                        Evaluator evaluator) {
+        this( extractor,
+              declaration,
+              evaluator,
+              null );
     }
 
     public BooleanConstrainedLeftMemory(FieldExtractor extractor,
-                                        Declaration    declaration,
-                                        Evaluator      evaluator,
+                                        Declaration declaration,
+                                        Evaluator evaluator,
                                         BetaLeftMemory childMemory) {
         this.extractor = extractor;
         this.declaration = declaration;
@@ -77,19 +79,17 @@ public class BooleanConstrainedLeftMemory
      */
     public void add(WorkingMemory workingMemory,
                     ReteTuple tuple) {
-         boolean select = ((Boolean) declaration.getValue( 
-                             workingMemory.getObject(
-                             tuple.get( this.declaration ) ) ) ).booleanValue();
-         if(select == true) {
-             trueList.add(tuple);
-         } else {
-             falseList.add(tuple);
-         }
-         if(this.childMemory != null) {
-             tuple.setChild(new MultiLinkedListNodeWrapper(tuple));
-             this.childMemory.add(workingMemory, 
-                                  ((MultiLinkedListNodeWrapper) tuple.getChild()));
-         }
+        boolean select = ((Boolean) declaration.getValue( workingMemory.getObject( tuple.get( this.declaration ) ) )).booleanValue();
+        if ( select == true ) {
+            trueList.add( tuple );
+        } else {
+            falseList.add( tuple );
+        }
+        if ( this.childMemory != null ) {
+            tuple.setChild( new MultiLinkedListNodeWrapper( tuple ) );
+            this.childMemory.add( workingMemory,
+                                  ((MultiLinkedListNodeWrapper) tuple.getChild()) );
+        }
     }
 
     /**
@@ -97,11 +97,13 @@ public class BooleanConstrainedLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
-    public void remove(WorkingMemory workingMemory, ReteTuple tuple) {
-        if(this.childMemory != null) {
-            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
+    public void remove(WorkingMemory workingMemory,
+                       ReteTuple tuple) {
+        if ( this.childMemory != null ) {
+            this.childMemory.remove( workingMemory,
+                                     (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
-        tuple.getLinkedList().remove(tuple);
+        tuple.getLinkedList().remove( tuple );
     }
 
     /**
@@ -109,18 +111,18 @@ public class BooleanConstrainedLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#add(org.drools.reteoo.ReteTuple)
      */
-    public void add(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
-        boolean partition = ((Boolean) declaration.getValue( workingMemory.getObject( 
-                    ((ReteTuple)tuple.getNode()).get( this.declaration ) ) ) ).booleanValue();
-        if(partition == true) {
-            trueList.add(tuple);
+    public void add(WorkingMemory workingMemory,
+                    MultiLinkedListNodeWrapper tuple) {
+        boolean partition = ((Boolean) declaration.getValue( workingMemory.getObject( ((ReteTuple) tuple.getNode()).get( this.declaration ) ) )).booleanValue();
+        if ( partition == true ) {
+            trueList.add( tuple );
         } else {
-            falseList.add(tuple);
+            falseList.add( tuple );
         }
-        if(this.childMemory != null) {
-            tuple.setChild(new MultiLinkedListNodeWrapper(tuple.getNode()));
-            this.childMemory.add(workingMemory, 
-                                 ((MultiLinkedListNodeWrapper) tuple.getChild()));
+        if ( this.childMemory != null ) {
+            tuple.setChild( new MultiLinkedListNodeWrapper( tuple.getNode() ) );
+            this.childMemory.add( workingMemory,
+                                  ((MultiLinkedListNodeWrapper) tuple.getChild()) );
         }
     }
 
@@ -129,11 +131,13 @@ public class BooleanConstrainedLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
-    public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
-        if(this.childMemory != null) {
-            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild());
+    public void remove(WorkingMemory workingMemory,
+                       MultiLinkedListNodeWrapper tuple) {
+        if ( this.childMemory != null ) {
+            this.childMemory.remove( workingMemory,
+                                     (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
-        tuple.getLinkedList().remove(tuple);
+        tuple.getLinkedList().remove( tuple );
     }
 
     /**
@@ -142,7 +146,7 @@ public class BooleanConstrainedLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#isEmpty()
      */
     public boolean isEmpty() {
-        return (trueList.isEmpty())&&(falseList.isEmpty());
+        return (trueList.isEmpty()) && (falseList.isEmpty());
     }
 
     /**
@@ -150,20 +154,21 @@ public class BooleanConstrainedLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
-    public Iterator iterator(final WorkingMemory workingMemory, final FactHandleImpl handle) {
-        this.selectPossibleMatches(workingMemory, handle);
+    public Iterator iterator(final WorkingMemory workingMemory,
+                             final FactHandleImpl handle) {
+        this.selectPossibleMatches( workingMemory,
+                                    handle );
         Iterator iterator = new Iterator() {
-            Iterator it = selectedList.iterator();
+            Iterator            it      = selectedList.iterator();
             MultiLinkedListNode current = null;
-            MultiLinkedListNode next = null;
+            MultiLinkedListNode next    = null;
 
             public boolean hasNext() {
                 boolean hasnext = false;
-                if(next == null) {
-                    while(it.hasNext()) {
+                if ( next == null ) {
+                    while ( it.hasNext() ) {
                         next = (MultiLinkedListNode) it.next();
-                        if((childMemory == null) || 
-                           (childMemory.isPossibleMatch((MultiLinkedListNodeWrapper) next.getChild()))) {
+                        if ( (childMemory == null) || (childMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) next.getChild() )) ) {
                             hasnext = true;
                             break;
                         }
@@ -175,52 +180,53 @@ public class BooleanConstrainedLeftMemory
             }
 
             public Object next() {
-                if(this.next == null) {
+                if ( this.next == null ) {
                     this.hasNext();
                 }
                 this.current = this.next;
                 this.next = null;
-                if(this.current == null) {
-                    throw new NoSuchElementException("No more elements to return");
+                if ( this.current == null ) {
+                    throw new NoSuchElementException( "No more elements to return" );
                 }
                 return this.current;
             }
 
             public void remove() {
-                if(this.current != null) {
-                    BooleanConstrainedLeftMemory.this.remove(workingMemory, (ReteTuple) current);
+                if ( this.current != null ) {
+                    BooleanConstrainedLeftMemory.this.remove( workingMemory,
+                                                              (ReteTuple) current );
                 } else {
-                    throw new IllegalStateException("No item to remove. Call next() before calling remove().");
+                    throw new IllegalStateException( "No item to remove. Call next() before calling remove()." );
                 }
             }
-            
+
         };
         return iterator;
     }
-    
+
     /**
      * @inheritDoc
      */
     public Iterator iterator() {
         return new Iterator() {
-            Iterator trueIt = trueList.iterator();
-            Iterator falseIt = falseList.iterator();
-            ReteTuple currentTrue = null;
+            Iterator  trueIt       = trueList.iterator();
+            Iterator  falseIt      = falseList.iterator();
+            ReteTuple currentTrue  = null;
             ReteTuple currentFalse = null;
-            ReteTuple current = null;
-            ReteTuple next = null;
+            ReteTuple current      = null;
+            ReteTuple next         = null;
 
             public boolean hasNext() {
                 boolean hasnext = false;
-                if(next == null) {
-                    if((currentTrue == null) && (trueIt.hasNext())) {
+                if ( next == null ) {
+                    if ( (currentTrue == null) && (trueIt.hasNext()) ) {
                         currentTrue = (ReteTuple) trueIt.next();
                     }
-                    if((currentFalse == null) && (falseIt.hasNext())) {
+                    if ( (currentFalse == null) && (falseIt.hasNext()) ) {
                         currentFalse = (ReteTuple) falseIt.next();
                     }
-                    if((currentTrue != null) && (currentFalse != null)) {
-                        if(currentTrue.getRecency() <= currentFalse.getRecency()) {
+                    if ( (currentTrue != null) && (currentFalse != null) ) {
+                        if ( currentTrue.getRecency() <= currentFalse.getRecency() ) {
                             next = currentTrue;
                             currentTrue = null;
                         } else {
@@ -228,11 +234,11 @@ public class BooleanConstrainedLeftMemory
                             currentFalse = null;
                         }
                         hasnext = true;
-                    } else if (currentTrue != null) {
+                    } else if ( currentTrue != null ) {
                         next = currentTrue;
                         currentTrue = null;
                         hasnext = true;
-                    } else if (currentFalse != null) {
+                    } else if ( currentFalse != null ) {
                         next = currentFalse;
                         currentFalse = null;
                         hasnext = true;
@@ -246,19 +252,19 @@ public class BooleanConstrainedLeftMemory
             }
 
             public Object next() {
-                if(this.next == null) {
+                if ( this.next == null ) {
                     this.hasNext();
                 }
                 this.current = this.next;
                 this.next = null;
-                if(this.current == null) {
-                    throw new NoSuchElementException("No more elements to return");
+                if ( this.current == null ) {
+                    throw new NoSuchElementException( "No more elements to return" );
                 }
                 return this.current;
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not possible to call remove when iterating over all elements");
+                throw new UnsupportedOperationException( "Not possible to call remove when iterating over all elements" );
             }
         };
     }
@@ -268,17 +274,18 @@ public class BooleanConstrainedLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
-    public void selectPossibleMatches(WorkingMemory workingMemory, FactHandleImpl handle) {
-        boolean select = ((Boolean)
-                this.extractor.getValue( workingMemory.getObject( handle ))).booleanValue();
+    public void selectPossibleMatches(WorkingMemory workingMemory,
+                                      FactHandleImpl handle) {
+        boolean select = ((Boolean) this.extractor.getValue( workingMemory.getObject( handle ) )).booleanValue();
         select = (evaluator.getOperator()) == Evaluator.EQUAL ? select : !select;
-        if(select == true) {
+        if ( select == true ) {
             this.selectedList = trueList;
         } else {
             this.selectedList = falseList;
         }
-        if(this.childMemory != null) {
-            this.childMemory.selectPossibleMatches(workingMemory, handle);
+        if ( this.childMemory != null ) {
+            this.childMemory.selectPossibleMatches( workingMemory,
+                                                    handle );
         }
     }
 
@@ -288,10 +295,9 @@ public class BooleanConstrainedLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#isPossibleMatch(org.drools.util.MultiLinkedListNodeWrapper)
      */
     public boolean isPossibleMatch(MultiLinkedListNodeWrapper tuple) {
-        boolean isPossible = ((this.selectedList != null) &&
-                              (tuple.getLinkedList() == this.selectedList));
-        if((isPossible) && (this.childMemory != null)) {
-            isPossible = this.childMemory.isPossibleMatch((MultiLinkedListNodeWrapper) tuple.getChild());
+        boolean isPossible = ((this.selectedList != null) && (tuple.getLinkedList() == this.selectedList));
+        if ( (isPossible) && (this.childMemory != null) ) {
+            isPossible = this.childMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
         return isPossible;
     }

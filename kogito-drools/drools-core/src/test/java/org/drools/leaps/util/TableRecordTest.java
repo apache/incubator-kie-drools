@@ -24,28 +24,31 @@ import junit.framework.TestCase;
 
 public class TableRecordTest extends TestCase {
 
-	public void testConstractor() {
-		String object = new String("test object");
-		TableRecord record = new TableRecord(object);
-		assertEquals(object, record.object);
-	}
+    public void testConstractor() {
+        String object = new String( "test object" );
+        TableRecord record = new TableRecord( object );
+        assertEquals( object,
+                      record.object );
+    }
 
-	public void testLeft() {
-		String object1 = new String("test object1");
-		String object2 = new String("test object2");
-		TableRecord record1 = new TableRecord(object1);
-		TableRecord record2 = new TableRecord(object2);
-		record1.left = record2;
-		assertEquals(object2, record1.left.object);
-	}
+    public void testLeft() {
+        String object1 = new String( "test object1" );
+        String object2 = new String( "test object2" );
+        TableRecord record1 = new TableRecord( object1 );
+        TableRecord record2 = new TableRecord( object2 );
+        record1.left = record2;
+        assertEquals( object2,
+                      record1.left.object );
+    }
 
-	public void testRight() {
-		String object1 = new String("test object1");
-		String object2 = new String("test object2");
-		TableRecord record1 = new TableRecord(object1);
-		TableRecord record2 = new TableRecord(object2);
-		record1.right = record2;
-		assertEquals(object2, record1.right.object);
-	}
+    public void testRight() {
+        String object1 = new String( "test object1" );
+        String object2 = new String( "test object2" );
+        TableRecord record1 = new TableRecord( object1 );
+        TableRecord record2 = new TableRecord( object2 );
+        record1.right = record2;
+        assertEquals( object2,
+                      record1.right.object );
+    }
 
 }

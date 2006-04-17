@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -31,7 +32,7 @@ import org.drools.spi.PropagationContext;
 interface TupleSink
     extends
     Serializable {
-    
+
     /**
      * Assert a new <code>ReteTuple</code>.
      * 
@@ -45,13 +46,13 @@ interface TupleSink
     void assertTuple(ReteTuple tuple,
                      PropagationContext context,
                      WorkingMemoryImpl workingMemory);
-    
+
     void retractTuple(ReteTuple tuple,
                       PropagationContext context,
-                      WorkingMemoryImpl workingMemory);    
-    
+                      WorkingMemoryImpl workingMemory);
+
     void modifyTuple(ReteTuple tuple,
                      PropagationContext context,
-                     WorkingMemoryImpl workingMemory);        
+                     WorkingMemoryImpl workingMemory);
 
 }

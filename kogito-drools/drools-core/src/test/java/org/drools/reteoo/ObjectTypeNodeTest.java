@@ -6,7 +6,6 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.base.ClassObjectType;
 import org.drools.common.PropagationContextImpl;
-import org.drools.rule.Rule;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.PrimitiveLongMap;
@@ -50,7 +49,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
                                                             source );
-        
+
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
@@ -66,13 +65,12 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                      context,
                                      workingMemory );
 
-
         /* make sure just string1 was asserted */
         List asserted = sink.getAsserted();
         assertLength( 1,
                       asserted );
         assertSame( string1,
-                    workingMemory.getObject( (FactHandleImpl) ((Object[]) asserted.get( 0 ))[0]) );
+                    workingMemory.getObject( (FactHandleImpl) ((Object[]) asserted.get( 0 ))[0] ) );
 
         /* check asserted object was added to memory */
         PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
@@ -93,7 +91,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         assertNotNull( memory );
     }
-    
+
     public void testMatches() {
 
         Rete source = new Rete();
@@ -101,18 +99,18 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
                                                             source );
-        
+
         assertFalse( objectTypeNode.matches( new Object() ) );
-        assertFalse( objectTypeNode.matches( new Integer(5) ) );        
+        assertFalse( objectTypeNode.matches( new Integer( 5 ) ) );
         assertTrue( objectTypeNode.matches( "string" ) );
-        
+
         objectTypeNode = new ObjectTypeNode( 1,
                                              new ClassObjectType( Object.class ),
                                              source );
-        
+
         assertTrue( objectTypeNode.matches( new Object() ) );
-        assertTrue( objectTypeNode.matches( new Integer(5) ) );        
-        assertTrue( objectTypeNode.matches( "string" ) );        
+        assertTrue( objectTypeNode.matches( new Integer( 5 ) ) );
+        assertTrue( objectTypeNode.matches( "string" ) );
 
     }
 

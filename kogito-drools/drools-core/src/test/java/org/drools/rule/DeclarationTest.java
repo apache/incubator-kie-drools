@@ -9,9 +9,7 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
-import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
-import org.drools.spi.ObjectType;
 
 public class DeclarationTest extends TestCase {
 
@@ -29,7 +27,7 @@ public class DeclarationTest extends TestCase {
                       declaration.getIdentifier() );
 
         assertSame( String.class,
-                    ( (ClassObjectType) declaration.getObjectType()).getClassType() );
+                    ((ClassObjectType) declaration.getObjectType()).getClassType() );
 
         assertSame( extractor,
                     declaration.getExtractor() );

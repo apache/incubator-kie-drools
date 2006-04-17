@@ -1,10 +1,8 @@
 package org.drools.base.evaluators;
 
 import java.util.Arrays;
-import java.util.Collection;
 
 import org.drools.base.BaseEvaluator;
-
 import org.drools.spi.Evaluator;
 
 /**
@@ -12,7 +10,7 @@ import org.drools.spi.Evaluator;
  * @author Michael Neale
  */
 public class ArrayFactory {
-    
+
     public static Evaluator getArrayEvaluator(int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
@@ -38,7 +36,7 @@ public class ArrayFactory {
                                 Object object2) {
             return object1.equals( object2 );
         }
-        
+
         public String toString() {
             return "Array ==";
         }
@@ -54,14 +52,15 @@ public class ArrayFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            return !Arrays.equals( (Object[]) object1,(Object[]) object2 );
+            return !Arrays.equals( (Object[]) object1,
+                                   (Object[]) object2 );
         }
-        
+
         public String toString() {
             return "Object !=";
-        }        
+        }
     }
-    
+
     static class ArrayContainsEvaluator extends BaseEvaluator {
         public final static Evaluator INSTANCE = new ArrayContainsEvaluator();
 
@@ -72,16 +71,15 @@ public class ArrayFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object2 == null) return false;
-            if (Arrays.binarySearch( (Object[]) object1, object2 ) == -1) 
-                return false;
-            else 
-                return true;
+            if ( object2 == null ) return false;
+            if ( Arrays.binarySearch( (Object[]) object1,
+                                      object2 ) == -1 ) return false;
+            else return true;
         }
-        
+
         public String toString() {
             return "Array contains";
-        }        
-    }    
+        }
+    }
 
 }

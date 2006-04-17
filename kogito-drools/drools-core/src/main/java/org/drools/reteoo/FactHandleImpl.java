@@ -41,9 +41,9 @@ public class FactHandleImpl
     // ----------------------------------------------------------------------
 
     protected FactHandleImpl() {
-        
+
     }
-    
+
     protected FactHandleImpl(long id) {
         this.id = id;
         this.recency = id;
@@ -73,7 +73,7 @@ public class FactHandleImpl
             return true;
         }
 
-        if ( object == null || !( object instanceof FactHandleImpl ) ) {
+        if ( object == null || !(object instanceof FactHandleImpl) ) {
             return false;
         }
 

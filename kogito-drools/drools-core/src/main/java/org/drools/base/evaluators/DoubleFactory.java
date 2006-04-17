@@ -1,11 +1,10 @@
 package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
-
 import org.drools.spi.Evaluator;
 
 public class DoubleFactory {
-    
+
     public static Evaluator getDoubleEvaluator(int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
@@ -23,9 +22,8 @@ public class DoubleFactory {
             default :
                 throw new RuntimeException( "Operator '" + operator + "' does not exist for DoubleEvaluator" );
         }
-    }    
-    
-    
+    }
+
     static class DoubleEqualEvaluator extends BaseEvaluator {
         public final static Evaluator INSTANCE = new DoubleEqualEvaluator();
 
@@ -36,13 +34,13 @@ public class DoubleFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 == null;
-            return ((Number) object1).equals(object2);
+            if ( object1 == null ) return object2 == null;
+            return ((Number) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Double ==";
-        }         
+        }
     }
 
     static class DoubleNotEqualEvaluator extends BaseEvaluator {
@@ -55,13 +53,13 @@ public class DoubleFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 != null;
-            return !((Number) object1).equals(object2);
+            if ( object1 == null ) return object2 != null;
+            return !((Number) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Double !=";
-        }                 
+        }
     }
 
     static class DoubleLessEvaluator extends BaseEvaluator {
@@ -76,10 +74,10 @@ public class DoubleFactory {
                                 Object object2) {
             return ((Number) object1).doubleValue() < ((Number) object2).doubleValue();
         }
-        
+
         public String toString() {
             return "Double <";
-        }                 
+        }
     }
 
     static class DoubleLessOrEqualEvaluator extends BaseEvaluator {
@@ -94,10 +92,10 @@ public class DoubleFactory {
                                 Object object2) {
             return ((Number) object1).doubleValue() <= ((Number) object2).doubleValue();
         }
-        
+
         public String toString() {
             return "Double <=";
-        }         
+        }
     }
 
     static class DoubleGreaterEvaluator extends BaseEvaluator {
@@ -112,10 +110,10 @@ public class DoubleFactory {
                                 Object object2) {
             return ((Number) object1).doubleValue() > ((Number) object2).doubleValue();
         }
-        
+
         public String toString() {
             return "Double >";
-        }         
+        }
     }
 
     static class DoubleGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -130,9 +128,9 @@ public class DoubleFactory {
                                 Object object2) {
             return ((Number) object1).doubleValue() >= ((Number) object2).doubleValue();
         }
-        
+
         public String toString() {
             return "Double >=";
-        }         
-    } 
+        }
+    }
 }

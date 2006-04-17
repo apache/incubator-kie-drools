@@ -32,60 +32,64 @@ import org.drools.leaps.ColumnConstraints;
  * @author Alexander Bagerman
  * 
  */
-public class ConstrainedFactTableIterator implements TableIterator {
-	private boolean finishInitialPass = false;
-	
-	final WorkingMemory workingMemory;
-	
-	final ColumnConstraints constraints;
+public class ConstrainedFactTableIterator
+    implements
+    TableIterator {
+    private boolean         finishInitialPass = false;
 
-	private int size = 0;
-	
-	private TableRecord firstRecord;
+    final WorkingMemory     workingMemory;
 
-	private TableRecord lastRecord;
+    final ColumnConstraints constraints;
 
-	private TableRecord currentRecord;
+    private int             size              = 0;
 
-	private TableRecord nextRecord;
-	
-	private TableRecord currentTableRecord;
-	
-	private TableRecord lastTableRecord;
+    private TableRecord     firstRecord;
 
-	protected ConstrainedFactTableIterator(WorkingMemory workingMemory,
-			ColumnConstraints constraints, TableRecord startRecord,
-			TableRecord currentRecord, TableRecord lastRecord) {
-		this.workingMemory = workingMemory;
-		this.constraints = constraints;
-		this.lastTableRecord = lastRecord;
-		this.currentTableRecord = startRecord;
-		boolean done = false;
-		boolean reachCurrentRecord = false;
-		while (!done && this.currentTableRecord != null && !this.finishInitialPass) {
-			if (!reachCurrentRecord && this.currentTableRecord == currentRecord) {
-				reachCurrentRecord = true;
-			} else {
-				if (this.constraints.isAllowedAlpha(
-						(FactHandle) this.currentTableRecord.object, null,
-						this.workingMemory)) {
-					this.add(this.currentTableRecord.object);
-				}
-				if (reachCurrentRecord && !this.isEmpty()) {
-					done = true;
-				}
-				if (this.currentTableRecord == this.lastTableRecord) {
-					this.finishInitialPass = true;
-				}
-				this.currentTableRecord = this.currentTableRecord.right;
-			}
-		}
-		// 
-		this.nextRecord = this.lastRecord;
-	}
+    private TableRecord     lastRecord;
 
-	private void add(Object object) {
-		TableRecord record = new TableRecord(object);
+    private TableRecord     currentRecord;
+
+    private TableRecord     nextRecord;
+
+    private TableRecord     currentTableRecord;
+
+    private TableRecord     lastTableRecord;
+
+    protected ConstrainedFactTableIterator(WorkingMemory workingMemory,
+                                           ColumnConstraints constraints,
+                                           TableRecord startRecord,
+                                           TableRecord currentRecord,
+                                           TableRecord lastRecord) {
+        this.workingMemory = workingMemory;
+        this.constraints = constraints;
+        this.lastTableRecord = lastRecord;
+        this.currentTableRecord = startRecord;
+        boolean done = false;
+        boolean reachCurrentRecord = false;
+        while ( !done && this.currentTableRecord != null && !this.finishInitialPass ) {
+            if ( !reachCurrentRecord && this.currentTableRecord == currentRecord ) {
+                reachCurrentRecord = true;
+            } else {
+                if ( this.constraints.isAllowedAlpha( (FactHandle) this.currentTableRecord.object,
+                                                      null,
+                                                      this.workingMemory ) ) {
+                    this.add( this.currentTableRecord.object );
+                }
+                if ( reachCurrentRecord && !this.isEmpty() ) {
+                    done = true;
+                }
+                if ( this.currentTableRecord == this.lastTableRecord ) {
+                    this.finishInitialPass = true;
+                }
+                this.currentTableRecord = this.currentTableRecord.right;
+            }
+        }
+        // 
+        this.nextRecord = this.lastRecord;
+    }
+
+    private void add(Object object) {
+        TableRecord record = new TableRecord( object );
         if ( this.firstRecord == null ) {
             this.firstRecord = record;
             this.lastRecord = record;
@@ -97,62 +101,61 @@ public class ConstrainedFactTableIterator implements TableIterator {
         this.size++;
     }
 
+    public boolean isEmpty() {
+        return this.firstRecord == null;
+    }
 
-	public boolean isEmpty() {
-		return this.firstRecord == null;
-	}
+    public void reset() {
+        this.currentRecord = null;
+        this.nextRecord = this.firstRecord;
+    }
 
-	public void reset() {
-		this.currentRecord = null;
-		this.nextRecord = this.firstRecord;
-	}
+    public Object next() {
+        this.currentRecord = this.nextRecord;
+        if ( this.currentRecord != null ) {
+            this.nextRecord = this.currentRecord.right;
+        } else {
+            throw new NoSuchElementException( "No more elements to return" );
+        }
+        return this.currentRecord.object;
+    }
 
-	public Object next() {
-		this.currentRecord = this.nextRecord;
-		if (this.currentRecord != null) {
-			this.nextRecord = this.currentRecord.right;
-		} else {
-			throw new NoSuchElementException("No more elements to return");
-		}
-		return this.currentRecord.object;
-	}
+    public Object current() {
+        return this.currentRecord.object;
+    }
 
-	public Object current() {
-		return this.currentRecord.object;
-	}
+    public Object peekNext() {
+        return this.nextRecord.object;
+    }
 
-	public Object peekNext() {
-		return this.nextRecord.object;
-	}
+    public void remove() {
+    }
 
-	public void remove() {
-	}
-
-	public boolean hasNext() {
-		if (!this.finishInitialPass) {
-			if (this.nextRecord == null) {
-				boolean found = false;
-				while (!found && this.currentTableRecord != null) {
-					if (this.constraints.isAllowedAlpha(
-							(FactHandle) this.currentTableRecord.object, null,
-							this.workingMemory)) {
-						this.add(this.currentTableRecord.object);
-						found = true;
-					}
-					if (this.currentTableRecord == this.lastTableRecord) {
-						this.finishInitialPass = true;
-					}
-					this.currentTableRecord = this.currentTableRecord.right;
-				}
-				// 
-				if (found) {
-					this.nextRecord = this.lastRecord;
-				}
-				return found;
-			}
-			return true;
-		} else {
-			return this.nextRecord != null;
-		}
-	}
+    public boolean hasNext() {
+        if ( !this.finishInitialPass ) {
+            if ( this.nextRecord == null ) {
+                boolean found = false;
+                while ( !found && this.currentTableRecord != null ) {
+                    if ( this.constraints.isAllowedAlpha( (FactHandle) this.currentTableRecord.object,
+                                                          null,
+                                                          this.workingMemory ) ) {
+                        this.add( this.currentTableRecord.object );
+                        found = true;
+                    }
+                    if ( this.currentTableRecord == this.lastTableRecord ) {
+                        this.finishInitialPass = true;
+                    }
+                    this.currentTableRecord = this.currentTableRecord.right;
+                }
+                // 
+                if ( found ) {
+                    this.nextRecord = this.lastRecord;
+                }
+                return found;
+            }
+            return true;
+        } else {
+            return this.nextRecord != null;
+        }
+    }
 }

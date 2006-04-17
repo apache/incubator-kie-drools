@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,14 +17,7 @@ package org.drools.common;
  */
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
-
-import org.drools.spi.AsyncExceptionHandler;
-import org.drools.spi.ConsequenceException;
-import org.drools.spi.PropagationContext;
 
 /**
  * Scheduler for rules requiring truth duration.
@@ -56,7 +50,7 @@ final class Scheduler {
     // ------------------------------------------------------------
 
     /** Alarm manager. */
-    private final Timer           scheduler;    
+    private final Timer scheduler;
 
     // ------------------------------------------------------------
     // Constructors
@@ -77,12 +71,12 @@ final class Scheduler {
      * @param workingMemory
      *            The working memory session.
      */
-    void  scheduleAgendaItem(ScheduledAgendaItem item) {
+    void scheduleAgendaItem(ScheduledAgendaItem item) {
         Date now = new Date();
 
         Date then = new Date( now.getTime() + item.getRule().getDuration().getDuration( item.getTuple() ) );
 
         this.scheduler.schedule( item,
-                                 then );       
-    }    
+                                 then );
+    }
 }

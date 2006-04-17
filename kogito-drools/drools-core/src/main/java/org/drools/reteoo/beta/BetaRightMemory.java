@@ -49,15 +49,17 @@ public interface BetaRightMemory {
      * @param workingMemory the working memory reference
      * @param matches the matches object (with the reference to the fact implementation)
      */
-    public void add(WorkingMemory workingMemory, ObjectMatches matches);
-    
+    public void add(WorkingMemory workingMemory,
+                    ObjectMatches matches);
+
     /**
      * Removes the given match from memory
      * 
      * @param workingMemory the working memory reference
      * @param matches
      */
-    public void remove(WorkingMemory workingMemory, ObjectMatches matches);
+    public void remove(WorkingMemory workingMemory,
+                       ObjectMatches matches);
 
     /**
      * Adds an object to the right memory
@@ -65,15 +67,17 @@ public interface BetaRightMemory {
      * @param workingMemory the working memory reference
      * @param matches the matches object (with the reference to the fact implementation)
      */
-    public void add(WorkingMemory workingMemory, MultiLinkedListNodeWrapper matches);
-    
+    public void add(WorkingMemory workingMemory,
+                    MultiLinkedListNodeWrapper matches);
+
     /**
      * Removes the given match from memory
      * 
      * @param workingMemory the working memory reference
      * @param matches
      */
-    public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper matches);
+    public void remove(WorkingMemory workingMemory,
+                       MultiLinkedListNodeWrapper matches);
 
     /**
      * Returns an iterator that allows to iterate over the ObjectMatches (and
@@ -85,8 +89,9 @@ public interface BetaRightMemory {
      * @param tuple the tuple that will possibly join with the returned matches
      * @return
      */
-    public Iterator iterator(WorkingMemory workingMemory, ReteTuple tuple);
-    
+    public Iterator iterator(WorkingMemory workingMemory,
+                             ReteTuple tuple);
+
     /**
      * Returns an iterator that allows to iterate over all the ObjectMatches
      * in the beta right memory.
@@ -96,28 +101,29 @@ public interface BetaRightMemory {
      * @return
      */
     public Iterator iterator();
-    
+
     /**
      * Returns the number of objects currently stored in the right memory
      * 
      * @return the number of objects currently stored in the right memory
      */
     public int size();
-    
+
     /**
      * Returns true if the memory is empty
      * @return
      */
     public boolean isEmpty();
-    
+
     /**
      * Prepares the right memory for subsequent calls of isPossibleMatch()
      * based on the constraints applied to the tuples
      * 
      * @param handle
      */
-    public void selectPossibleMatches(WorkingMemory workingMemory, ReteTuple tuple);
-    
+    public void selectPossibleMatches(WorkingMemory workingMemory,
+                                      ReteTuple tuple);
+
     /**
      * Returns true if the matches is a possible match to the tuple
      * given to the previous selectPossibleMatches() call
@@ -126,5 +132,5 @@ public interface BetaRightMemory {
      * @return
      */
     public boolean isPossibleMatch(MultiLinkedListNodeWrapper matches);
-    
+
 }

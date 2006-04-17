@@ -33,37 +33,38 @@ import org.drools.WorkingMemory;
 public class DefaultObjectSinkList extends ArrayList
     implements
     ObjectSinkList {
-    
+
     public DefaultObjectSinkList() {
         super();
     }
 
     public DefaultObjectSinkList(int size) {
-        super(size);
+        super( size );
     }
-    
+
     public ObjectSink getLastObjectSink() {
-        return (ObjectSink) super.get(this.size()-1);
+        return (ObjectSink) super.get( this.size() - 1 );
     }
-    
+
     public List getObjectsAsList() {
         return (List) this;
     }
-    
+
     public boolean add(ObjectSink objectSink) {
-        return super.add((Object) objectSink);
+        return super.add( (Object) objectSink );
     }
 
     public boolean contains(ObjectSink objectSink) {
-        return super.contains((Object) objectSink);
+        return super.contains( (Object) objectSink );
     }
 
     public boolean remove(ObjectSink objectSink) {
-        return super.remove((Object) objectSink);
+        return super.remove( (Object) objectSink );
     }
-    
-    public Iterator iterator(WorkingMemory workingMemory, FactHandleImpl handle) {
+
+    public Iterator iterator(WorkingMemory workingMemory,
+                             FactHandleImpl handle) {
         return super.iterator();
     }
-    
+
 }

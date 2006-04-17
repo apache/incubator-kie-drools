@@ -62,11 +62,11 @@ import org.drools.spi.ObjectType;
  */
 
 /**
-* @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
-* @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
-* @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
-*
-*/
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
+ * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
+ *
+ */
 public class Declaration
     implements
     Serializable {
@@ -75,11 +75,11 @@ public class Declaration
     // ------------------------------------------------------------
 
     /** The identifier for the variable. */
-    private final String     identifier;
+    private final String    identifier;
 
-    private final Extractor  extractor;
+    private final Extractor extractor;
 
-    private       int        column;
+    private int             column;
 
     // ------------------------------------------------------------
     // Constructors
@@ -133,11 +133,11 @@ public class Declaration
     public int getColumn() {
         return this.column;
     }
-    
+
     public void setColumn(int column) {
         this.column = column;
     }
- 
+
     /**
      * Returns the Extractor expression
      * 
@@ -150,6 +150,7 @@ public class Declaration
     public Object getValue(Object object) {
         return this.extractor.getValue( object );
     }
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public String toString() {

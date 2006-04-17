@@ -36,9 +36,9 @@ import org.drools.util.MultiLinkedListNodeWrapper;
 public class DefaultLeftMemory
     implements
     BetaLeftMemory {
-    
+
     private final MultiLinkedList memory;
-    
+
     public DefaultLeftMemory() {
         this.memory = new MultiLinkedList();
     }
@@ -50,14 +50,15 @@ public class DefaultLeftMemory
      */
     public void add(WorkingMemory workingMemory,
                     MultiLinkedListNodeWrapper tuple) {
-        this.memory.add(tuple);
+        this.memory.add( tuple );
     }
 
     /**
      * @inheritDoc
      */
-    public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
-        this.memory.remove(tuple);
+    public void remove(WorkingMemory workingMemory,
+                       MultiLinkedListNodeWrapper tuple) {
+        this.memory.remove( tuple );
     }
 
     /**
@@ -65,14 +66,15 @@ public class DefaultLeftMemory
      */
     public void add(WorkingMemory workingMemory,
                     ReteTuple tuple) {
-        this.memory.add(tuple);
+        this.memory.add( tuple );
     }
 
     /**
      * @inheritDoc
      */
-    public void remove(WorkingMemory workingMemory, ReteTuple tuple) {
-        this.memory.remove(tuple);
+    public void remove(WorkingMemory workingMemory,
+                       ReteTuple tuple) {
+        this.memory.remove( tuple );
     }
 
     /**
@@ -82,7 +84,7 @@ public class DefaultLeftMemory
                              FactHandleImpl handle) {
         return this.memory.iterator();
     }
-    
+
     /**
      * @inheritDoc
      */

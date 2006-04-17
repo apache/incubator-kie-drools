@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -22,11 +23,11 @@ package org.drools.util;
  */
 public class LinkedListNodeWrapper extends AbstractBaseLinkedListNode {
     private LinkedListNode node;
-    
+
     public LinkedListNodeWrapper(LinkedListNode node) {
         this.node = node;
     }
-    
+
     public LinkedListNode getNode() {
         return this.node;
     }

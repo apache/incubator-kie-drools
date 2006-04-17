@@ -26,39 +26,41 @@ package org.drools.audit.event;
  */
 public class ObjectLogEvent extends LogEvent {
 
-	private long factId;
-	private String objectToString;
-	
-	/**
-	 * Create a new activation log event.
-	 * 
-	 * @param type The type of event.  This can only be LogEvent.OBJECT_ASSERTED,
-	 * LogEvent.OBJECT_MODIFIED or LogEvent.OBJECT_RETRACTED.
-	 * @param factId The id of the fact
-	 * @param objectToString A toString of the fact 
-	 */
-	public ObjectLogEvent(int type, long factId, String objectToString) {
-		super(type);
-		this.factId = factId;
-		this.objectToString = objectToString;
-	}
-	
-	/**
-	 * Returns the fact id of the object this event is about.
-	 * 
-	 * @return the id of the fact
-	 */
-	public long getFactId() {
-		return factId;
-	}
-	
-	/**
-	 * Returns a toString of the fact this event is about at the
-	 * time the event was created.
-	 * 
-	 * @return the toString of the fact
-	 */
-	public String getObjectToString() {
-		return objectToString;
-	}
+    private long   factId;
+    private String objectToString;
+
+    /**
+     * Create a new activation log event.
+     * 
+     * @param type The type of event.  This can only be LogEvent.OBJECT_ASSERTED,
+     * LogEvent.OBJECT_MODIFIED or LogEvent.OBJECT_RETRACTED.
+     * @param factId The id of the fact
+     * @param objectToString A toString of the fact 
+     */
+    public ObjectLogEvent(int type,
+                          long factId,
+                          String objectToString) {
+        super( type );
+        this.factId = factId;
+        this.objectToString = objectToString;
+    }
+
+    /**
+     * Returns the fact id of the object this event is about.
+     * 
+     * @return the id of the fact
+     */
+    public long getFactId() {
+        return factId;
+    }
+
+    /**
+     * Returns a toString of the fact this event is about at the
+     * time the event was created.
+     * 
+     * @return the toString of the fact
+     */
+    public String getObjectToString() {
+        return objectToString;
+    }
 }

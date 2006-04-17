@@ -58,8 +58,8 @@ public class DebugAgendaEventListener
 
     public void beforeActivationFired(BeforeActivationFiredEvent event) {
         System.err.println( event );
-    }    
-    
+    }
+
     public void afterActivationFired(AfterActivationFiredEvent event) {
         System.err.println( event );
     }

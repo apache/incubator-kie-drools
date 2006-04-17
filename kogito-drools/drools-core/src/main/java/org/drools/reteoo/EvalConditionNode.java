@@ -80,19 +80,20 @@ class EvalConditionNode extends TupleSource
     public void attach() {
         this.tupleSource.addTupleSink( this );
     }
-    
+
     public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
-        
-        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+
+        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             WorkingMemoryImpl workingMemory = workingMemories[i];
             PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                 PropagationContext.RULE_ADDITION,
                                                                                 null,
-                                                                                null );            
-            this.tupleSource.updateNewNode( workingMemory, propagationContext );
-        }      
-    }       
+                                                                                null );
+            this.tupleSource.updateNewNode( workingMemory,
+                                            propagationContext );
+        }
+    }
 
     // ------------------------------------------------------------
     // Instance methods
@@ -140,25 +141,24 @@ class EvalConditionNode extends TupleSource
 
     public void retractTuple(ReteTuple tuple,
                              PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {        
+                             WorkingMemoryImpl workingMemory) {
         LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-        
+
         // checks if the tuple is attach to tuple
-        if ( ( tuple.getNext() != null && tuple.getPrevious() != null ) ||  memory.getFirst() == tuple) {            
+        if ( (tuple.getNext() != null && tuple.getPrevious() != null) || memory.getFirst() == tuple ) {
             memory.remove( tuple );
-    
+
             propagateRetractTuple( tuple,
                                    context,
                                    workingMemory );
         }
     }
-        
 
     public void modifyTuple(ReteTuple tuple,
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
         LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-        boolean exists = ( ( tuple.getNext() != null && tuple.getPrevious() != null ) ||  memory.getFirst() == tuple);
+        boolean exists = ((tuple.getNext() != null && tuple.getPrevious() != null) || memory.getFirst() == tuple);
         if ( exists ) {
             // Remove the tuple so it can be readded to the top of the list
             memory.remove( tuple );
@@ -190,7 +190,7 @@ class EvalConditionNode extends TupleSource
         this.attachingNewNode = true;
 
         LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-        
+
         for ( Iterator it = memory.iterator(); it.hasNext(); ) {
             propagateAssertTuple( (ReteTuple) it.next(),
                                   context,
@@ -232,8 +232,8 @@ class EvalConditionNode extends TupleSource
         getTupleSinks().remove( node );
         removeShare();
         if ( this.sharedCount < 0 ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++) {
-                workingMemories[i].clearNodeMemory( this );    
+            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                workingMemories[i].clearNodeMemory( this );
             }
             this.tupleSource.remove( this,
                                      workingMemories );

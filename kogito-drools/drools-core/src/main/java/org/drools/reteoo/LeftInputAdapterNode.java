@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,7 +15,6 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,8 +41,8 @@ class LeftInputAdapterNode extends TupleSource
     implements
     ObjectSink,
     NodeMemory {
-    
-    private final ObjectSource objectSource;
+
+    private final ObjectSource   objectSource;
     private final BetaNodeBinder binder;
 
     /**
@@ -56,7 +56,9 @@ class LeftInputAdapterNode extends TupleSource
      */
     public LeftInputAdapterNode(int id,
                                 ObjectSource source) {
-        this( id, source, null );        
+        this( id,
+              source,
+              null );
     }
 
     /**
@@ -74,7 +76,7 @@ class LeftInputAdapterNode extends TupleSource
     public LeftInputAdapterNode(int id,
                                 ObjectSource source,
                                 BetaNodeBinder binder) {
-        super( id );        
+        super( id );
         this.objectSource = source;
         this.binder = binder;
         setHasMemory( true );
@@ -86,19 +88,20 @@ class LeftInputAdapterNode extends TupleSource
     public void attach() {
         this.objectSource.addObjectSink( this );
     }
-    
+
     public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
-        
-        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+
+        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             WorkingMemoryImpl workingMemory = workingMemories[i];
             PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                 PropagationContext.RULE_ADDITION,
                                                                                 null,
-                                                                                null );            
-            this.objectSource.updateNewNode( workingMemory, propagationContext );
-        }        
-    }     
+                                                                                null );
+            this.objectSource.updateNewNode( workingMemory,
+                                             propagationContext );
+        }
+    }
 
     /**
      * Takes the asserted <code>FactHandleImpl</code> received from the <code>ObjectSource</code> and puts it
@@ -115,8 +118,10 @@ class LeftInputAdapterNode extends TupleSource
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) {
         Map memory = (Map) workingMemory.getNodeMemory( this );
-        
-        if((this.binder == null) || (this.binder.isAllowed( handle, null, workingMemory )) ) {
+
+        if ( (this.binder == null) || (this.binder.isAllowed( handle,
+                                                              null,
+                                                              workingMemory )) ) {
             createAndAssertTuple( handle,
                                   context,
                                   workingMemory,
@@ -145,12 +150,12 @@ class LeftInputAdapterNode extends TupleSource
 
         list.add( new LinkedListNodeWrapper( tuple ) );
 
-        if ( ! getTupleSinks().isEmpty() ) {
+        if ( !getTupleSinks().isEmpty() ) {
             // We do this one seperately so we avoid another tuple replication
             ((TupleSink) getTupleSinks().get( 0 )).assertTuple( tuple,
                                                                 context,
                                                                 workingMemory );
-      
+
             for ( int i = 1; i < size; i++ ) {
                 tuple = new ReteTuple( tuple );
                 list.add( new LinkedListNodeWrapper( tuple ) );
@@ -180,27 +185,29 @@ class LeftInputAdapterNode extends TupleSource
                               WorkingMemoryImpl workingMemory) {
         Map memory = (Map) workingMemory.getNodeMemory( this );
         LinkedList list = (LinkedList) memory.remove( handle );
-        
+
         // the handle might have been filtered out by the binder
-        if(list != null) {
+        if ( list != null ) {
             int i = 0;
             for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
                 ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
-                                                                     context,
-                                                                     workingMemory );
+                                                                       context,
+                                                                       workingMemory );
             }
         }
     }
-    
+
     public void modifyObject(FactHandleImpl handle,
-                              PropagationContext context,
-                              WorkingMemoryImpl workingMemory) {
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
         Map memory = (Map) workingMemory.getNodeMemory( this );
-        
-        if ((this.binder == null) || (this.binder.isAllowed( handle, null, workingMemory ))) {
+
+        if ( (this.binder == null) || (this.binder.isAllowed( handle,
+                                                              null,
+                                                              workingMemory )) ) {
             LinkedList list = (LinkedList) memory.get( handle );
 
-            if(list != null) {
+            if ( list != null ) {
                 // already existed, so propagate as a modify
                 int i = 0;
                 for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
@@ -210,21 +217,24 @@ class LeftInputAdapterNode extends TupleSource
                 }
             } else {
                 // didn't existed, so propagate as an assert
-                this.createAndAssertTuple( handle, context, workingMemory, memory );
+                this.createAndAssertTuple( handle,
+                                           context,
+                                           workingMemory,
+                                           memory );
             }
         } else {
             LinkedList list = (LinkedList) memory.remove( handle );
-            
-            if(list != null) {
+
+            if ( list != null ) {
                 int i = 0;
                 for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
                     ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
-                                                                          context,
-                                                                          workingMemory );
+                                                                           context,
+                                                                           workingMemory );
                 }
             }
         }
-    }    
+    }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
@@ -235,18 +245,18 @@ class LeftInputAdapterNode extends TupleSource
 
         // Get the newly attached TupleSink
         TupleSink sink = (TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 );
-        
+
         // Iterate the memory and assert all tuples into the newly attached TupleSink
         Map memory = (Map) workingMemory.getNodeMemory( this );
         for ( Iterator it = memory.values().iterator(); it.hasNext(); ) {
             LinkedList list = (LinkedList) it.next();
             for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
                 sink.assertTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
-                                                                      context,
-                                                                      workingMemory );
-            }           
+                                  context,
+                                  workingMemory );
+            }
         }
-        
+
         this.attachingNewNode = false;
     }
 
@@ -255,13 +265,13 @@ class LeftInputAdapterNode extends TupleSource
         getTupleSinks().remove( node );
         removeShare();
         if ( this.sharedCount < 0 ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++) {
-                workingMemories[i].clearNodeMemory( this );    
+            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                workingMemories[i].clearNodeMemory( this );
             }
-            this.objectSource.remove( this, workingMemories );
+            this.objectSource.remove( this,
+                                      workingMemories );
         }
     }
-
 
     /**
      * LeftInputAdapter uses a HashMap for memory. The key is the received <code>FactHandleImpl</code> and the

@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -23,18 +24,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TimerTask;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
-import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.util.LinkedListNode;
-import org.drools.util.PriorityQueue;
 
 /**
  * Rule-firing Agenda.
@@ -61,19 +58,20 @@ public class Agenda
     // ------------------------------------------------------------
 
     /** Working memory of this Agenda. */
-    private final WorkingMemory workingMemory; 
-    
+    private final WorkingMemory        workingMemory;
+
     private org.drools.util.LinkedList scheduledActivations;
-    
+
     /** Items time-delayed. */
 
-    private final Map               agendaGroups;
+    private final Map                  agendaGroups;
 
-    private final LinkedList        focusStack;
+    private final LinkedList           focusStack;
 
-    private AgendaGroupImpl         currentModule;
-    
-    private AgendaGroup             main;
+    private AgendaGroupImpl            currentModule;
+
+    private AgendaGroup                main;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -86,21 +84,21 @@ public class Agenda
      * @param conflictResolver
      *            The conflict resolver.
      */
-    public Agenda(WorkingMemory workingMemory ) {        
+    public Agenda(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         this.agendaGroups = new HashMap();
         this.focusStack = new LinkedList();
 
         // MAIN should always be the first AgendaGroup and can never be removed
         this.main = new AgendaGroupImpl( AgendaGroup.MAIN );
-        
+
         this.agendaGroups.put( AgendaGroup.MAIN,
                                this.main );
 
         this.focusStack.add( this.main );
 
     }
-    
+
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
@@ -109,33 +107,21 @@ public class Agenda
      * Clears all Activations from the Agenda
      * 
      */
-    public void clearAgenda() {    
+    public void clearAgenda() {
         EventSupport eventsupport = (EventSupport) this.workingMemory;
         // Cancel all items and fire a Cancelled event for each Activation
-        for ( Iterator agendaGroupIterator = this.agendaGroups.values().iterator();agendaGroupIterator.hasNext(); ) {
+        for ( Iterator agendaGroupIterator = this.agendaGroups.values().iterator(); agendaGroupIterator.hasNext(); ) {
             AgendaGroupImpl group = (AgendaGroupImpl) agendaGroupIterator.next();
-            for ( Iterator queueIterator = group.getPriorityQueue().iterator(); queueIterator.hasNext(); ) {
-                ActivationQueue queue = (ActivationQueue) queueIterator.next();
-                queue.setActivated( false );
-                if (!queue.isEmpty()) {
-                    for ( Activation item = queue.remove(); !queue.isEmpty(); item = queue.remove() ) {
-                        eventsupport.getAgendaEventSupport().fireActivationCancelled( item );
-                    }
-                }
-            }
+            group.clear();
         }
-        
-        AgendaGroup main = ( AgendaGroup ) this.focusStack.getFirst();
-        this.focusStack.clear();
-        this.focusStack.add( main );
 
         if ( this.scheduledActivations != null && !this.scheduledActivations.isEmpty() ) {
-            for (ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst();item != null ; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst()) {
+            for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
                 item.remove();
-                eventsupport.getAgendaEventSupport().fireActivationCancelled( item );            
+                eventsupport.getAgendaEventSupport().fireActivationCancelled( item );
             }
         }
-   }
+    }
 
     /**
      * Schedule an agenda item for delayed firing.
@@ -145,24 +131,23 @@ public class Agenda
      */
     public void scheduleItem(ScheduledAgendaItem item) {
         Scheduler.getInstance().scheduleAgendaItem( item );
-        
-        if (this.scheduledActivations == null ) {
+
+        if ( this.scheduledActivations == null ) {
             this.scheduledActivations = new org.drools.util.LinkedList();
         }
-        
-        this.scheduledActivations.add( item );       
+
+        this.scheduledActivations.add( item );
     }
-    
-    public void removeScheduleItem(ScheduledAgendaItem item) {    
+
+    public void removeScheduleItem(ScheduledAgendaItem item) {
         this.scheduledActivations.remove( item );
         item.cancel();
-    }    
+    }
 
-    
     public org.drools.util.LinkedList getScheduledItems() {
         return this.scheduledActivations;
     }
-    
+
     public void addAgendaGroup(AgendaGroup agendaGroup) {
         this.agendaGroups.put( agendaGroup.getName(),
                                agendaGroup );
@@ -179,11 +164,11 @@ public class Agenda
 
     public void setFocus(String name) {
         AgendaGroup agendaGroup = (AgendaGroup) this.agendaGroups.get( name );
-        
+
         // Agenda may not have been created yet, if not create it.
-        if ( agendaGroup == null) {
+        if ( agendaGroup == null ) {
             agendaGroup = new AgendaGroupImpl( name );
-            workingMemory.getAgenda().addAgendaGroup( agendaGroup );            
+            workingMemory.getAgenda().addAgendaGroup( agendaGroup );
         }
         setFocus( agendaGroup );
     }
@@ -201,21 +186,21 @@ public class Agenda
         AgendaGroupImpl agendaGroup = null;
         // Iterate untill we find a populate AgendaModule or we reach the MAIN, default, AgendaGroup
         while ( true ) {
-            agendaGroup = (AgendaGroupImpl) this.focusStack.getLast();  
-            
-            boolean empty = agendaGroup.isEmpty(); 
-            
+            agendaGroup = (AgendaGroupImpl) this.focusStack.getLast();
+
+            boolean empty = agendaGroup.isEmpty();
+
             // No populated queus found so pop the focusStack and repeat            
-            if ( empty && (this.focusStack.size() > 1 ) ) {
+            if ( empty && (this.focusStack.size() > 1) ) {
                 this.focusStack.removeLast();
             } else {
-                agendaGroup =  (empty)? null : agendaGroup;
+                agendaGroup = (empty) ? null : agendaGroup;
                 break;
             }
-        } 
-        
+        }
+
         return agendaGroup;
-    }      
+    }
 
     public void setCurrentAgendaGroup(AgendaGroup agendaGroup) {
         this.currentModule = (AgendaGroupImpl) agendaGroup;
@@ -242,7 +227,7 @@ public class Agenda
      * @return
      *      total number of <code>Activation</code>s on the focus stack
      */
-    public int focusStackSize() {   
+    public int focusStackSize() {
         int size = 0;
         for ( Iterator iterator = this.focusStack.iterator(); iterator.hasNext(); ) {
             AgendaGroup group = (AgendaGroupImpl) iterator.next();
@@ -262,25 +247,25 @@ public class Agenda
             AgendaGroup group = (AgendaGroupImpl) iterator.next();
             size += group.size();
         }
-        return size;       
+        return size;
     }
-    
+
     public Activation[] getActivations() {
-        List list = new ArrayList();        
+        List list = new ArrayList();
         for ( Iterator it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
             AgendaGroup group = (AgendaGroup) it.next();
             list.addAll( Arrays.asList( group.getActivations() ) );
         }
         return (Activation[]) list.toArray( new Activation[list.size()] );
     }
-           
+
     public Activation[] getScheduledActivations() {
-        List list = new ArrayList(this.scheduledActivations.size());
-        for (LinkedListNode node = this.scheduledActivations.getFirst(); node != null; node = node.getNext() ) {
+        List list = new ArrayList( this.scheduledActivations.size() );
+        for ( LinkedListNode node = this.scheduledActivations.getFirst(); node != null; node = node.getNext() ) {
             list.add( node );
-        }        
+        }
         return (Activation[]) list.toArray( new Activation[list.size()] );
-    }    
+    }
 
     /**
      * Fire the next scheduled <code>Agenda</code> item.
@@ -290,22 +275,24 @@ public class Agenda
      */
     public boolean fireNextItem(AgendaFilter filter) throws ConsequenceException {
         AgendaGroupImpl group = (AgendaGroupImpl) getNextFocus();
-        
+
         // return if there are no Activations to fire
         if ( group == null ) {
             return false;
         }
 
-
-        ActivationQueue queue = (ActivationQueue) group.getPriorityQueue().get();   
-        Activation item = queue.remove();
+        Activation item = group.getNext();
+        if  ( item == null ) {
+            return false;
+        }
+        
         if ( filter == null || filter.accept( item ) ) {
             fireActivation( item );
         }
 
         return true;
     }
-    
+
     /**
      * Fire this item.
      * 
@@ -314,18 +301,21 @@ public class Agenda
      * 
      * @throws ConsequenceException
      *             If an error occurs while attempting to fire the consequence.
-     */    
-    public synchronized void fireActivation(Activation activation)  throws ConsequenceException  {
+     */
+    public synchronized void fireActivation(Activation activation) throws ConsequenceException {
         EventSupport eventsupport = (EventSupport) this.workingMemory;
-        
+
         eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation );
-        
+
         try {
-            KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation, workingMemory );
-            activation.getRule().getConsequence().evaluate( knowledgeHelper, this.workingMemory );
+            KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
+                                                                                          workingMemory );
+            activation.getRule().getConsequence().evaluate( knowledgeHelper,
+                                                            this.workingMemory );
         } catch ( Exception e ) {
-            throw new  ConsequenceException( e, activation.getRule() );
-        }            
+            throw new ConsequenceException( e,
+                                            activation.getRule() );
+        }
 
         eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );
     }

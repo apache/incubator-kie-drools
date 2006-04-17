@@ -37,30 +37,27 @@ import org.drools.leaps.ConflictResolver;
  */
 public class DefaultConflictResolver extends CompositeConflictResolver {
 
-	private static final Comparator[] FACT_CONFLICT_RESOLVERS = new Comparator[] { LoadOrderConflictResolver
-			.getInstance() };
+    private static final Comparator[]            FACT_CONFLICT_RESOLVERS = new Comparator[]{LoadOrderConflictResolver.getInstance()};
 
-	private static final Comparator[] RULE_CONFLICT_RESOLVERS = new Comparator[] {
-			RuleSalienceConflictResolver.getInstance(),
-			RuleComplexityConflictResolver.getInstance(),
-            LoadOrderConflictResolver.getInstance() };
+    private static final Comparator[]            RULE_CONFLICT_RESOLVERS = new Comparator[]{RuleSalienceConflictResolver.getInstance(), RuleComplexityConflictResolver.getInstance(), LoadOrderConflictResolver.getInstance()};
 
-	/** Singleton instance. */
-	private static final DefaultConflictResolver INSTANCE = new DefaultConflictResolver();
+    /** Singleton instance. */
+    private static final DefaultConflictResolver INSTANCE                = new DefaultConflictResolver();
 
-	/**
-	 * Retrieve the singleton instance.
-	 * 
-	 * @return The singleton instance.
-	 */
-	public static ConflictResolver getInstance() {
-		return INSTANCE;
-	}
+    /**
+     * Retrieve the singleton instance.
+     * 
+     * @return The singleton instance.
+     */
+    public static ConflictResolver getInstance() {
+        return INSTANCE;
+    }
 
-	/**
-	 * Setup a default ConflictResolver configuration
-	 */
-	public DefaultConflictResolver() {
-		super(FACT_CONFLICT_RESOLVERS, RULE_CONFLICT_RESOLVERS);
-	}
+    /**
+     * Setup a default ConflictResolver configuration
+     */
+    public DefaultConflictResolver() {
+        super( FACT_CONFLICT_RESOLVERS,
+               RULE_CONFLICT_RESOLVERS );
+    }
 }

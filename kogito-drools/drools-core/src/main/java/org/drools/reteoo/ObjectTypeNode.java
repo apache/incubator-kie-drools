@@ -181,7 +181,7 @@ class ObjectTypeNode extends ObjectSource
                                    context,
                                    workingMemory );
             } else {
-                throw new RuntimeException("Possible BUG: trying to propagate an assert to a node that was the last added node");
+                throw new RuntimeException( "Possible BUG: trying to propagate an assert to a node that was the last added node" );
             }
         }
 
@@ -194,34 +194,36 @@ class ObjectTypeNode extends ObjectSource
     public void attach() {
         this.rete.addObjectSink( this );
     }
-    
+
     public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
-        
+
         // we need to call updateNewNode on Rete, because someone 
         // might have already added facts matching this ObjectTypeNode 
         // to working memories
-        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             WorkingMemoryImpl workingMemory = workingMemories[i];
             PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                 PropagationContext.RULE_ADDITION,
                                                                                 null,
-                                                                                null );            
-            this.rete.updateNewNode( workingMemory, propagationContext );
-        }        
-    }     
+                                                                                null );
+            this.rete.updateNewNode( workingMemory,
+                                     propagationContext );
+        }
+    }
 
     public void remove(BaseNode node,
                        WorkingMemoryImpl[] workingMemories) {
         getObjectSinks().remove( node );
         removeShare();
         if ( this.sharedCount < 0 ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++) {
-                workingMemories[i].clearNodeMemory( this );    
+            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                workingMemories[i].clearNodeMemory( this );
             }
             this.rete.removeObjectSink( this );
         }
     }
+
     /**
      * Rete needs to know that this ObjectTypeNode has had new nodes attached to
      * it one one of its ancestors

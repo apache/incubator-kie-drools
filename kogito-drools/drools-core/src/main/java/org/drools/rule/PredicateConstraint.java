@@ -10,9 +10,9 @@ import org.drools.spi.Tuple;
 public class PredicateConstraint
     implements
     FieldConstraint {
-    
+
     private PredicateExpression        expression;
-    
+
     private final Declaration          declaration;
 
     private final Declaration[]        requiredDeclarations;
@@ -25,12 +25,13 @@ public class PredicateConstraint
               declaration,
               null );
     }
-    
+
     public PredicateConstraint(Declaration declaration,
                                Declaration[] requiredDeclarations) {
-        this ( null, declaration, requiredDeclarations );
-    }    
-    
+        this( null,
+              declaration,
+              requiredDeclarations );
+    }
 
     public PredicateConstraint(PredicateExpression expression,
                                Declaration declaration,
@@ -54,7 +55,7 @@ public class PredicateConstraint
     public void setPredicateExpression(PredicateExpression expression) {
         this.expression = expression;
     }
-    
+
     public PredicateExpression getPredicateExpression() {
         return this.expression;
     }
@@ -69,7 +70,7 @@ public class PredicateConstraint
                                         this.requiredDeclarations,
                                         workingMemory );
         } catch ( Exception e ) {
-            throw new  RuntimeDroolsException( e );
+            throw new RuntimeDroolsException( e );
         }
 
     }

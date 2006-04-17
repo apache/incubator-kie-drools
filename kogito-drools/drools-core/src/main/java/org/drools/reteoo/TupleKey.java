@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -38,12 +39,12 @@ class TupleKey
 
     /** Columns. */
     private final FactHandleList handles;
-    
+
     /**
      * The recency of this tuple is given by the 
      * highest recency of all added fact handles
      */
-    private long recency = 0;
+    private long                 recency   = 0;
 
     // ------------------------------------------------------------
     // Constructors
@@ -52,17 +53,17 @@ class TupleKey
     private TupleKey() {
         this.handles = FactHandleList.EMPTY_LIST;// FactHandleList.EMPTY_LIST;
     }
-    
+
     public TupleKey(TupleKey key) {
         this.handles = key.handles;
         this.recency = key.recency;
-    }    
+    }
 
     public TupleKey(FactHandleImpl handle) {
         this.handles = new FactHandleList( handle );
         this.recency = handle.getRecency();
     }
-    
+
     public TupleKey(TupleKey left,
                     FactHandleImpl handle) {
         this.handles = new FactHandleList( left.handles,
@@ -71,7 +72,7 @@ class TupleKey
     }
 
     public String toString() {
-        return "[TupleKey: recency="+this.recency+" handles=" + this.handles + "]";
+        return "[TupleKey: recency=" + this.recency + " handles=" + this.handles + "]";
     }
 
     // ------------------------------------------------------------
@@ -114,15 +115,15 @@ class TupleKey
     public boolean containsAll(TupleKey that) {
         return this.handles.containsAll( that.handles );
     }
-    
+
     FactHandle[] getFactHandles() {
         return this.handles.getHandles();
     }
-    
+
     public int size() {
         return this.handles.size();
     }
-    
+
     public long getRecency() {
         return this.recency;
     }
@@ -150,5 +151,5 @@ class TupleKey
     public int hashCode() {
         return this.handles.hashCode();
     }
-    
+
 }

@@ -11,5 +11,5 @@ public class DroolsQuery {
     public String getName() {
         return name;
     }
-        
+
 }

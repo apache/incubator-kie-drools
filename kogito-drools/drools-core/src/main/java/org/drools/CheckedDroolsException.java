@@ -66,7 +66,7 @@ public class CheckedDroolsException extends Exception {
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     public CheckedDroolsException(String message,
-                           Throwable cause) {
+                                  Throwable cause) {
         super( message );
     }
 

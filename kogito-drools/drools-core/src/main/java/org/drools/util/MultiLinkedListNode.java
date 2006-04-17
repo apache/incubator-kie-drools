@@ -29,14 +29,14 @@ package org.drools.util;
 public interface MultiLinkedListNode
     extends
     LinkedListNode {
-    
+
     /**
      * Returns the child node
      * @return
      *      The child LinkedListNode
      */
     public MultiLinkedListNode getChild();
-    
+
     /**
      * Sets the child node 
      * @param child
@@ -50,13 +50,12 @@ public interface MultiLinkedListNode
      *      The containing LinkedList
      */
     public LinkedList getLinkedList();
-    
+
     /**
      * Sets the containing LinkedList 
      * @param list
      *      The containing LinkedListNode
      */
     public void setLinkedList(LinkedList list);
-
 
 }

@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -28,7 +29,7 @@ import org.drools.spi.PropagationContext;
  *
  */
 public interface ObjectSink {
-    
+
     /**
      * Assert a new <code>FactHandleImpl</code>.
      * 
@@ -52,12 +53,12 @@ public interface ObjectSink {
      *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.           
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
-     */    
+     */
     void retractObject(FactHandleImpl handle,
                        PropagationContext context,
                        WorkingMemoryImpl workingMemory);
-    
+
     void modifyObject(FactHandleImpl handle,
                       PropagationContext context,
-                      WorkingMemoryImpl workingMemory);    
+                      WorkingMemoryImpl workingMemory);
 }

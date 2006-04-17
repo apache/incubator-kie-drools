@@ -25,19 +25,19 @@ public class Cheese {
     public int getPrice() {
         return this.price;
     }
-    
+
     public String toString() {
         return "Cheese type='" + this.type + "' price='" + this.price + "'";
     }
 
     public boolean equals(Object object) {
-        if ( object == null || ! ( object instanceof Cheese) ) {
+        if ( object == null || !(object instanceof Cheese) ) {
             return false;
         }
-        
-        Cheese other = ( Cheese ) object;
-        
-        return (this.type.equals( other.getType() ) && this.price == other.getPrice() );
+
+        Cheese other = (Cheese) object;
+
+        return (this.type.equals( other.getType() ) && this.price == other.getPrice());
     }
 
     public static int getIndex(Class clazz,

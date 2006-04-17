@@ -19,7 +19,6 @@ package org.drools;
 import java.io.Serializable;
 
 import org.drools.rule.Package;
-import org.drools.spi.ConflictResolver;
 import org.drools.spi.FactHandleFactory;
 
 /**
@@ -42,8 +41,8 @@ public interface RuleBase
     Serializable {
 
     public static final int RETEOO = 1;
-    public static final int LEAPS = 2;    
-    
+    public static final int LEAPS  = 2;
+
     /**
      * Create a new <code>WorkingMemory</code> session for this
      * <code>RuleBase</code>.
@@ -70,10 +69,10 @@ public interface RuleBase
     FactHandleFactory getFactHandleFactory();
 
     Package[] getPackages();
-    
-    void  addPackage(Package  pkg) throws Exception;
-    
-//    void removePackage(Package pkg);
-//    
-//    void removePackage(String pkg);       
+
+    void addPackage(Package pkg) throws Exception;
+
+    //    void removePackage(Package pkg);
+    //    
+    //    void removePackage(String pkg);       
 }

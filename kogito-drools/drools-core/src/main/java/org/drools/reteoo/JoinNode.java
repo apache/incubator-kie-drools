@@ -101,11 +101,13 @@ class JoinNode extends BetaNode {
                             WorkingMemoryImpl workingMemory) {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        memory.add( workingMemory, leftTuple );
+        memory.add( workingMemory,
+                    leftTuple );
 
         BetaNodeBinder binder = getJoinNodeBinder();
 
-        for ( Iterator it = memory.rightObjectIterator(workingMemory, leftTuple); it.hasNext(); ) {
+        for ( Iterator it = memory.rightObjectIterator( workingMemory,
+                                                        leftTuple ); it.hasNext(); ) {
             ObjectMatches objectMatches = (ObjectMatches) it.next();
             FactHandleImpl handle = objectMatches.getFactHandle();
             TupleMatch tupleMatch = attemptJoin( leftTuple,
@@ -145,10 +147,12 @@ class JoinNode extends BetaNode {
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        ObjectMatches objectMatches = memory.add( workingMemory, handle );
+        ObjectMatches objectMatches = memory.add( workingMemory,
+                                                  handle );
 
         BetaNodeBinder binder = getJoinNodeBinder();
-        for ( Iterator it = memory.leftTupleIterator(workingMemory, handle); it.hasNext(); ) { 
+        for ( Iterator it = memory.leftTupleIterator( workingMemory,
+                                                      handle ); it.hasNext(); ) {
             ReteTuple leftTuple = (ReteTuple) it.next();
             TupleMatch tupleMatch = attemptJoin( leftTuple,
                                                  handle,
@@ -182,7 +186,8 @@ class JoinNode extends BetaNode {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Remove the FactHandle from memory
-        ObjectMatches objectMatches = memory.remove( workingMemory, handle );
+        ObjectMatches objectMatches = memory.remove( workingMemory,
+                                                     handle );
 
         for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
             ReteTuple leftTuple = tupleMatch.getTuple();
@@ -210,7 +215,8 @@ class JoinNode extends BetaNode {
                              WorkingMemoryImpl workingMemory) {
 
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.remove( workingMemory, leftTuple );
+        memory.remove( workingMemory,
+                       leftTuple );
 
         Map matches = leftTuple.getTupleMatches();
 
@@ -218,7 +224,7 @@ class JoinNode extends BetaNode {
             for ( Iterator it = matches.values().iterator(); it.hasNext(); ) {
                 TupleMatch tupleMatch = (TupleMatch) it.next();
                 tupleMatch.getObjectMatches().remove( tupleMatch );
-                propagateRetractTuple( tupleMatch, 
+                propagateRetractTuple( tupleMatch,
                                        context,
                                        workingMemory );
             }
@@ -232,7 +238,8 @@ class JoinNode extends BetaNode {
 
         // We remove the tuple as now its modified it needs to go to the top of
         // the stack, which is added back in else where
-        memory.remove( workingMemory, leftTuple );
+        memory.remove( workingMemory,
+                       leftTuple );
 
         Map matches = leftTuple.getTupleMatches();
 
@@ -244,32 +251,34 @@ class JoinNode extends BetaNode {
                          workingMemory );
         } else {
             // ensure the tuple is at the top of the memory
-            memory.add( workingMemory, leftTuple );
+            memory.add( workingMemory,
+                        leftTuple );
             BetaNodeBinder binder = getJoinNodeBinder();
-            
-            for ( Iterator rightIterator = memory.rightObjectIterator(workingMemory, leftTuple); rightIterator.hasNext(); ) {                
+
+            for ( Iterator rightIterator = memory.rightObjectIterator( workingMemory,
+                                                                       leftTuple ); rightIterator.hasNext(); ) {
                 ObjectMatches objectMatches = (ObjectMatches) rightIterator.next();
                 FactHandleImpl handle = objectMatches.getFactHandle();
-                
+
                 if ( binder.isAllowed( handle,
                                        leftTuple,
                                        workingMemory ) ) {
                     TupleMatch tupleMatch = (TupleMatch) leftTuple.getTupleMatches().get( handle );
-                    if (tupleMatch != null) {
+                    if ( tupleMatch != null ) {
                         propagateModifyTuple( tupleMatch,
                                               context,
-                                              workingMemory );                        
+                                              workingMemory );
                     } else {
                         tupleMatch = objectMatches.add( leftTuple );
                         leftTuple.addTupleMatch( handle,
-                                                 tupleMatch );  
+                                                 tupleMatch );
                         propagateAssertTuple( new ReteTuple( leftTuple,
                                                              handle ),
                                               tupleMatch,
                                               context,
-                                              workingMemory );                        
+                                              workingMemory );
                     }
-                    
+
                 } else {
                     TupleMatch tupleMatch = leftTuple.removeMatch( handle );
                     if ( tupleMatch != null ) {
@@ -279,7 +288,7 @@ class JoinNode extends BetaNode {
                                                workingMemory );
                     }
                 }
-            }                        
+            }
         }
     }
 
@@ -289,13 +298,16 @@ class JoinNode extends BetaNode {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Remove and re-add the FactHandle from memory, ensures that its the latest on the list
-        ObjectMatches objectMatches = memory.remove( workingMemory, handle );
-        memory.add( workingMemory, objectMatches );
+        ObjectMatches objectMatches = memory.remove( workingMemory,
+                                                     handle );
+        memory.add( workingMemory,
+                    objectMatches );
 
         TupleMatch tupleMatch = objectMatches.getFirstTupleMatch();
         BetaNodeBinder binder = getJoinNodeBinder();
-        
-        for ( Iterator it = memory.leftTupleIterator(workingMemory, handle); it.hasNext(); ) {
+
+        for ( Iterator it = memory.leftTupleIterator( workingMemory,
+                                                      handle ); it.hasNext(); ) {
             ReteTuple leftTuple = (ReteTuple) it.next();
             if ( tupleMatch != null && tupleMatch.getTuple() == leftTuple ) {
                 // has previous match so need to decide whether to continue
@@ -304,14 +316,14 @@ class JoinNode extends BetaNode {
                                        leftTuple,
                                        workingMemory ) ) {
                     propagateModifyTuple( tupleMatch,
-                                           context,
-                                           workingMemory );                    
+                                          context,
+                                          workingMemory );
                 } else {
                     leftTuple.removeMatch( handle );
                     objectMatches.remove( tupleMatch );
                     propagateRetractTuple( tupleMatch,
                                            context,
-                                           workingMemory );                    
+                                           workingMemory );
                 }
                 tupleMatch = (TupleMatch) tupleMatch.getNext();
             } else {
@@ -331,35 +343,35 @@ class JoinNode extends BetaNode {
             }
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
         this.attachingNewNode = true;
-        
+
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
+
         for ( Iterator it = memory.getRightObjectMemory().iterator(); it.hasNext(); ) {
-            ObjectMatches objectMatches = ( ObjectMatches) it.next();
+            ObjectMatches objectMatches = (ObjectMatches) it.next();
             FactHandleImpl handle = objectMatches.getFactHandle();
-            for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = ( TupleMatch ) tupleMatch.getNext() ) {
-                ReteTuple tuple = new ReteTuple( tupleMatch.getTuple(), handle );
-                TupleSink sink = ( TupleSink) this.tupleSinks.get( this.tupleSinks.size() -1 );
+            for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
+                ReteTuple tuple = new ReteTuple( tupleMatch.getTuple(),
+                                                 handle );
+                TupleSink sink = (TupleSink) this.tupleSinks.get( this.tupleSinks.size() - 1 );
                 if ( sink != null ) {
                     tupleMatch.addJoinedTuple( tuple );
                     sink.assertTuple( tuple,
                                       context,
                                       workingMemory );
                 } else {
-                    throw new RuntimeException("Possible BUG: trying to propagate an assert to a node that was the last added node");
-                }                  
+                    throw new RuntimeException( "Possible BUG: trying to propagate an assert to a node that was the last added node" );
+                }
             }
-        }       
-            
+        }
+
         this.attachingNewNode = true;
     }
-        
 
 }

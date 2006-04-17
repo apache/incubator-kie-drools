@@ -35,30 +35,38 @@ public class EvaluatorFactory {
     private EvaluatorFactory() {
 
     }
-    
-    public static Evaluator getEvaluator(int type, 
+
+    public static Evaluator getEvaluator(int type,
                                          String operator) {
         Evaluator evaluator = null;
-        if ( operator.equals("==") ) {
-            evaluator = getEvaluator(type, Evaluator.EQUAL);
-        } else if ( operator.equals("!=") ) {
-            evaluator = getEvaluator(type, Evaluator.NOT_EQUAL);
-        } else if ( operator.equals("<") ) {
-            evaluator = getEvaluator(type, Evaluator.LESS);
-        } else if ( operator.equals("<=") ) {
-            evaluator = getEvaluator(type, Evaluator.LESS_OR_EQUAL);
-        } else if ( operator.equals(">") ) {
-            evaluator = getEvaluator(type, Evaluator.GREATER);
-        } else if ( operator.equals(">=") ) {
-            evaluator = getEvaluator(type, Evaluator.GREATER_OR_EQUAL);
-        } else if (operator.equals( "contains" ) ) {
-            evaluator = getEvaluator(type, Evaluator.CONTAINS);
-        } else if (operator.equals( "matches" ) ) {
-            evaluator = getEvaluator(type, Evaluator.MATCHES);
+        if ( operator.equals( "==" ) ) {
+            evaluator = getEvaluator( type,
+                                      Evaluator.EQUAL );
+        } else if ( operator.equals( "!=" ) ) {
+            evaluator = getEvaluator( type,
+                                      Evaluator.NOT_EQUAL );
+        } else if ( operator.equals( "<" ) ) {
+            evaluator = getEvaluator( type,
+                                      Evaluator.LESS );
+        } else if ( operator.equals( "<=" ) ) {
+            evaluator = getEvaluator( type,
+                                      Evaluator.LESS_OR_EQUAL );
+        } else if ( operator.equals( ">" ) ) {
+            evaluator = getEvaluator( type,
+                                      Evaluator.GREATER );
+        } else if ( operator.equals( ">=" ) ) {
+            evaluator = getEvaluator( type,
+                                      Evaluator.GREATER_OR_EQUAL );
+        } else if ( operator.equals( "contains" ) ) {
+            evaluator = getEvaluator( type,
+                                      Evaluator.CONTAINS );
+        } else if ( operator.equals( "matches" ) ) {
+            evaluator = getEvaluator( type,
+                                      Evaluator.MATCHES );
         } else {
-            throw new IllegalArgumentException("Unknown operator: '" + operator + "'");
+            throw new IllegalArgumentException( "Unknown operator: '" + operator + "'" );
         }
-        
+
         return evaluator;
     }
 
@@ -74,7 +82,7 @@ public class EvaluatorFactory {
             case Evaluator.INTEGER_TYPE :
                 return IntegerFactory.getIntegerEvaluator( operator );
             case Evaluator.BOOLEAN_TYPE :
-                return BooleanFactory.getBooleanEvaluator( operator );  
+                return BooleanFactory.getBooleanEvaluator( operator );
             case Evaluator.DOUBLE_TYPE :
                 return DoubleFactory.getDoubleEvaluator( operator );
             case Evaluator.CHAR_TYPE :
@@ -88,10 +96,10 @@ public class EvaluatorFactory {
             case Evaluator.DATE_TYPE :
                 return DateFactory.getDateEvaluator( operator );
             case Evaluator.ARRAY_TYPE :
-                return ArrayFactory.getArrayEvaluator( operator ); 
+                return ArrayFactory.getArrayEvaluator( operator );
             default :
                 throw new RuntimeException( "Type '" + type + "' does not exist for BaseEvaluatorFactory" );
         }
     }
-    
+
 }

@@ -201,7 +201,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      * </pre>
      * 
      */
-    public void testNotOrTransformation() throws InvalidPatternException {
+    public void xxxtestNotOrTransformation() throws InvalidPatternException {
         String a = "a";
         String b = "b";
 
@@ -233,7 +233,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      * </pre>
      * 
      */
-    public void testExistOrTransformation() throws InvalidPatternException {
+    public void xxxtestExistOrTransformation() throws InvalidPatternException {
         String a = "a";
         String b = "b";
 
@@ -332,8 +332,8 @@ public class LogicTransformerTest extends DroolsTestCase {
      * 
      */
     public void xTestProcessTree() throws IOException,
-                                 ClassNotFoundException,
-                                 InvalidPatternException {
+                                  ClassNotFoundException,
+                                  InvalidPatternException {
         String a = "a";
         String b = "b";
         String c = "c";
@@ -501,8 +501,8 @@ public class LogicTransformerTest extends DroolsTestCase {
      * 
      */
     public void xTestTransform() throws IOException,
-                               ClassNotFoundException,
-                               InvalidPatternException {
+                                ClassNotFoundException,
+                                InvalidPatternException {
         String a = "a";
         String b = "b";
         String c = "c";

@@ -41,25 +41,20 @@ package org.drools.event;
  *
  */
 
-import org.drools.WorkingMemory;
-import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.Consequence;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 
 public class ActivationCreatedEvent extends ActivationEvent {
     public ActivationCreatedEvent(Activation activation) {
-        super(activation);
+        super( activation );
     }
-    
+
     public String toString() {
         return "==>[ActivationCreated(" + getActivation().getActivationNumber() + "): rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
-//        if (getActivation().getRule().getName().equals("fiSeating")) {
-//            return "==>[ActivationCreated: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
-//        } else {
-//            return "==>[ActivationCreated: rule=" + getActivation().getRule().getName() + "]";
-//        }
+        //        if (getActivation().getRule().getName().equals("fiSeating")) {
+        //            return "==>[ActivationCreated: rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";
+        //        } else {
+        //            return "==>[ActivationCreated: rule=" + getActivation().getRule().getName() + "]";
+        //        }
 
-    }    
+    }
 }

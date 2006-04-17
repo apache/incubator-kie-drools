@@ -41,18 +41,11 @@ package org.drools.event;
  *
  */
 
-import org.drools.WorkingMemory;
-import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.Consequence;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
-
-import sun.rmi.runtime.GetThreadPoolAction;
 
 public class BeforeActivationFiredEvent extends ActivationEvent {
     public BeforeActivationFiredEvent(Activation activation) {
-        super(activation);
+        super( activation );
     }
 
     public String toString() {

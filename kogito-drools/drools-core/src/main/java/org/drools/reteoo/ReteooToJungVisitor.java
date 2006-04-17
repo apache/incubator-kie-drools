@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,7 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
 import java.awt.Color;
 import java.awt.Paint;
 import java.util.HashMap;
@@ -25,15 +25,12 @@ import java.util.Map;
 
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.FieldValue;
-import org.drools.spi.FieldConstraint;
 import org.drools.visualize.ReteooJungViewer.DroolsVertex;
 
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.Vertex;
 import edu.uci.ics.jung.graph.impl.DirectedSparseEdge;
-import edu.uci.ics.jung.graph.impl.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.impl.DirectedSparseVertex;
-import edu.uci.ics.jung.visualization.VisualizationViewer;
 
 /**
  * Produces a graph in GraphViz DOT format.
@@ -58,11 +55,11 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
      */
     private Map                 visitedNodes = new HashMap();
 
-    private Graph                       graph;
+    private Graph               graph;
 
-    private Vertex                      rootVertex;
+    private Vertex              rootVertex;
 
-    private Vertex                      parentVertex;    
+    private Vertex              parentVertex;
 
     /**
      * Constructor.
@@ -74,9 +71,9 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     public Graph getGraph() {
         return this.graph;
     }
-    
+
     public Vertex getRootVertex() {
-    		return this.rootVertex;
+        return this.rootVertex;
     }
 
     /**
@@ -114,7 +111,8 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
                 Class clazz = Class.forName( "org.drools.reteoo.ReteooToJungVisitor$" + name );
                 vertex = (Vertex) clazz.getConstructor( new Class[]{node.getClass()} ).newInstance( new Object[]{node} );
             } catch ( Exception e ) {
-                throw new RuntimeException( "problem visiting node " + node.getClass().getName(), e);
+                throw new RuntimeException( "problem visiting node " + node.getClass().getName(),
+                                            e );
             }
             this.graph.addVertex( vertex );
             this.visitedNodes.put( dotId( node ),
@@ -220,16 +218,16 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         public String getHtml() {
             LiteralConstraint constraint = (LiteralConstraint) node.getConstraint();
             FieldValue field = constraint.getField();
-            return "AlphaNode<br>field name : " + "<br>evaluator : " + constraint.getEvaluator() + "<br>value :  " + field.getValue();  
+            return "AlphaNode<br>field name : " + "<br>evaluator : " + constraint.getEvaluator() + "<br>value :  " + field.getValue();
         }
 
         public String toString() {
             return "AlphaNode";
         }
-        
+
         public Paint getFillPaint() {
             return Color.BLUE;
-        }        
+        }
     }
 
     static class LeftInputAdapterNodeVertex extends BaseNodeVertex {
@@ -247,10 +245,10 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         public String toString() {
             return "leftInputAdapter";
         }
-        
+
         public Paint getFillPaint() {
             return Color.YELLOW;
-        }        
+        }
     }
 
     static class RightInputAdapterNodeVertex extends BaseNodeVertex {
@@ -268,7 +266,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         public String toString() {
             return "RightInputAdapterNodeVertex";
         }
-        
+
         public Paint getFillPaint() {
             return Color.ORANGE;
         }
@@ -289,10 +287,10 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         public String toString() {
             return "JoinNode";
         }
-        
+
         public Paint getFillPaint() {
             return Color.GREEN;
-        }        
+        }
     }
 
     static class NotNodeVertex extends BaseNodeVertex {
@@ -310,10 +308,10 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         public String toString() {
             return "NotNode";
         }
-        
+
         public Paint getFillPaint() {
             return Color.CYAN;
-        }        
+        }
     }
 
     static class TestNodeVertex extends BaseNodeVertex {
@@ -348,10 +346,10 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         public String toString() {
             return "TerminalNode";
         }
-        
+
         public Paint getFillPaint() {
             return Color.DARK_GRAY;
-        }        
+        }
     }
 
     public static abstract class BaseNodeVertex extends DirectedSparseVertex
@@ -359,19 +357,19 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         DroolsVertex {
         public BaseNodeVertex() {
             super();
-            
+
         }
 
         public String getHtml() {
             return this.getClass().getName().toString();
         }
-        
+
         public Paint getFillPaint() {
             return Color.WHITE;
         }
 
         public Paint getDrawPaint() {
             return Color.BLACK;
-        }        
+        }
     }
 }

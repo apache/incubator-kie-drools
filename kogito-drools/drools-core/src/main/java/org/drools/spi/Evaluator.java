@@ -2,7 +2,9 @@ package org.drools.spi;
 
 import java.io.Serializable;
 
-public interface Evaluator extends Serializable {
+public interface Evaluator
+    extends
+    Serializable {
     // Operators
     public static final int EQUAL            = 1;
     public static final int NOT_EQUAL        = 10;
@@ -12,7 +14,7 @@ public interface Evaluator extends Serializable {
     public static final int GREATER_OR_EQUAL = 50;
     public static final int CONTAINS         = 60;
     public static final int MATCHES          = 70;
-    
+
     // Types
     public static final int CHAR_TYPE        = 100;
     public static final int BYTE_TYPE        = 110;
@@ -27,8 +29,7 @@ public interface Evaluator extends Serializable {
     public static final int ARRAY_TYPE       = 200;
     public static final int OBJECT_TYPE      = 210;
     public static final int NULL_TYPE        = 300;
-    
-    
+
     public int getType();
 
     public int getOperator();
@@ -47,6 +48,5 @@ public interface Evaluator extends Serializable {
      */
     public boolean evaluate(Object object1,
                             Object object2);
-    
-   
+
 }

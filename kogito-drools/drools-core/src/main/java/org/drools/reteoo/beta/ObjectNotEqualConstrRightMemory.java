@@ -43,25 +43,28 @@ public class ObjectNotEqualConstrRightMemory
     implements
     BetaRightMemory {
 
-    private BetaRightMemory childMemory = null;
-    
+    private BetaRightMemory childMemory      = null;
+
     private Map             memoryMap        = null;
     private MultiLinkedList memoryMasterList = null;
     private MultiLinkedList noMatchList      = null;
-    
-    private FieldExtractor extractor   = null;
-    private Declaration    declaration = null;
-    
+
+    private FieldExtractor  extractor        = null;
+    private Declaration     declaration      = null;
+
     public ObjectNotEqualConstrRightMemory(FieldExtractor extractor,
-                                        Declaration    declaration,
-                                        Evaluator      evaluator) {
-        this(extractor, declaration, evaluator, null);
+                                           Declaration declaration,
+                                           Evaluator evaluator) {
+        this( extractor,
+              declaration,
+              evaluator,
+              null );
     }
 
     public ObjectNotEqualConstrRightMemory(FieldExtractor extractor,
-                                        Declaration    declaration,
-                                        Evaluator      evaluator,
-                                        BetaRightMemory childMemory) {
+                                           Declaration declaration,
+                                           Evaluator evaluator,
+                                           BetaRightMemory childMemory) {
         this.extractor = extractor;
         this.declaration = declaration;
         this.childMemory = childMemory;
@@ -78,20 +81,22 @@ public class ObjectNotEqualConstrRightMemory
     public void add(WorkingMemory workingMemory,
                     ObjectMatches matches) {
         // adding to master list
-        this.memoryMasterList.add(matches);
-        
+        this.memoryMasterList.add( matches );
+
         // creating child wrapper
-        MultiLinkedListNodeWrapper wrapper = new MultiLinkedListNodeWrapper(matches);
-        matches.setChild(wrapper);
-        
+        MultiLinkedListNodeWrapper wrapper = new MultiLinkedListNodeWrapper( matches );
+        matches.setChild( wrapper );
+
         // Adding to the indexed list
-        MultiLinkedList list = this.getFactList( workingMemory, matches.getFactHandle() );
-        list.add(wrapper);
-        
-        if(this.childMemory != null) {
+        MultiLinkedList list = this.getFactList( workingMemory,
+                                                 matches.getFactHandle() );
+        list.add( wrapper );
+
+        if ( this.childMemory != null ) {
             // Adding to inner indexes
-            wrapper.setChild(new MultiLinkedListNodeWrapper(matches));
-            this.childMemory.add(workingMemory, (MultiLinkedListNodeWrapper) wrapper.getChild());
+            wrapper.setChild( new MultiLinkedListNodeWrapper( matches ) );
+            this.childMemory.add( workingMemory,
+                                  (MultiLinkedListNodeWrapper) wrapper.getChild() );
         }
     }
 
@@ -102,24 +107,25 @@ public class ObjectNotEqualConstrRightMemory
      * @see org.drools.reteoo.beta.BetaRightMemory#remove(org.drools.WorkingMemory, org.drools.reteoo.ObjectMatches)
      */
     public void remove(WorkingMemory workingMemory,
-                                ObjectMatches matches) {
-        if(this.childMemory != null) {
+                       ObjectMatches matches) {
+        if ( this.childMemory != null ) {
             // removing from inner indexes
-            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) matches.getChild().getChild());
-            matches.getChild().setChild(null);
+            this.childMemory.remove( workingMemory,
+                                     (MultiLinkedListNodeWrapper) matches.getChild().getChild() );
+            matches.getChild().setChild( null );
         }
-        
+
         // removing from indexed list
-        matches.getChild().getLinkedList().remove(matches.getChild());
-        
-        if(matches.getChild().getLinkedList().isEmpty()) {
+        matches.getChild().getLinkedList().remove( matches.getChild() );
+
+        if ( matches.getChild().getLinkedList().isEmpty() ) {
             // removing index map entry 
             this.removeMemoryEntry( (MultiLinkedList) matches.getChild().getLinkedList() );
         }
-        matches.setChild(null);
-        
+        matches.setChild( null );
+
         // removing from master list
-        this.memoryMasterList.remove(matches);
+        this.memoryMasterList.remove( matches );
     }
 
     /**
@@ -130,26 +136,28 @@ public class ObjectNotEqualConstrRightMemory
      */
     public void add(WorkingMemory workingMemory,
                     MultiLinkedListNodeWrapper matches) {
-        ObjectMatches om = (ObjectMatches) matches.getNode(); 
-        
+        ObjectMatches om = (ObjectMatches) matches.getNode();
+
         // adding to master list
-        this.memoryMasterList.add(matches);
-        
+        this.memoryMasterList.add( matches );
+
         // creating child wrapper
-        MultiLinkedListNodeWrapper wrapper = new MultiLinkedListNodeWrapper(om);
-        matches.setChild(wrapper);
-        
+        MultiLinkedListNodeWrapper wrapper = new MultiLinkedListNodeWrapper( om );
+        matches.setChild( wrapper );
+
         // Adding to the indexed list
-        MultiLinkedList list = this.getFactList( workingMemory, om.getFactHandle() );
-        list.add(wrapper);
-        
-        if(this.childMemory != null) {
+        MultiLinkedList list = this.getFactList( workingMemory,
+                                                 om.getFactHandle() );
+        list.add( wrapper );
+
+        if ( this.childMemory != null ) {
             // Adding to inner indexes
-            wrapper.setChild(new MultiLinkedListNodeWrapper(om));
-            this.childMemory.add(workingMemory, (MultiLinkedListNodeWrapper) wrapper.getChild());
+            wrapper.setChild( new MultiLinkedListNodeWrapper( om ) );
+            this.childMemory.add( workingMemory,
+                                  (MultiLinkedListNodeWrapper) wrapper.getChild() );
         }
     }
-    
+
     /**
      * 
      * @inheritDoc 
@@ -158,23 +166,24 @@ public class ObjectNotEqualConstrRightMemory
      */
     public void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper matches) {
-        if(this.childMemory != null) {
+        if ( this.childMemory != null ) {
             // removing from inner indexes
-            this.childMemory.remove(workingMemory, (MultiLinkedListNodeWrapper) matches.getChild().getChild());
-            matches.getChild().setChild(null);
+            this.childMemory.remove( workingMemory,
+                                     (MultiLinkedListNodeWrapper) matches.getChild().getChild() );
+            matches.getChild().setChild( null );
         }
-        
+
         // removing from indexed list
-        matches.getChild().getLinkedList().remove(matches.getChild());
-        
-        if(matches.getChild().getLinkedList().isEmpty()) {
+        matches.getChild().getLinkedList().remove( matches.getChild() );
+
+        if ( matches.getChild().getLinkedList().isEmpty() ) {
             // removing index map entry 
-            this.removeMemoryEntry((MultiLinkedList) matches.getChild().getLinkedList());
+            this.removeMemoryEntry( (MultiLinkedList) matches.getChild().getLinkedList() );
         }
-        matches.setChild(null);
-        
+        matches.setChild( null );
+
         // removing from master list
-        this.memoryMasterList.remove(matches);
+        this.memoryMasterList.remove( matches );
     }
 
     /**
@@ -184,22 +193,22 @@ public class ObjectNotEqualConstrRightMemory
      */
     public Iterator iterator(final WorkingMemory workingMemory,
                              final ReteTuple tuple) {
-        this.selectPossibleMatches(workingMemory, tuple);
+        this.selectPossibleMatches( workingMemory,
+                                    tuple );
         Iterator iterator = new Iterator() {
-            Iterator it = memoryMasterList.iterator();
+            Iterator      it      = memoryMasterList.iterator();
             ObjectMatches current = null;
-            ObjectMatches next = null;
+            ObjectMatches next    = null;
 
             public boolean hasNext() {
                 boolean hasnext = false;
-                if(next == null) {
-                    while(it.hasNext()) {
+                if ( next == null ) {
+                    while ( it.hasNext() ) {
                         next = (ObjectMatches) it.next();
-                        if( next.getChild().getLinkedList() != noMatchList) {
-                            if((childMemory == null) || 
-                               (childMemory.isPossibleMatch((MultiLinkedListNodeWrapper)next.getChild().getChild()))) {
-                                 hasnext = true;
-                                 break;
+                        if ( next.getChild().getLinkedList() != noMatchList ) {
+                            if ( (childMemory == null) || (childMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) next.getChild().getChild() )) ) {
+                                hasnext = true;
+                                break;
                             }
                         }
                     }
@@ -210,21 +219,21 @@ public class ObjectNotEqualConstrRightMemory
             }
 
             public Object next() {
-                if(this.next == null) {
+                if ( this.next == null ) {
                     this.hasNext();
                 }
                 this.current = this.next;
                 this.next = null;
-                if(this.current == null) {
-                    throw new NoSuchElementException("No more elements to return");
+                if ( this.current == null ) {
+                    throw new NoSuchElementException( "No more elements to return" );
                 }
                 return this.current;
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Iterator.remove() should not be used to remove right side objects from right memory.");
+                throw new UnsupportedOperationException( "Iterator.remove() should not be used to remove right side objects from right memory." );
             }
-            
+
         };
         return iterator;
     }
@@ -245,13 +254,13 @@ public class ObjectNotEqualConstrRightMemory
      */
     public void selectPossibleMatches(WorkingMemory workingMemory,
                                       ReteTuple tuple) {
-        Object select = declaration.getValue( workingMemory.getObject( 
-                             tuple.get( this.declaration ) ) );
-        Integer hash = (select != null) ? new Integer(select.hashCode()) : new Integer( 0 );
-        this.noMatchList = (MultiLinkedList) this.memoryMap.get(hash);
-        
-        if(this.childMemory != null) {
-            this.childMemory.selectPossibleMatches(workingMemory, tuple);
+        Object select = declaration.getValue( workingMemory.getObject( tuple.get( this.declaration ) ) );
+        Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
+        this.noMatchList = (MultiLinkedList) this.memoryMap.get( hash );
+
+        if ( this.childMemory != null ) {
+            this.childMemory.selectPossibleMatches( workingMemory,
+                                                    tuple );
         }
     }
 
@@ -262,17 +271,15 @@ public class ObjectNotEqualConstrRightMemory
      */
     public boolean isPossibleMatch(MultiLinkedListNodeWrapper matches) {
         boolean ret = false;
-        if((matches != null) && 
-           (matches.getChild() != null) &&
-           (matches.getChild().getLinkedList() != null)) {
-                ret = ( matches.getChild().getLinkedList() != noMatchList);
-    
-                if(ret && (this.childMemory != null)) {
-                    ret = this.childMemory.isPossibleMatch((MultiLinkedListNodeWrapper)matches.getChild().getChild());
-                }
+        if ( (matches != null) && (matches.getChild() != null) && (matches.getChild().getLinkedList() != null) ) {
+            ret = (matches.getChild().getLinkedList() != noMatchList);
+
+            if ( ret && (this.childMemory != null) ) {
+                ret = this.childMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) matches.getChild().getChild() );
+            }
         }
         return ret;
-        
+
     }
 
     /**
@@ -283,17 +290,18 @@ public class ObjectNotEqualConstrRightMemory
      * @return
      */
     private MultiLinkedList getFactList(WorkingMemory workingMemory,
-                                     FactHandleImpl handle) {
-        Object select = this.extractor.getValue( workingMemory.getObject( handle ));
-        Integer hash = (select != null) ? new Integer(select.hashCode()) : new Integer( 0 );
-        MultiLinkedList list = (MultiLinkedList) this.memoryMap.get(hash);
-        if(list == null) {
-            list = new KeyMultiLinkedList(hash);
-            this.memoryMap.put(hash, list);
+                                        FactHandleImpl handle) {
+        Object select = this.extractor.getValue( workingMemory.getObject( handle ) );
+        Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
+        MultiLinkedList list = (MultiLinkedList) this.memoryMap.get( hash );
+        if ( list == null ) {
+            list = new KeyMultiLinkedList( hash );
+            this.memoryMap.put( hash,
+                                list );
         }
         return list;
     }
-    
+
     /**
      * 
      * @inheritDoc 
@@ -303,12 +311,12 @@ public class ObjectNotEqualConstrRightMemory
     public int size() {
         return this.memoryMasterList.size();
     }
-    
+
     /**
      * @param matches
      */
     private void removeMemoryEntry(MultiLinkedList list) {
-        this.memoryMap.remove(((KeyMultiLinkedList)list).getKey());
+        this.memoryMap.remove( ((KeyMultiLinkedList) list).getKey() );
     }
 
     /**
@@ -320,31 +328,30 @@ public class ObjectNotEqualConstrRightMemory
      */
     public boolean isClean() {
         boolean ret = true;
-        for(Iterator i = this.memoryMap.values().iterator(); i.hasNext(); ) {
+        for ( Iterator i = this.memoryMap.values().iterator(); i.hasNext(); ) {
             MultiLinkedList list = (MultiLinkedList) i.next();
-            if(list.size() == 0) {
+            if ( list.size() == 0 ) {
                 ret = false;
                 break;
             }
         }
         return ret;
     }
-    
+
     public Iterator iterator() {
-        return this.memoryMasterList.iterator(); 
+        return this.memoryMasterList.iterator();
     }
-    
-    
+
     private static class KeyMultiLinkedList extends MultiLinkedList {
         private final Object key;
-        
+
         public KeyMultiLinkedList(Object key) {
             this.key = key;
         }
-        
+
         public final Object getKey() {
             return this.key;
         }
     }
-    
+
 }

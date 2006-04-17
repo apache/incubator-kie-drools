@@ -21,7 +21,6 @@ import java.util.List;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.common.AgendaItem;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
@@ -29,7 +28,6 @@ import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
-import org.drools.util.LinkedList;
 
 public class DefaultKnowledgeHelper
     implements
@@ -60,19 +58,19 @@ public class DefaultKnowledgeHelper
                                          this.rule,
                                          this.activation );
     }
-    
+
     public void assertLogicalObject(Object object) throws FactException {
-        assertLogicalObject( object, 
-                       false );
+        assertLogicalObject( object,
+                             false );
     }
-    
+
     public void assertLogicalObject(Object object,
-                              boolean dynamic) throws FactException {
-            this.workingMemory.assertObject( object,
-                                             dynamic,
-                                             true,
-                                             this.rule,
-                                             this.activation );        
+                                    boolean dynamic) throws FactException {
+        this.workingMemory.assertObject( object,
+                                         dynamic,
+                                         true,
+                                         this.rule,
+                                         this.activation );
     }
 
     public void modifyObject(FactHandle handle,
@@ -118,7 +116,7 @@ public class DefaultKnowledgeHelper
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
-    
+
     public Activation getActivation() {
         return this.activation;
     }
@@ -126,16 +124,16 @@ public class DefaultKnowledgeHelper
     public List getQueryResults(String query) {
         return this.workingMemory.getQueryResults( query );
     }
-    
+
     public AgendaGroup getFocus() {
         return this.workingMemory.getFocus();
     }
-    
+
     public void setFocus(String focus) {
         this.workingMemory.setFocus( focus );
     }
-    
+
     public void setFocus(AgendaGroup focus) {
         this.workingMemory.setFocus( focus );
-    }        
+    }
 }

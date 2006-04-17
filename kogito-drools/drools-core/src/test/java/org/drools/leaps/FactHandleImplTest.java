@@ -17,9 +17,9 @@ package org.drools.leaps;
  */
 
 import junit.framework.TestCase;
-import org.drools.leaps.RuleBaseImpl;
-import org.drools.FactHandle;
+
 import org.drools.FactException;
+import org.drools.FactHandle;
 
 /**
  * 
@@ -28,34 +28,32 @@ import org.drools.FactException;
  */
 public class FactHandleImplTest extends TestCase {
 
-	private RuleBaseImpl ruleBase;
+    private RuleBaseImpl ruleBase;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.ruleBase = new RuleBaseImpl();
-	}
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.ruleBase = new RuleBaseImpl();
+    }
 
-	/*
-	 * Test method for 'leaps.LeapsFactHandle.getId()'
-	 */
-	public void testGetId() {
-		WorkingMemoryImpl memory = (WorkingMemoryImpl) this.ruleBase
-				.newWorkingMemory();
+    /*
+     * Test method for 'leaps.LeapsFactHandle.getId()'
+     */
+    public void testGetId() {
+        WorkingMemoryImpl memory = (WorkingMemoryImpl) this.ruleBase.newWorkingMemory();
 
-		try {
-			FactHandle fh1 = memory.assertObject("object1");
-			assertEquals(
-					((FactHandleImpl) fh1).getId(),
-					((FactHandleImpl) memory.newFactHandle("dummy")).getId() - 1);
-		} catch (FactException fe) {
-		}
-	}
+        try {
+            FactHandle fh1 = memory.assertObject( "object1" );
+            assertEquals( ((FactHandleImpl) fh1).getId(),
+                          ((FactHandleImpl) memory.newFactHandle( "dummy" )).getId() - 1 );
+        } catch ( FactException fe ) {
+        }
+    }
 
-	/*
-	 * Test method for 'leaps.LeapsFactHandle.equals(Object)'
-	 */
-	public void testEqualsObject() {
-		// they equal on id, am not sure how to simulate it yet
-	}
+    /*
+     * Test method for 'leaps.LeapsFactHandle.equals(Object)'
+     */
+    public void testEqualsObject() {
+        // they equal on id, am not sure how to simulate it yet
+    }
 
 }

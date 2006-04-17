@@ -25,13 +25,16 @@ import junit.framework.TestCase;
  */
 public class HandleTest extends TestCase {
 
-	/*
-	 * Test method for 'leaps.LeapsFactHandle.getId()'
-	 */
-	public void testGetId() {
-		Handle handle = new Handle(123456789, new String("test124"));
-		assertEquals(handle.getId(), 123456789);
-		assertEquals(handle.getObject(), "test124");
-	}
+    /*
+     * Test method for 'leaps.LeapsFactHandle.getId()'
+     */
+    public void testGetId() {
+        Handle handle = new Handle( 123456789,
+                                    new String( "test124" ) );
+        assertEquals( handle.getId(),
+                      123456789 );
+        assertEquals( handle.getObject(),
+                      "test124" );
+    }
 
 }

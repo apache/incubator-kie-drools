@@ -5,11 +5,11 @@ public class ColumnExtractor
     Extractor {
 
     private ObjectType objectType;
-    
+
     public ColumnExtractor(ObjectType objectType) {
         this.objectType = objectType;
     }
-    
+
     public Object getValue(Object object) {
         return object;
     }

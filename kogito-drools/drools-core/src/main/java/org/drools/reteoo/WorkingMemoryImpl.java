@@ -53,7 +53,6 @@ import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.IdentityMap;
-import org.drools.util.LinkedList;
 import org.drools.util.PrimitiveLongMap;
 import org.drools.util.PrimitiveLongStack;
 
@@ -302,7 +301,7 @@ public class WorkingMemoryImpl
     public List getFactHandles() {
         return new ArrayList( this.identityMap.values() );
     }
-    
+
     /**
      * A helper method used to avoid lookups when iterating over facthandles and 
      * objects at once. 
@@ -357,15 +356,15 @@ public class WorkingMemoryImpl
     public AgendaGroup getFocus() {
         return this.agenda.getFocus();
     }
-    
+
     public void setFocus(String focus) {
         this.agenda.setFocus( focus );
     }
-    
+
     public void setFocus(AgendaGroup focus) {
         this.agenda.setFocus( focus );
     }
-    
+
     /**
      * @see WorkingMemory
      */

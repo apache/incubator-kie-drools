@@ -1,11 +1,10 @@
 package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
-
 import org.drools.spi.Evaluator;
 
 public class BooleanFactory {
-    
+
     public static Evaluator getBooleanEvaluator(int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
@@ -15,8 +14,8 @@ public class BooleanFactory {
             default :
                 throw new RuntimeException( "Operator '" + operator + "' does not exist for BooleanEvaluator" );
         }
-    }      
-    
+    }
+
     static class BooleanEqualEvaluator extends BaseEvaluator {
         private final static Evaluator INSTANCE = new BooleanEqualEvaluator();
 
@@ -27,14 +26,14 @@ public class BooleanFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 == null;
-            return ((Boolean)object1).equals( object2 );
+            if ( object1 == null ) return object2 == null;
+            return ((Boolean) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Boolean ==";
-        }        
-    }      
+        }
+    }
 
     static class BooleanNotEqualEvaluator extends BaseEvaluator {
         public final static Evaluator INSTANCE = new BooleanNotEqualEvaluator();
@@ -46,14 +45,13 @@ public class BooleanFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 != null;
-            return !((Boolean)object1).equals( object2 );
+            if ( object1 == null ) return object2 != null;
+            return !((Boolean) object1).equals( object2 );
         }
-        
-        
+
         public String toString() {
             return "Boolean !=";
-        }        
-    }    
+        }
+    }
 
 }

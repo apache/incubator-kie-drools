@@ -1,7 +1,6 @@
 package org.drools.reteoo;
 
 import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 
 public class InstrumentedReteTuple extends ReteTuple {
     public InstrumentedReteTuple(ReteTuple left,

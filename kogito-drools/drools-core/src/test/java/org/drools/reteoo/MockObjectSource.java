@@ -24,7 +24,6 @@ public class MockObjectSource extends ObjectSource {
         return this.updated;
     }
 
-
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
         this.updated++;
@@ -33,12 +32,12 @@ public class MockObjectSource extends ObjectSource {
     public void remove(BaseNode node,
                        WorkingMemoryImpl[] workingMemories) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void attach(WorkingMemoryImpl[] workingMemories) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

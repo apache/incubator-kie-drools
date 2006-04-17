@@ -1,23 +1,14 @@
 package org.drools.visualize;
 
-import java.awt.Dimension;
-import java.awt.geom.Point2D;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import edu.uci.ics.jung.graph.ArchetypeVertex;
-import edu.uci.ics.jung.graph.Edge;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.Vertex;
 import edu.uci.ics.jung.utils.UserDataContainer;
 import edu.uci.ics.jung.visualization.AbstractLayout;
 import edu.uci.ics.jung.visualization.Coordinates;
-import edu.uci.ics.jung.visualization.VertexLocationFunction;
 
 public class ReteooLayout extends AbstractLayout {
 

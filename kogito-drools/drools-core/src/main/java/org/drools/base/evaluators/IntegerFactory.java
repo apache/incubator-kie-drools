@@ -33,13 +33,13 @@ public class IntegerFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 == null;
+            if ( object1 == null ) return object2 == null;
             return ((Number) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Integer ==";
-        }         
+        }
     }
 
     static class IntegerNotEqualEvaluator extends BaseEvaluator {
@@ -52,13 +52,13 @@ public class IntegerFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return (object2 != null);
+            if ( object1 == null ) return (object2 != null);
             return !((Number) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Integer !=";
-        }                 
+        }
     }
 
     static class IntegerLessEvaluator extends BaseEvaluator {
@@ -70,13 +70,13 @@ public class IntegerFactory {
         }
 
         public boolean evaluate(Object object1,
-                                Object object2) {            
+                                Object object2) {
             return ((Number) object1).intValue() < ((Number) object2).intValue();
         }
-        
+
         public String toString() {
             return "Integer <";
-        }                 
+        }
     }
 
     static class IntegerLessOrEqualEvaluator extends BaseEvaluator {
@@ -91,10 +91,10 @@ public class IntegerFactory {
                                 Object object2) {
             return ((Number) object1).intValue() <= ((Number) object2).intValue();
         }
-        
+
         public String toString() {
             return "Integer <=";
-        }         
+        }
     }
 
     static class IntegerGreaterEvaluator extends BaseEvaluator {
@@ -109,10 +109,10 @@ public class IntegerFactory {
                                 Object object2) {
             return ((Number) object1).intValue() > ((Number) object2).intValue();
         }
-        
+
         public String toString() {
             return "Integer >";
-        }         
+        }
     }
 
     static class IntegerGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -127,10 +127,10 @@ public class IntegerFactory {
                                 Object object2) {
             return ((Number) object1).intValue() >= ((Number) object2).intValue();
         }
-        
+
         public String toString() {
             return "Integer >=";
-        }         
+        }
     }
 
 }

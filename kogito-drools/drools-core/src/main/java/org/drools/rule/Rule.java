@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,7 +17,6 @@ package org.drools.rule;
  */
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,39 +47,39 @@ public class Rule
     // Instance members
     // ------------------------------------------------------------
     /** The parent pkg */
-    private String      pkg;
+    private String        pkg;
 
     /** Name of the rule. */
-    private final String name;
+    private final String  name;
 
     /** Salience value. */
-    private int          salience;
+    private int           salience;
 
-    private final Map    declarations = new HashMap();
-    
+    private final Map     declarations      = new HashMap();
+
     private Declaration[] declarationArray;
 
-    private final And    lhsRoot  = new And();
+    private final And     lhsRoot           = new And();
 
-    private String agendaGroup;
+    private String        agendaGroup;
 
     /** Consequence. */
-    private Consequence  consequence;
+    private Consequence   consequence;
 
     /** Truthness duration. */
-    private Duration     duration;
+    private Duration      duration;
 
     /** Load order in Package */
-    private long         loadOrder;
+    private long          loadOrder;
 
     /** Is recursion of this rule allowed */
-    private boolean      noLoop;
+    private boolean       noLoop;
 
     /** makes the rule's much the current focus */
-    private boolean      autoFocus;
-    
+    private boolean       autoFocus;
+
     /** indicates that the rule is semantically correct. */
-    private boolean      semanticallyValid = true;
+    private boolean       semanticallyValid = true;
 
     // ------------------------------------------------------------
     // Constructors
@@ -188,8 +188,6 @@ public class Rule
         return true;
     }
 
-
-
     public String getPackage() {
         return this.pkg;
     }
@@ -220,15 +218,14 @@ public class Rule
     public void setSalience(int salience) {
         this.salience = salience;
     }
-    
+
     public String getAgendaGroup() {
         return this.agendaGroup;
-    }   
-    
-    public void setAgendaGroup(String agendaGroup) {
-        this.agendaGroup= agendaGroup;
     }
-    
+
+    public void setAgendaGroup(String agendaGroup) {
+        this.agendaGroup = agendaGroup;
+    }
 
     public boolean getNoLoop() {
         return this.noLoop;
@@ -268,7 +265,7 @@ public class Rule
      */
     public Declaration[] getDeclarations() {
         if ( this.declarationArray == null ) {
-           this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[ this.declarations.values().size() ] );
+            this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
         }
         return this.declarationArray;
     }
@@ -287,34 +284,36 @@ public class Rule
         }
         this.lhsRoot.addChild( ce );
     }
-    
-    public  void addPattern(Column column) {
+
+    public void addPattern(Column column) {
         addDeclarations( column );
         this.lhsRoot.addChild( column );
-    }       
-    
-    private void addDeclarations(Column column)  {
+    }
+
+    private void addDeclarations(Column column) {
         // Check if the column is bound and if so add it as a declaration
         if ( column.isBound() ) {
             Declaration declaration = column.getDeclaration();
-            this.declarations.put( declaration.getIdentifier(), declaration );
+            this.declarations.put( declaration.getIdentifier(),
+                                   declaration );
         }
-        
+
         // Check if there are any bound fields and if so add it as a declaration
         for ( Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
             Object object = it.next();
-            if (object instanceof Declaration ) {
-                Declaration declaration = ( Declaration ) object;
-                this.declarations.put( declaration.getIdentifier(), declaration );
-            }                     
-        }    
+            if ( object instanceof Declaration ) {
+                Declaration declaration = (Declaration) object;
+                this.declarations.put( declaration.getIdentifier(),
+                                       declaration );
+            }
+        }
     }
-    
+
     private void addDeclarations(GroupElement ce) {
         for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof Column ) {
-                 addDeclarations( (Column) object );                 
+                addDeclarations( (Column) object );
             } else if ( object instanceof GroupElement ) {
                 addDeclarations( (GroupElement) object );
             }
@@ -350,28 +349,28 @@ public class Rule
     }
 
     private int getSpecifity(GroupElement ce) {
-        int specificity = 0;        
+        int specificity = 0;
         for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
-        	Object object = it.next();
-        	if ( object instanceof Column ) {
-        		specificity += getSpecifity((Column) object);	 
-        	} else if ( object instanceof GroupElement ) {
-        		specificity += getSpecifity((GroupElement) object);
-        	}        	
+            Object object = it.next();
+            if ( object instanceof Column ) {
+                specificity += getSpecifity( (Column) object );
+            } else if ( object instanceof GroupElement ) {
+                specificity += getSpecifity( (GroupElement) object );
+            }
         }
         return specificity;
     }
-    
+
     private int getSpecifity(Column column) {
-    	int specificity = 0;
-        for (Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
-        	if (!(it.next() instanceof Declaration)) {
-        		specificity++;
-        	}        		
+        int specificity = 0;
+        for ( Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
+            if ( !(it.next() instanceof Declaration) ) {
+                specificity++;
+            }
         }
-        
+
         return specificity;
-    }    
+    }
 
     /**
      * Set the <code>Consequence</code> that is associated with the successful
@@ -402,25 +401,25 @@ public class Rule
     void setLoadOrder(long loadOrder) {
         this.loadOrder = loadOrder;
     }
-    
+
     public String toString() {
         return "[Rule name=" + this.name + ", agendaGroup=" + this.agendaGroup + ", salience=" + this.salience + ", no-loop=" + this.noLoop + "]";
     }
-    
+
     public boolean equals(Object object) {
         if ( this == object ) {
             return true;
         }
-        
-        if (object == null||!(object instanceof Rule)) {
+
+        if ( object == null || !(object instanceof Rule) ) {
             return false;
         }
-        
+
         Rule other = (Rule) object;
-        
-        return (this.name.equals(other.name) && this.agendaGroup.equals( other.agendaGroup ) && this.salience == other.salience && this.noLoop == other.noLoop);
+
+        return (this.name.equals( other.name ) && this.agendaGroup.equals( other.agendaGroup ) && this.salience == other.salience && this.noLoop == other.noLoop);
     }
-    
+
     public int hashCode() {
         return this.name.hashCode();
     }
@@ -438,6 +437,5 @@ public class Rule
     public boolean isSemanticallyValid() {
         return semanticallyValid;
     }
-    
 
 }

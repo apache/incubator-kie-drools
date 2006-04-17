@@ -172,7 +172,7 @@ public class EvalNodeTest extends DroolsTestCase {
                       sink.getAsserted().size() );
 
     }
-    
+
     public void testRetractNotAllowed() throws Exception {
         // Create a test node that always returns false 
         EvalConditionNode node = new EvalConditionNode( 1,
@@ -190,14 +190,16 @@ public class EvalNodeTest extends DroolsTestCase {
         node.assertTuple( tuple,
                           this.context,
                           this.workingMemory );
-        
-        node.retractTuple( tuple, context, workingMemory );
+
+        node.retractTuple( tuple,
+                           context,
+                           workingMemory );
 
         // make sure no assertions were propagated
         assertEquals( 0,
-                      sink.getRetracted().size() );        
+                      sink.getRetracted().size() );
     }
-    
+
     public void testRetractAllowed() throws Exception {
         // Create a test node that always returns false 
         EvalConditionNode node = new EvalConditionNode( 1,
@@ -215,14 +217,16 @@ public class EvalNodeTest extends DroolsTestCase {
         node.assertTuple( tuple,
                           this.context,
                           this.workingMemory );
-        
-        node.retractTuple( tuple, context, workingMemory );
+
+        node.retractTuple( tuple,
+                           context,
+                           workingMemory );
 
         // make sure no assertions were propagated
         assertEquals( 1,
-                      sink.getRetracted().size() );        
-    }    
-    
+                      sink.getRetracted().size() );
+    }
+
     public void testModifyNotAllowed() throws Exception {
         // Create a test node that always returns false 
         EvalConditionNode node = new EvalConditionNode( 1,
@@ -240,18 +244,20 @@ public class EvalNodeTest extends DroolsTestCase {
         node.assertTuple( tuple,
                           this.context,
                           this.workingMemory );
-        
-        node.modifyTuple( tuple, context, workingMemory );
+
+        node.modifyTuple( tuple,
+                          context,
+                          workingMemory );
 
         // make sure no assertions were propagated
         assertEquals( 0,
-                      sink.getRetracted().size() );    
+                      sink.getRetracted().size() );
         assertEquals( 0,
                       sink.getModified().size() );
         assertEquals( 0,
-                      sink.getAsserted().size() );        
+                      sink.getAsserted().size() );
     }
-    
+
     public void testModifyAllowed() throws Exception {
         // Create a test node that always returns false 
         EvalConditionNode node = new EvalConditionNode( 1,
@@ -269,13 +275,15 @@ public class EvalNodeTest extends DroolsTestCase {
         node.assertTuple( tuple,
                           this.context,
                           this.workingMemory );
-        
-        node.modifyTuple( tuple, context, workingMemory );
+
+        node.modifyTuple( tuple,
+                          context,
+                          workingMemory );
 
         // make sure no assertions were propagated
         assertEquals( 1,
-                      sink.getModified().size() );      
-    }        
+                      sink.getModified().size() );
+    }
 
     //    public void testException() throws FactException {
     //        // Create a eval that will always throw an exception
@@ -320,7 +328,6 @@ public class EvalNodeTest extends DroolsTestCase {
                                                         new MockTupleSource( 15 ),
                                                         new MockEvalCondition( true ) );
 
-
         // Add the first tuple sink and assert a tuple and object
         // The sink has no memory
         MockTupleSink sink1 = new MockTupleSink( 2 );
@@ -333,8 +340,8 @@ public class EvalNodeTest extends DroolsTestCase {
         ReteTuple tuple1 = new ReteTuple( f0 );
 
         node.assertTuple( tuple1,
-                              this.context,
-                              workingMemory );
+                          this.context,
+                          workingMemory );
 
         assertLength( 1,
                       sink1.getAsserted() );
@@ -347,7 +354,7 @@ public class EvalNodeTest extends DroolsTestCase {
                       sink2.getAsserted() );
 
         node.updateNewNode( workingMemory,
-                                this.context );
+                            this.context );
 
         assertLength( 1,
                       sink2.getAsserted() );

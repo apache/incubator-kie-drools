@@ -48,8 +48,9 @@ import org.drools.spi.PropagationContext;
 
 public class WorkingMemoryEvent extends EventObject {
     private final PropagationContext propagationContext;
-    
-    public WorkingMemoryEvent(WorkingMemory workingMemory, PropagationContext propagationContext) {
+
+    public WorkingMemoryEvent(WorkingMemory workingMemory,
+                              PropagationContext propagationContext) {
         super( workingMemory );
         this.propagationContext = propagationContext;
     }
@@ -57,7 +58,7 @@ public class WorkingMemoryEvent extends EventObject {
     public WorkingMemory getWorkingMemory() {
         return (WorkingMemory) getSource();
     }
-    
+
     public PropagationContext getPropagationContext() {
         return this.propagationContext;
     }

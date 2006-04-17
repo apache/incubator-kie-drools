@@ -76,7 +76,7 @@ public interface Tuple {
      *      The <code>FactHandle</code>
      */
     FactHandle get(Declaration declaration);
-       
+
     FactHandle[] getFactHandles();
 
     boolean dependsOn(FactHandle handle);

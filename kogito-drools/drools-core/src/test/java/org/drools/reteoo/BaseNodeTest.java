@@ -31,7 +31,6 @@ public class BaseNodeTest extends TestCase {
 
         }
 
-
         public void updateNewNode(WorkingMemoryImpl workingMemory,
                                   PropagationContext context) {
             // TODO Auto-generated method stub
@@ -41,12 +40,12 @@ public class BaseNodeTest extends TestCase {
         public void remove(BaseNode node,
                            WorkingMemoryImpl[] workingMemories) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void attach(WorkingMemoryImpl[] workingMemories) {
             // TODO Auto-generated method stub
-            
+
         }
 
     }

@@ -65,112 +65,93 @@ import org.drools.spi.AsyncExceptionHandler;
  */
 public class SynchronizedWorkingMemory
     implements
-    WorkingMemory
-{
-    final  WorkingMemory workingMemory;
-    
-    public SynchronizedWorkingMemory(WorkingMemory workingMemory)
-    {
-        this.workingMemory =workingMemory;
+    WorkingMemory {
+    final WorkingMemory workingMemory;
+
+    public SynchronizedWorkingMemory(WorkingMemory workingMemory) {
+        this.workingMemory = workingMemory;
     }
 
-    public synchronized void addEventListener(WorkingMemoryEventListener listener)
-    {
+    public synchronized void addEventListener(WorkingMemoryEventListener listener) {
         this.workingMemory.addEventListener( listener );
     }
 
     public synchronized FactHandle assertObject(Object object,
-                                   boolean dynamic) throws FactException
-    {
+                                                boolean dynamic) throws FactException {
         return this.workingMemory.assertObject( object,
-                                           dynamic );
+                                                dynamic );
     }
 
-    public synchronized FactHandle assertObject(Object object) throws FactException
-    {
+    public synchronized FactHandle assertObject(Object object) throws FactException {
         return this.workingMemory.assertObject( object );
     }
 
-    public synchronized void clearAgenda()
-    {
+    public synchronized void clearAgenda() {
         this.workingMemory.clearAgenda();
     }
 
-    public synchronized boolean containsObject(FactHandle handle)
-    {
+    public synchronized boolean containsObject(FactHandle handle) {
         return this.workingMemory.containsObject( handle );
     }
 
-    public synchronized void fireAllRules() throws FactException
-    {
+    public synchronized void fireAllRules() throws FactException {
         this.workingMemory.fireAllRules();
     }
 
-    public synchronized void fireAllRules(AgendaFilter agendaFilter) throws FactException
-    {
+    public synchronized void fireAllRules(AgendaFilter agendaFilter) throws FactException {
         this.workingMemory.fireAllRules( agendaFilter );
     }
 
-    public synchronized FactHandle getFactHandle(Object object) throws NoSuchFactHandleException
-    {
+    public synchronized FactHandle getFactHandle(Object object) throws NoSuchFactHandleException {
         return this.workingMemory.getFactHandle( object );
     }
 
-    public synchronized List getFactHandles()
-    {
+    public synchronized List getFactHandles() {
         return this.workingMemory.getFactHandles();
     }
 
-    public synchronized Object getObject(FactHandle handle) throws NoSuchFactObjectException
-    {
+    public synchronized Object getObject(FactHandle handle) throws NoSuchFactObjectException {
         return this.workingMemory.getObject( handle );
     }
 
-    public synchronized List getObjects()
-    {
+    public synchronized List getObjects() {
         return this.workingMemory.getObjects();
     }
 
-    public synchronized List getObjects(Class objectClass)
-    {
+    public synchronized List getObjects(Class objectClass) {
         return this.workingMemory.getObjects( objectClass );
     }
 
-    public synchronized RuleBase getRuleBase()
-    {
+    public synchronized RuleBase getRuleBase() {
         return this.workingMemory.getRuleBase();
     }
 
     public synchronized void modifyObject(FactHandle handle,
-                             Object object) throws FactException
-    {
+                                          Object object) throws FactException {
         this.workingMemory.modifyObject( handle,
-                                    object );
+                                         object );
     }
 
-    public synchronized void removeEventListener(WorkingMemoryEventListener listener)
-    {
+    public synchronized void removeEventListener(WorkingMemoryEventListener listener) {
         this.workingMemory.removeEventListener( listener );
     }
 
-    public synchronized void retractObject(FactHandle handle) throws FactException
-    {
+    public synchronized void retractObject(FactHandle handle) throws FactException {
         this.workingMemory.retractObject( handle );
     }
 
-    public synchronized void setAsyncExceptionHandler(AsyncExceptionHandler handler)
-    {
+    public synchronized void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
         this.workingMemory.setAsyncExceptionHandler( handler );
     }
 
     public void addEventListener(AgendaEventListener listener) {
         this.workingMemory.addEventListener( listener );
-        
+
     }
 
     public void dispose() {
         this.workingMemory.dispose();
-        
+
     }
 
     public Agenda getAgenda() {
@@ -215,7 +196,7 @@ public class SynchronizedWorkingMemory
 
     public void setGlobal(String name,
                           Object value) {
-        this.workingMemory.setGlobal( name, 
+        this.workingMemory.setGlobal( name,
                                       value );
-    }        
+    }
 }

@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -30,9 +31,9 @@ import org.drools.util.LinkedList;
  *
  */
 public class ObjectMatches extends BaseMultiLinkedListNode {
-    private LinkedList list;
-    
-    private final FactHandleImpl handle;    
+    private LinkedList           list;
+
+    private final FactHandleImpl handle;
 
     /**
      * Constructs an ObjectMatches which maintain a reference to its <code>FactHandleImpl</code> with an empty <code>LinkedList</code>.
@@ -44,7 +45,6 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
         this.handle = handle;
     }
 
-
     /**
      * Adds a matched <code>ReteTuple</code>, which is then wrapped in a <code>TupleMatch</code> which is added to 
      * the <code>LinkedList</code> and then returned.
@@ -52,21 +52,22 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
      * @param tuple
      * @return
      */
-    TupleMatch add(ReteTuple tuple) {               
-        TupleMatch tupleMatch = new TupleMatch( tuple, this );
+    TupleMatch add(ReteTuple tuple) {
+        TupleMatch tupleMatch = new TupleMatch( tuple,
+                                                this );
 
         this.list.add( tupleMatch );
-        
+
         return tupleMatch;
     }
-        
+
     /**
      * Removes the <code>TupleMatch</code> as the underlying <code>ReteTuple</code> has been retracted and no longer matches.
      * 
      * @param tupleMatch
      */
     void remove(TupleMatch tupleMatch) {
-        this.list.remove( tupleMatch );          
+        this.list.remove( tupleMatch );
     }
 
     /**
@@ -76,7 +77,7 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
     public FactHandleImpl getFactHandle() {
         return this.handle;
     }
-    
+
     /**
      * Return the first <code>TupleMatch</code> that this <code>FactHandleImpl</code> matches.
      * 
@@ -90,15 +91,15 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
      * Return the last <code>TupleMatch</code> that this <code>FactHandleImpl</code> matches.
      * 
      * @return the <code>TupleMatch</code>
-     */    
+     */
     public TupleMatch getLastTupleMatch() {
         return (TupleMatch) this.list.getLast();
-    }  
-    
+    }
+
     public int size() {
         return this.list.size();
     }
-    
+
     public boolean hasMatches() {
         return !this.list.isEmpty();
     }

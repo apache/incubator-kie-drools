@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -27,7 +28,7 @@ public class PropagationContextImpl
     private final Rule       rule;
 
     private final Activation activation;
-    
+
     private final long       propagationNumber;
 
     public PropagationContextImpl(long number,
@@ -39,7 +40,7 @@ public class PropagationContextImpl
         this.activation = activation;
         this.propagationNumber = number;
     }
-    
+
     public long getPropagationNumber() {
         return this.propagationNumber;
     }

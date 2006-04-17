@@ -3,8 +3,8 @@ package org.drools.rule;
 import org.drools.FactHandle;
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
-import org.drools.spi.FieldConstraint;
 import org.drools.spi.Evaluator;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
@@ -56,7 +56,7 @@ public class ReturnValueConstraint
     public void setReturnValueExpression(ReturnValueExpression expression) {
         this.returnValueExpression = expression;
     }
-    
+
     public ReturnValueExpression getReturnValueExpression() {
         return this.returnValueExpression;
     }
@@ -70,7 +70,7 @@ public class ReturnValueConstraint
                                                                             this.requiredDeclarations,
                                                                             workingMemory ) );
         } catch ( Exception e ) {
-            throw new  RuntimeDroolsException( e );
+            throw new RuntimeDroolsException( e );
         }
     }
 }

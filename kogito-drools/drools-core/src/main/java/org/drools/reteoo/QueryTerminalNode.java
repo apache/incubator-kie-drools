@@ -126,21 +126,22 @@ final class QueryTerminalNode extends BaseNode
     public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
 
-        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             WorkingMemoryImpl workingMemory = workingMemories[i];
             PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                 PropagationContext.RULE_ADDITION,
                                                                                 null,
-                                                                                null );            
-            this.tupleSource.updateNewNode( workingMemory, propagationContext );
-        }   
+                                                                                null );
+            this.tupleSource.updateNewNode( workingMemory,
+                                            propagationContext );
+        }
     }
 
     public void remove(BaseNode node,
                        WorkingMemoryImpl[] workingMemories) {
-        for ( int i = 0, length = workingMemories.length; i < length; i++) {
-            workingMemories[i].clearNodeMemory( this );    
-        }        
+        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+            workingMemories[i].clearNodeMemory( this );
+        }
         tupleSource.remove( this,
                             workingMemories );
     }

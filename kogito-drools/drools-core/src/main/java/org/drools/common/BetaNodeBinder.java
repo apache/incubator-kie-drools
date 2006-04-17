@@ -10,11 +10,13 @@ import org.drools.rule.Declaration;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.Tuple;
 
-public class BetaNodeBinder implements Serializable  {
-    
+public class BetaNodeBinder
+    implements
+    Serializable {
+
     public final static BetaNodeBinder simpleBinder = new BetaNodeBinder();
-    
-    private final FieldConstraint[] constraints;
+
+    private final FieldConstraint[]    constraints;
 
     public BetaNodeBinder() {
         this.constraints = null;

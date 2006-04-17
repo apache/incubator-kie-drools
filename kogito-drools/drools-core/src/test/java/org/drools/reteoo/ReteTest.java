@@ -51,7 +51,6 @@ import java.util.Map;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.base.ClassObjectType;
-import org.drools.spi.PropagationContext;
 
 /**
  * @author mproctor

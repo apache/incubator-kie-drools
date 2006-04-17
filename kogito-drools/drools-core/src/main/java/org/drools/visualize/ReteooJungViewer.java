@@ -102,11 +102,13 @@ public class ReteooJungViewer extends JFrame {
                                                                    new ConstantVertexAspectRatioFunction( 1.0f ) ) );
 
         ReteooLayoutSolver solver = new ReteooLayoutSolver( visitor.getRootVertex() );
-        
-        Layout layout = new ReteooLayout( this.graph, new VertexFunctions(), solver.getRowList() );
+
+        Layout layout = new ReteooLayout( this.graph,
+                                          new VertexFunctions(),
+                                          solver.getRowList() );
         /*
-        Layout layout = new DAGLayout( this.graph );
-        */
+         Layout layout = new DAGLayout( this.graph );
+         */
 
         this.vv = new VisualizationViewer( layout,
                                            pr,
@@ -116,7 +118,7 @@ public class ReteooJungViewer extends JFrame {
         this.vv.setBackground( Color.white );
         this.vv.setPickSupport( new ShapePickSupport() );
         this.vv.setToolTipFunction( new DefaultToolTipFunction() );
-        
+
         final PluggableGraphMouse graphMouse = new PluggableGraphMouse();
         graphMouse.add( new PickingGraphMousePlugin() );
         graphMouse.add( new ViewScalingGraphMousePlugin() );

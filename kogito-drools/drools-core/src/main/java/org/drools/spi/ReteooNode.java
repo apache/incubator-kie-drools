@@ -10,8 +10,10 @@ import java.io.Serializable;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public interface ReteooNode extends Serializable {
-    
+public interface ReteooNode
+    extends
+    Serializable {
+
     /**
      * Returns the unique id that represents the node in the Rete network
      * @return

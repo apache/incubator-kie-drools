@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,9 +15,6 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-import java.util.Iterator;
 
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.PropagationContextImpl;
@@ -65,8 +63,7 @@ abstract class BetaNode extends TupleSource
      */
     BetaNode(int id,
              TupleSource leftInput,
-             ObjectSource rightInput)
-    {
+             ObjectSource rightInput) {
         this( id,
               leftInput,
               rightInput,
@@ -91,7 +88,7 @@ abstract class BetaNode extends TupleSource
         this.joinNodeBinder = joinNodeBinder;
 
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#attach()
      */
@@ -99,36 +96,40 @@ abstract class BetaNode extends TupleSource
         this.leftInput.addTupleSink( this );
         this.rightInput.addObjectSink( this );
     }
-    
+
     public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
-        
-        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+
+        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             WorkingMemoryImpl workingMemory = workingMemories[i];
             PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                 PropagationContext.RULE_ADDITION,
                                                                                 null,
-                                                                                null );            
-            this.leftInput.updateNewNode( workingMemory, propagationContext );
-            this.rightInput.updateNewNode( workingMemory, propagationContext );
-        }             
-                
-    }    
+                                                                                null );
+            this.leftInput.updateNewNode( workingMemory,
+                                          propagationContext );
+            this.rightInput.updateNewNode( workingMemory,
+                                           propagationContext );
+        }
+
+    }
 
     public void remove(BaseNode node,
                        WorkingMemoryImpl[] workingMemories) {
         getTupleSinks().remove( node );
         removeShare();
-        
+
         if ( this.sharedCount < 0 ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++) {
-                workingMemories[i].clearNodeMemory( this );    
+            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                workingMemories[i].clearNodeMemory( this );
             }
-            
-            this.rightInput.remove( this, workingMemories );
-            this.leftInput.remove( this, workingMemories );
+
+            this.rightInput.remove( this,
+                                    workingMemories );
+            this.leftInput.remove( this,
+                                   workingMemories );
         }
-        
+
     }
 
     /**
@@ -174,7 +175,7 @@ abstract class BetaNode extends TupleSource
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Object createMemory() {
-        return new BetaMemory(this.getJoinNodeBinder());
+        return new BetaMemory( this.getJoinNodeBinder() );
     }
 
 }

@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,7 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import org.drools.RuntimeDroolsException;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.ReteooNode;
 
@@ -77,8 +77,8 @@ abstract class BaseNode
      * Attaches the node into the network. Usually to the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */
     public abstract void attach();
-    
-    public abstract void attach(WorkingMemoryImpl[] workingMemories);    
+
+    public abstract void attach(WorkingMemoryImpl[] workingMemories);
 
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>

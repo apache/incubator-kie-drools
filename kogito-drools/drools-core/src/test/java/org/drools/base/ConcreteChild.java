@@ -7,12 +7,12 @@ public class ConcreteChild
     InterfaceChild {
 
     public String getBar() {
-        
+
         return "hola";
     }
 
     public int getFoo() {
-        
+
         return 42;
     }
 

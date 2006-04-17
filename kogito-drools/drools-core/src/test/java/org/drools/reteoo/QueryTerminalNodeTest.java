@@ -15,7 +15,6 @@ import org.drools.rule.Query;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.MockField;
-import org.drools.util.LinkedList;
 
 public class QueryTerminalNodeTest extends TestCase {
     public void testQueryTerminalNode() {
@@ -78,7 +77,7 @@ public class QueryTerminalNodeTest extends TestCase {
         QueryTerminalNode queryNode = new QueryTerminalNode( 7,
                                                              joinNode,
                                                              query );
-        
+
         queryNode.attach();
 
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();

@@ -25,87 +25,89 @@ import java.util.NoSuchElementException;
  * @author Alexander Bagerman
  * 
  */
-public class BaseTableIterator implements TableIterator {
-	/**
-	 * interator that was not initialized as "empty" iterator (one or another
-	 * record was submitted to constractor) will set it to false
-	 */
-	private TableRecord firstRecord;
+public class BaseTableIterator
+    implements
+    TableIterator {
+    /**
+     * interator that was not initialized as "empty" iterator (one or another
+     * record was submitted to constractor) will set it to false
+     */
+    private TableRecord firstRecord;
 
-	private TableRecord lastRecord;
+    private TableRecord lastRecord;
 
-	private TableRecord currentRecord;
+    private TableRecord currentRecord;
 
-	private TableRecord nextRecord;
+    private TableRecord nextRecord;
 
-	/**
-	 * constracts an leaps iterator to iterate over a single record. Used for
-	 * Dominant fact dimention iteration
-	 * 
-	 * @param record
-	 *            to iterate over
-	 */
+    /**
+     * constracts an leaps iterator to iterate over a single record. Used for
+     * Dominant fact dimention iteration
+     * 
+     * @param record
+     *            to iterate over
+     */
 
-	/**
-	 * constracts an leaps iterator to iterate over a single record. Used for
-	 * Dominant fact dimention iteration
-	 * 
-	 * @param record
-	 *            to iterate over
-	 */
-	protected BaseTableIterator(TableRecord record) {
-		this.firstRecord = record;
-		this.lastRecord = record;
-		this.currentRecord = null;
-		this.nextRecord = this.firstRecord;
-	}
+    /**
+     * constracts an leaps iterator to iterate over a single record. Used for
+     * Dominant fact dimention iteration
+     * 
+     * @param record
+     *            to iterate over
+     */
+    protected BaseTableIterator(TableRecord record) {
+        this.firstRecord = record;
+        this.lastRecord = record;
+        this.currentRecord = null;
+        this.nextRecord = this.firstRecord;
+    }
 
-	protected BaseTableIterator(TableRecord startRecord,
-			TableRecord currentRecord, TableRecord lastRecord) {
-		this.firstRecord = startRecord;
-		this.nextRecord = currentRecord;
-		this.lastRecord = lastRecord;
-		this.currentRecord = null;
-	}
+    protected BaseTableIterator(TableRecord startRecord,
+                                TableRecord currentRecord,
+                                TableRecord lastRecord) {
+        this.firstRecord = startRecord;
+        this.nextRecord = currentRecord;
+        this.lastRecord = lastRecord;
+        this.currentRecord = null;
+    }
 
-	public boolean isEmpty() {
-		return this.firstRecord == null;
-	}
+    public boolean isEmpty() {
+        return this.firstRecord == null;
+    }
 
-	public void reset() {
-		this.currentRecord = null;
-		this.nextRecord = this.firstRecord;
-	}
+    public void reset() {
+        this.currentRecord = null;
+        this.nextRecord = this.firstRecord;
+    }
 
-	public boolean hasNext() {
-		return this.nextRecord != null;
-	}
+    public boolean hasNext() {
+        return this.nextRecord != null;
+    }
 
-	public Object next() {
-		this.currentRecord = this.nextRecord;
-		if (this.currentRecord != null) {
-			// need to check on last record because we iterate of subset of
-			// all data limited by last record
-			if(this.currentRecord == this.lastRecord) {
-				this.nextRecord = null;
-			}
-			else {
-				this.nextRecord = this.currentRecord.right;
-			}
-		} else {
-			throw new NoSuchElementException("No more elements to return");
-		}
-		return this.currentRecord.object;
-	}
+    public Object next() {
+        this.currentRecord = this.nextRecord;
+        if ( this.currentRecord != null ) {
+            // need to check on last record because we iterate of subset of
+            // all data limited by last record
+            if ( this.currentRecord == this.lastRecord ) {
+                this.nextRecord = null;
+            } else {
+                this.nextRecord = this.currentRecord.right;
+            }
+        } else {
+            throw new NoSuchElementException( "No more elements to return" );
+        }
+        return this.currentRecord.object;
+    }
 
-	public Object current() {
-		return this.currentRecord.object;
-	}
+    public Object current() {
+        return this.currentRecord.object;
+    }
 
-	public Object peekNext() {
-		return this.nextRecord.object;
-	}
+    public Object peekNext() {
+        return this.nextRecord.object;
+    }
 
-	public void remove() {
-	}
+    public void remove() {
+    }
 }

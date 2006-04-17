@@ -60,7 +60,6 @@ public class ScheduledAgendaItem extends TimerTask
     private LinkedList               justified;
 
     private boolean                  activated;
-    
 
     // ------------------------------------------------------------
     // Constructors
@@ -128,7 +127,7 @@ public class ScheduledAgendaItem extends TimerTask
     /**
      * Handle the firing of an alarm.
      */
-    public void run() { 
+    public void run() {
         this.agenda.fireActivation( this );
         this.agenda.getWorkingMemory().fireAllRules();
     }
@@ -176,10 +175,10 @@ public class ScheduledAgendaItem extends TimerTask
     public boolean isActivated() {
         return this.activated;
     }
-    
+
     public void setActivated(boolean activated) {
         this.activated = activated;
-    }  
+    }
 
     /*
      * (non-Javadoc)

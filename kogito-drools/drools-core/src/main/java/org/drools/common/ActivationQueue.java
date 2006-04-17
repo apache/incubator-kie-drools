@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -47,7 +48,7 @@ public class ActivationQueue
     implements
     Comparable {
     private LinkedList list;
-    
+
     private final int  salience;
 
     private boolean    active;
@@ -94,25 +95,23 @@ public class ActivationQueue
         this.active = active;
     }
 
-
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(T)
      */
     public int compareTo(Object object) {
         ActivationQueue other = (ActivationQueue) object;
         return this.salience - other.salience;
-    }    
-    
+    }
+
     /**
      * Add an <code>Activation</code> to the end of the queue
      * @param activation
      *      the <code>Activation</code> to be placed onto the queue
      */
-    public void add(Activation activation) {        
-        this.list.add( (LinkedListNode ) activation );
+    public void add(Activation activation) {
+        this.list.add( (LinkedListNode) activation );
     }
-    
-    
+
     /**
      * Remove the <code>Activaton</code> at the end of the queue.
      * @return
@@ -123,7 +122,7 @@ public class ActivationQueue
         item.remove();
         return item;
     }
-    
+
     /**
      * Remove the given <code>Activation<code> from its place in the queue. This results in the 
      * previous <code>Activation</code> being linked to the next <code>activation</code>.
@@ -133,19 +132,19 @@ public class ActivationQueue
     public void remove(Activation activation) {
         this.list.remove( (LinkedListNode) activation );
     }
-    
+
     public LinkedListNode getFirst() {
         return this.list.getFirst();
     }
-    
+
     public Activation[] getActivations() {
         List activations = new ArrayList( this.list.size() );
-        for (LinkedListNode node = this.list.getFirst(); node != null; node = node.getNext()) {
+        for ( LinkedListNode node = this.list.getFirst(); node != null; node = node.getNext() ) {
             activations.add( node );
         }
         return (Activation[]) activations.toArray( new Activation[activations.size()] );
     }
-    
+
     /**
      * Returns true if there are no <code>Activations</code> on the queue.
      * @return

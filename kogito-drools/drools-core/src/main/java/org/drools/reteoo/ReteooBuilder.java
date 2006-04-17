@@ -58,7 +58,9 @@ import org.drools.spi.ObjectTypeResolver;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  * 
  */
-class ReteooBuilder implements Serializable {
+class ReteooBuilder
+    implements
+    Serializable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -79,15 +81,15 @@ class ReteooBuilder implements Serializable {
     private TupleSource              tupleSource;
 
     private ObjectSource             objectSource;
-    
+
     private Map                      declarations;
 
     private int                      id;
 
     private Map                      rules;
-    
+
     private Map                      objectType;
-    
+
     private int                      currentOffsetAdjustment;
 
     // ------------------------------------------------------------
@@ -108,7 +110,7 @@ class ReteooBuilder implements Serializable {
 
         //Set to 1 as Rete node is set to 0
         this.id = 1;
-    }    
+    }
 
     // ------------------------------------------------------------
     // Instance methods
@@ -148,23 +150,23 @@ class ReteooBuilder implements Serializable {
                 // Check there is no consequence
                 if ( rule.getConsequence() != null ) {
                     throw new InvalidPatternException( "Query '" + rule.getName() + "' should have no Consequence" );
-                }                
+                }
                 node = new QueryTerminalNode( this.id++,
                                               this.tupleSource,
                                               rule );
             }
-            
+
             nodes.add( node );
 
             if ( this.workingMemories.length == 0 ) {
                 node.attach();
             } else {
                 node.attach( workingMemories );
-            }            
+            }
         }
-        
+
         this.rules.put( rule,
-                        ( BaseNode[] )nodes.toArray( new BaseNode[ nodes.size() ] ) );
+                        (BaseNode[]) nodes.toArray( new BaseNode[nodes.size()] ) );
     }
 
     private void addRule(And and,
@@ -180,16 +182,15 @@ class ReteooBuilder implements Serializable {
 
         for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
             Object object = it.next();
-            
+
             if ( object instanceof EvalCondition ) {
                 EvalCondition eval = (EvalCondition) object;
-                checkUnboundDeclarations(  eval.getRequiredDeclarations() );
+                checkUnboundDeclarations( eval.getRequiredDeclarations() );
                 this.tupleSource = attachNode( new EvalConditionNode( this.id++,
                                                                       this.tupleSource,
                                                                       eval ) );
                 continue;
             }
-        
 
             BetaNodeBinder binder;
             Column column;
@@ -207,7 +208,7 @@ class ReteooBuilder implements Serializable {
                 if ( this.tupleSource == null ) {
                     this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
                                                                              this.objectSource,
-                                                                             binder) );
+                                                                             binder ) );
 
                     // objectSource is created by the attachColumn method, if we
                     // adapt this to
@@ -228,7 +229,7 @@ class ReteooBuilder implements Serializable {
                 if ( this.tupleSource == null ) {
                     // adjusting offset as all tuples will now contain initial-fact at index 0
                     this.currentOffsetAdjustment = 1;
-                    
+
                     ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
                                                                                 new ClassObjectType( InitialFact.class ),
                                                                                 this.rete ) );
@@ -236,9 +237,9 @@ class ReteooBuilder implements Serializable {
                     this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
                                                                              objectSource ) );
                 }
-                
+
                 binder = attachColumn( column,
-                                       and, 
+                                       and,
                                        false );
             }
 
@@ -303,15 +304,17 @@ class ReteooBuilder implements Serializable {
                                         boolean removeIdentities) throws InvalidPatternException {
         // Adjusting offset in case a previous Initial-Fact was added to the network
         column.adjustOffset( this.currentOffsetAdjustment );
-        
+
         // Check if the Column is bound
         if ( column.getDeclaration() != null ) {
             Declaration declaration = column.getDeclaration();
             // Add the declaration the map of previously bound declarations
-            this.declarations.put(  declaration.getIdentifier(), declaration );
+            this.declarations.put( declaration.getIdentifier(),
+                                   declaration );
         }
 
-        List predicates = attachAlphaNodes( column, removeIdentities );
+        List predicates = attachAlphaNodes( column,
+                                            removeIdentities );
 
         BetaNodeBinder binder;
 
@@ -324,39 +327,42 @@ class ReteooBuilder implements Serializable {
         return binder;
     }
 
-    public List attachAlphaNodes( Column column, boolean removeIdentities ) throws InvalidPatternException {
+    public List attachAlphaNodes(Column column,
+                                 boolean removeIdentities) throws InvalidPatternException {
         List constraints = column.getConstraints();
 
-        Class thisClass = ( ( ClassObjectType ) column.getObjectType() ).getClassType();
-        
+        Class thisClass = ((ClassObjectType) column.getObjectType()).getClassType();
+
         this.objectSource = attachNode( new ObjectTypeNode( this.id++,
                                                             column.getObjectType(),
-                                                            this.rete ) );                
-        
+                                                            this.rete ) );
+
         List predicateConstraints = new ArrayList();
-        
-        if( removeIdentities ) {
+
+        if ( removeIdentities ) {
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
             for ( Iterator it = this.objectType.entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) it.next();
-                Class previousClass = ( ( ClassObjectType ) entry.getKey() ).getClassType();
+                Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
-                    predicateConstraints.add( new InstanceEqualsConstraint( ((Integer)entry.getValue()).intValue() ) );
+                    predicateConstraints.add( new InstanceEqualsConstraint( ((Integer) entry.getValue()).intValue() ) );
                 }
             }
-            
+
             // Must be added after the checking, otherwise it matches against itself
-            this.objectType.put( column.getObjectType(), new Integer(column.getFactIndex()) );
+            this.objectType.put( column.getObjectType(),
+                                 new Integer( column.getFactIndex() ) );
         }
 
         for ( Iterator it = constraints.iterator(); it.hasNext(); ) {
             Object object = it.next();
             // Check if its a declaration
-            if (object instanceof Declaration) {
-                Declaration declaration = ( Declaration ) object;
+            if ( object instanceof Declaration ) {
+                Declaration declaration = (Declaration) object;
                 // Add the declaration the map of previously bound declarations
-                this.declarations.put( declaration.getIdentifier(), declaration );
+                this.declarations.put( declaration.getIdentifier(),
+                                       declaration );
                 continue;
             }
 
@@ -366,7 +372,7 @@ class ReteooBuilder implements Serializable {
                                                                fieldConstraint,
                                                                objectSource ) );
             } else {
-                checkUnboundDeclarations(  fieldConstraint.getRequiredDeclarations() );
+                checkUnboundDeclarations( fieldConstraint.getRequiredDeclarations() );
                 predicateConstraints.add( fieldConstraint );
             }
         }
@@ -498,20 +504,21 @@ class ReteooBuilder implements Serializable {
 
         return node;
     }
-    
+
     public void removeRule(Rule rule) {
         // reset working memories for potential propagation
         this.workingMemories = (WorkingMemoryImpl[]) this.ruleBase.getWorkingMemories().toArray( new WorkingMemoryImpl[this.ruleBase.getWorkingMemories().size()] );
-        
+
         Object object = this.rules.get( rule );
-        
-        BaseNode[] nodes =  ( BaseNode[] ) object;
+
+        BaseNode[] nodes = (BaseNode[]) object;
         for ( int i = 0, length = nodes.length; i < length; i++ ) {
             BaseNode node = nodes[i];
-            node.remove( null, this.workingMemories );
+            node.remove( null,
+                         this.workingMemories );
         }
     }
-    
+
     /**
      * Make sure the required declarations are previously bound
      * 
@@ -521,20 +528,20 @@ class ReteooBuilder implements Serializable {
     private void checkUnboundDeclarations(Declaration[] declarations) throws InvalidPatternException {
         List list = new ArrayList();
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
-          if ( this.declarations.get( declarations[i].getIdentifier() ) == null ) {
-              list.add( declarations[i].getIdentifier() );
-          }
+            if ( this.declarations.get( declarations[i].getIdentifier() ) == null ) {
+                list.add( declarations[i].getIdentifier() );
+            }
         }
-        
+
         // Make sure the required declarations        
         if ( list.size() != 0 ) {
             StringBuffer buffer = new StringBuffer();
             buffer.append( list.get( 0 ) );
             for ( int i = 1, size = list.size(); i < size; i++ ) {
-                buffer.append( ", " + list.get( i )  );
+                buffer.append( ", " + list.get( i ) );
             }
-            
-            throw new InvalidPatternException("Required Declarations not bound: '" + buffer );
+
+            throw new InvalidPatternException( "Required Declarations not bound: '" + buffer );
         }
 
     }

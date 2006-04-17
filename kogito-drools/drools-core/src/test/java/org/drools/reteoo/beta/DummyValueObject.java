@@ -26,65 +26,72 @@ package org.drools.reteoo.beta;
  */
 public class DummyValueObject {
     private boolean booleanAttr;
-    private String stringAttr;
-    private int    intAttr;
-    private Object objectAttr;
-    
+    private String  stringAttr;
+    private int     intAttr;
+    private Object  objectAttr;
+
     public DummyValueObject() {
     }
-    
-    public DummyValueObject( boolean aBoolean,
-                            String  aString,
-                            int     anInteger,
-                            Object  anObject) {
+
+    public DummyValueObject(boolean aBoolean,
+                            String aString,
+                            int anInteger,
+                            Object anObject) {
         this.booleanAttr = aBoolean;
-        this.stringAttr  = aString;
+        this.stringAttr = aString;
         this.intAttr = anInteger;
-        this.objectAttr  = anObject;
+        this.objectAttr = anObject;
     }
-    
+
     /**
      * @return Returns the booleanAttr.
      */
     public boolean isBooleanAttr() {
         return booleanAttr;
     }
+
     /**
      * @param boolean1 The booleanAttr to set.
      */
     public void setBooleanAttr(boolean boolean1) {
         booleanAttr = boolean1;
     }
+
     /**
      * @return Returns the intAttr.
      */
     public int getIntAttr() {
         return intAttr;
     }
+
     /**
      * @param intAttr The intAttr to set.
      */
     public void setIntAttr(int anInteger) {
         this.intAttr = anInteger;
     }
+
     /**
      * @return Returns the objectAttr.
      */
     public Object getObjectAttr() {
         return objectAttr;
     }
+
     /**
      * @param objectAttr The objectAttr to set.
      */
     public void setObjectAttr(Object anObject) {
         this.objectAttr = anObject;
     }
+
     /**
      * @return Returns the stringAttr.
      */
     public String getStringAttr() {
         return stringAttr;
     }
+
     /**
      * @param string The stringAttr to set.
      */

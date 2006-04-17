@@ -69,8 +69,8 @@ public class PackageIntegrationException extends IntegrationException {
                                        Package pkg) {
         super( message );
         this.pkg = pkg;
-    }    
-    
+    }
+
     /**
      * @see java.lang.Exception#Exception()
      * 

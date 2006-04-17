@@ -3,7 +3,6 @@ package org.drools.rule;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
@@ -17,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.CheckedDroolsException;
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.Consequence;
 import org.drools.spi.EvalExpression;
@@ -197,7 +197,7 @@ public class PackageCompilationData
             throw new RuntimeDroolsException( e );
         }
     }
-    
+
     public void clear() {
         this.store.clear();
         this.invokerLookups.clear();
@@ -238,12 +238,12 @@ public class PackageCompilationData
         this.invokerLookups.put( className,
                                  invoker );
     }
-    
+
     public void putAllInvokers(Map invokers) {
         this.invokerLookups.putAll( invokers );
-        
+
     }
-    
+
     public Map getInvokers() {
         return this.invokerLookups;
     }

@@ -30,7 +30,7 @@ public class RuntimeDroolsException extends RuntimeException {
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     public RuntimeDroolsException(String message,
-                           Throwable cause) {
+                                  Throwable cause) {
         super( message );
     }
 

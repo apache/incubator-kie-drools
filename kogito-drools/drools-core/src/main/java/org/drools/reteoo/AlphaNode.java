@@ -84,19 +84,20 @@ class AlphaNode extends ObjectSource
     public void attach() {
         this.objectSource.addObjectSink( this );
     }
-    
+
     public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
-        
-        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+
+        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             WorkingMemoryImpl workingMemory = workingMemories[i];
             PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                 PropagationContext.RULE_ADDITION,
                                                                                 null,
-                                                                                null );            
-            this.objectSource.updateNewNode( workingMemory, propagationContext );
-        }        
-    }     
+                                                                                null );
+            this.objectSource.updateNewNode( workingMemory,
+                                             propagationContext );
+        }
+    }
 
     public void assertObject(FactHandleImpl handle,
                              PropagationContext context,
@@ -127,7 +128,7 @@ class AlphaNode extends ObjectSource
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) {
         Set memory = (Set) workingMemory.getNodeMemory( this );
-        
+
         if ( this.constraint.isAllowed( handle,
                                         null,
                                         workingMemory ) ) {
@@ -135,11 +136,11 @@ class AlphaNode extends ObjectSource
                 propagateAssertObject( handle,
                                        context,
                                        workingMemory );
-            } else {                
+            } else {
                 // handle already existed so propagate as modify
                 propagateModifyObject( handle,
                                        context,
-                                       workingMemory );                             
+                                       workingMemory );
             }
         } else {
             if ( memory.remove( handle ) ) {
@@ -147,7 +148,7 @@ class AlphaNode extends ObjectSource
                                         context,
                                         workingMemory );
             }
-        }        
+        }
     }
 
     public void updateNewNode(WorkingMemoryImpl workingMemory,
@@ -164,7 +165,7 @@ class AlphaNode extends ObjectSource
                                    context,
                                    workingMemory );
             } else {
-                throw new RuntimeException("Possible BUG: trying to propagate an assert to a node that was the last added node");
+                throw new RuntimeException( "Possible BUG: trying to propagate an assert to a node that was the last added node" );
             }
         }
 
@@ -196,10 +197,9 @@ class AlphaNode extends ObjectSource
 
         return this.objectSource.equals( other.objectSource ) && this.constraint.equals( other.constraint );
     }
-    
+
     public int hashCode() {
-        return this.objectSource.hashCode() * 17 +
-               ((this.constraint != null) ? this.constraint.hashCode() : 0);
+        return this.objectSource.hashCode() * 17 + ((this.constraint != null) ? this.constraint.hashCode() : 0);
     }
 
     public void remove(BaseNode node,
@@ -207,10 +207,11 @@ class AlphaNode extends ObjectSource
         getObjectSinks().remove( node );
         removeShare();
         if ( this.sharedCount < 0 ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++) {
-                workingMemories[i].clearNodeMemory( this );    
+            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                workingMemories[i].clearNodeMemory( this );
             }
-            this.objectSource.remove( this, workingMemories );
+            this.objectSource.remove( this,
+                                      workingMemories );
         }
     }
 

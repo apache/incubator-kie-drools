@@ -23,11 +23,11 @@ package org.drools.audit.event;
  */
 public interface ILogEventFilter {
 
-	/**
-	 * Returns whether the given event should be filtered from the event log or not.
-	 * @param event The log event
-	 * @return Whether the event should be filtered from the event log or not.
-	 */
-	boolean acceptEvent(LogEvent event);
-	
+    /**
+     * Returns whether the given event should be filtered from the event log or not.
+     * @param event The log event
+     * @return Whether the event should be filtered from the event log or not.
+     */
+    boolean acceptEvent(LogEvent event);
+
 }
