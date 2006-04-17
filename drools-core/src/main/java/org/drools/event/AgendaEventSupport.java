@@ -46,9 +46,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.Tuple;
 
 /**
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
@@ -90,7 +88,7 @@ public class AgendaEventSupport
             return;
         }
 
-        ActivationCreatedEvent event = new ActivationCreatedEvent( activation);
+        ActivationCreatedEvent event = new ActivationCreatedEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).activationCreated( event );
@@ -120,7 +118,7 @@ public class AgendaEventSupport
             ((AgendaEventListener) this.listeners.get( i )).beforeActivationFired( event );
         }
     }
-    
+
     public void fireAfterActivationFired(Activation activation) {
         if ( this.listeners.isEmpty() ) {
             return;
@@ -131,5 +129,5 @@ public class AgendaEventSupport
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).afterActivationFired( event );
         }
-    }    
+    }
 }

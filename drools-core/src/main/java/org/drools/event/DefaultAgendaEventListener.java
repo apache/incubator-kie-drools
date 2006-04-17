@@ -59,7 +59,7 @@ public class DefaultAgendaEventListener
     public void beforeActivationFired(BeforeActivationFiredEvent event) {
         // intentionally left blank
     }
-    
+
     public void afterActivationFired(AfterActivationFiredEvent event) {
         // intentionally left blank
     }

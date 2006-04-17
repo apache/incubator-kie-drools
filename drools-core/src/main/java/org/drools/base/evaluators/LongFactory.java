@@ -33,13 +33,13 @@ public class LongFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 == null;            
-            return ((Number) object1).equals(object2);
+            if ( object1 == null ) return object2 == null;
+            return ((Number) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Long ==";
-        }         
+        }
     }
 
     static class LongNotEqualEvaluator extends BaseEvaluator {
@@ -52,13 +52,13 @@ public class LongFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 != null;
-            return !((Number) object1).equals(object2);
+            if ( object1 == null ) return object2 != null;
+            return !((Number) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Long !=";
-        }                 
+        }
     }
 
     static class LongLessEvaluator extends BaseEvaluator {
@@ -73,10 +73,10 @@ public class LongFactory {
                                 Object object2) {
             return ((Number) object1).longValue() < ((Number) object2).longValue();
         }
-        
+
         public String toString() {
             return "Long <";
-        }                 
+        }
     }
 
     static class LongLessOrEqualEvaluator extends BaseEvaluator {
@@ -91,10 +91,10 @@ public class LongFactory {
                                 Object object2) {
             return ((Number) object1).longValue() <= ((Number) object2).longValue();
         }
-        
+
         public String toString() {
             return "Long <=";
-        }         
+        }
     }
 
     static class LongGreaterEvaluator extends BaseEvaluator {
@@ -109,10 +109,10 @@ public class LongFactory {
                                 Object object2) {
             return ((Number) object1).longValue() > ((Number) object2).longValue();
         }
-        
+
         public String toString() {
             return "Long >";
-        }         
+        }
     }
 
     static class LongGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -127,10 +127,10 @@ public class LongFactory {
                                 Object object2) {
             return ((Number) object1).longValue() >= ((Number) object2).longValue();
         }
-        
+
         public String toString() {
             return "Long >=";
-        }         
+        }
     }
 
 }

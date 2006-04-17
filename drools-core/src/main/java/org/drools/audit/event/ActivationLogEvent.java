@@ -35,53 +35,56 @@ package org.drools.audit.event;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
 public class ActivationLogEvent extends LogEvent {
-	
-	private String activationId;
-	private String rule;
-	private String declarations;
-	
-	/**
-	 * Create a new activation log event.
-	 * 
-	 * @param type The type of event.  This can only be ACTIVATION_CREATED, ACTIVATION_CANCELLED,
-	 * BEFORE_ACTIVATION_FIRE or AFTER_ACTIVATION_FIRE.
-	 * @param activationId The id of the activation
-	 * @param rule The name of the rule of the activation
-	 * @param declarations A String representation of the declarations in the
-	 * activation.
-	 */
-	public ActivationLogEvent(int type, String activationId, String rule, String declarations) {
-		super(type);
-		this.activationId = activationId;
-		this.rule = rule;
-		this.declarations = declarations;
-	}
-	
-	/**
-	 * Returns a unique id for the activation.
-	 * 
-	 * @return The id of the activation
-	 */
-	public String getActivationId() {
-		return activationId;
-	}
-	
-	/**
-	 * Returns the name of the rule of the activation.
-	 * 
-	 * @return The name of the rule
-	 */
-	public String getRule() {
-		return rule;
-	}
-	
-	/**
-	 * Returns a String representation of the declarations in the
-	 * activation.
-	 * 
-	 * @return A String representation of the declarations.
-	 */
-	public String getDeclarations() {
-		return declarations;
-	}
+
+    private String activationId;
+    private String rule;
+    private String declarations;
+
+    /**
+     * Create a new activation log event.
+     * 
+     * @param type The type of event.  This can only be ACTIVATION_CREATED, ACTIVATION_CANCELLED,
+     * BEFORE_ACTIVATION_FIRE or AFTER_ACTIVATION_FIRE.
+     * @param activationId The id of the activation
+     * @param rule The name of the rule of the activation
+     * @param declarations A String representation of the declarations in the
+     * activation.
+     */
+    public ActivationLogEvent(int type,
+                              String activationId,
+                              String rule,
+                              String declarations) {
+        super( type );
+        this.activationId = activationId;
+        this.rule = rule;
+        this.declarations = declarations;
+    }
+
+    /**
+     * Returns a unique id for the activation.
+     * 
+     * @return The id of the activation
+     */
+    public String getActivationId() {
+        return activationId;
+    }
+
+    /**
+     * Returns the name of the rule of the activation.
+     * 
+     * @return The name of the rule
+     */
+    public String getRule() {
+        return rule;
+    }
+
+    /**
+     * Returns a String representation of the declarations in the
+     * activation.
+     * 
+     * @return A String representation of the declarations.
+     */
+    public String getDeclarations() {
+        return declarations;
+    }
 }

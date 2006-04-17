@@ -43,8 +43,6 @@ package org.drools.rule;
 
 import junit.framework.TestCase;
 
-import org.drools.rule.FixedDuration;
-
 public class FixedDurationTest extends TestCase {
     public void testConstruct() throws Exception {
         FixedDuration dur = new FixedDuration();

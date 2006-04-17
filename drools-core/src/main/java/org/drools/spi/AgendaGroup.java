@@ -1,4 +1,7 @@
 package org.drools.spi;
+
+import org.drools.common.Agenda;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,7 +17,6 @@ package org.drools.spi;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 /**
  *  The <code>Agenda</code> can be partitioned into groups, called <code>AgendaGroup</code>s. <code>Rule</code>s can be assigned to
@@ -38,12 +40,12 @@ public interface AgendaGroup {
      *      The <code>AgendaGroup</code> name
      */
     public String getName();
-    
+
     /**
      * @return An array of all the activations in the AgendaGroup
      */
     Activation[] getActivations();
-    
+
     /**
      * The total number of activations in this group
      * @return

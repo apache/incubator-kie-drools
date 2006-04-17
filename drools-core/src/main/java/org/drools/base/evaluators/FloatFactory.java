@@ -1,11 +1,10 @@
 package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
-
 import org.drools.spi.Evaluator;
 
 public class FloatFactory {
-    
+
     public static Evaluator getFloatEvaluator(int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
@@ -23,9 +22,8 @@ public class FloatFactory {
             default :
                 throw new RuntimeException( "Operator '" + operator + "' does not exist for FloatEvaluator" );
         }
-    }    
-    
-    
+    }
+
     static class FloatEqualEvaluator extends BaseEvaluator {
         public final static Evaluator INSTANCE = new FloatEqualEvaluator();
 
@@ -36,13 +34,13 @@ public class FloatFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 == null;
-            return ((Number) object1).equals(object2);
+            if ( object1 == null ) return object2 == null;
+            return ((Number) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Float ==";
-        }         
+        }
     }
 
     static class FloatNotEqualEvaluator extends BaseEvaluator {
@@ -55,13 +53,13 @@ public class FloatFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 != null;
-            return !((Number) object1).equals(object2);
+            if ( object1 == null ) return object2 != null;
+            return !((Number) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Float !=";
-        }                 
+        }
     }
 
     static class FloatLessEvaluator extends BaseEvaluator {
@@ -76,10 +74,10 @@ public class FloatFactory {
                                 Object object2) {
             return ((Number) object1).floatValue() < ((Number) object2).floatValue();
         }
-        
+
         public String toString() {
             return "Float <";
-        }                 
+        }
     }
 
     static class FloatLessOrEqualEvaluator extends BaseEvaluator {
@@ -94,10 +92,10 @@ public class FloatFactory {
                                 Object object2) {
             return ((Number) object1).floatValue() <= ((Number) object2).floatValue();
         }
-        
+
         public String toString() {
             return "Float <=";
-        }         
+        }
     }
 
     static class FloatGreaterEvaluator extends BaseEvaluator {
@@ -112,10 +110,10 @@ public class FloatFactory {
                                 Object object2) {
             return ((Number) object1).floatValue() > ((Number) object2).floatValue();
         }
-        
+
         public String toString() {
             return "Float >";
-        }         
+        }
     }
 
     static class FloatGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -130,9 +128,9 @@ public class FloatFactory {
                                 Object object2) {
             return ((Number) object1).floatValue() >= ((Number) object2).floatValue();
         }
-        
+
         public String toString() {
             return "Float >=";
-        }         
-    } 
+        }
+    }
 }

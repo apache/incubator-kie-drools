@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -30,7 +31,7 @@ public class RightInputAdapterNode extends ObjectSource
     TupleSink {
     private final TupleSource tupleSource;
 
-    private final int         column;    
+    private final int         column;
 
     /**
      * Constructor specifying the unique id of the node in the Rete network, the position of the propagating <code>FactHandleImpl</code> in
@@ -52,7 +53,6 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleSource = source;
     }
 
-    
     /**
      * Takes the asserted <code>ReteTuple</code> received from the <code>TupleSource</code> and extract and propagate
      * its <code>FactHandleImpl</code> based on the column specified by te node.
@@ -63,7 +63,7 @@ public class RightInputAdapterNode extends ObjectSource
      *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.           
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
-     */    
+     */
     public void assertTuple(ReteTuple tuple,
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
@@ -72,25 +72,24 @@ public class RightInputAdapterNode extends ObjectSource
                                workingMemory );
     }
 
-
     /* (non-Javadoc)
      * @see org.drools.reteoo.RetractionCallback#retractTuple(org.drools.reteoo.ReteTuple, org.drools.spi.PropagationContext, org.drools.reteoo.WorkingMemoryImpl)
      */
     public void retractTuple(ReteTuple tuple,
-                        PropagationContext context,
-                        WorkingMemoryImpl workingMemory) {
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
         propagateRetractObject( (FactHandleImpl) tuple.get( this.column ),
                                 context,
                                 workingMemory );
     }
-    
+
     public void modifyTuple(ReteTuple tuple,
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
-             propagateModifyObject( (FactHandleImpl) tuple.get( this.column ),
-                                     context,
-                                     workingMemory );
-         }    
+        propagateModifyObject( (FactHandleImpl) tuple.get( this.column ),
+                               context,
+                               workingMemory );
+    }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#attach()
@@ -98,11 +97,11 @@ public class RightInputAdapterNode extends ObjectSource
     public void attach() {
         this.tupleSource.addTupleSink( this );
     }
-    
+
     public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
         // this node has no memory, no point requesting repropagation     
-    }       
+    }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
@@ -125,8 +124,9 @@ public class RightInputAdapterNode extends ObjectSource
         getObjectSinks().remove( node );
         removeShare();
         if ( this.sharedCount < 0 ) {
-            this.tupleSource.remove( this, workingMemories );
+            this.tupleSource.remove( this,
+                                     workingMemories );
         }
     }
-    
+
 }

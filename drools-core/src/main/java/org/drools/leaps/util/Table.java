@@ -30,7 +30,9 @@ import org.drools.leaps.ColumnConstraints;
  * @author Alexander Bagerman
  * 
  */
-public class Table implements Serializable {
+public class Table
+    implements
+    Serializable {
 
     private final TreeMap map;
 
@@ -38,16 +40,16 @@ public class Table implements Serializable {
 
     protected TableRecord tailRecord;
 
-    private boolean empty = true;
+    private boolean       empty = true;
 
-    private int count = 0;
+    private int           count = 0;
 
     public Table(Comparator comparator) {
-        this.map = new TreeMap(comparator);
+        this.map = new TreeMap( comparator );
     }
 
     protected void clear() {
-        this.headRecord = new TableRecord(null);
+        this.headRecord = new TableRecord( null );
         this.empty = true;
         this.count = 0;
         this.map.clear();
@@ -59,16 +61,15 @@ public class Table implements Serializable {
      */
     public void add(Object object) {
         boolean foundEqualObject = false;
-        TableRecord newRecord = new TableRecord(object);
-        if (this.empty) {
+        TableRecord newRecord = new TableRecord( object );
+        if ( this.empty ) {
             this.headRecord = newRecord;
             this.empty = false;
         } else {
-            SortedMap bufMap = this.map.headMap(object);
-            if (!bufMap.isEmpty()) {
-                TableRecord bufRec = (TableRecord) this.map.get(bufMap
-                        .lastKey());
-                if (bufRec.right != null) {
+            SortedMap bufMap = this.map.headMap( object );
+            if ( !bufMap.isEmpty() ) {
+                TableRecord bufRec = (TableRecord) this.map.get( bufMap.lastKey() );
+                if ( bufRec.right != null ) {
                     bufRec.right.left = newRecord;
                 }
                 newRecord.right = bufRec.right;
@@ -81,16 +82,17 @@ public class Table implements Serializable {
                 this.headRecord = newRecord;
             }
         }
-        if (!foundEqualObject) {
+        if ( !foundEqualObject ) {
             // check if the new record was added at the end of the list
             // and assign new value to the tail record
-            if (newRecord.right == null) {
+            if ( newRecord.right == null ) {
                 this.tailRecord = newRecord;
             }
             //
             this.count++;
             //
-            this.map.put(object, newRecord);
+            this.map.put( object,
+                          newRecord );
         }
     }
 
@@ -101,22 +103,22 @@ public class Table implements Serializable {
      *            to remove from the table
      */
     public void remove(Object object) {
-        if (!this.empty) {
-            TableRecord record = (TableRecord) this.map.get(object);
+        if ( !this.empty ) {
+            TableRecord record = (TableRecord) this.map.get( object );
 
-            if (record != null) {
-                if (record == this.headRecord) {
-                    if (record.right != null) {
+            if ( record != null ) {
+                if ( record == this.headRecord ) {
+                    if ( record.right != null ) {
                         this.headRecord = record.right;
                         this.headRecord.left = null;
                     } else {
                         // single element in table being valid
                         // table is empty now
-                        this.headRecord = new TableRecord(null);
+                        this.headRecord = new TableRecord( null );
                         this.tailRecord = this.headRecord;
                         this.empty = true;
                     }
-                } else if (record == this.tailRecord) {
+                } else if ( record == this.tailRecord ) {
                     // single element in the table case is being solved above
                     // when
                     // we checked for headRecord match
@@ -130,7 +132,7 @@ public class Table implements Serializable {
             }
             this.count--;
             //
-            this.map.remove(object);
+            this.map.remove( object );
         }
     }
 
@@ -140,8 +142,8 @@ public class Table implements Serializable {
      */
     public boolean contains(Object object) {
         boolean ret = false;
-        if (!this.empty) {
-            ret = this.map.containsKey(object);
+        if ( !this.empty ) {
+            ret = this.map.containsKey( object );
         }
         return ret;
     }
@@ -153,11 +155,14 @@ public class Table implements Serializable {
      */
     public TableIterator iterator() {
         TableIterator ret;
-        if (this.empty) {
-            ret = new BaseTableIterator(null, null, null);
+        if ( this.empty ) {
+            ret = new BaseTableIterator( null,
+                                         null,
+                                         null );
         } else {
-            ret = new BaseTableIterator(this.headRecord, this.headRecord,
-                    this.tailRecord);
+            ret = new BaseTableIterator( this.headRecord,
+                                         this.headRecord,
+                                         this.tailRecord );
         }
         return ret;
     }
@@ -181,32 +186,38 @@ public class Table implements Serializable {
     }
 
     public TableIterator tailConstrainedIterator(WorkingMemory workingMemory,
-            ColumnConstraints constraints, Object objectAtStart,
-            Object objectAtPosition) {
-        Markers markers = this.getTailIteratorMarkers(objectAtStart,
-                objectAtPosition);
-        return new ConstrainedFactTableIterator(workingMemory, constraints,
-                markers.start, markers.current, markers.last);
+                                                 ColumnConstraints constraints,
+                                                 Object objectAtStart,
+                                                 Object objectAtPosition) {
+        Markers markers = this.getTailIteratorMarkers( objectAtStart,
+                                                       objectAtPosition );
+        return new ConstrainedFactTableIterator( workingMemory,
+                                                 constraints,
+                                                 markers.start,
+                                                 markers.current,
+                                                 markers.last );
 
     }
 
     public TableIterator tailIterator(Object objectAtStart,
-            Object objectAtPosition) {
-        Markers markers = this.getTailIteratorMarkers(objectAtStart,
-                objectAtPosition);
-        return new BaseTableIterator(markers.start, markers.current,
-                markers.last);
+                                      Object objectAtPosition) {
+        Markers markers = this.getTailIteratorMarkers( objectAtStart,
+                                                       objectAtPosition );
+        return new BaseTableIterator( markers.start,
+                                      markers.current,
+                                      markers.last );
     }
 
     private Markers getTailIteratorMarkers(Object objectAtStart,
-            Object objectAtPosition) {
+                                           Object objectAtPosition) {
         // validate
         Markers ret = new Markers();
         ret.start = null;
         ret.current = null;
         ret.last = null;
         //
-        if (this.map.comparator().compare(objectAtStart, objectAtPosition) > 0) {
+        if ( this.map.comparator().compare( objectAtStart,
+                                            objectAtPosition ) > 0 ) {
             // return empty iterator
             return ret;
         }
@@ -214,24 +225,23 @@ public class Table implements Serializable {
         TableRecord currentRecord = null;
         TableRecord lastRecord = this.tailRecord;
 
-        if (!this.empty) { // validate
+        if ( !this.empty ) { // validate
             // if (!this.map.isEmpty()) { // validate
-            if (this.map.comparator().compare(objectAtStart,
-                    this.tailRecord.object) <= 0) {
+            if ( this.map.comparator().compare( objectAtStart,
+                                                this.tailRecord.object ) <= 0 ) {
                 // let's check if we need iterator over the whole table
-                SortedMap bufMap = this.map.tailMap(objectAtStart);
-                if (!bufMap.isEmpty()) {
-                    startRecord = (TableRecord) bufMap.get(bufMap.firstKey());
-                    if (this.map.comparator().compare(objectAtStart,
-                            objectAtPosition) == 0) {
+                SortedMap bufMap = this.map.tailMap( objectAtStart );
+                if ( !bufMap.isEmpty() ) {
+                    startRecord = (TableRecord) bufMap.get( bufMap.firstKey() );
+                    if ( this.map.comparator().compare( objectAtStart,
+                                                        objectAtPosition ) == 0 ) {
                         currentRecord = startRecord;
                     } else {
                         // rewind to position
-                        bufMap = bufMap.tailMap(objectAtPosition);
+                        bufMap = bufMap.tailMap( objectAtPosition );
 
-                        if (!bufMap.isEmpty()) {
-                            currentRecord = ((TableRecord) bufMap.get(bufMap
-                                    .firstKey()));
+                        if ( !bufMap.isEmpty() ) {
+                            currentRecord = ((TableRecord) bufMap.get( bufMap.firstKey() ));
                         } else {
                             currentRecord = startRecord;
                         }
@@ -261,32 +271,38 @@ public class Table implements Serializable {
         TableRecord currentRecord = this.headRecord;
         TableRecord lastRecord = null;
 
-        if (!this.empty) { // validate
-            if (this.map.comparator().compare(this.headRecord.object,
-                    objectAtEnd) <= 0) {
+        if ( !this.empty ) { // validate
+            if ( this.map.comparator().compare( this.headRecord.object,
+                                                objectAtEnd ) <= 0 ) {
                 // let's check if we need iterator over the whole table
-                SortedMap bufMap = this.map.headMap(objectAtEnd);
-                if (!bufMap.isEmpty()) {
-                    lastRecord = (TableRecord) bufMap.get(bufMap.lastKey());
+                SortedMap bufMap = this.map.headMap( objectAtEnd );
+                if ( !bufMap.isEmpty() ) {
+                    lastRecord = (TableRecord) bufMap.get( bufMap.lastKey() );
                     // check if the next one is what we need
-                    if (lastRecord.right != null
-                            && this.map.comparator().compare(
-                                    lastRecord.right.object, objectAtEnd) == 0) {
+                    if ( lastRecord.right != null && this.map.comparator().compare( lastRecord.right.object,
+                                                                                    objectAtEnd ) == 0 ) {
                         lastRecord = lastRecord.right;
                     }
-                    iterator = new BaseTableIterator(startRecord,
-                            currentRecord, lastRecord);
+                    iterator = new BaseTableIterator( startRecord,
+                                                      currentRecord,
+                                                      lastRecord );
                 } else {
                     // empty iterator
-                    iterator = new BaseTableIterator(null, null, null);
+                    iterator = new BaseTableIterator( null,
+                                                      null,
+                                                      null );
                 }
             } else {
                 // empty iterator
-                iterator = new BaseTableIterator(null, null, null);
+                iterator = new BaseTableIterator( null,
+                                                  null,
+                                                  null );
             }
         } else {
             // empty iterator
-            iterator = new BaseTableIterator(null, null, null);
+            iterator = new BaseTableIterator( null,
+                                              null,
+                                              null );
         }
 
         return iterator;
@@ -304,7 +320,7 @@ public class Table implements Serializable {
     public String toString() {
         String ret = "";
 
-        for (Iterator it = this.iterator(); it.hasNext();) {
+        for ( Iterator it = this.iterator(); it.hasNext(); ) {
             ret = ret + it.next() + "\n";
         }
         return ret;
@@ -323,6 +339,6 @@ public class Table implements Serializable {
     }
 
     public static TableIterator singleItemIterator(Object object) {
-        return new BaseTableIterator(new TableRecord(object));
+        return new BaseTableIterator( new TableRecord( object ) );
     }
 }

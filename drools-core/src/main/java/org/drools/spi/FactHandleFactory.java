@@ -1,4 +1,5 @@
 package org.drools.spi;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,7 +15,6 @@ package org.drools.spi;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 import java.io.Serializable;
 
@@ -46,7 +46,7 @@ public interface FactHandleFactory
      * @return The handle.
      */
     FactHandle newFactHandle(long id);
-    
+
     /**
      * Increases the recency of the FactHandle
      * 
@@ -54,9 +54,9 @@ public interface FactHandleFactory
      *      The fact handle to have its recency increased.
      */
     public void increaseFactHandleRecency(FactHandle factHandle);
-    
+
     /**
      * @return a fresh instance of the fact handle factory, with any IDs reset etc.
      */
-    FactHandleFactory newInstance();    
+    FactHandleFactory newInstance();
 }

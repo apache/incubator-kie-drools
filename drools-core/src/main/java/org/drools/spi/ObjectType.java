@@ -49,7 +49,9 @@ import java.io.Serializable;
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public interface ObjectType extends  Serializable {
+public interface ObjectType
+    extends
+    Serializable {
     /**
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.
@@ -61,6 +63,6 @@ public interface ObjectType extends  Serializable {
      *         object type, else <code>false</code>.
      */
     boolean matches(Object object);
-    
+
     int getValueType();
 }

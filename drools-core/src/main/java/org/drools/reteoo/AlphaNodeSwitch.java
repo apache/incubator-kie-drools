@@ -32,38 +32,42 @@ import org.drools.rule.LiteralConstraint;
  *
  * Created: 04/03/2006
  */
-public class AlphaNodeSwitch implements Serializable {
+public class AlphaNodeSwitch
+    implements
+    Serializable {
     private final LiteralConstraint constraint;
-    private final Map alphaSwitch; 
+    private final Map               alphaSwitch;
 
     public AlphaNodeSwitch(LiteralConstraint constraint) {
         this.constraint = (LiteralConstraint) constraint;
         this.alphaSwitch = new HashMap();
     }
-    
+
     public void addAlphaNode(AlphaNode node) {
         LiteralConstraint constraint = (LiteralConstraint) node.getConstraint();
-        this.alphaSwitch.put(constraint.getField().getValue(), node);
+        this.alphaSwitch.put( constraint.getField().getValue(),
+                              node );
     }
-    
+
     public boolean removeAlphaNode(AlphaNode node) {
         LiteralConstraint constraint = (LiteralConstraint) node.getConstraint();
-        return this.alphaSwitch.remove(constraint.getField().getValue()) != null;
+        return this.alphaSwitch.remove( constraint.getField().getValue() ) != null;
     }
-    
-    public AlphaNode getNode(WorkingMemory workingMemory, FactHandleImpl handle) {
+
+    public AlphaNode getNode(WorkingMemory workingMemory,
+                             FactHandleImpl handle) {
         Object value = this.constraint.getFieldExtractor().getValue( workingMemory.getObject( handle ) );
-        return (AlphaNode) this.alphaSwitch.get(value);
+        return (AlphaNode) this.alphaSwitch.get( value );
     }
 
     public int getSwitchCount() {
         return this.alphaSwitch.size();
     }
-    
+
     public Collection getAllNodes() {
         return this.alphaSwitch.values();
     }
-    
+
     public boolean equals(Object otherConstraint) {
         if ( this == otherConstraint ) {
             return true;
@@ -71,8 +75,7 @@ public class AlphaNodeSwitch implements Serializable {
 
         if ( (otherConstraint != null) && (otherConstraint instanceof AlphaNodeSwitch) ) {
             AlphaNodeSwitch other = (AlphaNodeSwitch) otherConstraint;
-            if ( (this.constraint.getEvaluator().getOperator() == other.constraint.getEvaluator().getOperator()) && 
-                 (this.constraint.getFieldExtractor().getIndex() == other.constraint.getFieldExtractor().getIndex()) ) {
+            if ( (this.constraint.getEvaluator().getOperator() == other.constraint.getEvaluator().getOperator()) && (this.constraint.getFieldExtractor().getIndex() == other.constraint.getFieldExtractor().getIndex()) ) {
                 return true;
             }
         }
@@ -81,7 +84,7 @@ public class AlphaNodeSwitch implements Serializable {
 
     public int hashCode() {
         return this.constraint.getEvaluator().getOperator() * 17 + this.constraint.getFieldExtractor().getIndex();
-        
+
     }
-    
+
 }

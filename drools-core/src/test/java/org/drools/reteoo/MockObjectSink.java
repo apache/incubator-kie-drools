@@ -8,8 +8,8 @@ import org.drools.spi.PropagationContext;
 public class MockObjectSink
     implements
     ObjectSink {
-    private List                asserted  = new ArrayList();
-    private List                retracted = new ArrayList();
+    private List asserted  = new ArrayList();
+    private List retracted = new ArrayList();
 
     public void assertObject(FactHandleImpl handle,
                              PropagationContext context,
@@ -35,6 +35,6 @@ public class MockObjectSink
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) {
         // TODO Auto-generated method stub
-        
+
     }
 }

@@ -42,15 +42,13 @@ package org.drools.examples.manners;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Guest
     implements
     Serializable {
     private final String name;
 
-    private final Sex   sex;
+    private final Sex    sex;
 
     private final Hobby  hobby;
 
@@ -69,10 +67,10 @@ public class Guest
     public Hobby getHobby() {
         return this.hobby;
     }
-    
+
     public Sex getSex() {
         return this.sex;
-    }    
+    }
 
     public String toString() {
         return "[Guest name=" + this.name + ", sex=" + this.sex + ", hobbies=" + this.hobby + "]";

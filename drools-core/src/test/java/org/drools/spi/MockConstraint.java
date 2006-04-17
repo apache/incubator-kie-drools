@@ -7,10 +7,10 @@ import org.drools.rule.Declaration;
 public class MockConstraint
     implements
     FieldConstraint {
-    
+
     public Declaration[] declarations;
-    
-    public boolean isAllowed = true;
+
+    public boolean       isAllowed = true;
 
     public boolean isAllowed(FactHandle handle,
                              Tuple tuple,

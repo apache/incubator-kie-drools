@@ -57,15 +57,15 @@ public class ReteTuple extends BaseMultiLinkedListNode
     // ------------------------------------------------------------
 
     /** The </code>TupleKey</code> */
-    private final TupleKey      key;
+    private final TupleKey key;
 
     /** The <code>Map</code> of <code>FactHandleImpl</code> matches */
-    private Map                matches = Collections.EMPTY_MAP;
+    private Map            matches = Collections.EMPTY_MAP;
 
     /** The resuling propagation when used in a <code>NotNode</code> */
-    private LinkedList               linkedTuples;    
-    
-    private Activation         activation; 
+    private LinkedList     linkedTuples;
+
+    private Activation     activation;
 
     // ------------------------------------------------------------
     // Constructors
@@ -82,8 +82,8 @@ public class ReteTuple extends BaseMultiLinkedListNode
      */
     public ReteTuple(FactHandleImpl handle) {
         this.key = new TupleKey( handle );
-    }    
-    
+    }
+
     /**
      * Creates a copy of the passed <code>ReteTuple</code>.
      * 
@@ -119,7 +119,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
     TupleKey getKey() {
         return this.key;
     }
-    
+
     public long getRecency() {
         return this.key.getRecency();
     }
@@ -159,14 +159,14 @@ public class ReteTuple extends BaseMultiLinkedListNode
     public FactHandle get(Declaration declaration) {
         return get( declaration.getColumn() );
     }
-    
-     public void setActivation(Activation activation) {
-         this.activation = activation;
-     }
-     
-     public Activation getActivation() {
-         return this.activation;
-     }
+
+    public void setActivation(Activation activation) {
+        this.activation = activation;
+    }
+
+    public Activation getActivation() {
+        return this.activation;
+    }
 
     /**
      * Specifies the tuple as the result of <code>NotNode</code> propagation.
@@ -175,7 +175,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
      *      The <code>ReteTuple</code>
      */
     public void addLinkedTuple(LinkedListNode node) {
-        if (this.linkedTuples == null) {
+        if ( this.linkedTuples == null ) {
             this.linkedTuples = new LinkedList();
         }
         this.linkedTuples.add( node );
@@ -191,13 +191,13 @@ public class ReteTuple extends BaseMultiLinkedListNode
     public LinkedList getLinkedTuples() {
         return this.linkedTuples;
     }
-    
+
     public void clearLinkedTuple() {
         this.linkedTuples.clear();
     }
 
     public void addTupleMatch(FactHandleImpl handle,
-                         TupleMatch node) {
+                              TupleMatch node) {
         if ( this.matches == Collections.EMPTY_MAP ) {
             this.matches = new HashMap();
         }
@@ -212,46 +212,46 @@ public class ReteTuple extends BaseMultiLinkedListNode
     public Map getTupleMatches() {
         return this.matches;
     }
-    
+
     public TupleMatch getTupleMatch(FactHandleImpl handle) {
         return (TupleMatch) this.matches.get( handle );
-    }    
+    }
 
     public TupleMatch removeMatch(FactHandleImpl handle) {
         return (TupleMatch) this.matches.remove( handle );
     }
 
-//    public void remove(PropagationContext context,
-//                       WorkingMemoryImpl workingMemory) {
-//        if ( this.callback != null ) {
-//            this.callback.retract( this,
-//                                   context,
-//                                   workingMemory );
-//        }
-//
-//        if ( !this.matches.isEmpty() ) {
-//            for ( Iterator it = this.matches.values().iterator(); it.hasNext(); ) {
-//                TupleMatch node = (TupleMatch) it.next();
-//                if ( node != null && node.getJoinedTuple() != null ) {
-//                    node.getJoinedTuple().remove( context,
-//                                                  workingMemory );
-//                }
-//                node.remove( context,
-//                             workingMemory );
-//            }
-//        }
-//
-//        if ( previous != null ) {
-//            this.previous.setNext( this.next );
-//            if ( this.next != null ) {
-//                this.next.setPrevious( this.previous );
-//            }
-//        }
-//
-//        this.previous = null;
-//        this.next = null;
-//        this.matches = null;
-//    }         
+    //    public void remove(PropagationContext context,
+    //                       WorkingMemoryImpl workingMemory) {
+    //        if ( this.callback != null ) {
+    //            this.callback.retract( this,
+    //                                   context,
+    //                                   workingMemory );
+    //        }
+    //
+    //        if ( !this.matches.isEmpty() ) {
+    //            for ( Iterator it = this.matches.values().iterator(); it.hasNext(); ) {
+    //                TupleMatch node = (TupleMatch) it.next();
+    //                if ( node != null && node.getJoinedTuple() != null ) {
+    //                    node.getJoinedTuple().remove( context,
+    //                                                  workingMemory );
+    //                }
+    //                node.remove( context,
+    //                             workingMemory );
+    //            }
+    //        }
+    //
+    //        if ( previous != null ) {
+    //            this.previous.setNext( this.next );
+    //            if ( this.next != null ) {
+    //                this.next.setPrevious( this.previous );
+    //            }
+    //        }
+    //
+    //        this.previous = null;
+    //        this.next = null;
+    //        this.matches = null;
+    //    }         
 
     public boolean equals(Object object) {
         if ( this == object ) {

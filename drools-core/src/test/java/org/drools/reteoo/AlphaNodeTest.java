@@ -13,8 +13,8 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
 import org.drools.spi.FieldExtractor;
+import org.drools.spi.FieldValue;
 import org.drools.spi.MockField;
 import org.drools.spi.PropagationContext;
 
@@ -59,7 +59,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         MockObjectSource source = new MockObjectSource( 15 );
 
-        ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class, "type" );
+        ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                 "type" );
 
         FieldValue field = new MockField( "cheddar" );
 
@@ -186,8 +187,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         Cheese stilton = new Cheese( "stilton",
                                      6 );
         workingMemory.putObject( f0,
-                                 stilton );        
-        
+                                 stilton );
+
         sink.getAsserted().clear();
 
         // object should not assert as it does not pass text
@@ -211,10 +212,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                             "type" );
-        
+
         FieldValue field = new MockField( "cheddar" );
-
-
 
         Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
                                                                            Evaluator.EQUAL );
@@ -278,7 +277,7 @@ public class AlphaNodeTest extends DroolsTestCase {
     }
 
     public void testUpdateNewNode() throws FactException,
-                                             IntrospectionException {
+                                   IntrospectionException {
         // An AlphaNode with memory should not try and repropagate from its
         // source
         // Also it should only update the latest tuple sinky
@@ -293,11 +292,9 @@ public class AlphaNodeTest extends DroolsTestCase {
         MockObjectSource source = new MockObjectSource( 1 );
 
         FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            "type");
+                                                            "type" );
 
         FieldValue field = new MockField( "cheddar" );
-
-
 
         Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
                                                                            Evaluator.EQUAL );

@@ -1,5 +1,7 @@
 package org.drools.spi;
 
-public interface Constraint extends RuleComponent {
+public interface Constraint
+    extends
+    RuleComponent {
 
 }

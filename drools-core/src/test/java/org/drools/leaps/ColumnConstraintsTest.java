@@ -41,99 +41,123 @@ import org.drools.spi.MockField;
  */
 public class ColumnConstraintsTest extends DroolsTestCase {
 
-	Evaluator integerEqualEvaluator;
+    Evaluator integerEqualEvaluator;
 
-	Evaluator integerNotEqualEvaluator;
+    Evaluator integerNotEqualEvaluator;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.integerEqualEvaluator = EvaluatorFactory
-				.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.EQUAL);
-		this.integerNotEqualEvaluator = EvaluatorFactory
-				.getEvaluator(Evaluator.INTEGER_TYPE, Evaluator.NOT_EQUAL);
-	}
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.integerEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
+                                                                    Evaluator.EQUAL );
+        this.integerNotEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
+                                                                       Evaluator.NOT_EQUAL );
+    }
 
-	/*
-	 * Test method for
-	 * 'org.drools.leaps.ColumnConstraints.evaluateAlphas(FactHandleImpl, Token,
-	 * WorkingMemoryImpl)'
-	 */
-	public void testEvaluateAlphasSuccess() throws Exception {
-		RuleBaseImpl base = new RuleBaseImpl();
-		ArrayList alphas = new ArrayList();
-		ColumnConstraints columnConstraints;
-		FieldConstraint constraint;
-		ClassObjectType contextType = new ClassObjectType(Context.class);
-		Column testColumn = new Column(0, contextType, "state");
+    /*
+     * Test method for
+     * 'org.drools.leaps.ColumnConstraints.evaluateAlphas(FactHandleImpl, Token,
+     * WorkingMemoryImpl)'
+     */
+    public void testEvaluateAlphasSuccess() throws Exception {
+        RuleBaseImpl base = new RuleBaseImpl();
+        ArrayList alphas = new ArrayList();
+        ColumnConstraints columnConstraints;
+        FieldConstraint constraint;
+        ClassObjectType contextType = new ClassObjectType( Context.class );
+        Column testColumn = new Column( 0,
+                                        contextType,
+                                        "state" );
 
-		constraint = getLiteralConstraint(testColumn, "state", new Integer(
-				Context.START_UP), this.integerEqualEvaluator);
-		alphas.add(constraint);
-		testColumn.addConstraint(constraint);
-		constraint = getLiteralConstraint(testColumn, "state", new Integer(
-				-999999), this.integerNotEqualEvaluator);
-		alphas.add(constraint);
-		testColumn.addConstraint(constraint);
+        constraint = getLiteralConstraint( testColumn,
+                                           "state",
+                                           new Integer( Context.START_UP ),
+                                           this.integerEqualEvaluator );
+        alphas.add( constraint );
+        testColumn.addConstraint( constraint );
+        constraint = getLiteralConstraint( testColumn,
+                                           "state",
+                                           new Integer( -999999 ),
+                                           this.integerNotEqualEvaluator );
+        alphas.add( constraint );
+        testColumn.addConstraint( constraint );
 
-		columnConstraints = new ColumnConstraints(testColumn, alphas, null);
+        columnConstraints = new ColumnConstraints( testColumn,
+                                                   alphas,
+                                                   null );
 
-		LeapsTuple tuple = new LeapsTuple(new FactHandleImpl[0], null, null);
-		assertTrue(columnConstraints.isAllowed(new FactHandleImpl(23,
-				new Context(Context.START_UP)), tuple, base
-				.newWorkingMemory()));
-	}
+        LeapsTuple tuple = new LeapsTuple( new FactHandleImpl[0],
+                                           null,
+                                           null );
+        assertTrue( columnConstraints.isAllowed( new FactHandleImpl( 23,
+                                                                     new Context( Context.START_UP ) ),
+                                                 tuple,
+                                                 base.newWorkingMemory() ) );
+    }
 
-	/*
-	 * Test method for
-	 * 'org.drools.leaps.ColumnConstraints.evaluateAlphas(FactHandleImpl, Token,
-	 * WorkingMemoryImpl)'
-	 */
-	public void testEvaluateAlphasFalure() throws Exception {
-		RuleBaseImpl base = new RuleBaseImpl();
-		ArrayList alphas = new ArrayList();
-		ColumnConstraints columnConstraints;
-		FieldConstraint constraint;
-		ClassObjectType contextType = new ClassObjectType(Context.class);
-		Column testColumn = new Column(0, contextType, "state");
+    /*
+     * Test method for
+     * 'org.drools.leaps.ColumnConstraints.evaluateAlphas(FactHandleImpl, Token,
+     * WorkingMemoryImpl)'
+     */
+    public void testEvaluateAlphasFalure() throws Exception {
+        RuleBaseImpl base = new RuleBaseImpl();
+        ArrayList alphas = new ArrayList();
+        ColumnConstraints columnConstraints;
+        FieldConstraint constraint;
+        ClassObjectType contextType = new ClassObjectType( Context.class );
+        Column testColumn = new Column( 0,
+                                        contextType,
+                                        "state" );
 
-		constraint = getLiteralConstraint(testColumn, "state", new Integer(
-				Context.START_UP), this.integerEqualEvaluator);
-		alphas.add(constraint);
-		testColumn.addConstraint(constraint);
-		constraint = getLiteralConstraint(testColumn, "state", new Integer(
-				-999999), this.integerEqualEvaluator);
-		alphas.add(constraint);
-		testColumn.addConstraint(constraint);
+        constraint = getLiteralConstraint( testColumn,
+                                           "state",
+                                           new Integer( Context.START_UP ),
+                                           this.integerEqualEvaluator );
+        alphas.add( constraint );
+        testColumn.addConstraint( constraint );
+        constraint = getLiteralConstraint( testColumn,
+                                           "state",
+                                           new Integer( -999999 ),
+                                           this.integerEqualEvaluator );
+        alphas.add( constraint );
+        testColumn.addConstraint( constraint );
 
-		columnConstraints = new ColumnConstraints(testColumn, alphas, null);
+        columnConstraints = new ColumnConstraints( testColumn,
+                                                   alphas,
+                                                   null );
 
-		assertFalse(columnConstraints.isAllowed(new FactHandleImpl(23,
-				new Context(Context.START_UP)), null, base.newWorkingMemory()));
+        assertFalse( columnConstraints.isAllowed( new FactHandleImpl( 23,
+                                                                      new Context( Context.START_UP ) ),
+                                                  null,
+                                                  base.newWorkingMemory() ) );
 
-	}
+    }
 
-	private FieldConstraint getLiteralConstraint(Column column,
-			String fieldName, Object fieldValue, Evaluator evaluator)
-			throws IntrospectionException {
-		Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+    private FieldConstraint getLiteralConstraint(Column column,
+                                                 String fieldName,
+                                                 Object fieldValue,
+                                                 Evaluator evaluator) throws IntrospectionException {
+        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-		FieldValue field = new MockField(fieldValue);
+        FieldValue field = new MockField( fieldValue );
 
-		FieldExtractor extractor = new ClassFieldExtractor(clazz, fieldName);
+        FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                            fieldName );
 
-		return new LiteralConstraint(field, extractor, evaluator);
-	}
+        return new LiteralConstraint( field,
+                                      extractor,
+                                      evaluator );
+    }
 
-	public static int getIndex(Class clazz, String name)
-			throws IntrospectionException {
-		PropertyDescriptor[] descriptors = Introspector.getBeanInfo(clazz)
-				.getPropertyDescriptors();
-		for (int i = 0; i < descriptors.length; i++) {
-			if (descriptors[i].getName().equals(name)) {
-				return i;
-			}
-		}
-		return -1;
-	}
+    public static int getIndex(Class clazz,
+                               String name) throws IntrospectionException {
+        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
+        for ( int i = 0; i < descriptors.length; i++ ) {
+            if ( descriptors[i].getName().equals( name ) ) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
 }

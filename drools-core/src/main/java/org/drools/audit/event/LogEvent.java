@@ -23,36 +23,36 @@ package org.drools.audit.event;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
 public class LogEvent {
-	
-	public static final int OBJECT_ASSERTED = 1;
-	public static final int OBJECT_MODIFIED = 2;
-	public static final int OBJECT_RETRACTED = 3;
-	
-	public static final int ACTIVATION_CREATED = 4;
-	public static final int ACTIVATION_CANCELLED = 5; 
-	public static final int BEFORE_ACTIVATION_FIRE = 6;
-	public static final int AFTER_ACTIVATION_FIRE = 7;
-	
-	private int type;
-	
-	/**
-	 * Creates a new log event.
-	 * 
-	 * @param type The type of the log event.  This can be OBJECT_ASSERTED,
-	 * OBJECT_MODIFIED, OBJECT_RETRACTED, ACTIVATION_CREATED, ACTIVATION_CANCELLED,
-	 * BEFORE_ACTIVATION_FIRE or AFTER_ACTIVATION_FIRE.
-	 */
-	public LogEvent(int type) {
-		this.type = type;
-	}
-	
-	/**
-	 * Returns the type of the log event as defined in this class.
-	 * 
-	 * @return The type of the log event.
-	 */
-	public int getType() {
-		return type;
-	}
-	
+
+    public static final int OBJECT_ASSERTED        = 1;
+    public static final int OBJECT_MODIFIED        = 2;
+    public static final int OBJECT_RETRACTED       = 3;
+
+    public static final int ACTIVATION_CREATED     = 4;
+    public static final int ACTIVATION_CANCELLED   = 5;
+    public static final int BEFORE_ACTIVATION_FIRE = 6;
+    public static final int AFTER_ACTIVATION_FIRE  = 7;
+
+    private int             type;
+
+    /**
+     * Creates a new log event.
+     * 
+     * @param type The type of the log event.  This can be OBJECT_ASSERTED,
+     * OBJECT_MODIFIED, OBJECT_RETRACTED, ACTIVATION_CREATED, ACTIVATION_CANCELLED,
+     * BEFORE_ACTIVATION_FIRE or AFTER_ACTIVATION_FIRE.
+     */
+    public LogEvent(int type) {
+        this.type = type;
+    }
+
+    /**
+     * Returns the type of the log event as defined in this class.
+     * 
+     * @return The type of the log event.
+     */
+    public int getType() {
+        return type;
+    }
+
 }

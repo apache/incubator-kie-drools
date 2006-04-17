@@ -208,7 +208,7 @@ class LogicTransformer {
     }
 
     GroupElement applyOrTransformation(GroupElement parent,
-                                             GroupElement child) throws InvalidPatternException {
+                                       GroupElement child) throws InvalidPatternException {
         OrTransformation transformation = null;
         Map map = (HashMap) this.orTransformations.get( parent.getClass() );
         if ( map != null ) {
@@ -374,21 +374,19 @@ class LogicTransformer {
         OrTransformation {
 
         public GroupElement transform(GroupElement exist) throws InvalidPatternException {
-            if ( !(exist.getChildren( ).get( 0 ) instanceof Or) )
-            {
-                throw new RuntimeException( "ExistOrTransformation expected '" + Or.class.getName( ) + "' but instead found '" + exist.getChildren( ).get( 0 ).getClass( ).getName( ) + "'" );
+            if ( !(exist.getChildren().get( 0 ) instanceof Or) ) {
+                throw new RuntimeException( "ExistOrTransformation expected '" + Or.class.getName() + "' but instead found '" + exist.getChildren().get( 0 ).getClass().getName() + "'" );
             }
 
             /*
              * we know a Not only ever has one child, and the previous algorithm
              * has confirmed the child is an OR
              */
-            Or or = (Or) exist.getChildren( ).get( 0 );
-            And and = new And( );
-            for ( Iterator it = or.getChildren( ).iterator( ); it.hasNext( ); )
-            {
-                Exists newExist = new Exists( );
-                newExist.addChild( it.next( ) );
+            Or or = (Or) exist.getChildren().get( 0 );
+            And and = new And();
+            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+                Exists newExist = new Exists();
+                newExist.addChild( it.next() );
                 and.addChild( newExist );
             }
             return and;
@@ -415,27 +413,25 @@ class LogicTransformer {
      *       |     |
      *       a     b
      * </pre>
-     */ 
-     public class NotOrTransformation
+     */
+    public class NotOrTransformation
         implements
         OrTransformation {
 
         public GroupElement transform(GroupElement not) throws InvalidPatternException {
-            if ( !(not.getChildren( ).get( 0 ) instanceof Or) )
-            {
-                throw new RuntimeException( "NotOrTransformation expected '" + Or.class.getName( ) + "' but instead found '" + not.getChildren( ).get( 0 ).getClass( ).getName( ) + "'" );
+            if ( !(not.getChildren().get( 0 ) instanceof Or) ) {
+                throw new RuntimeException( "NotOrTransformation expected '" + Or.class.getName() + "' but instead found '" + not.getChildren().get( 0 ).getClass().getName() + "'" );
             }
 
             /*
              * we know a Not only ever has one child, and the previous algorithm
              * has confirmed the child is an OR
              */
-            Or or = (Or) not.getChildren( ).get( 0 );
-            And and = new And( );
-            for ( Iterator it = or.getChildren( ).iterator( ); it.hasNext( ); )
-            {
-                Not newNot = new Not( );
-                newNot.addChild( it.next( ) );
+            Or or = (Or) not.getChildren().get( 0 );
+            And and = new And();
+            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+                Not newNot = new Not();
+                newNot.addChild( it.next() );
                 and.addChild( newNot );
             }
             return and;

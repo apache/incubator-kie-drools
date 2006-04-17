@@ -99,11 +99,13 @@ public class NotNode extends BetaNode {
                             WorkingMemoryImpl workingMemory) {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        memory.add( workingMemory, leftTuple );
+        memory.add( workingMemory,
+                    leftTuple );
 
         BetaNodeBinder binder = getJoinNodeBinder();
 
-        for ( Iterator it = memory.rightObjectIterator(workingMemory, leftTuple); it.hasNext(); ) {
+        for ( Iterator it = memory.rightObjectIterator( workingMemory,
+                                                        leftTuple ); it.hasNext(); ) {
             ObjectMatches objectMatches = (ObjectMatches) it.next();
             FactHandleImpl handle = objectMatches.getFactHandle();
             attemptJoin( leftTuple,
@@ -138,11 +140,13 @@ public class NotNode extends BetaNode {
                              WorkingMemoryImpl workingMemory) {
 
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        ObjectMatches objectMatches = memory.add( workingMemory, handle );
+        ObjectMatches objectMatches = memory.add( workingMemory,
+                                                  handle );
 
         BetaNodeBinder binder = getJoinNodeBinder();
 
-        for ( Iterator it = memory.leftTupleIterator(workingMemory, handle); it.hasNext();  ) {
+        for ( Iterator it = memory.leftTupleIterator( workingMemory,
+                                                      handle ); it.hasNext(); ) {
             ReteTuple leftTuple = (ReteTuple) it.next();
             int previousSize = leftTuple.matchesSize();
             attemptJoin( leftTuple,
@@ -175,7 +179,8 @@ public class NotNode extends BetaNode {
                               PropagationContext context,
                               WorkingMemoryImpl workingMemory) {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        ObjectMatches objectMatches = memory.remove( workingMemory, handle );
+        ObjectMatches objectMatches = memory.remove( workingMemory,
+                                                     handle );
 
         for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
             ReteTuple leftTuple = tupleMatch.getTuple();
@@ -205,7 +210,8 @@ public class NotNode extends BetaNode {
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.remove( workingMemory, leftTuple );
+        memory.remove( workingMemory,
+                       leftTuple );
 
         Map matches = leftTuple.getTupleMatches();
 
@@ -228,16 +234,19 @@ public class NotNode extends BetaNode {
 
         // We remove the tuple as now its modified it needs to go to the top of
         // the stack, which is added back in else where
-        memory.remove( workingMemory, leftTuple );
+        memory.remove( workingMemory,
+                       leftTuple );
         // ensure the tuple is at the top of the memory
-        memory.add( workingMemory, leftTuple );
-        
+        memory.add( workingMemory,
+                    leftTuple );
+
         Map matches = leftTuple.getTupleMatches();
 
         int previous = matches.size();
         BetaNodeBinder binder = getJoinNodeBinder();
 
-        for ( Iterator rightIterator = memory.rightObjectIterator(workingMemory, leftTuple); rightIterator.hasNext(); ) {
+        for ( Iterator rightIterator = memory.rightObjectIterator( workingMemory,
+                                                                   leftTuple ); rightIterator.hasNext(); ) {
             ObjectMatches objectMatches = (ObjectMatches) rightIterator.next();
             FactHandleImpl handle = objectMatches.getFactHandle();
 
@@ -281,13 +290,16 @@ public class NotNode extends BetaNode {
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Remove the FactHandle from memory
-        ObjectMatches objectMatches = memory.remove( workingMemory, handle );
-        memory.add( workingMemory, objectMatches );
-        
+        ObjectMatches objectMatches = memory.remove( workingMemory,
+                                                     handle );
+        memory.add( workingMemory,
+                    objectMatches );
+
         TupleMatch tupleMatch = objectMatches.getFirstTupleMatch();
         BetaNodeBinder binder = getJoinNodeBinder();
 
-        for ( Iterator it = memory.leftTupleIterator(workingMemory, handle); it.hasNext();  ) {
+        for ( Iterator it = memory.leftTupleIterator( workingMemory,
+                                                      handle ); it.hasNext(); ) {
             ReteTuple leftTuple = (ReteTuple) it.next();
             if ( tupleMatch != null && tupleMatch.getTuple() == leftTuple ) {
                 // has previous match so need to decide whether to continue
@@ -330,27 +342,27 @@ public class NotNode extends BetaNode {
             }
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
         this.attachingNewNode = true;
-        
+
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         //@todo: can we iterate left memory like this?
-        for ( Iterator it = memory.leftTupleIterator( workingMemory, null ); it.hasNext(); ) {
-            ReteTuple leftTuple = ( ReteTuple ) it.next();
+        for ( Iterator it = memory.leftTupleIterator( workingMemory,
+                                                      null ); it.hasNext(); ) {
+            ReteTuple leftTuple = (ReteTuple) it.next();
             if ( leftTuple.matchesSize() == 0 ) {
                 propagateAssertTuple( leftTuple,
                                       context,
                                       workingMemory );
-            }            
+            }
         }
-            
+
         this.attachingNewNode = true;
     }
-        
 
 }

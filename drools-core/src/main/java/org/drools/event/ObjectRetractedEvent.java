@@ -54,7 +54,8 @@ public class ObjectRetractedEvent extends WorkingMemoryEvent {
                                 PropagationContext propagationContext,
                                 FactHandle handle,
                                 Object oldObject) {
-        super( workingMemory, propagationContext );
+        super( workingMemory,
+               propagationContext );
         this.handle = handle;
         this.oldObject = oldObject;
     }

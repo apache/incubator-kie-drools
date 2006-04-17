@@ -36,12 +36,12 @@ public class MockTupleSink extends TupleSource
         this.retracted.add( new Object[]{tuple, context, workingMemory} );
 
     }
-    
+
     public void modifyTuple(ReteTuple tuple,
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
-        this.modified.add( new Object[]{tuple, context, workingMemory} );        
-    }    
+        this.modified.add( new Object[]{tuple, context, workingMemory} );
+    }
 
     public List getAsserted() {
         return this.asserted;
@@ -50,7 +50,7 @@ public class MockTupleSink extends TupleSource
     public List getRetracted() {
         return this.retracted;
     }
-    
+
     public List getModified() {
         return this.modified;
     }
@@ -85,12 +85,12 @@ public class MockTupleSink extends TupleSource
     public void remove(BaseNode node,
                        WorkingMemoryImpl[] workingMemories) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void attach(WorkingMemoryImpl[] workingMemories) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

@@ -25,67 +25,70 @@ import junit.framework.TestCase;
  */
 public class HandleFactoryTest extends TestCase {
 
-	HandleFactory factory;
+    HandleFactory factory;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.factory = new HandleFactory();
-	}
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.factory = new HandleFactory();
+    }
 
-	/*
-	 * Test method for 'org.drools.leaps.Handlethis.factory.newFactHandle()'
-	 */
-	public void testNewFactHandle() {
-		assertTrue(((Handle) this.factory.newFactHandle()).getObject() == null);
-	}
+    /*
+     * Test method for 'org.drools.leaps.Handlethis.factory.newFactHandle()'
+     */
+    public void testNewFactHandle() {
+        assertTrue( ((Handle) this.factory.newFactHandle()).getObject() == null );
+    }
 
-	/*
-	 * Test method for 'org.drools.leaps.Handlethis.factory.getNextId()'
-	 */
-	public void testGetNextId() {
-		this.factory.getNextId();
-		this.factory.getNextId();
-		this.factory.getNextId();
-		this.factory.getNextId();
+    /*
+     * Test method for 'org.drools.leaps.Handlethis.factory.getNextId()'
+     */
+    public void testGetNextId() {
+        this.factory.getNextId();
+        this.factory.getNextId();
+        this.factory.getNextId();
+        this.factory.getNextId();
 
-		long nextId = this.factory.getNextId() + 1;
-		assertEquals(nextId, this.factory.getNextId());
-	}
+        long nextId = this.factory.getNextId() + 1;
+        assertEquals( nextId,
+                      this.factory.getNextId() );
+    }
 
-	/*
-	 * Test method for
-	 * 'org.drools.leaps.Handlethis.factory.newFactHandle(Object)'
-	 */
-	public void testNewFactHandleObject() {
-		this.factory.getNextId();
-		this.factory.getNextId();
+    /*
+     * Test method for
+     * 'org.drools.leaps.Handlethis.factory.newFactHandle(Object)'
+     */
+    public void testNewFactHandleObject() {
+        this.factory.getNextId();
+        this.factory.getNextId();
 
-		String testObject = new String("test object");
-		long nextId = this.factory.getNextId() + 1;
-		Handle handle = (Handle) this.factory.newFactHandle(testObject);
-		assertEquals(nextId, handle.getId());
-		assertEquals(testObject, handle.getObject());
+        String testObject = new String( "test object" );
+        long nextId = this.factory.getNextId() + 1;
+        Handle handle = (Handle) this.factory.newFactHandle( testObject );
+        assertEquals( nextId,
+                      handle.getId() );
+        assertEquals( testObject,
+                      handle.getObject() );
 
-	}
+    }
 
-	/*
-	 * Test method for 'org.drools.leaps.Handlethis.factory.newFactHandle(long)'
-	 */
-	public void testNewFactHandleLong() {
-		this.factory.getNextId();
-		this.factory.getNextId();
+    /*
+     * Test method for 'org.drools.leaps.Handlethis.factory.newFactHandle(long)'
+     */
+    public void testNewFactHandleLong() {
+        this.factory.getNextId();
+        this.factory.getNextId();
 
-		long nextId = this.factory.getNextId() + 1;
-		assertEquals(nextId, ((Handle) this.factory.newFactHandle(984393L))
-				.getId());
+        long nextId = this.factory.getNextId() + 1;
+        assertEquals( nextId,
+                      ((Handle) this.factory.newFactHandle( 984393L )).getId() );
 
-	}
+    }
 
-	/*
-	 * Test method for 'org.drools.leaps.Handlethis.factory.newInstance()'
-	 */
-	public void testNewInstance() {
-		assertFalse(this.factory == this.factory.newInstance());
-	}
+    /*
+     * Test method for 'org.drools.leaps.Handlethis.factory.newInstance()'
+     */
+    public void testNewInstance() {
+        assertFalse( this.factory == this.factory.newInstance() );
+    }
 
 }

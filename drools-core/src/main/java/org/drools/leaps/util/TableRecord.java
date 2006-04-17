@@ -23,33 +23,34 @@ import java.io.Serializable;
  * @author Alexander Bagerman
  * 
  */
-public class TableRecord  implements Serializable{
-	// left neigbor
-	TableRecord left;
+public class TableRecord
+    implements
+    Serializable {
+    // left neigbor
+    TableRecord left;
 
-	// right neigbor
-	TableRecord right;
+    // right neigbor
+    TableRecord right;
 
-	// content of the record
-	Object object;
+    // content of the record
+    Object      object;
 
-	TableRecord(Object o) {
-		this.left = null;
-		this.right = null;
-		this.object = o;
-	}
-	
-	public int hashCode() {
-		return this.object.hashCode();
-	}
-	
-	public boolean equals(Object that) {
-		if(this.object != null) {
-			return this.object.equals(that);
-		}
-		else {
-			return that == null;
-		}
-	}
+    TableRecord(Object o) {
+        this.left = null;
+        this.right = null;
+        this.object = o;
+    }
+
+    public int hashCode() {
+        return this.object.hashCode();
+    }
+
+    public boolean equals(Object that) {
+        if ( this.object != null ) {
+            return this.object.equals( that );
+        } else {
+            return that == null;
+        }
+    }
 
 }

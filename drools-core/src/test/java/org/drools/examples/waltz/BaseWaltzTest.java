@@ -31,7 +31,6 @@ import org.drools.DroolsTestCase;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.ClassObjectType;
-import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.EvaluatorFactory;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
@@ -42,7 +41,6 @@ import org.drools.rule.Not;
 import org.drools.rule.Or;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
@@ -166,7 +164,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Stage stage = (Stage) drools.get( stageDeclaration );
                     stage.setValue( Stage.DUPLICATE );
                     drools.modifyObject( tuple.get( stageDeclaration ),
@@ -260,7 +257,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Line line = (Line) drools.get( lineDeclaration );
                     drools.assertObject( new Edge( line.getP1(),
                                                    line.getP2(),
@@ -320,7 +316,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Stage stage = (Stage) drools.get( stageDeclaration );
                     stage.setValue( Stage.DETECT_JUNCTIONS );
@@ -436,7 +431,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     edge1.setJoined( true );
@@ -564,7 +558,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     edge1.setJoined( true );
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
@@ -631,7 +624,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Stage stage = (Stage) drools.get( stageDeclaration );
                     stage.setValue( Stage.FIND_INITIAL_BOUNDARY );
@@ -737,7 +729,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     edge1.setLabel( Edge.B );
@@ -872,7 +863,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Stage stage = (Stage) drools.get( stageDeclaration );
                     stage.setValue( Stage.FIND_SECOND_BOUNDARY );
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
@@ -992,7 +982,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     edge1.setLabel( Edge.B );
@@ -1127,7 +1116,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     edge1.setLabel( Edge.B );
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
@@ -1257,7 +1245,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     edge1.setPlotted( Edge.TRUE );
@@ -1389,7 +1376,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
                     edge2.setLabel( Edge.B );
 
@@ -1487,7 +1473,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     edge1.setLabel( Edge.B );
@@ -1590,7 +1575,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     edge1.setLabel( Edge.B );
@@ -1711,7 +1695,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
                     edge2.setLabel( Edge.PLUS );
@@ -1836,7 +1819,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Edge edge3 = (Edge) drools.get( edge3Declaration );
                     edge3.setLabel( Edge.B );
 
@@ -1957,7 +1939,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Edge edge3 = (Edge) drools.get( edge3Declaration );
                     edge3.setLabel( Edge.MINUS );
 
@@ -2076,7 +2057,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge3 = (Edge) drools.get( edge3Declaration );
                     edge3.setLabel( Edge.MINUS );
@@ -2224,7 +2204,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
@@ -2376,7 +2355,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
@@ -2530,7 +2508,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
                     edge2.setLabel( Edge.PLUS );
@@ -2683,7 +2660,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Edge edge1 = (Edge) drools.get( edge1Declaration );
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
                     edge2.setLabel( Edge.PLUS );
@@ -2812,7 +2788,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
                     edge2.setLabel( Edge.MINUS );
                     Edge edge3 = (Edge) drools.get( edge3Declaration );
@@ -2936,7 +2911,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
                     edge2.setLabel( Edge.MINUS );
@@ -3065,7 +3039,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
                     edge2.setLabel( Edge.MINUS );
                     Edge edge3 = (Edge) drools.get( edge3Declaration );
@@ -3189,7 +3162,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
                     edge2.setLabel( Edge.MINUS );
@@ -3317,7 +3289,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
                     edge2.setLabel( Edge.PLUS );
@@ -3449,7 +3420,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Edge edge2 = (Edge) drools.get( edge2Declaration );
                     edge2.setLabel( Edge.PLUS );
                     Edge edge3 = (Edge) drools.get( edge3Declaration );
@@ -3497,7 +3467,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Stage stage = (Stage) drools.get( stageDeclaration );
                     stage.setValue( Stage.PLOT_REMAINING_EDGES );
@@ -3555,7 +3524,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Edge edge = (Edge) drools.get( edgeDeclaration );
                     System.out.println( "plot " + edge.getLabel() + " " + edge.getP1() + " " + edge.getP2() );
@@ -3620,7 +3588,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-
                     Edge edge = (Edge) drools.get( edgeDeclaration );
                     System.out.println( "plot B " + edge.getP1() + " " + edge.getP2() );
                     edge.setPlotted( Edge.TRUE );
@@ -3672,7 +3639,6 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Stage stage = (Stage) drools.get( stageDeclaration );
                     stage.setValue( Stage.DONE );

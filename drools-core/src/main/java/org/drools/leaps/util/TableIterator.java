@@ -25,7 +25,9 @@ import java.util.Iterator;
  * @author Alexander Bagerman
  * 
  */
-public interface TableIterator extends Iterator {
+public interface TableIterator
+    extends
+    Iterator {
     /**
      * single object iterator
      * 

@@ -10,39 +10,30 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
 import junit.framework.TestCase;
 
-import org.drools.FactException;
-import org.drools.PackageIntegrationException;
-import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
-import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.EvaluatorFactory;
-import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
-import org.drools.rule.DuplicateRuleNameException;
-import org.drools.rule.InvalidPatternException;
 import org.drools.rule.InvalidRuleException;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
+import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.MockField;
 import org.drools.spi.Tuple;
@@ -59,7 +50,7 @@ public abstract class BaseMannersTest extends TestCase {
 
     /** Maximun number of hobbies each guest should have (default: 3). */
     private int             maxHobbies = 3;
-    
+
     protected Package       pkg;
 
     private ClassObjectType contextType;
@@ -99,7 +90,7 @@ public abstract class BaseMannersTest extends TestCase {
                                                                                   Evaluator.EQUAL );
         this.booleanNotEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.BOOLEAN_TYPE,
                                                                                      Evaluator.NOT_EQUAL );
-        
+
         this.pkg = new Package( "Miss Manners" );
         pkg.addRule( getAssignFirstSeatRule() );
         pkg.addRule( getFindSeating() );
@@ -188,7 +179,6 @@ public abstract class BaseMannersTest extends TestCase {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Guest guest = (Guest) drools.get( guestDeclaration );
                     Context context = (Context) drools.get( contextDeclaration );
@@ -447,11 +437,10 @@ public abstract class BaseMannersTest extends TestCase {
         Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
-                               WorkingMemory workingMemory) throws ConsequenceException {
+                                 WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Context context = (Context) drools.get( contextDeclaration );
                     Count count = (Count) drools.get( countDeclaration );
@@ -627,11 +616,10 @@ public abstract class BaseMannersTest extends TestCase {
         Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
-                               WorkingMemory workingMemory) throws ConsequenceException {
+                                 WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     int id = ((Integer) drools.get( seatingIdDeclaration )).intValue();
                     int seat = ((Integer) drools.get( pathSeatDeclaration )).intValue();
@@ -718,11 +706,10 @@ public abstract class BaseMannersTest extends TestCase {
         Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
-                               WorkingMemory workingMemory) throws ConsequenceException {
+                                 WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Context context = (Context) drools.get( contextDeclaration );
                     Seating seating = (Seating) drools.get( seatingDeclaration );
@@ -820,11 +807,10 @@ public abstract class BaseMannersTest extends TestCase {
         Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
-                               WorkingMemory workingMemory) throws ConsequenceException {
+                                 WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Context context = (Context) drools.get( contextDeclaration );
                     context.setState( Context.PRINT_RESULTS );
@@ -885,11 +871,10 @@ public abstract class BaseMannersTest extends TestCase {
         Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
-                               WorkingMemory workingMemory) throws ConsequenceException {
+                                 WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
-
 
                     Context context = (Context) drools.get( contextDeclaration );
                     context.setState( Context.ASSIGN_SEATS );
@@ -950,7 +935,7 @@ public abstract class BaseMannersTest extends TestCase {
         Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
-                               WorkingMemory workingMemory) throws ConsequenceException {
+                                 WorkingMemory workingMemory) throws ConsequenceException {
                 try {
                     System.err.println( "all done" );
                 } catch ( Exception e ) {

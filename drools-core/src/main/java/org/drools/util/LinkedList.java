@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
  * limitations under the License.
  */
 
-
 /**
  * This is a simple linked linked implementation. Each node must implement </code>LinkedListNode<code> so that it references
  * the node before and after it. This way a node can be removed without having to scan the list to find it. This class
@@ -46,10 +45,9 @@ import java.util.NoSuchElementException;
 public class LinkedList {
     private LinkedListNode firstNode;
     private LinkedListNode lastNode;
-    
-    private int size;
 
-    
+    private int            size;
+
     /**
      * Construct an empty <code>LinkedList</code>
      */
@@ -57,7 +55,6 @@ public class LinkedList {
 
     }
 
-    
     /**
      * Add a <code>LinkedListNode</code> to the list. If the <code>LinkedList</code> is empty then the first and 
      * last nodes are set to the added node.
@@ -86,13 +83,13 @@ public class LinkedList {
      *      The <code>LinkedListNode</code> to be removed.
      */
     public void remove(LinkedListNode node) {
-        if (( this.firstNode != node ) && ( this.lastNode != node )) {
+        if ( (this.firstNode != node) && (this.lastNode != node) ) {
             node.getPrevious().setNext( node.getNext() );
             node.getNext().setPrevious( node.getPrevious() );
             this.size--;
-            node.setPrevious(null);
-            node.setNext(null);
-            
+            node.setPrevious( null );
+            node.setNext( null );
+
         } else {
             if ( this.firstNode == node ) {
                 removeFirst();
@@ -102,7 +99,6 @@ public class LinkedList {
         }
     }
 
-    
     /**
      * Return the first node in the list
      * @return
@@ -116,7 +112,7 @@ public class LinkedList {
      * Return the last node in the list
      * @return
      *      The last <code>LinkedListNode</code>.
-     */    
+     */
     public LinkedListNode getLast() {
         return this.lastNode;
     }
@@ -127,7 +123,7 @@ public class LinkedList {
      * 
      * @return
      *      The first <code>LinkedListNode</code>.
-     */    
+     */
     public LinkedListNode removeFirst() {
         if ( this.firstNode == null ) {
             return null;
@@ -140,7 +136,7 @@ public class LinkedList {
         } else {
             this.lastNode = null;
         }
-        this.size--;        
+        this.size--;
         return node;
     }
 
@@ -150,22 +146,22 @@ public class LinkedList {
      * 
      * @return
      *      The first <code>LinkedListNode</code>.
-     */       
+     */
     public LinkedListNode removeLast() {
-        if ( this.lastNode == null ) { 
+        if ( this.lastNode == null ) {
             return null;
         }
         LinkedListNode node = this.lastNode;
         this.lastNode = node.getPrevious();
         node.setPrevious( null );
-        if ( this.lastNode != null) {
+        if ( this.lastNode != null ) {
             this.lastNode.setNext( null );
         } else {
             this.firstNode = this.lastNode;
         }
         this.size--;
         return node;
-    }    
+    }
 
     /**
      * @return
@@ -174,14 +170,15 @@ public class LinkedList {
     public boolean isEmpty() {
         return (this.firstNode == null);
     }
-    
+
     /**
      * Iterates the list removing all the nodes until there are no more nodes to remove. 
      */
     public void clear() {
-        while ( removeFirst() != null) { }
+        while ( removeFirst() != null ) {
+        }
     }
-    
+
     /**
      * @return
      *     return size of the list as an int
@@ -189,7 +186,7 @@ public class LinkedList {
     public int size() {
         return this.size;
     }
-    
+
     /**
      * Returns a list iterator
      * @return
@@ -197,7 +194,7 @@ public class LinkedList {
     public Iterator iterator() {
         return new Iterator() {
             private LinkedListNode currentNode = null;
-            private LinkedListNode nextNode = getFirst();
+            private LinkedListNode nextNode    = getFirst();
 
             public boolean hasNext() {
                 return (nextNode != null);
@@ -205,23 +202,23 @@ public class LinkedList {
 
             public Object next() {
                 currentNode = nextNode;
-                if(currentNode != null) {
+                if ( currentNode != null ) {
                     nextNode = currentNode.getNext();
                 } else {
-                    throw new NoSuchElementException("No more elements to return");
+                    throw new NoSuchElementException( "No more elements to return" );
                 }
                 return currentNode;
             }
 
             public void remove() {
-                if(currentNode != null) {
-                    LinkedList.this.remove(currentNode);
+                if ( currentNode != null ) {
+                    LinkedList.this.remove( currentNode );
                     currentNode = null;
                 } else {
-                    throw new IllegalStateException("No item to remove. Call next() before calling remove().");
+                    throw new IllegalStateException( "No item to remove. Call next() before calling remove()." );
                 }
             }
         };
     }
-    
+
 }

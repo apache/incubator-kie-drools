@@ -7,15 +7,14 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.spi.MockField;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.EvaluatorFactory;
 import org.drools.reteoo.InstrumentedReteTuple;
-import org.drools.reteoo.InstrumentedWorkingMemoryImpl;
 import org.drools.reteoo.RuleBaseImpl;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
 import org.drools.spi.FieldExtractor;
+import org.drools.spi.FieldValue;
+import org.drools.spi.MockField;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
@@ -44,11 +43,9 @@ public class FieldConstraintTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                  "type" );
+                                                                 "type" );
 
         FieldValue field = new MockField( "cheddar" );
-
-
 
         Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
                                                                            Evaluator.EQUAL );
@@ -116,7 +113,7 @@ public class FieldConstraintTest extends TestCase {
                                     Declaration[] declarations,
                                     WorkingMemory workingMemory) {
                 int price1 = ((Integer) declarations[0].getValue( workingMemory.getObject( tuple.get( declarations[0] ) ) )).intValue();
-                int price2 = ( (Integer) declaration.getValue( workingMemory.getObject( factHandle ) ) ).intValue();
+                int price2 = ((Integer) declaration.getValue( workingMemory.getObject( factHandle ) )).intValue();
 
                 return (price2 == (price1 * 2));
 

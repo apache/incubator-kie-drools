@@ -40,7 +40,6 @@ package org.drools.spi;
  *
  */
 
-import org.drools.CheckedDroolsException;
 import org.drools.RuntimeDroolsException;
 import org.drools.rule.Rule;
 

@@ -26,11 +26,10 @@ package org.drools.util;
  * Created: 14/02/2006
  */
 public class MultiLinkedList extends LinkedList {
-    
+
     public MultiLinkedList() {
     }
 
-    
     /**
      * Add a <code>MultiLinkedListNode</code> to the list. 
      * If the <code>MultiLinkedList</code> is empty then the first and 
@@ -40,8 +39,8 @@ public class MultiLinkedList extends LinkedList {
      *      The <code>LinkedListNode</code> to be added
      */
     public void add(MultiLinkedListNode node) {
-        super.add(node);
-        node.setLinkedList(this);
+        super.add( node );
+        node.setLinkedList( this );
     }
 
     /**
@@ -55,7 +54,7 @@ public class MultiLinkedList extends LinkedList {
      *      The <code>LinkedListNode</code> to be removed.
      */
     public void remove(MultiLinkedListNode node) {
-        super.remove(node);
-        node.setLinkedList(null);
+        super.remove( node );
+        node.setLinkedList( null );
     }
 }

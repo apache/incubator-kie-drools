@@ -10,7 +10,9 @@ import java.io.Serializable;
  * @author Michael Neale
  * @author "Jeff Brown" <brown_j@ociweb.com>
  */
-public interface FieldAccessor extends Serializable {
+public interface FieldAccessor
+    extends
+    Serializable {
 
     /**
      * Returns the "field" corresponding to the order in which it is in the object (class).
@@ -21,6 +23,7 @@ public interface FieldAccessor extends Serializable {
      * 
      * @return Appropriate return type. Primitives are boxed to the corresponding type.
      */
-    public Object getFieldByIndex(Object obj, int idx);
-    
+    public Object getFieldByIndex(Object obj,
+                                  int idx);
+
 }

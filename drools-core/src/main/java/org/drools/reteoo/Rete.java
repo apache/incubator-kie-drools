@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,9 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,16 +23,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.drools.FactException;
-import org.drools.base.ClassObjectType;
-import org.drools.rule.And;
-import org.drools.rule.InvalidPatternException;
-import org.drools.rule.Rule;
-import org.drools.spi.ClassObjectTypeResolver;
-import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.ObjectType;
+import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -67,9 +59,9 @@ class Rete extends ObjectSource
 
     /** The <code>Map</code> of <code>ObjectTypeNodes</code>. */
     private final Map                objectTypeNodes = new HashMap();
-    private       ObjectTypeNode     lastAddedNode = null;
-    
-    private final ObjectTypeResolver resolver;       
+    private ObjectTypeNode           lastAddedNode   = null;
+
+    private final ObjectTypeResolver resolver;
 
     // ------------------------------------------------------------
     // Constructors
@@ -81,17 +73,15 @@ class Rete extends ObjectSource
     public Rete() {
         this( null );
     }
-    
+
     public Rete(ObjectTypeResolver resolver) {
         super( 0 );
         this.resolver = resolver;
     }
-       
+
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-
-    
 
     /**
      * This is the entry point into the network for all asserted Facts. Iterates a cache
@@ -155,7 +145,7 @@ class Rete extends ObjectSource
                                           workingMemory );
         }
     }
-    
+
     public void modifyObject(FactHandleImpl handle,
                              PropagationContext context,
                              WorkingMemoryImpl workingMemory) {
@@ -172,10 +162,10 @@ class Rete extends ObjectSource
 
         for ( int i = 0; i < cachedNodes.length; i++ ) {
             cachedNodes[i].modifyObject( handle,
-                                          context,
-                                          workingMemory );
+                                         context,
+                                         workingMemory );
         }
-    }    
+    }
 
     private ObjectTypeNode[] getMatchingNodes(Object object) throws FactException {
         List cache = new ArrayList();
@@ -245,30 +235,30 @@ class Rete extends ObjectSource
     protected void addObjectSink(ObjectSink objectSink) {
         addObjectTypeNode( (ObjectTypeNode) objectSink );
     }
-    
+
     protected void removeObjectSink(ObjectSink objectSink) {
-        this.objectTypeNodes.remove( objectSink );        
-    }    
+        this.objectTypeNodes.remove( objectSink );
+    }
 
     public void attach() {
         // do nothing this is the root node
     }
-    
+
     public void attach(WorkingMemoryImpl[] workingMemories) {
         // do nothing this is the root node        
-    }       
+    }
 
     // when a new ObjectTypeNode is added, check for possible 
     // propagations into the new node
     public void updateNewNode(WorkingMemoryImpl workingMemory,
                               PropagationContext context) {
-        if(this.lastAddedNode != null) {
-            ObjectType objType = this.lastAddedNode.getObjectType(); 
-            for(Iterator i = workingMemory.getFactHandleMap().entrySet().iterator(); i.hasNext(); ) {
+        if ( this.lastAddedNode != null ) {
+            ObjectType objType = this.lastAddedNode.getObjectType();
+            for ( Iterator i = workingMemory.getFactHandleMap().entrySet().iterator(); i.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) i.next();
-                if(objType.matches( entry.getKey() )) {
-                    this.lastAddedNode.assertObject( (FactHandleImpl) entry.getValue(), 
-                                                     context, 
+                if ( objType.matches( entry.getKey() ) ) {
+                    this.lastAddedNode.assertObject( (FactHandleImpl) entry.getValue(),
+                                                     context,
                                                      workingMemory );
                 }
             }
@@ -276,9 +266,9 @@ class Rete extends ObjectSource
         }
     }
 
-    public void remove(BaseNode node,          
+    public void remove(BaseNode node,
                        WorkingMemoryImpl[] workingMemories) {
-        ObjectTypeNode objectTypeNode = ( ObjectTypeNode ) node;
+        ObjectTypeNode objectTypeNode = (ObjectTypeNode) node;
         removeObjectSink( objectTypeNode );
         //@todo: we really should attempt to clear the memory cache for this ObjectTypeNode        
     }

@@ -38,11 +38,11 @@ public class DefaultRightMemory
     BetaRightMemory {
 
     private final MultiLinkedList memory;
-    
+
     public DefaultRightMemory() {
         this.memory = new MultiLinkedList();
     }
-    
+
     /**
      * @inheritDoc 
      *
@@ -50,7 +50,7 @@ public class DefaultRightMemory
      */
     public void add(WorkingMemory workingMemory,
                     ObjectMatches matches) {
-        this.memory.add(matches);
+        this.memory.add( matches );
     }
 
     /**
@@ -61,7 +61,7 @@ public class DefaultRightMemory
      */
     public void remove(WorkingMemory workingMemory,
                        ObjectMatches matches) {
-        matches.getLinkedList().remove(matches);
+        matches.getLinkedList().remove( matches );
     }
 
     /**
@@ -72,7 +72,7 @@ public class DefaultRightMemory
      */
     public void add(WorkingMemory workingMemory,
                     MultiLinkedListNodeWrapper wrapper) {
-        this.memory.add(wrapper);
+        this.memory.add( wrapper );
     }
 
     /**
@@ -83,7 +83,7 @@ public class DefaultRightMemory
      */
     public void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper wrapper) {
-        wrapper.getLinkedList().remove(wrapper);
+        wrapper.getLinkedList().remove( wrapper );
     }
 
     /**
@@ -93,7 +93,8 @@ public class DefaultRightMemory
      */
     public Iterator iterator(final WorkingMemory workingMemory,
                              final ReteTuple tuple) {
-        this.selectPossibleMatches(workingMemory, tuple);
+        this.selectPossibleMatches( workingMemory,
+                                    tuple );
         return this.iterator();
     }
 

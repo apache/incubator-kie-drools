@@ -30,38 +30,40 @@ import org.drools.leaps.RuleHandle;
  * @see org.drools.leaps.ConflictResolver
  * @see org.drools.spi.ConflictResolver
  */
-class RuleLoadOrderConflictResolver implements Comparator {
+class RuleLoadOrderConflictResolver
+    implements
+    Comparator {
 
-	/** Singleton instance. */
-	private static final RuleLoadOrderConflictResolver INSTANCE = new RuleLoadOrderConflictResolver();
+    /** Singleton instance. */
+    private static final RuleLoadOrderConflictResolver INSTANCE = new RuleLoadOrderConflictResolver();
 
-	/**
-	 * Retrieve the singleton instance.
-	 * 
-	 * @return The singleton instance.
-	 */
-	public static Comparator getInstance() {
-		return INSTANCE;
-	}
+    /**
+     * Retrieve the singleton instance.
+     * 
+     * @return The singleton instance.
+     */
+    public static Comparator getInstance() {
+        return INSTANCE;
+    }
 
-	/**
-	 * Construct.
-	 */
-	private RuleLoadOrderConflictResolver() {
-		// intentionally left blank
-	}
+    /**
+     * Construct.
+     */
+    private RuleLoadOrderConflictResolver() {
+        // intentionally left blank
+    }
 
-	/**
-	 * @see LeapsRuleLoadOrderResolver
-	 */
-	public int compare(Object o1, Object o2) {
-		int ret = LoadOrderConflictResolver.getInstance().compare(o1, o2);
-		if (ret == 0) {
-			ret = (-1)
-					* AbstractConflictResolver.compare(((RuleHandle) o1)
-							.getDominantPosition(), ((RuleHandle) o2)
-							.getDominantPosition());
-		}
-		return ret;
-	};
+    /**
+     * @see LeapsRuleLoadOrderResolver
+     */
+    public int compare(Object o1,
+                       Object o2) {
+        int ret = LoadOrderConflictResolver.getInstance().compare( o1,
+                                                                   o2 );
+        if ( ret == 0 ) {
+            ret = (-1) * AbstractConflictResolver.compare( ((RuleHandle) o1).getDominantPosition(),
+                                                           ((RuleHandle) o2).getDominantPosition() );
+        }
+        return ret;
+    };
 }

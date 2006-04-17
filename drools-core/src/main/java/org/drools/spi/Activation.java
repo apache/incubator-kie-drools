@@ -43,7 +43,6 @@ package org.drools.spi;
 import org.drools.common.LogicalDependency;
 import org.drools.rule.Rule;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListNode;
 
 /**
  * When a <code>Tuple</code> fully matches a rule it is added to the <code>Agenda</code>
@@ -68,12 +67,12 @@ public interface Activation {
      * @return The tuple.
      */
     Tuple getTuple();
-    
+
     /**
      * Retrieve the <code>PropagationContext</code> for the <code>Activation</code>
      * 
      * @return The propagation context
-     */    
+     */
     PropagationContext getPropagationContext();
 
     /**
@@ -82,17 +81,17 @@ public interface Activation {
      * @return The activation number
      */
     long getActivationNumber();
-    
+
     /**
      * Cancel the <code>Activation</code> by removing it from the <code>Agenda</code>. 
      */
     void remove();
-    
+
     public void addLogicalDependency(LogicalDependency node);
-    
-    public LinkedList getLogicalDependencies( );
-    
+
+    public LinkedList getLogicalDependencies();
+
     public boolean isActivated();
-    
+
     public void setActivated(boolean activated);
 }

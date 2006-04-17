@@ -16,15 +16,9 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,17 +27,16 @@ import java.util.WeakHashMap;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
+import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
-import org.drools.PackageIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.InvalidPatternException;
+import org.drools.rule.Package;
 import org.drools.rule.PackageCompilationData;
 import org.drools.rule.Rule;
-import org.drools.rule.Package;
 import org.drools.spi.ClassObjectTypeResolver;
-import org.drools.spi.ConflictResolver;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.PropagationContext;

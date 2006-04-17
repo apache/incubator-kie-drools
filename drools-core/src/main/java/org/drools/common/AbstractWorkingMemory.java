@@ -22,12 +22,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
@@ -42,7 +42,6 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
-import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
@@ -82,7 +81,7 @@ abstract public class AbstractWorkingMemory
     protected final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
                                                                                                                     8 );
     /** Global values which are associated with this memory. */
-    private final Map                       globals                                       = new HashMap();
+    private final Map                         globals                                       = new HashMap();
 
     /** Object-to-handle mapping. */
     protected final Map                       identityMap                                   = new IdentityMap();
@@ -242,7 +241,7 @@ abstract public class AbstractWorkingMemory
         }
 
         return matching;
-    }      
+    }
 
     /**
      * @see WorkingMemory

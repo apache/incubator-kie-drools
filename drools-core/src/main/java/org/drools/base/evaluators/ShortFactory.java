@@ -1,7 +1,6 @@
 package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
-
 import org.drools.spi.Evaluator;
 
 public class ShortFactory {
@@ -41,13 +40,13 @@ public class ShortFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 == null;
+            if ( object1 == null ) return object2 == null;
             return ((Number) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Short ==";
-        }         
+        }
     }
 
     static class ShortNotEqualEvaluator extends BaseEvaluator {
@@ -67,13 +66,13 @@ public class ShortFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return !(object2 == null);
+            if ( object1 == null ) return !(object2 == null);
             return !((Number) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Short !=";
-        }         
+        }
     }
 
     static class ShortLessEvaluator extends BaseEvaluator {
@@ -95,10 +94,10 @@ public class ShortFactory {
                                 Object object2) {
             return ((Number) object1).shortValue() < ((Number) object2).shortValue();
         }
-        
+
         public String toString() {
             return "Short <";
-        }         
+        }
     }
 
     static class ShortLessOrEqualEvaluator extends BaseEvaluator {
@@ -120,10 +119,10 @@ public class ShortFactory {
                                 Object object2) {
             return ((Number) object1).shortValue() <= ((Number) object2).shortValue();
         }
-        
+
         public String toString() {
             return "Boolean <=";
-        }         
+        }
     }
 
     static class ShortGreaterEvaluator extends BaseEvaluator {
@@ -145,10 +144,10 @@ public class ShortFactory {
                                 Object object2) {
             return ((Number) object1).shortValue() > ((Number) object2).shortValue();
         }
-        
+
         public String toString() {
             return "Short >";
-        }         
+        }
     }
 
     static class ShortGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -170,10 +169,10 @@ public class ShortFactory {
                                 Object object2) {
             return ((Number) object1).shortValue() >= ((Number) object2).shortValue();
         }
-        
+
         public String toString() {
             return "Short >=";
-        }         
+        }
     }
 
 }

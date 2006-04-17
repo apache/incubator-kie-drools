@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,7 +16,6 @@ package org.drools.util;
  * limitations under the License.
  */
 
-
 /**
  * Items placed in a <code>LinkedList<code> must implement this interface .
  * 
@@ -25,14 +25,14 @@ package org.drools.util;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public interface LinkedListNode {
-    
+
     /**
      * Returns the next node
      * @return
      *      The next LinkedListNode
      */
     public LinkedListNode getNext();
-    
+
     /**
      * Sets the next node 
      * @param next
@@ -44,14 +44,14 @@ public interface LinkedListNode {
      * Returns the previous node
      * @return
      *      The previous LinkedListNode
-     */    
+     */
     public LinkedListNode getPrevious();
 
     /**
      * Sets the previous node 
      * @param previous
      *      The previous LinkedListNode
-     */    
+     */
     public void setPrevious(LinkedListNode previous);
 
 }

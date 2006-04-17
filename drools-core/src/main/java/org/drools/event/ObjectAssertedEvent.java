@@ -54,7 +54,8 @@ public class ObjectAssertedEvent extends WorkingMemoryEvent {
                                PropagationContext propagationContext,
                                FactHandle handle,
                                Object object) {
-        super( workingMemory, propagationContext );
+        super( workingMemory,
+               propagationContext );
         this.handle = handle;
         this.object = object;
     }

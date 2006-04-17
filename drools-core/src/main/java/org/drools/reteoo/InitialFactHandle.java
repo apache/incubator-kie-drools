@@ -1,16 +1,16 @@
 package org.drools.reteoo;
 
 public class InitialFactHandle extends FactHandleImpl {
-     private final FactHandleImpl delegate;
-     
-     private Object object;
-     
-     public InitialFactHandle(FactHandleImpl delegate) {
-         super( );
-         this.delegate = delegate;
-         this.object = InitialFactImpl.getInstance();
-     }
-    
+    private final FactHandleImpl delegate;
+
+    private Object               object;
+
+    public InitialFactHandle(FactHandleImpl delegate) {
+        super();
+        this.delegate = delegate;
+        this.object = InitialFactImpl.getInstance();
+    }
+
     // ----------------------------------------------------------------------
     // Instance members
     // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ public class InitialFactHandle extends FactHandleImpl {
      * @see Object
      */
     public boolean equals(Object object) {
-        return  this.delegate.equals( object );
+        return this.delegate.equals( object );
     }
 
     /**
@@ -60,10 +60,8 @@ public class InitialFactHandle extends FactHandleImpl {
         // do nothign
     }
 
-    
     public String toExternalForm() {
         return "InitialFact";
     }
-
 
 }

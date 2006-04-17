@@ -45,83 +45,83 @@ import com.thoughtworks.xstream.XStream;
  */
 public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 
-	private List events = new ArrayList();
-	private String fileName= "event";
-	private int maxEventsInMemory = 1000;
-	private int nbOfFile = 0;
-	
-	/**
-	 * Creates a new WorkingMemoryFileLogger for the given working memory.
-	 * @param workingMemory
-	 */
-	public WorkingMemoryFileLogger(WorkingMemory workingMemory) {
-		super(workingMemory);
-	}
-	
-	/**
-	 * Sets the name of the file the events are logged in.
-	 * No extensions should be given since .log is automatically appended
-	 * to the file name.
-	 * The default is an event.log file in the current working directory.
-	 * This can be a path relative to the current working directory
-	 * (e.g. "mydir/subDir/myLogFile"), or an absolute path 
-	 * (e.g. "C:/myLogFile").
-	 * 
-	 * @param fileName The name of the file the events should be logged in.
-	 */
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-	
-	/**
-	 * All events in the log are written to file.
-	 * The log is automatically cleared afterwards.
-	 */
-	public void writeToDisk() {
-		try {
-			XStream xstream = new XStream();
-			ObjectOutputStream out = xstream.createObjectOutputStream(
-				new FileWriter(fileName + (nbOfFile == 0 ? ".log" : nbOfFile + ".log"), false));
-			out.writeObject(events);
-			out.close();
-			nbOfFile++;
-			clear();
-		} catch (FileNotFoundException exc) {
-			throw new RuntimeException("Could not create the log file.  Please make sure that directory that the log file should be placed in does exist.");
-		} catch (Throwable t) {
-			t.printStackTrace(System.err);
-		}
-	}
-	
-	/**
-	 * Clears all the events in the log.
-	 */
-	public void clear() {
-		events.clear();
-	}
+    private List   events            = new ArrayList();
+    private String fileName          = "event";
+    private int    maxEventsInMemory = 1000;
+    private int    nbOfFile          = 0;
 
-	/**
-	 * Sets the maximum number of log events that are allowed in memory.
-	 * If this number is reached, all events are written to file.
-	 * The default is 1000.
-	 * 
-	 * @param maxEventsInMemory The maximum number of events in memory.
-	 */
-	public void setMaxEventsInMemory(int maxEventsInMemory) {
-		this.maxEventsInMemory = maxEventsInMemory;
-	}
+    /**
+     * Creates a new WorkingMemoryFileLogger for the given working memory.
+     * @param workingMemory
+     */
+    public WorkingMemoryFileLogger(WorkingMemory workingMemory) {
+        super( workingMemory );
+    }
 
-	/**
-	 * @see org.drools.audit.WorkingMemoryLogger
-	 */
-	public void logEventCreated(LogEvent logEvent) {
-		events.add(logEvent);
-		if (events.size() > maxEventsInMemory) {
-			writeToDisk();
-		}
-	}
-	
-	public void finalize() {
-		writeToDisk();
-	}
+    /**
+     * Sets the name of the file the events are logged in.
+     * No extensions should be given since .log is automatically appended
+     * to the file name.
+     * The default is an event.log file in the current working directory.
+     * This can be a path relative to the current working directory
+     * (e.g. "mydir/subDir/myLogFile"), or an absolute path 
+     * (e.g. "C:/myLogFile").
+     * 
+     * @param fileName The name of the file the events should be logged in.
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    /**
+     * All events in the log are written to file.
+     * The log is automatically cleared afterwards.
+     */
+    public void writeToDisk() {
+        try {
+            XStream xstream = new XStream();
+            ObjectOutputStream out = xstream.createObjectOutputStream( new FileWriter( fileName + (nbOfFile == 0 ? ".log" : nbOfFile + ".log"),
+                                                                                       false ) );
+            out.writeObject( events );
+            out.close();
+            nbOfFile++;
+            clear();
+        } catch ( FileNotFoundException exc ) {
+            throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
+        } catch ( Throwable t ) {
+            t.printStackTrace( System.err );
+        }
+    }
+
+    /**
+     * Clears all the events in the log.
+     */
+    public void clear() {
+        events.clear();
+    }
+
+    /**
+     * Sets the maximum number of log events that are allowed in memory.
+     * If this number is reached, all events are written to file.
+     * The default is 1000.
+     * 
+     * @param maxEventsInMemory The maximum number of events in memory.
+     */
+    public void setMaxEventsInMemory(int maxEventsInMemory) {
+        this.maxEventsInMemory = maxEventsInMemory;
+    }
+
+    /**
+     * @see org.drools.audit.WorkingMemoryLogger
+     */
+    public void logEventCreated(LogEvent logEvent) {
+        events.add( logEvent );
+        if ( events.size() > maxEventsInMemory ) {
+            writeToDisk();
+        }
+    }
+
+    public void finalize() {
+        writeToDisk();
+    }
 }

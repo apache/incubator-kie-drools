@@ -22,19 +22,19 @@ package org.drools;
  * @author Michael Neale
  */
 public class RuleBaseFactory {
-      
+
     private static RuleBaseFactory INSTANCE = new RuleBaseFactory();
-    
+
     private RuleBaseFactory() {
     }
-    
+
     public static RuleBaseFactory getInstance() {
         return INSTANCE;
     }
-    
+
     /** Create a new default rule base (RETEOO type engine) */
     public static RuleBase newRuleBase() {
-        return RuleBaseFactory.getInstance().newRuleBase(RuleBase.RETEOO);
+        return RuleBaseFactory.getInstance().newRuleBase( RuleBase.RETEOO );
     }
 
     /** Create a new RuleBase of the appropriate type */
@@ -46,16 +46,12 @@ public class RuleBaseFactory {
                 try {
                     return new org.drools.leaps.RuleBaseImpl();
                 } catch ( PackageIntegrationException e ) {
-                    throw new IllegalStateException("Unable to create Leaps engine. Error: " + e.getMessage());
+                    throw new IllegalStateException( "Unable to create Leaps engine. Error: " + e.getMessage() );
                 }
             default :
-                throw new IllegalArgumentException("Unknown engine type: " + type);
-                
+                throw new IllegalArgumentException( "Unknown engine type: " + type );
+
         }
     }
-    
-    
-    
-    
-    
+
 }

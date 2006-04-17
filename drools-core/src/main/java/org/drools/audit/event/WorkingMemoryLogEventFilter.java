@@ -24,40 +24,47 @@ package org.drools.audit.event;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
-public class WorkingMemoryLogEventFilter implements ILogEventFilter {
+public class WorkingMemoryLogEventFilter
+    implements
+    ILogEventFilter {
 
-	private boolean allowAssertEvents = true;
-	private boolean allowModifyEvents = true;
-	private boolean allowRetractEvents = true;
-	
-	public WorkingMemoryLogEventFilter(boolean allowAssertEvents,
-			boolean allowModifyEvents, boolean allowRetractEvents) {
-		setAllowAssertEvents(allowAssertEvents);
-		setAllowModifyEvents(allowModifyEvents);
-		setAllowRetractEvents(allowRetractEvents);
-	}
-	
-	/**
-	 * @see org.drools.audit.event.ILogEventFilter
-	 */
-	public boolean acceptEvent(LogEvent event) {
-		switch (event.getType()) {
-			case LogEvent.OBJECT_ASSERTED: return allowAssertEvents;
-			case LogEvent.OBJECT_MODIFIED: return allowModifyEvents;
-			case LogEvent.OBJECT_RETRACTED: return allowRetractEvents;
-			default: return true;
-		}
-	}
-	
-	public void setAllowAssertEvents(boolean allowAssertEvents) {
-		this.allowAssertEvents = allowAssertEvents;
-	}
+    private boolean allowAssertEvents  = true;
+    private boolean allowModifyEvents  = true;
+    private boolean allowRetractEvents = true;
 
-	public void setAllowModifyEvents(boolean allowModifyEvents) {
-		this.allowModifyEvents = allowModifyEvents;
-	}
+    public WorkingMemoryLogEventFilter(boolean allowAssertEvents,
+                                       boolean allowModifyEvents,
+                                       boolean allowRetractEvents) {
+        setAllowAssertEvents( allowAssertEvents );
+        setAllowModifyEvents( allowModifyEvents );
+        setAllowRetractEvents( allowRetractEvents );
+    }
 
-	public void setAllowRetractEvents(boolean allowRetractEvents) {
-		this.allowRetractEvents = allowRetractEvents;
-	}
+    /**
+     * @see org.drools.audit.event.ILogEventFilter
+     */
+    public boolean acceptEvent(LogEvent event) {
+        switch ( event.getType() ) {
+            case LogEvent.OBJECT_ASSERTED :
+                return allowAssertEvents;
+            case LogEvent.OBJECT_MODIFIED :
+                return allowModifyEvents;
+            case LogEvent.OBJECT_RETRACTED :
+                return allowRetractEvents;
+            default :
+                return true;
+        }
+    }
+
+    public void setAllowAssertEvents(boolean allowAssertEvents) {
+        this.allowAssertEvents = allowAssertEvents;
+    }
+
+    public void setAllowModifyEvents(boolean allowModifyEvents) {
+        this.allowModifyEvents = allowModifyEvents;
+    }
+
+    public void setAllowRetractEvents(boolean allowRetractEvents) {
+        this.allowRetractEvents = allowRetractEvents;
+    }
 }

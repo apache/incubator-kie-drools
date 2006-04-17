@@ -16,14 +16,10 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TimerTask;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.drools.FactException;
-import org.drools.common.ActivationQueue;
 import org.drools.common.Agenda;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.AgendaItem;
@@ -31,10 +27,10 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.Duration;
 import org.drools.spi.AgendaGroup;
+import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
-import org.drools.util.LinkedListNode;
+import org.drools.util.Queueable;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -53,7 +49,7 @@ final class TerminalNode extends BaseNode
     // ------------------------------------------------------------
 
     /** The rule to invoke upon match. */
-    private Rule        rule;
+    private Rule              rule;
     private final TupleSource tupleSource;
 
     // ------------------------------------------------------------
@@ -74,8 +70,8 @@ final class TerminalNode extends BaseNode
         super( id );
         this.rule = rule;
         this.tupleSource = source;
-    }   
-    
+    }
+
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
@@ -158,25 +154,15 @@ final class TerminalNode extends BaseNode
                 agenda.setFocus( agendaGroup );
             }
 
-            // Lazy assignment of the AgendaGroup's Activation Lifo Queue
-            if ( memory.getLifo() == null ) {
-                memory.setLifo( agendaGroup.getActivationQueue( this.rule.getSalience() ) );
-            }
-
-            ActivationQueue queue = memory.getLifo();
-
             AgendaItem item = new AgendaItem( context.getPropagationNumber(),
                                               tuple,
                                               context,
-                                              rule,
-                                              queue );
-
-            queue.add( item );
+                                              rule );
 
             // Makes sure the Lifo is added to the AgendaGroup priority queue
             // If the AgendaGroup is already in the priority queue it just
             // returns.
-            agendaGroup.addToAgenda( memory.getLifo() );
+            agendaGroup.add( item );
             tuple.setActivation( item );
             item.setActivated( true );
             workingMemory.getAgendaEventSupport().fireActivationCreated( item );
@@ -221,48 +207,55 @@ final class TerminalNode extends BaseNode
     public void attach() {
         tupleSource.addTupleSink( this );
     }
-    
+
     public void attach(WorkingMemoryImpl[] workingMemories) {
         attach();
-        
-        for (int i = 0, length = workingMemories.length; i < length; i++) { 
+
+        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             WorkingMemoryImpl workingMemory = workingMemories[i];
             PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                 PropagationContext.RULE_ADDITION,
                                                                                 null,
-                                                                                null );            
-            this.tupleSource.updateNewNode( workingMemory, propagationContext );
-        }        
-    }       
+                                                                                null );
+            this.tupleSource.updateNewNode( workingMemory,
+                                            propagationContext );
+        }
+    }
 
     public void remove(BaseNode node,
                        WorkingMemoryImpl[] workingMemories) {
-        for ( int i = 0, length = workingMemories.length; i < length; i++) {
+        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             WorkingMemoryImpl workingMemory = workingMemories[i];
-            
+
             TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-            
-            ActivationQueue queue = memory.getLifo();
-            for ( AgendaItem item = (AgendaItem) queue.getFirst(); item != null;  ) {
-                AgendaItem nextItem = ( AgendaItem ) item.getNext();
-                if ( item.getRule() == this.rule ) {                    
-                    if ( item.isActivated() ) {
-                        item.remove();
-                        workingMemory.getAgendaEventSupport().fireActivationCancelled( item );
-                    }    
-                    
-                    PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                        PropagationContext.RULE_ADDITION,
-                                                                                        null,
-                                                                                        null );  
-                    workingMemory.removeLogicalDependencies( item,
-                                                             propagationContext,
-                                                             this.rule );                                                    
+
+            AgendaGroupImpl group = memory.getAgendaGroup();
+            Queueable[] elements = group.getQueueable();
+            List list = new ArrayList();
+            //start at 1 as BinaryHeapQueue starts at 1
+            for ( int j = 1, size = group.size()+1; j < size; j++ ) {
+                AgendaItem item = (AgendaItem) elements[j];
+                if ( item.getRule() == this.rule ) {
+                    list.add( item );
                 }
-                item = nextItem;
             }
-            
-        }
+            for ( Iterator it = list.iterator(); it.hasNext(); ) {
+                AgendaItem item = ( AgendaItem ) it.next();
+                if ( item.isActivated() ) {
+                    item.remove();
+                    workingMemory.getAgendaEventSupport().fireActivationCancelled( item );
+                }
+
+                PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                    PropagationContext.RULE_REMOVAL,
+                                                                                    null,
+                                                                                    null );
+                workingMemory.removeLogicalDependencies( item,
+                                                         propagationContext,
+                                                         this.rule );                
+            }
+        }        
+        
         tupleSource.remove( this,
                             workingMemories );
     }
@@ -278,15 +271,6 @@ final class TerminalNode extends BaseNode
 
     class TerminalNodeMemory {
         private AgendaGroupImpl agendaGroup;
-        private ActivationQueue lifo;
-
-        public ActivationQueue getLifo() {
-            return this.lifo;
-        }
-
-        public void setLifo(ActivationQueue lifo) {
-            this.lifo = lifo;
-        }
 
         public AgendaGroupImpl getAgendaGroup() {
             return this.agendaGroup;

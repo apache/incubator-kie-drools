@@ -41,16 +41,11 @@ package org.drools.event;
  *
  */
 
-import org.drools.WorkingMemory;
-import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.Consequence;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 
 public class AfterActivationFiredEvent extends ActivationEvent {
     public AfterActivationFiredEvent(Activation activation) {
-        super(activation);
+        super( activation );
     }
 
     public String toString() {

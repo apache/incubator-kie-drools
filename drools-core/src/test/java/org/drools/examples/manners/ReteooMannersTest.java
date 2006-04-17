@@ -10,27 +10,56 @@ import org.drools.FactException;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
+import org.drools.event.ActivationCancelledEvent;
+import org.drools.event.ActivationCreatedEvent;
+import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.DefaultAgendaEventListener;
 import org.drools.rule.DuplicateRuleNameException;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.InvalidRuleException;
 
 public class ReteooMannersTest extends BaseMannersTest {
-    
+
     public void testManners() throws DuplicateRuleNameException,
-                             InvalidRuleException,
-                             IntrospectionException,
-                             RuleIntegrationException,
-                             PackageIntegrationException,
-                             InvalidPatternException,
-                             FactException,
-                             IOException,
-                             InterruptedException {
+                                InvalidRuleException,
+                                IntrospectionException,
+                                RuleIntegrationException,
+                                PackageIntegrationException,
+                                InvalidPatternException,
+                                FactException,
+                                IOException,
+                                InterruptedException {
 
         final org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
         ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        workingMemory.addEventListener( new DefaultAgendaEventListener() {
+           public void activationCreated(ActivationCreatedEvent event) {
+                super.activationCreated( event );
+                System.out.println( event );
+            }
+           
+           public void activationCancelled(ActivationCancelledEvent event) {
+               super.activationCancelled( event );
+               System.out.println( event );
+           }
+           
+           public void beforeActivationFired(BeforeActivationFiredEvent event) {
+               super.beforeActivationFired( event );
+               System.out.println( event );
+           }           
+           
+           public void afterActivationFired(AfterActivationFiredEvent event) {
+               super.afterActivationFired( event );
+               System.out.println( event );
+           }
+           
+        });
 
-        InputStream is = getClass().getResourceAsStream( "/manners64.dat" );
+        InputStream is = getClass().getResourceAsStream( "/manners5.dat" );
         List list = getInputObjects( is );
         for ( Iterator it = list.iterator(); it.hasNext(); ) {
             Object object = it.next();

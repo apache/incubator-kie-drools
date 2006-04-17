@@ -20,59 +20,59 @@ import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.ObjectType;
 import org.drools.util.asm.ClassFieldInspector;
-import org.drools.util.asm.FieldAccessorGenerator;
-import org.drools.util.asm.FieldAccessorMap;
 
 /**
  * This is the supertype for the ASM generated classes for accessing a field.
  * @author Alexander Bagerman
  */
-abstract public class BaseClassFieldExtractor implements FieldExtractor {
-	private final ClassObjectType objectType;
+abstract public class BaseClassFieldExtractor
+    implements
+    FieldExtractor {
+    private final ClassObjectType objectType;
 
-	private final int index;
+    private final int             index;
 
-	private final Class fieldType;
+    private final Class           fieldType;
 
-	public BaseClassFieldExtractor(Class clazz, String fieldName) {
-		try {
-            ClassFieldInspector inspector = new ClassFieldInspector(clazz);
-            this.index = ((Integer)inspector.getFieldNames().get( fieldName )).intValue();
+    public BaseClassFieldExtractor(Class clazz,
+                                   String fieldName) {
+        try {
+            ClassFieldInspector inspector = new ClassFieldInspector( clazz );
+            this.index = ((Integer) inspector.getFieldNames().get( fieldName )).intValue();
             this.fieldType = (Class) inspector.getFieldTypes().get( fieldName );
-			this.objectType = ClassFieldExtractorFactory.getClassObjectType(this.fieldType);
-		} catch (Exception e) {
-			throw new RuntimeDroolsException(e);
-		}
-	}
+            this.objectType = ClassFieldExtractorFactory.getClassObjectType( this.fieldType );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException( e );
+        }
+    }
 
-	public int getIndex() {
-		return this.index;
-	}
+    public int getIndex() {
+        return this.index;
+    }
 
-	protected Class getFieldType() {
-		return this.fieldType;
-	}
+    protected Class getFieldType() {
+        return this.fieldType;
+    }
 
     /** This will be implemented by the dynamic classes */
-	abstract public Object getValue(Object object);
+    abstract public Object getValue(Object object);
 
-	public ObjectType getObjectType() {
-		return this.objectType;
-	}
-	
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		if (!(other instanceof BaseClassFieldExtractor)) {
-			return false;
-		}
-		BaseClassFieldExtractor extr = (BaseClassFieldExtractor) other;
-		return this.objectType.equals(extr.objectType)
-				&& this.index == extr.index;
-	}
+    public ObjectType getObjectType() {
+        return this.objectType;
+    }
 
-	public int hashCode() {
-		return this.objectType.hashCode() * 17 + this.index;
-	}
+    public boolean equals(Object other) {
+        if ( this == other ) {
+            return true;
+        }
+        if ( !(other instanceof BaseClassFieldExtractor) ) {
+            return false;
+        }
+        BaseClassFieldExtractor extr = (BaseClassFieldExtractor) other;
+        return this.objectType.equals( extr.objectType ) && this.index == extr.index;
+    }
+
+    public int hashCode() {
+        return this.objectType.hashCode() * 17 + this.index;
+    }
 }

@@ -48,7 +48,6 @@ abstract class TupleSource extends BaseNode
 
     /** The destination for <code>Tuples</code>. */
     protected List tupleSinks = new ArrayList( 1 );
-    
 
     // ------------------------------------------------------------
     // Constructors
@@ -102,14 +101,14 @@ abstract class TupleSource extends BaseNode
             TupleMatch tupleMatch = objectMatches.add( leftTuple );
 
             leftTuple.addTupleMatch( handle,
-                                tupleMatch );
+                                     tupleMatch );
             return tupleMatch;
 
         } else {
             return null;
         }
-    }    
-    
+    }
+
     /**
      * Propagate the assertion of a <code>ReteTuple</code> to this node's
      * <code>TupleSink</code>.
@@ -129,13 +128,13 @@ abstract class TupleSource extends BaseNode
                                         WorkingMemoryImpl workingMemory) {
 
         // we do this one first to avoid an extra clone
-        if ( ! getTupleSinks().isEmpty() ) {
+        if ( !getTupleSinks().isEmpty() ) {
             ((TupleSink) getTupleSinks().get( 0 )).assertTuple( tuple,
                                                                 context,
                                                                 workingMemory );
-    
+
             tupleMatch.addJoinedTuple( tuple );
-    
+
             for ( int i = 1, size = getTupleSinks().size(); i < size; i++ ) {
                 ReteTuple clone = new ReteTuple( tuple );
                 tupleMatch.addJoinedTuple( clone );
@@ -170,48 +169,46 @@ abstract class TupleSource extends BaseNode
                                                                  workingMemory );
         }
     }
-    
+
     protected void propagateRetractTuple(ReteTuple tuple,
                                          PropagationContext context,
                                          WorkingMemoryImpl workingMemory) {
         LinkedList list = tuple.getLinkedTuples();
         if ( list != null && !list.isEmpty() ) {
             int i = 0;
-            for (LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst()) {
-                ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ( (LinkedListNodeWrapper) node).getNode(),
-                                                                     context,
-                                                                     workingMemory );            
+            for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
+                ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
+                                                                       context,
+                                                                       workingMemory );
             }
         }
-    }    
+    }
 
     protected void propagateModifyTuple(TupleMatch tupleMatch,
-                                         PropagationContext context,
-                                         WorkingMemoryImpl workingMemory) {
+                                        PropagationContext context,
+                                        WorkingMemoryImpl workingMemory) {
 
         List joined = tupleMatch.getJoinedTuples();
         for ( int i = 0, size = joined.size(); i < size; i++ ) {
             ((TupleSink) getTupleSinks().get( i )).modifyTuple( (ReteTuple) joined.get( i ),
-                                                                 context,
-                                                                 workingMemory );
+                                                                context,
+                                                                workingMemory );
         }
-    } 
-    
+    }
+
     protected void propagateModifyTuple(ReteTuple tuple,
-                                         PropagationContext context,
-                                         WorkingMemoryImpl workingMemory) {
+                                        PropagationContext context,
+                                        WorkingMemoryImpl workingMemory) {
         LinkedList list = tuple.getLinkedTuples();
         if ( list != null && !list.isEmpty() ) {
             int i = 0;
-            for (LinkedListNode node = list.getFirst(); node != null; node = node.getNext()) {
-                ((TupleSink) getTupleSinks().get( i++ )).modifyTuple( (ReteTuple) ( (LinkedListNodeWrapper) node).getNode(),
-                                                                     context,
-                                                                     workingMemory );            
+            for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
+                ((TupleSink) getTupleSinks().get( i++ )).modifyTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
+                                                                      context,
+                                                                      workingMemory );
             }
         }
-    }    
-    
-    
+    }
 
     /**
      * Retrieve the <code>TupleSinks</code> that receive propagated

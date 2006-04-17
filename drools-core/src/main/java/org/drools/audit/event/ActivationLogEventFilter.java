@@ -24,47 +24,56 @@ package org.drools.audit.event;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
-public class ActivationLogEventFilter implements ILogEventFilter {
+public class ActivationLogEventFilter
+    implements
+    ILogEventFilter {
 
-	private boolean allowActivationCreatedEvents = true;
-	private boolean allowActivationCancelledEvents = true;
-	private boolean allowBeforeActivationFireEvents = true;
-	private boolean allowAfterActivationFireEvents = true;
-	
-	public ActivationLogEventFilter(boolean allowActivationCreatedEvents, boolean allowActivationCancelledEvents,
-			boolean allowBeforeActivationFireEvents, boolean allowAfterActivationFireEvents) {
-		setAllowActivationCreatedEvents(allowActivationCreatedEvents);
-		setAllowActivationCancelledEvents(allowActivationCancelledEvents);
-		setAllowBeforeActivationFireEvents(allowBeforeActivationFireEvents);
-		setAllowAfterActivationFireEvents(allowAfterActivationFireEvents);
-	}
-	
-	/**
-	 * @see org.drools.audit.event.ILogEventFilter
-	 */
-	public boolean acceptEvent(LogEvent event) {
-		switch (event.getType()) {
-			case LogEvent.ACTIVATION_CREATED: return allowActivationCreatedEvents;
-			case LogEvent.ACTIVATION_CANCELLED: return allowActivationCancelledEvents;
-			case LogEvent.BEFORE_ACTIVATION_FIRE: return allowBeforeActivationFireEvents;
-			case LogEvent.AFTER_ACTIVATION_FIRE: return allowAfterActivationFireEvents;
-			default: return true;
-		}
-	}
-	
-	public void setAllowActivationCreatedEvents(boolean allowActivationCreatedEvents) {
-		this.allowActivationCreatedEvents = allowActivationCreatedEvents;
-	}
+    private boolean allowActivationCreatedEvents    = true;
+    private boolean allowActivationCancelledEvents  = true;
+    private boolean allowBeforeActivationFireEvents = true;
+    private boolean allowAfterActivationFireEvents  = true;
 
-	public void setAllowActivationCancelledEvents(boolean allowActivationCancelledEvents) {
-		this.allowActivationCancelledEvents = allowActivationCancelledEvents;
-	}
+    public ActivationLogEventFilter(boolean allowActivationCreatedEvents,
+                                    boolean allowActivationCancelledEvents,
+                                    boolean allowBeforeActivationFireEvents,
+                                    boolean allowAfterActivationFireEvents) {
+        setAllowActivationCreatedEvents( allowActivationCreatedEvents );
+        setAllowActivationCancelledEvents( allowActivationCancelledEvents );
+        setAllowBeforeActivationFireEvents( allowBeforeActivationFireEvents );
+        setAllowAfterActivationFireEvents( allowAfterActivationFireEvents );
+    }
 
-	public void setAllowBeforeActivationFireEvents(boolean allowBeforeActivationFireEvents) {
-		this.allowBeforeActivationFireEvents = allowBeforeActivationFireEvents;
-	}
-	
-	public void setAllowAfterActivationFireEvents(boolean allowAfterActivationFireEvents) {
-		this.allowAfterActivationFireEvents = allowAfterActivationFireEvents;
-	}
+    /**
+     * @see org.drools.audit.event.ILogEventFilter
+     */
+    public boolean acceptEvent(LogEvent event) {
+        switch ( event.getType() ) {
+            case LogEvent.ACTIVATION_CREATED :
+                return allowActivationCreatedEvents;
+            case LogEvent.ACTIVATION_CANCELLED :
+                return allowActivationCancelledEvents;
+            case LogEvent.BEFORE_ACTIVATION_FIRE :
+                return allowBeforeActivationFireEvents;
+            case LogEvent.AFTER_ACTIVATION_FIRE :
+                return allowAfterActivationFireEvents;
+            default :
+                return true;
+        }
+    }
+
+    public void setAllowActivationCreatedEvents(boolean allowActivationCreatedEvents) {
+        this.allowActivationCreatedEvents = allowActivationCreatedEvents;
+    }
+
+    public void setAllowActivationCancelledEvents(boolean allowActivationCancelledEvents) {
+        this.allowActivationCancelledEvents = allowActivationCancelledEvents;
+    }
+
+    public void setAllowBeforeActivationFireEvents(boolean allowBeforeActivationFireEvents) {
+        this.allowBeforeActivationFireEvents = allowBeforeActivationFireEvents;
+    }
+
+    public void setAllowAfterActivationFireEvents(boolean allowAfterActivationFireEvents) {
+        this.allowAfterActivationFireEvents = allowAfterActivationFireEvents;
+    }
 }

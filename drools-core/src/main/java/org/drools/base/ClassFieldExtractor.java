@@ -19,7 +19,7 @@ import org.drools.spi.ObjectType;
 public class ClassFieldExtractor
     implements
     FieldExtractor {
-    private String                  fieldName;
+    private String                   fieldName;
     private Class                    clazz;
     private transient FieldExtractor extractor;
 
@@ -31,18 +31,20 @@ public class ClassFieldExtractor
     }
 
     private void readObject(ObjectInputStream is) throws ClassNotFoundException,
-                                                           IOException, Exception {
+                                                 IOException,
+                                                 Exception {
         //always perform the default de-serialization first
         is.defaultReadObject();
-        init();       
+        init();
     }
-    
+
     public void init() {
         try {
-            this.extractor = ClassFieldExtractorFactory.getClassFieldExtractor( clazz, fieldName );
+            this.extractor = ClassFieldExtractorFactory.getClassFieldExtractor( clazz,
+                                                                                fieldName );
         } catch ( Exception e ) {
             throw new RuntimeDroolsException( e );
-        }        
+        }
     }
 
     public int getIndex() {
@@ -65,8 +67,7 @@ public class ClassFieldExtractor
             return false;
         }
         ClassFieldExtractor extr = (ClassFieldExtractor) other;
-        return this.extractor.getObjectType().equals( extr.getObjectType() ) && 
-            this.extractor.getIndex() == extr.getIndex();
+        return this.extractor.getObjectType().equals( extr.getObjectType() ) && this.extractor.getIndex() == extr.getIndex();
     }
 
     public int hashCode() {

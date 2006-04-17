@@ -48,7 +48,6 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-import org.drools.util.LinkedList;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -89,29 +88,28 @@ public interface KnowledgeHelper {
      */
     void assertObject(Object object,
                       boolean dynamic) throws FactException;
-    
-    public void assertLogicalObject(Object object) throws FactException;
-    
-    public void assertLogicalObject(Object object,
-                              boolean dynamic) throws FactException;    
 
+    public void assertLogicalObject(Object object) throws FactException;
+
+    public void assertLogicalObject(Object object,
+                                    boolean dynamic) throws FactException;
 
     void modifyObject(FactHandle handle,
-                      Object newObject) throws FactException;        
-    
+                      Object newObject) throws FactException;
+
     void retractObject(FactHandle handle) throws FactException;
-    
-    public Object get(Declaration declaration);    
-   
+
+    public Object get(Declaration declaration);
+
     /**
      * @return - The rule name
      */
     Rule getRule();
-    
+
     Tuple getTuple();
-    
+
     Activation getActivation();
-    
+
     WorkingMemory getWorkingMemory();
 
     /** @return - A List of the objects in the WorkingMemory */
@@ -126,20 +124,19 @@ public interface KnowledgeHelper {
      *         filter
      */
     List getObjects(Class objectClass);
-    
-    List getQueryResults( String query );
+
+    List getQueryResults(String query);
 
     /**
      * Clears the agenda causing all existing Activations to fire
      * ActivationCancelled events. <br>
      */
     void clearAgenda();
-    
+
     public AgendaGroup getFocus();
-    
+
     void setFocus(String focus);
-    
+
     void setFocus(AgendaGroup focus);
-    
-    
+
 }

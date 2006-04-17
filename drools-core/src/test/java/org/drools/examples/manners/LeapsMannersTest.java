@@ -1,22 +1,14 @@
 package org.drools.examples.manners;
 
-import java.beans.IntrospectionException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.FactException;
-import org.drools.PackageIntegrationException;
-import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
-import org.drools.rule.DuplicateRuleNameException;
-import org.drools.rule.InvalidPatternException;
-import org.drools.rule.InvalidRuleException;
 
 public class LeapsMannersTest extends BaseMannersTest {
-    
-    public void testManners() throws Exception {
+
+    public void xxxtestManners() throws Exception {
 
         final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
         ruleBase.addPackage( this.pkg );

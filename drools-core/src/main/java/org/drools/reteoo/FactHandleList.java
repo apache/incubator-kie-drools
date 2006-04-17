@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,7 +15,6 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -40,15 +40,15 @@ import org.drools.rule.Declaration;
 final class FactHandleList
     implements
     Serializable {
-    
+
     /** Empty list for testing purposes only. */
-    static final FactHandleList EMPTY_LIST = new FactHandleList();
+    static final FactHandleList    EMPTY_LIST = new FactHandleList();
 
     /** The list of handles. */
-    private final FactHandleImpl[]  handles;
+    private final FactHandleImpl[] handles;
 
     /** The cached hash code value. */
-    private final int           hashCode;
+    private final int              hashCode;
 
     /**
      * Private constructor for creating the {@link #EMPTY_LIST}.
@@ -56,7 +56,7 @@ final class FactHandleList
     private FactHandleList() {
         this.handles = new FactHandleImpl[0];
         this.hashCode = 0;
-    }    
+    }
 
     /**
      * Join two lists.
@@ -68,17 +68,17 @@ final class FactHandleList
      */
     public FactHandleList(FactHandleList left,
                           FactHandleImpl handle) {
-        this.handles = new FactHandleImpl[left.handles.length+1];
+        this.handles = new FactHandleImpl[left.handles.length + 1];
 
         System.arraycopy( left.handles,
                           0,
                           this.handles,
                           0,
                           left.handles.length );
-        
+
         this.handles[left.handles.length] = handle;
 
-        this.hashCode = left.hashCode + handle.hashCode(); 
+        this.hashCode = left.hashCode + handle.hashCode();
     }
 
     /**
@@ -90,7 +90,7 @@ final class FactHandleList
      *            The handle to use.
      */
     public FactHandleList(FactHandleImpl handle) {
-        this.handles = new FactHandleImpl[] { handle };
+        this.handles = new FactHandleImpl[]{handle};
         this.hashCode = handle.hashCode();
     }
 
@@ -147,7 +147,7 @@ final class FactHandleList
         }
         return true;
     }
-    
+
     FactHandle[] getHandles() {
         return this.handles;
     }

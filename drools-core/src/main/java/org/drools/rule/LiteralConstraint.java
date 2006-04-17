@@ -12,7 +12,7 @@ public class LiteralConstraint
     implements
     FieldConstraint {
 
-    private final FieldValue                field;
+    private final FieldValue           field;
 
     private final FieldExtractor       extractor;
 
@@ -35,7 +35,7 @@ public class LiteralConstraint
     public FieldValue getField() {
         return this.field;
     }
-    
+
     public FieldExtractor getFieldExtractor() {
         return this.extractor;
     }
@@ -53,31 +53,27 @@ public class LiteralConstraint
                              Tuple tuple,
                              WorkingMemory workingMemory) {
         return evaluator.evaluate( this.extractor.getValue( workingMemory.getObject( handle ) ),
-                                   this.field.getValue());
+                                   this.field.getValue() );
     }
-    
+
     public boolean equals(Object other) {
-        if(this == other) {
+        if ( this == other ) {
             return true;
         }
-        if(!(other instanceof LiteralConstraint)) {
+        if ( !(other instanceof LiteralConstraint) ) {
             return false;
         }
         LiteralConstraint lit = (LiteralConstraint) other;
-        
-        return this.field.equals(lit.field) &&
-               this.extractor.equals(lit.extractor) &&
-               this.evaluator.equals(lit.evaluator);
+
+        return this.field.equals( lit.field ) && this.extractor.equals( lit.extractor ) && this.evaluator.equals( lit.evaluator );
     }
-    
+
     public int hashCode() {
-        return (this.field.hashCode() * 17) ^
-               (this.extractor.hashCode() * 11) ^
-               (this.evaluator.hashCode());
-        
+        return (this.field.hashCode() * 17) ^ (this.extractor.hashCode() * 11) ^ (this.evaluator.hashCode());
+
     }
-    
+
     public String toString() {
-        return "LiteralConstraint { Field("+this.extractor.getIndex()+") "+this.evaluator.toString()+" ["+this.field.getValue()+"] }";
+        return "LiteralConstraint { Field(" + this.extractor.getIndex() + ") " + this.evaluator.toString() + " [" + this.field.getValue() + "] }";
     }
 };

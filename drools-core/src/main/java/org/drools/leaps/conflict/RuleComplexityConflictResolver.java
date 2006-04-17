@@ -29,34 +29,35 @@ import org.drools.leaps.RuleHandle;
  * @see org.drools.leaps.ConflictResolver
  * @see org.drools.spi.ConflictResolver
  */
-class RuleComplexityConflictResolver implements Comparator {
+class RuleComplexityConflictResolver
+    implements
+    Comparator {
 
-	/** Singleton instance. */
-	private static final RuleComplexityConflictResolver INSTANCE = new RuleComplexityConflictResolver();
+    /** Singleton instance. */
+    private static final RuleComplexityConflictResolver INSTANCE = new RuleComplexityConflictResolver();
 
-	/**
-	 * Retrieve the singleton instance.
-	 * 
-	 * @return The singleton instance.
-	 */
-	public static Comparator getInstance() {
-		return INSTANCE;
-	}
+    /**
+     * Retrieve the singleton instance.
+     * 
+     * @return The singleton instance.
+     */
+    public static Comparator getInstance() {
+        return INSTANCE;
+    }
 
-	/**
-	 * Construct.
-	 */
-	private RuleComplexityConflictResolver() {
-		// intentionally left blank
-	}
+    /**
+     * Construct.
+     */
+    private RuleComplexityConflictResolver() {
+        // intentionally left blank
+    }
 
-	/**
-	 * @see LeapsRuleConflictResolver
-	 */
-	public int compare(Object o1, Object o2) {
-		return (-1)
-				* AbstractConflictResolver.compare((((RuleHandle) o1)
-						.getRuleComplexity()), (((RuleHandle) o2)
-						.getRuleComplexity()));
-	};
+    /**
+     * @see LeapsRuleConflictResolver
+     */
+    public int compare(Object o1,
+                       Object o2) {
+        return (-1) * AbstractConflictResolver.compare( (((RuleHandle) o1).getRuleComplexity()),
+                                                        (((RuleHandle) o2).getRuleComplexity()) );
+    };
 }

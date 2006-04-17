@@ -33,12 +33,12 @@ public class MockTupleSource extends TupleSource {
     public void remove(BaseNode node,
                        WorkingMemoryImpl[] workingMemories) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void attach(WorkingMemoryImpl[] workingMemories) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

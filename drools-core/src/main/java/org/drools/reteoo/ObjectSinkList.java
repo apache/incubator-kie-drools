@@ -30,35 +30,35 @@ import org.drools.WorkingMemory;
  * Created: 06/march/2006
  */
 public interface ObjectSinkList {
-    
+
     /**
      * Returns true if the ObjectSinkList already contains the given object sink
      * @param element
      * @return
      */
     public boolean contains(ObjectSink objectSink);
-    
+
     /**
      * Adds the given objectSink to the list
      * @param objectSink
      * @return
      */
     public boolean add(ObjectSink objectSink);
-    
+
     /**
      * Removes the given objectSink from the list
      * @param objectSink
      * @return
      */
     public boolean remove(ObjectSink objectSink);
-    
+
     /**
      * Returns the last added object sink.
      * 
      * @return
      */
     public ObjectSink getLastObjectSink();
-    
+
     /**
      * Iterates over all matching (in case of hashed list) object Sinks
      * 
@@ -66,15 +66,16 @@ public interface ObjectSinkList {
      * @param handle
      * @return
      */
-    public Iterator iterator(WorkingMemory workingMemory, FactHandleImpl handle);
-    
+    public Iterator iterator(WorkingMemory workingMemory,
+                             FactHandleImpl handle);
+
     /**
      * Iterates over all  object Sinks
      * 
      * @return
      */
     public Iterator iterator();
-    
+
     /**
      * Returns a list with all object sinks
      * This may be an inneficient method to call, so we recomend using it only for
@@ -83,5 +84,5 @@ public interface ObjectSinkList {
      * @return
      */
     public List getObjectsAsList();
-    
+
 }

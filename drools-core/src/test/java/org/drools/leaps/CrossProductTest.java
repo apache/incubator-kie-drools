@@ -54,7 +54,7 @@ public class CrossProductTest extends TestCase {
         Package pkg = new Package( "org.drools" );
         pkg.addRule( rule );
 
-        RuleBase ruleBase = RuleBaseFactory.getInstance().newRuleBase(RuleBase.LEAPS);
+        RuleBase ruleBase = RuleBaseFactory.getInstance().newRuleBase( RuleBase.LEAPS );
         ruleBase.addPackage( pkg );
 
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();

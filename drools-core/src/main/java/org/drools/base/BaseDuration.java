@@ -49,11 +49,12 @@ import org.drools.spi.Tuple;
  * Implementation of the <code>Duration</code> interface
  * for specifying truthness duration.
  */
-public class BaseDuration implements Duration
-{
+public class BaseDuration
+    implements
+    Duration {
     /** The number of seconds of the duration. */
     private long seconds;
-    
+
     private Rule rule;
 
     /**
@@ -61,8 +62,8 @@ public class BaseDuration implements Duration
      * 
      * @param seconds the number of seconds of the duration
      */
-    public BaseDuration( Rule rule, long seconds )
-    {
+    public BaseDuration(Rule rule,
+                        long seconds) {
         this.rule = rule;
         this.seconds = seconds;
     }
@@ -75,13 +76,11 @@ public class BaseDuration implements Duration
      * 
      * @return the duration in seconds
      */
-    public long getDuration( Tuple tuple )
-    {
+    public long getDuration(Tuple tuple) {
         return this.seconds;
     }
-    
-    public Rule getRule( )
-    {
+
+    public Rule getRule() {
         return this.rule;
     }
 }

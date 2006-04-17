@@ -4,7 +4,7 @@ import org.drools.base.BaseEvaluator;
 import org.drools.spi.Evaluator;
 
 public class ByteFactory {
-    
+
     public static Evaluator getByteEvaluator(int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
@@ -34,13 +34,13 @@ public class ByteFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 == null;
-            return ((Byte) object1).equals(object2);
+            if ( object1 == null ) return object2 == null;
+            return ((Byte) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Byte ==";
-        }         
+        }
     }
 
     static class ByteNotEqualEvaluator extends BaseEvaluator {
@@ -53,13 +53,13 @@ public class ByteFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 != null;
-            return !((Byte) object1).equals(object2);
+            if ( object1 == null ) return object2 != null;
+            return !((Byte) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Byte !=";
-        }                 
+        }
     }
 
     static class ByteLessEvaluator extends BaseEvaluator {
@@ -74,10 +74,10 @@ public class ByteFactory {
                                 Object object2) {
             return ((Byte) object1).byteValue() < ((Byte) object2).byteValue();
         }
-        
+
         public String toString() {
             return "Byte <";
-        }                 
+        }
     }
 
     static class ByteLessOrEqualEvaluator extends BaseEvaluator {
@@ -92,10 +92,10 @@ public class ByteFactory {
                                 Object object2) {
             return ((Byte) object1).byteValue() <= ((Byte) object2).byteValue();
         }
-        
+
         public String toString() {
             return "Byte <=";
-        }         
+        }
     }
 
     static class ByteGreaterEvaluator extends BaseEvaluator {
@@ -110,10 +110,10 @@ public class ByteFactory {
                                 Object object2) {
             return ((Byte) object1).byteValue() > ((Byte) object2).byteValue();
         }
-        
+
         public String toString() {
             return "Byte >";
-        }         
+        }
     }
 
     static class ByteGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -128,10 +128,10 @@ public class ByteFactory {
                                 Object object2) {
             return ((Byte) object1).byteValue() >= ((Byte) object2).byteValue();
         }
-        
+
         public String toString() {
             return "Byte >=";
-        }         
+        }
     }
 
 }

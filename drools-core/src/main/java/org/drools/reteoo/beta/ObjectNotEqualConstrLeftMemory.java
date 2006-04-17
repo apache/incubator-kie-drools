@@ -40,26 +40,31 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  *
  * Created: 18/02/2006
  */
-public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
-    private BetaLeftMemory innerMemory = null;
-    
-    private Map             memoryMap   = null;
-    private MultiLinkedList memoryMasterList  = null;
-    private MultiLinkedList noMatchList = null;
-    
-    private FieldExtractor extractor   = null;
-    private Declaration    declaration = null;
+public class ObjectNotEqualConstrLeftMemory
+    implements
+    BetaLeftMemory {
+    private BetaLeftMemory  innerMemory      = null;
+
+    private Map             memoryMap        = null;
+    private MultiLinkedList memoryMasterList = null;
+    private MultiLinkedList noMatchList      = null;
+
+    private FieldExtractor  extractor        = null;
+    private Declaration     declaration      = null;
 
     public ObjectNotEqualConstrLeftMemory(FieldExtractor extractor,
-                                        Declaration    declaration,
-                                        Evaluator      evaluator) {
-        this(extractor, declaration, evaluator, null);
+                                          Declaration declaration,
+                                          Evaluator evaluator) {
+        this( extractor,
+              declaration,
+              evaluator,
+              null );
     }
 
     public ObjectNotEqualConstrLeftMemory(FieldExtractor extractor,
-                                        Declaration    declaration,
-                                        Evaluator      evaluator,
-                                        BetaLeftMemory childMemory) {
+                                          Declaration declaration,
+                                          Evaluator evaluator,
+                                          BetaLeftMemory childMemory) {
         this.extractor = extractor;
         this.declaration = declaration;
         this.innerMemory = childMemory;
@@ -74,18 +79,19 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      */
     public void add(WorkingMemory workingMemory,
                     ReteTuple tuple) {
-        this.memoryMasterList.add(tuple);
-        
+        this.memoryMasterList.add( tuple );
+
         // this memory is double indexed, so an additional wrapper is needed
-        tuple.setChild(new MultiLinkedListNodeWrapper(tuple));
-        MultiLinkedList list = getTupleBucket( workingMemory, tuple );
-        list.add(tuple.getChild());
-        
-        if(this.innerMemory != null) {
+        tuple.setChild( new MultiLinkedListNodeWrapper( tuple ) );
+        MultiLinkedList list = getTupleBucket( workingMemory,
+                                               tuple );
+        list.add( tuple.getChild() );
+
+        if ( this.innerMemory != null ) {
             // double indexes require the child of the child of the tuple to be propagated
-            tuple.getChild().setChild(new MultiLinkedListNodeWrapper(tuple));
-            this.innerMemory.add(workingMemory, 
-                                 ((MultiLinkedListNodeWrapper) tuple.getChild().getChild()));
+            tuple.getChild().setChild( new MultiLinkedListNodeWrapper( tuple ) );
+            this.innerMemory.add( workingMemory,
+                                  ((MultiLinkedListNodeWrapper) tuple.getChild().getChild()) );
         }
     }
 
@@ -94,17 +100,18 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
-    public void remove(WorkingMemory workingMemory, ReteTuple tuple) {
-        if(this.innerMemory != null) {
-            this.innerMemory.remove(workingMemory, 
-                                    (MultiLinkedListNodeWrapper)tuple.getChild().getChild());
+    public void remove(WorkingMemory workingMemory,
+                       ReteTuple tuple) {
+        if ( this.innerMemory != null ) {
+            this.innerMemory.remove( workingMemory,
+                                     (MultiLinkedListNodeWrapper) tuple.getChild().getChild() );
         }
-        LinkedList list = tuple.getChild().getLinkedList(); 
-        list.remove(tuple.getChild());
-        if(list.isEmpty()) {
+        LinkedList list = tuple.getChild().getLinkedList();
+        list.remove( tuple.getChild() );
+        if ( list.isEmpty() ) {
             removeMemoryEntry( list );
         }
-        this.memoryMasterList.remove(tuple);
+        this.memoryMasterList.remove( tuple );
     }
 
     /**
@@ -112,21 +119,23 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#add(org.drools.reteoo.ReteTuple)
      */
-    public void add(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
-        this.memoryMasterList.add(tuple);
-        
-        // this memory is double indexed, so an additional wrapper is needed
-        tuple.setChild(new MultiLinkedListNodeWrapper(tuple.getNode()));
+    public void add(WorkingMemory workingMemory,
+                    MultiLinkedListNodeWrapper tuple) {
+        this.memoryMasterList.add( tuple );
 
-        MultiLinkedList list = this.getTupleBucket( workingMemory, (ReteTuple)tuple.getNode() );
-      
+        // this memory is double indexed, so an additional wrapper is needed
+        tuple.setChild( new MultiLinkedListNodeWrapper( tuple.getNode() ) );
+
+        MultiLinkedList list = this.getTupleBucket( workingMemory,
+                                                    (ReteTuple) tuple.getNode() );
+
         // adding the wrapper instead of the node
-        list.add(tuple.getChild()); 
-        
-        if(this.innerMemory != null) {
-            tuple.getChild().setChild(new MultiLinkedListNodeWrapper(tuple.getNode()));
-            this.innerMemory.add(workingMemory, 
-                                 ((MultiLinkedListNodeWrapper) tuple.getChild().getChild()));
+        list.add( tuple.getChild() );
+
+        if ( this.innerMemory != null ) {
+            tuple.getChild().setChild( new MultiLinkedListNodeWrapper( tuple.getNode() ) );
+            this.innerMemory.add( workingMemory,
+                                  ((MultiLinkedListNodeWrapper) tuple.getChild().getChild()) );
         }
     }
 
@@ -135,18 +144,20 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
-    public void remove(WorkingMemory workingMemory, MultiLinkedListNodeWrapper tuple) {
-        if(this.innerMemory != null) {
-            this.innerMemory.remove(workingMemory, (MultiLinkedListNodeWrapper)tuple.getChild().getChild());
+    public void remove(WorkingMemory workingMemory,
+                       MultiLinkedListNodeWrapper tuple) {
+        if ( this.innerMemory != null ) {
+            this.innerMemory.remove( workingMemory,
+                                     (MultiLinkedListNodeWrapper) tuple.getChild().getChild() );
         }
 
         LinkedList list = tuple.getChild().getLinkedList();
-        list.remove(tuple.getChild());
-        
-        if(list.isEmpty()) {
-            this.removeMemoryEntry(list);
+        list.remove( tuple.getChild() );
+
+        if ( list.isEmpty() ) {
+            this.removeMemoryEntry( list );
         }
-        this.memoryMasterList.remove(tuple);
+        this.memoryMasterList.remove( tuple );
     }
 
     /**
@@ -163,23 +174,24 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
-    public Iterator iterator(final WorkingMemory workingMemory, final FactHandleImpl handle) {
-        this.selectPossibleMatches(workingMemory, handle);
+    public Iterator iterator(final WorkingMemory workingMemory,
+                             final FactHandleImpl handle) {
+        this.selectPossibleMatches( workingMemory,
+                                    handle );
         Iterator iterator = new Iterator() {
-            Iterator it = memoryMasterList.iterator();
+            Iterator            it      = memoryMasterList.iterator();
             MultiLinkedListNode current = null;
-            MultiLinkedListNode next = null;
+            MultiLinkedListNode next    = null;
 
             public boolean hasNext() {
                 boolean hasnext = false;
-                if(next == null) {
-                    while(it.hasNext()) {
+                if ( next == null ) {
+                    while ( it.hasNext() ) {
                         next = (MultiLinkedListNode) it.next();
-                        if(next.getChild().getLinkedList() != noMatchList) {
-                            if((innerMemory == null) || 
-                                (innerMemory.isPossibleMatch((MultiLinkedListNodeWrapper) next.getChild().getChild()))) {
-                                 hasnext = true;
-                                 break;
+                        if ( next.getChild().getLinkedList() != noMatchList ) {
+                            if ( (innerMemory == null) || (innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) next.getChild().getChild() )) ) {
+                                hasnext = true;
+                                break;
                             }
                         }
                     }
@@ -190,24 +202,25 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
             }
 
             public Object next() {
-                if(this.next == null) {
+                if ( this.next == null ) {
                     this.hasNext();
                 }
                 this.current = this.next;
                 this.next = null;
-                if(this.current == null) {
-                    throw new NoSuchElementException("No more items to return");
+                if ( this.current == null ) {
+                    throw new NoSuchElementException( "No more items to return" );
                 }
                 return this.current;
             }
 
             public void remove() {
-                if(this.current != null) {
+                if ( this.current != null ) {
                     // Iterator is always called on the outer most memory, 
                     // so elements shall always be ReteTuples
-                    ObjectNotEqualConstrLeftMemory.this.remove(workingMemory, (ReteTuple) current);
+                    ObjectNotEqualConstrLeftMemory.this.remove( workingMemory,
+                                                                (ReteTuple) current );
                 } else {
-                    throw new IllegalStateException("No item to remove. Call next() before calling remove().");
+                    throw new IllegalStateException( "No item to remove. Call next() before calling remove()." );
                 }
             }
         };
@@ -226,11 +239,12 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
-    public void selectPossibleMatches(WorkingMemory workingMemory, FactHandleImpl handle) {
-        Object select = this.extractor.getValue( workingMemory.getObject( handle ));
-        this.noMatchList = (MultiLinkedList) this.memoryMap.get(select);
+    public void selectPossibleMatches(WorkingMemory workingMemory,
+                                      FactHandleImpl handle) {
+        Object select = this.extractor.getValue( workingMemory.getObject( handle ) );
+        this.noMatchList = (MultiLinkedList) this.memoryMap.get( select );
     }
-    
+
     /**
      * @inheritDoc 
      *
@@ -238,17 +252,15 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      */
     public boolean isPossibleMatch(MultiLinkedListNodeWrapper tuple) {
         boolean ret = false;
-        if((tuple != null) &&
-           (tuple.getChild() != null) &&
-           (tuple.getChild().getLinkedList() != null) ) {
-                ret = (tuple.getChild().getLinkedList() != this.noMatchList);
-                if(ret && (this.innerMemory != null)) {
-                    ret = this.innerMemory.isPossibleMatch((MultiLinkedListNodeWrapper) tuple.getChild().getChild());
-                }
+        if ( (tuple != null) && (tuple.getChild() != null) && (tuple.getChild().getLinkedList() != null) ) {
+            ret = (tuple.getChild().getLinkedList() != this.noMatchList);
+            if ( ret && (this.innerMemory != null) ) {
+                ret = this.innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) tuple.getChild().getChild() );
+            }
         }
         return ret;
     }
-    
+
     /**
      * Returns the list related to the given tuple, 
      * creating if it does not exist already
@@ -259,11 +271,13 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      */
     private MultiLinkedList getTupleBucket(WorkingMemory workingMemory,
                                            ReteTuple tuple) {
-        Object key = getTupleKey( workingMemory,tuple );
-        MultiLinkedList list = (MultiLinkedList) this.memoryMap.get(key);
-        if(list == null) {
-            list = new KeyMultiLinkedList(key);
-            this.memoryMap.put(key, list);
+        Object key = getTupleKey( workingMemory,
+                                  tuple );
+        MultiLinkedList list = (MultiLinkedList) this.memoryMap.get( key );
+        if ( list == null ) {
+            list = new KeyMultiLinkedList( key );
+            this.memoryMap.put( key,
+                                list );
         }
         return list;
     }
@@ -276,10 +290,8 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      * @return
      */
     private Object getTupleKey(WorkingMemory workingMemory,
-                                 ReteTuple tuple) {
-        Object select = declaration.getValue( 
-                             workingMemory.getObject(
-                             tuple.get( this.declaration ) ) );
+                               ReteTuple tuple) {
+        Object select = declaration.getValue( workingMemory.getObject( tuple.get( this.declaration ) ) );
         return select;
     }
 
@@ -297,7 +309,7 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      * @param list
      */
     private void removeMemoryEntry(LinkedList list) {
-        this.memoryMap.remove(((KeyMultiLinkedList)list).getKey());
+        this.memoryMap.remove( ((KeyMultiLinkedList) list).getKey() );
     }
 
     /**
@@ -309,23 +321,23 @@ public class ObjectNotEqualConstrLeftMemory implements BetaLeftMemory {
      */
     public boolean isClean() {
         boolean ret = true;
-        for(Iterator i = this.memoryMap.values().iterator(); i.hasNext(); ) {
+        for ( Iterator i = this.memoryMap.values().iterator(); i.hasNext(); ) {
             MultiLinkedList list = (MultiLinkedList) i.next();
-            if(list.size() == 0) {
+            if ( list.size() == 0 ) {
                 ret = false;
                 break;
             }
         }
         return ret;
     }
-    
+
     private static class KeyMultiLinkedList extends MultiLinkedList {
         private final Object key;
-        
+
         public KeyMultiLinkedList(Object key) {
             this.key = key;
         }
-        
+
         public final Object getKey() {
             return this.key;
         }

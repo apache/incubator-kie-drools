@@ -23,8 +23,9 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.AbstractBaseLinkedListNode;
 import org.drools.util.LinkedList;
+import org.drools.util.Queue;
+import org.drools.util.Queueable;
 
 /**
  * Item entry in the <code>Agenda</code>.
@@ -32,9 +33,10 @@ import org.drools.util.LinkedList;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public class AgendaItem extends AbstractBaseLinkedListNode
+public class AgendaItem
     implements
     Activation,
+    Queueable,
     Serializable {
     // ------------------------------------------------------------
     // Instance members
@@ -52,8 +54,10 @@ public class AgendaItem extends AbstractBaseLinkedListNode
     /** The activation number */
     private final long               activationNumber;
 
-    /** A reference to the ActivatinQeue the item is on */
-    private final ActivationQueue    queue;
+    /** A reference to the PriorityQeue the item is on */
+    private Queue                    queue;
+
+    private int                      index;
 
     private LinkedList               justified;
 
@@ -74,13 +78,11 @@ public class AgendaItem extends AbstractBaseLinkedListNode
     public AgendaItem(long activationNumber,
                       Tuple tuple,
                       PropagationContext context,
-                      Rule rule,
-                      ActivationQueue queue) {
+                      Rule rule) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
         this.activationNumber = activationNumber;
-        this.queue = queue;
     }
 
     // ------------------------------------------------------------
@@ -131,16 +133,6 @@ public class AgendaItem extends AbstractBaseLinkedListNode
         return this.activationNumber;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.drools.spi.Activation#remove()
-     */
-    public void remove() {
-        this.queue.remove( this );
-        this.activated = false;
-    }
-
     public void addLogicalDependency(LogicalDependency node) {
         if ( this.justified == null ) {
             this.justified = new LinkedList();
@@ -151,20 +143,20 @@ public class AgendaItem extends AbstractBaseLinkedListNode
 
     public LinkedList getLogicalDependencies() {
         return this.justified;
-    }    
-    
+    }
+
     public boolean isActivated() {
         return this.activated;
     }
-    
+
     public void setActivated(boolean activated) {
         this.activated = activated;
-    }    
+    }
 
     public String toString() {
         return "[Activation rule=" + this.rule.getName() + ", tuple=" + this.tuple + "]";
-    }    
-    
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -191,5 +183,20 @@ public class AgendaItem extends AbstractBaseLinkedListNode
      */
     public int hashcode() {
         return this.tuple.hashCode();
+    }
+
+    public void enqueued(Queue queue,
+                         int index) {
+        this.queue = queue;
+        this.index = index;
+    }
+
+    public void dequeue() {
+        this.queue.dequeue( this.index );
+        this.activated = false;
+    }
+
+    public void remove() {
+        dequeue();
     }
 }

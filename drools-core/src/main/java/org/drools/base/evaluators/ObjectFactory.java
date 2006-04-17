@@ -3,7 +3,6 @@ package org.drools.base.evaluators;
 import java.util.Collection;
 
 import org.drools.base.BaseEvaluator;
-
 import org.drools.spi.Evaluator;
 
 /**
@@ -14,7 +13,7 @@ import org.drools.spi.Evaluator;
  * @author Michael Neale
  */
 public class ObjectFactory {
-    
+
     public static Evaluator getObjectEvaluator(int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
@@ -38,10 +37,10 @@ public class ObjectFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 == null;
+            if ( object1 == null ) return object2 == null;
             return object1.equals( object2 );
         }
-        
+
         public String toString() {
             return "Object ==";
         }
@@ -57,15 +56,15 @@ public class ObjectFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return ! (object2 == null);
+            if ( object1 == null ) return !(object2 == null);
             return !object1.equals( object2 );
         }
-        
+
         public String toString() {
             return "Object !=";
-        }        
+        }
     }
-    
+
     static class ObjectContainsEvaluator extends BaseEvaluator {
         public final static Evaluator INSTANCE = new ObjectContainsEvaluator();
 
@@ -76,16 +75,16 @@ public class ObjectFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object2 == null) return false;
-            
+            if ( object2 == null ) return false;
+
             //TODO: add support for hashes, normal arrays etc
             Collection col = (Collection) object1;
             return col.contains( object2 );
         }
-        
+
         public String toString() {
             return "Object contains";
-        }        
-    }    
+        }
+    }
 
 }

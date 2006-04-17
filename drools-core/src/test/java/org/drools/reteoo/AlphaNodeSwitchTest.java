@@ -141,10 +141,13 @@ public class AlphaNodeSwitchTest extends TestCase {
         AlphaNodeSwitch alphaSwitch1 = new AlphaNodeSwitch( constraint1 );
         alphaSwitch1.addAlphaNode( alphaNode1 );
         alphaSwitch1.addAlphaNode( alphaNode2 );
-        
-        AlphaNode node = alphaSwitch1.getNode(workingMemory, f0);
-        
-        Assert.assertSame("Switch should have returned alphaNode2", alphaNode2, node);
+
+        AlphaNode node = alphaSwitch1.getNode( workingMemory,
+                                               f0 );
+
+        Assert.assertSame( "Switch should have returned alphaNode2",
+                           alphaNode2,
+                           node );
 
     }
 

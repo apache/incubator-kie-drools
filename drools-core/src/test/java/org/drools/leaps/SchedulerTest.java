@@ -24,7 +24,6 @@ import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
 import org.drools.spi.Duration;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;

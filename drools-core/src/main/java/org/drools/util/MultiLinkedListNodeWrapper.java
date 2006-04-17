@@ -28,14 +28,14 @@ package org.drools.util;
  */
 public class MultiLinkedListNodeWrapper extends BaseMultiLinkedListNode {
 
-   private LinkedListNode node = null;
-   
-   public MultiLinkedListNodeWrapper(LinkedListNode node) {
-       this.node = node;
-   }
-   
-   public LinkedListNode getNode() {
-       return this.node;
-   }
-    
+    private LinkedListNode node = null;
+
+    public MultiLinkedListNodeWrapper(LinkedListNode node) {
+        this.node = node;
+    }
+
+    public LinkedListNode getNode() {
+        return this.node;
+    }
+
 }

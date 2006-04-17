@@ -18,7 +18,6 @@ package org.drools.leaps;
 
 import java.util.ArrayList;
 
-import org.drools.common.ActivationQueue;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Rule;
@@ -45,39 +44,37 @@ class LeapsRule {
 
     boolean                   existsColumnsPresent;
 
-    boolean evalCoditionsPresent;
+    boolean                   evalCoditionsPresent;
 
-    final Class[] existsNotsClasses;
+    final Class[]             existsNotsClasses;
 
-    public LeapsRule(Rule rule, ArrayList columns, ArrayList notColumns,
-            ArrayList existsColumns, ArrayList evalConditions) {
+    public LeapsRule(Rule rule,
+                     ArrayList columns,
+                     ArrayList notColumns,
+                     ArrayList existsColumns,
+                     ArrayList evalConditions) {
         this.rule = rule;
-        this.columnConstraints = (ColumnConstraints[]) columns
-                .toArray(new ColumnConstraints[0]);
-        this.notColumnConstraints = (ColumnConstraints[]) notColumns
-                .toArray(new ColumnConstraints[0]);
-        this.existsColumnConstraints = (ColumnConstraints[]) existsColumns
-                .toArray(new ColumnConstraints[0]);
-        this.evalConditions = (EvalCondition[]) evalConditions
-                .toArray(new EvalCondition[0]);
+        this.columnConstraints = (ColumnConstraints[]) columns.toArray( new ColumnConstraints[0] );
+        this.notColumnConstraints = (ColumnConstraints[]) notColumns.toArray( new ColumnConstraints[0] );
+        this.existsColumnConstraints = (ColumnConstraints[]) existsColumns.toArray( new ColumnConstraints[0] );
+        this.evalConditions = (EvalCondition[]) evalConditions.toArray( new EvalCondition[0] );
         this.notColumnsPresent = (this.notColumnConstraints.length != 0);
         this.existsColumnsPresent = (this.existsColumnConstraints.length != 0);
         this.evalCoditionsPresent = (this.evalConditions.length != 0);
 
         ArrayList classes = new ArrayList();
-        for (int i = 0; i < this.notColumnConstraints.length; i++) {
-            if (!classes.contains(this.notColumnConstraints[i].getClassType())) {
-                classes.add(this.notColumnConstraints[i].getClassType());
+        for ( int i = 0; i < this.notColumnConstraints.length; i++ ) {
+            if ( !classes.contains( this.notColumnConstraints[i].getClassType() ) ) {
+                classes.add( this.notColumnConstraints[i].getClassType() );
             }
         }
-        for (int i = 0; i < this.existsColumnConstraints.length; i++) {
-            if (!classes.contains(this.existsColumnConstraints[i]
-                    .getClassType())) {
-                classes.add(this.existsColumnConstraints[i].getClassType());
+        for ( int i = 0; i < this.existsColumnConstraints.length; i++ ) {
+            if ( !classes.contains( this.existsColumnConstraints[i].getClassType() ) ) {
+                classes.add( this.existsColumnConstraints[i].getClassType() );
             }
         }
 
-        this.existsNotsClasses = (Class[]) classes.toArray(new Class[0]);
+        this.existsNotsClasses = (Class[]) classes.toArray( new Class[0] );
     }
 
     Rule getRule() {
@@ -151,16 +148,6 @@ class LeapsRule {
      */
     private AgendaGroupImpl agendaGroup;
 
-    private ActivationQueue lifo;
-
-    public ActivationQueue getLifo() {
-        return this.lifo;
-    }
-
-    public void setLifo(ActivationQueue lifo) {
-        this.lifo = lifo;
-    }
-
     public AgendaGroupImpl getAgendaGroup() {
         return this.agendaGroup;
     }
@@ -169,6 +156,3 @@ class LeapsRule {
         this.agendaGroup = agendaGroup;
     }
 }
-
-
-

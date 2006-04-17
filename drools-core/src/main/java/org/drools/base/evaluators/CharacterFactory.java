@@ -4,7 +4,7 @@ import org.drools.base.BaseEvaluator;
 import org.drools.spi.Evaluator;
 
 public class CharacterFactory {
-    
+
     public static Evaluator getCharacterEvaluator(int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
@@ -34,13 +34,13 @@ public class CharacterFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 == null;
+            if ( object1 == null ) return object2 == null;
             return ((Character) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Character ==";
-        }         
+        }
     }
 
     static class CharacterNotEqualEvaluator extends BaseEvaluator {
@@ -53,13 +53,13 @@ public class CharacterFactory {
 
         public boolean evaluate(Object object1,
                                 Object object2) {
-            if (object1 == null) return object2 != null;
-            return !((Character) object1).equals(object2);
+            if ( object1 == null ) return object2 != null;
+            return !((Character) object1).equals( object2 );
         }
-        
+
         public String toString() {
             return "Character !=";
-        }                 
+        }
     }
 
     static class CharacterLessEvaluator extends BaseEvaluator {
@@ -74,10 +74,10 @@ public class CharacterFactory {
                                 Object object2) {
             return ((Character) object1).charValue() < ((Character) object2).charValue();
         }
-        
+
         public String toString() {
             return "Character <";
-        }                 
+        }
     }
 
     static class CharacterLessOrEqualEvaluator extends BaseEvaluator {
@@ -92,10 +92,10 @@ public class CharacterFactory {
                                 Object object2) {
             return ((Character) object1).charValue() <= ((Character) object2).charValue();
         }
-        
+
         public String toString() {
             return "Character <=";
-        }         
+        }
     }
 
     static class CharacterGreaterEvaluator extends BaseEvaluator {
@@ -110,10 +110,10 @@ public class CharacterFactory {
                                 Object object2) {
             return ((Character) object1).charValue() > ((Character) object2).charValue();
         }
-        
+
         public String toString() {
             return "Character >";
-        }         
+        }
     }
 
     static class CharacterGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -128,10 +128,10 @@ public class CharacterFactory {
                                 Object object2) {
             return ((Character) object1).charValue() >= ((Character) object2).charValue();
         }
-        
+
         public String toString() {
             return "Character >=";
-        }         
+        }
     }
 
 }

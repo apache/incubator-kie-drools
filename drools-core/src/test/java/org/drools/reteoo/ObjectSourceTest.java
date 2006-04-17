@@ -1,7 +1,6 @@
 package org.drools.reteoo;
 
 import org.drools.DroolsTestCase;
-import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
@@ -60,7 +59,6 @@ public class ObjectSourceTest extends DroolsTestCase {
         Object[] list = (Object[]) sink1.getAsserted().get( 0 );
         assertEquals( new Integer( 1 ),
                       workingMemory.getObject( (FactHandleImpl) list[0] ) );
-        
 
         MockObjectSink sink2 = new MockObjectSink();
         source.addObjectSink( sink2 );
@@ -86,7 +84,7 @@ public class ObjectSourceTest extends DroolsTestCase {
 
         list = (Object[]) sink1.getAsserted().get( 1 );
         assertEquals( new Integer( 2 ),
-                      workingMemory.getObject( (FactHandle) list[0] ));
+                      workingMemory.getObject( (FactHandle) list[0] ) );
         assertSame( context,
                     list[1] );
         assertSame( workingMemory,

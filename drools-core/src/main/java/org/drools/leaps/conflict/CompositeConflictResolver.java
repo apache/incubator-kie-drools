@@ -35,45 +35,45 @@ import java.util.Comparator;
  */
 
 class CompositeConflictResolver extends AbstractConflictResolver {
-	final Comparator[] factResolvers;
+    final Comparator[] factResolvers;
 
-	final Comparator[] ruleResolvers;
+    final Comparator[] ruleResolvers;
 
-	public CompositeConflictResolver(Comparator[] factResolvers,
-			Comparator[] ruleResolvers) {
-		this.factResolvers = factResolvers;
-		this.ruleResolvers = ruleResolvers;
-	}
+    public CompositeConflictResolver(Comparator[] factResolvers,
+                                     Comparator[] ruleResolvers) {
+        this.factResolvers = factResolvers;
+        this.ruleResolvers = ruleResolvers;
+    }
 
-	public final Comparator getFactConflictResolver() {
-		return new Comparator() {
-			public int compare(Object o1, Object o2) {
-				int ret = 0;
-				if (o1 != o2) {
-					for (int i = 0, length = CompositeConflictResolver.this.factResolvers.length; ret == 0
-							&& i < length; ++i) {
-						ret = CompositeConflictResolver.this.factResolvers[i]
-								.compare(o1, o2);
-					}
-				}
-				return ret;
-			}
-		};
-	}
+    public final Comparator getFactConflictResolver() {
+        return new Comparator() {
+            public int compare(Object o1,
+                               Object o2) {
+                int ret = 0;
+                if ( o1 != o2 ) {
+                    for ( int i = 0, length = CompositeConflictResolver.this.factResolvers.length; ret == 0 && i < length; ++i ) {
+                        ret = CompositeConflictResolver.this.factResolvers[i].compare( o1,
+                                                                                       o2 );
+                    }
+                }
+                return ret;
+            }
+        };
+    }
 
-	public final Comparator getRuleConflictResolver() {
-		return new Comparator() {
-			public int compare(Object o1, Object o2) {
-				int ret = 0;
-				if (o1 != o2) {
-					for (int i = 0, length = CompositeConflictResolver.this.ruleResolvers.length; ret == 0
-							&& i < length; ++i) {
-						ret = CompositeConflictResolver.this.ruleResolvers[i]
-								.compare(o1, o2);
-					}
-				}
-				return ret;
-			}
-		};
-	}
+    public final Comparator getRuleConflictResolver() {
+        return new Comparator() {
+            public int compare(Object o1,
+                               Object o2) {
+                int ret = 0;
+                if ( o1 != o2 ) {
+                    for ( int i = 0, length = CompositeConflictResolver.this.ruleResolvers.length; ret == 0 && i < length; ++i ) {
+                        ret = CompositeConflictResolver.this.ruleResolvers[i].compare( o1,
+                                                                                       o2 );
+                    }
+                }
+                return ret;
+            }
+        };
+    }
 }

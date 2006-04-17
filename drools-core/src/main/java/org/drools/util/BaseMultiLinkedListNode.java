@@ -28,10 +28,10 @@ package org.drools.util;
 public class BaseMultiLinkedListNode extends AbstractBaseLinkedListNode
     implements
     MultiLinkedListNode {
-    
+
     private MultiLinkedListNode child = null;
     private LinkedList          list  = null;
-    
+
     public BaseMultiLinkedListNode() {
     }
 

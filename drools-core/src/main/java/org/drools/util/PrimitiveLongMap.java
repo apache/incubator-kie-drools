@@ -185,7 +185,7 @@ public class PrimitiveLongMap
     public Collection values() {
         CompositeCollection collection = new CompositeCollection();
         Page page = this.firstPage;
-        
+
         while ( page != null && page.getPageId() <= this.lastPageId ) {
             collection.addComposited( Arrays.asList( page.getValues() ) );
             page = page.getNextSibling();
