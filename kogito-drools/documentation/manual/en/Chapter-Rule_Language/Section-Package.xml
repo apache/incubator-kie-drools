@@ -2,13 +2,14 @@
 <section>
   <title>Package</title>
 
-  <para>A package is basically a collection of rules kept under a namespace. A
-  package represents a namespace, which ideally is kept unique for a given
-  grouping of rules. The package name itself is just a namespace, and is not
-  related to files or folders in any way.</para>
+  <para>A package is basically a collection of rules (rules that are logically
+  related to each other - perhaps HR rules, for instance). A package
+  represents a namespace, which ideally is kept unique for a given grouping of
+  rules. The package name itself is the namespace, and is not related to files
+  or folders in any way. </para>
 
   <para>At the Package level items are things like functions, imports, global
-  data and so on. </para>
+  data and so on.</para>
 
   <para>Not that it is possible to assemble rules from multiple rule sources,
   and have one top level package configuration that all the rules are kept
@@ -56,7 +57,7 @@
 
     <para>Import statements work like import statements in Java. You need to
     specify the fully qualified paths and type names for any objects you want
-    to use in the rule. </para>
+    to use in the rule.</para>
   </section>
 
   <section>
@@ -101,7 +102,24 @@
 
     <para>Globals are global variables (although ideally, they won't change in
     value while the rules are executing). They typically are used to return
-    data, such as a log of actions, or provide data that the rules refer
-    to.</para>
+    data, such as a log of actions, or provide data or services that the rules
+    use.</para>
+
+    <para>Note that these are just named instances of objects that you pass in
+    from your application to the working memory. This means you can pass in
+    any object you want: you could pass in a service locator, or perhaps a
+    service itself. </para>
+
+    <para>One example may be an instance of a Email service. In your
+    integration code that is calling the rule engine, you get your
+    emailService object, and then set it in the working memory. In the DRL,
+    you declare that you have a global of type EmailService, and give it a
+    name "email". Then in your rule consequences, you can use things like
+    email.sendSMS(number, message); etc... (you get the idea). </para>
+
+    <para>It is important to NOT use globals as a replacement for asserting
+    facts, if you do, you are bypassing most of the rule engines power, and
+    may get suprising results (surprising in a bad way, like when a doctor
+    says "thats interesting" to a chest XRay of yours).</para>
   </section>
 </section>

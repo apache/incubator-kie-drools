@@ -7,16 +7,43 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="function.svg" format="SVG" role=""
-                    />
+        <imagedata align="center" fileref="function.svg" format="SVG" role="" />
       </imageobject>
 
       <imageobject>
-        <imagedata align="center" fileref="function.png" format="PNG" role=""
-                    />
+        <imagedata align="center" fileref="function.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
 
-  <para>uuuere</para>
+  <para>Functions are a way to put semantic code in your rule source, as
+  opposed to in normal java classes. They can't do anything more then what you
+  can do with helper classes (in fact, the compiler generates the helper class
+  for you behind the scenes, isn't that helpful). The main advantage of using
+  functions in a rule is that you can keep the logic all in one place, and you
+  can change the functions as needed (this can be a good and bad thing).
+  Functions are most useful for invoking actions on the consequence ("then")
+  part of a rule, especially if that particular action is used over and over
+  (perhaps with only differing parameters for each rule - for example the
+  contents of an email message).</para>
+
+  <para>A typica function declaration looks like:</para>
+
+  <para>function String calcSomething(String arg) {</para>
+
+  <para> return "hola !";</para>
+
+  <para>}</para>
+
+  <para>Note that the "function" keyword is used, even though its not really
+  part of java. Parameters to the function are just like a normal method (and
+  you don't have to have parameters if they are not needed). Return type is
+  just like a normal method. To call the function from within a rule (in a
+  consequence, or perhaps an eval, simply use the function name, and toss in
+  the parameters - just like a method call). </para>
+
+  <para>An alternative to a function, could be to use a static method in a
+  helper class: Foo.doSomething(), or perhaps pass in an instance of a helper
+  class/service as a named global (see the section on globals):
+  foo.soSomething() (where foo is a named global variable).</para>
 </section>
