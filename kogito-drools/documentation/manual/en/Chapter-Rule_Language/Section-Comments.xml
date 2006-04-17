@@ -2,7 +2,8 @@
 <section>
   <title>Comments</title>
 
-  <para>uuuere</para>
+  <para>Comments are sections of text that are ignored by the rule engine.
+  They are effectively stripped out when they are encountered. </para>
 
   <section>
     <title>Single line comment</title>
@@ -13,12 +14,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="single_line_comment.svg"
-                     format="SVG"  />
+                     format="SVG" />
         </imageobject>
 
         <imageobject>
           <imagedata align="center" fileref="single_line_comment.png"
-                     format="PNG"  />
+                     format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -35,12 +36,12 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="multi_line_comment.svg"
-                     format="SVG"  />
+                     format="SVG" />
         </imageobject>
 
         <imageobject>
           <imagedata align="center" fileref="multi_line_comment.png"
-                     format="PNG"  />
+                     format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -48,25 +49,4 @@
     <para></para>
   </section>
 
-  <section>
-    <title>Documentation</title>
-
-    <figure>
-      <title>Documentation</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="documentation.svg" format="SVG"
-                      />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="documentation.png" format="PNG"
-                      />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para></para>
-  </section>
 </section>

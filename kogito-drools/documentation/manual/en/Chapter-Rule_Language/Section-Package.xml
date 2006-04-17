@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>package</title>
+  <title>Package</title>
 
-  <para>uuuere</para>
+  <para>A package is basically a collection of rules kept under a namespace. A
+  package represents a namespace, which ideally is kept unique for a given
+  grouping of rules. The package name itself is just a namespace, and is not
+  related to files or folders in any way.</para>
+
+  <para>At the Package level items are things like functions, imports, global
+  data and so on. </para>
+
+  <para>Not that it is possible to assemble rules from multiple rule sources,
+  and have one top level package configuration that all the rules are kept
+  under (when the rules are assembled). A common structure, however, is to
+  have all the rules for a package in the same file as the package declaration
+  (so that is it entirely self contained).</para>
+
+  <para>The following rail road diagram shows all the components that may make
+  up a package. Not that a package MUST have a namespace (which can contain no
+  spaces). In terms of the order of elements, they can appear in any order in
+  the rule file, with the exception of the "package" and "expander" statements
+  being at the top of the file, before any rules appear. In all cases, the
+  semi colons are optional.</para>
 
   <figure>
     <title>package</title>
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="package.svg" format="SVG" role=""
-                    />
+        <imagedata align="center" fileref="package.svg" format="SVG" role="" />
       </imageobject>
 
       <imageobject>
-        <imagedata align="center" fileref="package.png" format="PNG" role=""
-                    />
+        <imagedata align="center" fileref="package.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -28,16 +45,18 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="import.svg" format="SVG"  />
+          <imagedata fileref="import.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata fileref="import.png" format="PNG"  />
+          <imagedata fileref="import.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para></para>
+    <para>Import statements work like import statements in Java. You need to
+    specify the fully qualified paths and type names for any objects you want
+    to use in the rule. </para>
   </section>
 
   <section>
@@ -48,16 +67,19 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="expander.svg" format="SVG"  />
+          <imagedata fileref="expander.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata fileref="expander.png" format="PNG"  />
+          <imagedata fileref="expander.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para></para>
+    <para>The expander statement (optional) is used to specify domain specific
+    language configurations (which are normally stored in a seperate file).
+    This provides clues to the parser as to how to understand what you are
+    raving on about in your rules.</para>
   </section>
 
   <section>
@@ -68,15 +90,18 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="global.svg" format="SVG"  />
+          <imagedata fileref="global.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata fileref="global.png" format="PNG"  />
+          <imagedata fileref="global.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para></para>
+    <para>Globals are global variables (although ideally, they won't change in
+    value while the rules are executing). They typically are used to return
+    data, such as a log of actions, or provide data that the rules refer
+    to.</para>
   </section>
 </section>
