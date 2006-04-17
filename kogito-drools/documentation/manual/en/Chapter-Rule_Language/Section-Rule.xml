@@ -16,12 +16,27 @@
     </mediaobject>
   </figure>
 
-  <para>uuuere</para>
+  <para>The Rule construct is where is all happens. Rules are of the form "IF"
+  something "THEN" action (of course we chose the keywords "when" and "then")
+  - in the style of production rules. </para>
+
+  <para>A rule must have a name, and be a unique name for a rule package. If a
+  rule name is to have spaces, then it will need to be in double quotes (its
+  best to always use double quotes.</para>
+
+  <para>Attributes are optional, and are described below (they are best kept
+  as one per line).</para>
+
+  <para>The LHS of the rule follows the "when" keyword (ideally on a new
+  line), similarly the RHS follows the "then" keyword (ideally on a newline).
+  The rule is terminated by the keyword "end". Rules cannot be nested of
+  course.</para>
 
   <section>
     <title>Left Hand Side</title>
 
-    <para></para>
+    <para>To interpret the following diagram, refer to the sections below for
+    the details.</para>
 
     <figure>
       <title>Left Hand Side</title>
@@ -156,7 +171,13 @@
 Cheese( type == "stilton", price &lt; 10 )</programlisting>
     </example>
 
-    <para>A Column is what Drools refers to</para>
+    <para>A Column is what Drools refers calls a list of constraints on an
+    Object type. The above cases refer to constraints against instances of a
+    Cheese object. In the first case, there are obviously no constraints, so
+    this Column will match all instances of Cheese that it finds in working
+    memory. In the latter case, there are 2 constraints on "fields" that must
+    be met before the Cheese object will be matched (they are seperated by a
+    comma, which implicitly means "and").</para>
 
     <figure>
       <title>Column</title>
@@ -175,7 +196,7 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
     </figure>
 
     <example>
-      <title> Bound Column</title>
+      <title>Bound Column</title>
 
       <programlisting>cheapStilton : Cheese( type == "stilton", price &lt; 10 )</programlisting>
     </example>
@@ -277,7 +298,7 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
         <simplesect>
           <title>Date</title>
 
-          <para>Currently only "dd/mm/yyyy" date format is supported. There
+          <para>Currently only "dd-mmm-yyyy" date format is supported. There
           are plans to make this configurable in the future.</para>
 
           <para>Valid operators:</para>
@@ -311,7 +332,7 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
           <example>
             <title>Date Literal Constraint</title>
 
-            <programlisting>Cheese( bestBefore &lt; "27/10/2007" )</programlisting>
+            <programlisting>Cheese( bestBefore &lt; "27-Oct-2007" )</programlisting>
           </example>
         </simplesect>
 
