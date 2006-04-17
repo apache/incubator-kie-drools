@@ -21,7 +21,7 @@ package org.drools.util;
  * A linked list where each node has a reference to the list itself and to a 
  * child node.
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 14/02/2006
  */

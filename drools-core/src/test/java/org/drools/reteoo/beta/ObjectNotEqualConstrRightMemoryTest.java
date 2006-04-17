@@ -35,7 +35,7 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  * ObjectNotEqualConstrRightMemoryTest
  * A test case for ObjectNotEqualConstrRightMemory 
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 28/02/2006
  */

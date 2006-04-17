@@ -35,7 +35,7 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  * ObjectNotEqualConstrRightMemory
  * An Object not equal constrained right memory implementation
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 22/02/2006
  */

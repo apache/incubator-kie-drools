@@ -25,7 +25,7 @@ import org.drools.spi.FieldConstraint;
  * MemoryFactory
  * A factory for Beta memories, both left and right
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 12/02/2006
  */

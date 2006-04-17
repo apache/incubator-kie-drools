@@ -26,7 +26,7 @@ import org.drools.WorkingMemory;
  * DefaultObjectSinkList
  * A default implementation for DefaultObjectSinkList
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 06/march/2006
  */

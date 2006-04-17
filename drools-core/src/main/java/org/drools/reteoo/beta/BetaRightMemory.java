@@ -37,7 +37,7 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  * Although, the implementations are all required to keep the order of
  * objects, and iterate then in order with the <code>iterator()</code> method. 
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a> 
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a> 
  *
  * Created: 12/02/2006
  */

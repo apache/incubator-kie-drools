@@ -28,7 +28,7 @@ import org.drools.spi.MockConstraint;
  * BetaMemoryFactoryTest
  * An unit test for the BetaMemoryFactory
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 28/02/2006
  */

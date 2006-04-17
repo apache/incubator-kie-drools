@@ -34,7 +34,7 @@ import org.drools.spi.FieldConstraint;
  * A hashed implementation for ObjectSinkList to use in nodes
  * that do alpha node hashing
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 06/march/2006
  */

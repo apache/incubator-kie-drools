@@ -33,7 +33,7 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  * BooleanConstrainedLeftMemory
  * A boolean constrained implementation for the left memory
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 12/02/2006
  */

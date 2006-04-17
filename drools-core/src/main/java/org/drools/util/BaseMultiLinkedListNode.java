@@ -21,7 +21,7 @@ package org.drools.util;
  * A base implementation for the MultiLinkedListNode that helps to
  * manage object references.
  *
- * @author <a href="mailto:edson.tirelli@auster.com.br">Edson Tirelli</a>
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 12/02/2006
  */
