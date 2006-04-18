@@ -57,6 +57,12 @@ public class FunctionFixerTest extends TestCase {
         FunctionFixer fixer = new FunctionFixer();
         assertEquals( "\n\t\n\tAddFive.addFive(list) ;",
                       fixer.fix( "\n\t\n\taddFive ( list ) ;" ) );
-    }  
+    } 
+    
+    public void testWithDollarSigns() {
+        FunctionFixer fixer = new FunctionFixer();
+        assertEquals( "\nFoo.foo($list);",
+                      fixer.fix( "\nfoo($list);" ) );
+    }      
         
 }

@@ -55,8 +55,8 @@ public class FunctionFixer {
             if (post != null) {
                 post = fix(post);
             }
-            
-            return pre + matcher.replaceAll(ucFirst(function) + "." + function + "(" + params + ")" ) + post;
+            String target = ucFirst(function) + "." + function + "(" + params + ")";
+            return pre + matcher.replaceAll( KnowledgeHelperFixer.replace( target, "$", "\\$", 128 )) + post;
         }
         return raw;
     }

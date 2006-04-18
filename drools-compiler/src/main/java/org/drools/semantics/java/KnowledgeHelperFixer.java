@@ -147,10 +147,10 @@ public class KnowledgeHelperFixer {
     
     
     /**
-     * Simple replacer. 
+     * Simple non regex replacer. 
      * jakarta commons provided the inspiration for this.
      */
-    private String replace(String text,
+    static String replace(String text,
                                   String repl,
                                   String with,
                                   int max)
