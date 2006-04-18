@@ -271,6 +271,10 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
           </indexterm>Literal Constraint which allows the user to constrain a
         field to a given value.</para>
 
+        <para>A note on nulls: you can do checks against fields that are or
+        maybe null, using == and != as you would expect, and the literal
+        "null" keyword, like: Cheese(type != null).</para>
+
         <figure>
           <title>Literal Constraints</title>
 
@@ -467,7 +471,7 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
           </mediaobject>
         </figure>
 
-        <para>Variables can be found to Facts and and Fields and then used in
+        <para>Variables can be bound to Facts and and Fields and then used in
         subsequent Field Constraints. A bound variable is called a <indexterm>
             <primary>declaration</primary>
           </indexterm>Declaration. Declarations cannot be used with
