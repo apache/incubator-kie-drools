@@ -1,5 +1,4 @@
 package org.drools;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,6 +14,10 @@ package org.drools;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
+
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
