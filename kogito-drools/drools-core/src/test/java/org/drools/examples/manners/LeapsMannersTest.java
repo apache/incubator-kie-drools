@@ -25,7 +25,7 @@ import org.drools.WorkingMemory;
 
 public class LeapsMannersTest extends BaseMannersTest {
 
-    public void xxxtestManners() throws Exception {
+    public void testManners() throws Exception {
 
         final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
         ruleBase.addPackage( this.pkg );
