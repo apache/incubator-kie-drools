@@ -18,7 +18,7 @@
 
   <para>The Rule construct is where is all happens. Rules are of the form "IF"
   something "THEN" action (of course we chose the keywords "when" and "then")
-  - in the style of production rules. </para>
+  - in the style of production rules.</para>
 
   <para>A rule must have a name, and be a unique name for a rule package. If a
   rule name is to have spaces, then it will need to be in double quotes (its
@@ -34,6 +34,9 @@
 
   <section>
     <title>Left Hand Side</title>
+
+    <para>The Left Hand Side (LHS) is a common the conditional part of the
+    rule.</para>
 
     <para>To interpret the following diagram, refer to the sections below for
     the details.</para>
@@ -171,13 +174,13 @@
 Cheese( type == "stilton", price &lt; 10 )</programlisting>
     </example>
 
-    <para>A Column is what Drools refers calls a list of constraints on an
-    Object type. The above cases refer to constraints against instances of a
-    Cheese object. In the first case, there are obviously no constraints, so
-    this Column will match all instances of Cheese that it finds in working
-    memory. In the latter case, there are 2 constraints on "fields" that must
-    be met before the Cheese object will be matched (they are seperated by a
-    comma, which implicitly means "and").</para>
+    <para>A Column is what Drools calls a list of constraints on an Object
+    type. The above cases refer to constraints against instances of a Cheese
+    object. In the first case, there are obviously no constraints, so this
+    Column will match all instances of Cheese that it finds in working memory.
+    In the latter case, there are 2 constraints on "fields" that must be met
+    before the Cheese object will be matched (they are seperated by a comma,
+    which implicitly means "and").</para>
 
     <figure>
       <title>Column</title>
@@ -201,10 +204,36 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
       <programlisting>cheapStilton : Cheese( type == "stilton", price &lt; 10 )</programlisting>
     </example>
 
+    <para>This is similar to the previous case, but in this case we are
+    binding a variable to that instance of Cheese that the rule engine will
+    match. This means you can use cheapStilton in another condition, or
+    perhaps in the consequence part of the rule. You can also eat it, but I
+    wouldn't.</para>
+
     <section>
       <title>Field Constraints</title>
 
-      <para>uuuere</para>
+      <para>Field constraints place constraints on the Fact objects for the
+      rule engine to match/select out of working memory. They work
+      comparing/evaluating "field" values from the fact object
+      instances.</para>
+
+      <para>A "field" is not a field in the sense of a public or private
+      member of a class. A field is an accessible method. If your model
+      objects follow the java bean pattern, then fields are accessed via
+      "getXXX" or "isXXX" methods (these are methods that take no arguments,
+      and return something). You can access fields either by using the
+      bean-name convention (so "getType" can be accessed as "type") or by
+      specifying the whole method name (without any brackets). </para>
+
+      <para>For example, refering to our Cheese class, the following are
+      equivalent: Cheese(type == ...), and Cheese(getType == ...). This means
+      that you can use model objects that aren't strictly java beans. However,
+      make sure that you are accessing methods that take no parameters, and
+      are infact "accessors" (as in, they don't change the state of the object
+      in a way that may effect the rules - remember that the rule engine
+      effectively caches the results of its matching inbetween invocations to
+      make it faster).</para>
 
       <section>
         <title>Operators</title>
@@ -228,7 +257,10 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
           </indexterm>opreators that can be used with the various <indexterm>
             <primary>Field Constraint</primary>
           </indexterm>Field Constraints. Valid operators are dependent on the
-        field type.</para>
+        field type. Generally they are self explanatory based on the type of
+        data: for instance, for date fields, "&lt;" means "before" and so on.
+        "Matches" is only applicable to string fields, and "contains" is only
+        applicable to Collection type fields.</para>
       </section>
 
       <section>
