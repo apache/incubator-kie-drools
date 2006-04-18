@@ -22,7 +22,7 @@
 
   <para>A rule must have a name, and be a unique name for a rule package. If a
   rule name is to have spaces, then it will need to be in double quotes (its
-  best to always use double quotes.</para>
+  best to always use double quotes).</para>
 
   <para>Attributes are optional, and are described below (they are best kept
   as one per line).</para>
@@ -35,8 +35,8 @@
   <section>
     <title>Left Hand Side</title>
 
-    <para>The Left Hand Side (LHS) is a common the conditional part of the
-    rule.</para>
+    <para>The Left Hand Side (LHS) is a common name for the conditional part
+    of the rule.</para>
 
     <para>To interpret the following diagram, refer to the sections below for
     the details.</para>
@@ -234,6 +234,13 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
       in a way that may effect the rules - remember that the rule engine
       effectively caches the results of its matching inbetween invocations to
       make it faster).</para>
+
+      <para>Note that if primitive types are used for a field, Drools will
+      autobox them to their corresponding object types (even if you are using
+      java 1.4). On the whole, it is probably best to use the non primitive
+      types in the model objects you are using in your rules. If you use Java
+      5, then you get the best of both worlds (you can let the compiler
+      autobox for you - much neater).</para>
 
       <section>
         <title>Operators</title>
@@ -521,7 +528,8 @@ Cheesery( cheeses contains stilton )</programlisting>
           </indexterm>Predicate constraint can use any valid Java expression
         as long as it evaluated to a primitive boolean. Previously bound
         declarations can be used in the expression. All bound primitive
-        declarations are boxed, there is currently no auto-unboxing.</para>
+        declarations are boxed, there is currently no auto-unboxing (if you
+        use java 5, this is all automatic).</para>
 
         <para>This example will find all pairs of male/femal people where the
         male is 2 years older than the female.</para>
@@ -561,7 +569,9 @@ Person( boyAge : age -&gt; ( girlAge == boyAge + 2 ), sex = 'M' )
         primitives. Previously bound declarations can be used in the
         expression. All bound primitive declarations are boxed, there is
         currently no auto-unboxing. The returned value must be boxed if its a
-        primitive.</para>
+        primitive (unless you are using Java 5, in which case you don't have
+        to worry. If you are stuck on Java 1.4, I can recommend some headache
+        tablets).</para>
 
         <para>Like the Predicate example this will find all pairs of
         male/femal people where the male is 2 years older than the female.
@@ -582,7 +592,10 @@ Person( age == ( girlAge + 2 ), sex = 'M' )
   <section>
     <title>Conditional Elements</title>
 
-    <para>uuuere</para>
+    <para>Conditional elements work on one or more Columns (which were
+    described above). The most common one is "and" which is implicit when you
+    have multiple Columns in the LHS of a rule that are not connected in
+    anyway.</para>
 
     <section>
       <title>'and'</title>
@@ -657,11 +670,15 @@ Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 )
       <example>
         <title>or with binding</title>
 
-        <programlisting>pensioner : ( Person( sex == "f", age &gt; 60 ) || Person( sex == "m", age &gt; 65 ) )
-pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 ) )</programlisting>
+        <programlisting>pensioner : Person( sex == "f", age &gt; 60 ) || pensioner : Person( sex == "m", age &gt; 65 ) 
+pensioner : Person( sex == "f", age &gt; 60 ) or pensioner : Person( sex == "m", age &gt; 65 )</programlisting>
       </example>
 
-      <para></para>
+      <para>Care must be taken when binding with an "or" conditional element,
+      as this may yield apparently unpredictable results if both conditions
+      match (its not XOR). Also, you may accidentally refer to a variable that
+      is bound to a column that does not exist in a given activation (giving
+      null pointer exceptions, and the associated headaches).</para>
     </section>
 
     <section>
@@ -683,10 +700,23 @@ pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 
 
       <para>valid children : none</para>
 
+      <para>Eval is essentially a catch all which allows any semantic code
+      (that returns a boolean) to be executed. This can refer to variables
+      that were bound in the LHS of the rule, and functions in the rule
+      package. An eval should be the last conditional element in the LHS of a
+      rule.</para>
+
       <para>Evals cannot be indexed and thus are not as optimal as using Field
       Constraints. However this makes them ideal for being used when functions
       return values that change over time, which is not allowed within Field
       Constraints.</para>
+
+      <para>For folks who are familiar with Drools 2.x lineage, the old Drools
+      paramater and condition tags are equivalent to:</para>
+
+      <para>p1 : Parameter() p2 : Parameter() </para>
+
+      <para>eval( /* your condition here, involving the parameters */)</para>
 
       <example>
         <title>or</title>
@@ -750,16 +780,22 @@ pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 
       <para>valid children: Column</para>
 
       <para>Future versions of Drools will allow 'and' and 'or' to be nested
-      in 'not'</para>
+      in 'not'.</para>
+
+      <para>Think of exist as meaning "at least one..". It is different from
+      just having the Column on its own. If you had the column on its on, its
+      kind of like saying "for each one of...". if you use exist with a
+      Column, then the rule will only activate once regardless of how much
+      data there is in working memory that matches that condition.</para>
 
       <example>
-        <title>Atleast one Busses</title>
+        <title>Atleast one Bus</title>
 
         <programlisting>exists Bus()</programlisting>
       </example>
 
       <example>
-        <title>Atleast one red Busses</title>
+        <title>Atleast one red Bus</title>
 
         <programlisting>exists Bus(color == "red")</programlisting>
       </example>
@@ -782,7 +818,8 @@ pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 
         </mediaobject>
       </figure>
 
-      <para></para>
+      <para>Grouping is similar to using parentheses in algebra, it makes the
+      order of operations explicit. </para>
     </section>
   </section>
 </section>
