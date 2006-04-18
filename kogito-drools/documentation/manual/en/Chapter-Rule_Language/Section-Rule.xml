@@ -224,7 +224,7 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
       "getXXX" or "isXXX" methods (these are methods that take no arguments,
       and return something). You can access fields either by using the
       bean-name convention (so "getType" can be accessed as "type") or by
-      specifying the whole method name (without any brackets). </para>
+      specifying the whole method name (without any brackets).</para>
 
       <para>For example, refering to our Cheese class, the following are
       equivalent: Cheese(type == ...), and Cheese(getType == ...). This means
@@ -334,8 +334,11 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
         <simplesect>
           <title>Date</title>
 
-          <para>Currently only "dd-mmm-yyyy" date format is supported. There
-          are plans to make this configurable in the future.</para>
+          <para>Currently only "dd-mmm-yyyy" date format is supported by
+          default. You can customise this by providing an alternative date
+          format mask as a System property ("drools.dateformat" is the name of
+          the property). If more control is required, use the predicate
+          constraint.</para>
 
           <para>Valid operators:</para>
 
