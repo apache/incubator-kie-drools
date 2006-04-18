@@ -2,48 +2,152 @@
 <section>
   <title>What is a Rule Engine</title>
 
-  <para>At the simplest level a <indexterm>
-      <primary>Rule Engine</primary>
-    </indexterm>Rule Engine executes a <indexterm>
-      <primary>Consequence</primary>
-    </indexterm>Consequence when a set of conditions are true.</para>
-
-  <programlisting>when
-    Cheese( type == "cheddar" )
-then
-    System.out.println( "cheddar" )</programlisting>
-
-  <para>The example above is similar to : </para>
-
-  <programlisting>if ( cheese.getType().equals("cheddar") {
-    System.out.println( "cheddar" )
-}</programlisting>
-
-  <para>Each Rule consists of a Left Hand Side (LHS) and a Right Hand Side
-  (RHS)</para>
-
-  <programlisting>when
-    LHS
-then
-    RHS</programlisting>
-
-  <para>The RHS is the Consequence, This is the part of the rule that executes
-  when all the Patterns in the LHS are matched and true. Pattern is the
-  terminology used for the various rule constructs that be used to define when
-  a Rule is true and can fire.</para>
-
-  <para>Each <indexterm>
+  <para>A <indexterm>
       <primary>Rule</primary>
-    </indexterm>Rule is the codification of business knowledge known as the
+    </indexterm>Rule is the codification of business knowledge. A Rule has
+  attributes, a Left Hand Side (LHS) and a Right Hand Side (RHS). The allowed
+  attributes are:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>salience</para>
+    </listitem>
+
+    <listitem>
+      <para>agenda-group</para>
+    </listitem>
+
+    <listitem>
+      <para>no-loop</para>
+    </listitem>
+
+    <listitem>
+      <para>auto-focus</para>
+    </listitem>
+
+    <listitem>
+      <para>duration</para>
+    </listitem>
+  </itemizedlist>
+
+  <programlisting>rule “&lt;name&gt;”    
+    &lt;attribute&gt; &lt;value&gt;    
+    when        
+        &lt;LHS&gt;    
+    then        
+        &lt;RHS&gt;
+end
+</programlisting>
+
+  <para>The LHS of the Rule consists of one or more Conditions. As the Rule
+  Engine is made aware of new data or changes to existing data it matches the
+  data against the Conditions, when all the Conditions are met and true the
+  RHS, and its actions, are executed; the RHS, called the <indexterm>
+      <primary>Consequence</primary>
+    </indexterm>Consequence.</para>
+
+  <para>Rules are associated with a namespace via the
+  <literal>package</literal> keyword. A Package declares imports, global
+  variables, functions and rules.</para>
+
+  <programlisting>package com.sample
+
+import java.util.List
+import com.sample.Cheese
+
+global List cheeses
+
+function void exampleFunction(Cheese cheese) {
+    System.out.println( cheese );
+}
+
+rule “A Cheesy Rule”
+    when
+        cheese : Cheese( type == "stilton" )
+    then
+        exampleFunction( cheese );
+        cheeses.add( cheese );
+end</programlisting>
+
+  <para>The process of matching the new or existing modified data against
+  rules is called <indexterm>
+      <primary>Pattern Matching</primary>
+    </indexterm> Pattern Matching, the engine which does this matching is the
   <indexterm>
+      <primary>Inference Engine</primary>
+    </indexterm>Inference Engine. The Rule's are referred to as the <indexterm>
       <primary>Production Memory</primary>
-    </indexterm>Production Memory. The Rule Engine is made aware of Business
-  Objects when they are asserted, as <indexterm>
-      <primary>Fact</primary>
-    </indexterm>Facts, into the <indexterm>
-      <primary>Working Memory</primary>
-    </indexterm>Working Memory . The Working Memory is the Rule Engine's
-  repository of all known Facts.</para>
+    </indexterm>Production Memory and the data that the Inference Engine
+  matches against is the <indexterm>
+      <primary>WorkingMemory</primary>
+    </indexterm>Working Memory. the Agenda manages the execution of the
+  matched Rules. There are a number of algorithms used for Pattern Matching by
+  Inference Engines including:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Linear</para>
+    </listitem>
+
+    <listitem>
+      <para>Rete</para>
+    </listitem>
+
+    <listitem>
+      <para>Treat</para>
+    </listitem>
+
+    <listitem>
+      <para>Leaps</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>Drools has implementations for both Rete and Leaps; Leaps is still
+  considered experiment. The Drools <indexterm>
+      <primary>Rete</primary>
+    </indexterm>Rete implementation is called ReteOO signifying that this
+  Drools has an enhanced and optimised implementation of the Rete
+  algorithm.</para>
+
+  <figure>
+    <title>A Basic Rete network</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="Rule_Engine.svg" format="SVG" />
+      </imageobject>
+
+      <imageobject>
+        <imagedata align="center" fileref="Rule_Engine.png" format="PNG" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The LHS of a rule is made up of <indexterm>
+      <primary>Conditional Element</primary>
+    </indexterm>iConditional Elements and <indexterm>
+      <primary>Field Constraint</primary>
+    </indexterm>iField Constraints. The following example shows a <indexterm>
+      <primary>Literal Field Constraint</primary>
+    </indexterm>iLiteral Field Constraint used with a Cheese Fact; the
+  combination of Field Constraints on a Fact is known as a <indexterm>
+      <primary>Column</primary>
+    </indexterm>iColumn.</para>
+
+  <programlisting>rule "Cheddar Cheese"
+    when
+        Cheese( type == "cheddar" )
+    then
+        System.out.println( "cheddar" );
+end</programlisting>
+
+  <para>The example above is similar to :</para>
+
+  <programlisting>public void cheddarCheese(Cheese cheese) {
+    if ( cheese.getType().equals("cheddar") {
+        System.out.println( "cheddar" );
+    }
+}</programlisting>
 
   <para>Rule engines are a complete de-coupling of data from the logic. Rules
   cannot be called directly as they are not methods or functions instead Rules
@@ -80,12 +184,12 @@ then
     <mediaobject>
       <imageobject>
         <imagedata align="center" fileref="A_Basic_Rete_Network.svg"
-                   format="SVG"   />
+                   format="SVG" />
       </imageobject>
 
       <imageobject>
         <imagedata align="center" fileref="A_Basic_Rete_Network.png"
-                   format="PNG"   />
+                   format="PNG" />
       </imageobject>
     </mediaobject>
   </figure>
