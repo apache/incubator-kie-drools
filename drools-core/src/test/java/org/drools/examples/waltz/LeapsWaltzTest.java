@@ -37,7 +37,7 @@ import org.drools.WorkingMemory;
  */
 public class LeapsWaltzTest extends BaseWaltzTest {
 
-    public void xxxtestWaltz() throws Exception {
+    public void testWaltz() throws Exception {
 
         final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
         ruleBase.addPackage( this.pkg );
