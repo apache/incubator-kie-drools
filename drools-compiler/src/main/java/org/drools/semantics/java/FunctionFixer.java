@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 public class FunctionFixer {
     
-    static Pattern FUNCTION = Pattern.compile("(.*)\\b([^.][\\S]+)\\s*\\(([^)]*)\\)(.*)", Pattern.DOTALL);
+    static Pattern FUNCTION = Pattern.compile("(\\S*\\s*|\\.\\s*)\\b([\\S&&[^\\.]]+)\\s*\\(([^)]*)\\)", Pattern.DOTALL);
             
     public String fix(String raw) {
         //return raw;
@@ -31,34 +31,32 @@ public class FunctionFixer {
     
     public String fix(String raw, Pattern pattern) {
         if (raw == null) return null;
+        StringBuffer buf = new StringBuffer();
+        int lastIndex = 0;
+        
         Matcher matcher = pattern.matcher(raw);
         
-        if (matcher.matches()) {
+        while(matcher.find()) {
             String pre = matcher.group(1);
             if (matcher.group(1) != null) {
                 String trimmedPre = pre.trim();
                 if (trimmedPre.endsWith( "." ) || trimmedPre.endsWith( "new" )) {
                     //leave alone
-                    return raw;
-                 } else {
-                     //recurse
-                    pre = fix(pre, pattern);
-                 }                
-                 //pre = fix(pre, pattern);
+                    continue;
+                 }
             }
-            
             String function = matcher.group(2).trim();
             
             String params = matcher.group(3).trim();
             
-            String post = matcher.group(4);
-            if (post != null) {
-                post = fix(post);
-            }
             String target = ucFirst(function) + "." + function + "(" + params + ")";
-            return pre + matcher.replaceAll( KnowledgeHelperFixer.replace( target, "$", "\\$", 128 )) + post;
+            
+            buf.append( raw.substring( lastIndex, matcher.start( 2 ) ) );
+            buf.append( KnowledgeHelperFixer.replace( target, "$", "\\$", 128 ) );
+            lastIndex = matcher.end();
         }
-        return raw;
+        buf.append( raw.substring( lastIndex ) );
+        return buf.toString();
     }
     
     private String ucFirst(String name) {
