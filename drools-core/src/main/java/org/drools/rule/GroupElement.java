@@ -21,11 +21,53 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.RuntimeDroolsException;
+
 public abstract class GroupElement extends ConditionalElement {
     private List children = new ArrayList();
 
+    /**
+     * This removes single branch 'and' and 'or'
+     * It also does basic nested removal, where an 'and' is
+     * nested inside an 'and' and when an 'or' is nested inside an 'or'
+     * 
+     *  LogicTransformer does further, more complicated, transformations
+     * @param child
+     */
     public void addChild(Object child) {
-        this.children.add( child );
+        if ( child instanceof GroupElement && ( child instanceof And || child instanceof Or ) ) {
+            GroupElement group = ( GroupElement )  child;
+            
+            // Removal single branch group elements 
+            // If the child is a GroupElement iterate down until we either
+            // find a GroupElement that has more than one children, or its not a GroupElement            
+            if (  group.getChildren().size() == 1 ) {
+                child = group.getChildren().get( 0 );
+            }            
+        }
+        
+        if ( child instanceof GroupElement && ( child instanceof And || child instanceof Or ) ) {
+            GroupElement group = ( GroupElement )  child;
+            
+            // Remove nested Ands/Ors            
+            if ( group.getClass() == this.getClass() ) {
+                    
+                    GroupElement newGroup = null;
+                    if ( group instanceof And) {
+                        newGroup = new And();
+                    } else {
+                        newGroup =  new Or();
+                    }
+                    
+                    for ( Iterator it = group.getChildren().iterator(); it.hasNext(); ) {
+                        this.children.add( it.next() );
+                    }
+            } else {
+                this.children.add( child );
+            }
+        }   else {        
+            this.children.add( child );
+        }
     }
 
     public List getChildren() {
