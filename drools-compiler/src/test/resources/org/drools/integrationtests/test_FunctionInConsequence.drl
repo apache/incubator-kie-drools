@@ -15,4 +15,6 @@ rule "global rule test"
         Cheese( )
     then
 		addFive( list );
+		// Calling methods does not mess with function calls
+		String tmp = list.toString();
 end    
