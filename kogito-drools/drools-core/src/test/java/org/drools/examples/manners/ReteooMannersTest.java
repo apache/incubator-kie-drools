@@ -53,30 +53,30 @@ public class ReteooMannersTest extends BaseMannersTest {
         ruleBase.addPackage( this.pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         
-        workingMemory.addEventListener( new DefaultAgendaEventListener() {
-           public void activationCreated(ActivationCreatedEvent event) {
-                super.activationCreated( event );
-                System.out.println( event );
-            }
-           
-           public void activationCancelled(ActivationCancelledEvent event) {
-               super.activationCancelled( event );
-               System.out.println( event );
-           }
-           
-           public void beforeActivationFired(BeforeActivationFiredEvent event) {
-               super.beforeActivationFired( event );
-               System.out.println( event );
-           }           
-           
-           public void afterActivationFired(AfterActivationFiredEvent event) {
-               super.afterActivationFired( event );
-               System.out.println( event );
-           }
-           
-        });
+//        workingMemory.addEventListener( new DefaultAgendaEventListener() {
+//           public void activationCreated(ActivationCreatedEvent event) {
+//                super.activationCreated( event );
+//                System.out.println( event );
+//            }
+//           
+//           public void activationCancelled(ActivationCancelledEvent event) {
+//               super.activationCancelled( event );
+//               System.out.println( event );
+//           }
+//           
+//           public void beforeActivationFired(BeforeActivationFiredEvent event) {
+//               super.beforeActivationFired( event );
+//               System.out.println( event );
+//           }           
+//           
+//           public void afterActivationFired(AfterActivationFiredEvent event) {
+//               super.afterActivationFired( event );
+//               System.out.println( event );
+//           }
+//           
+//        });
 
-        InputStream is = getClass().getResourceAsStream( "/manners5.dat" );
+        InputStream is = getClass().getResourceAsStream( "/manners64.dat" );
         List list = getInputObjects( is );
         for ( Iterator it = list.iterator(); it.hasNext(); ) {
             Object object = it.next();
