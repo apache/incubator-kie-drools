@@ -1,0 +1,4 @@
+<package name="com.sample">
+	<import>java.util.HashMap</import>
+	<import>org.drools.*</import>	
+</package>
