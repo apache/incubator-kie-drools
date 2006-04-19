@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
 "http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
 <section>
@@ -536,5 +536,14 @@
     libraries into it and the drls you want to inspect with the Rete View.
     Just click on the right tab below in the DRL Editor, followed by a click
     on "Generate Rete View".</para>
+  </section>
+  <section>
+    <title>Large drl files</title>
+    <para>Depending on the JDK you use, it may be necessary to increase the permanent
+    generation max size. Both SUN and IBM jdk have a permanent generation, whereas
+    BEA JRockit does not.</para>
+    <para>To increase the permanent generation, start eclipse with -XX:MaxPermSize=###m</para>
+    <para>Example: c:\eclipse\eclipse.exe -XX:MaxPermSize=128m</para>
+    <para>Rulesets of 4,000 rules or greater should set the permanent generation to atleast 128Mb.</para>
   </section>
 </section>
