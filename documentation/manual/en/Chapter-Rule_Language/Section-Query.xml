@@ -7,16 +7,21 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="query.svg" format="SVG" role=""
-                    />
+        <imagedata align="center" fileref="query.svg" format="SVG" role="" />
       </imageobject>
 
       <imageobject>
-        <imagedata align="center" fileref="query.png" format="PNG" role=""
-                    />
+        <imagedata align="center" fileref="query.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
 
-  <para>uuuere</para>
+  <para>A query contains the structure of the LHS of a rule only (you don't
+  specify "when" or "then"). It is simply a way to query the working memory
+  for facts that match the conditions stated. </para>
+
+  <para>You use WorkingMemory.getQueryResults("name") by using the query name.
+  This will return a list of Tuple instances. Each Tuple instance has one or
+  more FactHandles. To get to the original Fact object, use
+  WorkingMemory.getObject(factHandle).</para>
 </section>
