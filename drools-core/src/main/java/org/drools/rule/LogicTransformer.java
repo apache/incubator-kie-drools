@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.rule;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -224,12 +223,16 @@ class LogicTransformer {
         parent.getChildren().addAll( newChildren );
     }
 
+    void checkForAndRemoveSingleBranch(GroupElement parent) {
+
+    }
+
     GroupElement applyOrTransformation(GroupElement parent,
                                        GroupElement child) throws InvalidPatternException {
-        OrTransformation transformation = null;
+        Transformation transformation = null;
         Map map = (HashMap) this.orTransformations.get( parent.getClass() );
         if ( map != null ) {
-            transformation = (OrTransformation) map.get( child.getClass() );
+            transformation = (Transformation) map.get( child.getClass() );
         }
 
         if ( transformation == null ) {
@@ -239,7 +242,7 @@ class LogicTransformer {
         return transformation.transform( parent );
     }
 
-    interface OrTransformation {
+    interface Transformation {
         GroupElement transform(GroupElement element) throws InvalidPatternException;
     }
 
@@ -272,7 +275,7 @@ class LogicTransformer {
      */
     class AndOrTransformation
         implements
-        OrTransformation {
+        Transformation {
 
         public GroupElement transform(GroupElement and) throws InvalidPatternException {
             Or or = new Or();
@@ -388,25 +391,26 @@ class LogicTransformer {
      */
     class ExistOrTransformation
         implements
-        OrTransformation {
+        Transformation {
 
         public GroupElement transform(GroupElement exist) throws InvalidPatternException {
-            if ( !(exist.getChildren().get( 0 ) instanceof Or) ) {
-                throw new RuntimeException( "ExistOrTransformation expected '" + Or.class.getName() + "' but instead found '" + exist.getChildren().get( 0 ).getClass().getName() + "'" );
-            }
-
-            /*
-             * we know a Not only ever has one child, and the previous algorithm
-             * has confirmed the child is an OR
-             */
-            Or or = (Or) exist.getChildren().get( 0 );
-            And and = new And();
-            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
-                Exists newExist = new Exists();
-                newExist.addChild( it.next() );
-                and.addChild( newExist );
-            }
-            return and;
+            throw new InvalidPatternException( "You cannot nest an OR within an Exists" );
+//            if ( !(exist.getChildren().get( 0 ) instanceof Or) ) {
+//                throw new RuntimeException( "ExistOrTransformation expected '" + Or.class.getName() + "' but instead found '" + exist.getChildren().get( 0 ).getClass().getName() + "'" );
+//            }
+//
+//            /*
+//             * we know a Not only ever has one child, and the previous algorithm
+//             * has confirmed the child is an OR
+//             */
+//            Or or = (Or) exist.getChildren().get( 0 );
+//            And and = new And();
+//            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+//                Exists newExist = new Exists();
+//                newExist.addChild( it.next() );
+//                and.addChild( newExist );
+//            }
+//            return and;
         }
     }
 
@@ -433,26 +437,62 @@ class LogicTransformer {
      */
     public class NotOrTransformation
         implements
-        OrTransformation {
+        Transformation {
 
         public GroupElement transform(GroupElement not) throws InvalidPatternException {
-            if ( !(not.getChildren().get( 0 ) instanceof Or) ) {
-                throw new RuntimeException( "NotOrTransformation expected '" + Or.class.getName() + "' but instead found '" + not.getChildren().get( 0 ).getClass().getName() + "'" );
-            }
 
-            /*
-             * we know a Not only ever has one child, and the previous algorithm
-             * has confirmed the child is an OR
-             */
-            Or or = (Or) not.getChildren().get( 0 );
-            And and = new And();
-            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
-                Not newNot = new Not();
-                newNot.addChild( it.next() );
-                and.addChild( newNot );
-            }
-            return and;
+            throw new InvalidPatternException( "You cannot nest an OR within an Not" );
+            // @todo for 3.1
+//            if ( !(not.getChildren().get( 0 ) instanceof Or) ) {
+//                throw new RuntimeException( "NotOrTransformation expected '" + Or.class.getName() + "' but instead found '" + not.getChildren().get( 0 ).getClass().getName() + "'" );
+//            }
+//
+//            /*
+//             * we know a Not only ever has one child, and the previous algorithm
+//             * has confirmed the child is an OR
+//             */
+//            Or or = (Or) not.getChildren().get( 0 );
+//            And and = new And();
+//            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+//                Not newNot = new Not();
+//                newNot.addChild( it.next() );
+//                and.addChild( newNot );
+//            }
+//            return and;
         }
     }
 
+    //@todo for 3.1
+//    public class NotAndTransformation
+//        implements
+//        Transformation {
+//
+//        public GroupElement transform(GroupElement not) throws InvalidPatternException {
+//            if ( !(not.getChildren().get( 0 ) instanceof And) ) {
+//                throw new RuntimeException( "NotAndTransformation expected '" + And.class.getName() + "' but instead found '" + not.getChildren().get( 0 ).getClass().getName() + "'" );
+//            }
+//
+//            /*
+//             * we know a Not only ever has one child, and the previous algorithm
+//             * has confirmed the child is an And
+//             */
+//            And and = (And) not.getChildren().get( 0 );
+//            for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
+//                Object object1 = it.next();
+//
+//                for ( Iterator it2 = and.getChildren().iterator(); it.hasNext(); ) {
+//                    Object object2 = it.next();
+//                    if ( object2 != object1 ) {
+//
+//                    }
+//                }
+//
+//                Not newNot = new Not();
+//                newNot.addChild( it.next() );
+//                and.addChild( newNot );
+//            }
+//
+//            return and;
+//        }
+//    }
 }
