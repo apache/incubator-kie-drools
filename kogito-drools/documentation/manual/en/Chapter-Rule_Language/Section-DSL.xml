@@ -2,37 +2,74 @@
 <section>
   <title>Domain Specific Languages</title>
 
-  <para>As mentioned previously, Domain Specific Languages (or DSLs) are a way of extending the rule language to your problem domain.
-  They are wired in to the rule language for you, and can make use of all the underlying rule langauge and engine features.</para>
-
+  <para>As mentioned previously, Domain Specific Languages (or DSLs) are a way
+  of extending the rule language to your problem domain. They are wired in to
+  the rule language for you, and can make use of all the underlying rule
+  langauge and engine features.</para>
 
   <section>
     <title>When to use a DSL</title>
-	<para>DSLs can serve as a layer of seperation between rule authoring (and rule authors) and the domain objects that the engine operates on.
-	DSLs can also act as "templates" of conditions or actions that are used over and over in your rules, perhaps only with parameters changing each time.
-	If your rules need to be read and validated by less technical folk, (such as Business Analysts) the DSLs are definately for you. 
-	 </para>
-  </section>
 
+    <para>DSLs can serve as a layer of seperation between rule authoring (and
+    rule authors) and the domain objects that the engine operates on. DSLs can
+    also act as "templates" of conditions or actions that are used over and
+    over in your rules, perhaps only with parameters changing each time. If
+    your rules need to be read and validated by less technical folk, (such as
+    Business Analysts) the DSLs are definately for you. If the conditions or
+    consequences of your rules follow similar patterns which you can express
+    in a template. You wish to hide away your implementation details, and
+    focus on the business rule. You want to provide a controlled means of
+    editing rules based on pre-defined templates.</para>
+  </section>
 
   <section>
     <title>Creating a DSL</title>
 
-    <para></para>
+    <para>A DSL's configuration like most things is stored in a plain text
+    file. If you use the IDE, you get a nice graphical editor, but the format
+    of the file is quite simple, and is basically a properties file.</para>
 
+    <example>
+      <title>Example DSL mapping</title>
+
+      <programlisting>[when]This is {something}=Something(something=={something})</programlisting>
+    </example>
   </section>
 
   <section>
     <title>Using a DSL in your rules</title>
+
+    <para>A good way to get started if you are new to Rules (and DSLs) is just
+    write the rules as you normally would against your object model. You can
+    unit test as you go (like a good agile citizen!). Once you feel
+    comfortable, you can look at extracting a domain language to express what
+    you are doing in the rules. Note that once you have started using the
+    "expander" keyword, you will get errors if the parser does not recognise
+    expressions you have in there - you need to move everything to the DSL. As
+    a way around this, you can prefix each line with "&gt;" and it will tell
+    the parser to take that line literally, and not try and expand it (this is
+    handy also if you are debugging why something isn't working).</para>
+
+    <para>As you work through building up your DSL, you will find that the DSL
+    configuration stabilises pretty quickly, and that as you add new rules and
+    edit rules you are reusing the same DSL expressions over and over. The aim
+    is to make things as fluent as possible.</para>
+
+    <para>To use the DSL when you want to compile and run the rules, you will
+    need to pass the DSL configuration source along with the rule source.
+    <programlisting>PackageBuilder builder = new PackageBuilder();
+builder.addPackageFromDrl( source, dsl );
+//source is a reader for the rule source, dsl is a reader for the DSL configuration
+</programlisting> You will also need to specify the expander by name in the
+    rule source file: <programlisting>expander your-expander.dsl
+</programlisting> Typically you keep the DSL in the same directory as the
+    rule, but this is not required if you are using the above API (you only
+    need to pass a reader). Otherwise everything is just the same.</para>
   </section>
 
   <section>
     <title>How it works</title>
 
     <para></para>
-
   </section>
-
-
-
 </section>
