@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Domain Specific Languages</title>
+
+  <para>As mentioned previously, Domain Specific Languages (or DSLs) are a way of extending the rule language to your problem domain.
+  They are wired in to the rule language for you, and can make use of all the underlying rule langauge and engine features.</para>
+
+
+  <section>
+    <title>When to use a DSL</title>
+	<para>DSLs can serve as a layer of seperation between rule authoring (and rule authors) and the domain objects that the engine operates on.
+	DSLs can also act as "templates" of conditions or actions that are used over and over in your rules, perhaps only with parameters changing each time.
+	If your rules need to be read and validated by less technical folk, (such as Business Analysts) the DSLs are definately for you. 
+	 </para>
+  </section>
+
+
+  <section>
+    <title>Creating a DSL</title>
+
+    <para></para>
+
+  </section>
+
+  <section>
+    <title>Using a DSL in your rules</title>
+  </section>
+
+  <section>
+    <title>How it works</title>
+
+    <para></para>
+
+  </section>
+
+
+
+</section>
