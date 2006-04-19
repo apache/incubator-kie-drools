@@ -294,36 +294,36 @@ public class RuleBuilder {
             if ( object instanceof ConditionalElementDescr ) {
                 if ( object instanceof AndDescr ) {
                     And and = new And();
-                    ce.addChild( and );
                     build( rule,
                            (ConditionalElementDescr) object,
                            and,
                            false,
                            false);
+                    ce.addChild( and );                    
                 } else if ( object instanceof OrDescr ) {
                     Or or = new Or();
-                    ce.addChild( or );
                     build( rule,
                            (ConditionalElementDescr) object,
                            or,
                            true,
                            false);
+                    ce.addChild( or );                    
                 } else if ( object instanceof NotDescr ) {
                     Not not = new Not();
-                    ce.addChild( not );
                     build( rule,
                            (ConditionalElementDescr) object,
                            not,
                            true,
                            true);
+                    ce.addChild( not );                    
                 } else if ( object instanceof ExistsDescr ) {
                     Exists exists = new Exists();
-                    ce.addChild( exists );
                     build( rule,
                            (ConditionalElementDescr) object,
                            exists,
                            true, 
                            true);
+                    ce.addChild( exists );                    
                 } else if ( object instanceof EvalDescr ) {
                     EvalCondition eval = build( (EvalDescr) object );
                     if ( eval != null ) {
