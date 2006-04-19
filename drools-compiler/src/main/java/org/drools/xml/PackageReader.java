@@ -126,39 +126,39 @@ public class PackageReader extends DefaultHandler {
         this.parents = new LinkedList();
 
         this.handlers = new HashMap();
-        this.handlers.put( "PackageDescr",
+        this.handlers.put( "package",
+                           new PackageHandler( this ) );
+        this.handlers.put( "rule",
                            null );
-        this.handlers.put( "RuleDescr",
+        this.handlers.put( "query",
                            null );
-        this.handlers.put( "QueryDescr",
-                           null );
-        this.handlers.put( "AttributeDescr",
+        this.handlers.put( "attribute",
                            null );
 
-        this.handlers.put( "FunctionDescr",
+        this.handlers.put( "function",
                            null );
 
         // Conditional Elements
-        this.handlers.put( "AndDescr",
+        this.handlers.put( "and",
                            null );
-        this.handlers.put( "OrDescr",
+        this.handlers.put( "or",
                            null );
-        this.handlers.put( "NotDescr",
+        this.handlers.put( "not",
                            null );
-        this.handlers.put( "ExistsDescr",
+        this.handlers.put( "exists",
                            null );
 
-        this.handlers.put( "ColumnDescr",
+        this.handlers.put( "column",
                            null );
 
         // Field Constraints
-        this.handlers.put( "LiteralDescr",
+        this.handlers.put( "literal",
                            null );
-        this.handlers.put( "PredicateDescr",
+        this.handlers.put( "predicate",
                            null );
-        this.handlers.put( "ReturnValueDescr",
+        this.handlers.put( "return-value",
                            null );
-        this.handlers.put( "BoundVariableDescr",
+        this.handlers.put( "bound-variable",
                            null );
 
         initEntityResolver();
@@ -334,10 +334,10 @@ public class PackageReader extends DefaultHandler {
         }
 
         if ( handler == null ) {
-            if ( ((this.inHandledRuleSubElement == false) && (this.parents.getLast() instanceof RuleDescr)) || (this.parents.getLast() instanceof PackageDescr) ) {
-                throw new SAXParseException( "unknown tag '" + localName + "' in namespace '" + uri + "'",
-                                             getLocator() );
-            }
+//            if ( ((this.inHandledRuleSubElement == false) && (this.parents.getLast() instanceof RuleDescr)) || (this.parents.getLast() instanceof PackageDescr) ) {
+//                throw new SAXParseException( "unknown tag '" + localName + "' in namespace '" + uri + "'",
+//                                             getLocator() );
+//            }
             // no handler so build up the configuration
             startConfiguration( localName,
                                 attrs );
