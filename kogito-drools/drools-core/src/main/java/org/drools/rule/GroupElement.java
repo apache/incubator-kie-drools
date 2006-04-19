@@ -35,6 +35,24 @@ public abstract class GroupElement extends ConditionalElement {
      * @param child
      */
     public void addChild(Object child) {
+        // @todo : I've commented this out for 3.0, but we want this working for 3.1
+//        if ( child instanceof Not ) {
+//            Not not = ( Not )  child;
+//            Object notChild = not.getChild();
+//            if ( notChild instanceof Or ) {
+//                Or or = (Or) notChild;
+//                And and = new And();
+//                for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+//                    Not newNot = new Not();
+//                    newNot.addChild( it.next() );
+//                    and.addChild( newNot );
+//                }                
+//                child = and;
+//            } else if ( notChild instanceof And ) {
+//                
+//            }            
+//        }
+        
         if ( child instanceof GroupElement && ( child instanceof And || child instanceof Or ) ) {
             GroupElement group = ( GroupElement )  child;
             
