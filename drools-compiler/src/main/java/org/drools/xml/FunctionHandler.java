@@ -47,7 +47,7 @@ class FunctionHandler extends BaseAbstractHandler
             this.validPeers.add( FunctionDescr.class );
             this.validPeers.add( RuleDescr.class );
             this.validPeers.add( QueryDescr.class );
-            
+
             this.allowNesting = false;
         }
     }
@@ -56,7 +56,7 @@ class FunctionHandler extends BaseAbstractHandler
                         String localName,
                         Attributes attrs) throws SAXException {
         xmlPackageReader.startConfiguration( localName,
-                                          attrs );
+                                             attrs );
         return null;
     }
 
@@ -94,7 +94,8 @@ class FunctionHandler extends BaseAbstractHandler
                                              xmlPackageReader.getLocator() );
             }
 
-            functionDescr.addParameter( type, identifier );
+            functionDescr.addParameter( type,
+                                        identifier );
         }
 
         // we allow empty, "", bodies - but make sure that we atleast have a body element
@@ -103,8 +104,7 @@ class FunctionHandler extends BaseAbstractHandler
             throw new SAXParseException( "function must have a <body>",
                                          xmlPackageReader.getLocator() );
         }
-        
-       
+
         functionDescr.setText( body.getText() );
 
         PackageDescr packageDescr = this.xmlPackageReader.getPackageDescr();

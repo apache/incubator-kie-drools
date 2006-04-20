@@ -1,0 +1,29 @@
+<package name="com.sample">
+	<import>java.util.HashMap</import>
+	<import>org.drools.*</import>	
+	
+	<global identifier="x">com.sample.X</global>		
+	<global identifier="yada">com.sample.Yada</global>
+	
+	<function return-type="void" name="myFunc">
+	    <parameter identifier="foo">Bar</parameter>
+	    <parameter identifier="bada">Bing</parameter>
+	    	    
+	    <body>
+	    	System.out.println("hello world");
+		</body>
+		
+	</function>
+	
+	<rule name="my rule">
+		<attribute name="salience" value="10" />
+		
+		<lhs>					
+	       <column object-type="Foo" />			
+		</lhs>
+		
+	    <rhs>
+	    	System.out.println( "hello" );	    
+		</rhs>
+	</rule>
+</package>

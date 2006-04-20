@@ -27,11 +27,10 @@ import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import java.util.Iterator;
 
 /**
  * @author mproctor
@@ -47,6 +46,7 @@ class AndHandler extends BaseAbstractHandler
 
         if ( (this.validParents == null) && (validPeers == null) ) {
             this.validParents = new HashSet();
+            this.validParents.add( QueryDescr.class );
             this.validParents.add( RuleDescr.class );
             this.validParents.add( OrDescr.class );
             this.validParents.add( AndDescr.class );
@@ -59,7 +59,7 @@ class AndHandler extends BaseAbstractHandler
             this.validPeers.add( ExistsDescr.class );
             this.validPeers.add( EvalDescr.class );
             this.validPeers.add( ColumnDescr.class );
-            
+
             this.allowNesting = true;
         }
     }
@@ -70,29 +70,29 @@ class AndHandler extends BaseAbstractHandler
         xmlPackageReader.startConfiguration( localName,
                                              attrs );
         AndDescr andDescr = new AndDescr();
-        
+
         return andDescr;
     }
 
     public Object end(String uri,
                       String localName) throws SAXException {
         Configuration config = xmlPackageReader.endConfiguration();
-        
-        AndDescr andDescr = ( AndDescr ) this.xmlPackageReader.getCurrent();
-        
+
+        AndDescr andDescr = (AndDescr) this.xmlPackageReader.getCurrent();
+
         LinkedList parents = this.xmlPackageReader.getParents();
         ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        Object parent = it.previous();        
-        
-        if ( parent.getClass() != RuleDescr.class ) {
-            ConditionalElementDescr ceDescr = ( ConditionalElementDescr ) parent;
-            ceDescr.addDescr( andDescr );
-        } else {
-            RuleDescr ruleDescr = ( RuleDescr ) parent;
+        Object parent = it.previous();
+
+        if ( parent.getClass() == RuleDescr.class || parent.getClass() == QueryDescr.class ) {
+            RuleDescr ruleDescr = (RuleDescr) parent;
             ruleDescr.setLhs( andDescr );
+        } else {
+            ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
+            ceDescr.addDescr( andDescr );
         }
-        
+
         return null;
     }
 

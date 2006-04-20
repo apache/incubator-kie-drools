@@ -54,14 +54,16 @@
 					<column object-type="Bar" />			
 				</or>
 				<column object-type="Yada" />							
-			</and>	
+			</and>							
 				
 			<or>
 				<and>
 					<column object-type="Foo" />							
 				</and>	
 				<column object-type="Zaa" />			
-			</or>								
+			</or>	
+			
+			<eval expression="1==1" />							
 		</lhs>
 		
 	    <rhs>

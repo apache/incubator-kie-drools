@@ -27,11 +27,8 @@ import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
-import org.drools.lang.descr.RuleDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import java.util.Iterator;
 
 /**
  * @author mproctor
@@ -48,7 +45,7 @@ class OrHandler extends BaseAbstractHandler
         if ( (this.validParents == null) && (validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( AndDescr.class );
-            this.validParents.add( OrDescr.class );            
+            this.validParents.add( OrDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
@@ -58,7 +55,7 @@ class OrHandler extends BaseAbstractHandler
             this.validPeers.add( ExistsDescr.class );
             this.validPeers.add( EvalDescr.class );
             this.validPeers.add( ColumnDescr.class );
-            
+
             this.allowNesting = true;
         }
     }
@@ -69,24 +66,24 @@ class OrHandler extends BaseAbstractHandler
         xmlPackageReader.startConfiguration( localName,
                                              attrs );
         OrDescr orDescr = new OrDescr();
-        
+
         return orDescr;
     }
 
     public Object end(String uri,
                       String localName) throws SAXException {
         Configuration config = xmlPackageReader.endConfiguration();
-        
-        OrDescr orDescr = ( OrDescr ) this.xmlPackageReader.getCurrent();
-        
+
+        OrDescr orDescr = (OrDescr) this.xmlPackageReader.getCurrent();
+
         LinkedList parents = this.xmlPackageReader.getParents();
         ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        Object parent = it.previous();        
-        
-        ConditionalElementDescr parentDescr = ( ConditionalElementDescr ) parent;
+        Object parent = it.previous();
+
+        ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
         parentDescr.addDescr( orDescr );
-        
+
         return null;
     }
 

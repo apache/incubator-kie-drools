@@ -54,7 +54,7 @@ class LhsHandler extends BaseAbstractHandler
                         String localName,
                         Attributes attrs) throws SAXException {
         xmlPackageReader.startConfiguration( localName,
-                                          attrs );
+                                             attrs );
         return null;
     }
 
@@ -92,7 +92,8 @@ class LhsHandler extends BaseAbstractHandler
                                              xmlPackageReader.getLocator() );
             }
 
-            functionDescr.addParameter( type, identifier );
+            functionDescr.addParameter( type,
+                                        identifier );
         }
 
         // we allow empty, "", bodies - but make sure that we atleast have a body element
@@ -101,8 +102,7 @@ class LhsHandler extends BaseAbstractHandler
             throw new SAXParseException( "function must have a <body>",
                                          xmlPackageReader.getLocator() );
         }
-        
-       
+
         functionDescr.setText( body.getText() );
 
         PackageDescr packageDescr = this.xmlPackageReader.getPackageDescr();

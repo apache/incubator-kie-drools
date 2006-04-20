@@ -27,12 +27,9 @@ import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
-import org.drools.lang.descr.RuleDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import java.util.Iterator;
 
 /**
  * @author mproctor

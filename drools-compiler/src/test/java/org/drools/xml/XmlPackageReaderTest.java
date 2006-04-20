@@ -7,8 +7,10 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -17,6 +19,7 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
 
@@ -90,9 +93,57 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "System.out.println(\"hello world\");", functionDescr.getText().trim() );       
     }
     
-    public void testParseSimpleRule() throws Exception {
+    
+    public void testParseRule() throws Exception {
         XmlPackageReader xmlPackageReader = new XmlPackageReader( );
-        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseSimpleRule.xml" ) ) );
+        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRule.xml" ) ) );
+        PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
+        assertNotNull( packageDescr );
+        assertEquals("com.sample", packageDescr.getName() );
+        
+        List imports = packageDescr.getImports();
+        assertEquals( 2, imports.size() );
+        assertEquals("java.util.HashMap", imports.get( 0 ) );
+        assertEquals("org.drools.*", imports.get( 1 ) );
+        
+        Map globals = packageDescr.getGlobals();
+        assertEquals( 2, globals.size() );
+        assertEquals("com.sample.X", globals.get( "x" ) );
+        assertEquals("com.sample.Yada", globals.get( "yada" ) );      
+
+        FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get( 0 );
+        List  names = functionDescr.getParameterNames();
+        assertEquals( "foo", names.get(0) );
+        assertEquals( "bada", names.get(1) );
+        
+        List types = functionDescr.getParameterTypes();
+        assertEquals( "Bar", types.get(0) );
+        assertEquals( "Bing", types.get(1) );   
+        
+        assertEquals( "System.out.println(\"hello world\");", functionDescr.getText().trim() );
+        
+        RuleDescr ruleDescr = ( RuleDescr ) packageDescr.getRules().get( 0 );
+        assertEquals( "my rule", ruleDescr.getName() );
+        
+        assertEquals( 1, ruleDescr.getAttributes().size() );
+        AttributeDescr attributeDescr = (AttributeDescr) ruleDescr.getAttributes().get( 0 );
+        assertEquals( "salience", attributeDescr.getName() );
+        assertEquals( "10", attributeDescr.getValue() );
+       
+        AndDescr lhs = ruleDescr.getLhs();
+        assertEquals( 1, lhs.getDescrs().size() );
+        ColumnDescr columnDescr = ( ColumnDescr) lhs.getDescrs().get( 0 );
+        assertEquals("Foo", columnDescr.getObjectType() );
+        
+        String consequence = ruleDescr.getConsequence();
+        assertNotNull( consequence );
+        assertEquals( "System.out.println( \"hello\" );", consequence.trim() );           
+        
+    }     
+    
+    public void testParseLhs() throws Exception {
+        XmlPackageReader xmlPackageReader = new XmlPackageReader( );
+        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseLhs.xml" ) ) );
         PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
         assertEquals("com.sample", packageDescr.getName() );
@@ -181,8 +232,84 @@ public class XmlPackageReaderTest extends TestCase {
         columnDescr = ( ColumnDescr ) andDescr.getDescrs().get( 0 );
         assertEquals( "Foo", columnDescr.getObjectType() );
         columnDescr = ( ColumnDescr ) orDescr.getDescrs().get( 1 );
-        assertEquals( "Zaa", columnDescr.getObjectType() );        
+        assertEquals( "Zaa", columnDescr.getObjectType() );
+        
+        EvalDescr evalDescr = ( EvalDescr ) lhsDescr.getDescrs().get( 9 );
+        assertEquals( "1==1", evalDescr.getText() );
     }    
     
+    public void testParseRhs() throws Exception {
+        XmlPackageReader xmlPackageReader = new XmlPackageReader( );
+        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRhs.xml" ) ) );
+        PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
+        assertNotNull( packageDescr );
+        assertEquals("com.sample", packageDescr.getName() );
+        
+        List imports = packageDescr.getImports();
+        assertEquals( 2, imports.size() );
+        assertEquals("java.util.HashMap", imports.get( 0 ) );
+        assertEquals("org.drools.*", imports.get( 1 ) );
+        
+        Map globals = packageDescr.getGlobals();
+        assertEquals( 2, globals.size() );
+        assertEquals("com.sample.X", globals.get( "x" ) );
+        assertEquals("com.sample.Yada", globals.get( "yada" ) );      
+
+        FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get( 0 );
+        List  names = functionDescr.getParameterNames();
+        assertEquals( "foo", names.get(0) );
+        assertEquals( "bada", names.get(1) );
+        
+        List types = functionDescr.getParameterTypes();
+        assertEquals( "Bar", types.get(0) );
+        assertEquals( "Bing", types.get(1) );   
+        
+        assertEquals( "System.out.println(\"hello world\");", functionDescr.getText().trim() );
+        
+        RuleDescr ruleDescr = ( RuleDescr ) packageDescr.getRules().get( 0 );
+        assertEquals( "my rule", ruleDescr.getName() );
+       
+        String consequence = ruleDescr.getConsequence();
+        assertNotNull( consequence );
+        assertEquals( "System.out.println( \"hello\" );", consequence.trim() );       
+    }
+    
+    public void testParseQuery() throws Exception {
+        XmlPackageReader xmlPackageReader = new XmlPackageReader( );
+        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseQuery.xml" ) ) );
+        PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
+        assertNotNull( packageDescr );
+        assertEquals("com.sample", packageDescr.getName() );
+        
+        List imports = packageDescr.getImports();
+        assertEquals( 2, imports.size() );
+        assertEquals("java.util.HashMap", imports.get( 0 ) );
+        assertEquals("org.drools.*", imports.get( 1 ) );
+        
+        Map globals = packageDescr.getGlobals();
+        assertEquals( 2, globals.size() );
+        assertEquals("com.sample.X", globals.get( "x" ) );
+        assertEquals("com.sample.Yada", globals.get( "yada" ) );      
+
+        FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get( 0 );
+        List  names = functionDescr.getParameterNames();
+        assertEquals( "foo", names.get(0) );
+        assertEquals( "bada", names.get(1) );
+        
+        List types = functionDescr.getParameterTypes();
+        assertEquals( "Bar", types.get(0) );
+        assertEquals( "Bing", types.get(1) );   
+        
+        assertEquals( "System.out.println(\"hello world\");", functionDescr.getText().trim() );
+        
+        QueryDescr queryDescr = ( QueryDescr ) packageDescr.getRules().get( 0 );
+        assertEquals( "my query", queryDescr.getName() );
+       
+        AndDescr lhs = queryDescr.getLhs();
+        assertEquals( 1, lhs.getDescrs().size() );
+        ColumnDescr columnDescr = ( ColumnDescr) lhs.getDescrs().get( 0 );
+        assertEquals("Foo", columnDescr.getObjectType() );
+        
+    }    
 }
 

@@ -1,4 +1,5 @@
 package org.drools.xml;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.xml;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.util.ArrayList;
 import java.util.HashMap;

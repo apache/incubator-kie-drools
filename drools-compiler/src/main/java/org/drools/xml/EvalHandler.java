@@ -20,12 +20,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.drools.lang.descr.BoundVariableDescr;
+import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
-import org.drools.lang.descr.FieldBindingDescr;
-import org.drools.lang.descr.LiteralDescr;
-import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.ReturnValueDescr;
+import org.drools.lang.descr.ConditionalElementDescr;
+import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.NotDescr;
+import org.drools.lang.descr.OrDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -36,24 +37,27 @@ import org.xml.sax.SAXParseException;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
-class PredicateHandler extends BaseAbstractHandler
+class EvalHandler extends BaseAbstractHandler
     implements
     Handler {
-    PredicateHandler(XmlPackageReader xmlPackageReader) {
+    EvalHandler(XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
         if ( (this.validParents == null) && (validPeers == null) ) {
             this.validParents = new HashSet();
-            this.validParents.add( ColumnDescr.class );
+            this.validParents.add( AndDescr.class );
+            this.validParents.add( OrDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
-            this.validPeers.add( LiteralDescr.class );
-            this.validPeers.add( PredicateDescr.class );
-            this.validPeers.add( ReturnValueDescr.class );
-            this.validPeers.add( FieldBindingDescr.class );
-            this.validPeers.add( BoundVariableDescr.class );
-            this.allowNesting = false;
+            this.validPeers.add( AndDescr.class );
+            this.validPeers.add( OrDescr.class );
+            this.validPeers.add( NotDescr.class );
+            this.validPeers.add( ExistsDescr.class );
+            this.validPeers.add( EvalDescr.class );
+            this.validPeers.add( ColumnDescr.class );
+
+            this.allowNesting = true;
         }
     }
 
@@ -63,48 +67,36 @@ class PredicateHandler extends BaseAbstractHandler
         xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        String identifier = attrs.getValue( "identifier" );
-        if ( identifier == null || identifier.trim().equals( "" ) ) {
-            throw new SAXParseException( "<predicate> requires an 'identifier' attribute",
-                                         xmlPackageReader.getLocator() );
-        }
-
-        String fieldName = attrs.getValue( "field-name" );
-        if ( fieldName == null || fieldName.trim().equals( "" ) ) {
-            throw new SAXParseException( "<predicate> requires a 'field-name' attribute",
-                                         xmlPackageReader.getLocator() );
-        }
-
         String expression = attrs.getValue( "expression" );
+
         if ( expression == null || expression.trim().equals( "" ) ) {
-            throw new SAXParseException( "<predicate> requires an expression",
+            throw new SAXParseException( "<eval> must have some content",
                                          xmlPackageReader.getLocator() );
         }
 
-        PredicateDescr predicateDescr = new PredicateDescr( fieldName,
-                                                            identifier,
-                                                            expression );
+        EvalDescr evalDescr = new EvalDescr( expression );
 
-        return predicateDescr;
+        return evalDescr;
     }
 
     public Object end(String uri,
                       String localName) throws SAXException {
         Configuration config = xmlPackageReader.endConfiguration();
 
-        PredicateDescr predicateDescr = (PredicateDescr) this.xmlPackageReader.getCurrent();
+        EvalDescr evalDescr = (EvalDescr) this.xmlPackageReader.getCurrent();
 
         LinkedList parents = this.xmlPackageReader.getParents();
         ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        ColumnDescr columnDescr = (ColumnDescr) it.previous();
+        Object parent = it.previous();
 
-        columnDescr.addDescr( predicateDescr );
+        ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+        parentDescr.addDescr( evalDescr );
 
         return null;
     }
 
     public Class generateNodeFor() {
-        return PredicateDescr.class;
+        return EvalDescr.class;
     }
 }
