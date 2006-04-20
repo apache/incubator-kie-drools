@@ -1,0 +1,353 @@
+package org.drools.samples
+import com.sample.benchmark.models.Account;
+
+rule rule0
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc0")
+  then
+    System.out.println("rule0 fired");
+end
+
+rule rule1
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc1")
+  then
+    System.out.println("rule1 fired");
+end
+
+rule rule2
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc2")
+  then
+    System.out.println("rule2 fired");
+end
+
+rule rule3
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc3")
+  then
+    System.out.println("rule3 fired");
+end
+
+rule rule4
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc4")
+  then
+    System.out.println("rule4 fired");
+end
+
+rule rule5
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc5")
+  then
+    System.out.println("rule5 fired");
+end
+
+rule rule6
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc6")
+  then
+    System.out.println("rule6 fired");
+end
+
+rule rule7
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc7")
+  then
+    System.out.println("rule7 fired");
+end
+
+rule rule8
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc8")
+  then
+    System.out.println("rule8 fired");
+end
+
+rule rule9
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc9")
+  then
+    System.out.println("rule9 fired");
+end
+
+rule rule10
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc10")
+  then
+    System.out.println("rule10 fired");
+end
+
+rule rule11
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc11")
+  then
+    System.out.println("rule11 fired");
+end
+
+rule rule12
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc12")
+  then
+    System.out.println("rule12 fired");
+end
+
+rule rule13
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc13")
+  then
+    System.out.println("rule13 fired");
+end
+
+rule rule14
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc14")
+  then
+    System.out.println("rule14 fired");
+end
+
+rule rule15
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc15")
+  then
+    System.out.println("rule15 fired");
+end
+
+rule rule16
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc16")
+  then
+    System.out.println("rule16 fired");
+end
+
+rule rule17
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc17")
+  then
+    System.out.println("rule17 fired");
+end
+
+rule rule18
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc18")
+  then
+    System.out.println("rule18 fired");
+end
+
+rule rule19
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc19")
+  then
+    System.out.println("rule19 fired");
+end
+
+rule rule20
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc20")
+  then
+    System.out.println("rule20 fired");
+end
+
+rule rule21
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc21")
+  then
+    System.out.println("rule21 fired");
+end
+
+rule rule22
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc22")
+  then
+    System.out.println("rule22 fired");
+end
+
+rule rule23
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc23")
+  then
+    System.out.println("rule23 fired");
+end
+
+rule rule24
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc24")
+  then
+    System.out.println("rule24 fired");
+end
+
+rule rule25
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc25")
+  then
+    System.out.println("rule25 fired");
+end
+
+rule rule26
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc26")
+  then
+    System.out.println("rule26 fired");
+end
+
+rule rule27
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc27")
+  then
+    System.out.println("rule27 fired");
+end
+
+rule rule28
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc28")
+  then
+    System.out.println("rule28 fired");
+end
+
+rule rule29
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc29")
+  then
+    System.out.println("rule29 fired");
+end
+
+rule rule30
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc30")
+  then
+    System.out.println("rule30 fired");
+end
+
+rule rule31
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc31")
+  then
+    System.out.println("rule31 fired");
+end
+
+rule rule32
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc32")
+  then
+    System.out.println("rule32 fired");
+end
+
+rule rule33
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc33")
+  then
+    System.out.println("rule33 fired");
+end
+
+rule rule34
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc34")
+  then
+    System.out.println("rule34 fired");
+end
+
+rule rule35
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc35")
+  then
+    System.out.println("rule35 fired");
+end
+
+rule rule36
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc36")
+  then
+    System.out.println("rule36 fired");
+end
+
+rule rule37
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc37")
+  then
+    System.out.println("rule37 fired");
+end
+
+rule rule38
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc38")
+  then
+    System.out.println("rule38 fired");
+end
+
+rule rule39
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc39")
+  then
+    System.out.println("rule39 fired");
+end
+
+rule rule40
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc40")
+  then
+    System.out.println("rule40 fired");
+end
+
+rule rule41
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc41")
+  then
+    System.out.println("rule41 fired");
+end
+
+rule rule42
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc42")
+  then
+    System.out.println("rule42 fired");
+end
+
+rule rule43
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc43")
+  then
+    System.out.println("rule43 fired");
+end
+
+rule rule44
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc44")
+  then
+    System.out.println("rule44 fired");
+end
+
+rule rule45
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc45")
+  then
+    System.out.println("rule45 fired");
+end
+
+rule rule46
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc46")
+  then
+    System.out.println("rule46 fired");
+end
+
+rule rule47
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc47")
+  then
+    System.out.println("rule47 fired");
+end
+
+rule rule48
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc48")
+  then
+    System.out.println("rule48 fired");
+end
+
+rule rule49
+  when
+    $acc : Account(status == "standard", title == "mr", accountId == "acc49")
+  then
+    System.out.println("rule49 fired");
+end
+
