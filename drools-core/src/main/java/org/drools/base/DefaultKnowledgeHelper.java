@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
+import org.drools.QueryResults;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.rule.Declaration;
@@ -121,7 +122,7 @@ public class DefaultKnowledgeHelper
         return this.activation;
     }
 
-    public List getQueryResults(String query) {
+    public QueryResults getQueryResults(String query) {
         return this.workingMemory.getQueryResults( query );
     }
 

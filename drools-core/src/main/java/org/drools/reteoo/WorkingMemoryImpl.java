@@ -33,6 +33,7 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.NoSuchFactHandleException;
 import org.drools.NoSuchFactObjectException;
+import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.base.DroolsQuery;
@@ -45,6 +46,7 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
@@ -333,15 +335,21 @@ public class WorkingMemoryImpl
         return matching;
     }
 
-    public List getQueryResults(String query) {
+    public QueryResults getQueryResults(String query) {
         FactHandle handle = assertObject( new DroolsQuery( query ) );
         QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
-        List list = null;
-        if ( node != null ) {
-            list = (List) this.nodeMemories.remove( node.getId() );
+        if ( node == null ) {
+            retractObject( handle );
+            return null;
         }
+        
+        List list = (List) this.nodeMemories.remove( node.getId() );
+
         retractObject( handle );
-        return list;
+        if ( list == null ) {
+            list = Collections.EMPTY_LIST;
+        }
+        return new QueryResults( list, ( Query ) node.getRule(), this);
     }
 
     void setQueryResults(String query,
