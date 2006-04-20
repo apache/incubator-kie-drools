@@ -1,5 +1,6 @@
 package org.drools;
 
+import java.lang.reflect.Array;
 import java.util.Map;
 
 import org.drools.rule.Declaration;
@@ -24,7 +25,8 @@ public class QueryResult {
     }
     
     public Object get(int i) {
-        return this.workingMemory.getObject( tuple.get( i ) );
+        //adjust for the DroolsQuery object
+        return this.workingMemory.getObject( tuple.get( i+1 ) );
     }
 
     public Object get(String declaration) {
@@ -36,10 +38,15 @@ public class QueryResult {
     }
     
     public FactHandle[] getFactHandles() {
-        return this.tuple.getFactHandles();
+        // Strip the DroolsQuery fact
+        FactHandle[] src = this.tuple.getFactHandles();
+        FactHandle[] dst = new FactHandle[src.length-1];
+        System.arraycopy( src, 1, dst, 0, dst.length );
+        return dst;
     }
     
     public int size() {
-        return tuple.getFactHandles().length;
+        // Adjust for the DroolsQuery object
+        return tuple.getFactHandles().length -1;
     }
 }
