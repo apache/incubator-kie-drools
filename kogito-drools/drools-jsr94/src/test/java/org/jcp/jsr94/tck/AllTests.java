@@ -34,8 +34,7 @@ public class AllTests extends TestSuite {
 
         TestSuite suite = new TestSuite( "JSR 94 Test Compatability Kit" );
         suite.addTestSuite( ApiSignatureTest.class );
-        //JBRULES-139 TCK-TestCaseUtil needs to be fixed
-        //suite.addTestSuite( ClassLoaderTest.class );
+        suite.addTestSuite( ClassLoaderTest.class );
         suite.addTestSuite( ConfigurationExceptionTest.class );
         suite.addTestSuite( HandleTest.class );
         suite.addTestSuite( InvalidHandleExceptionTest.class );
