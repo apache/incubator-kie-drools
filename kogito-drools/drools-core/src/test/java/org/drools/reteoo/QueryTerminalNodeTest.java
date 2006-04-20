@@ -134,21 +134,21 @@ public class QueryTerminalNodeTest extends TestCase {
                       results.size() );
         
         QueryResult result = results.get( 0 );
-        assertTrue( result.get( 0 ) instanceof DroolsQuery );        
-        assertSame( stilton1, result.get( 1 ) );
+        assertEquals(1, result.size() );        
+        assertSame( stilton1, result.get( 0 ) );
 
         result = results.get( 1 );
-        assertTrue( result.get( 0 ) instanceof DroolsQuery );        
-        assertSame( stilton2, result.get( 1 ) ); 
+        assertEquals(1, result.size() );        
+        assertSame( stilton2, result.get( 0 ) );
         
         int i = 0;
         for ( Iterator it = results.iterator(); it.hasNext(); ) {
            result = ( QueryResult ) it.next();
-           assertTrue( result.get( 0 ) instanceof DroolsQuery );
+           assertEquals(1, result.size() );        
            if ( i == 0 ) {
-               assertSame( stilton1, result.get( 1 ) );
+               assertSame( stilton1, result.get( 0 ) );
            } else {
-               assertSame( stilton2, result.get( 1 ) );
+               assertSame( stilton2, result.get( 0 ) );
            }
            i++;
         }
