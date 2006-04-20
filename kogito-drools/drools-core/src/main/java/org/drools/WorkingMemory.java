@@ -219,7 +219,7 @@ public interface WorkingMemory
      */
     FactHandle assertObject(Object object) throws FactException;
 
-    public List getQueryResults(String query);
+    public QueryResults getQueryResults(String query);
 
     /**
      * Assert a fact registering JavaBean <code>PropertyChangeListeners</code>

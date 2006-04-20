@@ -130,7 +130,15 @@ class LogicTransformer {
             ands = new And[or.getChildren().size()];
             int i = 0;
             for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
-                ands[i] = (And) it.next();
+                Object object = it.next();
+                if ( object.getClass() == And.class ) {
+                    ands[i] = (And) object;    
+                } else {
+                    And newAnd = new And();
+                    newAnd.addChild( and );
+                    ands[i] = newAnd; 
+                }
+                
                 i++;
             }
 
@@ -221,10 +229,6 @@ class LogicTransformer {
             }
         }
         parent.getChildren().addAll( newChildren );
-    }
-
-    void checkForAndRemoveSingleBranch(GroupElement parent) {
-
     }
 
     GroupElement applyOrTransformation(GroupElement parent,

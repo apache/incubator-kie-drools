@@ -17,11 +17,14 @@ package org.drools.reteoo;
 
 
 
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.drools.FactHandle;
+import org.drools.QueryResult;
+import org.drools.QueryResults;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
@@ -98,48 +101,70 @@ public class QueryTerminalNodeTest extends TestCase {
         queryNode.attach();
 
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        List list = workingMemory.getQueryResults( "query-1" );
+        QueryResults results = workingMemory.getQueryResults( "query-1" );
 
-        assertNull( list );
+        assertNull( results );
 
-        Cheese stilton = new Cheese( "stilton",
+        Cheese stilton1 = new Cheese( "stilton",
                                      100 );
-        FactHandle handle1 = workingMemory.assertObject( stilton );
+        FactHandle handle1 = workingMemory.assertObject( stilton1 );
 
-        list = workingMemory.getQueryResults( "query-1" );
+        results = workingMemory.getQueryResults( "query-1" );
 
         assertEquals( 1,
-                      list.size() );
+                      results.size() );
 
         Cheese cheddar = new Cheese( "cheddar",
                                      55 );
         workingMemory.assertObject( cheddar );
 
-        list = workingMemory.getQueryResults( "query-1" );
+        results = workingMemory.getQueryResults( "query-1" );
 
         assertEquals( 1,
-                      list.size() );
+                      results.size() );
 
-        stilton = new Cheese( "stilton",
+        Cheese stilton2 = new Cheese( "stilton",
                               5 );
 
-        FactHandle handle2 = workingMemory.assertObject( stilton );
+        FactHandle handle2 = workingMemory.assertObject( stilton2 );
 
-        list = workingMemory.getQueryResults( "query-1" );
+        results = workingMemory.getQueryResults( "query-1" );
 
         assertEquals( 2,
-                      list.size() );
+                      results.size() );
+        
+        QueryResult result = results.get( 0 );
+        assertTrue( result.get( 0 ) instanceof DroolsQuery );        
+        assertSame( stilton1, result.get( 1 ) );
 
+        result = results.get( 1 );
+        assertTrue( result.get( 0 ) instanceof DroolsQuery );        
+        assertSame( stilton2, result.get( 1 ) ); 
+        
+        int i = 0;
+        for ( Iterator it = results.iterator(); it.hasNext(); ) {
+           result = ( QueryResult ) it.next();
+           assertTrue( result.get( 0 ) instanceof DroolsQuery );
+           if ( i == 0 ) {
+               assertSame( stilton1, result.get( 1 ) );
+           } else {
+               assertSame( stilton2, result.get( 1 ) );
+           }
+           i++;
+        }
+        
+        
         workingMemory.retractObject( handle1 );
-        list = workingMemory.getQueryResults( "query-1" );
+        results = workingMemory.getQueryResults( "query-1" );
+        
 
         assertEquals( 1,
-                      list.size() );
+                      results.size() );
 
         workingMemory.retractObject( handle2 );
-        list = workingMemory.getQueryResults( "query-1" );
+        results = workingMemory.getQueryResults( "query-1" );
 
-        assertNull( list );
+        assertNull( results );
 
     }
 
@@ -160,6 +185,10 @@ public class QueryTerminalNodeTest extends TestCase {
 
         public String getType() {
             return type;
+        }
+        
+        public String toString() {
+            return "[Cheese type='" + this.type + "' price='" + this.price + "']";
         }
 
     }

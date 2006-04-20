@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
+import org.drools.QueryResults;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
@@ -103,7 +104,7 @@ public interface KnowledgeHelper {
      */
     List getObjects(Class objectClass);
 
-    List getQueryResults(String query);
+    QueryResults getQueryResults(String query);
 
     /**
      * Clears the agenda causing all existing Activations to fire

@@ -152,7 +152,7 @@ public class SynchronizedWorkingMemory
         return this.workingMemory.getGlobals();
     }
 
-    public List getQueryResults(String query) {
+    public QueryResults getQueryResults(String query) {
         return this.workingMemory.getQueryResults( query );
     }
 

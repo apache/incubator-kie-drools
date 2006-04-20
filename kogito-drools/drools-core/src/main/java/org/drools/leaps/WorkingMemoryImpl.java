@@ -32,6 +32,7 @@ import java.util.Stack;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
+import org.drools.QueryResults;
 import org.drools.WorkingMemory;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.Agenda;
@@ -42,6 +43,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.leaps.conflict.DefaultConflictResolver;
 import org.drools.leaps.util.TableIterator;
+import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
@@ -870,8 +872,16 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
         ((RuleBaseImpl) this.ruleBase).disposeWorkingMemory( this );
     }
 
-    public List getQueryResults(String query) {
-        return (List) this.queryResults.remove( query );
+    public QueryResults getQueryResults(String query) {
+        List list = ( List ) this.queryResults.remove( query );
+        if ( list == null ) {
+            return null;
+        }
+        
+        // @todo we need to pass the Query itself
+        return new QueryResults( list, 
+                                 ( Query ) null, 
+                                 this);        
     }
 
     void addToQueryResults(String query,
