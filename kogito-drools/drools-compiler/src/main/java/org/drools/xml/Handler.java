@@ -1,4 +1,5 @@
 package org.drools.xml;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-
-
 import java.util.Set;
 
 import org.xml.sax.Attributes;
@@ -28,12 +27,14 @@ import org.xml.sax.SAXException;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
-interface Handler
-{
+interface Handler {
 
-    Object start( String uri, String localName, Attributes attrs ) throws SAXException;
+    Object start(String uri,
+                 String localName,
+                 Attributes attrs) throws SAXException;
 
-    Object end( String uri, String localName ) throws SAXException;
+    Object end(String uri,
+               String localName) throws SAXException;
 
     Set getValidParents();
 

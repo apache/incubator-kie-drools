@@ -1,4 +1,5 @@
 package org.drools.xml;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,7 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-
-
 import java.util.HashSet;
-import java.util.List;
 
 import org.drools.lang.descr.PackageDescr;
 import org.xml.sax.Attributes;
@@ -31,86 +29,82 @@ import org.xml.sax.SAXParseException;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
-class PackageHandler extends BaseAbstractHandler implements Handler
-{
-    PackageHandler( XmlPackageReader xmlPackageReader )
-    {
+class PackageHandler extends BaseAbstractHandler
+    implements
+    Handler {
+    PackageHandler(XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
-        
-        if ( (this.validParents == null) && (validPeers == null) )
-        {
-            this.validParents = new HashSet( );
+
+        if ( (this.validParents == null) && (validPeers == null) ) {
+            this.validParents = new HashSet();
             this.validParents.add( null );
 
-            this.validPeers = new HashSet( );
+            this.validPeers = new HashSet();
             this.validPeers.add( null );
 
             this.allowNesting = false;
         }
     }
 
-    public Object start( String uri, String localName, Attributes attrs ) throws SAXException
-    {
-        xmlPackageReader.startConfiguration( localName, attrs );
+    public Object start(String uri,
+                        String localName,
+                        Attributes attrs) throws SAXException {
+        xmlPackageReader.startConfiguration( localName,
+                                             attrs );
 
         String ruleSetName = attrs.getValue( "name" );
 
-        if ( ruleSetName == null || ruleSetName.trim( ).equals( "" ) )
-        {
-            throw new SAXParseException(
-                    "<package> requires a 'name' attribute", xmlPackageReader.getLocator( ) );
+        if ( ruleSetName == null || ruleSetName.trim().equals( "" ) ) {
+            throw new SAXParseException( "<package> requires a 'name' attribute",
+                                         xmlPackageReader.getLocator() );
         }
 
-        PackageDescr packageDescr = new PackageDescr( ruleSetName.trim( ) );
-
+        PackageDescr packageDescr = new PackageDescr( ruleSetName.trim() );
 
         xmlPackageReader.setPackageDescr( packageDescr );
         return packageDescr;
     }
 
-    public Object end( String uri, String localName ) throws SAXException
-    {
+    public Object end(String uri,
+                      String localName) throws SAXException {
         PackageDescr packageDescr = this.xmlPackageReader.getPackageDescr();
-        Configuration config = xmlPackageReader.endConfiguration( );
-        
-        Configuration[] imports = config.getChildren("import");
-        
+        Configuration config = xmlPackageReader.endConfiguration();
+
+        Configuration[] imports = config.getChildren( "import" );
+
         for ( int i = 0, length = imports.length; i < length; i++ ) {
             String importEntry = imports[i].getText();
 
-            if ( importEntry == null || importEntry.trim( ).equals( "" ) )
-            {
-                throw new SAXParseException(
-                        "<import> cannot be blank", xmlPackageReader.getLocator( ) );
-            }            
+            if ( importEntry == null || importEntry.trim().equals( "" ) ) {
+                throw new SAXParseException( "<import> cannot be blank",
+                                             xmlPackageReader.getLocator() );
+            }
             packageDescr.addImport( importEntry );
         }
-        
-        Configuration[] globals = config.getChildren("global");
-        
+
+        Configuration[] globals = config.getChildren( "global" );
+
         for ( int i = 0, length = globals.length; i < length; i++ ) {
             String identifier = globals[i].getAttribute( "identifier" );
             String type = globals[i].getText();
 
-            if ( identifier == null || identifier.trim( ).equals( "" ) )
-            {
-                throw new SAXParseException(
-                        "<global> must have an identifier", xmlPackageReader.getLocator( ) );
+            if ( identifier == null || identifier.trim().equals( "" ) ) {
+                throw new SAXParseException( "<global> must have an identifier",
+                                             xmlPackageReader.getLocator() );
             }
-            
-            if ( type == null || type.trim( ).equals( "" ) )
-            {
-                throw new SAXParseException(
-                        "<global> must have specify a type", xmlPackageReader.getLocator( ) );
-            }                        
-            packageDescr.addGlobal( identifier, type );
-        }       
-        
+
+            if ( type == null || type.trim().equals( "" ) ) {
+                throw new SAXParseException( "<global> must have specify a type",
+                                             xmlPackageReader.getLocator() );
+            }
+            packageDescr.addGlobal( identifier,
+                                    type );
+        }
+
         return null;
     }
 
-    public Class generateNodeFor()
-    {
+    public Class generateNodeFor() {
         return PackageDescr.class;
     }
 }

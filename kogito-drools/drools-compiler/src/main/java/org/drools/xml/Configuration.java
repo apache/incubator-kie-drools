@@ -1,4 +1,5 @@
 package org.drools.xml;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-
-
 /**
  * Configuration passed to a configurable <code>SemanticComponent</code>.
  * 
@@ -31,15 +30,14 @@ package org.drools.xml;
  * 
  * @version $Id: Configuration.java,v 1.5 2005/01/23 18:16:20 mproctor Exp $
  */
-public interface Configuration
-{
+public interface Configuration {
     // ----------------------------------------------------------------------
     //     Constants
     // ----------------------------------------------------------------------
 
     /** Empty <code>Configuration</code> array. */
     Configuration[] EMPTY_ARRAY = new Configuration[0];
-    
+
     // ----------------------------------------------------------------------
     //     Interface
     // ----------------------------------------------------------------------
@@ -101,5 +99,5 @@ public interface Configuration
      * @return All children nodes, otherwise an empty array if this node
      *         contains no children.
      */
-    Configuration[] getChildren();    
+    Configuration[] getChildren();
 }

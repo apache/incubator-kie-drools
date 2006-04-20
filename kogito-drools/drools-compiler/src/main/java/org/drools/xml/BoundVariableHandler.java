@@ -20,25 +20,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
-import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.LiteralDescr;
-import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueDescr;
-import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.LiteralConstraint;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import java.util.Iterator;
 
 /**
  * @author mproctor
@@ -62,7 +52,7 @@ class BoundVariableHandler extends BaseAbstractHandler
             this.validPeers.add( PredicateDescr.class );
             this.validPeers.add( ReturnValueDescr.class );
             this.validPeers.add( FieldBindingDescr.class );
-            this.validPeers.add( BoundVariableDescr.class );    
+            this.validPeers.add( BoundVariableDescr.class );
             this.allowNesting = false;
         }
     }
@@ -72,46 +62,45 @@ class BoundVariableHandler extends BaseAbstractHandler
                         Attributes attrs) throws SAXException {
         xmlPackageReader.startConfiguration( localName,
                                              attrs );
-                
-        String fieldName = attrs.getValue( "field-name" );        
-        if ( fieldName == null || fieldName.trim( ).equals( "" ) )
-        {
-            throw new SAXParseException(
-                    "<bound-variable> requires a 'field-name' attribute", xmlPackageReader.getLocator( ) );
+
+        String fieldName = attrs.getValue( "field-name" );
+        if ( fieldName == null || fieldName.trim().equals( "" ) ) {
+            throw new SAXParseException( "<bound-variable> requires a 'field-name' attribute",
+                                         xmlPackageReader.getLocator() );
         }
-        
-        String evaluator = attrs.getValue( "evaluator" );        
-        if ( evaluator == null || evaluator.trim( ).equals( "" ) )
-        {
-            throw new SAXParseException(
-                    "<bound-variable> requires an 'evaluator' attribute", xmlPackageReader.getLocator( ) );
-        }        
-        
-        String identifier = attrs.getValue( "identifier" );        
-        if ( identifier == null || identifier.trim( ).equals( "" ) )
-        {
-            throw new SAXParseException(
-                    "<bound-variable>  requires an 'identifier' attribute", xmlPackageReader.getLocator( ) );
-        }        
-        
-        BoundVariableDescr boundVariableDescr = new BoundVariableDescr( fieldName, evaluator, identifier);
-        
+
+        String evaluator = attrs.getValue( "evaluator" );
+        if ( evaluator == null || evaluator.trim().equals( "" ) ) {
+            throw new SAXParseException( "<bound-variable> requires an 'evaluator' attribute",
+                                         xmlPackageReader.getLocator() );
+        }
+
+        String identifier = attrs.getValue( "identifier" );
+        if ( identifier == null || identifier.trim().equals( "" ) ) {
+            throw new SAXParseException( "<bound-variable>  requires an 'identifier' attribute",
+                                         xmlPackageReader.getLocator() );
+        }
+
+        BoundVariableDescr boundVariableDescr = new BoundVariableDescr( fieldName,
+                                                                        evaluator,
+                                                                        identifier );
+
         return boundVariableDescr;
     }
 
     public Object end(String uri,
                       String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();                
+        Configuration config = xmlPackageReader.endConfiguration();
 
-        BoundVariableDescr boundVariableDescr = ( BoundVariableDescr )  this.xmlPackageReader.getCurrent();
-        
+        BoundVariableDescr boundVariableDescr = (BoundVariableDescr) this.xmlPackageReader.getCurrent();
+
         LinkedList parents = this.xmlPackageReader.getParents();
         ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        ColumnDescr columnDescr = ( ColumnDescr ) it.previous();
-        
-        columnDescr.addDescr( boundVariableDescr );        
-        
+        ColumnDescr columnDescr = (ColumnDescr) it.previous();
+
+        columnDescr.addDescr( boundVariableDescr );
+
         return null;
     }
 

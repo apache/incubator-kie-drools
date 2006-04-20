@@ -1,4 +1,5 @@
 package org.drools.xml;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,33 +16,27 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-
-
 import java.util.Set;
 
 /**
  * @author mproctor
  * 
  */
-abstract class BaseAbstractHandler
-{
+abstract class BaseAbstractHandler {
     protected XmlPackageReader xmlPackageReader;
-    protected Set validPeers;
-    protected Set validParents;
-    protected boolean allowNesting;
+    protected Set              validPeers;
+    protected Set              validParents;
+    protected boolean          allowNesting;
 
-    public Set getValidParents()
-    {
+    public Set getValidParents() {
         return this.validParents;
     }
 
-    public Set getValidPeers()
-    {
+    public Set getValidPeers() {
         return this.validPeers;
     }
 
-    public boolean allowNesting()
-    {
+    public boolean allowNesting() {
         return this.allowNesting;
     }
 }

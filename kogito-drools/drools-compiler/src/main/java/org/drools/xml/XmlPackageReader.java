@@ -1,4 +1,5 @@
 package org.drools.xml;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.xml;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -126,13 +125,13 @@ public class XmlPackageReader extends DefaultHandler {
         this.parents = new LinkedList();
 
         this.handlers = new HashMap();
-        
+
         this.handlers.put( "package",
-                           new PackageHandler( this ) );        
+                           new PackageHandler( this ) );
         this.handlers.put( "rule",
                            new RuleHandler( this ) );
         this.handlers.put( "query",
-                           null );
+                           new QueryHandler( this ) );
         this.handlers.put( "attribute",
                            null );
         this.handlers.put( "function",
@@ -140,16 +139,17 @@ public class XmlPackageReader extends DefaultHandler {
 
         // Conditional Elements
         this.handlers.put( "lhs",
-                           new AndHandler( this ) );        
+                           new AndHandler( this ) );
         this.handlers.put( "and",
-                           new AndHandler( this )  );        
+                           new AndHandler( this ) );
         this.handlers.put( "or",
                            new OrHandler( this ) );
         this.handlers.put( "not",
                            new NotHandler( this ) );
         this.handlers.put( "exists",
                            new ExistsHandler( this ) );
-
+        this.handlers.put( "eval",
+                           new EvalHandler( this ) );
         this.handlers.put( "column",
                            new ColumnHandler( this ) );
 
@@ -159,9 +159,9 @@ public class XmlPackageReader extends DefaultHandler {
         this.handlers.put( "predicate",
                            new PredicateHandler( this ) );
         this.handlers.put( "return-value",
-                           new ReturnValueHandler( this ) );        
+                           new ReturnValueHandler( this ) );
         this.handlers.put( "field-binding",
-                           new FieldBindingHandler( this ) );        
+                           new FieldBindingHandler( this ) );
         this.handlers.put( "bound-variable",
                            new BoundVariableHandler( this ) );
 
@@ -284,6 +284,7 @@ public class XmlPackageReader extends DefaultHandler {
     PackageDescr getPackageDescr() {
         return this.packageDescr;
     }
+
     /**
      * @see org.xml.sax.ContentHandler
      */
@@ -338,10 +339,10 @@ public class XmlPackageReader extends DefaultHandler {
         }
 
         if ( handler == null ) {
-//            if ( ((this.inHandledRuleSubElement == false) && (this.parents.getLast() instanceof RuleDescr)) || (this.parents.getLast() instanceof PackageDescr) ) {
-//                throw new SAXParseException( "unknown tag '" + localName + "' in namespace '" + uri + "'",
-//                                             getLocator() );
-//            }
+            //            if ( ((this.inHandledRuleSubElement == false) && (this.parents.getLast() instanceof RuleDescr)) || (this.parents.getLast() instanceof PackageDescr) ) {
+            //                throw new SAXParseException( "unknown tag '" + localName + "' in namespace '" + uri + "'",
+            //                                             getLocator() );
+            //            }
             // no handler so build up the configuration
             startConfiguration( localName,
                                 attrs );
@@ -439,7 +440,7 @@ public class XmlPackageReader extends DefaultHandler {
                 }
             }
             if ( !validParent ) {
-                throw new SAXParseException( "<" + localName + "> has an invalid parent element",
+                throw new SAXParseException( "<" + localName + "> has an invalid parent element [" + parent + "]",
                                              getLocator() );
             }
         }

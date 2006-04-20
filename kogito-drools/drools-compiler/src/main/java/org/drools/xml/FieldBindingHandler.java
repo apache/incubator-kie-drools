@@ -52,7 +52,7 @@ class FieldBindingHandler extends BaseAbstractHandler
             this.validPeers.add( PredicateDescr.class );
             this.validPeers.add( ReturnValueDescr.class );
             this.validPeers.add( FieldBindingDescr.class );
-            this.validPeers.add( BoundVariableDescr.class );            
+            this.validPeers.add( BoundVariableDescr.class );
             this.allowNesting = false;
         }
     }
@@ -62,41 +62,38 @@ class FieldBindingHandler extends BaseAbstractHandler
                         Attributes attrs) throws SAXException {
         xmlPackageReader.startConfiguration( localName,
                                              attrs );
-         
-        String identifier = attrs.getValue( "identifier" );        
-        if ( identifier == null || identifier.trim( ).equals( "" ) )
-        {
-            throw new SAXParseException(
-                    "<field-binding> requires an 'identifier' attribute", xmlPackageReader.getLocator( ) );
-        }         
-        
-        String fieldName = attrs.getValue( "field-name" );        
-        if ( fieldName == null || fieldName.trim( ).equals( "" ) )
-        {
-            throw new SAXParseException(
-                    "<field-binding> requires a 'field-name' attribute", xmlPackageReader.getLocator( ) );
-        }               
-        
-     
-        
-        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( fieldName, identifier );
-        
+
+        String identifier = attrs.getValue( "identifier" );
+        if ( identifier == null || identifier.trim().equals( "" ) ) {
+            throw new SAXParseException( "<field-binding> requires an 'identifier' attribute",
+                                         xmlPackageReader.getLocator() );
+        }
+
+        String fieldName = attrs.getValue( "field-name" );
+        if ( fieldName == null || fieldName.trim().equals( "" ) ) {
+            throw new SAXParseException( "<field-binding> requires a 'field-name' attribute",
+                                         xmlPackageReader.getLocator() );
+        }
+
+        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( fieldName,
+                                                                     identifier );
+
         return fieldBindingDescr;
     }
 
     public Object end(String uri,
                       String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();                
+        Configuration config = xmlPackageReader.endConfiguration();
 
-        FieldBindingDescr fieldBindingDescr = ( FieldBindingDescr )  this.xmlPackageReader.getCurrent();
-        
+        FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) this.xmlPackageReader.getCurrent();
+
         LinkedList parents = this.xmlPackageReader.getParents();
         ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        ColumnDescr columnDescr = ( ColumnDescr ) it.previous();
-        
-        columnDescr.addDescr( fieldBindingDescr );        
-        
+        ColumnDescr columnDescr = (ColumnDescr) it.previous();
+
+        columnDescr.addDescr( fieldBindingDescr );
+
         return null;
     }
 

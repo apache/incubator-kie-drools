@@ -19,7 +19,6 @@ package org.drools.xml;
 import java.util.HashSet;
 
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.QueryDescr;
@@ -34,10 +33,10 @@ import org.xml.sax.SAXParseException;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
-class RuleHandler extends BaseAbstractHandler
+class QueryHandler extends BaseAbstractHandler
     implements
     Handler {
-    RuleHandler(XmlPackageReader xmlPackageReader) {
+    QueryHandler(XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
         if ( (this.validParents == null) && (validPeers == null) ) {
@@ -60,59 +59,37 @@ class RuleHandler extends BaseAbstractHandler
         xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        String ruleName = attrs.getValue( "name" );
+        String queryName = attrs.getValue( "name" );
 
-        if ( ruleName == null || ruleName.trim().equals( "" ) ) {
-            throw new SAXParseException( "<rule> requires a 'name' attribute",
+        if ( queryName == null || queryName.trim().equals( "" ) ) {
+            throw new SAXParseException( "<query> requires a 'name' attribute",
                                          xmlPackageReader.getLocator() );
         }
 
-        RuleDescr ruleDescr = new RuleDescr( ruleName.trim() );
+        QueryDescr queryDescr = new QueryDescr( queryName.trim() );
 
-        return ruleDescr;
+        return queryDescr;
     }
 
     public Object end(String uri,
                       String localName) throws SAXException {
         Configuration config = this.xmlPackageReader.endConfiguration();
 
-        RuleDescr ruleDescr = (RuleDescr) this.xmlPackageReader.getCurrent();
+        QueryDescr queryDescr = (QueryDescr) this.xmlPackageReader.getCurrent();
 
-        AndDescr lhs = (AndDescr) ruleDescr.getLhs();
+        AndDescr lhs = (AndDescr) queryDescr.getLhs();
 
-        if ( lhs == null ) {
-            throw new SAXParseException( "<rule> requires a LHS",
+        if ( lhs == null || lhs.getDescrs().isEmpty() ) {
+            throw new SAXParseException( "<query> requires a LHS",
                                          xmlPackageReader.getLocator() );
         }
 
-        Configuration rhs = config.getChild( "rhs" );
-        if ( rhs == null ) {
-            throw new SAXParseException( "<rule> requires a <rh> child element",
-                                         xmlPackageReader.getLocator() );
-        }
-
-        ruleDescr.setConsequence( rhs.getText() );
-
-        Configuration[] attributes = config.getChildren( "attribute" );
-        for ( int i = 0, length = attributes.length; i < length; i++ ) {
-            String name = attributes[i].getAttribute( "name" );
-            if ( name == null || name.trim().equals( "" ) ) {
-                throw new SAXParseException( "<attribute> requires a 'name' attribute",
-                                             xmlPackageReader.getLocator() );
-            }
-
-            String value = attributes[i].getAttribute( "value" );
-
-            ruleDescr.addAttribute( new AttributeDescr( name,
-                                                        value ) );
-        }
-
-        this.xmlPackageReader.getPackageDescr().addRule( ruleDescr );
+        this.xmlPackageReader.getPackageDescr().addRule( queryDescr );
 
         return null;
     }
 
     public Class generateNodeFor() {
-        return RuleDescr.class;
+        return QueryDescr.class;
     }
 }

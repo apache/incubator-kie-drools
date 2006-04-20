@@ -20,25 +20,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
-import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.LiteralDescr;
-import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueDescr;
-import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.LiteralConstraint;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import java.util.Iterator;
 
 /**
  * @author mproctor
@@ -62,7 +52,7 @@ class LiteralHandler extends BaseAbstractHandler
             this.validPeers.add( PredicateDescr.class );
             this.validPeers.add( ReturnValueDescr.class );
             this.validPeers.add( FieldBindingDescr.class );
-            this.validPeers.add( BoundVariableDescr.class );             
+            this.validPeers.add( BoundVariableDescr.class );
             this.allowNesting = false;
         }
     }
@@ -72,46 +62,45 @@ class LiteralHandler extends BaseAbstractHandler
                         Attributes attrs) throws SAXException {
         xmlPackageReader.startConfiguration( localName,
                                              attrs );
-                
-        String fieldName = attrs.getValue( "field-name" );        
-        if ( fieldName == null || fieldName.trim( ).equals( "" ) )
-        {
-            throw new SAXParseException(
-                    "<literal> requires a 'field-name' attribute", xmlPackageReader.getLocator( ) );
+
+        String fieldName = attrs.getValue( "field-name" );
+        if ( fieldName == null || fieldName.trim().equals( "" ) ) {
+            throw new SAXParseException( "<literal> requires a 'field-name' attribute",
+                                         xmlPackageReader.getLocator() );
         }
-        
-        String evaluator = attrs.getValue( "evaluator" );        
-        if ( evaluator == null || evaluator.trim( ).equals( "" ) )
-        {
-            throw new SAXParseException(
-                    "<literal> requires an 'evaluator' attribute", xmlPackageReader.getLocator( ) );
-        }        
-        
-        String text = attrs.getValue( "value" );        
-        if ( text == null || text.trim( ).equals( "" ) )
-        {
-            throw new SAXParseException(
-                    "<literal>  requires an 'value' attribute", xmlPackageReader.getLocator( ) );
-        }        
-        
-        LiteralDescr literalDescr = new LiteralDescr( fieldName, evaluator, text);
-        
+
+        String evaluator = attrs.getValue( "evaluator" );
+        if ( evaluator == null || evaluator.trim().equals( "" ) ) {
+            throw new SAXParseException( "<literal> requires an 'evaluator' attribute",
+                                         xmlPackageReader.getLocator() );
+        }
+
+        String text = attrs.getValue( "value" );
+        if ( text == null || text.trim().equals( "" ) ) {
+            throw new SAXParseException( "<literal>  requires an 'value' attribute",
+                                         xmlPackageReader.getLocator() );
+        }
+
+        LiteralDescr literalDescr = new LiteralDescr( fieldName,
+                                                      evaluator,
+                                                      text );
+
         return literalDescr;
     }
 
     public Object end(String uri,
                       String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();                
+        Configuration config = xmlPackageReader.endConfiguration();
 
-        LiteralDescr literalDescr = ( LiteralDescr )  this.xmlPackageReader.getCurrent();
-        
+        LiteralDescr literalDescr = (LiteralDescr) this.xmlPackageReader.getCurrent();
+
         LinkedList parents = this.xmlPackageReader.getParents();
         ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        ColumnDescr columnDescr = ( ColumnDescr ) it.previous();
-        
-        columnDescr.addDescr( literalDescr );        
-        
+        ColumnDescr columnDescr = (ColumnDescr) it.previous();
+
+        columnDescr.addDescr( literalDescr );
+
         return null;
     }
 
