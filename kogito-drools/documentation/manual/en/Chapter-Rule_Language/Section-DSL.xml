@@ -3,11 +3,10 @@
   <title>Domain Specific Languages</title>
 
   <para>As mentioned previously, <indexterm>
-          <primary>Domain Specific Languages</primary>
-        </indexterm>(or DSLs) are a way
-  of extending the rule language to your problem domain. They are wired in to
-  the rule language for you, and can make use of all the underlying rule
-  langauge and engine features.</para>
+      <primary>Domain Specific Languages</primary>
+    </indexterm>(or DSLs) are a way of extending the rule language to your
+  problem domain. They are wired in to the rule language for you, and can make
+  use of all the underlying rule langauge and engine features.</para>
 
   <section>
     <title>When to use a DSL</title>
@@ -31,42 +30,77 @@
     <title>Creating and editing a DSL</title>
 
     <para>A DSL's configuration like most things is stored in plain text. If
-    you use the IDE, you get a nice graphical editor, but the format of the
-    file is quite simple, and is basically a properties file.</para>
+    you use the IDE, you get a nice graphical editor (with some validation),
+    but the format of the file is quite simple, and is basically a properties
+    file.</para>
 
     <example>
-      <title>Example <indexterm><primary>DSL</primary></indexterm> mapping</title>
+      <title>Example <indexterm>
+          <primary>DSL</primary>
+        </indexterm> mapping</title>
 
       <programlisting>[when]This is {something}=Something(something=={something})</programlisting>
     </example>
-  
 
-  <para>Refering to the above example, the [when] refers to the scope of the
-  expression: ie does it belong on the LHS or the RHS of a rule. The part
-  after the [scope] is the expression that you use in the rule (typically a
-  natural language expression, but it doesn't have to be). The part on the
-  right of the "=" is the mapping into the rule language (of course the form
-  of this depends on if you are talking about the RHS or the LHS).</para>
+    <para>Refering to the above example, the [when] refers to the scope of the
+    expression: ie does it belong on the LHS or the RHS of a rule. The part
+    after the [scope] is the expression that you use in the rule (typically a
+    natural language expression, but it doesn't have to be). The part on the
+    right of the "=" is the mapping into the rule language (of course the form
+    of this depends on if you are talking about the RHS or the LHS - if its
+    the LHS, then its the normal LHS syntax, if its the RHS then its fragments
+    of java code for instance).</para>
 
-  <para>The parser will take the expression you specify, and extract the
-  values that match where the {something} appear in the input. The values are
-  then interpolated with the corresponding {something} on the right hand side
-  of the mapping.</para>
+    <para>The parser will take the expression you specify, and extract the
+    values that match where the {something} (named Tokens) appear in the
+    input. The values that match the tokens are then interpolated with the
+    corresponding {something} (named Tokens) on the right hand side of the
+    mapping (the target expression).</para>
 
-  <para>
-	It is important to note that the DSL expressions are processed one line at a time. This means that in the above example, all the text after "There is " will be included as the value for "{something}" when it is interpolated into the target string. This may not be exactly what you want, as you may want to "chain" together different 
-  </para>
+    <para>It is important to note that the DSL expressions are processed one
+    line at a time. This means that in the above example, all the text after
+    "There is " will be included as the value for "{something}" when it is
+    interpolated into the target string. This may not be exactly what you
+    want, as you may want to "chain" together different DSL expressions to
+    generate a target expression. The best way around this is to make sure
+    that the {tokens} are enclosed with characters or words. This means that
+    the parser will scan along the sentence, and pluck out the value BETWEEN
+    the characters (in the example below they are doublequotes). Note that the
+    characters that surrount the token are not included in when interpolating,
+    just the contents between them (rather then all the way to the end of the
+    line, as would otherwise be the case).</para>
 
-  <example>
+    <para>As a rule of thumb, use quotes for textual data that a rule editor
+    may want to enter. You can also wrap words around the {tokens} to make
+    sure you enclose the data you want to capture (see other example).</para>
+
+    <example>
       <title>Example with quotes</title>
 
-      <programlisting>[when]This is "{something}" and "{another}"=Something(something=="{something}", another="{another}")</programlisting>
+      <programlisting>[when]This is "{something}" and "{another}"=Something(something=="{something}", another=="{another}")
+[when]This is {also} valid=Another(something=="{also}")</programlisting>
     </example>
 
-	<para>
-		
-	</para>
-</section>
+    <para>It is a good idea to try and avoid punctuation in your DSL
+    expressions where possible, other then quotes and the like - keep it
+    simple it things will be easier. Using a DSL can make debugging slightly
+    harder when you are first building rules, but it can make the maintenance
+    easier.</para>
+
+    <para>Don't forget that if you are capturing strings from users, you will
+    also need the quotes on the right hand side of the mapping, just like a
+    normal rule.</para>
+
+    <example>
+      <title>Some more examples</title>
+
+      <programlisting>#This is a comment to be ignored.
+[when]There is a Person with name of "{name}"=Person(name=="{name}")
+[when]Person is at least {age} years old and lives in "{location}"=Person(age &gt; {age}, location=="{location}")
+[then]Log "{message}"=System.out.println("{message}");
+</programlisting>
+    </example>
+  </section>
 
   <section>
     <title>Using a DSL in your rules</title>
@@ -102,6 +136,6 @@ builder.addPackageFromDrl( source, dsl );
   <section>
     <title>How it works</title>
 
-    <para />
+    <para></para>
   </section>
 </section>
