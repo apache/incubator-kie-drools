@@ -2,7 +2,9 @@
 <section>
   <title>Domain Specific Languages</title>
 
-  <para>As mentioned previously, Domain Specific Languages (or DSLs) are a way
+  <para>As mentioned previously, <indexterm>
+          <primary>Domain Specific Languages</primary>
+        </indexterm>(or DSLs) are a way
   of extending the rule language to your problem domain. They are wired in to
   the rule language for you, and can make use of all the underlying rule
   langauge and engine features.</para>
@@ -20,29 +22,51 @@
     in a template. You wish to hide away your implementation details, and
     focus on the business rule. You want to provide a controlled means of
     editing rules based on pre-defined templates.</para>
+
+    <para>DSLs have no impact on the rules at runtime, they are just a
+    parse/compile time feature.</para>
   </section>
 
   <section>
-    <title>Creating a DSL</title>
+    <title>Creating and editing a DSL</title>
 
-    <para>A DSL's configuration like most things is stored in plain text. If you use the IDE, you get a nice graphical editor, but the format
-    of the file is quite simple, and is basically a properties file.</para>
+    <para>A DSL's configuration like most things is stored in plain text. If
+    you use the IDE, you get a nice graphical editor, but the format of the
+    file is quite simple, and is basically a properties file.</para>
 
     <example>
-      <title>Example DSL mapping</title>
+      <title>Example <indexterm><primary>DSL</primary></indexterm> mapping</title>
 
       <programlisting>[when]This is {something}=Something(something=={something})</programlisting>
     </example>
-  </section>
+  
+
+  <para>Refering to the above example, the [when] refers to the scope of the
+  expression: ie does it belong on the LHS or the RHS of a rule. The part
+  after the [scope] is the expression that you use in the rule (typically a
+  natural language expression, but it doesn't have to be). The part on the
+  right of the "=" is the mapping into the rule language (of course the form
+  of this depends on if you are talking about the RHS or the LHS).</para>
+
+  <para>The parser will take the expression you specify, and extract the
+  values that match where the {something} appear in the input. The values are
+  then interpolated with the corresponding {something} on the right hand side
+  of the mapping.</para>
+
+  <para>
+	It is important to note that the DSL expressions are processed one line at a time. This means that in the above example, all the text after "There is " will be included as the value for "{something}" when it is interpolated into the target string. This may not be exactly what you want, as you may want to "chain" together different 
+  </para>
+
+  <example>
+      <title>Example with quotes</title>
+
+      <programlisting>[when]This is "{something}" and "{another}"=Something(something=="{something}", another="{another}")</programlisting>
+    </example>
 
 	<para>
-	Refering to the above example, the [when] refers to the scope of the expression: ie does it belong on the LHS or the RHS of a rule.
-	The part after the [scope] is the expression that you use in the rule (typically a natural language expression, but it doesn't have to be).
-	The part on the right of the "=" is the mapping into the rule language (of course the form of this depends on if you are talking about the RHS or the LHS). 
+		
 	</para>
-	<para>
-	The parser will take the expression you specify, and extract the values that match where the {something} appear in the input. The values are then interpolated with the corresponding {something} on the right hand side of the mapping. 
-	</para>
+</section>
 
   <section>
     <title>Using a DSL in your rules</title>
@@ -78,6 +102,6 @@ builder.addPackageFromDrl( source, dsl );
   <section>
     <title>How it works</title>
 
-    <para></para>
+    <para />
   </section>
 </section>

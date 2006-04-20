@@ -15,7 +15,7 @@
     <listitem>
       <para><indexterm>
           <primary>eclipse</primary>
-        </indexterm>Eclipse 3.2M5</para>
+        </indexterm>Eclipse 3.2</para>
 
       <para>http://www.eclipse.org/</para>
     </listitem>
@@ -43,7 +43,7 @@
 
     <listitem>
       <para><indexterm>
-          <primary>naven</primary>
+          <primary>Maven</primary>
         </indexterm>Maven 2</para>
 
       <para>http://maven.apache.org</para>
