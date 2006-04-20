@@ -16,5 +16,5 @@ rule "global rule test"
     then
 		addFive( list );
 		// Calling methods does not mess with function calls
-		String tmp = list.toString();
+		System.out.println(list);
 end    
