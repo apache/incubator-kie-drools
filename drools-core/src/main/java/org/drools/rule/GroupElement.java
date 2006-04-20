@@ -53,41 +53,40 @@ public abstract class GroupElement extends ConditionalElement {
 //            }            
 //        }
         
-//        if ( child instanceof GroupElement && ( child instanceof And || child instanceof Or ) ) {
-//            GroupElement group = ( GroupElement )  child;
-//            
-//            // Removal single branch group elements 
-//            // If the child is a GroupElement iterate down until we either
-//            // find a GroupElement that has more than one children, or its not a GroupElement            
-//            if (  group.getChildren().size() == 1 ) {
-//                child = group.getChildren().get( 0 );
-//            }            
-//        }
-//        
-//        if ( child instanceof GroupElement && ( child instanceof And || child instanceof Or ) ) {
-//            GroupElement group = ( GroupElement )  child;
-//            
-//            // Remove nested Ands/Ors            
-//            if ( group.getClass() == this.getClass() ) {
-//                    
-//                    GroupElement newGroup = null;
-//                    if ( group instanceof And) {
-//                        newGroup = new And();
-//                    } else {
-//                        newGroup =  new Or();
-//                    }
-//                    
-//                    for ( Iterator it = group.getChildren().iterator(); it.hasNext(); ) {
-//                        this.children.add( it.next() );
-//                    }
-//            } else {
-//                this.children.add( child );
-//            }
-//        }   else {        
-//            this.children.add( child );
-//        }
+        if ( child instanceof GroupElement && ( child instanceof And || child instanceof Or ) ) {
+            GroupElement group = ( GroupElement )  child;
+            
+            // Removal single branch group elements 
+            // If the child is a GroupElement iterate down until we either
+            // find a GroupElement that has more than one children, or its not a GroupElement            
+            if (  group.getChildren().size() == 1 ) {
+                child = group.getChildren().get( 0 );
+            }            
+        }
         
-        this.children.add( child );
+        if ( child instanceof GroupElement && ( child instanceof And || child instanceof Or ) ) {
+            GroupElement group = ( GroupElement )  child;
+            
+            // Remove nested Ands/Ors            
+            if ( group.getClass() == this.getClass() ) {
+                    
+                    GroupElement newGroup = null;
+                    if ( group instanceof And) {
+                        newGroup = new And();
+                    } else {
+                        newGroup =  new Or();
+                    }
+                    
+                    for ( Iterator it = group.getChildren().iterator(); it.hasNext(); ) {
+                        this.children.add( it.next() );
+                    }
+            } else {
+                this.children.add( child );
+            }
+        }   else {        
+            this.children.add( child );
+        }
+        
     }
 
     public List getChildren() {
