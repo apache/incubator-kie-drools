@@ -41,6 +41,8 @@ import org.drools.semantics.java.FunctionBuilder;
 import org.drools.semantics.java.PackageStore;
 import org.drools.semantics.java.RuleBuilder;
 import org.drools.spi.TypeResolver;
+import org.drools.xml.XmlPackageReader;
+import org.xml.sax.SAXException;
 
 public class PackageBuilder {
     private JavaCompiler         compiler;
@@ -99,6 +101,24 @@ public class PackageBuilder {
         this.results.addAll( parser.getErrors() );
         addPackage( pkg );
     }
+    
+    /**
+     * Load a rule package from XML source.
+     * @param reader
+     * @throws DroolsParserException
+     * @throws IOException
+     */
+    public void addPackageFromXml(Reader reader) throws DroolsParserException, IOException {
+        XmlPackageReader xmlReader = new XmlPackageReader();
+
+        try {
+            xmlReader.read( reader );
+        } catch ( SAXException e ) {
+            throw new DroolsParserException( e.getCause() );
+        }
+
+        addPackage( xmlReader.getPackageDescr() );
+    }    
 
     /**
      * Load a rule package from DRL source using the supplied DSL configuration.
