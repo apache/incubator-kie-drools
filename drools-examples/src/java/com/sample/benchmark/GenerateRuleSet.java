@@ -39,8 +39,8 @@ public class GenerateRuleSet {
                 for (int idx=0; idx < count; idx++) {
                     buf.append("rule rule" + idx + "" + linebreak);
                     buf.append("  when" + linebreak);
-                    buf.append("    $acc : Account(status == \"standard\", title == \"mr\")"
-                            + linebreak);
+                    buf.append("    $acc : Account(status == \"standard\", title == \"mr\", accountId == \"acc" + idx +
+                    		"\")" + linebreak);
                     buf.append("  then" + linebreak);
                     buf.append("    System.out.println(\"rule" + idx + " fired\");" + linebreak);
                     buf.append("end" + linebreak + linebreak);

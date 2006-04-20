@@ -5,6 +5,8 @@ import junit.framework.TestCase;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
@@ -18,12 +20,14 @@ import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 
+import com.sample.benchmark.models.Account;
+
 /**
  * @author Peter Lin
  *
  */
-public class RuleSetBenchmark extends TestCase {
-	public RuleSetBenchmark() {
+public class RuleSetLoad extends TestCase {
+	public RuleSetLoad() {
 		super();
 	}
 	
@@ -35,9 +39,11 @@ public class RuleSetBenchmark extends TestCase {
 		
 	}
 
-    private static RuleBase readRule() throws IOException, DroolsParserException, RuleIntegrationException, PackageIntegrationException, InvalidPatternException {
+    private static RuleBase readRule(String file) throws IOException, DroolsParserException, RuleIntegrationException, PackageIntegrationException, InvalidPatternException {
         //read in the source
-        Reader reader = new InputStreamReader( RuleSetBenchmark.class.getResourceAsStream( "1000_rules.drl" ) );
+        Reader reader = 
+        	new InputStreamReader( 
+        			RuleSetLoad.class.getResourceAsStream( file ) );
         DrlParser parser = new DrlParser();
         PackageDescr packageDescr = parser.parse( reader );
         
@@ -52,16 +58,32 @@ public class RuleSetBenchmark extends TestCase {
         return ruleBase;
     }
 	
-	public void testOneThousand() {
+	public void testOneThousandLoad() {
 		try {
+			String file = "1000_rules.drl";
 			long loadStart = System.currentTimeMillis();
-	        RuleBase ruleBase = readRule();
+	        RuleBase ruleBase = readRule(file);
 	        long loadEnd = System.currentTimeMillis();
-	        System.out.println("time to load 1000 rules " +
-	        		(loadEnd - loadStart) + "ms");
+	        System.out.println("time to load " + file +
+	        		" " + (loadEnd - loadStart) + "ms");
 	        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	public void testFourThousandLoad() {
+		try {
+			String file = "4000_rules.drl";
+			long loadStart = System.currentTimeMillis();
+	        RuleBase ruleBase = readRule(file);
+	        long loadEnd = System.currentTimeMillis();
+	        System.out.println("time to load " + file +
+	        		" " + (loadEnd - loadStart) + "ms");
+	        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
