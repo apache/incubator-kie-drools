@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.Cheese;
+import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
@@ -58,7 +59,7 @@ public class LeapsTest extends IntegrationCases {
         Cheese stilton = new Cheese("stinky", 5);
         workingMemory.assertObject(stilton);
         workingMemory.fireAllRules();// <=== the only difference from the base test case
-        List results = workingMemory.getQueryResults("simple query");
+        QueryResults results = workingMemory.getQueryResults("simple query");
         assertEquals(1, results.size());
     }
 
