@@ -35,7 +35,7 @@
         <dependency>
             <groupId>jsr94</groupId>
             <artifactId>jsr94-tck</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
 
         <dependency>
