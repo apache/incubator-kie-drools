@@ -21,7 +21,5 @@
   for facts that match the conditions stated. </para>
 
   <para>You use WorkingMemory.getQueryResults("name") by using the query name.
-  This will return a list of Tuple instances. Each Tuple instance has one or
-  more FactHandles. To get to the original Fact object, use
-  WorkingMemory.getObject(factHandle).</para>
+  This will return a QueryResults object. This contains a list of query results, which allow you to to get to the objects that matched the query.</para>
 </section>

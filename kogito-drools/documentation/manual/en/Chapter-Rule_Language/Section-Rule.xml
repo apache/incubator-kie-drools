@@ -427,7 +427,7 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
           <example>
             <title>Boolean Literal Constraint</title>
 
-            <programlisting>Cheese( smelly = true )</programlisting>
+            <programlisting>Cheese( smelly == true )</programlisting>
           </example>
         </simplesect>
 
