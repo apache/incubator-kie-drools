@@ -36,6 +36,7 @@ import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
 import org.drools.Person;
+import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
@@ -222,7 +223,7 @@ public abstract class IntegrationCases extends TestCase {
         Cheese stilton = new Cheese( "stinky",
                                      5 );
         workingMemory.assertObject( stilton );
-        List results = workingMemory.getQueryResults( "simple query" );
+        QueryResults results = workingMemory.getQueryResults( "simple query" );
         assertEquals( 1,
                       results.size() );
     }
