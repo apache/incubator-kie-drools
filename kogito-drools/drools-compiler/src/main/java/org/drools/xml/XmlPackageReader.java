@@ -281,7 +281,7 @@ public class XmlPackageReader extends DefaultHandler {
         this.packageDescr = packageDescr;
     }
 
-    PackageDescr getPackageDescr() {
+    public PackageDescr getPackageDescr() {
         return this.packageDescr;
     }
 
