@@ -25,8 +25,7 @@
   <section>
     <title>Creating a DSL</title>
 
-    <para>A DSL's configuration like most things is stored in a plain text
-    file. If you use the IDE, you get a nice graphical editor, but the format
+    <para>A DSL's configuration like most things is stored in plain text. If you use the IDE, you get a nice graphical editor, but the format
     of the file is quite simple, and is basically a properties file.</para>
 
     <example>
@@ -35,6 +34,15 @@
       <programlisting>[when]This is {something}=Something(something=={something})</programlisting>
     </example>
   </section>
+
+	<para>
+	Refering to the above example, the [when] refers to the scope of the expression: ie does it belong on the LHS or the RHS of a rule.
+	The part after the [scope] is the expression that you use in the rule (typically a natural language expression, but it doesn't have to be).
+	The part on the right of the "=" is the mapping into the rule language (of course the form of this depends on if you are talking about the RHS or the LHS). 
+	</para>
+	<para>
+	The parser will take the expression you specify, and extract the values that match where the {something} appear in the input. The values are then interpolated with the corresponding {something} on the right hand side of the mapping. 
+	</para>
 
   <section>
     <title>Using a DSL in your rules</title>
