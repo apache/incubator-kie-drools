@@ -93,11 +93,11 @@ class RuleHandler extends BaseAbstractHandler
 
         ruleDescr.setConsequence( rhs.getText() );
 
-        Configuration[] attributes = config.getChildren( "attribute" );
+        Configuration[] attributes = config.getChildren( "rule-attribute" );
         for ( int i = 0, length = attributes.length; i < length; i++ ) {
             String name = attributes[i].getAttribute( "name" );
             if ( name == null || name.trim().equals( "" ) ) {
-                throw new SAXParseException( "<attribute> requires a 'name' attribute",
+                throw new SAXParseException( "<rule-attribute> requires a 'name' attribute",
                                              xmlPackageReader.getLocator() );
             }
 
