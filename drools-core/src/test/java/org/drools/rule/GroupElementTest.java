@@ -3,6 +3,10 @@ package org.drools.rule;
 import junit.framework.TestCase;
 
 public class GroupElementTest extends TestCase {
+    public void test1() {
+        //dummy test
+        assertTrue(true);
+    }
 //    public void testAddNestedAnd() {
 //        And and1 = new And();
 //        Column column1 = new Column(0, null);
