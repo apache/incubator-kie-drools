@@ -1,5 +1,8 @@
 package com.sample
 
+import com.sample.TroubleTicketExample.Customer;
+import com.sample.TroubleTicketExample.Ticket;
+
 rule "New Ticket"
 	salience 10
 	when
@@ -38,8 +41,6 @@ rule "Platinum Priority"
 		modify( ticket );
 end
 
-
- 
 rule "Escalate"
 	when
 		customer : Customer( )	
@@ -59,7 +60,3 @@ end
 function void sendEscalationEmail( Customer customer, Ticket ticket ) {
 	System.out.println( "Email : " + ticket );
 }
-
-import com.sample.TroubleTicketExample.Customer;
-import com.sample.TroubleTicketExample.Ticket;
-
