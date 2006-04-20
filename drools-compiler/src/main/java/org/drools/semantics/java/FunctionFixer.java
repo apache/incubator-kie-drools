@@ -15,15 +15,24 @@ package org.drools.semantics.java;
  * limitations under the License.
  */
 
-
-
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This horrific utility adds in the function class name (which is the same as the functions method name)
+ * into the RHS guts of a rule. It has to tip toe around method calls, new declarations and other 
+ * stuff like that.
+ * A better future solution is to use a static import as found in Java 5, then ALL THIS can 
+ * disappear. Oh Happy day.
+ * @author Michael Neale (sadly..)
+ *
+ */
 public class FunctionFixer {
     
     static Pattern FUNCTION = Pattern.compile("(\\S*\\s*|\\.\\s*)\\b([\\S&&[^\\.]]+)\\s*\\(([^)]*)\\)", Pattern.DOTALL);
-            
+    static final Set KEYWORDS = getJavaKeywords();
     public String fix(String raw) {
         //return raw;
         return fix(raw, FUNCTION);
@@ -46,13 +55,15 @@ public class FunctionFixer {
                  }
             }
             String function = matcher.group(2).trim();
+            //if we have a reserved work, DO NOT TOUCH !
+            if (KEYWORDS.contains( function )) continue;
             
             String params = matcher.group(3).trim();
             
             String target = ucFirst(function) + "." + function + "(" + params + ")";
             
             buf.append( raw.substring( lastIndex, matcher.start( 2 ) ) );
-            buf.append( KnowledgeHelperFixer.replace( target, "$", "\\$", 128 ) );
+            buf.append( target );
             lastIndex = matcher.end();
         }
         buf.append( raw.substring( lastIndex ) );
@@ -62,4 +73,63 @@ public class FunctionFixer {
     private String ucFirst(String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }    
+    
+    /**
+     * This list was obtained from http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html
+     */
+    private static Set getJavaKeywords() {
+        Set keys = new HashSet();
+        keys.add("abstract");   
+        keys.add("continue");   
+        keys.add("for");
+        keys.add("new");
+        keys.add("switch");
+        keys.add("assert"); 
+        keys.add("default");    
+        keys.add("goto");
+        keys.add("package");
+        keys.add("synchronized");
+        keys.add("boolean");
+        keys.add("do");
+        keys.add("if");
+        keys.add("private");
+        keys.add("this");
+        keys.add("break");
+        keys.add("double");     
+        keys.add("implements");     
+        keys.add("protected");  
+        keys.add("throw");
+        keys.add("byte");   
+        keys.add("else");   
+        keys.add("import");     
+        keys.add("public");     
+        keys.add("throws");
+        keys.add("case");   
+        keys.add("enum");   
+        keys.add("instanceof");     
+        keys.add("return");     
+        keys.add("transient");
+        keys.add("catch");  
+        keys.add("extends");    
+        keys.add("int");    
+        keys.add("short");  
+        keys.add("try");
+        keys.add("char");   
+        keys.add("final");  
+        keys.add("interface");  
+        keys.add("static");     
+        keys.add("void");
+        keys.add("class");  
+        keys.add("finally");    
+        keys.add("long");   
+        keys.add("strictfp");   
+        keys.add("volatile");
+        keys.add("const");  
+        keys.add("float");  
+        keys.add("native");     
+        keys.add("super");  
+        keys.add("while");
+        return keys;
+    }
+    
 }

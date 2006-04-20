@@ -64,5 +64,11 @@ public class FunctionFixerTest extends TestCase {
         assertEquals( "\nFoo.foo($list);",
                       fixer.fix( "\nfoo($list);" ) );
     }      
+    
+    public void testReservedWordsInJava() {
+        FunctionFixer fixer = new FunctionFixer();
+        assertEquals( "\nfor(int i=0; i < 2; i++) { /*do noithing*/ }",
+                      fixer.fix( "\nfor(int i=0; i < 2; i++) { /*do noithing*/ }" ) );
+    }
         
 }
