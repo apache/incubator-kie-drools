@@ -20,7 +20,6 @@ import java.util.HashSet;
 
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -32,10 +31,10 @@ import org.xml.sax.SAXParseException;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
-class FunctionHandler extends BaseAbstractHandler
+class LhsHandler extends BaseAbstractHandler
     implements
     Handler {
-    FunctionHandler(XmlPackageReader xmlPackageReader) {
+    LhsHandler(XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
         if ( (this.validParents == null) && (validPeers == null) ) {
@@ -46,8 +45,7 @@ class FunctionHandler extends BaseAbstractHandler
             this.validPeers.add( null );
             this.validPeers.add( FunctionDescr.class );
             this.validPeers.add( RuleDescr.class );
-            this.validPeers.add( QueryDescr.class );
-            
+
             this.allowNesting = false;
         }
     }

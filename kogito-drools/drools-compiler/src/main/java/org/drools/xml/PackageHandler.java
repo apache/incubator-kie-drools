@@ -33,9 +33,9 @@ import org.xml.sax.SAXParseException;
  */
 class PackageHandler extends BaseAbstractHandler implements Handler
 {
-    PackageHandler( PackageReader packageReader )
+    PackageHandler( XmlPackageReader xmlPackageReader )
     {
-        this.packageReader = packageReader;
+        this.xmlPackageReader = xmlPackageReader;
         
         if ( (this.validParents == null) && (validPeers == null) )
         {
@@ -51,27 +51,27 @@ class PackageHandler extends BaseAbstractHandler implements Handler
 
     public Object start( String uri, String localName, Attributes attrs ) throws SAXException
     {
-        packageReader.startConfiguration( localName, attrs );
+        xmlPackageReader.startConfiguration( localName, attrs );
 
         String ruleSetName = attrs.getValue( "name" );
 
         if ( ruleSetName == null || ruleSetName.trim( ).equals( "" ) )
         {
             throw new SAXParseException(
-                    "<package> requires a 'name' attribute", packageReader.getLocator( ) );
+                    "<package> requires a 'name' attribute", xmlPackageReader.getLocator( ) );
         }
 
         PackageDescr packageDescr = new PackageDescr( ruleSetName.trim( ) );
 
 
-        packageReader.setPackageDescr( packageDescr );
+        xmlPackageReader.setPackageDescr( packageDescr );
         return packageDescr;
     }
 
     public Object end( String uri, String localName ) throws SAXException
     {
-        PackageDescr packageDescr = this.packageReader.getPackageDescr();
-        Configuration config = packageReader.endConfiguration( );
+        PackageDescr packageDescr = this.xmlPackageReader.getPackageDescr();
+        Configuration config = xmlPackageReader.endConfiguration( );
         
         Configuration[] imports = config.getChildren("import");
         
@@ -81,7 +81,7 @@ class PackageHandler extends BaseAbstractHandler implements Handler
             if ( importEntry == null || importEntry.trim( ).equals( "" ) )
             {
                 throw new SAXParseException(
-                        "<import> cannot be blank", packageReader.getLocator( ) );
+                        "<import> cannot be blank", xmlPackageReader.getLocator( ) );
             }            
             packageDescr.addImport( importEntry );
         }
@@ -95,13 +95,13 @@ class PackageHandler extends BaseAbstractHandler implements Handler
             if ( identifier == null || identifier.trim( ).equals( "" ) )
             {
                 throw new SAXParseException(
-                        "<global> must have an identifier", packageReader.getLocator( ) );
+                        "<global> must have an identifier", xmlPackageReader.getLocator( ) );
             }
             
             if ( type == null || type.trim( ).equals( "" ) )
             {
                 throw new SAXParseException(
-                        "<global> must have specify a type", packageReader.getLocator( ) );
+                        "<global> must have specify a type", xmlPackageReader.getLocator( ) );
             }                        
             packageDescr.addGlobal( identifier, type );
         }       
