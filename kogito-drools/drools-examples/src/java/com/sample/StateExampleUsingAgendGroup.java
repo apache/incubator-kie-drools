@@ -7,6 +7,8 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
+import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.DefaultAgendaEventListener;
 
 public class StateExampleUsingAgendGroup {
 
@@ -21,7 +23,14 @@ public class StateExampleUsingAgendGroup {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory( );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory( );        
+        
+        workingMemory.addEventListener( new DefaultAgendaEventListener() {
+           public void afterActivationFired(AfterActivationFiredEvent arg0) {
+                super.afterActivationFired( arg0 );
+            } 
+        }
+        );        
         
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
         logger.setFileName("log/state");

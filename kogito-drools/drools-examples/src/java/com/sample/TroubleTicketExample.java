@@ -25,7 +25,7 @@ public class TroubleTicketExample {
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
-        logger.setFileName( "log/state" );
+        logger.setFileName( "log/trouble_ticket" );
 
         Customer a = new Customer( "A", "Gold" );
         Customer b = new Customer( "B", "Platinum" );
@@ -61,7 +61,9 @@ public class TroubleTicketExample {
         catch ( InterruptedException e )
         {
             e.printStackTrace( );
-        }        
+        }   
+        
+        System.err.println( "[[ awake ]]" );
         
         logger.writeToDisk();
     }

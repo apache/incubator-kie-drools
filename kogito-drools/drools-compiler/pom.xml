@@ -30,8 +30,14 @@
     <dependency>
       <groupId>jci</groupId>
       <artifactId>jci</artifactId>
-      <version>SNAPSHOT-378493+patch3</version>
+      <version>SNAPSHOT-378493+patch4</version>
     </dependency> 
+    
+    <dependency>
+      <groupId>janino</groupId>
+      <artifactId>janino</artifactId>
+      <version>2.4.1</version>
+    </dependency>     
     
     <dependency>
       <groupId>commons-logging</groupId>
