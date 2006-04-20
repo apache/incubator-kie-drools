@@ -1,0 +1,17 @@
+<package name="com.sample">
+	<import>java.util.HashMap</import>
+	<import>org.drools.*</import>	
+	
+	<global identifier="x">com.sample.X</global>		
+	<global identifier="yada">com.sample.Yada</global>
+	
+	<function return-type="void" name="myFunc">
+	    <parameter identifier="foo">Bar</parameter>
+	    <parameter identifier="bada">Bing</parameter>
+	    	    
+	    <body>
+	    	System.out.println("hello world");
+		</body>
+		
+	</function>
+</package>

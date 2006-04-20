@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,53 +16,51 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
-public class ReturnValueDescr extends PatternDescr {    
-    private String fieldName;
-    private String evaluator;
-    private String text;            
+public class ReturnValueDescr extends PatternDescr {
+    private String   fieldName;
+    private String   evaluator;
+    private String   text;
     private String[] declarations;
-    
-    private String classMethodName;
-        
+
+    private String   classMethodName;
+
     public ReturnValueDescr(String fieldName,
-                                    String evaluator,
-                                    String text) {
+                            String evaluator,
+                            String text) {
         this.fieldName = fieldName;
         this.evaluator = evaluator;
         this.text = text;
     }
-    
+
     public String getFieldName() {
         return fieldName;
     }
-    
+
     public String getClassMethodName() {
         return this.classMethodName;
     }
 
     public void setClassMethodName(String classMethodName) {
         this.classMethodName = classMethodName;
-    }    
-    
+    }
+
     public String getEvaluator() {
         return evaluator;
     }
-    
+
     public String getText() {
         return this.text;
-    } 
-    
-    public void setDeclarations( String[] declarations) {
+    }
+
+    public void setDeclarations(String[] declarations) {
         this.declarations = declarations;
     }
-    
+
     public String[] getDeclarations() {
         return this.declarations;
-    }     
-    
+    }
+
     public String toString() {
-    		return "[ReturnValue: field=" + fieldName + "; evaluator=" + evaluator + "; text=" + text + "]";
+        return "[ReturnValue: field=" + fieldName + "; evaluator=" + evaluator + "; text=" + text + "]";
     }
 }

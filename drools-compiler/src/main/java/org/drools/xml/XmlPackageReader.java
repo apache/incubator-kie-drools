@@ -55,7 +55,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public class PackageReader extends DefaultHandler {
+public class XmlPackageReader extends DefaultHandler {
     // ----------------------------------------------------------------------
     // Constants
     // ----------------------------------------------------------------------
@@ -120,46 +120,50 @@ public class PackageReader extends DefaultHandler {
      * <code>DefaultSemanticModule</code>.
      * </p>
      */
-    public PackageReader() {
+    public XmlPackageReader() {
         // init
         this.configurationStack = new LinkedList();
         this.parents = new LinkedList();
 
         this.handlers = new HashMap();
+        
         this.handlers.put( "package",
-                           new PackageHandler( this ) );
+                           new PackageHandler( this ) );        
         this.handlers.put( "rule",
-                           null );
+                           new RuleHandler( this ) );
         this.handlers.put( "query",
                            null );
         this.handlers.put( "attribute",
                            null );
-
         this.handlers.put( "function",
-                           null );
+                           new FunctionHandler( this ) );
 
         // Conditional Elements
+        this.handlers.put( "lhs",
+                           new AndHandler( this ) );        
         this.handlers.put( "and",
-                           null );
+                           new AndHandler( this )  );        
         this.handlers.put( "or",
-                           null );
+                           new OrHandler( this ) );
         this.handlers.put( "not",
-                           null );
+                           new NotHandler( this ) );
         this.handlers.put( "exists",
-                           null );
+                           new ExistsHandler( this ) );
 
         this.handlers.put( "column",
-                           null );
+                           new ColumnHandler( this ) );
 
         // Field Constraints
         this.handlers.put( "literal",
-                           null );
+                           new LiteralHandler( this ) );
         this.handlers.put( "predicate",
-                           null );
+                           new PredicateHandler( this ) );
         this.handlers.put( "return-value",
-                           null );
+                           new ReturnValueHandler( this ) );        
+        this.handlers.put( "field-binding",
+                           new FieldBindingHandler( this ) );        
         this.handlers.put( "bound-variable",
-                           null );
+                           new BoundVariableHandler( this ) );
 
         initEntityResolver();
 
@@ -175,7 +179,7 @@ public class PackageReader extends DefaultHandler {
      * @param parser
      *            The SAX parser.
      */
-    public PackageReader(SAXParser parser) {
+    public XmlPackageReader(SAXParser parser) {
         this.parser = parser;
     }
 
@@ -653,7 +657,7 @@ public class PackageReader extends DefaultHandler {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
         if ( cl == null ) {
-            cl = PackageReader.class.getClassLoader();
+            cl = XmlPackageReader.class.getClassLoader();
         }
 
         // Try looking in META-INF

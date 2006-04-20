@@ -1,0 +1,70 @@
+<package name="com.sample">
+	<import>java.util.HashMap</import>
+	<import>org.drools.*</import>	
+	
+	<global identifier="x">com.sample.X</global>		
+	<global identifier="yada">com.sample.Yada</global>
+	
+	<function return-type="void" name="myFunc">
+	    <parameter identifier="foo">Bar</parameter>
+	    <parameter identifier="bada">Bing</parameter>
+	    	    
+	    <body>
+	    	System.out.println("hello world");
+		</body>
+		
+	</function>
+	
+	<rule name="my rule">
+		<lhs>
+			<and>
+			</and>	
+				
+			<or>
+			</or>
+			
+			<column object-type="Foo" >			
+			</column>							
+				
+			<column identifier="bar" object-type="Bar" >			
+			</column>		
+									
+			<column object-type="Foo">
+				<literal field-name="field1" evaluator="==" value="value1" />
+											
+				<predicate field-name="field1" identifier="var1" expression="1==1" />
+							
+				<return-value field-name="field1" evaluator="==" expression="1==1" />
+							
+				<field-binding field-name="field1" identifier="var1" />
+				
+				<bound-variable field-name="field1" evaluator="==" identifier="var1" />				
+			</column>		
+			
+			<not>
+				<column object-type="Bar" />			
+			</not>
+			
+			<exists>
+				<column object-type="Bar" />							
+			</exists>		
+			
+			<and>
+				<or>
+					<column object-type="Bar" />			
+				</or>
+				<column object-type="Yada" />							
+			</and>	
+				
+			<or>
+				<and>
+					<column object-type="Foo" />							
+				</and>	
+				<column object-type="Zaa" />			
+			</or>								
+		</lhs>
+		
+	    <rhs>
+		</rhs>
+	</rule>
+</package>

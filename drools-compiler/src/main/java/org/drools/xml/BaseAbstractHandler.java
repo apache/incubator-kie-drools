@@ -25,7 +25,7 @@ import java.util.Set;
  */
 abstract class BaseAbstractHandler
 {
-    protected PackageReader packageReader;
+    protected XmlPackageReader xmlPackageReader;
     protected Set validPeers;
     protected Set validParents;
     protected boolean allowNesting;
