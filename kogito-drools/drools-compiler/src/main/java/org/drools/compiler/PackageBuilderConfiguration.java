@@ -24,7 +24,7 @@ public class PackageBuilderConfiguration {
     public static final int ECLIPSE = 0;
     public static final int JANINO  = 1;    
     
-    private int compiler = JavaCompilerFactory.JANINO;
+    private int compiler = JavaCompilerFactory.ECLIPSE;
     
     private ClassLoader          classLoader;
     
