@@ -347,7 +347,7 @@ public class WorkingMemoryImpl
 
         retractObject( handle );
         if ( list == null ) {
-            list = Collections.EMPTY_LIST;
+            return null;
         }
         return new QueryResults( list, ( Query ) node.getRule(), this);
     }
