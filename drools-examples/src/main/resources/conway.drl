@@ -1,0 +1,29 @@
+package com.sample
+
+expander conway.dsl
+ 
+import org.drools.examples.conway.Cell;
+import org.drools.examples.conway.CellState;
+
+
+rule "Kill The Lonely"
+when
+	A live cell has fewer than 2 live neighbors
+then
+	Kill the cell
+end
+
+rule "Kill The Overcrowded"
+when
+	A live cell has more than 3 live neighbors
+then
+	Kill the cell
+end
+
+rule "Give Birth"
+when
+	A dead cell has 3 live neighbors
+then
+	Bring the cell to life
+end
+ 
