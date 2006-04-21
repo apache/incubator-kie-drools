@@ -5,7 +5,6 @@ package org.drools.examples.conway;
  * be in.
  * 
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
- * @version $Id: CellState.java,v 1.3 2005/05/08 19:54:48 mproctor Exp $
  * @see Cell
  * @see CellGrid
  */
