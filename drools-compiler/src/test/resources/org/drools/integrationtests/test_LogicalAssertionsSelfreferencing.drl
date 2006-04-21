@@ -1,0 +1,11 @@
+package org.drools.test;
+
+global java.lang.String b;
+import java.lang.String;
+
+rule "String => b"
+    when
+        s : String()
+    then
+		assertLogical( b );
+end

@@ -285,7 +285,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // Alreyad identify same so return previously assigned handle
         logicalHandle1 = workingMemory.assertObject( logicalString2,
                                                      false,
-                                                     true,
+                                                     false,
                                                      rule1,
                                                      tuple1.getActivation() );
         // return the matched handle
@@ -507,5 +507,96 @@ public class LogicalAssertionTest extends DroolsTestCase {
         assertLength( 0,
                       workingMemory.getJustified().values() );
     }
+    
+    /**
+     * This tests that when multiple not identical, but equals facts, are asserted
+     * into WM, only when all are removed, a logical assert will succeed 
+     * 
+     * @throws Exception
+     */
+    public void testMultipleAssert() throws Exception {
+        // create a RuleBase with a single ObjectTypeNode we attach a
+        // MockObjectSink so we can detect assertions and retractions
+        final Rule rule1 = new Rule( "test-rule1" );
+        Rete rete = new Rete();
+        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
+                                                            new ClassObjectType( String.class ),
+                                                            rete );
+        objectTypeNode.attach();
+        MockObjectSink sink = new MockObjectSink();
+        objectTypeNode.addObjectSink( sink );
+        final TerminalNode node = new TerminalNode( 2,
+                                                    new MockTupleSource( 2 ),
+                                                    rule1 );
+        RuleBase ruleBase = new RuleBaseImpl();
+        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+
+        final Agenda agenda = workingMemory.getAgenda();
+
+        Consequence consequence = new Consequence() {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
+                // do nothing
+            }
+        };
+        rule1.setConsequence( consequence );
+
+        FactHandleImpl handle1 = new FactHandleImpl( 1 );
+        ReteTuple tuple1 = new ReteTuple( handle1 );
+
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        null,
+                                                                        null );
+
+        // Assert multiple stated objects
+        node.assertTuple( tuple1,
+                          context1,
+                          workingMemory );
+
+        String statedString1 = new String( "logical" );
+        FactHandle statedHandle1 = workingMemory.assertObject( statedString1 );
+
+        String statedString2 = new String( "logical" );
+        FactHandle statedHandle2 = workingMemory.assertObject( statedString2 );
+
+        // This assertion is logical should fail as there is previous stated objects
+        String logicalString3 = new String( "logical" );
+        FactHandle logicalHandle3 = workingMemory.assertObject( logicalString3,
+                                                                false,
+                                                                true,
+                                                                rule1,
+                                                                tuple1.getActivation() );
+
+        // Checks that previous LogicalAssert failed 
+        assertNull( logicalHandle3 );
+        
+        workingMemory.retractObject( statedHandle2 );
+
+        logicalHandle3 = workingMemory.assertObject( logicalString3,
+                                                    false,
+                                                    true,
+                                                    rule1,
+                                                    tuple1.getActivation() );
+
+        // Checks that previous LogicalAssert failed as there is still one 
+        // stated string in the working memory
+        assertNull( logicalHandle3 );
+        
+        workingMemory.retractObject( statedHandle1 );
+
+        logicalHandle3 = workingMemory.assertObject( logicalString3,
+                                                    false,
+                                                    true,
+                                                    rule1,
+                                                    tuple1.getActivation() );
+
+        // Checks that previous LogicalAssert succeeded as there are no more
+        // stated strings in the working memory
+        assertNotNull( logicalHandle3 );
+        
+    }
+
+    
 
 }
