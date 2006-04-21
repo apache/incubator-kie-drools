@@ -5,7 +5,7 @@
   <para>As Drools is an open source project, instructions for building from
   source are part of the manual ! Building from source means you can stay on
   top with the latest features. Whilst aspects of Drools are quite
-  complicated, many users have found ways to become contributors. </para>
+  complicated, many users have found ways to become contributors.</para>
 
   <para>Drools works with JDK1.4 and above. you will need also need to have
   the following tools installed. Minimum requirement version numbers
@@ -15,7 +15,7 @@
     <listitem>
       <para><indexterm>
           <primary>eclipse</primary>
-        </indexterm>Eclipse 3.2</para>
+        </indexterm>Eclipse 3.2 RC1</para>
 
       <para>http://www.eclipse.org/</para>
     </listitem>
@@ -44,7 +44,7 @@
     <listitem>
       <para><indexterm>
           <primary>Maven</primary>
-        </indexterm>Maven 2</para>
+        </indexterm>Maven 2.0.4</para>
 
       <para>http://maven.apache.org</para>
     </listitem>
@@ -55,13 +55,13 @@
     </indexterm>path. The examples given illustrative and are for a win32
   system:</para>
 
-  <literallayout>Path=D:\java\j2sdk1.4.2_10\bin;C:\bin;D:\java\maven-2.0.3\bin;D:\java\apache-ant-1.6.5\bin;</literallayout>
+  <literallayout>Path=D:\java\j2sdk1.4.2_10\bin;C:\bin;D:\java\maven-2.0.4\bin;D:\java\apache-ant-1.6.5\bin;</literallayout>
 
   <para>Following environment variables will also need to be set. The examples
   given illustrative and are for a win32 system::</para>
 
   <literallayout>JAVA_HOME=D:\java\j2sdk1.4.2_10
-M2_HOME=D:\java\maven-2.0.1
+M2_HOME=D:\java\maven-2.0.4
 M2_REPO=&lt;your home directory&gt;\.m2\repository
 ANT_HOME=D:\java\apache-ant-1.6.5
 </literallayout>
