@@ -6,7 +6,6 @@ package org.drools.examples.conway.patterns;
  * @see ConwayPattern
  * @see org.drools.examples.conway.CellGrid
  * 
- * @version $Id: Pentadecathalon.java,v 1.3 2005/05/08 19:54:48 mproctor Exp $
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  */
 public class Pentadecathalon

@@ -13,7 +13,6 @@ import org.drools.rule.Package;
 
 /**
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
- * @version $Id: RuleBaseFactory.java,v 1.4 2005/11/25 02:35:33 mproctor Exp $
  */
 public class ConwayRuleBaseFactory {
 

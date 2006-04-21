@@ -9,7 +9,6 @@ import org.drools.examples.conway.patterns.ConwayPattern;
  * <p/>
  * 
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
- * @version $Id: CellGrid.java,v 1.4 2005/05/08 19:54:48 mproctor Exp $
  * @see Cell
  */
 public class CellGrid
