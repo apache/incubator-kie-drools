@@ -98,6 +98,8 @@
 
       <xi:include href="Chapter-Rule_Language/Section-Query.xml" />
 
+	  <xi:include href="Chapter-Rule_Language/Section-DSL.xml" />
+
       <!--xi:include href="Chapter-Rule_Language/Section-Column.xml" />
 
       <xi:include href="Chapter-Rule_Language/Section-Field_Constraints.xml" />
