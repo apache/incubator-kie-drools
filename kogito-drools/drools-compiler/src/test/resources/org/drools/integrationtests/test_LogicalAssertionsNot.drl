@@ -1,0 +1,13 @@
+package org.drools.test;
+
+import java.lang.String;
+import java.lang.Integer;
+
+global java.lang.Integer i;
+
+rule "r"
+    when
+        not String()
+    then
+   		assertLogical(i);
+end
