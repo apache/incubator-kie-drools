@@ -26,8 +26,8 @@ import com.sample.benchmark.models.Account;
  * @author Peter Lin
  *
  */
-public class RuleSetLoad extends TestCase {
-	public RuleSetLoad() {
+public class RuleSetLoadTest extends TestCase {
+	public RuleSetLoadTest() {
 		super();
 	}
 	
@@ -43,7 +43,7 @@ public class RuleSetLoad extends TestCase {
         //read in the source
         Reader reader = 
         	new InputStreamReader( 
-        			RuleSetLoad.class.getResourceAsStream( file ) );
+        			RuleSetLoadTest.class.getResourceAsStream( file ) );
         DrlParser parser = new DrlParser();
         PackageDescr packageDescr = parser.parse( reader );
         
