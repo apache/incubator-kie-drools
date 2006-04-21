@@ -1570,6 +1570,45 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals("Exactly six events", 6, events.size());
     }
 
+    public void xxxtestLogicalAssertionsNot() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsNot.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        List list;
+        
+        String a = new String("a");
+        Integer i = new Integer(1);
+        workingMemory.setGlobal( "i", i );
+
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects();
+        assertEquals("i was not asserted by not a => i.", 1, list.size());
+        assertEquals("i was not asserted by not a => i.", i, list.get(0));
+
+        FactHandle h = workingMemory.assertObject(a);
+        //no need to fire rules, assertion alone removes justification for i, so it should be retracted.
+        //workingMemory.fireAllRules();
+        list = workingMemory.getObjects();
+        assertEquals("a was not asserted or i not retracted.", 1, list.size());
+        assertEquals("a was asserted.", a, list.get(0));
+        assertFalse("i was not rectracted.", list.contains(i));
+
+        //no rules should fire, but nevertheless...
+        //workingMemory.fireAllRules();
+        assertEquals("agenda should be empty.", 0, workingMemory.getAgenda().agendaSize());
+        
+        workingMemory.retractObject(h);
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects();
+        assertEquals("i was not asserted by not a => i.", 1, list.size());
+        assertEquals("i was not asserted by not a => i.", i, list.get(0));
+    }
+    
     private Object serializeIn(byte[] bytes) throws IOException,
                                             ClassNotFoundException {
         ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
