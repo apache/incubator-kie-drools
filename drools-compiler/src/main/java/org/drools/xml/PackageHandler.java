@@ -73,7 +73,7 @@ class PackageHandler extends BaseAbstractHandler
         Configuration[] imports = config.getChildren( "import" );
 
         for ( int i = 0, length = imports.length; i < length; i++ ) {
-            String importEntry = imports[i].getText();
+            String importEntry = imports[i].getAttribute( "name" );
 
             if ( importEntry == null || importEntry.trim().equals( "" ) ) {
                 throw new SAXParseException( "<import> cannot be blank",
