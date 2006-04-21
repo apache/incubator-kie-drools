@@ -38,7 +38,9 @@ import org.drools.FactHandle;
 import org.drools.Person;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
+import org.drools.Sensor;
 import org.drools.WorkingMemory;
+import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
@@ -1005,37 +1007,6 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 7 ) );
     }
 
-    public void testLogicalAssertions() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions.drl" ) ) );
-        Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-
-        List list = new ArrayList();
-        workingMemory.setGlobal( "list",
-                                 list );
-
-        Cheese brie = new Cheese( "brie",
-                                  12 );
-        FactHandle brieHandle = workingMemory.assertObject( brie );
-
-        workingMemory.fireAllRules();
-
-        assertEquals( 2,
-                      list.size() );
-
-        assertEquals( 2,
-                      workingMemory.getObjects().size() );
-
-        workingMemory.retractObject( brieHandle );
-
-        assertEquals( 0,
-                      workingMemory.getObjects().size() );
-    }
-
     public void testDuration() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration.drl" ) ) );
@@ -1403,6 +1374,200 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( "match Person 1", rules[0].getName() );
         assertEquals( "match Person 2", rules[1].getName() );
         assertEquals( "match Person 3", rules[2].getName() );
+    }
+
+    public void testLogicalAssertions() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        Cheese brie = new Cheese( "brie",
+                                  12 );
+        FactHandle brieHandle = workingMemory.assertObject( brie );
+
+        Cheese provolone = new Cheese( "provolone",
+                                  12 );
+        FactHandle provoloneHandle = workingMemory.assertObject( provolone );
+
+        workingMemory.fireAllRules();
+        
+        assertEquals( 3, 
+                      list.size() );
+
+        assertEquals( 3,
+                      workingMemory.getObjects().size() );
+
+        workingMemory.retractObject( brieHandle );
+
+        assertEquals( 2,
+                      workingMemory.getObjects().size() );
+
+        workingMemory.retractObject( provoloneHandle );
+
+        assertEquals( 0,
+                      workingMemory.getObjects().size() );
+    }
+
+    public void xxxtestLogicalAssertionsBacking() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsBacking.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        Cheese cheese1 = new Cheese("c", 1);
+        Cheese cheese2 = new Cheese(cheese1.getType(), 1);
+        List list; 
+        
+        FactHandle h1 = workingMemory.assertObject( cheese1 );
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects(cheese1.getType().getClass());
+        assertEquals(1, list.size());
+        //probably dangerous, as contains works with equals, not identity
+        assertEquals(cheese1.getType(), list.get(0));
+        //FactHandle ht = workingMemory.getFactHandle(c1.getType());
+        
+        FactHandle h2 = workingMemory.assertObject( cheese2 );
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects(cheese1.getType().getClass());
+        assertEquals(1, list.size());
+        assertEquals(cheese1.getType(), list.get(0));
+
+        workingMemory.retractObject(h1);
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects(cheese1.getType().getClass());
+        assertEquals("cheese-type " + cheese1.getType() + " was retracted, but should not. Backed by cheese2 => type.", 1, list.size());
+        assertEquals("cheese-type " + cheese1.getType() + " was retracted, but should not. Backed by cheese2 => type.", cheese1.getType(), list.get(0));
+        
+        workingMemory.retractObject(h2);
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects(cheese1.getType().getClass());
+        assertEquals("cheese-type " + cheese1.getType() + " was not retracted, but should have. Neither  cheese1 => type nor cheese2 => type is true.", 0, list.size());
+    }
+
+    public void xxxtestLogicalAssertionsSelfreferencing() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsSelfreferencing.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        List list;
+        
+        String b = new String("b");
+        String a = new String("a");
+
+        workingMemory.setGlobal( "b", b );
+
+        FactHandle h1 = workingMemory.assertObject( a );
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects(a.getClass());
+        assertEquals(2, list.size());
+        assertTrue(list.contains(a));
+        assertTrue(list.contains(b));
+        
+        workingMemory.retractObject(h1);
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects(a.getClass());
+        assertEquals("b was retracted, but it should not have. Is backed by b => b being true.", 1, list.size());
+        assertEquals("b was retracted, but it should not have. Is backed by b => b being true.", b, list.get(0));
+        
+        h1 = workingMemory.getFactHandle(b);
+        workingMemory.retractObject(h1);
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects(a.getClass());
+        assertEquals(0, list.size());
+    }
+
+    public void xxxtestLogicalAssertionsLoop() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsLoop.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        List list;
+        
+        List l = new ArrayList();
+        String a = new String("a");
+        workingMemory.setGlobal( "a", a );
+        workingMemory.setGlobal( "l", l );
+
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects(a.getClass());
+        assertEquals("a still asserted.", 0, list.size());
+        assertEquals("Rule has not fired (looped) expected number of times", 10, l.size());
+    }
+
+    public void xxxtestLogicalAssertionsNoLoop() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsNoLoop.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        List list;
+        
+        List l = new ArrayList();
+        String a = new String("a");
+        workingMemory.setGlobal( "a", a );
+        workingMemory.setGlobal( "l", l );
+
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects(a.getClass());
+        assertEquals("a not asserted.", 1, list.size());
+        assertEquals("a not asserted", a, list.get(0));
+        assertEquals("Rule should not loop", 1, l.size());
+    }
+
+    public void xxxtestLogicalAssertions2() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions2.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List events = new ArrayList();
+        
+        workingMemory.setGlobal( "events", events );
+        
+        Sensor sensor = new Sensor(80, 80);
+        FactHandle handle = workingMemory.assertObject( sensor );
+
+        // everything should be normal
+        workingMemory.fireAllRules();
+        
+        List list = workingMemory.getObjects();
+        
+        assertEquals("Only sensor is there", 1, list.size());
+        assertEquals("Only one event", 1, events.size());
+        
+        // problems should be detected
+        sensor.setPressure( 200 );
+        sensor.setTemperature( 200 );
+        workingMemory.modifyObject( handle, sensor );
+        
+        workingMemory.fireAllRules();
+        assertEquals("Only sensor is there", 1, list.size());
+        assertEquals("Exactly six events", 6, events.size());
     }
 
     private Object serializeIn(byte[] bytes) throws IOException,

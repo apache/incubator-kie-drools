@@ -1,0 +1,10 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+rule "Cheese => type"
+    when
+        Cheese( type : type )
+    then
+		assertLogical( type );
+end

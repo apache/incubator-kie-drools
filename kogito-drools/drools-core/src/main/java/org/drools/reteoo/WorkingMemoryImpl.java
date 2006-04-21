@@ -103,7 +103,11 @@ public class WorkingMemoryImpl
 
     private Map                             queryResults                                  = Collections.EMPTY_MAP;
 
+    /** Support for logical assertions */
     private static final String             STATED                                        = "STATED";
+    private static final String             JUSTIFIED                                     = "JUSTIFIED";
+    private static final String             NEW                                           = "NEW";
+    private static final FactStatus         STATUS_NEW                                    = new FactStatus(NEW, 0);
 
     /** The eventSupport */
     private final WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( this );
@@ -425,27 +429,40 @@ public class WorkingMemoryImpl
                                    boolean logical,
                                    Rule rule,
                                    Activation activation) throws FactException {
+        
         // check if the object already exists in the WM
         FactHandleImpl handle = (FactHandleImpl) this.identityMap.get( object );
 
-        // return if the handle exists and this is a logical assertion
-        if ( (handle != null) && (logical) ) {
-            return handle;
+        // lets see if the object is already logical asserted
+        FactStatus logicalState = (FactStatus) this.equalsMap.get( object );
+        if(logicalState == null) {
+            logicalState = STATUS_NEW;
         }
 
-        // lets see if the object is already logical asserted
-        Object logicalState = this.equalsMap.get( object );
+        // This object is already STATED, we cannot make it justifieable
+        if ( (logical) && (logicalState.getStatus() == WorkingMemoryImpl.STATED) ) {
+            return null;
+        }
+
+        // return if there is already a logical handle
+        if ( (logical) && (logicalState.getStatus() == WorkingMemoryImpl.JUSTIFIED) ) {
+            addLogicalDependency( logicalState.getHandle(),
+                                  activation,
+                                  activation.getPropagationContext(),
+                                  rule );
+            return logicalState.getHandle();
+        }
 
         // if we have a handle and this STATED fact was previously STATED
-        if ( (handle != null) && (!logical) && logicalState == WorkingMemoryImpl.STATED ) {
+        if ( (handle != null) && (!logical) && ( logicalState.getStatus() == WorkingMemoryImpl.STATED ) ) {
             return handle;
         }
 
         if ( !logical ) {
             // If this stated assertion already has justifications then we need
             // to cancel them
-            if ( logicalState instanceof FactHandleImpl ) {
-                handle = (FactHandleImpl) logicalState;
+            if ( logicalState.getStatus() == WorkingMemoryImpl.JUSTIFIED ) {
+                handle = logicalState.getHandle();
                 removeLogicalDependencies( handle );
             } else {
                 handle = (FactHandleImpl) newFactHandle();
@@ -454,19 +471,21 @@ public class WorkingMemoryImpl
             putObject( handle,
                        object );
 
-            this.equalsMap.put( object,
-                                WorkingMemoryImpl.STATED );
+            if( logicalState != WorkingMemoryImpl.STATUS_NEW) {
+                // make sure status is stated
+                logicalState.setStatus( WorkingMemoryImpl.STATED );
+                logicalState.incCounter();
+            } else {
+                this.equalsMap.put( object,
+                                    new FactStatus(WorkingMemoryImpl.STATED, 1) );
+            }
 
             if ( dynamic ) {
                 addPropertyChangeListener( object );
             }
         } else {
-            // This object is already STATED, we cannot make it justifieable
-            if ( logicalState == WorkingMemoryImpl.STATED ) {
-                return null;
-            }
 
-            handle = (FactHandleImpl) logicalState;
+            handle = logicalState.getHandle();
             // we create a lookup handle for the first asserted equals object
             // all future equals objects will use that handle
             if ( handle == null ) {
@@ -476,8 +495,8 @@ public class WorkingMemoryImpl
                            object );
 
                 this.equalsMap.put( object,
-                                    handle );
-            }
+                                    new FactStatus(WorkingMemoryImpl.JUSTIFIED, handle) );
+            } 
             addLogicalDependency( handle,
                                   activation,
                                   activation.getPropagationContext(),
@@ -614,11 +633,17 @@ public class WorkingMemoryImpl
         /* check to see if this was a logical asserted object */
         if ( removeLogical ) {
             removeLogicalDependencies( handle );
-            this.equalsMap.remove( oldObject );
+            //this.equalsMap.remove( oldObject );
         }
 
-        if ( updateEqualsMap ) {
-            this.equalsMap.remove( oldObject );
+        if ( removeLogical || updateEqualsMap ) {
+            FactStatus status = (FactStatus) this.equalsMap.get( oldObject );
+            if(status != null) {
+                status.decCounter();
+                if(status.getCounter() <= 0) {
+                    this.equalsMap.remove( oldObject );
+                }
+            }
         }
 
         this.factHandlePool.push( ((FactHandleImpl) handle).getId() );
@@ -661,7 +686,7 @@ public class WorkingMemoryImpl
         if ( this.justified.get( handleImpl.getId() ) != null ) {
             this.equalsMap.remove( originalObject );
             this.equalsMap.put( object,
-                                handle );
+                                new FactStatus(WorkingMemoryImpl.JUSTIFIED, handleImpl) );
         }
 
         PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
@@ -811,5 +836,79 @@ public class WorkingMemoryImpl
 
     public void dispose() {
         this.ruleBase.disposeWorkingMemory( this );
+    }
+    
+    private static class FactStatus {
+        private int counter;
+        private String status;
+        private FactHandleImpl handle;
+        
+        public FactStatus() {
+            this(WorkingMemoryImpl.STATED, 1);
+        }
+        
+        public FactStatus(String status) {
+            this(status, 1);
+        }
+        
+        public FactStatus(String status, FactHandleImpl handle) {
+            this.status = status;
+            this.handle = handle;
+        }
+        
+        public FactStatus(String status, int counter) {
+            this.status = status;
+            this.counter = counter;
+        }
+        
+        /**
+         * @return the counter
+         */
+        public int getCounter() {
+            return counter;
+        }
+        /**
+         * @param counter the counter to set
+         */
+        public void setCounter(int counter) {
+            this.counter = counter;
+        }
+        
+        public int incCounter() {
+            return ++counter;
+        }
+        
+        public int decCounter() {
+            return --counter;
+        }
+        /**
+         * @return the handle
+         */
+        public FactHandleImpl getHandle() {
+            return handle;
+        }
+        /**
+         * @param handle the handle to set
+         */
+        public void setHandle(FactHandleImpl handle) {
+            this.handle = handle;
+        }
+        /**
+         * @return the status
+         */
+        public String getStatus() {
+            return status;
+        }
+        /**
+         * @param status the status to set
+         */
+        public void setStatus(String status) {
+            this.status = status;
+        }
+        
+        public String toString() {
+            return "FactStatus( "+this.status+", handle="+this.handle+", counter="+this.counter+")";
+        }
+        
     }
 }

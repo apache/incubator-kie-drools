@@ -5,9 +5,17 @@ import org.drools.Person;
 
 global java.util.List list;
 
-rule justifier
+rule justifier1
     when
-        cheese : Cheese( )
+        cheese : Cheese( type == "brie" )
+    then
+		assertLogical( new  Person( "jane" ) );
+		list.add( cheese );
+end   
+
+rule justifier2
+    when
+        cheese : Cheese( type == "provolone" )
     then
 		assertLogical( new  Person( "jane" ) );
 		list.add( cheese );

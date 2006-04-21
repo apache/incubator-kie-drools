@@ -1,0 +1,18 @@
+package org.drools.test;
+
+import java.lang.String;
+import java.util.List;
+
+global java.lang.String a;
+global java.util.List l;
+
+rule "r"
+    when
+        not String()
+    then
+    	if (l.size() < 10)
+    	{
+    		l.add(new Integer(0));
+    		assertLogical( a );
+    	}
+end
