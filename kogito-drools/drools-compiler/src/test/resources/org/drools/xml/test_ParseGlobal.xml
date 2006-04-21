@@ -2,6 +2,6 @@
 	<import>java.util.HashMap</import>
 	<import>org.drools.*</import>	
 	
-	<global identifier="x">com.sample.X</global>		
-	<global identifier="yada">com.sample.Yada</global>			
+	<global identifier="x" type="com.sample.X" />		
+	<global identifier="yada" type="com.sample.Yada" />		
 </package>
