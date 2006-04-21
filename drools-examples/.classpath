@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/rules"/>
+	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="DROOLS/JBoss Rules"/>
+	<classpathentry kind="var" path="M2_REPO/foxtrot/foxtrot/2.0/foxtrot-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/jgoodies/forms/1.0.4/forms-1.0.4.jar"/>
+	<classpathentry kind="lib" path="src/main/resources"/>
+	<classpathentry kind="lib" path="src/test/resources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
