@@ -36,4 +36,19 @@
        <version>1.0.4</version>
     </dependency>
   </dependencies>
+  <build>
+  <plugins>
+   <plugin>
+   <groupId>org.apache.maven.plugins</groupId>
+   <artifactId>maven-antrun-plugin</artifactId>
+   <configuration>
+     <tasks>
+       <java fork="true" classname="org.drools.examples.conway.ui.ConwayGUI">
+         <classpath refid="maven.runtime.classpath"/>
+       </java>
+     </tasks>
+   </configuration>
+ </plugin>
+  </plugins>
+  </build>
 </project>
