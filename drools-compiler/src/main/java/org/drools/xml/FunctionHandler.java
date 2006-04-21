@@ -88,9 +88,9 @@ class FunctionHandler extends BaseAbstractHandler
                                              xmlPackageReader.getLocator() );
             }
 
-            String type = parameters[i].getText();
+            String type =  parameters[i].getAttribute( "type" );
             if ( type == null || type.trim().equals( "" ) ) {
-                throw new SAXParseException( "function's <parameter> must specify a 'type'",
+                throw new SAXParseException( "function's <parameter> requires an 'type' attribute",
                                              xmlPackageReader.getLocator() );
             }
 

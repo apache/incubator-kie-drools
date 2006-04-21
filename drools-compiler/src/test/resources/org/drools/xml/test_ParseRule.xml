@@ -2,21 +2,20 @@
 	<import>java.util.HashMap</import>
 	<import>org.drools.*</import>	
 	
-	<global identifier="x">com.sample.X</global>		
-	<global identifier="yada">com.sample.Yada</global>
+	<global identifier="x" type="com.sample.X" />		
+	<global identifier="yada" type="com.sample.Yada" />
 	
 	<function return-type="void" name="myFunc">
-	    <parameter identifier="foo">Bar</parameter>
-	    <parameter identifier="bada">Bing</parameter>
+	    <parameter identifier="foo" type="Bar" />
+	    <parameter identifier="bada" type="Bing" />
 	    	    
 	    <body>
 	    	System.out.println("hello world");
-		</body>
-		
+		</body>		
 	</function>
 	
 	<rule name="my rule">
-		<attribute name="salience" value="10" />
+		<rule-attribute name="salience" value="10" />
 		
 		<lhs>					
 	       <column object-type="Foo" />			

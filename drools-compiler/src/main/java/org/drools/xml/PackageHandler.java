@@ -86,13 +86,13 @@ class PackageHandler extends BaseAbstractHandler
 
         for ( int i = 0, length = globals.length; i < length; i++ ) {
             String identifier = globals[i].getAttribute( "identifier" );
-            String type = globals[i].getText();
 
             if ( identifier == null || identifier.trim().equals( "" ) ) {
                 throw new SAXParseException( "<global> must have an identifier",
                                              xmlPackageReader.getLocator() );
             }
 
+            String type = globals[i].getAttribute( "type" );
             if ( type == null || type.trim().equals( "" ) ) {
                 throw new SAXParseException( "<global> must have specify a type",
                                              xmlPackageReader.getLocator() );
