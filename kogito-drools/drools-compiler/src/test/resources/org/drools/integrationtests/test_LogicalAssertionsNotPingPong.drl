@@ -1,0 +1,28 @@
+package org.drools.test;
+
+import java.lang.String;
+import java.lang.Integer;
+import java.util.List;
+
+global java.lang.Integer i;
+global java.lang.String s;
+global java.util.List l;
+
+rule "not s then i"
+    when
+        not String()
+    then
+    	if (l.size() < 10) {
+    		l.add(new Integer(0));
+	   		assertLogical(i);
+	   	}
+end
+rule "i then s"
+	when
+		Integer()
+	then
+    	if (l.size() < 10) {
+	   		l.add(new Integer(0));
+			assertLogical(s);
+	   	}
+end

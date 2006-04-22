@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.common.BetaNodeBinder;
@@ -174,9 +175,15 @@ abstract class TupleSource extends BaseNode
                                          PropagationContext context,
                                          WorkingMemoryImpl workingMemory) {
         LinkedList list = tuple.getLinkedTuples();
+
         if ( list != null && !list.isEmpty() ) {
-            int i = 0;
-            for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
+            LinkedListNode[] clone = new LinkedListNode[list.size()];
+            int i=0;
+            for( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst()) {
+                clone[i++] = node;
+            }
+            for(i = 0; i < clone.length; i++) {
+                LinkedListNode node = clone[i];
                 ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
                                                                        context,
                                                                        workingMemory );
