@@ -184,6 +184,12 @@ public class NLGrammarTest extends TestCase {
         Assert.assertEquals( "Error list should have 1 error", 1, errors.size() );
         error = (MappingError) errors.get( 0 );
         Assert.assertEquals( "Wrong reported error", MappingError.ERROR_UNMATCHED_BRACES, error.getErrorCode());
+
+//TODO: really should stop the following from barfing...        
+//        item = new NLMappingItem("this is something {here}", "yeah here is {here} and { doSomething(); }", "*");
+//        errors = g.validateMapping( item );
+//        Assert.assertEquals( 0, errors.size() );
+       
     }
     
 }

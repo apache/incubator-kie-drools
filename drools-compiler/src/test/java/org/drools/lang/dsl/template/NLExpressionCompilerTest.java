@@ -139,4 +139,13 @@ public class NLExpressionCompilerTest extends TestCase {
         assertEquals( "something boo eee fa", result );
     }
     
+    public void testWithCurliesInTarget() {
+        NLGrammar g = new NLGrammar();
+        g.addNLItem( new NLMappingItem("foo {bar}", "if ({bar}) { doSomething(); }", "when") );
+        NLExpressionCompiler compiler = new NLExpressionCompiler(g);
+        String result = compiler.compile( "foo bar", "when");
+        assertEquals("if (bar) { doSomething(); }", result);
+        
+    }
+    
 }

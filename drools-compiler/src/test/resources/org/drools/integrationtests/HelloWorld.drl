@@ -1,0 +1,15 @@
+package HelloWorld
+ 
+import org.drools.integrationtests.helloworld.Message
+
+rule "Hello World"
+	when
+		$m : Message(list contains "hello", 
+					text:message == "hola", 
+					number > 40, 
+					birthday > "10-Jul-1974", 
+					message matches ".*ho.*")
+	then
+		System.out.println("hello world with collections " + $m.getMessage());
+		$m.setFired(true); 
+end

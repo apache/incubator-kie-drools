@@ -52,6 +52,8 @@ import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.DefaultAgendaEventListener;
+import org.drools.integrationtests.helloworld.Message;
+import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
@@ -85,6 +87,37 @@ public abstract class IntegrationCases extends TestCase {
 
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
+    }
+
+    public void testHelloWorld() throws Exception {
+
+        //read in the source
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "HelloWorld.drl" ) );
+        DrlParser parser = new DrlParser();
+        PackageDescr packageDescr = parser.parse( reader );
+
+        //pre build the package
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackage( packageDescr );
+        Package pkg = builder.getPackage();
+
+        //add the package to a rulebase
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        //load up the rulebase
+
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        //go !            
+        Message message = new Message( "hola" );
+        message.addToList( "hello" );
+        message.setNumber( 42 );
+
+        workingMemory.assertObject( message );
+        workingMemory.assertObject( "boo" );
+        workingMemory.fireAllRules();
+        assertTrue( message.isFired() );
+
     }
 
     public void testLiteral() throws Exception {
@@ -156,22 +189,23 @@ public abstract class IntegrationCases extends TestCase {
     }
 
     public void testCell() throws Exception {
-        Cell cell1 = new Cell(9);
-        Cell cell = new Cell(0);
-        
+        Cell cell1 = new Cell( 9 );
+        Cell cell = new Cell( 0 );
+
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "evalmodify.drl" )) );
-        
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "evalmodify.drl" ) ) );
+
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        
+
         WorkingMemory memory = ruleBase.newWorkingMemory();
-        memory.assertObject(cell1);
-        memory.assertObject(cell);
+        memory.assertObject( cell1 );
+        memory.assertObject( cell );
         memory.fireAllRules();
-        assertEquals(9, cell.getValue());        
+        assertEquals( 9,
+                      cell.getValue() );
     }
-    
+
     public void testOr() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "or_test.drl" ) ) );
@@ -439,7 +473,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
 
     }
-    
+
     public void testNullConstraint() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_constraint.drl" ) ) );
@@ -449,8 +483,9 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         List foo = new ArrayList();
-        workingMemory.setGlobal( "messages", foo );
-        
+        workingMemory.setGlobal( "messages",
+                                 foo );
+
         Person p1 = new Person( null,
                                 "food",
                                 40 );
@@ -458,10 +493,10 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.assertObject( p1 );
 
         workingMemory.fireAllRules();
-        assertEquals(1, foo.size());
+        assertEquals( 1,
+                      foo.size() );
 
-
-    }    
+    }
 
     public void testExists() throws Exception {
         PackageBuilder builder = new PackageBuilder();
@@ -1211,12 +1246,10 @@ public abstract class IntegrationCases extends TestCase {
 
         assertEquals( "stilton",
                       list.get( 0 ) );
-        
-        assertTrue("cheddar".equals(list.get(1))
-                || "cheddar".equals(list.get(2)));
-        
-        assertTrue("stilton".equals(list.get(1))
-                || "stilton".equals(list.get(2)));
+
+        assertTrue( "cheddar".equals( list.get( 1 ) ) || "cheddar".equals( list.get( 2 ) ) );
+
+        assertTrue( "stilton".equals( list.get( 1 ) ) || "stilton".equals( list.get( 2 ) ) );
 
         list.clear();
 
@@ -1267,7 +1300,7 @@ public abstract class IntegrationCases extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) ) );
         Package pkg = builder.getPackage();
 
-        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl(); 
+        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
@@ -1338,7 +1371,7 @@ public abstract class IntegrationCases extends TestCase {
                                  null );
         bob.setStatus( "P1" );
         Person pete = new Person( null,
-                                 null );
+                                  null );
         bob.setStatus( "P2" );
         workingMemory.assertObject( bob );
         workingMemory.assertObject( pete );
@@ -1346,9 +1379,11 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
 
         Assert.assertEquals( "Indexing with null values is not working correctly.",
-                             "OK", bob.getStatus() );
+                             "OK",
+                             bob.getStatus() );
         Assert.assertEquals( "Indexing with null values is not working correctly.",
-                             "OK", pete.getStatus() );
+                             "OK",
+                             pete.getStatus() );
 
     }
 
@@ -1361,19 +1396,23 @@ public abstract class IntegrationCases extends TestCase {
 
         assertEquals( 0,
                       builder.getErrors().length );
-        
+
         RuleBase ruleBase = getRuleBase();//RuleBaseFactory.newRuleBase();
-        
+
         ruleBase.addPackage( pkg );
-        
+
         byte[] ast = serializeOut( ruleBase );
-        ruleBase = ( RuleBase ) serializeIn( ast );   
+        ruleBase = (RuleBase) serializeIn( ast );
         Rule[] rules = ruleBase.getPackages()[0].getRules();
-        assertEquals( 3, rules.length );
-        
-        assertEquals( "match Person 1", rules[0].getName() );
-        assertEquals( "match Person 2", rules[1].getName() );
-        assertEquals( "match Person 3", rules[2].getName() );
+        assertEquals( 3,
+                      rules.length );
+
+        assertEquals( "match Person 1",
+                      rules[0].getName() );
+        assertEquals( "match Person 2",
+                      rules[1].getName() );
+        assertEquals( "match Person 3",
+                      rules[2].getName() );
     }
 
     public void testLogicalAssertions() throws Exception {
@@ -1630,8 +1669,3 @@ public abstract class IntegrationCases extends TestCase {
     }
 
 }
-
-
-
-
-

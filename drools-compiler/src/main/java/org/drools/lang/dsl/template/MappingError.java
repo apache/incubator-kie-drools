@@ -92,9 +92,9 @@ public class MappingError extends DroolsError {
     public String getMessage() {
         switch(this.errorCode) {
             case ERROR_UNUSED_TOKEN:
-                return "Token "+this.token+" not used in the mapping.";
+                return "Warning, the token "+this.token+" not used in the mapping.";
             case ERROR_UNDECLARED_TOKEN:
-                return "Token "+this.token+" not found in the expression.";
+                return "Warning, the token "+this.token+" not found in the expression. (May not be a problem).";
             case ERROR_INVALID_TOKEN:
                 return "Invalid token declaration at offset "+this.offset+": "+this.token;
             case ERROR_UNMATCHED_BRACES:

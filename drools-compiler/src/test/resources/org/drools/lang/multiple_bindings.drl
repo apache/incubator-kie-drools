@@ -1,0 +1,8 @@
+#trying to show how it will normalise biondings 
+rule simple_rule 
+  when
+    foo : Bar(a==3)
+    foo : Bar(a!=4)    
+  then
+  	Baz();
+end
