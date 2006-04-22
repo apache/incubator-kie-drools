@@ -1455,7 +1455,7 @@ public abstract class IntegrationCases extends TestCase {
                       workingMemory.getObjects().size() );
     }
 
-    public void xxxtestLogicalAssertionsBacking() throws Exception {
+    public void testLogicalAssertionsBacking() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsBacking.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -1494,7 +1494,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals("cheese-type " + cheese1.getType() + " was not retracted, but should have. Neither  cheese1 => type nor cheese2 => type is true.", 0, list.size());
     }
 
-    public void xxxtestLogicalAssertionsSelfreferencing() throws Exception {
+    public void testLogicalAssertionsSelfreferencing() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsSelfreferencing.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -1530,7 +1530,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals(0, list.size());
     }
 
-    public void xxxtestLogicalAssertionsLoop() throws Exception {
+    public void testLogicalAssertionsLoop() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsLoop.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -1552,7 +1552,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals("Rule has not fired (looped) expected number of times", 10, l.size());
     }
 
-    public void xxxtestLogicalAssertionsNoLoop() throws Exception {
+    public void testLogicalAssertionsNoLoop() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsNoLoop.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -1570,12 +1570,11 @@ public abstract class IntegrationCases extends TestCase {
 
         workingMemory.fireAllRules();
         list = workingMemory.getObjects(a.getClass());
-        assertEquals("a not asserted.", 1, list.size());
-        assertEquals("a not asserted", a, list.get(0));
+        assertEquals("a still in WM", 0, list.size());
         assertEquals("Rule should not loop", 1, l.size());
     }
 
-    public void xxxtestLogicalAssertions2() throws Exception {
+    public void testLogicalAssertions2() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertions2.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -1609,7 +1608,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals("Exactly six events", 6, events.size());
     }
 
-    public void xxxtestLogicalAssertionsNot() throws Exception {
+    public void testLogicalAssertionsNot() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsNot.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -1646,6 +1645,34 @@ public abstract class IntegrationCases extends TestCase {
         list = workingMemory.getObjects();
         assertEquals("i was not asserted by not a => i.", 1, list.size());
         assertEquals("i was not asserted by not a => i.", i, list.get(0));
+    }
+
+    public void testLogicalAssertionsNotPingPong() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsNotPingPong.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        //workingMemory.addEventListener(new DebugAgendaEventListener());
+        //workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+        
+        List list;
+        
+        List l = new ArrayList();
+        
+        String s = new String("s");
+        Integer i = new Integer(1);
+        workingMemory.setGlobal( "i", i );
+        workingMemory.setGlobal( "s", s );
+        workingMemory.setGlobal( "l", l );
+        
+        workingMemory.fireAllRules();
+
+        //not sure about desired state of working memory. 
+        assertEquals("Rules have not fired (looped) expected number of times", 10, l.size());
     }
     
     private Object serializeIn(byte[] bytes) throws IOException,
