@@ -19,8 +19,10 @@ package org.drools.lang;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -41,6 +43,7 @@ import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueDescr;
@@ -327,6 +330,19 @@ public class RuleParserTest extends TestCase {
 		
     		assertFalse( parser.hasErrors() );
 	}
+    
+    /** Note this is only to be enabled if we agree to combine patterns from columns bound to the same var.
+     * At present, not a valid test. Refer to AndDescr and AndDescrTest (Michael Neale).
+     */
+    public void xxxtestMultiBindings() throws Exception {
+        RuleDescr rule = parseResource( "multiple_bindings.drl" ).rule();        
+        assertNotNull( rule );        
+        assertEquals( "simple_rule", rule.getName() );
+        
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        
+    }
+    
 	
 	public void testLhsSemicolonDelim() throws Exception {
 		RuleDescr rule = parseResource( "lhs_semicolon_delim.drl" ).rule();
