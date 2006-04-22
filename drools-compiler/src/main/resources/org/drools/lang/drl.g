@@ -859,7 +859,7 @@ lhs_exist returns [PatternDescr d]
 	@init {
 		d = null;
 	}
-	:	loc='exists' column=lhs_column 
+	:	loc='exists' ('(' column=lhs_column ')' | column=lhs_column)
 		{ 
 			d = new ExistsDescr( (ColumnDescr) column ); 
 			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
@@ -870,7 +870,7 @@ lhs_not	returns [NotDescr d]
 	@init {
 		d = null;
 	}
-	:	loc='not' column=lhs_column 
+	:	loc='not' ('(' column=lhs_column  ')' | column=lhs_column)
 		{
 			d = new NotDescr( (ColumnDescr) column ); 
 			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );

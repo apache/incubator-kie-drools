@@ -37,6 +37,7 @@ import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BoundVariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.LiteralDescr;
@@ -434,6 +435,35 @@ public class RuleParserTest extends TestCase {
         
     		assertFalse( parser.hasErrors() );
     }
+    
+    public void testNotExistWithBrackets() throws Exception {
+        
+        RuleParser parser = parseResource( "not_exist_with_brackets.drl");
+        
+        parser.compilation_unit();
+        PackageDescr pkg = parser.getPackageDescr();
+        
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        
+        assertNotNull( rule );
+        assertEquals( "simple_rule", rule.getName() );
+        
+        AndDescr lhs = rule.getLhs();
+        assertEquals( 2, lhs.getDescrs().size() );
+        NotDescr not = (NotDescr) lhs.getDescrs().get( 0 );
+        assertEquals(1, not.getDescrs().size());
+        ColumnDescr col = (ColumnDescr) not.getDescrs().get( 0 );
+        
+        assertEquals("Cheese", col.getObjectType());
+        
+        ExistsDescr ex = (ExistsDescr) lhs.getDescrs().get( 1 );
+        assertEquals(1, ex.getDescrs().size());
+        ColumnDescr exCol = (ColumnDescr) ex.getDescrs().get( 0 );
+        assertEquals( "Foo", exCol.getObjectType() );
+        
+        
+        assertFalse( parser.hasErrors() );
+    }    
     
     public void testSimpleQuery() throws Exception {
         QueryDescr query = parseResource( "simple_query.drl" ).query();
