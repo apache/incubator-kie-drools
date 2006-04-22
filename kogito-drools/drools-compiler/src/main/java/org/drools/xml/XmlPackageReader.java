@@ -17,6 +17,7 @@ package org.drools.xml;
  */
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -662,54 +663,64 @@ public class XmlPackageReader extends DefaultHandler {
         }
 
         // Try looking in META-INF
-        try {
-            return new InputSource( cl.getResourceAsStream( "META-INF/" + xsd ) );
-        } catch ( Exception e ) {
+
+        {
+            InputStream is = cl.getResourceAsStream( "META-INF/" + xsd );
+            if ( is != null ) {
+                return new InputSource( is );
+            }
         }
 
         // Try looking in /META-INF
-        try {
-            return new InputSource( cl.getResourceAsStream( "/META-INF/" + xsd ) );
-        } catch ( Exception e ) {
+        {
+            InputStream is = cl.getResourceAsStream( "/META-INF/" + xsd );
+            if ( is != null ) {
+                return new InputSource( is );
+            }
         }
 
         // Try looking at root of classpath
-        try {
-            return new InputSource( cl.getResourceAsStream( "/" + xsd ) );
-        } catch ( Exception e ) {
+        {
+            InputStream is = cl.getResourceAsStream( "/" + xsd );
+            if ( is != null ) {
+                return new InputSource( is );
+            }
         }
 
         // Try current working directory
-        try {
-            return new InputSource( new BufferedInputStream( new FileInputStream( xsd ) ) );
-        } catch ( Exception e ) {
+        {
+            File file = new File( xsd );
+            if ( file.exists() ) {
+                return new InputSource( new BufferedInputStream( new FileInputStream( file ) ) );
+            }
         }
 
         cl = ClassLoader.getSystemClassLoader();
 
         // Try looking in META-INF
-        try {
-            return new InputSource( cl.getResourceAsStream( "META-INF/" + xsd ) );
-        } catch ( Exception e ) {
+        {
+            InputStream is = cl.getResourceAsStream( "META-INF/" + xsd );
+            if ( is != null ) {
+                return new InputSource( is );
+            }
         }
 
         // Try looking in /META-INF
-        try {
-            return new InputSource( cl.getResourceAsStream( "/META-INF/" + xsd ) );
-        } catch ( Exception e ) {
+        {
+            InputStream is = cl.getResourceAsStream( "/META-INF/" + xsd );
+            if ( is != null ) {
+                return new InputSource( is );
+            }
         }
 
         // Try looking at root of classpath
-        try {
-            return new InputSource( cl.getResourceAsStream( "/" + xsd ) );
-        } catch ( Exception e ) {
+        {
+            InputStream is = cl.getResourceAsStream( "/" + xsd );
+            if ( is != null ) {
+                return new InputSource( is );
+            }
         }
 
-        // Try current working directory
-        try {
-            return new InputSource( new BufferedInputStream( new FileInputStream( xsd ) ) );
-        } catch ( Exception e ) {
-        }
         return null;
     }
 
