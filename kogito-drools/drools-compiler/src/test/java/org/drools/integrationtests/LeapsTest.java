@@ -116,4 +116,11 @@ public class LeapsTest extends IntegrationCases {
         assertEquals(4, list.size());
         assertEquals("group2", list.get(3));
     }
+
+    public void testLogicalAssertions() throws Exception {
+        // Not working in leaps
+        
+    }
+    
+    
 }
