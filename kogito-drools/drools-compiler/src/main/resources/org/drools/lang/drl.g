@@ -592,27 +592,38 @@ fact_binding returns [PatternDescr d]
  	:
  		id=ID 
  		
- 		opt_eol ':' opt_eol 
- 		f=fact opt_eol
+ 		opt_eol ':' opt_eol fe=fact_expression[id.getText()]
  		{
- 			((ColumnDescr)f).setIdentifier( id.getText() );
- 			d = f;
+ 			d=fe;
+ 		}
+	;
+ 
+ fact_expression[String id] returns [PatternDescr pd]
+ 	@init {
+ 		pd = null;
+ 		boolean multi = false;
+ 	}
+ 	:	'(' fe=fact_expression[id] ')' { pd=fe; }
+ 	| 	f=fact opt_eol
+ 		{
+ 			((ColumnDescr)f).setIdentifier( id );
+ 			pd = f;
  		}
  		(	'or'
  			{	if ( ! multi ) {
- 					PatternDescr first = d;
- 					d = new OrDescr();
- 					((OrDescr)d).addDescr( first );
+ 					PatternDescr first = pd;
+ 					pd = new OrDescr();
+ 					((OrDescr)pd).addDescr( first );
  					multi=true;
  				}
  			}
  			f=fact
  			{
- 				((ColumnDescr)f).setIdentifier( id.getText() );
- 				((OrDescr)d).addDescr( f );
+ 				((ColumnDescr)f).setIdentifier( id );
+ 				((OrDescr)pd).addDescr( f );
  			}
  		)*	
- 	;
+	;
  
 fact returns [PatternDescr d] 
 	@init {
