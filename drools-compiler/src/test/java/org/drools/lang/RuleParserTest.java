@@ -903,6 +903,35 @@ public class RuleParserTest extends TestCase {
     		assertFalse( parser.hasErrors() );
     }   
     
+    public void testOrBindingWithBrackets() throws Exception {
+        RuleParser parser = parseResource( "or_binding_with_brackets.drl" );
+        parser.compilation_unit();
+        
+        PackageDescr pack = parser.getPackageDescr();
+        assertEquals(1, pack.getRules().size());
+        RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        
+        assertEquals(1, rule.getLhs().getDescrs().size());
+
+        OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( 2, or.getDescrs().size() );
+        
+        //first fact
+        ColumnDescr firstFact = (ColumnDescr) or.getDescrs().get( 0 );
+        assertEquals("Person", firstFact.getObjectType());
+        assertEquals("foo", firstFact.getIdentifier());
+        
+        //second "option"
+        ColumnDescr secondFact = (ColumnDescr) or.getDescrs().get( 0 );
+        assertEquals("Person", secondFact.getObjectType());
+        assertEquals( "foo", secondFact.getIdentifier() );
+        
+        assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" + bar );", rule.getConsequence());
+        
+        assertFalse( parser.hasErrors() );
+    }       
+    
     /** */
     public void testBracketsPrecedence() throws Exception {
         RuleParser parser = parseResource( "brackets_precedence.drl" );
