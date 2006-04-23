@@ -70,14 +70,27 @@ public class SharedNodePerformanceTest extends TestCase {
 			long totalload = 0;
 			long totalassert = 0;
 			long totalfire = 0;
+			long aveloadmem = 0;
+			long aveassertmem = 0;
+			Runtime rt = Runtime.getRuntime();
 			for (int c=0; c < loop; c++) {
+		        rt.gc();
+				long memt1 = rt.totalMemory();
+				long memf1 = rt.freeMemory();
+				long used1 = memt1 - memf1;
 				long loadStart = System.currentTimeMillis();
 		        RuleBase ruleBase = readRule(file);
 		        long loadEnd = System.currentTimeMillis();
+				long memt2 = rt.totalMemory();
+				long memf2 = rt.freeMemory();
+				long used2 = memt2 - memf2;
 		        long loadet = loadEnd - loadStart;
+		        rt.gc();
 		        totalload += loadet;
+		        aveloadmem += (used2 - used1);
 		        System.out.println("time to load " + file +
 		        		" " + loadet + "ms");
+		        System.out.println("load memory used " + ((used2-used1)/1024) + " kb");
 		        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 		        ArrayList objects = new ArrayList();
 		        // create the objects
@@ -92,15 +105,23 @@ public class SharedNodePerformanceTest extends TestCase {
 		        	objects.add(addr);
 		        }
 		        Iterator itr = objects.iterator();
+				long memt3 = rt.totalMemory();
+				long memf3 = rt.freeMemory();
+				long used3 = memt3 - memf3;
 		        long assertStart = System.currentTimeMillis();
 		        while( itr.hasNext() ) {
 		        	workingMemory.assertObject(itr.next());
 		        }
 		        long assertEnd = System.currentTimeMillis();
+				long memt4 = rt.totalMemory();
+				long memf4 = rt.freeMemory();
+				long used4 = memt4 - memf4;
 		        long assertet = assertEnd - assertStart;
 		        totalassert += assertet;
+		        aveassertmem += (used4 - used3);
 		        System.out.println("time to assert " + assertet +
 		        		" ms");
+		        System.out.println("assert memory used " + ((used4-used3)/1024) + " kb");
 		        long fireStart = System.currentTimeMillis();
 		        workingMemory.fireAllRules();
 		        long fireEnd = System.currentTimeMillis();
@@ -109,11 +130,15 @@ public class SharedNodePerformanceTest extends TestCase {
 		        System.out.println("time to fireAllRules " + fireet +
 		        		" ms");
 		        workingMemory.dispose();
+		        rt.gc();
+		        System.out.println("");
 			}
 			System.out.println(file);
 			System.out.println("number of objects asserted " + factCount);
 			System.out.println("average load " + (totalload/loop) + " ms");
+			System.out.println("average load mem " + (aveloadmem/1024/loop) + " kb");
 			System.out.println("average assert " + (totalassert/loop) + " ms");
+			System.out.println("average assert mem " + (aveassertmem/1024/loop) + " kb");
 			System.out.println("average fire " + (totalfire/loop) + " ms");
 		} catch (Exception e) {
 			e.printStackTrace();
