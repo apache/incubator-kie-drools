@@ -1260,6 +1260,19 @@ public class RuleParserTest extends TestCase {
     		assertFalse( parser.hasErrors() );
     }
     
+    public void testQualifiedClassname() throws Exception {
+    		parseResource( "qualified_classname.drl" ).compilation_unit();
+    		
+    		assertFalse( parser.hasErrors() );
+    		
+    		PackageDescr pkg = parser.getPackageDescr();
+    		RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+    		
+    		ColumnDescr c = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+    		
+    		assertEquals( "com.cheeseco.Cheese", c.getObjectType() );
+    }
+    
 	private RuleParser parse(String text) throws Exception {
 		parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
 		return parser;
