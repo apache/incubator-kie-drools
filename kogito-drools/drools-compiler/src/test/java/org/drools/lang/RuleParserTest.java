@@ -1282,7 +1282,7 @@ public class RuleParserTest extends TestCase {
     		assertEquals( "2. Do More Stuff!", ((RuleDescr)pkg.getRules().get( 1 )).getName() );
     }
     
-    public void FIXME_testEvalWithNewline() throws Exception {
+    public void testEvalWithNewline() throws Exception {
     		parseResource( "eval_with_newline.drl" ).compilation_unit();
     		
     		System.err.println( parser.getErrorMessages() );

@@ -136,7 +136,7 @@ grammar RuleParser;
                         return;
                 }
                 errorRecovery = true;
-
+		System.err.println( ex );
 		errors.add( ex ); 
 	}
      	
@@ -767,7 +767,7 @@ paren_chunk returns [String text]
 		 (	options{greedy=false;} : 
 			'(' c=paren_chunk ')' 	
 			{
-				//System.err.println( "chunk [" + c + "]" );
+				System.err.println( "chunk [" + c + "]" );
 				if ( c == null ) {
 					c = "";
 				}
@@ -779,7 +779,39 @@ paren_chunk returns [String text]
 			} 
 		| any=. 
 			{
-				//System.err.println( "any [" + any.getText() + "]" );
+				System.err.println( "any [" + any.getText() + "]" );
+				if ( text == null ) {
+					text = any.getText();
+				} else {
+					text = text + " " + any.getText(); 
+				} 
+			}
+		)* 
+	;
+	
+
+paren_chunk2 returns [String text]
+	@init {
+		text = null;
+	}
+	
+	:
+		 (	options{greedy=false;} : 
+			'(' c=paren_chunk2 ')' 	
+			{
+				System.err.println( "chunk [" + c + "]" );
+				if ( c == null ) {
+					c = "";
+				}
+				if ( text == null ) {
+					text = "( " + c + " )";
+				} else {
+					text = text + " ( " + c + " )";
+				}
+			} 
+		| any=. 
+			{
+				System.err.println( "any [" + any.getText() + "]" );
 				if ( text == null ) {
 					text = any.getText();
 				} else {
@@ -901,7 +933,11 @@ lhs_eval returns [PatternDescr d]
 		d = null;
 		String text = "";
 	}
-	:	'eval' loc='(' opt_eol c=paren_chunk ')' 
+	:	'eval' loc='(' 
+			{ System.err.println( "START EVAL" ); }
+			c=paren_chunk2
+			{ System.err.println( "END EVAL" ); }
+		')' { System.err.println( "END 2" ); }
 		{ 
 			checkTrailingSemicolon( c, loc.getLine() );
 			d = new EvalDescr( c ); 
