@@ -618,12 +618,13 @@ fact returns [PatternDescr d]
 	@init {
 		d=null;
 	}
- 	:	id=ID 
+ 	:	id=dotted_name 
  		{ 
- 			d = new ColumnDescr( id.getText() ); 
- 			d.setLocation( id.getLine(), id.getCharPositionInLine() );
+ 			d = new ColumnDescr( id ); 
  		} opt_eol 
- 		'(' opt_eol (	c=constraints
+ 		loc='(' {
+ 				d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+ 			}opt_eol (	c=constraints
  				{
 		 			for ( Iterator cIter = c.iterator() ; cIter.hasNext() ; ) {
  						((ColumnDescr)d).addDescr( (PatternDescr) cIter.next() );

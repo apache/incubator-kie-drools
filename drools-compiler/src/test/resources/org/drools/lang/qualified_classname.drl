@@ -1,0 +1,8 @@
+package org.drools.test;
+
+rule "Who likes Stilton"
+    when
+        com.cheeseco.Cheese($type : type == "stilton")
+    then
+        System.out.println( $name + " likes " + $type);
+end    
