@@ -17,10 +17,19 @@ package org.drools.lang;
 
 
 
+import org.antlr.runtime.RecognitionException;
 
-public class ExpanderException extends GeneralParseException {
+public class GeneralParseException extends RecognitionException {
 
-    public ExpanderException(String message, int line) {
-    		super( message, line );
+    private String message;
+    
+    public GeneralParseException(String message, int line) {
+        this.message = message; 
+        this.line = line;
     }
+    
+    public String getMessage() {
+        return message;
+    }
+    
 }
