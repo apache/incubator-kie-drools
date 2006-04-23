@@ -27,6 +27,7 @@ public class MockObjectSink
     ObjectSink {
     private List asserted  = new ArrayList();
     private List retracted = new ArrayList();
+    private List modified = new ArrayList();    
 
     public void assertObject(FactHandleImpl handle,
                              PropagationContext context,
@@ -40,6 +41,13 @@ public class MockObjectSink
         this.retracted.add( new Object[]{handle, context, workingMemory} );
     }
 
+    public void modifyObject(FactHandleImpl handle,
+                             PropagationContext context,
+                             WorkingMemoryImpl workingMemory) {
+        this.modified.add( new Object[]{handle, context, workingMemory} );
+
+    }    
+    
     public List getAsserted() {
         return this.asserted;
     }
@@ -48,10 +56,8 @@ public class MockObjectSink
         return this.retracted;
     }
 
-    public void modifyObject(FactHandleImpl handle,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
-        // TODO Auto-generated method stub
-
+    public List getModified() {
+        return this.modified;
     }
+
 }
