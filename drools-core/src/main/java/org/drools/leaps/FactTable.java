@@ -15,10 +15,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -110,12 +106,13 @@ class FactTable extends Table {
 
             // let's only add facts below waterline - added before rule is added
             // rest would be added to stack automatically
-            Handle factHandle = new FactHandleImpl( workingMemory.getIdLastFireAllAt(),
+            Handle startFactHandle = new FactHandleImpl( workingMemory.getIdLastFireAllAt(),
                                                     null );
-            for ( Iterator it = this.tailIterator( factHandle,
-                                                   factHandle ); it.hasNext(); ) {
-                workingMemory.pushTokenOnStack( new Token( workingMemory,
-                                                           (FactHandleImpl) it.next(),
+            for ( Iterator it = this.tailIterator( startFactHandle,
+                                                   startFactHandle ); it.hasNext(); ) {
+                FactHandleImpl handle = (FactHandleImpl) it.next();
+                workingMemory.pushTokenOnStack( handle, new Token( workingMemory,
+                                                           handle,
                                                            context ) );
             }
         }

@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -37,7 +34,7 @@ import org.drools.spi.Tuple;
  * @author Alexander Bagerman
  * 
  */
-class Token
+public class Token
     implements
     Tuple,
     Serializable {
@@ -61,19 +58,20 @@ class Token
     /**
      * 
      */
-    public Token(WorkingMemoryImpl workingMemory,
-                 FactHandleImpl factHandle,
-                 PropagationContextImpl propagationContext) {
+    public Token(WorkingMemoryImpl workingMemory, FactHandleImpl factHandle,
+            PropagationContextImpl propagationContext) {
         this.workingMemory = workingMemory;
         this.dominantFactHandle = factHandle;
         this.propagationContext = propagationContext;
     }
 
     private Iterator rulesIterator() {
-        if ( this.rules == null ) {
-            if ( this.dominantFactHandle != null ) {
-                this.rules = this.workingMemory.getFactTable( this.dominantFactHandle.getObject().getClass() ).getRulesIterator();
-            } else {
+        if (this.rules == null) {
+            if (this.dominantFactHandle != null) {
+                this.rules = this.workingMemory.getFactTable(
+                        this.dominantFactHandle.getObject().getClass()).getRulesIterator();
+            }
+            else {
                 this.rules = this.workingMemory.getNoRequiredColumnsLeapsRules();
             }
         }
@@ -94,44 +92,49 @@ class Token
 
     public boolean hasNextRuleHandle() {
         boolean ret = false;
-        if ( this.rulesIterator() != null ) {
+        if (this.rulesIterator() != null) {
             // starting with calling rulesIterator() to make sure that we picks
             // rules because fact can be asserted before rules added
             long levelId = this.workingMemory.getIdLastFireAllAt();
-            if ( this.dominantFactHandle == null || this.dominantFactHandle.getId() >= levelId ) {
+            if (this.dominantFactHandle == null
+                    || this.dominantFactHandle.getId() >= levelId) {
                 ret = this.rules.hasNext();
-            } else {
+            }
+            else {
                 // then we need to skip rules that have id lower than
                 // workingMemory.idLastFireAllAt
                 boolean done = false;
-                while ( !done ) {
-                    if ( this.rules.hasNext() ) {
-                        if ( ((RuleHandle) ((TableIterator) this.rules).peekNext()).getId() > levelId ) {
+                while (!done) {
+                    if (this.rules.hasNext()) {
+                        if (((RuleHandle) ((TableIterator) this.rules).peekNext()).getId() > levelId) {
                             ret = true;
                             done = true;
-                        } else {
+                        }
+                        else {
                             this.rules.next();
                         }
-                    } else {
+                    }
+                    else {
                         ret = false;
                         done = true;
                     }
                 }
             }
         }
+        
         return ret;
     }
 
     public int hashCode() {
-        if ( this.dominantFactHandle != null ) {
+        if (this.dominantFactHandle != null) {
             return this.dominantFactHandle.hashCode();
-        } else {
+        }
+        else {
             return 0;
         }
     }
 
-    public void set(int idx,
-                    FactHandleImpl factHandle) {
+    public void set(int idx, FactHandleImpl factHandle) {
         this.currentFactHandles[idx] = factHandle;
     }
 
@@ -214,9 +217,8 @@ class Token
      * @return LeapsTuple
      */
     LeapsTuple getTuple() {
-        return new LeapsTuple( this.currentFactHandles,
-                               this.currentRuleHandle.getLeapsRule(),
-                               this.propagationContext );
+        return new LeapsTuple(this.currentFactHandles, this.currentRuleHandle
+                .getLeapsRule(), this.propagationContext);
     }
 
     /**

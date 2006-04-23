@@ -15,11 +15,7 @@ package org.drools.leaps.util;
  * limitations under the License.
  */
 
-
-
 import java.util.NoSuchElementException;
-
-
 
 /**
  * Leaps specific iterator for leaps tables. relies on leaps table double link

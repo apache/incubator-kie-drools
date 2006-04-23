@@ -15,17 +15,12 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * Exception to facilitate <code>seek</code> process in working memory
  * 
  * @author Alexander Bagerman
  * 
  */
-
 class NoMatchesFoundException extends Exception {
 
     /**

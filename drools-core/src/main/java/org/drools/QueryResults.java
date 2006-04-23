@@ -15,8 +15,8 @@ public class QueryResults {
 
     private Map           declarations;
 
-    private List          results;
-    private WorkingMemory workingMemory;
+    protected List          results;
+    protected WorkingMemory workingMemory;
 
     public QueryResults(List results,
                         Query query,

@@ -15,10 +15,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * class container for rules used in the system. Handle is created for each
  * leaps rule, dominant position (column/ce position), dominant position type

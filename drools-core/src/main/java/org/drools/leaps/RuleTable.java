@@ -15,10 +15,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 import java.util.Comparator;
 
 import org.drools.leaps.util.Table;

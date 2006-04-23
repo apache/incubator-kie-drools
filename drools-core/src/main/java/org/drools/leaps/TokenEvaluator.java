@@ -15,10 +15,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 import org.drools.leaps.util.Table;
 import org.drools.leaps.util.TableIterator;
 import org.drools.rule.EvalCondition;
