@@ -15,10 +15,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 import org.drools.FactHandle;
 import org.drools.spi.FactHandleFactory;
 

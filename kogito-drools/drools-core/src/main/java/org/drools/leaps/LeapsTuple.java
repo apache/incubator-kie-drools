@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -222,6 +219,9 @@ class LeapsTuple
         this.blockingNotFactHandles[index] = factHandle;
     }
 
+    boolean isBlockingNotFactHandle(int index ) {
+        return this.blockingNotFactHandles[index] != null;
+    }
     void removeBlockingNotFactHandle(int index) {
         this.blockingNotFactHandles[index] = null;
         this.setReadyForActivation();
@@ -231,6 +231,10 @@ class LeapsTuple
                              int index) {
         this.existsFactHandles[index] = factHandle;
         this.setReadyForActivation();
+    }
+
+    boolean isExistsFactHandle(int index) {
+        return this.existsFactHandles[index] != null;
     }
 
     void removeExistsFactHandle(int index) {

@@ -1,4 +1,5 @@
 package org.drools.leaps.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,10 @@ package org.drools.leaps.util;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -70,7 +68,13 @@ public class Table
             this.empty = false;
         } else {
             SortedMap bufMap = this.map.headMap( object );
-            if ( !bufMap.isEmpty() ) {
+            try {
+                // check on first key should work faster than check on empty
+                // but logically we check on empty
+                // if map empty it will throw exception
+                bufMap.firstKey();
+            
+//            if ( !bufMap.isEmpty() ) {
                 TableRecord bufRec = (TableRecord) this.map.get( bufMap.lastKey() );
                 if ( bufRec.right != null ) {
                     bufRec.right.left = newRecord;
@@ -79,7 +83,9 @@ public class Table
                 bufRec.right = newRecord;
                 newRecord.left = bufRec;
 
-            } else {
+            } //else {
+            catch (NoSuchElementException nsee) {
+                // means map is empty
                 this.headRecord.left = newRecord;
                 newRecord.right = this.headRecord;
                 this.headRecord = newRecord;
@@ -132,6 +138,8 @@ public class Table
                     record.left.right = record.right;
                     record.right.left = record.left;
                 }
+                record.left = null;
+                record.right = null;
             }
             this.count--;
             //
@@ -229,12 +237,16 @@ public class Table
         TableRecord lastRecord = this.tailRecord;
 
         if ( !this.empty ) { // validate
-            // if (!this.map.isEmpty()) { // validate
             if ( this.map.comparator().compare( objectAtStart,
                                                 this.tailRecord.object ) <= 0 ) {
                 // let's check if we need iterator over the whole table
                 SortedMap bufMap = this.map.tailMap( objectAtStart );
-                if ( !bufMap.isEmpty() ) {
+                try {
+                    // check on first key should work faster than check on empty
+                    // but logically we check on empty
+                    // if map empty it will throw exception
+                    bufMap.firstKey();
+//                if ( !bufMap.isEmpty() ) {
                     startRecord = (TableRecord) bufMap.get( bufMap.firstKey() );
                     if ( this.map.comparator().compare( objectAtStart,
                                                         objectAtPosition ) == 0 ) {
@@ -243,9 +255,15 @@ public class Table
                         // rewind to position
                         bufMap = bufMap.tailMap( objectAtPosition );
 
-                        if ( !bufMap.isEmpty() ) {
+                        try {
+                            // check on first key should work faster than check on empty
+                            // but logically we check on empty
+                            // if map empty it will throw exception
+                            bufMap.firstKey();
+//                        if ( !bufMap.isEmpty() ) {
                             currentRecord = ((TableRecord) bufMap.get( bufMap.firstKey() ));
-                        } else {
+                        } // else {
+                        catch (NoSuchElementException nsee) {
                             currentRecord = startRecord;
                         }
                     }
@@ -253,6 +271,8 @@ public class Table
                     ret.current = currentRecord;
                     ret.last = lastRecord;
                 }
+                catch (NoSuchElementException nsee) {}
+
             }
         }
 
@@ -279,7 +299,12 @@ public class Table
                                                 objectAtEnd ) <= 0 ) {
                 // let's check if we need iterator over the whole table
                 SortedMap bufMap = this.map.headMap( objectAtEnd );
-                if ( !bufMap.isEmpty() ) {
+                try {
+                    // check on first key should work faster than check on empty
+                    // but logically we check on empty
+                    // if map empty it will throw exception
+                    bufMap.firstKey();
+//                if ( !bufMap.isEmpty() ) {
                     lastRecord = (TableRecord) bufMap.get( bufMap.lastKey() );
                     // check if the next one is what we need
                     if ( lastRecord.right != null && this.map.comparator().compare( lastRecord.right.object,
@@ -289,7 +314,8 @@ public class Table
                     iterator = new BaseTableIterator( startRecord,
                                                       currentRecord,
                                                       lastRecord );
-                } else {
+                } //else {
+                catch (NoSuchElementException nsee) {
                     // empty iterator
                     iterator = new BaseTableIterator( null,
                                                       null,

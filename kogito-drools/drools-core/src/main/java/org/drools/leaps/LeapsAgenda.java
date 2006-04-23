@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,16 +16,13 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 import org.drools.common.Agenda;
 import org.drools.rule.Query;
 import org.drools.spi.Activation;
 import org.drools.spi.ConsequenceException;
 
 /**
+ * 
  * @author Alexander Bagerman
  * 
  */

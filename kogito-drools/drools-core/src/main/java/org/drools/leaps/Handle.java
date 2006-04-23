@@ -15,10 +15,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.Serializable;
 
 import org.drools.FactHandle;

@@ -15,11 +15,7 @@ package org.drools.leaps.util;
  * limitations under the License.
  */
 
-
-
 import java.io.Serializable;
-
-
 
 /**
  * 

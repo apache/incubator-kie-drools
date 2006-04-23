@@ -15,10 +15,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;

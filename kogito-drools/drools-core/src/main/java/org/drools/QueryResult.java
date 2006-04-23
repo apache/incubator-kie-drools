@@ -8,7 +8,7 @@ import org.drools.spi.Tuple;
 
 public class QueryResult {
     
-    private Tuple tuple;
+    protected Tuple tuple;
     private WorkingMemory workingMemory;
     private QueryResults queryResults;
     
