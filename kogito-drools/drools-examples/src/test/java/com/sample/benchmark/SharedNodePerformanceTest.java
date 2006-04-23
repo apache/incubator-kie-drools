@@ -157,12 +157,15 @@ public class SharedNodePerformanceTest extends TestCase {
 			long totalload = 0;
 			long totalassert = 0;
 			long totalfire = 0;
+			Runtime rt = Runtime.getRuntime();
 			for (int c=0; c < loop; c++) {
+		        rt.gc();
 				long loadStart = System.currentTimeMillis();
 		        RuleBase ruleBase = readRule(file);
 		        long loadEnd = System.currentTimeMillis();
 		        long loadet = loadEnd - loadStart;
 		        totalload += loadet;
+		        rt.gc();
 		        System.out.println("time to load " + file +
 		        		" " + loadet + "ms");
 		        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
@@ -185,6 +188,7 @@ public class SharedNodePerformanceTest extends TestCase {
 		        long assertEnd = System.currentTimeMillis();
 		        long assertet = assertEnd - assertStart;
 		        totalassert += assertet;
+		        rt.gc();
 		        System.out.println("time to assert " + assertet +
 		        		" ms");
 		        long fireStart = System.currentTimeMillis();
@@ -195,6 +199,7 @@ public class SharedNodePerformanceTest extends TestCase {
 		        System.out.println("time to fireAllRules " + fireet +
 		        		" ms");
 		        workingMemory.dispose();
+		        rt.gc();
 			}
 			System.out.println(file);
 			System.out.println("number of objects asserted " + factCount);
@@ -218,12 +223,15 @@ public class SharedNodePerformanceTest extends TestCase {
 			long totalload = 0;
 			long totalassert = 0;
 			long totalfire = 0;
+			Runtime rt = Runtime.getRuntime();
 			for (int c=0; c < loop; c++) {
+		        rt.gc();
 				long loadStart = System.currentTimeMillis();
 		        RuleBase ruleBase = readRule(file);
 		        long loadEnd = System.currentTimeMillis();
 		        long loadet = loadEnd - loadStart;
 		        totalload += loadet;
+		        rt.gc();
 		        System.out.println("time to load " + file +
 		        		" " + loadet + "ms");
 		        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
@@ -246,6 +254,7 @@ public class SharedNodePerformanceTest extends TestCase {
 		        long assertEnd = System.currentTimeMillis();
 		        long assertet = assertEnd - assertStart;
 		        totalassert += assertet;
+		        rt.gc();
 		        System.out.println("time to assert " + assertet +
 		        		" ms");
 		        long fireStart = System.currentTimeMillis();
@@ -256,6 +265,7 @@ public class SharedNodePerformanceTest extends TestCase {
 		        System.out.println("time to fireAllRules " + fireet +
 		        		" ms");
 		        workingMemory.dispose();
+		        rt.gc();
 			}
 			System.out.println(file);
 			System.out.println("number of objects asserted " + factCount);
@@ -279,12 +289,15 @@ public class SharedNodePerformanceTest extends TestCase {
 			long totalload = 0;
 			long totalassert = 0;
 			long totalfire = 0;
+			Runtime rt = Runtime.getRuntime();
 			for (int c=0; c < loop; c++) {
+		        rt.gc();
 				long loadStart = System.currentTimeMillis();
 		        RuleBase ruleBase = readRule(file);
 		        long loadEnd = System.currentTimeMillis();
 		        long loadet = loadEnd - loadStart;
 		        totalload += loadet;
+		        rt.gc();
 		        System.out.println("time to load " + file +
 		        		" " + loadet + "ms");
 		        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
@@ -307,6 +320,7 @@ public class SharedNodePerformanceTest extends TestCase {
 		        long assertEnd = System.currentTimeMillis();
 		        long assertet = assertEnd - assertStart;
 		        totalassert += assertet;
+		        rt.gc();
 		        System.out.println("time to assert " + assertet +
 		        		" ms");
 		        long fireStart = System.currentTimeMillis();
@@ -317,6 +331,7 @@ public class SharedNodePerformanceTest extends TestCase {
 		        System.out.println("time to fireAllRules " + fireet +
 		        		" ms");
 		        workingMemory.dispose();
+		        rt.gc();
 			}
 			System.out.println(file);
 			System.out.println("number of objects asserted " + factCount);
@@ -336,12 +351,15 @@ public class SharedNodePerformanceTest extends TestCase {
 			long totalload = 0;
 			long totalassert = 0;
 			long totalfire = 0;
+			Runtime rt = Runtime.getRuntime();
 			for (int c=0; c < loop; c++) {
+		        rt.gc();
 				long loadStart = System.currentTimeMillis();
 		        RuleBase ruleBase = readRule(file);
 		        long loadEnd = System.currentTimeMillis();
 		        long loadet = loadEnd - loadStart;
 		        totalload += loadet;
+		        rt.gc();
 		        System.out.println("time to load " + file +
 		        		" " + loadet + "ms");
 		        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
@@ -364,6 +382,7 @@ public class SharedNodePerformanceTest extends TestCase {
 		        long assertEnd = System.currentTimeMillis();
 		        long assertet = assertEnd - assertStart;
 		        totalassert += assertet;
+		        rt.gc();
 		        System.out.println("time to assert " + assertet +
 		        		" ms");
 		        long fireStart = System.currentTimeMillis();
@@ -374,6 +393,7 @@ public class SharedNodePerformanceTest extends TestCase {
 		        System.out.println("time to fireAllRules " + fireet +
 		        		" ms");
 		        workingMemory.dispose();
+		        rt.gc();
 			}
 			System.out.println(file);
 			System.out.println("number of objects asserted " + factCount);
@@ -393,12 +413,15 @@ public class SharedNodePerformanceTest extends TestCase {
 			long totalload = 0;
 			long totalassert = 0;
 			long totalfire = 0;
+			Runtime rt = Runtime.getRuntime();
 			for (int c=0; c < loop; c++) {
+		        rt.gc();
 				long loadStart = System.currentTimeMillis();
 		        RuleBase ruleBase = readRule(file);
 		        long loadEnd = System.currentTimeMillis();
 		        long loadet = loadEnd - loadStart;
 		        totalload += loadet;
+		        rt.gc();
 		        System.out.println("time to load " + file +
 		        		" " + loadet + "ms");
 		        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
@@ -422,6 +445,7 @@ public class SharedNodePerformanceTest extends TestCase {
 		        long assertEnd = System.currentTimeMillis();
 		        long assertet = assertEnd - assertStart;
 		        totalassert += assertet;
+		        rt.gc();
 		        System.out.println("time to assert " + assertet +
 		        		" ms");
 		        long fireStart = System.currentTimeMillis();
@@ -432,6 +456,7 @@ public class SharedNodePerformanceTest extends TestCase {
 		        System.out.println("time to fireAllRules " + fireet +
 		        		" ms");
 		        workingMemory.dispose();
+		        rt.gc();
 			}
 			System.out.println(file);
 			System.out.println("number of objects asserted " + factCount);
