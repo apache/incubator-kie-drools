@@ -136,7 +136,7 @@ grammar RuleParser;
                         return;
                 }
                 errorRecovery = true;
-		System.err.println( ex );
+		//System.err.println( ex );
 		errors.add( ex ); 
 	}
      	
@@ -767,7 +767,6 @@ paren_chunk returns [String text]
 		 (	options{greedy=false;} : 
 			'(' c=paren_chunk ')' 	
 			{
-				System.err.println( "chunk [" + c + "]" );
 				if ( c == null ) {
 					c = "";
 				}
@@ -779,7 +778,6 @@ paren_chunk returns [String text]
 			} 
 		| any=. 
 			{
-				System.err.println( "any [" + any.getText() + "]" );
 				if ( text == null ) {
 					text = any.getText();
 				} else {
@@ -799,7 +797,6 @@ paren_chunk2 returns [String text]
 		 (	options{greedy=false;} : 
 			'(' c=paren_chunk2 ')' 	
 			{
-				System.err.println( "chunk [" + c + "]" );
 				if ( c == null ) {
 					c = "";
 				}
@@ -811,7 +808,6 @@ paren_chunk2 returns [String text]
 			} 
 		| any=. 
 			{
-				System.err.println( "any [" + any.getText() + "]" );
 				if ( text == null ) {
 					text = any.getText();
 				} else {
@@ -934,10 +930,8 @@ lhs_eval returns [PatternDescr d]
 		String text = "";
 	}
 	:	'eval' loc='(' 
-			{ System.err.println( "START EVAL" ); }
 			c=paren_chunk2
-			{ System.err.println( "END EVAL" ); }
-		')' { System.err.println( "END 2" ); }
+		')' 
 		{ 
 			checkTrailingSemicolon( c, loc.getLine() );
 			d = new EvalDescr( c ); 
