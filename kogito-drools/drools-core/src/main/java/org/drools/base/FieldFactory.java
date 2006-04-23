@@ -67,7 +67,7 @@ public class FieldFactory {
                 field = new FieldImpl( new Boolean( value ) );
                 break;
             case Evaluator.STRING_TYPE :
-                field = new FieldImpl( value );
+                field = new FieldImpl( value.intern() );
                 break;
             case Evaluator.DATE_TYPE :
                 //MN: I think its fine like this, seems to work !
