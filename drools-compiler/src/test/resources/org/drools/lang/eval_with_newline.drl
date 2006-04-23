@@ -4,9 +4,18 @@ rule simple_rule
 	Foo()
 	Bar()
 	eval(
-	       abc("foo") 
-	       + 5
-	    )
+	
+	
+	
+	       abc(
+	       
+	       "foo") + 
+	       5
+	       
+	       
+	       
+	        
+	       )
   then
 	Kapow
 	Poof
