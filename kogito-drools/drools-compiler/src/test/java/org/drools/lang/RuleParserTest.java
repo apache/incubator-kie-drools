@@ -1289,6 +1289,15 @@ public class RuleParserTest extends TestCase {
     		assertFalse( parser.hasErrors() );
     }
     
+    public void testEvalWithSemicolon() throws Exception {
+    		parseResource( "eval_with_semicolon.drl" ).compilation_unit();
+    		
+    		assertTrue( parser.hasErrors() );
+    		assertEquals( 1, parser.getErrorMessages().size() );
+    		System.err.println( parser.getErrorMessages().get( 0 ) );
+    		assertTrue( ((String)parser.getErrorMessages().get( 0 )).indexOf( "Trailing semi-colon not allowed" ) >= 0 );
+    }
+    
     public void testQualifiedClassname() throws Exception {
     		parseResource( "qualified_classname.drl" ).compilation_unit();
     		

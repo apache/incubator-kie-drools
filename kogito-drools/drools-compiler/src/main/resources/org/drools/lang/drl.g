@@ -212,11 +212,18 @@ grammar RuleParser;
                         FailedPredicateException fpe = (FailedPredicateException)e;
                         message.append("rule "+fpe.ruleName+" failed predicate: {"+
                                                            fpe.predicateText+"}?");
-                } else if (e instanceof ExpanderException) {
+                } else if (e instanceof GeneralParseException) {
 			message.append(" " + e.getMessage());
 		}
                	return message.toString();
         }   
+        
+        void checkTrailingSemicolon(String text, int line) {
+        	if (text.trim().endsWith( ";" ) ) {
+        		this.errors.add( new GeneralParseException( "Trailing semi-colon not allowed", line ) );
+        	}
+        }
+      
 }
 
 @lexer::header {
@@ -894,8 +901,11 @@ lhs_eval returns [PatternDescr d]
 		d = null;
 		String text = "";
 	}
-	:	'eval' '(' opt_eol c=paren_chunk ')' 
-		{ d = new EvalDescr( c ); }
+	:	'eval' loc='(' opt_eol c=paren_chunk ')' 
+		{ 
+			checkTrailingSemicolon( c, loc.getLine() );
+			d = new EvalDescr( c ); 
+		}
 	;
 	
 dotted_name returns [String name]
