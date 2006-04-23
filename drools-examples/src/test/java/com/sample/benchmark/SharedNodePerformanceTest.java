@@ -362,7 +362,7 @@ public class SharedNodePerformanceTest extends TestCase {
 	
 	public void testNoneSharedNodes() {
 		try {
-			int factCount = 50000;
+			int factCount = 5000;
 			String file = "20rules_0shared.drl";
 			int loop = 5;
 			long totalload = 0;
