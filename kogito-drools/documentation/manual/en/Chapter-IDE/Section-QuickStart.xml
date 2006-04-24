@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
 "http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
 <section>
@@ -127,7 +127,19 @@
     execution are also added to the classpath in a custom classpath container
     called Drools Library [3.0]. Rules do not have to be kept in "java"
     projects at all, this is just a convenience for people who are already
-    using eclipse as their Java IDE</para>
+    using eclipse as their Java IDE.</para>
+
+    <para>Important note: The Drools plug in adds a "Drools Builder"
+    capability to your eclipse instance. This means you can enable a builder
+    on any project that will build and validate your rules when resources
+    change. This happens automatically with the Rule Project Wizard, but you
+    can also enable it manually on any project. One downside of this is if you
+    have rule files that have a large number of rules (&gt;500 rules per file)
+    - as it means that the background builder may be doing a lot of work to
+    build the rules on each change. An option here is to turn off the builder,
+    or put the large rules into .rule files, where you can still use the rule
+    editor, but it won't build them in the background - to fully validate the
+    rules you will need to run them in a unit test of course.</para>
   </section>
 
   <section>
@@ -537,13 +549,20 @@
     Just click on the right tab below in the DRL Editor, followed by a click
     on "Generate Rete View".</para>
   </section>
+
   <section>
     <title>Large drl files</title>
-    <para>Depending on the JDK you use, it may be necessary to increase the permanent
-    generation max size. Both SUN and IBM jdk have a permanent generation, whereas
-    BEA JRockit does not.</para>
-    <para>To increase the permanent generation, start eclipse with -XX:MaxPermSize=###m</para>
+
+    <para>Depending on the JDK you use, it may be necessary to increase the
+    permanent generation max size. Both SUN and IBM jdk have a permanent
+    generation, whereas BEA JRockit does not.</para>
+
+    <para>To increase the permanent generation, start eclipse with
+    -XX:MaxPermSize=###m</para>
+
     <para>Example: c:\eclipse\eclipse.exe -XX:MaxPermSize=128m</para>
-    <para>Rulesets of 4,000 rules or greater should set the permanent generation to atleast 128Mb.</para>
+
+    <para>Rulesets of 4,000 rules or greater should set the permanent
+    generation to atleast 128Mb.</para>
   </section>
 </section>
