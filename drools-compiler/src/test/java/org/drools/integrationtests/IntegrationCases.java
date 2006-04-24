@@ -573,10 +573,18 @@ public abstract class IntegrationCases extends TestCase {
         assertNotNull( ruleErr.getDescr() );
         assertTrue( ruleErr.getLine() != -1 );
 
+        assertEquals(3, builder.getErrors().length);
+        
         //check that its getting it from the ruleDescr
         assertEquals( ruleErr.getLine(),
                       ruleErr.getDescr().getLine() );
-        assertTrue( builder.getErrors().length > 0 );
+        //check the absolute error line number (there are more).
+        assertEquals(11, ruleErr.getLine());
+        
+        //now check the RHS, not being too specific yet, as long as it has the rules line number, not zero
+        RuleError rhs = (RuleError) builder.getErrors()[2];
+        assertTrue(rhs.getLine() > 7); //not being too specific - may need to change this when we rework the error reporting
+        
     }
 
     public void testErrorsParser() throws Exception {
