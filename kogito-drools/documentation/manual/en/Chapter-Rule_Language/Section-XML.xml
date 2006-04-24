@@ -207,9 +207,9 @@
 
       <para>It is possible generally to migrate from drools 2 to drools 3 XML
       format, if you have existing rulebases you want to port to drools 3.
-      This may be done with a stylesheet, possibly. Note that Drools 2.x will
-      not be as trivial to port to drools 3 XML. You would be best to look at
-      the new DSL features in Drools 3 DRL.</para>
+      This may be done with a stylesheet, possibly. Note that Drools 2.x DSLs
+      will not be trivial to port to drools 3 XML. You would be best to look
+      at the new DSL features in Drools 3 DRL.</para>
 
       <para>Note that while "eval" allows you to more or less directly migrate
       your conditions from Drools 2.x to 3, it is far more powerful, and
