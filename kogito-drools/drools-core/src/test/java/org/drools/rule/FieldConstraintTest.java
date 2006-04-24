@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 import java.beans.IntrospectionException;
 
 import junit.framework.TestCase;
@@ -26,6 +25,7 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.EvaluatorFactory;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.InstrumentedReteTuple;
 import org.drools.reteoo.RuleBaseImpl;
 import org.drools.spi.Evaluator;
@@ -73,7 +73,7 @@ public class FieldConstraintTest extends TestCase {
         Cheese cheddar = new Cheese( "cheddar",
                                      5 );
 
-        FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
+        InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle,
@@ -83,7 +83,7 @@ public class FieldConstraintTest extends TestCase {
         Cheese stilton = new Cheese( "stilton",
                                      5 );
 
-        FactHandle stiltonHandle = workingMemory.assertObject( stilton );
+        InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.assertObject( stilton );
 
         // check constraint
         assertFalse( constraint.isAllowed( stiltonHandle,
@@ -148,7 +148,7 @@ public class FieldConstraintTest extends TestCase {
 
         Cheese cheddar1 = new Cheese( "cheddar",
                                       10 );
-        FactHandle f1 = workingMemory.assertObject( cheddar1 );
+        InternalFactHandle f1 = (InternalFactHandle) workingMemory.assertObject( cheddar1 );
 
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
@@ -214,7 +214,7 @@ public class FieldConstraintTest extends TestCase {
 
         Cheese cheddar1 = new Cheese( "cheddar",
                                       10 );
-        FactHandle f1 = workingMemory.assertObject( cheddar1 );
+        InternalFactHandle f1 = (InternalFactHandle) workingMemory.assertObject( cheddar1 );
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
 
@@ -229,7 +229,7 @@ public class FieldConstraintTest extends TestCase {
         Cheese cheddar2 = new Cheese( "cheddar",
                                       11 );
 
-        FactHandle f2 = workingMemory.assertObject( cheddar2 );
+        InternalFactHandle f2 = (InternalFactHandle) workingMemory.assertObject( cheddar2 );
 
         assertTrue( constraint2.isAllowed( f2,
                                            tuple,

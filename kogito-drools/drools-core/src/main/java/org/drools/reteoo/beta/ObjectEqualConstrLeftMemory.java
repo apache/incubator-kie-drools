@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleImpl;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
@@ -55,6 +56,7 @@ public class ObjectEqualConstrLeftMemory
 
     private FieldExtractor  extractor    = null;
     private Declaration     declaration  = null;
+    private int             column;
 
     public ObjectEqualConstrLeftMemory(FieldExtractor extractor,
                                        Declaration declaration,
@@ -71,6 +73,7 @@ public class ObjectEqualConstrLeftMemory
                                        BetaLeftMemory childMemory) {
         this.extractor = extractor;
         this.declaration = declaration;
+        this.column = declaration.getColumn();
         this.childMemory = childMemory;
         this.memoryMap = new HashMap();
     }
@@ -170,7 +173,7 @@ public class ObjectEqualConstrLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
     public Iterator iterator(final WorkingMemory workingMemory,
-                             final FactHandleImpl handle) {
+                             final InternalFactHandle handle) {
         this.selectPossibleMatches( workingMemory,
                                     handle );
         Iterator iterator = null;
@@ -251,8 +254,8 @@ public class ObjectEqualConstrLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
     public void selectPossibleMatches(WorkingMemory workingMemory,
-                                      FactHandleImpl handle) {
-        Object select = this.extractor.getValue( workingMemory.getObject( handle ) );
+                                      InternalFactHandle handle) {
+        Object select = this.extractor.getValue( handle.getObject() );
         Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
         this.selectedList = (MultiLinkedList) this.memoryMap.get( hash );
     }
@@ -296,7 +299,7 @@ public class ObjectEqualConstrLeftMemory
      */
     private Integer getTupleHash(WorkingMemory workingMemory,
                                  ReteTuple tuple) {
-        Object select = declaration.getValue( workingMemory.getObject( tuple.get( this.declaration ) ) );
+        Object select = declaration.getValue( tuple.get( this.column ).getObject() );
         Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
         return hash;
     }

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.FactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
@@ -127,7 +128,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
     /* (non-Javadoc)
      * @see org.drools.spi.Tuple#getFactHandles()
      */
-    public FactHandle[] getFactHandles() {
+    public InternalFactHandle[] getFactHandles() {
         return this.key.getFactHandles();
     }
 
@@ -149,14 +150,14 @@ public class ReteTuple extends BaseMultiLinkedListNode
     /* (non-Javadoc)
      * @see org.drools.spi.Tuple#get(int)
      */
-    public FactHandle get(int col) {
+    public InternalFactHandle get(int col) {
         return this.key.get( col );
     }
 
     /* (non-Javadoc)
      * @see org.drools.spi.Tuple#get(org.drools.rule.Declaration)
      */
-    public FactHandle get(Declaration declaration) {
+    public InternalFactHandle get(Declaration declaration) {
         return get( declaration.getColumn() );
     }
 

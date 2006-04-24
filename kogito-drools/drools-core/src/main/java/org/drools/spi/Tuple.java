@@ -20,6 +20,7 @@ package org.drools.spi;
 
 
 import org.drools.FactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 
 /**
@@ -43,7 +44,7 @@ public interface Tuple {
      * @return
      *      The <code>FactHandle</code>
      */
-    FactHandle get(int column);
+    InternalFactHandle get(int column);
 
     /**
      * Returns the <code>FactHandle</code> for the given <code>Declaration</code>, which in turn
@@ -54,9 +55,11 @@ public interface Tuple {
      * @return
      *      The <code>FactHandle</code>
      */
-    FactHandle get(Declaration declaration);
+    InternalFactHandle get(Declaration declaration);
 
-    FactHandle[] getFactHandles();
+    InternalFactHandle[] getFactHandles();
+    
+    long getRecency();
 
     boolean dependsOn(FactHandle handle);
 

@@ -34,6 +34,7 @@ import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.Primitives;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.AndDescr;
@@ -738,16 +739,16 @@ public class PackageBuilderTest extends DroolsTestCase {
             this.declarations = declarations;
         }
 
-        public FactHandle get(int column) {
+        public InternalFactHandle get(int column) {
             return null;
         }
 
-        public FactHandle get(Declaration declaration) {
-            return (FactHandle) this.declarations.get( declaration );
+        public InternalFactHandle get(Declaration declaration) {
+            return (InternalFactHandle) this.declarations.get( declaration );
         }
 
-        public FactHandle[] getFactHandles() {
-            return (FactHandle[]) this.declarations.values().toArray( new FactHandle[0] );
+        public InternalFactHandle[] getFactHandles() {
+            return (InternalFactHandle[]) this.declarations.values().toArray( new FactHandle[0] );
         }
 
         public boolean dependsOn(FactHandle handle) {
@@ -755,6 +756,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public void setActivation(Activation activation) {
+        }
+
+        public long getRecency() {
+            // TODO Auto-generated method stub
+            return 0;
         }
 
     }

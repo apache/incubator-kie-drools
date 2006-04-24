@@ -21,12 +21,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamClass;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +32,7 @@ import java.util.Map;
 
 import org.drools.CheckedDroolsException;
 import org.drools.RuntimeDroolsException;
+import org.drools.common.ObjectInputStreamWithLoader;
 import org.drools.spi.Consequence;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.PredicateExpression;
@@ -112,27 +110,6 @@ public class PackageCompilationData
         ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( new ByteArrayInputStream( bytes ),
                                                                                         this.classLoader );
         this.invokerLookups = (Map) streamWithLoader.readObject();
-    }
-
-    private static class ObjectInputStreamWithLoader extends ObjectInputStream {
-        private final ClassLoader classLoader;
-
-        public ObjectInputStreamWithLoader(InputStream in,
-                                           ClassLoader classLoader) throws IOException {
-            super( in );
-            this.classLoader = classLoader;
-            enableResolveObject( true );
-        }
-
-        protected Class resolveClass(ObjectStreamClass desc) throws IOException,
-                                                            ClassNotFoundException {
-            if ( this.classLoader == null ) {
-                return super.resolveClass( desc );
-            } else {
-                String name = desc.getName();
-                return this.classLoader.loadClass( name );
-            }
-        }
     }
 
     public ClassLoader getClassLoader() {
@@ -277,22 +254,32 @@ public class PackageCompilationData
         AST = ast;
     }
 
+    /**
+     * Lifted and adapted from Jakarta commons-jci
+     * 
+     * @author mproctor
+     *
+     */
     public class PackageClassLoader extends ClassLoader {
 
         public PackageClassLoader(ClassLoader parentClassLoader) {
             super( parentClassLoader );
         }
 
-        private Class fastFindClass(final String name) {
-            final byte[] clazzBytes = read( name );
-            if ( clazzBytes != null ) {
-                return defineClass( name,
-                                    clazzBytes,
-                                    0,
-                                    clazzBytes.length );
+        public Class fastFindClass(final String name) {
+            Class clazz = findLoadedClass( name );
+            
+            if ( clazz == null ) {
+                final byte[] clazzBytes = read( name );
+                if ( clazzBytes != null ) {
+                    return defineClass( name,
+                                        clazzBytes,
+                                        0,
+                                        clazzBytes.length );
+                }
             }
 
-            return null;
+            return clazz;
         }
 
         /**
@@ -304,19 +291,14 @@ public class PackageCompilationData
          */
         protected synchronized Class loadClass(String name,
                                                boolean resolve) throws ClassNotFoundException {
-            Class clazz = findLoadedClass( name );
+            Class clazz = fastFindClass( name );
 
             if ( clazz == null ) {
-                clazz = fastFindClass( name );
-
-                if ( clazz == null ) {
-
-                    final ClassLoader parent = getParent();
-                    if ( parent != null ) {
-                        clazz = parent.loadClass( name );
-                    } else {
-                        throw new ClassNotFoundException( name );
-                    }
+                final ClassLoader parent = getParent();
+                if ( parent != null ) {
+                    clazz = parent.loadClass( name );
+                } else {
+                    throw new ClassNotFoundException( name );
                 }
             }
 

@@ -1,4 +1,6 @@
 package org.drools;
+
+import java.io.Serializable;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,7 +19,7 @@ package org.drools;
 
 
 
-public class Person {
+public class Person implements Serializable {
     private final String name;
     private final String likes;
     private final int age;

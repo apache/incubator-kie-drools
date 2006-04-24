@@ -17,8 +17,8 @@ package org.drools.rule;
 
 
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
@@ -31,6 +31,8 @@ public class BoundVariableConstraint
     private final FieldExtractor fieldExtractor;
 
     private final Declaration    declaration;
+    
+    private final int            column;
 
     private final Declaration[]  requiredDeclarations;
 
@@ -41,6 +43,7 @@ public class BoundVariableConstraint
                                    Evaluator evaluator) {
         this.fieldExtractor = fieldExtractor;
         this.declaration = declaration;
+        this.column = declaration.getColumn();
         this.requiredDeclarations = new Declaration[]{declaration};
         this.evaluator = evaluator;
     }
@@ -57,7 +60,7 @@ public class BoundVariableConstraint
         return this.evaluator;
     }
 
-    public boolean isAllowed(FactHandle handle,
+    public boolean isAllowed(InternalFactHandle handle,
                              Tuple tuple,
                              WorkingMemory workingMemory) {
         //can't do this as null indexing breaks.        
@@ -69,8 +72,8 @@ public class BoundVariableConstraint
         //            return evaluator.evaluate( this.fieldExtractor.getValue( right ),
         //                                       declaration.getValue( left ) );                
         //        }
-        return evaluator.evaluate( this.fieldExtractor.getValue( workingMemory.getObject( handle ) ),
-                                   declaration.getValue( workingMemory.getObject( tuple.get( this.declaration ) ) ) );
+        return evaluator.evaluate( this.fieldExtractor.getValue( handle.getObject() ),
+                                   declaration.getValue( tuple.get( this.column ).getObject() ) );
 
     }
 }

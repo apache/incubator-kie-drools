@@ -17,10 +17,11 @@ package org.drools;
 
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cheesery {
+public class Cheesery implements Serializable {
     public final static int MAKING_CHEESE = 0;
     public final static int SELLING_CHEESE = 1;
     

@@ -107,7 +107,7 @@ public class DefaultKnowledgeHelper
     }
 
     public Object get(Declaration declaration) {
-        return declaration.getValue( this.workingMemory.getObject( this.tuple.get( declaration ) ) );
+        return declaration.getValue(  this.tuple.get( declaration ).getObject() );
     }
 
     public Tuple getTuple() {

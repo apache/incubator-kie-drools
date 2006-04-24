@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.rule.LiteralConstraint;
 
 /**
@@ -55,8 +56,8 @@ public class AlphaNodeSwitch
     }
 
     public AlphaNode getNode(WorkingMemory workingMemory,
-                             FactHandleImpl handle) {
-        Object value = this.constraint.getFieldExtractor().getValue( workingMemory.getObject( handle ) );
+                             InternalFactHandle handle) {
+        Object value = this.constraint.getFieldExtractor().getValue( handle.getObject() );
         return (AlphaNode) this.alphaSwitch.get( value );
     }
 

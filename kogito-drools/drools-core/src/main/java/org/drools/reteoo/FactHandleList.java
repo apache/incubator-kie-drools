@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.drools.FactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 
 /**
@@ -45,7 +46,7 @@ final class FactHandleList
     static final FactHandleList    EMPTY_LIST = new FactHandleList();
 
     /** The list of handles. */
-    private final FactHandleImpl[] handles;
+    private final InternalFactHandle[] handles;
 
     /** The cached hash code value. */
     private final int              hashCode;
@@ -67,7 +68,7 @@ final class FactHandleList
      *            The right list.
      */
     public FactHandleList(FactHandleList left,
-                          FactHandleImpl handle) {
+                          InternalFactHandle handle) {
         this.handles = new FactHandleImpl[left.handles.length + 1];
 
         System.arraycopy( left.handles,
@@ -103,7 +104,7 @@ final class FactHandleList
      * @throws ArrayIndexOutOfBoundsException
      *             if <code>index</code> &gt; {@link #size()}.
      */
-    public FactHandleImpl get(int index) {
+    public InternalFactHandle get(int index) {
         return this.handles[index];
     }
 
@@ -148,7 +149,7 @@ final class FactHandleList
         return true;
     }
 
-    FactHandle[] getHandles() {
+    InternalFactHandle[] getHandles() {
         return this.handles;
     }
 

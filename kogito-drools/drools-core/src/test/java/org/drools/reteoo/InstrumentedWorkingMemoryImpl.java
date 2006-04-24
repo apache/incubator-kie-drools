@@ -40,10 +40,10 @@ public class InstrumentedWorkingMemoryImpl extends WorkingMemoryImpl {
      * @param object
      *            The object.
      */
-    public Object putObject(FactHandle handle,
+    public void putObject(FactHandle handle,
                             Object object) {
-        return super.putObject( handle,
-                                object );
+        super.putObject( handle,
+                         object );
     }
 
     /**

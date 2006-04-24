@@ -34,7 +34,7 @@ public class FactHandleImpl
     /** Handle id. */
     private long             id;
     private long             recency;
-    private transient Object object;
+    private Object object;
 
     // ----------------------------------------------------------------------
     // Constructors

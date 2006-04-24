@@ -5,8 +5,8 @@
   <para>A <indexterm>
       <primary>Rule</primary>
     </indexterm>Rule is the codification of business knowledge. A Rule has
-  attributes, a Left Hand Side (LHS) and a Right Hand Side (RHS). The allowed
-  attributes are:</para>
+  attributes, a Left Hand Side (LHS) and a Right Hand Side (RHS). Drools
+  allows the following attributes:</para>
 
   <itemizedlist>
     <listitem>
@@ -44,11 +44,18 @@ end
   data against the Conditions, when all the Conditions are met and true the
   RHS, and its actions, are executed; the RHS, called the <indexterm>
       <primary>Consequence</primary>
-    </indexterm>Consequence.</para>
+    </indexterm>Consequence. The LHS and the RHS is analogous to:</para>
+
+  <programlisting>if ( &lt;LHS&gt; ) {
+    &lt;RHS&gt;
+}</programlisting>
 
   <para>Rules are associated with a namespace via the
-  <literal>package</literal> keyword. A Package declares imports, global
-  variables, functions and rules.</para>
+  <literal>package</literal> keyword; other Rule Engines may call this a
+  <indexterm>
+      <primary>Rule Set</primary>
+    </indexterm>Rule Set. A Package declares imports, global variables,
+  functions and rules.</para>
 
   <programlisting>package com.sample
 
@@ -106,8 +113,9 @@ end</programlisting>
   considered experiment. The Drools <indexterm>
       <primary>Rete</primary>
     </indexterm>Rete implementation is called ReteOO signifying that this
-  Drools has an enhanced and optimised implementation of the Rete
-  algorithm.</para>
+  Drools has an enhanced and optimised implementation of the Rete algorithm.
+  Other Rete based engines also have marketting terms for their prioprietary
+  enhancements to Rete, like RetePlus and Rete III, </para>
 
   <figure>
     <title>A Basic Rete network</title>
@@ -132,7 +140,7 @@ end</programlisting>
     </indexterm>iLiteral Field Constraint used with a Cheese Fact; the
   combination of Field Constraints on a Fact is known as a <indexterm>
       <primary>Column</primary>
-    </indexterm>iColumn.</para>
+    </indexterm>Column.</para>
 
   <programlisting>rule "Cheddar Cheese"
     when
@@ -153,7 +161,7 @@ end</programlisting>
   cannot be called directly as they are not methods or functions instead Rules
   fire in response to changes in Working Memory's data, It may help to think
   of this de-coupling as a specialised event sytem. The Consequence is the
-  Listener to the full matching of the LHS event.</para>
+  Listener to the full matching of the LHS events.</para>
 
   <para>Rule Engines are much like a database where Rule's LHS define the
   queries on the Working Memory. The previous rule can be expressed in
@@ -175,8 +183,8 @@ end</programlisting>
     </indexterm>Rete algorithm. Rete is one of the standard Rule Engine
   algorithms developed by <indexterm>
       <primary>Charles Forgey</primary>
-    </indexterm>Charles Forgey in 1979 which is covered in greater detail in
-  further chapters.</para>
+    </indexterm>Charles Forgey in 1979 which is covered in greater detail in a
+  Rete Algorithm chapter.</para>
 
   <figure>
     <title>A Basic Rete network</title>

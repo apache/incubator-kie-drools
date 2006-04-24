@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.leaps.ColumnConstraints;
 
 /**
@@ -69,7 +70,7 @@ public class ConstrainedFactTableIterator
             if ( !reachCurrentRecord && this.currentTableRecord == currentRecord ) {
                 reachCurrentRecord = true;
             } else {
-                if ( this.constraints.isAllowedAlpha( (FactHandle) this.currentTableRecord.object,
+                if ( this.constraints.isAllowedAlpha( (InternalFactHandle) this.currentTableRecord.object,
                                                       null,
                                                       this.workingMemory ) ) {
                     this.add( this.currentTableRecord.object );
@@ -135,7 +136,7 @@ public class ConstrainedFactTableIterator
             if ( this.nextRecord == null ) {
                 boolean found = false;
                 while ( !found && this.currentTableRecord != null ) {
-                    if ( this.constraints.isAllowedAlpha( (FactHandle) this.currentTableRecord.object,
+                    if ( this.constraints.isAllowedAlpha( (InternalFactHandle) this.currentTableRecord.object,
                                                           null,
                                                           this.workingMemory ) ) {
                         this.add( this.currentTableRecord.object );

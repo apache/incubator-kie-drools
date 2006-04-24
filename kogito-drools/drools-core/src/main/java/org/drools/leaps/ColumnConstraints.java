@@ -21,6 +21,7 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.BetaNodeBinder;
+import org.drools.common.InternalFactHandle;
 import org.drools.rule.Column;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.Tuple;
@@ -67,7 +68,7 @@ public class ColumnConstraints {
         return this.classType;
     }
 
-    boolean isAllowed(FactHandle factHandle,
+    boolean isAllowed(InternalFactHandle factHandle,
                       Tuple tuple,
                       WorkingMemory workingMemory) {
         return this.isAllowedAlpha( factHandle,
@@ -77,7 +78,7 @@ public class ColumnConstraints {
                                                                            workingMemory );
     }
 
-    public boolean isAllowedAlpha(FactHandle factHandle,
+    public boolean isAllowedAlpha(InternalFactHandle factHandle,
                                   Tuple tuple,
                                   WorkingMemory workingMemory) {
         if ( this.alphaPresent ) {
@@ -94,7 +95,7 @@ public class ColumnConstraints {
         return true;
     }
 
-    boolean isAllowedBeta(FactHandle factHandle,
+    boolean isAllowedBeta(InternalFactHandle factHandle,
                           Tuple tuple,
                           WorkingMemory workingMemory) {
         if ( this.betaPresent ) {

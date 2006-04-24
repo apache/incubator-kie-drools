@@ -51,6 +51,7 @@ public class BooleanConstrainedRightMemory
 
     private FieldExtractor  extractor    = null;
     private Declaration     declaration  = null;
+    private int             column;
     private Evaluator       evaluator    = null;
 
     public BooleanConstrainedRightMemory(FieldExtractor extractor,
@@ -68,6 +69,7 @@ public class BooleanConstrainedRightMemory
                                          BetaRightMemory childMemory) {
         this.extractor = extractor;
         this.declaration = declaration;
+        this.column = declaration.getColumn();
         this.evaluator = evaluator;
         this.childMemory = childMemory;
         this.trueList = new MultiLinkedList();
@@ -210,7 +212,7 @@ public class BooleanConstrainedRightMemory
      */
     public void selectPossibleMatches(WorkingMemory workingMemory,
                                       ReteTuple tuple) {
-        boolean select = ((Boolean) declaration.getValue( workingMemory.getObject( tuple.get( this.declaration ) ) )).booleanValue();
+        boolean select = ((Boolean) declaration.getValue( tuple.get( this.column ).getObject() )).booleanValue();
         select = (evaluator.getOperator()) == Evaluator.EQUAL ? select : !select;
         this.selectedList = (select == true) ? trueList : falseList;
 
@@ -246,7 +248,7 @@ public class BooleanConstrainedRightMemory
      */
     private MultiLinkedList getMatchingList(WorkingMemory workingMemory,
                                             FactHandleImpl handle) {
-        boolean select = ((Boolean) this.extractor.getValue( workingMemory.getObject( handle ) )).booleanValue();
+        boolean select = ((Boolean) this.extractor.getValue( handle.getObject() )).booleanValue();
         MultiLinkedList list = (select == true) ? this.trueList : this.falseList;
         return list;
     }

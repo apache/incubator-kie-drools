@@ -39,6 +39,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.DroolsQuery;
 import org.drools.common.Agenda;
 import org.drools.common.EventSupport;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.LogicalDependency;
 import org.drools.common.PropagationContextImpl;
@@ -89,9 +90,9 @@ public class WorkingMemoryImpl
     /** Global values which are associated with this memory. */
     private final Map                       globals                                       = new HashMap();
 
-    /** Handle-to-object mapping. */
-    private final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
-                                                                                                                  8 );
+//    /** Handle-to-object mapping. */
+//    private final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
+//                                                                                                                  8 );
 
     /** Object-to-handle mapping. */
     private final Map                       identityMap                                   = new IdentityMap();
@@ -107,11 +108,16 @@ public class WorkingMemoryImpl
     private static final String             STATED                                        = "STATED";
     private static final String             JUSTIFIED                                     = "JUSTIFIED";
     private static final String             NEW                                           = "NEW";
-    private static final FactStatus         STATUS_NEW                                    = new FactStatus(NEW, 0);
+    private static final FactStatus         STATUS_NEW                                    = new FactStatus( NEW,
+                                                                                                            0 );
 
     /** The eventSupport */
     private final WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( this );
     private final AgendaEventSupport        agendaEventSupport                            = new AgendaEventSupport( this );
+
+    //private LinkedList                      factQueue                                      = new LinkedList();
+
+    private Object                          lock                                          = new Object();
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     private final RuleBaseImpl              ruleBase;
@@ -279,14 +285,14 @@ public class WorkingMemoryImpl
      * 
      */
     public Object getObject(FactHandle handle) {
-        FactHandleImpl handleImpl = (FactHandleImpl) handle;
-        if ( handleImpl.getObject() == null ) {
-            Object object = this.objects.get( handleImpl.getId() );
-            if ( object == null ) {
-                throw new NoSuchFactObjectException( handle );
-            }
-            handleImpl.setObject( object );
-        }
+        InternalFactHandle handleImpl = (InternalFactHandle) handle;
+//        if ( handleImpl.getObject() == null ) {
+//            Object object = this.objects.get( handleImpl.getId() );
+//            if ( object == null ) {
+//                throw new NoSuchFactObjectException( handle );
+//            }
+//            handleImpl.setObject( object );
+//        }
 
         return handleImpl.getObject();
     }
@@ -323,12 +329,12 @@ public class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public List getObjects() {
-        return new ArrayList( this.objects.values() );
+        return new ArrayList( this.identityMap.values() );
     }
 
     public List getObjects(Class objectClass) {
         List matching = new java.util.LinkedList();
-        for ( Iterator objIter = this.objects.values().iterator(); objIter.hasNext(); ) {
+        for ( Iterator objIter = this.identityMap.values().iterator(); objIter.hasNext(); ) {
             Object obj = objIter.next();
 
             if ( objectClass.isInstance( obj ) ) {
@@ -346,14 +352,16 @@ public class WorkingMemoryImpl
             retractObject( handle );
             return null;
         }
-        
+
         List list = (List) this.nodeMemories.remove( node.getId() );
 
         retractObject( handle );
         if ( list == null ) {
             return null;
         }
-        return new QueryResults( list, ( Query ) node.getRule(), this);
+        return new QueryResults( list,
+                                 (Query) node.getRule(),
+                                 this );
     }
 
     void setQueryResults(String query,
@@ -381,7 +389,7 @@ public class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public boolean containsObject(FactHandle handle) {
-        return this.objects.containsKey( ((FactHandleImpl) handle).getId() );
+        return this.identityMap.containsKey( getObject( handle ) );
     }
 
     /**
@@ -429,96 +437,101 @@ public class WorkingMemoryImpl
                                    boolean logical,
                                    Rule rule,
                                    Activation activation) throws FactException {
-        
-        // check if the object already exists in the WM
-        FactHandleImpl handle = (FactHandleImpl) this.identityMap.get( object );
 
-        // lets see if the object is already logical asserted
-        FactStatus logicalState = (FactStatus) this.equalsMap.get( object );
-        if(logicalState == null) {
-            logicalState = STATUS_NEW;
-        }
+        synchronized ( this.ruleBase.getLock() ) {
 
-        // This object is already STATED, we cannot make it justifieable
-        if ( (logical) && (logicalState.getStatus() == WorkingMemoryImpl.STATED) ) {
-            return null;
-        }
+            // check if the object already exists in the WM
+            FactHandleImpl handle = (FactHandleImpl) this.identityMap.get( object );
 
-        // return if there is already a logical handle
-        if ( (logical) && (logicalState.getStatus() == WorkingMemoryImpl.JUSTIFIED) ) {
-            addLogicalDependency( logicalState.getHandle(),
-                                  activation,
-                                  activation.getPropagationContext(),
-                                  rule );
-            return logicalState.getHandle();
-        }
-
-        // if we have a handle and this STATED fact was previously STATED
-        if ( (handle != null) && (!logical) && ( logicalState.getStatus() == WorkingMemoryImpl.STATED ) ) {
-            return handle;
-        }
-
-        if ( !logical ) {
-            // If this stated assertion already has justifications then we need
-            // to cancel them
-            if ( logicalState.getStatus() == WorkingMemoryImpl.JUSTIFIED ) {
-                handle = logicalState.getHandle();
-                removeLogicalDependencies( handle );
-            } else {
-                handle = (FactHandleImpl) newFactHandle();
+            // lets see if the object is already logical asserted
+            FactStatus logicalState = (FactStatus) this.equalsMap.get( object );
+            if ( logicalState == null ) {
+                logicalState = STATUS_NEW;
             }
 
-            putObject( handle,
-                       object );
-
-            if( logicalState != WorkingMemoryImpl.STATUS_NEW) {
-                // make sure status is stated
-                logicalState.setStatus( WorkingMemoryImpl.STATED );
-                logicalState.incCounter();
-            } else {
-                this.equalsMap.put( object,
-                                    new FactStatus(WorkingMemoryImpl.STATED, 1) );
+            // This object is already STATED, we cannot make it justifieable
+            if ( (logical) && (logicalState.getStatus() == WorkingMemoryImpl.STATED) ) {
+                return null;
             }
 
-            if ( dynamic ) {
-                addPropertyChangeListener( object );
+            // return if there is already a logical handle
+            if ( (logical) && (logicalState.getStatus() == WorkingMemoryImpl.JUSTIFIED) ) {
+                addLogicalDependency( logicalState.getHandle(),
+                                      activation,
+                                      activation.getPropagationContext(),
+                                      rule );
+                return logicalState.getHandle();
             }
-        } else {
 
-            handle = logicalState.getHandle();
-            // we create a lookup handle for the first asserted equals object
-            // all future equals objects will use that handle
-            if ( handle == null ) {
-                handle = (FactHandleImpl) newFactHandle();
+            // if we have a handle and this STATED fact was previously STATED
+            if ( (handle != null) && (!logical) && (logicalState.getStatus() == WorkingMemoryImpl.STATED) ) {
+                return handle;
+            }
+
+            if ( !logical ) {
+                // If this stated assertion already has justifications then we need
+                // to cancel them
+                if ( logicalState.getStatus() == WorkingMemoryImpl.JUSTIFIED ) {
+                    handle = logicalState.getHandle();
+                    removeLogicalDependencies( handle );
+                } else {
+                    handle = (FactHandleImpl) newFactHandle();
+                }
 
                 putObject( handle,
                            object );
 
-                this.equalsMap.put( object,
-                                    new FactStatus(WorkingMemoryImpl.JUSTIFIED, handle) );
-            } 
-            addLogicalDependency( handle,
-                                  activation,
-                                  activation.getPropagationContext(),
-                                  rule );
+                if ( logicalState != WorkingMemoryImpl.STATUS_NEW ) {
+                    // make sure status is stated
+                    logicalState.setStatus( WorkingMemoryImpl.STATED );
+                    logicalState.incCounter();
+                } else {
+                    this.equalsMap.put( object,
+                                        new FactStatus( WorkingMemoryImpl.STATED,
+                                                        1 ) );
+                }
+
+                if ( dynamic ) {
+                    addPropertyChangeListener( object );
+                }
+            } else {
+
+                handle = logicalState.getHandle();
+                // we create a lookup handle for the first asserted equals object
+                // all future equals objects will use that handle
+                if ( handle == null ) {
+                    handle = (FactHandleImpl) newFactHandle();
+
+                    putObject( handle,
+                               object );
+
+                    this.equalsMap.put( object,
+                                        new FactStatus( WorkingMemoryImpl.JUSTIFIED,
+                                                        handle ) );
+                }
+                addLogicalDependency( handle,
+                                      activation,
+                                      activation.getPropagationContext(),
+                                      rule );
+            }
+
+            handle.setObject( object );
+
+            PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
+                                                                                PropagationContext.ASSERTION,
+                                                                                rule,
+                                                                                activation );
+
+            this.ruleBase.assertObject( handle,
+                                        object,
+                                        propagationContext,
+                                        this );
+
+            this.workingMemoryEventSupport.fireObjectAsserted( propagationContext,
+                                                               handle,
+                                                               object );
+            return handle;
         }
-
-        handle.setObject( object );
-
-        PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
-                                                                            PropagationContext.ASSERTION,
-                                                                            rule,
-                                                                            activation );
-
-        this.ruleBase.assertObject( handle,
-                                    object,
-                                    propagationContext,
-                                    this );
-
-        this.workingMemoryEventSupport.fireObjectAsserted( propagationContext,
-                                                           handle,
-                                                           object );
-        return handle;
     }
 
     private void addPropertyChangeListener(Object object) {
@@ -581,21 +594,22 @@ public class WorkingMemoryImpl
      * @param object
      *            The object.
      */
-    Object putObject(FactHandle handle,
+    void putObject(FactHandle handle,
                      Object object) {
-        Object oldValue = this.objects.put( ((FactHandleImpl) handle).getId(),
-                                            object );
+//        Object oldValue = this.objects.put( ((FactHandleImpl) handle).getId(),
+//                                            object );
 
         this.identityMap.put( object,
                               handle );
 
         ((FactHandleImpl) handle).setObject( object );
-        return oldValue;
+        //return oldValue;
     }
 
     Object removeObject(FactHandle handle) {
-        Object object = this.objects.remove( ((FactHandleImpl) handle).getId() );
+        //Object object = this.objects.remove( ((FactHandleImpl) handle).getId() );
 
+        Object object = getObject( handle );
         this.identityMap.remove( object );
 
         return object;
@@ -617,42 +631,44 @@ public class WorkingMemoryImpl
                               boolean updateEqualsMap,
                               Rule rule,
                               Activation activation) throws FactException {
-        removePropertyChangeListener( handle );
+        synchronized ( this.ruleBase.getLock() ) {
+            removePropertyChangeListener( handle );
 
-        PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
-                                                                            PropagationContext.RETRACTION,
-                                                                            rule,
-                                                                            activation );
+            PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
+                                                                                PropagationContext.RETRACTION,
+                                                                                rule,
+                                                                                activation );
 
-        this.ruleBase.retractObject( handle,
-                                     propagationContext,
-                                     this );
+            this.ruleBase.retractObject( handle,
+                                         propagationContext,
+                                         this );
 
-        Object oldObject = removeObject( handle );
+            Object oldObject = removeObject( handle );
 
-        /* check to see if this was a logical asserted object */
-        if ( removeLogical ) {
-            removeLogicalDependencies( handle );
-            //this.equalsMap.remove( oldObject );
-        }
+            /* check to see if this was a logical asserted object */
+            if ( removeLogical ) {
+                removeLogicalDependencies( handle );
+                //this.equalsMap.remove( oldObject );
+            }
 
-        if ( removeLogical || updateEqualsMap ) {
-            FactStatus status = (FactStatus) this.equalsMap.get( oldObject );
-            if(status != null) {
-                status.decCounter();
-                if(status.getCounter() <= 0) {
-                    this.equalsMap.remove( oldObject );
+            if ( removeLogical || updateEqualsMap ) {
+                FactStatus status = (FactStatus) this.equalsMap.get( oldObject );
+                if ( status != null ) {
+                    status.decCounter();
+                    if ( status.getCounter() <= 0 ) {
+                        this.equalsMap.remove( oldObject );
+                    }
                 }
             }
+
+            this.factHandlePool.push( ((FactHandleImpl) handle).getId() );
+
+            this.workingMemoryEventSupport.fireObjectRetracted( propagationContext,
+                                                                handle,
+                                                                oldObject );
+
+            ((FactHandleImpl) handle).invalidate();
         }
-
-        this.factHandlePool.push( ((FactHandleImpl) handle).getId() );
-
-        this.workingMemoryEventSupport.fireObjectRetracted( propagationContext,
-                                                            handle,
-                                                            oldObject );
-
-        ((FactHandleImpl) handle).invalidate();
     }
 
     public void modifyObject(FactHandle handle,
@@ -670,49 +686,52 @@ public class WorkingMemoryImpl
                              Object object,
                              Rule rule,
                              Activation activation) throws FactException {
-        Object originalObject = removeObject( handle );
+        synchronized ( this.ruleBase.getLock() ) {
+            Object originalObject = removeObject( handle );
 
-        if ( originalObject == null ) {
-            throw new NoSuchFactObjectException( handle );
+            if ( originalObject == null ) {
+                throw new NoSuchFactObjectException( handle );
+            }
+
+            this.handleFactory.increaseFactHandleRecency( handle );
+
+            putObject( handle,
+                       object );
+
+            /* check to see if this is a logically asserted object */
+            FactHandleImpl handleImpl = (FactHandleImpl) handle;
+            if ( this.justified.get( handleImpl.getId() ) != null ) {
+                this.equalsMap.remove( originalObject );
+                this.equalsMap.put( object,
+                                    new FactStatus( WorkingMemoryImpl.JUSTIFIED,
+                                                    handleImpl ) );
+            }
+
+            PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
+                                                                                PropagationContext.MODIFICATION,
+                                                                                rule,
+                                                                                activation );
+
+            this.ruleBase.modifyObject( handle,
+                                        propagationContext,
+                                        this );
+            // this.ruleBase.retractObject( handle,
+            // propagationContext,
+            // this );
+            //
+            // this.ruleBase.assertObject( handle,
+            // object,
+            // propagationContext,
+            // this );
+
+            /*
+             * this.ruleBase.modifyObject( handle, object, this );
+             */
+            this.workingMemoryEventSupport.fireObjectModified( propagationContext,
+                                                               handle,
+                                                               originalObject,
+                                                               object );
         }
-
-        this.handleFactory.increaseFactHandleRecency( handle );
-
-        putObject( handle,
-                   object );
-
-        /* check to see if this is a logically asserted object */
-        FactHandleImpl handleImpl = (FactHandleImpl) handle;
-        if ( this.justified.get( handleImpl.getId() ) != null ) {
-            this.equalsMap.remove( originalObject );
-            this.equalsMap.put( object,
-                                new FactStatus(WorkingMemoryImpl.JUSTIFIED, handleImpl) );
-        }
-
-        PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
-                                                                            PropagationContext.MODIFICATION,
-                                                                            rule,
-                                                                            activation );
-
-        this.ruleBase.modifyObject( handle,
-                                    propagationContext,
-                                    this );
-        // this.ruleBase.retractObject( handle,
-        // propagationContext,
-        // this );
-        //
-        // this.ruleBase.assertObject( handle,
-        // object,
-        // propagationContext,
-        // this );
-
-        /*
-         * this.ruleBase.modifyObject( handle, object, this );
-         */
-        this.workingMemoryEventSupport.fireObjectModified( propagationContext,
-                                                           handle,
-                                                           originalObject,
-                                                           object );
     }
 
     /**
@@ -837,78 +856,87 @@ public class WorkingMemoryImpl
     public void dispose() {
         this.ruleBase.disposeWorkingMemory( this );
     }
-    
+
     private static class FactStatus {
-        private int counter;
-        private String status;
+        private int            counter;
+        private String         status;
         private FactHandleImpl handle;
-        
+
         public FactStatus() {
-            this(WorkingMemoryImpl.STATED, 1);
+            this( WorkingMemoryImpl.STATED,
+                  1 );
         }
-        
+
         public FactStatus(String status) {
-            this(status, 1);
+            this( status,
+                  1 );
         }
-        
-        public FactStatus(String status, FactHandleImpl handle) {
+
+        public FactStatus(String status,
+                          FactHandleImpl handle) {
             this.status = status;
             this.handle = handle;
         }
-        
-        public FactStatus(String status, int counter) {
+
+        public FactStatus(String status,
+                          int counter) {
             this.status = status;
             this.counter = counter;
         }
-        
+
         /**
          * @return the counter
          */
         public int getCounter() {
             return counter;
         }
+
         /**
          * @param counter the counter to set
          */
         public void setCounter(int counter) {
             this.counter = counter;
         }
-        
+
         public int incCounter() {
             return ++counter;
         }
-        
+
         public int decCounter() {
             return --counter;
         }
+
         /**
          * @return the handle
          */
         public FactHandleImpl getHandle() {
             return handle;
         }
+
         /**
          * @param handle the handle to set
          */
         public void setHandle(FactHandleImpl handle) {
             this.handle = handle;
         }
+
         /**
          * @return the status
          */
         public String getStatus() {
             return status;
         }
+
         /**
          * @param status the status to set
          */
         public void setStatus(String status) {
             this.status = status;
         }
-        
+
         public String toString() {
-            return "FactStatus( "+this.status+", handle="+this.handle+", counter="+this.counter+")";
+            return "FactStatus( " + this.status + ", handle=" + this.handle + ", counter=" + this.counter + ")";
         }
-        
+
     }
 }

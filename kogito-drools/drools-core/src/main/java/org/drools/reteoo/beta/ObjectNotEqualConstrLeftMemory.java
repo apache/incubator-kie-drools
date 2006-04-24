@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleImpl;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
@@ -51,6 +52,7 @@ public class ObjectNotEqualConstrLeftMemory
 
     private FieldExtractor  extractor        = null;
     private Declaration     declaration      = null;
+    private int             column;
 
     public ObjectNotEqualConstrLeftMemory(FieldExtractor extractor,
                                           Declaration declaration,
@@ -67,6 +69,7 @@ public class ObjectNotEqualConstrLeftMemory
                                           BetaLeftMemory childMemory) {
         this.extractor = extractor;
         this.declaration = declaration;
+        this.column = declaration.getColumn();
         this.innerMemory = childMemory;
         this.memoryMap = new HashMap();
         this.memoryMasterList = new MultiLinkedList();
@@ -175,7 +178,7 @@ public class ObjectNotEqualConstrLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
     public Iterator iterator(final WorkingMemory workingMemory,
-                             final FactHandleImpl handle) {
+                             final InternalFactHandle handle) {
         this.selectPossibleMatches( workingMemory,
                                     handle );
         Iterator iterator = new Iterator() {
@@ -240,8 +243,8 @@ public class ObjectNotEqualConstrLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
     public void selectPossibleMatches(WorkingMemory workingMemory,
-                                      FactHandleImpl handle) {
-        Object select = this.extractor.getValue( workingMemory.getObject( handle ) );
+                                      InternalFactHandle handle) {
+        Object select = this.extractor.getValue( handle.getObject() );
         this.noMatchList = (MultiLinkedList) this.memoryMap.get( select );
     }
 
@@ -291,7 +294,7 @@ public class ObjectNotEqualConstrLeftMemory
      */
     private Object getTupleKey(WorkingMemory workingMemory,
                                ReteTuple tuple) {
-        Object select = declaration.getValue( workingMemory.getObject( tuple.get( this.declaration ) ) );
+        Object select = declaration.getValue( tuple.get( this.column ).getObject() );
         return select;
     }
 

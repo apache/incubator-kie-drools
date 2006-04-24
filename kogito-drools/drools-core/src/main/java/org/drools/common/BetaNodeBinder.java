@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.FieldConstraint;
@@ -47,7 +46,7 @@ public class BetaNodeBinder
         this.constraints = constraints;
     }
 
-    public boolean isAllowed(FactHandle handle,
+    public boolean isAllowed(InternalFactHandle handle,
                              Tuple tuple,
                              WorkingMemory workingMemory) {
         if ( this.constraints == null ) {

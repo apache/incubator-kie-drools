@@ -26,7 +26,7 @@ public class QueryResult {
     
     public Object get(int i) {
         //adjust for the DroolsQuery object
-        return this.workingMemory.getObject( tuple.get( i+1 ) );
+        return tuple.get( i+1 ).getObject();
     }
 
     public Object get(String declaration) {
@@ -34,7 +34,7 @@ public class QueryResult {
     }
     
     public Object get(Declaration declaration) {
-        return declaration.getValue( this.workingMemory.getObject( this.tuple.get( declaration ) ) );
+        return declaration.getValue( this.tuple.get( declaration ).getObject() );
     }
     
     public FactHandle[] getFactHandles() {
