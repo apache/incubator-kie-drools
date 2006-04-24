@@ -9,7 +9,8 @@
   plug in. This will provide you with all the dependencies you need to get
   going: you can simply create a new rule project and everything will be done
   for you. Refer to the chapter on the Rule Workbench and IDE for detailed
-  instructions on this.</para>
+  instructions on this. Installing the eclipse plugin is generally as simple
+  as unzipping a file into your eclipse plugin directory.</para>
 
   <para>Use of the eclipse plug in is not required. Rule files are just
   textual input (or spreadsheets as the case may be) and the IDE (also known
@@ -39,7 +40,9 @@
     <itemizedlist>
       <listitem>
         <para>drools-core.jar - this is the core engine, runtime component.
-        Contains both the RETE engine and the LEAPS engine.</para>
+        Contains both the RETE engine and the LEAPS engine. This is the only
+        runtime dependency if you are pre-compiling rules (and deploying via
+        Package or RuleBase objects).</para>
       </listitem>
 
       <listitem>
@@ -48,15 +51,6 @@
         is often a runtime dependency of your application, but it need not be
         if you are pre-compiling your rules. This depends on
         drools-core</para>
-      </listitem>
-
-      <listitem>
-        <para>drools-asm.jar - this is a localised version of the ASM utility
-        for bytecode generation. Bytecodes are generated to provide fast
-        access directly to the objects that are used in the engine. This has
-        been localised using 'jarjar-links' to avoid collisions with other asm
-        version that may be in your application. This is required by
-        drools-core.</para>
       </listitem>
 
       <listitem>
@@ -73,8 +67,6 @@
         'compiler' component, which uses the drools-compiler component. This
         supports both excel and CSV input formats.</para>
       </listitem>
-
-      
     </itemizedlist>
 
     <para>There are quite a few other dependencies which the above components
@@ -95,8 +87,8 @@
     etc). This is an optional feature that allows you to keep your runtime
     very light. You may use drools-compiler to produce rule packages "out of
     process", and then deploy them to a runtime system. This runtime system
-    only requires drools-core.jar and drools-asm.jar for execution. This is an
-    optional deployment pattern, and many people do not need to "trim" their
+    only requires drools-core.jar for execution. This is an optional
+    deployment pattern, and many people do not need to "trim" their
     application this much, but it is an ideal option for certain
     environments.</para>
   </section>
