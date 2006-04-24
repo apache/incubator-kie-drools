@@ -332,6 +332,44 @@ public class RuleParserTest extends TestCase {
     		assertFalse( parser.hasErrors() );
 	}
     
+    public void testLineNumberInAST() throws Exception {
+        //also see testSimpleExpander to see how this works with an expander (should be the same). 
+        
+        RuleDescr rule = parseResource( "simple_rule.drl" ).rule();
+        
+        assertNotNull( rule );
+        
+        assertEquals( "simple_rule", rule.getName() );
+        
+        assertEquals(7, rule.getConsequenceLine());
+        assertEquals(2, rule.getConsequenceColumn());
+        
+        AndDescr lhs = rule.getLhs();
+        
+        assertNotNull( lhs );
+        
+        assertEquals( 3, lhs.getDescrs().size() );
+        
+        // Check first column
+        ColumnDescr first = (ColumnDescr) lhs.getDescrs().get( 0 );     
+        assertEquals( "foo3", first.getIdentifier() );
+        assertEquals( "Bar", first.getObjectType() );
+        assertEquals( 1, first.getDescrs().size() );
+        
+        // Check second column
+        ColumnDescr second = (ColumnDescr) lhs.getDescrs().get( 1 );     
+        assertEquals( "foo4", second.getIdentifier() );
+        assertEquals( "Bar", second.getObjectType() );
+
+        ColumnDescr third = (ColumnDescr) lhs.getDescrs().get( 2 );
+        assertEquals("Baz", third.getObjectType());
+
+        assertEquals(4, first.getLine());
+        assertEquals(5, second.getLine());
+        assertEquals(6, third.getLine());
+        assertFalse( parser.hasErrors() );
+    }    
+    
     /** Note this is only to be enabled if we agree to combine patterns from columns bound to the same var.
      * At present, not a valid test. Refer to AndDescr and AndDescrTest (Michael Neale).
      */
@@ -599,6 +637,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( "Bar", col.getObjectType() );
         assertEquals( "foo1", col.getIdentifier() );
         assertEquals(1, col.getDescrs().size());
+        assertEquals(6, col.getLine());
+        
         LiteralDescr lit = (LiteralDescr) col.getDescrs().get( 0 );
         assertEquals("==", lit.getEvaluator());
         assertEquals("a", lit.getFieldName());
@@ -607,12 +647,14 @@ public class RuleParserTest extends TestCase {
         //>Baz() --> not expanded, as it has the magical escape character '>' !!
         col = (ColumnDescr) rule.getLhs().getDescrs().get( 1 );
         assertEquals("Baz", col.getObjectType());
+        assertEquals(7, col.getLine());
         
         //The rain in spain ... ----> foo : Bar(a==3) (via MockExpander), again...
         col = (ColumnDescr) rule.getLhs().getDescrs().get( 2 );
         assertEquals( "Bar", col.getObjectType() );
         assertEquals( "foo2", col.getIdentifier() );
         assertEquals(1, col.getDescrs().size());
+        assertEquals(8, col.getLine());
         lit = (LiteralDescr) col.getDescrs().get( 0 );
         assertEquals("==", lit.getEvaluator());
         assertEquals("a", lit.getFieldName());
@@ -621,6 +663,7 @@ public class RuleParserTest extends TestCase {
         //>Bar() --> not expanded, as it has the magical escape character '>' !!
         col = (ColumnDescr) rule.getLhs().getDescrs().get( 3 );
         assertEquals("Bar", col.getObjectType());
+        assertEquals(9, col.getLine());
         
         assertEqualsIgnoreWhitespace( "bar foo3 : Bar(a==3) baz foo4 : Bar(a==4)", rule.getConsequence() );
         assertTrue(mockExpanderResolver.checkExpanded( "when,The rain in spain falls mainly" ));
