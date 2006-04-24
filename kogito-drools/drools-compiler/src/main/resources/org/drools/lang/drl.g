@@ -16,6 +16,7 @@ grammar RuleParser;
 	private PackageDescr packageDescr;
 	private List errors = new ArrayList();
 	private String source = "unknown";
+	private int lineOffset = 0;
 	
 	public void setSource(String source) {
 		this.source = source;
@@ -34,6 +35,17 @@ grammar RuleParser;
 	
 	public PackageDescr getPackageDescr() {
 		return packageDescr;
+	}
+	
+	private int offset(int line) {
+		return line + lineOffset;
+	}
+	
+	/**
+	 * This will set the offset to record when reparsing. Normally is zero of course 
+	 */
+	public void setLineOffset(int i) {
+	 	this.lineOffset = i;
 	}
 	
 	public void setExpanderResolver(ExpanderResolver expanderResolver) {
@@ -70,14 +82,10 @@ grammar RuleParser;
     		RuleParserLexer lexer = new RuleParserLexer( charStream );
     		TokenStream tokenStream = new CommonTokenStream( lexer );
     		RuleParser parser = new RuleParser( tokenStream );
+    		parser.setLineOffset( descrs.getLine() );
     		parser.normal_lhs_block(descrs);
             
                 if (parser.hasErrors()) {
-		        //add the offset of the error 
-        	        for ( Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
-                	    RecognitionException err = (RecognitionException) iter.next();
-                    	err.line = err.line + descrs.getLine();
-                	}
     			this.errors.addAll(parser.getErrors());
     		}
 		if (expanderDebug) {
@@ -132,11 +140,11 @@ grammar RuleParser;
 	        // if we've already reported an error and have not matched a token
                 // yet successfully, don't report any errors.
                 if ( errorRecovery ) {
-                        //System.err.print("[SPURIOUS] ");
                         return;
                 }
                 errorRecovery = true;
-		//System.err.println( ex );
+
+		ex.line = offset(ex.line); //add the offset if there is one
 		errors.add( ex ); 
 	}
      	
@@ -220,7 +228,7 @@ grammar RuleParser;
         
         void checkTrailingSemicolon(String text, int line) {
         	if (text.trim().endsWith( ";" ) ) {
-        		this.errors.add( new GeneralParseException( "Trailing semi-colon not allowed", line ) );
+        		this.errors.add( new GeneralParseException( "Trailing semi-colon not allowed", offset(line) ) );
         	}
         }
       
@@ -346,9 +354,9 @@ query returns [QueryDescr query]
 		loc='query' queryName=word opt_eol 
 		{ 
 			query = new QueryDescr( queryName, null ); 
-			query.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			query.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			AndDescr lhs = new AndDescr(); query.setLhs( lhs ); 
-			lhs.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 		(
 			{ expander != null }? expander_lhs_block[lhs]
@@ -368,7 +376,7 @@ rule returns [RuleDescr rule]
 		loc='rule' ruleName=word opt_eol 
 		{ 
 			rule = new RuleDescr( ruleName, null ); 
-			rule.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 		(	rule_attributes[rule]
 		)?
@@ -376,7 +384,7 @@ rule returns [RuleDescr rule]
 		((	loc='when' ':'? opt_eol
 			{ 
 				AndDescr lhs = new AndDescr(); rule.setLhs( lhs ); 
-				lhs.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+				lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			}
 			(
 				{ expander != null }? expander_lhs_block[lhs]
@@ -392,12 +400,12 @@ rule returns [RuleDescr rule]
 			)*
 			{
 				if ( expander != null ) {
-					String expanded = runThenExpander( consequence, loc.getLine() );
+					String expanded = runThenExpander( consequence, offset(loc.getLine()) );
 					rule.setConsequence( expanded );
 				} else { 
 					rule.setConsequence( consequence ); 
 				}
-				rule.setConsequenceLocation(loc.getLine(), loc.getCharPositionInLine());
+				rule.setConsequenceLocation(offset(loc.getLine()), loc.getCharPositionInLine());
 			})?
 		)?
 		'end' opt_eol 
@@ -443,7 +451,7 @@ salience returns [AttributeDescr d ]
 		loc='salience' opt_eol i=INT ';'? opt_eol
 		{
 			d = new AttributeDescr( "salience", i.getText() );
-			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 	;
 	
@@ -456,7 +464,7 @@ no_loop returns [AttributeDescr d]
 			loc='no-loop' opt_eol ';'? opt_eol
 			{
 				d = new AttributeDescr( "no-loop", "true" );
-				d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			}
 		) 
 		|
@@ -464,7 +472,7 @@ no_loop returns [AttributeDescr d]
 			loc='no-loop' t=BOOL opt_eol ';'? opt_eol
 			{
 				d = new AttributeDescr( "no-loop", t.getText() );
-				d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			}
 		
 		)
@@ -480,7 +488,7 @@ auto_focus returns [AttributeDescr d]
 			loc='auto-focus' opt_eol ';'? opt_eol
 			{
 				d = new AttributeDescr( "auto-focus", "true" );
-				d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			}
 		) 
 		|
@@ -488,7 +496,7 @@ auto_focus returns [AttributeDescr d]
 			loc='auto-focus' t=BOOL opt_eol ';'? opt_eol
 			{
 				d = new AttributeDescr( "auto-focus", t.getText() );
-				d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			}
 		
 		)
@@ -503,7 +511,7 @@ xor_group returns [AttributeDescr d]
 		loc='xor-group' opt_eol name=STRING ';'? opt_eol
 		{
 			d = new AttributeDescr( "xor-group", getString( name ) );
-			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 	;
 
@@ -515,7 +523,7 @@ agenda_group returns [AttributeDescr d]
 		loc='agenda-group' opt_eol name=STRING ';'? opt_eol
 		{
 			d = new AttributeDescr( "agenda-group", getString( name ) );
-			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 	;		
 
@@ -528,7 +536,7 @@ duration returns [AttributeDescr d]
 		loc='duration' opt_eol i=INT ';'? opt_eol
 		{
 			d = new AttributeDescr( "duration", i.getText() );
-			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 	;		
 	
@@ -555,9 +563,9 @@ expander_lhs_block[AndDescr descrs]
 				//only expand non null
 				if (text != null) {
 					if (lhsBlock == null) {					
-						lhsBlock = runWhenExpander( text, loc.getLine());
+						lhsBlock = runWhenExpander( text, offset(loc.getLine()));
 					} else {
-						lhsBlock = lhsBlock + eol + runWhenExpander( text, loc.getLine());
+						lhsBlock = lhsBlock + eol + runWhenExpander( text, offset(loc.getLine()));
 					}
 					text = null;
 				}
@@ -641,7 +649,7 @@ fact returns [PatternDescr d]
  			d = new ColumnDescr( id ); 
  		} opt_eol 
  		loc='(' {
- 				d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+ 				d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
  			}opt_eol (	c=constraints
  				{
 		 			for ( Iterator cIter = c.iterator() ; cIter.hasNext() ; ) {
@@ -677,7 +685,7 @@ constraint[List constraints]
 				d = new FieldBindingDescr( f.getText(), fb.getText() );
 				//System.err.println( "fbd: " + d );
 				
-				d.setLocation( f.getLine(), f.getCharPositionInLine() );
+				d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 				constraints.add( d );
 			} 
 		}
@@ -694,27 +702,27 @@ constraint[List constraints]
 					(	bvc=ID
 						{
 							d = new BoundVariableDescr( f.getText(), op.getText(), bvc.getText() );
-							d.setLocation( f.getLine(), f.getCharPositionInLine() );
+							d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 							constraints.add( d );
 						}
 					|
 						lc=enum_constraint 
 						{ 
 							d = new LiteralDescr( f.getText(), op.getText(), lc, true ); 
-							d.setLocation( f.getLine(), f.getCharPositionInLine() );
+							d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 							constraints.add( d );
 						}						
 					|
 						lc=literal_constraint 
 						{ 
 							d = new LiteralDescr( f.getText(), op.getText(), lc ); 
-							d.setLocation( f.getLine(), f.getCharPositionInLine() );
+							d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 							constraints.add( d );
 						}
 					|	rvc=retval_constraint 
 						{ 
 							d = new ReturnValueDescr( f.getText(), op.getText(), rvc ); 
-							d.setLocation( f.getLine(), f.getCharPositionInLine() );
+							d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 							constraints.add( d );
 						} 
 					)
@@ -909,7 +917,7 @@ lhs_exist returns [PatternDescr d]
 	:	loc='exists' ('(' column=lhs_column ')' | column=lhs_column)
 		{ 
 			d = new ExistsDescr( (ColumnDescr) column ); 
-			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}	
 	;
 	
@@ -920,7 +928,7 @@ lhs_not	returns [NotDescr d]
 	:	loc='not' ('(' column=lhs_column  ')' | column=lhs_column)
 		{
 			d = new NotDescr( (ColumnDescr) column ); 
-			d.setLocation( loc.getLine(), loc.getCharPositionInLine() );
+			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 	;
 
@@ -933,7 +941,7 @@ lhs_eval returns [PatternDescr d]
 			c=paren_chunk2
 		')' 
 		{ 
-			checkTrailingSemicolon( c, loc.getLine() );
+			checkTrailingSemicolon( c, offset(loc.getLine()) );
 			d = new EvalDescr( c ); 
 		}
 	;
