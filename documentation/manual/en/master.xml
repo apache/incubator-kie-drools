@@ -74,7 +74,7 @@
 
       <xi:include href="Chapter-Rule_Engine/Section-Rete_Algorithm.xml" />            
       
-      <xi:include href="Chapter-Rule_Engine/Section-Leaps_Algorithm.xml" />
+      <!-- MISSING !! <xi:include href="Chapter-Rule_Engine/Section-Leaps_Algorithm.xml" /> -->
 
       <xi:include href="Chapter-Rule_Engine/Section-Rule_Base.xml" />
 
@@ -101,6 +101,8 @@
       <xi:include href="Chapter-Rule_Language/Section-Query.xml" />
 
 	  <xi:include href="Chapter-Rule_Language/Section-DSL.xml" />
+
+	  <xi:include href="Chapter-Rule_Language/Section-XML.xml" />
 
       <!--xi:include href="Chapter-Rule_Language/Section-Column.xml" />
 
