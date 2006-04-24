@@ -19,6 +19,7 @@ package org.drools.reteoo.beta;
 import java.util.Iterator;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleImpl;
 import org.drools.reteoo.ReteTuple;
 import org.drools.util.MultiLinkedListNodeWrapper;
@@ -88,7 +89,7 @@ public interface BetaLeftMemory {
      * @return an Iterator over the tuples
      */
     public Iterator iterator(WorkingMemory workingMemory,
-                             FactHandleImpl handle);
+                             InternalFactHandle handle);
 
     /**
      * Returns an iterator to iterate over all tuples in the beta left memory
@@ -126,7 +127,7 @@ public interface BetaLeftMemory {
      * @param handle the handle whose tuples shall match
      */
     public void selectPossibleMatches(WorkingMemory workingMemory,
-                                      FactHandleImpl handle);
+                                      InternalFactHandle handle);
 
     /**
      * Returns true if the tuple is a possible match to the handle

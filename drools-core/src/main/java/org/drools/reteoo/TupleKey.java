@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.io.Serializable;
 
 import org.drools.FactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.spi.Tuple;
 
 /**
@@ -87,7 +88,7 @@ class TupleKey
      * 
      * @return The fact handle.
      */
-    public FactHandleImpl get(int index) {
+    public InternalFactHandle get(int index) {
         return this.handles.get( index );
     }
 
@@ -116,7 +117,7 @@ class TupleKey
         return this.handles.containsAll( that.handles );
     }
 
-    FactHandle[] getFactHandles() {
+    InternalFactHandle[] getFactHandles() {
         return this.handles.getHandles();
     }
 

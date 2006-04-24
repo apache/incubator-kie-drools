@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleImpl;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
@@ -51,6 +52,7 @@ public class ObjectNotEqualConstrRightMemory
 
     private FieldExtractor  extractor        = null;
     private Declaration     declaration      = null;
+    private int             column;
 
     public ObjectNotEqualConstrRightMemory(FieldExtractor extractor,
                                            Declaration declaration,
@@ -67,6 +69,7 @@ public class ObjectNotEqualConstrRightMemory
                                            BetaRightMemory childMemory) {
         this.extractor = extractor;
         this.declaration = declaration;
+        this.column = declaration.getColumn();
         this.childMemory = childMemory;
         this.memoryMap = new HashMap();
         this.memoryMasterList = new MultiLinkedList();
@@ -254,7 +257,7 @@ public class ObjectNotEqualConstrRightMemory
      */
     public void selectPossibleMatches(WorkingMemory workingMemory,
                                       ReteTuple tuple) {
-        Object select = declaration.getValue( workingMemory.getObject( tuple.get( this.declaration ) ) );
+        Object select = declaration.getValue( tuple.get( this.column ).getObject() );
         Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
         this.noMatchList = (MultiLinkedList) this.memoryMap.get( hash );
 
@@ -290,8 +293,8 @@ public class ObjectNotEqualConstrRightMemory
      * @return
      */
     private MultiLinkedList getFactList(WorkingMemory workingMemory,
-                                        FactHandleImpl handle) {
-        Object select = this.extractor.getValue( workingMemory.getObject( handle ) );
+                                        InternalFactHandle handle) {
+        Object select = this.extractor.getValue( handle.getObject() );
         Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
         MultiLinkedList list = (MultiLinkedList) this.memoryMap.get( hash );
         if ( list == null ) {

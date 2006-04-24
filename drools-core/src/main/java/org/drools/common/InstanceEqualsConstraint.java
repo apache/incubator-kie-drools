@@ -17,7 +17,6 @@ package org.drools.common;
 
 
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.FieldConstraint;
@@ -38,10 +37,10 @@ public class InstanceEqualsConstraint
         return this.declarations;
     }
 
-    public boolean isAllowed(FactHandle handle,
+    public boolean isAllowed(InternalFactHandle handle,
                              Tuple tuple,
                              WorkingMemory workingMemory) {
-        return !(workingMemory.getObject( tuple.get( this.otherColumn ) ) == workingMemory.getObject( handle ));
+        return !(tuple.get( this.otherColumn ).getObject() == handle.getObject() );
     }
 
     public String toString() {

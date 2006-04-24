@@ -17,8 +17,8 @@ package org.drools.rule;
 
 
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
@@ -66,10 +66,10 @@ public class LiteralConstraint
         return LiteralConstraint.requiredDeclarations;
     }
 
-    public boolean isAllowed(FactHandle handle,
+    public boolean isAllowed(InternalFactHandle handle,
                              Tuple tuple,
                              WorkingMemory workingMemory) {
-        return evaluator.evaluate( this.extractor.getValue( workingMemory.getObject( handle ) ),
+        return evaluator.evaluate( this.extractor.getValue( handle.getObject() ),
                                    this.field.getValue() );
     }
 

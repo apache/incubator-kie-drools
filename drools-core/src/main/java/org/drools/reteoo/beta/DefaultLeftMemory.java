@@ -19,6 +19,7 @@ package org.drools.reteoo.beta;
 import java.util.Iterator;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleImpl;
 import org.drools.reteoo.ReteTuple;
 import org.drools.util.MultiLinkedList;
@@ -81,7 +82,7 @@ public class DefaultLeftMemory
      * @inheritDoc
      */
     public Iterator iterator(WorkingMemory workingMemory,
-                             FactHandleImpl handle) {
+                             InternalFactHandle handle) {
         return this.memory.iterator();
     }
 
@@ -103,7 +104,7 @@ public class DefaultLeftMemory
      * @inheritDoc
      */
     public void selectPossibleMatches(WorkingMemory workingMemory,
-                                      FactHandleImpl handle) {
+                                      InternalFactHandle handle) {
         // nothing to do. all tuples are possible matches
     }
 
@@ -120,5 +121,6 @@ public class DefaultLeftMemory
     public int size() {
         return this.memory.size();
     }
+
 
 }

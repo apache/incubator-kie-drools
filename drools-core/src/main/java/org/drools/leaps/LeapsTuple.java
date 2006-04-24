@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.FactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
@@ -113,21 +114,21 @@ class LeapsTuple
     /**
      * @see org.drools.spi.Tuple
      */
-    public FactHandle get(int col) {
+    public InternalFactHandle get(int col) {
         return this.factHandles[col];
     }
 
     /**
      * @see org.drools.spi.Tuple
      */
-    public FactHandle get(Declaration declaration) {
+    public InternalFactHandle get(Declaration declaration) {
         return this.get( declaration.getColumn() );
     }
 
     /**
      * @see org.drools.spi.Tuple
      */
-    public FactHandle[] getFactHandles() {
+    public InternalFactHandle[] getFactHandles() {
         return this.factHandles;
     }
 
@@ -150,6 +151,10 @@ class LeapsTuple
 
     Activation getActivation() {
         return this.activation;
+    }
+    
+    public long getRecency() {
+        return 0;
     }
 
     /**

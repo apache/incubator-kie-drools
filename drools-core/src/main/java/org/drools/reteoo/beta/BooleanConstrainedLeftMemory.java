@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleImpl;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
@@ -49,6 +50,7 @@ public class BooleanConstrainedLeftMemory
 
     private FieldExtractor  extractor    = null;
     private Declaration     declaration  = null;
+    private int             column;
     private Evaluator       evaluator    = null;
 
     public BooleanConstrainedLeftMemory(FieldExtractor extractor,
@@ -66,6 +68,7 @@ public class BooleanConstrainedLeftMemory
                                         BetaLeftMemory childMemory) {
         this.extractor = extractor;
         this.declaration = declaration;
+        this.column = declaration.getColumn();
         this.evaluator = evaluator;
         this.childMemory = childMemory;
         this.trueList = new MultiLinkedList();
@@ -79,7 +82,7 @@ public class BooleanConstrainedLeftMemory
      */
     public void add(WorkingMemory workingMemory,
                     ReteTuple tuple) {
-        boolean select = ((Boolean) declaration.getValue( workingMemory.getObject( tuple.get( this.declaration ) ) )).booleanValue();
+        boolean select = ((Boolean) declaration.getValue( tuple.get( this.column ).getObject() )).booleanValue();
         if ( select == true ) {
             trueList.add( tuple );
         } else {
@@ -113,7 +116,7 @@ public class BooleanConstrainedLeftMemory
      */
     public void add(WorkingMemory workingMemory,
                     MultiLinkedListNodeWrapper tuple) {
-        boolean partition = ((Boolean) declaration.getValue( workingMemory.getObject( ((ReteTuple) tuple.getNode()).get( this.declaration ) ) )).booleanValue();
+        boolean partition = ((Boolean) declaration.getValue( ((ReteTuple) tuple.getNode()).get( this.column ).getObject() )).booleanValue();
         if ( partition == true ) {
             trueList.add( tuple );
         } else {
@@ -155,7 +158,7 @@ public class BooleanConstrainedLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
     public Iterator iterator(final WorkingMemory workingMemory,
-                             final FactHandleImpl handle) {
+                             final InternalFactHandle handle) {
         this.selectPossibleMatches( workingMemory,
                                     handle );
         Iterator iterator = new Iterator() {
@@ -275,8 +278,8 @@ public class BooleanConstrainedLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
     public void selectPossibleMatches(WorkingMemory workingMemory,
-                                      FactHandleImpl handle) {
-        boolean select = ((Boolean) this.extractor.getValue( workingMemory.getObject( handle ) )).booleanValue();
+                                      InternalFactHandle handle) {
+        boolean select = ((Boolean) this.extractor.getValue( handle.getObject() )).booleanValue();
         select = (evaluator.getOperator()) == Evaluator.EQUAL ? select : !select;
         if ( select == true ) {
             this.selectedList = trueList;

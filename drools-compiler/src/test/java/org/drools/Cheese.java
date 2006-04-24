@@ -1,4 +1,6 @@
 package org.drools;
+
+import java.io.Serializable;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,7 +19,7 @@ package org.drools;
 
 
 
-public class Cheese {
+public class Cheese implements Serializable {
     private String type;
     private int    price;
 

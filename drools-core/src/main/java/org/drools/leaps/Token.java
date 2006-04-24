@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.TableIterator;
 import org.drools.rule.Declaration;
@@ -170,22 +171,26 @@ public class Token
      * @return The currently bound <code>Object</code> value.
      * @see org.drools.spi.Tuple
      */
-    public FactHandle get(int idx) {
+    public InternalFactHandle get(int idx) {
         return this.currentFactHandles[idx];
     }
 
     /**
      * @see org.drools.spi.Tuple
      */
-    public FactHandle get(Declaration declaration) {
+    public InternalFactHandle get(Declaration declaration) {
         return this.get( declaration.getColumn() );
     }
 
     /**
      * @see org.drools.spi.Tuple
      */
-    public FactHandle[] getFactHandles() {
+    public InternalFactHandle[] getFactHandles() {
         return this.currentFactHandles;
+    }
+    
+    public long getRecency() {
+        return 0;
     }
 
     /**

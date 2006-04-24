@@ -25,5 +25,7 @@ public interface InternalFactHandle
     public long getId();
 
     public long getRecency();
+    
+    public Object getObject();
 
 }

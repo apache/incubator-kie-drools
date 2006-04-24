@@ -17,6 +17,7 @@ package org.drools.common;
  */
 
 import org.drools.conflict.DefaultConflictResolver;
+import org.drools.conflict.DepthConflictResolver;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.util.BinaryHeapFifoQueue;
@@ -51,7 +52,7 @@ public class AgendaGroupImpl
      */
     public AgendaGroupImpl(String name) {
         this.name = name;
-        this.queue = new BinaryHeapFifoQueue( DefaultConflictResolver.getInstance() );
+        this.queue = new BinaryHeapFifoQueue( DepthConflictResolver.getInstance() );
     }
 
     /* (non-Javadoc)

@@ -66,14 +66,14 @@ class ReteooBuilder
     // ------------------------------------------------------------
 
     /** The RuleBase */
-    private final RuleBaseImpl       ruleBase;
-
-    private final ObjectTypeResolver resolver;
-
-    private WorkingMemoryImpl[]      workingMemories;
+    private transient RuleBaseImpl       ruleBase;
 
     /** Rete network to build against. */
-    private final Rete               rete;
+    private transient Rete               rete;    
+
+    private transient WorkingMemoryImpl[]      workingMemories;
+
+    private final ObjectTypeResolver resolver;
 
     /** Nodes that have been attached. */
     private final Map                attachedNodes;
@@ -110,6 +110,22 @@ class ReteooBuilder
 
         //Set to 1 as Rete node is set to 0
         this.id = 1;
+    }
+    
+    /**
+     * Allow this to be settable, otherwise we get infinite recursion on serialisation
+     * @param ruleBase
+     */
+    void setRuleBase(RuleBaseImpl ruleBase) {
+        this.ruleBase = ruleBase;
+    }
+    
+    /**
+     * Allow this to be settable, otherwise we get infinite recursion on serialisation
+     * @param ruleBase
+     */    
+    void setRete(Rete rete) {
+        
     }
 
     // ------------------------------------------------------------

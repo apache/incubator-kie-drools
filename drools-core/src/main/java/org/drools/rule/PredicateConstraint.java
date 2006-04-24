@@ -17,9 +17,9 @@ package org.drools.rule;
 
 
 
-import org.drools.FactHandle;
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.Tuple;
@@ -77,7 +77,7 @@ public class PredicateConstraint
         return this.expression;
     }
 
-    public boolean isAllowed(FactHandle handle,
+    public boolean isAllowed(InternalFactHandle handle,
                              Tuple tuple,
                              WorkingMemory workingMemory) {
         try {
