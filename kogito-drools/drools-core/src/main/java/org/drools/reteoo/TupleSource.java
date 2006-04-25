@@ -175,15 +175,9 @@ abstract class TupleSource extends BaseNode
                                          PropagationContext context,
                                          WorkingMemoryImpl workingMemory) {
         LinkedList list = tuple.getLinkedTuples();
-
         if ( list != null && !list.isEmpty() ) {
-            LinkedListNode[] clone = new LinkedListNode[list.size()];
-            int i=0;
-            for( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst()) {
-                clone[i++] = node;
-            }
-            for(i = 0; i < clone.length; i++) {
-                LinkedListNode node = clone[i];
+            int i = 0;
+            for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
                 ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
                                                                        context,
                                                                        workingMemory );
