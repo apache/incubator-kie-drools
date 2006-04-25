@@ -28,6 +28,9 @@ public class EvalDescr extends PatternDescr
     private String[] declarations;
 
     private String   classMethodName;
+    
+    public EvalDescr() {
+    }    
 
     public EvalDescr(String text) {
         this.text = text;
@@ -35,6 +38,10 @@ public class EvalDescr extends PatternDescr
 
     public String getText() {
         return this.text;
+    }
+    
+    public void setText(String text) {
+        this.text = text;
     }
 
     public String getClassMethodName() {

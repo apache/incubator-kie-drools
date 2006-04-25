@@ -67,14 +67,8 @@ class EvalHandler extends BaseAbstractHandler
         xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        String expression = attrs.getValue( "expression" );
 
-        if ( expression == null || expression.trim().equals( "" ) ) {
-            throw new SAXParseException( "<eval> must have some content",
-                                         xmlPackageReader.getLocator() );
-        }
-
-        EvalDescr evalDescr = new EvalDescr( expression );
+        EvalDescr evalDescr = new EvalDescr( );
 
         return evalDescr;
     }
@@ -84,6 +78,16 @@ class EvalHandler extends BaseAbstractHandler
         Configuration config = xmlPackageReader.endConfiguration();
 
         EvalDescr evalDescr = (EvalDescr) this.xmlPackageReader.getCurrent();
+        
+
+        String expression = config.getText();
+
+        if ( expression == null || expression.trim().equals( "" ) ) {
+            throw new SAXParseException( "<eval> must have some content",
+                                         xmlPackageReader.getLocator() );
+        }
+        
+        evalDescr.setText( expression );
 
         LinkedList parents = this.xmlPackageReader.getParents();
         ListIterator it = parents.listIterator( parents.size() );

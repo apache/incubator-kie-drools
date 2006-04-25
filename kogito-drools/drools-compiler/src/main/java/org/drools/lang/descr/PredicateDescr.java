@@ -19,12 +19,18 @@ package org.drools.lang.descr;
 
 public class PredicateDescr extends PatternDescr {
     private final String fieldName;
-    private final String text;
+    private String text;
     
     private final String declaration;
     private String[] declarations;
     
     private String classMethodName;
+    
+    public PredicateDescr(String fieldName,
+                          String declaration) {
+        this.fieldName = fieldName;
+        this.declaration = declaration;
+    }    
         
     public PredicateDescr(String fieldName,
                           String declaration,
@@ -49,6 +55,10 @@ public class PredicateDescr extends PatternDescr {
     public String getText() {
         return this.text;
     } 
+    
+    public void setText(String text) {
+        this.text = text;
+    }    
     
     public String getDeclaration() {
         return this.declaration;
