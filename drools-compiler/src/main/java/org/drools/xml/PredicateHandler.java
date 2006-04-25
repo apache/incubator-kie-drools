@@ -75,15 +75,8 @@ class PredicateHandler extends BaseAbstractHandler
                                          xmlPackageReader.getLocator() );
         }
 
-        String expression = attrs.getValue( "expression" );
-        if ( expression == null || expression.trim().equals( "" ) ) {
-            throw new SAXParseException( "<predicate> requires an expression",
-                                         xmlPackageReader.getLocator() );
-        }
-
         PredicateDescr predicateDescr = new PredicateDescr( fieldName,
-                                                            identifier,
-                                                            expression );
+                                                            identifier );
 
         return predicateDescr;
     }
@@ -93,6 +86,15 @@ class PredicateHandler extends BaseAbstractHandler
         Configuration config = xmlPackageReader.endConfiguration();
 
         PredicateDescr predicateDescr = (PredicateDescr) this.xmlPackageReader.getCurrent();
+        
+        String expression = config.getText();
+
+        if ( expression == null || expression.trim().equals( "" ) ) {
+            throw new SAXParseException( "<predicate> must have some content",
+                                         xmlPackageReader.getLocator() );
+        }
+        
+        predicateDescr.setText( expression );        
 
         LinkedList parents = this.xmlPackageReader.getParents();
         ListIterator it = parents.listIterator( parents.size() );

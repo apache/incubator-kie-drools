@@ -36,9 +36,9 @@
 			<column object-type="Foo">
 				<literal field-name="field1" evaluator="==" value="value1" />
 											
-				<predicate field-name="field1" identifier="var1" expression="1==1" />
+				<predicate field-name="field1" identifier="var1">1==1</predicate>
 							
-				<return-value field-name="field1" evaluator="==" expression="1==1" />
+				<return-value field-name="field1" evaluator="==">1==1</return-value>
 							
 				<field-binding field-name="field1" identifier="var1" />
 				
@@ -67,7 +67,7 @@
 				<column object-type="Zaa" />			
 			</or>	
 			
-			<eval expression="1==1" />							
+			<eval>1==1</eval>					
 		</lhs>
 		
 	    <rhs>

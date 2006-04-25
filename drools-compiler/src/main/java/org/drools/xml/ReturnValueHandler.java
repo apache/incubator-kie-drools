@@ -75,15 +75,8 @@ class ReturnValueHandler extends BaseAbstractHandler
                                          xmlPackageReader.getLocator() );
         }
 
-        String expression = attrs.getValue( "expression" );
-        if ( expression == null || expression.trim().equals( "" ) ) {
-            throw new SAXParseException( "<return-value>  requires an 'expression' attribute",
-                                         xmlPackageReader.getLocator() );
-        }
-
         ReturnValueDescr returnValueDescr = new ReturnValueDescr( fieldName,
-                                                                  evaluator,
-                                                                  expression );
+                                                                  evaluator );
 
         return returnValueDescr;
     }
@@ -93,6 +86,15 @@ class ReturnValueHandler extends BaseAbstractHandler
         Configuration config = xmlPackageReader.endConfiguration();
 
         ReturnValueDescr returnValueDescr = (ReturnValueDescr) this.xmlPackageReader.getCurrent();
+        
+        String expression = config.getText();
+
+        if ( expression == null || expression.trim().equals( "" ) ) {
+            throw new SAXParseException( "<return-value> must have some content",
+                                         xmlPackageReader.getLocator() );
+        }
+        
+        returnValueDescr.setText( expression );           
 
         LinkedList parents = this.xmlPackageReader.getParents();
         ListIterator it = parents.listIterator( parents.size() );
