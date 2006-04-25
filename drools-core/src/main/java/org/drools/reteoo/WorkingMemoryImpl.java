@@ -334,7 +334,7 @@ public class WorkingMemoryImpl
 
     public List getObjects(Class objectClass) {
         List matching = new java.util.LinkedList();
-        for ( Iterator objIter = this.identityMap.values().iterator(); objIter.hasNext(); ) {
+        for ( Iterator objIter = this.identityMap.keySet().iterator(); objIter.hasNext(); ) {
             Object obj = objIter.next();
 
             if ( objectClass.isInstance( obj ) ) {
