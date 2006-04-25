@@ -329,7 +329,7 @@ public class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public List getObjects() {
-        return new ArrayList( this.identityMap.values() );
+        return new ArrayList( this.identityMap.keySet() );
     }
 
     public List getObjects(Class objectClass) {
