@@ -142,7 +142,9 @@
     &lt;column object-type="Zaa" /&gt;
   &lt;/or&gt;
 
-  &lt;eval expression="1==1" /&gt;
+  &lt;eval&gt;
+    1==1
+  &lt;/eval&gt;
  &lt;/lhs&gt;
 
  &lt;rhs&gt;
@@ -171,6 +173,13 @@
     can nest things further). "Exists" and "Not" work around Columns, to check
     for the existence or non existance of a fact meeting its
     constraints.</para>
+
+    <para>The Eval element allows the execution of a valid snippet of java
+    code - as long as it evaluates to a boolean (do not end it with a
+    semi-colon, as it is just a fragment) - this can include calling a
+    function. The Eval is less efficient then then columns, as the rule engine
+    has to evaluate it each time, but it is a "catch all" feature for when you
+    can express what you need to do with Column constraints.</para>
   </section>
 
   <section>
@@ -219,10 +228,10 @@
       <example>
         <title>Drools 3 XML equivalent</title>
 
-        <programlisting>&lt;rule name="my rule"&gt;
+        <programlisting>&lt;rule name="Goodbye Cruel World"&gt;
  &lt;lhs&gt;
    &lt;column identifier='goodbye' object-type='String' &gt;
-   &lt;eval expression='goodbye.equals("Goodbye")'/&gt;
+   &lt;eval&gt;goodbye.equals("Goodbye")&lt;/eval&gt;
  &lt;/lhs&gt;
  &lt;rhs&gt;
    goodbyeWorld( goodbye );
