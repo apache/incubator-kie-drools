@@ -21,7 +21,7 @@ package org.drools.examples.manners;
 
 import java.io.Serializable;
 
-public class Seating
+public final class Seating
     implements
     Serializable {
     private final int id, pid;
@@ -49,39 +49,39 @@ public class Seating
         this.rightGuestName = rightGuestName;
     }
 
-    public boolean isPathDone() {
+    public final boolean isPathDone() {
         return this.pathDone;
     }
 
-    public void setPathDone(boolean pathDone) {
+    public final void setPathDone(boolean pathDone) {
         this.pathDone = pathDone;
     }
 
-    public int getId() {
+    public final int getId() {
         return this.id;
     }
 
-    public String getLeftGuestName() {
+    public final String getLeftGuestName() {
         return this.leftGuestName;
     }
 
-    public int getLeftSeat() {
+    public final int getLeftSeat() {
         return this.leftSeat;
     }
 
-    public int getPid() {
+    public final int getPid() {
         return this.pid;
     }
 
-    public String getRightGuestName() {
+    public final String getRightGuestName() {
         return this.rightGuestName;
     }
 
-    public int getRightSeat() {
+    public final int getRightSeat() {
         return this.rightSeat;
     }
 
-    public String toString() {
+    public final String toString() {
         return "[Seating id=" + this.id + " , pid=" + this.pid + " , pathDone=" + this.pathDone + " , leftSeat=" + this.leftSeat + ", leftGuestName=" + this.leftGuestName + ", rightSeat=" + this.rightSeat + ", rightGuestName=" + this.rightGuestName
                + "]";
     }

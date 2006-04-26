@@ -48,7 +48,7 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#add(org.drools.WorkingMemory, org.drools.reteoo.ObjectMatches)
      */
-    public void add(WorkingMemory workingMemory,
+    public final void add(WorkingMemory workingMemory,
                     ObjectMatches matches) {
         this.memory.add( matches );
     }
@@ -59,7 +59,7 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#remove(org.drools.WorkingMemory, org.drools.reteoo.ObjectMatches)
      */
-    public void remove(WorkingMemory workingMemory,
+    public final void remove(WorkingMemory workingMemory,
                        ObjectMatches matches) {
         matches.getLinkedList().remove( matches );
     }
@@ -70,7 +70,7 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#add(org.drools.WorkingMemory, org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public void add(WorkingMemory workingMemory,
+    public final void add(WorkingMemory workingMemory,
                     MultiLinkedListNodeWrapper wrapper) {
         this.memory.add( wrapper );
     }
@@ -81,7 +81,7 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#remove(org.drools.WorkingMemory, org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public void remove(WorkingMemory workingMemory,
+    public final void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper wrapper) {
         wrapper.getLinkedList().remove( wrapper );
     }
@@ -91,11 +91,9 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
-    public Iterator iterator(final WorkingMemory workingMemory,
+    public final Iterator iterator(final WorkingMemory workingMemory,
                              final ReteTuple tuple) {
-        this.selectPossibleMatches( workingMemory,
-                                    tuple );
-        return this.iterator();
+        return this.memory.iterator();
     }
 
     /**
@@ -103,7 +101,7 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#isEmpty()
      */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return this.memory.isEmpty();
     }
 
@@ -113,7 +111,7 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
-    public void selectPossibleMatches(WorkingMemory workingMemory,
+    public final void selectPossibleMatches(WorkingMemory workingMemory,
                                       ReteTuple tuple) {
         // nothing to do
     }
@@ -124,7 +122,7 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#isPossibleMatch(org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public boolean isPossibleMatch(MultiLinkedListNodeWrapper matches) {
+    public final boolean isPossibleMatch(MultiLinkedListNodeWrapper matches) {
         return matches.getLinkedList() == this.memory;
     }
 
@@ -134,7 +132,7 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#size()
      */
-    public int size() {
+    public final int size() {
         return this.memory.size();
     }
 
@@ -143,7 +141,7 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#iterator()
      */
-    public Iterator iterator() {
+    public final Iterator iterator() {
         return memory.iterator();
     }
 
