@@ -4,7 +4,7 @@ import org.drools.Cheese;
 
 global java.util.List list;
  
-rule simple rule
+rule "simple rule"
     when
         Cheese( )
     then
