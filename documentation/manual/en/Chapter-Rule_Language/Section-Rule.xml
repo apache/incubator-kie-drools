@@ -71,6 +71,40 @@
   </section>
 
   <section>
+    <title>The Right Hand Side</title>
+
+    <para>The Right Hand Side (RHS) is a common name for the consequence or
+    action part of the rule. The purpose of the right hand side is to retract
+    or add facts to working memory, and also invoke arbitary actions specific
+    to your application. In practical terms, the RHS is a block of code that
+    is executed when the rule fires.</para>
+
+    <para>There are a few convenience methods you can use to modify working
+    memory: </para>
+
+    <para>"modify(obj);" will tell the engine that an object has changed (one
+    that has been bound to something on the LHS) and rules may need to be
+    reconsidered. </para>
+
+    <para>"assert(new Something());" will place a new object of your creation
+    in working memory. </para>
+
+    <para>"assertLogical(new Something());" is similar to assert, but the
+    object will be automatically retracted when there are no more facts to
+    support the truth of the currently firing rule. </para>
+
+    <para>"retract(obj);" removes an object from working memory. </para>
+
+    <para>These convenience methods are basically macros that provide short
+    cuts to the KnowldgeHelper instance (refer to the KnowledgeHelper
+    interface for more advanced operations). The KnowledgeHelper interface is
+    made available to the RHS code block as a variable called "drools". If you
+    provide "Property Change Listeners" to your java beans that you are
+    asserting into the engine, you can avoid the need to call "modify" when
+    the object changes.</para>
+  </section>
+
+  <section>
     <title>Rule Attriutes</title>
 
     <para></para>
@@ -671,7 +705,7 @@ Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 )
         <title>or with binding</title>
 
         <programlisting>pensioner : Person( sex == "f", age &gt; 60 ) || pensioner : Person( sex == "m", age &gt; 65 ) 
-pensioner : Person( sex == "f", age &gt; 60 ) or pensioner : Person( sex == "m", age &gt; 65 )</programlisting>
+pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 ) )</programlisting>
       </example>
 
       <para>Care must be taken when binding with an "or" conditional element,
@@ -714,7 +748,7 @@ pensioner : Person( sex == "f", age &gt; 60 ) or pensioner : Person( sex == "m",
       <para>For folks who are familiar with Drools 2.x lineage, the old Drools
       paramater and condition tags are equivalent to:</para>
 
-      <para>p1 : Parameter() p2 : Parameter() </para>
+      <para>p1 : Parameter() p2 : Parameter()</para>
 
       <para>eval( /* your condition here, involving the parameters */)</para>
 
@@ -819,7 +853,7 @@ pensioner : Person( sex == "f", age &gt; 60 ) or pensioner : Person( sex == "m",
       </figure>
 
       <para>Grouping is similar to using parentheses in algebra, it makes the
-      order of operations explicit. </para>
+      order of operations explicit.</para>
     </section>
   </section>
 </section>
