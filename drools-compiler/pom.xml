@@ -59,8 +59,8 @@
     </dependency>                                            
     
 	 <dependency>
-			<groupId>antlr</groupId>
-			<artifactId>antlr3</artifactId>    
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr</artifactId>    
 			<version>3.0ea8</version>
     </dependency>     
     
@@ -71,9 +71,9 @@
     </dependency>       
 
     <dependency>
-			<groupId>eclipse</groupId>
-			<artifactId>jdtcore</artifactId>    
-			<version>3.2.0.v_658</version>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>core</artifactId>    
+			<version>3.2.0.658</version>
     </dependency>  
 
            
