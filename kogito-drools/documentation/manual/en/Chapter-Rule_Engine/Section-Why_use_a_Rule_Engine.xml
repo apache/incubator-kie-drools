@@ -2,9 +2,13 @@
 <section>
   <title>Why use a Rule Engine</title>
 
-  <para>Two questions often asked are</para>
+  <para>Some questions often asked are</para>
 
   <orderedlist>
+    <listitem>
+      <para>When should I use a rule engine ?</para>
+    </listitem>
+
     <listitem>
       <para>What advantage does this have over hand coded "if ..... then"
       approaches?</para>
@@ -18,49 +22,157 @@
     </listitem>
   </orderedlist>
 
-  <para></para>
-
-  <itemizedlist>
-    <listitem>
-      <para>Declarative Programming</para>
-
-      <para>Rule englines allow you to say "What to do" not "How to do
-      it".</para>
-    </listitem>
-
-    <listitem>
-      <para>Logic and Data Separation</para>
-    </listitem>
-
-    <listitem>
-      <para>Speed and Scalability</para>
-
-      <para>The Rete algorithm, and its descendents such as Drools'
-      Reteoo,</para>
-    </listitem>
-
-    <listitem>
-      <para>Centralisation Knowledge</para>
-    </listitem>
-
-    <listitem>
-      <para>Tool Integration</para>
-    </listitem>
-  </itemizedlist>
+  <para>We will attempt to adderess these below.</para>
 
   <section>
-	  <title>When not to use a rule engine</title>
-	  <para>
-		To quote a Drools mailing list regular (Dave Hamu):
-		"It seems to me that in the excitement of working
-with rules engines, that people forget that a rules engine is only one
-piece of a complex application or solution.  Rules engines are not
-really intended to handle workflow or process executions nor are
-workflow engines or process management tools designed to do rules.  Use
-the right tool for the job.  Sure, a pair of pliers can be used as a
-hammering tool in a pinch, but that's not what it's designed for."
+    <title>Summary of advantages of a rule engine</title>
 
-	  </para>
+    <itemizedlist>
+      <listitem>
+        <para>Declarative Programming</para>
+
+        <para>Rule englines allow you to say "What to do" not "How to do
+        it".</para>
+
+        <para>They key advantage of this point is that it can make it easy to
+        express solutions to hard problems, and consequently have those
+        solutions verified (rules are much easier to read then code).</para>
+
+        <para>Rule systems are capable of solving very very hard problems, yet
+        providing a solution that is able to explain why a "decision" was made
+        (not so easy with other types of AI systems like neural networks, or
+        say, my brain - I have no idea why I scratched the side of the
+        car).</para>
+      </listitem>
+
+      <listitem>
+        <para>Logic and Data Separation</para>
+
+        <para>Your data is in your domain objects, the logic is in the rules.
+        This is fundamentally breaking the OO coupling of data and logic (this
+        can be an advantage as well as a disadvantage depending on your point
+        of view). The upshot is that the logic can be much easier to maintain
+        as there are changes in the future, as the logic is all layed out in
+        rules.</para>
+      </listitem>
+
+      <listitem>
+        <para>Speed and Scalability</para>
+
+        <para>The Rete algorithm, Leaps algorithm, and its descendents such as
+        Drools' Reteoo (and Leaps), provide very efficient ways of matching
+        rule patterns to your domain object data. These are especially
+        efficient when you have datasets that do not change entirely (as the
+        rule engine can remember past matches). These algorithms are battle
+        proven.</para>
+      </listitem>
+
+      <listitem>
+        <para>Centralisation of Knowledge</para>
+
+        <para>By using rules, you are creating a repository of knowlegde (a
+        knowledebase) which is executable. This means its a single point of
+        truth, for business policy (for instance) - ideally rules are so
+        readable, they also serve as the documentation.</para>
+      </listitem>
+
+      <listitem>
+        <para>Tool Integration</para>
+
+        <para>Tools such as eclipse (and in future, Web based UIs) provide
+        ways to edit and manage rules and get immediate feedback, validation
+        and content assistance. Auditing and debugging tools are also
+        available.</para>
+      </listitem>
+
+      <listitem>
+        <para>Explanation facility</para>
+
+        <para>Rule systems effectively provide an "explanation facility" by
+        being able to log the "decisions" made by the rule engine (and why the
+        decisions were made).</para>
+      </listitem>
+
+      <listitem>
+        <para>Understandable rules (readable by domain experts)</para>
+
+        <para>By creating object models (and optionally Domain Specific
+        Languages) that model your problem domain, rules can look very close
+        to natural language. They lend themselves to logic that is
+        understandable to domain experts who may be non technical (as all the
+        program plumbing is in the usual code, hidden away).</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
+  <section>
+    <title>When should you use a rule engine</title>
+
+    <para>The shortest answer to this is "when there is no satisfactory
+    traditional programming approach to solve the problem.". Given that short
+    answer, some more explanation is required. The reason why there is no
+    "traditional" approach is possibly one of the following: <itemizedlist>
+        <listitem>
+           <para>The problem is just too fiddly for traditional code. </para>
+
+          <para>The problem may not be complex, but you can't see a non
+          fragile way of building it.</para>
+
+           
+        </listitem>
+
+        <listitem>
+           <para>The problem is beyond any obvious algorithm based solution.</para>
+        </listitem>
+
+        <listitem>
+           <para>The logic changes often </para>
+
+          <para>The logic itself may be simple (but doesn't have to be) but
+          the rules change just too often. In many organisations, software
+          releases are few and far between, and rules can help provide the
+          "agility" that is needed, and expected these days (in a reasonably
+          safe way).</para>
+
+           
+        </listitem>
+      </itemizedlist>
+	 </para>
+
+	 <para>
+		Of course if rules are a new technology in your project teams experience, the overhead in getting going must be factored in. Its not a trivial technology, but we try to make it easier.
+	 </para>
+
+    <para>Typically in a modern OO application you would use a rule engine to
+    contain key parts of your business logic (what that means of course
+    depends on the application) - ESPECIALLY the REALLY MESSY parts !. This is
+    an inversion of the OO concept of encapsulating all the logic inside your
+    objects. This is not to say that you throw out OO practices, on the
+    contrary in any real world application, business logic is just one part of
+    the application. If you ever notice lots of "if" "else" "switch" and other
+    messy logic in your code that just doesn't feel right (and you keep coming
+    back to fix it - either because you got it wrong, or the logic/your
+    understanding changes) - think about using rules. If you are faced with
+    tough problems of which there are no algorithms or patterns for, consider
+    rules.</para>
+
+    <para>Rules could be used embedded in your application, or perhaps as a
+    service. Often rules work best as "stateful" component - hence they are
+    often an integral part of an application. However, there have been
+    successful cases of creating reusable rul eservices which are
+    stateless.</para>
+  </section>
+
+  <section>
+    <title>When not to use a rule engine</title>
+
+    <para>To quote a Drools mailing list regular (Dave Hamu): "It seems to me
+    that in the excitement of working with rules engines, that people forget
+    that a rules engine is only one piece of a complex application or
+    solution. Rules engines are not really intended to handle workflow or
+    process executions nor are workflow engines or process management tools
+    designed to do rules. Use the right tool for the job. Sure, a pair of
+    pliers can be used as a hammering tool in a pinch, but that's not what
+    it's designed for."</para>
+  </section>
 </section>
