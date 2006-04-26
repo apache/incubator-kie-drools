@@ -88,6 +88,33 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
     }
+    
+    public void testEmptyColumn() throws Exception {
+        //pre build the package
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyColumn.drl" ) )  );
+        Package pkg = builder.getPackage();
+
+        //add the package to a rulebase
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        Cheese stilton = new Cheese( "stilton",
+                                     5 );
+        workingMemory.assertObject( stilton );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( new Integer( 5 ),
+                      list.get( 0 ) );        
+    }
+    
 
     public void testHelloWorld() throws Exception {
 

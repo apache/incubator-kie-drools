@@ -1,0 +1,9 @@
+package org.drools.test;
+ 
+import org.drools.Cheese;
+ 
+rule simple rule
+    when
+        Cheese( )
+    then
+end 

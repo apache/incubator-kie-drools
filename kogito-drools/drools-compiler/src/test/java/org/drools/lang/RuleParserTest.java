@@ -259,6 +259,20 @@ public class RuleParserTest extends TestCase {
 		
     		assertFalse( parser.hasErrors() );
 	}
+    
+    public void testEmptyColumn() throws Exception {
+        RuleParser ruleParser = parseResource( "test_EmptyColumn.drl" );
+        ruleParser.compilation_unit();
+        PackageDescr packageDescr = ruleParser.getPackageDescr();
+        assertEquals( 1, packageDescr.getRules().size() );
+        RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get( 0 );
+        assertNotNull( ruleDescr.getLhs() );
+        assertEquals( 1, ruleDescr.getLhs().getDescrs().size() );
+        ColumnDescr columnDescr = ( ColumnDescr ) ruleDescr.getLhs().getDescrs().get( 0 );
+        assertEquals( 0, columnDescr.getDescrs().size() ); //this may be null, not sure as the test doesn't get this far...
+        assertEquals( "Cheese", columnDescr.getObjectType() );
+        
+    }
 	
 	public void testSimpleRule() throws Exception {
 		RuleDescr rule = parseResource( "simple_rule.drl" ).rule();

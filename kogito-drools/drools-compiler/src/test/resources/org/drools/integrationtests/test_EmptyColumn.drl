@@ -1,0 +1,12 @@
+package org.drools.test;
+ 
+import org.drools.Cheese;
+
+global java.util.List list;
+ 
+rule simple rule
+    when
+        Cheese( )
+    then
+		list.add( cheese ); 
+end 
