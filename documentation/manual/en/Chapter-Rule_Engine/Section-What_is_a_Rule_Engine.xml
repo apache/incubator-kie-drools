@@ -115,7 +115,7 @@ end</programlisting>
     </indexterm>Rete implementation is called ReteOO signifying that this
   Drools has an enhanced and optimised implementation of the Rete algorithm.
   Other Rete based engines also have marketting terms for their prioprietary
-  enhancements to Rete, like RetePlus and Rete III, </para>
+  enhancements to Rete, like RetePlus and Rete III,</para>
 
   <figure>
     <title>A Basic Rete network</title>
@@ -260,8 +260,9 @@ List results = workingMemory.getQueryResults( "Find cheeses with a cost of 5" );
   construct instead of a Query the Terminal Node's Consequence would have
   attempted to fire twice, once for "cheddar" and once for "mozarella".</para>
 
-  <para>When a Rule is Fully Matched it does not fire immediately. Instead the
-  Rule plus the matched Facts are <indexterm>
+  <para>When a Rule is Fully Matched it does not fire immediately (in Rete,
+  but in Leaps it does !). Instead the Rule plus the matched Facts are
+  <indexterm>
       <primary>Activated</primary>
     </indexterm>Activated placed onto the <indexterm>
       <primary>Agenda</primary>
