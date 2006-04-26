@@ -2,6 +2,20 @@
 <section>
   <title>What is a Rule Engine</title>
 
+  <section>
+    <title>Background</title>
+  <para>
+	A rule engine like Drools is centred around the concept of production rules (IF conditions THEN actions). Emil Leon Post (http://en.wikipedia.org/wiki/Emil_Leon_Post) was the first to use production systems in logic - as a consequence of this he was able to prove that any logical system (including mathematics) could be written with production rules. Quite an amazing proof, this essentially means that you can represent any system/problem with production rules (back in the real world there are constraints of processing power and efficiency of course !). 
+  </para>
+
+  <para>
+	You may also have heard of "Expert Systems" in the context of rule engines. You can think of expert systems as a rule engine + the codification of knowledge for a specific problem domain (+ a user interface !). In that sense, Drools is a platform for expert systems. Historically, rule engines popularity grew out of expert systems success (for example, EMYCIN was one of the first "shells" for an expert system, which was created from the MYCIN medical diagnosis expert system).
+  </para>
+
+  </section>
+
+  <section>
+    <title>Rules</title>
   <para>A <indexterm>
       <primary>Rule</primary>
     </indexterm>Rule is the codification of business knowledge. A Rule has
@@ -270,4 +284,6 @@ List results = workingMemory.getQueryResults( "Find cheeses with a cost of 5" );
   <indexterm>
       <primary>Activation</primary>
     </indexterm>Activations.</para>
+
+	</section>
 </section>
