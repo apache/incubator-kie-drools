@@ -18,6 +18,17 @@ grammar RuleParser;
 	private String source = "unknown";
 	private int lineOffset = 0;
 	
+	private boolean parserDebug = false;
+	
+	public void setParserDebug(boolean parserDebug) {
+		this.parserDebug = parserDebug;
+	}
+	
+	public void debug(String message) {
+		if ( parserDebug ) 
+			System.err.println( "drl parser: " + message );
+	}
+	
 	public void setSource(String source) {
 		this.source = source;
 	}
@@ -375,6 +386,7 @@ rule returns [RuleDescr rule]
 		opt_eol
 		loc='rule' ruleName=word opt_eol 
 		{ 
+			debug( "start rule: " + ruleName );
 			rule = new RuleDescr( ruleName, null ); 
 			rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
@@ -408,7 +420,10 @@ rule returns [RuleDescr rule]
 				rule.setConsequenceLocation(offset(loc.getLine()), loc.getCharPositionInLine());
 			})?
 		)?
-		'end' opt_eol 
+		'end' opt_eol
+		{
+			debug( "end rule: " + ruleName );
+		} 
 	;
 	
 extra_statement

@@ -261,11 +261,12 @@ public class RuleParserTest extends TestCase {
 	}
     
     public void testEmptyColumn() throws Exception {
-        RuleParser ruleParser = parseResource( "test_EmptyColumn.drl" );
-        ruleParser.compilation_unit();
-        PackageDescr packageDescr = ruleParser.getPackageDescr();
+        parseResource( "test_EmptyColumn.drl" );
+        parser.compilation_unit();
+        PackageDescr packageDescr = parser.getPackageDescr();
         assertEquals( 1, packageDescr.getRules().size() );
         RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get( 0 );
+        assertEquals( "simple rule", ruleDescr.getName() );
         assertNotNull( ruleDescr.getLhs() );
         assertEquals( 1, ruleDescr.getLhs().getDescrs().size() );
         ColumnDescr columnDescr = ( ColumnDescr ) ruleDescr.getLhs().getDescrs().get( 0 );
@@ -1380,6 +1381,7 @@ public class RuleParserTest extends TestCase {
 	
 	private RuleParser parseResource(String name) throws Exception {
 		
+		System.err.println( getClass().getResource( name ) );
 		InputStream in = getClass().getResourceAsStream( name );
 		
 		InputStreamReader reader = new InputStreamReader( in );
@@ -1409,7 +1411,9 @@ public class RuleParserTest extends TestCase {
 	}
 	
 	private RuleParser newParser(TokenStream tokenStream) {
-		return new RuleParser( tokenStream );
+		RuleParser p = new RuleParser( tokenStream );
+		//p.setParserDebug( true );
+		return p;
 	}
 	
 	private void assertEqualsIgnoreWhitespace(String expected, String actual) {
