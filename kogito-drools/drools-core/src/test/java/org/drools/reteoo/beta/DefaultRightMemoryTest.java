@@ -47,6 +47,10 @@ public class DefaultRightMemoryTest extends BaseBetaRightMemoryTestClass {
         super.tearDown();
     }
 
+    public void testSelectPossibleMatches2() {
+        // do nothing as there is no child memory
+    }
+    
     /*
      * Test method for 'org.drools.reteoo.beta.DefaultRightMemory.iterator(WorkingMemory, ReteTuple)'
      */

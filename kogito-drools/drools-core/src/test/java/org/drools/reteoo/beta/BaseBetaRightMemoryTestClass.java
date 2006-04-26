@@ -21,6 +21,7 @@ import java.util.Iterator;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.drools.WorkingMemory;
 import org.drools.reteoo.DefaultFactHandleFactory;
 import org.drools.reteoo.FactHandleImpl;
 import org.drools.reteoo.ObjectMatches;
@@ -42,6 +43,7 @@ import org.drools.util.MultiLinkedListNodeWrapper;
 public abstract class BaseBetaRightMemoryTestClass extends TestCase {
     protected WorkingMemoryImpl workingMemory;
     protected BetaRightMemory   memory;
+    protected MockBetaRightMemory child;
     protected DummyValueObject  obj0;
     protected DummyValueObject  obj1;
     protected DummyValueObject  obj2;
@@ -58,6 +60,7 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
 
     public BaseBetaRightMemoryTestClass() {
         this.memory = null;
+        this.child = new MockBetaRightMemory();
     }
 
     protected void setUp() throws Exception {
@@ -343,6 +346,12 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
         }
     }
 
+    public void testSelectPossibleMatches2() {
+        int counter = this.child.getCounter();
+        this.memory.selectPossibleMatches( this.workingMemory, this.tuple0 );
+        Assert.assertEquals( "Should have called inner memory", counter+1, this.child.getCounter() );
+    }
+
     /*
      * Test method for 'org.drools.reteoo.beta.DefaultRightMemory.selectPossibleMatches(WorkingMemory, ReteTuple)'
      */
@@ -358,4 +367,62 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
      * a remove;
      */
     public abstract void testModifyObjectAttribute();
+    
+    public static class MockBetaRightMemory implements BetaRightMemory {
+        private int callCounter = 0;
+
+        public void add(WorkingMemory workingMemory,
+                        ObjectMatches matches) {
+            this.callCounter++;
+        }
+
+        public void add(WorkingMemory workingMemory,
+                        MultiLinkedListNodeWrapper matches) {
+            this.callCounter++;
+        }
+
+        public boolean isEmpty() {
+            this.callCounter++;
+            return false;
+        }
+
+        public boolean isPossibleMatch(MultiLinkedListNodeWrapper matches) {
+            this.callCounter++;
+            return true;
+        }
+
+        public Iterator iterator(WorkingMemory workingMemory,
+                                 ReteTuple tuple) {
+            this.callCounter++;
+            return null;
+        }
+
+        public Iterator iterator() {
+            this.callCounter++;
+            return null;
+        }
+
+        public void remove(WorkingMemory workingMemory,
+                           ObjectMatches matches) {
+            this.callCounter++;
+        }
+
+        public void remove(WorkingMemory workingMemory,
+                           MultiLinkedListNodeWrapper matches) {
+            this.callCounter++;
+        }
+
+        public void selectPossibleMatches(WorkingMemory workingMemory,
+                                          ReteTuple tuple) {
+            this.callCounter++;
+        }
+
+        public int size() {
+            return 0;
+        }
+        
+        public int getCounter() {
+            return this.callCounter;
+        }
+    }
 }

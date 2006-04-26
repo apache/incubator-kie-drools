@@ -247,6 +247,11 @@ public class ObjectNotEqualConstrLeftMemory
                                       InternalFactHandle handle) {
         Object select = this.extractor.getValue( handle.getObject() );
         this.noMatchList = (MultiLinkedList) this.memoryMap.get( select );
+        
+        if ( this.innerMemory != null ) {
+            this.innerMemory.selectPossibleMatches( workingMemory,
+                                                    handle );
+        }
     }
 
     /**
