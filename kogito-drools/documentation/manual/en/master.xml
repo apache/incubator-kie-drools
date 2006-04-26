@@ -74,7 +74,7 @@
 
       <xi:include href="Chapter-Rule_Engine/Section-Rete_Algorithm.xml" />            
       
-      <!-- MISSING !! <xi:include href="Chapter-Rule_Engine/Section-Leaps_Algorithm.xml" /> -->
+      <xi:include href="Chapter-Rule_Engine/Section-Leaps_Algorithm.xml" />
 
       <xi:include href="Chapter-Rule_Engine/Section-Rule_Base.xml" />
 
