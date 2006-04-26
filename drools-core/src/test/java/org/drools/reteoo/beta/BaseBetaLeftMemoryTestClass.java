@@ -21,6 +21,8 @@ import java.util.Iterator;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.DefaultFactHandleFactory;
 import org.drools.reteoo.FactHandleImpl;
 import org.drools.reteoo.ReteTuple;
@@ -37,21 +39,23 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  * Created: 28/02/2006
  */
 public abstract class BaseBetaLeftMemoryTestClass extends TestCase {
-    protected WorkingMemoryImpl workingMemory;
-    protected BetaLeftMemory    memory;
-    protected DummyValueObject  obj0;
-    protected DummyValueObject  obj1;
-    protected DummyValueObject  obj2;
-    protected FactHandleFactory factory;
-    protected FactHandleImpl    f0;
-    protected FactHandleImpl    f1;
-    protected FactHandleImpl    f2;
-    protected ReteTuple         tuple0;
-    protected ReteTuple         tuple1;
-    protected ReteTuple         tuple2;
+    protected WorkingMemoryImpl  workingMemory;
+    protected BetaLeftMemory     memory;
+    protected MockBetaLeftMemory child;
+    protected DummyValueObject   obj0;
+    protected DummyValueObject   obj1;
+    protected DummyValueObject   obj2;
+    protected FactHandleFactory  factory;
+    protected FactHandleImpl     f0;
+    protected FactHandleImpl     f1;
+    protected FactHandleImpl     f2;
+    protected ReteTuple          tuple0;
+    protected ReteTuple          tuple1;
+    protected ReteTuple          tuple2;
 
     public BaseBetaLeftMemoryTestClass() {
         this.memory = null;
+        this.child = new MockBetaLeftMemory();
     }
 
     protected void setUp() throws Exception {
@@ -349,6 +353,12 @@ public abstract class BaseBetaLeftMemoryTestClass extends TestCase {
             Assert.fail( "BetaRightMemory was not supposed to throw ClassCastException: " + e.getMessage() );
         }
     }
+    
+    public void testSelectPossibleMatches2() {
+        int counter = this.child.getCounter();
+        this.memory.selectPossibleMatches( this.workingMemory, this.f0 );
+        Assert.assertEquals( "Should have called inner memory", counter+1, this.child.getCounter() );
+    }
 
     public abstract void testIterator();
 
@@ -359,5 +369,65 @@ public abstract class BaseBetaLeftMemoryTestClass extends TestCase {
      * a remove;
      */
     public abstract void testModifyObjectAttribute();
+
+    
+    public static class  MockBetaLeftMemory implements BetaLeftMemory {
+        private int callCounter = 0;
+        
+        public void add(WorkingMemory workingMemory,
+                        MultiLinkedListNodeWrapper tuple) {
+            this.callCounter++;    
+        }
+
+        public void add(WorkingMemory workingMemory,
+                        ReteTuple tuple) {
+            this.callCounter++;    
+        }
+
+        public boolean isEmpty() {
+            this.callCounter++;    
+            return false;
+        }
+
+        public boolean isPossibleMatch(MultiLinkedListNodeWrapper tuple) {
+            this.callCounter++;    
+            return true;
+        }
+
+        public Iterator iterator(WorkingMemory workingMemory,
+                                 InternalFactHandle handle) {
+            this.callCounter++;    
+            return null;
+        }
+
+        public Iterator iterator() {
+            this.callCounter++;    
+            return null;
+        }
+
+        public void remove(WorkingMemory workingMemory,
+                           MultiLinkedListNodeWrapper tuple) {
+            this.callCounter++;    
+        }
+
+        public void remove(WorkingMemory workingMemory,
+                           ReteTuple tuple) {
+            this.callCounter++;    
+        }
+
+        public void selectPossibleMatches(WorkingMemory workingMemory,
+                                          InternalFactHandle handle) {
+            this.callCounter++;    
+        }
+
+        public int size() {
+            this.callCounter++;    
+            return 0;
+        }
+        
+        public int getCounter() {
+            return this.callCounter;
+        }
+    };
 
 }

@@ -51,7 +51,8 @@ public class ObjectEqualConstrLeftMemoryTest extends BaseBetaLeftMemoryTestClass
 
         this.memory = new ObjectEqualConstrLeftMemory( extractor,
                                                        declaration,
-                                                       evaluator );
+                                                       evaluator,
+                                                       this.child);
     }
 
     protected void tearDown() throws Exception {

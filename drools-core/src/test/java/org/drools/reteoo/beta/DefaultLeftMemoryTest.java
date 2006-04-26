@@ -41,6 +41,10 @@ public class DefaultLeftMemoryTest extends BaseBetaLeftMemoryTestClass {
         super.tearDown();
     }
 
+    public void testSelectPossibleMatches2() {
+        // do nothing as there is no child memory
+    }
+    
     /*
      * Test method for 'org.drools.reteoo.beta.DefaultLeftMemory.iterator(WorkingMemory, FactHandleImpl)'
      */

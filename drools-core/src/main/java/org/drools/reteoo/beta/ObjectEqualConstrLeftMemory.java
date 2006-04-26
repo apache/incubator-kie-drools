@@ -259,6 +259,11 @@ public class ObjectEqualConstrLeftMemory
         Object select = this.extractor.getValue( handle.getObject() );
         Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
         this.selectedList = (MultiLinkedList) this.memoryMap.get( hash );
+        
+        if ( this.childMemory != null ) {
+            this.childMemory.selectPossibleMatches( workingMemory,
+                                                    handle );
+        }
     }
 
     /**

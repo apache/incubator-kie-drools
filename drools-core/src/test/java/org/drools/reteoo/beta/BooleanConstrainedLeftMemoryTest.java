@@ -52,7 +52,8 @@ public class BooleanConstrainedLeftMemoryTest extends BaseBetaLeftMemoryTestClas
 
         this.memory = new BooleanConstrainedLeftMemory( extractor,
                                                         declaration,
-                                                        evaluator );
+                                                        evaluator,
+                                                        this.child);
     }
 
     protected void tearDown() throws Exception {
