@@ -21,7 +21,7 @@ package org.drools.examples.manners;
 
 import java.io.Serializable;
 
-public class Context
+public final class Context
     implements
     Serializable {
 
@@ -30,6 +30,14 @@ public class Context
     public static final int MAKE_PATH     = 2;
     public static final int CHECK_DONE    = 3;
     public static final int PRINT_RESULTS = 4;
+    
+    public static final String[] stateStrings = {
+                                  "START_UP",
+                                  "ASSIGN_SEATS",
+                                  "MAKE_PATH",
+                                  "CHECK_DONE",
+                                  "PRINT_RESULTS"
+    };
 
     private int             state;
 
@@ -45,35 +53,23 @@ public class Context
         this.state = state;
     }
 
-    public void setState(int state) {
+    public final void setState(int state) {
         this.state = state;
     }
 
-    public boolean isState(int state) {
+    public final boolean isState(int state) {
         return this.state == state;
     }
 
-    public int getState() {
+    public final int getState() {
         return this.state;
     }
 
-    public String getStringValue() {
-        switch ( this.state ) {
-            case 0 :
-                return "START_UP";
-            case 1 :
-                return "ASSIGN_SEATS";
-            case 2 :
-                return "MAKE_PATH";
-            case 3 :
-                return "CHECK_DONE";
-            case 4 :
-                return "PRINT_RESULTS";
-        }
-        return "";
+    public final String getStringValue() {
+        return stateStrings[this.state];
     }
 
-    public String toString() {
+    public final String toString() {
         return "[Context state=" + getStringValue() + "]";
     }
 }

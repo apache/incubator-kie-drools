@@ -104,7 +104,7 @@ public class LinkedList {
      * @return
      *      The first <code>LinkedListNode</code>.
      */
-    public LinkedListNode getFirst() {
+    public final LinkedListNode getFirst() {
         return this.firstNode;
     }
 
@@ -113,7 +113,7 @@ public class LinkedList {
      * @return
      *      The last <code>LinkedListNode</code>.
      */
-    public LinkedListNode getLast() {
+    public final LinkedListNode getLast() {
         return this.lastNode;
     }
 
@@ -167,7 +167,7 @@ public class LinkedList {
      * @return
      *      boolean value indicating the empty status of the list
      */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return (this.firstNode == null);
     }
 
@@ -183,7 +183,7 @@ public class LinkedList {
      * @return
      *     return size of the list as an int
      */
-    public int size() {
+    public final int size() {
         return this.size;
     }
 

@@ -17,7 +17,7 @@ package org.drools.examples.manners;
 
 
 
-public class Count {
+public final class Count {
     private int value;
 
     public Count(int value) {
@@ -25,19 +25,19 @@ public class Count {
         this.value = value;
     }
 
-    public int getValue() {
+    public final int getValue() {
         return this.value;
     }
 
-    public void setValue(int value) {
+    public final void setValue(int value) {
         this.value = value;
     }
 
-    public String toString() {
+    public final String toString() {
         return "[Count value=" + this.value + "]";
     }
 
-    public boolean equals(Object object) {
+    public final boolean equals(Object object) {
         if ( object == this ) {
             return true;
         }
@@ -49,7 +49,7 @@ public class Count {
         return this.value == ((Count) object).value;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         return this.value;
     }
 

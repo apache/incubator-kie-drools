@@ -21,20 +21,20 @@ package org.drools.examples.manners;
 
 import java.io.Serializable;
 
-public class LastSeat
+public final class LastSeat
     implements
     Serializable {
-    private int seat;
+    private final int seat;
 
     public LastSeat(int seat) {
         this.seat = seat;
     }
 
-    public int getSeat() {
+    public final int getSeat() {
         return this.seat;
     }
 
-    public String toString() {
+    public final String toString() {
         return "[LastSeat seat=" + this.seat + "]";
     }
 }

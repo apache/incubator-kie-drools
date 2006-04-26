@@ -20,7 +20,6 @@ import java.util.Iterator;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.FactHandleImpl;
 import org.drools.reteoo.ReteTuple;
 import org.drools.util.MultiLinkedListNodeWrapper;
 

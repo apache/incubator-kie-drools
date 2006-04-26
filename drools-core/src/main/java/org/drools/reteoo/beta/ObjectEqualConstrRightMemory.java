@@ -84,7 +84,7 @@ public class ObjectEqualConstrRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#add(org.drools.WorkingMemory, org.drools.reteoo.ObjectMatches)
      */
-    public void add(WorkingMemory workingMemory,
+    public final void add(WorkingMemory workingMemory,
                     ObjectMatches matches) {
         MultiLinkedList list = this.getFactList( workingMemory,
                                                  matches.getFactHandle() );
@@ -104,7 +104,7 @@ public class ObjectEqualConstrRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#remove(org.drools.WorkingMemory, org.drools.reteoo.ObjectMatches)
      */
-    public void remove(WorkingMemory workingMemory,
+    public final void remove(WorkingMemory workingMemory,
                        ObjectMatches matches) {
         if ( this.childMemory != null ) {
             this.childMemory.remove( workingMemory,
@@ -125,7 +125,7 @@ public class ObjectEqualConstrRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#add(org.drools.WorkingMemory, org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public void add(WorkingMemory workingMemory,
+    public final void add(WorkingMemory workingMemory,
                     MultiLinkedListNodeWrapper wrapper) {
         ObjectMatches matches = (ObjectMatches) wrapper.getNode();
         MultiLinkedList list = this.getFactList( workingMemory,
@@ -146,7 +146,7 @@ public class ObjectEqualConstrRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#remove(org.drools.WorkingMemory, org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public void remove(WorkingMemory workingMemory,
+    public final void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper matches) {
         if ( this.childMemory != null ) {
             this.childMemory.remove( workingMemory,
@@ -165,26 +165,28 @@ public class ObjectEqualConstrRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
-    public Iterator iterator(final WorkingMemory workingMemory,
+    public final Iterator iterator(final WorkingMemory workingMemory,
                              final ReteTuple tuple) {
         this.selectPossibleMatches( workingMemory,
                                     tuple );
         Iterator iterator = null;
         if ( this.selectedList != null ) {
             iterator = new Iterator() {
-                Iterator      it      = selectedList.iterator();
-                ObjectMatches current = null;
-                ObjectMatches next    = null;
+                ObjectMatches current   = null;
+                ObjectMatches next      = null;
+                ObjectMatches candidate = (ObjectMatches) selectedList.getFirst();
 
-                public boolean hasNext() {
+                public final boolean hasNext() {
                     boolean hasnext = false;
                     if ( next == null ) {
-                        while ( it.hasNext() ) {
-                            next = (ObjectMatches) it.next();
-                            if ( (childMemory == null) || (childMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) next.getChild() )) ) {
+                        while ( candidate != null ) {
+                            if ( (childMemory == null) || (childMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) candidate.getChild() )) ) {
                                 hasnext = true;
+                                next = candidate;
+                                candidate = (ObjectMatches) candidate.getNext();
                                 break;
                             }
+                            candidate = (ObjectMatches) candidate.getNext();
                         }
                     } else {
                         hasnext = true;
@@ -192,7 +194,7 @@ public class ObjectEqualConstrRightMemory
                     return hasnext;
                 }
 
-                public Object next() {
+                public final Object next() {
                     if ( this.next == null ) {
                         this.hasNext();
                     }
@@ -204,7 +206,7 @@ public class ObjectEqualConstrRightMemory
                     return this.current;
                 }
 
-                public void remove() {
+                public final void remove() {
                     throw new UnsupportedOperationException( "Iterator.remove() should not be used to remove right side objects from right memory." );
                 }
             };
@@ -219,7 +221,7 @@ public class ObjectEqualConstrRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#isEmpty()
      */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return this.memoryMap.isEmpty();
     }
 
@@ -228,7 +230,7 @@ public class ObjectEqualConstrRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
-    public void selectPossibleMatches(WorkingMemory workingMemory,
+    public final void selectPossibleMatches(WorkingMemory workingMemory,
                                       ReteTuple tuple) {
         Object select = declaration.getValue( tuple.get( this.column ).getObject() );
         Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
@@ -240,7 +242,7 @@ public class ObjectEqualConstrRightMemory
         }
     }
 
-    public boolean isPossibleMatch(MultiLinkedListNodeWrapper wrapper) {
+    public final boolean isPossibleMatch(MultiLinkedListNodeWrapper wrapper) {
         boolean ret = false;
         if ( this.selectedList != null ) {
             ret = wrapper.getLinkedList() == this.selectedList;
@@ -258,7 +260,7 @@ public class ObjectEqualConstrRightMemory
      * @param handle
      * @return
      */
-    private MultiLinkedList getFactList(WorkingMemory workingMemory,
+    private final MultiLinkedList getFactList(WorkingMemory workingMemory,
                                         InternalFactHandle handle) {
         Object select = this.extractor.getValue( handle.getObject() );
         Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
@@ -271,12 +273,12 @@ public class ObjectEqualConstrRightMemory
         return list;
     }
 
-    private void removeMapEntry(KeyMultiLinkedList list) {
+    private final void removeMapEntry(KeyMultiLinkedList list) {
         Object hash = list.getKey();
         this.memoryMap.remove( hash );
     }
 
-    public int size() {
+    public final int size() {
         return this.memorySize;
     }
 
@@ -287,7 +289,7 @@ public class ObjectEqualConstrRightMemory
      * 
      * @return
      */
-    public boolean isClean() {
+    public final boolean isClean() {
         boolean ret = true;
         for ( Iterator i = this.memoryMap.values().iterator(); i.hasNext(); ) {
             MultiLinkedList list = (MultiLinkedList) i.next();
@@ -302,7 +304,7 @@ public class ObjectEqualConstrRightMemory
     /**
      * @inheritDoc
      */
-    public Iterator iterator() {
+    public final Iterator iterator() {
         TreeSet set = new TreeSet( new Comparator() {
             public int compare(Object arg0,
                                Object arg1) {

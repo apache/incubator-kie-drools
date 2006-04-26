@@ -20,7 +20,6 @@ import java.util.Iterator;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.FactHandleImpl;
 import org.drools.reteoo.ReteTuple;
 import org.drools.util.MultiLinkedList;
 import org.drools.util.MultiLinkedListNodeWrapper;
@@ -49,7 +48,7 @@ public class DefaultLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#add(org.drools.WorkingMemory, org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public void add(WorkingMemory workingMemory,
+    public final void add(WorkingMemory workingMemory,
                     MultiLinkedListNodeWrapper tuple) {
         this.memory.add( tuple );
     }
@@ -57,7 +56,7 @@ public class DefaultLeftMemory
     /**
      * @inheritDoc
      */
-    public void remove(WorkingMemory workingMemory,
+    public final void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper tuple) {
         this.memory.remove( tuple );
     }
@@ -65,7 +64,7 @@ public class DefaultLeftMemory
     /**
      * @inheritDoc
      */
-    public void add(WorkingMemory workingMemory,
+    public final void add(WorkingMemory workingMemory,
                     ReteTuple tuple) {
         this.memory.add( tuple );
     }
@@ -73,7 +72,7 @@ public class DefaultLeftMemory
     /**
      * @inheritDoc
      */
-    public void remove(WorkingMemory workingMemory,
+    public final void remove(WorkingMemory workingMemory,
                        ReteTuple tuple) {
         this.memory.remove( tuple );
     }
@@ -81,7 +80,7 @@ public class DefaultLeftMemory
     /**
      * @inheritDoc
      */
-    public Iterator iterator(WorkingMemory workingMemory,
+    public final Iterator iterator(WorkingMemory workingMemory,
                              InternalFactHandle handle) {
         return this.memory.iterator();
     }
@@ -89,21 +88,21 @@ public class DefaultLeftMemory
     /**
      * @inheritDoc
      */
-    public Iterator iterator() {
+    public final Iterator iterator() {
         return this.memory.iterator();
     }
 
     /**
      * @inheritDoc
      */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return this.memory.isEmpty();
     }
 
     /**
      * @inheritDoc
      */
-    public void selectPossibleMatches(WorkingMemory workingMemory,
+    public final void selectPossibleMatches(WorkingMemory workingMemory,
                                       InternalFactHandle handle) {
         // nothing to do. all tuples are possible matches
     }
@@ -111,14 +110,14 @@ public class DefaultLeftMemory
     /**
      * @inheritDoc
      */
-    public boolean isPossibleMatch(MultiLinkedListNodeWrapper tuple) {
+    public final boolean isPossibleMatch(MultiLinkedListNodeWrapper tuple) {
         return tuple.getLinkedList() == this.memory;
     }
 
     /**
      * @inheritDoc
      */
-    public int size() {
+    public final int size() {
         return this.memory.size();
     }
 

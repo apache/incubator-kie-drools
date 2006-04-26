@@ -23,7 +23,6 @@ import java.util.NoSuchElementException;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.FactHandleImpl;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
@@ -80,7 +79,7 @@ public class ObjectNotEqualConstrLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#add(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
-    public void add(WorkingMemory workingMemory,
+    public final void add(WorkingMemory workingMemory,
                     ReteTuple tuple) {
         this.memoryMasterList.add( tuple );
 
@@ -103,7 +102,7 @@ public class ObjectNotEqualConstrLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
-    public void remove(WorkingMemory workingMemory,
+    public final void remove(WorkingMemory workingMemory,
                        ReteTuple tuple) {
         if ( this.innerMemory != null ) {
             this.innerMemory.remove( workingMemory,
@@ -122,7 +121,7 @@ public class ObjectNotEqualConstrLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#add(org.drools.reteoo.ReteTuple)
      */
-    public void add(WorkingMemory workingMemory,
+    public final void add(WorkingMemory workingMemory,
                     MultiLinkedListNodeWrapper tuple) {
         this.memoryMasterList.add( tuple );
 
@@ -147,7 +146,7 @@ public class ObjectNotEqualConstrLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#remove(org.drools.reteoo.ReteTuple)
      */
-    public void remove(WorkingMemory workingMemory,
+    public final void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper tuple) {
         if ( this.innerMemory != null ) {
             this.innerMemory.remove( workingMemory,
@@ -168,7 +167,7 @@ public class ObjectNotEqualConstrLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#isEmpty()
      */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return memoryMasterList.isEmpty();
     }
 
@@ -177,26 +176,28 @@ public class ObjectNotEqualConstrLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
-    public Iterator iterator(final WorkingMemory workingMemory,
+    public final Iterator iterator(final WorkingMemory workingMemory,
                              final InternalFactHandle handle) {
         this.selectPossibleMatches( workingMemory,
                                     handle );
         Iterator iterator = new Iterator() {
-            Iterator            it      = memoryMasterList.iterator();
-            MultiLinkedListNode current = null;
-            MultiLinkedListNode next    = null;
+            MultiLinkedListNode current   = null;
+            MultiLinkedListNode next      = null;
+            MultiLinkedListNode candidate = (MultiLinkedListNode) memoryMasterList.getFirst();
 
-            public boolean hasNext() {
+            public final boolean hasNext() {
                 boolean hasnext = false;
                 if ( next == null ) {
-                    while ( it.hasNext() ) {
-                        next = (MultiLinkedListNode) it.next();
-                        if ( next.getChild().getLinkedList() != noMatchList ) {
-                            if ( (innerMemory == null) || (innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) next.getChild().getChild() )) ) {
+                    while ( candidate != null ) {
+                        if ( candidate.getChild().getLinkedList() != noMatchList ) {
+                            if ( (innerMemory == null) || (innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) candidate.getChild().getChild() )) ) {
                                 hasnext = true;
+                                next = candidate;
+                                candidate = (MultiLinkedListNode) candidate.getNext();
                                 break;
                             }
                         }
+                        candidate = (MultiLinkedListNode) candidate.getNext();
                     }
                 } else {
                     hasnext = true;
@@ -204,7 +205,7 @@ public class ObjectNotEqualConstrLeftMemory
                 return hasnext;
             }
 
-            public Object next() {
+            public final Object next() {
                 if ( this.next == null ) {
                     this.hasNext();
                 }
@@ -216,7 +217,7 @@ public class ObjectNotEqualConstrLeftMemory
                 return this.current;
             }
 
-            public void remove() {
+            public final void remove() {
                 if ( this.current != null ) {
                     // Iterator is always called on the outer most memory, 
                     // so elements shall always be ReteTuples
@@ -233,7 +234,7 @@ public class ObjectNotEqualConstrLeftMemory
     /**
      * @inheritDoc
      */
-    public Iterator iterator() {
+    public final Iterator iterator() {
         return this.memoryMasterList.iterator();
     }
 
@@ -242,7 +243,7 @@ public class ObjectNotEqualConstrLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.FactHandleImpl)
      */
-    public void selectPossibleMatches(WorkingMemory workingMemory,
+    public final void selectPossibleMatches(WorkingMemory workingMemory,
                                       InternalFactHandle handle) {
         Object select = this.extractor.getValue( handle.getObject() );
         this.noMatchList = (MultiLinkedList) this.memoryMap.get( select );
@@ -253,7 +254,7 @@ public class ObjectNotEqualConstrLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#isPossibleMatch(org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public boolean isPossibleMatch(MultiLinkedListNodeWrapper tuple) {
+    public final boolean isPossibleMatch(MultiLinkedListNodeWrapper tuple) {
         boolean ret = false;
         if ( (tuple != null) && (tuple.getChild() != null) && (tuple.getChild().getLinkedList() != null) ) {
             ret = (tuple.getChild().getLinkedList() != this.noMatchList);
@@ -272,7 +273,7 @@ public class ObjectNotEqualConstrLeftMemory
      * @param tuple
      * @return
      */
-    private MultiLinkedList getTupleBucket(WorkingMemory workingMemory,
+    private final MultiLinkedList getTupleBucket(WorkingMemory workingMemory,
                                            ReteTuple tuple) {
         Object key = getTupleKey( workingMemory,
                                   tuple );
@@ -292,7 +293,7 @@ public class ObjectNotEqualConstrLeftMemory
      * @param tuple
      * @return
      */
-    private Object getTupleKey(WorkingMemory workingMemory,
+    private final Object getTupleKey(WorkingMemory workingMemory,
                                ReteTuple tuple) {
         Object select = declaration.getValue( tuple.get( this.column ).getObject() );
         return select;
@@ -304,14 +305,14 @@ public class ObjectNotEqualConstrLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#size()
      */
-    public int size() {
+    public final int size() {
         return this.memoryMasterList.size();
     }
 
     /**
      * @param list
      */
-    private void removeMemoryEntry(LinkedList list) {
+    private final void removeMemoryEntry(LinkedList list) {
         this.memoryMap.remove( ((KeyMultiLinkedList) list).getKey() );
     }
 
@@ -322,7 +323,7 @@ public class ObjectNotEqualConstrLeftMemory
      * 
      * @return
      */
-    public boolean isClean() {
+    public final boolean isClean() {
         boolean ret = true;
         for ( Iterator i = this.memoryMap.values().iterator(); i.hasNext(); ) {
             MultiLinkedList list = (MultiLinkedList) i.next();

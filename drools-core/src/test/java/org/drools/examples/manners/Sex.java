@@ -17,12 +17,13 @@ package org.drools.examples.manners;
 
 
 
-public class Sex {
+public final class Sex {
     public static final Sex    M       = new Sex( 0 );
     public static final Sex    F       = new Sex( 1 );
 
     public static final String stringM = "m";
     public static final String stringF = "f";
+    public static final String[] sexList = new String[] { stringM, stringF };
 
     private final int          sex;
 
@@ -30,18 +31,11 @@ public class Sex {
         this.sex = sex;
     }
 
-    public String getSex() {
-        switch ( this.sex ) {
-            case 0 :
-                return stringM;
-            case 1 :
-                return stringF;
-            default :
-                return "";
-        }
+    public final String getSex() {
+        return sexList[this.sex];
     }
 
-    public static Sex resolve(String sex) {
+    public final static Sex resolve(String sex) {
         if ( stringM.equals( sex ) ) {
             return Sex.M;
         } else if ( stringF.equals( sex ) ) {
@@ -51,25 +45,15 @@ public class Sex {
         }
     }
 
-    public String toString() {
+    public final String toString() {
         return getSex();
     }
 
-    public boolean equals(Object object) {
-        if ( object == null ) {
-            return false;
-        }
-
-        if ( !(object instanceof Sex) ) {
-            return false;
-        }
-
-        Sex other = (Sex) object;
-
-        return (this.sex == other.sex);
+    public final boolean equals(Object object) {
+        return this == object;
     }
 
-    public int hashcode() {
+    public final int hashcode() {
         return this.sex;
     }
 
