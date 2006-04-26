@@ -4,47 +4,58 @@
 
   <section>
     <title>Background</title>
-  <para>
-	A rule engine like Drools is centred around the concept of production rules (IF conditions THEN actions). Emil Leon Post (http://en.wikipedia.org/wiki/Emil_Leon_Post) was the first to use production systems in logic - as a consequence of this he was able to prove that any logical system (including mathematics) could be written with production rules. Quite an amazing proof, this essentially means that you can represent any system/problem with production rules (back in the real world there are constraints of processing power and efficiency of course !). 
-  </para>
 
-  <para>
-	You may also have heard of "Expert Systems" in the context of rule engines. You can think of expert systems as a rule engine + the codification of knowledge for a specific problem domain (+ a user interface !). In that sense, Drools is a platform for expert systems. Historically, rule engines popularity grew out of expert systems success (for example, EMYCIN was one of the first "shells" for an expert system, which was created from the MYCIN medical diagnosis expert system).
-  </para>
+    <para>A rule engine like Drools is centred around the concept of
+    production rules (IF conditions THEN actions). Emil Leon Post
+    (http://en.wikipedia.org/wiki/Emil_Leon_Post) was the first to use
+    production systems in logic - as a consequence of this he was able to
+    prove that any logical system (including mathematics) could be written
+    with production rules. Quite an amazing proof, this essentially means that
+    you can represent any system/problem with production rules (back in the
+    real world there are constraints of processing power and efficiency of
+    course !).</para>
 
+    <para>You may also have heard of "Expert Systems" in the context of rule
+    engines. You can think of expert systems as a rule engine + the
+    codification of knowledge for a specific problem domain (+ a user
+    interface !). In that sense, Drools is a platform for expert systems.
+    Historically, rule engines popularity grew out of expert systems success
+    (for example, EMYCIN was one of the first "shells" for an expert system,
+    which was created from the MYCIN medical diagnosis expert system).</para>
   </section>
 
   <section>
     <title>Rules</title>
-  <para>A <indexterm>
-      <primary>Rule</primary>
-    </indexterm>Rule is the codification of business knowledge. A Rule has
-  attributes, a Left Hand Side (LHS) and a Right Hand Side (RHS). Drools
-  allows the following attributes:</para>
 
-  <itemizedlist>
-    <listitem>
-      <para>salience</para>
-    </listitem>
+    <para>A <indexterm>
+        <primary>Rule</primary>
+      </indexterm>Rule is the codification of business knowledge. A Rule has
+    attributes, a Left Hand Side (LHS) and a Right Hand Side (RHS). Drools
+    allows the following attributes:</para>
 
-    <listitem>
-      <para>agenda-group</para>
-    </listitem>
+    <itemizedlist>
+      <listitem>
+        <para>salience</para>
+      </listitem>
 
-    <listitem>
-      <para>no-loop</para>
-    </listitem>
+      <listitem>
+        <para>agenda-group</para>
+      </listitem>
 
-    <listitem>
-      <para>auto-focus</para>
-    </listitem>
+      <listitem>
+        <para>no-loop</para>
+      </listitem>
 
-    <listitem>
-      <para>duration</para>
-    </listitem>
-  </itemizedlist>
+      <listitem>
+        <para>auto-focus</para>
+      </listitem>
 
-  <programlisting>rule “&lt;name&gt;”    
+      <listitem>
+        <para>duration</para>
+      </listitem>
+    </itemizedlist>
+
+    <programlisting>rule “&lt;name&gt;”    
     &lt;attribute&gt; &lt;value&gt;    
     when        
         &lt;LHS&gt;    
@@ -53,25 +64,25 @@
 end
 </programlisting>
 
-  <para>The LHS of the Rule consists of one or more Conditions. As the Rule
-  Engine is made aware of new data or changes to existing data it matches the
-  data against the Conditions, when all the Conditions are met and true the
-  RHS, and its actions, are executed; the RHS, called the <indexterm>
-      <primary>Consequence</primary>
-    </indexterm>Consequence. The LHS and the RHS is analogous to:</para>
+    <para>The LHS of the Rule consists of one or more Conditions. As the Rule
+    Engine is made aware of new data or changes to existing data it matches
+    the data against the Conditions, when all the Conditions are met and true
+    the RHS, and its actions, are executed; the RHS, called the <indexterm>
+        <primary>Consequence</primary>
+      </indexterm>Consequence. The LHS and the RHS is analogous to:</para>
 
-  <programlisting>if ( &lt;LHS&gt; ) {
+    <programlisting>if ( &lt;LHS&gt; ) {
     &lt;RHS&gt;
 }</programlisting>
 
-  <para>Rules are associated with a namespace via the
-  <literal>package</literal> keyword; other Rule Engines may call this a
-  <indexterm>
-      <primary>Rule Set</primary>
-    </indexterm>Rule Set. A Package declares imports, global variables,
-  functions and rules.</para>
+    <para>Rules are associated with a namespace via the
+    <literal>package</literal> keyword; other Rule Engines may call this a
+    <indexterm>
+        <primary>Rule Set</primary>
+      </indexterm>Rule Set. A Package declares imports, global variables,
+    functions and rules.</para>
 
-  <programlisting>package com.sample
+    <programlisting>package com.sample
 
 import java.util.List
 import com.sample.Cheese
@@ -90,174 +101,175 @@ rule “A Cheesy Rule”
         cheeses.add( cheese );
 end</programlisting>
 
-  <para>The process of matching the new or existing modified data against
-  rules is called <indexterm>
-      <primary>Pattern Matching</primary>
-    </indexterm> Pattern Matching, the engine which does this matching is the
-  <indexterm>
-      <primary>Inference Engine</primary>
-    </indexterm>Inference Engine. The Rule's are referred to as the <indexterm>
-      <primary>Production Memory</primary>
-    </indexterm>Production Memory and the data that the Inference Engine
-  matches against is the <indexterm>
-      <primary>WorkingMemory</primary>
-    </indexterm>Working Memory. the Agenda manages the execution of the
-  matched Rules. There are a number of algorithms used for Pattern Matching by
-  Inference Engines including:</para>
+    <para>The process of matching the new or existing modified data against
+    rules is called <indexterm>
+        <primary>Pattern Matching</primary>
+      </indexterm> Pattern Matching, the engine which does this matching is
+    the <indexterm>
+        <primary>Inference Engine</primary>
+      </indexterm>Inference Engine. The Rule's are referred to as the
+    <indexterm>
+        <primary>Production Memory</primary>
+      </indexterm>Production Memory and the data that the Inference Engine
+    matches against is the <indexterm>
+        <primary>WorkingMemory</primary>
+      </indexterm>Working Memory. the Agenda manages the execution of the
+    matched Rules. There are a number of algorithms used for Pattern Matching
+    by Inference Engines including:</para>
 
-  <itemizedlist>
-    <listitem>
-      <para>Linear</para>
-    </listitem>
+    <itemizedlist>
+      <listitem>
+        <para>Linear</para>
+      </listitem>
 
-    <listitem>
-      <para>Rete</para>
-    </listitem>
+      <listitem>
+        <para>Rete</para>
+      </listitem>
 
-    <listitem>
-      <para>Treat</para>
-    </listitem>
+      <listitem>
+        <para>Treat</para>
+      </listitem>
 
-    <listitem>
-      <para>Leaps</para>
-    </listitem>
-  </itemizedlist>
+      <listitem>
+        <para>Leaps</para>
+      </listitem>
+    </itemizedlist>
 
-  <para>Drools has implementations for both Rete and Leaps; Leaps is still
-  considered experiment. The Drools <indexterm>
-      <primary>Rete</primary>
-    </indexterm>Rete implementation is called ReteOO signifying that this
-  Drools has an enhanced and optimised implementation of the Rete algorithm.
-  Other Rete based engines also have marketting terms for their prioprietary
-  enhancements to Rete, like RetePlus and Rete III,</para>
+    <para>Drools has implementations for both Rete and Leaps; Leaps is still
+    considered experiment. The Drools <indexterm>
+        <primary>Rete</primary>
+      </indexterm>Rete implementation is called ReteOO signifying that this
+    Drools has an enhanced and optimised implementation of the Rete algorithm.
+    Other Rete based engines also have marketting terms for their prioprietary
+    enhancements to Rete, like RetePlus and Rete III,</para>
 
-  <figure>
-    <title>A Basic Rete network</title>
+    <figure>
+      <title>A Basic Rete network</title>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="Rule_Engine.svg" format="SVG" />
-      </imageobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="Rule_Engine.svg" format="SVG" />
+        </imageobject>
 
-      <imageobject>
-        <imagedata align="center" fileref="Rule_Engine.png" format="PNG" />
-      </imageobject>
-    </mediaobject>
-  </figure>
+        <imageobject>
+          <imagedata align="center" fileref="Rule_Engine.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
-  <para>The LHS of a rule is made up of <indexterm>
-      <primary>Conditional Element</primary>
-    </indexterm>iConditional Elements and <indexterm>
-      <primary>Field Constraint</primary>
-    </indexterm>iField Constraints. The following example shows a <indexterm>
-      <primary>Literal Field Constraint</primary>
-    </indexterm>iLiteral Field Constraint used with a Cheese Fact; the
-  combination of Field Constraints on a Fact is known as a <indexterm>
-      <primary>Column</primary>
-    </indexterm>Column.</para>
+    <para>The LHS of a rule is made up of <indexterm>
+        <primary>Conditional Element</primary>
+      </indexterm>iConditional Elements and <indexterm>
+        <primary>Field Constraint</primary>
+      </indexterm>iField Constraints. The following example shows a <indexterm>
+        <primary>Literal Field Constraint</primary>
+      </indexterm>iLiteral Field Constraint used with a Cheese Fact; the
+    combination of Field Constraints on a Fact is known as a <indexterm>
+        <primary>Column</primary>
+      </indexterm>Column.</para>
 
-  <programlisting>rule "Cheddar Cheese"
+    <programlisting>rule "Cheddar Cheese"
     when
         Cheese( type == "cheddar" )
     then
         System.out.println( "cheddar" );
 end</programlisting>
 
-  <para>The example above is similar to :</para>
+    <para>The example above is similar to :</para>
 
-  <programlisting>public void cheddarCheese(Cheese cheese) {
+    <programlisting>public void cheddarCheese(Cheese cheese) {
     if ( cheese.getType().equals("cheddar") {
         System.out.println( "cheddar" );
     }
 }</programlisting>
 
-  <para>Rule engines are a complete de-coupling of data from the logic. Rules
-  cannot be called directly as they are not methods or functions instead Rules
-  fire in response to changes in Working Memory's data, It may help to think
-  of this de-coupling as a specialised event sytem. The Consequence is the
-  Listener to the full matching of the LHS events.</para>
+    <para>Rule engines are a complete de-coupling of data from the logic.
+    Rules cannot be called directly as they are not methods or functions
+    instead Rules fire in response to changes in Working Memory's data, It may
+    help to think of this de-coupling as a specialised event sytem. The
+    Consequence is the Listener to the full matching of the LHS events.</para>
 
-  <para>Rule Engines are much like a database where Rule's LHS define the
-  queries on the Working Memory. The previous rule can be expressed in
-  <indexterm>
-      <primary>SQL</primary>
-    </indexterm>SQL as:</para>
+    <para>Rule Engines are much like a database where Rule's LHS define the
+    queries on the Working Memory. The previous rule can be expressed in
+    <indexterm>
+        <primary>SQL</primary>
+      </indexterm>SQL as:</para>
 
-  <programlisting> select * from Cheese where type == "cheddar"</programlisting>
+    <programlisting> select * from Cheese where type == "cheddar"</programlisting>
 
-  <para>A <indexterm>
-      <primary>DataBase</primary>
-    </indexterm>Database executes SQL, on request, where as a Rule Engine will
-  process data against its rules, its Production Memory, as it's asserted;
-  this process is known as <indexterm>
-      <primary>Pattern Matching</primary>
-    </indexterm>Pattern Matching. When added to the Production Memory, Rule's
-  are decomposed into a graph using the <indexterm>
-      <primary>Rete</primary>
-    </indexterm>Rete algorithm. Rete is one of the standard Rule Engine
-  algorithms developed by <indexterm>
-      <primary>Charles Forgey</primary>
-    </indexterm>Charles Forgey in 1979 which is covered in greater detail in a
-  Rete Algorithm chapter.</para>
+    <para>A <indexterm>
+        <primary>DataBase</primary>
+      </indexterm>Database executes SQL, on request, where as a Rule Engine
+    will process data against its rules, its Production Memory, as it's
+    asserted; this process is known as <indexterm>
+        <primary>Pattern Matching</primary>
+      </indexterm>Pattern Matching. When added to the Production Memory,
+    Rule's are decomposed into a graph using the <indexterm>
+        <primary>Rete</primary>
+      </indexterm>Rete algorithm. Rete is one of the standard Rule Engine
+    algorithms developed by <indexterm>
+        <primary>Charles Forgey</primary>
+      </indexterm>Charles Forgey in 1979 which is covered in greater detail in
+    a Rete Algorithm chapter.</para>
 
-  <figure>
-    <title>A Basic Rete network</title>
+    <figure>
+      <title>A Basic Rete network</title>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="A_Basic_Rete_Network.svg"
-                   format="SVG" />
-      </imageobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="A_Basic_Rete_Network.svg"
+                     format="SVG" />
+        </imageobject>
 
-      <imageobject>
-        <imagedata align="center" fileref="A_Basic_Rete_Network.png"
-                   format="PNG" />
-      </imageobject>
-    </mediaobject>
-  </figure>
+        <imageobject>
+          <imagedata align="center" fileref="A_Basic_Rete_Network.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
-  <para>Each Fact type in our Working Memory, such as <code>Cheese</code>, is
-  represented by an <indexterm>
-      <primary>Object Type</primary>
-    </indexterm>Object Type class, shown as the root node in our graph. When
-  Facts are asserted into the Working Memory the Rule Engine finds the
-  matching Object Type node and propagates the asserted Fact onto the next
-  node. The Object Type node maintains a memory of all matched Facts. in our
-  example the next node in the graph is a <indexterm>
-      <primary>Field Constraint</primary>
-    </indexterm>Field Constraint, <code>type == "cheddar", </code>its job is
-  to filter Facts using the given constraint; if the type of
-  <code>Cheese</code> is not "cheddar" the Fact progresses no further in the
-  network, if it is "cheddar" it is rememebered in the <indexterm>
-      <primary>Alpha Node</primary>
-    </indexterm>Alpha Node's memory and propagated onto the next node in the
-  network.. Alpha Node is classic Rete terminology for single input/single
-  output nodes, in that it receives a single Fact of a specified Object Type
-  and propates a single Fact of specified Object Type.</para>
+    <para>Each Fact type in our Working Memory, such as <code>Cheese</code>,
+    is represented by an <indexterm>
+        <primary>Object Type</primary>
+      </indexterm>Object Type class, shown as the root node in our graph. When
+    Facts are asserted into the Working Memory the Rule Engine finds the
+    matching Object Type node and propagates the asserted Fact onto the next
+    node. The Object Type node maintains a memory of all matched Facts. in our
+    example the next node in the graph is a <indexterm>
+        <primary>Field Constraint</primary>
+      </indexterm>Field Constraint, <code>type == "cheddar", </code>its job is
+    to filter Facts using the given constraint; if the type of
+    <code>Cheese</code> is not "cheddar" the Fact progresses no further in the
+    network, if it is "cheddar" it is rememebered in the <indexterm>
+        <primary>Alpha Node</primary>
+      </indexterm>Alpha Node's memory and propagated onto the next node in the
+    network.. Alpha Node is classic Rete terminology for single input/single
+    output nodes, in that it receives a single Fact of a specified Object Type
+    and propates a single Fact of specified Object Type.</para>
 
-  <para>At this point we have what is known as a <indexterm>
-      <primary>Partial Match</primary>
-    </indexterm>Partial Match, in that we have matched facts against some, but
-  not all, of the Rule's nodes. <indexterm>
-      <primary>Left Input Adapter Node</primary>
-    </indexterm>s will be explained later, suffice to say it always propagetes
-  onto the next node, in this case a <indexterm>
-      <primary>Terminal Node</primary>
-    </indexterm>Terminal Node. The Terminal Node is our end node, now we say
-  the Rule is Fully Matched and ready to fire.</para>
+    <para>At this point we have what is known as a <indexterm>
+        <primary>Partial Match</primary>
+      </indexterm>Partial Match, in that we have matched facts against some,
+    but not all, of the Rule's nodes. <indexterm>
+        <primary>Left Input Adapter Node</primary>
+      </indexterm>s will be explained later, suffice to say it always
+    propagetes onto the next node, in this case a <indexterm>
+        <primary>Terminal Node</primary>
+      </indexterm>Terminal Node. The Terminal Node is our end node, now we say
+    the Rule is Fully Matched and ready to fire.</para>
 
-  <para>Earlier we mentioned that a Rule Engine is much like a Database, we
-  can prove this by using a <indexterm>
-      <primary>Query</primary>
-    </indexterm>Query construct. A Query is Rule with a special Terminal node;
-  instead of executing a Consequence the Terminal node stores matching Facts
-  in a list, which is returned as the result. Lets prove this</para>
+    <para>Earlier we mentioned that a Rule Engine is much like a Database, we
+    can prove this by using a <indexterm>
+        <primary>Query</primary>
+      </indexterm>Query construct. A Query is Rule with a special Terminal
+    node; instead of executing a Consequence the Terminal node stores matching
+    Facts in a list, which is returned as the result. Lets prove this</para>
 
-  <programlisting>query "Find cheeses with a cost of 5"
+    <programlisting>query "Find cheeses with a cost of 5"
     Cheese( price == 5 )
 end</programlisting>
 
-  <programlisting>// First create the facts
+    <programlisting>// First create the facts
 Cheese stilton = new Cheese("stilton", 8);     // type, price
 Cheese cheddar = new Cheese("cheddar", 5);     // type, price
 Cheese mozarella = new Cheese("mozarella", 5); // type, price
@@ -269,21 +281,21 @@ workingMemory.assertObject( mozarella );
 
 List results = workingMemory.getQueryResults( "Find cheeses with a cost of 5" );</programlisting>
 
-  <para>When we get the Query Results the List has a size of two and
-  references "cheddar" and "mozarella", as expected. If we had used a Rule
-  construct instead of a Query the Terminal Node's Consequence would have
-  attempted to fire twice, once for "cheddar" and once for "mozarella".</para>
+    <para>When we get the Query Results the List has a size of two and
+    references "cheddar" and "mozarella", as expected. If we had used a Rule
+    construct instead of a Query the Terminal Node's Consequence would have
+    attempted to fire twice, once for "cheddar" and once for
+    "mozarella".</para>
 
-  <para>When a Rule is Fully Matched it does not fire immediately (in Rete,
-  but in Leaps it does !). Instead the Rule plus the matched Facts are
-  <indexterm>
-      <primary>Activated</primary>
-    </indexterm>Activated placed onto the <indexterm>
-      <primary>Agenda</primary>
-    </indexterm>Agenda; which is responsible for the scheduling and firing
-  <indexterm>
-      <primary>Activation</primary>
-    </indexterm>Activations.</para>
-
-	</section>
+    <para>When a Rule is Fully Matched it does not fire immediately (in Rete,
+    but in Leaps it does !). Instead the Rule plus the matched Facts are
+    <indexterm>
+        <primary>Activated</primary>
+      </indexterm>Activated placed onto the <indexterm>
+        <primary>Agenda</primary>
+      </indexterm>Agenda; which is responsible for the scheduling and firing
+    <indexterm>
+        <primary>Activation</primary>
+      </indexterm>Activations.</para>
+  </section>
 </section>
