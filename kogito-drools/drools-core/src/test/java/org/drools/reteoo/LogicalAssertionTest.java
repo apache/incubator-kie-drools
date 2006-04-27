@@ -84,6 +84,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         node.retractTuple( tuple1,
                            context1,
                            workingMemory );
+        
+        workingMemory.propagateQueuedActions();
 
         assertLength( 1,
                       sink.getRetracted() );
@@ -110,6 +112,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         node.retractTuple( tuple1,
                            context1,
                            workingMemory );
+        
+        workingMemory.propagateQueuedActions();
 
         assertLength( 2,
                       sink.getRetracted() );
@@ -498,6 +502,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         node.retractTuple( tuple1,
                            context1,
                            workingMemory );
+        
+        workingMemory.propagateQueuedActions();
 
         // Should cause the logical fact to be retracted
         assertLength( 1,

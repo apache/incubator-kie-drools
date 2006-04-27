@@ -750,7 +750,7 @@ public class WorkingMemoryImpl
         }
     }
     
-    private void propagateQueuedActions() {
+    void propagateQueuedActions() {
         for ( Iterator it = this.factQueue.iterator(); it.hasNext(); ) {
             WorkingMemoryAction action = (WorkingMemoryAction) it.next();
             it.remove();
