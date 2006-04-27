@@ -17,29 +17,25 @@ package org.drools.leaps;
  */
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.LogicalDependency;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.drools.util.LinkedList;
 
 /**
  * Leaps Tuple implementation
  * 
  * @author Alexander Bagerman
  */
-class LeapsTuple
-    implements
-    Tuple,
-    Serializable {
+class LeapsTuple implements Tuple, Serializable {
     private static final long        serialVersionUID       = 1L;
 
-    private final PropagationContext context;
+    private PropagationContext context;
 
     private boolean                  readyForActivation;
 
@@ -49,11 +45,11 @@ class LeapsTuple
 
     private FactHandleImpl[]         existsFactHandles      = null;
 
-    private Set                      logicalDependencies;
-
     private Activation               activation;
 
     private final LeapsRule          leapsRule;
+
+    private LinkedList               justified;
 
     /**
      * agendaItem parts
@@ -273,17 +269,19 @@ class LeapsTuple
         return this.context;
     }
 
-    void addLogicalDependency(FactHandle handle) {
-        if ( this.logicalDependencies == null ) {
-            this.logicalDependencies = new HashSet();
+    public void addLogicalDependency(LogicalDependency node) {
+        if ( this.justified == null ) {
+            this.justified = new LinkedList();
         }
-        this.logicalDependencies.add( handle );
+
+        this.justified.add( node );
     }
 
-    Iterator getLogicalDependencies() {
-        if ( this.logicalDependencies != null ) {
-            return this.logicalDependencies.iterator();
-        }
-        return null;
+    public LinkedList getLogicalDependencies() {
+        return this.justified;
+    }
+
+    protected void setContext( PropagationContext context ) {
+        this.context = context;
     }
 }

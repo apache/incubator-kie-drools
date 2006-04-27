@@ -72,9 +72,6 @@ public class Token
                 this.rules = this.workingMemory.getFactTable(
                         this.dominantFactHandle.getObject().getClass()).getRulesIterator();
             }
-            else {
-                this.rules = this.workingMemory.getNoRequiredColumnsLeapsRules();
-            }
         }
         return this.rules;
     }

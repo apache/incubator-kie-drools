@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,12 +73,6 @@ abstract public class AbstractWorkingMemory
     /** The arguments used when adding/removing a property change listener. */
     protected final Object[]                  addRemovePropertyChangeListenerArgs           = new Object[]{this};
 
-    /** The actual memory for the <code>JoinNode</code>s. */
-    private final PrimitiveLongMap            nodeMemories                                  = new PrimitiveLongMap( 32,
-                                                                                                                    8 );
-    /** Handle-to-object mapping. */
-    protected final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
-                                                                                                                    8 );
     /** Global values which are associated with this memory. */
     private final Map                         globals                                       = new HashMap();
 
@@ -92,6 +85,10 @@ abstract public class AbstractWorkingMemory
     private final PrimitiveLongStack          factHandlePool                                = new PrimitiveLongStack();
 
     protected static final String             STATED                                        = "STATED";
+    protected static final String             JUSTIFIED                                     = "JUSTIFIED";
+    protected static final String             NEW                                           = "NEW";
+    protected static final FactStatus         STATUS_NEW                                    = new FactStatus( NEW,
+                                                                                                            0 );
 
     /** The eventSupport */
     protected final WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( this );
@@ -227,12 +224,12 @@ abstract public class AbstractWorkingMemory
      * @see WorkingMemory
      */
     public List getObjects() {
-        return new ArrayList( this.objects.values() );
+        return new ArrayList( this.identityMap.keySet() );
     }
 
     public List getObjects(Class objectClass) {
-        List matching = new LinkedList();
-        for ( Iterator objIter = this.objects.values().iterator(); objIter.hasNext(); ) {
+        List matching = new java.util.LinkedList();
+        for ( Iterator objIter = this.identityMap.keySet().iterator(); objIter.hasNext(); ) {
             Object obj = objIter.next();
 
             if ( objectClass.isInstance( obj ) ) {
@@ -392,24 +389,24 @@ abstract public class AbstractWorkingMemory
         set.add( node );
     }
 
-    public void removeLogicalDependencies(Activation activation,
+    public void removeLogicalDependencies( Activation activation,
                                           PropagationContext context,
-                                          Rule rule) throws FactException {
+                                          Rule rule ) throws FactException {
         org.drools.util.LinkedList list = activation.getLogicalDependencies();
-        if ( list == null || list.isEmpty() ) {
+        if (list == null || list.isEmpty( )) {
             return;
         }
-        for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
-            InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
-            Set set = (Set) this.justified.get( handle.getId() );
+        for (LogicalDependency node = (LogicalDependency) list.getFirst( ); node != null; node = (LogicalDependency) node.getNext( )) {
+            InternalFactHandle handle = (InternalFactHandle) node.getFactHandle( );
+            Set set = (Set) this.justified.get( handle.getId( ) );
             set.remove( node );
-            if ( set.isEmpty() ) {
-                this.justified.remove( handle.getId() );
+            if (set.isEmpty( )) {
+                this.justified.remove( handle.getId( ) );
                 retractObject( handle,
                                false,
                                true,
-                               context.getRuleOrigin(),
-                               context.getActivationOrigin() );
+                               context.getRuleOrigin( ),
+                               context.getActivationOrigin( ) );
             }
         }
     }
@@ -423,4 +420,87 @@ abstract public class AbstractWorkingMemory
             }
         }
     }
+
+    protected static class FactStatus {
+        private int            counter;
+        private String         status;
+        private InternalFactHandle handle;
+
+        public FactStatus() {
+            this( AbstractWorkingMemory.STATED,
+                  1 );
+        }
+
+        public FactStatus(String status) {
+            this( status,
+                  1 );
+        }
+
+        public FactStatus(String status,
+                          InternalFactHandle handle) {
+            this.status = status;
+            this.handle = handle;
+        }
+
+        public FactStatus(String status,
+                          int counter) {
+            this.status = status;
+            this.counter = counter;
+        }
+
+        /**
+         * @return the counter
+         */
+        public int getCounter() {
+            return counter;
+        }
+
+        /**
+         * @param counter the counter to set
+         */
+        public void setCounter(int counter) {
+            this.counter = counter;
+        }
+
+        public int incCounter() {
+            return ++counter;
+        }
+
+        public int decCounter() {
+            return --counter;
+        }
+
+        /**
+         * @return the handle
+         */
+        public InternalFactHandle getHandle() {
+            return handle;
+        }
+
+        /**
+         * @param handle the handle to set
+         */
+        public void setHandle(InternalFactHandle handle) {
+            this.handle = handle;
+        }
+
+        /**
+         * @return the status
+         */
+        public String getStatus() {
+            return status;
+        }
+
+        /**
+         * @param status the status to set
+         */
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public String toString() {
+            return "FactStatus( " + this.status + ", handle=" + this.handle + ", counter=" + this.counter + ")";
+        }
+    }
 }
+
