@@ -2,7 +2,8 @@
 <section>
   <title>Agenda</title>
 
-  <para>uuuere</para>
+  <para>The agenda is a RETE feature. It is an area where rules + matching
+  facts are kept before they are fired.</para>
 
   <section>
     <title>Conflict Resultion</title>
