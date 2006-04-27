@@ -1,51 +1,104 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <section>
   <title>WorkingMemory</title>
 
-  <para>uuuere</para>
+  <para>The working memory is basically the rule engine, with all the rules
+  loaded, ready to go. It holds references to all data that has been
+  "asserted" into it (until retracted) and it the place where the interaction
+  with your application occurs. Working memories are stateful objects. They
+  may be shortlived, or longlived. If you are interacting with an engine in a
+  stateless manner, that means you would use the RuleBase object to create a
+  newWorkingMemory for each session, and then discard the working memory when
+  finished (creating a working memory is a cheap operation). An alternative
+  pattern is a working memory that is kept around for a longer time (such as a
+  conversation) - and kept updated with new facts.</para>
 
   <section>
     <title>Facts</title>
 
-    <para></para>
+    <para>Facts are objects (beans) from your application that you assert into
+    the working memory. Facts are any java objects which the rules can access.
+    The rule engine does not "clone" facts at all, it is all
+    references/pointers at the end of the day. Facts are your applications
+    data.</para>
   </section>
 
   <section>
     <title>Assertion</title>
 
-    <para></para>
+    <para>"Assertion" is the act of telling the working memory about the
+    facts. WorkingMemory.assertObject(yourObject) for example. When you assert
+    a fact, it is examined for matches against the rules etc. However, no
+    actions are taken until you call "fireAllRules()" after you have finished
+    asserting your facts.</para>
   </section>
 
   <section>
     <title>Retraction</title>
 
-    <para></para>
+    <para>Basically the reverse of Asserting. When you retract a fact, the
+    working memory will no longer track that fact, and any rules that were
+    dependent on that fact will not be activated. Note that it is possible to
+    have rules that depend on the "non existence" of fact, in which case
+    retracting a fact may cause a rule to activate. </para>
   </section>
 
   <section>
     <title>Modification</title>
 
-    <para></para>
+    <para>If the rule engine has to know when a fact has changed, as rules
+    that depend on that fact may have to be triggered again. You modify a fact
+    to tell the rule engine that its state has changed.</para>
   </section>
 
   <section>
     <title>Globals</title>
 
-    <para></para>
+    <para>Globals are a named objects that can be passed in to the rule
+    engine. Most often these are used for static information, or services that
+    are used in the RHS of a rule, or perhaps a means to return objects from
+    the rule engine.</para>
   </section>
 
   <section>
     <title>Property Change Listener</title>
 
-    <para></para>
+    <para>If your fact objects are java beans, you can implement a property
+    change listener for them, and then tell the rule engine about it. This
+    means that the engine will automatically know when a fact has changed, and
+    behave accordingly (you don't need to tell it that it is modified). There
+    are proxy libraries that can help automate this (a future version of
+    drools will bundle some to make it easier).</para>
   </section>
 
   <section>
     <title>Shadow Facts</title>
 
-    <para>A shadow fact is a shallow copy of an asserted object. Shadow facts are cached copies of object asserted to the working memory. The term shadow facts is commonly known as a feature of JESS (Java Expert System Shell).</para> 
-    <para>The origins of shadow facts traces back to the concept of truth maintenance. The basic idea is that an expert system should gaurantee the derived conclusions are accurate. A running system may alter a fact during evaluation. When this occurs, the rule engine must know a modification occurred and handle the change appropriately. There's generally two ways to gaurantee truthfullness. The first is to lock all the facts during the inference process. The second is to make a cache copy of an object and force all modifications to go through the rule engine. This way, the changes are processed in an orderly fashion. Shadow facts are particularly important in multi-threaded environments, where an engine is shared by multiple sessions. Without truth maintenance, a system has a difficult time proving the results are accurate. The primary benefit of shadow facts is it makes development easier. When developers are forced to keep track of fact modifications, it can lead to errors, which are difficult to debug. Building a moderately complex system using a rule engine is hard enough without adding the burden of tracking changes to facts and when they should notify the rule engine.</para>
-    <para>As of Drools 3.0, shadow facts hasn't been implemented, but it is planned for the future.</para>
+    <para>A shadow fact is a shallow copy of an asserted object. Shadow facts
+    are cached copies of object asserted to the working memory. The term
+    shadow facts is commonly known as a feature of JESS (Java Expert System
+    Shell).</para>
+
+    <para>The origins of shadow facts traces back to the concept of truth
+    maintenance. The basic idea is that an expert system should gaurantee the
+    derived conclusions are accurate. A running system may alter a fact during
+    evaluation. When this occurs, the rule engine must know a modification
+    occurred and handle the change appropriately. There's generally two ways
+    to gaurantee truthfullness. The first is to lock all the facts during the
+    inference process. The second is to make a cache copy of an object and
+    force all modifications to go through the rule engine. This way, the
+    changes are processed in an orderly fashion. Shadow facts are particularly
+    important in multi-threaded environments, where an engine is shared by
+    multiple sessions. Without truth maintenance, a system has a difficult
+    time proving the results are accurate. The primary benefit of shadow facts
+    is it makes development easier. When developers are forced to keep track
+    of fact modifications, it can lead to errors, which are difficult to
+    debug. Building a moderately complex system using a rule engine is hard
+    enough without adding the burden of tracking changes to facts and when
+    they should notify the rule engine.</para>
+
+    <para>As of Drools 3.0, shadow facts hasn't been implemented, but it is
+    planned for the future.</para>
   </section>
 
   <section>
