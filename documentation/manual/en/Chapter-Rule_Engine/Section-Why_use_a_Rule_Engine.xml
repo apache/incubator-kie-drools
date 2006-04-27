@@ -113,35 +113,49 @@
     answer, some more explanation is required. The reason why there is no
     "traditional" approach is possibly one of the following: <itemizedlist>
         <listitem>
-           <para>The problem is just too fiddly for traditional code. </para>
+          <para>The problem is just too fiddly for traditional code.</para>
 
           <para>The problem may not be complex, but you can't see a non
           fragile way of building it.</para>
-
-           
         </listitem>
 
         <listitem>
-           <para>The problem is beyond any obvious algorithm based solution.</para>
+          <para>The problem is beyond any obvious algorithm based
+          solution.</para>
+
+          <para>It is a complex problem to solve, there are no obvious
+          traditional solutions or basically the problem isn't fully
+          understood.</para>
         </listitem>
 
         <listitem>
-           <para>The logic changes often </para>
+          <para>The logic changes often</para>
 
           <para>The logic itself may be simple (but doesn't have to be) but
           the rules change just too often. In many organisations, software
           releases are few and far between, and rules can help provide the
           "agility" that is needed, and expected these days (in a reasonably
           safe way).</para>
-
-           
         </listitem>
-      </itemizedlist>
-	 </para>
 
-	 <para>
-		Of course if rules are a new technology in your project teams experience, the overhead in getting going must be factored in. Its not a trivial technology, but we try to make it easier.
-	 </para>
+        <listitem>
+          <para>Domain experts (or business analysts) are readily available,
+          but are non technical.</para>
+
+          <para>Non technical domain experts are often a wealth of knowledge
+          about business rules. They typically are non technical, but can be
+          very logical. Rules can allow them to express the logic in their own
+          terms. Of course, they still have to think critically and be capable
+          of logical thinking (many people in "soft" non technical positions
+          are not, so be careful, as by codifying business knowledge in rules,
+          you will often be exposing flaws in the way the business rules are
+          at present).</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>Of course if rules are a new technology in your project teams
+    experience, the overhead in getting going must be factored in. Its not a
+    trivial technology, but we try to make it easier.</para>
 
     <para>Typically in a modern OO application you would use a rule engine to
     contain key parts of your business logic (what that means of course
@@ -161,6 +175,12 @@
     often an integral part of an application. However, there have been
     successful cases of creating reusable rul eservices which are
     stateless.</para>
+
+    <para>In your organisation, it is important to think about the process you
+    may want to/have to use for updating rules in systems that are in
+    production (the options are many, but different organisations have
+    different requirements - often they are out of the control of the
+    application vendors/project teams).</para>
   </section>
 
   <section>
@@ -174,5 +194,48 @@
     designed to do rules. Use the right tool for the job. Sure, a pair of
     pliers can be used as a hammering tool in a pinch, but that's not what
     it's designed for."</para>
+
+    <para>As rule engines are dynamic (dynamic in the sense that the rules can
+    be stored and managed and updates as data), they are often looked at as a
+    solution to the problem of deploying software (most IT departments seem to
+    exist for the purpose of preventing software being rolled out). If this is
+    the reason you wish to use a rule engine, be aware that rule engines work
+    best when you are able to write declarative rules. As an alternative, you
+    can consider data-driven designs (lookup tables), or script/process
+    engines where the scripts are managed in a database, and able to be
+    updated on the fly.</para>
+  </section>
+
+  <section>
+    <title>Scripting or process engines</title>
+
+    <para>Hopefully the preceeding sections have explained when you may want
+    to use a rule engine. </para>
+
+    <para>Alternatives are script-based engines that provide the dynamicness
+    for "changes on the fly" (there are many solutions here) or </para>
+
+    <para>Process engines (also capable of workflow) such as jBPM allow you to
+    graphically (or programmatically) describe steps in a process - those
+    steps can also involve decision point which are in themselves a simple
+    rule. Process engines and rules often can work nicely together, so its not
+    an either-or proposition.</para>
+
+    <para>One key point to note with rule engines, is that some rule-engines
+    are really scripting engines. The downside of scripting engines is that
+    you are tightly coupling your application to the scripts (if they are
+    rules, you are effectively calling rules directly) and this may cause more
+    difficulty in future maintenance, as they tend to grow in complexity over
+    time. The upside of scripting engines is they can be easier to implement
+    at first, and you can get quite results (and conceptually simpler for
+    imperative programmers !).</para>
+
+    <para>Many people have also implemented data-driven systems successfully
+    in the past (where there are control tables that store meta-data that
+    changes your applications behaviour) - these can work well when the
+    control can remain very limited. However, they can quickly grow out of
+    control if extended to much (such that only the original creators can
+    change the applications behaviour), or, they cause the application to
+    stagnate as they are too inflexible.</para>
   </section>
 </section>
