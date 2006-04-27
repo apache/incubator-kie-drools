@@ -86,8 +86,6 @@ public class RuleBaseImpl
      */
     private transient Map                         workingMemories;
 
-    private transient Object                      lock;
-
     /** Special value when adding to the underlying map. */
     private static final Object                   PRESENT = new Object();
 
@@ -121,8 +119,7 @@ public class RuleBaseImpl
         this.packageClassLoader = new CompositePackageClassLoader( Thread.currentThread().getContextClassLoader() );
         this.pkgs = new HashMap();
         this.globals = new HashMap();
-        this.workingMemories = new WeakHashMap();
-        this.lock = new Object();
+        this.workingMemories = new WeakHashMap();       
     }
 
     /**
@@ -178,8 +175,6 @@ public class RuleBaseImpl
         this.globals = (Map) streamWithLoader.readObject();
 
         this.workingMemories = new WeakHashMap();
-        this.lock = new Object();
-
     }
 
     // ------------------------------------------------------------
@@ -299,10 +294,6 @@ public class RuleBaseImpl
         return this.globals;
     }
 
-    public Object getLock() {
-        return this.lock;
-    }
-
     /**
      * Add a <code>Package</code> to the network. Iterates through the
      * <code>Package</code> adding Each individual <code>Rule</code> to the
@@ -359,8 +350,8 @@ public class RuleBaseImpl
 
         this.packageClassLoader.addClassLoader( newPkg.getPackageCompilationData().getClassLoader() );
         
-        // Iterate each workingMemory and attempt to fire any rules, that were activated as a result of the new rule addition
-        // 
+        // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
+        // of the new rule addition. Unlock after fireAllRules();
         for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
             WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
 
@@ -412,31 +403,52 @@ public class RuleBaseImpl
 
     public void removePackage(String packageName) {
         Package pkg = (Package) this.pkgs.get( packageName );
+        // Iterate each workingMemory and lock it
+        // This is so we don't update the Rete network during propagation
+        for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
+            WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
+            workingMemory.getLock().lock();
+        }         
+        
         Rule[] rules = pkg.getRules();
 
-        synchronized ( this.lock ) {
             for ( int i = 0; i < rules.length; ++i ) {
                 removeRule( rules[i] );
             }
-        }
 
         this.packageClassLoader.removeClassLoader( pkg.getPackageCompilationData().getClassLoader() );
 
         pkg.clear();
+
+        // Iterate and unlock
+        for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
+            WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
+            workingMemory.getLock().unlock();
+        }         
     }
 
     public void removeRule(String packageName,
                            String ruleName) {
         Package pkg = (Package) this.pkgs.get( packageName );
         Rule rule = pkg.getRule( ruleName );
+        // Iterate each workingMemory and lock it
+        // This is so we don't update the Rete network during propagation
+        for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
+            WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
+            workingMemory.getLock().lock();
+        }         
         removeRule( rule );
         pkg.removeRule( rule );
+
+        // Iterate and unlock
+        for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
+            WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
+            workingMemory.getLock().unlock();
+        }         
     }
 
     private void removeRule(Rule rule) {
-        synchronized ( this.lock ) {
-            this.reteooBuilder.removeRule( rule );
-        }
+        this.reteooBuilder.removeRule( rule );
     }
 
     public Set getWorkingMemories() {
