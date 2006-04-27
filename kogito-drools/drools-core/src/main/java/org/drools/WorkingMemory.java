@@ -93,7 +93,7 @@ public interface WorkingMemory
     Map getGlobals();
 
     /**
-     * Set a specific piece of application data in this working memory
+     * Set a specific piece of global in this working memory.
      * 
      * @param name
      *            the name under which to populate the data
@@ -104,7 +104,7 @@ public interface WorkingMemory
                    Object value);
 
     /**
-     * Retrieve a specific piece of application data by name
+     * Retrieve a specific piece of global data by name
      * 
      * @return application data or null if nothing is set under this name
      */

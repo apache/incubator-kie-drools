@@ -58,6 +58,8 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.IdentityMap;
 import org.drools.util.PrimitiveLongMap;
 import org.drools.util.PrimitiveLongStack;
+import org.drools.util.concurrent.locks.Lock;
+import org.drools.util.concurrent.locks.ReentrantLock;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -90,9 +92,9 @@ public class WorkingMemoryImpl
     /** Global values which are associated with this memory. */
     private final Map                       globals                                       = new HashMap();
 
-//    /** Handle-to-object mapping. */
-//    private final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
-//                                                                                                                  8 );
+    //    /** Handle-to-object mapping. */
+    //    private final PrimitiveLongMap          objects                                       = new PrimitiveLongMap( 32,
+    //                                                                                                                  8 );
 
     /** Object-to-handle mapping. */
     private final Map                       identityMap                                   = new IdentityMap();
@@ -117,7 +119,7 @@ public class WorkingMemoryImpl
 
     //private LinkedList                      factQueue                                      = new LinkedList();
 
-    private Object                          lock                                          = new Object();
+    private ReentrantLock                   lock                                          = new ReentrantLock();
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     private final RuleBaseImpl              ruleBase;
@@ -200,10 +202,10 @@ public class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public void setGlobal(String name,
-                          Object value) {
-        // Make sure the application data has been declared in the RuleBase
-        Map applicationDataDefintions = this.ruleBase.getGlobals();
-        Class type = (Class) applicationDataDefintions.get( name );
+                          Object value) {  
+        // Make sure the global has been declared in the RuleBase        
+        Map globalDefintions = this.ruleBase.getGlobals();
+        Class type = (Class) globalDefintions.get( name );
         if ( (type == null) ) {
             throw new RuntimeException( "Unexpected global [" + name + "]" );
         } else if ( !type.isInstance( value ) ) {
@@ -219,7 +221,8 @@ public class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public Object getGlobal(String name) {
-        return this.globals.get( name );
+        Object object = this.globals.get( name );
+        return object;
     }
 
     /**
@@ -246,6 +249,13 @@ public class WorkingMemoryImpl
         return this.ruleBase;
     }
 
+    /**
+     * @see WorkingMemory
+     */
+    public void fireAllRules() throws FactException {
+        fireAllRules( null );
+    }
+
     public synchronized void fireAllRules(AgendaFilter agendaFilter) throws FactException {
         // If we're already firing a rule, then it'll pick up
         // the firing for any other assertObject(..) that get
@@ -266,13 +276,6 @@ public class WorkingMemoryImpl
     }
 
     /**
-     * @see WorkingMemory
-     */
-    public void fireAllRules() throws FactException {
-        fireAllRules( null );
-    }
-
-    /**
      * Returns the fact Object for the given <code>FactHandle</code>. It
      * actually attemps to return the value from the handle, before retrieving
      * it from objects map.
@@ -286,14 +289,6 @@ public class WorkingMemoryImpl
      */
     public Object getObject(FactHandle handle) {
         InternalFactHandle handleImpl = (InternalFactHandle) handle;
-//        if ( handleImpl.getObject() == null ) {
-//            Object object = this.objects.get( handleImpl.getId() );
-//            if ( object == null ) {
-//                throw new NoSuchFactObjectException( handle );
-//            }
-//            handleImpl.setObject( object );
-//        }
-
         return handleImpl.getObject();
     }
 
@@ -437,8 +432,8 @@ public class WorkingMemoryImpl
                                    boolean logical,
                                    Rule rule,
                                    Activation activation) throws FactException {
-
-        synchronized ( this.ruleBase.getLock() ) {
+        this.lock.lock();
+        try {
 
             // check if the object already exists in the WM
             FactHandleImpl handle = (FactHandleImpl) this.identityMap.get( object );
@@ -531,6 +526,8 @@ public class WorkingMemoryImpl
                                                                handle,
                                                                object );
             return handle;
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -595,9 +592,9 @@ public class WorkingMemoryImpl
      *            The object.
      */
     void putObject(FactHandle handle,
-                     Object object) {
-//        Object oldValue = this.objects.put( ((FactHandleImpl) handle).getId(),
-//                                            object );
+                   Object object) {
+        //        Object oldValue = this.objects.put( ((FactHandleImpl) handle).getId(),
+        //                                            object );
 
         this.identityMap.put( object,
                               handle );
@@ -631,7 +628,8 @@ public class WorkingMemoryImpl
                               boolean updateEqualsMap,
                               Rule rule,
                               Activation activation) throws FactException {
-        synchronized ( this.ruleBase.getLock() ) {
+        this.lock.lock();
+        try {
             removePropertyChangeListener( handle );
 
             PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
@@ -668,6 +666,8 @@ public class WorkingMemoryImpl
                                                                 oldObject );
 
             ((FactHandleImpl) handle).invalidate();
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -686,7 +686,8 @@ public class WorkingMemoryImpl
                              Object object,
                              Rule rule,
                              Activation activation) throws FactException {
-        synchronized ( this.ruleBase.getLock() ) {
+        this.lock.lock();
+        try {
             Object originalObject = removeObject( handle );
 
             if ( originalObject == null ) {
@@ -731,6 +732,8 @@ public class WorkingMemoryImpl
                                                                handle,
                                                                originalObject,
                                                                object );
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -855,6 +858,10 @@ public class WorkingMemoryImpl
 
     public void dispose() {
         this.ruleBase.disposeWorkingMemory( this );
+    }
+
+    public Lock getLock() {
+        return this.lock;
     }
 
     private static class FactStatus {

@@ -33,7 +33,7 @@ import org.drools.spi.Activation;
 public class AgendaEventSupport
     implements
     Serializable {
-    private final List          listeners = new ArrayList();
+    private final List          listeners = Collections.synchronizedList( new ArrayList() );
     private final WorkingMemory workingMemory;
 
     public AgendaEventSupport(WorkingMemory workingMemory) {
