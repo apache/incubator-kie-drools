@@ -526,7 +526,9 @@ public class WorkingMemoryImpl
                                                                handle,
                                                                object );
             
-            propagateQueuedActions();
+            if ( !this.factQueue.isEmpty() ) {
+                propagateQueuedActions();
+            }
             
             return handle;
         } finally {
@@ -670,7 +672,9 @@ public class WorkingMemoryImpl
 
             ((FactHandleImpl) handle).invalidate();
             
-            propagateQueuedActions();
+            if ( !this.factQueue.isEmpty() ) {
+                propagateQueuedActions();
+            }
         } finally {
             this.lock.unlock();
         }
@@ -738,7 +742,9 @@ public class WorkingMemoryImpl
                                                                originalObject,
                                                                object );
             
-            propagateQueuedActions();
+            if ( !this.factQueue.isEmpty() ) {
+                propagateQueuedActions();
+            }
         } finally {
             this.lock.unlock();
         }
