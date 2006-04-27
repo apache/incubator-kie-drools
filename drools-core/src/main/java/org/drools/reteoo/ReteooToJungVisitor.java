@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.FieldValue;
+import org.drools.util.ReflectiveVisitor;
 import org.drools.visualize.ReteooJungViewer.DroolsVertex;
 
 import edu.uci.ics.jung.graph.Graph;
