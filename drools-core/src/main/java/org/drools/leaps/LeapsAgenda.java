@@ -45,13 +45,6 @@ public class LeapsAgenda extends Agenda {
             this.workingMemory.addToQueryResults( activation.getRule().getName(),
                                                   activation.getTuple() );
         } else {
-            // remove tuple from fact tables, we do it first so assert and retract 
-            // in rule does not touch this tuple
-            LeapsTuple tuple = (LeapsTuple) activation.getTuple();
-            Class[] classes = tuple.getLeapsRule().getExistsNotColumnsClasses();
-            for ( int i = 0, length = classes.length; i < length; i++ ) {
-                workingMemory.getFactTable( classes[i] ).removeTuple( tuple );
-            }
             // fire regular rule
             super.fireActivation( activation );
         }

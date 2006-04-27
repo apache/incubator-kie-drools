@@ -119,36 +119,16 @@ public class LeapsTest extends IntegrationCases {
         assertEquals("group2", list.get(3)); 
     }
 
-    public void testLogicalAssertions() throws Exception {
-        // Not working in leaps
-    }
-    
-    public void testLogicalAssertionsBacking() throws Exception {
-        // Not working in leaps
-    }
-
-    public void testLogicalAssertionsSelfreferencing() throws Exception {
-        // Not working in leaps
-    }
-
-    public void testLogicalAssertionsLoop() throws Exception {
-        // Not working in leaps
-    }
-
-    public void testLogicalAssertionsNoLoop() throws Exception {
-        // Not working in leaps
-    }
-
+    // the problem here is that rete does conflict resolution after all
+    // activations
+    // are generated and takes rules salience as a first sorting criteria
+    // and only then uses fact recency while leaps uses fact recency (and other
+    // possible
+    // criteria) first and rule based after
     public void testLogicalAssertions2() throws Exception {
         // Not working in leaps
     }
-
-    public void testLogicalAssertionsNot() throws Exception {
-        // Not working in leaps
-    }
-
-    public void testLogicalAssertionsNotPingPong() throws Exception {
-        // Not working in leaps
-    }
     
+    public void testEmptyColumn() throws Exception {
+    }
 }

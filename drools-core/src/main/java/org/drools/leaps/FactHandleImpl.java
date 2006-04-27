@@ -39,12 +39,6 @@ public class FactHandleImpl extends Handle
 
     private List    existsTuples      = null;
 
-    private Set     logicalJustifiers = null;
-
-    private boolean logicalyDependent = false;
-
-    private int     dependencyCount   = 0;
-
     /**
      * actual object that is asserted to the system no getters just a direct
      * access to speed things up
@@ -55,14 +49,14 @@ public class FactHandleImpl extends Handle
                object );
     }
 
-    void addActivatedTuple(LeapsTuple tuple) {
+    protected final void addActivatedTuple(LeapsTuple tuple) {
         if ( this.activatedTuples == null ) {
             this.activatedTuples = new HashSet();
         }
         this.activatedTuples.add( tuple );
     }
 
-    void addNotTuple(LeapsTuple tuple,
+    protected final void addNotTuple(LeapsTuple tuple,
                      int index) {
         if ( this.notTuples == null ) {
             this.notTuples = new LinkedList();
@@ -71,7 +65,7 @@ public class FactHandleImpl extends Handle
                                                          index ) );
     }
 
-    void addExistsTuple(LeapsTuple tuple,
+    protected final void addExistsTuple(LeapsTuple tuple,
                         int index) {
         if ( this.existsTuples == null ) {
             this.existsTuples = new LinkedList();
@@ -80,57 +74,25 @@ public class FactHandleImpl extends Handle
                                                             index ) );
     }
 
-    Iterator getActivatedTuples() {
+    protected final Iterator getActivatedTuples() {
         if ( this.activatedTuples != null ) {
             return this.activatedTuples.iterator();
         }
         return null;
     }
 
-    Iterator getNotTupleAssemblies() {
+    protected final Iterator getNotTupleAssemblies() {
         if ( this.notTuples != null ) {
             return this.notTuples.iterator();
         }
         return null;
     }
 
-    Iterator getExistsTupleAssemblies() {
+    protected final Iterator getExistsTupleAssemblies() {
         if ( this.existsTuples != null ) {
             return this.existsTuples.iterator();
         }
         return null;
-    }
-
-    void addLogicalDependency(LeapsTuple tuple) {
-        if ( this.logicalJustifiers == null ) {
-            this.logicalyDependent = true;
-            this.logicalJustifiers = new HashSet();
-        }
-        this.logicalJustifiers.add( tuple );
-
-        this.dependencyCount++;
-    }
-
-    void removeLogicalDependency(LeapsTuple tuple) {
-        if ( this.dependencyCount > 0 ) {
-            this.logicalJustifiers.remove( tuple );
-        }
-        this.dependencyCount--;
-    }
-
-    void removeAllLogicalDependencies() {
-        if ( this.dependencyCount > 0 ) {
-            for ( Iterator it = this.logicalJustifiers.iterator(); it.hasNext(); ) {
-                this.removeLogicalDependency( (LeapsTuple) it.next() );
-            }
-        }
-    }
-
-    boolean isLogicalyValid() {
-        if ( this.logicalyDependent ) {
-            return this.dependencyCount != 0;
-        }
-        return true;
     }
 
     /**

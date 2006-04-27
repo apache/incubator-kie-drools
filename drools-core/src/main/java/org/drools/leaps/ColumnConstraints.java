@@ -17,7 +17,6 @@ package org.drools.leaps;
 
 import java.util.List;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.BetaNodeBinder;
@@ -64,11 +63,11 @@ public class ColumnConstraints {
         }
     }
 
-    public Class getClassType() {
+    protected final Class getClassType() {
         return this.classType;
     }
 
-    boolean isAllowed(InternalFactHandle factHandle,
+    protected final boolean isAllowed(InternalFactHandle factHandle,
                       Tuple tuple,
                       WorkingMemory workingMemory) {
         return this.isAllowedAlpha( factHandle,
@@ -78,7 +77,7 @@ public class ColumnConstraints {
                                                                            workingMemory );
     }
 
-    public boolean isAllowedAlpha(InternalFactHandle factHandle,
+    public final boolean isAllowedAlpha(InternalFactHandle factHandle,
                                   Tuple tuple,
                                   WorkingMemory workingMemory) {
         if ( this.alphaPresent ) {
@@ -95,7 +94,7 @@ public class ColumnConstraints {
         return true;
     }
 
-    boolean isAllowedBeta(InternalFactHandle factHandle,
+    protected final boolean isAllowedBeta(InternalFactHandle factHandle,
                           Tuple tuple,
                           WorkingMemory workingMemory) {
         if ( this.betaPresent ) {
@@ -107,7 +106,7 @@ public class ColumnConstraints {
         return true;
     }
 
-    protected boolean isAlphaPresent() {
+    protected final boolean isAlphaPresent() {
         return alphaPresent;
     }
 

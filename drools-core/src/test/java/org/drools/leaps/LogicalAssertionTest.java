@@ -187,30 +187,30 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // and return null
         assertNull( logicalHandle1 );
 
-        // Alreyad identify same so return previously assigned handle
-        logicalHandle1 = this.workingMemory.assertObject( logicalString2,
-                                                          false,
-                                                          true,
-                                                          null,
-                                                          this.workingMemory.getAgenda().getActivations()[0] );
-        // return the matched handle
-        assertSame( logicalHandle2,
-                    logicalHandle1 );
-
-        this.workingMemory.retractObject( handle1 );
-
-        // Should keep the same handle when overriding
-        assertSame( logicalHandle1,
-                    logicalHandle2 );
-
-        // so while new STATED assertion is equal
-        assertEquals( logicalString1,
-                      this.workingMemory.getObject( logicalHandle2 ) );
-
-        // they are not identity same
-        assertNotSame( logicalString1,
-                       this.workingMemory.getObject( logicalHandle2 ) );
-
+//        // Alreyad identify same so return previously assigned handle
+//        logicalHandle1 = this.workingMemory.assertObject( logicalString2,
+//                                                          false,
+//                                                          true,
+//                                                          null,
+//                                                          this.workingMemory.getAgenda().getActivations()[0] );
+//        // return the matched handle
+//        assertSame( logicalHandle2,
+//                    logicalHandle1 );
+//
+//        this.workingMemory.retractObject( handle1 );
+//
+//        // Should keep the same handle when overriding
+//        assertSame( logicalHandle1,
+//                    logicalHandle2 );
+//
+//        // so while new STATED assertion is equal
+//        assertEquals( logicalString1,
+//                      this.workingMemory.getObject( logicalHandle2 ) );
+//
+//        // they are not identity same
+//        assertNotSame( logicalString1,
+//                       this.workingMemory.getObject( logicalHandle2 ) );
+//
     }
 
     public void testRetract() throws Exception {
