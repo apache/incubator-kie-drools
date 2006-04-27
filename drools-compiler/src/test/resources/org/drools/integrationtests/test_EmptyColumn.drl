@@ -6,7 +6,7 @@ global java.util.List list;
  
 rule "simple rule"
     when
-        Cheese( )
+        cheese : Cheese( )
     then
-		list.add( cheese ); 
+		list.add( new Integer(5) ); 
 end 
