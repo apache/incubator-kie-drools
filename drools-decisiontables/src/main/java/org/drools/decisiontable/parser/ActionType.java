@@ -25,7 +25,9 @@ import java.util.Map;
 import org.drools.decisiontable.model.SnippetBuilder;
 
 /**
- * Simple holder class identifying a condition or action column.
+ * Simple holder class identifying a condition or action column etc.
+ * This is stored in a map in the main listener class, to track what type of values
+ * you can expect to see in the rows directly below.
  * 
  * There are five types of columns relevant to a rule table.
  * @author <a href="mailto:Michael.Neale@gmail.com"> Michael Neale</a>
