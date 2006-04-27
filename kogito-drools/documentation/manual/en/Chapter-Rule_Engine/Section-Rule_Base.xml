@@ -2,5 +2,18 @@
 <section>
   <title>Rule Base</title>
 
-  <para>uuuere</para>
+  <para>A rule base contains one more more packages of rules, ready to be used
+  (ie they have been validated/compiled etc). Typically, a rulebase would be
+  generated when the rules change, and the cached until the rules change
+  again. </para>
+
+  <para>A rulebase instance is threadsafe, in the sense that you can have the
+  one instance shared accross threads in your application (which may be a web
+  application, for instance). The most common operation on a rulebase is to
+  create a newWorkingMemory. </para>
+
+  <para>The rulebase also holds weak references to any working memories that
+  it has spawned, so if rules are changing (or being added/removed etc) for
+  long running working memories, they can be updated with the latest rules
+  (without necessarily having to restart the working memory). </para>
 </section>
