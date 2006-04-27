@@ -117,8 +117,6 @@ public class WorkingMemoryImpl
     private final WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( this );
     private final AgendaEventSupport        agendaEventSupport                            = new AgendaEventSupport( this );
 
-    //private LinkedList                      factQueue                                      = new LinkedList();
-
     private ReentrantLock                   lock                                          = new ReentrantLock();
 
     /** The <code>RuleBase</code> with which this memory is associated. */
@@ -133,6 +131,8 @@ public class WorkingMemoryImpl
     private boolean                         firing;
 
     private long                            propagationIdCounter;
+    
+    private List                            factQueue                                     = new ArrayList();
 
     // ------------------------------------------------------------
     // Constructors
@@ -525,6 +525,9 @@ public class WorkingMemoryImpl
             this.workingMemoryEventSupport.fireObjectAsserted( propagationContext,
                                                                handle,
                                                                object );
+            
+            propagateQueuedActions();
+            
             return handle;
         } finally {
             this.lock.unlock();
@@ -666,6 +669,8 @@ public class WorkingMemoryImpl
                                                                 oldObject );
 
             ((FactHandleImpl) handle).invalidate();
+            
+            propagateQueuedActions();
         } finally {
             this.lock.unlock();
         }
@@ -732,9 +737,21 @@ public class WorkingMemoryImpl
                                                                handle,
                                                                originalObject,
                                                                object );
+            
+            propagateQueuedActions();
         } finally {
             this.lock.unlock();
         }
+    }
+    
+    private void propagateQueuedActions() {
+        for ( Iterator it = this.factQueue.iterator(); it.hasNext(); ) {
+            WorkingMemoryAction action = (WorkingMemoryAction) it.next();
+            it.remove();
+            action.propagate();
+        }
+        
+        
     }
 
     /**
@@ -813,11 +830,12 @@ public class WorkingMemoryImpl
             set.remove( node );
             if ( set.isEmpty() ) {
                 this.justified.remove( handle.getId() );
-                retractObject( handle,
-                               false,
-                               true,
-                               context.getRuleOrigin(),
-                               context.getActivationOrigin() );
+                // this needs to be scheduled so we don't upset the current working memory operation
+                this.factQueue.add( new WorkingMemoryRetractAction( handle,
+                                                                    false,
+                                                                    true,
+                                                                    context.getRuleOrigin(),
+                                                                    context.getActivationOrigin() ) );
             }
         }
     }
@@ -862,6 +880,41 @@ public class WorkingMemoryImpl
 
     public Lock getLock() {
         return this.lock;
+    }
+    
+    private interface WorkingMemoryAction {
+        public void propagate();
+    }
+    
+    private class WorkingMemoryRetractAction implements WorkingMemoryAction {
+        private InternalFactHandle factHandle;
+        private boolean removeLogical;
+        private boolean updateEqualsMap;
+        private Rule ruleOrigin;
+        private Activation activationOrigin;
+        
+        
+        
+        public WorkingMemoryRetractAction(InternalFactHandle factHandle,
+                                          boolean removeLogical,
+                                          boolean updateEqualsMap,
+                                          Rule ruleOrigin,
+                                          Activation activationOrigin) {
+            super();
+            this.factHandle = factHandle;
+            this.removeLogical = removeLogical;
+            this.updateEqualsMap = updateEqualsMap;
+            this.ruleOrigin = ruleOrigin;
+            this.activationOrigin = activationOrigin;
+        }
+
+        public void propagate() {
+            retractObject( this.factHandle,
+                           this.removeLogical,
+                           this.updateEqualsMap,
+                           this.ruleOrigin,
+                           this.activationOrigin );
+        }
     }
 
     private static class FactStatus {
