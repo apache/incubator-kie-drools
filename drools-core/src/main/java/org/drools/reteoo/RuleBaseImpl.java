@@ -170,16 +170,16 @@ public class RuleBaseImpl
 
         this.rete = (Rete) streamWithLoader.readObject();
         this.reteooBuilder = (ReteooBuilder) streamWithLoader.readObject();
-        
+
         this.reteooBuilder.setRuleBase( this );
         this.reteooBuilder.setRete( this.rete );
-        
+
         this.factHandleFactory = (FactHandleFactory) streamWithLoader.readObject();
         this.globals = (Map) streamWithLoader.readObject();
 
         this.workingMemories = new WeakHashMap();
         this.lock = new Object();
-        
+
     }
 
     // ------------------------------------------------------------
@@ -306,10 +306,12 @@ public class RuleBaseImpl
     /**
      * Add a <code>Package</code> to the network. Iterates through the
      * <code>Package</code> adding Each individual <code>Rule</code> to the
-     * network.
+     * network. Before update network each referenced <code>WorkingMemory</code>
+     * is locked.
      * 
      * @param pkg
-     *            The rule-set to add.
+     *            The package to add.
+     * @throws PackageIntegrationException 
      * 
      * @throws RuleIntegrationException
      *             if an error prevents complete construction of the network for
@@ -317,12 +319,17 @@ public class RuleBaseImpl
      * @throws FactException
      * @throws InvalidPatternException
      */
-    public void addPackage(Package newPkg) throws RuleIntegrationException,
-                                          PackageIntegrationException,
-                                          FactException,
-                                          InvalidPatternException {
+    public void addPackage(Package newPkg) throws PackageIntegrationException {
         newPkg.checkValidity();
         Package pkg = (Package) this.pkgs.get( newPkg.getName() );
+        
+        // Iterate each workingMemory and lock it
+        // This is so we don't update the Rete network during propagation
+        for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
+            WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
+            workingMemory.getLock().lock();
+        }  
+        
         if ( pkg != null ) {
             mergePackage( pkg,
                           newPkg );
@@ -351,10 +358,19 @@ public class RuleBaseImpl
         }
 
         this.packageClassLoader.addClassLoader( newPkg.getPackageCompilationData().getClassLoader() );
+        
+        // Iterate each workingMemory and attempt to fire any rules, that were activated as a result of the new rule addition
+        // 
+        for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
+            WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
+
+            workingMemory.fireAllRules();
+            workingMemory.getLock().unlock();
+        }        
     }
 
-    public void mergePackage(Package pkg,
-                             Package newPkg) throws PackageIntegrationException {
+    private void mergePackage(Package pkg,
+                              Package newPkg) throws PackageIntegrationException {
         Map globals = pkg.getGlobals();
         List imports = pkg.getImports();
 
@@ -385,20 +401,14 @@ public class RuleBaseImpl
         }
     }
 
-    public void addRule(Rule rule) throws InvalidPatternException {
-        if ( !rule.isValid() ) throw new IllegalArgumentException( "The rule called " + rule.getName() + " is not valid. Check for compile errors reported." );
-
-        synchronized ( this.lock ) {
-            // This adds the rule. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
-            this.reteooBuilder.addRule( rule );
-
-            // Iterate each workingMemory and attempt to fire any rules, that were activated as a result of the new rule addition
-            for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
-                WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) it.next();
-                workingMemory.fireAllRules();
-            }
+    private void addRule(Rule rule) throws InvalidPatternException {
+        if ( !rule.isValid() ) {
+            throw new IllegalArgumentException( "The rule called " + rule.getName() + " is not valid. Check for compile errors reported." );
         }
-    }
+
+        // This adds the rule. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
+        this.reteooBuilder.addRule( rule );
+    }   
 
     public void removePackage(String packageName) {
         Package pkg = (Package) this.pkgs.get( packageName );

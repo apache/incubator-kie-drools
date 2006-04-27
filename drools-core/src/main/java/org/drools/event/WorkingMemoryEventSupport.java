@@ -34,7 +34,7 @@ import org.drools.spi.PropagationContext;
 public class WorkingMemoryEventSupport
     implements
     Serializable {
-    private final List          listeners = new ArrayList();
+    private final List          listeners = Collections.synchronizedList( new ArrayList() );
     private final WorkingMemory workingMemory;
 
     public WorkingMemoryEventSupport(WorkingMemory workingMemory) {
