@@ -15,15 +15,6 @@ package org.drools.decisiontable.model;
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
-import java.text.StringCharacterIterator;
-
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  * 
@@ -48,51 +39,6 @@ public abstract class DRLElement
     	return (_comment != null && !("".equals(_comment)));
     }
 
-    /**
-     * This escapes plain snippets into an xml/drl safe format.
-     * 
-     * @param snippet
-     * @return An escaped DRL safe string.
-     */
-    static String escapeSnippet(String snippet)
-    {
-        if ( snippet != null )
-        {
-            final StringBuffer result = new StringBuffer( );
 
-            final StringCharacterIterator iterator = new StringCharacterIterator( snippet );
-            char character = iterator.current( );
-            while ( character != StringCharacterIterator.DONE )
-            {
-                if ( character == '<' )
-                {
-                    result.append( "&lt;" );
-                }
-                else if ( character == '>' )
-                {
-                    result.append( "&gt;" );
-                } // What else really needs to be escaped? SAX parsers are
-                // inconsistent here...
-                /*
-                 * else if (character == '\"') { result.append("&quot;"); } else
-                 * if (character == '\'') { result.append("&#039;"); } else if
-                 * (character == '\\') { result.append("&#092;"); }
-                 */
-                else if ( character == '&' )
-                {
-                    result.append( "&amp;" );
-                }
-                else
-                {
-                    // the char is not a special one
-                    // add it to the result as is
-                    result.append( character );
-                }
-                character = iterator.next( );
-            }
-            return result.toString( );
-        }
-        return null;
-    }
 
 }
