@@ -241,6 +241,24 @@
     </section>
   </section>
 
+  <section>
+    <title>Automatic transforming between formats (XML and DRL)</title>
+
+    <para>Drools comes with some utility classes to transform between formats.
+    This works by parsing the rules from the source format into the AST, and
+    then "dumping" out to the appropriate target format. This allows you, for
+    example, to write rules in DRL, and when needed, export to XML if
+    necessary at some point in the future.</para>
+
+    <para>The classes to look at if you need to do this are: <programlisting>XmlDumper - for exporting XML.
+DrlDumper - for exporting DRL.
+DrlParser - reading DRL.
+XmlPackageReader - reading XML.
+</programlisting> Using combinations of the above, you can convert between any
+    format (including round trip). Note that DSLs will not be preserved (from
+    DRLs that are using a DSL) - but they will be able to be converted.</para>
+  </section>
+
   <para>Feel free to make use of XSLT to provide all sorts of possibilities
   for XML, XSLT and its ilk are what make XML powerful.</para>
 </section>
