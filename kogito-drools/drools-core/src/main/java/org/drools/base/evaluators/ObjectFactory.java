@@ -1,4 +1,5 @@
 package org.drools.base.evaluators;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,8 @@ package org.drools.base.evaluators;
  * limitations under the License.
  */
 
-
-
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.base.BaseEvaluator;
@@ -26,6 +27,10 @@ import org.drools.spi.Evaluator;
  * This is the misc "bucket" evaluator factory for objects.
  * It is fairly limited in operations, 
  * and what operations are available are dependent on the exact type.
+ * 
+ * This supports "<" and ">" etc by requiring objects to implement the comparable interface.
+ * Of course, literals will not work with comparator, as it has no way
+ * of converting from literal to the appropriate type.
  * 
  * @author Michael Neale
  */
@@ -39,6 +44,14 @@ public class ObjectFactory {
                 return ObjectNotEqualEvaluator.INSTANCE;
             case Evaluator.CONTAINS :
                 return ObjectContainsEvaluator.INSTANCE;
+            case Evaluator.LESS :
+                return ObjectLessEvaluator.INSTANCE;
+            case Evaluator.LESS_OR_EQUAL :
+                return ObjectLessOrEqualEvaluator.INSTANCE;
+            case Evaluator.GREATER :
+                return ObjectGreaterEvaluator.INSTANCE;
+            case Evaluator.GREATER_OR_EQUAL :
+                return ObjectGreaterOrEqualEvaluator.INSTANCE;
             default :
                 throw new RuntimeException( "Operator '" + operator + "' does not exist for ObjectEvaluator" );
         }
@@ -82,6 +95,83 @@ public class ObjectFactory {
         }
     }
 
+    static class ObjectLessEvaluator extends BaseEvaluator {
+        public final static Evaluator INSTANCE = new ObjectLessEvaluator();
+
+        private ObjectLessEvaluator() {
+            super( Evaluator.OBJECT_TYPE,
+                   Evaluator.LESS );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            Comparable comp = (Comparable) object1;
+            int val = comp.compareTo( object2 );
+            return val < 0;
+        }
+
+        public String toString() {
+            return "Object <";
+        }
+    }
+
+    static class ObjectLessOrEqualEvaluator extends BaseEvaluator {
+        public final static Evaluator INSTANCE = new ObjectLessOrEqualEvaluator();
+
+        private ObjectLessOrEqualEvaluator() {
+            super( Evaluator.OBJECT_TYPE,
+                   Evaluator.LESS_OR_EQUAL );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            Comparable comp = (Comparable) object1;
+            return comp.compareTo( object2 ) <= 0;
+        }
+
+        public String toString() {
+            return "Object <=";
+        }
+    }
+
+    static class ObjectGreaterEvaluator extends BaseEvaluator {
+        public final static Evaluator INSTANCE = new ObjectGreaterEvaluator();
+
+        private ObjectGreaterEvaluator() {
+            super( Evaluator.OBJECT_TYPE,
+                   Evaluator.GREATER );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            Comparable comp = (Comparable) object1;
+            return comp.compareTo( object2 ) > 0;
+        }
+
+        public String toString() {
+            return "Object >";
+        }
+    }
+
+    static class ObjectGreaterOrEqualEvaluator extends BaseEvaluator {
+        public final static Evaluator INSTANCE = new ObjectGreaterOrEqualEvaluator();
+
+        private ObjectGreaterOrEqualEvaluator() {
+            super( Evaluator.OBJECT_TYPE,
+                   Evaluator.GREATER_OR_EQUAL );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            Comparable comp = (Comparable) object1;
+            return comp.compareTo( object2 ) >= 0;
+        }
+
+        public String toString() {
+            return "Object >=";
+        }
+    }
+
     static class ObjectContainsEvaluator extends BaseEvaluator {
         public final static Evaluator INSTANCE = new ObjectContainsEvaluator();
 
@@ -93,8 +183,6 @@ public class ObjectFactory {
         public boolean evaluate(Object object1,
                                 Object object2) {
             if ( object2 == null ) return false;
-
-            //TODO: add support for hashes, normal arrays etc
             Collection col = (Collection) object1;
             return col.contains( object2 );
         }

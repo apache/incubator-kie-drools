@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +68,7 @@ public abstract class IntegrationCases extends TestCase {
     protected abstract RuleBase getRuleBase() throws Exception;
 
     public void testGlobals() throws Exception {
+        
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "globals_rule_test.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -214,6 +216,32 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( bill,
                       list.get( 0 ) );
     }
+    
+    public void testBigDecimal() throws Exception {
+              
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "big_decimal_and_comparable.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        Person bill = new Person( "bill",
+                                  null,
+                                  12 );
+        bill.setBigDecimal( new BigDecimal("42") );
+        workingMemory.assertObject( new BigDecimal("43") );
+        workingMemory.assertObject( bill );
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+    }    
 
     public void testCell() throws Exception {
         Cell cell1 = new Cell( 9 );

@@ -388,12 +388,14 @@ public class RuleParserTest extends TestCase {
     /** Note this is only to be enabled if we agree to combine patterns from columns bound to the same var.
      * At present, not a valid test. Refer to AndDescr and AndDescrTest (Michael Neale).
      */
-    public void xxxtestMultiBindings() throws Exception {
+    public void XXXtestMultiBindings() throws Exception {
         RuleDescr rule = parseResource( "multiple_bindings.drl" ).rule();        
         assertNotNull( rule );        
         assertEquals( "simple_rule", rule.getName() );
         
-        assertEquals(1, rule.getLhs().getDescrs().size());
+        assertEquals(2, rule.getLhs().getDescrs().size());
+        assertEquals("foo", ( (ColumnDescr) rule.getLhs().getDescrs().get( 0 )).getIdentifier());
+        assertEquals("baz", ( (ColumnDescr) rule.getLhs().getDescrs().get( 1 )).getIdentifier());
         
     }
     

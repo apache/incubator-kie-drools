@@ -17,6 +17,8 @@ package org.drools.base;
 
 
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +40,18 @@ public class EvaluatorFactoryTest extends TestCase {
         list.add( "foo" );
 
         Object[][] data = {{"foo", "==", "bar", Boolean.FALSE}, {"foo", "==", "foo", Boolean.TRUE}, {"foo", "!=", "bar", Boolean.TRUE}, {list, "contains", "foo", Boolean.TRUE}, {list, "contains", "bar", Boolean.FALSE},
-                {list, "==", null, Boolean.FALSE}, {list, "!=", null, Boolean.TRUE}, {null, "==", null, Boolean.TRUE}};
-
+                {list, "==", null, Boolean.FALSE}, 
+                {list, "!=", null, Boolean.TRUE}, 
+                {null, "==", null, Boolean.TRUE},
+                {new BigDecimal("42.42"), "<", new BigDecimal("43"), Boolean.TRUE},
+                {new BigDecimal("42.42"), ">", new BigDecimal("43"), Boolean.FALSE},
+                {new BigDecimal("42.42"), "<=", new BigDecimal("42.42"), Boolean.TRUE},
+                {new BigInteger("42"), ">=", new BigInteger("43"), Boolean.FALSE}
+                
+                
+                
+        };
+        
         runEvaluatorTest( data,
                           Evaluator.OBJECT_TYPE );
 
@@ -49,8 +61,12 @@ public class EvaluatorFactoryTest extends TestCase {
 
         Object[] field = new Object[]{"foo", "bar"};
 
-        Object[][] data = {{field, "==", new Object[]{"foo"}, Boolean.FALSE}, {field, "==", field, Boolean.TRUE}, {field, "!=", new Object[]{"foo"}, Boolean.TRUE}, {field, "contains", "foo", Boolean.TRUE}, {field, "!=", null, Boolean.TRUE},
-                {field, "==", null, Boolean.FALSE}};
+        Object[][] data = {{field, "==", new Object[]{"foo"}, Boolean.FALSE}, 
+                           {field, "==", field, Boolean.TRUE}, 
+                           {field, "!=", new Object[]{"foo"}, Boolean.TRUE}, 
+                           {field, "contains", "foo", Boolean.TRUE}, 
+                           {field, "!=", null, Boolean.TRUE},
+                           {field, "==", null, Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           Evaluator.ARRAY_TYPE );
