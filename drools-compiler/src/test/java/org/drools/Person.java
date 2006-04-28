@@ -16,6 +16,8 @@ import java.io.Serializable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 
 
@@ -23,6 +25,8 @@ public class Person implements Serializable {
     private final String name;
     private final String likes;
     private final int age;
+    private BigDecimal bigDecimal;
+    private BigInteger bigInteger;
     
     private char sex;
     
@@ -117,5 +121,25 @@ public class Person implements Serializable {
         } else if ( !name.equals( other.name ) ) return false;
         if ( sex != other.sex ) return false;
         return true;
+    }
+
+
+    public BigDecimal getBigDecimal() {
+        return bigDecimal;
+    }
+
+
+    public void setBigDecimal(BigDecimal bigDecimal) {
+        this.bigDecimal = bigDecimal;
+    }
+
+
+    public BigInteger getBigInteger() {
+        return bigInteger;
+    }
+
+
+    public void setBigInteger(BigInteger bigInteger) {
+        this.bigInteger = bigInteger;
     }
 }

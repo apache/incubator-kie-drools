@@ -1,0 +1,16 @@
+#created on: 27-Mar-2006
+package org.drools.test
+
+import org.drools.Person;
+import java.math.BigDecimal;
+
+global java.util.List list;
+
+rule "BigDec"
+	
+	when
+		b : BigDecimal()
+		p : Person(bigDecimal < b)
+	then 		
+		list.add( p );
+end

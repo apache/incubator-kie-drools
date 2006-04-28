@@ -26,9 +26,9 @@ import org.drools.lang.descr.*;
 import org.drools.util.ReflectiveVisitor;
 
 /**
- * 
+ * This utility will take a AST of a rule package, and emit XML.
+ * This can be used in porting from DRL to XML.
  * @author <a href="mailto:jayaramcs@gmail.com">Author Jayaram C S</a>
- *
  */
 public class XmlDumper extends ReflectiveVisitor
     implements
