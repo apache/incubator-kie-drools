@@ -12,10 +12,9 @@ import java.util.Set;
  * @see CellState
  * @see CellGrid
  */
-public class Cell
-{
+public class Cell {
 
-    private Set neighbors         = new HashSet( );
+    private Set       neighbors   = new HashSet();
 
     private CellState state       = CellState.DEAD;
 
@@ -25,25 +24,21 @@ public class Cell
      * @return the number of neighbors that this cell has
      * @see #getNumberOfLiveNeighbors()
      */
-    public int getNumberOfNeighboringCells()
-    {
-        return neighbors.size( );
+    public int getNumberOfNeighboringCells() {
+        return neighbors.size();
     }
 
     /**
      * @return the number of live neighbors that this cell has
      * @see #getNumberOfNeighboringCells()
      */
-    public int getNumberOfLiveNeighbors()
-    {
+    public int getNumberOfLiveNeighbors() {
         int numberOfLiveNeighbors = 0;
-        Iterator it = neighbors.iterator( );
+        Iterator it = neighbors.iterator();
         Cell cell = null;
-        while ( it.hasNext( ) )
-        {
-            cell = (Cell) it.next( );
-            if (cell.getCellState( ) == CellState.LIVE)
-            {
+        while ( it.hasNext() ) {
+            cell = (Cell) it.next();
+            if ( cell.getCellState() == CellState.LIVE ) {
                 numberOfLiveNeighbors++;
             }
         }
@@ -56,8 +51,7 @@ public class Cell
      * @param neighbor
      *            new neighbor
      */
-    public void addNeighbor(Cell neighbor)
-    {
+    public void addNeighbor(Cell neighbor) {
         neighbors.add( neighbor );
         neighbor.neighbors.add( this );
     }
@@ -74,10 +68,8 @@ public class Cell
      * @see #getCellState()
      * @see #transitionState()
      */
-    public void queueNextCellState(CellState nextLiveState)
-    {
-        if ( nextLiveState != state )
-        {
+    public void queueNextCellState(CellState nextLiveState) {
+        if ( nextLiveState != state ) {
             queuedState = nextLiveState;
         }
     }
@@ -88,11 +80,9 @@ public class Cell
      * @return <code>true</code> if the state changed, otherwise false
      * @see #queueNextCellState(CellState)
      */
-    public boolean transitionState()
-    {
+    public boolean transitionState() {
         boolean stateChanged = false;
-        if ( queuedState != null )
-        {
+        if ( queuedState != null ) {
             state = queuedState;
             queuedState = null;
             stateChanged = true;
@@ -105,8 +95,7 @@ public class Cell
      * @see #queueNextCellState(org.drools.examples.conway.CellState)
      * @see CellState
      */
-    public CellState getCellState()
-    {
+    public CellState getCellState() {
         return state;
     }
 
@@ -117,8 +106,7 @@ public class Cell
      *            new state for this cell
      * @see CellState
      */
-    public void setCellState(CellState newState)
-    {
+    public void setCellState(CellState newState) {
         state = newState;
     }
 }

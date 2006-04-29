@@ -9,8 +9,7 @@ package org.drools.examples.conway.patterns;
  */
 public class SimpleGlider
     implements
-    ConwayPattern
-{
+    ConwayPattern {
 
     private boolean[][] grid = {{false, true, false}, {true, false, false}, {true, true, true}};
 
@@ -21,21 +20,18 @@ public class SimpleGlider
      * 
      * @return array representing a conway grid
      */
-    public boolean[][] getPattern()
-    {
+    public boolean[][] getPattern() {
         return grid;
     }
 
     /**
      * @return the name of this pattern
      */
-    public String getPatternName()
-    {
+    public String getPatternName() {
         return "Simple Glider";
     }
 
-    public String toString()
-    {
-        return getPatternName( );
+    public String toString() {
+        return getPatternName();
     }
 }

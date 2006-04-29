@@ -11,8 +11,7 @@ import java.io.Serializable;
  */
 public interface ConwayPattern
     extends
-    Serializable
-{
+    Serializable {
 
     /**
      * This method should return a 2 dimensional array of boolean that represent

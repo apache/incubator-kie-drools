@@ -9,8 +9,7 @@ package org.drools.examples.conway.patterns;
  */
 public class Pulsar
     implements
-    ConwayPattern
-{
+    ConwayPattern {
 
     private boolean[][] grid = {{false, true, false}, {true, true, true}, {true, false, true}, {true, true, true}, {false, true, false}};
 
@@ -21,21 +20,18 @@ public class Pulsar
      * 
      * @return array representing a conway grid
      */
-    public boolean[][] getPattern()
-    {
+    public boolean[][] getPattern() {
         return grid;
     }
 
     /**
      * @return the name of this pattern
      */
-    public String getPatternName()
-    {
+    public String getPatternName() {
         return "Pulsar";
     }
 
-    public String toString()
-    {
-        return getPatternName( );
+    public String toString() {
+        return getPatternName();
     }
 }
