@@ -7,24 +7,20 @@ import java.util.ResourceBundle;
  * 
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  */
-public class ConwayApplicationProperties
-{
-    private static ConwayApplicationProperties ourInstance = new ConwayApplicationProperties( );
+public class ConwayApplicationProperties {
+    private static ConwayApplicationProperties ourInstance = new ConwayApplicationProperties();
 
-    public static ConwayApplicationProperties getInstance()
-    {
+    public static ConwayApplicationProperties getInstance() {
         return ourInstance;
     }
 
     private final ResourceBundle resources;
 
-    private ConwayApplicationProperties()
-    {
-        resources = ResourceBundle.getBundle( "conway" );
+    private ConwayApplicationProperties() {
+        resources = ResourceBundle.getBundle( "conway.conway" );
     }
 
-    public static String getProperty(String propertyName)
-    {
+    public static String getProperty(String propertyName) {
         return ourInstance.resources.getString( propertyName );
     }
 }

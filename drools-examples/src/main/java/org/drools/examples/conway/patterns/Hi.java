@@ -10,8 +10,7 @@ package org.drools.examples.conway.patterns;
  */
 public class Hi
     implements
-    ConwayPattern
-{
+    ConwayPattern {
 
     private boolean[][] grid = {{true, false, false, false, true, false, false, true, true, true, true, true, true, true}, {true, false, false, false, true, false, false, false, false, false, true, false, false, false},
             {true, false, false, false, true, false, false, false, false, false, true, false, false, false}, {true, false, false, false, true, false, false, false, false, false, true, false, false, false},
@@ -26,21 +25,18 @@ public class Hi
      * 
      * @return array representing a conway grid
      */
-    public boolean[][] getPattern()
-    {
+    public boolean[][] getPattern() {
         return grid;
     }
 
     /**
      * @return the name of this pattern
      */
-    public String getPatternName()
-    {
+    public String getPatternName() {
         return "Hi";
     }
 
-    public String toString()
-    {
-        return getPatternName( );
+    public String toString() {
+        return getPatternName();
     }
 }

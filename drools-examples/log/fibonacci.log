@@ -1,0 +1,2538 @@
+<object-stream>
+  <list>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [1]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(50/-1)(1)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>1</factId>
+      <objectToString>Fibonacci(50/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [1]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(50/-1)(1)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [2]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(49/-1)(2)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>2</factId>
+      <objectToString>Fibonacci(49/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [1]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(50/-1)(1)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [2]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(49/-1)(2)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [3]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(48/-1)(3)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>3</factId>
+      <objectToString>Fibonacci(48/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [2]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(49/-1)(2)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [3]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(48/-1)(3)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [4]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(47/-1)(4)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>4</factId>
+      <objectToString>Fibonacci(47/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [3]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(48/-1)(3)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [4]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(47/-1)(4)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [5]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(46/-1)(5)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>5</factId>
+      <objectToString>Fibonacci(46/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [4]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(47/-1)(4)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [5]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(46/-1)(5)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [6]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(45/-1)(6)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>6</factId>
+      <objectToString>Fibonacci(45/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [5]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(46/-1)(5)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [6]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(45/-1)(6)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [7]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(44/-1)(7)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>7</factId>
+      <objectToString>Fibonacci(44/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [6]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(45/-1)(6)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [7]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(44/-1)(7)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [8]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(43/-1)(8)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>8</factId>
+      <objectToString>Fibonacci(43/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [7]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(44/-1)(7)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [8]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(43/-1)(8)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [9]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(42/-1)(9)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>9</factId>
+      <objectToString>Fibonacci(42/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [8]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(43/-1)(8)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [9]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(42/-1)(9)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [10]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(41/-1)(10)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>10</factId>
+      <objectToString>Fibonacci(41/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [9]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(42/-1)(9)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [10]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(41/-1)(10)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [11]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(40/-1)(11)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>11</factId>
+      <objectToString>Fibonacci(40/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [10]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(41/-1)(10)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [11]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(40/-1)(11)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [12]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(39/-1)(12)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>12</factId>
+      <objectToString>Fibonacci(39/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [11]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(40/-1)(11)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [12]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(39/-1)(12)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [13]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(38/-1)(13)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>13</factId>
+      <objectToString>Fibonacci(38/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [12]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(39/-1)(12)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [13]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(38/-1)(13)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [14]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(37/-1)(14)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>14</factId>
+      <objectToString>Fibonacci(37/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [13]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(38/-1)(13)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [14]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(37/-1)(14)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [15]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(36/-1)(15)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>15</factId>
+      <objectToString>Fibonacci(36/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [14]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(37/-1)(14)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [15]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(36/-1)(15)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [16]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(35/-1)(16)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>16</factId>
+      <objectToString>Fibonacci(35/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [15]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(36/-1)(15)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [16]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(35/-1)(16)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [17]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(34/-1)(17)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>17</factId>
+      <objectToString>Fibonacci(34/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [16]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(35/-1)(16)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [17]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(34/-1)(17)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [18]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(33/-1)(18)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>18</factId>
+      <objectToString>Fibonacci(33/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [17]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(34/-1)(17)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [18]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(33/-1)(18)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [19]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(32/-1)(19)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>19</factId>
+      <objectToString>Fibonacci(32/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [18]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(33/-1)(18)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [19]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(32/-1)(19)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [20]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(31/-1)(20)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>20</factId>
+      <objectToString>Fibonacci(31/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [19]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(32/-1)(19)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [20]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(31/-1)(20)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [21]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(30/-1)(21)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>21</factId>
+      <objectToString>Fibonacci(30/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [20]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(31/-1)(20)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [21]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(30/-1)(21)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [22]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(29/-1)(22)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>22</factId>
+      <objectToString>Fibonacci(29/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [21]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(30/-1)(21)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [22]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(29/-1)(22)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [23]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(28/-1)(23)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>23</factId>
+      <objectToString>Fibonacci(28/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [22]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(29/-1)(22)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [23]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(28/-1)(23)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [24]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(27/-1)(24)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>24</factId>
+      <objectToString>Fibonacci(27/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [23]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(28/-1)(23)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [24]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(27/-1)(24)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [25]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(26/-1)(25)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>25</factId>
+      <objectToString>Fibonacci(26/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [24]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(27/-1)(24)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [25]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(26/-1)(25)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [26]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(25/-1)(26)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>26</factId>
+      <objectToString>Fibonacci(25/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [25]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(26/-1)(25)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [26]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(25/-1)(26)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [27]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(24/-1)(27)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>27</factId>
+      <objectToString>Fibonacci(24/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [26]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(25/-1)(26)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [27]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(24/-1)(27)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [28]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(23/-1)(28)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>28</factId>
+      <objectToString>Fibonacci(23/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [27]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(24/-1)(27)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [28]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(23/-1)(28)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [29]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(22/-1)(29)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>29</factId>
+      <objectToString>Fibonacci(22/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [28]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(23/-1)(28)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [29]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(22/-1)(29)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [30]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(21/-1)(30)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>30</factId>
+      <objectToString>Fibonacci(21/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [29]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(22/-1)(29)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [30]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(21/-1)(30)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [31]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(20/-1)(31)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>31</factId>
+      <objectToString>Fibonacci(20/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [30]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(21/-1)(30)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [31]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(20/-1)(31)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [32]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(19/-1)(32)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>32</factId>
+      <objectToString>Fibonacci(19/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [31]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(20/-1)(31)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [32]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(19/-1)(32)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [33]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(18/-1)(33)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>33</factId>
+      <objectToString>Fibonacci(18/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [32]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(19/-1)(32)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [33]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(18/-1)(33)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [34]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(17/-1)(34)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>34</factId>
+      <objectToString>Fibonacci(17/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [33]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(18/-1)(33)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [34]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(17/-1)(34)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [35]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(16/-1)(35)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>35</factId>
+      <objectToString>Fibonacci(16/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [34]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(17/-1)(34)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [35]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(16/-1)(35)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [36]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(15/-1)(36)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>36</factId>
+      <objectToString>Fibonacci(15/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [35]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(16/-1)(35)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [36]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(15/-1)(36)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [37]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(14/-1)(37)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>37</factId>
+      <objectToString>Fibonacci(14/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [36]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(15/-1)(36)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [37]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(14/-1)(37)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [38]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(13/-1)(38)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>38</factId>
+      <objectToString>Fibonacci(13/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [37]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(14/-1)(37)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [38]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(13/-1)(38)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [39]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(12/-1)(39)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>39</factId>
+      <objectToString>Fibonacci(12/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [38]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(13/-1)(38)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [39]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(12/-1)(39)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [40]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(11/-1)(40)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>40</factId>
+      <objectToString>Fibonacci(11/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [39]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(12/-1)(39)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [40]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(11/-1)(40)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [41]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(10/-1)(41)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>41</factId>
+      <objectToString>Fibonacci(10/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [40]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(11/-1)(40)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [41]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(10/-1)(41)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [42]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(9/-1)(42)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>42</factId>
+      <objectToString>Fibonacci(9/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [41]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(10/-1)(41)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [42]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(9/-1)(42)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [43]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(8/-1)(43)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>43</factId>
+      <objectToString>Fibonacci(8/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [42]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(9/-1)(42)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [43]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(8/-1)(43)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [44]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(7/-1)(44)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>44</factId>
+      <objectToString>Fibonacci(7/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [43]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(8/-1)(43)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [44]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(7/-1)(44)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [45]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(6/-1)(45)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>45</factId>
+      <objectToString>Fibonacci(6/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [44]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(7/-1)(44)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [45]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(6/-1)(45)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [46]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(5/-1)(46)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>46</factId>
+      <objectToString>Fibonacci(5/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [45]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(6/-1)(45)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [46]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(5/-1)(46)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [47]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(4/-1)(47)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>47</factId>
+      <objectToString>Fibonacci(4/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [46]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(5/-1)(46)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [47]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(4/-1)(47)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [48]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(3/-1)(48)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>48</factId>
+      <objectToString>Fibonacci(3/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [47]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(4/-1)(47)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [48]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(3/-1)(48)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Bootstrap2 [49]</activationId>
+      <rule>Bootstrap2</rule>
+      <declarations>f=Fibonacci(2/-1)(49)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [49]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(2/-1)(49)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>49</factId>
+      <objectToString>Fibonacci(2/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [48]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(3/-1)(48)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [49]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(2/-1)(49)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Bootstrap1 [50]</activationId>
+      <rule>Bootstrap1</rule>
+      <declarations>f=Fibonacci(1/-1)(50)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [50]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(1/-1)(50)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>50</factId>
+      <objectToString>Fibonacci(1/-1)</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [49]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(2/-1)(49)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Bootstrap1 [50]</activationId>
+      <rule>Bootstrap1</rule>
+      <declarations>f=Fibonacci(1/-1)(50)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Recurse [50]</activationId>
+      <rule>Recurse</rule>
+      <declarations>f=Fibonacci(1/1)(50)</declarations>
+      <type>5</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>50</factId>
+      <objectToString>Fibonacci(1/1)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Bootstrap1 [50]</activationId>
+      <rule>Bootstrap1</rule>
+      <declarations>f=Fibonacci(1/1)(50)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Bootstrap2 [49]</activationId>
+      <rule>Bootstrap2</rule>
+      <declarations>f=Fibonacci(2/-1)(49)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [50, 49, 48]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(2/1)(49); s2=2(49); f1=Fibonacci(1/1)(50); s1=1(50); f3=Fibonacci(3/-1)(48)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>49</factId>
+      <objectToString>Fibonacci(2/1)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Bootstrap2 [49]</activationId>
+      <rule>Bootstrap2</rule>
+      <declarations>f=Fibonacci(2/1)(49)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [50, 49, 48]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(2/1)(49); s2=2(49); f1=Fibonacci(1/1)(50); s1=1(50); f3=Fibonacci(3/-1)(48)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [49, 48, 47]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(3/2)(48); s2=3(48); f1=Fibonacci(2/1)(49); s1=2(49); f3=Fibonacci(4/-1)(47)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>48</factId>
+      <objectToString>Fibonacci(3/2)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>50</factId>
+      <objectToString>Fibonacci(1/1)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 49, 48]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(2/1)(49); s2=2(49); f1=Fibonacci(1/1)(-1); s1=1(-1); f3=Fibonacci(3/2)(48)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [49, 48, 47]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(3/2)(48); s2=3(48); f1=Fibonacci(2/1)(49); s1=2(49); f3=Fibonacci(4/-1)(47)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [48, 47, 46]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(4/3)(47); s2=4(47); f1=Fibonacci(3/2)(48); s1=3(48); f3=Fibonacci(5/-1)(46)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>47</factId>
+      <objectToString>Fibonacci(4/3)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>49</factId>
+      <objectToString>Fibonacci(2/1)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 48, 47]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(3/2)(48); s2=3(48); f1=Fibonacci(2/1)(-1); s1=2(-1); f3=Fibonacci(4/3)(47)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [48, 47, 46]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(4/3)(47); s2=4(47); f1=Fibonacci(3/2)(48); s1=3(48); f3=Fibonacci(5/-1)(46)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [47, 46, 45]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(5/5)(46); s2=5(46); f1=Fibonacci(4/3)(47); s1=4(47); f3=Fibonacci(6/-1)(45)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>46</factId>
+      <objectToString>Fibonacci(5/5)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>48</factId>
+      <objectToString>Fibonacci(3/2)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 47, 46]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(4/3)(47); s2=4(47); f1=Fibonacci(3/2)(-1); s1=3(-1); f3=Fibonacci(5/5)(46)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [47, 46, 45]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(5/5)(46); s2=5(46); f1=Fibonacci(4/3)(47); s1=4(47); f3=Fibonacci(6/-1)(45)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [46, 45, 44]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(6/8)(45); s2=6(45); f1=Fibonacci(5/5)(46); s1=5(46); f3=Fibonacci(7/-1)(44)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>45</factId>
+      <objectToString>Fibonacci(6/8)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>47</factId>
+      <objectToString>Fibonacci(4/3)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 46, 45]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(5/5)(46); s2=5(46); f1=Fibonacci(4/3)(-1); s1=4(-1); f3=Fibonacci(6/8)(45)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [46, 45, 44]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(6/8)(45); s2=6(45); f1=Fibonacci(5/5)(46); s1=5(46); f3=Fibonacci(7/-1)(44)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [45, 44, 43]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(7/13)(44); s2=7(44); f1=Fibonacci(6/8)(45); s1=6(45); f3=Fibonacci(8/-1)(43)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>44</factId>
+      <objectToString>Fibonacci(7/13)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>46</factId>
+      <objectToString>Fibonacci(5/5)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 45, 44]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(6/8)(45); s2=6(45); f1=Fibonacci(5/5)(-1); s1=5(-1); f3=Fibonacci(7/13)(44)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [45, 44, 43]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(7/13)(44); s2=7(44); f1=Fibonacci(6/8)(45); s1=6(45); f3=Fibonacci(8/-1)(43)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [44, 43, 42]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(8/21)(43); s2=8(43); f1=Fibonacci(7/13)(44); s1=7(44); f3=Fibonacci(9/-1)(42)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>43</factId>
+      <objectToString>Fibonacci(8/21)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>45</factId>
+      <objectToString>Fibonacci(6/8)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 44, 43]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(7/13)(44); s2=7(44); f1=Fibonacci(6/8)(-1); s1=6(-1); f3=Fibonacci(8/21)(43)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [44, 43, 42]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(8/21)(43); s2=8(43); f1=Fibonacci(7/13)(44); s1=7(44); f3=Fibonacci(9/-1)(42)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [43, 42, 41]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(9/34)(42); s2=9(42); f1=Fibonacci(8/21)(43); s1=8(43); f3=Fibonacci(10/-1)(41)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>42</factId>
+      <objectToString>Fibonacci(9/34)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>44</factId>
+      <objectToString>Fibonacci(7/13)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 43, 42]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(8/21)(43); s2=8(43); f1=Fibonacci(7/13)(-1); s1=7(-1); f3=Fibonacci(9/34)(42)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [43, 42, 41]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(9/34)(42); s2=9(42); f1=Fibonacci(8/21)(43); s1=8(43); f3=Fibonacci(10/-1)(41)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [42, 41, 40]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(10/55)(41); s2=10(41); f1=Fibonacci(9/34)(42); s1=9(42); f3=Fibonacci(11/-1)(40)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>41</factId>
+      <objectToString>Fibonacci(10/55)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>43</factId>
+      <objectToString>Fibonacci(8/21)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 42, 41]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(9/34)(42); s2=9(42); f1=Fibonacci(8/21)(-1); s1=8(-1); f3=Fibonacci(10/55)(41)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [42, 41, 40]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(10/55)(41); s2=10(41); f1=Fibonacci(9/34)(42); s1=9(42); f3=Fibonacci(11/-1)(40)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [41, 40, 39]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(11/89)(40); s2=11(40); f1=Fibonacci(10/55)(41); s1=10(41); f3=Fibonacci(12/-1)(39)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>40</factId>
+      <objectToString>Fibonacci(11/89)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>42</factId>
+      <objectToString>Fibonacci(9/34)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 41, 40]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(10/55)(41); s2=10(41); f1=Fibonacci(9/34)(-1); s1=9(-1); f3=Fibonacci(11/89)(40)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [41, 40, 39]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(11/89)(40); s2=11(40); f1=Fibonacci(10/55)(41); s1=10(41); f3=Fibonacci(12/-1)(39)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [40, 39, 38]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(12/144)(39); s2=12(39); f1=Fibonacci(11/89)(40); s1=11(40); f3=Fibonacci(13/-1)(38)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>39</factId>
+      <objectToString>Fibonacci(12/144)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>41</factId>
+      <objectToString>Fibonacci(10/55)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 40, 39]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(11/89)(40); s2=11(40); f1=Fibonacci(10/55)(-1); s1=10(-1); f3=Fibonacci(12/144)(39)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [40, 39, 38]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(12/144)(39); s2=12(39); f1=Fibonacci(11/89)(40); s1=11(40); f3=Fibonacci(13/-1)(38)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [39, 38, 37]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(13/233)(38); s2=13(38); f1=Fibonacci(12/144)(39); s1=12(39); f3=Fibonacci(14/-1)(37)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>38</factId>
+      <objectToString>Fibonacci(13/233)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>40</factId>
+      <objectToString>Fibonacci(11/89)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 39, 38]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(12/144)(39); s2=12(39); f1=Fibonacci(11/89)(-1); s1=11(-1); f3=Fibonacci(13/233)(38)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [39, 38, 37]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(13/233)(38); s2=13(38); f1=Fibonacci(12/144)(39); s1=12(39); f3=Fibonacci(14/-1)(37)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [38, 37, 36]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(14/377)(37); s2=14(37); f1=Fibonacci(13/233)(38); s1=13(38); f3=Fibonacci(15/-1)(36)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>37</factId>
+      <objectToString>Fibonacci(14/377)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>39</factId>
+      <objectToString>Fibonacci(12/144)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 38, 37]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(13/233)(38); s2=13(38); f1=Fibonacci(12/144)(-1); s1=12(-1); f3=Fibonacci(14/377)(37)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [38, 37, 36]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(14/377)(37); s2=14(37); f1=Fibonacci(13/233)(38); s1=13(38); f3=Fibonacci(15/-1)(36)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [37, 36, 35]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(15/610)(36); s2=15(36); f1=Fibonacci(14/377)(37); s1=14(37); f3=Fibonacci(16/-1)(35)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>36</factId>
+      <objectToString>Fibonacci(15/610)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>38</factId>
+      <objectToString>Fibonacci(13/233)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 37, 36]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(14/377)(37); s2=14(37); f1=Fibonacci(13/233)(-1); s1=13(-1); f3=Fibonacci(15/610)(36)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [37, 36, 35]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(15/610)(36); s2=15(36); f1=Fibonacci(14/377)(37); s1=14(37); f3=Fibonacci(16/-1)(35)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [36, 35, 34]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(16/987)(35); s2=16(35); f1=Fibonacci(15/610)(36); s1=15(36); f3=Fibonacci(17/-1)(34)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>35</factId>
+      <objectToString>Fibonacci(16/987)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>37</factId>
+      <objectToString>Fibonacci(14/377)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 36, 35]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(15/610)(36); s2=15(36); f1=Fibonacci(14/377)(-1); s1=14(-1); f3=Fibonacci(16/987)(35)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [36, 35, 34]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(16/987)(35); s2=16(35); f1=Fibonacci(15/610)(36); s1=15(36); f3=Fibonacci(17/-1)(34)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [35, 34, 33]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(17/1597)(34); s2=17(34); f1=Fibonacci(16/987)(35); s1=16(35); f3=Fibonacci(18/-1)(33)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>34</factId>
+      <objectToString>Fibonacci(17/1597)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>36</factId>
+      <objectToString>Fibonacci(15/610)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 35, 34]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(16/987)(35); s2=16(35); f1=Fibonacci(15/610)(-1); s1=15(-1); f3=Fibonacci(17/1597)(34)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [35, 34, 33]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(17/1597)(34); s2=17(34); f1=Fibonacci(16/987)(35); s1=16(35); f3=Fibonacci(18/-1)(33)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [34, 33, 32]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(18/2584)(33); s2=18(33); f1=Fibonacci(17/1597)(34); s1=17(34); f3=Fibonacci(19/-1)(32)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>33</factId>
+      <objectToString>Fibonacci(18/2584)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>35</factId>
+      <objectToString>Fibonacci(16/987)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 34, 33]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(17/1597)(34); s2=17(34); f1=Fibonacci(16/987)(-1); s1=16(-1); f3=Fibonacci(18/2584)(33)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [34, 33, 32]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(18/2584)(33); s2=18(33); f1=Fibonacci(17/1597)(34); s1=17(34); f3=Fibonacci(19/-1)(32)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [33, 32, 31]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(19/4181)(32); s2=19(32); f1=Fibonacci(18/2584)(33); s1=18(33); f3=Fibonacci(20/-1)(31)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>32</factId>
+      <objectToString>Fibonacci(19/4181)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>34</factId>
+      <objectToString>Fibonacci(17/1597)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 33, 32]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(18/2584)(33); s2=18(33); f1=Fibonacci(17/1597)(-1); s1=17(-1); f3=Fibonacci(19/4181)(32)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [33, 32, 31]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(19/4181)(32); s2=19(32); f1=Fibonacci(18/2584)(33); s1=18(33); f3=Fibonacci(20/-1)(31)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [32, 31, 30]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(20/6765)(31); s2=20(31); f1=Fibonacci(19/4181)(32); s1=19(32); f3=Fibonacci(21/-1)(30)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>31</factId>
+      <objectToString>Fibonacci(20/6765)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>33</factId>
+      <objectToString>Fibonacci(18/2584)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 32, 31]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(19/4181)(32); s2=19(32); f1=Fibonacci(18/2584)(-1); s1=18(-1); f3=Fibonacci(20/6765)(31)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [32, 31, 30]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(20/6765)(31); s2=20(31); f1=Fibonacci(19/4181)(32); s1=19(32); f3=Fibonacci(21/-1)(30)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [31, 30, 29]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(21/10946)(30); s2=21(30); f1=Fibonacci(20/6765)(31); s1=20(31); f3=Fibonacci(22/-1)(29)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>30</factId>
+      <objectToString>Fibonacci(21/10946)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>32</factId>
+      <objectToString>Fibonacci(19/4181)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 31, 30]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(20/6765)(31); s2=20(31); f1=Fibonacci(19/4181)(-1); s1=19(-1); f3=Fibonacci(21/10946)(30)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [31, 30, 29]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(21/10946)(30); s2=21(30); f1=Fibonacci(20/6765)(31); s1=20(31); f3=Fibonacci(22/-1)(29)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [30, 29, 28]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(22/17711)(29); s2=22(29); f1=Fibonacci(21/10946)(30); s1=21(30); f3=Fibonacci(23/-1)(28)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>29</factId>
+      <objectToString>Fibonacci(22/17711)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>31</factId>
+      <objectToString>Fibonacci(20/6765)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 30, 29]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(21/10946)(30); s2=21(30); f1=Fibonacci(20/6765)(-1); s1=20(-1); f3=Fibonacci(22/17711)(29)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [30, 29, 28]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(22/17711)(29); s2=22(29); f1=Fibonacci(21/10946)(30); s1=21(30); f3=Fibonacci(23/-1)(28)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [29, 28, 27]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(23/28657)(28); s2=23(28); f1=Fibonacci(22/17711)(29); s1=22(29); f3=Fibonacci(24/-1)(27)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>28</factId>
+      <objectToString>Fibonacci(23/28657)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>30</factId>
+      <objectToString>Fibonacci(21/10946)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 29, 28]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(22/17711)(29); s2=22(29); f1=Fibonacci(21/10946)(-1); s1=21(-1); f3=Fibonacci(23/28657)(28)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [29, 28, 27]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(23/28657)(28); s2=23(28); f1=Fibonacci(22/17711)(29); s1=22(29); f3=Fibonacci(24/-1)(27)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [28, 27, 26]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(24/46368)(27); s2=24(27); f1=Fibonacci(23/28657)(28); s1=23(28); f3=Fibonacci(25/-1)(26)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>27</factId>
+      <objectToString>Fibonacci(24/46368)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>29</factId>
+      <objectToString>Fibonacci(22/17711)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 28, 27]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(23/28657)(28); s2=23(28); f1=Fibonacci(22/17711)(-1); s1=22(-1); f3=Fibonacci(24/46368)(27)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [28, 27, 26]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(24/46368)(27); s2=24(27); f1=Fibonacci(23/28657)(28); s1=23(28); f3=Fibonacci(25/-1)(26)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [27, 26, 25]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(25/75025)(26); s2=25(26); f1=Fibonacci(24/46368)(27); s1=24(27); f3=Fibonacci(26/-1)(25)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>26</factId>
+      <objectToString>Fibonacci(25/75025)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>28</factId>
+      <objectToString>Fibonacci(23/28657)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 27, 26]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(24/46368)(27); s2=24(27); f1=Fibonacci(23/28657)(-1); s1=23(-1); f3=Fibonacci(25/75025)(26)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [27, 26, 25]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(25/75025)(26); s2=25(26); f1=Fibonacci(24/46368)(27); s1=24(27); f3=Fibonacci(26/-1)(25)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [26, 25, 24]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(26/121393)(25); s2=26(25); f1=Fibonacci(25/75025)(26); s1=25(26); f3=Fibonacci(27/-1)(24)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>25</factId>
+      <objectToString>Fibonacci(26/121393)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>27</factId>
+      <objectToString>Fibonacci(24/46368)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 26, 25]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(25/75025)(26); s2=25(26); f1=Fibonacci(24/46368)(-1); s1=24(-1); f3=Fibonacci(26/121393)(25)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [26, 25, 24]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(26/121393)(25); s2=26(25); f1=Fibonacci(25/75025)(26); s1=25(26); f3=Fibonacci(27/-1)(24)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [25, 24, 23]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(27/196418)(24); s2=27(24); f1=Fibonacci(26/121393)(25); s1=26(25); f3=Fibonacci(28/-1)(23)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>24</factId>
+      <objectToString>Fibonacci(27/196418)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>26</factId>
+      <objectToString>Fibonacci(25/75025)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 25, 24]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(26/121393)(25); s2=26(25); f1=Fibonacci(25/75025)(-1); s1=25(-1); f3=Fibonacci(27/196418)(24)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [25, 24, 23]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(27/196418)(24); s2=27(24); f1=Fibonacci(26/121393)(25); s1=26(25); f3=Fibonacci(28/-1)(23)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [24, 23, 22]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(28/317811)(23); s2=28(23); f1=Fibonacci(27/196418)(24); s1=27(24); f3=Fibonacci(29/-1)(22)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>23</factId>
+      <objectToString>Fibonacci(28/317811)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>25</factId>
+      <objectToString>Fibonacci(26/121393)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 24, 23]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(27/196418)(24); s2=27(24); f1=Fibonacci(26/121393)(-1); s1=26(-1); f3=Fibonacci(28/317811)(23)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [24, 23, 22]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(28/317811)(23); s2=28(23); f1=Fibonacci(27/196418)(24); s1=27(24); f3=Fibonacci(29/-1)(22)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [23, 22, 21]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(29/514229)(22); s2=29(22); f1=Fibonacci(28/317811)(23); s1=28(23); f3=Fibonacci(30/-1)(21)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>22</factId>
+      <objectToString>Fibonacci(29/514229)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>24</factId>
+      <objectToString>Fibonacci(27/196418)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 23, 22]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(28/317811)(23); s2=28(23); f1=Fibonacci(27/196418)(-1); s1=27(-1); f3=Fibonacci(29/514229)(22)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [23, 22, 21]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(29/514229)(22); s2=29(22); f1=Fibonacci(28/317811)(23); s1=28(23); f3=Fibonacci(30/-1)(21)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [22, 21, 20]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(30/832040)(21); s2=30(21); f1=Fibonacci(29/514229)(22); s1=29(22); f3=Fibonacci(31/-1)(20)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>21</factId>
+      <objectToString>Fibonacci(30/832040)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>23</factId>
+      <objectToString>Fibonacci(28/317811)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 22, 21]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(29/514229)(22); s2=29(22); f1=Fibonacci(28/317811)(-1); s1=28(-1); f3=Fibonacci(30/832040)(21)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [22, 21, 20]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(30/832040)(21); s2=30(21); f1=Fibonacci(29/514229)(22); s1=29(22); f3=Fibonacci(31/-1)(20)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [21, 20, 19]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(31/1346269)(20); s2=31(20); f1=Fibonacci(30/832040)(21); s1=30(21); f3=Fibonacci(32/-1)(19)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>20</factId>
+      <objectToString>Fibonacci(31/1346269)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>22</factId>
+      <objectToString>Fibonacci(29/514229)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 21, 20]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(30/832040)(21); s2=30(21); f1=Fibonacci(29/514229)(-1); s1=29(-1); f3=Fibonacci(31/1346269)(20)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [21, 20, 19]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(31/1346269)(20); s2=31(20); f1=Fibonacci(30/832040)(21); s1=30(21); f3=Fibonacci(32/-1)(19)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [20, 19, 18]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(32/2178309)(19); s2=32(19); f1=Fibonacci(31/1346269)(20); s1=31(20); f3=Fibonacci(33/-1)(18)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>19</factId>
+      <objectToString>Fibonacci(32/2178309)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>21</factId>
+      <objectToString>Fibonacci(30/832040)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 20, 19]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(31/1346269)(20); s2=31(20); f1=Fibonacci(30/832040)(-1); s1=30(-1); f3=Fibonacci(32/2178309)(19)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [20, 19, 18]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(32/2178309)(19); s2=32(19); f1=Fibonacci(31/1346269)(20); s1=31(20); f3=Fibonacci(33/-1)(18)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [19, 18, 17]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(33/3524578)(18); s2=33(18); f1=Fibonacci(32/2178309)(19); s1=32(19); f3=Fibonacci(34/-1)(17)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>18</factId>
+      <objectToString>Fibonacci(33/3524578)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>20</factId>
+      <objectToString>Fibonacci(31/1346269)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 19, 18]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(32/2178309)(19); s2=32(19); f1=Fibonacci(31/1346269)(-1); s1=31(-1); f3=Fibonacci(33/3524578)(18)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [19, 18, 17]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(33/3524578)(18); s2=33(18); f1=Fibonacci(32/2178309)(19); s1=32(19); f3=Fibonacci(34/-1)(17)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [18, 17, 16]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(34/5702887)(17); s2=34(17); f1=Fibonacci(33/3524578)(18); s1=33(18); f3=Fibonacci(35/-1)(16)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>17</factId>
+      <objectToString>Fibonacci(34/5702887)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>19</factId>
+      <objectToString>Fibonacci(32/2178309)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 18, 17]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(33/3524578)(18); s2=33(18); f1=Fibonacci(32/2178309)(-1); s1=32(-1); f3=Fibonacci(34/5702887)(17)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [18, 17, 16]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(34/5702887)(17); s2=34(17); f1=Fibonacci(33/3524578)(18); s1=33(18); f3=Fibonacci(35/-1)(16)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [17, 16, 15]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(35/9227465)(16); s2=35(16); f1=Fibonacci(34/5702887)(17); s1=34(17); f3=Fibonacci(36/-1)(15)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>16</factId>
+      <objectToString>Fibonacci(35/9227465)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>18</factId>
+      <objectToString>Fibonacci(33/3524578)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 17, 16]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(34/5702887)(17); s2=34(17); f1=Fibonacci(33/3524578)(-1); s1=33(-1); f3=Fibonacci(35/9227465)(16)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [17, 16, 15]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(35/9227465)(16); s2=35(16); f1=Fibonacci(34/5702887)(17); s1=34(17); f3=Fibonacci(36/-1)(15)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [16, 15, 14]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(36/14930352)(15); s2=36(15); f1=Fibonacci(35/9227465)(16); s1=35(16); f3=Fibonacci(37/-1)(14)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>15</factId>
+      <objectToString>Fibonacci(36/14930352)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>17</factId>
+      <objectToString>Fibonacci(34/5702887)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 16, 15]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(35/9227465)(16); s2=35(16); f1=Fibonacci(34/5702887)(-1); s1=34(-1); f3=Fibonacci(36/14930352)(15)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [16, 15, 14]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(36/14930352)(15); s2=36(15); f1=Fibonacci(35/9227465)(16); s1=35(16); f3=Fibonacci(37/-1)(14)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [15, 14, 13]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(37/24157817)(14); s2=37(14); f1=Fibonacci(36/14930352)(15); s1=36(15); f3=Fibonacci(38/-1)(13)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>14</factId>
+      <objectToString>Fibonacci(37/24157817)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>16</factId>
+      <objectToString>Fibonacci(35/9227465)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 15, 14]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(36/14930352)(15); s2=36(15); f1=Fibonacci(35/9227465)(-1); s1=35(-1); f3=Fibonacci(37/24157817)(14)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [15, 14, 13]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(37/24157817)(14); s2=37(14); f1=Fibonacci(36/14930352)(15); s1=36(15); f3=Fibonacci(38/-1)(13)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [14, 13, 12]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(38/39088169)(13); s2=38(13); f1=Fibonacci(37/24157817)(14); s1=37(14); f3=Fibonacci(39/-1)(12)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>13</factId>
+      <objectToString>Fibonacci(38/39088169)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>15</factId>
+      <objectToString>Fibonacci(36/14930352)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 14, 13]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(37/24157817)(14); s2=37(14); f1=Fibonacci(36/14930352)(-1); s1=36(-1); f3=Fibonacci(38/39088169)(13)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [14, 13, 12]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(38/39088169)(13); s2=38(13); f1=Fibonacci(37/24157817)(14); s1=37(14); f3=Fibonacci(39/-1)(12)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [13, 12, 11]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(39/63245986)(12); s2=39(12); f1=Fibonacci(38/39088169)(13); s1=38(13); f3=Fibonacci(40/-1)(11)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>12</factId>
+      <objectToString>Fibonacci(39/63245986)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>14</factId>
+      <objectToString>Fibonacci(37/24157817)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 13, 12]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(38/39088169)(13); s2=38(13); f1=Fibonacci(37/24157817)(-1); s1=37(-1); f3=Fibonacci(39/63245986)(12)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [13, 12, 11]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(39/63245986)(12); s2=39(12); f1=Fibonacci(38/39088169)(13); s1=38(13); f3=Fibonacci(40/-1)(11)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [12, 11, 10]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(40/102334155)(11); s2=40(11); f1=Fibonacci(39/63245986)(12); s1=39(12); f3=Fibonacci(41/-1)(10)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>11</factId>
+      <objectToString>Fibonacci(40/102334155)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>13</factId>
+      <objectToString>Fibonacci(38/39088169)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 12, 11]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(39/63245986)(12); s2=39(12); f1=Fibonacci(38/39088169)(-1); s1=38(-1); f3=Fibonacci(40/102334155)(11)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [12, 11, 10]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(40/102334155)(11); s2=40(11); f1=Fibonacci(39/63245986)(12); s1=39(12); f3=Fibonacci(41/-1)(10)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [11, 10, 9]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(41/165580141)(10); s2=41(10); f1=Fibonacci(40/102334155)(11); s1=40(11); f3=Fibonacci(42/-1)(9)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>10</factId>
+      <objectToString>Fibonacci(41/165580141)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>12</factId>
+      <objectToString>Fibonacci(39/63245986)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 11, 10]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(40/102334155)(11); s2=40(11); f1=Fibonacci(39/63245986)(-1); s1=39(-1); f3=Fibonacci(41/165580141)(10)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [11, 10, 9]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(41/165580141)(10); s2=41(10); f1=Fibonacci(40/102334155)(11); s1=40(11); f3=Fibonacci(42/-1)(9)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [10, 9, 8]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(42/267914296)(9); s2=42(9); f1=Fibonacci(41/165580141)(10); s1=41(10); f3=Fibonacci(43/-1)(8)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>9</factId>
+      <objectToString>Fibonacci(42/267914296)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>11</factId>
+      <objectToString>Fibonacci(40/102334155)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 10, 9]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(41/165580141)(10); s2=41(10); f1=Fibonacci(40/102334155)(-1); s1=40(-1); f3=Fibonacci(42/267914296)(9)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [10, 9, 8]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(42/267914296)(9); s2=42(9); f1=Fibonacci(41/165580141)(10); s1=41(10); f3=Fibonacci(43/-1)(8)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [9, 8, 7]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(43/433494437)(8); s2=43(8); f1=Fibonacci(42/267914296)(9); s1=42(9); f3=Fibonacci(44/-1)(7)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>8</factId>
+      <objectToString>Fibonacci(43/433494437)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>10</factId>
+      <objectToString>Fibonacci(41/165580141)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 9, 8]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(42/267914296)(9); s2=42(9); f1=Fibonacci(41/165580141)(-1); s1=41(-1); f3=Fibonacci(43/433494437)(8)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [9, 8, 7]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(43/433494437)(8); s2=43(8); f1=Fibonacci(42/267914296)(9); s1=42(9); f3=Fibonacci(44/-1)(7)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [8, 7, 6]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(44/701408733)(7); s2=44(7); f1=Fibonacci(43/433494437)(8); s1=43(8); f3=Fibonacci(45/-1)(6)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>7</factId>
+      <objectToString>Fibonacci(44/701408733)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>9</factId>
+      <objectToString>Fibonacci(42/267914296)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 8, 7]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(43/433494437)(8); s2=43(8); f1=Fibonacci(42/267914296)(-1); s1=42(-1); f3=Fibonacci(44/701408733)(7)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [8, 7, 6]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(44/701408733)(7); s2=44(7); f1=Fibonacci(43/433494437)(8); s1=43(8); f3=Fibonacci(45/-1)(6)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [7, 6, 5]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(45/1134903170)(6); s2=45(6); f1=Fibonacci(44/701408733)(7); s1=44(7); f3=Fibonacci(46/-1)(5)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>6</factId>
+      <objectToString>Fibonacci(45/1134903170)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>8</factId>
+      <objectToString>Fibonacci(43/433494437)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 7, 6]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(44/701408733)(7); s2=44(7); f1=Fibonacci(43/433494437)(-1); s1=43(-1); f3=Fibonacci(45/1134903170)(6)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [7, 6, 5]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(45/1134903170)(6); s2=45(6); f1=Fibonacci(44/701408733)(7); s1=44(7); f3=Fibonacci(46/-1)(5)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [6, 5, 4]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(46/1836311903)(5); s2=46(5); f1=Fibonacci(45/1134903170)(6); s1=45(6); f3=Fibonacci(47/-1)(4)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>5</factId>
+      <objectToString>Fibonacci(46/1836311903)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>7</factId>
+      <objectToString>Fibonacci(44/701408733)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 6, 5]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(45/1134903170)(6); s2=45(6); f1=Fibonacci(44/701408733)(-1); s1=44(-1); f3=Fibonacci(46/1836311903)(5)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [6, 5, 4]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(46/1836311903)(5); s2=46(5); f1=Fibonacci(45/1134903170)(6); s1=45(6); f3=Fibonacci(47/-1)(4)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [5, 4, 3]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(47/2971215073)(4); s2=47(4); f1=Fibonacci(46/1836311903)(5); s1=46(5); f3=Fibonacci(48/-1)(3)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>4</factId>
+      <objectToString>Fibonacci(47/2971215073)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>6</factId>
+      <objectToString>Fibonacci(45/1134903170)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 5, 4]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(46/1836311903)(5); s2=46(5); f1=Fibonacci(45/1134903170)(-1); s1=45(-1); f3=Fibonacci(47/2971215073)(4)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [5, 4, 3]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(47/2971215073)(4); s2=47(4); f1=Fibonacci(46/1836311903)(5); s1=46(5); f3=Fibonacci(48/-1)(3)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [4, 3, 2]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(48/4807526976)(3); s2=48(3); f1=Fibonacci(47/2971215073)(4); s1=47(4); f3=Fibonacci(49/-1)(2)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>3</factId>
+      <objectToString>Fibonacci(48/4807526976)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>5</factId>
+      <objectToString>Fibonacci(46/1836311903)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 4, 3]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(47/2971215073)(4); s2=47(4); f1=Fibonacci(46/1836311903)(-1); s1=46(-1); f3=Fibonacci(48/4807526976)(3)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [4, 3, 2]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(48/4807526976)(3); s2=48(3); f1=Fibonacci(47/2971215073)(4); s1=47(4); f3=Fibonacci(49/-1)(2)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [3, 2, 1]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(49/7778742049)(2); s2=49(2); f1=Fibonacci(48/4807526976)(3); s1=48(3); f3=Fibonacci(50/-1)(1)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>2</factId>
+      <objectToString>Fibonacci(49/7778742049)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>4</factId>
+      <objectToString>Fibonacci(47/2971215073)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 3, 2]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(48/4807526976)(3); s2=48(3); f1=Fibonacci(47/2971215073)(-1); s1=47(-1); f3=Fibonacci(49/7778742049)(2)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [3, 2, 1]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(49/7778742049)(2); s2=49(2); f1=Fibonacci(48/4807526976)(3); s1=48(3); f3=Fibonacci(50/-1)(1)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>1</factId>
+      <objectToString>Fibonacci(50/12586269025)</objectToString>
+      <type>2</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>3</factId>
+      <objectToString>Fibonacci(48/4807526976)</objectToString>
+      <type>3</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Calculate [-1, 2, 1]</activationId>
+      <rule>Calculate</rule>
+      <declarations>f2=Fibonacci(49/7778742049)(2); s2=49(2); f1=Fibonacci(48/4807526976)(-1); s1=48(-1); f3=Fibonacci(50/12586269025)(1)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+  </list>
+</object-stream>

@@ -1,6 +1,5 @@
 package org.drools.examples.conway.ui;
 
-
 import javax.swing.*;
 
 import org.drools.examples.conway.Cell;
@@ -15,16 +14,15 @@ import java.awt.event.MouseMotionAdapter;
 /**
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  */
-public class CellGridCanvas extends Canvas
-{
+public class CellGridCanvas extends Canvas {
     private Image              offScreenImage;
     private Image              backgroundImage;
     private final int          cellSize;
     private final CellGrid     cellGrid;
-    private final Image        liveCellImage    = new ImageIcon( CellGridCanvas.class.getResource( "/liveCellImage.gif" ) ).getImage( );
+    private final Image        liveCellImage    = new ImageIcon( CellGridCanvas.class.getResource( "/conway/liveCellImage.gif" ) ).getImage();
 
     private static final Color BACKGROUND_COLOR = Color.gray;
-    private static final Color GRID_COLOR       = BACKGROUND_COLOR.brighter( );
+    private static final Color GRID_COLOR       = BACKGROUND_COLOR.brighter();
 
     /**
      * Constructs a CellGridCanvas.
@@ -32,70 +30,59 @@ public class CellGridCanvas extends Canvas
      * @param cellGrid
      *            the GoL cellgrid
      */
-    public CellGridCanvas(CellGrid cellGrid)
-    {
+    public CellGridCanvas(CellGrid cellGrid) {
         this.cellGrid = cellGrid;
         this.cellSize = liveCellImage.getWidth( this );
 
         setBackground( GRID_COLOR );
 
-        addMouseListener( new MouseAdapter( ) {
+        addMouseListener( new MouseAdapter() {
             /**
              * Invoked when a mouse button has been pressed on a component.
              */
-            public void mousePressed(MouseEvent e)
-            {
-                toggleCellAt( e.getX( ),
-                              e.getY( ) );
+            public void mousePressed(MouseEvent e) {
+                toggleCellAt( e.getX(),
+                              e.getY() );
             }
         } );
 
-        addMouseMotionListener( new MouseMotionAdapter( ) {
+        addMouseMotionListener( new MouseMotionAdapter() {
 
-            public void mouseDragged(MouseEvent e)
-            {
-                Cell cell = getCellAtPoint( e.getX( ),
-                                            e.getY( ) );
-                if ( cell != null )
-                {
+            public void mouseDragged(MouseEvent e) {
+                Cell cell = getCellAtPoint( e.getX(),
+                                            e.getY() );
+                if ( cell != null ) {
                     cell.setCellState( CellState.LIVE );
-                    repaint( );
+                    repaint();
                 }
             }
         } );
     }
 
     private void toggleCellAt(int x,
-                              int y)
-    {
+                              int y) {
         Cell cell = getCellAtPoint( x,
                                     y );
-        if ( cell != null )
-        {
-            if ( cell.getCellState( ) == CellState.LIVE )
-            {
+        if ( cell != null ) {
+            if ( cell.getCellState() == CellState.LIVE ) {
                 cell.setCellState( CellState.DEAD );
-            }
-            else
-            {
+            } else {
                 cell.setCellState( CellState.LIVE );
             }
-            repaint( );
+            repaint();
         }
     }
 
     private Cell getCellAtPoint(int x,
-                                int y)
-    {
+                                int y) {
         Cell cell = null;
 
         int column = x / cellSize;
         int row = y / cellSize;
-        final int numberOfColumns = cellGrid.getNumberOfColumns( );
-        final int numberOfRows = cellGrid.getNumberOfRows( );
+        final int numberOfColumns = cellGrid.getNumberOfColumns();
+        final int numberOfRows = cellGrid.getNumberOfRows();
 
-        if ( column >= 0 && column < numberOfColumns && row >= 0 && row < numberOfRows )
-        {
+        if ( column >= 0 && column < numberOfColumns && row >= 0 && row < numberOfRows ) {
             cell = cellGrid.getCellAt( row,
                                        column );
         }
@@ -108,15 +95,13 @@ public class CellGridCanvas extends Canvas
      * 
      * @see java.awt.Component#update(java.awt.Graphics)
      */
-    public void update(Graphics g)
-    {
-        Dimension d = getSize( );
-        if ( (offScreenImage == null) )
-        {
+    public void update(Graphics g) {
+        Dimension d = getSize();
+        if ( (offScreenImage == null) ) {
             offScreenImage = createImage( d.width,
                                           d.height );
         }
-        paint( offScreenImage.getGraphics( ) );
+        paint( offScreenImage.getGraphics() );
         g.drawImage( offScreenImage,
                      0,
                      0,
@@ -128,19 +113,17 @@ public class CellGridCanvas extends Canvas
      * 
      * @see java.awt.Component#paint(java.awt.Graphics)
      */
-    public void paint(Graphics g)
-    {
+    public void paint(Graphics g) {
         // Draw grid on background image, which is faster
-        final int numberOfColumns = cellGrid.getNumberOfColumns( );
-        final int numberOfRows = cellGrid.getNumberOfRows( );
-        if ( backgroundImage == null )
-        {
-            Dimension d = getSize( );
+        final int numberOfColumns = cellGrid.getNumberOfColumns();
+        final int numberOfRows = cellGrid.getNumberOfRows();
+        if ( backgroundImage == null ) {
+            Dimension d = getSize();
             backgroundImage = createImage( d.width,
                                            d.height );
-            Graphics backgroundImageGraphics = backgroundImage.getGraphics( );
+            Graphics backgroundImageGraphics = backgroundImage.getGraphics();
             // draw background (MSIE doesn't do that)
-            backgroundImageGraphics.setColor( getBackground( ) );
+            backgroundImageGraphics.setColor( getBackground() );
             backgroundImageGraphics.fillRect( 0,
                                               0,
                                               d.width,
@@ -151,15 +134,13 @@ public class CellGridCanvas extends Canvas
                                               cellSize * numberOfColumns - 1,
                                               cellSize * numberOfRows - 1 );
             backgroundImageGraphics.setColor( GRID_COLOR );
-            for ( int x = 1; x < numberOfColumns; x++ )
-            {
+            for ( int x = 1; x < numberOfColumns; x++ ) {
                 backgroundImageGraphics.drawLine( x * cellSize - 1,
                                                   0,
                                                   x * cellSize - 1,
                                                   cellSize * numberOfRows - 1 );
             }
-            for ( int y = 1; y < numberOfRows; y++ )
-            {
+            for ( int y = 1; y < numberOfRows; y++ ) {
                 backgroundImageGraphics.drawLine( 0,
                                                   y * cellSize - 1,
                                                   cellSize * numberOfColumns - 1,
@@ -172,14 +153,11 @@ public class CellGridCanvas extends Canvas
                      null );
 
         // draw populated cells
-        for ( int row = 0; row < numberOfRows; row++ )
-        {
-            for ( int column = 0; column < numberOfColumns; column++ )
-            {
+        for ( int row = 0; row < numberOfRows; row++ ) {
+            for ( int column = 0; column < numberOfColumns; column++ ) {
                 Cell cell = cellGrid.getCellAt( row,
                                                 column );
-                if ( cell.getCellState( ) == CellState.LIVE )
-                {
+                if ( cell.getCellState() == CellState.LIVE ) {
                     g.drawImage( liveCellImage,
                                  column * cellSize,
                                  row * cellSize,
@@ -194,10 +172,9 @@ public class CellGridCanvas extends Canvas
      * 
      * @see java.awt.Component#getPreferredSize()
      */
-    public Dimension getPreferredSize()
-    {
-        final int numberOfColumns = cellGrid.getNumberOfColumns( );
-        final int numberOfRows = cellGrid.getNumberOfRows( );
+    public Dimension getPreferredSize() {
+        final int numberOfColumns = cellGrid.getNumberOfColumns();
+        final int numberOfRows = cellGrid.getNumberOfRows();
         return new Dimension( cellSize * numberOfColumns,
                               cellSize * numberOfRows );
     }
@@ -207,8 +184,7 @@ public class CellGridCanvas extends Canvas
      * 
      * @see java.awt.Component#getMinimumSize()
      */
-    public Dimension getMinimumSize()
-    {
+    public Dimension getMinimumSize() {
         return new Dimension( cellSize,
                               cellSize );
     }

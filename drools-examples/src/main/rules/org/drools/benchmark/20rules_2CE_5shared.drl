@@ -1,0 +1,164 @@
+package org.drools.samples
+import org.drools.benchmark.models.Account;
+import org.drools.benchmark.models.Address;
+
+rule rule0
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc0") 
+  then
+    System.out.println("rule0 fired");
+end
+
+rule rule1
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc1") 
+  then
+    System.out.println("rule1 fired");
+end
+
+rule rule2
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc2") 
+  then
+    System.out.println("rule2 fired");
+end
+
+rule rule3
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc3") 
+  then
+    System.out.println("rule3 fired");
+end
+
+rule rule4
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc4") 
+  then
+    System.out.println("rule4 fired");
+end
+
+rule rule5
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc5") 
+  then
+    System.out.println("rule5 fired");
+end
+
+rule rule6
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc6") 
+  then
+    System.out.println("rule6 fired");
+end
+
+rule rule7
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc7") 
+  then
+    System.out.println("rule7 fired");
+end
+
+rule rule8
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc8") 
+  then
+    System.out.println("rule8 fired");
+end
+
+rule rule9
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc9") 
+  then
+    System.out.println("rule9 fired");
+end
+
+rule rule10
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc10") 
+  then
+    System.out.println("rule10 fired");
+end
+
+rule rule11
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc11") 
+  then
+    System.out.println("rule11 fired");
+end
+
+rule rule12
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc12") 
+  then
+    System.out.println("rule12 fired");
+end
+
+rule rule13
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc13") 
+  then
+    System.out.println("rule13 fired");
+end
+
+rule rule14
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc14") 
+  then
+    System.out.println("rule14 fired");
+end
+
+rule rule15
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc15") 
+  then
+    System.out.println("rule15 fired");
+end
+
+rule rule16
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc16") 
+  then
+    System.out.println("rule16 fired");
+end
+
+rule rule17
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc17") 
+  then
+    System.out.println("rule17 fired");
+end
+
+rule rule18
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc18") 
+  then
+    System.out.println("rule18 fired");
+end
+
+rule rule19
+  when
+    $acc : Account(status == "standard")
+    $addr : Address(city == "boston", state == "ma", houseType == "single family", status == "not listed", country == "usa", accountId == "acc19") 
+  then
+    System.out.println("rule19 fired");
+end
+

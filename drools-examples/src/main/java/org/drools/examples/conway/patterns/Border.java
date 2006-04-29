@@ -9,8 +9,7 @@ package org.drools.examples.conway.patterns;
  */
 public class Border
     implements
-    ConwayPattern
-{
+    ConwayPattern {
 
     private boolean[][] grid = {{true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
             {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true},
@@ -50,21 +49,18 @@ public class Border
      * 
      * @return array representing a conway grid
      */
-    public boolean[][] getPattern()
-    {
+    public boolean[][] getPattern() {
         return grid;
     }
 
     /**
      * @return the name of this pattern
      */
-    public String getPatternName()
-    {
+    public String getPatternName() {
         return "Border";
     }
 
-    public String toString()
-    {
-        return getPatternName( );
+    public String toString() {
+        return getPatternName();
     }
 }

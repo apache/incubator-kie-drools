@@ -3,8 +3,6 @@
 	<name>drools-examples</name>
 	<comment></comment>
 	<projects>
-		<project>drools-compiler</project>
-		<project>drools-core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

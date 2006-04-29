@@ -10,8 +10,7 @@ package org.drools.examples.conway.patterns;
  */
 public class Pentadecathalon
     implements
-    ConwayPattern
-{
+    ConwayPattern {
 
     private boolean[][] grid = {{true, true, true, true, true, true, true, true, true}};
 
@@ -22,21 +21,18 @@ public class Pentadecathalon
      * 
      * @return array representing a conway grid
      */
-    public boolean[][] getPattern()
-    {
+    public boolean[][] getPattern() {
         return grid;
     }
 
     /**
      * @return the name of this pattern
      */
-    public String getPatternName()
-    {
+    public String getPatternName() {
         return "Pentadecathalon";
     }
 
-    public String toString()
-    {
-        return getPatternName( );
+    public String toString() {
+        return getPatternName();
     }
 }

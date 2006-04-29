@@ -1,0 +1,22 @@
+package org.drools.examples
+ 
+import org.drools.examples.HelloWorldExample.Message;
+ 
+rule "Hello World"
+	when
+		m : Message( status == Message.HELLO, message : message )
+	then
+		System.out.println( message ); 
+		m.setMessage( "Goodbye cruel world" );
+		m.setStatus( Message.GOODBYE );
+		modify( m );
+end
+
+rule "GoodBye"
+	no-loop true
+	when
+		m : Message( status == Message.GOODBYE, message : message )
+	then
+		System.out.println( message ); 
+		m.setMessage( message );
+end
