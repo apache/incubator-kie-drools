@@ -41,7 +41,6 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.Sensor;
 import org.drools.WorkingMemory;
-import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
