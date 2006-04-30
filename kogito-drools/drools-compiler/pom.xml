@@ -26,24 +26,24 @@
       <version>${project.version}</version>
     </dependency>
     
-    <!--  will keep JCI local for now. Move to ibiblio when its updated  -->         
+    <!--  will keep JCI local for now. Move to ibiblio when its updated  -->             
     <dependency>
-      <groupId>jci</groupId>
-      <artifactId>jci</artifactId>
-      <version>SNAPSHOT-378493+patch4</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-jci-janino</artifactId>
+      <version>2.4.1</version>
     </dependency> 
+    
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-jci-eclipse</artifactId>
+      <version>3.2.0.658</version>
+    </dependency>         
     
     <dependency>
       <groupId>janino</groupId>
       <artifactId>janino</artifactId>
       <version>2.4.1</version>
     </dependency>     
-    
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging-api</artifactId>
-      <version>1.0.4</version>
-    </dependency>
 
 	  <!-- only needed for the default expander in parser/lang.. to remove when it is refactored into another module. -->
 	  <dependency>
