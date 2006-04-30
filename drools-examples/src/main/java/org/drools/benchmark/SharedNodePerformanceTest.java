@@ -14,8 +14,6 @@ package org.drools.benchmark;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import junit.framework.TestCase;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -26,6 +24,7 @@ import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
+import org.drools.benchmark.models.Address;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
@@ -33,8 +32,6 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
-
-import org.drools.benchmark.models.Address;
 
 /**
  * @author Peter Lin

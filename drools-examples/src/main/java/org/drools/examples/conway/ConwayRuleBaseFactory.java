@@ -30,10 +30,10 @@ public class ConwayRuleBaseFactory {
              */
             // private static RuleBase readRule() throws Exception {
             // read in the source
-            final Reader source = new InputStreamReader( ConwayRuleBaseFactory.class.getResourceAsStream( "/conway/conway.drl" ) );
+            final Reader source = new InputStreamReader( ConwayRuleBaseFactory.class.getResourceAsStream( "/org/drools/examples/conway/conway.drl" ) );
 
             // optionally read in the DSL (if you are using it).
-            final Reader dsl = new InputStreamReader( ConwayRuleBaseFactory.class.getResourceAsStream( "/conway/conway.dsl" ) );
+            final Reader dsl = new InputStreamReader( ConwayRuleBaseFactory.class.getResourceAsStream( "/org/drools/examples/conway/conway.dsl" ) );
 
             // Use package builder to build up a rule package.
             // An alternative lower level class called "DrlParser" can also be
