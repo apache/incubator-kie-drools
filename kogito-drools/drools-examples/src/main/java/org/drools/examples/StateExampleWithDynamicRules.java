@@ -13,28 +13,28 @@ public class StateExampleWithDynamicRules {
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
 
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( StateExampleWithDynamicRules.class.getResourceAsStream( "/StateExampleUsingSalience.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( StateExampleWithDynamicRules.class.getResourceAsStream( "StateExampleUsingSalience.drl" ) ) );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
         logger.setFileName( "log/state" );
 
-        State a = new State( "A" );
-        State b = new State( "B" );
-        State c = new State( "C" );
-        State d = new State( "D" );
-        State e = new State( "E" );
+        final State a = new State( "A" );
+        final State b = new State( "B" );
+        final State c = new State( "C" );
+        final State d = new State( "D" );
+        final State e = new State( "E" );
 
         // By setting dynamic to TRUE, Drools will use JavaBean
         // PropertyChangeListeners so you don't have to call modifyObject().
-        boolean dynamic = true;
+        final boolean dynamic = true;
 
         workingMemory.assertObject( a,
                                     dynamic );

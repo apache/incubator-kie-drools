@@ -14,21 +14,21 @@ import org.drools.rule.Package;
  */
 public class HelloWorldExample {
 
-    public static final void main(String[] args) {
+    public static final void main(final String[] args) {
         try {
 
             //load up the rulebase
-            RuleBase ruleBase = readRule();
-            WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            final RuleBase ruleBase = readRule();
+            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
             //go !
-            Message message = new Message();
+            final Message message = new Message();
             message.setMessage( "Hello World" );
             message.setStatus( Message.HELLO );
             workingMemory.assertObject( message );
             workingMemory.fireAllRules();
 
-        } catch ( Throwable t ) {
+        } catch ( final Throwable t ) {
             t.printStackTrace();
         }
     }
@@ -38,7 +38,7 @@ public class HelloWorldExample {
      */
     private static RuleBase readRule() throws Exception {
         //read in the source
-        Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "/HelloWorld.drl" ) );
+        final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
 
         //optionally read in the DSL (if you are using it).
         //Reader dsl = new InputStreamReader( DroolsTest.class.getResourceAsStream( "/mylang.dsl" ) );
@@ -46,7 +46,7 @@ public class HelloWorldExample {
         //Use package builder to build up a rule package.
         //An alternative lower level class called "DrlParser" can also be used...
 
-        PackageBuilder builder = new PackageBuilder();
+        final PackageBuilder builder = new PackageBuilder();
 
         //this wil parse and compile in one step
         //NOTE: There are 2 methods here, the one argument one is for normal DRL.
@@ -56,10 +56,10 @@ public class HelloWorldExample {
         //builder.addPackageFromDrl( source, dsl );
 
         //get the compiled package (which is serializable)
-        Package pkg = builder.getPackage();
+        final Package pkg = builder.getPackage();
 
         //add the package to a rulebase (deploy the rule package).
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
         return ruleBase;
     }
@@ -76,7 +76,7 @@ public class HelloWorldExample {
             return this.message;
         }
 
-        public void setMessage(String message) {
+        public void setMessage(final String message) {
             this.message = message;
         }
 
@@ -84,7 +84,7 @@ public class HelloWorldExample {
             return this.status;
         }
 
-        public void setStatus(int status) {
+        public void setStatus(final int status) {
             this.status = status;
         }
     }

@@ -1,0 +1,112 @@
+package org.drools.benchmark.manners
+
+rule assignFirstSeat
+    when
+        context : Context( state == Context.START_UP )
+        guest : Guest()
+        count : Count()
+    then
+        String guestName = guest.getName();
+        
+        Seating seating =  new Seating( count.getValue(), 1, true, 1, guestName, 1, guestName);
+        assert( seating );
+        
+        Path path = new Path( count.getValue(), 1, guestName );
+        assert( path );
+        
+        count.setValue(  count.getValue() + 1 );        
+        modify( count );
+
+		System.out.println( "assign first seat :  " + seating + " : " + path );
+
+        context.setState( Context.ASSIGN_SEATS );        
+        modify( context );
+end
+
+rule findSeating
+   when 
+       context : Context( state == Context.ASSIGN_SEATS )
+       Seating( seatingId:id, seatingPid:pid, pathDone == true, seatingRightSeat:rightSeat, seatingRightGuestName:rightGuestName )
+       Guest( name == seatingRightGuestName, rightGuestSex:sex, rightGuestHobby:hobby )
+       Guest( leftGuestName:name , sex != rightGuestSex, hobby == rightGuestHobby )
+
+       count : Count()
+
+       not ( Path( id == seatingId, guestName == leftGuestName) )
+       not ( Chosen( id == seatingId, guestName == leftGuestName, hobby == rightGuestHobby) )
+   then
+       int rightSeat = seatingRightSeat.intValue();
+       int seatId = seatingId.intValue();
+       int countValue = count.getValue();
+       
+       Seating seating = new Seating( countValue, seatId, false, rightSeat, seatingRightGuestName, rightSeat + 1, leftGuestName );
+       assert( seating );     
+                            
+       Path path = new Path( countValue, rightSeat + 1, leftGuestName  );
+       assert( path );
+       
+       Chosen chosen = new Chosen( seatId, leftGuestName, rightGuestHobby );
+       assert( chosen  );
+
+	   System.err.println( "find seating : " + seating + " : " + path + " : " + chosen);
+
+       count.setValue(  countValue + 1 );
+       modify( count );
+
+       context.setState( Context.MAKE_PATH );
+       modify( context );
+end
+
+rule makePath
+    when 
+        Context( state == Context.MAKE_PATH )
+        Seating( seatingId:id, seatingPid:pid, pathDone == false )
+        Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
+        not Path( id == seatingId, guestName == pathGuestName )
+    then
+        assert( new Path( seatingId.intValue(), pathSeat.intValue(), pathGuestName ) );
+end 
+
+rule pathDone
+    when
+        context : Context( state == Context.MAKE_PATH ) 
+        seating : Seating( pathDone == false ) 
+    then
+        seating.setPathDone( true ); 
+        modify( seating );
+        
+        context.setState( Context.CHECK_DONE ); 
+		modify( context );
+end
+
+
+rule areWeDone
+    when
+        context : Context( state == Context.CHECK_DONE ) 
+        LastSeat( lastSeat: seat )
+        Seating( rightSeat == lastSeat ) 
+    then
+        context.setState(Context.PRINT_RESULTS ); 
+        modify( context );
+end
+
+rule continue
+    when
+        context : Context( state == Context.CHECK_DONE ) 
+    then
+        context.setState( Context.ASSIGN_SEATS ); 
+        modify( context );
+end
+
+
+rule allDone
+    when
+        context : Context( state == Context.PRINT_RESULTS ) 
+    then
+    	System.out.println( "All Done" );
+end
+
+//query getResults
+//	context : Context( state == Context.PRINT_RESULTS ) 
+//end 
+ 

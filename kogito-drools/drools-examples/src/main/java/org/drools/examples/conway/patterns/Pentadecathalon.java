@@ -12,7 +12,7 @@ public class Pentadecathalon
     implements
     ConwayPattern {
 
-    private boolean[][] grid = {{true, true, true, true, true, true, true, true, true}};
+    private final boolean[][] grid = {{true, true, true, true, true, true, true, true, true}};
 
     /**
      * This method should return a 2 dimensional array of boolean that represent
@@ -22,7 +22,7 @@ public class Pentadecathalon
      * @return array representing a conway grid
      */
     public boolean[][] getPattern() {
-        return grid;
+        return this.grid;
     }
 
     /**

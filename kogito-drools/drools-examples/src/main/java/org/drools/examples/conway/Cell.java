@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class Cell {
 
-    private Set       neighbors   = new HashSet();
+    private final Set       neighbors   = new HashSet();
 
     private CellState state       = CellState.DEAD;
 
@@ -25,7 +25,7 @@ public class Cell {
      * @see #getNumberOfLiveNeighbors()
      */
     public int getNumberOfNeighboringCells() {
-        return neighbors.size();
+        return this.neighbors.size();
     }
 
     /**
@@ -34,7 +34,7 @@ public class Cell {
      */
     public int getNumberOfLiveNeighbors() {
         int numberOfLiveNeighbors = 0;
-        Iterator it = neighbors.iterator();
+        final Iterator it = this.neighbors.iterator();
         Cell cell = null;
         while ( it.hasNext() ) {
             cell = (Cell) it.next();
@@ -51,8 +51,8 @@ public class Cell {
      * @param neighbor
      *            new neighbor
      */
-    public void addNeighbor(Cell neighbor) {
-        neighbors.add( neighbor );
+    public void addNeighbor(final Cell neighbor) {
+        this.neighbors.add( neighbor );
         neighbor.neighbors.add( this );
     }
 
@@ -68,9 +68,9 @@ public class Cell {
      * @see #getCellState()
      * @see #transitionState()
      */
-    public void queueNextCellState(CellState nextLiveState) {
-        if ( nextLiveState != state ) {
-            queuedState = nextLiveState;
+    public void queueNextCellState(final CellState nextLiveState) {
+        if ( nextLiveState != this.state ) {
+            this.queuedState = nextLiveState;
         }
     }
 
@@ -82,9 +82,9 @@ public class Cell {
      */
     public boolean transitionState() {
         boolean stateChanged = false;
-        if ( queuedState != null ) {
-            state = queuedState;
-            queuedState = null;
+        if ( this.queuedState != null ) {
+            this.state = this.queuedState;
+            this.queuedState = null;
             stateChanged = true;
         }
         return stateChanged;
@@ -96,7 +96,7 @@ public class Cell {
      * @see CellState
      */
     public CellState getCellState() {
-        return state;
+        return this.state;
     }
 
     /**
@@ -106,7 +106,7 @@ public class Cell {
      *            new state for this cell
      * @see CellState
      */
-    public void setCellState(CellState newState) {
-        state = newState;
+    public void setCellState(final CellState newState) {
+        this.state = newState;
     }
 }

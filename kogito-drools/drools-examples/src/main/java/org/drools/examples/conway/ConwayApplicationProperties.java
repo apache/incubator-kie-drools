@@ -8,19 +8,19 @@ import java.util.ResourceBundle;
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  */
 public class ConwayApplicationProperties {
-    private static ConwayApplicationProperties ourInstance = new ConwayApplicationProperties();
+    private static final ConwayApplicationProperties ourInstance = new ConwayApplicationProperties();
 
     public static ConwayApplicationProperties getInstance() {
-        return ourInstance;
+        return ConwayApplicationProperties.ourInstance;
     }
 
     private final ResourceBundle resources;
 
     private ConwayApplicationProperties() {
-        resources = ResourceBundle.getBundle( "conway.conway" );
+        this.resources = ResourceBundle.getBundle( "conway.conway" );
     }
 
-    public static String getProperty(String propertyName) {
-        return ourInstance.resources.getString( propertyName );
+    public static String getProperty(final String propertyName) {
+        return ConwayApplicationProperties.ourInstance.resources.getString( propertyName );
     }
 }
