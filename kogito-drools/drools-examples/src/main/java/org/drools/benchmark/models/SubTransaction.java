@@ -2,7 +2,6 @@ package org.drools.benchmark.models;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**

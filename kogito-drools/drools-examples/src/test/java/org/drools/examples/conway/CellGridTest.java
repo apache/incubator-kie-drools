@@ -1,9 +1,5 @@
 package org.drools.examples.conway;
 
-import org.drools.examples.conway.Cell;
-import org.drools.examples.conway.CellGrid;
-import org.drools.examples.conway.CellState;
-
 import junit.framework.TestCase;
 
 /**

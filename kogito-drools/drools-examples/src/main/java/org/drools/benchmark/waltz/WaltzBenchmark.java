@@ -18,27 +18,15 @@ package org.drools.benchmark.waltz;
 
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
-
-import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.reteoo.RuleBaseImpl;
-import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
  
 /**

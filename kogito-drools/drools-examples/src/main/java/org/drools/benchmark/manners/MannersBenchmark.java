@@ -15,7 +15,6 @@ import java.util.StringTokenizer;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.benchmark.waltz.WaltzBenchmark;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 

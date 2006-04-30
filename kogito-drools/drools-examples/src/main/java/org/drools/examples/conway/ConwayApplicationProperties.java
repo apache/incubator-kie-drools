@@ -17,7 +17,7 @@ public class ConwayApplicationProperties {
     private final ResourceBundle resources;
 
     private ConwayApplicationProperties() {
-        this.resources = ResourceBundle.getBundle( "conway.conway" );
+        this.resources = ResourceBundle.getBundle( "org.drools.examples.conway.conway" );
     }
 
     public static String getProperty(final String propertyName) {
