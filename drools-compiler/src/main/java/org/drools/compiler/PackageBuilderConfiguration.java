@@ -30,8 +30,8 @@ import org.drools.RuntimeDroolsException;
  * The valid values are "ECLIPSE" and "JANINO" only. 
  */
 public class PackageBuilderConfiguration {
-    public static final int ECLIPSE  = JavaCompilerFactory.ECLIPSE;
-    public static final int JANINO   = JavaCompilerFactory.JANINO;
+    public static final int ECLIPSE  = 0;
+    public static final int JANINO   = 1;
     
     /** This will be only setup once. It tries to look for a system property */
     private static final int CONFIGURED_COMPILER   = getDefaultCompiler();
@@ -59,10 +59,10 @@ public class PackageBuilderConfiguration {
     public void setCompiler(int compiler) {
         switch ( compiler ) {
             case PackageBuilderConfiguration.ECLIPSE :
-                this.compiler = JavaCompilerFactory.ECLIPSE;
+                this.compiler = PackageBuilderConfiguration.ECLIPSE;
                 break;
             case PackageBuilderConfiguration.JANINO :
-                this.compiler = JavaCompilerFactory.JANINO;
+                this.compiler = PackageBuilderConfiguration.JANINO;
                 break;
             default :
                 throw new RuntimeDroolsException( "value '" + compiler + "' is not a valid compiler" );
