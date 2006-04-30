@@ -156,6 +156,8 @@ public class RuleBuilder {
 
         this.typeResolver = new ClassTypeResolver( pkg.getImports(),
                                                    pkg.getPackageCompilationData().getClassLoader() );
+        // make an automatic import for the current package
+        this.typeResolver.addImport( pkg.getName() + ".*" );
 
         this.ruleDescr = ruleDescr;
 
