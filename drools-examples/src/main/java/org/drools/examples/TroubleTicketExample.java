@@ -14,42 +14,42 @@ public class TroubleTicketExample {
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
 
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( TroubleTicketExample.class.getResourceAsStream( "/TroubleTicket.drl" ) ) );
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( TroubleTicketExample.class.getResourceAsStream( "TroubleTicket.drl" ) ) );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
         logger.setFileName( "log/trouble_ticket" );
 
-        Customer a = new Customer( "A",
+        final Customer a = new Customer( "A",
                                    "Gold" );
-        Customer b = new Customer( "B",
+        final Customer b = new Customer( "B",
                                    "Platinum" );
-        Customer c = new Customer( "C",
+        final Customer c = new Customer( "C",
                                    "Silver" );
-        Customer d = new Customer( "D",
+        final Customer d = new Customer( "D",
                                    "Silver" );
 
-        Ticket t1 = new Ticket( a );
-        Ticket t2 = new Ticket( b );
-        Ticket t3 = new Ticket( c );
-        Ticket t4 = new Ticket( d );
+        final Ticket t1 = new Ticket( a );
+        final Ticket t2 = new Ticket( b );
+        final Ticket t3 = new Ticket( c );
+        final Ticket t4 = new Ticket( d );
 
-        FactHandle fa = workingMemory.assertObject( a );
-        FactHandle fb = workingMemory.assertObject( b );
-        FactHandle fc = workingMemory.assertObject( c );
-        FactHandle fd = workingMemory.assertObject( d );
+        final FactHandle fa = workingMemory.assertObject( a );
+        final FactHandle fb = workingMemory.assertObject( b );
+        final FactHandle fc = workingMemory.assertObject( c );
+        final FactHandle fd = workingMemory.assertObject( d );
 
-        FactHandle ft1 = workingMemory.assertObject( t1 );
-        FactHandle ft2 = workingMemory.assertObject( t2 );
-        FactHandle ft3 = workingMemory.assertObject( t3 );
-        FactHandle ft4 = workingMemory.assertObject( t4 );
+        final FactHandle ft1 = workingMemory.assertObject( t1 );
+        final FactHandle ft2 = workingMemory.assertObject( t2 );
+        final FactHandle ft3 = workingMemory.assertObject( t3 );
+        final FactHandle ft4 = workingMemory.assertObject( t4 );
 
         workingMemory.fireAllRules();
 
@@ -61,7 +61,7 @@ public class TroubleTicketExample {
         try {
             System.err.println( "[[ Sleeping 5 seconds ]]" );
             Thread.sleep( 5000 );
-        } catch ( InterruptedException e ) {
+        } catch ( final InterruptedException e ) {
             e.printStackTrace();
         }
 
@@ -74,8 +74,8 @@ public class TroubleTicketExample {
         private String name;
         private String subscription;
 
-        public Customer(String name,
-                        String subscription) {
+        public Customer(final String name,
+                        final String subscription) {
             super();
             this.name = name;
             this.subscription = subscription;
@@ -99,7 +99,7 @@ public class TroubleTicketExample {
         private Customer customer;
         private String   status;
 
-        public Ticket(Customer customer) {
+        public Ticket(final Customer customer) {
             super();
             this.customer = customer;
             this.status = "New";
@@ -109,7 +109,7 @@ public class TroubleTicketExample {
             return this.status;
         }
 
-        public void setStatus(String status) {
+        public void setStatus(final String status) {
             this.status = status;
         }
 

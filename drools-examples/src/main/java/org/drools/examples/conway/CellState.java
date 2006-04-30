@@ -15,11 +15,11 @@ public class CellState {
 
     private final String          name;
 
-    private CellState(String name) {
+    private CellState(final String name) {
         this.name = name;
     }
 
     public String toString() {
-        return "CellState: " + name;
+        return "CellState: " + this.name;
     }
 }

@@ -7,14 +7,14 @@ public class State {
     public static final int       NOTRUN   = 0;
     public static final int       FINISHED = 1;
 
-    private PropertyChangeSupport changes  = new PropertyChangeSupport( this );
+    private final PropertyChangeSupport changes  = new PropertyChangeSupport( this );
 
     private String                name;
     private int                   state;
 
-    public State(String name) {
+    public State(final String name) {
         this.name = name;
-        this.state = NOTRUN;
+        this.state = State.NOTRUN;
     }
 
     public String getName() {
@@ -25,16 +25,16 @@ public class State {
         return this.state;
     }
 
-    public void setState(int newState) {
-        int oldState = this.state;
+    public void setState(final int newState) {
+        final int oldState = this.state;
         this.state = newState;
         this.changes.firePropertyChange( "state",
                                          oldState,
                                          newState );
     }
 
-    public boolean inState(String name,
-                           int state) {
+    public boolean inState(final String name,
+                           final int state) {
         return this.name.equals( name ) && this.state == state;
     }
 
@@ -48,11 +48,11 @@ public class State {
         }
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener l) {
-        changes.addPropertyChangeListener( l );
+    public void addPropertyChangeListener(final PropertyChangeListener l) {
+        this.changes.addPropertyChangeListener( l );
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener l) {
-        changes.removePropertyChangeListener( l );
+    public void removePropertyChangeListener(final PropertyChangeListener l) {
+        this.changes.removePropertyChangeListener( l );
     }
 }

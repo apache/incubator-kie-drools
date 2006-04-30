@@ -1,12 +1,24 @@
 package org.drools.benchmark;
-
+/*
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import junit.framework.TestCase;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
@@ -20,23 +32,18 @@ import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 
-import org.drools.benchmark.models.Account;
-
 /**
  * @author Peter Lin
  *
  */
-public class RuleSetLoadTest extends TestCase {
-    public RuleSetLoadTest() {
-        super();
-    }
-
-    public void setUp() {
-
-    }
-
-    public void tearDown() {
-
+public class RuleSetLoadTest {
+    
+    public static final void main(final String[] args) {
+        RuleSetLoadTest test = new RuleSetLoadTest();
+        test.testOneThousandLoad();
+        
+        // generate the drl first to run this test
+        //test.testFourThousandLoad();
     }
 
     private static RuleBase readRule(String file) throws IOException,

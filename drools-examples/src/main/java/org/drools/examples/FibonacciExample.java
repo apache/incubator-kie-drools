@@ -13,22 +13,22 @@ public class FibonacciExample {
     /**
      * @param args
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
 
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( FibonacciExample.class.getResourceAsStream( "/Fibonacci.drl" ) ) );
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( FibonacciExample.class.getResourceAsStream( "Fibonacci.drl" ) ) );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
         logger.setFileName( "log/fibonacci" );
 
         // By setting dynamic to TRUE, Drools will use JavaBean
         // PropertyChangeListeners so you don't have to call modifyObject().
-        boolean dynamic = false;
+        final boolean dynamic = false;
 
         workingMemory.assertObject( new Fibonacci( 50 ),
                                     dynamic );
@@ -43,7 +43,7 @@ public class FibonacciExample {
 
         private long value;
 
-        public Fibonacci(int sequence) {
+        public Fibonacci(final int sequence) {
             this.sequence = sequence;
             this.value = -1;
         }
@@ -52,7 +52,7 @@ public class FibonacciExample {
             return this.sequence;
         }
 
-        public void setValue(long value) {
+        public void setValue(final long value) {
             this.value = value;
         }
 

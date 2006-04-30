@@ -11,7 +11,7 @@ public class Pulsar
     implements
     ConwayPattern {
 
-    private boolean[][] grid = {{false, true, false}, {true, true, true}, {true, false, true}, {true, true, true}, {false, true, false}};
+    private final boolean[][] grid = {{false, true, false}, {true, true, true}, {true, false, true}, {true, true, true}, {false, true, false}};
 
     /**
      * This method should return a 2 dimensional array of boolean that represent
@@ -21,7 +21,7 @@ public class Pulsar
      * @return array representing a conway grid
      */
     public boolean[][] getPattern() {
-        return grid;
+        return this.grid;
     }
 
     /**
