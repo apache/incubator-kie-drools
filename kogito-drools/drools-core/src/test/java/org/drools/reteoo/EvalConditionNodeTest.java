@@ -19,17 +19,19 @@ package org.drools.reteoo;
 
 
 
+import java.util.List;
+
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 
-public class EvalNodeTest extends DroolsTestCase {
+public class EvalConditionNodeTest extends DroolsTestCase {
     private PropagationContext context;
     private WorkingMemoryImpl  workingMemory;
 
-    public EvalNodeTest(String name) {
+    public EvalConditionNodeTest(String name) {
         super( name );
     }
 
@@ -189,20 +191,52 @@ public class EvalNodeTest extends DroolsTestCase {
 
         // Create the Tuple
         FactHandleImpl f0 = new FactHandleImpl( 0 );
-        ReteTuple tuple = new ReteTuple( f0 );
+        f0.setObject( "stilton" );
+        ReteTuple tuple0 = new ReteTuple( f0 );
 
         // Tuple should pass and propagate 
-        node.assertTuple( tuple,
+        node.assertTuple( tuple0,
                           this.context,
                           this.workingMemory );
-
-        node.retractTuple( tuple,
+        
+        // we create and retract two tuples, checking the linkedtuples is null for JBRULES-246 "NPE on retract()"        
+        // Create the Tuple
+        FactHandleImpl f1 = new FactHandleImpl( 1 );
+        f0.setObject( "cheddar" );
+        ReteTuple tuple1 = new ReteTuple( f1 );   
+        
+        // Tuple should pass and propagate 
+        node.assertTuple( tuple1,
+                          this.context,
+                          this.workingMemory );     
+        
+        // to stimulate JBRULES-246 we retract the second tuple1 first.
+        node.retractTuple( tuple1,
                            context,
-                           workingMemory );
-
+                           workingMemory );     
+                
+        List list = sink.getRetracted();
+        
         // make sure no assertions were propagated
         assertEquals( 1,
+                      sink.getRetracted().size() );        
+        
+        ReteTuple retractedTuple0 = ( ReteTuple ) ( ( Object[] ) list.get( 0 ) )[0];
+        assertNull( retractedTuple0.getLinkedTuples() );        
+
+        node.retractTuple( tuple0,
+                           context,
+                           workingMemory );
+        
+        // make sure no assertions were propagated
+        assertEquals( 2,
                       sink.getRetracted().size() );
+
+        
+        ReteTuple retractedTuple1 = ( ReteTuple ) ( ( Object[] ) list.get( 1) )[0];
+        assertNull( retractedTuple1.getLinkedTuples() );
+        
+        assertNotSame( retractedTuple0, retractedTuple1);
     }
 
     public void testModifyNotAllowed() throws Exception {
