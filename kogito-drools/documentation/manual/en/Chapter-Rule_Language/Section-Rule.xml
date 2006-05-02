@@ -80,20 +80,20 @@
     is executed when the rule fires.</para>
 
     <para>There are a few convenience methods you can use to modify working
-    memory: </para>
+    memory:</para>
 
     <para>"modify(obj);" will tell the engine that an object has changed (one
     that has been bound to something on the LHS) and rules may need to be
-    reconsidered. </para>
+    reconsidered.</para>
 
     <para>"assert(new Something());" will place a new object of your creation
-    in working memory. </para>
+    in working memory.</para>
 
     <para>"assertLogical(new Something());" is similar to assert, but the
     object will be automatically retracted when there are no more facts to
-    support the truth of the currently firing rule. </para>
+    support the truth of the currently firing rule.</para>
 
-    <para>"retract(obj);" removes an object from working memory. </para>
+    <para>"retract(obj);" removes an object from working memory.</para>
 
     <para>These convenience methods are basically macros that provide short
     cuts to the KnowldgeHelper instance (refer to the KnowledgeHelper
@@ -300,8 +300,8 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
           </indexterm>Field Constraints. Valid operators are dependent on the
         field type. Generally they are self explanatory based on the type of
         data: for instance, for date fields, "&lt;" means "before" and so on.
-        "Matches" is only applicable to string fields, and "contains" is only
-        applicable to Collection type fields.</para>
+        "Matches" is only applicable to string fields, "contains" and
+        "excludes" is only applicable to Collection type fields.</para>
       </section>
 
       <section>
@@ -486,12 +486,27 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
           <para><literal>'contains' </literal>is a special operator that can
           be used to check if a field's <indexterm>
               <primary>Collection</primary>
-            </indexterm>Collection contains a String literal.</para>
+            </indexterm>Collection contains an object.</para>
 
           <example>
             <title>Literal Cosntraints with Collections</title>
 
             <programlisting>CheeseCounter( cheeses contains "stilton" )</programlisting>
+          </example>
+        </simplesect>
+
+        <simplesect>
+          <title>Excludes Operator</title>
+
+          <para><literal>'excludes' </literal>is a special operator that can
+          be used to check if a field's <indexterm>
+              <primary>Collection</primary>
+            </indexterm>Collection does not contains an object.</para>
+
+          <example>
+            <title>Literal Cosntraints with Collections</title>
+
+            <programlisting>CheeseCounter( cheeses excludes "cheddar" )</programlisting>
           </example>
         </simplesect>
       </section>
