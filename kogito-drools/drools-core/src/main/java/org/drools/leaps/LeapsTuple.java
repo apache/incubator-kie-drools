@@ -20,12 +20,10 @@ import java.io.Serializable;
 
 import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.LogicalDependency;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.LinkedList;
 
 /**
  * Leaps Tuple implementation
@@ -48,8 +46,6 @@ class LeapsTuple implements Tuple, Serializable {
     private Activation               activation;
 
     private final LeapsRule          leapsRule;
-
-    private LinkedList               justified;
 
     /**
      * agendaItem parts
@@ -83,7 +79,7 @@ class LeapsTuple implements Tuple, Serializable {
      * 
      * @return rule
      */
-    LeapsRule getLeapsRule() {
+    protected LeapsRule getLeapsRule() {
         return this.leapsRule;
     }
 
@@ -141,11 +137,11 @@ class LeapsTuple implements Tuple, Serializable {
      * 
      * @return indicator if agendaItem was null'ed
      */
-    boolean isActivationNull() {
+    protected boolean isActivationNull() {
         return this.activation == null;
     }
 
-    Activation getActivation() {
+    protected Activation getActivation() {
         return this.activation;
     }
     
@@ -184,7 +180,7 @@ class LeapsTuple implements Tuple, Serializable {
      * 
      * @return
      */
-    boolean isReadyForActivation() {
+    protected boolean isReadyForActivation() {
         return this.readyForActivation;
     }
 
@@ -214,31 +210,32 @@ class LeapsTuple implements Tuple, Serializable {
         return buffer.toString();
     }
 
-    void setBlockingNotFactHandle(FactHandleImpl factHandle,
+    protected void setBlockingNotFactHandle(FactHandleImpl factHandle,
                                   int index) {
         this.readyForActivation = false;
         this.blockingNotFactHandles[index] = factHandle;
     }
 
-    boolean isBlockingNotFactHandle(int index ) {
+    protected boolean isBlockingNotFactHandle(int index ) {
         return this.blockingNotFactHandles[index] != null;
     }
-    void removeBlockingNotFactHandle(int index) {
+    
+    protected void removeBlockingNotFactHandle(int index) {
         this.blockingNotFactHandles[index] = null;
         this.setReadyForActivation();
     }
 
-    void setExistsFactHandle(FactHandleImpl factHandle,
+    protected void setExistsFactHandle(FactHandleImpl factHandle,
                              int index) {
         this.existsFactHandles[index] = factHandle;
         this.setReadyForActivation();
     }
 
-    boolean isExistsFactHandle(int index) {
+    protected boolean isExistsFactHandle(int index) {
         return this.existsFactHandles[index] != null;
     }
 
-    void removeExistsFactHandle(int index) {
+    protected void removeExistsFactHandle(int index) {
         this.existsFactHandles[index] = null;
         this.setReadyForActivation();
     }
@@ -265,20 +262,8 @@ class LeapsTuple implements Tuple, Serializable {
         }
     }
 
-    PropagationContext getContext() {
+    protected PropagationContext getContext() {
         return this.context;
-    }
-
-    public void addLogicalDependency(LogicalDependency node) {
-        if ( this.justified == null ) {
-            this.justified = new LinkedList();
-        }
-
-        this.justified.add( node );
-    }
-
-    public LinkedList getLogicalDependencies() {
-        return this.justified;
     }
 
     protected void setContext( PropagationContext context ) {

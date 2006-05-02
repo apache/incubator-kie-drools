@@ -17,7 +17,6 @@ package org.drools.leaps.util;
 
 import java.util.NoSuchElementException;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.leaps.ColumnConstraints;

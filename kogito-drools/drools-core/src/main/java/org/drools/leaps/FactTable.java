@@ -15,9 +15,8 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.LinkedList;
 
 import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.Table;
@@ -47,7 +46,7 @@ class FactTable extends Table {
      * Tuples that are either already on agenda or are very close (missing
      * exists or have not facts matching)
      */
-    private final Set       tuples;
+    private final LinkedList       tuples;
 
     /**
      * initializes base LeapsTable with appropriate Comparator and positive and
@@ -59,7 +58,7 @@ class FactTable extends Table {
     public FactTable(ConflictResolver conflictResolver) {
         super( conflictResolver.getFactConflictResolver() );
         this.rules = new RuleTable( conflictResolver.getRuleConflictResolver() );
-        this.tuples = new HashSet();
+        this.tuples = new LinkedList();
     }
 
     /**
@@ -165,15 +164,11 @@ class FactTable extends Table {
         return ret.toString();
     }
 
-    Iterator getTuplesIterator() {
+    protected Iterator getTuplesIterator() {
         return this.tuples.iterator();
     }
 
-    boolean addTuple(LeapsTuple tuple) {
-        return this.tuples.add( tuple );
-    }
-
-    void removeTuple(LeapsTuple tuple) {
-        this.tuples.remove( tuple );
+    protected void addTuple(LeapsTuple tuple) {
+        this.tuples.add( tuple );
     }
 }

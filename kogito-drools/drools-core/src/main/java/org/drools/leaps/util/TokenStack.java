@@ -17,6 +17,7 @@ package org.drools.leaps.util;
  */
 
 import java.util.EmptyStackException;
+import java.util.Iterator;
 
 import org.drools.leaps.Token;
 import org.drools.util.PrimitiveLongMap;
@@ -106,5 +107,20 @@ public class TokenStack {
         
         this.map.put(((Token)item).getDominantFactHandle().getId(), record);
         return item;
+    }
+    
+    public Iterator iterator() {
+        return new Iterator() {
+            Iterator it = map.values().iterator(); 
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+            public void remove() {
+                
+            }
+            public Object next() {
+                return it.next();
+            }
+        };
     }
 }

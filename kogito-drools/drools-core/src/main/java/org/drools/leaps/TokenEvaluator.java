@@ -181,37 +181,33 @@ final class TokenEvaluator {
      * @return
      * @throws Exception
      */
-    final static boolean processAfterAllPositiveConstraintOk(LeapsTuple tuple,
+    final static boolean processAfterAllPositiveConstraintOk( LeapsTuple tuple,
                                                              LeapsRule leapsRule,
-                                                             WorkingMemoryImpl workingMemory) {
-        if ( leapsRule.containsEvalConditions() && !TokenEvaluator.evaluateEvalConditions( leapsRule,
-                                                                                           tuple,
-                                                                                           workingMemory ) ) {
+                                                             WorkingMemoryImpl workingMemory ) {
+        if (leapsRule.containsEvalConditions( )
+                && !TokenEvaluator.evaluateEvalConditions( leapsRule, tuple, workingMemory )) {
             return false;
         }
-        if ( leapsRule.containsExistsColumns() ) {
-            TokenEvaluator.evaluateExistsConditions( tuple,
-                                                     leapsRule,
-                                                     workingMemory );
+        if (leapsRule.containsExistsColumns( )) {
+            TokenEvaluator.evaluateExistsConditions( tuple, leapsRule, workingMemory );
         }
-        if ( leapsRule.containsNotColumns() ) {
-            TokenEvaluator.evaluateNotConditions( tuple,
-                                                  leapsRule,
-                                                  workingMemory );
+        if (leapsRule.containsNotColumns( )) {
+            TokenEvaluator.evaluateNotConditions( tuple, leapsRule, workingMemory );
         }
         // put tuple onto fact tables that might affect activation status
         // via exists or not conditions
-        Class[] classes = leapsRule.getExistsNotColumnsClasses();
-        for ( int i = 0, length = classes.length; i < length; i++ ) {
+        Class[] classes = leapsRule.getExistsNotColumnsClasses( );
+        for (int i = 0, length = classes.length; i < length; i++) {
             workingMemory.getFactTable( classes[i] ).addTuple( tuple );
         }
 
         // 
-        if ( tuple.isReadyForActivation() ) {
+        if (tuple.isReadyForActivation( )) {
             // let agenda to do its work
             workingMemory.assertTuple( tuple );
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -225,13 +221,12 @@ final class TokenEvaluator {
      * @return
      * @throws Exception
      */
-    private final static boolean evaluateEvalConditions(LeapsRule leapsRule,
+    private final static boolean evaluateEvalConditions( LeapsRule leapsRule,
                                                         LeapsTuple tuple,
-                                                        WorkingMemoryImpl workingMemory) {
-        EvalCondition[] evals = leapsRule.getEvalConditions();
-        for ( int i = 0; i < evals.length; i++ ) {
-            if ( !evals[i].isAllowed( tuple,
-                                      workingMemory ) ) {
+                                                        WorkingMemoryImpl workingMemory ) {
+        EvalCondition[] evals = leapsRule.getEvalConditions( );
+        for (int i = 0; i < evals.length; i++) {
+            if (!evals[i].isAllowed( tuple, workingMemory )) {
                 return false;
             }
         }
@@ -247,26 +242,23 @@ final class TokenEvaluator {
      * @return success
      * @throws Exception
      */
-    final static void evaluateNotConditions(LeapsTuple tuple,
+    final static void evaluateNotConditions( LeapsTuple tuple,
                                             LeapsRule rule,
-                                            WorkingMemoryImpl workingMemory) {
-        ColumnConstraints[] not = rule.getNotColumnConstraints();
-        for ( int i = 0, length = not.length; i < length; i++ ) {
+                                            WorkingMemoryImpl workingMemory ) {
+        ColumnConstraints[] not = rule.getNotColumnConstraints( );
+        for (int i = 0, length = not.length; i < length; i++) {
             ColumnConstraints constraint = not[i];
             // scan table starting at start fact handle
-            TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType() ).iterator();
+            TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType( ) )
+                                                       .reverseOrderIterator( );
             // stops if exists
             boolean done = false;
-            while ( !done && tableIterator.hasNext() ) {
-                FactHandleImpl factHandle = (FactHandleImpl) tableIterator.next();
+            while (!done && tableIterator.hasNext( )) {
+                FactHandleImpl factHandle = (FactHandleImpl) tableIterator.next( );
                 // check constraint conditions
-                if ( constraint.isAllowed( factHandle,
-                                           tuple,
-                                           workingMemory ) ) {
-                    tuple.setBlockingNotFactHandle( factHandle,
-                                                    i );
-                    factHandle.addNotTuple( tuple,
-                                            i );
+                if (constraint.isAllowed( factHandle, tuple, workingMemory )) {
+                    tuple.setBlockingNotFactHandle( factHandle, i );
+                    factHandle.addNotTuple( tuple, i );
                     done = true;
                 }
             }
@@ -274,7 +266,8 @@ final class TokenEvaluator {
     }
 
     /**
-     * To evaluate conditions above the water line that is supplied in the first argument
+     * To evaluate conditions above the water line that is supplied in the first
+     * argument
      * 
      * @param startFactHandle
      * @param index
@@ -282,30 +275,26 @@ final class TokenEvaluator {
      * @param rule
      * @param workingMemory
      */
-    final static void evaluateNotCondition(FactHandleImpl startFactHandle,
+    final static void evaluateNotCondition( FactHandleImpl startFactHandle,
                                            int index,
                                            LeapsTuple tuple,
-                                           WorkingMemoryImpl workingMemory) {
-        LeapsRule rule = tuple.getLeapsRule();
+                                           WorkingMemoryImpl workingMemory ) {
+        LeapsRule rule = tuple.getLeapsRule( );
         // scan table starting at start fact handle
-        ColumnConstraints constraint = rule.getNotColumnConstraints()[index];
-        TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType() ).headIterator( startFactHandle );
+        ColumnConstraints constraint = rule.getNotColumnConstraints( )[index];
+        TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType( ) )
+                                                   .headReverseOrderIterator( startFactHandle );
         // stops if exists
         boolean done = false;
-        while ( !done && tableIterator.hasNext() ) {
-            FactHandleImpl factHandle = (FactHandleImpl) tableIterator.next();
+        while (!done && tableIterator.hasNext( )) {
+            FactHandleImpl factHandle = (FactHandleImpl) tableIterator.next( );
             // check constraint conditions
-            if ( constraint.isAllowed( factHandle,
-                                       tuple,
-                                       workingMemory ) ) {
-                tuple.setBlockingNotFactHandle( factHandle,
-                                                index );
-                factHandle.addNotTuple( tuple,
-                                        index );
+            if (constraint.isAllowed( factHandle, tuple, workingMemory )) {
+                tuple.setBlockingNotFactHandle( factHandle, index );
+                factHandle.addNotTuple( tuple, index );
                 done = true;
             }
         }
-
     }
 
     /**
@@ -315,24 +304,22 @@ final class TokenEvaluator {
      * @param memory
      * @throws Exception
      */
-    private final static void evaluateExistsConditions(LeapsTuple tuple,
+    private final static void evaluateExistsConditions( LeapsTuple tuple,
                                                        LeapsRule rule,
-                                                       WorkingMemoryImpl workingMemory) {
-        ColumnConstraints[] exists = rule.getExistsColumnConstraints();
-        for ( int i = 0, length = exists.length; i < length; i++ ) {
+                                                       WorkingMemoryImpl workingMemory ) {
+        ColumnConstraints[] exists = rule.getExistsColumnConstraints( );
+        for (int i = 0, length = exists.length; i < length; i++) {
             ColumnConstraints constraint = exists[i];
             // scan table starting at start fact handle
-            TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType() ).iterator();
+            TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType( ) )
+                                                       .reverseOrderIterator( );
             // stop if exists
             boolean done = false;
-            while ( !done && tableIterator.hasNext() ) {
-                FactHandleImpl factHandle = (FactHandleImpl) tableIterator.next();
+            while (!done && tableIterator.hasNext( )) {
+                FactHandleImpl factHandle = (FactHandleImpl) tableIterator.next( );
                 // check constraint conditions
-                if ( constraint.isAllowed( factHandle,
-                                           tuple,
-                                           workingMemory ) ) {
-                    tuple.setExistsFactHandle( factHandle,
-                                               i );
+                if (constraint.isAllowed( factHandle, tuple, workingMemory )) {
+                    tuple.setExistsFactHandle( factHandle, i );
                     factHandle.addExistsTuple( tuple,
                                                i );
                     done = true;
@@ -351,20 +338,21 @@ final class TokenEvaluator {
      * @param rule
      * @param workingMemory
      */
-    final static void evaluateExistsCondition(FactHandleImpl startFactHandle,
+    final static void evaluateExistsCondition( FactHandleImpl startFactHandle,
                                               int index,
                                               LeapsTuple tuple,
-                                              WorkingMemoryImpl workingMemory) {
-        LeapsRule rule = tuple.getLeapsRule();
+                                              WorkingMemoryImpl workingMemory ) {
+        LeapsRule rule = tuple.getLeapsRule( );
         // scan table starting at start fact handle
-        ColumnConstraints constraint = rule.getExistsColumnConstraints()[index];
-        TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType() ).headIterator( startFactHandle );
+        ColumnConstraints constraint = rule.getExistsColumnConstraints( )[index];
+        TableIterator tableIterator = workingMemory.getFactTable( constraint.getClassType( ) )
+                                                   .headReverseOrderIterator( startFactHandle );
         // stop if exists
         boolean done = false;
-        while ( !done && tableIterator.hasNext() ) {
-            FactHandleImpl factHandle = (FactHandleImpl) tableIterator.next();
+        while (!done && tableIterator.hasNext( )) {
+            FactHandleImpl factHandle = (FactHandleImpl) tableIterator.next( );
             // check constraint conditions
-            if ( constraint.isAllowed( factHandle,
+            if (constraint.isAllowed( factHandle,
                                        tuple,
                                        workingMemory ) ) {
                 tuple.setExistsFactHandle( factHandle,

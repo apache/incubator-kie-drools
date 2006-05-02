@@ -15,11 +15,9 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
@@ -33,62 +31,56 @@ import org.drools.common.InternalFactHandle;
 public class FactHandleImpl extends Handle
     implements
     InternalFactHandle {
-    private Set     activatedTuples   = null;
+    private List activatedTuples = null;
 
-    private List    notTuples         = null;
+    private List notTuples       = null;
 
-    private List    existsTuples      = null;
+    private List existsTuples    = null;
 
     /**
      * actual object that is asserted to the system no getters just a direct
      * access to speed things up
      */
-    public FactHandleImpl(long id,
-                          Object object) {
-        super( id,
-               object );
+    public FactHandleImpl(long id, Object object) {
+        super( id, object );
     }
 
-    protected final void addActivatedTuple(LeapsTuple tuple) {
-        if ( this.activatedTuples == null ) {
-            this.activatedTuples = new HashSet();
+    protected void addActivatedTuple( LeapsTuple tuple ) {
+        if (this.activatedTuples == null) {
+            this.activatedTuples = new LinkedList( );
         }
         this.activatedTuples.add( tuple );
     }
 
-    protected final void addNotTuple(LeapsTuple tuple,
-                     int index) {
-        if ( this.notTuples == null ) {
-            this.notTuples = new LinkedList();
+    protected void addNotTuple( LeapsTuple tuple, int index ) {
+        if (this.notTuples == null) {
+            this.notTuples = new LinkedList( );
         }
-        this.notTuples.add( new FactHandleTupleAssembly( tuple,
-                                                         index ) );
+        this.notTuples.add( new FactHandleTupleAssembly( tuple, index ) );
     }
 
-    protected final void addExistsTuple(LeapsTuple tuple,
-                        int index) {
-        if ( this.existsTuples == null ) {
-            this.existsTuples = new LinkedList();
+    protected void addExistsTuple( LeapsTuple tuple, int index ) {
+        if (this.existsTuples == null) {
+            this.existsTuples = new LinkedList( );
         }
-        this.existsTuples.add( new FactHandleTupleAssembly( tuple,
-                                                            index ) );
+        this.existsTuples.add( new FactHandleTupleAssembly( tuple, index ) );
     }
 
-    protected final Iterator getActivatedTuples() {
+    protected Iterator getActivatedTuples() {
         if ( this.activatedTuples != null ) {
             return this.activatedTuples.iterator();
         }
         return null;
     }
 
-    protected final Iterator getNotTupleAssemblies() {
+    protected Iterator getNotTupleAssemblies() {
         if ( this.notTuples != null ) {
             return this.notTuples.iterator();
         }
         return null;
     }
 
-    protected final Iterator getExistsTupleAssemblies() {
+    protected Iterator getExistsTupleAssemblies() {
         if ( this.existsTuples != null ) {
             return this.existsTuples.iterator();
         }

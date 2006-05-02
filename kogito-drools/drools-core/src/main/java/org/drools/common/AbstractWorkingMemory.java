@@ -47,6 +47,8 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.IdentityMap;
 import org.drools.util.PrimitiveLongMap;
 import org.drools.util.PrimitiveLongStack;
+import org.drools.util.concurrent.locks.Lock;
+import org.drools.util.concurrent.locks.ReentrantLock;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -55,43 +57,45 @@ import org.drools.util.PrimitiveLongStack;
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  * @author <a href="mailto:bagerman@gmail.com">Alexander Bagerman </a>
  */
-abstract public class AbstractWorkingMemory
-    implements
-    WorkingMemory,
-    InternalWorkingMemoryActions,
-    EventSupport,
-    PropertyChangeListener {
+abstract public class AbstractWorkingMemory implements WorkingMemory,
+        InternalWorkingMemoryActions, EventSupport, PropertyChangeListener {
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
-    private static final Class[]              ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+    private static final Class[]              ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[] { PropertyChangeListener.class };
 
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /** The arguments used when adding/removing a property change listener. */
-    protected final Object[]                  addRemovePropertyChangeListenerArgs           = new Object[]{this};
+    protected final Object[]                  addRemovePropertyChangeListenerArgs           = new Object[] { this };
 
     /** Global values which are associated with this memory. */
-    private final Map                         globals                                       = new HashMap();
+    private final Map                         globals                                       = new HashMap( );
 
     /** Object-to-handle mapping. */
-    protected final Map                       identityMap                                   = new IdentityMap();
-    protected final Map                       equalsMap                                     = new HashMap();
+    protected final Map                       identityMap                                   = new IdentityMap( );
+
+    protected final Map                       equalsMap                                     = new HashMap( );
 
     protected final PrimitiveLongMap          justified                                     = new PrimitiveLongMap( 8,
                                                                                                                     32 );
-    private final PrimitiveLongStack          factHandlePool                                = new PrimitiveLongStack();
+
+    private final PrimitiveLongStack          factHandlePool                                = new PrimitiveLongStack( );
 
     protected static final String             STATED                                        = "STATED";
+
     protected static final String             JUSTIFIED                                     = "JUSTIFIED";
+
     protected static final String             NEW                                           = "NEW";
+
     protected static final FactStatus         STATUS_NEW                                    = new FactStatus( NEW,
-                                                                                                            0 );
+                                                                                                              0 );
 
     /** The eventSupport */
     protected final WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( this );
+
     protected final AgendaEventSupport        agendaEventSupport                            = new AgendaEventSupport( this );
 
     /** The <code>RuleBase</code> with which this memory is associated. */
@@ -100,12 +104,14 @@ abstract public class AbstractWorkingMemory
     protected final FactHandleFactory         handleFactory;
 
     /** Rule-firing agenda. */
-    //	protected final Agenda agenda;
+    // protected final Agenda agenda;
     /** Flag to determine if a rule is currently being fired. */
     protected boolean                         firing;
 
     protected long                            propagationIdCounter;
 
+    private ReentrantLock                     lock                                          = new ReentrantLock( );
+    
     public AbstractWorkingMemory(RuleBase ruleBase,
                                  FactHandleFactory handleFactory) {
         this.ruleBase = ruleBase;
@@ -421,6 +427,10 @@ abstract public class AbstractWorkingMemory
         }
     }
 
+    public Lock getLock() {
+        return this.lock;
+    }
+ 
     protected static class FactStatus {
         private int            counter;
         private String         status;

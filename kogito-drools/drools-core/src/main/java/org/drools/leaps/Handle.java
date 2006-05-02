@@ -26,9 +26,7 @@ import org.drools.FactHandle;
  * @author Alexander Bagerman
  * 
  */
-public class Handle
-    implements
-    Serializable {
+public class Handle implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // object to handle
