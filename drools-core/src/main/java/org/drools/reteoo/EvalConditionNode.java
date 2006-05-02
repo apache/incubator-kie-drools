@@ -145,7 +145,7 @@ class EvalConditionNode extends TupleSource
         LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
 
         // checks if the tuple is attach to tuple
-        if ( (tuple.getNext() != null && tuple.getPrevious() != null) || memory.getFirst() == tuple ) {
+        if ( tuple.getLinkedTuples() != null ) {
             memory.remove( tuple );
 
             propagateRetractTuple( tuple,
