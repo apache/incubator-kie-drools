@@ -5,7 +5,7 @@
 
     <subtitle>Drools Documentation</subtitle>
 
-    <releaseinfo>3.0-RC-2</releaseinfo>
+    <releaseinfo>3.0</releaseinfo>
 
     <author>
       <firstname>Mark</firstname>
@@ -133,7 +133,7 @@
     <chapter>
       <title>Examples</title>
 
-      <xi:include href="Chapter-Examples/Section-State_Example.xml" />
+      <xi:include href="Chapter-Examples/Section-Examples.xml" />
     </chapter>
     
     <chapter>
