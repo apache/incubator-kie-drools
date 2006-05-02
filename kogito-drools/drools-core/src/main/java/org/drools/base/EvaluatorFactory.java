@@ -80,6 +80,9 @@ public class EvaluatorFactory {
         } else if ( operator.equals( "matches" ) ) {
             evaluator = getEvaluator( type,
                                       Evaluator.MATCHES );
+        } else if ( operator.equals( "excludes" ) ) {
+            evaluator = getEvaluator( type,
+                                      Evaluator.EXCLUDES );
         } else {
             throw new IllegalArgumentException( "Unknown operator: '" + operator + "'" );
         }

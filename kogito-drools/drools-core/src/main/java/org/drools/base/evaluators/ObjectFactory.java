@@ -52,6 +52,8 @@ public class ObjectFactory {
                 return ObjectGreaterEvaluator.INSTANCE;
             case Evaluator.GREATER_OR_EQUAL :
                 return ObjectGreaterOrEqualEvaluator.INSTANCE;
+            case Evaluator.EXCLUDES :
+                return ObjectExcludesEvaluator.INSTANCE;
             default :
                 throw new RuntimeException( "Operator '" + operator + "' does not exist for ObjectEvaluator" );
         }
@@ -191,5 +193,25 @@ public class ObjectFactory {
             return "Object contains";
         }
     }
+    
+    static class ObjectExcludesEvaluator extends BaseEvaluator {
+        public final static Evaluator INSTANCE = new ObjectExcludesEvaluator();
+
+        private ObjectExcludesEvaluator() {
+            super( Evaluator.OBJECT_TYPE,
+                   Evaluator.EXCLUDES );
+        }
+
+        public boolean evaluate(Object object1,
+                                Object object2) {
+            if ( object2 == null ) return false;
+            Collection col = (Collection) object1;
+            return !col.contains( object2 );
+        }
+
+        public String toString() {
+            return "Object excludes";
+        }
+    }    
 
 }

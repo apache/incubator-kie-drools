@@ -712,6 +712,7 @@ constraint[List constraints]
 					|	'!='
 					|	'contains'
 					|	'matches'
+					|       'excludes'
 					) opt_eol	
 					
 					(	bvc=ID
@@ -810,7 +811,7 @@ paren_chunk returns [String text]
 		)* 
 	;
 	
-
+//NOTE: this is needed as there is a bug in antlr if you sometimes use the same sub rule in multiple places
 paren_chunk2 returns [String text]
 	@init {
 		text = null;

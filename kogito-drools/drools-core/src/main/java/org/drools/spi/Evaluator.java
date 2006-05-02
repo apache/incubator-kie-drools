@@ -31,6 +31,7 @@ public interface Evaluator
     public static final int GREATER_OR_EQUAL = 50;
     public static final int CONTAINS         = 60;
     public static final int MATCHES          = 70;
+    public static final int EXCLUDES          = 80;
 
     // Types
     public static final int CHAR_TYPE        = 100;
