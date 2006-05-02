@@ -39,16 +39,21 @@ public class EvaluatorFactoryTest extends TestCase {
         List list = new ArrayList();
         list.add( "foo" );
 
-        Object[][] data = {{"foo", "==", "bar", Boolean.FALSE}, {"foo", "==", "foo", Boolean.TRUE}, {"foo", "!=", "bar", Boolean.TRUE}, {list, "contains", "foo", Boolean.TRUE}, {list, "contains", "bar", Boolean.FALSE},
+        Object[][] data = {{"foo", "==", "bar", Boolean.FALSE}, 
+                           {"foo", "==", "foo", Boolean.TRUE}, 
+                           {"foo", "!=", "bar", Boolean.TRUE}, 
+                           {list, "contains", "foo", Boolean.TRUE}, 
+                           {list, "contains", "bar", Boolean.FALSE},
                 {list, "==", null, Boolean.FALSE}, 
                 {list, "!=", null, Boolean.TRUE}, 
                 {null, "==", null, Boolean.TRUE},
                 {new BigDecimal("42.42"), "<", new BigDecimal("43"), Boolean.TRUE},
                 {new BigDecimal("42.42"), ">", new BigDecimal("43"), Boolean.FALSE},
                 {new BigDecimal("42.42"), "<=", new BigDecimal("42.42"), Boolean.TRUE},
-                {new BigInteger("42"), ">=", new BigInteger("43"), Boolean.FALSE}
-                
-                
+                {new BigInteger("42"), ">=", new BigInteger("43"), Boolean.FALSE},
+                {new BigInteger("42"), ">=", new BigInteger("43"), Boolean.FALSE},
+                {list, "excludes", "baz", Boolean.TRUE},
+                {list, "excludes", "foo", Boolean.FALSE}
                 
         };
         
