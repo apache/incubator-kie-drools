@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
  * @author Alexander Bagerman
  * 
  */
-public class BaseTableIterator
+public class BaseTableReverseOrderIterator
     implements
     TableIterator {
     /**
@@ -54,14 +54,14 @@ public class BaseTableIterator
      * @param record
      *            to iterate over
      */
-    protected BaseTableIterator(TableRecord record) {
+    protected BaseTableReverseOrderIterator(TableRecord record) {
         this.firstRecord = record;
         this.lastRecord = record;
         this.currentRecord = null;
         this.nextRecord = this.firstRecord;
     }
 
-    protected BaseTableIterator(TableRecord startRecord,
+    protected BaseTableReverseOrderIterator(TableRecord startRecord,
                                 TableRecord currentRecord,
                                 TableRecord lastRecord) {
         this.firstRecord = startRecord;
@@ -91,11 +91,15 @@ public class BaseTableIterator
             if ( this.currentRecord == this.lastRecord ) {
                 this.nextRecord = null;
             } else {
-                this.nextRecord = this.currentRecord.right;
+                this.nextRecord = this.currentRecord.left;
             }
         } else {
             throw new NoSuchElementException( "No more elements to return" );
         }
+        return this.currentRecord.object;
+    }
+
+    public Object current() {
         return this.currentRecord.object;
     }
 

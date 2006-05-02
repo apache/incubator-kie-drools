@@ -28,11 +28,8 @@ public class RuleHandle extends Handle {
     // ce position for which handle is created
     private final int dominantPosition;
 
-    public RuleHandle(long id,
-                      LeapsRule rule,
-                      int dominantPosition) {
-        super( id,
-               rule );
+    public RuleHandle(long id, LeapsRule rule, int dominantPosition) {
+        super( id, rule );
         this.dominantPosition = dominantPosition;
     }
 
@@ -67,14 +64,16 @@ public class RuleHandle extends Handle {
     /**
      * @see java.lang.Object
      */
-    public boolean equals(Object that) {
-        return super.equals( that ) && (this.getDominantPosition() == ((RuleHandle) that).getDominantPosition());
+    public boolean equals( Object that ) {
+        return super.equals( that )
+                && ( this.getDominantPosition( ) == ( (RuleHandle) that ).getDominantPosition( ) );
     }
 
     /**
      * @see java.lang.Object
      */
     public String toString() {
-        return "R-" + this.getId() + " \"" + this.getLeapsRule().toString() + "\" [pos - " + this.dominantPosition + "]";
+        return "R-" + this.getId( ) + " \"" + this.getLeapsRule( ).toString( )
+                + "\" [pos - " + this.dominantPosition + "]";
     }
 }

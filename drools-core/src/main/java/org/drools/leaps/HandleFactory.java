@@ -22,14 +22,12 @@ import org.drools.spi.FactHandleFactory;
  * @author Alexander Bagerman
  * 
  */
-class HandleFactory
-    implements
-    FactHandleFactory {
+class HandleFactory implements FactHandleFactory {
     private static final long serialVersionUID = 8510623248591449450L;
 
     private long              counter;
 
-    HandleFactory() {
+    protected HandleFactory() {
         this.counter = 0L;
     }
 
@@ -49,9 +47,8 @@ class HandleFactory
      * @param object
      * @return leaps handle
      */
-    public final FactHandle newFactHandle(Object object) {
-        return new FactHandleImpl( this.getNextId(),
-                                   object );
+    public final FactHandle newFactHandle( Object object ) {
+        return new FactHandleImpl( this.getNextId( ), object );
     }
 
     /**
