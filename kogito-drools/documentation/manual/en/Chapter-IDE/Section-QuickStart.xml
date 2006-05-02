@@ -20,6 +20,9 @@
   on Eclipse, and integrators are free to use their tools of choice, as always
   !</para>
 
+  <para>Note you can get the plug in either as a zip to download, or from an
+  update site (refer to the chapter on installation).</para>
+
   <figure>
     <title>Overview</title>
 
@@ -564,5 +567,13 @@
 
     <para>Rulesets of 4,000 rules or greater should set the permanent
     generation to atleast 128Mb.</para>
+
+    <para>(note that this may also apply to compiling large numbers of rules
+    in general - as there is generally one or more classes per rule).</para>
+
+    <para>As an alternative to the above, you may put rules in a file with the
+    ".rule" extension, and the background builder will not try to compile them
+    with each change, which may provide performance improvements if your IDE
+    becomes sluggish with very large numbers of rules.</para>
   </section>
 </section>
