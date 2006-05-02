@@ -136,6 +136,13 @@
     <para>The drools-ide project was checked out out using subversion and is
     ready for exporting.</para>
 
+    <para>NOTE: there is also an update site for the plug in. For developers
+    who want to update the update site (ha) you will need to open the feature
+    project, and the site project. They are kept in SVN, but in
+    /jbossrules/update instead of /trunk. They are plain vanilla eclipse
+    feature and site projects, so refreshing them should be self explanatory
+    should you need to do it.</para>
+
     <screenshot>
       <screeninfo>Select Export on the drools-ide project</screeninfo>
 
