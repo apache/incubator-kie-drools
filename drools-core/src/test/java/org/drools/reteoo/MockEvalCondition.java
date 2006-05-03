@@ -24,20 +24,14 @@ import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
 
 public class MockEvalCondition extends EvalCondition {
+    
+    private Boolean isAllowed ;
 
-    private static EvalExpression trueExpression  = new EvalExpression() {
+    private final EvalExpression expression  = new EvalExpression() {
                                                       public boolean evaluate(Tuple tuple,
                                                                               Declaration[] requiredDeclarations,
                                                                               WorkingMemory workingMemory) {
-                                                          return true;
-                                                      }
-                                                  };
-
-    private static EvalExpression falseExpression = new EvalExpression() {
-                                                      public boolean evaluate(Tuple tuple,
-                                                                              Declaration[] requiredDeclarations,
-                                                                              WorkingMemory workingMemory) {
-                                                          return false;
+                                                          return isAllowed .booleanValue();
                                                       }
                                                   };
 
@@ -48,13 +42,17 @@ public class MockEvalCondition extends EvalCondition {
 
     public MockEvalCondition(boolean isAllowed,
                              Declaration[] requiredDeclarations) {
-        this( (isAllowed) ? trueExpression : falseExpression,
-              requiredDeclarations );
+        super( requiredDeclarations );
+        setEvalExpression( this.expression );
+        setIsAllowed( isAllowed );
     }
 
     public MockEvalCondition(EvalExpression eval,
                              Declaration[] requiredDeclarations) {
-        super( eval,
-               requiredDeclarations );
+        super( eval, requiredDeclarations );
+    }
+    
+    public void setIsAllowed(boolean isAllowed ) {
+        this.isAllowed  = new Boolean( isAllowed );
     }
 }

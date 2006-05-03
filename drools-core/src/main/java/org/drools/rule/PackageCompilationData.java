@@ -21,9 +21,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -282,6 +284,8 @@ public class PackageCompilationData
             return clazz;
         }
 
+        
+        
         /**
          * Javadocs recommend that this method not be overloaded. We overload this so that we can prioritise the fastFindClass 
          * over method calls to parent.loadClass(name, false); and c = findBootstrapClass0(name); which the default implementation
@@ -315,6 +319,15 @@ public class PackageCompilationData
                 throw new ClassNotFoundException( name );
             }
             return clazz;
+        }
+        
+        public InputStream getResourceAsStream(String name) {
+            byte[] bytes = read( name );
+            if ( bytes != null ) {
+                return null;
+            } else  {
+                return super.getResourceAsStream( name );
+            }
         }
     }
 

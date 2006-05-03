@@ -73,6 +73,25 @@ public class EvalCondition extends ConditionalElement {
         EvalCondition eval = new EvalCondition( this.expression,
                                                 this.requiredDeclarations );
         return eval;
-    }
-
+    }    
+    
+//    public int hashcode() {
+//        return this.expression.hashCode();
+//    }
+//    
+//    public boolean equals(Object object) {
+//        if (object == null ) {
+//            return false;
+//        } else if ( object == this ){
+//            return true;
+//        }
+//        
+//        if ( ! (object instanceof EvalExpression) ) {
+//            return false;
+//        }
+//        
+//        EvalCondition other = ( EvalCondition ) object;
+//        
+//        return this.expression.equals( other.expression );
+//    }
 };
