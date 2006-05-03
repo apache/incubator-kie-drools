@@ -23,31 +23,44 @@ public class MethodComparator {
      * This actually does the comparing.
      * Class1 and Class2 are class reader instances to the respective classes. method1 and method2 are looked up on the 
      * respective classes and their contents compared.
+     * 
+     * This is a convenience method.
      */
     public boolean equivalent(String method1, ClassReader class1, String method2, ClassReader class2) {
         
-        Tracer visit1 = new Tracer(method1);
-        class1.accept( visit1, true );
-        TraceMethodVisitor trace1 = visit1.getTrace();
-        List list1 = (trace1.getText());
-      
-        Tracer visit2 = new Tracer(method2);
-        class2.accept( visit2, true );
-        TraceMethodVisitor trace2 = visit2.getTrace();
-        List list2 = trace2.getText();
+        List list1 = getMethodBytecode( method1, class1 );
+        List list2 = getMethodBytecode( method2, class2 );
         
-        if (list1.size() != list2.size()) return false;
+        return compareBytecode( list1, list2 );
+    }
+    
+    /**
+     * This will return a series of bytecode instructions which can be used to compare one method with another.
+     * debug info like local var declarations and line numbers are ignored, so the focus is on the content.
+     */
+    public List getMethodBytecode(String methodName, ClassReader classReader) {
+        Tracer visit = new Tracer(methodName);
+        classReader.accept( visit, true );
+        TraceMethodVisitor trace = visit.getTrace();
+        return trace.getText();        
+    }
+    
+    /**
+     * Compares 2 bytecode listings.
+     * Returns true if they are identical.
+     */
+    public boolean compareBytecode(List b1, List b2) {
+        if (b1.size() != b2.size()) return false;
         
-        for (int i = 0; i < list1.size(); i++) {
+        for (int i = 0; i < b1.size(); i++) {
             if (! 
-                    (list1.get( i ).equals( list2.get( i ) ))
+                    (b1.get( i ).equals( b2.get( i ) ))
                     ) {
                 return false;
                 
             }
         }
         return true;
-        
     }
     
     static class Tracer implements ClassVisitor {
