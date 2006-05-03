@@ -36,7 +36,7 @@ import edu.uci.ics.jung.graph.impl.DirectedSparseVertex;
 /**
  * Produces a graph in GraphViz DOT format.
  *
- * @see http://www.research.att.com/sw/tools/graphviz/
+ * @see http://www.research.att.com/sw/tools/graphviz/ 
  * @see http://www.pixelglow.com/graphviz/
  *
  * @author Andy Barnett
