@@ -40,7 +40,7 @@
     working memory will no longer track that fact, and any rules that were
     dependent on that fact will not be activated. Note that it is possible to
     have rules that depend on the "non existence" of fact, in which case
-    retracting a fact may cause a rule to activate. </para>
+    retracting a fact may cause a rule to activate.</para>
   </section>
 
   <section>
@@ -104,6 +104,20 @@
   <section>
     <title>Stateless and Statefull Sessions</title>
 
-    <para></para>
+    <para>Rule engines that are based around algorithms like RETE are
+    technically statefull rule engines. That is, they work best when the RETE
+    network is longer lived, being notified of changes, and accumulating facts
+    - that is where they shine. </para>
+
+    <para>However, many scenarious simply require a stateless mode where all
+    the facts (data) are supplied fresh to the rule engine and then the rules
+    are invoked. Drools is fine in these scenarious as well - in fact, the
+    RETE algorithm is still of benefit as often there will be scenarios in a
+    stateless session where rules actions cause other rules to fire, or where
+    there are large numbers of facts to match with rules. </para>
+
+    <para>The JSR-94 api specifies statefull and stateless modes, but the
+    equivalent in the native API is to simply create a new working memory
+    instance, and then discard it when the session is finished.</para>
   </section>
 </section>
