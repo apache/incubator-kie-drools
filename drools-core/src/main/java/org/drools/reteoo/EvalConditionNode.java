@@ -145,7 +145,7 @@ class EvalConditionNode extends TupleSource
         LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
 
         // checks if the tuple is attach to tuple
-        if ( tuple.getLinkedTuples() != null ) {
+        if (tuple.getLinkedTuples() != null && !tuple.getLinkedTuples().isEmpty()) {
             memory.remove( tuple );
 
             propagateRetractTuple( tuple,
@@ -158,7 +158,7 @@ class EvalConditionNode extends TupleSource
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
         LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-        boolean exists = (tuple.getLinkedTuples() != null);
+        boolean exists = (tuple.getLinkedTuples() != null && !tuple.getLinkedTuples().isEmpty());
         
         if ( exists ) {
             // Remove the tuple so it can be readded to the top of the list
