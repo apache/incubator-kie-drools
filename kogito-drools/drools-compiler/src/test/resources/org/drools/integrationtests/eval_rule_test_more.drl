@@ -13,3 +13,12 @@ rule "another test"
     then
         list.add( s );
 end  
+
+rule "yet more"
+    when
+        s : String()
+        eval(s.equals("foo") && s.startsWith("f"))
+        eval(s.equals("foo") && s.startsWith("q"))        
+    then
+        list.add( s );
+end  

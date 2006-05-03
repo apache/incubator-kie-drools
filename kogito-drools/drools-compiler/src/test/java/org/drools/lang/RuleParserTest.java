@@ -388,7 +388,7 @@ public class RuleParserTest extends TestCase {
     /** Note this is only to be enabled if we agree to combine patterns from columns bound to the same var.
      * At present, not a valid test. Refer to AndDescr and AndDescrTest (Michael Neale).
      */
-    public void XXXtestMultiBindings() throws Exception {
+    public void testMultiBindings() throws Exception {
         RuleDescr rule = parseResource( "multiple_bindings.drl" ).rule();        
         assertNotNull( rule );        
         assertEquals( "simple_rule", rule.getName() );
