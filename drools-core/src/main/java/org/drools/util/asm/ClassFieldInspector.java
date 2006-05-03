@@ -84,8 +84,8 @@ public class ClassFieldInspector {
      * Convert it to a form so we can load the bytes from the classpath.
      */
     private String getResourcePath(Class clazz) {
-        return "/" + clazz.getName().replaceAll( "\\.",
-                                                 "/" ) + ".class";
+        return "/" + clazz.getName().replace( '.',
+                                                 '/' ) + ".class";
     }
 
     /** 
