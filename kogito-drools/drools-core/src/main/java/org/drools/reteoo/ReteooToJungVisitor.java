@@ -315,20 +315,20 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
     }
 
-    static class TestNodeVertex extends BaseNodeVertex {
+    static class EvalConditionNodeVertex extends BaseNodeVertex {
         private final EvalConditionNode node;
 
-        public TestNodeVertex(EvalConditionNode node) {
+        public EvalConditionNodeVertex(EvalConditionNode node) {
             super();
             this.node = node;
         }
 
         public String getHtml() {
-            return "TestNode : " + this.node.getId();
+            return "EvalConditionNode : " + this.node.getId();
         }
 
         public String toString() {
-            return "TestNode";
+            return "EvalConditionNode";
         }
     }
 
