@@ -87,7 +87,7 @@
 	      <systemProperties>
           <property>
             <name>jsr94.tck.configuration</name>
-            <value>drools-jsr94/target/test-classes/org/drools/jsr94/tck</value>
+            <value>${basedir}/target/test-classes/org/drools/jsr94/tck</value>
           </property>
         </systemProperties>p
 	        <includes>
