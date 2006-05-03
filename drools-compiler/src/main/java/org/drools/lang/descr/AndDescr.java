@@ -36,12 +36,12 @@ public class AndDescr extends PatternDescr
         if ( this.descrs == Collections.EMPTY_LIST ) {
             this.descrs = new ArrayList( 1 );
         }
-//MN: No pattern combining ??     
-//        if ( patternDescr instanceof ColumnDescr ) {
-//            addColumn( (ColumnDescr) patternDescr );
-//        } else {
+     
+        if ( patternDescr instanceof ColumnDescr ) {
+            addColumn( (ColumnDescr) patternDescr );
+        } else {
             this.descrs.add( patternDescr );
-//        }
+        }
     }
 
     /**
