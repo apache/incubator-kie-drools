@@ -158,7 +158,8 @@ class EvalConditionNode extends TupleSource
                             PropagationContext context,
                             WorkingMemoryImpl workingMemory) {
         LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-        boolean exists = ((tuple.getNext() != null && tuple.getPrevious() != null) || memory.getFirst() == tuple);
+        boolean exists = (tuple.getLinkedTuples() != null);
+        
         if ( exists ) {
             // Remove the tuple so it can be readded to the top of the list
             memory.remove( tuple );
