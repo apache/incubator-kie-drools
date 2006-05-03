@@ -1,0 +1,831 @@
+/***
+ * ASM XML Adapter
+ * Copyright (c) 2004, Eugene Kuleshov
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the copyright holders nor the names of its
+ *    contributors may be used to endorse or promote products derived from
+ *    this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+ * THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.objectweb.asm.xml;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.Type;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+/**
+ * A {@link org.xml.sax.ContentHandler ContentHandler} 
+ * that transforms XML document into Java class file. This class can be feeded by any
+ * kind of SAX 2.0 event producers, e.g. XML parser, XSLT or XPath engines, or custom code.
+ * 
+ * @see org.objectweb.asm.xml.SAXClassAdapter
+ * @see org.objectweb.asm.xml.Processor
+ * 
+ * @author Eugene Kuleshov
+ */
+
+public class ASMContentHandler extends DefaultHandler implements Opcodes {
+
+  final static int CLASS = 1;
+  final static int INTERFACES = 2;
+  final static int INTERFACE = 3;
+  final static int SOURCE = 4;
+  final static int INNERCLASS = 5;
+  final static int OUTERCLASS = 6;
+  final static int ANNOTATION = 7;
+  final static int ANNOTATION_DEFAULT = 8;
+  final static int PARAMETER_ANNOTATION = 9;
+  final static int ANNOTATION_VALUE = 10;
+  final static int ANNOTATION_VALUE_ENUM = 11;
+  final static int ANNOTATION_VALUE_ANNOTATION = 12;
+  final static int ANNOTATION_VALUE_ARRAY = 13;
+  final static int FIELD = 14;
+  final static int METHOD = 15;
+  final static int EXCEPTIONS = 16;
+  final static int EXCEPTION = 17;
+  final static int CODE = 18;
+  final static int TABLELABEL = 20;
+  final static int TRYCATCH = 21;
+  final static int MAX = 22;
+  final static int LOCALVAR = 23;
+  final static int LINENUMBER = 24;
+  
+  final static int INSN = 50;
+  final static int INT_INSN = 51;
+  final static int VAR_INSN = 52;
+  final static int TYPE_INSN = 53;
+  final static int FIELD_INSN = 54;
+  final static int METHOD_INSN = 55;
+  final static int JUMP_INSN = 56;
+  final static int LABEL = 57;
+  final static int LDC_INSN = 58;
+  final static int IINC_INSN = 59;
+  final static int TABLESWITCH_INSN = 60;
+  final static int LOOKUPSWITCH_INSN = 61;
+  final static int MULTIANEWARRAY_INSN = 62;
+
+  static int[] MAP;
+  static {
+    String map =
+      "\1\54\62\256\11\372\62\214\5\53\62\56\7\2\62\255\1\262\62\163"+
+      "\1\345\74\252\11\136\70\240\4\25\70\237\10\44\62\207\5\276\62\13"+
+      "\1\77\62\254\7\363\62\7\10\334\65\300\1\204\64\27\10\71\3\0"+
+      "\5\71\62\133\7\234\62\144\1\202\70\236\11\164\62\174\7\230\62\155"+
+      "\11\23\62\212\1\231\62\60\1\343\64\30\3\162\26\0\4\336\62\124"+
+      "\3\11\62\156\6\53\62\170\1\330\62\130\7\167\62\10\3\326\62\257"+
+      "\11\102\62\117\4\1\63\20\4\374\62\15\12\34\17\0\1\70\62\127"+
+      "\10\345\62\5\5\177\62\17\10\153\62\145\4\265\62\131\7\367\62\215"+
+      "\4\376\62\134\7\255\71\0\2\162\64\70\1\240\65\273\4\112\76\305"+
+      "\12\32\62\302\7\0\62\153\11\177\70\233\0\277\62\225\11\133\62\4"+
+      "\7\37\21\0\10\106\62\132\2\127\70\235\11\256\62\222\1\106\62\1"+
+      "\1\252\62\210\11\127\62\162\2\143\62\177\10\215\15\0\7\242\6\0"+
+      "\6\333\70\234\11\331\62\14\2\267\65\275\0\253\12\0\5\335\30\0"+
+      "\0\32\62\63\1\71\62\141\11\317\62\3\1\355\62\0\4\43\62\65"+
+      "\7\315\62\175\11\75\27\0\11\31\64\66\1\353\62\172\1\243\62\171"+
+      "\12\56\62\224\10\250\73\204\5\112\10\0\4\201\64\251\11\160\62\303"+
+      "\0\306\67\266\1\1\62\221\0\276\62\146\10\134\67\270\6\253\64\71"+
+      "\3\363\62\123\10\173\62\157\5\154\62\161\11\70\62\201\0\153\62\122"+
+      "\10\165\62\125\11\304\66\262\3\55\62\166\3\366\64\67\6\27\62\216"+
+      "\0\261\62\12\1\166\66\263\7\251\62\160\3\132\70\246\7\122\62\165"+
+      "\6\174\22\0\6\33\70\232\4\55\70\242\7\373\62\154\1\260\70\250"+
+      "\3\7\70\247\3\252\20\0\0\34\70\241\10\56\62\167\5\26\62\206"+
+      "\3\131\64\31\1\170\62\217\1\76\67\267\10\124\66\265\11\337\62\277"+
+      "\0\76\72\22\5\2\11\0\3\155\66\264\7\345\1\0\10\3\62\137"+
+      "\0\217\62\220\10\350\65\301\5\317\62\276\6\336\5\0\3\177\70\307"+
+      "\7\71\64\26\5\274\62\147\7\114\62\227\2\350\13\0\3\13\63\21"+
+      "\6\34\4\0\5\203\67\271\10\322\62\176\3\261\62\150\2\254\25\0"+
+      "\11\130\62\230\5\211\62\2\11\51\14\0\10\120\62\121\7\56\62\61"+
+      "\1\322\62\143\10\155\62\6\1\147\62\151\7\176\62\226\5\124\70\244"+
+      "\3\215\75\253\11\353\62\16\11\47\62\120\0\36\70\306\5\225\62\11"+
+      "\6\125\62\205\2\46\62\200\11\212\62\173\1\123\62\260\6\262\62\135"+
+      "\0\70\62\213\6\322\7\0\12\23\70\245\1\350\62\64\3\260\2\0"+
+      "\5\133\62\62\3\241\62\164\5\316\70\231\5\167\64\25\5\342\62\136"+
+      "\6\177\62\140\12\55\62\211\3\213\70\243\10\162\62\261\2\272\62\152"+
+      "\11\333\62\142\6\377\63\274\6\160\62\223\0\356\62\57\1\375\62\203"+
+      "\3\256\24\0\11\224\62\202\1\201\16\0\1\310\62\126\7\245\64\72";
+    MAP = new int[2617];
+    for (int i = 0; i < map.length(); i += 4) {
+      int key = map.charAt(i) << 8 | map.charAt(i+1);
+      int value = map.charAt(i+2) << 8 | map.charAt(i+3);
+      MAP[key] = value;
+    }
+  }
+  
+  /* code to generate the above code
+  public static void main (String[] args) {
+    Map elements = new HashMap();
+    elements.put("class", new Integer(CLASS << 8));
+    elements.put("interfaces", new Integer(INTERFACES << 8));
+    elements.put("interface", new Integer(INTERFACE << 8));
+    elements.put("source", new Integer(SOURCE << 8));
+    elements.put("innerclass", new Integer(INNERCLASS << 8));
+    elements.put("outerclass", new Integer(OUTERCLASS << 8));
+    elements.put("annotation", new Integer(ANNOTATION << 8));
+    elements.put("annotationDefault", new Integer(ANNOTATION_DEFAULT << 8));
+    elements.put("parameterAnnotation", new Integer(PARAMETER_ANNOTATION << 8));
+    elements.put("annotationValue", new Integer(ANNOTATION_VALUE << 8));
+    elements.put("annotationValueEnum", new Integer(ANNOTATION_VALUE_ENUM << 8));
+    elements.put("annotationValueAnnotation", new Integer(ANNOTATION_VALUE_ANNOTATION << 8));
+    elements.put("annotationValueArray", new Integer(ANNOTATION_VALUE_ARRAY << 8));
+    elements.put("field", new Integer(FIELD << 8));
+    elements.put("method", new Integer(METHOD << 8));
+    elements.put("exceptions", new Integer(EXCEPTIONS << 8));
+    elements.put("exception", new Integer(EXCEPTION << 8));
+    elements.put("code", new Integer(CODE << 8));
+    elements.put("Label", new Integer(LABEL << 8));
+    elements.put("label", new Integer(TABLELABEL << 8));
+    elements.put("TryCatch", new Integer(TRYCATCH << 8));
+    elements.put("Max", new Integer(MAX << 8));
+    elements.put("LocalVar", new Integer(LOCALVAR << 8));
+    elements.put("LineNumber", new Integer(LINENUMBER << 8));
+    
+    String[] opcodes = org.objectweb.asm.util.AbstractVisitor.OPCODES;
+    for (int i = 0; i < opcodes.length; ++i) {
+      if (opcodes[i] != null) {
+        if (i == BIPUSH || i == SIPUSH || i == NEWARRAY) {
+          elements.put(opcodes[i], new Integer(INT_INSN << 8 | i));          
+        } else if ((i >= ILOAD && i <= ALOAD) || (i >= ISTORE && i <= ASTORE) || i == RET) {
+          elements.put(opcodes[i], new Integer(VAR_INSN << 8 | i));
+        } else if (i == NEW || i == ANEWARRAY || i == CHECKCAST || i == INSTANCEOF) {
+          elements.put(opcodes[i], new Integer(TYPE_INSN << 8 | i));
+        } else if (i == GETSTATIC || i == PUTSTATIC || i == GETFIELD || i == PUTFIELD) {
+          elements.put(opcodes[i], new Integer(FIELD_INSN << 8 | i));
+        } else if (i == INVOKEVIRTUAL || i == INVOKESPECIAL || i == INVOKESTATIC || i == INVOKEINTERFACE) {
+          elements.put(opcodes[i], new Integer(METHOD_INSN << 8 | i));
+        } else if ((i >= IFEQ && i <= JSR) || i == IFNULL || i == IFNONNULL) {
+          elements.put(opcodes[i], new Integer(JUMP_INSN << 8 | i));
+        } else if (i == LDC) {
+          elements.put(opcodes[i], new Integer(LDC_INSN << 8 | i));
+        } else if (i == IINC) {
+          elements.put(opcodes[i], new Integer(IINC_INSN << 8 | i));
+        } else if (i == TABLESWITCH) {
+          elements.put(opcodes[i], new Integer(TABLESWITCH_INSN << 8 | i));
+        } else if (i == LOOKUPSWITCH) {
+          elements.put(opcodes[i], new Integer(LOOKUPSWITCH_INSN << 8 | i));
+        } else if (i == MULTIANEWARRAY) {
+          elements.put(opcodes[i], new Integer(MULTIANEWARRAY_INSN << 8 | i));
+        } else {
+          elements.put(opcodes[i], new Integer(INSN << 8 | i));
+        }
+      }
+    }
+    
+    for (int p = 1; p < 8000; ++p) {
+      MAP = new int[p];
+      java.util.Set s = new java.util.HashSet();
+      int min = Integer.MAX_VALUE;
+      int max = Integer.MIN_VALUE;
+      java.util.Iterator it = elements.keySet().iterator();
+      while (it.hasNext()) {
+        int j = hashcode(it.next());
+        min = Math.min(min, j);
+        max = Math.max(max, j);
+        s.add(new Integer(j));
+      }
+      if (s.size() == elements.size()) {
+        int n = 0;
+        System.err.println("static int[] MAP;");        
+        System.err.println("static {");
+        System.err.println("  String map =");
+        System.err.print("    \"");
+        it = elements.entrySet().iterator();
+        while (it.hasNext()) {
+          Map.Entry e = (Map.Entry)it.next();
+          short k = (short)hashcode(e.getKey());
+          short v = (short)((Integer)e.getValue()).intValue();
+          System.err.print("\\" + Integer.toOctalString((k >>> 8) & 0xFF));
+          System.err.print("\\" + Integer.toOctalString(k & 0xFF));
+          System.err.print("\\" + Integer.toOctalString((v >>> 8) & 0xFF));
+          System.err.print("\\" + Integer.toOctalString(v & 0xFF));
+          ++n;
+          if (n == 5) {
+            System.err.print("\"+\n    \"");
+            n = 0;
+          }
+        }
+        System.err.println("\";");
+        System.err.println("  MAP = new int[" + p + "];");
+        System.err.println("  for (int i = 0; i < map.length(); i += 4) {");
+        System.err.println("    int key = map.charAt(i) << 8 | map.charAt(i+1);");
+        System.err.println("    int value = map.charAt(i+2) << 8 | map.charAt(i+3);");
+        System.err.println("    MAP[key] = value;");
+        System.err.println("  }");
+        System.err.println("}");        
+        break;
+      }
+    }
+  }
+  */
+
+  /**
+   * Stack of the intermediate processing contexts.
+   */
+  private List stack = new ArrayList();
+
+  /**
+   * <tt>true</tt> if the maximum stack size and number of local variables must
+   * be automatically computed.
+   */
+  protected boolean computeMax;
+
+  /**
+   * Output stream to write result bytecode.
+   */
+  protected OutputStream os;
+
+  /**
+   * Current instance of the {@link ClassWriter ClassWriter} used to write class bytecode.
+   */
+  protected ClassWriter cw;
+
+  /**
+   * Map of the active {@link Label Label} instances for current method.
+   */
+  protected Map labels;
+
+  /**
+   * Constructs a new {@link ASMContentHandler ASMContentHandler} object.
+   * 
+   * @param os output stream to write generated class. 
+   * @param computeMax <tt>true</tt> if the maximum stack size and the maximum
+   *      number of local variables must be automatically computed. 
+   *      This value is passed to {@link ClassWriter ClassWriter}
+   *      instance.
+   */
+  public ASMContentHandler (OutputStream os, boolean computeMax) {
+    this.os = os;
+    this.computeMax = computeMax;
+  }
+
+  /**
+   * Process notification of the start of an XML element being reached.
+   * 
+   * @param ns - The Namespace URI, or the empty string if the element has no
+   *                Namespace URI or if Namespace processing is not being performed.
+   * @param localName - The local name (without prefix), or the empty string if Namespace
+   *                processing is not being performed.
+   * @param qName - The qualified name (with prefix), or the empty string if
+   *                qualified names are not available.
+   * @param list - The attributes attached to the element. If there are no
+   *                attributes, it shall be an empty Attributes object.
+   * @exception SAXException if a parsing error is to be reported
+   */
+  public final void startElement (String ns, String localName, String qName,
+      Attributes list) throws SAXException {
+    // the actual element name is either in localName or qName, depending
+    // on whether the parser is namespace aware
+    String name = localName;
+    if (name == null || name.length() < 1) {
+      name = qName;
+    }
+
+    start(MAP[hashcode(name)], list);
+  }
+
+  /**
+   * Process notification of the end of an XML element being reached.
+   *
+   * @param ns - The Namespace URI, or the empty string if the
+   *   element has no Namespace URI or if Namespace processing is not
+   *   being performed.
+   * @param localName - The local name (without prefix), or the empty
+   *   string if Namespace processing is not being performed.
+   * @param qName - The qualified XML 1.0 name (with prefix), or the
+   *   empty string if qualified names are not available.
+   * 
+   * @exception SAXException if a parsing error is to be reported
+   */
+  public final void endElement (String ns, String localName, String qName)
+      throws SAXException {
+    // the actual element name is either in localName or qName, depending
+    // on whether the parser is namespace aware
+    String name = localName;
+    if (name == null || name.length() < 1) {
+      name = qName;
+    }
+    
+    end(MAP[hashcode(name)]);
+  }
+
+  /**
+   * Process notification of the end of a document and write generated bytecode 
+   * into output stream.
+   *
+   * @exception SAXException if parsing or writing error is to be reported.
+   */
+  public final void endDocument () throws SAXException {
+    try {
+      os.write(cw.toByteArray());
+    } catch (IOException ex) {
+      throw new SAXException(ex.toString(), ex);
+    }
+  }
+
+  private void start (int element, Attributes attrs) {
+    Map vals;
+    int access;
+    String owner, name, desc, signature, value;
+    boolean visible;
+    Label start, end;
+    
+    int opcode = element & 0xFF;
+    
+    switch (element >> 8) {
+      case CLASS:
+        int major = Integer.parseInt(attrs.getValue("major"));
+        int minor = Integer.parseInt(attrs.getValue("minor"));
+        cw = new ClassWriter(computeMax);
+        vals = new HashMap();
+        vals.put("version", new Integer(minor << 16 | major));
+        vals.put("access", attrs.getValue("access"));
+        vals.put("name", attrs.getValue("name"));
+        vals.put("parent", attrs.getValue("parent"));
+        vals.put("source", attrs.getValue("source"));
+        vals.put("signature", attrs.getValue("signature"));
+        vals.put("interfaces", new ArrayList());
+        push(vals);
+        break;
+        
+      case INTERFACE:
+        ((List)((Map)peek()).get("interfaces")).add(attrs.getValue("name"));
+        break;
+        
+      case SOURCE:
+        String file = attrs.getValue("file");
+        String debug = attrs.getValue("debug");
+        cw.visitSource(file, debug);
+        break;
+
+      case INNERCLASS:
+        access = getAccess(attrs.getValue("access"));
+        name = attrs.getValue("name");
+        String outerName = attrs.getValue("outerName");
+        String innerName = attrs.getValue("innerName");
+        cw.visitInnerClass(name, outerName, innerName, access);
+        break;
+
+      case OUTERCLASS:
+        owner = attrs.getValue("owner");
+        name = attrs.getValue("name");
+        desc = attrs.getValue("desc");
+        cw.visitOuterClass(owner, name, desc);
+        break;
+        
+      case ANNOTATION:
+        desc = attrs.getValue("desc");
+        visible = Boolean.valueOf(attrs.getValue("visible")).booleanValue();
+        Object v = peek();
+        if (v instanceof ClassVisitor) {
+          push(((ClassVisitor)v).visitAnnotation(desc, visible));
+        } else if (v instanceof FieldVisitor) {
+          push(((FieldVisitor)v).visitAnnotation(desc, visible));
+        } else if (v instanceof MethodVisitor) {
+          push(((MethodVisitor)v).visitAnnotation(desc, visible));
+        }
+        break;
+        
+      case ANNOTATION_DEFAULT:
+        push(((MethodVisitor)peek()).visitAnnotationDefault());
+        break;
+        
+      case PARAMETER_ANNOTATION:
+        int parameter = Integer.parseInt(attrs.getValue("parameter"));
+        desc = attrs.getValue("desc");
+        visible = Boolean.valueOf(attrs.getValue("visible")).booleanValue();
+        push(((MethodVisitor)peek()).visitParameterAnnotation(parameter, desc, visible));
+        break;
+
+      case ANNOTATION_VALUE:
+        name = attrs.getValue("name");
+        desc = attrs.getValue("desc");
+        value = attrs.getValue("value");
+        ((AnnotationVisitor)peek()).visit(name, getValue(desc, value));
+        break;
+        
+      case ANNOTATION_VALUE_ENUM:
+        name = attrs.getValue("name");
+        desc = attrs.getValue("desc");
+        value = attrs.getValue("value");
+        ((AnnotationVisitor)peek()).visitEnum(name, desc, value);
+        break;
+        
+      case ANNOTATION_VALUE_ANNOTATION:
+        name = attrs.getValue("name");
+        desc = attrs.getValue("desc");
+        push(((AnnotationVisitor)peek()).visitAnnotation(name, desc));
+        break;
+        
+      case ANNOTATION_VALUE_ARRAY:
+        name = attrs.getValue("name");
+        push(((AnnotationVisitor)peek()).visitArray(name));
+        break;
+        
+      case FIELD:
+        access = getAccess(attrs.getValue("access"));
+        name = attrs.getValue("name");
+        signature = attrs.getValue("signature");
+        desc = attrs.getValue("desc");
+        Object val = getValue(desc, attrs.getValue("value"));
+        push(cw.visitField(access, name, desc, signature, val));
+        break;
+        
+      case METHOD:
+        labels = new HashMap();
+        vals = new HashMap();
+        vals.put("access", attrs.getValue("access"));
+        vals.put("name", attrs.getValue("name"));
+        vals.put("desc", attrs.getValue("desc"));
+        vals.put("signature", attrs.getValue("signature"));
+        vals.put("exceptions", new ArrayList());
+        push(vals);
+        break;
+        
+      case EXCEPTION:
+        ((List)((Map)peek()).get("exceptions")).add(attrs.getValue("name"));
+        break;
+
+      case TRYCATCH:
+        start = getLabel(attrs.getValue("start"));
+        end = getLabel(attrs.getValue("end"));
+        Label handler = getLabel(attrs.getValue("handler"));
+        String type = attrs.getValue("type");
+        getMethodVisitor().visitTryCatchBlock(start, end, handler, type);
+        break;
+        
+      case MAX:
+        int maxStack = Integer.parseInt(attrs.getValue("maxStack"));
+        int maxLocals = Integer.parseInt(attrs.getValue("maxLocals"));
+        getMethodVisitor().visitMaxs(maxStack, maxLocals);
+        break;
+
+      case LOCALVAR:
+        name = attrs.getValue("name");
+        desc = attrs.getValue("desc");
+        signature = attrs.getValue("signature");
+        start = getLabel(attrs.getValue("start"));
+        end = getLabel(attrs.getValue("end"));
+        int var = Integer.parseInt(attrs.getValue("var"));
+        getMethodVisitor().visitLocalVariable(name, desc, signature, start, end, var);
+        break;
+
+      case LINENUMBER:
+        int line = Integer.parseInt(attrs.getValue("line"));
+        start = getLabel(attrs.getValue("start"));
+        getMethodVisitor().visitLineNumber(line, start);
+        break;
+        
+      case INSN:
+        getMethodVisitor().visitInsn(opcode);
+        break;
+
+      case INT_INSN:
+        getMethodVisitor().visitIntInsn(opcode, Integer.parseInt(attrs.getValue("value")));
+        break;
+
+      case VAR_INSN:
+        getMethodVisitor().visitVarInsn(opcode, Integer.parseInt(attrs.getValue("var")));
+        break;
+        
+      case TYPE_INSN:
+        getMethodVisitor().visitTypeInsn(opcode, attrs.getValue("desc"));
+        break;
+        
+      case FIELD_INSN:
+        getMethodVisitor().visitFieldInsn(opcode, attrs.getValue("owner"), attrs.getValue("name"), attrs.getValue("desc"));
+        break;
+        
+      case METHOD_INSN:
+        getMethodVisitor().visitMethodInsn(opcode, attrs.getValue("owner"), attrs.getValue("name"), attrs.getValue("desc"));
+        break;
+        
+      case JUMP_INSN:
+        getMethodVisitor().visitJumpInsn(opcode, getLabel(attrs.getValue("label")));
+        break;
+        
+      case LABEL:
+        getMethodVisitor().visitLabel(getLabel(attrs.getValue("name")));
+        break;
+
+      case TABLELABEL:
+        vals = (Map)peek();
+        ((List)vals.get("labels")).add(getLabel(attrs.getValue("name")));
+        if (attrs.getValue("key") != null) {
+          ((List)vals.get("keys")).add(attrs.getValue("key"));
+        }
+        break;
+        
+      case LDC_INSN:
+        getMethodVisitor().visitLdcInsn(getValue(attrs.getValue("desc"), attrs.getValue("cst")));
+        break;
+        
+      case IINC_INSN:
+        getMethodVisitor().visitIincInsn(Integer.parseInt(attrs.getValue("var")), Integer.parseInt(attrs.getValue("inc")));
+        break;
+
+      case TABLESWITCH_INSN:
+        vals = new HashMap();
+        vals.put("min", attrs.getValue("min"));
+        vals.put("max", attrs.getValue("max"));
+        vals.put("dflt", attrs.getValue("dflt"));
+        vals.put("labels", new ArrayList());
+        push(vals);
+        break;
+        
+      case LOOKUPSWITCH_INSN:
+        vals = new HashMap();
+        vals.put("dflt", attrs.getValue("dflt"));
+        vals.put("labels", new ArrayList());
+        vals.put("keys", new ArrayList());
+        push(vals);
+        break;
+        
+      case MULTIANEWARRAY_INSN:
+        getMethodVisitor().visitMultiANewArrayInsn(attrs.getValue("desc"), Integer.parseInt(attrs.getValue("dims")));
+        break;
+        
+    }
+  }
+
+  private void end (int element) {
+    Map vals;
+    int access;
+    String name, desc, signature;
+    Label dflt;
+    Label[] lbls;
+    
+    switch (element >> 8) {
+      case INTERFACES:
+        vals = (Map)pop();
+        int version = ((Integer)vals.get("version")).intValue();
+        access = getAccess((String)vals.get("access"));
+        name = (String)vals.get("name");
+        signature = (String)vals.get("signature");
+        String parent = (String)vals.get("parent");
+        String[] interfaces = (String[])((List)vals.get("interfaces")).toArray(new String[0]);
+        cw.visit(version, access, name, signature, parent, interfaces);
+        push(cw);
+        break;
+        
+      case ANNOTATION:
+      case ANNOTATION_DEFAULT:
+      case PARAMETER_ANNOTATION:
+      case ANNOTATION_VALUE_ANNOTATION:
+      case ANNOTATION_VALUE_ARRAY:
+        ((AnnotationVisitor)pop()).visitEnd();
+        break;
+
+      case FIELD:
+        ((FieldVisitor)pop()).visitEnd();
+        break;
+        
+      case METHOD:
+        ((MethodVisitor)pop()).visitEnd();
+        labels = null;
+        break;
+        
+      case EXCEPTIONS:
+        vals = (Map)pop();
+        access = getAccess((String)vals.get("access"));
+        name = (String)vals.get("name");
+        desc = (String)vals.get("desc");
+        signature = (String)vals.get("signature");
+        String[] exceptions = (String[])((List)vals.get("exceptions")).toArray(new String[0]);
+        push(cw.visitMethod(access, name, desc, signature, exceptions));
+        break;
+
+      case TABLESWITCH_INSN:
+        vals = (Map)pop();
+        int min = Integer.parseInt((String)vals.get("min"));
+        int max = Integer.parseInt((String)vals.get("max"));
+        dflt = getLabel(vals.get("dflt"));
+        lbls = (Label[])((List)vals.get("labels")).toArray(new Label[0]);
+        getMethodVisitor().visitTableSwitchInsn(min, max, dflt, lbls);
+        break;
+        
+      case LOOKUPSWITCH_INSN:
+        vals = (Map)pop();
+        dflt = getLabel(vals.get("dflt"));
+        List keyList = (List)vals.get("keys");
+        lbls = (Label[])((List)vals.get("labels")).toArray(new Label[0]);
+        int[] keys = new int[keyList.size()];
+        for (int i = 0; i < keys.length; i++) {
+          keys[i] = Integer.parseInt((String)keyList.get(i));
+        }
+        getMethodVisitor().visitLookupSwitchInsn(dflt, keys, lbls);
+        break;
+    }
+  }
+
+  private static int hashcode (final Object o) {
+    int h = o.hashCode();
+    return Math.abs(h*h) % MAP.length;
+  }
+
+  private static int getAccess (final String s) {
+    int access = 0;
+    if (s.indexOf("public") != -1)
+      access |= Opcodes.ACC_PUBLIC;
+    if (s.indexOf("private") != -1)
+      access |= Opcodes.ACC_PRIVATE;
+    if (s.indexOf("protected") != -1)
+      access |= Opcodes.ACC_PROTECTED;
+    if (s.indexOf("static") != -1)
+      access |= Opcodes.ACC_STATIC;
+    if (s.indexOf("final") != -1)
+      access |= Opcodes.ACC_FINAL;
+    if (s.indexOf("super") != -1)
+      access |= Opcodes.ACC_SUPER;
+    if (s.indexOf("synchronized") != -1)
+      access |= Opcodes.ACC_SYNCHRONIZED;
+    if (s.indexOf("volatile") != -1)
+      access |= Opcodes.ACC_VOLATILE;
+    if (s.indexOf("bridge") != -1)
+      access |= Opcodes.ACC_BRIDGE;
+    if (s.indexOf("varargs") != -1)
+      access |= Opcodes.ACC_VARARGS;
+    if (s.indexOf("transient") != -1)
+      access |= Opcodes.ACC_TRANSIENT;
+    if (s.indexOf("native") != -1)
+      access |= Opcodes.ACC_NATIVE;
+    if (s.indexOf("interface") != -1)
+      access |= Opcodes.ACC_INTERFACE;
+    if (s.indexOf("abstract") != -1)
+      access |= Opcodes.ACC_ABSTRACT;
+    if (s.indexOf("strict") != -1)
+      access |= Opcodes.ACC_STRICT;
+    if (s.indexOf("synthetic") != -1)
+      access |= Opcodes.ACC_SYNTHETIC;
+    if (s.indexOf("annotation") != -1)
+      access |= Opcodes.ACC_ANNOTATION;
+    if (s.indexOf("enum") != -1)
+      access |= Opcodes.ACC_ENUM;
+    if (s.indexOf("deprecated") != -1)
+      access |= Opcodes.ACC_DEPRECATED;
+    return access;
+  }
+
+  private final static String decode (final String val) {
+    StringBuffer sb = new StringBuffer(val.length());
+    try {
+      int n = 0;
+      while (n < val.length()) {
+        char c = val.charAt(n);
+        if (c == '\\') {
+          n++;
+          c = val.charAt(n);
+          if (c == '\\') {
+            sb.append('\\');
+          } else {
+            n++; // skip 'u'
+            sb.append((char)Integer.parseInt(val.substring(n, n + 4), 16));
+            n += 3;
+          }
+        } else {
+          sb.append(c);
+        }
+        n++;
+      }
+    } catch (RuntimeException ex) {
+      System.err.println(val + "\n" + ex.toString());
+      ex.printStackTrace();
+      throw ex;
+    }
+    return sb.toString();
+  }
+
+  private final static Object getValue (String desc, String val) {
+    Object value = null;
+    if (val != null) {
+      if (desc.equals("Ljava/lang/String;")) {
+        value = decode(val);
+      } else if ("Ljava/lang/Integer;".equals(desc) || "I".equals(desc)
+          || "S".equals(desc) || "B".equals(desc) || "C".equals(desc)
+          || desc.equals("Z")) {
+        value = new Integer(val);
+      } else if ("Ljava/lang/Short;".equals(desc)) {
+        value = new Short(val);
+      } else if ("Ljava/lang/Byte;".equals(desc)) {
+        value = new Byte(val);
+      } else if ("Ljava/lang/Character;".equals(desc)) {
+        value = new Character(decode(val).charAt(0));
+      } else if ("Ljava/lang/Boolean;".equals(desc)) {
+        value = Boolean.valueOf(val);
+        /*
+         * } else if( "Ljava/lang/Integer;".equals( desc) || desc.equals( "I")) {
+         * value = new Integer( val); } else if( "Ljava/lang/Character;".equals(
+         * desc) || desc.equals( "C")) { value = new Character( decode(
+         * val).charAt( 0)); } else if( "Ljava/lang/Short;".equals( desc) ||
+         * desc.equals( "S")) { value = Short.valueOf( val); } else if(
+         * "Ljava/lang/Byte;".equals( desc) || desc.equals( "B")) { value =
+         * Byte.valueOf( val);
+         */
+      } else if ("Ljava/lang/Long;".equals(desc) || desc.equals("J")) {
+        value = new Long(val);
+      } else if ("Ljava/lang/Float;".equals(desc) || desc.equals("F")) {
+        value = new Float(val);
+      } else if ("Ljava/lang/Double;".equals(desc) || desc.equals("D")) {
+        value = new Double(val);
+      } else if (Type.getDescriptor(Type.class).equals(desc)) {
+        value = Type.getType(val);
+        /*
+         * } else if( "[I".equals( desc)) { value = new int[ 0]; // TODO } else
+         * if( "[C".equals( desc)) { value = new char[ 0]; // TODO } else if(
+         * "[Z".equals( desc)) { value = new boolean[ 0]; // TODO } else if(
+         * "[S".equals( desc)) { value = new short[ 0]; // TODO } else if(
+         * "[B".equals( desc)) { value = new byte[ 0]; // TODO } else if(
+         * "[J".equals( desc)) { value = new long[ 0]; // TODO } else if(
+         * "[F".equals( desc)) { value = new float[ 0]; // TODO } else if(
+         * "[D".equals( desc)) { value = new double[ 0]; // TODO
+         */
+      } else {
+        throw new RuntimeException("Invalid value:" + val + " desc:" + desc);
+      }
+    }
+    return value;
+  }
+  
+  /**
+   * Return the top object on the stack without removing it. If there are no
+   * objects on the stack, return <code>null</code>.
+   */
+  private Object peek () {
+    return stack.size() == 0 ? null : stack.get(stack.size() - 1);
+  }
+
+  private MethodVisitor getMethodVisitor () {
+    return (MethodVisitor)peek();
+  }
+
+  /**
+   * Pop the top object off of the stack, and return it.  If there are
+   * no objects on the stack, return <code>null</code>.
+   */
+  private Object pop () {
+    return stack.size() == 0 ? null : stack.remove(stack.size() - 1);
+  }
+
+  /**
+   * Push a new object onto the top of the object stack.
+   *
+   * @param object The new object
+   */
+  private void push (Object object) {
+    stack.add(object);
+  }
+
+  private Label getLabel (Object label) {
+    Label lbl = (Label)labels.get(label);
+    if (lbl == null) {
+      lbl = new Label();
+      labels.put(label, lbl);
+    }
+    return lbl;
+  }
+  
+  /**
+   * Returns the bytecode of the class that was build with underneath class writer.
+   *
+   * @return the bytecode of the class that was build with underneath class writer or
+   *        null if there are no classwriter created.
+   */
+  public byte[] toByteArray () {
+    return cw == null ? null : cw.toByteArray();
+  }
+}
