@@ -44,6 +44,11 @@ import org.drools.spi.TypeResolver;
 import org.drools.xml.XmlPackageReader;
 import org.xml.sax.SAXException;
 
+/**
+ * This is the main compiler class for parsing and compiling rules and assembling or merging them into a
+ * binary Package instance.
+ * This can be done by merging into existing binary packages, or totally from source.
+ */
 public class PackageBuilder {
     private JavaCompiler                compiler;
 
@@ -57,16 +62,27 @@ public class PackageBuilder {
 
     private PackageBuilderConfiguration configuration;
 
+    /**
+     * Use this when package is starting from scratch. 
+     */
     public PackageBuilder() {
         this( null,
               null );
     }
 
+    /**
+     * This will allow you to merge rules into this pre existing package.
+     */
     public PackageBuilder(Package pkg) {
         this( pkg,
               null );
     }
 
+    /**
+     * This allows you to pass in a pre existing package, and a configuration (for instance to set the classloader).
+     * @param pkg A pre existing package (can be null if none exists)
+     * @param configuration Optional configuration for this builder.
+     */
     public PackageBuilder(Package pkg,
                           PackageBuilderConfiguration configuration) {
         if ( configuration == null ) {
