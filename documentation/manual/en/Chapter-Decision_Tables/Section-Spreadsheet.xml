@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Decision tables in spreadsheets</title>
+
+  <para>Drools supports managing rules in a Spreadsheet format. Formats
+  supported are Excel, and CSV. Thus you can use a variety of spreadsheet
+  programs (such as Microsoft Excel, OpenOffice.org Calc amongst others). It
+  is expected that web based decision table editors will be included in a near
+  future release.</para>
+
+  <para>Decision tables are an old concept (in software terms) but have proven
+  useful over the years. Very briefly speaking, in Drools decision tables are
+  a way to generate rules driven from the data entered into a spreadsheet. All
+  the usual features of a spreadsheet for data capture and manipulation can be
+  taken advantage of.</para>
+
+  <section>
+    <title>When to use Decision tables</title>
+
+    <para>You may want to consider decision tables if you have rules that can
+    be expressed as rule templates + data. In each row of a decision table,
+    data is collected that is combined with the tempaltes to generate a
+    rule.</para>
+
+    <para>Many businesses already use spreadsheets for managing data,
+    calculations etc. If you are happy to continue this way, you can also
+    manage your business rules this way. This also assumes you are happy to
+    manage packages of rules in .xls or .csv files. Decision tables are not
+    recommented for rules that do not follow a set of templates, or where
+    there are a small number of rules (or if you don't want to use software
+    like excel or open office). They are ideal in the sense that you can
+    control what "parameters" of rules can be edited, without exposing the
+    rules directly.</para>
+  </section>
+
+  <section>
+    <title>Overview</title>
+
+    <para>Here are some examples of real world decision tables (slightly
+    edited to protect the innocent).</para>
+
+    <screenshot>
+      <screeninfo>Using excel to edit a decision table</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="excel.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Using OpenOffice</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="open_office.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>In the above examples, the technical aspects of the decision table
+    have been collapsed away (standard spreadsheet feature).</para>
+
+    <para>The rules start from row 17 (each row results in a rule). The
+    conditions are in column C, D, E etc.. (off screen are the actions). You
+    can see that the value in the cells are quite simple, and have meaning
+    when you look at the headers in Row 16. Column B is just a description. It
+    is conventional to use colour to make it obvious what the different areas
+    of the table mean.</para>
+
+    <para>Note that although the decision tables look like the process top
+    down, this is not necessarily the case. It is ideal if you can author
+    rules in such a way as order does not matter (simply as it makes
+    maintenance easier, you are not trying to shift rows around all the time).
+    As each row is a rule, the same principles apply. As the rule engine
+    processes the facts, any rules that match may fire (some people are
+    confused by this - it is possible to clear the agenda when a rule fires
+    and simulate a very simple decision table where the first match exists).
+    Also note that you can have multiple tables on the one spreadsheet (so
+    rules can be grouped where they share common templates - yet at the end of
+    the day they are all combined into a one rule package). Decision tables
+    are essentually a tool to generate DRL rules automatically.</para>
+
+    <screenshot>
+      <screeninfo>A real world example using multiple tables for grouping like
+      rules</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="multi_table.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
+
+  <section>
+    <title>How decision tables work</title>
+
+    <para>The spreadsheet looks for the "RuleTable" keyword to indicate the
+    start of a rule table (both the starting row and column). Other keywords
+    are also used to define other package level attributes (covered later). It
+    is important to keep the keywords in the one column. By convention the
+    second column ("B") is used for this, but it can be any column (convention
+    is to leave a margin on the left for notes). In the following diagram, C
+    is actually the column where it starts. Everything to the left of this is
+    ignored.</para>
+
+    <screenshot>
+      <screeninfo>Rows and columns</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="row_col.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>If we expand the hidden sections, it starts to make more sense how
+    it works. Note the keywords in column C.</para>
+
+    <screenshot>
+      <screeninfo>Expanded for rule templates</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="expanded.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>Now you can see the hidden magic that makes it work. The RuleSet
+    keyword indicates the name to be used in the "rule package" that all the
+    rules will come under (this is optional, it will have a default) in the
+    cell immediately to the right. The other keywords visible in Column C are:
+    Import, Sequential which will be covered later - just note that in general
+    the keywords make up name/value pairs. The RuleTable keyword is important
+    as it indicates that a chunk of rules will follow, based on some rule
+    templates. After the RuleTable keyword there is a name - this name is used
+    to prefix the generated rules names (the row numbers are appended to
+    create unique rule names). The column of RuleTable indicates the column in
+    which the rules start.</para>
+
+    <para>Referring to row 14 (the row immediately after RuleTable): the
+    keywords CONDITION and ACTION indicate that the data in the columns below
+    are for either the LHS or the RHS parts of a rule. There are other
+    attributes on the rule which can also be optionally set this way. Row 15
+    contains the rule templates themselves: note that they use the "$para"
+    place holder to indicate where data from the cells below will be populated
+    (you can use $param, or $1, $2 etc to indicate parameters from a comma
+    seperated list in a cell below). Row 16 is ignored - it is textual
+    descriptions of the rule template.</para>
+
+    <para>Row 17 to 18 shows data, which will be combined (interpolated) with
+    the templates in row 15, to generate rules. If a cell contains no data,
+    then its template is ignored (eg it means that condition, or action, does
+    not apply for that rule-row). Rule rows are read until there is a BLANK
+    row. You can have mutliple RuleTables in a sheet. Row 20 contains another
+    keyword, and a value - the row positions of keywords like this do not
+    matter (most people put them at the top) but their column should be the
+    same one where the RuleTable or RuleSet keywords should appear (in this
+    case column C has been chosen to be significant, but you can use column A
+    if you like).</para>
+  </section>
+
+  <section>
+    <title>Keywords and syntax</title>
+
+    <section>
+      <title>Syntax of templates</title>
+
+      <para>The syntax of what goes in the templates is dependent on if it is
+      a CONDITION column or ACTION column. In either case, it is identical to
+      "vanilla" DRL for the LHS or RHS respectively. This means in the LHS,
+      the constraint language must be used, and in the RHS it is a snippet of
+      code to be executed.</para>
+
+      <para>The "$para" place holder is used in templates to indicate where
+      data form the cell will be interpolated. You can also use "$1" to the
+      same effect. If the cell contains a comma seperated list of values, $1
+      and $2 etc. may be used to indicate which positional parameter from the
+      list of values in the cell will be used. <programlisting>For example: If the templates is [Foo(bar == $param)] and the cell is [ 42 ] then the result will be [Foo(bar == 42)]
+If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then the result will be [Foo(bar &gt; 42, baz ==42)]
+</programlisting></para>
+    </section>
+
+    <section>
+      <title>Keywords</title>
+
+      <para>The following table describes the keywords that are pertinent to
+      the rule table structure.</para>
+
+      <table>
+        <title>Keywords</title>
+
+        <tgroup cols="3">
+          <thead>
+            <row>
+              <entry>Keyword</entry>
+
+              <entry>Description</entry>
+
+              <entry>Is required?</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>RuleSet</entry>
+
+              <entry>The cell to the right of this contains the ruleset
+              name</entry>
+
+              <entry>One only (if left out, it will default)</entry>
+            </row>
+
+            <row>
+              <entry>Sequential</entry>
+
+              <entry>The cell to the right of this can be true or false. If
+              true, then salience is used to ensure that rules fire from the
+              top down</entry>
+
+              <entry>optional</entry>
+            </row>
+
+            <row>
+              <entry>Import</entry>
+
+              <entry>The cell to the right contains a comma seperated list of
+              java classes to import</entry>
+
+              <entry>optional</entry>
+            </row>
+
+            <row>
+              <entry>RuleTable</entry>
+
+              <entry>A cell starting with RuleTable indicates the start of a
+              definition of a rule table. The actual rule table starts the
+              next row down. The rule table is read left-to-right, and
+              top-down, until there is one BLANK ROW.</entry>
+
+              <entry>at least one. if there are more, then they are all added
+              to the one ruleset</entry>
+            </row>
+
+            <row>
+              <entry>CONDITION</entry>
+
+              <entry>Indicates that this column will be for rule
+              conditions</entry>
+
+              <entry>At least one per rule table</entry>
+            </row>
+
+            <row>
+              <entry>ACTION</entry>
+
+              <entry>Indicates that this column will be for rule
+              consequences</entry>
+
+              <entry>At least one per rule table</entry>
+            </row>
+
+            <row>
+              <entry>PRIORITY</entry>
+
+              <entry>Indicates that this columns values will set the
+              'salience' values for the rule row. Over-rides the 'Sequential'
+              flag.</entry>
+
+              <entry>optional</entry>
+            </row>
+
+            <row>
+              <entry>DURATION</entry>
+
+              <entry>Indicates that this columns values will set the duration
+              values for the rule row. </entry>
+
+              <entry>optional</entry>
+            </row>
+
+            <row>
+              <entry>NAME</entry>
+
+              <entry>Indicates that this columns values will set the name for
+              the rule generated from that row</entry>
+
+              <entry>optional</entry>
+            </row>
+
+            <row>
+              <entry>Functions</entry>
+
+              <entry>The cell immediately to the right can contain functions
+              which can be used in the rule snippets. Drools supports
+              functions defined in the DRL, allowing logic to be embedded in
+              the rule, and changed without hard coding, use with care. Same
+              syntax as regular DRL.</entry>
+
+              <entry>optional</entry>
+            </row>
+
+            <row>
+              <entry>Variables</entry>
+
+              <entry>The cell immediately to the right can contain global
+              declartions which drools supports. This is a type, followed by a
+              variable name. (if multiple variables are needed, comma seperate
+              them).</entry>
+
+              <entry>optional</entry>
+            </row>
+
+            <row>
+              <entry>UNLOOP</entry>
+
+              <entry>Indicates that if there cell values in this column, the
+              no-loop attribute should be set</entry>
+
+              <entry>optional</entry>
+            </row>
+
+            <row>
+              <entry>Worksheet</entry>
+
+              <entry>By default, the first worksheet is only looked at for
+              decision tables.</entry>
+
+              <entry>N/A</entry>
+            </row>
+
+          </tbody>
+        </tgroup>
+      </table>
+
+      <screenshot>
+        <screeninfo>Example usage of keywords for imports, functions
+        etc.</screeninfo>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="keywords.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+  </section>
+</section>
