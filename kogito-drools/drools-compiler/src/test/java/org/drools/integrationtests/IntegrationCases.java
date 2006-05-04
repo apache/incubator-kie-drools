@@ -1737,6 +1737,42 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals("Rules have not fired (looped) expected number of times", 10, l.size());
     }
     
+    public void testEmptyRule() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyRule.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
+        
+        workingMemory.fireAllRules();
+        
+        assertTrue( list.contains("fired1") );
+        assertTrue( list.contains("fired2") );
+    }
+    
+    public void testjustEval() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NoColumns.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );        
+        
+        workingMemory.fireAllRules();
+        
+        assertTrue( list.contains("fired1") );
+        assertTrue( list.contains("fired3") );
+    }    
+    
     private Object serializeIn(byte[] bytes) throws IOException,
                                             ClassNotFoundException {
         ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );

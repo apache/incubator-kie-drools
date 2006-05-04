@@ -1,0 +1,16 @@
+package org.drools.test
+
+global java.util.List list
+
+rule "empty lhs1"
+    when
+    then
+    	list.add("fired1");
+end    
+
+rule "empty lhs2"
+    when
+    then
+    	list.add("fired2");
+end    
+
