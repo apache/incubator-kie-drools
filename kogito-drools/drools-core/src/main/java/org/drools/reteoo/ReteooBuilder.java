@@ -35,6 +35,7 @@ import org.drools.common.BetaNodeBinder;
 import org.drools.common.InstanceEqualsConstraint;
 import org.drools.rule.And;
 import org.drools.rule.Column;
+import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Exists;
@@ -66,31 +67,31 @@ class ReteooBuilder
     // ------------------------------------------------------------
 
     /** The RuleBase */
-    private transient RuleBaseImpl       ruleBase;
+    private transient RuleBaseImpl        ruleBase;
 
     /** Rete network to build against. */
-    private transient Rete               rete;    
+    private transient Rete                rete;
 
-    private transient WorkingMemoryImpl[]      workingMemories;
+    private transient WorkingMemoryImpl[] workingMemories;
 
-    private final ObjectTypeResolver resolver;
+    private final ObjectTypeResolver      resolver;
 
     /** Nodes that have been attached. */
-    private final Map                attachedNodes;
+    private final Map                     attachedNodes;
 
-    private TupleSource              tupleSource;
+    private TupleSource                   tupleSource;
 
-    private ObjectSource             objectSource;
+    private ObjectSource                  objectSource;
 
-    private Map                      declarations;
+    private Map                           declarations;
 
-    private int                      id;
+    private int                           id;
 
-    private Map                      rules;
+    private Map                           rules;
 
-    private Map                      objectType;
+    private Map                           objectType;
 
-    private int                      currentOffsetAdjustment;
+    private int                           currentOffsetAdjustment;
 
     // ------------------------------------------------------------
     // Constructors
@@ -111,7 +112,7 @@ class ReteooBuilder
         //Set to 1 as Rete node is set to 0
         this.id = 1;
     }
-    
+
     /**
      * Allow this to be settable, otherwise we get infinite recursion on serialisation
      * @param ruleBase
@@ -119,13 +120,13 @@ class ReteooBuilder
     void setRuleBase(RuleBaseImpl ruleBase) {
         this.ruleBase = ruleBase;
     }
-    
+
     /**
      * Allow this to be settable, otherwise we get infinite recursion on serialisation
      * @param ruleBase
-     */    
+     */
     void setRete(Rete rete) {
-        
+
     }
 
     // ------------------------------------------------------------
@@ -150,7 +151,12 @@ class ReteooBuilder
 
         List nodes = new ArrayList();
         And[] and = rule.getTransformedLhs();
+
         for ( int i = 0; i < and.length; i++ ) {
+            if ( !hasColumns( and[i] ) ) {
+                addInitialFactMatch( and[i] );
+            }
+
             addRule( and[i],
                      rule );
             BaseNode node = null;
@@ -183,6 +189,34 @@ class ReteooBuilder
 
         this.rules.put( rule,
                         (BaseNode[]) nodes.toArray( new BaseNode[nodes.size()] ) );
+    }
+
+    private boolean hasColumns(GroupElement ge) {
+        for ( Iterator it = ge.getChildren().iterator(); it.hasNext(); ) {
+            Object object = it.next();
+            if ( object instanceof Column || (object instanceof GroupElement && hasColumns( (GroupElement) object )) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void addInitialFactMatch(And and) {
+        And temp = null;
+        
+        // If we have children we know there are no columns but we need to make sure that InitialFact is first
+        if ( !and.getChildren().isEmpty() ) {
+            temp = (And) and.clone();
+            and.getChildren().clear();
+        }
+        Column column = new Column( 0,
+                                    new ClassObjectType( InitialFact.class ) );
+        and.addChild( column );
+        
+        // now we know InitialFact is first add all the previous constrains
+        if ( temp != null ) {
+            and.getChildren().addAll( temp.getChildren() );
+        }
     }
 
     private void addRule(And and,
