@@ -111,6 +111,11 @@
       <xi:include href="Chapter-Rule_Language/Section-Conditional_Elements.xml" /-->
     </chapter>
 
+	<chapter>
+		<title>Decision Tables</title>
+		<xi:include href="Chapter-Decision_Tables/Section-Spreadsheet.xml" />
+	</chapter>
+
     <chapter>
       <title>The Rule Workbench (IDE)</title>
 
