@@ -290,12 +290,20 @@ package_statement returns [String packageName]
 	;
 	
 import_statement
-	:	'import' opt_eol name=dotted_name ';'? opt_eol
+	:	'import' opt_eol name=import_name ';'? opt_eol
 		{
-			packageDescr.addImport( name );
+			if (packageDescr != null) 
+				packageDescr.addImport( name );
 		}	
 	;
 
+import_name returns [String name]
+	@init {
+		name = null;
+	}
+	:	
+		id=ID { name=id.getText(); } ( '.' id=ID { name = name + "." + id.getText(); } )* (star='.*' { name = name + star.getText(); })?
+	;
 expander
 	@init {
 		String config=null;

@@ -1,7 +1,7 @@
 #created on: 27-Mar-2006
 package org.drools.test
 
-import org.drools.PersonInterface;
+import org.drools.*
 
 global java.util.List list;
 
