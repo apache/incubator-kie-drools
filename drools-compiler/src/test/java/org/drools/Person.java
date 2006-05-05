@@ -21,7 +21,7 @@ import java.math.BigInteger;
 
 
 
-public class Person implements Serializable {
+public class Person implements Serializable, PersonInterface {
     private final String name;
     private final String likes;
     private final int age;
@@ -49,40 +49,67 @@ public class Person implements Serializable {
         this.age = age;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#getStatus()
+     */
     public String getStatus() {
         return status;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#setStatus(java.lang.String)
+     */
     public void setStatus(String status) {
         this.status = status;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#getLikes()
+     */
     public String getLikes() {
         return likes;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#getName()
+     */
     public String getName() {
         return name;
     }
         
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#getAge()
+     */
     public int getAge() {
         return this.age;
     }
     
     
     
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#isAlive()
+     */
     public boolean isAlive() {
         return alive;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#setAlive(boolean)
+     */
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#getSex()
+     */
     public char getSex() {
         return sex;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#setSex(char)
+     */
     public void setSex(char sex) {
         this.sex = sex;
     }
@@ -124,21 +151,33 @@ public class Person implements Serializable {
     }
 
 
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#getBigDecimal()
+     */
     public BigDecimal getBigDecimal() {
         return bigDecimal;
     }
 
 
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#setBigDecimal(java.math.BigDecimal)
+     */
     public void setBigDecimal(BigDecimal bigDecimal) {
         this.bigDecimal = bigDecimal;
     }
 
 
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#getBigInteger()
+     */
     public BigInteger getBigInteger() {
         return bigInteger;
     }
 
 
+    /* (non-Javadoc)
+     * @see org.drools.PersonInterface#setBigInteger(java.math.BigInteger)
+     */
     public void setBigInteger(BigInteger bigInteger) {
         this.bigInteger = bigInteger;
     }

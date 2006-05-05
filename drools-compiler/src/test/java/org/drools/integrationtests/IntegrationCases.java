@@ -37,6 +37,7 @@ import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
 import org.drools.Person;
+import org.drools.PersonInterface;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.Sensor;
@@ -205,7 +206,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        Person bill = new Person( "bill",
+        PersonInterface bill = new Person( "bill",
                                   null,
                                   12 );
         bill.setAlive( true );
@@ -230,7 +231,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        Person bill = new Person( "bill",
+        PersonInterface bill = new Person( "bill",
                                   null,
                                   12 );
         bill.setBigDecimal( new BigDecimal("42") );
@@ -379,11 +380,11 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        Person peter = new Person( "peter",
+        PersonInterface peter = new Person( "peter",
                                    null,
                                    12 );
         workingMemory.assertObject( peter );
-        Person jane = new Person( "jane",
+        PersonInterface jane = new Person( "jane",
                                   null,
                                   10 );
         workingMemory.assertObject( jane );
@@ -412,11 +413,11 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        Person peter = new Person( "peter",
+        PersonInterface peter = new Person( "peter",
                                    null,
                                    12 );
         workingMemory.assertObject( peter );
-        Person jane = new Person( "jane",
+        PersonInterface jane = new Person( "jane",
                                   null,
                                   10 );
         workingMemory.assertObject( jane );
@@ -489,7 +490,7 @@ public abstract class IntegrationCases extends TestCase {
                                      7 );
         FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
 
-        Person paul = new Person( "paul",
+        PersonInterface paul = new Person( "paul",
                                   "stilton",
                                   12 );
         workingMemory.assertObject( paul );
@@ -515,10 +516,10 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        Person p1 = new Person( "michael",
+        PersonInterface p1 = new Person( "michael",
                                 "food",
                                 40 );
-        Person p2 = new Person( null,
+        PersonInterface p2 = new Person( null,
                                 "drink",
                                 30 );
         workingMemory.assertObject( p1 );
@@ -540,7 +541,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "messages",
                                  foo );
 
-        Person p1 = new Person( null,
+        PersonInterface p1 = new Person( null,
                                 "food",
                                 40 );
 
@@ -758,7 +759,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        Person person = new Person( "michael",
+        PersonInterface person = new Person( "michael",
                                     "cheese" );
         person.setStatus( "start" );
         workingMemory.assertObject( person );
@@ -905,7 +906,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        Person person = new Person( "Edson",
+        PersonInterface person = new Person( "Edson",
                                     "cheese" );
         workingMemory.assertObject( person );
 
@@ -1277,7 +1278,7 @@ public abstract class IntegrationCases extends TestCase {
         // Adding person in advance. There is no Person() object
         // type node in memory yet, but the rule engine is supposed
         // to handle that correctly
-        Person bob = new Person( "bob",
+        PersonInterface bob = new Person( "bob",
                                  "stilton" );
         bob.setStatus( "Not evaluated" );
         workingMemory.assertObject( bob );
@@ -1370,7 +1371,7 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        Person bob = new Person( "bob",
+        PersonInterface bob = new Person( "bob",
                                  "stilton" );
         bob.setStatus( "Not evaluated" );
         workingMemory.assertObject( bob );
@@ -1429,10 +1430,10 @@ public abstract class IntegrationCases extends TestCase {
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         // Adding person with null name and likes attributes
-        Person bob = new Person( null,
+        PersonInterface bob = new Person( null,
                                  null );
         bob.setStatus( "P1" );
-        Person pete = new Person( null,
+        PersonInterface pete = new Person( null,
                                   null );
         bob.setStatus( "P2" );
         workingMemory.assertObject( bob );
