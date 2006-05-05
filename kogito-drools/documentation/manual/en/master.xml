@@ -52,20 +52,6 @@
     <title>Reference Manual</title>
 
     <chapter>
-      <title>Installation and Setup</title>
-
-      <xi:include href="Chapter-Install/Section-Install.xml" />
-
-      <xi:include href="Chapter-Install/Section-Setup.xml" />
-
-      <xi:include href="Chapter-Install/Section-Checkout.xml" />
-
-      <xi:include href="Chapter-Install/Section-Maven_build.xml" />
-
-      <xi:include href="Chapter-Install/Section-Eclipse.xml" />
-    </chapter>
-
-    <chapter>
       <title>The Rule Engine</title>
 
       <xi:include href="Chapter-Rule_Engine/Section-What_is_a_Rule_Engine.xml" />
@@ -83,6 +69,20 @@
       <xi:include href="Chapter-Rule_Engine/Section-Agenda.xml" />
 
       <xi:include href="Chapter-Rule_Engine/Section-Event_Model.xml" />
+    </chapter>
+
+    <chapter>
+      <title>Installation and Setup</title>
+
+      <xi:include href="Chapter-Install/Section-Install.xml" />
+
+      <xi:include href="Chapter-Install/Section-Setup.xml" />
+
+      <xi:include href="Chapter-Install/Section-Checkout.xml" />
+
+      <xi:include href="Chapter-Install/Section-Maven_build.xml" />
+
+      <xi:include href="Chapter-Install/Section-Eclipse.xml" />
     </chapter>
 
     <chapter>
