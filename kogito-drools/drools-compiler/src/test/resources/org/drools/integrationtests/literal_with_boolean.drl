@@ -1,7 +1,7 @@
 #created on: 27-Mar-2006
 package org.drools.test
 
-import org.drools.Person;
+import org.drools.PersonInterface;
 
 global java.util.List list;
 
@@ -9,7 +9,7 @@ rule "Literal with boolean"
 	
 	when
 		#conditions
-		alivePerson : Person(alive ==  true)
+		alivePerson : PersonInterface(alive ==  true)
 	then 		
 		list.add( alivePerson );
 end
