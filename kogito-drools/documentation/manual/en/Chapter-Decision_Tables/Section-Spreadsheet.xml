@@ -35,6 +35,8 @@
     like excel or open office). They are ideal in the sense that you can
     control what "parameters" of rules can be edited, without exposing the
     rules directly.</para>
+
+	<para>Decision tables also provide a degree of insulation from the underlying object model.</para>
   </section>
 
   <section>
