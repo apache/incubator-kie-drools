@@ -2,11 +2,11 @@
 <section>
   <title>Leaps Algorithm</title>
 
-  <para>Leaps algorithm for production systems uses "lazy" approach to
-  condition evaluations. Modification of this algorithm, implemented as part
-  of Drools v3, makes attempt to take the best features of both Leaps and Rete
+  <para>Leaps algorithm for production systems uses a "lazy" approach to
+  condition evaluations. A modified version of this algorithm, implemented as part
+  of Drools v3, attempts to take the best features of both Leaps and Rete
   approaches in processing facts in the working memory. Leaps is not being
-  described here in details but only relevant sections to described how
+  described here in detail but only some relevant sections to described how
   current implementation deviates from "classical" leaps algorithm.</para>
 
   <para>The "classical" Leaps approach puts all incoming (asserted) facts on
