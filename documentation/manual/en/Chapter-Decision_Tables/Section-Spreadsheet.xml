@@ -2,6 +2,10 @@
 <section>
   <title>Decision tables in spreadsheets</title>
 
+  <para>Decision tables are a "precise yet compact" (ref. Wikipedia) way of
+  representing conditional logic, and are well suited to "business" level
+  rules.</para>
+
   <para>Drools supports managing rules in a Spreadsheet format. Formats
   supported are Excel, and CSV. Thus you can use a variety of spreadsheet
   programs (such as Microsoft Excel, OpenOffice.org Calc amongst others). It
@@ -45,6 +49,16 @@
       <mediaobject>
         <imageobject>
           <imagedata fileref="excel.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <screeninfo>Can have multiple actions for a rule row</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="actions.png" />
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -97,14 +111,9 @@
   <section>
     <title>How decision tables work</title>
 
-    <para>The spreadsheet looks for the "RuleTable" keyword to indicate the
-    start of a rule table (both the starting row and column). Other keywords
-    are also used to define other package level attributes (covered later). It
-    is important to keep the keywords in the one column. By convention the
-    second column ("B") is used for this, but it can be any column (convention
-    is to leave a margin on the left for notes). In the following diagram, C
-    is actually the column where it starts. Everything to the left of this is
-    ignored.</para>
+    <para>The key point to keep in mind is that in a decision table, each row
+    is a rule, and each column in that row is either a condition or action for
+    that rule.</para>
 
     <screenshot>
       <screeninfo>Rows and columns</screeninfo>
@@ -115,6 +124,15 @@
         </imageobject>
       </mediaobject>
     </screenshot>
+
+    <para>The spreadsheet looks for the "RuleTable" keyword to indicate the
+    start of a rule table (both the starting row and column). Other keywords
+    are also used to define other package level attributes (covered later). It
+    is important to keep the keywords in the one column. By convention the
+    second column ("B") is used for this, but it can be any column (convention
+    is to leave a margin on the left for notes). In the following diagram, C
+    is actually the column where it starts. Everything to the left of this is
+    ignored.</para>
 
     <para>If we expand the hidden sections, it starts to make more sense how
     it works. Note the keywords in column C.</para>
@@ -277,7 +295,7 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
               <entry>DURATION</entry>
 
               <entry>Indicates that this columns values will set the duration
-              values for the rule row. </entry>
+              values for the rule row.</entry>
 
               <entry>optional</entry>
             </row>
@@ -331,7 +349,6 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
 
               <entry>N/A</entry>
             </row>
-
           </tbody>
         </tgroup>
       </table>
@@ -346,6 +363,113 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
           </imageobject>
         </mediaobject>
       </screenshot>
+    </section>
+  </section>
+
+  <section>
+    <title>Creating and integrating Spreadsheet based Decision Tables</title>
+
+    <para>The API to use spreadsheet based decision tables is in the
+    drools-decisiontables module. There is really only one class to look at:
+    SpreadsheetCompiler. This class will take spreadsheets in various formats,
+    and generate rules in DRL (which you can then use in the normal way). Also
+    note that if you like you can just use the SpreadsheetComiler to generate
+    partial rule files, and assemble it into a complete rule package after the
+    fact (this allows to you seperate technical and non technical aspects of
+    the rules if needed).</para>
+
+    <para>To get started, you can find a sample spreadsheet and base it on
+    that. Alternatively, if you are using the plug in (Rule Workbench IDE) the
+    wizard can generate a spreadsheet for you from a template (to edit it you
+    will need to use an xls compatable spreadsheet editor). <screenshot>
+        <screeninfo>Wizard in the IDE</screeninfo>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="wizard.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot></para>
+  </section>
+
+  <section>
+    <title>Managing business rules in decision tables.</title>
+
+    <section>
+      <title>Workflow and collaboration.</title>
+
+      <para>Spreadsheets are well established business tools (in use for over
+      25 years). Decision tables lend themselves to close collaboration
+      between IT and domain experts, while making the business rules clear to
+      business analysts, it is an ideal seperation of concerns.</para>
+
+      <para>Typically, the whole process of authoring rules (coming up with a
+      new decision table) would be something like:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Business analyst takes a template decision table (from a
+          repository, or from IT)</para>
+        </listitem>
+
+        <listitem>
+          <para>Decision table business language descriptions are entered in
+          the table(s)</para>
+        </listitem>
+
+        <listitem>
+          <para>Decision table rules (rows) are entered (roughly)</para>
+        </listitem>
+
+        <listitem>
+          <para>Decision table is handed to a technical resource, who maps the
+          business language (descriptions) to scripts (this may involve
+          software development of course, if it is a new application or data
+          model !)</para>
+        </listitem>
+
+        <listitem>
+          <para>Technical person hands back and reviews the modifications with
+          the business analyst.</para>
+        </listitem>
+
+        <listitem>
+          <para>The business analyst can continue editing the rule rows as
+          needed (moving columns around is also fine etc).</para>
+        </listitem>
+
+        <listitem>
+          <para>In parallel, the technical person can develop test cases for
+          the rules (liasing with business analysts) as these test cases can
+          be used to verify rules and rule changes once the system is
+          running.</para>
+        </listitem>
+      </orderedlist>
+    </section>
+
+    <section>
+      <title>Using spreadsheet features</title>
+
+      <para>You can use the features of applications like Excel to provide
+      assistance in entering data into spreadsheets, such as validating
+      fields. You can use lists that are stored in other worksheets to provide
+      valid lists of values for cells, like in the following diagram.
+      <screenshot>
+          <screeninfo>Wizard in the IDE</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="lists.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para>Some applications provide a limited ability to keep a history of
+      changes, but it is recommended that an alternative means of revision
+      control is also used. So when you are making changes to rules over time,
+      older versions are archived (many solutions exist for this which are
+      also open source, such as Subversion).
+      http://www.drools.org/Business+rules+in+decision+tables+explained</para>
     </section>
   </section>
 </section>
