@@ -31,7 +31,10 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.KnowledgeHelper;
+import org.drools.spi.XorGroup;
 import org.drools.util.LinkedListNode;
+import org.drools.util.LinkedListObjectWrapper;
+import org.drools.util.Queueable;
 
 /**
  * Rule-firing Agenda.
@@ -65,6 +68,8 @@ public class Agenda
     /** Items time-delayed. */
 
     private final Map                  agendaGroups;
+    
+    private final Map                  xorGroups;
 
     private final LinkedList           focusStack;
 
@@ -87,6 +92,7 @@ public class Agenda
     public Agenda(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         this.agendaGroups = new HashMap();
+        this.xorGroups = new HashMap();
         this.focusStack = new LinkedList();
 
         // MAIN should always be the first AgendaGroup and can never be removed
@@ -101,26 +107,6 @@ public class Agenda
 
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
-    }
-
-    /**
-     * Clears all Activations from the Agenda
-     * 
-     */
-    public void clearAgenda() {
-        EventSupport eventsupport = (EventSupport) this.workingMemory;
-        // Cancel all items and fire a Cancelled event for each Activation
-        for ( Iterator agendaGroupIterator = this.agendaGroups.values().iterator(); agendaGroupIterator.hasNext(); ) {
-            AgendaGroupImpl group = (AgendaGroupImpl) agendaGroupIterator.next();
-            group.clear();
-        }
-
-        if ( this.scheduledActivations != null && !this.scheduledActivations.isEmpty() ) {
-            for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
-                item.remove();
-                eventsupport.getAgendaEventSupport().fireActivationCancelled( item );
-            }
-        }
     }
 
     /**
@@ -222,6 +208,15 @@ public class Agenda
         return (AgendaGroup[]) this.focusStack.toArray( new AgendaGroup[this.focusStack.size()] );
     }
 
+    public XorGroup getXorGroup(String name) {
+        XorGroupImpl xorGroup = (XorGroupImpl) this.xorGroups.get( name );
+        if (xorGroup == null) {
+            xorGroup = new XorGroupImpl( name );
+            this.xorGroups.put( name, xorGroup );
+        }
+        return xorGroup;
+    }    
+    
     /**
      * Iterates all the <code>AgendGroup<code>s in the focus stack returning the total number of <code>Activation</code>s
      * @return
@@ -268,6 +263,102 @@ public class Agenda
     }
 
     /**
+     * Clears all Activations from the Agenda
+     * 
+     */
+    public void clearAgenda() {
+        // Cancel all items and fire a Cancelled event for each Activation
+        for ( Iterator agendaGroupIterator = this.agendaGroups.values().iterator(); agendaGroupIterator.hasNext(); ) {
+            AgendaGroupImpl group = (AgendaGroupImpl) agendaGroupIterator.next();
+            clearAgendaGroup( group );
+        }
+
+        EventSupport eventsupport = (EventSupport) this.workingMemory;        
+        if ( this.scheduledActivations != null && !this.scheduledActivations.isEmpty() ) {
+            for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
+                item.remove();
+                eventsupport.getAgendaEventSupport().fireActivationCancelled( item );
+            }
+        }
+    }
+    
+    /**
+     * Clears all Activations from an Agenda Group. Any Activations that are also in an Xor Group are removed the
+     * the Xor Group.
+     * 
+     * @param agendaGroup
+     */    
+    public void clearAgendaGroup(String name) {
+        AgendaGroupImpl agendaGroup = (AgendaGroupImpl) this.agendaGroups.get( name );
+        if ( agendaGroup != null ) {
+            clearAgendaGroup( agendaGroup );
+        }    
+    }
+    
+    /**
+     * Clears all Activations from an Agenda Group. Any Activations that are also in an Xor Group are removed the
+     * the Xor Group.
+     * 
+     * @param agendaGroup
+     */
+    public void clearAgendaGroup(AgendaGroupImpl agendaGroup) {
+        EventSupport eventsupport = (EventSupport) this.workingMemory;        
+        
+        Queueable[] queueable = agendaGroup.getQueueable();
+        for(int i = 0, length = queueable.length; i < length; i++) {
+            AgendaItem item =  (AgendaItem) queueable[i];
+            if ( item == null ) {
+                continue;
+            }
+            
+            // this must be set false before removal from the XorGroup. Otherwise the XorGroup will also try to cancel the Actvation
+            item.setActivated( false );      
+            
+            if ( item.getXorGroupNode() != null ) {
+                item.getXorGroupNode().getXorGroup().removeActivation( item );                
+            }
+                                              
+            eventsupport.getAgendaEventSupport().fireActivationCancelled( item );                
+        }
+        agendaGroup.clear();        
+    }
+    
+   
+    /**
+     * Clears all Activations from an Xor Group. Any Activations that are also in an Agenda Group are removed
+     * from the Agenda Group.
+     * 
+     * @param xorGroup
+     */     
+    public void clearXorGroup(String name) {
+        XorGroup xorGroup = (XorGroup) this.xorGroups.get( name );
+        if ( xorGroup != null ) {
+            clearXorGroup( xorGroup );
+        }        
+    }
+    
+    /**
+     * Clears all Activations from an Xor Group. Any Activations that are also in an Agenda Group are removed
+     * from the Agenda Group.
+     * 
+     * @param xorGroup
+     */    
+    public void clearXorGroup(XorGroup xorGroup) {
+        EventSupport eventsupport = (EventSupport) this.workingMemory;
+        for ( Iterator it = xorGroup.iterator(); it.hasNext(); ) {
+            Activation activation = ( Activation)( (XorGroupNode) it.next() ).getActivation();
+            activation.setXorGroupNode( null );
+            
+            if ( activation.isActivated() ) {
+                activation.setActivated( false );
+                activation.remove();
+                eventsupport.getAgendaEventSupport().fireActivationCancelled( activation );   
+            }            
+        }
+        xorGroup.clear();             
+    }    
+    
+    /**
      * Fire the next scheduled <code>Agenda</code> item.
      * 
      * @throws ConsequenceException
@@ -281,12 +372,12 @@ public class Agenda
             return false;
         }
 
-        Activation item = group.getNext();
+        AgendaItem item = (AgendaItem) group.getNext();
         if  ( item == null ) {
             return false;
         }
         
-        if ( filter == null || filter.accept( item ) ) {
+        if ( filter == null || filter.accept( item ) ) {                   
             fireActivation( item );
         }
 
@@ -302,10 +393,17 @@ public class Agenda
      * @throws ConsequenceException
      *             If an error occurs while attempting to fire the consequence.
      */
-    public synchronized void fireActivation(Activation activation) throws ConsequenceException {
+    public synchronized void fireActivation(Activation activation) throws ConsequenceException {        
         EventSupport eventsupport = (EventSupport) this.workingMemory;
 
-        eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation );
+        eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation );     
+                
+        if ( activation.getXorGroupNode()  != null ) {
+            XorGroup xorGroup = activation.getXorGroupNode().getXorGroup();
+            xorGroup.removeActivation( activation );
+            clearXorGroup(xorGroup);
+        }         
+        activation.setActivated( false );
 
         try {
             KnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( activation,
@@ -319,5 +417,5 @@ public class Agenda
 
         eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );
     }
-
+      
 }

@@ -77,6 +77,8 @@ public class Rule
 
     /** makes the rule's much the current focus */
     private boolean       autoFocus;
+    
+    private String        xorGroup;
 
     /** indicates that the rule is semantically correct. */
     private boolean       semanticallyValid = true;
@@ -241,7 +243,15 @@ public class Rule
 
     public void setAutoFocus(boolean autoFocus) {
         this.autoFocus = autoFocus;
+    }    
+
+    public String getXorGroup() {
+        return this.xorGroup;
     }
+
+    public void setXorGroup(String xorGroup) {
+        this.xorGroup = xorGroup;
+    }    
 
     /**
      * Retrieve a parameter <code>Declaration</code> by identifier.
@@ -437,5 +447,4 @@ public class Rule
     public boolean isSemanticallyValid() {
         return semanticallyValid;
     }
-
 }

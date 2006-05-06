@@ -30,6 +30,8 @@ import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.XorGroup;
+import org.drools.util.LinkedListObjectWrapper;
 import org.drools.util.Queueable;
 
 /**
@@ -49,8 +51,9 @@ final class TerminalNode extends BaseNode
     // ------------------------------------------------------------
 
     /** The rule to invoke upon match. */
-    private Rule              rule;
+    private final Rule        rule;
     private final TupleSource tupleSource;
+    private XorGroup          xorGroup;
 
     // ------------------------------------------------------------
     // Constructors
@@ -64,9 +67,9 @@ final class TerminalNode extends BaseNode
      * @param rule
      *            The rule.
      */
-    TerminalNode(int id,
-                 TupleSource source,
-                 Rule rule) {
+    TerminalNode(final int id,
+                 final TupleSource source,
+                 final Rule rule) {
         super( id );
         this.rule = rule;
         this.tupleSource = source;
@@ -89,6 +92,16 @@ final class TerminalNode extends BaseNode
     // org.drools.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+    public void assertTuple(final ReteTuple tuple,
+                            final PropagationContext context,
+                            final WorkingMemoryImpl workingMemory) {
+        assertTuple( tuple,
+                     context,
+                     workingMemory,
+                     true );
+
+    }
+
     /**
      * Assert a new <code>Tuple</code>.
      * 
@@ -99,24 +112,34 @@ final class TerminalNode extends BaseNode
      * @throws AssertionException
      *             If an error occurs while asserting.
      */
-    public void assertTuple(ReteTuple tuple,
-                            PropagationContext context,
-                            WorkingMemoryImpl workingMemory) {
+    public void assertTuple(final ReteTuple tuple,
+                            final PropagationContext context,
+                            final WorkingMemoryImpl workingMemory,
+                            final boolean fireActivationCreated) {
         // if the current Rule is no-loop and the origin rule is the same then
         // return
-        if ( rule.getNoLoop() && rule.equals( context.getRuleOrigin() ) ) {
+        if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
             return;
         }
-        Agenda agenda = workingMemory.getAgenda();
+        final Agenda agenda = workingMemory.getAgenda();
 
-        Duration dur = rule.getDuration();
+        final Duration dur = this.rule.getDuration();                
 
         if ( dur != null && dur.getDuration( tuple ) > 0 ) {
-            ScheduledAgendaItem item = new ScheduledAgendaItem( context.getPropagationNumber(),
+            final ScheduledAgendaItem item = new ScheduledAgendaItem( context.getPropagationNumber(),
                                                                 tuple,
                                                                 workingMemory.getAgenda(),
                                                                 context,
-                                                                rule );
+                                                                this.rule );
+
+            if ( this.rule.getXorGroup() != null ) {
+                // Lazy cache xorGroup
+                if ( this.xorGroup == null ) {
+                    this.xorGroup = workingMemory.getAgenda().getXorGroup( this.rule.getXorGroup() );
+                }
+                this.xorGroup.addActivation( item );
+            }            
+            
             agenda.scheduleItem( item );
             tuple.setActivation( item );
             item.setActivated( true );
@@ -126,23 +149,23 @@ final class TerminalNode extends BaseNode
             // Lazy instantiation and addition to the Agenda of AgendGroup
             // implementations
             // ----------------
-            TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
+            final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
             AgendaGroupImpl agendaGroup = memory.getAgendaGroup();
             if ( agendaGroup == null ) {
-                if ( rule.getAgendaGroup() == null || rule.getAgendaGroup().equals( "" ) || rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
+                if ( this.rule.getAgendaGroup() == null || this.rule.getAgendaGroup().equals( "" ) || this.rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
                     // Is the Rule AgendaGroup undefined? If it is use MAIN,
                     // which is added to the Agenda by default
                     agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup( AgendaGroup.MAIN );
                 } else {
                     // AgendaGroup is defined, so try and get the AgendaGroup
                     // from the Agenda
-                    agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup( rule.getAgendaGroup() );
+                    agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup( this.rule.getAgendaGroup() );
                 }
 
                 if ( agendaGroup == null ) {
                     // The AgendaGroup is defined but not yet added to the
                     // Agenda, so create the AgendaGroup and add to the Agenda.
-                    agendaGroup = new AgendaGroupImpl( rule.getAgendaGroup() );
+                    agendaGroup = new AgendaGroupImpl( this.rule.getAgendaGroup() );
                     workingMemory.getAgenda().addAgendaGroup( agendaGroup );
                 }
 
@@ -150,14 +173,22 @@ final class TerminalNode extends BaseNode
             }
 
             // set the focus if rule autoFocus is true
-            if ( rule.getAutoFocus() ) {
+            if ( this.rule.getAutoFocus() ) {
                 agenda.setFocus( agendaGroup );
             }
 
-            AgendaItem item = new AgendaItem( context.getPropagationNumber(),
+            final AgendaItem item = new AgendaItem( context.getPropagationNumber(),
                                               tuple,
                                               context,
-                                              rule );
+                                              this.rule );
+            
+            if ( this.rule.getXorGroup() != null ) {
+                // Lazy cache xorGroup
+                if ( this.xorGroup == null ) {
+                    this.xorGroup = workingMemory.getAgenda().getXorGroup( this.rule.getXorGroup() );
+                }
+                this.xorGroup.addActivation( item );
+            }               
 
             // Makes sure the Lifo is added to the AgendaGroup priority queue
             // If the AgendaGroup is already in the priority queue it just
@@ -165,14 +196,18 @@ final class TerminalNode extends BaseNode
             agendaGroup.add( item );
             tuple.setActivation( item );
             item.setActivated( true );
-            workingMemory.getAgendaEventSupport().fireActivationCreated( item );
+
+            // We only want to fire an event on a truly new Activation and not on an Activation as a result of a modify
+            if ( fireActivationCreated ) {
+                workingMemory.getAgendaEventSupport().fireActivationCreated( item );
+            }
         }
     }
 
-    public void retractTuple(ReteTuple tuple,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
-        Activation activation = tuple.getActivation();
+    public void retractTuple(final ReteTuple tuple,
+                             final PropagationContext context,
+                             final WorkingMemoryImpl workingMemory) {
+        final Activation activation = tuple.getActivation();
         if ( activation.isActivated() ) {
             activation.remove();
             workingMemory.getAgendaEventSupport().fireActivationCancelled( activation );
@@ -183,15 +218,17 @@ final class TerminalNode extends BaseNode
                                                  this.rule );
     }
 
-    public void modifyTuple(ReteTuple tuple,
-                            PropagationContext context,
-                            WorkingMemoryImpl workingMemory) {
+    public void modifyTuple(final ReteTuple tuple,
+                            final PropagationContext context,
+                            final WorkingMemoryImpl workingMemory) {
+        // We have to remove and assert the new tuple as it has modified facts and thus its tuple is newer
         if ( tuple.getActivation().isActivated() ) {
             tuple.getActivation().remove();
         }
         assertTuple( tuple,
                      context,
-                     workingMemory );
+                     workingMemory,
+                     false );
 
     }
 
@@ -205,15 +242,15 @@ final class TerminalNode extends BaseNode
     }
 
     public void attach() {
-        tupleSource.addTupleSink( this );
+        this.tupleSource.addTupleSink( this );
     }
 
-    public void attach(WorkingMemoryImpl[] workingMemories) {
+    public void attach(final WorkingMemoryImpl[] workingMemories) {
         attach();
 
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            WorkingMemoryImpl workingMemory = workingMemories[i];
-            PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+            final WorkingMemoryImpl workingMemory = workingMemories[i];
+            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                 PropagationContext.RULE_ADDITION,
                                                                                 null,
                                                                                 null );
@@ -222,46 +259,46 @@ final class TerminalNode extends BaseNode
         }
     }
 
-    public void remove(BaseNode node,
-                       WorkingMemoryImpl[] workingMemories) {
+    public void remove(final BaseNode node,
+                       final WorkingMemoryImpl[] workingMemories) {
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            WorkingMemoryImpl workingMemory = workingMemories[i];
+            final WorkingMemoryImpl workingMemory = workingMemories[i];
 
-            TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
+            final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
 
-            AgendaGroupImpl group = memory.getAgendaGroup();
-            Queueable[] elements = group.getQueueable();
-            List list = new ArrayList();
+            final AgendaGroupImpl group = memory.getAgendaGroup();
+            final Queueable[] elements = group.getQueueable();
+            final List list = new ArrayList();
             //start at 1 as BinaryHeapQueue starts at 1
-            for ( int j = 1, size = group.size()+1; j < size; j++ ) {
-                AgendaItem item = (AgendaItem) elements[j];
+            for ( int j = 1, size = group.size() + 1; j < size; j++ ) {
+                final AgendaItem item = (AgendaItem) elements[j];
                 if ( item.getRule() == this.rule ) {
                     list.add( item );
                 }
             }
-            for ( Iterator it = list.iterator(); it.hasNext(); ) {
-                AgendaItem item = ( AgendaItem ) it.next();
+            for ( final Iterator it = list.iterator(); it.hasNext(); ) {
+                final AgendaItem item = (AgendaItem) it.next();
                 if ( item.isActivated() ) {
                     item.remove();
                     workingMemory.getAgendaEventSupport().fireActivationCancelled( item );
                 }
 
-                PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                     PropagationContext.RULE_REMOVAL,
                                                                                     null,
                                                                                     null );
                 workingMemory.removeLogicalDependencies( item,
                                                          propagationContext,
-                                                         this.rule );                
+                                                         this.rule );
             }
-        }        
-        
-        tupleSource.remove( this,
+        }
+
+        this.tupleSource.remove( this,
                             workingMemories );
     }
 
-    public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) {
+    public void updateNewNode(final WorkingMemoryImpl workingMemory,
+                              final PropagationContext context) {
         // There are no child nodes to update, do nothing.
     }
 
@@ -276,7 +313,7 @@ final class TerminalNode extends BaseNode
             return this.agendaGroup;
         }
 
-        public void setAgendaGroup(AgendaGroupImpl agendaGroup) {
+        public void setAgendaGroup(final AgendaGroupImpl agendaGroup) {
             this.agendaGroup = agendaGroup;
         }
     }

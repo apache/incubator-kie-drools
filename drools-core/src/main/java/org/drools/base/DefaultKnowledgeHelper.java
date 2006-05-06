@@ -105,6 +105,10 @@ public class DefaultKnowledgeHelper
     public void clearAgenda() {
         this.workingMemory.clearAgenda();
     }
+    
+    public  void clearAgendaGroup(String group)  {
+        this.workingMemory.clearAgendaGroup( group );
+    }
 
     public Object get(Declaration declaration) {
         return declaration.getValue(  this.tuple.get( declaration ).getObject() );

@@ -25,7 +25,7 @@ import org.drools.common.BetaNodeBinder;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
-import org.drools.util.LinkedListNodeWrapper;
+import org.drools.util.LinkedListObjectWrapper;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.
@@ -152,7 +152,7 @@ abstract class TupleSource extends BaseNode
         for ( int i = 0, size = getTupleSinks().size(); i < size; i++ ) {
             ReteTuple child = new ReteTuple( tuple );
             // no TupleMatch so instead add as a linked tuple
-            tuple.addLinkedTuple( new LinkedListNodeWrapper( child ) );
+            tuple.addLinkedTuple( new LinkedListObjectWrapper( child ) );
             ((TupleSink) getTupleSinks().get( i )).assertTuple( child,
                                                                 context,
                                                                 workingMemory );
@@ -178,7 +178,7 @@ abstract class TupleSource extends BaseNode
         if ( list != null && !list.isEmpty() ) {
             int i = 0;
             for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
-                ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
+                ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListObjectWrapper) node).getObject(),
                                                                        context,
                                                                        workingMemory );
             }
@@ -204,7 +204,7 @@ abstract class TupleSource extends BaseNode
         if ( list != null && !list.isEmpty() ) {
             int i = 0;
             for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                ((TupleSink) getTupleSinks().get( i++ )).modifyTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
+                ((TupleSink) getTupleSinks().get( i++ )).modifyTuple( (ReteTuple) ((LinkedListObjectWrapper) node).getObject(),
                                                                       context,
                                                                       workingMemory );
             }

@@ -278,6 +278,11 @@ public interface WorkingMemory
      * 
      */
     void clearAgenda();
+    
+    /**
+     * Clear the Agenda Group
+     */
+    public void clearAgendaGroup(String group);     
 
     /**
      * Forces the workingMemory to be derefenced from
