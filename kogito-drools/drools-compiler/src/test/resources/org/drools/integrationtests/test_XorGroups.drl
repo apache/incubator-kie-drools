@@ -1,0 +1,38 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list;
+
+rule "rule0"
+	salience 10
+	xor-group "xor-group-0"
+    when
+    	Cheese( )
+    then
+		list.add( "rule0" );
+end  
+
+rule "rule1"
+	xor-group "xor-group-0"
+    when
+    	Cheese( )
+    then
+		list.add( "rule1" );
+end  
+
+rule "rul2"
+    when
+    	Cheese( )
+    then
+		list.add( "rule2" );
+end  
+
+rule "rule3"
+	agenda-group "agenda-group-3"
+	xor-group "xor-group-3"		
+    when
+    	Cheese( )
+    then    	
+		list.add( "rule3" );
+end  
