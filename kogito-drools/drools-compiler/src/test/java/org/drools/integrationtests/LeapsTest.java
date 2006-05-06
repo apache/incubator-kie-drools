@@ -126,4 +126,8 @@ public class LeapsTest extends IntegrationCases {
     public void testLogicalAssertions2() throws Exception {
         // Not working in leaps
     }
+    
+    public void testXorGroups() throws Exception {
+        // Not Working in leaps
+    }
 }
