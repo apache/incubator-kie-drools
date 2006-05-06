@@ -16,7 +16,9 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.DroolsTestCase;
@@ -33,6 +35,7 @@ import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.XorGroup;
 
 /**
  * @author mproctor
@@ -456,6 +459,133 @@ public class AgendaTest extends DroolsTestCase {
         //        agenda.fireNextItem( null );
         //        assertEquals( 0,
         //                      queue.size() );
+    }
+    
+    public void testXorGroup() {
+        RuleBase ruleBase = new RuleBaseImpl();
+
+        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+
+        final Agenda agenda = workingMemory.getAgenda();
+        
+        final List list = new ArrayList();
+
+        // create the consequence
+        Consequence consequence = new Consequence() {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
+                list.add( knowledgeHelper.getRule() );
+            }
+        };
+
+        ReteTuple tuple = new ReteTuple( new FactHandleImpl( 1 ) );
+
+        // create a rule for each agendaGroup
+        Rule rule0 = new Rule( "test-rule0" );       
+        rule0.setXorGroup( "xor-group-0" );        
+        TerminalNode node0 = new TerminalNode( 3,
+                                               new MockTupleSource( 2 ),
+                                               rule0 );
+        rule0.setConsequence( consequence );
+        PropagationContext context0 = new PropagationContextImpl( 0,
+                                                                  PropagationContext.ASSERTION,
+                                                                  rule0,
+                                                                  null );
+
+        Rule rule1 = new Rule( "test-rule1" );
+        rule1.setXorGroup( "xor-group-0" );
+        TerminalNode node1 = new TerminalNode( 5,
+                                               new MockTupleSource( 4 ),
+                                               rule1 );
+        rule1.setConsequence( consequence );
+        PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                  PropagationContext.ASSERTION,
+                                                                  rule1,
+                                                                  null );
+
+        Rule rule2 = new Rule( "test-rule2" );
+        TerminalNode node2 = new TerminalNode( 7,
+                                               new MockTupleSource( 6 ),
+                                               rule2 );
+        rule2.setConsequence( consequence );
+        PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                  PropagationContext.ASSERTION,
+                                                                  rule2,
+                                                                  null );
+
+        Rule rule3 = new Rule( "test-rule3",
+                               "agendaGroup3" );
+        rule3.setXorGroup( "xor-group-3" );
+        TerminalNode node3 = new TerminalNode( 9,
+                                               new MockTupleSource( 8 ),
+                                               rule3 );
+        rule3.setConsequence( consequence );
+        PropagationContext context3 = new PropagationContextImpl( 0,
+                                                                  PropagationContext.ASSERTION,
+                                                                  rule3,
+                                                                  null );
+        
+        // Assert the tuple and check it was added to xor-group-0
+        node0.assertTuple( tuple, context0, workingMemory );        
+        XorGroup xorGroup0 = agenda.getXorGroup( "xor-group-0" );
+        assertEquals( 1, xorGroup0.size() );
+        
+        // Assert another tuple and check it was added to xor-group-0        
+        node1.assertTuple( tuple, context1, workingMemory );        
+        assertEquals( 2, xorGroup0.size() );
+        
+        // There should now be two potential activations to fire
+        assertEquals( 2, agenda.focusStackSize() );
+        
+        // The first tuple should fire, adding itself to the List and clearing and cancelling the other Activations in the xor-group-0        
+        agenda.fireNextItem( null );
+        
+        // Make sure the xor-group-0 is clear
+        assertEquals( 0, xorGroup0.size() );
+        
+        // Make sure the Agenda  is  empty
+        assertEquals( 0, agenda.focusStackSize() );
+        
+        // List should only have a single item, "rule0"
+        assertEquals( 1, list.size() );
+        assertSame( rule0, list.get( 0 ) );
+        
+        list.clear();
+        
+        //-------------------
+        // Now try a more complex scenario involving  two Xor Groups and one  rule not in a Group
+        node0.assertTuple( tuple, context0, workingMemory );
+        node1.assertTuple( tuple, context1, workingMemory );        
+        node2.assertTuple( tuple, context2, workingMemory );        
+        node3.assertTuple( tuple, context3, workingMemory );        
+        
+        // xor-group-0 should be populated again
+        assertEquals( 2, xorGroup0.size() ); 
+        
+        // make sure the xor-group-3 is cleared when we can clear the Agenda Group for the activation that is in both
+        XorGroup xorGroup3 = agenda.getXorGroup( "xor-group-3" );
+        
+        assertEquals( 4, agenda.agendaSize() );
+        assertEquals( 1, xorGroup3.size() );
+        
+        agenda.clearAgendaGroup( "agendaGroup3" );
+        assertEquals( 3, agenda.agendaSize() );
+        assertEquals( 0, xorGroup3.size() );
+        
+        // Activation for xor-group-0 should be next - the activation in no xor/agenda group should remain on the agenda
+        agenda.fireNextItem( null );
+        assertEquals( 1, agenda.agendaSize() );
+        assertEquals( 0, xorGroup0.size() );        
+        
+        
+        // Fire  the  last activation and  make sure the Agenda Empties
+        agenda.fireNextItem( null );
+        assertEquals( 0, agenda.agendaSize() );
+        
+        assertEquals( 2, list.size() );
+        assertEquals( rule0, list.get(0));
+        assertEquals( rule2, list.get(1));        
+        
     }
 
 }

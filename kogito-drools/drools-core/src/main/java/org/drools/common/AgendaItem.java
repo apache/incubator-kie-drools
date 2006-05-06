@@ -19,11 +19,13 @@ package org.drools.common;
 import java.io.Serializable;
 
 import org.drools.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
+import org.drools.util.LinkedListObjectWrapper;
 import org.drools.util.Queue;
 import org.drools.util.Queueable;
 
@@ -62,6 +64,8 @@ public class AgendaItem
     private LinkedList               justified;
 
     private boolean                  activated;
+
+    private XorGroupNode             xorGroupNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -199,4 +203,12 @@ public class AgendaItem
     public void remove() {
         dequeue();
     }
+
+    public XorGroupNode getXorGroupNode() {
+        return this.xorGroupNode;
+    }
+
+    public void setXorGroupNode(XorGroupNode xorNode) {
+        this.xorGroupNode = xorNode;
+    }    
 }

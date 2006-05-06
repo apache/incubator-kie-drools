@@ -24,7 +24,7 @@ import org.drools.DroolsTestCase;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListNodeWrapper;
+import org.drools.util.LinkedListObjectWrapper;
 
 public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
@@ -106,7 +106,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       list0.size() );
         assertSame( tuple0,
-                    ((LinkedListNodeWrapper) list0.getFirst()).getNode() );
+                    ((LinkedListObjectWrapper) list0.getFirst()).getObject() );
 
         // check memory stacks correctly
         FactHandleImpl f1 = (FactHandleImpl) workingMemory.assertObject( "test1" );
@@ -122,7 +122,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       list1.size() );
         assertSame( tuple1,
-                    ((LinkedListNodeWrapper) list1.getFirst()).getNode() );
+                    ((LinkedListObjectWrapper) list1.getFirst()).getObject() );
 
         assertNotSame( tuple0,
                        tuple1 );

@@ -24,8 +24,10 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.drools.spi.XorGroup;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
+import org.drools.util.LinkedListObjectWrapper;
 
 /**
  * Item entry in the <code>Agenda</code>.
@@ -60,6 +62,8 @@ public class ScheduledAgendaItem extends TimerTask
     private LinkedList               justified;
 
     private boolean                  activated;
+    
+    private XorGroupNode             xorGroupNode;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -128,7 +132,7 @@ public class ScheduledAgendaItem extends TimerTask
      * Handle the firing of an alarm.
      */
     public void run() {
-        this.agenda.fireActivation( this );
+        this.agenda.fireActivation( this );           
         this.agenda.getWorkingMemory().fireAllRules();
     }
 
@@ -179,6 +183,14 @@ public class ScheduledAgendaItem extends TimerTask
     public void setActivated(boolean activated) {
         this.activated = activated;
     }
+    
+    public XorGroupNode getXorGroupNode() {
+        return this.xorGroupNode;
+    }
+
+    public void setXorGroupNode(XorGroupNode xorGroupNode) {
+        this.xorGroupNode = xorGroupNode;
+    }    
 
     /*
      * (non-Javadoc)

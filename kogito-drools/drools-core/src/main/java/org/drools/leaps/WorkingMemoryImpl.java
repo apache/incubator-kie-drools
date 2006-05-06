@@ -119,6 +119,10 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
     public void clearAgenda() {
         this.agenda.clearAgenda();
     }
+    
+    public void clearAgendaGroup(String group) {
+        this.agenda.clearAgendaGroup( group );
+    }    
 
     /**
      * Returns the fact Object for the given <code>FactHandle</code>. It

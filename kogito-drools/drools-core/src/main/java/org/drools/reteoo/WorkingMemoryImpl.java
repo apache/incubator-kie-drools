@@ -241,6 +241,13 @@ public class WorkingMemoryImpl
     public void clearAgenda() {
         this.agenda.clearAgenda();
     }
+    
+    /**
+     * Clear the Agenda Group
+     */
+    public void clearAgendaGroup(String group) {
+        this.agenda.clearAgendaGroup(group);
+    }    
 
     /**
      * @see WorkingMemory

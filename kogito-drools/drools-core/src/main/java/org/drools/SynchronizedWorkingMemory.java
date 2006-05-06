@@ -68,6 +68,10 @@ public class SynchronizedWorkingMemory
         this.workingMemory.clearAgenda();
     }
 
+    public synchronized void clearAgendaGroup(String group) {
+        this.workingMemory.clearAgendaGroup(group);
+    }
+    
     public synchronized boolean containsObject(FactHandle handle) {
         return this.workingMemory.containsObject( handle );
     }

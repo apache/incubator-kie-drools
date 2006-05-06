@@ -20,8 +20,10 @@ package org.drools.spi;
 
 
 import org.drools.common.LogicalDependency;
+import org.drools.common.XorGroupNode;
 import org.drools.rule.Rule;
 import org.drools.util.LinkedList;
+import org.drools.util.LinkedListObjectWrapper;
 
 /**
  * When a <code>Tuple</code> fully matches a rule it is added to the <code>Agenda</code>
@@ -73,4 +75,8 @@ public interface Activation {
     public boolean isActivated();
 
     public void setActivated(boolean activated);
+    
+    public XorGroupNode getXorGroupNode();
+
+    public void setXorGroupNode(XorGroupNode xorGroupNode);
 }

@@ -111,6 +111,8 @@ public interface KnowledgeHelper {
      * ActivationCancelled events. <br>
      */
     void clearAgenda();
+    
+    void clearAgendaGroup(String group);
 
     public AgendaGroup getFocus();
 

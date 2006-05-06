@@ -25,7 +25,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
-import org.drools.util.LinkedListNodeWrapper;
+import org.drools.util.LinkedListObjectWrapper;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Column
@@ -148,7 +148,7 @@ class LeftInputAdapterNode extends TupleSource
 
         ReteTuple tuple = new ReteTuple( handle );
 
-        list.add( new LinkedListNodeWrapper( tuple ) );
+        list.add( new LinkedListObjectWrapper( tuple ) );
 
         if ( !getTupleSinks().isEmpty() ) {
             // We do this one seperately so we avoid another tuple replication
@@ -158,7 +158,7 @@ class LeftInputAdapterNode extends TupleSource
 
             for ( int i = 1; i < size; i++ ) {
                 tuple = new ReteTuple( tuple );
-                list.add( new LinkedListNodeWrapper( tuple ) );
+                list.add( new LinkedListObjectWrapper( tuple ) );
                 ((TupleSink) getTupleSinks().get( i )).assertTuple( tuple,
                                                                     context,
                                                                     workingMemory );
@@ -190,7 +190,7 @@ class LeftInputAdapterNode extends TupleSource
         if ( list != null ) {
             int i = 0;
             for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
-                ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
+                ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListObjectWrapper) node).getObject(),
                                                                        context,
                                                                        workingMemory );
             }
@@ -211,7 +211,7 @@ class LeftInputAdapterNode extends TupleSource
                 // already existed, so propagate as a modify
                 int i = 0;
                 for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                    ((TupleSink) getTupleSinks().get( i++ )).modifyTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
+                    ((TupleSink) getTupleSinks().get( i++ )).modifyTuple( (ReteTuple) ((LinkedListObjectWrapper) node).getObject(),
                                                                           context,
                                                                           workingMemory );
                 }
@@ -228,7 +228,7 @@ class LeftInputAdapterNode extends TupleSource
             if ( list != null ) {
                 int i = 0;
                 for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                    ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
+                    ((TupleSink) getTupleSinks().get( i++ )).retractTuple( (ReteTuple) ((LinkedListObjectWrapper) node).getObject(),
                                                                            context,
                                                                            workingMemory );
                 }
@@ -251,7 +251,7 @@ class LeftInputAdapterNode extends TupleSource
         for ( Iterator it = memory.values().iterator(); it.hasNext(); ) {
             LinkedList list = (LinkedList) it.next();
             for ( LinkedListNode node = list.getFirst(); node != null; node = node.getNext() ) {
-                sink.assertTuple( (ReteTuple) ((LinkedListNodeWrapper) node).getNode(),
+                sink.assertTuple( (ReteTuple) ((LinkedListObjectWrapper) node).getObject(),
                                   context,
                                   workingMemory );
             }
