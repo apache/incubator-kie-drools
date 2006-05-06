@@ -57,6 +57,8 @@ import org.drools.integrationtests.helloworld.Message;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.spi.AgendaGroup;
+import org.drools.spi.XorGroup;
 
 /**
  * This contains the test cases for each engines implementation to execute.
@@ -1105,6 +1107,49 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 7 ) );
     }
 
+    public void testXorGroups() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_XorGroups.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        Cheese brie = new Cheese( "brie",
+                                  12 );
+        workingMemory.assertObject( brie );
+        
+        XorGroup xorGroup0 = workingMemory.getAgenda().getXorGroup( "xor-group-0" );
+        assertEquals( 2, xorGroup0.size() );
+        
+        XorGroup xorGroup3 = workingMemory.getAgenda().getXorGroup( "xor-group-3" );
+        assertEquals( 1, xorGroup3.size() );
+        
+        AgendaGroup agendaGroup3 = workingMemory.getAgenda().getAgendaGroup( "agenda-group-3" );
+        assertEquals( 1, agendaGroup3.size() );
+        
+        AgendaGroup agendaGroupMain = workingMemory.getAgenda().getAgendaGroup( "MAIN" );
+        assertEquals( 3, agendaGroupMain.size() );
+        
+        workingMemory.clearAgendaGroup( "agenda-group-3" );
+        assertEquals( 0, xorGroup3.size() );
+        assertEquals( 0, agendaGroup3.size() );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 0, xorGroup0.size() );
+        
+        assertEquals( 2, list.size() );
+        assertEquals( "rule0", list.get(0));
+        assertEquals( "rule2", list.get(1));
+        
+    }    
+    
     public void testDuration() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration.drl" ) ) );
