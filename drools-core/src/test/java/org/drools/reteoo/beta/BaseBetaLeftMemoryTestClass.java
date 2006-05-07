@@ -18,6 +18,8 @@ package org.drools.reteoo.beta;
 
 import java.util.Iterator;
 
+import javax.naming.OperationNotSupportedException;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -427,6 +429,13 @@ public abstract class BaseBetaLeftMemoryTestClass extends TestCase {
         
         public int getCounter() {
             return this.callCounter;
+        }
+
+        public BetaLeftMemory getInnerMemory() throws OperationNotSupportedException {
+            return null;
+        }
+
+        public void setInnerMemory(BetaLeftMemory innerMemory) throws OperationNotSupportedException {
         }
     };
 

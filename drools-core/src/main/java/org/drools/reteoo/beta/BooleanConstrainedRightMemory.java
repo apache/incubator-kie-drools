@@ -43,7 +43,7 @@ public class BooleanConstrainedRightMemory
     implements
     BetaRightMemory {
 
-    private BetaRightMemory childMemory  = null;
+    private BetaRightMemory innerMemory  = null;
 
     private MultiLinkedList trueList     = null;
     private MultiLinkedList falseList    = null;
@@ -71,7 +71,7 @@ public class BooleanConstrainedRightMemory
         this.declaration = declaration;
         this.column = declaration.getColumn();
         this.evaluator = evaluator;
-        this.childMemory = childMemory;
+        this.innerMemory = childMemory;
         this.trueList = new MultiLinkedList();
         this.falseList = new MultiLinkedList();
     }
@@ -87,9 +87,9 @@ public class BooleanConstrainedRightMemory
                                                      matches.getFactHandle() );
         list.add( matches );
 
-        if ( this.childMemory != null ) {
+        if ( this.innerMemory != null ) {
             matches.setChild( new MultiLinkedListNodeWrapper( matches ) );
-            this.childMemory.add( workingMemory,
+            this.innerMemory.add( workingMemory,
                                   (MultiLinkedListNodeWrapper) matches.getChild() );
         }
 
@@ -103,8 +103,8 @@ public class BooleanConstrainedRightMemory
      */
     public final void remove(WorkingMemory workingMemory,
                        ObjectMatches matches) {
-        if ( this.childMemory != null ) {
-            this.childMemory.remove( workingMemory,
+        if ( this.innerMemory != null ) {
+            this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) matches.getChild() );
         }
         matches.getLinkedList().remove( matches );
@@ -123,9 +123,9 @@ public class BooleanConstrainedRightMemory
                                                      matches.getFactHandle() );
         list.add( wrapper );
 
-        if ( this.childMemory != null ) {
+        if ( this.innerMemory != null ) {
             wrapper.setChild( new MultiLinkedListNodeWrapper( matches ) );
-            this.childMemory.add( workingMemory,
+            this.innerMemory.add( workingMemory,
                                   (MultiLinkedListNodeWrapper) wrapper.getChild() );
         }
     }
@@ -138,8 +138,8 @@ public class BooleanConstrainedRightMemory
      */
     public final void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper wrapper) {
-        if ( this.childMemory != null ) {
-            this.childMemory.remove( workingMemory,
+        if ( this.innerMemory != null ) {
+            this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) wrapper.getChild() );
         }
         wrapper.getLinkedList().remove( wrapper );
@@ -163,7 +163,7 @@ public class BooleanConstrainedRightMemory
                 boolean hasnext = false;
                 if ( next == null ) {
                     while ( candidate != null ) {
-                        if ( (childMemory == null) || (childMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) candidate.getChild() )) ) {
+                        if ( (innerMemory == null) || (innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) candidate.getChild() )) ) {
                             hasnext = true;
                             next = candidate;
                             candidate = (ObjectMatches) candidate.getNext();
@@ -218,8 +218,8 @@ public class BooleanConstrainedRightMemory
         select = (evaluator.getOperator()) == Evaluator.EQUAL ? select : !select;
         this.selectedList = (select == true) ? trueList : falseList;
 
-        if ( this.childMemory != null ) {
-            this.childMemory.selectPossibleMatches( workingMemory,
+        if ( this.innerMemory != null ) {
+            this.innerMemory.selectPossibleMatches( workingMemory,
                                                     tuple );
         }
     }
@@ -234,8 +234,8 @@ public class BooleanConstrainedRightMemory
         boolean ret = false;
         if ( this.selectedList != null ) {
             ret = matches.getLinkedList() == this.selectedList;
-            if ( ret && (this.childMemory != null) ) {
-                ret = this.childMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) matches.getChild() );
+            if ( ret && (this.innerMemory != null) ) {
+                ret = this.innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) matches.getChild() );
             }
         }
         return ret;
@@ -288,4 +288,19 @@ public class BooleanConstrainedRightMemory
         return set.iterator();
     }
 
+    /**
+     * @inheritDoc
+     */
+    public BetaRightMemory getInnerMemory() {
+        return innerMemory;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public void setInnerMemory(BetaRightMemory innerMemory) {
+        this.innerMemory = innerMemory;
+    }
+
+    
 }

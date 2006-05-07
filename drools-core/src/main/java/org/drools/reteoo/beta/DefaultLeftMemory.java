@@ -18,6 +18,8 @@ package org.drools.reteoo.beta;
 
 import java.util.Iterator;
 
+import javax.naming.OperationNotSupportedException;
+
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
@@ -121,5 +123,18 @@ public class DefaultLeftMemory
         return this.memory.size();
     }
 
+    /**
+     * @inheritDoc
+     */
+    public BetaLeftMemory getInnerMemory() throws OperationNotSupportedException {
+        throw new OperationNotSupportedException("Default left memory does not support inner memory");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public void setInnerMemory(BetaLeftMemory innerMemory) throws OperationNotSupportedException  {
+        throw new OperationNotSupportedException("Default left memory does not support inner memory");
+    }
 
 }

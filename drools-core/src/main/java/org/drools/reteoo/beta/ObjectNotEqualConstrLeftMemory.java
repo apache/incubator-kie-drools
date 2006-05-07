@@ -340,6 +340,20 @@ public class ObjectNotEqualConstrLeftMemory
         return ret;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public BetaLeftMemory getInnerMemory() {
+        return innerMemory;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public void setInnerMemory(BetaLeftMemory innerMemory) {
+        this.innerMemory = innerMemory;
+    }
+
     private static class KeyMultiLinkedList extends MultiLinkedList {
         private final Object key;
 

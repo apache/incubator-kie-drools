@@ -18,6 +18,8 @@ package org.drools.reteoo.beta;
 
 import java.util.Iterator;
 
+import javax.naming.OperationNotSupportedException;
+
 import org.drools.WorkingMemory;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
@@ -143,6 +145,20 @@ public class DefaultRightMemory
      */
     public final Iterator iterator() {
         return memory.iterator();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public BetaRightMemory getInnerMemory() throws OperationNotSupportedException {
+        throw new OperationNotSupportedException("Default right memory does not support inner memory");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public void setInnerMemory(BetaRightMemory innerMemory) throws OperationNotSupportedException  {
+        throw new OperationNotSupportedException("Default right memory does not support inner memory");
     }
 
 }
