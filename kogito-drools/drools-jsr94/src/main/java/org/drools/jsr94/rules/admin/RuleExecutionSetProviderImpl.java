@@ -2,13 +2,13 @@ package org.drools.jsr94.rules.admin;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,23 +22,30 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.Map;
 
 import javax.rules.admin.RuleExecutionSet;
 import javax.rules.admin.RuleExecutionSetCreateException;
 import javax.rules.admin.RuleExecutionSetProvider;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+import org.drools.xml.XmlPackageReader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
 
 /**
  * The Drools implementation of the <code>RuleExecutionSetProvider</code>
@@ -73,45 +80,39 @@ public class RuleExecutionSetProviderImpl
      */
     public RuleExecutionSet createRuleExecutionSet(Element ruleExecutionSetElement,
                                                    Map properties) throws RuleExecutionSetCreateException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder;
+    	  try
+          {
+//    		 Prepare the DOM source
+    	      Source source = new DOMSource( ruleExecutionSetElement );
 
-        try {
-            /*
-             * This should unpack rules from a xml-file, which has the following structure:
-             * <rule-execution-set>
-                 <name>RuleExecutionSet2</name>
-                     <description>Stateful RuleExecutionSet for the TCK for Drools</description>
-                     <code>
-                     <!-- enter rules code for Drools 3 here -->
-                     </code>
-                     </rule-execution-set>
-             */
-            docBuilder = factory.newDocumentBuilder();
-            Document doc1 = docBuilder.newDocument();
-            doc1.appendChild( ruleExecutionSetElement );
-            Reader reader = new StringReader( ruleExecutionSetElement.getChildNodes().item( 2 ).getNodeValue() );
+    		  XmlPackageReader xmlPackageReader = new XmlPackageReader( );
+              // Prepare the result
+              SAXResult result = new SAXResult( xmlPackageReader );
 
-            DrlParser parser = new DrlParser();
-            PackageDescr packageDescr;
-            packageDescr = parser.parse( reader );
+              // Create a transformer
+              Transformer xformer =
+                  TransformerFactory.newInstance( ).newTransformer( );
 
-            //          pre build the package
-            PackageBuilder builder = new PackageBuilder();
-            builder.addPackage( packageDescr );
-            Package pkg = builder.getPackage();
+              // Traverse the DOM tree
+              xformer.transform( source, result );
 
-            LocalRuleExecutionSetProviderImpl localRuleExecutionSetProvider = new LocalRuleExecutionSetProviderImpl();
-            return localRuleExecutionSetProvider.createRuleExecutionSet( pkg,
-                                                                         properties );
+              PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
 
-        } catch ( ParserConfigurationException e ) {
-            throw new RuleExecutionSetCreateException( "could not create RuleExecutionSet: " + e );
-        } catch ( IOException e ) {
-            throw new RuleExecutionSetCreateException( "could not create RuleExecutionSet: " + e );
-        } catch ( DroolsParserException e ) {
-            throw new RuleExecutionSetCreateException( "could not create RuleExecutionSet: " + e );
-        }
+              //          pre build the package
+              PackageBuilder builder = new PackageBuilder();
+              builder.addPackage( packageDescr );
+              Package pkg = builder.getPackage();
+
+              LocalRuleExecutionSetProviderImpl localRuleExecutionSetProvider = new LocalRuleExecutionSetProviderImpl();
+              return localRuleExecutionSetProvider.createRuleExecutionSet( pkg,
+                                                                           properties );
+          }
+          catch ( TransformerException e )
+          {
+              throw new RuleExecutionSetCreateException(
+                  "could not create RuleExecutionSet: " + e );
+          }
+
 
     }
 
