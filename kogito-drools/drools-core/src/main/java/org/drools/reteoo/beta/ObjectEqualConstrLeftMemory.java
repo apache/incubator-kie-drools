@@ -47,7 +47,7 @@ public class ObjectEqualConstrLeftMemory
     implements
     BetaLeftMemory {
 
-    private BetaLeftMemory  childMemory  = null;
+    private BetaLeftMemory  innerMemory  = null;
 
     private Map             memoryMap    = null;
     private int             size         = 0;
@@ -73,7 +73,7 @@ public class ObjectEqualConstrLeftMemory
         this.extractor = extractor;
         this.declaration = declaration;
         this.column = declaration.getColumn();
-        this.childMemory = childMemory;
+        this.innerMemory = childMemory;
         this.memoryMap = new HashMap();
     }
 
@@ -88,9 +88,9 @@ public class ObjectEqualConstrLeftMemory
                                                tuple );
         list.add( tuple );
         this.size++;
-        if ( this.childMemory != null ) {
+        if ( this.innerMemory != null ) {
             tuple.setChild( new MultiLinkedListNodeWrapper( tuple ) );
-            this.childMemory.add( workingMemory,
+            this.innerMemory.add( workingMemory,
                                   ((MultiLinkedListNodeWrapper) tuple.getChild()) );
         }
     }
@@ -102,8 +102,8 @@ public class ObjectEqualConstrLeftMemory
      */
     public final void remove(WorkingMemory workingMemory,
                        ReteTuple tuple) {
-        if ( this.childMemory != null ) {
-            this.childMemory.remove( workingMemory,
+        if ( this.innerMemory != null ) {
+            this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
         LinkedList list = tuple.getLinkedList();
@@ -128,9 +128,9 @@ public class ObjectEqualConstrLeftMemory
         list.add( tuple );
         this.size++;
 
-        if ( this.childMemory != null ) {
+        if ( this.innerMemory != null ) {
             tuple.setChild( new MultiLinkedListNodeWrapper( tuple.getNode() ) );
-            this.childMemory.add( workingMemory,
+            this.innerMemory.add( workingMemory,
                                   ((MultiLinkedListNodeWrapper) tuple.getChild()) );
         }
     }
@@ -142,8 +142,8 @@ public class ObjectEqualConstrLeftMemory
      */
     public final void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper tuple) {
-        if ( this.childMemory != null ) {
-            this.childMemory.remove( workingMemory,
+        if ( this.innerMemory != null ) {
+            this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
 
@@ -186,7 +186,7 @@ public class ObjectEqualConstrLeftMemory
                     boolean hasnext = false;
                     if ( next == null ) {
                         while ( candidate != null ) {
-                            if ( (childMemory == null) || (childMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) candidate.getChild() )) ) {
+                            if ( (innerMemory == null) || (innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) candidate.getChild() )) ) {
                                 hasnext = true;
                                 next = candidate;
                                 candidate = (MultiLinkedListNode) candidate.getNext();
@@ -260,8 +260,8 @@ public class ObjectEqualConstrLeftMemory
         Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
         this.selectedList = (MultiLinkedList) this.memoryMap.get( hash );
         
-        if ( this.childMemory != null ) {
-            this.childMemory.selectPossibleMatches( workingMemory,
+        if ( this.innerMemory != null ) {
+            this.innerMemory.selectPossibleMatches( workingMemory,
                                                     handle );
         }
     }
@@ -354,4 +354,17 @@ public class ObjectEqualConstrLeftMemory
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    public BetaLeftMemory getInnerMemory() {
+        return innerMemory;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public void setInnerMemory(BetaLeftMemory innerMemory) {
+        this.innerMemory = innerMemory;
+    }
 }

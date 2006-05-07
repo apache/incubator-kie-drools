@@ -18,6 +18,8 @@ package org.drools.reteoo.beta;
 
 import java.util.Iterator;
 
+import javax.naming.OperationNotSupportedException;
+
 import org.drools.WorkingMemory;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
@@ -133,4 +135,18 @@ public interface BetaRightMemory {
      */
     public boolean isPossibleMatch(MultiLinkedListNodeWrapper matches);
 
+    /**
+     * Sets the inner beta right memory in case of a multi-indexed memory
+     *  
+     * @param innerMemory
+     */
+    public void setInnerMemory(BetaRightMemory innerMemory) throws OperationNotSupportedException;
+    
+    /**
+     * Returns the inner beta right memory in case of a multi-indexed memory
+     *  
+     * @return the inner beta right memory or null in case it is not a multi-indexed memory
+     */
+    public BetaRightMemory getInnerMemory() throws OperationNotSupportedException;
+    
 }

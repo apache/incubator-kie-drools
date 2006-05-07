@@ -41,7 +41,7 @@ public class BooleanConstrainedLeftMemory
     implements
     BetaLeftMemory {
 
-    private BetaLeftMemory  childMemory  = null;
+    private BetaLeftMemory  innerMemory  = null;
 
     private MultiLinkedList trueList     = null;
     private MultiLinkedList falseList    = null;
@@ -69,7 +69,7 @@ public class BooleanConstrainedLeftMemory
         this.declaration = declaration;
         this.column = declaration.getColumn();
         this.evaluator = evaluator;
-        this.childMemory = childMemory;
+        this.innerMemory = childMemory;
         this.trueList = new MultiLinkedList();
         this.falseList = new MultiLinkedList();
     }
@@ -87,9 +87,9 @@ public class BooleanConstrainedLeftMemory
         } else {
             falseList.add( tuple );
         }
-        if ( this.childMemory != null ) {
+        if ( this.innerMemory != null ) {
             tuple.setChild( new MultiLinkedListNodeWrapper( tuple ) );
-            this.childMemory.add( workingMemory,
+            this.innerMemory.add( workingMemory,
                                   ((MultiLinkedListNodeWrapper) tuple.getChild()) );
         }
     }
@@ -101,8 +101,8 @@ public class BooleanConstrainedLeftMemory
      */
     public final void remove(WorkingMemory workingMemory,
                        ReteTuple tuple) {
-        if ( this.childMemory != null ) {
-            this.childMemory.remove( workingMemory,
+        if ( this.innerMemory != null ) {
+            this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
         tuple.getLinkedList().remove( tuple );
@@ -121,9 +121,9 @@ public class BooleanConstrainedLeftMemory
         } else {
             falseList.add( tuple );
         }
-        if ( this.childMemory != null ) {
+        if ( this.innerMemory != null ) {
             tuple.setChild( new MultiLinkedListNodeWrapper( tuple.getNode() ) );
-            this.childMemory.add( workingMemory,
+            this.innerMemory.add( workingMemory,
                                   ((MultiLinkedListNodeWrapper) tuple.getChild()) );
         }
     }
@@ -135,8 +135,8 @@ public class BooleanConstrainedLeftMemory
      */
     public final void remove(WorkingMemory workingMemory,
                        MultiLinkedListNodeWrapper tuple) {
-        if ( this.childMemory != null ) {
-            this.childMemory.remove( workingMemory,
+        if ( this.innerMemory != null ) {
+            this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
         tuple.getLinkedList().remove( tuple );
@@ -169,7 +169,7 @@ public class BooleanConstrainedLeftMemory
                 boolean hasnext = false;
                 if ( next == null ) {
                     while ( candidate != null ) {
-                        if ( (childMemory == null) || (childMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) candidate.getChild() )) ) {
+                        if ( (innerMemory == null) || (innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) candidate.getChild() )) ) {
                             hasnext = true;
                             next = candidate;
                             candidate = (MultiLinkedListNode) candidate.getNext();
@@ -287,8 +287,8 @@ public class BooleanConstrainedLeftMemory
         } else {
             this.selectedList = falseList;
         }
-        if ( this.childMemory != null ) {
-            this.childMemory.selectPossibleMatches( workingMemory,
+        if ( this.innerMemory != null ) {
+            this.innerMemory.selectPossibleMatches( workingMemory,
                                                     handle );
         }
     }
@@ -300,14 +300,28 @@ public class BooleanConstrainedLeftMemory
      */
     public final boolean isPossibleMatch(MultiLinkedListNodeWrapper tuple) {
         boolean isPossible = ((this.selectedList != null) && (tuple.getLinkedList() == this.selectedList));
-        if ( (isPossible) && (this.childMemory != null) ) {
-            isPossible = this.childMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) tuple.getChild() );
+        if ( (isPossible) && (this.innerMemory != null) ) {
+            isPossible = this.innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
         return isPossible;
     }
 
     public final int size() {
         return this.trueList.size() + this.falseList.size();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public BetaLeftMemory getInnerMemory() {
+        return innerMemory;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public void setInnerMemory(BetaLeftMemory innerMemory) {
+        this.innerMemory = innerMemory;
     }
 
 }

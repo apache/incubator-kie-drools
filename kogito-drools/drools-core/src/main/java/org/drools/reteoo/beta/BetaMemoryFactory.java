@@ -16,6 +16,8 @@
 
 package org.drools.reteoo.beta;
 
+import javax.naming.OperationNotSupportedException;
+
 import org.drools.common.BetaNodeBinder;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.spi.Evaluator;
@@ -31,6 +33,9 @@ import org.drools.spi.FieldConstraint;
  */
 public class BetaMemoryFactory {
     private static final String INDEX_DISABLED = "false";
+    
+    public static final String INDEX_LEFT_BETA_MEMORY = "org.drools.reteoo.beta.index-left";
+    public static final String INDEX_RIGHT_BETA_MEMORY = "org.drools.reteoo.beta.index-right";
 
     protected BetaMemoryFactory() {
     }
@@ -46,17 +51,18 @@ public class BetaMemoryFactory {
      */
     public static BetaLeftMemory newLeftMemory(BetaNodeBinder binder) {
         BetaLeftMemory memory = null;
+        BetaLeftMemory innerMostMemory = null;
         FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
-        if ( (constraints != null) && (!INDEX_DISABLED.equalsIgnoreCase( System.getProperty( "org.drools.beta-indexing" ) )) ) {
+        if ( (constraints != null) && (!INDEX_DISABLED.equalsIgnoreCase( System.getProperty( INDEX_LEFT_BETA_MEMORY ) )) ) {
             for ( int i = 0; i < constraints.length; i++ ) {
                 if ( constraints[i] instanceof BoundVariableConstraint ) {
                     BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
+                    BetaLeftMemory innerMemory = null;
                     switch ( bvc.getEvaluator().getType() ) {
                         case Evaluator.BOOLEAN_TYPE :
-                            memory = new BooleanConstrainedLeftMemory( bvc.getFieldExtractor(),
+                            innerMemory = new BooleanConstrainedLeftMemory( bvc.getFieldExtractor(),
                                                                        bvc.getRequiredDeclarations()[0],
-                                                                       bvc.getEvaluator(),
-                                                                       memory );
+                                                                       bvc.getEvaluator());
                             break;
                         case Evaluator.OBJECT_TYPE :
                         case Evaluator.SHORT_TYPE :
@@ -65,17 +71,28 @@ public class BetaMemoryFactory {
                         case Evaluator.FLOAT_TYPE :
                         case Evaluator.BYTE_TYPE :
                             if ( bvc.getEvaluator().getOperator() == Evaluator.EQUAL ) {
-                                memory = new ObjectEqualConstrLeftMemory( bvc.getFieldExtractor(),
+                                innerMemory = new ObjectEqualConstrLeftMemory( bvc.getFieldExtractor(),
                                                                           bvc.getRequiredDeclarations()[0],
-                                                                          bvc.getEvaluator(),
-                                                                          memory );
+                                                                          bvc.getEvaluator());
                             } else if ( bvc.getEvaluator().getOperator() == Evaluator.NOT_EQUAL ) {
-                                memory = new ObjectNotEqualConstrLeftMemory( bvc.getFieldExtractor(),
+                                innerMemory = new ObjectNotEqualConstrLeftMemory( bvc.getFieldExtractor(),
                                                                              bvc.getRequiredDeclarations()[0],
-                                                                             bvc.getEvaluator(),
-                                                                             memory );
+                                                                             bvc.getEvaluator());
                             }
                             break;
+                    }
+                    if( innerMemory != null ) {
+                        if (innerMostMemory != null) {
+                            try {
+                                innerMostMemory.setInnerMemory( innerMemory );
+                                innerMostMemory = innerMemory;
+                            } catch ( OperationNotSupportedException e ) {
+                                throw new RuntimeException("BUG: Exception was not supposed to be raised", e);
+                            }
+                        } else {
+                            memory = innerMemory;
+                            innerMostMemory = memory;
+                        }
                     }
                 }
             }
@@ -97,17 +114,18 @@ public class BetaMemoryFactory {
      */
     public static BetaRightMemory newRightMemory(BetaNodeBinder binder) {
         BetaRightMemory memory = null;
+        BetaRightMemory innerMostMemory = null;
         FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
-        if ( (constraints != null) && (!INDEX_DISABLED.equalsIgnoreCase( System.getProperty( "org.drools.beta-indexing" ) )) ) {
+        if ( (constraints != null) && (!INDEX_DISABLED.equalsIgnoreCase( System.getProperty( INDEX_RIGHT_BETA_MEMORY ) )) ) {
             for ( int i = 0; i < constraints.length; i++ ) {
                 if ( constraints[i] instanceof BoundVariableConstraint ) {
                     BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
+                    BetaRightMemory innerMemory = null;
                     switch ( bvc.getEvaluator().getType() ) {
                         case Evaluator.BOOLEAN_TYPE :
-                            memory = new BooleanConstrainedRightMemory( bvc.getFieldExtractor(),
+                            innerMemory = new BooleanConstrainedRightMemory( bvc.getFieldExtractor(),
                                                                         bvc.getRequiredDeclarations()[0],
-                                                                        bvc.getEvaluator(),
-                                                                        memory );
+                                                                        bvc.getEvaluator());
                             break;
                         case Evaluator.OBJECT_TYPE :
                         case Evaluator.SHORT_TYPE :
@@ -116,17 +134,28 @@ public class BetaMemoryFactory {
                         case Evaluator.FLOAT_TYPE :
                         case Evaluator.BYTE_TYPE :
                             if ( bvc.getEvaluator().getOperator() == Evaluator.EQUAL ) {
-                                memory = new ObjectEqualConstrRightMemory( bvc.getFieldExtractor(),
+                                innerMemory = new ObjectEqualConstrRightMemory( bvc.getFieldExtractor(),
                                                                            bvc.getRequiredDeclarations()[0],
-                                                                           bvc.getEvaluator(),
-                                                                           memory );
+                                                                           bvc.getEvaluator());
                             } else if ( bvc.getEvaluator().getOperator() == Evaluator.NOT_EQUAL ) {
-                                memory = new ObjectNotEqualConstrRightMemory( bvc.getFieldExtractor(),
+                                innerMemory = new ObjectNotEqualConstrRightMemory( bvc.getFieldExtractor(),
                                                                               bvc.getRequiredDeclarations()[0],
-                                                                              bvc.getEvaluator(),
-                                                                              memory );
+                                                                              bvc.getEvaluator());
                             }
                             break;
+                    }
+                    if( innerMemory != null ) {
+                        if (innerMostMemory != null) {
+                            try {
+                                innerMostMemory.setInnerMemory( innerMemory );
+                                innerMostMemory = innerMemory;
+                            } catch ( OperationNotSupportedException e ) {
+                                throw new RuntimeException("BUG: Exception was not supposed to be raised", e);
+                            }
+                        } else {
+                            memory = innerMemory;
+                            innerMostMemory = memory;
+                        }
                     }
                 }
             }
