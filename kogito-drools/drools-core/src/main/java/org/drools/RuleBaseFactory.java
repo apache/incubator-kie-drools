@@ -38,7 +38,7 @@ public class RuleBaseFactory {
     }
 
     /** Create a new RuleBase of the appropriate type */
-    public RuleBase newRuleBase(int type) {
+    public static RuleBase newRuleBase(int type) {
         switch ( type ) {
             case RuleBase.RETEOO :
                 return new org.drools.reteoo.RuleBaseImpl();
