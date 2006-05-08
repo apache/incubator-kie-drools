@@ -1,0 +1,13 @@
+package br.com.auster.drools.sample;
+
+import br.com.auster.drools.sample.SampleObject;
+
+expander latin.dsl;  // so I had to change the filename to this
+
+rule "Latin Sample"
+	when
+		Objeto é igual a 1
+	then
+		Mostre Objeto
+end
+  
