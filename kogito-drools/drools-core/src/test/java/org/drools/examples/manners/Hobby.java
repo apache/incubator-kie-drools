@@ -75,7 +75,7 @@ public class Hobby {
         return (this == object);
     }
 
-    public final int hashcode() {
+    public final int hashCode() {
         return this.hobbyIndex;
     }
 

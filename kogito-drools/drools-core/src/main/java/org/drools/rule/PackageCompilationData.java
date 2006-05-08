@@ -322,9 +322,9 @@ public class PackageCompilationData
         }
         
         public InputStream getResourceAsStream(String name) {
-            byte[] bytes = read( name );
+            byte[] bytes = (byte[]) PackageCompilationData.this.store.get( name );
             if ( bytes != null ) {
-                return null;
+                return new ByteArrayInputStream( bytes );
             } else  {
                 return super.getResourceAsStream( name );
             }

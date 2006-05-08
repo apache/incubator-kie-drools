@@ -33,9 +33,11 @@ public class BetaNodeBinder
     public final static BetaNodeBinder simpleBinder = new BetaNodeBinder();
 
     private final FieldConstraint[]    constraints;
+    
+    private static final FieldConstraint[] EMPTY_CONSTRAINTS = new FieldConstraint[0]; 
 
     public BetaNodeBinder() {
-        this.constraints = null;
+        this.constraints = BetaNodeBinder.EMPTY_CONSTRAINTS;
     }
 
     public BetaNodeBinder(FieldConstraint constraint) {
@@ -102,9 +104,13 @@ public class BetaNodeBinder
 
         BetaNodeBinder other = (BetaNodeBinder) object;
 
+        if  ( this.constraints == other.constraints ) {
+            return true;
+        }
+        
         if ( this.constraints.length != other.constraints.length ) {
             return false;
-        }
+        }        
 
         for ( int i = 0; i < this.constraints.length; i++ ) {
             if ( !this.constraints[i].equals( other.constraints[i] ) ) {

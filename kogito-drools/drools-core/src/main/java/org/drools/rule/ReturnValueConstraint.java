@@ -32,7 +32,7 @@ public class ReturnValueConstraint
 
     private final FieldExtractor       fieldExtractor;
 
-    private ReturnValueExpression      returnValueExpression;
+    private ReturnValueExpression      expression;
 
     private final Declaration[]        requiredDeclarations;
 
@@ -55,7 +55,7 @@ public class ReturnValueConstraint
                                  Evaluator evaluator) {
         this.fieldExtractor = fieldExtractor;
 
-        this.returnValueExpression = returnValueExpression;
+        this.expression = returnValueExpression;
 
         if ( declarations != null ) {
             this.requiredDeclarations = declarations;
@@ -71,11 +71,11 @@ public class ReturnValueConstraint
     }
 
     public void setReturnValueExpression(ReturnValueExpression expression) {
-        this.returnValueExpression = expression;
+        this.expression = expression;
     }
 
-    public ReturnValueExpression getReturnValueExpression() {
-        return this.returnValueExpression;
+    public ReturnValueExpression getExpression() {
+        return this.expression;
     }
 
     public boolean isAllowed(InternalFactHandle handle,
@@ -83,11 +83,31 @@ public class ReturnValueConstraint
                              WorkingMemory workingMemory) {
         try {
             return evaluator.evaluate( this.fieldExtractor.getValue( handle.getObject() ),
-                                       this.returnValueExpression.evaluate( tuple,
+                                       this.expression.evaluate( tuple,
                                                                             this.requiredDeclarations,
                                                                             workingMemory ) );
         } catch ( Exception e ) {
             throw new RuntimeDroolsException( e );
         }
     }
+    
+    public int hashCode() {
+        return this.expression.hashCode();
+    }
+    
+    public boolean equals(Object object) {
+        if (object == null ) {
+            return false;
+        } else if ( object == this ){
+            return true;
+        }
+        
+        if ( ! (object instanceof ReturnValueConstraint) ) {
+            return false;
+        }
+        
+        ReturnValueConstraint other = ( ReturnValueConstraint ) object;
+        
+        return this.expression.equals( other.expression );
+    }    
 }

@@ -305,6 +305,23 @@ final class TerminalNode extends BaseNode
     public Object createMemory() {
         return new TerminalNodeMemory();
     }
+    
+    public int hashCode() {
+        return this.rule.hashCode();
+    }
+    
+    public boolean equals(Object object) {
+        if ( object == this ){
+            return true;
+        }
+        
+        if ( object == null || object.getClass() != TerminalNode.class ) {
+            return false;
+        }
+        
+        TerminalNode other = ( TerminalNode ) object;
+        return this.rule.equals( other.rule );
+    }       
 
     class TerminalNodeMemory {
         private AgendaGroupImpl agendaGroup;

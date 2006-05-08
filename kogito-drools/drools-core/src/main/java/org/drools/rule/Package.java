@@ -289,7 +289,7 @@ public class Package
             if ( object instanceof PredicateConstraint ) {
                 this.packageCompilationData.remove( ((PredicateConstraint) object).getPredicateExpression().getClass().getName() );
             } else if ( object instanceof ReturnValueConstraint ) {
-                this.packageCompilationData.remove( ((ReturnValueConstraint) object).getReturnValueExpression().getClass().getName() );
+                this.packageCompilationData.remove( ((ReturnValueConstraint) object).getExpression().getClass().getName() );
             }
         }
     }

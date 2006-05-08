@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.PropagationContextImpl;
+import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
@@ -280,4 +281,25 @@ class LeftInputAdapterNode extends TupleSource
     public Object createMemory() {
         return new HashMap();
     }
+    
+    public int hashCode() {
+        return this.objectSource.hashCode();
+    }
+    
+    public boolean equals(Object object) {
+        if ( object == this ){
+            return true;
+        }
+        
+        if ( object == null || object.getClass() != LeftInputAdapterNode.class ) {
+            return false;
+        }
+        
+        LeftInputAdapterNode other = ( LeftInputAdapterNode ) object;
+        if ( this.binder == null ) {
+            return this.objectSource.equals( other.objectSource ) && other.binder == null;
+        } else {        
+            return this.objectSource.equals( other.objectSource ) && this.binder.equals( other.binder );
+        }
+    }   
 }

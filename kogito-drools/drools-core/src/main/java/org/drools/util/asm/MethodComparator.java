@@ -46,10 +46,22 @@ public class MethodComparator {
     }
     
     /**
+     * This will return a series of bytecode instructions which can be used to compare one method with another.
+     * debug info like local var declarations and line numbers are ignored, so the focus is on the content.
+     */
+    public static List getMethodBytecode(String methodName, byte[] bytes) {
+        Tracer visit = new Tracer(methodName);
+        ClassReader classReader  = new ClassReader( bytes );
+        classReader.accept( visit, true );
+        TraceMethodVisitor trace = visit.getTrace();
+        return trace.getText();        
+    }    
+    
+    /**
      * Compares 2 bytecode listings.
      * Returns true if they are identical.
      */
-    public boolean compareBytecode(List b1, List b2) {
+    public static boolean compareBytecode(List b1, List b2) {
         if (b1.size() != b2.size()) return false;
         
         for (int i = 0; i < b1.size(); i++) {
@@ -63,7 +75,7 @@ public class MethodComparator {
         return true;
     }
     
-    static class Tracer implements ClassVisitor {
+    public static class Tracer implements ClassVisitor {
 
         private TraceMethodVisitor trace;
         private String methodName;

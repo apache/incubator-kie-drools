@@ -181,11 +181,11 @@ public class AgendaItem
     }
 
     /**
-     * Return the hashcode of the
-     * <code>TupleKey<code> as the hashcode of the AgendaItem
+     * Return the hashCode of the
+     * <code>TupleKey<code> as the hashCode of the AgendaItem
      * @return
      */
-    public int hashcode() {
+    public int hashCode() {
         return this.tuple.hashCode();
     }
 

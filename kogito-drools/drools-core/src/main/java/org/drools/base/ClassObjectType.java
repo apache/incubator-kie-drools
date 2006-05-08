@@ -145,7 +145,7 @@ public class ClassObjectType
             return true;
         }
 
-        if ( object == null || !(object instanceof ClassObjectType) ) {
+        if ( object == null || object.getClass() != ClassObjectType.class ) {
             return false;
         }
 
