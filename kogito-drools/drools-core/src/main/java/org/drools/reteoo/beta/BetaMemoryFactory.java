@@ -33,6 +33,7 @@ import org.drools.spi.FieldConstraint;
  */
 public class BetaMemoryFactory {
     private static final String INDEX_DISABLED = "false";
+    private static final String INDEX_ENABLED  = "true";
     
     public static final String INDEX_LEFT_BETA_MEMORY = "org.drools.reteoo.beta.index-left";
     public static final String INDEX_RIGHT_BETA_MEMORY = "org.drools.reteoo.beta.index-right";
@@ -53,7 +54,7 @@ public class BetaMemoryFactory {
         BetaLeftMemory memory = null;
         BetaLeftMemory innerMostMemory = null;
         FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
-        if ( (constraints != null) && (!INDEX_DISABLED.equalsIgnoreCase( System.getProperty( INDEX_LEFT_BETA_MEMORY ) )) ) {
+        if ( (constraints != null) && (INDEX_ENABLED.equalsIgnoreCase( System.getProperty( INDEX_LEFT_BETA_MEMORY ) )) ) {
             for ( int i = 0; i < constraints.length; i++ ) {
                 if ( constraints[i] instanceof BoundVariableConstraint ) {
                     BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
