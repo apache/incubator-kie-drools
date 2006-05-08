@@ -33,12 +33,23 @@
     tries to match every tuple in the left memory according to the constraints
     defined for the given BetaNode. Those elements that match are propagated
     down through the network. The symmetrical behavior happens for when a
-    tuple arrives at the left input of the node. See diagram bellow:
-    <mediaobject>
+    tuple arrives at the left input of the node. See diagram bellow: </para>
+
+    <figure>
+      <title>Beta Node</title>
+
+      <mediaobject>
         <imageobject>
-          <imagedata fileref="beta_node.png" />
+          <imagedata align="center" contentwidth="300" fileref="beta_node.svg"
+                     format="SVG" scalefit="1" />
         </imageobject>
-      </mediaobject></para>
+
+        <imageobject>
+          <imagedata align="center" fileref="beta_node.png" format="PNG"
+                     scalefit="1" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
     <para>When the number of elements in each of the Beta Node Memories starts
     to grow, the matching process starts to slow down, as each new element
@@ -130,19 +141,21 @@ Manners 64 with BetaNode indexes: 10078 millisec to run on average</programlisti
     would be to disable left indexing, leaving only right indexing
     enabled.</para>
 
-	<section>
-		<title>Re-arranging constraints</title>
-    <para>Another tip to tune performance when using indexing is always to
-    write your rules in a way that the most restrictive constraints are
-    declared before the less restrictive ones in your rule. For example, if
-    you have a rule with a column like this: <programlisting>Employee (department == $aDepartment, name == $aName)
+    <section>
+      <title>Re-arranging constraints</title>
+
+      <para>Another tip to tune performance when using indexing is always to
+      write your rules in a way that the most restrictive constraints are
+      declared before the less restrictive ones in your rule. For example, if
+      you have a rule with a column like this: <programlisting>Employee (department == $aDepartment, name == $aName)
 </programlisting> Rewriting it as shown bellow will probably give you a better
-    performance, as “name” is probably a more restrictive constraint than
-    “department”: <programlisting>Employee (name == $aName, department == $aDepartment)
+      performance, as “name” is probably a more restrictive constraint than
+      “department”: <programlisting>Employee (name == $aName, department == $aDepartment)
 </programlisting> (Unless you work in an organisation where there are more
-    departments then employees, which could well be the case in a Government
-    organisation ;)</para>
-	</section>
+      departments then employees, which could well be the case in a Government
+      organisation ;)</para>
+    </section>
+
     <para>Some other improvements are being developed for Drools in this area
     and will be documented as they become available in future versions.</para>
   </section>
