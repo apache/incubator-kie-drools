@@ -53,7 +53,7 @@ final class TerminalNode extends BaseNode
     /** The rule to invoke upon match. */
     private final Rule        rule;
     private final TupleSource tupleSource;
-    private XorGroup          xorGroup;
+
 
     // ------------------------------------------------------------
     // Constructors
@@ -133,11 +133,12 @@ final class TerminalNode extends BaseNode
                                                                 this.rule );
 
             if ( this.rule.getXorGroup() != null ) {
+                final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
                 // Lazy cache xorGroup
-                if ( this.xorGroup == null ) {
-                    this.xorGroup = workingMemory.getAgenda().getXorGroup( this.rule.getXorGroup() );
+                if ( memory.getXorGroup() == null ) {
+                    memory.setXorGroup( workingMemory.getAgenda().getXorGroup( this.rule.getXorGroup() )  );
                 }
-                this.xorGroup.addActivation( item );
+                memory.getXorGroup().addActivation( item );
             }            
             
             agenda.scheduleItem( item );
@@ -184,10 +185,10 @@ final class TerminalNode extends BaseNode
             
             if ( this.rule.getXorGroup() != null ) {
                 // Lazy cache xorGroup
-                if ( this.xorGroup == null ) {
-                    this.xorGroup = workingMemory.getAgenda().getXorGroup( this.rule.getXorGroup() );
+                if ( memory.getXorGroup() == null ) {
+                    memory.setXorGroup( workingMemory.getAgenda().getXorGroup( this.rule.getXorGroup() )  );
                 }
-                this.xorGroup.addActivation( item );
+                memory.getXorGroup().addActivation( item );
             }               
 
             // Makes sure the Lifo is added to the AgendaGroup priority queue
@@ -325,6 +326,8 @@ final class TerminalNode extends BaseNode
 
     class TerminalNodeMemory {
         private AgendaGroupImpl agendaGroup;
+        
+        private XorGroup          xorGroup;
 
         public AgendaGroupImpl getAgendaGroup() {
             return this.agendaGroup;
@@ -333,5 +336,15 @@ final class TerminalNode extends BaseNode
         public void setAgendaGroup(final AgendaGroupImpl agendaGroup) {
             this.agendaGroup = agendaGroup;
         }
+
+        public XorGroup getXorGroup() {
+            return this.xorGroup;
+        }
+
+        public void setXorGroup(XorGroup xorGroup) {
+            this.xorGroup = xorGroup;
+        }
+        
+        
     }
 }
