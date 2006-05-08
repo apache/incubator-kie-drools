@@ -56,17 +56,22 @@ import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
+import org.drools.rule.EvalCondition;
 import org.drools.rule.Exists;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Or;
 import org.drools.rule.Package;
+import org.drools.rule.PredicateConstraint;
+import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
+import org.drools.semantics.java.CompiledInvoker;
 import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
+import org.drools.util.asm.MethodComparator;
 
 public class PackageBuilderTest extends DroolsTestCase {
 
@@ -334,6 +339,33 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors() );
     }
+    
+    public void testReturnValueMethodCompare() {
+        PackageBuilder builder1 = new  PackageBuilder();
+        PackageDescr packageDescr1 = new PackageDescr( "package1" );
+        createReturnValueRule( packageDescr1, "new Integer(x.intValue() + y.intValue() )" );
+        builder1.addPackage( packageDescr1 );
+        Column column1 = (Column) builder1.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        ReturnValueConstraint returnValue1 = (ReturnValueConstraint) column1.getConstraints().get( 2 );        
+        
+        PackageBuilder builder2 = new  PackageBuilder();
+        PackageDescr packageDescr2 = new PackageDescr( "package2" );
+        createReturnValueRule( packageDescr2, "new Integer(x.intValue() + y.intValue() )" );        
+        builder2.addPackage( packageDescr2 );   
+        Column column2 = (Column) builder2.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        ReturnValueConstraint returnValue2 = (ReturnValueConstraint) column2.getConstraints().get( 2 );
+
+        PackageBuilder builder3 = new  PackageBuilder();
+        PackageDescr packageDescr3 = new PackageDescr( "package3" );
+        createReturnValueRule( packageDescr3, "new Integer(x.intValue() - y.intValue() )" );
+        builder3.addPackage( packageDescr3 );
+        Column column3 = (Column) builder3.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        ReturnValueConstraint returnValue3 = (ReturnValueConstraint) column3.getConstraints().get( 2 );
+        
+        assertEquals( returnValue1, returnValue2);
+        assertFalse( returnValue1.equals( returnValue3 ) );
+        assertFalse( returnValue2.equals( returnValue3 ) );       
+    }      
 
     public void testPredicate() throws Exception {
         PackageBuilder builder = new PackageBuilder();
@@ -368,6 +400,33 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors() );
     }
+    
+    public void testPredicateMethodCompare() {
+        PackageBuilder builder1 = new  PackageBuilder();
+        PackageDescr packageDescr1 = new PackageDescr( "package1" );
+        createPredicateRule( packageDescr1, "x==y" );
+        builder1.addPackage( packageDescr1 );
+        Column column1 = (Column) builder1.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        PredicateConstraint predicate1 = (PredicateConstraint) column1.getConstraints().get( 2 );        
+        
+        PackageBuilder builder2 = new  PackageBuilder();
+        PackageDescr packageDescr2 = new PackageDescr( "package2" );
+        createPredicateRule( packageDescr2, "x==y" );        
+        builder2.addPackage( packageDescr2 );   
+        Column column2 = (Column) builder2.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        PredicateConstraint predicate2 = (PredicateConstraint) column2.getConstraints().get( 2 );
+
+        PackageBuilder builder3 = new  PackageBuilder();
+        PackageDescr packageDescr3 = new PackageDescr( "package3" );
+        createPredicateRule( packageDescr3, "x!=y" );
+        builder3.addPackage( packageDescr3 );
+        Column column3 = (Column) builder3.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        PredicateConstraint predicate3 = (PredicateConstraint) column3.getConstraints().get( 2 );
+        
+        assertEquals( predicate1, predicate2);
+        assertFalse( predicate1.equals( predicate3 ) );
+        assertFalse( predicate2.equals( predicate3 ) );       
+    }    
 
     public void testEval() throws Exception {
         PackageBuilder builder = new PackageBuilder();
@@ -398,10 +457,40 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
-        builder.addPackage( packageDescr );
+        builder.addPackage( packageDescr );                        
 
         assertLength( 0,
                       builder.getErrors() );
+        
+        Package pkg = builder.getPackage();
+        Rule rule = pkg.getRule( "rule-1" );
+        EvalCondition eval = (EvalCondition) rule.getLhs().getChildren().get( 1 );
+        CompiledInvoker invoker = (CompiledInvoker ) eval.getEvalExpression();
+        List list =  invoker.getMethodBytecode();
+    }
+    
+    public void testEvalMethodCompare() {
+        PackageBuilder builder1 = new  PackageBuilder();
+        PackageDescr packageDescr1 = new PackageDescr( "package1" );
+        createEvalRule( packageDescr1, "1==1" );
+        builder1.addPackage( packageDescr1 );
+        EvalCondition eval1 = (EvalCondition) builder1.getPackage().getRules()[0].getLhs().getChildren().get( 0 );        
+        
+        PackageBuilder builder2 = new  PackageBuilder();
+        PackageDescr packageDescr2 = new PackageDescr( "package2" );
+        createEvalRule( packageDescr2, "1==1" );        
+        builder2.addPackage( packageDescr2 );   
+        EvalCondition eval2 = (EvalCondition) builder2.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+
+        PackageBuilder builder3 = new  PackageBuilder();
+        PackageDescr packageDescr3 = new PackageDescr( "package3" );
+        createEvalRule( packageDescr3, "1==3" );
+        builder3.addPackage( packageDescr3 );
+        EvalCondition eval3 = (EvalCondition) builder3.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
+        
+        assertEquals( eval1, eval2);
+        assertFalse( eval1.equals( eval3 ) );
+        assertFalse( eval2.equals( eval3 ) );       
     }
 
     public void testOr() throws Exception {
@@ -625,7 +714,78 @@ public class PackageBuilderTest extends DroolsTestCase {
         
         assertLength( 0,
                       builder.getErrors() );        
+    }   
+    
+    private void createReturnValueRule(PackageDescr packageDescr, String expression) {
+        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+        packageDescr.addRule( ruleDescr );
+
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+
+        ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+                                              "stilton" );
+        lhs.addDescr( column );
+
+        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
+                                                                     "x" );
+        column.addDescr( fieldBindingDescr );
+        fieldBindingDescr = new FieldBindingDescr( "price",
+                                                   "y" );
+        column.addDescr( fieldBindingDescr );
+
+        packageDescr.addGlobal( "map",
+                                "java.util.Map" );
+
+        ReturnValueDescr returnValue = new ReturnValueDescr( "price",
+                                                             "==",
+                                                             expression );
+        column.addDescr( returnValue );
+
+        ruleDescr.setConsequence( "modify(stilton);" );
+    }      
+    
+    private void createPredicateRule(PackageDescr packageDescr, String expression) {
+        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+        packageDescr.addRule( ruleDescr );
+
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+
+        ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
+                                              "stilton" );
+        lhs.addDescr( column );
+
+        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
+                                                                     "x" );
+        column.addDescr( fieldBindingDescr );
+
+        packageDescr.addGlobal( "map",
+                                "java.util.Map" );
+
+        PredicateDescr predicate = new PredicateDescr( "price",
+                                                       "y",
+                                                       expression );
+        column.addDescr( predicate );
+
+        ruleDescr.setConsequence( "modify(stilton);" );
     }    
+    
+    private void createEvalRule(PackageDescr packageDescr, String expression) {
+        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+        packageDescr.addRule( ruleDescr );
+
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+
+        packageDescr.addGlobal( "map",
+                                "java.util.Map" );
+
+        EvalDescr evalDescr = new EvalDescr( expression );
+        lhs.addDescr( evalDescr );
+
+        ruleDescr.setConsequence( "" );
+    }
 
     private void createLiteralRule(LiteralDescr literalDescr) {
         PackageBuilder builder = new PackageBuilder();
