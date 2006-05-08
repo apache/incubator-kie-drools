@@ -99,6 +99,7 @@ public class RuleParserTest extends TestCase {
 	}
     
     public void FIXME_testKeywordCollisions() throws Exception {
+        //MN: this really needs the multiphase parser for it to work properly
         RuleParser parser = parseResource( "eol_funny_business.drl" );
         
         parser.compilation_unit();
