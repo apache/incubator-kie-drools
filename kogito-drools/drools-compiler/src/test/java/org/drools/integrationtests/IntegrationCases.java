@@ -70,7 +70,7 @@ public abstract class IntegrationCases extends TestCase {
     protected abstract RuleBase getRuleBase() throws Exception;
 
     public void testGlobals() throws Exception {
-        
+
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "globals_rule_test.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -92,11 +92,11 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
     }
-    
+
     public void testEmptyColumn() throws Exception {
         //pre build the package
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyColumn.drl" ) )  );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyColumn.drl" ) ) );
         Package pkg = builder.getPackage();
 
         //add the package to a rulebase
@@ -116,9 +116,8 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.fireAllRules();
 
         assertEquals( new Integer( 5 ),
-                      list.get( 0 ) );        
+                      list.get( 0 ) );
     }
-    
 
     public void testHelloWorld() throws Exception {
 
@@ -209,8 +208,8 @@ public abstract class IntegrationCases extends TestCase {
                                  list );
 
         PersonInterface bill = new Person( "bill",
-                                  null,
-                                  12 );
+                                           null,
+                                           12 );
         bill.setAlive( true );
         workingMemory.assertObject( bill );
         workingMemory.fireAllRules();
@@ -218,9 +217,9 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( bill,
                       list.get( 0 ) );
     }
-    
+
     public void testBigDecimal() throws Exception {
-              
+
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "big_decimal_and_comparable.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -234,16 +233,16 @@ public abstract class IntegrationCases extends TestCase {
                                  list );
 
         PersonInterface bill = new Person( "bill",
-                                  null,
-                                  12 );
-        bill.setBigDecimal( new BigDecimal("42") );
-        workingMemory.assertObject( new BigDecimal("43") );
+                                           null,
+                                           12 );
+        bill.setBigDecimal( new BigDecimal( "42" ) );
+        workingMemory.assertObject( new BigDecimal( "43" ) );
         workingMemory.assertObject( bill );
         workingMemory.fireAllRules();
 
         assertEquals( 1,
                       list.size() );
-    }    
+    }
 
     public void testCell() throws Exception {
         Cell cell1 = new Cell( 9 );
@@ -383,12 +382,12 @@ public abstract class IntegrationCases extends TestCase {
                                  list );
 
         PersonInterface peter = new Person( "peter",
-                                   null,
-                                   12 );
+                                            null,
+                                            12 );
         workingMemory.assertObject( peter );
         PersonInterface jane = new Person( "jane",
-                                  null,
-                                  10 );
+                                           null,
+                                           10 );
         workingMemory.assertObject( jane );
 
         workingMemory.fireAllRules();
@@ -416,12 +415,12 @@ public abstract class IntegrationCases extends TestCase {
                                  list );
 
         PersonInterface peter = new Person( "peter",
-                                   null,
-                                   12 );
+                                            null,
+                                            12 );
         workingMemory.assertObject( peter );
         PersonInterface jane = new Person( "jane",
-                                  null,
-                                  10 );
+                                           null,
+                                           10 );
         workingMemory.assertObject( jane );
 
         workingMemory.fireAllRules();
@@ -493,8 +492,8 @@ public abstract class IntegrationCases extends TestCase {
         FactHandle cheddarHandle = workingMemory.assertObject( cheddar );
 
         PersonInterface paul = new Person( "paul",
-                                  "stilton",
-                                  12 );
+                                           "stilton",
+                                           12 );
         workingMemory.assertObject( paul );
         workingMemory.fireAllRules();
 
@@ -519,11 +518,11 @@ public abstract class IntegrationCases extends TestCase {
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         PersonInterface p1 = new Person( "michael",
-                                "food",
-                                40 );
+                                         "food",
+                                         40 );
         PersonInterface p2 = new Person( null,
-                                "drink",
-                                30 );
+                                         "drink",
+                                         30 );
         workingMemory.assertObject( p1 );
         workingMemory.assertObject( p2 );
 
@@ -544,8 +543,8 @@ public abstract class IntegrationCases extends TestCase {
                                  foo );
 
         PersonInterface p1 = new Person( null,
-                                "food",
-                                40 );
+                                         "food",
+                                         40 );
 
         workingMemory.assertObject( p1 );
 
@@ -630,18 +629,20 @@ public abstract class IntegrationCases extends TestCase {
         assertNotNull( ruleErr.getDescr() );
         assertTrue( ruleErr.getLine() != -1 );
 
-        assertEquals(3, builder.getErrors().length);
-        
+        assertEquals( 3,
+                      builder.getErrors().length );
+
         //check that its getting it from the ruleDescr
         assertEquals( ruleErr.getLine(),
                       ruleErr.getDescr().getLine() );
         //check the absolute error line number (there are more).
-        assertEquals(11, ruleErr.getLine());
-        
+        assertEquals( 11,
+                      ruleErr.getLine() );
+
         //now check the RHS, not being too specific yet, as long as it has the rules line number, not zero
         RuleError rhs = (RuleError) builder.getErrors()[2];
-        assertTrue(rhs.getLine() > 7); //not being too specific - may need to change this when we rework the error reporting
-        
+        assertTrue( rhs.getLine() > 7 ); //not being too specific - may need to change this when we rework the error reporting
+
     }
 
     public void testErrorsParser() throws Exception {
@@ -762,7 +763,7 @@ public abstract class IntegrationCases extends TestCase {
                                  list );
 
         PersonInterface person = new Person( "michael",
-                                    "cheese" );
+                                             "cheese" );
         person.setStatus( "start" );
         workingMemory.assertObject( person );
         workingMemory.fireAllRules();
@@ -909,7 +910,7 @@ public abstract class IntegrationCases extends TestCase {
                                  list );
 
         PersonInterface person = new Person( "Edson",
-                                    "cheese" );
+                                             "cheese" );
         workingMemory.assertObject( person );
 
         workingMemory.fireAllRules();
@@ -1115,7 +1116,7 @@ public abstract class IntegrationCases extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        
+
         List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
@@ -1123,33 +1124,43 @@ public abstract class IntegrationCases extends TestCase {
         Cheese brie = new Cheese( "brie",
                                   12 );
         workingMemory.assertObject( brie );
-        
+
         XorGroup xorGroup0 = workingMemory.getAgenda().getXorGroup( "xor-group-0" );
-        assertEquals( 2, xorGroup0.size() );
-        
+        assertEquals( 2,
+                      xorGroup0.size() );
+
         XorGroup xorGroup3 = workingMemory.getAgenda().getXorGroup( "xor-group-3" );
-        assertEquals( 1, xorGroup3.size() );
-        
+        assertEquals( 1,
+                      xorGroup3.size() );
+
         AgendaGroup agendaGroup3 = workingMemory.getAgenda().getAgendaGroup( "agenda-group-3" );
-        assertEquals( 1, agendaGroup3.size() );
-        
+        assertEquals( 1,
+                      agendaGroup3.size() );
+
         AgendaGroup agendaGroupMain = workingMemory.getAgenda().getAgendaGroup( "MAIN" );
-        assertEquals( 3, agendaGroupMain.size() );
-        
+        assertEquals( 3,
+                      agendaGroupMain.size() );
+
         workingMemory.clearAgendaGroup( "agenda-group-3" );
-        assertEquals( 0, xorGroup3.size() );
-        assertEquals( 0, agendaGroup3.size() );
-        
+        assertEquals( 0,
+                      xorGroup3.size() );
+        assertEquals( 0,
+                      agendaGroup3.size() );
+
         workingMemory.fireAllRules();
-        
-        assertEquals( 0, xorGroup0.size() );
-        
-        assertEquals( 2, list.size() );
-        assertEquals( "rule0", list.get(0));
-        assertEquals( "rule2", list.get(1));
-        
-    }    
-    
+
+        assertEquals( 0,
+                      xorGroup0.size() );
+
+        assertEquals( 2,
+                      list.size() );
+        assertEquals( "rule0",
+                      list.get( 0 ) );
+        assertEquals( "rule2",
+                      list.get( 1 ) );
+
+    }
+
     public void testDuration() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration.drl" ) ) );
@@ -1324,7 +1335,7 @@ public abstract class IntegrationCases extends TestCase {
         // type node in memory yet, but the rule engine is supposed
         // to handle that correctly
         PersonInterface bob = new Person( "bob",
-                                 "stilton" );
+                                          "stilton" );
         bob.setStatus( "Not evaluated" );
         workingMemory.assertObject( bob );
 
@@ -1417,7 +1428,7 @@ public abstract class IntegrationCases extends TestCase {
                                  list );
 
         PersonInterface bob = new Person( "bob",
-                                 "stilton" );
+                                          "stilton" );
         bob.setStatus( "Not evaluated" );
         workingMemory.assertObject( bob );
 
@@ -1476,10 +1487,10 @@ public abstract class IntegrationCases extends TestCase {
 
         // Adding person with null name and likes attributes
         PersonInterface bob = new Person( null,
-                                 null );
+                                          null );
         bob.setStatus( "P1" );
         PersonInterface pete = new Person( null,
-                                  null );
+                                           null );
         bob.setStatus( "P2" );
         workingMemory.assertObject( bob );
         workingMemory.assertObject( pete );
@@ -1531,7 +1542,7 @@ public abstract class IntegrationCases extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        
+
         List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
@@ -1541,12 +1552,12 @@ public abstract class IntegrationCases extends TestCase {
         FactHandle brieHandle = workingMemory.assertObject( brie );
 
         Cheese provolone = new Cheese( "provolone",
-                                  12 );
+                                       12 );
         FactHandle provoloneHandle = workingMemory.assertObject( provolone );
 
         workingMemory.fireAllRules();
-        
-        assertEquals( 3, 
+
+        assertEquals( 3,
                       list.size() );
 
         assertEquals( 3,
@@ -1572,34 +1583,46 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        Cheese cheese1 = new Cheese("c", 1);
-        Cheese cheese2 = new Cheese(cheese1.getType(), 1);
-        List list; 
-        
+        Cheese cheese1 = new Cheese( "c",
+                                     1 );
+        Cheese cheese2 = new Cheese( cheese1.getType(),
+                                     1 );
+        List list;
+
         FactHandle h1 = workingMemory.assertObject( cheese1 );
         workingMemory.fireAllRules();
-        list = workingMemory.getObjects(cheese1.getType().getClass());
-        assertEquals(1, list.size());
+        list = workingMemory.getObjects( cheese1.getType().getClass() );
+        assertEquals( 1,
+                      list.size() );
         //probably dangerous, as contains works with equals, not identity
-        assertEquals(cheese1.getType(), list.get(0));
+        assertEquals( cheese1.getType(),
+                      list.get( 0 ) );
         //FactHandle ht = workingMemory.getFactHandle(c1.getType());
-        
+
         FactHandle h2 = workingMemory.assertObject( cheese2 );
         workingMemory.fireAllRules();
-        list = workingMemory.getObjects(cheese1.getType().getClass());
-        assertEquals(1, list.size());
-        assertEquals(cheese1.getType(), list.get(0));
+        list = workingMemory.getObjects( cheese1.getType().getClass() );
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( cheese1.getType(),
+                      list.get( 0 ) );
 
-        workingMemory.retractObject(h1);
+        workingMemory.retractObject( h1 );
         workingMemory.fireAllRules();
-        list = workingMemory.getObjects(cheese1.getType().getClass());
-        assertEquals("cheese-type " + cheese1.getType() + " was retracted, but should not. Backed by cheese2 => type.", 1, list.size());
-        assertEquals("cheese-type " + cheese1.getType() + " was retracted, but should not. Backed by cheese2 => type.", cheese1.getType(), list.get(0));
-        
-        workingMemory.retractObject(h2);
+        list = workingMemory.getObjects( cheese1.getType().getClass() );
+        assertEquals( "cheese-type " + cheese1.getType() + " was retracted, but should not. Backed by cheese2 => type.",
+                      1,
+                      list.size() );
+        assertEquals( "cheese-type " + cheese1.getType() + " was retracted, but should not. Backed by cheese2 => type.",
+                      cheese1.getType(),
+                      list.get( 0 ) );
+
+        workingMemory.retractObject( h2 );
         workingMemory.fireAllRules();
-        list = workingMemory.getObjects(cheese1.getType().getClass());
-        assertEquals("cheese-type " + cheese1.getType() + " was not retracted, but should have. Neither  cheese1 => type nor cheese2 => type is true.", 0, list.size());
+        list = workingMemory.getObjects( cheese1.getType().getClass() );
+        assertEquals( "cheese-type " + cheese1.getType() + " was not retracted, but should have. Neither  cheese1 => type nor cheese2 => type is true.",
+                      0,
+                      list.size() );
     }
 
     public void testLogicalAssertionsSelfreferencing() throws Exception {
@@ -1612,30 +1635,37 @@ public abstract class IntegrationCases extends TestCase {
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         List list;
-        
-        String b = new String("b");
-        String a = new String("a");
 
-        workingMemory.setGlobal( "b", b );
+        String b = new String( "b" );
+        String a = new String( "a" );
+
+        workingMemory.setGlobal( "b",
+                                 b );
 
         FactHandle h1 = workingMemory.assertObject( a );
         workingMemory.fireAllRules();
-        list = workingMemory.getObjects(a.getClass());
-        assertEquals(2, list.size());
-        assertTrue(list.contains(a));
-        assertTrue(list.contains(b));
-        
-        workingMemory.retractObject(h1);
+        list = workingMemory.getObjects( a.getClass() );
+        assertEquals( 2,
+                      list.size() );
+        assertTrue( list.contains( a ) );
+        assertTrue( list.contains( b ) );
+
+        workingMemory.retractObject( h1 );
         workingMemory.fireAllRules();
-        list = workingMemory.getObjects(a.getClass());
-        assertEquals("b was retracted, but it should not have. Is backed by b => b being true.", 1, list.size());
-        assertEquals("b was retracted, but it should not have. Is backed by b => b being true.", b, list.get(0));
-        
-        h1 = workingMemory.getFactHandle(b);
-        workingMemory.retractObject(h1);
+        list = workingMemory.getObjects( a.getClass() );
+        assertEquals( "b was retracted, but it should not have. Is backed by b => b being true.",
+                      1,
+                      list.size() );
+        assertEquals( "b was retracted, but it should not have. Is backed by b => b being true.",
+                      b,
+                      list.get( 0 ) );
+
+        h1 = workingMemory.getFactHandle( b );
+        workingMemory.retractObject( h1 );
         workingMemory.fireAllRules();
-        list = workingMemory.getObjects(a.getClass());
-        assertEquals(0, list.size());
+        list = workingMemory.getObjects( a.getClass() );
+        assertEquals( 0,
+                      list.size() );
     }
 
     public void testLogicalAssertionsLoop() throws Exception {
@@ -1648,16 +1678,22 @@ public abstract class IntegrationCases extends TestCase {
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         List list;
-        
+
         List l = new ArrayList();
-        String a = new String("a");
-        workingMemory.setGlobal( "a", a );
-        workingMemory.setGlobal( "l", l );
+        String a = new String( "a" );
+        workingMemory.setGlobal( "a",
+                                 a );
+        workingMemory.setGlobal( "l",
+                                 l );
 
         workingMemory.fireAllRules();
-        list = workingMemory.getObjects(a.getClass());
-        assertEquals("a still asserted.", 0, list.size());
-        assertEquals("Rule has not fired (looped) expected number of times", 10, l.size());
+        list = workingMemory.getObjects( a.getClass() );
+        assertEquals( "a still asserted.",
+                      0,
+                      list.size() );
+        assertEquals( "Rule has not fired (looped) expected number of times",
+                      10,
+                      l.size() );
     }
 
     public void testLogicalAssertionsNoLoop() throws Exception {
@@ -1670,16 +1706,22 @@ public abstract class IntegrationCases extends TestCase {
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         List list;
-        
+
         List l = new ArrayList();
-        String a = new String("a");
-        workingMemory.setGlobal( "a", a );
-        workingMemory.setGlobal( "l", l );
+        String a = new String( "a" );
+        workingMemory.setGlobal( "a",
+                                 a );
+        workingMemory.setGlobal( "l",
+                                 l );
 
         workingMemory.fireAllRules();
-        list = workingMemory.getObjects(a.getClass());
-        assertEquals("a still in WM", 0, list.size());
-        assertEquals("Rule should not loop", 1, l.size());
+        list = workingMemory.getObjects( a.getClass() );
+        assertEquals( "a still in WM",
+                      0,
+                      list.size() );
+        assertEquals( "Rule should not loop",
+                      1,
+                      l.size() );
     }
 
     public void testLogicalAssertions2() throws Exception {
@@ -1690,30 +1732,41 @@ public abstract class IntegrationCases extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        
+
         List events = new ArrayList();
-        
-        workingMemory.setGlobal( "events", events );
-        
-        Sensor sensor = new Sensor(80, 80);
+
+        workingMemory.setGlobal( "events",
+                                 events );
+
+        Sensor sensor = new Sensor( 80,
+                                    80 );
         FactHandle handle = workingMemory.assertObject( sensor );
 
         // everything should be normal
         workingMemory.fireAllRules();
-        
+
         List list = workingMemory.getObjects();
-        
-        assertEquals("Only sensor is there", 1, list.size());
-        assertEquals("Only one event", 1, events.size());
-        
+
+        assertEquals( "Only sensor is there",
+                      1,
+                      list.size() );
+        assertEquals( "Only one event",
+                      1,
+                      events.size() );
+
         // problems should be detected
         sensor.setPressure( 200 );
         sensor.setTemperature( 200 );
-        workingMemory.modifyObject( handle, sensor );
-        
+        workingMemory.modifyObject( handle,
+                                    sensor );
+
         workingMemory.fireAllRules();
-        assertEquals("Only sensor is there", 1, list.size());
-        assertEquals("Exactly six events", 6, events.size());
+        assertEquals( "Only sensor is there",
+                      1,
+                      list.size() );
+        assertEquals( "Exactly six events",
+                      6,
+                      events.size() );
     }
 
     public void testLogicalAssertionsNot() throws Exception {
@@ -1726,33 +1779,49 @@ public abstract class IntegrationCases extends TestCase {
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         List list;
-        
-        String a = new String("a");
-        Integer i = new Integer(1);
-        workingMemory.setGlobal( "i", i );
+
+        String a = new String( "a" );
+        Integer i = new Integer( 1 );
+        workingMemory.setGlobal( "i",
+                                 i );
 
         workingMemory.fireAllRules();
         list = workingMemory.getObjects();
-        assertEquals("i was not asserted by not a => i.", 1, list.size());
-        assertEquals("i was not asserted by not a => i.", i, list.get(0));
+        assertEquals( "i was not asserted by not a => i.",
+                      1,
+                      list.size() );
+        assertEquals( "i was not asserted by not a => i.",
+                      i,
+                      list.get( 0 ) );
 
-        FactHandle h = workingMemory.assertObject(a);
+        FactHandle h = workingMemory.assertObject( a );
         //no need to fire rules, assertion alone removes justification for i, so it should be retracted.
         //workingMemory.fireAllRules();
         list = workingMemory.getObjects();
-        assertEquals("a was not asserted or i not retracted.", 1, list.size());
-        assertEquals("a was asserted.", a, list.get(0));
-        assertFalse("i was not rectracted.", list.contains(i));
+        assertEquals( "a was not asserted or i not retracted.",
+                      1,
+                      list.size() );
+        assertEquals( "a was asserted.",
+                      a,
+                      list.get( 0 ) );
+        assertFalse( "i was not rectracted.",
+                     list.contains( i ) );
 
         //no rules should fire, but nevertheless...
         //workingMemory.fireAllRules();
-        assertEquals("agenda should be empty.", 0, workingMemory.getAgenda().agendaSize());
-        
-        workingMemory.retractObject(h);
+        assertEquals( "agenda should be empty.",
+                      0,
+                      workingMemory.getAgenda().agendaSize() );
+
+        workingMemory.retractObject( h );
         workingMemory.fireAllRules();
         list = workingMemory.getObjects();
-        assertEquals("i was not asserted by not a => i.", 1, list.size());
-        assertEquals("i was not asserted by not a => i.", i, list.get(0));
+        assertEquals( "i was not asserted by not a => i.",
+                      1,
+                      list.size() );
+        assertEquals( "i was not asserted by not a => i.",
+                      i,
+                      list.get( 0 ) );
     }
 
     public void testLogicalAssertionsNotPingPong() throws Exception {
@@ -1766,23 +1835,146 @@ public abstract class IntegrationCases extends TestCase {
 
         //workingMemory.addEventListener(new DebugAgendaEventListener());
         //workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
-        
+
         List list;
-        
+
         List l = new ArrayList();
-        
-        String s = new String("s");
-        Integer i = new Integer(1);
-        workingMemory.setGlobal( "i", i );
-        workingMemory.setGlobal( "s", s );
-        workingMemory.setGlobal( "l", l );
-        
+
+        String s = new String( "s" );
+        Integer i = new Integer( 1 );
+        workingMemory.setGlobal( "i",
+                                 i );
+        workingMemory.setGlobal( "s",
+                                 s );
+        workingMemory.setGlobal( "l",
+                                 l );
+
         workingMemory.fireAllRules();
 
         //not sure about desired state of working memory. 
-        assertEquals("Rules have not fired (looped) expected number of times", 10, l.size());
+        assertEquals( "Rules have not fired (looped) expected number of times",
+                      10,
+                      l.size() );
     }
-    
+
+    public void xxxtestLogicalAssertionsDynamicRule() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsDynamicRule.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        org.drools.reteoo.RuleBaseImpl reteooRuleBase = null;
+        org.drools.leaps.RuleBaseImpl leapsRuleBase = null;
+        RuleBase ruleBase = getRuleBase();
+        if ( ruleBase instanceof org.drools.reteoo.RuleBaseImpl ) {
+            reteooRuleBase = (org.drools.reteoo.RuleBaseImpl) ruleBase;
+        } else if ( ruleBase instanceof org.drools.leaps.RuleBaseImpl ) {
+            leapsRuleBase = (org.drools.leaps.RuleBaseImpl) ruleBase;
+        }
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        //        workingMemory.addEventListener(new org.drools.event.DebugAgendaEventListener());
+        //        workingMemory.addEventListener(new org.drools.event.DebugWorkingMemoryEventListener());
+
+        Cheese c1 = new Cheese( "a",
+                                1 );
+        Cheese c2 = new Cheese( "b",
+                                2 );
+        Cheese c3 = new Cheese( "c",
+                                3 );
+        List list;
+
+        workingMemory.assertObject( c1 );
+        FactHandle h = workingMemory.assertObject( c2 );
+        workingMemory.assertObject( c3 );
+        workingMemory.fireAllRules();
+        list = workingMemory.getObjects( c1.getType().getClass() );
+        assertEquals( 2,
+                      list.size() );
+        assertFalse( list.contains( c1.getType() ) );
+        assertTrue( list.contains( c2.getType() ) );
+        assertTrue( list.contains( c3.getType() ) );
+
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsDynamicRule2.drl" ) );
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( reader );
+        Package pkg2 = builder.getPackage();
+        ruleBase.addPackage( pkg2 );
+
+        workingMemory.fireAllRules();
+
+        list = workingMemory.getObjects( c1.getType().getClass() );
+        assertEquals( 3,
+                      list.size() );
+        assertTrue( list.contains( c1.getType() ) );
+        assertTrue( list.contains( c2.getType() ) );
+        assertTrue( list.contains( c3.getType() ) );
+
+        assertEquals( "org.drools.test",
+                      ruleBase.getPackages()[0].getName() );
+        assertEquals( "org.drools.test2",
+                      ruleBase.getPackages()[1].getName() );
+        assertEquals( "rule1",
+                      ruleBase.getPackages()[0].getRules()[0].getName() );
+        assertEquals( "rule2",
+                      ruleBase.getPackages()[1].getRules()[0].getName() );
+
+        if ( reteooRuleBase != null ) {
+            reteooRuleBase.removeRule( ruleBase.getPackages()[0].getName(),
+                                       ruleBase.getPackages()[0].getRules()[0].getName() );
+        } else if ( leapsRuleBase != null ) {
+            leapsRuleBase.removeRule( ruleBase.getPackages()[0].getName(),
+                                      ruleBase.getPackages()[0].getRules()[0].getName() );
+        }
+
+        assertEquals( 0,
+                      ruleBase.getPackages()[0].getRules().length );
+        assertEquals( 1,
+                      ruleBase.getPackages()[1].getRules().length );
+        assertEquals( "org.drools.test2",
+                      ruleBase.getPackages()[1].getName() );
+        assertEquals( "rule2",
+                      ruleBase.getPackages()[1].getRules()[0].getName() );
+
+        list = workingMemory.getObjects( c1.getType().getClass() );
+        assertEquals( "remove of rule should retract objects logically asserted based on the rule",
+                      2,
+                      list.size() );
+        assertTrue( "remove of rule should retract objects logically asserted based on the rule",
+                    list.contains( c1.getType() ) );
+        assertTrue( "remove of rule should retract objects logically asserted based on the rule",
+                    list.contains( c2.getType() ) );
+        assertFalse( "remove of rule should retract objects logically asserted based on the rule",
+                     list.contains( c3.getType() ) );
+
+        c2.setPrice( 1 );
+        workingMemory.modifyObject( h,
+                                    c2 );
+        list = workingMemory.getObjects( c1.getType().getClass() );
+        assertEquals( "remove of rule should remove one justification for c2 -> type",
+                      1,
+                      list.size() );
+        assertFalse( "remove of rule should remove one justification for c2 -> type",
+                     list.contains( c2.getType() ) );
+        assertTrue( "remove of rule should remove one justification for c2 -> type",
+                    list.contains( c1.getType() ) );
+
+        if ( reteooRuleBase != null ) {
+            reteooRuleBase.removeRule( ruleBase.getPackages()[1].getName(),
+                                       ruleBase.getPackages()[1].getRules()[0].getName() );
+        } else if ( leapsRuleBase != null ) {
+            leapsRuleBase.removeRule( ruleBase.getPackages()[1].getName(),
+                                      ruleBase.getPackages()[1].getRules()[0].getName() );
+        }
+        assertEquals( 0,
+                      ruleBase.getPackages()[0].getRules().length );
+        assertEquals( 0,
+                      ruleBase.getPackages()[1].getRules().length );
+        list = workingMemory.getObjects( c1.getType().getClass() );
+        assertEquals( 0,
+                      list.size() );
+    }
+
     public void testEmptyRule() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyRule.drl" ) ) );
@@ -1791,16 +1983,17 @@ public abstract class IntegrationCases extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        
+
         List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );        
-        
+        workingMemory.setGlobal( "list",
+                                 list );
+
         workingMemory.fireAllRules();
-        
-        assertTrue( list.contains("fired1") );
-        assertTrue( list.contains("fired2") );
+
+        assertTrue( list.contains( "fired1" ) );
+        assertTrue( list.contains( "fired2" ) );
     }
-    
+
     public void testjustEval() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NoColumns.drl" ) ) );
@@ -1809,16 +2002,17 @@ public abstract class IntegrationCases extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        
+
         List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );        
-        
+        workingMemory.setGlobal( "list",
+                                 list );
+
         workingMemory.fireAllRules();
-        
-        assertTrue( list.contains("fired1") );
-        assertTrue( list.contains("fired3") );
-    }    
-    
+
+        assertTrue( list.contains( "fired1" ) );
+        assertTrue( list.contains( "fired3" ) );
+    }
+
     private Object serializeIn(byte[] bytes) throws IOException,
                                             ClassNotFoundException {
         ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );

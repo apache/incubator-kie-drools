@@ -1,0 +1,10 @@
+package org.drools.test2;
+
+import org.drools.Cheese;
+
+rule "rule2"
+    when
+        Cheese( type : type, price : price -> (price.intValue() < 3))
+    then
+		assertLogical( type );
+end
