@@ -158,6 +158,7 @@ public class RuleBuilder {
                                                    pkg.getPackageCompilationData().getClassLoader() );
         // make an automatic import for the current package
         this.typeResolver.addImport( pkg.getName() + ".*" );
+        this.typeResolver.addImport( "java.lang.*" );
 
         this.ruleDescr = ruleDescr;
 
@@ -577,8 +578,10 @@ public class RuleBuilder {
 
         st.setAttribute( "methodName",
                          classMethodName );
+        
+        String returnValueText = functionFixer.fix( returnValueDescr.getText() );
         st.setAttribute( "text",
-                         functionFixer.fix( returnValueDescr.getText() ) );
+                         returnValueText );
 
         this.methods.add( st.toString() );
 
@@ -597,8 +600,8 @@ public class RuleBuilder {
                                      declarations,
                                      returnValueDescr.getText() );
 
-        st.setAttribute( "text",
-                         returnValueDescr.getText() );
+        st.setAttribute( "hashCode",
+                         returnValueText.hashCode() );
 
         String invokerClassName = pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
@@ -668,8 +671,10 @@ public class RuleBuilder {
 
         st.setAttribute( "methodName",
                          classMethodName );
+        
+        String predicateText =  functionFixer.fix( predicateDescr.getText() );
         st.setAttribute( "text",
-                         functionFixer.fix( predicateDescr.getText() ) );
+                         predicateText );
 
         this.methods.add( st.toString() );
 
@@ -694,8 +699,8 @@ public class RuleBuilder {
                                      declarations,
                                      predicateDescr.getText() );
 
-        st.setAttribute( "text",
-                         predicateDescr.getText() );
+        st.setAttribute( "hashCode",
+                         predicateText.hashCode() );
 
         String invokerClassName = pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
@@ -729,8 +734,10 @@ public class RuleBuilder {
 
         st.setAttribute( "methodName",
                          classMethodName );
+        
+        String  evalText = functionFixer.fix( evalDescr.getText() );
         st.setAttribute( "text",
-                         functionFixer.fix( evalDescr.getText() ) );
+                          evalText );
 
         this.methods.add( st.toString() );
 
@@ -749,8 +756,8 @@ public class RuleBuilder {
                                      declarations,
                                      evalDescr.getText() );
 
-        st.setAttribute( "text",
-                         evalDescr.getText() );
+        st.setAttribute( "hashCode",
+                         evalText.hashCode() );
 
         String invokerClassName = pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
