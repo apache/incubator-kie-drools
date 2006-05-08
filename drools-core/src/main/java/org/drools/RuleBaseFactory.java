@@ -34,7 +34,7 @@ public class RuleBaseFactory {
 
     /** Create a new default rule base (RETEOO type engine) */
     public static RuleBase newRuleBase() {
-        return RuleBaseFactory.getInstance().newRuleBase( RuleBase.RETEOO );
+        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
     }
 
     /** Create a new RuleBase of the appropriate type */
