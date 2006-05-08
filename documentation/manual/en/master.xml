@@ -135,6 +135,11 @@
       
     </chapter>
 
+	<chapter>
+		<title>Performance tuning</title>
+		<xi:include href="Chapter-Performance_Tuning/Section-Performance.xml" />
+	</chapter>
+
     <chapter>
       <title>Examples</title>
 
