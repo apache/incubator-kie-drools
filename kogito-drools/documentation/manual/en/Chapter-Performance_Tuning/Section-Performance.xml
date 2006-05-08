@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
+<section>
+  <title>Perforamnce considerations</title>
+
+  <para>In any reasonably complex application, there are many things that may
+  effect performance. The usual advice applies of course (ie don't speculate,
+  measure, profile and plan). In terms of the rule engine, it does its best to
+  be as efficient as possibly, without too much thought needed, most people
+  should not need to read this chapter in detail.</para>
+
+  <para>Note that for someone who is using a rule engine of the first time,
+  the most noticable "cost" will be the startup of the rule engine (which is
+  actually compiling the rules) - this problem is easily solved - simply cache
+  the RuleBase instances (or the rule packages) and only update rules as
+  needed (there are many ways to achieve this in your application which will
+  not be covered here).</para>
+
+  <para>The remainder of this chapter is considerations on tuning the runtime
+  performance of rules (not compiling), which is where performance often
+  really counts.</para>
+
+  <section>
+    <title>Beta Node Memory Indexing</title>
+
+    <para>As explained in the chapter on the Rete Algorithm, BetaNodes are
+    nodes that have two inputs: the left input (for tuples) and the right
+    input (for single objects). Each beta node has two memories, one for each
+    input: the left memory and the right memory.</para>
+
+    <para>So, when a single object arrives at the right input of the node, it
+    tries to match every tuple in the left memory according to the constraints
+    defined for the given BetaNode. Those elements that match are propagated
+    down through the network. The symmetrical behavior happens for when a
+    tuple arrives at the left input of the node. See diagram bellow:
+    <mediaobject>
+        <imageobject>
+          <imagedata fileref="beta_node.png" />
+        </imageobject>
+      </mediaobject></para>
+
+    <para>When the number of elements in each of the Beta Node Memories starts
+    to grow, the matching process starts to slow down, as each new element
+    that arrives needs to try to match all the elements in the opposite memory
+    for the given constraints. This process becomes a serious limitation for
+    real systems where thousands of facts are asserted into working memory and
+    where the Rete Network has several Beta Nodes.</para>
+
+    <para>One way of minimizing the problem is to index each of the BetaNode
+    memories in a way that when a new element arrives, it does not need to
+    iterate over all elements of the opposite memory in order to find its
+    matches.</para>
+
+    <para>So, for example, if we have a Rule like the following:
+    <programlisting>rule "find brothers"
+    when
+        p1: Person( $mother : mother )
+        p2: Person( mother == $mother )
+    then
+        // do something
+end
+</programlisting> If no indexing is used, each new Person object asserted into
+    working memory will try to match each other previously asserted Person
+    object to find those that have the same mother. So, if we have 1000 Person
+    objects already asserted into working memory, and we assert a new one, the
+    new one will try to match each of the 1000 previously asserted
+    objects.</para>
+
+    <para>If we index BetaNode memories by the “mother” attribute, though,
+    when a new Person is asserted into memory, it will try to match only the
+    previously asserted objects that have the same mother attribute, in a very
+    efficient way using the previously built index. So, if the new object has
+    only one brother previously asserted into memory, it will match only one
+    object, avoiding the 999 tries that would fail.</para>
+
+    <para>Drools implements BetaNode indexing exactly as described above in
+    order to boost performance. The BetaNode indexing is enabled by default
+    and users usually don’t need to worry about it. Although, for specific
+    situations where a user has a limited amount of memory or for some reason
+    does not want to incur in the indexing overhead, indexing can be disabled
+    for each of the memories, by setting the following system properties to
+    false: <programlisting>org.drools.reteoo.beta.index-left
+org.drools.reteoo.beta.index-right
+
+For example:
+..when you launch the application (or in the container as appropriate).
+-Dorg.drools.reteoo.beta.index-right=false
+-Dorg.drools.reteoo.beta.index-left=false
+</programlisting></para>
+  </section>
+
+  <section>
+    <title>Indexing Performance Tuning</title>
+
+    <para>A good way to understand what happens when indexing is used is to
+    make an analogy to databases systems. As we all know, indexing is a great
+    mechanism for performance improvements on database queries, but also adds
+    an overhead to other operations like insert, updates and deletes. Also,
+    there is a memory consumption cost involved. A well planned set of indexes
+    is essential for most enterprise applications and the responsible for
+    defining them is usually the DBA. Once indexes are defined, when a query
+    is executed against that database, a query planner component is used by
+    database systems to estimate the best plan to run the query with the best
+    performance, sometimes using the index, sometimes not.</para>
+
+    <para>Working memory has the same issues and same thoughts are valid here.
+    Drools implements an automatic indexing strategy to index beta node
+    memories. Just to have some data to understand the consequences of it,
+    lets use Manners 64 benchmark test results on a Pentium IV 3 Ghz HT
+    machine with 1.0 Gb memory. This is not really a detailed benchmark test,
+    but simply some rough numbers in order to make the scenario easier to
+    understand: <programlisting>Manners 64 without indexes: 135000 millisec to run 
+Manners 64 with BetaNode indexes: 10078 millisec to run on average</programlisting></para>
+
+    <para>It is obvious by the previous run times that indexes overall
+    benefits pays off the overhead to keep them, at least in terms of
+    performance. We are not analyzing limited memory environments here.</para>
+
+    <para>Although, every system has its own peculiarities and sometimes it is
+    possible to do some fine tuning on performance. For example, in our
+    Manners 64 example, if we disable the right memory indexing we would have
+    the following result: <programlisting>Manners 64 with BetaNode indexing only for left memory: 142000 millisec to run on average
+</programlisting> The above is even worse than no using any indexing. This
+    happens clearly because for Manners 64, the left indexing overhead is
+    bigger than its benefit. So, if we do the contrary, leaving right indexing
+    enabled and disabling the left indexing, we get the following result:
+    <programlisting>Manners 64 with BetaNode indexing only for right memory: 8765 millisec to run on average
+</programlisting> So, we have the best scenario now. For Manners 64, the best
+    would be to disable left indexing, leaving only right indexing
+    enabled.</para>
+
+	<section>
+		<title>Re-arranging constraints</title>
+    <para>Another tip to tune performance when using indexing is always to
+    write your rules in a way that the most restrictive constraints are
+    declared before the less restrictive ones in your rule. For example, if
+    you have a rule with a column like this: <programlisting>Employee (department == $aDepartment, name == $aName)
+</programlisting> Rewriting it as shown bellow will probably give you a better
+    performance, as “name” is probably a more restrictive constraint than
+    “department”: <programlisting>Employee (name == $aName, department == $aDepartment)
+</programlisting> (Unless you work in an organisation where there are more
+    departments then employees, which could well be the case in a Government
+    organisation ;)</para>
+	</section>
+    <para>Some other improvements are being developed for Drools in this area
+    and will be documented as they become available in future versions.</para>
+  </section>
+</section>
