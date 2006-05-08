@@ -19,6 +19,7 @@ package org.drools.lang;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
+import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BoundVariableDescr;
@@ -96,7 +98,7 @@ public class RuleParserTest extends TestCase {
     		assertFalse( parser.hasErrors() );
 	}
     
-    public void FIXME_testNewLinesFunnyBusiness() throws Exception {
+    public void FIXME_testKeywordCollisions() throws Exception {
         RuleParser parser = parseResource( "eol_funny_business.drl" );
         
         parser.compilation_unit();
@@ -108,6 +110,18 @@ public class RuleParserTest extends TestCase {
         
     }    
 	
+    public void FIXME_testLatinChars() throws Exception {
+        DrlParser parser = new DrlParser();
+        Reader drl = new InputStreamReader(this.getClass().getResourceAsStream( "latin-sample.drl" ));
+        Reader dsl = new InputStreamReader(this.getClass().getResourceAsStream( "latin.dsl" ));
+        
+        PackageDescr pkg = parser.parse( drl, dsl );
+        assertFalse(parser.hasErrors());
+        assertEquals("br.com.auster.drools.sample", pkg.getName());
+        assertEquals(1, pkg.getRules().size());
+        
+    }
+    
 	public void testAlmostEmptyRule() throws Exception {
 		RuleDescr rule = parseResource( "almost_empty_rule.drl" ).rule();
 		
