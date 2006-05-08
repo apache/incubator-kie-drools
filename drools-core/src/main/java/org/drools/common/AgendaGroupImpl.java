@@ -116,7 +116,7 @@ public class AgendaGroupImpl
         return false;
     }
 
-    public int hashcode() {
+    public int hashCode() {
         return this.name.hashCode();
     }
 }

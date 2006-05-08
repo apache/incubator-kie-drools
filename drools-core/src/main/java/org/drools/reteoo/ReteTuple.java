@@ -40,7 +40,7 @@ import org.drools.util.LinkedListNode;
  * <p>
  * Each <code>ReteTuple</code> also reference a <code>TupleKey</code> which is special array of FactHandles
  * representing the <code>Column</code>s in a <code>Rule</code>. The <code>TupleKey</code> also provide the 
- * hashcode implementation for <code>ReteTuple</code>.
+ * hashCode implementation for <code>ReteTuple</code>.
  * 
  * @see Tuple
  * @see TupleMatch

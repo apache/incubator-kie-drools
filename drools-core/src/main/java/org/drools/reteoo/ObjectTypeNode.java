@@ -246,22 +246,26 @@ class ObjectTypeNode extends ObjectSource
         return "[ObjectTypeNode objectType=" + this.objectType + "]";
     }
 
+    /**
+     * Uses he hashCode() of the underlying ObjectType implementation.
+     */
+    public int hashCode() {
+        return this.objectType.hashCode();
+    }    
+    
     public boolean equals(Object object) {
         if ( this == object ) {
             return true;
         }
 
-        if ( object == null || getClass() != object.getClass() ) {
+        if ( object == null || object.getClass() != ObjectTypeNode.class ) {
             return false;
         }
 
-        return this.objectType.equals( this.objectType );
+        ObjectTypeNode other = (ObjectTypeNode) object;
+        
+        return this.objectType.equals( other.objectType );
     }
 
-    /**
-     * Uses he hashcode() of the underlying ObjectType implementation.
-     */
-    public int hashCode() {
-        return this.objectType.hashCode();
-    }
+
 }

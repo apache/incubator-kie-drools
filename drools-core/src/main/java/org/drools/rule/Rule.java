@@ -421,13 +421,13 @@ public class Rule
             return true;
         }
 
-        if ( object == null || !(object instanceof Rule) ) {
+        if ( object == null || object.getClass() != Rule.class ) {
             return false;
         }
 
         Rule other = (Rule) object;
 
-        return (this.name.equals( other.name ) && this.agendaGroup.equals( other.agendaGroup ) && this.salience == other.salience && this.noLoop == other.noLoop);
+        return (this.name.equals( other.name ) && this.agendaGroup.equals( other.agendaGroup ) && this.xorGroup.equals( other.xorGroup )&& this.salience == other.salience && this.noLoop == other.noLoop);
     }
 
     public int hashCode() {

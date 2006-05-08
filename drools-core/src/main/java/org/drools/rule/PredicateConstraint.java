@@ -92,4 +92,23 @@ public class PredicateConstraint
 
     }
 
+    public int hashCode() {
+        return this.expression.hashCode();
+    }
+    
+    public boolean equals(Object object) {
+        if (object == null ) {
+            return false;
+        } else if ( object == this ){
+            return true;
+        }
+        
+        if ( ! (object instanceof PredicateConstraint) ) {
+            return false;
+        }
+        
+        PredicateConstraint other = ( PredicateConstraint ) object;
+        
+        return this.expression.equals( other.expression );
+    }    
 };

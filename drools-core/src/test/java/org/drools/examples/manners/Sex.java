@@ -53,7 +53,7 @@ public final class Sex {
         return this == object;
     }
 
-    public final int hashcode() {
+    public final int hashCode() {
         return this.sex;
     }
 

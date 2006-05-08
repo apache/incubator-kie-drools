@@ -219,7 +219,7 @@ class EvalConditionNode extends TupleSource
             return true;
         }
 
-        if ( object == null || getClass() != object.getClass() ) {
+        if ( object == null || object.getClass() != EvalConditionNode.class ) {
             return false;
         }
 

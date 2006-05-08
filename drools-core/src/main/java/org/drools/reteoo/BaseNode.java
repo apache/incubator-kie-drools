@@ -135,7 +135,7 @@ abstract class BaseNode
     }
 
     /** 
-     * The hashcode return is simply the unique id of the node. It is expected that base classes will also implement equals(Object object). 
+     * The hashCode return is simply the unique id of the node. It is expected that base classes will also implement equals(Object object). 
      */
     public int hashCode() {
         return this.id;
