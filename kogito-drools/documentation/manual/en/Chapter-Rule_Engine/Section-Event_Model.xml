@@ -2,17 +2,12 @@
 <section>
   <title>Event Model</title>
 
-  <para>uuuere</para>
+  <para>The event package provides means to be notified of rule engine events, including rules firing, objects being asserted etc. This
+  allows you to seperate out logging/auditing activities from the main part of your application (and the rules) - as events are a cross cutting concern.</para>
 
-  <section>
-    <title>Debug Event Listener</title>
+  <para>
+		Refer to the org.drools.event package in the drools-core module javadocs. This provides interfaces, and debug implementations of event classes that you can wire in to monitor the rule engine.
+		The Eclipse based Rule IDE also provides a audit logger, and graphical viewer, so that the rule engine can log events for later viewing, and auditing.
+  </para>
 
-    <para></para>
-  </section>
-
-  <section>
-    <title>Audit Event Listener</title>
-
-    <para></para>
-  </section>
 </section>
