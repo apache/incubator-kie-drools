@@ -156,6 +156,7 @@ public class PackageBuilder {
 
     public void addPackage(PackageDescr packageDescr) {
 
+
         if ( packageDescr.getName() == null || "".equals( packageDescr.getName() ) ) {
 
             throw new MissingPackageNameException( "Missing package name for rule package." );
@@ -169,14 +170,17 @@ public class PackageBuilder {
             this.pkg = newPackage( packageDescr );
         }
 
-        //iterate and compile
-        for ( Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-            addFunction( (FunctionDescr) it.next() );
-        }
-
-        //iterate and compile
-        for ( Iterator it = packageDescr.getRules().iterator(); it.hasNext(); ) {
-            addRule( (RuleDescr) it.next() );
+        //only try to compile if there are no parse errors
+        if (!hasErrors()) {
+            //iterate and compile
+            for ( Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
+                addFunction( (FunctionDescr) it.next() );
+            }
+    
+            //iterate and compile
+            for ( Iterator it = packageDescr.getRules().iterator(); it.hasNext(); ) {
+                addRule( (RuleDescr) it.next() );
+            }
         }
     }
 
