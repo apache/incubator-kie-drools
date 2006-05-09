@@ -27,6 +27,8 @@ import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.drools.spi.AgendaGroup;
+import org.drools.spi.XorGroup;
 
 /** 
  * This runs the integration test cases with the leaps implementation.
@@ -127,7 +129,38 @@ public class LeapsTest extends IntegrationCases {
         // Not working in leaps
     }
     
+
+    // while Xor group behaviour is supported by leaps certain functionality is no
+    // due to the lazy nature of leaps and the fact that it does not accumulate 
+    // activations before firing them we can not do counts on xor groups and 
+    // agenda groups as in base integration test
     public void testXorGroups() throws Exception {
-        // Not Working in leaps
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_XorGroups.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        Cheese brie = new Cheese( "brie",
+                                  12 );
+        workingMemory.assertObject( brie );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 3,
+                      list.size() );
+        assertTrue( "rule0",
+                    list.contains( "rule0" ) );
+        assertTrue( "rule1",
+                    list.contains( "rule1" ) );
+        assertTrue( "rule2",
+                    list.contains( "rule2" ) );
     }
+
 }
