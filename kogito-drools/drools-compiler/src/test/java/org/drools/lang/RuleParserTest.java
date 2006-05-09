@@ -111,7 +111,7 @@ public class RuleParserTest extends TestCase {
         
     }    
 	
-    public void FIXME_testLatinChars() throws Exception {
+    public void testLatinChars() throws Exception {
         DrlParser parser = new DrlParser();
         Reader drl = new InputStreamReader(this.getClass().getResourceAsStream( "latin-sample.drl" ));
         Reader dsl = new InputStreamReader(this.getClass().getResourceAsStream( "latin.dsl" ));
