@@ -339,13 +339,13 @@ function
 			f = new FunctionDescr( name.getText(), retType );
 		} 
 		'(' opt_eol
-			(	(paramType=dotted_name)? opt_eol paramName=ID opt_eol
+			(	(paramType=dotted_name)? opt_eol paramName=argument opt_eol
 				{
-					f.addParameter( paramType, paramName.getText() );
+					f.addParameter( paramType, paramName );
 				}
-				(	',' opt_eol (paramType=dotted_name)? opt_eol paramName=ID opt_eol 
+				(	',' opt_eol (paramType=dotted_name)? opt_eol paramName=argument opt_eol 
 					{
-						f.addParameter( paramType, paramName.getText() );
+						f.addParameter( paramType, paramName );
 					}
 				)*
 			)?
@@ -975,9 +975,17 @@ dotted_name returns [String name]
 		name = null;
 	}
 	:	
-		id=ID { name=id.getText(); } ( '.' id=ID { name = name + "." + id.getText(); } )*
+		id=ID { name=id.getText(); } ( '.' id=ID { name = name + "." + id.getText(); } )* ( '[' ']' { name = name + "[]";})*
 	;
 	
+argument returns [String name]
+	@init {
+		name = null;
+	}
+	:
+		id=ID { name=id.getText(); } ( '[' ']' { name = name + "[]";})*
+	;
+
 	
 word returns [String word]
 	@init{
