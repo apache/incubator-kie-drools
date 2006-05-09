@@ -41,6 +41,7 @@ import org.drools.PersonInterface;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.Sensor;
+import org.drools.State;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
@@ -217,6 +218,31 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( bill,
                       list.get( 0 ) );
     }
+    
+    public void testPropertyChangeSupport() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "Test_PropertyChange.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        State state = new State("initial");
+        workingMemory.assertObject( state, true );
+        workingMemory.fireAllRules();
+        
+        assertEquals(1, list.size());
+        
+        state.setState( "finished" );
+        workingMemory.fireAllRules();
+        assertEquals(2, list.size());
+
+    }    
 
     public void testBigDecimal() throws Exception {
 
