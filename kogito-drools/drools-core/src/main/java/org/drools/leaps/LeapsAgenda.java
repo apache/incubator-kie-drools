@@ -39,14 +39,24 @@ public class LeapsAgenda extends Agenda {
         this.workingMemory = workingMemory;
     }
 
-    public synchronized void fireActivation(Activation activation) throws ConsequenceException {
-        if ( activation.getRule() instanceof Query ) {
+    public synchronized void fireActivation( Activation activation )
+            throws ConsequenceException {
+        if (activation.getRule( ) instanceof Query) {
             // put query results to the working memory location
-            this.workingMemory.addToQueryResults( activation.getRule().getName(),
-                                                  activation.getTuple() );
-        } else {
-            // fire regular rule
-            super.fireActivation( activation );
+            this.workingMemory.addToQueryResults( activation.getRule( ).getName( ),
+                                                  activation.getTuple( ) );
+        }
+        else {
+            if (activation.getRule( ).getXorGroup( ) == null
+                    || ( activation.getRule( ).getXorGroup( ) != null && this.getXorGroup( activation.getRule( )
+                                                                                                     .getXorGroup( ) )
+                                                                             .isEmpty( ) )) {
+                // fire regular rule
+                super.fireActivation( activation );
+                if (activation.getRule( ).getXorGroup( ) != null) {
+                    this.getXorGroup( activation.getRule( ).getXorGroup( ) );
+                }
+            }
         }
     }
 }
