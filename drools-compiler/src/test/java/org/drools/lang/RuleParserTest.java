@@ -535,6 +535,12 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }    
     
+    public void testNotBindindShouldBarf() throws Exception {
+        RuleParser parser = parseResource( "not_with_binding_error.drl");
+        parser.compilation_unit();
+        assertTrue( parser.hasErrors() );
+    }        
+    
     public void testSimpleQuery() throws Exception {
         QueryDescr query = parseResource( "simple_query.drl" ).query();
         

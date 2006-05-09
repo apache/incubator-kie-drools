@@ -20,6 +20,7 @@ package org.drools.compiler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
@@ -111,6 +112,12 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         assertLength( 1,
                       builder.getErrors() );
+    }
+    
+    public void testErrorsInParser() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader(this.getClass().getResourceAsStream( "bad_rule.drl" )) );
+        assertTrue(builder.hasErrors());
     }
 
     public void testReload() throws Exception {
