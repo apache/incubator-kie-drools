@@ -1,0 +1,14 @@
+package foo
+
+function String[] yourFunction(String args[]) {
+     baz();
+}
+
+rule "new rule"
+
+	when
+		Something()
+	then
+		yourFunction(new String[3] {"a","b","c"});
+		
+end

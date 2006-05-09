@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea8 C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-05-09 10:21:45
+// $ANTLR 3.0ea8 C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-05-09 20:55:12
 
 	package org.drools.lang;
 	import java.util.List;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class RuleParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "EOL", "ID", "INT", "BOOL", "STRING", "FLOAT", "MISC", "WS", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "\';\'", "\'package\'", "\'import\'", "\'.\'", "\'.*\'", "\'expander\'", "\'global\'", "\'function\'", "\'(\'", "\',\'", "\')\'", "\'{\'", "\'}\'", "\'query\'", "\'end\'", "\'rule\'", "\'when\'", "\':\'", "\'then\'", "\'attributes\'", "\'salience\'", "\'no-loop\'", "\'auto-focus\'", "\'xor-group\'", "\'agenda-group\'", "\'duration\'", "\'or\'", "\'==\'", "\'>\'", "\'>=\'", "\'<\'", "\'<=\'", "\'!=\'", "\'contains\'", "\'matches\'", "\'excludes\'", "\'null\'", "\'->\'", "\'||\'", "\'and\'", "\'&&\'", "\'exists\'", "\'not\'", "\'eval\'", "\'use\'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "EOL", "ID", "INT", "BOOL", "STRING", "FLOAT", "MISC", "WS", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "\';\'", "\'package\'", "\'import\'", "\'.\'", "\'.*\'", "\'expander\'", "\'global\'", "\'function\'", "\'(\'", "\',\'", "\')\'", "\'{\'", "\'}\'", "\'query\'", "\'end\'", "\'rule\'", "\'when\'", "\':\'", "\'then\'", "\'attributes\'", "\'salience\'", "\'no-loop\'", "\'auto-focus\'", "\'xor-group\'", "\'agenda-group\'", "\'duration\'", "\'or\'", "\'==\'", "\'>\'", "\'>=\'", "\'<\'", "\'<=\'", "\'!=\'", "\'contains\'", "\'matches\'", "\'excludes\'", "\'null\'", "\'->\'", "\'||\'", "\'and\'", "\'&&\'", "\'exists\'", "\'not\'", "\'eval\'", "\'[\'", "\']\'", "\'use\'"
     };
     public static final int BOOL=7;
     public static final int INT=6;
@@ -901,13 +901,14 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start function
-    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:331:1: function : 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= ID opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= ID opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol ;
+    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:331:1: function : 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= argument opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol ;
     public void function() throws RecognitionException {   
         Token name=null;
-        Token paramName=null;
         String retType = null;
 
         String paramType = null;
+
+        String paramName = null;
 
         String body = null;
 
@@ -916,8 +917,8 @@ public class RuleParser extends Parser {
         		FunctionDescr f = null;
         	
         try {
-            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:336:17: ( 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= ID opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= ID opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol )
-            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:336:17: 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= ID opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= ID opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:336:17: ( 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= argument opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol )
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:336:17: 'function' opt_eol (retType= dotted_name )? opt_eol name= ID opt_eol '(' opt_eol ( (paramType= dotted_name )? opt_eol paramName= argument opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument opt_eol )* )? ')' opt_eol '{' body= curly_chunk '}' opt_eol
             {
             match(input,22,FOLLOW_22_in_function362); 
             following.push(FOLLOW_opt_eol_in_function364);
@@ -960,7 +961,7 @@ public class RuleParser extends Parser {
             opt_eol();
             following.pop();
 
-            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:342:25: ( (paramType= dotted_name )? opt_eol paramName= ID opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= ID opt_eol )* )?
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:342:25: ( (paramType= dotted_name )? opt_eol paramName= argument opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument opt_eol )* )?
             int alt16=2;
             int LA16_0 = input.LA(1);
             if ( (LA16_0>=EOL && LA16_0<=ID)||LA16_0==15 ) {
@@ -971,13 +972,13 @@ public class RuleParser extends Parser {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("342:25: ( (paramType= dotted_name )? opt_eol paramName= ID opt_eol ( \',\' opt_eol (paramType= dotted_name )? opt_eol paramName= ID opt_eol )* )?", 16, 0, input);
+                    new NoViableAltException("342:25: ( (paramType= dotted_name )? opt_eol paramName= argument opt_eol ( \',\' opt_eol (paramType= dotted_name )? opt_eol paramName= argument opt_eol )* )?", 16, 0, input);
 
                 throw nvae;
             }
             switch (alt16) {
                 case 1 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:342:33: (paramType= dotted_name )? opt_eol paramName= ID opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= ID opt_eol )*
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:342:33: (paramType= dotted_name )? opt_eol paramName= argument opt_eol ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument opt_eol )*
                     {
                     // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:342:33: (paramType= dotted_name )?
                     int alt13=2;
@@ -1000,16 +1001,18 @@ public class RuleParser extends Parser {
                     opt_eol();
                     following.pop();
 
-                    paramName=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_function408); 
+                    following.push(FOLLOW_argument_in_function408);
+                    paramName=argument();
+                    following.pop();
+
                     following.push(FOLLOW_opt_eol_in_function410);
                     opt_eol();
                     following.pop();
 
                     
-                    					f.addParameter( paramType, paramName.getText() );
+                    					f.addParameter( paramType, paramName );
                     				
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:346:33: ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= ID opt_eol )*
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:346:33: ( ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument opt_eol )*
                     loop15:
                     do {
                         int alt15=2;
@@ -1021,7 +1024,7 @@ public class RuleParser extends Parser {
 
                         switch (alt15) {
                     	case 1 :
-                    	    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:346:41: ',' opt_eol (paramType= dotted_name )? opt_eol paramName= ID opt_eol
+                    	    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:346:41: ',' opt_eol (paramType= dotted_name )? opt_eol paramName= argument opt_eol
                     	    {
                     	    match(input,24,FOLLOW_24_in_function424); 
                     	    following.push(FOLLOW_opt_eol_in_function426);
@@ -1049,14 +1052,16 @@ public class RuleParser extends Parser {
                     	    opt_eol();
                     	    following.pop();
 
-                    	    paramName=(Token)input.LT(1);
-                    	    match(input,ID,FOLLOW_ID_in_function439); 
+                    	    following.push(FOLLOW_argument_in_function439);
+                    	    paramName=argument();
+                    	    following.pop();
+
                     	    following.push(FOLLOW_opt_eol_in_function441);
                     	    opt_eol();
                     	    following.pop();
 
                     	    
-                    	    						f.addParameter( paramType, paramName.getText() );
+                    	    						f.addParameter( paramType, paramName );
                     	    					
 
                     	    }
@@ -1315,6 +1320,8 @@ public class RuleParser extends Parser {
             case 54:
             case 55:
             case 59:
+            case 60:
+            case 61:
                 alt17=1;
                 break;
             default:
@@ -1517,7 +1524,7 @@ public class RuleParser extends Parser {
                                     throw nvae;
                                 }
                             }
-                            else if ( (LA19_0>=EOL && LA19_0<=31)||(LA19_0>=33 && LA19_0<=59) ) {
+                            else if ( (LA19_0>=EOL && LA19_0<=31)||(LA19_0>=33 && LA19_0<=61) ) {
                                 alt19=2;
                             }
                             else {
@@ -1730,6 +1737,8 @@ public class RuleParser extends Parser {
                             case 54:
                             case 55:
                             case 59:
+                            case 60:
+                            case 61:
                                 alt20=1;
                                 break;
                             default:
@@ -1803,7 +1812,7 @@ public class RuleParser extends Parser {
                             if ( LA22_0==32 ) {
                                 alt22=1;
                             }
-                            else if ( (LA22_0>=EOL && LA22_0<=31)||(LA22_0>=33 && LA22_0<=59) ) {
+                            else if ( (LA22_0>=EOL && LA22_0<=31)||(LA22_0>=33 && LA22_0<=61) ) {
                                 alt22=2;
                             }
                             else {
@@ -1835,7 +1844,7 @@ public class RuleParser extends Parser {
                                 if ( LA23_0==29 ) {
                                     alt23=2;
                                 }
-                                else if ( (LA23_0>=EOL && LA23_0<=28)||(LA23_0>=30 && LA23_0<=59) ) {
+                                else if ( (LA23_0>=EOL && LA23_0<=28)||(LA23_0>=30 && LA23_0<=61) ) {
                                     alt23=1;
                                 }
 
@@ -2976,6 +2985,8 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
+                case 60:
+                case 61:
                     alt43=1;
                     break;
                 case 15:
@@ -4100,6 +4111,8 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
+                case 60:
+                case 61:
                     alt55=2;
                     break;
 
@@ -4244,6 +4257,8 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
+                case 60:
+                case 61:
                     alt56=2;
                     break;
 
@@ -4388,6 +4403,8 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
+                case 60:
+                case 61:
                     alt57=2;
                     break;
 
@@ -4937,7 +4954,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start dotted_name
-    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:973:1: dotted_name returns [String name] : id= ID ( '.' id= ID )* ;
+    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:973:1: dotted_name returns [String name] : id= ID ( '.' id= ID )* ( '[' ']' )* ;
     public String dotted_name() throws RecognitionException {   
         String name;
         Token id=null;
@@ -4946,8 +4963,8 @@ public class RuleParser extends Parser {
         		name = null;
         	
         try {
-            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:978:17: (id= ID ( '.' id= ID )* )
-            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:978:17: id= ID ( '.' id= ID )*
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:978:17: (id= ID ( '.' id= ID )* ( '[' ']' )* )
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:978:17: id= ID ( '.' id= ID )* ( '[' ']' )*
             {
             id=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_dotted_name2754); 
@@ -4979,6 +4996,32 @@ public class RuleParser extends Parser {
                 }
             } while (true);
 
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:978:99: ( '[' ']' )*
+            loop64:
+            do {
+                int alt64=2;
+                int LA64_0 = input.LA(1);
+                if ( LA64_0==59 ) {
+                    alt64=1;
+                }
+
+
+                switch (alt64) {
+            	case 1 :
+            	    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:978:101: '[' ']'
+            	    {
+            	    match(input,59,FOLLOW_59_in_dotted_name2773); 
+            	    match(input,60,FOLLOW_60_in_dotted_name2775); 
+            	     name = name + "[]";
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop64;
+                }
+            } while (true);
+
 
             }
 
@@ -4994,8 +5037,65 @@ public class RuleParser extends Parser {
     // $ANTLR end dotted_name
 
 
+    // $ANTLR start argument
+    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:981:1: argument returns [String name] : id= ID ( '[' ']' )* ;
+    public String argument() throws RecognitionException {   
+        String name;
+        Token id=null;
+
+        
+        		name = null;
+        	
+        try {
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:986:17: (id= ID ( '[' ']' )* )
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:986:17: id= ID ( '[' ']' )*
+            {
+            id=(Token)input.LT(1);
+            match(input,ID,FOLLOW_ID_in_argument2805); 
+             name=id.getText(); 
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:986:46: ( '[' ']' )*
+            loop65:
+            do {
+                int alt65=2;
+                int LA65_0 = input.LA(1);
+                if ( LA65_0==59 ) {
+                    alt65=1;
+                }
+
+
+                switch (alt65) {
+            	case 1 :
+            	    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:986:48: '[' ']'
+            	    {
+            	    match(input,59,FOLLOW_59_in_argument2811); 
+            	    match(input,60,FOLLOW_60_in_argument2813); 
+            	     name = name + "[]";
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop65;
+                }
+            } while (true);
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+        }
+        return name;
+    }
+    // $ANTLR end argument
+
+
     // $ANTLR start word
-    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:982:1: word returns [String word] : (id= ID | 'import' | 'use' | 'rule' | 'query' | 'salience' | 'no-loop' | 'when' | 'then' | 'end' | str= STRING );
+    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:990:1: word returns [String word] : (id= ID | 'import' | 'use' | 'rule' | 'query' | 'salience' | 'no-loop' | 'when' | 'then' | 'end' | str= STRING );
     public String word() throws RecognitionException {   
         String word;
         Token id=null;
@@ -5005,136 +5105,136 @@ public class RuleParser extends Parser {
         		word = null;
         	
         try {
-            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:986:17: (id= ID | 'import' | 'use' | 'rule' | 'query' | 'salience' | 'no-loop' | 'when' | 'then' | 'end' | str= STRING )
-            int alt64=11;
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:994:17: (id= ID | 'import' | 'use' | 'rule' | 'query' | 'salience' | 'no-loop' | 'when' | 'then' | 'end' | str= STRING )
+            int alt66=11;
             switch ( input.LA(1) ) {
             case ID:
-                alt64=1;
+                alt66=1;
                 break;
             case 17:
-                alt64=2;
+                alt66=2;
                 break;
-            case 59:
-                alt64=3;
+            case 61:
+                alt66=3;
                 break;
             case 30:
-                alt64=4;
+                alt66=4;
                 break;
             case 28:
-                alt64=5;
+                alt66=5;
                 break;
             case 35:
-                alt64=6;
+                alt66=6;
                 break;
             case 36:
-                alt64=7;
+                alt66=7;
                 break;
             case 31:
-                alt64=8;
+                alt66=8;
                 break;
             case 33:
-                alt64=9;
+                alt66=9;
                 break;
             case 29:
-                alt64=10;
+                alt66=10;
                 break;
             case STRING:
-                alt64=11;
+                alt66=11;
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("982:1: word returns [String word] : (id= ID | \'import\' | \'use\' | \'rule\' | \'query\' | \'salience\' | \'no-loop\' | \'when\' | \'then\' | \'end\' | str= STRING );", 64, 0, input);
+                    new NoViableAltException("990:1: word returns [String word] : (id= ID | \'import\' | \'use\' | \'rule\' | \'query\' | \'salience\' | \'no-loop\' | \'when\' | \'then\' | \'end\' | str= STRING );", 66, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt64) {
+            switch (alt66) {
                 case 1 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:986:17: id= ID
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:994:17: id= ID
                     {
                     id=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_word2794); 
+                    match(input,ID,FOLLOW_ID_in_word2841); 
                      word=id.getText(); 
 
                     }
                     break;
                 case 2 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:987:17: 'import'
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:995:17: 'import'
                     {
-                    match(input,17,FOLLOW_17_in_word2806); 
+                    match(input,17,FOLLOW_17_in_word2853); 
                      word="import"; 
 
                     }
                     break;
                 case 3 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:988:17: 'use'
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:996:17: 'use'
                     {
-                    match(input,59,FOLLOW_59_in_word2815); 
+                    match(input,61,FOLLOW_61_in_word2862); 
                      word="use"; 
 
                     }
                     break;
                 case 4 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:989:17: 'rule'
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:997:17: 'rule'
                     {
-                    match(input,30,FOLLOW_30_in_word2827); 
+                    match(input,30,FOLLOW_30_in_word2874); 
                      word="rule"; 
 
                     }
                     break;
                 case 5 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:990:17: 'query'
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:998:17: 'query'
                     {
-                    match(input,28,FOLLOW_28_in_word2838); 
+                    match(input,28,FOLLOW_28_in_word2885); 
                      word="query"; 
 
                     }
                     break;
                 case 6 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:991:17: 'salience'
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:999:17: 'salience'
                     {
-                    match(input,35,FOLLOW_35_in_word2848); 
+                    match(input,35,FOLLOW_35_in_word2895); 
                      word="salience"; 
 
                     }
                     break;
                 case 7 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:992:17: 'no-loop'
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:1000:17: 'no-loop'
                     {
-                    match(input,36,FOLLOW_36_in_word2856); 
+                    match(input,36,FOLLOW_36_in_word2903); 
                      word="no-loop"; 
 
                     }
                     break;
                 case 8 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:993:17: 'when'
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:1001:17: 'when'
                     {
-                    match(input,31,FOLLOW_31_in_word2864); 
+                    match(input,31,FOLLOW_31_in_word2911); 
                      word="when"; 
 
                     }
                     break;
                 case 9 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:994:17: 'then'
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:1002:17: 'then'
                     {
-                    match(input,33,FOLLOW_33_in_word2875); 
+                    match(input,33,FOLLOW_33_in_word2922); 
                      word="then"; 
 
                     }
                     break;
                 case 10 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:995:17: 'end'
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:1003:17: 'end'
                     {
-                    match(input,29,FOLLOW_29_in_word2886); 
+                    match(input,29,FOLLOW_29_in_word2933); 
                      word="end"; 
 
                     }
                     break;
                 case 11 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:996:17: str= STRING
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:1004:17: str= STRING
                     {
                     str=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_word2900); 
+                    match(input,STRING,FOLLOW_STRING_in_word2947); 
                      word=getString(str);
 
                     }
@@ -5159,20 +5259,20 @@ public class RuleParser extends Parser {
             return predict(input, s0);
         }
         DFA.State s1 = new DFA.State() {{alt=4;}};
-        DFA.State s4 = new DFA.State() {{alt=2;}};
         DFA.State s3 = new DFA.State() {{alt=1;}};
+        DFA.State s4 = new DFA.State() {{alt=2;}};
         DFA.State s2 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 28:
-                    return s4;
+                case 30:
+                    return s3;
 
                 case EOL:
                 case 15:
                     return s2;
 
-                case 30:
-                    return s3;
+                case 28:
+                    return s4;
 
                 default:
                     NoViableAltException nvae =
@@ -5241,23 +5341,53 @@ public class RuleParser extends Parser {
                 throw nvae;
             }
         };
-        DFA.State s17 = new DFA.State() {{alt=1;}};
-        DFA.State s24 = new DFA.State() {
+        DFA.State s18 = new DFA.State() {{alt=1;}};
+        DFA.State s27 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA4_24 = input.LA(1);
-                if ( LA4_24==ID ) {return s17;}
-                if ( LA4_24==18 ) {return s16;}
+                int LA4_27 = input.LA(1);
+                if ( LA4_27==ID ) {return s18;}
+                if ( LA4_27==59 ) {return s17;}
 
                 NoViableAltException nvae =
-        	    new NoViableAltException("", 4, 24, input);
+        	    new NoViableAltException("", 4, 27, input);
 
                 throw nvae;
+            }
+        };
+        DFA.State s17 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA4_17 = input.LA(1);
+                if ( LA4_17==60 ) {return s27;}
+
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 4, 17, input);
+
+                throw nvae;
+            }
+        };
+        DFA.State s26 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case 59:
+                    return s17;
+
+                case ID:
+                    return s18;
+
+                case 18:
+                    return s16;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 26, input);
+
+                    throw nvae;        }
             }
         };
         DFA.State s16 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 int LA4_16 = input.LA(1);
-                if ( LA4_16==ID ) {return s24;}
+                if ( LA4_16==ID ) {return s26;}
 
                 NoViableAltException nvae =
         	    new NoViableAltException("", 4, 16, input);
@@ -5267,14 +5397,21 @@ public class RuleParser extends Parser {
         };
         DFA.State s11 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA4_11 = input.LA(1);
-                if ( LA4_11==18 ) {return s16;}
-                if ( LA4_11==ID ) {return s17;}
+                switch ( input.LA(1) ) {
+                case 18:
+                    return s16;
 
-                NoViableAltException nvae =
-        	    new NoViableAltException("", 4, 11, input);
+                case 59:
+                    return s17;
 
-                throw nvae;
+                case ID:
+                    return s18;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 11, input);
+
+                    throw nvae;        }
             }
         };
         DFA.State s5 = new DFA.State() {
@@ -5288,18 +5425,17 @@ public class RuleParser extends Parser {
                 throw nvae;
             }
         };
-        DFA.State s71 = new DFA.State() {{alt=1;}};
-        DFA.State s84 = new DFA.State() {{alt=1;}};
-        DFA.State s93 = new DFA.State() {{alt=1;}};
-        DFA.State s100 = new DFA.State() {{alt=1;}};
-        DFA.State s101 = new DFA.State() {
+        DFA.State s105 = new DFA.State() {{alt=1;}};
+        DFA.State s114 = new DFA.State() {{alt=1;}};
+        DFA.State s120 = new DFA.State() {{alt=1;}};
+        DFA.State s122 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 27:
-                    return s100;
+                    return s120;
 
                 case 26:
-                    return s99;
+                    return s121;
 
                 case EOL:
                 case ID:
@@ -5355,23 +5491,25 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
-                    return s101;
+                case 60:
+                case 61:
+                    return s122;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 101, input);
+                        new NoViableAltException("", 4, 122, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s99 = new DFA.State() {
+        DFA.State s121 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 26:
-                    return s99;
-
                 case 27:
-                    return s100;
+                    return s120;
+
+                case 26:
+                    return s121;
 
                 case EOL:
                 case ID:
@@ -5427,23 +5565,25 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
-                    return s101;
+                case 60:
+                case 61:
+                    return s122;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 99, input);
+                        new NoViableAltException("", 4, 121, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s94 = new DFA.State() {
+        DFA.State s115 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 26:
-                    return s99;
-
                 case 27:
-                    return s100;
+                    return s120;
+
+                case 26:
+                    return s121;
 
                 case EOL:
                 case ID:
@@ -5499,23 +5639,25 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
-                    return s101;
+                case 60:
+                case 61:
+                    return s122;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 94, input);
+                        new NoViableAltException("", 4, 115, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s95 = new DFA.State() {
+        DFA.State s116 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 27:
-                    return s93;
+                    return s114;
 
                 case 26:
-                    return s94;
+                    return s115;
 
                 case EOL:
                 case ID:
@@ -5571,23 +5713,25 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
-                    return s95;
+                case 60:
+                case 61:
+                    return s116;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 95, input);
+                        new NoViableAltException("", 4, 116, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s85 = new DFA.State() {
+        DFA.State s106 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 27:
-                    return s93;
+                    return s114;
 
                 case 26:
-                    return s94;
+                    return s115;
 
                 case EOL:
                 case ID:
@@ -5643,23 +5787,25 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
-                    return s95;
+                case 60:
+                case 61:
+                    return s116;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 85, input);
+                        new NoViableAltException("", 4, 106, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s86 = new DFA.State() {
+        DFA.State s107 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 27:
-                    return s84;
+                    return s105;
 
                 case 26:
-                    return s85;
+                    return s106;
 
                 case EOL:
                 case ID:
@@ -5715,23 +5861,25 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
-                    return s86;
+                case 60:
+                case 61:
+                    return s107;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 86, input);
+                        new NoViableAltException("", 4, 107, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s72 = new DFA.State() {
+        DFA.State s87 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 27:
-                    return s84;
+                    return s105;
 
                 case 26:
-                    return s85;
+                    return s106;
 
                 case EOL:
                 case ID:
@@ -5787,23 +5935,26 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
-                    return s86;
+                case 60:
+                case 61:
+                    return s107;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 72, input);
+                        new NoViableAltException("", 4, 87, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s73 = new DFA.State() {
+        DFA.State s88 = new DFA.State() {{alt=1;}};
+        DFA.State s89 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 27:
-                    return s71;
+                    return s88;
 
                 case 26:
-                    return s72;
+                    return s87;
 
                 case EOL:
                 case ID:
@@ -5859,23 +6010,25 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
-                    return s73;
+                case 60:
+                case 61:
+                    return s89;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 73, input);
+                        new NoViableAltException("", 4, 89, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s58 = new DFA.State() {
+        DFA.State s67 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 27:
-                    return s71;
-
                 case 26:
-                    return s72;
+                    return s87;
+
+                case 27:
+                    return s88;
 
                 case EOL:
                 case ID:
@@ -5931,79 +6084,201 @@ public class RuleParser extends Parser {
                 case 57:
                 case 58:
                 case 59:
-                    return s73;
+                case 60:
+                case 61:
+                    return s89;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 58, input);
+                        new NoViableAltException("", 4, 67, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s59 = new DFA.State() {{alt=1;}};
+        DFA.State s68 = new DFA.State() {{alt=1;}};
+        DFA.State s69 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case 27:
+                    return s68;
+
+                case 26:
+                    return s67;
+
+                case EOL:
+                case ID:
+                case INT:
+                case BOOL:
+                case STRING:
+                case FLOAT:
+                case MISC:
+                case WS:
+                case SH_STYLE_SINGLE_LINE_COMMENT:
+                case C_STYLE_SINGLE_LINE_COMMENT:
+                case MULTI_LINE_COMMENT:
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                case 19:
+                case 20:
+                case 21:
+                case 22:
+                case 23:
+                case 24:
+                case 25:
+                case 28:
+                case 29:
+                case 30:
+                case 31:
+                case 32:
+                case 33:
+                case 34:
+                case 35:
+                case 36:
+                case 37:
+                case 38:
+                case 39:
+                case 40:
+                case 41:
+                case 42:
+                case 43:
+                case 44:
+                case 45:
+                case 46:
+                case 47:
+                case 48:
+                case 49:
+                case 50:
+                case 51:
+                case 52:
+                case 53:
+                case 54:
+                case 55:
+                case 56:
+                case 57:
+                case 58:
+                case 59:
+                case 60:
+                case 61:
+                    return s69;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 69, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s53 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case 26:
+                    return s67;
+
+                case 27:
+                    return s68;
+
+                case EOL:
+                case ID:
+                case INT:
+                case BOOL:
+                case STRING:
+                case FLOAT:
+                case MISC:
+                case WS:
+                case SH_STYLE_SINGLE_LINE_COMMENT:
+                case C_STYLE_SINGLE_LINE_COMMENT:
+                case MULTI_LINE_COMMENT:
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                case 19:
+                case 20:
+                case 21:
+                case 22:
+                case 23:
+                case 24:
+                case 25:
+                case 28:
+                case 29:
+                case 30:
+                case 31:
+                case 32:
+                case 33:
+                case 34:
+                case 35:
+                case 36:
+                case 37:
+                case 38:
+                case 39:
+                case 40:
+                case 41:
+                case 42:
+                case 43:
+                case 44:
+                case 45:
+                case 46:
+                case 47:
+                case 48:
+                case 49:
+                case 50:
+                case 51:
+                case 52:
+                case 53:
+                case 54:
+                case 55:
+                case 56:
+                case 57:
+                case 58:
+                case 59:
+                case 60:
+                case 61:
+                    return s69;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 53, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s52 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA4_52 = input.LA(1);
+                if ( LA4_52==26 ) {return s53;}
+                if ( LA4_52==EOL||LA4_52==15 ) {return s52;}
+
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 4, 52, input);
+
+                throw nvae;
+            }
+        };
+        DFA.State s35 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA4_35 = input.LA(1);
+                if ( LA4_35==EOL||LA4_35==15 ) {return s52;}
+                if ( LA4_35==26 ) {return s53;}
+
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 4, 35, input);
+
+                throw nvae;
+            }
+        };
         DFA.State s60 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 27:
-                    return s59;
+                case 24:
+                    return s50;
 
-                case 26:
-                    return s58;
+                case 25:
+                    return s35;
 
                 case EOL:
-                case ID:
-                case INT:
-                case BOOL:
-                case STRING:
-                case FLOAT:
-                case MISC:
-                case WS:
-                case SH_STYLE_SINGLE_LINE_COMMENT:
-                case C_STYLE_SINGLE_LINE_COMMENT:
-                case MULTI_LINE_COMMENT:
                 case 15:
-                case 16:
-                case 17:
-                case 18:
-                case 19:
-                case 20:
-                case 21:
-                case 22:
-                case 23:
-                case 24:
-                case 25:
-                case 28:
-                case 29:
-                case 30:
-                case 31:
-                case 32:
-                case 33:
-                case 34:
-                case 35:
-                case 36:
-                case 37:
-                case 38:
-                case 39:
-                case 40:
-                case 41:
-                case 42:
-                case 43:
-                case 44:
-                case 45:
-                case 46:
-                case 47:
-                case 48:
-                case 49:
-                case 50:
-                case 51:
-                case 52:
-                case 53:
-                case 54:
-                case 55:
-                case 56:
-                case 57:
-                case 58:
-                case 59:
                     return s60;
 
                 default:
@@ -6013,384 +6288,351 @@ public class RuleParser extends Parser {
                     throw nvae;        }
             }
         };
-        DFA.State s46 = new DFA.State() {
+        DFA.State s75 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 26:
-                    return s58;
+                case EOL:
+                case 15:
+                    return s60;
 
-                case 27:
+                case 24:
+                    return s50;
+
+                case 25:
+                    return s35;
+
+                case 59:
+                    return s59;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 75, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s59 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA4_59 = input.LA(1);
+                if ( LA4_59==60 ) {return s75;}
+
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 4, 59, input);
+
+                throw nvae;
+            }
+        };
+        DFA.State s102 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case 25:
+                    return s35;
+
+                case 24:
+                    return s50;
+
+                case EOL:
+                case 15:
+                    return s102;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 102, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s84 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case 59:
                     return s59;
 
                 case EOL:
-                case ID:
-                case INT:
-                case BOOL:
-                case STRING:
-                case FLOAT:
-                case MISC:
-                case WS:
-                case SH_STYLE_SINGLE_LINE_COMMENT:
-                case C_STYLE_SINGLE_LINE_COMMENT:
-                case MULTI_LINE_COMMENT:
                 case 15:
-                case 16:
-                case 17:
-                case 18:
-                case 19:
-                case 20:
-                case 21:
-                case 22:
-                case 23:
-                case 24:
+                    return s102;
+
                 case 25:
-                case 28:
-                case 29:
-                case 30:
-                case 31:
-                case 32:
-                case 33:
-                case 34:
-                case 35:
-                case 36:
-                case 37:
-                case 38:
-                case 39:
-                case 40:
-                case 41:
-                case 42:
-                case 43:
-                case 44:
-                case 45:
-                case 46:
-                case 47:
-                case 48:
-                case 49:
-                case 50:
-                case 51:
-                case 52:
-                case 53:
-                case 54:
-                case 55:
-                case 56:
-                case 57:
-                case 58:
-                case 59:
-                    return s60;
+                    return s35;
+
+                case 24:
+                    return s50;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 46, input);
+                        new NoViableAltException("", 4, 84, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s45 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA4_45 = input.LA(1);
-                if ( LA4_45==26 ) {return s46;}
-                if ( LA4_45==EOL||LA4_45==15 ) {return s45;}
-
-                NoViableAltException nvae =
-        	    new NoViableAltException("", 4, 45, input);
-
-                throw nvae;
-            }
-        };
-        DFA.State s32 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA4_32 = input.LA(1);
-                if ( LA4_32==EOL||LA4_32==15 ) {return s45;}
-                if ( LA4_32==26 ) {return s46;}
-
-                NoViableAltException nvae =
-        	    new NoViableAltException("", 4, 32, input);
-
-                throw nvae;
-            }
-        };
-        DFA.State s81 = new DFA.State() {
+        DFA.State s83 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 25:
-                    return s32;
+                    return s35;
 
                 case 24:
-                    return s43;
+                    return s50;
 
                 case EOL:
                 case 15:
-                    return s81;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 4, 81, input);
-
-                    throw nvae;        }
-            }
-        };
-        DFA.State s68 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case EOL:
-                case 15:
-                    return s81;
-
-                case 25:
-                    return s32;
-
-                case 24:
-                    return s43;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 4, 68, input);
-
-                    throw nvae;        }
-            }
-        };
-        DFA.State s67 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case 25:
-                    return s32;
-
-                case 24:
-                    return s43;
-
-                case EOL:
-                case 15:
-                    return s67;
+                    return s83;
 
                 case ID:
-                    return s68;
+                    return s84;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 67, input);
+                        new NoViableAltException("", 4, 83, input);
 
                     throw nvae;        }
             }
         };
-        DFA.State s55 = new DFA.State() {
+        DFA.State s64 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 18:
                     return s16;
 
+                case 59:
+                    return s47;
+
                 case EOL:
                 case 15:
-                    return s67;
+                    return s83;
 
                 case ID:
-                    return s68;
+                    return s84;
 
                 case 25:
-                    return s32;
+                    return s35;
 
                 case 24:
-                    return s43;
+                    return s50;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 55, input);
+                        new NoViableAltException("", 4, 64, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s63 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA4_63 = input.LA(1);
+                if ( LA4_63==ID ) {return s64;}
+                if ( LA4_63==EOL||LA4_63==15 ) {return s63;}
+
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 4, 63, input);
+
+                throw nvae;
+            }
+        };
+        DFA.State s50 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA4_50 = input.LA(1);
+                if ( LA4_50==EOL||LA4_50==15 ) {return s63;}
+                if ( LA4_50==ID ) {return s64;}
+
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 4, 50, input);
+
+                throw nvae;
+            }
+        };
+        DFA.State s49 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case 59:
+                    return s59;
+
+                case EOL:
+                case 15:
+                    return s60;
+
+                case 24:
+                    return s50;
+
+                case 25:
+                    return s35;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 49, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s48 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case 24:
+                    return s50;
+
+                case 25:
+                    return s35;
+
+                case EOL:
+                case 15:
+                    return s48;
+
+                case ID:
+                    return s49;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 48, input);
 
                     throw nvae;        }
             }
         };
         DFA.State s54 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA4_54 = input.LA(1);
-                if ( LA4_54==ID ) {return s55;}
-                if ( LA4_54==EOL||LA4_54==15 ) {return s54;}
-
-                NoViableAltException nvae =
-        	    new NoViableAltException("", 4, 54, input);
-
-                throw nvae;
-            }
-        };
-        DFA.State s43 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA4_43 = input.LA(1);
-                if ( LA4_43==EOL||LA4_43==15 ) {return s54;}
-                if ( LA4_43==ID ) {return s55;}
-
-                NoViableAltException nvae =
-        	    new NoViableAltException("", 4, 43, input);
-
-                throw nvae;
-            }
-        };
-        DFA.State s51 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case 24:
-                    return s43;
-
-                case 25:
-                    return s32;
-
-                case EOL:
-                case 15:
-                    return s51;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 4, 51, input);
-
-                    throw nvae;        }
-            }
-        };
-        DFA.State s42 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case EOL:
                 case 15:
-                    return s51;
-
-                case 24:
-                    return s43;
-
-                case 25:
-                    return s32;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 4, 42, input);
-
-                    throw nvae;        }
-            }
-        };
-        DFA.State s41 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case 24:
-                    return s43;
-
-                case 25:
-                    return s32;
-
-                case EOL:
-                case 15:
-                    return s41;
+                    return s48;
 
                 case ID:
-                    return s42;
+                    return s49;
+
+                case 59:
+                    return s47;
+
+                case 24:
+                    return s50;
+
+                case 25:
+                    return s35;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 4, 41, input);
+                        new NoViableAltException("", 4, 54, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s47 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA4_47 = input.LA(1);
+                if ( LA4_47==60 ) {return s54;}
+
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 4, 47, input);
+
+                throw nvae;
+            }
+        };
+        DFA.State s34 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case 18:
+                    return s16;
+
+                case 59:
+                    return s47;
+
+                case EOL:
+                case 15:
+                    return s48;
+
+                case ID:
+                    return s49;
+
+                case 24:
+                    return s50;
+
+                case 25:
+                    return s35;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 34, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s33 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case ID:
+                    return s34;
+
+                case EOL:
+                case 15:
+                    return s33;
+
+                case 25:
+                    return s35;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 33, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s25 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case EOL:
+                case 15:
+                    return s33;
+
+                case ID:
+                    return s34;
+
+                case 25:
+                    return s35;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 4, 25, input);
 
                     throw nvae;        }
             }
         };
         DFA.State s31 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case 18:
-                    return s16;
+                int LA4_31 = input.LA(1);
+                if ( LA4_31==23 ) {return s25;}
+                if ( LA4_31==EOL||LA4_31==15 ) {return s31;}
 
-                case EOL:
-                case 15:
-                    return s41;
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 4, 31, input);
 
-                case ID:
-                    return s42;
-
-                case 24:
-                    return s43;
-
-                case 25:
-                    return s32;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 4, 31, input);
-
-                    throw nvae;        }
+                throw nvae;
             }
         };
-        DFA.State s30 = new DFA.State() {
+        DFA.State s24 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case ID:
-                    return s31;
+                int LA4_24 = input.LA(1);
+                if ( LA4_24==EOL||LA4_24==15 ) {return s31;}
+                if ( LA4_24==23 ) {return s25;}
 
-                case EOL:
-                case 15:
-                    return s30;
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 4, 24, input);
 
-                case 25:
-                    return s32;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 4, 30, input);
-
-                    throw nvae;        }
+                throw nvae;
             }
         };
         DFA.State s23 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
+                case 23:
+                    return s25;
+
                 case EOL:
                 case 15:
-                    return s30;
+                    return s23;
 
                 case ID:
-                    return s31;
-
-                case 25:
-                    return s32;
+                    return s24;
 
                 default:
                     NoViableAltException nvae =
                         new NoViableAltException("", 4, 23, input);
-
-                    throw nvae;        }
-            }
-        };
-        DFA.State s28 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA4_28 = input.LA(1);
-                if ( LA4_28==23 ) {return s23;}
-                if ( LA4_28==EOL||LA4_28==15 ) {return s28;}
-
-                NoViableAltException nvae =
-        	    new NoViableAltException("", 4, 28, input);
-
-                throw nvae;
-            }
-        };
-        DFA.State s22 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                int LA4_22 = input.LA(1);
-                if ( LA4_22==EOL||LA4_22==15 ) {return s28;}
-                if ( LA4_22==23 ) {return s23;}
-
-                NoViableAltException nvae =
-        	    new NoViableAltException("", 4, 22, input);
-
-                throw nvae;
-            }
-        };
-        DFA.State s21 = new DFA.State() {
-            public DFA.State transition(IntStream input) throws RecognitionException {
-                switch ( input.LA(1) ) {
-                case 23:
-                    return s23;
-
-                case EOL:
-                case 15:
-                    return s21;
-
-                case ID:
-                    return s22;
-
-                default:
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 4, 21, input);
 
                     throw nvae;        }
             }
@@ -6401,15 +6643,18 @@ public class RuleParser extends Parser {
                 case 18:
                     return s16;
 
+                case 59:
+                    return s17;
+
                 case EOL:
                 case 15:
-                    return s21;
+                    return s23;
 
                 case ID:
-                    return s22;
+                    return s24;
 
                 case 23:
-                    return s23;
+                    return s25;
 
                 default:
                     NoViableAltException nvae =
@@ -6477,20 +6722,20 @@ public class RuleParser extends Parser {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s2 = new DFA.State() {{alt=2;}};
         DFA.State s5 = new DFA.State() {{alt=1;}};
+        DFA.State s2 = new DFA.State() {{alt=2;}};
         DFA.State s3 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 23:
-                    return s2;
+                case ID:
+                    return s5;
 
                 case EOL:
                 case 15:
                     return s3;
 
-                case ID:
-                    return s5;
+                case 23:
+                    return s2;
 
                 default:
                     NoViableAltException nvae =
@@ -6511,6 +6756,7 @@ public class RuleParser extends Parser {
 
                 case ID:
                 case 18:
+                case 59:
                     return s5;
 
                 default:
@@ -6539,15 +6785,39 @@ public class RuleParser extends Parser {
         }
         DFA.State s3 = new DFA.State() {{alt=1;}};
         DFA.State s2 = new DFA.State() {{alt=2;}};
-        DFA.State s4 = new DFA.State() {
+        DFA.State s5 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
+                case ID:
+                    return s3;
+
+                case EOL:
+                case 15:
+                    return s5;
+
                 case 24:
                 case 25:
                     return s2;
 
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 13, 5, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s9 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
                 case EOL:
                 case 15:
+                    return s5;
+
+                case 24:
+                case 25:
+                    return s2;
+
+                case 59:
                     return s4;
 
                 case ID:
@@ -6555,9 +6825,20 @@ public class RuleParser extends Parser {
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 13, 4, input);
+                        new NoViableAltException("", 13, 9, input);
 
                     throw nvae;        }
+            }
+        };
+        DFA.State s4 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA13_4 = input.LA(1);
+                if ( LA13_4==60 ) {return s9;}
+
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 13, 4, input);
+
+                throw nvae;
             }
         };
         DFA.State s1 = new DFA.State() {
@@ -6567,9 +6848,12 @@ public class RuleParser extends Parser {
                 case 18:
                     return s3;
 
+                case 59:
+                    return s4;
+
                 case EOL:
                 case 15:
-                    return s4;
+                    return s5;
 
                 case 24:
                 case 25:
@@ -6599,8 +6883,8 @@ public class RuleParser extends Parser {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s3 = new DFA.State() {{alt=1;}};
         DFA.State s2 = new DFA.State() {{alt=2;}};
+        DFA.State s7 = new DFA.State() {{alt=1;}};
         DFA.State s4 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
@@ -6613,7 +6897,7 @@ public class RuleParser extends Parser {
                     return s4;
 
                 case ID:
-                    return s3;
+                    return s7;
 
                 default:
                     NoViableAltException nvae =
@@ -6622,11 +6906,45 @@ public class RuleParser extends Parser {
                     throw nvae;        }
             }
         };
+        DFA.State s9 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                switch ( input.LA(1) ) {
+                case EOL:
+                case 15:
+                    return s4;
+
+                case ID:
+                    return s7;
+
+                case 59:
+                    return s3;
+
+                case 24:
+                case 25:
+                    return s2;
+
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 14, 9, input);
+
+                    throw nvae;        }
+            }
+        };
+        DFA.State s3 = new DFA.State() {
+            public DFA.State transition(IntStream input) throws RecognitionException {
+                int LA14_3 = input.LA(1);
+                if ( LA14_3==60 ) {return s9;}
+
+                NoViableAltException nvae =
+        	    new NoViableAltException("", 14, 3, input);
+
+                throw nvae;
+            }
+        };
         DFA.State s1 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case ID:
-                case 18:
+                case 59:
                     return s3;
 
                 case EOL:
@@ -6636,6 +6954,10 @@ public class RuleParser extends Parser {
                 case 24:
                 case 25:
                     return s2;
+
+                case ID:
+                case 18:
+                    return s7;
 
                 default:
                     NoViableAltException nvae =
@@ -6661,24 +6983,24 @@ public class RuleParser extends Parser {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s2 = new DFA.State() {{alt=2;}};
-        DFA.State s5 = new DFA.State() {{alt=1;}};
-        DFA.State s3 = new DFA.State() {
+        DFA.State s3 = new DFA.State() {{alt=1;}};
+        DFA.State s4 = new DFA.State() {{alt=2;}};
+        DFA.State s2 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
                 case 32:
-                    return s5;
+                    return s3;
 
                 case EOL:
                 case 15:
-                    return s3;
+                    return s2;
 
                 case 23:
-                    return s2;
+                    return s4;
 
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 44, 3, input);
+                        new NoViableAltException("", 44, 2, input);
 
                     throw nvae;        }
             }
@@ -6686,16 +7008,17 @@ public class RuleParser extends Parser {
         DFA.State s1 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 18:
-                case 23:
-                    return s2;
-
                 case EOL:
                 case 15:
-                    return s3;
+                    return s2;
 
                 case 32:
-                    return s5;
+                    return s3;
+
+                case 18:
+                case 23:
+                case 59:
+                    return s4;
 
                 default:
                     NoViableAltException nvae =
@@ -6720,20 +7043,20 @@ public class RuleParser extends Parser {
         public int predict(IntStream input) throws RecognitionException {
             return predict(input, s0);
         }
-        DFA.State s3 = new DFA.State() {{alt=2;}};
         DFA.State s2 = new DFA.State() {{alt=1;}};
+        DFA.State s3 = new DFA.State() {{alt=2;}};
         DFA.State s1 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case 25:
-                    return s3;
+                case ID:
+                    return s2;
 
                 case EOL:
                 case 15:
                     return s1;
 
-                case ID:
-                    return s2;
+                case 25:
+                    return s3;
 
                 default:
                     NoViableAltException nvae =
@@ -6819,10 +7142,6 @@ public class RuleParser extends Parser {
         DFA.State s2 = new DFA.State() {
             public DFA.State transition(IntStream input) throws RecognitionException {
                 switch ( input.LA(1) ) {
-                case EOL:
-                case 15:
-                    return s2;
-
                 case 24:
                 case 25:
                 case 42:
@@ -6835,6 +7154,10 @@ public class RuleParser extends Parser {
                 case 49:
                 case 50:
                     return s4;
+
+                case EOL:
+                case 15:
+                    return s2;
 
                 case 32:
                     return s3;
@@ -6935,43 +7258,43 @@ public class RuleParser extends Parser {
     public static final BitSet FOLLOW_opt_eol_in_function390 = new BitSet(new long[]{0x0000000002008032L});
     public static final BitSet FOLLOW_dotted_name_in_function400 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_function404 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_function408 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_argument_in_function408 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_function410 = new BitSet(new long[]{0x0000000003000000L});
     public static final BitSet FOLLOW_24_in_function424 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_function426 = new BitSet(new long[]{0x0000000000008032L});
     public static final BitSet FOLLOW_dotted_name_in_function431 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_function435 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_function439 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_argument_in_function439 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_function441 = new BitSet(new long[]{0x0000000003000000L});
     public static final BitSet FOLLOW_25_in_function466 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_function470 = new BitSet(new long[]{0x0000000004000000L});
-    public static final BitSet FOLLOW_26_in_function474 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_26_in_function474 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
     public static final BitSet FOLLOW_curly_chunk_in_function481 = new BitSet(new long[]{0x0000000008000000L});
     public static final BitSet FOLLOW_27_in_function490 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_function498 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_opt_eol_in_query522 = new BitSet(new long[]{0x0000000010000000L});
-    public static final BitSet FOLLOW_28_in_query528 = new BitSet(new long[]{0x0800001AF0020120L});
+    public static final BitSet FOLLOW_28_in_query528 = new BitSet(new long[]{0x2000001AF0020120L});
     public static final BitSet FOLLOW_word_in_query532 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_query534 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_opt_eol_in_query534 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
     public static final BitSet FOLLOW_expander_lhs_block_in_query550 = new BitSet(new long[]{0x0000000020000000L});
     public static final BitSet FOLLOW_normal_lhs_block_in_query558 = new BitSet(new long[]{0x0000000020000000L});
     public static final BitSet FOLLOW_29_in_query573 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_query575 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_opt_eol_in_rule598 = new BitSet(new long[]{0x0000000040000000L});
-    public static final BitSet FOLLOW_30_in_rule604 = new BitSet(new long[]{0x0800001AF0020120L});
+    public static final BitSet FOLLOW_30_in_rule604 = new BitSet(new long[]{0x2000001AF0020120L});
     public static final BitSet FOLLOW_word_in_rule608 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_rule610 = new BitSet(new long[]{0x0000000500008012L});
     public static final BitSet FOLLOW_rule_attributes_in_rule621 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_rule631 = new BitSet(new long[]{0x00000000A0008012L});
     public static final BitSet FOLLOW_31_in_rule640 = new BitSet(new long[]{0x0000000100008012L});
     public static final BitSet FOLLOW_32_in_rule642 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_rule645 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_opt_eol_in_rule645 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
     public static final BitSet FOLLOW_expander_lhs_block_in_rule663 = new BitSet(new long[]{0x0000000020008012L});
     public static final BitSet FOLLOW_normal_lhs_block_in_rule672 = new BitSet(new long[]{0x0000000020008012L});
     public static final BitSet FOLLOW_opt_eol_in_rule695 = new BitSet(new long[]{0x0000000200000000L});
     public static final BitSet FOLLOW_33_in_rule699 = new BitSet(new long[]{0x0000000100008012L});
     public static final BitSet FOLLOW_32_in_rule701 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_rule705 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF0L});
+    public static final BitSet FOLLOW_opt_eol_in_rule705 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF0L});
     public static final BitSet FOLLOW_29_in_rule751 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_rule753 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_import_statement_in_extra_statement773 = new BitSet(new long[]{0x0000000000000002L});
@@ -7031,7 +7354,7 @@ public class RuleParser extends Parser {
     public static final BitSet FOLLOW_opt_eol_in_normal_lhs_block1295 = new BitSet(new long[]{0x0700000000808032L});
     public static final BitSet FOLLOW_opt_eol_in_normal_lhs_block1307 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_paren_chunk_in_expander_lhs_block1348 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_EOL_in_expander_lhs_block1352 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_EOL_in_expander_lhs_block1352 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
     public static final BitSet FOLLOW_lhs_or_in_lhs1404 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_fact_binding_in_lhs_column1432 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_fact_in_lhs_column1441 = new BitSet(new long[]{0x0000000000000002L});
@@ -7086,25 +7409,25 @@ public class RuleParser extends Parser {
     public static final BitSet FOLLOW_ID_in_enum_constraint2096 = new BitSet(new long[]{0x0000000000040000L});
     public static final BitSet FOLLOW_18_in_enum_constraint2098 = new BitSet(new long[]{0x0000000000000020L});
     public static final BitSet FOLLOW_ID_in_enum_constraint2102 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_23_in_retval_constraint2131 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_23_in_retval_constraint2131 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
     public static final BitSet FOLLOW_paren_chunk_in_retval_constraint2135 = new BitSet(new long[]{0x0000000002000000L});
     public static final BitSet FOLLOW_25_in_retval_constraint2137 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ID_in_predicate2155 = new BitSet(new long[]{0x0000000100000000L});
     public static final BitSet FOLLOW_32_in_predicate2157 = new BitSet(new long[]{0x0000000000000020L});
     public static final BitSet FOLLOW_ID_in_predicate2161 = new BitSet(new long[]{0x0010000000000000L});
     public static final BitSet FOLLOW_52_in_predicate2163 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_predicate2165 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_23_in_predicate2165 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
     public static final BitSet FOLLOW_paren_chunk_in_predicate2169 = new BitSet(new long[]{0x0000000002000000L});
     public static final BitSet FOLLOW_25_in_predicate2171 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_23_in_paren_chunk2217 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_23_in_paren_chunk2217 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
     public static final BitSet FOLLOW_paren_chunk_in_paren_chunk2221 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_paren_chunk2223 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
-    public static final BitSet FOLLOW_23_in_paren_chunk22294 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_25_in_paren_chunk2223 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_23_in_paren_chunk22294 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
     public static final BitSet FOLLOW_paren_chunk2_in_paren_chunk22298 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_paren_chunk22300 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
-    public static final BitSet FOLLOW_26_in_curly_chunk2369 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_25_in_paren_chunk22300 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_26_in_curly_chunk2369 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
     public static final BitSet FOLLOW_curly_chunk_in_curly_chunk2373 = new BitSet(new long[]{0x0000000008000000L});
-    public static final BitSet FOLLOW_27_in_curly_chunk2375 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_27_in_curly_chunk2375 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
     public static final BitSet FOLLOW_lhs_and_in_lhs_or2433 = new BitSet(new long[]{0x0020020000000002L});
     public static final BitSet FOLLOW_set_in_lhs_or2442 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_lhs_or2447 = new BitSet(new long[]{0x0700000000800020L});
@@ -7131,22 +7454,27 @@ public class RuleParser extends Parser {
     public static final BitSet FOLLOW_25_in_lhs_not2674 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_lhs_column_in_lhs_not2680 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_58_in_lhs_eval2706 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_lhs_eval2710 = new BitSet(new long[]{0x0FFFFFFFFFFFFFF2L});
+    public static final BitSet FOLLOW_23_in_lhs_eval2710 = new BitSet(new long[]{0x3FFFFFFFFFFFFFF2L});
     public static final BitSet FOLLOW_paren_chunk2_in_lhs_eval2718 = new BitSet(new long[]{0x0000000002000000L});
     public static final BitSet FOLLOW_25_in_lhs_eval2722 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_dotted_name2754 = new BitSet(new long[]{0x0000000000040002L});
+    public static final BitSet FOLLOW_ID_in_dotted_name2754 = new BitSet(new long[]{0x0800000000040002L});
     public static final BitSet FOLLOW_18_in_dotted_name2760 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_ID_in_dotted_name2764 = new BitSet(new long[]{0x0000000000040002L});
-    public static final BitSet FOLLOW_ID_in_word2794 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_17_in_word2806 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_59_in_word2815 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_30_in_word2827 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_28_in_word2838 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_35_in_word2848 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_36_in_word2856 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_31_in_word2864 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_33_in_word2875 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_29_in_word2886 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_word2900 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_dotted_name2764 = new BitSet(new long[]{0x0800000000040002L});
+    public static final BitSet FOLLOW_59_in_dotted_name2773 = new BitSet(new long[]{0x1000000000000000L});
+    public static final BitSet FOLLOW_60_in_dotted_name2775 = new BitSet(new long[]{0x0800000000000002L});
+    public static final BitSet FOLLOW_ID_in_argument2805 = new BitSet(new long[]{0x0800000000000002L});
+    public static final BitSet FOLLOW_59_in_argument2811 = new BitSet(new long[]{0x1000000000000000L});
+    public static final BitSet FOLLOW_60_in_argument2813 = new BitSet(new long[]{0x0800000000000002L});
+    public static final BitSet FOLLOW_ID_in_word2841 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_17_in_word2853 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_61_in_word2862 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_30_in_word2874 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_28_in_word2885 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_35_in_word2895 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_36_in_word2903 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_31_in_word2911 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_33_in_word2922 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_29_in_word2933 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_word2947 = new BitSet(new long[]{0x0000000000000002L});
 
 }

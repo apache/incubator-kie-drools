@@ -123,6 +123,25 @@ public class RuleParserTest extends TestCase {
         
     }
     
+    public void testFunctionWithArrays() throws Exception {
+        DrlParser parser = new DrlParser();
+        Reader drl = new InputStreamReader(this.getClass().getResourceAsStream( "function_arrays.drl" ));
+        
+        PackageDescr pkg = parser.parse( drl);
+        assertFalse(parser.hasErrors());
+        assertEquals("foo", pkg.getName());
+        assertEquals(1, pkg.getRules().size());
+        
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        
+        assertEqualsIgnoreWhitespace( "yourFunction(new String[3] {\"a\",\"b\",\"c\"});", rule.getConsequence() );
+        FunctionDescr func = (FunctionDescr) pkg.getFunctions().get( 0 );
+        
+        assertEquals("String[]", func.getReturnType());
+        assertEquals("args[]", func.getParameterNames().get( 0 ));
+        assertEquals("String", func.getParameterTypes().get( 0 ));
+    }
+    
 	public void testAlmostEmptyRule() throws Exception {
 		RuleDescr rule = parseResource( "almost_empty_rule.drl" ).rule();
 		
