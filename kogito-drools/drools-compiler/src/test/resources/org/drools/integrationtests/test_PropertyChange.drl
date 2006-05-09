@@ -1,0 +1,12 @@
+package org.drools.test;
+
+import org.drools.State;
+
+global java.util.List list
+
+rule simple
+    when
+        State( )
+    then
+		list.add("fired");
+end   
