@@ -36,7 +36,8 @@
     control what "parameters" of rules can be edited, without exposing the
     rules directly.</para>
 
-	<para>Decision tables also provide a degree of insulation from the underlying object model.</para>
+    <para>Decision tables also provide a degree of insulation from the
+    underlying object model.</para>
   </section>
 
   <section>
@@ -339,6 +340,17 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
 
               <entry>Indicates that if there cell values in this column, the
               no-loop attribute should be set</entry>
+
+              <entry>optional</entry>
+            </row>
+
+            <row>
+              <entry>XOR-GROUP</entry>
+
+              <entry>Cell values in this column mean that the rule-row belongs
+              to the given XOR group. An Xor group means that only one rule in
+              the named group will fire (ie the first one to fire cancells the
+              other rules activations).</entry>
 
               <entry>optional</entry>
             </row>
