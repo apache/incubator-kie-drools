@@ -1,3 +1,3 @@
 #place your comments here - this is just a description for your own purposes.
 [then]Mostre {$object}=System.out.println({$object});
-[when]{$object} י igual a {$value}={$object}: SampleObject(value == {$value});
+[when]{$object} יי igual a {$value}={$object}: SampleObject(value == {$value});
