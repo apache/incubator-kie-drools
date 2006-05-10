@@ -224,7 +224,7 @@ public class PrimitiveLongMap
                           0,
                           newIndex,
                           0,
-                          newSize - 1 );
+                          (newSize > this.pageIndex.length) ? this.pageIndex.length : newSize);
         this.pageIndex = newIndex;
     }
 
