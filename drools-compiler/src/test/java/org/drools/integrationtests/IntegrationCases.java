@@ -238,11 +238,16 @@ public abstract class IntegrationCases extends TestCase {
         
         assertEquals(1, list.size());
         
-        state.setState( "finished" );
+
+        state.setFlag( true );
         assertEquals(1, list.size());
         
         workingMemory.fireAllRules();
         assertEquals(2, list.size());
+        
+        state.setState( "finished" );
+        workingMemory.fireAllRules();
+        assertEquals(3, list.size());
 
     }    
 
