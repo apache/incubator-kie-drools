@@ -7,7 +7,8 @@ public class State {
     private PropertyChangeSupport changes = new PropertyChangeSupport( this );
 
     private String                state;
-
+    private boolean               flag;
+    
     public State(String state) {
         this.state = state;
     }
@@ -23,6 +24,8 @@ public class State {
                                          oldState,
                                          newState );
     }
+    
+    
 
     public void addPropertyChangeListener(PropertyChangeListener l) {
         changes.addPropertyChangeListener( l );
@@ -30,5 +33,15 @@ public class State {
 
     public void removePropertyChangeListener(PropertyChangeListener l) {
         changes.removePropertyChangeListener( l );
+    }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        boolean old = this.flag;
+        this.flag = flag;
+        this.changes.firePropertyChange( "flag", old, flag );
     }
 }
