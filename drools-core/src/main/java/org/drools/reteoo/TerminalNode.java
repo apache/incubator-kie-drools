@@ -265,33 +265,25 @@ final class TerminalNode extends BaseNode
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final WorkingMemoryImpl workingMemory = workingMemories[i];
 
-            final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-
-            final AgendaGroupImpl group = memory.getAgendaGroup();
-            final Queueable[] elements = group.getQueueable();
-            final List list = new ArrayList();
-            //start at 1 as BinaryHeapQueue starts at 1
-            for ( int j = 1, size = group.size() + 1; j < size; j++ ) {
-                final AgendaItem item = (AgendaItem) elements[j];
-                if ( item.getRule() == this.rule ) {
-                    list.add( item );
-                }
-            }
-            for ( final Iterator it = list.iterator(); it.hasNext(); ) {
-                final AgendaItem item = (AgendaItem) it.next();
-                if ( item.isActivated() ) {
-                    item.remove();
-                    workingMemory.getAgendaEventSupport().fireActivationCancelled( item );
+            for ( final Iterator it = this.tupleSource.getPropagatedTuples( workingMemory, this ).iterator();
+                        it.hasNext(); ) {
+                ReteTuple tuple = (ReteTuple) it.next();
+                Activation activation = tuple.getActivation();
+                
+                if ( activation.isActivated() ) {
+                    activation.remove();
+                    workingMemory.getAgendaEventSupport().fireActivationCancelled( activation );
                 }
 
                 final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                     PropagationContext.RULE_REMOVAL,
                                                                                     null,
                                                                                     null );
-                workingMemory.removeLogicalDependencies( item,
+                workingMemory.removeLogicalDependencies( activation,
                                                          propagationContext,
                                                          this.rule );
             }
+            workingMemory.propagateQueuedActions();
         }
 
         this.tupleSource.remove( this,

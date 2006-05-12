@@ -16,7 +16,9 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.common.BetaNodeBinder;
@@ -371,7 +373,24 @@ class JoinNode extends BetaNode {
             }
         }
 
-        this.attachingNewNode = true;
+        this.attachingNewNode = false;
     }
+    
+    /**
+     * @inheritDoc
+     */
+    public List getPropagatedTuples(WorkingMemoryImpl workingMemory, TupleSink sink) {
+        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        int index = this.getTupleSinks().indexOf( sink );
+        List propagatedTuples = new ArrayList();
+
+        for ( Iterator it = memory.getRightObjectMemory().iterator(); it.hasNext(); ) {
+            ObjectMatches objectMatches = (ObjectMatches) it.next();
+            for ( TupleMatch tupleMatch = objectMatches.getFirstTupleMatch(); tupleMatch != null; tupleMatch = (TupleMatch) tupleMatch.getNext() ) {
+                propagatedTuples.add( tupleMatch.getJoinedTuples().get( index ) );
+            }
+        }
+        return propagatedTuples;
+    }   
 
 }

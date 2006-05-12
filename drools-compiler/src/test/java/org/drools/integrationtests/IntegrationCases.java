@@ -1890,7 +1890,7 @@ public abstract class IntegrationCases extends TestCase {
                       l.size() );
     }
 
-    public void xxxtestLogicalAssertionsDynamicRule() throws Exception {
+    public void testLogicalAssertionsDynamicRule() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalAssertionsDynamicRule.drl" ) ) );
         Package pkg = builder.getPackage();
@@ -1980,7 +1980,7 @@ public abstract class IntegrationCases extends TestCase {
         assertFalse( "remove of rule should retract objects logically asserted based on the rule",
                      list.contains( c3.getType() ) );
 
-        c2.setPrice( 1 );
+        c2.setPrice( 3 );
         workingMemory.modifyObject( h,
                                     c2 );
         list = workingMemory.getObjects( c1.getType().getClass() );

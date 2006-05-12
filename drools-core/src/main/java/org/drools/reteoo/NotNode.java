@@ -16,11 +16,15 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.common.BetaNodeBinder;
 import org.drools.spi.PropagationContext;
+import org.drools.util.LinkedList;
+import org.drools.util.LinkedListObjectWrapper;
 
 /**
  * <code>NotNode</code> extends <code>BetaNode</code> to perform tests for
@@ -351,18 +355,41 @@ public class NotNode extends BetaNode {
         this.attachingNewNode = true;
 
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        //@todo: can we iterate left memory like this?
-        for ( Iterator it = memory.leftTupleIterator( workingMemory,
-                                                      null ); it.hasNext(); ) {
+        for ( Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {
             ReteTuple leftTuple = (ReteTuple) it.next();
             if ( leftTuple.matchesSize() == 0 ) {
-                propagateAssertTuple( leftTuple,
-                                      context,
-                                      workingMemory );
+                ReteTuple child = new ReteTuple( leftTuple );
+                // no TupleMatch so instead add as a linked tuple
+                leftTuple.addLinkedTuple( new LinkedListObjectWrapper( child ) );
+                ((TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 )).assertTuple( child,
+                                                                    context,
+                                                                    workingMemory );
             }
         }
 
         this.attachingNewNode = true;
     }
+    
+    /**
+     * @inheritDoc
+     */
+    public List getPropagatedTuples(WorkingMemoryImpl workingMemory, TupleSink sink) {
+        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        int index = this.getTupleSinks().indexOf( sink );
+        List propagatedTuples = new ArrayList();
+
+        for ( Iterator it = memory.getLeftTupleMemory().iterator(); it.hasNext(); ) {
+            ReteTuple leftTuple = (ReteTuple) it.next();
+            LinkedList linkedTuples = leftTuple.getLinkedTuples();
+            
+            LinkedListObjectWrapper wrapper = (LinkedListObjectWrapper) linkedTuples.getFirst();
+            for( int c = 0; c < index; c++) {
+                wrapper = (LinkedListObjectWrapper) wrapper.getNext();
+            }
+            propagatedTuples.add( wrapper.getObject() );
+        }
+        return propagatedTuples;
+    }   
+    
 
 }

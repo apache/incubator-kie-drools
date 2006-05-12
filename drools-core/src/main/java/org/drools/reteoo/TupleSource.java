@@ -222,4 +222,10 @@ abstract class TupleSource extends BaseNode
         return this.tupleSinks;
     }
 
+    /**
+     * Returns the list of propagated tuples
+     * @return
+     */
+    public abstract List getPropagatedTuples(WorkingMemoryImpl workingMemory, TupleSink sink);
+
 }

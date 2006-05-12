@@ -16,8 +16,10 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.common.BetaNodeBinder;
@@ -301,5 +303,25 @@ class LeftInputAdapterNode extends TupleSource
         } else {        
             return this.objectSource.equals( other.objectSource ) && this.binder.equals( other.binder );
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public List getPropagatedTuples(WorkingMemoryImpl workingMemory, TupleSink sink) {
+        Map memory = (Map) workingMemory.getNodeMemory( this );
+        int index = this.getTupleSinks().indexOf( sink );
+        List propagatedTuples = new ArrayList();
+
+        for( Iterator i = memory.values().iterator(); i.hasNext(); ) {
+            LinkedList tuples = (LinkedList) i.next();
+            LinkedListObjectWrapper wrapper = (LinkedListObjectWrapper) tuples.getFirst();
+            for( int c = 0; c < index; c++) {
+                wrapper = (LinkedListObjectWrapper) wrapper.getNext();
+            }
+            propagatedTuples.add( wrapper.getObject() );
+        }
+        
+        return propagatedTuples;
     }   
 }
