@@ -439,11 +439,12 @@ public class WorkingMemoryImpl
                                    boolean logical,
                                    Rule rule,
                                    Activation activation) throws FactException {
+        FactHandleImpl handle = null;
         this.lock.lock();
         try {
 
             // check if the object already exists in the WM
-            FactHandleImpl handle = (FactHandleImpl) this.identityMap.get( object );
+            handle = (FactHandleImpl) this.identityMap.get( object );
 
             // lets see if the object is already logical asserted
             FactStatus logicalState = (FactStatus) this.equalsMap.get( object );
@@ -535,12 +536,11 @@ public class WorkingMemoryImpl
             
             if ( !this.factQueue.isEmpty() ) {
                 propagateQueuedActions();
-            }
-            
-            return handle;
+            }            
         } finally {
             this.lock.unlock();
         }
+        return handle;
     }
 
     private void addPropertyChangeListener(Object object) {
