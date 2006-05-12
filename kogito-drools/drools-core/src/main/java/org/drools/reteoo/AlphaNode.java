@@ -204,7 +204,7 @@ class AlphaNode extends ObjectSource
 
     public void remove(BaseNode node,
                        WorkingMemoryImpl[] workingMemories) {
-        getObjectSinks().remove( node );
+        this.objectSinks.remove( (ObjectSink) node );
         removeShare();
         if ( this.sharedCount < 0 ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {

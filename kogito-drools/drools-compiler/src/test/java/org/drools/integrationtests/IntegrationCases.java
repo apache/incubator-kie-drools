@@ -1497,6 +1497,10 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.removeRule( "org.drools.test",
                              "like cheese" );
 
+        Cheese muzzarela = new Cheese( "muzzarela",
+                                     5 );
+        workingMemory.assertObject( muzzarela );
+
         assertEquals( 4,
                       workingMemory.getAgenda().getActivations().length );
 
