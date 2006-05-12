@@ -383,7 +383,7 @@ public class NotNode extends BetaNode {
             LinkedList linkedTuples = leftTuple.getLinkedTuples();
             
             LinkedListObjectWrapper wrapper = (LinkedListObjectWrapper) linkedTuples.getFirst();
-            for( int c = 0; c < index; c++) {
+            for( int i = 0; i < index; i++) {
                 wrapper = (LinkedListObjectWrapper) wrapper.getNext();
             }
             propagatedTuples.add( wrapper.getObject() );
