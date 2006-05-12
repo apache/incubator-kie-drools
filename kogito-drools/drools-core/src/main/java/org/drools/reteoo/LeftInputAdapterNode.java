@@ -313,10 +313,10 @@ class LeftInputAdapterNode extends TupleSource
         int index = this.getTupleSinks().indexOf( sink );
         List propagatedTuples = new ArrayList();
 
-        for( Iterator i = memory.values().iterator(); i.hasNext(); ) {
-            LinkedList tuples = (LinkedList) i.next();
+        for( Iterator it = memory.values().iterator(); it.hasNext(); ) {
+            LinkedList tuples = (LinkedList) it.next();
             LinkedListObjectWrapper wrapper = (LinkedListObjectWrapper) tuples.getFirst();
-            for( int c = 0; c < index; c++) {
+            for( int i = 0; i < index; i++) {
                 wrapper = (LinkedListObjectWrapper) wrapper.getNext();
             }
             propagatedTuples.add( wrapper.getObject() );
