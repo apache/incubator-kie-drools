@@ -145,6 +145,11 @@
 
       <xi:include href="Chapter-Examples/Section-Examples.xml" />
     </chapter>
+
+	<chapter>
+		<title>Deployment</title>
+		<xi:include href="Chapter-Deployment/Section-Deployment.xml" />
+	</chapter>
     
     <chapter>
       <title>Papers</title>
