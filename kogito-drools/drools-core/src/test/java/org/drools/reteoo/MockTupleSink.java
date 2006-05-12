@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -108,6 +109,12 @@ public class MockTupleSink extends TupleSource
     public void attach(WorkingMemoryImpl[] workingMemories) {
         // TODO Auto-generated method stub
 
+    }
+
+    public List getPropagatedTuples(WorkingMemoryImpl workingMemory,
+                                    TupleSink sink) {
+        // TODO Auto-generated method stub
+        return Collections.EMPTY_LIST;
     }
 
 }

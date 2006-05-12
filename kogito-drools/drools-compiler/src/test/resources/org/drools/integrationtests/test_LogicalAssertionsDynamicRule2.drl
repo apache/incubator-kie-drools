@@ -4,7 +4,8 @@ import org.drools.Cheese;
 
 rule "rule2"
     when
-        Cheese( type : type, price : price -> (price.intValue() < 3))
+        #Cheese( type : type, price : price -> (price.intValue() < 3))
+        Cheese( type : type, price < 3)
     then
 		assertLogical( type );
 end

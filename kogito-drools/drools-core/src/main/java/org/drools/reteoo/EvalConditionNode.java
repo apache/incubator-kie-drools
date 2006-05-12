@@ -16,12 +16,15 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
+import org.drools.util.LinkedListObjectWrapper;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -193,9 +196,13 @@ class EvalConditionNode extends TupleSource
         LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
 
         for ( Iterator it = memory.iterator(); it.hasNext(); ) {
-            propagateAssertTuple( (ReteTuple) it.next(),
-                                  context,
-                                  workingMemory );
+            ReteTuple tuple = (ReteTuple) it.next();
+            ReteTuple child = new ReteTuple( tuple );
+            // no TupleMatch so instead add as a linked tuple
+            tuple.addLinkedTuple( new LinkedListObjectWrapper( child ) );
+            ((TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 )).assertTuple( child,
+                                                                context,
+                                                                workingMemory );
         }
 
         this.attachingNewNode = false;
@@ -244,4 +251,26 @@ class EvalConditionNode extends TupleSource
     public Object createMemory() {
         return new LinkedList();
     }
+    
+    /**
+     * @inheritDoc
+     */
+    public List getPropagatedTuples(WorkingMemoryImpl workingMemory, TupleSink sink) {
+        LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+        int index = this.getTupleSinks().indexOf( sink );
+        List propagatedTuples = new ArrayList();
+
+        for ( Iterator it = memory.iterator(); it.hasNext(); ) {
+            ReteTuple leftTuple = (ReteTuple) it.next();
+            LinkedList linkedTuples = leftTuple.getLinkedTuples();
+            
+            LinkedListObjectWrapper wrapper = (LinkedListObjectWrapper) linkedTuples.getFirst();
+            for( int c = 0; c < index; c++) {
+                wrapper = (LinkedListObjectWrapper) wrapper.getNext();
+            }
+            propagatedTuples.add( wrapper.getObject() );
+        }
+        return propagatedTuples;
+    }   
+    
 }

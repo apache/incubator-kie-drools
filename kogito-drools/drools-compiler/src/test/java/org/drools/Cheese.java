@@ -41,5 +41,9 @@ public class Cheese implements Serializable {
     public void setPrice(int price) {
         this.price = price;
     }
+    
+    public String toString() {
+        return "Cheese( type='"+this.type+"', price="+this.price+" )";
+    }
 
 }
