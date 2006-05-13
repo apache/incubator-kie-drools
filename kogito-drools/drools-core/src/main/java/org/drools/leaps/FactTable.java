@@ -46,7 +46,7 @@ class FactTable extends Table {
      * Tuples that are either already on agenda or are very close (missing
      * exists or have not facts matching)
      */
-    private final LinkedList       tuples;
+    private LinkedList       tuples;
 
     /**
      * initializes base LeapsTable with appropriate Comparator and positive and
@@ -67,9 +67,8 @@ class FactTable extends Table {
      * @param workingMemory
      * @param ruleHandle
      */
-    public void addRule(WorkingMemoryImpl workingMemory,
-                        RuleHandle ruleHandle) {
-        if ( !this.rules.contains( ruleHandle ) ) {
+    public void addRule( WorkingMemoryImpl workingMemory, RuleHandle ruleHandle ) {
+        if (!this.rules.contains( ruleHandle )) {
             this.rules.add( ruleHandle );
             // push facts back to stack if needed
             this.checkAndAddFactsToStack( workingMemory );
@@ -81,8 +80,18 @@ class FactTable extends Table {
      * 
      * @param ruleHandle
      */
-    public void removeRule(RuleHandle ruleHandle) {
+    public void removeRule( RuleHandle ruleHandle ) {
         this.rules.remove( ruleHandle );
+        // remove tuples that are still there
+        LinkedList list = new LinkedList( );
+
+        for (Iterator it = this.getTuplesIterator( ); it.hasNext( );) {
+            LeapsTuple tuple = (LeapsTuple) it.next( );
+            if (ruleHandle.getLeapsRule( ).getRule( ) != tuple.getLeapsRule( ).getRule( )) {
+                list.add( tuple );
+            }
+        }
+        this.tuples = list;
     }
 
     /**

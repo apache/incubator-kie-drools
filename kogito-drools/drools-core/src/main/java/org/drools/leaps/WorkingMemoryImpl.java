@@ -74,6 +74,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
 
     private final IdentityMap leapsRulesToHandlesMap = new IdentityMap( );
 
+    private final IdentityMap rulesActivationsMap = new IdentityMap( );
+
     /**
      * Construct.
      * 
@@ -214,11 +216,11 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
                                    boolean logical,
                                    Rule rule,
                                    Activation activation ) throws FactException {
-
+        FactHandleImpl handle ;
         this.getLock().lock( );
         try {
             // check if the object already exists in the WM
-            FactHandleImpl handle = (FactHandleImpl) this.identityMap.get( object );
+            handle = (FactHandleImpl) this.identityMap.get( object );
 
             // lets see if the object is already logical asserted
             FactStatus logicalState = (FactStatus) this.equalsMap.get( object );
@@ -237,6 +239,7 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
                                       activation,
                                       activation.getPropagationContext( ),
                                       rule );
+                
                 return logicalState.getHandle( );
             }
 
@@ -294,7 +297,6 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
                                       activation,
                                       activation.getPropagationContext( ),
                                       rule );
-
             }
 
             // new leaps stack token
@@ -380,12 +382,13 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
                     }
                 }
             }
-
-            return handle;
+            propagateQueuedActions( );
         }
         finally {
-            this.getLock().unlock( );
+            this.getLock( ).unlock( );
         }
+
+        return handle;
     }
 
     /**
@@ -555,6 +558,8 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
                                                                          activation );
 
             this.workingMemoryEventSupport.fireObjectRetracted( context, handle, oldObject );
+            
+            propagateQueuedActions();
         }
         finally {
             this.getLock().unlock( );
@@ -586,14 +591,37 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
         }
     }
 
+    
+    
+    public void addLogicalDependency( FactHandle handle,
+                                     Activation activation,
+                                     PropagationContext context,
+                                     Rule rule ) throws FactException {
+        super.addLogicalDependency( handle, activation, context, rule );
+
+        LinkedList activations = (LinkedList) this.rulesActivationsMap.get( rule );
+        if (activations == null) {
+            activations = new LinkedList( );
+            this.rulesActivationsMap.put( rule, activations );
+        }
+        activations.add( activation );
+    }
+
+    
+    public void removeLogicalDependencies( Activation activation,
+                                          PropagationContext context,
+                                          Rule rule ) throws FactException {
+        super.removeLogicalDependencies( activation, context, rule );
+    }
+
     /**
      * @see WorkingMemory
      */
-    public void modifyObject(FactHandle handle,
+    public void modifyObject( FactHandle handle,
                              Object object,
                              Rule rule,
                              Activation activation ) throws FactException {
-        this.getLock().lock( );
+        this.getLock( ).lock( );
         try {
 
             this.retractObject( handle );
@@ -624,9 +652,10 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
                                                                handle,
                                                                ( (FactHandleImpl) handle ).getObject( ),
                                                                object );
+            propagateQueuedActions( );
         }
         finally {
-            this.getLock().unlock( );
+            this.getLock( ).unlock( );
         }
     }
 
@@ -778,22 +807,36 @@ class WorkingMemoryImpl extends AbstractWorkingMemory
         this.getLock( ).lock( );
         try {
             ArrayList ruleHandlesList;
-            LeapsRule rule;
+            LeapsRule leapsRule;
             RuleHandle ruleHandle;
             for (Iterator it = rules.iterator( ); it.hasNext( );) {
-                rule = (LeapsRule) it.next( );
+                leapsRule = (LeapsRule) it.next( );
                 // some times rules do not have "normal" constraints and only
                 // not and exists
-                if (rule.getNumberOfColumns( ) > 0) {
-                    ruleHandlesList = (ArrayList) this.leapsRulesToHandlesMap.remove( rule );
+                if (leapsRule.getNumberOfColumns( ) > 0) {
+                    ruleHandlesList = (ArrayList) this.leapsRulesToHandlesMap.remove( leapsRule );
                     for (int i = 0; i < ruleHandlesList.size( ); i++) {
                         ruleHandle = (RuleHandle) ruleHandlesList.get( i );
                         // 
-                        this.getFactTable( rule.getColumnClassObjectTypeAtPosition( i ) )
+                        this.getFactTable( leapsRule.getColumnClassObjectTypeAtPosition( i ) )
                             .removeRule( ruleHandle );
                     }
                 }
+                //
             }
+            Rule rule = ((LeapsRule)rules.get(0)).getRule( );
+            List activations = (List) this.rulesActivationsMap.remove( rule );
+            if (activations != null) {
+                for (Iterator activationsIt = activations.iterator( ); activationsIt.hasNext( );) {
+                    Activation activation = (Activation) activationsIt.next( );
+                    ((LeapsTuple)activation.getTuple()).setActivation(null);
+                    this.removeLogicalDependencies( activation,
+                                                    activation.getPropagationContext( ),
+                                                    rule );
+                }
+            }
+            
+            propagateQueuedActions();
         }
         finally {
             this.getLock( ).unlock( );
