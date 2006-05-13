@@ -111,7 +111,9 @@ abstract public class AbstractWorkingMemory implements WorkingMemory,
     protected long                            propagationIdCounter;
 
     private ReentrantLock                     lock                                          = new ReentrantLock( );
-    
+
+    private List                              factQueue                                     = new ArrayList( );
+
     public AbstractWorkingMemory(RuleBase ruleBase,
                                  FactHandleFactory handleFactory) {
         this.ruleBase = ruleBase;
@@ -377,7 +379,51 @@ abstract public class AbstractWorkingMemory implements WorkingMemory,
         return this.justified;
     }
 
+    public long getNextPropagationIdCounter() {
+        return this.propagationIdCounter++;
+    }
+
     abstract public void dispose();
+
+    public void removeLogicalDependencies(Activation activation,
+                                          PropagationContext context,
+                                          Rule rule) throws FactException {
+        org.drools.util.LinkedList list = activation.getLogicalDependencies();
+        if ( list == null || list.isEmpty() ) {
+            return;
+        }
+        for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
+            InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
+            Set set = (Set) this.justified.get( handle.getId( ) );
+            // check set for null because in some weird cases on logical assertion  
+            // it comes back with the same activation/handle and tries on
+            // already cleaned this.justified. only happens on removal of rule 
+            // from the working memory
+            if (set != null) {
+                set.remove( node );
+                if (set.isEmpty( )) {
+                    this.justified.remove( handle.getId( ) );
+                    // this needs to be scheduled so we don't upset the current
+                    // working memory operation
+                    this.factQueue.add( new WorkingMemoryRetractAction( handle,
+                                                                        false,
+                                                                        true,
+                                                                        context.getRuleOrigin( ),
+                                                                        context.getActivationOrigin( ) ) );
+                }
+            }
+        }
+    }
+
+    public void removeLogicalDependencies(FactHandle handle) throws FactException {
+        Set set = (Set) this.justified.remove( ((InternalFactHandle) handle).getId() );
+        if ( set != null && !set.isEmpty() ) {
+            for ( Iterator it = set.iterator(); it.hasNext(); ) {
+                LogicalDependency node = (LogicalDependency) it.next();
+                node.getJustifier().getLogicalDependencies().remove( node );
+            }
+        }
+    }
 
     public void addLogicalDependency(FactHandle handle,
                                      Activation activation,
@@ -395,34 +441,12 @@ abstract public class AbstractWorkingMemory implements WorkingMemory,
         set.add( node );
     }
 
-    public void removeLogicalDependencies( Activation activation,
-                                          PropagationContext context,
-                                          Rule rule ) throws FactException {
-        org.drools.util.LinkedList list = activation.getLogicalDependencies();
-        if (list == null || list.isEmpty( )) {
-            return;
-        }
-        for (LogicalDependency node = (LogicalDependency) list.getFirst( ); node != null; node = (LogicalDependency) node.getNext( )) {
-            InternalFactHandle handle = (InternalFactHandle) node.getFactHandle( );
-            Set set = (Set) this.justified.get( handle.getId( ) );
-            set.remove( node );
-            if (set.isEmpty( )) {
-                this.justified.remove( handle.getId( ) );
-                retractObject( handle,
-                               false,
-                               true,
-                               context.getRuleOrigin( ),
-                               context.getActivationOrigin( ) );
-            }
-        }
-    }
-
-    public void removeLogicalDependencies(FactHandle handle) throws FactException {
-        Set set = (Set) this.justified.remove( ((InternalFactHandle) handle).getId() );
-        if ( set != null && !set.isEmpty() ) {
-            for ( Iterator it = set.iterator(); it.hasNext(); ) {
-                LogicalDependency node = (LogicalDependency) it.next();
-                node.getJustifier().getLogicalDependencies().remove( node );
+    protected void propagateQueuedActions() {
+        if (!this.factQueue.isEmpty( )) {
+            for (Iterator it = this.factQueue.iterator( ); it.hasNext( );) {
+                WorkingMemoryAction action = (WorkingMemoryAction) it.next( );
+                it.remove( );
+                action.propagate( );
             }
         }
     }
@@ -431,6 +455,41 @@ abstract public class AbstractWorkingMemory implements WorkingMemory,
         return this.lock;
     }
  
+    private interface WorkingMemoryAction {
+        public void propagate();
+    }
+    
+    private class WorkingMemoryRetractAction implements WorkingMemoryAction {
+        private InternalFactHandle factHandle;
+        private boolean removeLogical;
+        private boolean updateEqualsMap;
+        private Rule ruleOrigin;
+        private Activation activationOrigin;
+        
+        
+        
+        public WorkingMemoryRetractAction(InternalFactHandle factHandle,
+                                          boolean removeLogical,
+                                          boolean updateEqualsMap,
+                                          Rule ruleOrigin,
+                                          Activation activationOrigin) {
+            super();
+            this.factHandle = factHandle;
+            this.removeLogical = removeLogical;
+            this.updateEqualsMap = updateEqualsMap;
+            this.ruleOrigin = ruleOrigin;
+            this.activationOrigin = activationOrigin;
+        }
+
+        public void propagate() {
+            retractObject( this.factHandle,
+                           this.removeLogical,
+                           this.updateEqualsMap,
+                           this.ruleOrigin,
+                           this.activationOrigin );
+        }
+    }
+
     protected static class FactStatus {
         private int            counter;
         private String         status;
