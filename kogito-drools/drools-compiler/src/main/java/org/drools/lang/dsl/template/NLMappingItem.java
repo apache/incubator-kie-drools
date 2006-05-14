@@ -50,7 +50,7 @@ public class NLMappingItem
 
     
     public void setNaturalTemplate(String naturalTemplate) {
-        this.naturalTemplate = naturalTemplate;
+        this.naturalTemplate = naturalTemplate.replaceAll( "\\s*,\\s*", " , " );
     }
 
     public void setScope(String scope) {
@@ -64,9 +64,9 @@ public class NLMappingItem
     public NLMappingItem(String naturalTemplate,
                          String targetTemplate,
                          String scope) {
-        this.naturalTemplate = naturalTemplate;
-        this.targetTemplate = targetTemplate;        
-        this.scope = scope;        
+        this.setNaturalTemplate( naturalTemplate );
+        this.setTargetTemplate( targetTemplate );        
+        this.setScope( scope );        
     }
     
     public String getNaturalTemplate() {
