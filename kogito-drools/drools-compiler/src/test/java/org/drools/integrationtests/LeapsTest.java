@@ -162,4 +162,13 @@ public class LeapsTest extends IntegrationCases {
         assertTrue( "rule2",
                     list.contains( "rule2" ) );
     }
+    
+    public void testDynamicRuleRemovals() throws Exception {
+        // TODO FIXME
+    }
+    
+    public void testDynamicRuleRemovalsUnusedWorkingMemory() throws Exception {
+        // TODO FIXME
+    }
+    
 }

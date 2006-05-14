@@ -40,15 +40,15 @@ public class ObjectSourceTest extends DroolsTestCase {
     public void testAddObjectSink() {
         MockObjectSource source = new MockObjectSource( 15 );
         assertLength( 0,
-                      source.getObjectSinks() );
+                      source.getObjectSinksAsList() );
 
         source.addObjectSink( new MockObjectSink() );
         assertLength( 1,
-                      source.getObjectSinks() );
+                      source.getObjectSinksAsList() );
 
         source.addObjectSink( new MockObjectSink() );
         assertLength( 2,
-                      source.getObjectSinks() );
+                      source.getObjectSinksAsList() );
     }
 
     public void testPropagateAssertObject() throws Exception {

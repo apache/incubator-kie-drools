@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -262,6 +263,7 @@ public class HashedObjectSinkList
      * 
      * This method is not efficient and shall be used only for debugging and
      * test purposes.
+     * Also, the list returned is an unmodifiable list to prevent misusage of it.
      */
     public List getObjectsAsList() {
         List list = new ArrayList();
@@ -270,7 +272,11 @@ public class HashedObjectSinkList
             list.addAll( wrapper.getAllNodes() );
         }
         list.addAll( this.otherSinks );
-        return list;
+        return Collections.unmodifiableList( list );
+    }
+
+    public int size() {
+        return this.hashedSinks.size()+this.otherSinks.size();
     }
 
 }

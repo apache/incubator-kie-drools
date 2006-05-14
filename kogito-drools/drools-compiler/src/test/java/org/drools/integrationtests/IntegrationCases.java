@@ -218,7 +218,7 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( bill,
                       list.get( 0 ) );
     }
-    
+
     public void testPropertyChangeSupport() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "Test_PropertyChange.drl" ) ) );
@@ -232,24 +232,28 @@ public abstract class IntegrationCases extends TestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        State state = new State("initial");
-        workingMemory.assertObject( state, true );
+        State state = new State( "initial" );
+        workingMemory.assertObject( state,
+                                    true );
         workingMemory.fireAllRules();
-        
-        assertEquals(1, list.size());
-        
+
+        assertEquals( 1,
+                      list.size() );
 
         state.setFlag( true );
-        assertEquals(1, list.size());
-        
+        assertEquals( 1,
+                      list.size() );
+
         workingMemory.fireAllRules();
-        assertEquals(2, list.size());
-        
+        assertEquals( 2,
+                      list.size() );
+
         state.setState( "finished" );
         workingMemory.fireAllRules();
-        assertEquals(3, list.size());
+        assertEquals( 3,
+                      list.size() );
 
-    }    
+    }
 
     public void testBigDecimal() throws Exception {
 
@@ -1452,8 +1456,17 @@ public abstract class IntegrationCases extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) ) );
         Package pkg = builder.getPackage();
 
-        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        org.drools.reteoo.RuleBaseImpl reteooRuleBase = null;
+        org.drools.leaps.RuleBaseImpl leapsRuleBase = null;
+        RuleBase ruleBase = getRuleBase();
+        //org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        if ( ruleBase instanceof org.drools.reteoo.RuleBaseImpl ) {
+            reteooRuleBase = (org.drools.reteoo.RuleBaseImpl) ruleBase;
+        } else if ( ruleBase instanceof org.drools.leaps.RuleBaseImpl ) {
+            leapsRuleBase = (org.drools.leaps.RuleBaseImpl) ruleBase;
+        }
         ruleBase.addPackage( pkg );
+
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         List list = new ArrayList();
@@ -1488,27 +1501,111 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( 11,
                       workingMemory.getAgenda().getActivations().length );
 
-        ruleBase.removeRule( "org.drools.test",
-                             "Who likes Stilton" );
+        if ( reteooRuleBase != null ) {
+            reteooRuleBase.removeRule( "org.drools.test",
+                                       "Who likes Stilton" );
+            assertEquals( 8,
+                          workingMemory.getAgenda().getActivations().length );
 
-        assertEquals( 8,
-                      workingMemory.getAgenda().getActivations().length );
+            reteooRuleBase.removeRule( "org.drools.test",
+                                       "like cheese" );
 
-        ruleBase.removeRule( "org.drools.test",
-                             "like cheese" );
+            Cheese muzzarela = new Cheese( "muzzarela",
+                                           5 );
+            workingMemory.assertObject( muzzarela );
 
-        Cheese muzzarela = new Cheese( "muzzarela",
-                                     5 );
-        workingMemory.assertObject( muzzarela );
+            assertEquals( 4,
+                          workingMemory.getAgenda().getActivations().length );
 
-        assertEquals( 4,
-                      workingMemory.getAgenda().getActivations().length );
+            reteooRuleBase.removePackage( "org.drools.test" );
 
-        ruleBase.removePackage( "org.drools.test" );
+            assertEquals( 0,
+                          workingMemory.getAgenda().getActivations().length );
+        } else if ( leapsRuleBase != null ) {
+            leapsRuleBase.removeRule( "org.drools.test",
+                                       "Who likes Stilton" );
+            assertEquals( 8,
+                          workingMemory.getAgenda().getActivations().length );
 
-        assertEquals( 0,
-                      workingMemory.getAgenda().getActivations().length );
+            leapsRuleBase.removeRule( "org.drools.test",
+                                       "like cheese" );
 
+            Cheese muzzarela = new Cheese( "muzzarela",
+                                           5 );
+            workingMemory.assertObject( muzzarela );
+
+            assertEquals( 4,
+                          workingMemory.getAgenda().getActivations().length );
+
+            leapsRuleBase.removePackage( "org.drools.test" );
+
+            assertEquals( 0,
+                          workingMemory.getAgenda().getActivations().length );
+
+        }
+    }
+
+    public void testDynamicRuleRemovalsUnusedWorkingMemory() throws Exception {
+
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) ) );
+        Package pkg = builder.getPackage();
+
+        org.drools.reteoo.RuleBaseImpl reteooRuleBase = null;
+        org.drools.leaps.RuleBaseImpl leapsRuleBase = null;
+        RuleBase ruleBase = getRuleBase();
+        //org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        if ( ruleBase instanceof org.drools.reteoo.RuleBaseImpl ) {
+            reteooRuleBase = (org.drools.reteoo.RuleBaseImpl) ruleBase;
+        } else if ( ruleBase instanceof org.drools.leaps.RuleBaseImpl ) {
+            leapsRuleBase = (org.drools.leaps.RuleBaseImpl) ruleBase;
+        }
+        ruleBase.addPackage( pkg );
+
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        if ( reteooRuleBase != null ) {
+            assertEquals( 1,
+                          reteooRuleBase.getPackages().length );
+            assertEquals( 4,
+                          reteooRuleBase.getPackages()[0].getRules().length );
+
+            reteooRuleBase.removeRule( "org.drools.test",
+                                       "Who likes Stilton" );
+            assertEquals( 3,
+                          reteooRuleBase.getPackages()[0].getRules().length );
+
+            reteooRuleBase.removeRule( "org.drools.test",
+                                       "like cheese" );
+            assertEquals( 2,
+                          reteooRuleBase.getPackages()[0].getRules().length );
+
+            reteooRuleBase.removePackage( "org.drools.test" );
+            assertEquals( 0,
+                          reteooRuleBase.getPackages().length );
+        } else if ( leapsRuleBase != null ) {
+            assertEquals( 1,
+                          leapsRuleBase.getPackages().length );
+            assertEquals( 4,
+                          leapsRuleBase.getPackages()[0].getRules().length );
+
+            leapsRuleBase.removeRule( "org.drools.test",
+                                      "Who likes Stilton" );
+            assertEquals( 3,
+                          leapsRuleBase.getPackages()[0].getRules().length );
+
+            leapsRuleBase.removeRule( "org.drools.test",
+                                      "like cheese" );
+            assertEquals( 2,
+                          leapsRuleBase.getPackages()[0].getRules().length );
+
+            leapsRuleBase.removePackage( "org.drools.test" );
+            assertEquals( 0,
+                          leapsRuleBase.getPackages().length );
+        }
     }
 
     public void testNullValuesIndexing() throws Exception {

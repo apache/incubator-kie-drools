@@ -121,7 +121,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     public void remove(BaseNode node,
                        WorkingMemoryImpl[] workingMemories) {
-        getObjectSinks().remove( node );
+        getObjectSinks().remove( (ObjectSink) node );
         removeShare();
         if ( this.sharedCount < 0 ) {
             this.tupleSource.remove( this,

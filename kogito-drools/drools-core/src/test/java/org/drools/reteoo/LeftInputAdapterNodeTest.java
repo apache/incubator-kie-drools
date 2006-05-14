@@ -56,15 +56,15 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                       liaNode.getId() );
 
         assertLength( 0,
-                      source.getObjectSinks() );
+                      source.getObjectSinksAsList() );
 
         liaNode.attach();
 
         assertLength( 1,
-                      source.getObjectSinks() );
+                      source.getObjectSinksAsList() );
 
         assertSame( liaNode,
-                    source.getObjectSinks().get( 0 ) );
+                    source.getObjectSinks().getLastObjectSink() );
     }
 
     /**

@@ -46,12 +46,12 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       alphaNode.getId() );
         assertLength( 0,
-                      source.getObjectSinks() );
+                      source.getObjectSinksAsList() );
         alphaNode.attach();
         assertLength( 1,
-                      source.getObjectSinks() );
+                      source.getObjectSinksAsList() );
         assertSame( alphaNode,
-                    source.getObjectSinks().get( 0 ) );
+                    source.getObjectSinks().getLastObjectSink() );
     }
 
     public void testMemory() {

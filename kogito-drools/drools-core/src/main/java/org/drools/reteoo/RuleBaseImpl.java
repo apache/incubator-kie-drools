@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -382,7 +383,7 @@ public class RuleBaseImpl
         compilationData.putAllInvokers( newCompilationData.getInvokers() );
 
         // Add globals
-        for ( Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
+        for ( Iterator it = newPkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
             String identifier = (String) it.next();
             Class type = (Class) globals.get( identifier );
             if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
@@ -390,6 +391,7 @@ public class RuleBaseImpl
                                                        newPkg );
             }
         }
+        globals.putAll( newPkg.getGlobals() );
     }
 
     private void addRule(Rule rule) throws InvalidPatternException {
@@ -419,6 +421,24 @@ public class RuleBaseImpl
         this.packageClassLoader.removeClassLoader( pkg.getPackageCompilationData().getClassLoader() );
 
         pkg.clear();
+
+        // getting the list of referenced globals 
+        Set referencedGlobals = new HashSet();
+        for( Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
+            org.drools.rule.Package pkgref = (org.drools.rule.Package) it.next();
+            if(pkgref != pkg) {
+                referencedGlobals.addAll( pkgref.getGlobals().keySet() );
+            }
+        }
+        // removing globals declared inside the package that are not shared
+        for( Iterator it = pkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
+            String globalName = (String) it.next();
+            if( !referencedGlobals.contains( globalName ) ) {
+                this.globals.remove( globalName );
+            }
+        }
+        // removing the package itself from the list
+        this.pkgs.remove( pkg.getName() );
 
         // Iterate and unlock
         for ( Iterator it = this.workingMemories.keySet().iterator(); it.hasNext(); ) {
