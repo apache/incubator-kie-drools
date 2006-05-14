@@ -140,7 +140,7 @@ public class ReteTest extends DroolsTestCase {
                            null,
                            workingMemory );
 
-        MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinks().get( 0 );
+        MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinksAsList().get( 0 );
         assertLength( 0,
                       sink1.getAsserted() );
 
@@ -187,7 +187,7 @@ public class ReteTest extends DroolsTestCase {
                            null,
                            workingMemory );
 
-        MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinks().get( 0 );
+        MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinksAsList().get( 0 );
         assertLength( 0,
                       sink1.getRetracted() );
 

@@ -148,7 +148,15 @@ abstract class ObjectSource extends BaseNode
      * @return The <code>ObjectsSinks</code> that receive propagated
      *         <code>FactHandles</code>.
      */
-    public List getObjectSinks() {
+    public ObjectSinkList getObjectSinks() {
+        return this.objectSinks;
+    }
+    
+    /**
+     * Returns the object sinks as an unmodifiable list
+     * @return
+     */
+    public List getObjectSinksAsList() {
         return this.objectSinks.getObjectsAsList();
     }
 

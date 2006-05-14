@@ -77,7 +77,7 @@ public class JoinNodeTest extends DroolsTestCase {
                       this.node.getId() );
 
         assertLength( 0,
-                      this.objectSource.getObjectSinks() );
+                      this.objectSource.getObjectSinksAsList() );
 
         assertLength( 0,
                       this.tupleSource.getTupleSinks() );
@@ -85,13 +85,13 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node.attach();
 
         assertLength( 1,
-                      this.objectSource.getObjectSinks() );
+                      this.objectSource.getObjectSinksAsList() );
 
         assertLength( 1,
                       this.tupleSource.getTupleSinks() );
 
         assertSame( this.node,
-                    this.objectSource.getObjectSinks().get( 0 ) );
+                    this.objectSource.getObjectSinks().getLastObjectSink() );
 
         assertSame( this.node,
                     this.tupleSource.getTupleSinks().get( 0 ) );

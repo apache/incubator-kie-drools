@@ -51,6 +51,12 @@ public interface ObjectSinkList {
      * @return
      */
     public boolean remove(ObjectSink objectSink);
+    
+    /**
+     * Returns the number of ObjectSinks in this list
+     * @return
+     */
+    public int size();
 
     /**
      * Returns the last added object sink.
@@ -80,6 +86,7 @@ public interface ObjectSinkList {
      * Returns a list with all object sinks
      * This may be an inneficient method to call, so we recomend using it only for
      * tests and debug purposes
+     * Also, it returns an unmodifiable list to prevent misuse
      * 
      * @return
      */

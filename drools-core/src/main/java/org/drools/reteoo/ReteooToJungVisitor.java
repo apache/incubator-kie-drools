@@ -125,7 +125,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
 
             List list = null;
             if ( node instanceof ObjectSource ) {
-                list = ((ObjectSource) node).getObjectSinks();
+                list = ((ObjectSource) node).getObjectSinksAsList();
             } else if ( node instanceof TupleSource ) {
                 list = ((TupleSource) node).getTupleSinks();
             }
