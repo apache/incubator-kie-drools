@@ -221,7 +221,7 @@ public abstract class IntegrationCases extends TestCase {
 
     public void testPropertyChangeSupport() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "Test_PropertyChange.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PropertyChange.drl" ) ) );
         Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
