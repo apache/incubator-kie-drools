@@ -47,8 +47,8 @@ public class Rule extends DRLElement implements DRLJavaEmitter {
 	private String _noLoop; // RIK: New variable to the Rule class (Set the
 							// no-loop parameter of the rule tag)
 
-	private String _xorGroup; // RIK: New variable to the Rule class (Set the
-								// xor-group parameter of the rule tag)
+	private String _activationGroup; // RIK: New variable to the Rule class (Set the
+								// activation-group parameter of the rule tag)
 
 	private List _lhs;
 
@@ -88,7 +88,7 @@ public class Rule extends DRLElement implements DRLJavaEmitter {
 		out.writeLine("rule " + "\"" + _name + "\"");
 		if (_description != null) out.writeLine("\t" + _description);
 		if (_salience != null) out.writeLine("\tsalience " + _salience);
-		if (_xorGroup != null) out.writeLine("\txor-group" + _xorGroup);
+		if (_activationGroup != null) out.writeLine("\tactivation-group" + _activationGroup);
 		if (_noLoop != null) out.writeLine("\tno-loop" + _noLoop);
 		if (_duration != null) out.writeLine("\tduration" + _duration);
 		
@@ -205,13 +205,13 @@ public class Rule extends DRLElement implements DRLJavaEmitter {
 		return _duration.getSnippet();
 	}
 
-	public void setXorGroup(String value) // Set the duration of the rule
+	public void setActivationrGroup(String value) // Set the duration of the rule
 	{
-		_xorGroup = value;
+		_activationGroup = value;
 	}
 
-	public String getXorGroup() {
-		return _xorGroup;
+	public String getActivationGroup() {
+		return _activationGroup;
 	}
 
 	public void setNoLoop(String value) // Set the no-loop attribute of the rule

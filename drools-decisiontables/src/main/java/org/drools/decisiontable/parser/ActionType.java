@@ -56,8 +56,8 @@ public class ActionType
     //  NOLOOP is used to set the no-loop parameter of a rule tag
     public static final int NOLOOP      = 6;
 
-    //  XOR-GROUP is used to set the xor-group parameter of a rule tag
-    public static final int XORGROUP      = 7;
+    //  XOR-GROUP is used to set the activation-group parameter of a rule tag
+    public static final int ACTIVATIONGROUP      = 7;
 
     int                     type;
 
@@ -160,7 +160,7 @@ public class ActionType
 												            // list
 		{
 			actionTypeMap.put( new Integer( column ),
-			                   new ActionType( ActionType.XORGROUP,
+			                   new ActionType( ActionType.ACTIVATIONGROUP,
 					                           null ) );
 		}
         else
