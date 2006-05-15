@@ -147,8 +147,9 @@
     </chapter>
 
 	<chapter>
-		<title>Deployment</title>
+		<title>Deployment and Testing</title>
 		<xi:include href="Chapter-Deployment/Section-Deployment.xml" />
+		<xi:include href="Chapter-Deployment/Section-Testing.xml" />
 	</chapter>
     
     <chapter>
