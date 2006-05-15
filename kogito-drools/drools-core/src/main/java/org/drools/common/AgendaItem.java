@@ -65,7 +65,7 @@ public class AgendaItem
 
     private boolean                  activated;
 
-    private XorGroupNode             xorGroupNode;
+    private ActivationGroupNode      activationGroupNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -204,11 +204,11 @@ public class AgendaItem
         dequeue();
     }
 
-    public XorGroupNode getXorGroupNode() {
-        return this.xorGroupNode;
+    public ActivationGroupNode getActivationGroupNode() {
+        return this.activationGroupNode;
     }
 
-    public void setXorGroupNode(XorGroupNode xorNode) {
-        this.xorGroupNode = xorNode;
-    }    
+    public void setActivationGroupNode(ActivationGroupNode activationNode) {
+        this.activationGroupNode = activationNode;
+    }
 }

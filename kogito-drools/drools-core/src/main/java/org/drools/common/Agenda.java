@@ -31,7 +31,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.XorGroup;
+import org.drools.spi.ActivationGroup;
 import org.drools.util.LinkedListNode;
 import org.drools.util.LinkedListObjectWrapper;
 import org.drools.util.Queueable;
@@ -69,7 +69,7 @@ public class Agenda
 
     private final Map                  agendaGroups;
     
-    private final Map                  xorGroups;
+    private final Map                  activationGroups;
 
     private final LinkedList           focusStack;
 
@@ -92,7 +92,7 @@ public class Agenda
     public Agenda(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         this.agendaGroups = new HashMap();
-        this.xorGroups = new HashMap();
+        this.activationGroups = new HashMap();
         this.focusStack = new LinkedList();
 
         // MAIN should always be the first AgendaGroup and can never be removed
@@ -208,13 +208,13 @@ public class Agenda
         return (AgendaGroup[]) this.focusStack.toArray( new AgendaGroup[this.focusStack.size()] );
     }
 
-    public XorGroup getXorGroup(String name) {
-        XorGroupImpl xorGroup = (XorGroupImpl) this.xorGroups.get( name );
-        if (xorGroup == null) {
-            xorGroup = new XorGroupImpl( name );
-            this.xorGroups.put( name, xorGroup );
+    public ActivationGroup getActivationGroup(String name) {
+        ActivationGroupImpl activationGroup = (ActivationGroupImpl) this.activationGroups.get( name );
+        if (activationGroup == null) {
+            activationGroup = new ActivationGroupImpl( name );
+            this.activationGroups.put( name, activationGroup );
         }
-        return xorGroup;
+        return activationGroup;
     }    
     
     /**
@@ -314,8 +314,8 @@ public class Agenda
             // this must be set false before removal from the XorGroup. Otherwise the XorGroup will also try to cancel the Actvation
             item.setActivated( false );      
             
-            if ( item.getXorGroupNode() != null ) {
-                item.getXorGroupNode().getXorGroup().removeActivation( item );                
+            if ( item.getActivationGroupNode() != null ) {
+                item.getActivationGroupNode().getActivationGroup().removeActivation( item );                
             }
                                               
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item );                
@@ -325,15 +325,15 @@ public class Agenda
     
    
     /**
-     * Clears all Activations from an Xor Group. Any Activations that are also in an Agenda Group are removed
+     * Clears all Activations from an Activation-Group. Any Activations that are also in an Agenda Group are removed
      * from the Agenda Group.
      * 
-     * @param xorGroup
+     * @param activationGroup
      */     
-    public void clearXorGroup(String name) {
-        XorGroup xorGroup = (XorGroup) this.xorGroups.get( name );
-        if ( xorGroup != null ) {
-            clearXorGroup( xorGroup );
+    public void clearActivationGroup(String name) {
+        ActivationGroup activationGroup = (ActivationGroup) this.activationGroups.get( name );
+        if ( activationGroup != null ) {
+            clearActivationGroup( activationGroup );
         }        
     }
     
@@ -341,13 +341,13 @@ public class Agenda
      * Clears all Activations from an Xor Group. Any Activations that are also in an Agenda Group are removed
      * from the Agenda Group.
      * 
-     * @param xorGroup
+     * @param activationGroup
      */    
-    public void clearXorGroup(XorGroup xorGroup) {
+    public void clearActivationGroup(ActivationGroup activationGroup) {
         EventSupport eventsupport = (EventSupport) this.workingMemory;
-        for ( Iterator it = xorGroup.iterator(); it.hasNext(); ) {
-            Activation activation = ( Activation)( (XorGroupNode) it.next() ).getActivation();
-            activation.setXorGroupNode( null );
+        for ( Iterator it = activationGroup.iterator(); it.hasNext(); ) {
+            Activation activation = ( Activation)( (ActivationGroupNode) it.next() ).getActivation();
+            activation.setActivationGroupNode( null );
             
             if ( activation.isActivated() ) {
                 activation.setActivated( false );
@@ -355,7 +355,7 @@ public class Agenda
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( activation );   
             }            
         }
-        xorGroup.clear();             
+        activationGroup.clear();             
     }    
     
     /**
@@ -398,10 +398,10 @@ public class Agenda
 
         eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation );     
                 
-        if ( activation.getXorGroupNode()  != null ) {
-            XorGroup xorGroup = activation.getXorGroupNode().getXorGroup();
-            xorGroup.removeActivation( activation );
-            clearXorGroup(xorGroup);
+        if ( activation.getActivationGroupNode()  != null ) {
+            ActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();
+            activationGroup.removeActivation( activation );
+            clearActivationGroup(activationGroup);
         }         
         activation.setActivated( false );
 
