@@ -461,7 +461,7 @@ rule_attribute returns [AttributeDescr d]
 		|	a=no_loop  { d = a; }
 		|	a=agenda_group  { d = a; }		
 		|	a=duration  { d = a; }			
-		|	a=xor_group { d = a; }	
+		|	a=activation_group { d = a; }	
 		|	a=auto_focus { d = a; }	
 		
 	;
@@ -526,14 +526,14 @@ auto_focus returns [AttributeDescr d]
 		
 	;	
 	
-xor_group returns [AttributeDescr d]
+activation_group returns [AttributeDescr d]
 	@init {
 		d = null;
 	}
 	:
-		loc='xor-group' opt_eol name=STRING ';'? opt_eol
+		loc='activation-group' opt_eol name=STRING ';'? opt_eol
 		{
-			d = new AttributeDescr( "xor-group", getString( name ) );
+			d = new AttributeDescr( "activation-group", getString( name ) );
 			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 		}
 	;

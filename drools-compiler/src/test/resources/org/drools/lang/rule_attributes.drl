@@ -7,7 +7,7 @@ rule simple_rule
 		agenda-group "my_group"
 		no-loop 
 		duration 42
-		xor-group "my_xor_group"
+		activation-group "my_activation_group"
 	when
 		Foo()
 	then

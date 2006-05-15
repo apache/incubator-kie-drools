@@ -1261,8 +1261,8 @@ public class RuleParserTest extends TestCase {
         assertEquals("42", at.getValue());        
 
         at = (AttributeDescr) attrs.get( 4 );
-        assertEquals("xor-group", at.getName());
-        assertEquals("my_xor_group", at.getValue());        
+        assertEquals("activation-group", at.getName());
+        assertEquals("my_activation_group", at.getValue());        
         
     		assertFalse( parser.hasErrors() );
     }    
@@ -1292,8 +1292,8 @@ public class RuleParserTest extends TestCase {
         assertEquals("42", at.getValue());        
 
         at = (AttributeDescr) attrs.get( 4 );
-        assertEquals("xor-group", at.getName());
-        assertEquals("my_xor_group", at.getValue());        
+        assertEquals("activation-group", at.getName());
+        assertEquals("my_activation_group", at.getValue());        
         
     		assertFalse( parser.hasErrors() );
     }   
