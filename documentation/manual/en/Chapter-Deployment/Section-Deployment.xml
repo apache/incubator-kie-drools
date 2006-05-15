@@ -56,7 +56,8 @@
       "PackageDescr" object, which means that the rules are pre-parsed (for
       syntactic errors) but not compiled into the binary form. Use the
       PackageBuilder class to achieve this. You can of course use the XML form
-      for the rules if needed. <programlisting>PackageDescr, PackageBuilder, RuleBaseLoader</programlisting></para>
+      for the rules if needed. </para>
+	  <programlisting>PackageDescr, PackageBuilder, RuleBaseLoader</programlisting>
     </section>
 
     <section>
@@ -75,7 +76,8 @@
       rules from the same package name can be merged together).</para>
 
       <para>Package objects themselves are serializable, hence they can be
-      sent over a network, or bound to JNDI, Session etc. <programlisting>PackageBuilder, RuleBase, org.drools.rule.Package</programlisting></para>
+      sent over a network, or bound to JNDI, Session etc. </para>
+	  <programlisting>PackageBuilder, RuleBase, org.drools.rule.Package</programlisting>
     </section>
 
     <section>
@@ -86,7 +88,8 @@
       can be a useful option for when rulebases are updated as a whole - for
       short lived working memories. If existing working memories need to have
       rules changed on the fly, then it is best to deploy Package objects.
-      <programlisting>RuleBase, RuleBaseLoader</programlisting></para>
+      </para>
+	  <programlisting>RuleBase, RuleBaseLoader</programlisting>
     </section>
 
     <section>
@@ -134,14 +137,16 @@
         check for changes) or a request to the runtime system (perhaps via a
         JMX interface). This is possibly the more common scenario.</para>
 
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="DeploymentPatterns1.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-      </section>
+
+	  </section>
+
+				<screenshot>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="DeploymentPatterns1.png" />
+					</imageobject>
+				  </mediaobject>
+				</screenshot>
 
       <section>
         <title>Push style</title>
@@ -150,15 +155,15 @@
         "pushes" rules into the runtime system (either in source or binary
         form, as described above). This gives more control as to when the new
         rules take effect.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="DeploymentPatterns2.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
       </section>
+			<screenshot>
+			  <mediaobject>
+				<imageobject>
+				  <imagedata fileref="DeploymentPatterns2.png" />
+				</imageobject>
+			  </mediaobject>
+			</screenshot>
+
     </section>
   </section>
 
