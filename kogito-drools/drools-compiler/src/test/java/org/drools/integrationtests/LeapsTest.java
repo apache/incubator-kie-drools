@@ -28,7 +28,7 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.drools.spi.AgendaGroup;
-import org.drools.spi.XorGroup;
+import org.drools.spi.ActivationGroup;
 
 /** 
  * This runs the integration test cases with the leaps implementation.
@@ -132,11 +132,11 @@ public class LeapsTest extends IntegrationCases {
 
     // while Xor group behaviour is supported by leaps certain functionality is no
     // due to the lazy nature of leaps and the fact that it does not accumulate 
-    // activations before firing them we can not do counts on xor groups and 
+    // activations before firing them we can not do counts on activation groups and 
     // agenda groups as in base integration test
     public void testXorGroups() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_XorGroups.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ActivationGroups.drl" ) ) );
         Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();

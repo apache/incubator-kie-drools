@@ -37,7 +37,7 @@ import org.drools.Primitives;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
-import org.drools.common.XorGroupNode;
+import org.drools.common.ActivationGroupNode;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
@@ -897,12 +897,12 @@ public class PackageBuilderTest extends DroolsTestCase {
         public void setActivated(boolean activated) {
         }
 
-        public XorGroupNode getXorGroupNode() {
+        public ActivationGroupNode getActivationGroupNode() {
             // TODO Auto-generated method stub
             return null;
         }
 
-        public void setXorGroupNode(XorGroupNode xorGroupNode) {
+        public void setActivationGroupNode(ActivationGroupNode activationGroupNode) {
             // TODO Auto-generated method stub
             
         }

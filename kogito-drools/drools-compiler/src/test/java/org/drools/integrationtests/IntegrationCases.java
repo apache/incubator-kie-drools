@@ -59,7 +59,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.AgendaGroup;
-import org.drools.spi.XorGroup;
+import org.drools.spi.ActivationGroup;
 
 /**
  * This contains the test cases for each engines implementation to execute.
@@ -1162,13 +1162,13 @@ public abstract class IntegrationCases extends TestCase {
                                   12 );
         workingMemory.assertObject( brie );
 
-        XorGroup xorGroup0 = workingMemory.getAgenda().getXorGroup( "xor-group-0" );
+        ActivationGroup activationGroup0 = workingMemory.getAgenda().getActivationGroup( "activation-group-0" );
         assertEquals( 2,
-                      xorGroup0.size() );
+                      activationGroup0.size() );
 
-        XorGroup xorGroup3 = workingMemory.getAgenda().getXorGroup( "xor-group-3" );
+        ActivationGroup activationGroup3 = workingMemory.getAgenda().getActivationGroup( "activation-group-3" );
         assertEquals( 1,
-                      xorGroup3.size() );
+                      activationGroup3.size() );
 
         AgendaGroup agendaGroup3 = workingMemory.getAgenda().getAgendaGroup( "agenda-group-3" );
         assertEquals( 1,
@@ -1180,14 +1180,14 @@ public abstract class IntegrationCases extends TestCase {
 
         workingMemory.clearAgendaGroup( "agenda-group-3" );
         assertEquals( 0,
-                      xorGroup3.size() );
+                      activationGroup3.size() );
         assertEquals( 0,
                       agendaGroup3.size() );
 
         workingMemory.fireAllRules();
 
         assertEquals( 0,
-                      xorGroup0.size() );
+                      activationGroup0.size() );
 
         assertEquals( 2,
                       list.size() );
