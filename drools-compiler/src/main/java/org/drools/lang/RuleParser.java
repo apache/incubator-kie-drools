@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea8 C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-05-10 10:15:08
+// $ANTLR 3.0ea8 C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g 2006-05-15 21:35:31
 
 	package org.drools.lang;
 	import java.util.List;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class RuleParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "EOL", "ID", "INT", "BOOL", "STRING", "FLOAT", "MISC", "WS", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "\';\'", "\'package\'", "\'import\'", "\'.\'", "\'.*\'", "\'expander\'", "\'global\'", "\'function\'", "\'(\'", "\',\'", "\')\'", "\'{\'", "\'}\'", "\'query\'", "\'end\'", "\'rule\'", "\'when\'", "\':\'", "\'then\'", "\'attributes\'", "\'salience\'", "\'no-loop\'", "\'auto-focus\'", "\'xor-group\'", "\'agenda-group\'", "\'duration\'", "\'or\'", "\'==\'", "\'>\'", "\'>=\'", "\'<\'", "\'<=\'", "\'!=\'", "\'contains\'", "\'matches\'", "\'excludes\'", "\'null\'", "\'->\'", "\'||\'", "\'and\'", "\'&&\'", "\'exists\'", "\'not\'", "\'eval\'", "\'[\'", "\']\'", "\'use\'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "EOL", "ID", "INT", "BOOL", "STRING", "FLOAT", "MISC", "WS", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "\';\'", "\'package\'", "\'import\'", "\'.\'", "\'.*\'", "\'expander\'", "\'global\'", "\'function\'", "\'(\'", "\',\'", "\')\'", "\'{\'", "\'}\'", "\'query\'", "\'end\'", "\'rule\'", "\'when\'", "\':\'", "\'then\'", "\'attributes\'", "\'salience\'", "\'no-loop\'", "\'auto-focus\'", "\'activation-group\'", "\'agenda-group\'", "\'duration\'", "\'or\'", "\'==\'", "\'>\'", "\'>=\'", "\'<\'", "\'<=\'", "\'!=\'", "\'contains\'", "\'matches\'", "\'excludes\'", "\'null\'", "\'->\'", "\'||\'", "\'and\'", "\'&&\'", "\'exists\'", "\'not\'", "\'eval\'", "\'[\'", "\']\'", "\'use\'"
     };
     public static final int BOOL=7;
     public static final int INT=6;
@@ -2128,7 +2128,7 @@ public class RuleParser extends Parser {
 
 
     // $ANTLR start rule_attribute
-    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:455:1: rule_attribute returns [AttributeDescr d] : (a= salience | a= no_loop | a= agenda_group | a= duration | a= xor_group | a= auto_focus );
+    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:455:1: rule_attribute returns [AttributeDescr d] : (a= salience | a= no_loop | a= agenda_group | a= duration | a= activation_group | a= auto_focus );
     public AttributeDescr rule_attribute() throws RecognitionException {   
         AttributeDescr d;
         AttributeDescr a = null;
@@ -2138,7 +2138,7 @@ public class RuleParser extends Parser {
         		d = null;
         	
         try {
-            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:460:25: (a= salience | a= no_loop | a= agenda_group | a= duration | a= xor_group | a= auto_focus )
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:460:25: (a= salience | a= no_loop | a= agenda_group | a= duration | a= activation_group | a= auto_focus )
             int alt31=6;
             switch ( input.LA(1) ) {
             case 35:
@@ -2161,7 +2161,7 @@ public class RuleParser extends Parser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("455:1: rule_attribute returns [AttributeDescr d] : (a= salience | a= no_loop | a= agenda_group | a= duration | a= xor_group | a= auto_focus );", 31, 0, input);
+                    new NoViableAltException("455:1: rule_attribute returns [AttributeDescr d] : (a= salience | a= no_loop | a= agenda_group | a= duration | a= activation_group | a= auto_focus );", 31, 0, input);
 
                 throw nvae;
             }
@@ -2212,10 +2212,10 @@ public class RuleParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:464:25: a= xor_group
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:464:25: a= activation_group
                     {
-                    following.push(FOLLOW_xor_group_in_rule_attribute909);
-                    a=xor_group();
+                    following.push(FOLLOW_activation_group_in_rule_attribute909);
+                    a=activation_group();
                     following.pop();
 
                      d = a; 
@@ -2630,9 +2630,9 @@ public class RuleParser extends Parser {
     // $ANTLR end auto_focus
 
 
-    // $ANTLR start xor_group
-    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:529:1: xor_group returns [AttributeDescr d] : loc= 'xor-group' opt_eol name= STRING ( ';' )? opt_eol ;
-    public AttributeDescr xor_group() throws RecognitionException {   
+    // $ANTLR start activation_group
+    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:529:1: activation_group returns [AttributeDescr d] : loc= 'activation-group' opt_eol name= STRING ( ';' )? opt_eol ;
+    public AttributeDescr activation_group() throws RecognitionException {   
         AttributeDescr d;
         Token loc=null;
         Token name=null;
@@ -2641,18 +2641,18 @@ public class RuleParser extends Parser {
         		d = null;
         	
         try {
-            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:534:17: (loc= 'xor-group' opt_eol name= STRING ( ';' )? opt_eol )
-            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:534:17: loc= 'xor-group' opt_eol name= STRING ( ';' )? opt_eol
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:534:17: (loc= 'activation-group' opt_eol name= STRING ( ';' )? opt_eol )
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:534:17: loc= 'activation-group' opt_eol name= STRING ( ';' )? opt_eol
             {
             loc=(Token)input.LT(1);
-            match(input,38,FOLLOW_38_in_xor_group1173); 
-            following.push(FOLLOW_opt_eol_in_xor_group1175);
+            match(input,38,FOLLOW_38_in_activation_group1173); 
+            following.push(FOLLOW_opt_eol_in_activation_group1175);
             opt_eol();
             following.pop();
 
             name=(Token)input.LT(1);
-            match(input,STRING,FOLLOW_STRING_in_xor_group1179); 
-            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:534:53: ( ';' )?
+            match(input,STRING,FOLLOW_STRING_in_activation_group1179); 
+            // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:534:60: ( ';' )?
             int alt39=2;
             int LA39_0 = input.LA(1);
             if ( LA39_0==15 ) {
@@ -2663,27 +2663,27 @@ public class RuleParser extends Parser {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("534:53: ( \';\' )?", 39, 0, input);
+                    new NoViableAltException("534:60: ( \';\' )?", 39, 0, input);
 
                 throw nvae;
             }
             switch (alt39) {
                 case 1 :
-                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:534:53: ';'
+                    // C:\Projects\jboss-rules-new\drools-compiler\src\main\resources\org\drools\lang\drl.g:534:60: ';'
                     {
-                    match(input,15,FOLLOW_15_in_xor_group1181); 
+                    match(input,15,FOLLOW_15_in_activation_group1181); 
 
                     }
                     break;
 
             }
 
-            following.push(FOLLOW_opt_eol_in_xor_group1184);
+            following.push(FOLLOW_opt_eol_in_activation_group1184);
             opt_eol();
             following.pop();
 
             
-            			d = new AttributeDescr( "xor-group", getString( name ) );
+            			d = new AttributeDescr( "activation-group", getString( name ) );
             			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
             		
 
@@ -2698,7 +2698,7 @@ public class RuleParser extends Parser {
         }
         return d;
     }
-    // $ANTLR end xor_group
+    // $ANTLR end activation_group
 
 
     // $ANTLR start agenda_group
@@ -7310,7 +7310,7 @@ public class RuleParser extends Parser {
     public static final BitSet FOLLOW_no_loop_in_rule_attribute871 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_agenda_group_in_rule_attribute882 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_duration_in_rule_attribute895 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_xor_group_in_rule_attribute909 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_activation_group_in_rule_attribute909 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_auto_focus_in_rule_attribute920 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_35_in_salience953 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_salience955 = new BitSet(new long[]{0x0000000000000040L});
@@ -7335,11 +7335,11 @@ public class RuleParser extends Parser {
     public static final BitSet FOLLOW_opt_eol_in_auto_focus1126 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_15_in_auto_focus1128 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_auto_focus1131 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_38_in_xor_group1173 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_xor_group1175 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_STRING_in_xor_group1179 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_15_in_xor_group1181 = new BitSet(new long[]{0x0000000000008012L});
-    public static final BitSet FOLLOW_opt_eol_in_xor_group1184 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_38_in_activation_group1173 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_activation_group1175 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_STRING_in_activation_group1179 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_15_in_activation_group1181 = new BitSet(new long[]{0x0000000000008012L});
+    public static final BitSet FOLLOW_opt_eol_in_activation_group1184 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_39_in_agenda_group1213 = new BitSet(new long[]{0x0000000000008012L});
     public static final BitSet FOLLOW_opt_eol_in_agenda_group1215 = new BitSet(new long[]{0x0000000000000100L});
     public static final BitSet FOLLOW_STRING_in_agenda_group1219 = new BitSet(new long[]{0x0000000000008012L});
