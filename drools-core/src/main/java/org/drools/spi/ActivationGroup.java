@@ -2,7 +2,7 @@ package org.drools.spi;
 
 import java.util.Iterator;
 
-public interface XorGroup {
+public interface ActivationGroup {
     public String getName();
     
     public void addActivation(Activation activation);

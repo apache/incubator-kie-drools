@@ -20,7 +20,7 @@ package org.drools.spi;
 
 
 import org.drools.common.LogicalDependency;
-import org.drools.common.XorGroupNode;
+import org.drools.common.ActivationGroupNode;
 import org.drools.rule.Rule;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListObjectWrapper;
@@ -76,7 +76,7 @@ public interface Activation {
 
     public void setActivated(boolean activated);
     
-    public XorGroupNode getXorGroupNode();
+    public ActivationGroupNode getActivationGroupNode();
 
-    public void setXorGroupNode(XorGroupNode xorGroupNode);
+    public void setActivationGroupNode(ActivationGroupNode activationGroupNode);
 }

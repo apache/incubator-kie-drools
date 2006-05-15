@@ -78,7 +78,7 @@ public class Rule
     /** makes the rule's much the current focus */
     private boolean       autoFocus;
     
-    private String        xorGroup;
+    private String        ActivationGroup;
 
     /** indicates that the rule is semantically correct. */
     private boolean       semanticallyValid = true;
@@ -245,12 +245,12 @@ public class Rule
         this.autoFocus = autoFocus;
     }    
 
-    public String getXorGroup() {
-        return this.xorGroup;
+    public String getActivationGroup() {
+        return this.ActivationGroup;
     }
 
-    public void setXorGroup(String xorGroup) {
-        this.xorGroup = xorGroup;
+    public void setXorGroup(String activationGroup) {
+        this.ActivationGroup = activationGroup;
     }    
 
     /**
@@ -427,7 +427,7 @@ public class Rule
 
         Rule other = (Rule) object;
 
-        return (this.name.equals( other.name ) && this.agendaGroup.equals( other.agendaGroup ) && this.xorGroup.equals( other.xorGroup )&& this.salience == other.salience && this.noLoop == other.noLoop);
+        return (this.name.equals( other.name ) && this.agendaGroup.equals( other.agendaGroup ) && this.ActivationGroup.equals( other.ActivationGroup )&& this.salience == other.salience && this.noLoop == other.noLoop);
     }
 
     public int hashCode() {

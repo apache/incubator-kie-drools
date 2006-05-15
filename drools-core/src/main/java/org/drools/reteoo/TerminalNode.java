@@ -30,7 +30,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.XorGroup;
+import org.drools.spi.ActivationGroup;
 import org.drools.util.LinkedListObjectWrapper;
 import org.drools.util.Queueable;
 
@@ -132,13 +132,13 @@ final class TerminalNode extends BaseNode
                                                                 context,
                                                                 this.rule );
 
-            if ( this.rule.getXorGroup() != null ) {
+            if ( this.rule.getActivationGroup() != null ) {
                 final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-                // Lazy cache xorGroup
-                if ( memory.getXorGroup() == null ) {
-                    memory.setXorGroup( workingMemory.getAgenda().getXorGroup( this.rule.getXorGroup() )  );
+                // Lazy cache activationGroup
+                if ( memory.getActivationGroup() == null ) {
+                    memory.setActivationGroup( workingMemory.getAgenda().getActivationGroup( this.rule.getActivationGroup() )  );
                 }
-                memory.getXorGroup().addActivation( item );
+                memory.getActivationGroup().addActivation( item );
             }            
             
             agenda.scheduleItem( item );
@@ -183,12 +183,12 @@ final class TerminalNode extends BaseNode
                                               context,
                                               this.rule );
             
-            if ( this.rule.getXorGroup() != null ) {
-                // Lazy cache xorGroup
-                if ( memory.getXorGroup() == null ) {
-                    memory.setXorGroup( workingMemory.getAgenda().getXorGroup( this.rule.getXorGroup() )  );
+            if ( this.rule.getActivationGroup() != null ) {
+                // Lazy cache activationGroup
+                if ( memory.getActivationGroup() == null ) {
+                    memory.setActivationGroup( workingMemory.getAgenda().getActivationGroup( this.rule.getActivationGroup() )  );
                 }
-                memory.getXorGroup().addActivation( item );
+                memory.getActivationGroup().addActivation( item );
             }               
 
             // Makes sure the Lifo is added to the AgendaGroup priority queue
@@ -319,7 +319,7 @@ final class TerminalNode extends BaseNode
     class TerminalNodeMemory {
         private AgendaGroupImpl agendaGroup;
         
-        private XorGroup          xorGroup;
+        private ActivationGroup          activationGroup;
 
         public AgendaGroupImpl getAgendaGroup() {
             return this.agendaGroup;
@@ -329,12 +329,12 @@ final class TerminalNode extends BaseNode
             this.agendaGroup = agendaGroup;
         }
 
-        public XorGroup getXorGroup() {
-            return this.xorGroup;
+        public ActivationGroup getActivationGroup() {
+            return this.activationGroup;
         }
 
-        public void setXorGroup(XorGroup xorGroup) {
-            this.xorGroup = xorGroup;
+        public void setActivationGroup(ActivationGroup activationGroup) {
+            this.activationGroup = activationGroup;
         }
         
         

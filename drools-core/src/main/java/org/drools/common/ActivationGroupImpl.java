@@ -3,16 +3,16 @@ package org.drools.common;
 import java.util.Iterator;
 
 import org.drools.spi.Activation;
-import org.drools.spi.XorGroup;
+import org.drools.spi.ActivationGroup;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListObjectWrapper;
 
-public class XorGroupImpl implements XorGroup {
+public class ActivationGroupImpl implements ActivationGroup {
     private String name;
     
     private final LinkedList list; 
 
-    public XorGroupImpl(String name) {
+    public ActivationGroupImpl(String name) {
         this.name = name;
         this.list = new LinkedList();
     }
@@ -22,15 +22,15 @@ public class XorGroupImpl implements XorGroup {
     }
     
     public void addActivation(Activation activation) {
-        XorGroupNode node = new XorGroupNode(activation, this);
-        activation.setXorGroupNode( node );     
+        ActivationGroupNode node = new ActivationGroupNode(activation, this);
+        activation.setActivationGroupNode( node );     
         this.list.add( node );
     }
     
     public void removeActivation(Activation activation) {
-        XorGroupNode node = activation.getXorGroupNode( );     
+        ActivationGroupNode node = activation.getActivationGroupNode( );     
         this.list.remove( node );        
-        activation.setXorGroupNode( null );
+        activation.setActivationGroupNode( null );
     }
     
     public Iterator iterator() {

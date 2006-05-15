@@ -24,7 +24,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.spi.XorGroup;
+import org.drools.spi.ActivationGroup;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
 import org.drools.util.LinkedListObjectWrapper;
@@ -63,7 +63,7 @@ public class ScheduledAgendaItem extends TimerTask
 
     private boolean                  activated;
     
-    private XorGroupNode             xorGroupNode;    
+    private ActivationGroupNode             activationGroupNode;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -184,12 +184,12 @@ public class ScheduledAgendaItem extends TimerTask
         this.activated = activated;
     }
     
-    public XorGroupNode getXorGroupNode() {
-        return this.xorGroupNode;
+    public ActivationGroupNode getActivationGroupNode() {
+        return this.activationGroupNode;
     }
 
-    public void setXorGroupNode(XorGroupNode xorGroupNode) {
-        this.xorGroupNode = xorGroupNode;
+    public void setActivationGroupNode(ActivationGroupNode activationGroupNode) {
+        this.activationGroupNode = activationGroupNode;
     }    
 
     /*

@@ -47,14 +47,14 @@ public class LeapsAgenda extends Agenda {
                                                   activation.getTuple( ) );
         }
         else {
-            if (activation.getRule( ).getXorGroup( ) == null
-                    || ( activation.getRule( ).getXorGroup( ) != null && this.getXorGroup( activation.getRule( )
-                                                                                                     .getXorGroup( ) )
+            if (activation.getRule( ).getActivationGroup( ) == null
+                    || ( activation.getRule( ).getActivationGroup( ) != null && this.getActivationGroup( activation.getRule( )
+                                                                                                     .getActivationGroup( ) )
                                                                              .isEmpty( ) )) {
                 // fire regular rule
                 super.fireActivation( activation );
-                if (activation.getRule( ).getXorGroup( ) != null) {
-                    this.getXorGroup( activation.getRule( ).getXorGroup( ) );
+                if (activation.getRule( ).getActivationGroup( ) != null) {
+                    this.getActivationGroup( activation.getRule( ).getActivationGroup( ) );
                 }
             }
         }
