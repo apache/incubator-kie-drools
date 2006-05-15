@@ -364,7 +364,7 @@ public class RuleSheetListener
         // from the cell
         {
             _currentRule.setDescription( value );
-        } else if ( actionType.type == ActionType.XORGROUP ) // if the actionType
+        } else if ( actionType.type == ActionType.ACTIVATIONGROUP ) // if the actionType
         // type is NOLOOP
         // then set the
         // current Rule's
@@ -373,7 +373,7 @@ public class RuleSheetListener
         // the value got
         // from the cell
         {
-            _currentRule.setXorGroup( value );
+            _currentRule.setActivationrGroup( value );
         } else if ( actionType.type == ActionType.NOLOOP ) // if the actionType
         // type is NOLOOP
         // then set the
