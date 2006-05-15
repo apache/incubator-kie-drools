@@ -1147,7 +1147,7 @@ public abstract class IntegrationCases extends TestCase {
 
     public void testXorGroups() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_XorGroups.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ActivationGroups.drl" ) ) );
         Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();

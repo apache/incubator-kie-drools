@@ -30,7 +30,7 @@ end
 
 rule "rule3"
 	agenda-group "agenda-group-3"
-	activation-group "activatino-group-3"		
+	activation-group "activation-group-3"		
     when
     	Cheese( )
     then    	
