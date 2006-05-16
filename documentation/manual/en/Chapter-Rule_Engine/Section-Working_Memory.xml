@@ -31,6 +31,10 @@
     a fact, it is examined for matches against the rules etc. However, no
     actions are taken until you call "fireAllRules()" after you have finished
     asserting your facts.</para>
+
+    <para>Drools uses an IdentityHashMap – if an instance is asserted twice
+    then it returns the previous fact handle – i.e. it ignores the second
+    assertion for the same fact. Once </para>
   </section>
 
   <section>
@@ -54,37 +58,69 @@
 
   <section>
     <title><indexterm>
-        <primary>Logical Assertion</primary></indexterm>
-	</title>
+        <primary>Logical Assertion</primary>
+      </indexterm></title>
 
-    <para>
-	In a regular assertion, you need to explicitly retract a fact. In logical assertions, the fact that was asserted will be automatically retracted when
-	the conditions that asserted it in the first place are no longer true (its actually cleverer then this, if there are no possible conditions that could support the logical assertion, only then will it be retracted). 
-	</para>
+    <para>In a regular assertion, you need to explicitly retract a fact. In
+    logical assertions, the fact that was asserted will be automatically
+    retracted when the conditions that asserted it in the first place are no
+    longer true (its actually cleverer then this, if there are no possible
+    conditions that could support the logical assertion, only then will it be
+    retracted).</para>
 
-	<para>
-		This sounds confusing but its not really. Logical assertions are a powerful form of truth maintenance. A logically asserted fact can be thought of as a proxy for all the conditions that cause the rule it belongs to to be true. This means that you can use a logically asserted fact in a condition in other rules, without including all the conditions that triggered the logical assertion (meaning that all those conditions are not repeated everywhere). Logically asserted facts are like other facts, nothing special, you can even use "not" to check for the non existance of a logically asserted fact.
-	</para>
+    <para>This sounds confusing but its not really. Logical assertions are a
+    powerful form of truth maintenance. A logically asserted fact can be
+    thought of as a proxy for all the conditions that cause the rule it
+    belongs to to be true. This means that you can use a logically asserted
+    fact in a condition in other rules, without including all the conditions
+    that triggered the logical assertion (meaning that all those conditions
+    are not repeated everywhere). Logically asserted facts are like other
+    facts, nothing special, you can even use "not" to check for the non
+    existance of a logically asserted fact.</para>
 
-	<section>
-		<title>Example scenario</title>
-		<para>
-			An example may make things clearer.
-			Imagine a credit card processing application, processing transactions for a given account (and we have a working memory accumulating knowledge about a single accounts transaction). The rule engine is doing its best to decide if transactions are possibly fraudulent or not. Imagine this rule base basically has rules that kick in when there is "reason to be suspicious" and when "everything is normal". </para>
-		<para>
-			Of course there are many rules that operate no matter what (performing standard calculations etc). 
-			Now there are possibly many reasons as to what could trigger a "reason to be suspicious": someone notifying the bank, a sequence of large transactions, transactions for geographically disparate transactions, or even reports of credit card theft. Rather then smattering all the little conditions in lots of rules, imagine there is a fact class called "SuspiciousAccount". </para>
-		<para>
-			Then there can be a series of rules whose job is to look for things that may raise suspicion, and if they fire, they simply assert a new SuspiciousAccount() instance. All the other rules just have conditions like "not SuspiciousAccount()" or "SuspiciousAccount()" depending on their needs. Note that this has the advantage of allowing there to be many rules around raising suspicion, without touching the other rules. When the facts causing the SuspiciousAccount() assertion are removed, the rule engine reverts back to the normal "mode" of operation (and for instance, a rule with "not SuspiciousAccount()" may kick in which flushes through any interrupted transactions). 
-		</para>
-		<para>
-			If you have followed this far, you will note that truth maintenance like logical assertions allows rules to behave a little like a human would, and can certainly make the rules more managable.
-	</para>
+    <para>Normal assertions are said to be “STATED” (ie The Fact has been
+    stated - just like the intuitive concept). You cannot logically assert
+    fact, that is already STATED (it has no effect - it only needs to be
+    STATED once that is). If you logically assert something and then later
+    normally assert the same fact then that the fact that was logically
+    asserted is changed to STATED (ie becomes a normal non logically asserted
+    fact). </para>
 
-	</section>
+    <section>
+      <title>Example scenario</title>
+
+      <para>An example may make things clearer. Imagine a credit card
+      processing application, processing transactions for a given account (and
+      we have a working memory accumulating knowledge about a single accounts
+      transaction). The rule engine is doing its best to decide if
+      transactions are possibly fraudulent or not. Imagine this rule base
+      basically has rules that kick in when there is "reason to be suspicious"
+      and when "everything is normal".</para>
+
+      <para>Of course there are many rules that operate no matter what
+      (performing standard calculations etc). Now there are possibly many
+      reasons as to what could trigger a "reason to be suspicious": someone
+      notifying the bank, a sequence of large transactions, transactions for
+      geographically disparate transactions, or even reports of credit card
+      theft. Rather then smattering all the little conditions in lots of
+      rules, imagine there is a fact class called "SuspiciousAccount".</para>
+
+      <para>Then there can be a series of rules whose job is to look for
+      things that may raise suspicion, and if they fire, they simply assert a
+      new SuspiciousAccount() instance. All the other rules just have
+      conditions like "not SuspiciousAccount()" or "SuspiciousAccount()"
+      depending on their needs. Note that this has the advantage of allowing
+      there to be many rules around raising suspicion, without touching the
+      other rules. When the facts causing the SuspiciousAccount() assertion
+      are removed, the rule engine reverts back to the normal "mode" of
+      operation (and for instance, a rule with "not SuspiciousAccount()" may
+      kick in which flushes through any interrupted transactions).</para>
+
+      <para>If you have followed this far, you will note that truth
+      maintenance like logical assertions allows rules to behave a little like
+      a human would, and can certainly make the rules more managable.</para>
+    </section>
   </section>
-
-
 
   <section>
     <title>Globals</title>
