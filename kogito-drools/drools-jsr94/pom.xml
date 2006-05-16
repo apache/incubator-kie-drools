@@ -2,7 +2,7 @@
   <parent>
     <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-    <version>3.0-RC-2</version>
+    <version>3.0-RC-3</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -10,7 +10,7 @@
   <artifactId>drools-jsr94</artifactId>
 
   <name>Drools :: JSR-94 API Module</name>
-  <version>3.0-RC-2</version>
+  <version>3.0-RC-3</version>
   
   <repositories>
     <repository>
