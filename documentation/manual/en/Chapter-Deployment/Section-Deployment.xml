@@ -101,6 +101,11 @@
       deploy remotely, and "bind" rule assets to JNDI as a means of using them
       in a container environment.</para>
     </section>
+
+	<para>
+		Please note that when using package builder, you may want to check the hasError() flag before continuing deploying your rules (if there are errors, you can get them from the package builder - rather then letting it fail later on when you try to deploy).
+	</para>
+
   </section>
 
   <section>
@@ -123,6 +128,10 @@
       system can have minimal dependencies (just one jar). It also means that
       any errors to do with compiling are well contained and and known before
       deployment to the running system is attempted.</para>
+
+	  <para>
+		Use the PackageBuilder class out of process, and then use getPackage() to get the Package object. You can then (for example) serialize the Package object to a file (using standard java serialization). The runtime system, which only needs drools-core, can then load the file using RuleBaseFactory.newRuleBase().addPackage(deserialized package object).
+	  </para>
     </section>
 
     <section>
