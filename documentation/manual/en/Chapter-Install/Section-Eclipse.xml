@@ -143,6 +143,12 @@
     feature and site projects, so refreshing them should be self explanatory
     should you need to do it.</para>
 
+    <para>Should this be problematic, the drools-ide-update project can be
+    manually edited - change the version number in the site.xml, and then
+    change it in the feature.xml which is embedded in the /features/*.jar
+    file. Then place the updated plug in in the /plugins directory (with the
+    same file name as the /features jar file).</para>
+
     <screenshot>
       <screeninfo>Select Export on the drools-ide project</screeninfo>
 
