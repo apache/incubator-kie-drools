@@ -174,15 +174,21 @@
     </section>
 
     <section>
-      <title>xor-group</title>
+      <title>activation-group</title>
 
       <para>default value N/A</para>
 
       <para>type : String</para>
 
-      <para>Rules that belong to the same named xor-group will only fire exclusively.
-	  In other words, the first rule in an xor-group to fire will cancel the other rules activations (stop them from firing).
-	  The Xor group attribute is any string, as long as the string is identical for all the rules you need to be in the one group.</para>
+      <para>Rules that belong to the same named activation-group will only
+      fire exclusively. In other words, the first rule in an activation-group
+      to fire will cancel the other rules activations (stop them from firing).
+      The Activtion group attribute is any string, as long as the string is
+      identical for all the rules you need to be in the one group.</para>
+
+      <para>NOTE: this used to be called Xor group, but technically its not
+      quite an Xor, but you may hear people mention Xor group, just swap that
+      term in your mind with activation-group.</para>
     </section>
 
     <section>
