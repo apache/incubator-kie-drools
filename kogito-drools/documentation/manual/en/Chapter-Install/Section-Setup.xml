@@ -15,7 +15,7 @@
     <listitem>
       <para><indexterm>
           <primary>eclipse</primary>
-        </indexterm>Eclipse 3.2 RC1</para>
+        </indexterm>Eclipse 3.2 </para>
 
       <para>http://www.eclipse.org/</para>
     </listitem>
@@ -41,28 +41,23 @@
       <para>http://ant.apache.org</para>
     </listitem>
 
-    <listitem>
-      <para><indexterm>
-          <primary>Maven</primary>
-        </indexterm>Maven 2.0.4</para>
-
-      <para>http://maven.apache.org</para>
-    </listitem>
   </itemizedlist>
 
-  <para>Ensure the executeables for ant, maven and java are in your <indexterm>
+  <para>Ensure the executeables for ant and java are in your <indexterm>
       <primary>path</primary>
     </indexterm>path. The examples given illustrative and are for a win32
   system:</para>
 
-  <literallayout>Path=D:\java\j2sdk1.4.2_10\bin;C:\bin;D:\java\maven-2.0.4\bin;D:\java\apache-ant-1.6.5\bin;</literallayout>
+  <literallayout>Path=D:\java\j2sdk1.4.2_10\bin;D:\java\apache-ant-1.6.5\bin;</literallayout>
 
   <para>Following environment variables will also need to be set. The examples
   given illustrative and are for a win32 system::</para>
 
   <literallayout>JAVA_HOME=D:\java\j2sdk1.4.2_10
-M2_HOME=D:\java\maven-2.0.4
-M2_REPO=&lt;your home directory&gt;\.m2\repository
 ANT_HOME=D:\java\apache-ant-1.6.5
+
 </literallayout>
+	<para>
+		Past releases used to use maven 2 as the build mechanism, but now ant is used as the primary mechanism. Maven is used underneath the covers as the mechanism for managing project dependencies etc. (You can of course still have maven 2 installed and use it if needed - there is a pom.xml structure for each module - this is what is used for dependency management).
+	</para>
 </section>
