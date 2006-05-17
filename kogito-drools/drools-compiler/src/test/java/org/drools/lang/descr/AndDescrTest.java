@@ -14,7 +14,7 @@ public class AndDescrTest extends TestCase {
     }
     
     /** This is for combining bound columns with the same name patterns together */
-    public void xxtestAddBoundCols() {
+    public void testAddBoundCols() {
         AndDescr and = new AndDescr();
         ColumnDescr col1 = new ColumnDescr("Foo");
         col1.setIdentifier( "foo" );
