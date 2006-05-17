@@ -7,60 +7,99 @@
 
     <para>Now that we have the source the next step is to build and install
     the source. We do this with <indexterm>
-        <primary>maven</primary>
-      </indexterm>Maven 2, which will also handle the downloading of required
-    dependencies.</para>
+        <primary>Ant</primary>
+      </indexterm>Ant, which uses maven 2 under the covers to get the needed
+    dependencies (you don't need to have maven 2 installed to build). Note
+    that the plug in is build seperatly, but the build process will update the
+    plug ins dependencies (refer to the section on building the plug in if you
+    need to build a new version of the plug in).</para>
 
-    <para>Type <literal>'mvn install' </literal>to start the build process.
-    Maven will then build and each Drools module - <indexterm>
-        <primary>drools-core</primary>
-      </indexterm>drools-core, <indexterm>
-        <primary>drools-compiler</primary>
-      </indexterm>drools-compiler, <indexterm>
-        <primary>drools-jsr94</primary>
-      </indexterm>drools-jsr94. During this process it will run the <indexterm>
-        <primary>unit test</primary>
-      </indexterm>Unit Tests for each module. Maven is not yet able to build
-    <indexterm>
-        <primary>eclipse</primary>
-      </indexterm>Eclipse plugins, so this module is not included, instead the
-    project for the <indexterm>
-        <primary>drools-ide</primary>
-      </indexterm>drools-ide module is already added to subversion.</para>
+    <para>Type <literal>'ant' </literal>to get a listing of what capabilities
+    the build script has (from the root of the project). You should then see a
+    listing which contains further instructions: <programlisting>
+<literal>C:\Projects\jboss-rules-new&gt;ant
+Buildfile: build.xml
 
-    <screenshot>
-      <screeninfo>Start Maven Install</screeninfo>
+help:
+     [echo] Drools Build Help
+     [echo] -----------------
+     [echo]
+     [echo] The build process is for the following four modules:
+     [echo] drools-core
+     [echo] drools-compiler
+     [echo] drools-decisiontables
+     [echo] drools-jsr94
+     [echo]
+     [echo] Further to this there are two Eclipse project:
+     [echo] drools-examples - To use open eclipse and import.
+     [echo]                   Requires the Drools eclipse plugin.
+     [echo]                   Either build the plugin from drools-ide
+     [echo]                   or install from the Eclipse update site
+     [echo]                   http://anonsvn.labs.jboss.com/labs/jbossrules/upda
+tes
+     [echo] drools-ide      - To use open Eclipse and import.
+     [echo]                   Select export and plugin fragements to
+     [echo]                   generate the Drools Eclipse plugin
+     [echo]                   Depends on all the depencies being copied
+     [echo]                   to its lib directory at the end of build-all,
+     [echo]                   which calls copy-deps.
+     [echo]
+     [echo] Targets
+     [echo] -----
+     [echo]
+     [echo] clean-all - cleans all directories
+     [echo]
+     [echo] build-all - builds all modules
+     [echo]
+     [echo] javadocs  - generates the javadoc at target/docs
+     [echo]
+     [echo] manual    - generates the docbook documentation in
+     [echo]             html and single_html format at target/docs
+     [echo]
+     [echo] dist-all  - generates the distribution builds for
+     [echo]             src, bin, bin-withdeps and examples
+     [echo]
+     [echo] Each module can individually be executed with clean, compile,
+     [echo] test and build. To use simply use the following commands,
+     [echo] replace ${module} with one of the module names:
+     [echo] clean-${module}
+     [echo] compile-${module}
+     [echo] test-${module}
+     [echo] build-${module}
+     [echo]
+     [echo] Generates specific distribution builds:
+     [echo] dist-src
+     [echo] dist-bin
+     [echo] dist-bin-withdeps
+     [echo] dist-examples
+     [echo]
+     [echo] You may also pass the following system properties:
+     [echo] -Dtest.skip=true
+     [echo] -Djavadocs.skip=true
+     [echo] -Dmanual.skip=true
+     [echo]
+     [echo] Targets may be combined:
+     [echo] ant -Dtest.skip clean-all build-all
+     [echo]
+     [echo] For more help use the build system to generate the manual
+     [echo] or you can find the manual online at:
+     [echo] http://labs.jboss.com/portal/jbossrules/docs/index.html
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="mvn_install1.jpg" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+BUILD SUCCESSFUL
 
-    <screenshot>
-      <screeninfo>Maven Module Unit Testing</screeninfo>
+</literal>
+</programlisting></para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="mvn_install2.jpg" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+    <para>The most common pair of tasks to run is 'ant clean-all build-all'
+    which will clear old artifacts, and then test and built the source, and
+    report on any errors.</para>
 
-    <screenshot>
-      <screeninfo>Finished Maven Install</screeninfo>
+    <para>The resulting jars are put in the /target directory from the top
+    level of the project.</para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="mvn_install3.jpg" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-
-    <para>As Maven builds each module it will install the resulting jars in
-    the local Maven 2 repository. Where it can be easily used from other
-    project <literal>pom.xml</literal> or copied else where.</para>
+    <para>As Ant builds each module it will install the resulting jars in the
+    local Maven 2 repository automatically. Where it can be easily used from
+    other project <literal>pom.xml</literal> or copied else where.</para>
 
     <screenshot>
       <screeninfo>Installed Drools Jars</screeninfo>
