@@ -69,7 +69,7 @@
         <!--antcall target="lang.docpdf"/-->
         <antcall target="lang.dochtml"/>
         <antcall target="lang.dochtmlsingle"/>        
-        <!--antcall target="lang.doceclipse"/-->  
+        <antcall target="lang.doceclipse"/>  
     </target>       
 
     <target name="lang.docpdf.prepare">
