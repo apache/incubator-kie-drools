@@ -227,7 +227,7 @@
     rules, you are effectively calling rules directly) and this may cause more
     difficulty in future maintenance, as they tend to grow in complexity over
     time. The upside of scripting engines is they can be easier to implement
-    at first, and you can get quite results (and conceptually simpler for
+    at first, and you can get quick results (and conceptually simpler for
     imperative programmers !).</para>
 
     <para>Many people have also implemented data-driven systems successfully
