@@ -391,6 +391,6 @@ class JoinNode extends BetaNode {
             }
         }
         return propagatedTuples;
-    }   
+    }
 
 }

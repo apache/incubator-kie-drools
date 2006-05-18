@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.FactException;
+import org.drools.RuleBaseConfiguration;
 import org.drools.spi.ObjectType;
 import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.PropagationContext;
@@ -273,7 +274,7 @@ class Rete extends ObjectSource
         //@todo: we really should attempt to clear the memory cache for this ObjectTypeNode        
     }
 
-    public Object createMemory() {
+    public Object createMemory( RuleBaseConfiguration config ) {
         return new HashMap();
     }
 

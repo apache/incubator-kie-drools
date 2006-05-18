@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -76,7 +77,23 @@ class ObjectTypeNode extends ObjectSource
     public ObjectTypeNode(int id,
                           ObjectType objectType,
                           Rete rete) {
-        super( id );
+        this( id, null, objectType, rete );
+    }
+
+    /**
+     * Construct given a semantic <code>ObjectType</code> and the provided
+     * unique id. All <code>ObjectTypdeNode</code> have node memory.
+     * 
+     * @param id The unique id for the node
+     * @param sinklist An object sink list for the node. If null, a default will be created.
+     * @param objectType The semantic object-type differentiator
+     * @param rete The rete network reference
+     */
+    public ObjectTypeNode(int id,
+                          ObjectSinkList sinklist,
+                          ObjectType objectType,
+                          Rete rete) {
+        super( id, sinklist );
         this.rete = rete;
         this.objectType = objectType;
         setHasMemory( true );
@@ -237,7 +254,7 @@ class ObjectTypeNode extends ObjectSource
      * However PrimitiveLongMap is not ideal for spase data. So it should be monitored incase its more optimal
      * to switch back to a standard HashMap.
      */
-    public Object createMemory() {
+    public Object createMemory( RuleBaseConfiguration config ) {
         return new PrimitiveLongMap( 32,
                                      8 );
     }

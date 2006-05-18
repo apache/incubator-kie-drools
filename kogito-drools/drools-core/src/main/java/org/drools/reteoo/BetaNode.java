@@ -16,6 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
@@ -174,8 +175,8 @@ abstract class BetaNode extends TupleSource
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */
-    public Object createMemory() {
-        return new BetaMemory( this.getJoinNodeBinder() );
+    public Object createMemory( RuleBaseConfiguration config ) {
+        return new BetaMemory( config, this.getJoinNodeBinder() );
     }
 
 }

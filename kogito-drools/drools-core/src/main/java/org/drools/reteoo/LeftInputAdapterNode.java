@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.EvalCondition;
@@ -280,7 +281,7 @@ class LeftInputAdapterNode extends TupleSource
      * LeftInputAdapter uses a HashMap for memory. The key is the received <code>FactHandleImpl</code> and the
      * created <code>ReteTuple</code> is the value.
      */
-    public Object createMemory() {
+    public Object createMemory( RuleBaseConfiguration config ) {
         return new HashMap();
     }
     

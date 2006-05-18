@@ -780,7 +780,7 @@ public class WorkingMemoryImpl
         Object memory = this.nodeMemories.get( node.getId() );
 
         if ( memory == null ) {
-            memory = node.createMemory();
+            memory = node.createMemory( this.ruleBase.getConfiguration() );
 
             this.nodeMemories.put( node.getId(),
                                    memory );

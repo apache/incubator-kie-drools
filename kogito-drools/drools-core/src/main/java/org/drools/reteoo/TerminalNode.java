@@ -16,10 +16,9 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.common.Agenda;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.AgendaItem;
@@ -27,12 +26,10 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.ActivationGroup;
-import org.drools.util.LinkedListObjectWrapper;
-import org.drools.util.Queueable;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -295,7 +292,7 @@ final class TerminalNode extends BaseNode
         // There are no child nodes to update, do nothing.
     }
 
-    public Object createMemory() {
+    public Object createMemory( RuleBaseConfiguration config ) {
         return new TerminalNodeMemory();
     }
     

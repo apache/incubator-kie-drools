@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
@@ -248,7 +249,7 @@ class EvalConditionNode extends TupleSource
         }
     }
 
-    public Object createMemory() {
+    public Object createMemory( RuleBaseConfiguration config ) {
         return new LinkedList();
     }
     

@@ -19,6 +19,7 @@ package org.drools.reteoo.beta;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaNodeBinder;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.MockConstraint;
@@ -34,9 +35,11 @@ import org.drools.spi.MockConstraint;
  */
 public class BetaMemoryFactoryTest extends TestCase {
     BetaNodeBinder binder = null;
+    RuleBaseConfiguration config;
 
     protected void setUp() throws Exception {
         super.setUp();
+        config = new RuleBaseConfiguration();
         FieldConstraint[] constraints = new FieldConstraint[]{new MockConstraint()};
         binder = new BetaNodeBinder( constraints );
     }
@@ -50,14 +53,14 @@ public class BetaMemoryFactoryTest extends TestCase {
      */
     public void testNewLeftMemory() {
         try {
-            BetaLeftMemory memory = BetaMemoryFactory.newLeftMemory( null );
+            BetaLeftMemory memory = BetaMemoryFactory.newLeftMemory( config, null );
 
             Assert.assertNotNull( "BetaMemoryFactory should not return null",
                                   memory );
             Assert.assertTrue( "Without constraints, BetaMemoryFactory should " + "return an instance of DefaultLeftMemory",
                                memory instanceof DefaultLeftMemory );
 
-            memory = BetaMemoryFactory.newLeftMemory( binder );
+            memory = BetaMemoryFactory.newLeftMemory( config, binder );
             Assert.assertNotNull( "BetaMemoryFactory should not return null",
                                   memory );
 
@@ -71,14 +74,14 @@ public class BetaMemoryFactoryTest extends TestCase {
      */
     public void testNewRightMemory() {
         try {
-            BetaRightMemory memory = BetaMemoryFactory.newRightMemory( null );
+            BetaRightMemory memory = BetaMemoryFactory.newRightMemory( config, null );
 
             Assert.assertNotNull( "BetaMemoryFactory should not return null",
                                   memory );
             Assert.assertTrue( "Without constraints, BetaMemoryFactory should " + "return an instance of DefaultRightMemory",
                                memory instanceof DefaultRightMemory );
 
-            memory = BetaMemoryFactory.newRightMemory( binder );
+            memory = BetaMemoryFactory.newRightMemory( config, binder );
             Assert.assertNotNull( "BetaMemoryFactory should not return null",
                                   memory );
 

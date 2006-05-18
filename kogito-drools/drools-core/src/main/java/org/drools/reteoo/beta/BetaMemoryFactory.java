@@ -18,6 +18,7 @@ package org.drools.reteoo.beta;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaNodeBinder;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.spi.Evaluator;
@@ -32,12 +33,7 @@ import org.drools.spi.FieldConstraint;
  * Created: 12/02/2006
  */
 public class BetaMemoryFactory {
-    private static final String INDEX_DISABLED = "false";
-    private static final String INDEX_ENABLED  = "true";
     
-    public static final String INDEX_LEFT_BETA_MEMORY = "org.drools.reteoo.beta.index-left";
-    public static final String INDEX_RIGHT_BETA_MEMORY = "org.drools.reteoo.beta.index-right";
-
     protected BetaMemoryFactory() {
     }
 
@@ -50,11 +46,11 @@ public class BetaMemoryFactory {
      * 
      * @return the newly created BetaLeftMemory 
      */
-    public static BetaLeftMemory newLeftMemory(BetaNodeBinder binder) {
+    public static BetaLeftMemory newLeftMemory(RuleBaseConfiguration config, BetaNodeBinder binder) {
         BetaLeftMemory memory = null;
         BetaLeftMemory innerMostMemory = null;
         FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
-        if ( (constraints != null) && (INDEX_ENABLED.equalsIgnoreCase( System.getProperty( INDEX_LEFT_BETA_MEMORY ) )) ) {
+        if ( (constraints != null) && (config.getBooleanProperty( RuleBaseConfiguration.INDEX_LEFT_BETA_MEMORY ))) {
             for ( int i = 0; i < constraints.length; i++ ) {
                 if ( constraints[i] instanceof BoundVariableConstraint ) {
                     BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
@@ -113,11 +109,11 @@ public class BetaMemoryFactory {
      * 
      * @return the newly created BetaRightMemory 
      */
-    public static BetaRightMemory newRightMemory(BetaNodeBinder binder) {
+    public static BetaRightMemory newRightMemory(RuleBaseConfiguration config, BetaNodeBinder binder) {
         BetaRightMemory memory = null;
         BetaRightMemory innerMostMemory = null;
         FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
-        if ( (constraints != null) && (!INDEX_DISABLED.equalsIgnoreCase( System.getProperty( INDEX_RIGHT_BETA_MEMORY ) )) ) {
+        if ( (constraints != null) && ( config.getBooleanProperty( RuleBaseConfiguration.INDEX_RIGHT_BETA_MEMORY ))) {
             for ( int i = 0; i < constraints.length; i++ ) {
                 if ( constraints[i] instanceof BoundVariableConstraint ) {
                     BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];

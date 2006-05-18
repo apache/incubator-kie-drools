@@ -1,5 +1,7 @@
 package org.drools.reteoo;
 
+import org.drools.RuleBaseConfiguration;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -19,6 +21,6 @@ package org.drools.reteoo;
 public interface NodeMemory {
     public int getId();
 
-    public Object createMemory();
+    public Object createMemory( RuleBaseConfiguration config );
 
 }

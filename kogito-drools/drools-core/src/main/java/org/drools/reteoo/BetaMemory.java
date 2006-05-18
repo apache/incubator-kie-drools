@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.common.BetaNodeBinder;
 import org.drools.reteoo.beta.BetaLeftMemory;
@@ -66,9 +67,9 @@ class BetaMemory
      * Construct a BetaMemory with a LinkedList for the <code>Tuples</code> and a <code>LinkedHashMap</code> for the 
      * <code>FactHandle</code>s
      */
-    BetaMemory(BetaNodeBinder binder) {
-        this.leftMemory = BetaMemoryFactory.newLeftMemory( binder );
-        this.rightMemory = BetaMemoryFactory.newRightMemory( binder );
+    BetaMemory(RuleBaseConfiguration config, BetaNodeBinder binder) {
+        this.leftMemory = BetaMemoryFactory.newLeftMemory( config, binder );
+        this.rightMemory = BetaMemoryFactory.newRightMemory( config, binder );
         this.rightObjectMap = new HashMap();
     }
 
