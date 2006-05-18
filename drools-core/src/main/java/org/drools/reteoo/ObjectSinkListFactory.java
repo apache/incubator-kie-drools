@@ -16,6 +16,8 @@
 
 package org.drools.reteoo;
 
+import org.drools.RuleBaseConfiguration;
+
 /**
  * ObjectSinkListFactory
  * A factory for ObjectSinkLists
@@ -25,18 +27,24 @@ package org.drools.reteoo;
  * Created: 06/march/2006
  */
 public class ObjectSinkListFactory {
-    public static final String  TYPE_NODE_ALPHA_HASHING  = "org.drools.alpha-hash.type-node";
-    public static final String  ALPHA_NODE_ALPHA_HASHING = "org.drools.alpha-hash.alpha-node";
-
-    private static final String DISABLED                 = "false";
-    private static final String ENABLED                  = "true";
-
-    public static final ObjectSinkList newObjectSinkList(Object owner) {
-        if ( (!DISABLED.equalsIgnoreCase( System.getProperty( TYPE_NODE_ALPHA_HASHING ) )) && (owner instanceof ObjectTypeNode) ) {
+    private final RuleBaseConfiguration config;
+    
+    public ObjectSinkListFactory(RuleBaseConfiguration config) {
+        this.config = config;
+    }
+    
+    public final ObjectSinkList newObjectSinkList(Class owner) {
+        if ( config.getBooleanProperty( RuleBaseConfiguration.HASH_OBJECT_TYPE_NODES) && 
+             (ObjectTypeNode.class.isAssignableFrom( owner )) ) {
             return new HashedObjectSinkList();
-        } else if ( ENABLED.equalsIgnoreCase( System.getProperty( ALPHA_NODE_ALPHA_HASHING ) ) && (owner instanceof AlphaNode) ) {
+        } else if ( config.getBooleanProperty( RuleBaseConfiguration.HASH_ALPHA_NODES ) && 
+                   (AlphaNode.class.isAssignableFrom( owner )) ) {
             return new HashedObjectSinkList();
         }
+        return new DefaultObjectSinkList( 1 );
+    }
+    
+    public static final ObjectSinkList newDefaultObjectSinkList() {
         return new DefaultObjectSinkList( 1 );
     }
 

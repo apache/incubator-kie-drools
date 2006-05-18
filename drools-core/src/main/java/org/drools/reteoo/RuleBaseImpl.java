@@ -36,10 +36,12 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.common.ObjectInputStreamWithLoader;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.beta.BetaMemoryFactory;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
@@ -65,6 +67,7 @@ public class RuleBaseImpl
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
+    private RuleBaseConfiguration                 config;
 
     private Map                                   pkgs;
 
@@ -89,7 +92,7 @@ public class RuleBaseImpl
 
     /** Special value when adding to the underlying map. */
     private static final Object                   PRESENT = new Object();
-
+    
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -101,7 +104,21 @@ public class RuleBaseImpl
      *            The rete network.
      */
     public RuleBaseImpl() {
-        this( new DefaultFactHandleFactory() );
+        this( null, new DefaultFactHandleFactory() );
+    }
+
+    /**
+     * @param factHandleFactory
+     */
+    public RuleBaseImpl(FactHandleFactory factHandleFactory) {
+        this( null, factHandleFactory );
+    }
+
+    /**
+     * @param config
+     */
+    public RuleBaseImpl(RuleBaseConfiguration config) {
+        this( config, new DefaultFactHandleFactory() );
     }
 
     /**
@@ -110,7 +127,8 @@ public class RuleBaseImpl
      * @param rete
      *            The rete network.
      */
-    public RuleBaseImpl(FactHandleFactory factHandleFactory) {
+    public RuleBaseImpl(RuleBaseConfiguration config, FactHandleFactory factHandleFactory) {
+        this.config = ( config != null ) ? config : new RuleBaseConfiguration();
         ObjectTypeResolver resolver = new ClassObjectTypeResolver();
         this.rete = new Rete( resolver );
         this.reteooBuilder = new ReteooBuilder( this,
@@ -120,7 +138,7 @@ public class RuleBaseImpl
         this.packageClassLoader = new CompositePackageClassLoader( Thread.currentThread().getContextClassLoader() );
         this.pkgs = new HashMap();
         this.globals = new HashMap();
-        this.workingMemories = new WeakHashMap();       
+        this.workingMemories = new WeakHashMap();
     }
 
     /**
@@ -139,6 +157,7 @@ public class RuleBaseImpl
         out.writeObject( this.reteooBuilder );
         out.writeObject( this.factHandleFactory );
         out.writeObject( this.globals );
+        out.writeObject( this.config );
 
         stream.writeObject( bos.toByteArray() );
     }
@@ -174,6 +193,8 @@ public class RuleBaseImpl
 
         this.factHandleFactory = (FactHandleFactory) streamWithLoader.readObject();
         this.globals = (Map) streamWithLoader.readObject();
+        
+        this.config = (RuleBaseConfiguration) streamWithLoader.readObject();
 
         this.workingMemories = new WeakHashMap();
     }
@@ -473,6 +494,10 @@ public class RuleBaseImpl
 
     public Set getWorkingMemories() {
         return this.workingMemories.keySet();
+    }
+    
+    public RuleBaseConfiguration getConfiguration() {
+        return this.config;
     }
 
     //    /**

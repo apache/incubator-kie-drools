@@ -92,6 +92,10 @@ class ReteooBuilder
     private Map                           objectType;
 
     private int                           currentOffsetAdjustment;
+    
+    /** A factory for object sink lists */
+    private transient ObjectSinkListFactory       sinklistFactory;
+    
 
     // ------------------------------------------------------------
     // Constructors
@@ -111,6 +115,9 @@ class ReteooBuilder
 
         //Set to 1 as Rete node is set to 0
         this.id = 1;
+
+        // creating factory
+        this.sinklistFactory = new ObjectSinkListFactory(this.ruleBase.getConfiguration());
     }
 
     /**
@@ -281,6 +288,7 @@ class ReteooBuilder
                     this.currentOffsetAdjustment = 1;
 
                     ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
+                                                                                this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
                                                                                 new ClassObjectType( InitialFact.class ),
                                                                                 this.rete ) );
 
@@ -321,6 +329,7 @@ class ReteooBuilder
     private void attachQuery(String queryName) {
         ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( this.id++,
+                                                                 this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
                                                                  queryObjectType,
                                                                  rete );
         queryObjectTypeNode.attach();
@@ -338,6 +347,7 @@ class ReteooBuilder
                                                               evaluator );
 
         AlphaNode alphaNode = new AlphaNode( this.id++,
+                                             this.sinklistFactory.newObjectSinkList( AlphaNode.class ),
                                              constraint,
                                              queryObjectTypeNode );
         alphaNode.attach();
@@ -384,6 +394,7 @@ class ReteooBuilder
         Class thisClass = ((ClassObjectType) column.getObjectType()).getClassType();
 
         this.objectSource = attachNode( new ObjectTypeNode( this.id++,
+                                                            this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
                                                             column.getObjectType(),
                                                             this.rete ) );
 
@@ -419,6 +430,7 @@ class ReteooBuilder
             FieldConstraint fieldConstraint = (FieldConstraint) object;
             if ( fieldConstraint instanceof LiteralConstraint ) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
+                                                               this.sinklistFactory.newObjectSinkList( AlphaNode.class ),
                                                                fieldConstraint,
                                                                objectSource ) );
             } else {

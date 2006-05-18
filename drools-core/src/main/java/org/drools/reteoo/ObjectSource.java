@@ -43,7 +43,7 @@ abstract class ObjectSource extends BaseNode
     // ------------------------------------------------------------
 
     /** The destination for <code>FactHandleImpl</code>. */
-    protected ObjectSinkList objectSinks = ObjectSinkListFactory.newObjectSinkList( this );
+    protected ObjectSinkList objectSinks;
 
     // ------------------------------------------------------------
     // Constructors
@@ -55,7 +55,21 @@ abstract class ObjectSource extends BaseNode
      * @param id
      */
     ObjectSource(int id) {
+        this( id,
+              null );
+    }
+
+    /**
+     * Single parameter constructor that specifies the unique id of the node.
+     * 
+     * @param id
+     */
+    ObjectSource(int id,
+                 ObjectSinkList objectSinks) {
         super( id );
+        this.objectSinks = (objectSinks != null) ? 
+                            objectSinks : 
+                            ObjectSinkListFactory.newDefaultObjectSinkList();
     }
 
     // ------------------------------------------------------------
@@ -151,7 +165,7 @@ abstract class ObjectSource extends BaseNode
     public ObjectSinkList getObjectSinks() {
         return this.objectSinks;
     }
-    
+
     /**
      * Returns the object sinks as an unmodifiable list
      * @return

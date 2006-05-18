@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.FactException;
+import org.drools.RuleBaseConfiguration;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -61,7 +62,23 @@ class AlphaNode extends ObjectSource
     AlphaNode(int id,
               FieldConstraint constraint,
               ObjectSource objectSource) {
-        super( id );
+        this( id, null, constraint, objectSource );
+    }
+
+    /**
+     * Construct an <code>AlphaNode</code> with a unique id using the provided
+     * <code>ObjectSinkList</code> and <code>FieldConstraint</code>. 
+     * 
+     * @param id Node unique id
+     * @param sinklist An object sink list. If null, a default will be used.
+     * @param constraint Node's constraints
+     * @param objectSource Node's object source
+     */
+    AlphaNode(int id,
+              ObjectSinkList sinklist,
+              FieldConstraint constraint,
+              ObjectSource objectSource) {
+        super( id, sinklist );
         this.constraint = constraint;
         this.objectSource = objectSource;
         setHasMemory( true );
@@ -175,7 +192,7 @@ class AlphaNode extends ObjectSource
     /**
      * Creates a HashSet for the AlphaNode's memory.
      */
-    public Object createMemory() {
+    public Object createMemory( RuleBaseConfiguration config ) {
         return new HashSet();
     }
 

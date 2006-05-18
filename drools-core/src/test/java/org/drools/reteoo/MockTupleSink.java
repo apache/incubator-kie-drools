@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.drools.FactException;
+import org.drools.RuleBaseConfiguration;
 import org.drools.spi.PropagationContext;
 
 public class MockTupleSink extends TupleSource
@@ -85,7 +86,7 @@ public class MockTupleSink extends TupleSource
         return this.id;
     }
 
-    public Object createMemory() {
+    public Object createMemory( RuleBaseConfiguration config ) {
         return new HashMap();
     }
 

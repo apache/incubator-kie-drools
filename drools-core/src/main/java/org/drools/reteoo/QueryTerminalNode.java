@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import java.util.LinkedList;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
@@ -151,7 +152,7 @@ final class QueryTerminalNode extends BaseNode
         // There are no child nodes to update, do nothing.
     }
 
-    public Object createMemory() {
+    public Object createMemory( RuleBaseConfiguration config ) {
         //return new QueryTerminalNodeMemory();
         return new LinkedList();
     }
