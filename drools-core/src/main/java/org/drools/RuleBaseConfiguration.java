@@ -32,36 +32,53 @@ public class RuleBaseConfiguration extends Properties {
      * Property to enable/disable left beta memory indexing
      * Defaults to false 
      */
-    public static final String INDEX_LEFT_BETA_MEMORY  = "org.drools.reteoo.beta.index-left";
+    public static final String PROPERTY_INDEX_LEFT_BETA_MEMORY  = "org.drools.reteoo.beta.index-left";
     /**
      * Property to enable/disable right beta memory indexing
      * Defaults to true 
      */
-    public static final String INDEX_RIGHT_BETA_MEMORY = "org.drools.reteoo.beta.index-right";
+    public static final String PROPERTY_INDEX_RIGHT_BETA_MEMORY = "org.drools.reteoo.beta.index-right";
     /**
      * Property to enable/disable alpha node hashing inside object type nodes
      * Defaults to true 
      */
-    public static final String HASH_OBJECT_TYPE_NODES  = "org.drools.reteoo.alpha.hash-type-node";
+    public static final String PROPERTY_HASH_OBJECT_TYPE_NODES  = "org.drools.reteoo.alpha.hash-type-node";
     /**
      * Property to enable/disable alpha node hashing inside alpha nodes
      * Defaults to false 
      */
-    public static final String HASH_ALPHA_NODES        = "org.drools.reteoo.alpha.hash-alpha-node";
+    public static final String PROPERTY_HASH_ALPHA_NODES        = "org.drools.reteoo.alpha.hash-alpha-node";
+    /**
+     * Property to define working memory assert behavior. Valid values are "identity" or "equals".
+     * Defaults to identity 
+     */
+    public static final String PROPERTY_ASSERT_BEHAVIOR         = "org.drools.wm.assert-behavior";
+    /**
+     * Property to define working memory logical assert behavior. Valid values are "identity" or "equals".
+     * Defaults to identity 
+     */
+    public static final String PROPERTY_LOGICAL_ASSERT_BEHAVIOR = "org.drools.wm.logical-assert-behavior";
+    
+    public static final String WM_BEHAVIOR_IDENTITY = "identity";
+    public static final String WM_BEHAVIOR_EQUALS   = "equals";
 
     // a generated serial version id
     private static final long  serialVersionUID        = 2989084670778336973L;
 
     public RuleBaseConfiguration() {
         // default values
-        this.setProperty( INDEX_LEFT_BETA_MEMORY, 
-                          System.getProperty( INDEX_LEFT_BETA_MEMORY, "false" ) );
-        this.setProperty( INDEX_RIGHT_BETA_MEMORY,
-                          System.getProperty( INDEX_RIGHT_BETA_MEMORY, "true" ) );
-        this.setProperty( HASH_OBJECT_TYPE_NODES,
-                          System.getProperty( HASH_OBJECT_TYPE_NODES, "true" ) );
-        this.setProperty( HASH_ALPHA_NODES,
-                          System.getProperty( HASH_ALPHA_NODES, "false" ) );
+        this.setProperty( PROPERTY_INDEX_LEFT_BETA_MEMORY, 
+                          System.getProperty( PROPERTY_INDEX_LEFT_BETA_MEMORY, "false" ) );
+        this.setProperty( PROPERTY_INDEX_RIGHT_BETA_MEMORY,
+                          System.getProperty( PROPERTY_INDEX_RIGHT_BETA_MEMORY, "true" ) );
+        this.setProperty( PROPERTY_HASH_OBJECT_TYPE_NODES,
+                          System.getProperty( PROPERTY_HASH_OBJECT_TYPE_NODES, "true" ) );
+        this.setProperty( PROPERTY_HASH_ALPHA_NODES,
+                          System.getProperty( PROPERTY_HASH_ALPHA_NODES, "false" ) );
+        this.setProperty( PROPERTY_ASSERT_BEHAVIOR,
+                          System.getProperty( PROPERTY_ASSERT_BEHAVIOR, WM_BEHAVIOR_IDENTITY ) );
+        this.setProperty( PROPERTY_LOGICAL_ASSERT_BEHAVIOR,
+                          System.getProperty( PROPERTY_LOGICAL_ASSERT_BEHAVIOR, WM_BEHAVIOR_EQUALS ) );
     }
 
     public boolean getBooleanProperty(String prop) {

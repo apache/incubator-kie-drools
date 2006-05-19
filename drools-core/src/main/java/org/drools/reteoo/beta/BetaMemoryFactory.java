@@ -50,7 +50,7 @@ public class BetaMemoryFactory {
         BetaLeftMemory memory = null;
         BetaLeftMemory innerMostMemory = null;
         FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
-        if ( (constraints != null) && (config.getBooleanProperty( RuleBaseConfiguration.INDEX_LEFT_BETA_MEMORY ))) {
+        if ( (constraints != null) && (config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_INDEX_LEFT_BETA_MEMORY ))) {
             for ( int i = 0; i < constraints.length; i++ ) {
                 if ( constraints[i] instanceof BoundVariableConstraint ) {
                     BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
@@ -113,7 +113,7 @@ public class BetaMemoryFactory {
         BetaRightMemory memory = null;
         BetaRightMemory innerMostMemory = null;
         FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
-        if ( (constraints != null) && ( config.getBooleanProperty( RuleBaseConfiguration.INDEX_RIGHT_BETA_MEMORY ))) {
+        if ( (constraints != null) && ( config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_INDEX_RIGHT_BETA_MEMORY ))) {
             for ( int i = 0; i < constraints.length; i++ ) {
                 if ( constraints[i] instanceof BoundVariableConstraint ) {
                     BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
