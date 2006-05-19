@@ -58,6 +58,8 @@
 
       <xi:include href="Chapter-Rule_Engine/Section-Why_use_a_Rule_Engine.xml" />
 
+      <xi:include href="Chapter-Rule_Engine/Section-Rules.xml" />
+
       <xi:include href="Chapter-Rule_Engine/Section-Rete_Algorithm.xml" />            
       
       <xi:include href="Chapter-Rule_Engine/Section-Leaps_Algorithm.xml" />
