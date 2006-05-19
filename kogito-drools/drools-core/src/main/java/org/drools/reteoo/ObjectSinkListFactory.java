@@ -34,10 +34,10 @@ public class ObjectSinkListFactory {
     }
     
     public final ObjectSinkList newObjectSinkList(Class owner) {
-        if ( config.getBooleanProperty( RuleBaseConfiguration.HASH_OBJECT_TYPE_NODES) && 
+        if ( config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_HASH_OBJECT_TYPE_NODES) && 
              (ObjectTypeNode.class.isAssignableFrom( owner )) ) {
             return new HashedObjectSinkList();
-        } else if ( config.getBooleanProperty( RuleBaseConfiguration.HASH_ALPHA_NODES ) && 
+        } else if ( config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_HASH_ALPHA_NODES ) && 
                    (AlphaNode.class.isAssignableFrom( owner )) ) {
             return new HashedObjectSinkList();
         }
