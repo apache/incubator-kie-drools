@@ -21,6 +21,8 @@ import java.util.Properties;
 /**
  * RuleBaseConfiguration
  * A class to store RuleBase related configuration
+ * 
+ * IMPORTANT NOTE: This API is under review and may change in the future.
  *
  * Created: 16/05/2006
  * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a> 
@@ -48,19 +50,6 @@ public class RuleBaseConfiguration extends Properties {
      * Defaults to false 
      */
     public static final String PROPERTY_HASH_ALPHA_NODES        = "org.drools.reteoo.alpha.hash-alpha-node";
-    /**
-     * Property to define working memory assert behavior. Valid values are "identity" or "equals".
-     * Defaults to identity 
-     */
-    public static final String PROPERTY_ASSERT_BEHAVIOR         = "org.drools.wm.assert-behavior";
-    /**
-     * Property to define working memory logical assert behavior. Valid values are "identity" or "equals".
-     * Defaults to identity 
-     */
-    public static final String PROPERTY_LOGICAL_ASSERT_BEHAVIOR = "org.drools.wm.logical-assert-behavior";
-    
-    public static final String WM_BEHAVIOR_IDENTITY = "identity";
-    public static final String WM_BEHAVIOR_EQUALS   = "equals";
 
     // a generated serial version id
     private static final long  serialVersionUID        = 2989084670778336973L;
@@ -75,10 +64,6 @@ public class RuleBaseConfiguration extends Properties {
                           System.getProperty( PROPERTY_HASH_OBJECT_TYPE_NODES, "true" ) );
         this.setProperty( PROPERTY_HASH_ALPHA_NODES,
                           System.getProperty( PROPERTY_HASH_ALPHA_NODES, "false" ) );
-        this.setProperty( PROPERTY_ASSERT_BEHAVIOR,
-                          System.getProperty( PROPERTY_ASSERT_BEHAVIOR, WM_BEHAVIOR_IDENTITY ) );
-        this.setProperty( PROPERTY_LOGICAL_ASSERT_BEHAVIOR,
-                          System.getProperty( PROPERTY_LOGICAL_ASSERT_BEHAVIOR, WM_BEHAVIOR_EQUALS ) );
     }
 
     public boolean getBooleanProperty(String prop) {
