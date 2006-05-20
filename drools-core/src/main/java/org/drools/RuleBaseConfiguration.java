@@ -78,8 +78,9 @@ public class RuleBaseConfiguration implements Serializable {
      * Property to define working memory logical assert behavior. Valid values are "identity" or "equals".
      * 
      * IMPORTANT NODE: if you set LOGICAL_ASSERT_BEHAVIOR to IDENTITY, then ASSERT_BEHAVIOR will be 
-     * automatically set to IDENTITY also, as it is not possible to have ASSERT_BEHAVIOR EQUALS and 
-     * LOGICAL_ASSERT_BEHAVIOR IDENTITY.
+     * automatically set to IDENTITY, as it is not possible to have ASSERT_BEHAVIOR EQUALS and 
+     * LOGICAL_ASSERT_BEHAVIOR IDENTITY. In a symetrical way, if you set ASSERT_BEHAVIOR to EQUALS,
+     * LOGICAL_ASSERT_BEHAVIOR will automatically be set to EQUALS.
      *  
      * Defaults to equals 
      */
@@ -140,6 +141,11 @@ public class RuleBaseConfiguration implements Serializable {
     /**
      * Sets the value of the given property
      * 
+     * IMPORTANT NODE: if you set LOGICAL_ASSERT_BEHAVIOR to IDENTITY, then ASSERT_BEHAVIOR will be 
+     * automatically set to IDENTITY, as it is not possible to have ASSERT_BEHAVIOR EQUALS and 
+     * LOGICAL_ASSERT_BEHAVIOR IDENTITY. In a symetrical way, if you set ASSERT_BEHAVIOR to EQUALS,
+     * LOGICAL_ASSERT_BEHAVIOR will automatically be set to EQUALS.
+     * 
      * @param prop
      * @param value
      */
@@ -151,6 +157,10 @@ public class RuleBaseConfiguration implements Serializable {
                     WM_BEHAVIOR_IDENTITY.equals( value ) ) {
                 this.properties.put( PROPERTY_ASSERT_BEHAVIOR,
                                      WM_BEHAVIOR_IDENTITY);
+            } else if( PROPERTY_ASSERT_BEHAVIOR.equals( prop ) &&
+                    WM_BEHAVIOR_EQUALS.equals( value ) ) {
+                this.properties.put( PROPERTY_LOGICAL_ASSERT_BEHAVIOR,
+                                     WM_BEHAVIOR_EQUALS);
             }
             this.properties.put( prop, value );
         } else {
