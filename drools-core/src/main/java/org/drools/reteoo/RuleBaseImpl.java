@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -41,7 +40,6 @@ import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.common.ObjectInputStreamWithLoader;
 import org.drools.common.PropagationContextImpl;
-import org.drools.reteoo.beta.BetaMemoryFactory;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
@@ -129,6 +127,8 @@ public class RuleBaseImpl
      */
     public RuleBaseImpl(RuleBaseConfiguration config, FactHandleFactory factHandleFactory) {
         this.config = ( config != null ) ? config : new RuleBaseConfiguration();
+        this.config.makeImmutable();
+        
         ObjectTypeResolver resolver = new ClassObjectTypeResolver();
         this.rete = new Rete( resolver );
         this.reteooBuilder = new ReteooBuilder( this,

@@ -37,23 +37,23 @@ import org.drools.spi.ObjectType;
 
 public class CrossProductTest extends TestCase {
     public void test1() throws Exception {
-        ObjectType list1ObjectType = new ClassObjectType( List.class );
-        ObjectType list2ObjectType = new ClassObjectType( List.class );
+        ObjectType list1ObjectType = new ClassObjectType( String.class );
+        ObjectType list2ObjectType = new ClassObjectType( String.class );
 
         Rule rule = new Rule( "rule-1" );
 
         Column list1Column = new Column( 0,
                                          list1ObjectType,
-                                         "list1" );
+                                         "s1" );
         Column list2Column = new Column( 1,
                                          list2ObjectType,
-                                         "list2" );
+                                         "s2" );
 
         rule.addPattern( list1Column );
         rule.addPattern( list2Column );
 
-        final Declaration list1Declaration = rule.getDeclaration( "list1" );
-        final Declaration list2Declaration = rule.getDeclaration( "list2" );
+        final Declaration s1Declaration = rule.getDeclaration( "s1" );
+        final Declaration s2Declaration = rule.getDeclaration( "s2" );
 
         final List values = new ArrayList();
 
@@ -61,9 +61,9 @@ public class CrossProductTest extends TestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) throws Exception {
-                List list1 = (List) knowledgeHelper.get( list1Declaration );
-                List list2 = (List) knowledgeHelper.get( list2Declaration );
-                values.add( new List[]{list1, list2} );
+                String s1 = (String) knowledgeHelper.get( s1Declaration );
+                String s2 = (String) knowledgeHelper.get( s2Declaration );
+                values.add( new String[]{s1, s2} );
             }
 
         } );
@@ -75,10 +75,10 @@ public class CrossProductTest extends TestCase {
         ruleBase.addPackage( pkg );
 
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-        workingMemory.assertObject( new ArrayList() );
-        workingMemory.assertObject( new ArrayList() );
-        workingMemory.assertObject( new LinkedList() );
-        workingMemory.assertObject( new LinkedList() );
+        workingMemory.assertObject( "F1" );
+        workingMemory.assertObject( "F2" );
+        workingMemory.assertObject( "F3" );
+        workingMemory.assertObject( "F4" );
 
         workingMemory.fireAllRules();
 

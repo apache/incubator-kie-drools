@@ -1,4 +1,3 @@
-package org.drools.examples.manners;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +13,7 @@ package org.drools.examples.manners;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
+package org.drools.examples.manners;
 
 public final class Path {
     private final int    id;
