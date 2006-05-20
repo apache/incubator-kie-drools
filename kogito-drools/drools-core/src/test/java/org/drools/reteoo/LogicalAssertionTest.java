@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,12 +16,11 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.Agenda;
@@ -84,7 +84,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         node.retractTuple( tuple1,
                            context1,
                            workingMemory );
-        
+
         workingMemory.propagateQueuedActions();
 
         assertLength( 1,
@@ -112,7 +112,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         node.retractTuple( tuple1,
                            context1,
                            workingMemory );
-        
+
         workingMemory.propagateQueuedActions();
 
         assertLength( 2,
@@ -181,14 +181,36 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 rule1,
                                                                 tuple1.getActivation() );
 
-        assertSame( logicalHandle1,
-                    logicalHandle2 );
+        // If logical assert behavior in working memory is EQUALS,
+        // it must return the same handle
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_EQUALS.equals( 
+             ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+              RuleBaseConfiguration.PROPERTY_LOGICAL_ASSERT_BEHAVIOR) ) ) {
+            assertSame( logicalHandle1,
+                           logicalHandle2 );
+        } else {
+            // otherwise, it must not return the same handle 
+            assertNotSame( logicalHandle1,
+                           logicalHandle2 );
+        }
 
         // little sanity check using normal assert
         logicalHandle1 = workingMemory.assertObject( logicalString1 );
         logicalHandle2 = workingMemory.assertObject( logicalString2 );
-        assertNotSame( logicalHandle1,
-                       logicalHandle2 );
+        
+        // If assert behavior in working memory is IDENTITY, 
+        // returned handles must not be the same 
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( 
+             ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+              RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR ) ) ) {
+        
+            assertNotSame( logicalHandle1,
+                           logicalHandle2 );
+        } else {
+            // in case behavior is EQUALS, handles should be the same
+            assertSame( logicalHandle1,
+                        logicalHandle2 );
+        }
     }
 
     /**
@@ -255,9 +277,18 @@ public class LogicalAssertionTest extends DroolsTestCase {
         assertLength( 0,
                       sink.getRetracted() );
 
-        // Should keep the same handle when overriding
-        assertSame( logicalHandle1,
-                    logicalHandle2 );
+        // If logical assert behavior in working memory is IDENTITY, 
+        // returned handles must not be the same 
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( 
+             ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+              RuleBaseConfiguration.PROPERTY_LOGICAL_ASSERT_BEHAVIOR ) ) ) {
+
+            assertNotSame( logicalHandle2,
+                           logicalHandle1 );
+        } else {
+            assertSame( logicalHandle2,
+                        logicalHandle1 );
+        }
 
         // so while new STATED assertion is equal
         assertEquals( logicalString1,
@@ -282,9 +313,18 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                      true,
                                                      rule1,
                                                      tuple1.getActivation() );
-        // Already an equals object but not identity same, so will do nothing
-        // and return null
-        assertNull( logicalHandle1 );
+
+        // If logical assert behavior in working memory is IDENTITY, 
+        // must return a handle 
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( 
+             ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+              RuleBaseConfiguration.PROPERTY_LOGICAL_ASSERT_BEHAVIOR ) ) ) {
+
+            assertNotNull( logicalHandle1 );
+        } else {
+            assertNull( logicalHandle1 );
+        }
+
 
         // Alreyad identify same so return previously assigned handle
         logicalHandle1 = workingMemory.assertObject( logicalString2,
@@ -293,6 +333,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                      rule1,
                                                      tuple1.getActivation() );
         // return the matched handle
+
         assertSame( logicalHandle2,
                     logicalHandle1 );
 
@@ -390,16 +431,39 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 rule2,
                                                                 tuple2.getActivation() );
 
-        // "logical" should only appear once
-        assertLength( 1,
-                      workingMemory.getJustified().values() );
+        // If logical assert behavior in working memory is IDENTITY, 
+        // must have 2 justified facts
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( 
+             ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+              RuleBaseConfiguration.PROPERTY_LOGICAL_ASSERT_BEHAVIOR ) ) ) {
+
+            // "logical" should only appear twice
+            assertLength( 2,
+                          workingMemory.getJustified().values() );
+        } else {
+            // "logical" should only appear once
+            assertLength( 1,
+                          workingMemory.getJustified().values() );
+        }
 
         // retract the logical object
         workingMemory.retractObject( logicalHandle2 );
 
-        // The logical object should never appear
-        assertLength( 0,
-                      workingMemory.getJustified().values() );
+        // If logical assert behavior in working memory is IDENTITY, 
+        // must have 2 justified facts
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( 
+             ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+              RuleBaseConfiguration.PROPERTY_LOGICAL_ASSERT_BEHAVIOR ) ) ) {
+
+            // "logical" should only appear once
+            assertLength( 1,
+                          workingMemory.getJustified().values() );
+        } else {
+            // The logical object should never appear
+            assertLength( 0,
+                          workingMemory.getJustified().values() );
+        }
+
 
     }
 
@@ -481,18 +545,42 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 rule2,
                                                                 tuple2.getActivation() );
 
-        // "logical" should only appear once
-        assertLength( 1,
-                      workingMemory.getJustified().values() );
+        // If logical assert behavior in working memory is IDENTITY, 
+        // must have 2 justified facts
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( 
+             ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+              RuleBaseConfiguration.PROPERTY_LOGICAL_ASSERT_BEHAVIOR ) ) ) {
+
+            // "logical" should only appear twice
+            assertLength( 2,
+                          workingMemory.getJustified().values() );
+        } else {
+            // "logical" should only appear once
+            assertLength( 1,
+                          workingMemory.getJustified().values() );
+        }
 
         // Now lets cancel the first activation
         node2.retractTuple( tuple2,
                             context2,
                             workingMemory );
 
-        // because this logical fact has two relationships it shouldn't retract yet
-        assertLength( 0,
-                      sink.getRetracted() );
+        workingMemory.propagateQueuedActions();
+
+        // If logical assert behavior in working memory is IDENTITY, 
+        // must have 1 retracted
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( 
+             ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+              RuleBaseConfiguration.PROPERTY_LOGICAL_ASSERT_BEHAVIOR ) ) ) {
+
+            // because this logical fact has two relationships it shouldn't retract yet
+            assertLength( 1,
+                          sink.getRetracted() );
+        } else {
+            // because this logical fact has two relationships it shouldn't retract yet
+            assertLength( 0,
+                          sink.getRetracted() );
+        }
 
         // check "logical" is still in the system
         assertLength( 1,
@@ -502,18 +590,30 @@ public class LogicalAssertionTest extends DroolsTestCase {
         node.retractTuple( tuple1,
                            context1,
                            workingMemory );
-        
+
         workingMemory.propagateQueuedActions();
 
-        // Should cause the logical fact to be retracted
-        assertLength( 1,
-                      sink.getRetracted() );
+        // If logical assert behavior in working memory is IDENTITY, 
+        // must have 1 retracted
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( 
+             ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+              RuleBaseConfiguration.PROPERTY_LOGICAL_ASSERT_BEHAVIOR ) ) ) {
+
+            // Should cause the logical fact to be retracted
+            assertLength( 2,
+                          sink.getRetracted() );
+        } else {
+            // Should cause the logical fact to be retracted
+            assertLength( 1,
+                          sink.getRetracted() );
+        }
+
 
         // "logical" fact should no longer be in the system
         assertLength( 0,
                       workingMemory.getJustified().values() );
     }
-    
+
     /**
      * This tests that when multiple not identical, but equals facts, are asserted
      * into WM, only when all are removed, a logical assert will succeed 
@@ -574,35 +674,60 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 rule1,
                                                                 tuple1.getActivation() );
 
-        // Checks that previous LogicalAssert failed 
-        assertNull( logicalHandle3 );
-        
-        workingMemory.retractObject( statedHandle2 );
+        // if logical assert behavior is identity, must return 
+        // a handle, otherwise, must return null
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( 
+           ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+            RuleBaseConfiguration.PROPERTY_LOGICAL_ASSERT_BEHAVIOR ) ) ) {
 
-        logicalHandle3 = workingMemory.assertObject( logicalString3,
-                                                    false,
-                                                    true,
-                                                    rule1,
-                                                    tuple1.getActivation() );
+            // Checks that previous LogicalAssert failed 
+            assertNotNull( logicalHandle3 );
+        } else {
+            // Checks that previous LogicalAssert failed 
+            assertNull( logicalHandle3 );
+        }
 
-        // Checks that previous LogicalAssert failed as there is still one 
-        // stated string in the working memory
-        assertNull( logicalHandle3 );
-        
+        // If assert behavior in working memory is IDENTITY, 
+        // we need to retract object 2 times before being able to 
+        // succesfully logically assert a new fact
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( 
+             ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+              RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR ) ) ) {
+
+            workingMemory.retractObject( statedHandle2 );
+
+            logicalHandle3 = workingMemory.assertObject( logicalString3,
+                                                         false,
+                                                         true,
+                                                         rule1,
+                                                         tuple1.getActivation() );
+
+            // if logical assert behavior is identity, must return 
+            // a handle, otherwise, must return null
+            if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( 
+               ((RuleBaseImpl) ruleBase).getConfiguration().getProperty( 
+                RuleBaseConfiguration.PROPERTY_LOGICAL_ASSERT_BEHAVIOR ) ) ) {
+
+                // Checks that previous LogicalAssert failed 
+                assertNotNull( logicalHandle3 );
+            } else {
+                // Checks that previous LogicalAssert failed 
+                assertNull( logicalHandle3 );
+            }
+        }
+
         workingMemory.retractObject( statedHandle1 );
 
         logicalHandle3 = workingMemory.assertObject( logicalString3,
-                                                    false,
-                                                    true,
-                                                    rule1,
-                                                    tuple1.getActivation() );
+                                                     false,
+                                                     true,
+                                                     rule1,
+                                                     tuple1.getActivation() );
 
         // Checks that previous LogicalAssert succeeded as there are no more
         // stated strings in the working memory
         assertNotNull( logicalHandle3 );
-        
-    }
 
-    
+    }
 
 }

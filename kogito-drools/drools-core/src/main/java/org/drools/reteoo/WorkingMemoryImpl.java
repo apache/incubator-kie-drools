@@ -35,6 +35,7 @@ import org.drools.NoSuchFactHandleException;
 import org.drools.NoSuchFactObjectException;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.base.DroolsQuery;
 import org.drools.common.Agenda;
@@ -97,8 +98,8 @@ public class WorkingMemoryImpl
     //                                                                                                                  8 );
 
     /** Object-to-handle mapping. */
-    private final Map                       identityMap                                   = new IdentityMap();
-    private final Map                       equalsMap                                     = new HashMap();
+    private final Map                       assertMap;
+    private final Map                       logicalAssertMap;
 
     private final PrimitiveLongMap          justified                                     = new PrimitiveLongMap( 8,
                                                                                                                   32 );
@@ -131,7 +132,7 @@ public class WorkingMemoryImpl
     private boolean                         firing;
 
     private long                            propagationIdCounter;
-    
+
     private List                            factQueue                                     = new ArrayList();
 
     // ------------------------------------------------------------
@@ -148,6 +149,20 @@ public class WorkingMemoryImpl
         this.ruleBase = ruleBase;
         this.agenda = new Agenda( this );
         this.handleFactory = this.ruleBase.newFactHandleFactory();
+        RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
+
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_EQUALS.equals( conf.getProperty( RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR ) ) ) {
+            this.assertMap = new HashMap();
+        } else {
+            this.assertMap = new IdentityMap();
+        }
+
+        if ( RuleBaseConfiguration.WM_BEHAVIOR_IDENTITY.equals( conf.getProperty( RuleBaseConfiguration.PROPERTY_LOGICAL_ASSERT_BEHAVIOR ) ) ) {
+            this.logicalAssertMap = new IdentityMap();
+        } else {
+            this.logicalAssertMap = new HashMap();
+        }
+
     }
 
     // ------------------------------------------------------------
@@ -202,7 +217,7 @@ public class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public void setGlobal(String name,
-                          Object value) {  
+                          Object value) {
         // Make sure the global has been declared in the RuleBase        
         Map globalDefintions = this.ruleBase.getGlobals();
         Class type = (Class) globalDefintions.get( name );
@@ -241,13 +256,13 @@ public class WorkingMemoryImpl
     public void clearAgenda() {
         this.agenda.clearAgenda();
     }
-    
+
     /**
      * Clear the Agenda Group
      */
     public void clearAgendaGroup(String group) {
-        this.agenda.clearAgendaGroup(group);
-    }    
+        this.agenda.clearAgendaGroup( group );
+    }
 
     /**
      * @see WorkingMemory
@@ -303,7 +318,7 @@ public class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public FactHandle getFactHandle(Object object) {
-        FactHandle factHandle = (FactHandle) this.identityMap.get( object );
+        FactHandle factHandle = (FactHandle) this.assertMap.get( object );
 
         if ( factHandle == null ) {
             throw new NoSuchFactHandleException( object );
@@ -313,7 +328,7 @@ public class WorkingMemoryImpl
     }
 
     public List getFactHandles() {
-        return new ArrayList( this.identityMap.values() );
+        return new ArrayList( this.assertMap.values() );
     }
 
     /**
@@ -324,19 +339,19 @@ public class WorkingMemoryImpl
      * @return
      */
     Map getFactHandleMap() {
-        return Collections.unmodifiableMap( this.identityMap );
+        return Collections.unmodifiableMap( this.assertMap );
     }
 
     /**
      * @see WorkingMemory
      */
     public List getObjects() {
-        return new ArrayList( this.identityMap.keySet() );
+        return new ArrayList( this.assertMap.keySet() );
     }
 
     public List getObjects(Class objectClass) {
         List matching = new java.util.LinkedList();
-        for ( Iterator objIter = this.identityMap.keySet().iterator(); objIter.hasNext(); ) {
+        for ( Iterator objIter = this.assertMap.keySet().iterator(); objIter.hasNext(); ) {
             Object obj = objIter.next();
 
             if ( objectClass.isInstance( obj ) ) {
@@ -391,7 +406,7 @@ public class WorkingMemoryImpl
      * @see WorkingMemory
      */
     public boolean containsObject(FactHandle handle) {
-        return this.identityMap.containsKey( getObject( handle ) );
+        return this.assertMap.containsKey( getObject( handle ) );
     }
 
     /**
@@ -444,10 +459,10 @@ public class WorkingMemoryImpl
         try {
 
             // check if the object already exists in the WM
-            handle = (FactHandleImpl) this.identityMap.get( object );
+            handle = (FactHandleImpl) this.assertMap.get( object );
 
             // lets see if the object is already logical asserted
-            FactStatus logicalState = (FactStatus) this.equalsMap.get( object );
+            FactStatus logicalState = (FactStatus) this.logicalAssertMap.get( object );
             if ( logicalState == null ) {
                 logicalState = STATUS_NEW;
             }
@@ -475,10 +490,13 @@ public class WorkingMemoryImpl
                 // If this stated assertion already has justifications then we need
                 // to cancel them
                 if ( logicalState.getStatus() == WorkingMemoryImpl.JUSTIFIED ) {
-                    handle = logicalState.getHandle();
-                    removeLogicalDependencies( handle );
+                    FactHandleImpl handle2 = logicalState.getHandle();
+                    removeLogicalDependencies( handle2 );
+                    if( handle == null) {
+                        handle = handle2;
+                    }
                 } else {
-                    handle = (FactHandleImpl) newFactHandle();
+                    handle = (handle == null) ? (FactHandleImpl) newFactHandle() : handle;
                 }
 
                 putObject( handle,
@@ -489,7 +507,7 @@ public class WorkingMemoryImpl
                     logicalState.setStatus( WorkingMemoryImpl.STATED );
                     logicalState.incCounter();
                 } else {
-                    this.equalsMap.put( object,
+                    this.logicalAssertMap.put( object,
                                         new FactStatus( WorkingMemoryImpl.STATED,
                                                         1 ) );
                 }
@@ -508,7 +526,7 @@ public class WorkingMemoryImpl
                     putObject( handle,
                                object );
 
-                    this.equalsMap.put( object,
+                    this.logicalAssertMap.put( object,
                                         new FactStatus( WorkingMemoryImpl.JUSTIFIED,
                                                         handle ) );
                 }
@@ -533,10 +551,10 @@ public class WorkingMemoryImpl
             this.workingMemoryEventSupport.fireObjectAsserted( propagationContext,
                                                                handle,
                                                                object );
-            
+
             if ( !this.factQueue.isEmpty() ) {
                 propagateQueuedActions();
-            }            
+            }
         } finally {
             this.lock.unlock();
         }
@@ -608,7 +626,7 @@ public class WorkingMemoryImpl
         //        Object oldValue = this.objects.put( ((FactHandleImpl) handle).getId(),
         //                                            object );
 
-        this.identityMap.put( object,
+        this.assertMap.put( object,
                               handle );
 
         ((FactHandleImpl) handle).setObject( object );
@@ -619,7 +637,7 @@ public class WorkingMemoryImpl
         //Object object = this.objects.remove( ((FactHandleImpl) handle).getId() );
 
         Object object = getObject( handle );
-        this.identityMap.remove( object );
+        this.assertMap.remove( object );
 
         return object;
     }
@@ -662,11 +680,11 @@ public class WorkingMemoryImpl
             }
 
             if ( removeLogical || updateEqualsMap ) {
-                FactStatus status = (FactStatus) this.equalsMap.get( oldObject );
+                FactStatus status = (FactStatus) this.logicalAssertMap.get( oldObject );
                 if ( status != null ) {
                     status.decCounter();
                     if ( status.getCounter() <= 0 ) {
-                        this.equalsMap.remove( oldObject );
+                        this.logicalAssertMap.remove( oldObject );
                     }
                 }
             }
@@ -678,7 +696,7 @@ public class WorkingMemoryImpl
                                                                 oldObject );
 
             ((FactHandleImpl) handle).invalidate();
-            
+
             if ( !this.factQueue.isEmpty() ) {
                 propagateQueuedActions();
             }
@@ -718,8 +736,8 @@ public class WorkingMemoryImpl
             /* check to see if this is a logically asserted object */
             FactHandleImpl handleImpl = (FactHandleImpl) handle;
             if ( this.justified.get( handleImpl.getId() ) != null ) {
-                this.equalsMap.remove( originalObject );
-                this.equalsMap.put( object,
+                this.logicalAssertMap.remove( originalObject );
+                this.logicalAssertMap.put( object,
                                     new FactStatus( WorkingMemoryImpl.JUSTIFIED,
                                                     handleImpl ) );
             }
@@ -748,7 +766,7 @@ public class WorkingMemoryImpl
                                                                handle,
                                                                originalObject,
                                                                object );
-            
+
             if ( !this.factQueue.isEmpty() ) {
                 propagateQueuedActions();
             }
@@ -756,15 +774,14 @@ public class WorkingMemoryImpl
             this.lock.unlock();
         }
     }
-    
+
     void propagateQueuedActions() {
         for ( Iterator it = this.factQueue.iterator(); it.hasNext(); ) {
             WorkingMemoryAction action = (WorkingMemoryAction) it.next();
             it.remove();
             action.propagate();
         }
-        
-        
+
     }
 
     /**
@@ -894,20 +911,20 @@ public class WorkingMemoryImpl
     public Lock getLock() {
         return this.lock;
     }
-    
+
     private interface WorkingMemoryAction {
         public void propagate();
     }
-    
-    private class WorkingMemoryRetractAction implements WorkingMemoryAction {
+
+    private class WorkingMemoryRetractAction
+        implements
+        WorkingMemoryAction {
         private InternalFactHandle factHandle;
-        private boolean removeLogical;
-        private boolean updateEqualsMap;
-        private Rule ruleOrigin;
-        private Activation activationOrigin;
-        
-        
-        
+        private boolean            removeLogical;
+        private boolean            updateEqualsMap;
+        private Rule               ruleOrigin;
+        private Activation         activationOrigin;
+
         public WorkingMemoryRetractAction(InternalFactHandle factHandle,
                                           boolean removeLogical,
                                           boolean updateEqualsMap,
