@@ -152,7 +152,7 @@ then
     results in rules firing - we start with a fact, it propagates and we end
     in a conclusion. Drools is a forward chaining engine. Backward chaining is
     'goal-driven', we start with a conclusion which the engine tries to
-    satisfy. If it can't it searches for conclusions, 'sub goals', that helps
+    satisfy. If it can't it searches for conclusions, 'sub goals', that help
     satisfy an unknown part fo the current goal - it continues this process
     untill either the initial conclusion is proven or there are no more sub
     goals.</para>

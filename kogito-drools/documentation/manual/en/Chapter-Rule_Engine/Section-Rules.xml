@@ -302,6 +302,8 @@ where exists (
         m.score &lt; 40 
 )</programlisting>
 
+    <para></para>
+
     <programlisting>rule
     when
         exists( $student : Student() &amp;&amp; Module( student == $student, score &lt; 40 ) )</programlisting>
