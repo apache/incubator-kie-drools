@@ -210,10 +210,10 @@
     <title>Scripting or process engines</title>
 
     <para>Hopefully the preceeding sections have explained when you may want
-    to use a rule engine. </para>
+    to use a rule engine.</para>
 
     <para>Alternatives are script-based engines that provide the dynamicness
-    for "changes on the fly" (there are many solutions here) or </para>
+    for "changes on the fly" (there are many solutions here) or</para>
 
     <para>Process engines (also capable of workflow) such as jBPM allow you to
     graphically (or programmatically) describe steps in a process - those
@@ -237,5 +237,25 @@
     control if extended to much (such that only the original creators can
     change the applications behaviour), or, they cause the application to
     stagnate as they are too inflexible.</para>
+  </section>
+
+  <section>
+    <title>Strong and Loose coupling</title>
+
+    <para>No doubt you have heard terms like "tight coupling" and "loose
+    coupling" in systems design. Generally people assert that loose or "weak"
+    coupling is preferable in design terms, due to the added flexibility.
+    Similarly with rules, you can have "strongly coupled" and "weakly coupled"
+    rules. Strongly coupled in this sense means that one rule "firing" will
+    clearly result in another rule firing etc. in other words there is a clear
+    (probably obvious) chain of logic. If your rules are all strongly coupled,
+    the chances are that the rules will have future inflexibility, and more
+    significantly, that perhaps a rule engine is overkill (as the logic is a
+    clear chain of rules - and can be hard coded). This is not to say that
+    strong or weak coupling is inherently bad, but its a point to keep in mind
+    when considering a rule engine, and also in how you capture the rules.
+    "Loosely" coupled rules should result in a system that allows rules to be
+    changed, removed, added without requiring changes to other rules that are
+    unrelated.</para>
   </section>
 </section>
