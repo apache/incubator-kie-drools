@@ -31,17 +31,17 @@
 
     <para>The term Rule Engine is quite ambiguous in that it can be any system
     that uses rules, in any form, that can be applied to data to produce
-    outcomes; which includes simple systems like form validation; "How to
+    outcomes; which includes simple systems like form validation: "How to
     Build a Business Rules Engine (2004)" by Malcolm Chisholm exemplifies this
     ambiguity. The book is actually about how to build and alter a database
     schema to hold validation rules which it then shows how to generate VB
     code from those validation rules to validate data entry - while a very
-    valid and usefil topic for some some, it caused quite a suprise to this
-    author, unaware at the time in the subtleties of Rules Engines
-    differences, who was hoping to find some hidden secrets to help improve
-    the Drools engine. While a Production Rule System is a kinda of Rule
-    Engine and also Expert System, the validation Rule Engine mention
-    previously obviously isn't an Expert System.</para>
+    valid and usefil topic for some, it caused quite a suprise to this author,
+    unaware at the time in the subtleties of Rules Engines differences, who
+    was hoping to find some hidden secrets to help improve the Drools engine.
+    While a Production Rule System is a kind of Rule Engine and also Expert
+    System, the validation Rule Engine mention previously obviously isn't an
+    Expert System.</para>
 
     <para>The brain of a Production Rule System is an Inference Engine which
     matches facts, the data, against Production Rules, also called
@@ -84,17 +84,17 @@ then
         <primary>Rete</primary>
       </indexterm>Rete and <indexterm>
         <primary>Leaps</primary>
-      </indexterm>Leaps; Leaps is still considered experiment. The Drools
-    <indexterm>
+      </indexterm>Leaps; Leaps is considered provisional, as it is quite new.
+    The Drools <indexterm>
         <primary>Rete</primary>
       </indexterm>Rete implementation is called ReteOO signifying that Drools
-    has an enhanced and optimised implementation of the Rete algorithm. Other
-    Rete based engines also have marketing terms for their proprietary
-    enhancements to Rete, like RetePlus and Rete III. It is important to
-    understand that names like Rete III are purely marketing where, unlike the
-    original published Rete Algorithm, no details of implementation are
-    published; thus asking a question like "Does Drools implement Rete III" is
-    nonsensical.</para>
+    has an enhanced and optimised implementation of the Rete algorithm for
+    Object Oriented systems. Other Rete based engines also have marketing
+    terms for their proprietary enhancements to Rete, like RetePlus and Rete
+    III. It is important to understand that names like Rete III are purely
+    marketing where, unlike the original published Rete Algorithm, no details
+    of implementation are published; thus asking a question like "Does Drools
+    implement Rete III?" is nonsensical.</para>
 
     <para>The Production Rules are referred to as the <indexterm>
         <primary>Production Memory</primary>
@@ -106,7 +106,7 @@ then
     of rules and facts may result in many rules being true for the same fact
     assertion, these rules are said to be in conflict. The Agenda manages the
     execution order of these conflicuting rules using a Conflict Resolution
-    stategy. </para>
+    stategy.</para>
 
     <figure>
       <title>A Basic Rete network</title>
