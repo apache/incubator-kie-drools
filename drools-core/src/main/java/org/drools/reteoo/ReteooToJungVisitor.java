@@ -341,7 +341,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
 
         public String getHtml() {
-            return "TerminalNode : " + this.node.getId();
+            return "TerminalNode : " + this.node.getId() + " : " + this.node.getRule();
         }
 
         public String toString() {
