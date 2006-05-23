@@ -71,12 +71,31 @@ public class FunctionFixerTest extends TestCase {
                       fixer.fix( "\nfor(int i=0; i < 2; i++) { /*do noithing*/ }" ) );
     }
     
-    public void testNestedInAMethod() {
+    public void testMultipleInABracket() {
         FunctionFixer fixer = new FunctionFixer();
-            assertEquals( "obj.method(Foo.foo(bar));",
-                          fixer.fix( "obj.method(foo(bar));" ) );    
+            assertEquals( "if (Foo.foo(bar)) { Bar.bar(baz); }",
+                          fixer.fix( "if (foo(bar)) { bar(baz); }" ) );    
 
         
     }
+    
+    public void testInBrackets() {
+        FunctionFixer fixer = new FunctionFixer();
+        assertEquals( "if (Foo.foo(bar))",
+                      fixer.fix( "if (foo(bar))" ) );    
+
+        
+        
+    }
+    
+    public void testAlreadyAdded() {
+        FunctionFixer fixer = new FunctionFixer();
+        assertEquals( "Foo.foo(bar)",
+                      fixer.fix( "Foo.foo(bar)" ) );    
+
+        
+        
+    }    
+
         
 }

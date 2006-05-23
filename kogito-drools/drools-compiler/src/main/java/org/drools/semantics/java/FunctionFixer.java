@@ -41,33 +41,40 @@ public class FunctionFixer {
     public String fix(String raw, Pattern pattern) {
         if (raw == null) return null;
         StringBuffer buf = new StringBuffer();
-        int lastIndex = 0;
+        int startIndex = 0, lastIndex = 0;
         
-        Matcher matcher = pattern.matcher(raw);
-        
-        while(matcher.find()) {
-            String pre = matcher.group(1);
-            if (matcher.group(1) != null) {
-                String trimmedPre = pre.trim();
-                if (trimmedPre.endsWith( "." ) || trimmedPre.endsWith( "new" )) {
-                    //leave alone
-                    continue;
-                 }
+            Matcher matcher = pattern.matcher(raw);
+            while (matcher.find(startIndex)) {
+                  startIndex = getStartIndex(matcher);
+                  
+                String pre = matcher.group(1);
+                if (matcher.group(1) != null) {
+                    String trimmedPre = pre.trim();
+                    if (trimmedPre.endsWith( "." ) || trimmedPre.endsWith( "new" )) {
+                        //leave alone
+                        continue;
+                     }
+                }
+                String function = matcher.group(2).trim();
+                //if we have a reserve  d work, DO NOT TOUCH !
+                if (KEYWORDS.contains( function )) continue;
+                
+                String params = matcher.group(3).trim();
+                
+                String target = ucFirst(function) + "." + function + "(" + params + ")";
+                
+                buf.append( raw.substring( lastIndex, matcher.start( 2 ) ) );
+                buf.append( target );
+  
+                lastIndex = matcher.end();
             }
-            String function = matcher.group(2).trim();
-            //if we have a reserved work, DO NOT TOUCH !
-            if (KEYWORDS.contains( function )) continue;
-            
-            String params = matcher.group(3).trim();
-            
-            String target = ucFirst(function) + "." + function + "(" + params + ")";
-            
-            buf.append( raw.substring( lastIndex, matcher.start( 2 ) ) );
-            buf.append( target );
-            lastIndex = matcher.end();
-        }
+
         buf.append( raw.substring( lastIndex ) );
         return buf.toString();
+    }
+    
+    private int getStartIndex(Matcher matcher) {
+        return matcher.start(3) <= 0 ? matcher.end() + 1 : matcher.start(3); 
     }
     
     private String ucFirst(String name) {
