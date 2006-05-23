@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -139,6 +140,8 @@ class LogicTransformer {
                     ands[i] = newAnd; 
                 }
                 
+                checkForAndRemoveDuplicates( ands[i] );
+                
                 i++;
             }
 
@@ -160,9 +163,8 @@ class LogicTransformer {
      * @param ce
      */
     void processTree(GroupElement ce) throws InvalidPatternException {
-        List newChildren = new ArrayList();
 
-        for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
+        for ( ListIterator it = ce.getChildren().listIterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof GroupElement ) {
                 GroupElement parent = (GroupElement) object;
@@ -176,18 +178,15 @@ class LogicTransformer {
                 for ( Iterator orIter = parent.getChildren().iterator(); orIter.hasNext(); ) {
                     Object object2 = orIter.next();
                     if ( object2 instanceof Or ) {
-                        newChildren.add( applyOrTransformation( parent,
-                                                                (GroupElement) object2 ) );
                         it.remove();
+                        it.add( applyOrTransformation( parent,
+                                                       (GroupElement) object2 ) );                        
                         break;
                     }
                 }
 
             }
         }
-
-        // Add all the transformed children
-        ce.getChildren().addAll( newChildren );
     }
 
     /**
@@ -213,22 +212,23 @@ class LogicTransformer {
      * 
      */
     void checkForAndRemoveDuplicates(GroupElement parent) {
-        List newChildren = new ArrayList();
-
-        for ( Iterator it = parent.getChildren().iterator(); it.hasNext(); ) {
+        for ( ListIterator it = parent.getChildren().listIterator(); it.hasNext(); ) {
             Object object = it.next();
             // Remove the duplicate if the classes are the same and
             // removeDuplicate method returns true
             if ( parent.getClass().isInstance( object ) && removeDuplicate( parent,
-                                                                            (GroupElement) object ) ) {
+                                                                           (GroupElement) object ) ) {
+                List newList = new ArrayList(); 
                 GroupElement child = (GroupElement) object;
                 for ( Iterator childIter = child.getChildren().iterator(); childIter.hasNext(); ) {
-                    newChildren.add( childIter.next() );
+                     newList.add( childIter.next() );
                 }
                 it.remove();
+                for ( Iterator childIter = newList.iterator(); childIter.hasNext(); ) {
+                    it.add( childIter.next() );   
+                }
             }
-        }
-        parent.getChildren().addAll( newChildren );
+        }                
     }
 
     GroupElement applyOrTransformation(GroupElement parent,
