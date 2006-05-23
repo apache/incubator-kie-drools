@@ -88,7 +88,7 @@ public class RuleBuilder {
 
     private int                         counter;
 
-    private int                         columnCounter;
+    private ColumnCounter               columnCounter;
 
     private int                         columnOffset;
 
@@ -153,6 +153,7 @@ public class RuleBuilder {
         this.invokerLookups = new HashMap();
         this.declarations = new HashMap();
         this.descrLookups = new HashMap();
+        this.columnCounter = new ColumnCounter();
 
         this.typeResolver = new ClassTypeResolver( pkg.getImports(),
                                                    pkg.getPackageCompilationData().getClassLoader() );
@@ -180,7 +181,7 @@ public class RuleBuilder {
     }
 
     private void setAttributes(Rule rule,
-                               List attributes) {
+                               List attributes) {        
         for ( Iterator it = attributes.iterator(); it.hasNext(); ) {
             AttributeDescr attributeDescr = (AttributeDescr) it.next();
             String name = attributeDescr.getName();
@@ -218,7 +219,7 @@ public class RuleBuilder {
             if ( object instanceof ConditionalElementDescr ) {
                 if ( object instanceof AndDescr ) {
                     And and = new And();
-                    //rule.addChild( and );
+                    this.columnCounter.setParent( and );
                     build( rule,
                            (ConditionalElementDescr) object,
                            and,
@@ -227,16 +228,18 @@ public class RuleBuilder {
                     rule.addPattern( and );
                 } else if ( object instanceof OrDescr ) {
                     Or or = new Or();
+                    this.columnCounter.setParent( or );                    
                     build( rule,
                            (ConditionalElementDescr) object,
                            or,
-                           true,
+                           false,
                            false );
                     rule.addPattern( or );
                 } else if ( object instanceof NotDescr ) {
                     // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
                     this.notDeclarations = new HashMap();
                     Not not = new Not();
+                    this.columnCounter.setParent( not );                    
                     build( rule,
                            (ConditionalElementDescr) object,
                            not,
@@ -254,6 +257,7 @@ public class RuleBuilder {
                     // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
                     this.notDeclarations = new HashMap();
                     Exists exists = new Exists();
+                    this.columnCounter.setParent( exists );                    
                     build( rule,
                            (ConditionalElementDescr) object,
                            exists,
@@ -299,6 +303,7 @@ public class RuleBuilder {
             if ( object instanceof ConditionalElementDescr ) {
                 if ( object instanceof AndDescr ) {
                     And and = new And();
+                    this.columnCounter.setParent( and );
                     build( rule,
                            (ConditionalElementDescr) object,
                            and,
@@ -307,14 +312,16 @@ public class RuleBuilder {
                     ce.addChild( and );                    
                 } else if ( object instanceof OrDescr ) {
                     Or or = new Or();
+                    this.columnCounter.setParent( or );
                     build( rule,
                            (ConditionalElementDescr) object,
                            or,
-                           true,
+                           false,
                            false);
                     ce.addChild( or );                    
                 } else if ( object instanceof NotDescr ) {
                     Not not = new Not();
+                    this.columnCounter.setParent( not );
                     build( rule,
                            (ConditionalElementDescr) object,
                            not,
@@ -323,6 +330,7 @@ public class RuleBuilder {
                     ce.addChild( not );                    
                 } else if ( object instanceof ExistsDescr ) {
                     Exists exists = new Exists();
+                    this.columnCounter.setParent( exists );
                     build( rule,
                            (ConditionalElementDescr) object,
                            exists,
@@ -373,7 +381,7 @@ public class RuleBuilder {
 
         Column column;
         if ( columnDescr.getIdentifier() != null && !columnDescr.getIdentifier().equals( "" ) ) {
-            column = new Column( columnCounter++,
+            column = new Column( this.columnCounter.getNext(),
                                  this.columnOffset,
                                  new ClassObjectType( clazz ),
                                  columnDescr.getIdentifier() );;
@@ -385,7 +393,7 @@ public class RuleBuilder {
                                           column.getDeclaration() );
             }
         } else {
-            column = new Column( columnCounter++,
+            column = new Column( this.columnCounter.getNext(),
                                  this.columnOffset,
                                  new ClassObjectType( clazz ),
                                  null);
@@ -959,5 +967,32 @@ public class RuleBuilder {
                                             "Unable to determine the used declarations" ) );
         }
         return usedDeclarations;
+    }
+    
+    static class ColumnCounter {
+        // we start with -1 so that we can ++this.value - otherwise the first element has a lower value than the second in an 'or'
+        private int value = -1;
+        
+        private boolean orCheck;
+        
+        private GroupElement ge;
+        
+        public void setParent(GroupElement ge) {
+            this.ge = ge;
+            this.orCheck = false;
+        }
+        
+        public int getNext() {
+            if ( this.ge != null && this.ge.getClass() == Or.class ) {
+                if ( !this.orCheck ) {
+                    this.orCheck = true;
+                    return ++this.value;
+                } else {
+                    return this.value;
+                }                                
+            } else {
+                return ++this.value;
+            }
+        }
     }
 }
