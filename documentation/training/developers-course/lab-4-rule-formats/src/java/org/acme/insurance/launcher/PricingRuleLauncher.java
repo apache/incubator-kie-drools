@@ -2,8 +2,6 @@ package org.acme.insurance.launcher;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringReader;
 
 import org.acme.insurance.Driver;
@@ -15,7 +13,6 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
-import org.drools.rule.Package;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.
