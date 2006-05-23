@@ -9,7 +9,7 @@ Instructions:
 	FOR DECISION TABLES:
 	
 	Step 1: Import the project into eclipse.
-	Step 2: Note the location of PolicyPricing.xls decision table. Note that it is in a classpath
+	Step 2: Note the location of PolicyPricing.xls decision table (in /src/rules/decisiontables/). Note that it is in a classpath
 			accessible location (seperate to the source code).
 	Step 3: Right click on the PolicyPricing.xls spreadsheet, and choose the Open With menu item
 			followed by "System Editor". This will open up the decision table in the spreadsheet app.
@@ -39,6 +39,8 @@ Instructions:
 	NOTE: when you make a change to the spreadsheet, you will need to refresh the eclipse project to pick up 
 	the latest (of course, if you change it to load direct from a file system, not the classpath,
 	then you won't need to do this).
+	
+	
 	
 	
 	
