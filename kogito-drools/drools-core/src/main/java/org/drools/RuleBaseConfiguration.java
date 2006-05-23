@@ -135,7 +135,7 @@ public class RuleBaseConfiguration implements Serializable {
      * @return
      */
     public boolean getBooleanProperty( String prop ) {
-        return Boolean.valueOf( prop ).booleanValue();
+        return Boolean.valueOf( (String) this.properties.get( prop ) ).booleanValue();
     }
     
     /**
