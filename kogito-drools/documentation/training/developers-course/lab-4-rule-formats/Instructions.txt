@@ -1,0 +1,50 @@
+---------------------------------------------
+JBoss Rules Essentual Lab Excercise 4
+	- Alternative rule formats -
+---------------------------------------------
+
+Instructions:
+	This excercise is a self contained Eclipse project. 	
+	
+	FOR DECISION TABLES:
+	
+	Step 1: Import the project into eclipse.
+	Step 2: Note the location of PolicyPricing.xls decision table. Note that it is in a classpath
+			accessible location (seperate to the source code).
+	Step 3: Right click on the PolicyPricing.xls spreadsheet, and choose the Open With menu item
+			followed by "System Editor". This will open up the decision table in the spreadsheet app.
+	
+	Step 4: Find the org.acme.insurance package, and note the domain object in there (they have default 
+			values for fields). Open the PricingRuleLauncher class in the launcher sub package.
+	Step 5: Fire the launcher (it has a main method). Run menu, Run-as, Java application
+			You should see some results - one item being the base price, another the discount. You
+			can also see messages being logged by the rules (one of the action columns).
+	Step 6: Change some values in the message being logged, and/or the values of discount or price.
+			You can also change the attributes of the driver, to see other rules fired.
+	Step 7: See if you can find any inconsitencies/gaps in the rule rows (where a price may not be found, or
+			where there is a "conflict" and 2 rules may match).
+				- Note: if there is a conflict, either add more conditions to make it unique, 
+				  or, use the "sequential" flag to force the rules to have a top to bottom order.
+				  You can then have a "hidden" action that does "drools.clearAgenda()" to stop for the first match 
+				  found. This is what we call a "dirty hack", but can be useful from time to time.
+	Step 8: Uncomment the line that prints out the DRL from the spreadsheet, inspect.
+	
+	Step 9: Make a grammatical error in the "rule template" row, check out the errors being reported (ie how to debug).
+	Step 10: For advanced folks, you can try the excel feature for "locking" cells so you can allow non 
+				techie folk to edit in relative safety.			  
+				 (http://support.microsoft.com/?kbid=214081)
+			
+			
+	
+	NOTE: when you make a change to the spreadsheet, you will need to refresh the eclipse project to pick up 
+	the latest (of course, if you change it to load direct from a file system, not the classpath,
+	then you won't need to do this).
+	
+	
+	
+	
+Pre-requisites:
+	Eclipse 3.2 must be installed
+	JBoss Rules plug in installed into Eclipse
+	(including the decision tables module).
+	Microsoft Excel or Open Office 2.0 should be installed.
