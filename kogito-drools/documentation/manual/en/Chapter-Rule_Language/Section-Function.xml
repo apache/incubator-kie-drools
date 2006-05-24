@@ -27,11 +27,11 @@
   (perhaps with only differing parameters for each rule - for example the
   contents of an email message).</para>
 
-  <para>A typica function declaration looks like:</para>
+  <para>A typical function declaration looks like:</para>
 
   <para>function String calcSomething(String arg) {</para>
 
-  <para> return "hola !";</para>
+  <para>return "hola !";</para>
 
   <para>}</para>
 
@@ -40,7 +40,7 @@
   you don't have to have parameters if they are not needed). Return type is
   just like a normal method. To call the function from within a rule (in a
   consequence, or perhaps an eval, simply use the function name, and toss in
-  the parameters - just like a method call). </para>
+  the parameters - just like a method call).</para>
 
   <para>An alternative to a function, could be to use a static method in a
   helper class: Foo.doSomething(), or perhaps pass in an instance of a helper
