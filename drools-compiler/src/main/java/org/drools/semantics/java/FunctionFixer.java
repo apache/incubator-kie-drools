@@ -39,51 +39,145 @@ public class FunctionFixer {
     }
     
     public String fix(String raw, Pattern pattern) {
-        if (raw == null) return null;
-        StringBuffer buf = new StringBuffer();
-        int startIndex = 0, lastIndex = 0;
-        
+            if (raw == null) return null;
+            StringBuffer buf = new StringBuffer();
+            int lastIndex = 0, startIndex = 0;
+            
             Matcher matcher = pattern.matcher(raw);
             while (matcher.find(startIndex)) {
-                  startIndex = getStartIndex(matcher);
-                  
+                
+                // instead of just using matcher.end(), grow the endIndex
+                // as necessary to close all '(' in the matched String
+                int endIndex = findEndParenthesis(raw, matcher);
+                if (endIndex < 0) {
+                    // this means that the first '(' is inside quotes - jump it ant try again
+                    startIndex = matcher.start(3);
+                    continue;
+                } else {
+                    // next iteration will start from here
+                    startIndex = endIndex;
+                }
+                
+                String params = matcher.group(3).trim();
+                if (endIndex > matcher.end()) {
+                    // params have to grow since endIndex changed
+                    params += raw.substring(matcher.end() - 1, endIndex - 1);
+                }
+                // Recursively process parameters
+                params = fix(params, pattern);
+                
+                String function = null;
+                
                 String pre = matcher.group(1);
                 if (matcher.group(1) != null) {
                     String trimmedPre = pre.trim();
-                    if (trimmedPre.endsWith( "." ) || trimmedPre.endsWith( "new" )) {
-                        //leave alone
-                        continue;
-                     }
+                    if (trimmedPre.endsWith(".") || trimmedPre.endsWith("new")) {
+                        // leave alone
+                        function = raw.substring(matcher.start(2), matcher.start(3) - 1);
+                    }
                 }
-                String function = matcher.group(2).trim();
-                //if we have a reserve  d work, DO NOT TOUCH !
-                if (KEYWORDS.contains( function )) continue;
                 
-                String params = matcher.group(3).trim();
+                if (function == null) {
+                    function = matcher.group(2).trim();
+                    // if we have a reserve d work, DO NOT TOUCH !
+                    if (KEYWORDS.contains(function)) {
+                        function = raw.substring(matcher.start(2), matcher.start(3) - 1);
+                    } else {
+                        function = ucFirst(function) + "." + function;
+                    }
+                }
                 
-                String target = ucFirst(function) + "." + function + "(" + params + ")";
+                // Every scenario must reach this so that "params"
+                // are correctly processed
+                String target = function + "(" + params + ")";
                 
-                buf.append( raw.substring( lastIndex, matcher.start( 2 ) ) );
-                buf.append( target );
-  
-                lastIndex = matcher.end();
-            }
-
-        buf.append( raw.substring( lastIndex ) );
-        return buf.toString();
-    }
+                buf.append(raw.substring(lastIndex, matcher.start(2)));
+                buf.append(target);
     
-    private int getStartIndex(Matcher matcher) {
-        return matcher.start(3) <= 0 ? matcher.end() + 1 : matcher.start(3); 
-    }
+                lastIndex = endIndex;
+            }
+    
+            buf.append(raw.substring(lastIndex));
+            return buf.toString();
+        }
     
     private String ucFirst(String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }    
     
     /**
-     * This list was obtained from http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html
-     */
+         * Search a raw string for all '(' after matcher.start(3), until
+         * the match is over and return the end index the contains the last
+         * ')' needed to close all opened parenthesis. 
+         * 
+         * @param raw
+         *          The raw String containg the match and everything else.
+         * @param matcher
+         *          The matched stuff.
+         * @return the index of the last ')' needed to close all '(' in the match,
+         *         or -1 if the first '(' is inside quotes (and thus being invalid).
+         */
+    private int findEndParenthesis(String raw, Matcher matcher) {
+        // start is the first '('; end is the end of the match
+        int start = matcher.start(3) - 1, end = matcher.end();
+        
+        // Count the number of '(' and ')' in raw String
+        int oCount = 0, cCount = 0;
+        
+        // Handles text inside quotes (""): 
+        //  * -1 means no quote opened
+        //  * positive int represent the index of the opened quote
+        int lastQuoteIndex = -1;
+        
+        for (int i = 0; i < raw.length(); i++) {
+            
+            // if we reached the end of raw and opened/close parenthesis are OK
+                if (i > end && oCount == cCount) {
+                    // Check if there was an opened quote that was never closed
+                    // (before the first '(')
+                    if (lastQuoteIndex >= 0 && lastQuoteIndex <= start) {
+                        return -1;
+                    }
+                    // Everything OK - we are done!
+                    break;
+                }
+                
+                switch (raw.charAt(i)) {
+                case '"':
+                    if (lastQuoteIndex >= 0) {
+                        // Check if the quotes contains the first '('
+                        if (lastQuoteIndex <= start && start <= i) {
+                            return -1;
+                        }
+                        lastQuoteIndex = -1;
+                    } else {
+                        lastQuoteIndex = i;
+                    }
+                    break;
+                case '(':
+                    if (lastQuoteIndex < 0 && i >= start) {
+                        ++oCount;
+                    }
+                    break;
+                case ')':
+                    if (lastQuoteIndex < 0 && i >= start) {
+                        ++cCount;
+                        if (i >= end) {
+                            // found a ')' that needs to be included
+                            end = i + 1;
+                        }
+                    }
+                }
+                
+        } // for
+
+        return end;
+      }
+    
+    /**
+         * This list was obtained from
+         * http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html
+         */
     private static Set getJavaKeywords() {
         Set keys = new HashSet();
         keys.add("abstract");   

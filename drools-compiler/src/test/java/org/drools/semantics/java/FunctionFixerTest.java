@@ -75,27 +75,31 @@ public class FunctionFixerTest extends TestCase {
         FunctionFixer fixer = new FunctionFixer();
             assertEquals( "if (Foo.foo(bar)) { Bar.bar(baz); }",
                           fixer.fix( "if (foo(bar)) { bar(baz); }" ) );    
-
-        
     }
     
     public void testInBrackets() {
         FunctionFixer fixer = new FunctionFixer();
         assertEquals( "if (Foo.foo(bar))",
                       fixer.fix( "if (foo(bar))" ) );    
-
-        
-        
     }
     
     public void testAlreadyAdded() {
         FunctionFixer fixer = new FunctionFixer();
         assertEquals( "Foo.foo(bar)",
-                      fixer.fix( "Foo.foo(bar)" ) );    
-
-        
-        
-    }    
+                      fixer.fix( "Foo.foo(bar)" ) );       
+    }
+    
+    public void testInString() {
+      FunctionFixer fixer = new FunctionFixer();
+      assertEquals( "\"if (foo(bar))\"",
+                    fixer.fix( "\"if (foo(bar))\"" ) );     
+    }
+    
+    public void testComplexWithBrackets() {
+      FunctionFixer fixer = new FunctionFixer();
+      assertEquals( "System.out.println(\"foo(\" + Foo.foo(bar) + Bar.bar(baz)",
+                    fixer.fix( "System.out.println(\"foo(\" + foo(bar) + bar(baz)" ) );     
+    }
 
         
 }
