@@ -1,0 +1,67 @@
+#created on: 23/05/2006
+package org.acme.insurance
+
+
+rule "Driver underage"
+	
+	when
+		Driver(age < 18)
+	then 
+		assert(new Rejection("Driver is underage"));
+		
+end
+
+rule "Driver in margina age bracket"
+	when
+		Driver(age > 18, age < 25, priorClaims > 1)
+		Policy(type == "COMPREHENSIVE")
+	then
+		assert(new Rejection("No accidents accepted if in marginal age group"));
+end
+
+rule "Driver unsafe"
+	when
+		Driver(priorClaims > 3)
+	then
+		assert(new Rejection("Too many accidents"));
+end
+
+rule "Driver in unsafe area for comprehensive"
+	when
+		Policy(type == "COMPREHENSIVE")
+		Driver(locationRiskProfile == "HIGH")
+			or
+		Driver(locationRiskProfile == "MED", priorClaims > 2)
+
+	then
+		assert(new Rejection("Driver in that area is too risky"));
+end
+
+rule "Driver unsafe for third party"
+	when
+		Policy(type == "THIRD_PARTY")
+		Driver(priorClaims > 2)
+	then
+		assert(new Rejection("Too many priors for third party"));
+end
+
+rule "Driver in bad area for theft"
+
+	when 
+		Policy(type == "FIRE_THEFT")
+		d : Driver(locationRiskProfile == "HIGH")
+	then
+		assert(new Rejection("Unsafe area for theft"));
+end
+
+rule "Handle Reject of application"
+
+	when
+		r : Rejection()
+		d : Driver()
+	then
+		#may also notify at this point, send an email etc
+		retract(d);
+		#call some utility or a method on "d"
+end
+
