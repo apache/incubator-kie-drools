@@ -1,14 +1,15 @@
 package org.acme.insurance;
 
 /**
- * 
+ * This is a simple fact class to mark something as approved.
  * @author Michael Neale
+ *
  */
-public class Rejection {
-
+public class Approve {
+	
 	private String reason;
 
-	public Rejection(String reason) {
+	public Approve(String reason) {
 		this.reason = reason;
 	}
 
@@ -19,5 +20,5 @@ public class Rejection {
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
-	
+
 }

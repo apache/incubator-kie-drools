@@ -5,6 +5,7 @@ JBoss Rules Essentual Lab Excercise 4
 
 Instructions:
 	This excercise is a self contained Eclipse project. 	
+	There are 2 parts, decision tables, and DSLs.	
 	
 	FOR DECISION TABLES:
 	
@@ -34,17 +35,39 @@ Instructions:
 				techie folk to edit in relative safety.			  
 				 (http://support.microsoft.com/?kbid=214081)
 			
-			
-	
 	NOTE: when you make a change to the spreadsheet, you will need to refresh the eclipse project to pick up 
 	the latest (of course, if you change it to load direct from a file system, not the classpath,
 	then you won't need to do this).
 	
 	DSLs:
 	
-	Step 11: 
-	
-	
+	Step 11: Locate the src/rules/approval package. Open the approval rules.
+	Step 12: Locate the PolicyApprovalLauncher class.
+	Step 13: Run the PolicyApprovalLauncher class as a java application, note the console output.
+	Step 14: open the acme.dsl and examine the mappings for the domain language.
+	         Add a mapping for the "then" section to log some debug message. 
+	         Open the approval.drl and add the log expression to a rule that you think
+	         will fire. Then re-run the launcher.
+	Step 15: Modify or add a constraint to a rule, re-launch and observe
+	Step 16: open the technical.drl file, and change APPROVAL or REJECTED messages.	Relaunch.         
+	Step 17: Right click on the .dsl file, and open as a text file, note the format of the mappings.
+	Step 18: Open the approval.drl file, make a "typo" and save, observe an error showing up on the appropriate line
+				 (errors may be parse errors, or an "expand" error).
+	Step 18: (optional) - store rules from approval in seperate files. Modify the launcher to load them all up from 
+				the seperate files.
+	Step 19: (optional - advanced) - note the way that multiple patterns
+				are added to the "d : Driver(..)" construct.
+				Discuss alternative ways, perhaps more mappings for combinations
+				that capture all constraints on a line.
+								 
+				Add a mapping like: "Set Driver to 'd'" which will simply
+				bind a Driver instance to a "d" variable. 
+				Then add mappings to add constraints in the form of 
+				"eval( /* java code with 'd' */)" - this is less efficient
+				but can provide more flexibility.
+	Step 20: Open the archive/raw.drl file, to see what the rules would look like
+				without	a DSL. Note the use of little facts like "Approve" and "Rejection"
+				to control the behaviour.		
 	
 	
 Pre-requisites:

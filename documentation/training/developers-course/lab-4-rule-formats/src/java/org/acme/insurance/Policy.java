@@ -11,7 +11,7 @@ package org.acme.insurance;
 public class Policy {
 
 	private String type = "COMPREHENSIVE";
-	private boolean approved = true;
+	private boolean approved = false;
 	private int discountPercent = 0;
 	private int basePrice;
 	
