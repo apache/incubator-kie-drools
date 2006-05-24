@@ -1,0 +1,23 @@
+#created on: 23/05/2006
+package org.acme.insurance
+
+expander acme_insure.dsl
+
+
+rule "Your First Rule"
+	
+	when
+		#conditions
+	then 
+		#actions
+		
+end
+
+rule "Your Second Rule"
+	#include attributes such as "salience" here...
+	when
+		#conditions
+	then 
+		#actions
+		
+end
