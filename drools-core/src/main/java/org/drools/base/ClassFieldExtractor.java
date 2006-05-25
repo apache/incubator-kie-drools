@@ -67,6 +67,10 @@ public class ClassFieldExtractor
     public int getIndex() {
         return this.extractor.getIndex();
     }
+    
+    public String getFieldName() {
+        return this.fieldName;
+    }
 
     public Object getValue(Object object) {
         return this.extractor.getValue( object );
@@ -76,18 +80,25 @@ public class ClassFieldExtractor
         return this.extractor.getObjectType();
     }
 
-    public boolean equals(Object other) {
-        if ( this == other ) {
-            return true;
-        }
-        if ( !(other instanceof ClassFieldExtractor) ) {
-            return false;
-        }
-        ClassFieldExtractor extr = (ClassFieldExtractor) other;
-        return this.extractor.getObjectType().equals( extr.getObjectType() ) && this.extractor.getIndex() == extr.getIndex();
+    public String toString() {
+        return "[ClassFieldExtractor class=" + this.clazz + " field=" + this.fieldName  + "]";
     }
-
+    
     public int hashCode() {
         return this.getObjectType().hashCode() * 17 + this.getIndex();
+    }
+    
+    public boolean equals(Object object) {
+        if ( this == object ) {
+            return true;
+        }
+        
+        if ( object == null || object.getClass() != ClassFieldExtractor.class ) {
+            return false;
+        }
+        
+        ClassFieldExtractor other = (ClassFieldExtractor) object;
+        
+        return this.extractor.getObjectType().equals( other.getObjectType() ) && this.extractor.getIndex() == other.getIndex();
     }
 }

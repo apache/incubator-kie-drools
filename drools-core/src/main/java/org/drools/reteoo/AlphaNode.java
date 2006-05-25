@@ -23,6 +23,7 @@ import java.util.Set;
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.PropagationContextImpl;
+import org.drools.rule.LiteralConstraint;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
 
@@ -188,6 +189,19 @@ class AlphaNode extends ObjectSource
 
         this.attachingNewNode = false;
     }
+    
+    public void remove(BaseNode node,
+                       WorkingMemoryImpl[] workingMemories) {
+        this.objectSinks.remove( (ObjectSink) node );
+        removeShare();
+        if ( this.sharedCount < 0 ) {
+            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                workingMemories[i].clearNodeMemory( this );
+            }
+            this.objectSource.remove( this,
+                                      workingMemories );
+        }
+    }    
 
     /**
      * Creates a HashSet for the AlphaNode's memory.
@@ -196,6 +210,14 @@ class AlphaNode extends ObjectSource
         return new HashSet();
     }
 
+    public String toString() {
+        return "[AlphaNode constraint=" + this.constraint + "]"; 
+    }
+    
+    public int hashCode() {
+        return this.objectSource.hashCode() * 17 + ((this.constraint != null) ? this.constraint.hashCode() : 0);
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -214,22 +236,4 @@ class AlphaNode extends ObjectSource
 
         return this.objectSource.equals( other.objectSource ) && this.constraint.equals( other.constraint );
     }
-
-    public int hashCode() {
-        return this.objectSource.hashCode() * 17 + ((this.constraint != null) ? this.constraint.hashCode() : 0);
-    }
-
-    public void remove(BaseNode node,
-                       WorkingMemoryImpl[] workingMemories) {
-        this.objectSinks.remove( (ObjectSink) node );
-        removeShare();
-        if ( this.sharedCount < 0 ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                workingMemories[i].clearNodeMemory( this );
-            }
-            this.objectSource.remove( this,
-                                      workingMemories );
-        }
-    }
-
 }

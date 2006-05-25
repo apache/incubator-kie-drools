@@ -35,7 +35,7 @@ public class LiteralConstraint
 
     private final Evaluator            evaluator;
 
-    private static final Declaration[] requiredDeclarations = new Declaration[]{};
+    private static final Declaration[] requiredDeclarations = new Declaration[0];
 
     public LiteralConstraint(FieldValue field,
                              FieldExtractor extractor,
@@ -73,24 +73,25 @@ public class LiteralConstraint
                                    this.field.getValue() );
     }
 
-    public boolean equals(Object other) {
-        if ( this == other ) {
-            return true;
-        }
-        if ( !(other instanceof LiteralConstraint) ) {
-            return false;
-        }
-        LiteralConstraint lit = (LiteralConstraint) other;
-
-        return this.field.equals( lit.field ) && this.extractor.equals( lit.extractor ) && this.evaluator.equals( lit.evaluator );
+    public String toString() {
+        return "[LiteralConstraint fieldExtractor=" + this.extractor + " evaluator=" + this.evaluator + " value=" + this.field.getValue() + "]";
     }
-
+    
     public int hashCode() {
         return (this.field.hashCode() * 17) ^ (this.extractor.hashCode() * 11) ^ (this.evaluator.hashCode());
 
+    }    
+    
+    public boolean equals(Object object) {
+        if ( this == object ) {
+            return true;
+        }
+        if ( object == null || object.getClass() != LiteralConstraint.class ) {
+            return false;
+        }
+        LiteralConstraint other = (LiteralConstraint) object;
+
+        return this.field.equals( other.field ) && this.extractor.equals( other.extractor ) && this.evaluator.equals( other.evaluator );
     }
 
-    public String toString() {
-        return "LiteralConstraint { Field(" + this.extractor.getIndex() + ") " + this.evaluator.toString() + " [" + this.field.getValue() + "] }";
-    }
 };

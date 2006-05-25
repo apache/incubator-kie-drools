@@ -44,7 +44,24 @@ public class InstanceEqualsConstraint
     }
 
     public String toString() {
-        return this.getClass().getName() + "[ otherColumn == " + this.otherColumn + " ]";
+        return "[InstanceEqualsConstraint otherColumn=" + this.otherColumn + " ]";
+    }
+    
+    public int hashCode() {
+        return this.otherColumn;
+    }
+    
+    public boolean equals(Object object) {
+        if ( this == object ) {
+            return true;
+        }
+
+        if ( object == null || getClass() != object.getClass() ) {
+            return false;
+        }
+        
+        InstanceEqualsConstraint other = ( InstanceEqualsConstraint ) object;
+        return this.otherColumn == other.otherColumn ;
     }
 
 }
