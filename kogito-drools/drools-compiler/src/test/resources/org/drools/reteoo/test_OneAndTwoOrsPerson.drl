@@ -1,0 +1,24 @@
+package org.drools.reteoo;
+
+import org.drools.Message
+import org.drools.Cheese
+import org.drools.Person
+ 
+rule "Hello World 1"
+    when
+        Message(  message1 =="One") &&     Message(  message2 =="Two")
+        Message(  message2 =="One") ||  ( Cheese( type == "stilton") && Cheese( type == "brie")  )
+        Message(  message3 =="One") ||     Message(  message3 =="Three")
+    then
+        System.out.println( "done 1" ); 
+end
+
+rule "Hello World 2"
+    when
+        Message(  $message1 : message1 =="One") &&     Message(  message2 =="Two")
+        Message(  message2 =="One") ||  ( Cheese( type == "stilton") && Cheese( type == "brie")  )
+        Message(  message3 =="One") ||     Message(  message3 =="Three")
+        Person( name=="mark" ) || Person( name == $message1 )
+    then
+        System.out.println( "done 1" ); 
+end

@@ -1,0 +1,22 @@
+package org.drools.reteoo;
+
+import org.drools.Message;
+ 
+rule "Hello World 1"
+    when
+        Message(  message1 =="One") &&     Message(  message2 =="Two")
+        Message(  message2 =="One") ||     Message(  message2 =="Two")
+        Message(  message3 =="One") ||     Message(  message3 =="Three")
+    then
+        System.out.println( "done 1" ); 
+end
+
+rule "Hello World 2"
+    when
+        Message(  message1 =="One") &&     Message(  message2 =="Two")
+        Message(  message2 =="One") ||     Message(  message2 =="Two")
+        Message(  message3 =="One") ||     Message(  message3 =="Three")
+        eval( true );
+    then
+        System.out.println( "done 2" ); 
+end
