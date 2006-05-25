@@ -93,7 +93,7 @@ public class BoundVariableConstraint
         result = PRIME * result + ((this.declaration == null) ? 0 : this.declaration.hashCode());
         result = PRIME * result + ((this.evaluator == null) ? 0 : this.evaluator.hashCode());
         result = PRIME * result + ((this.fieldExtractor == null) ? 0 : this.fieldExtractor.hashCode());
-        result = PRIME * result + Arrays.hashCode( this.requiredDeclarations );
+        result = PRIME * result + this.requiredDeclarations[0].hashCode();
         return result;
     }    
     
@@ -111,6 +111,5 @@ public class BoundVariableConstraint
         return (this.column == other.column) && this.fieldExtractor.equals( other.fieldExtractor ) && this.declaration.equals( other.declaration ) && this.evaluator.equals( other.evaluator ) && Arrays.equals( this.requiredDeclarations,
                                                                                                                                                                                                                  other.requiredDeclarations );       
     }
-    
-    
+
 }
