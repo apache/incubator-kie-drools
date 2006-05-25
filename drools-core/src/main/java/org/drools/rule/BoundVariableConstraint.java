@@ -86,7 +86,6 @@ public class BoundVariableConstraint
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
-    @Override
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
