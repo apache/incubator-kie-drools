@@ -26,6 +26,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.EvalCondition;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
@@ -84,6 +85,10 @@ class LeftInputAdapterNode extends TupleSource
         this.objectSource = source;
         this.binder = binder;
         setHasMemory( true );
+    }
+    
+    public FieldConstraint[] getConstraints() {
+        return this.binder.getConstraints();
     }
 
     /* (non-Javadoc)

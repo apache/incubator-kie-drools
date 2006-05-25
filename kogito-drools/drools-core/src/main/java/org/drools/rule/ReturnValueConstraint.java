@@ -96,16 +96,14 @@ public class ReturnValueConstraint
     }
     
     public boolean equals(Object object) {
-        if (object == null ) {
-            return false;
-        } else if ( object == this ){
+        if ( object == this ) {
             return true;
         }
         
-        if ( ! (object instanceof ReturnValueConstraint) ) {
+        if (object == null || object.getClass() != PredicateConstraint.class ) {
             return false;
         }
-        
+            
         ReturnValueConstraint other = ( ReturnValueConstraint ) object;
         
         return this.expression.equals( other.expression );

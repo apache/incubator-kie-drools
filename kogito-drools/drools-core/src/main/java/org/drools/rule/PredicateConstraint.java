@@ -96,17 +96,15 @@ public class PredicateConstraint
         return this.expression.hashCode();
     }
     
-    public boolean equals(Object object) {
-        if (object == null ) {
-            return false;
-        } else if ( object == this ){
+    public boolean equals(Object object) {        
+        if ( object == this ) {
             return true;
         }
         
-        if ( ! (object instanceof PredicateConstraint) ) {
+        if (object == null || object.getClass() != PredicateConstraint.class ) {
             return false;
         }
-        
+            
         PredicateConstraint other = ( PredicateConstraint ) object;
         
         return this.expression.equals( other.expression );

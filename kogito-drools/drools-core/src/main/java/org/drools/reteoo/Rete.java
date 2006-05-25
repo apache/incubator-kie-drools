@@ -277,5 +277,22 @@ class Rete extends ObjectSource
     public Object createMemory( RuleBaseConfiguration config ) {
         return new HashMap();
     }
+    
+    public int hashCode() {
+        return this.objectTypeNodes.hashCode();
+    }
+    
+    public boolean equals(Object object) {
+        if ( object == this ) {
+            return true;
+        }
+
+        if ( object == null || object.getClass() != Rete.class ) {
+            return false;
+        }
+
+        Rete other = (Rete) object;
+        return this.objectTypeNodes.equals( other.objectTypeNodes );
+    }
 
 }

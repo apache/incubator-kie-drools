@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.PropagationContextImpl;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -88,6 +89,10 @@ abstract class BetaNode extends TupleSource
         this.rightInput = rightInput;
         this.joinNodeBinder = joinNodeBinder;
 
+    }
+    
+    public FieldConstraint[] getConstraints(){
+        return this.joinNodeBinder.getConstraints();
     }
 
     /* (non-Javadoc)

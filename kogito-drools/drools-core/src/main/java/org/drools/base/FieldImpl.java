@@ -31,17 +31,21 @@ public class FieldImpl
     public Object getValue() {
         return this.value;
     }
+    
+    public String toString() {
+        return this.value.toString();
+    }
 
-    public boolean equals(Object other) {
-        if ( this == other ) {
+    public boolean equals(Object object) {
+        if ( this == object ) {
             return true;
         }
-        if ( !(other instanceof FieldImpl) ) {
+        if ( object == null || !(object instanceof FieldValue) ) {
             return false;
         }
-        FieldImpl field = (FieldImpl) other;
+        FieldImpl other = (FieldImpl) object;
 
-        return (((this.value == null) && (field.value == null)) || ((this.value != null) && (this.value.equals( field.value ))));
+        return (((this.value == null) && (other.value == null)) || ((this.value != null) && (this.value.equals( other.value ))));
     }
 
     public int hashCode() {

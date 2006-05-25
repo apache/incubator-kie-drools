@@ -23,7 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.ClassFieldExtractor;
 import org.drools.rule.LiteralConstraint;
+import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldValue;
 import org.drools.util.ReflectiveVisitor;
 import org.drools.visualize.ReteooJungViewer.DroolsVertex;
@@ -218,12 +220,12 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
 
         public String getHtml() {
             LiteralConstraint constraint = (LiteralConstraint) node.getConstraint();
-            FieldValue field = constraint.getField();
-            return "AlphaNode<br>field name : " + "<br>evaluator : " + constraint.getEvaluator() + "<br>value :  " + field.getValue();
+            ClassFieldExtractor extractor = ( ClassFieldExtractor ) constraint.getFieldExtractor();
+            return "AlphaNode<br>field : " + extractor.getFieldName() + "<br>evaluator : " + constraint.getEvaluator() + "<br>value :  " + constraint.getField();
         }
 
         public String toString() {
-            return "AlphaNode";
+            return this.node.toString();
         }
 
         public Paint getFillPaint() {
@@ -240,11 +242,11 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
 
         public String getHtml() {
-            return "LeftInputAdapterNode : " + this.node.getId();
+            return "LeftInputAdapterNode<br>" + dumpConstraints( this.node.getConstraints() );
         }
 
         public String toString() {
-            return "leftInputAdapter";
+            return this.node.toString();
         }
 
         public Paint getFillPaint() {
@@ -261,11 +263,11 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
 
         public String getHtml() {
-            return "RightInputAdapterNodeVertex : " + this.node.getId();
+            return "RightInputAdapterNode";
         }
 
         public String toString() {
-            return "RightInputAdapterNodeVertex";
+            return "RightInputAdapterNode";
         }
 
         public Paint getFillPaint() {
@@ -282,7 +284,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         }
 
         public String getHtml() {
-            return "JoinNode : " + this.node.getId();
+            return "JoinNode<br> " + dumpConstraints( this.node.getConstraints() );
         }
 
         public String toString() {
@@ -372,5 +374,13 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
         public Paint getDrawPaint() {
             return Color.BLACK;
         }
+    }
+    
+    public static String dumpConstraints(FieldConstraint[] constraints) {
+        StringBuffer buffer = new StringBuffer();
+        for ( int i = 0, length = constraints.length; i < length; i++ ) {
+            buffer.append( constraints[i].toString() + "<br>" );
+        }
+        return buffer.toString();
     }
 }

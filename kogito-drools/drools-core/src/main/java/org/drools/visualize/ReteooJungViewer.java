@@ -76,7 +76,7 @@ public class ReteooJungViewer extends JFrame {
      */
     VisualizationViewer vv;
 
-    private boolean     running;
+    private boolean     running = true;
 
     public ReteooJungViewer(RuleBase ruleBase) {
         // Setup a standard left/right splitPane
@@ -211,8 +211,7 @@ public class ReteooJungViewer extends JFrame {
 
     public void showGUI() {
         pack();
-        setVisible( true );
-        this.running = true;
+        setVisible( true );        
 
         addWindowListener( new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -222,7 +221,7 @@ public class ReteooJungViewer extends JFrame {
         } );
     }
 
-    public boolean isRunning() {
+    public synchronized boolean isRunning() {
         return this.running;
     }
 
