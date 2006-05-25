@@ -2,7 +2,7 @@
   <parent>
     <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-    <version>3.0-RC-3</version>
+    <version>3.0</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -10,8 +10,8 @@
   <artifactId>drools-core</artifactId>
 
   <name>Drools :: Rete-OO Core</name>
-  <version>3.0-RC-3</version>
-  
+  <version>3.0</version>
+ 
   <repositories>
     <repository>
       <id>basedir</id>
