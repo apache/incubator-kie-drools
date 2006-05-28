@@ -28,10 +28,17 @@ public class PatternDescr implements Serializable {
     
     private int line;
 	private int column;
+	private int endLine;
+	private int endColumn;
 
 	public void setLocation(int line, int column) {
 		this.line   = line;
 		this.column = column;
+	}
+	
+	public void setEndLocation(int line, int column) {
+		this.endLine = line;
+		this.endColumn = column;
 	}
 	
 	public int getLine() {
@@ -40,5 +47,13 @@ public class PatternDescr implements Serializable {
 	
 	public int getColumn() {
 		return this.column;
+	}
+	
+	public int getEndLine() {
+		return this.endLine;
+	}
+	
+	public int getEndColumn() {
+		return this.endColumn;
 	}
 }
