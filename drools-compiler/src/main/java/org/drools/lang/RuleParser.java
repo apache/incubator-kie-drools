@@ -3118,6 +3118,7 @@ public class RuleParser extends Parser {
                     break;
 
             }
+            
         }
         catch (RecognitionException re) {
             reportError(re);
@@ -3361,7 +3362,8 @@ public class RuleParser extends Parser {
             opt_eol();
             following.pop();
 
-
+            Token end = input.LT(-1);
+            d.setEndLocation(offset(end.getLine()), end.getCharPositionInLine());
             }
 
         }
