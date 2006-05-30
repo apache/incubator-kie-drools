@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,16 +16,14 @@ package org.drools.util;
  * limitations under the License.
  */
 
-
-
 public class BaseQueueable
     implements
     Queueable {
     private Queue queue;
     private int   index;
 
-    public void enqueued(Queue queue,
-                         int index) {
+    public void enqueued(final Queue queue,
+                         final int index) {
         this.queue = queue;
         this.index = index;
     }

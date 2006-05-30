@@ -50,87 +50,103 @@ public class LocalVariablesSorter extends MethodAdapter {
      * i of size 1 is remapped to 'mapping[2*i]', while a local variable at
      * index i of size 2 is remapped to 'mapping[2*i+1]'.
      */
-    private int[] mapping = new int[40];
+    private int[]       mapping = new int[40];
 
     protected final int firstLocal;
 
-    private int nextLocal;
+    private int         nextLocal;
 
-    public LocalVariablesSorter(
-        final int access,
-        final String desc,
-        final MethodVisitor mv)
-    {
-        super(mv);
-        Type[] args = Type.getArgumentTypes(desc);
-        nextLocal = ((Opcodes.ACC_STATIC & access) != 0) ? 0 : 1;
-        for (int i = 0; i < args.length; i++) {
-            nextLocal += args[i].getSize();
+    public LocalVariablesSorter(final int access,
+                                final String desc,
+                                final MethodVisitor mv) {
+        super( mv );
+        final Type[] args = Type.getArgumentTypes( desc );
+        this.nextLocal = ((Opcodes.ACC_STATIC & access) != 0) ? 0 : 1;
+        for ( int i = 0; i < args.length; i++ ) {
+            this.nextLocal += args[i].getSize();
         }
-        firstLocal = nextLocal;
+        this.firstLocal = this.nextLocal;
     }
 
-    public void visitVarInsn(final int opcode, final int var) {
+    public void visitVarInsn(final int opcode,
+                             final int var) {
         int size;
-        switch (opcode) {
-            case Opcodes.LLOAD:
-            case Opcodes.LSTORE:
-            case Opcodes.DLOAD:
-            case Opcodes.DSTORE:
+        switch ( opcode ) {
+            case Opcodes.LLOAD :
+            case Opcodes.LSTORE :
+            case Opcodes.DLOAD :
+            case Opcodes.DSTORE :
                 size = 2;
                 break;
-            default:
+            default :
                 size = 1;
         }
-        mv.visitVarInsn(opcode, remap(var, size));
+        this.mv.visitVarInsn( opcode,
+                              remap( var,
+                                     size ) );
     }
 
-    public void visitIincInsn(final int var, final int increment) {
-        mv.visitIincInsn(remap(var, 1), increment);
+    public void visitIincInsn(final int var,
+                              final int increment) {
+        this.mv.visitIincInsn( remap( var,
+                                      1 ),
+                               increment );
     }
 
-    public void visitMaxs(final int maxStack, final int maxLocals) {
-        mv.visitMaxs(maxStack, nextLocal);
+    public void visitMaxs(final int maxStack,
+                          final int maxLocals) {
+        this.mv.visitMaxs( maxStack,
+                           this.nextLocal );
     }
 
-    public void visitLocalVariable(
-        final String name,
-        final String desc,
-        final String signature,
-        final Label start,
-        final Label end,
-        final int index)
-    {
-        int size = "J".equals(desc) || "D".equals(desc) ? 2 : 1;
-        mv.visitLocalVariable(name, desc, signature, start, end, remap(index, size));
+    public void visitLocalVariable(final String name,
+                                   final String desc,
+                                   final String signature,
+                                   final Label start,
+                                   final Label end,
+                                   final int index) {
+        final int size = "J".equals( desc ) || "D".equals( desc ) ? 2 : 1;
+        this.mv.visitLocalVariable( name,
+                                    desc,
+                                    signature,
+                                    start,
+                                    end,
+                                    remap( index,
+                                           size ) );
     }
 
     // -------------
 
     protected int newLocal(final int size) {
-        int var = nextLocal;
-        nextLocal += size;
+        final int var = this.nextLocal;
+        this.nextLocal += size;
         return var;
     }
 
-    private int remap(final int var, final int size) {
-        if (var < firstLocal) {
+    private int remap(final int var,
+                      final int size) {
+        if ( var < this.firstLocal ) {
             return var;
         }
-        int key = 2 * var + size - 1;
-        int length = mapping.length;
-        if (key >= length) {
-            int[] newMapping = new int[Math.max(2 * length, key + 1)];
-            System.arraycopy(mapping, 0, newMapping, 0, length);
-            mapping = newMapping;
+        final int key = 2 * var + size - 1;
+        final int length = this.mapping.length;
+        if ( key >= length ) {
+            final int[] newMapping = new int[Math.max( 2 * length,
+                                                       key + 1 )];
+            System.arraycopy( this.mapping,
+                              0,
+                              newMapping,
+                              0,
+                              length );
+            this.mapping = newMapping;
         }
-        int value = mapping[key];
-        if (value == 0) {
-            value = nextLocal + 1;
-            mapping[key] = value;
-            nextLocal += size;
+        int value = this.mapping[key];
+        if ( value == 0 ) {
+            value = this.nextLocal + 1;
+            this.mapping[key] = value;
+            this.nextLocal += size;
         }
         return value - 1;
     }
-    
+
 }

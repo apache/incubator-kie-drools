@@ -36,7 +36,9 @@ package org.drools.asm;
  * 
  * @author Eric Bruneton
  */
-public class ClassAdapter implements ClassVisitor {
+public class ClassAdapter
+    implements
+    ClassVisitor {
 
     /**
      * The {@link ClassVisitor} to which this adapter delegates calls.
@@ -52,70 +54,79 @@ public class ClassAdapter implements ClassVisitor {
         this.cv = cv;
     }
 
-    public void visit(
-        final int version,
-        final int access,
-        final String name,
-        final String signature,
-        final String superName,
-        final String[] interfaces)
-    {
-        cv.visit(version, access, name, signature, superName, interfaces);
+    public void visit(final int version,
+                      final int access,
+                      final String name,
+                      final String signature,
+                      final String superName,
+                      final String[] interfaces) {
+        this.cv.visit( version,
+                       access,
+                       name,
+                       signature,
+                       superName,
+                       interfaces );
     }
 
-    public void visitSource(final String source, final String debug) {
-        cv.visitSource(source, debug);
+    public void visitSource(final String source,
+                            final String debug) {
+        this.cv.visitSource( source,
+                             debug );
     }
 
-    public void visitOuterClass(
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        cv.visitOuterClass(owner, name, desc);
+    public void visitOuterClass(final String owner,
+                                final String name,
+                                final String desc) {
+        this.cv.visitOuterClass( owner,
+                                 name,
+                                 desc );
     }
 
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        return cv.visitAnnotation(desc, visible);
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        return this.cv.visitAnnotation( desc,
+                                        visible );
     }
 
     public void visitAttribute(final Attribute attr) {
-        cv.visitAttribute(attr);
+        this.cv.visitAttribute( attr );
     }
 
-    public void visitInnerClass(
-        final String name,
-        final String outerName,
-        final String innerName,
-        final int access)
-    {
-        cv.visitInnerClass(name, outerName, innerName, access);
+    public void visitInnerClass(final String name,
+                                final String outerName,
+                                final String innerName,
+                                final int access) {
+        this.cv.visitInnerClass( name,
+                                 outerName,
+                                 innerName,
+                                 access );
     }
 
-    public FieldVisitor visitField(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final Object value)
-    {
-        return cv.visitField(access, name, desc, signature, value);
+    public FieldVisitor visitField(final int access,
+                                   final String name,
+                                   final String desc,
+                                   final String signature,
+                                   final Object value) {
+        return this.cv.visitField( access,
+                                   name,
+                                   desc,
+                                   signature,
+                                   value );
     }
 
-    public MethodVisitor visitMethod(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final String[] exceptions)
-    {
-        return cv.visitMethod(access, name, desc, signature, exceptions);
+    public MethodVisitor visitMethod(final int access,
+                                     final String name,
+                                     final String desc,
+                                     final String signature,
+                                     final String[] exceptions) {
+        return this.cv.visitMethod( access,
+                                    name,
+                                    desc,
+                                    signature,
+                                    exceptions );
     }
 
     public void visitEnd() {
-        cv.visitEnd();
+        this.cv.visitEnd();
     }
 }

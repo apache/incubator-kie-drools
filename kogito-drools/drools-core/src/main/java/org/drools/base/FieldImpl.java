@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,35 +16,37 @@ package org.drools.base;
  * limitations under the License.
  */
 
-
-
 import org.drools.spi.FieldValue;
 
 public class FieldImpl
     implements
     FieldValue {
-    private Object value;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -5865571326405806524L;
+    private Object            value;
 
-    public FieldImpl(Object value) {
+    public FieldImpl(final Object value) {
         this.value = value;
     }
 
     public Object getValue() {
         return this.value;
     }
-    
+
     public String toString() {
         return this.value.toString();
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
         if ( object == null || !(object instanceof FieldValue) ) {
             return false;
         }
-        FieldImpl other = (FieldImpl) object;
+        final FieldImpl other = (FieldImpl) object;
 
         return (((this.value == null) && (other.value == null)) || ((this.value != null) && (this.value.equals( other.value ))));
     }

@@ -30,7 +30,7 @@ public class MultiLinkedListNodeWrapper extends BaseMultiLinkedListNode {
 
     private LinkedListNode node = null;
 
-    public MultiLinkedListNodeWrapper(LinkedListNode node) {
+    public MultiLinkedListNodeWrapper(final LinkedListNode node) {
         this.node = node;
     }
 

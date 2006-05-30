@@ -1,4 +1,5 @@
 package org.drools.spi;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,19 +16,21 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-
-
 public class ColumnExtractor
     implements
     Extractor {
 
-    private ObjectType objectType;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 9055898682913511836L;
+    private ObjectType        objectType;
 
-    public ColumnExtractor(ObjectType objectType) {
+    public ColumnExtractor(final ObjectType objectType) {
         this.objectType = objectType;
     }
 
-    public Object getValue(Object object) {
+    public Object getValue(final Object object) {
         return object;
     }
 

@@ -1,4 +1,5 @@
 package org.drools.spi;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,15 +16,10 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-
-
-
-
-import org.drools.common.LogicalDependency;
 import org.drools.common.ActivationGroupNode;
+import org.drools.common.LogicalDependency;
 import org.drools.rule.Rule;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListObjectWrapper;
 
 /**
  * When a <code>Tuple</code> fully matches a rule it is added to the <code>Agenda</code>
@@ -75,7 +71,7 @@ public interface Activation {
     public boolean isActivated();
 
     public void setActivated(boolean activated);
-    
+
     public ActivationGroupNode getActivationGroupNode();
 
     public void setActivationGroupNode(ActivationGroupNode activationGroupNode);

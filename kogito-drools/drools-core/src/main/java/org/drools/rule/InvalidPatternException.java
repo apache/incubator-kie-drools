@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,9 +16,12 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 public class InvalidPatternException extends RuleConstructionException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -9130595795187136300L;
+
     /**
      * @see java.lang.Exception#Exception()
      */
@@ -28,15 +32,15 @@ public class InvalidPatternException extends RuleConstructionException {
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public InvalidPatternException(String message) {
+    public InvalidPatternException(final String message) {
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    public InvalidPatternException(String message,
-                                   Throwable cause) {
+    public InvalidPatternException(final String message,
+                                   final Throwable cause) {
         super( message,
                cause );
     }
@@ -44,7 +48,7 @@ public class InvalidPatternException extends RuleConstructionException {
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public InvalidPatternException(Throwable cause) {
+    public InvalidPatternException(final Throwable cause) {
         super( cause );
     }
 }

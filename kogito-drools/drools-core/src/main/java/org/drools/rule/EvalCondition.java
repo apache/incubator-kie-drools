@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,27 +16,30 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
 
 public class EvalCondition extends ConditionalElement {
+    /**
+     * 
+     */
+    private static final long          serialVersionUID   = 4479634725392322326L;
+
     private EvalExpression             expression;
 
     private final Declaration[]        requiredDeclarations;
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
-    public EvalCondition(Declaration[] requiredDeclarations) {
+    public EvalCondition(final Declaration[] requiredDeclarations) {
         this( null,
               requiredDeclarations );
     }
 
-    public EvalCondition(EvalExpression eval,
-                         Declaration[] requiredDeclarations) {
+    public EvalCondition(final EvalExpression eval,
+                         final Declaration[] requiredDeclarations) {
 
         this.expression = eval;
 
@@ -50,7 +54,7 @@ public class EvalCondition extends ConditionalElement {
         return this.expression;
     }
 
-    public void setEvalExpression(EvalExpression expression) {
+    public void setEvalExpression(final EvalExpression expression) {
         this.expression = expression;
     }
 
@@ -58,38 +62,38 @@ public class EvalCondition extends ConditionalElement {
         return this.requiredDeclarations;
     }
 
-    public boolean isAllowed(Tuple tuple,
-                             WorkingMemory workingMemory) {
+    public boolean isAllowed(final Tuple tuple,
+                             final WorkingMemory workingMemory) {
         try {
-            return expression.evaluate( tuple,
-                                        this.requiredDeclarations,
-                                        workingMemory );
-        } catch ( Exception e ) {
+            return this.expression.evaluate( tuple,
+                                             this.requiredDeclarations,
+                                             workingMemory );
+        } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
     }
 
     public Object clone() {
-        EvalCondition eval = new EvalCondition( this.expression,
-                                                this.requiredDeclarations );
+        final EvalCondition eval = new EvalCondition( this.expression,
+                                                      this.requiredDeclarations );
         return eval;
-    }    
-    
+    }
+
     public int hashCode() {
         return this.expression.hashCode();
     }
-    
-    public boolean equals(Object object) {
-        if ( object == this ){
+
+    public boolean equals(final Object object) {
+        if ( object == this ) {
             return true;
         }
-        
+
         if ( object == null || object.getClass() != EvalCondition.class ) {
             return false;
         }
-        
-        EvalCondition other = ( EvalCondition ) object;
-        
+
+        final EvalCondition other = (EvalCondition) object;
+
         return this.expression.equals( other.expression );
     }
 };

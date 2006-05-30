@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 package org.drools.util;
 
@@ -63,7 +61,7 @@ public class CompositeCollection
      * @param coll
      *            a collection to decorate
      */
-    public CompositeCollection(Collection coll) {
+    public CompositeCollection(final Collection coll) {
         this();
         this.addComposited( coll );
     }
@@ -75,7 +73,7 @@ public class CompositeCollection
      * @param colls
      *            an array of collections to decorate
      */
-    public CompositeCollection(Collection[] colls) {
+    public CompositeCollection(final Collection[] colls) {
         this();
         this.addComposited( colls );
     }
@@ -121,7 +119,7 @@ public class CompositeCollection
      *            the object to search for
      * @return true if obj is contained in any of the contained collections
      */
-    public boolean contains(Object obj) {
+    public boolean contains(final Object obj) {
         for ( int i = this.all.length - 1; i >= 0; i-- ) {
             if ( this.all[i].contains( obj ) ) {
                 return true;
@@ -145,7 +143,7 @@ public class CompositeCollection
         if ( this.all.length == 0 ) {
             return Collections.EMPTY_LIST.iterator();
         }
-        IteratorChain chain = new IteratorChain();
+        final IteratorChain chain = new IteratorChain();
         for ( int i = 0; i < this.all.length; ++i ) {
             chain.addIterator( this.all[i].iterator() );
         }
@@ -160,7 +158,7 @@ public class CompositeCollection
     public Object[] toArray() {
         final Object[] result = new Object[this.size()];
         int i = 0;
-        for ( Iterator it = this.iterator(); it.hasNext(); i++ ) {
+        for ( final Iterator it = this.iterator(); it.hasNext(); i++ ) {
             result[i] = it.next();
         }
         return result;
@@ -174,8 +172,8 @@ public class CompositeCollection
      *            the array to use, populating if possible
      * @return an array of all the elements in the collection
      */
-    public Object[] toArray(Object[] array) {
-        int size = this.size();
+    public Object[] toArray(final Object[] array) {
+        final int size = this.size();
         Object[] result;
         if ( array.length >= size ) {
             result = array;
@@ -186,7 +184,7 @@ public class CompositeCollection
 
         int offset = 0;
         for ( int i = 0; i < this.all.length; ++i ) {
-            for ( Iterator it = this.all[i].iterator(); it.hasNext(); ) {
+            for ( final Iterator it = this.all[i].iterator(); it.hasNext(); ) {
                 result[offset++] = it.next();
             }
         }
@@ -214,7 +212,7 @@ public class CompositeCollection
      * @throws IllegalArgumentException
      *             if the object cannot be added
      */
-    public boolean add(Object obj) {
+    public boolean add(final Object obj) {
         if ( this.mutator == null ) {
             throw new UnsupportedOperationException( "add() is not supported on CompositeCollection without a CollectionMutator strategy" );
         }
@@ -240,7 +238,7 @@ public class CompositeCollection
      * @throws IllegalArgumentException
      *             if the object cannot be removed
      */
-    public boolean remove(Object obj) {
+    public boolean remove(final Object obj) {
         if ( this.mutator == null ) {
             throw new UnsupportedOperationException( "remove() is not supported on CompositeCollection without a CollectionMutator strategy" );
         }
@@ -260,8 +258,8 @@ public class CompositeCollection
      *            the collection to check for
      * @return true if all elements contained
      */
-    public boolean containsAll(Collection coll) {
-        for ( Iterator it = coll.iterator(); it.hasNext(); ) {
+    public boolean containsAll(final Collection coll) {
+        for ( final Iterator it = coll.iterator(); it.hasNext(); ) {
             if ( this.contains( it.next() ) == false ) {
                 return false;
             }
@@ -288,7 +286,7 @@ public class CompositeCollection
      * @throws IllegalArgumentException
      *             if the object cannot be added
      */
-    public boolean addAll(Collection coll) {
+    public boolean addAll(final Collection coll) {
         if ( this.mutator == null ) {
             throw new UnsupportedOperationException( "addAll() is not supported on CompositeCollection without a CollectionMutator strategy" );
         }
@@ -309,7 +307,7 @@ public class CompositeCollection
      * @throws UnsupportedOperationException
      *             if removeAll is unsupported
      */
-    public boolean removeAll(Collection coll) {
+    public boolean removeAll(final Collection coll) {
         if ( coll.isEmpty() ) {
             return false;
         }
@@ -362,7 +360,7 @@ public class CompositeCollection
      * @param mutator
      *            the mutator to use
      */
-    public void setMutator(CollectionMutator mutator) {
+    public void setMutator(final CollectionMutator mutator) {
         this.mutator = mutator;
     }
 
@@ -372,8 +370,8 @@ public class CompositeCollection
      * @param comps
      *            Collections to be appended to the composite
      */
-    public void addComposited(Collection[] comps) {
-        ArrayList list = new ArrayList( Arrays.asList( this.all ) );
+    public void addComposited(final Collection[] comps) {
+        final ArrayList list = new ArrayList( Arrays.asList( this.all ) );
         list.addAll( Arrays.asList( comps ) );
         this.all = (Collection[]) list.toArray( new Collection[list.size()] );
     }
@@ -384,7 +382,7 @@ public class CompositeCollection
      * @param c
      *            the collection to add
      */
-    public void addComposited(Collection c) {
+    public void addComposited(final Collection c) {
         this.addComposited( new Collection[]{c} );
     }
 
@@ -396,8 +394,8 @@ public class CompositeCollection
      * @param d
      *            the second collection to add
      */
-    public void addComposited(Collection c,
-                              Collection d) {
+    public void addComposited(final Collection c,
+                              final Collection d) {
         this.addComposited( new Collection[]{c, d} );
     }
 
@@ -407,8 +405,8 @@ public class CompositeCollection
      * @param coll
      *            collection to be removed
      */
-    public void removeComposited(Collection coll) {
-        ArrayList list = new ArrayList( this.all.length );
+    public void removeComposited(final Collection coll) {
+        final ArrayList list = new ArrayList( this.all.length );
         list.addAll( Arrays.asList( this.all ) );
         list.remove( coll );
         this.all = (Collection[]) list.toArray( new Collection[list.size()] );

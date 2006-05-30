@@ -26,16 +26,17 @@ import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.common.Agenda;
 import org.drools.common.AgendaGroupImpl;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.ActivationGroup;
 
 /**
  * @author mproctor
@@ -43,19 +44,20 @@ import org.drools.spi.ActivationGroup;
 
 public class AgendaTest extends DroolsTestCase {
     public void testClearAgenda() {
-        RuleBase ruleBase = new RuleBaseImpl();
+        final RuleBase ruleBase = new ReteooRuleBase();
 
-        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final Agenda agenda = workingMemory.getAgenda();
 
         final Rule rule1 = new Rule( "test-rule1" );
 
-        TerminalNode node1 = new TerminalNode( 3,
-                                               new MockTupleSource( 2 ),
-                                               rule1 );
+        final TerminalNode node1 = new TerminalNode( 3,
+                                                     new MockTupleSource( 2 ),
+                                                     rule1 );
 
-        ReteTuple tuple = new ReteTuple( new FactHandleImpl( 1 ) );
+        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+                                                                      "cheese" ) );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -65,8 +67,13 @@ public class AgendaTest extends DroolsTestCase {
         // Add consequence. Notice here the context here for the add to ageyunda
         // is itself
         rule1.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -130061018648367024L;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) {
                 // do nothing
             }
         } );
@@ -90,27 +97,33 @@ public class AgendaTest extends DroolsTestCase {
     }
 
     public void testFilters() throws Exception {
-        RuleBase ruleBase = new RuleBaseImpl();
+        final RuleBase ruleBase = new ReteooRuleBase();
 
-        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
         final Agenda agenda = workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
-        TerminalNode node = new TerminalNode( 3,
-                                              new MockTupleSource( 2 ),
-                                              rule );
+        final TerminalNode node = new TerminalNode( 3,
+                                                    new MockTupleSource( 2 ),
+                                                    rule );
 
         final Map results = new HashMap();
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -5958911613493145604L;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) {
                 results.put( "fired",
                              new Boolean( true ) );
             }
         } );
 
-        ReteTuple tuple = new ReteTuple( new FactHandleImpl( 1 ) );
+        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+                                                                      "cheese" ) );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        rule,
@@ -121,7 +134,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.getFocus().size() );
 
         // True filter, activations should always add
-        AgendaFilter filterTrue = new AgendaFilter() {
+        final AgendaFilter filterTrue = new AgendaFilter() {
             public boolean accept(Activation item) {
                 return true;
             }
@@ -150,7 +163,7 @@ public class AgendaTest extends DroolsTestCase {
         results.clear();
 
         // False filter, activations should always be denied
-        AgendaFilter filterFalse = new AgendaFilter() {
+        final AgendaFilter filterFalse = new AgendaFilter() {
             public boolean accept(Activation item) {
                 return false;
             }
@@ -175,78 +188,84 @@ public class AgendaTest extends DroolsTestCase {
     }
 
     public void testFocusStack() throws ConsequenceException {
-        RuleBase ruleBase = new RuleBaseImpl();
+        final RuleBase ruleBase = new ReteooRuleBase();
 
-        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final Agenda agenda = workingMemory.getAgenda();
 
         //       // create the AgendaGroups
-        AgendaGroupImpl agendaGroup1 = new AgendaGroupImpl( "agendaGroup1" );
+        final AgendaGroupImpl agendaGroup1 = new AgendaGroupImpl( "agendaGroup1" );
         agenda.addAgendaGroup( agendaGroup1 );
         //        ActivationQueue queue1 = agendaGroup1.getActivationQueue( 0 );
 
-        AgendaGroupImpl agendaGroup2 = new AgendaGroupImpl( "agendaGroup2" );
+        final AgendaGroupImpl agendaGroup2 = new AgendaGroupImpl( "agendaGroup2" );
         agenda.addAgendaGroup( agendaGroup2 );
         //        ActivationQueue queue2 = agendaGroup2.getActivationQueue( 0 );
 
-        AgendaGroupImpl agendaGroup3 = new AgendaGroupImpl( "agendaGroup3" );
+        final AgendaGroupImpl agendaGroup3 = new AgendaGroupImpl( "agendaGroup3" );
         agenda.addAgendaGroup( agendaGroup3 );
         //        ActivationQueue queue3 = agendaGroup3.getActivationQueue( 0 );
 
         // create the consequence
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -5828597682602481200L;
+
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
         };
 
-        ReteTuple tuple = new ReteTuple( new FactHandleImpl( 1 ) );
+        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+                                                                      "cheese" ) );
 
         // create a rule for each agendaGroup
-        Rule rule0 = new Rule( "test-rule0" );
-        TerminalNode node0 = new TerminalNode( 3,
-                                               new MockTupleSource( 2 ),
-                                               rule0 );
+        final Rule rule0 = new Rule( "test-rule0" );
+        final TerminalNode node0 = new TerminalNode( 3,
+                                                     new MockTupleSource( 2 ),
+                                                     rule0 );
         rule0.setConsequence( consequence );
-        PropagationContext context0 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  rule0,
-                                                                  null );
+        final PropagationContext context0 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule0,
+                                                                        null );
 
-        Rule rule1 = new Rule( "test-rule1",
-                               "agendaGroup1" );
-        TerminalNode node1 = new TerminalNode( 5,
-                                               new MockTupleSource( 4 ),
-                                               rule1 );
+        final Rule rule1 = new Rule( "test-rule1",
+                                     "agendaGroup1" );
+        final TerminalNode node1 = new TerminalNode( 5,
+                                                     new MockTupleSource( 4 ),
+                                                     rule1 );
         rule1.setConsequence( consequence );
-        PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  rule1,
-                                                                  null );
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule1,
+                                                                        null );
 
-        Rule rule2 = new Rule( "test-rule2",
-                               "agendaGroup2" );
-        TerminalNode node2 = new TerminalNode( 7,
-                                               new MockTupleSource( 6 ),
-                                               rule2 );
+        final Rule rule2 = new Rule( "test-rule2",
+                                     "agendaGroup2" );
+        final TerminalNode node2 = new TerminalNode( 7,
+                                                     new MockTupleSource( 6 ),
+                                                     rule2 );
         rule2.setConsequence( consequence );
-        PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  rule2,
-                                                                  null );
+        final PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule2,
+                                                                        null );
 
-        Rule rule3 = new Rule( "test-rule3",
-                               "agendaGroup3" );
-        TerminalNode node3 = new TerminalNode( 9,
-                                               new MockTupleSource( 8 ),
-                                               rule3 );
+        final Rule rule3 = new Rule( "test-rule3",
+                                     "agendaGroup3" );
+        final TerminalNode node3 = new TerminalNode( 9,
+                                                     new MockTupleSource( 8 ),
+                                                     rule3 );
         rule3.setConsequence( consequence );
-        PropagationContext context3 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  rule3,
-                                                                  null );
+        final PropagationContext context3 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule3,
+                                                                        null );
 
         // focus at this point is MAIN
         assertEquals( 0,
@@ -257,7 +276,7 @@ public class AgendaTest extends DroolsTestCase {
                            workingMemory );
 
         // check focus is main
-        AgendaGroupImpl main = (AgendaGroupImpl) agenda.getAgendaGroup( AgendaGroup.MAIN );
+        final AgendaGroupImpl main = (AgendaGroupImpl) agenda.getAgendaGroup( AgendaGroup.MAIN );
         assertEquals( agenda.getFocus(),
                       main );
         // check main got the tuple
@@ -390,37 +409,43 @@ public class AgendaTest extends DroolsTestCase {
 
     //
     public void testAutoFocus() throws ConsequenceException {
-        RuleBase ruleBase = new RuleBaseImpl();
+        final RuleBase ruleBase = new ReteooRuleBase();
 
-        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
         final Agenda agenda = workingMemory.getAgenda();
 
         // create the agendaGroup
-        AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup" );
+        final AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup" );
         agenda.addAgendaGroup( agendaGroup );
         //        ActivationQueue queue = agendaGroup.getActivationQueue( 0 );
 
         // create the consequence
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -5853809196578694208L;
+
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
         };
 
-        ReteTuple tuple = new ReteTuple( new FactHandleImpl( 1 ) );
+        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+                                                                      "cheese" ) );
 
         // create a rule for the agendaGroup
-        Rule rule = new Rule( "test-rule",
-                              "agendaGroup" );
+        final Rule rule = new Rule( "test-rule",
+                                    "agendaGroup" );
         final TerminalNode node = new TerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule );
         rule.setConsequence( consequence );
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 rule,
-                                                                 null );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       rule,
+                                                                       null );
 
         // first test that autoFocus=false works. Here the rule should not fire
         // as its agendaGroup does not have focus.
@@ -460,132 +485,167 @@ public class AgendaTest extends DroolsTestCase {
         //        assertEquals( 0,
         //                      queue.size() );
     }
-    
-    public void testXorGroup() {
-        RuleBase ruleBase = new RuleBaseImpl();
 
-        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+    public void testXorGroup() {
+        final RuleBase ruleBase = new ReteooRuleBase();
+
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final Agenda agenda = workingMemory.getAgenda();
-        
+
         final List list = new ArrayList();
 
         // create the consequence
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -2596133893109870505L;
+
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 list.add( knowledgeHelper.getRule() );
             }
         };
 
-        ReteTuple tuple = new ReteTuple( new FactHandleImpl( 1 ) );
+        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+                                                                      "cheese" ) );
 
         // create a rule for each agendaGroup
-        Rule rule0 = new Rule( "test-rule0" );       
-        rule0.setXorGroup( "activation-group-0" );        
-        TerminalNode node0 = new TerminalNode( 3,
-                                               new MockTupleSource( 2 ),
-                                               rule0 );
+        final Rule rule0 = new Rule( "test-rule0" );
+        rule0.setXorGroup( "activation-group-0" );
+        final TerminalNode node0 = new TerminalNode( 3,
+                                                     new MockTupleSource( 2 ),
+                                                     rule0 );
         rule0.setConsequence( consequence );
-        PropagationContext context0 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  rule0,
-                                                                  null );
+        final PropagationContext context0 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule0,
+                                                                        null );
 
-        Rule rule1 = new Rule( "test-rule1" );
+        final Rule rule1 = new Rule( "test-rule1" );
         rule1.setXorGroup( "activation-group-0" );
-        TerminalNode node1 = new TerminalNode( 5,
-                                               new MockTupleSource( 4 ),
-                                               rule1 );
+        final TerminalNode node1 = new TerminalNode( 5,
+                                                     new MockTupleSource( 4 ),
+                                                     rule1 );
         rule1.setConsequence( consequence );
-        PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  rule1,
-                                                                  null );
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule1,
+                                                                        null );
 
-        Rule rule2 = new Rule( "test-rule2" );
-        TerminalNode node2 = new TerminalNode( 7,
-                                               new MockTupleSource( 6 ),
-                                               rule2 );
+        final Rule rule2 = new Rule( "test-rule2" );
+        final TerminalNode node2 = new TerminalNode( 7,
+                                                     new MockTupleSource( 6 ),
+                                                     rule2 );
         rule2.setConsequence( consequence );
-        PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  rule2,
-                                                                  null );
+        final PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule2,
+                                                                        null );
 
-        Rule rule3 = new Rule( "test-rule3",
-                               "agendaGroup3" );
+        final Rule rule3 = new Rule( "test-rule3",
+                                     "agendaGroup3" );
         rule3.setXorGroup( "activation-group-3" );
-        TerminalNode node3 = new TerminalNode( 9,
-                                               new MockTupleSource( 8 ),
-                                               rule3 );
+        final TerminalNode node3 = new TerminalNode( 9,
+                                                     new MockTupleSource( 8 ),
+                                                     rule3 );
         rule3.setConsequence( consequence );
-        PropagationContext context3 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  rule3,
-                                                                  null );
-        
+        final PropagationContext context3 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule3,
+                                                                        null );
+
         // Assert the tuple and check it was added to activation-group-0
-        node0.assertTuple( tuple, context0, workingMemory );        
-        ActivationGroup activationGroup0 = agenda.getActivationGroup( "activation-group-0" );
-        assertEquals( 1, activationGroup0.size() );
-        
+        node0.assertTuple( tuple,
+                           context0,
+                           workingMemory );
+        final ActivationGroup activationGroup0 = agenda.getActivationGroup( "activation-group-0" );
+        assertEquals( 1,
+                      activationGroup0.size() );
+
         // Assert another tuple and check it was added to activation-group-0        
-        node1.assertTuple( tuple, context1, workingMemory );        
-        assertEquals( 2, activationGroup0.size() );
-        
+        node1.assertTuple( tuple,
+                           context1,
+                           workingMemory );
+        assertEquals( 2,
+                      activationGroup0.size() );
+
         // There should now be two potential activations to fire
-        assertEquals( 2, agenda.focusStackSize() );
-        
+        assertEquals( 2,
+                      agenda.focusStackSize() );
+
         // The first tuple should fire, adding itself to the List and clearing and cancelling the other Activations in the activation-group-0        
         agenda.fireNextItem( null );
-        
+
         // Make sure the activation-group-0 is clear
-        assertEquals( 0, activationGroup0.size() );
-        
+        assertEquals( 0,
+                      activationGroup0.size() );
+
         // Make sure the Agenda  is  empty
-        assertEquals( 0, agenda.focusStackSize() );
-        
+        assertEquals( 0,
+                      agenda.focusStackSize() );
+
         // List should only have a single item, "rule0"
-        assertEquals( 1, list.size() );
-        assertSame( rule0, list.get( 0 ) );
-        
+        assertEquals( 1,
+                      list.size() );
+        assertSame( rule0,
+                    list.get( 0 ) );
+
         list.clear();
-        
+
         //-------------------
         // Now try a more complex scenario involving  two Xor Groups and one  rule not in a Group
-        node0.assertTuple( tuple, context0, workingMemory );
-        node1.assertTuple( tuple, context1, workingMemory );        
-        node2.assertTuple( tuple, context2, workingMemory );        
-        node3.assertTuple( tuple, context3, workingMemory );        
-        
+        node0.assertTuple( tuple,
+                           context0,
+                           workingMemory );
+        node1.assertTuple( tuple,
+                           context1,
+                           workingMemory );
+        node2.assertTuple( tuple,
+                           context2,
+                           workingMemory );
+        node3.assertTuple( tuple,
+                           context3,
+                           workingMemory );
+
         // activation-group-0 should be populated again
-        assertEquals( 2, activationGroup0.size() ); 
-        
+        assertEquals( 2,
+                      activationGroup0.size() );
+
         // make sure the activation-group-3 is cleared when we can clear the Agenda Group for the activation that is in both
-        ActivationGroup activationGroup3 = agenda.getActivationGroup( "activation-group-3" );
-        
-        assertEquals( 4, agenda.agendaSize() );
-        assertEquals( 1, activationGroup3.size() );
-        
+        final ActivationGroup activationGroup3 = agenda.getActivationGroup( "activation-group-3" );
+
+        assertEquals( 4,
+                      agenda.agendaSize() );
+        assertEquals( 1,
+                      activationGroup3.size() );
+
         agenda.clearAgendaGroup( "agendaGroup3" );
-        assertEquals( 3, agenda.agendaSize() );
-        assertEquals( 0, activationGroup3.size() );
-        
+        assertEquals( 3,
+                      agenda.agendaSize() );
+        assertEquals( 0,
+                      activationGroup3.size() );
+
         // Activation for activation-group-0 should be next - the activation in no activation/agenda group should remain on the agenda
         agenda.fireNextItem( null );
-        assertEquals( 1, agenda.agendaSize() );
-        assertEquals( 0, activationGroup0.size() );        
-        
-        
+        assertEquals( 1,
+                      agenda.agendaSize() );
+        assertEquals( 0,
+                      activationGroup0.size() );
+
         // Fire  the  last activation and  make sure the Agenda Empties
         agenda.fireNextItem( null );
-        assertEquals( 0, agenda.agendaSize() );
-        
-        assertEquals( 2, list.size() );
-        assertEquals( rule0, list.get(0));
-        assertEquals( rule2, list.get(1));        
-        
+        assertEquals( 0,
+                      agenda.agendaSize() );
+
+        assertEquals( 2,
+                      list.size() );
+        assertEquals( rule0,
+                      list.get( 0 ) );
+        assertEquals( rule2,
+                      list.get( 1 ) );
+
     }
 
 }

@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -26,8 +25,8 @@ public class Cheese {
 
     private int    price;
 
-    public Cheese(String type,
-                  int price) {
+    public Cheese(final String type,
+                  final int price) {
         this.type = type;
         this.price = price;
     }
@@ -40,23 +39,49 @@ public class Cheese {
         return this.price;
     }
 
+    /**
+     * @param price the price to set
+     */
+    public void setPrice(final int price) {
+        this.price = price;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(final String type) {
+        this.type = type;
+    }
+
     public String toString() {
         return "Cheese type='" + this.type + "' price='" + this.price + "'";
     }
 
-    public boolean equals(Object object) {
+    public int hashCode() {
+        //like org.apache.commons.lang.builder.HashCodeBuilder
+        int hashCode = 17;
+        hashCode = hashCode * 37 + this.price;
+        hashCode = hashCode * 37 + (this.type == null ? 0 : this.type.hashCode());
+        return hashCode;
+    }
+
+    public boolean equals(final Object object) {
+        if ( object == this ) {
+            return true;
+        }
+
         if ( object == null || !(object instanceof Cheese) ) {
             return false;
         }
 
-        Cheese other = (Cheese) object;
+        final Cheese other = (Cheese) object;
 
         return (this.type.equals( other.getType() ) && this.price == other.getPrice());
     }
 
-    public static int getIndex(Class clazz,
-                               String name) throws IntrospectionException {
-        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
+    public static int getIndex(final Class clazz,
+                               final String name) throws IntrospectionException {
+        final PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
         for ( int i = 0; i < descriptors.length; i++ ) {
             if ( descriptors[i].getName().equals( name ) ) {
                 return i;

@@ -33,10 +33,10 @@ public class ActivationLogEventFilter
     private boolean allowBeforeActivationFireEvents = true;
     private boolean allowAfterActivationFireEvents  = true;
 
-    public ActivationLogEventFilter(boolean allowActivationCreatedEvents,
-                                    boolean allowActivationCancelledEvents,
-                                    boolean allowBeforeActivationFireEvents,
-                                    boolean allowAfterActivationFireEvents) {
+    public ActivationLogEventFilter(final boolean allowActivationCreatedEvents,
+                                    final boolean allowActivationCancelledEvents,
+                                    final boolean allowBeforeActivationFireEvents,
+                                    final boolean allowAfterActivationFireEvents) {
         setAllowActivationCreatedEvents( allowActivationCreatedEvents );
         setAllowActivationCancelledEvents( allowActivationCancelledEvents );
         setAllowBeforeActivationFireEvents( allowBeforeActivationFireEvents );
@@ -46,34 +46,34 @@ public class ActivationLogEventFilter
     /**
      * @see org.drools.audit.event.ILogEventFilter
      */
-    public boolean acceptEvent(LogEvent event) {
+    public boolean acceptEvent(final LogEvent event) {
         switch ( event.getType() ) {
             case LogEvent.ACTIVATION_CREATED :
-                return allowActivationCreatedEvents;
+                return this.allowActivationCreatedEvents;
             case LogEvent.ACTIVATION_CANCELLED :
-                return allowActivationCancelledEvents;
+                return this.allowActivationCancelledEvents;
             case LogEvent.BEFORE_ACTIVATION_FIRE :
-                return allowBeforeActivationFireEvents;
+                return this.allowBeforeActivationFireEvents;
             case LogEvent.AFTER_ACTIVATION_FIRE :
-                return allowAfterActivationFireEvents;
+                return this.allowAfterActivationFireEvents;
             default :
                 return true;
         }
     }
 
-    public void setAllowActivationCreatedEvents(boolean allowActivationCreatedEvents) {
+    public void setAllowActivationCreatedEvents(final boolean allowActivationCreatedEvents) {
         this.allowActivationCreatedEvents = allowActivationCreatedEvents;
     }
 
-    public void setAllowActivationCancelledEvents(boolean allowActivationCancelledEvents) {
+    public void setAllowActivationCancelledEvents(final boolean allowActivationCancelledEvents) {
         this.allowActivationCancelledEvents = allowActivationCancelledEvents;
     }
 
-    public void setAllowBeforeActivationFireEvents(boolean allowBeforeActivationFireEvents) {
+    public void setAllowBeforeActivationFireEvents(final boolean allowBeforeActivationFireEvents) {
         this.allowBeforeActivationFireEvents = allowBeforeActivationFireEvents;
     }
 
-    public void setAllowAfterActivationFireEvents(boolean allowAfterActivationFireEvents) {
+    public void setAllowAfterActivationFireEvents(final boolean allowAfterActivationFireEvents) {
         this.allowAfterActivationFireEvents = allowAfterActivationFireEvents;
     }
 }

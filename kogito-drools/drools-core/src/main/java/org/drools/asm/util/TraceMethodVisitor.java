@@ -29,6 +29,8 @@
  */
 package org.drools.asm.util;
 
+import java.util.HashMap;
+
 import org.drools.asm.AnnotationVisitor;
 import org.drools.asm.Attribute;
 import org.drools.asm.Label;
@@ -38,17 +40,15 @@ import org.drools.asm.Type;
 import org.drools.asm.signature.SignatureReader;
 import org.drools.asm.util.attrs.Traceable;
 
-import java.util.HashMap;
-
 /**
  * A {@link MethodVisitor} that prints a disassembled view of the methods it
  * visits.
  * 
  * @author Eric Bruneton
  */
-public class TraceMethodVisitor extends TraceAbstractVisitor implements
-        MethodVisitor
-{
+public class TraceMethodVisitor extends TraceAbstractVisitor
+    implements
+    MethodVisitor {
 
     /**
      * The {@link MethodVisitor} to which this visitor delegates calls. May be
@@ -59,17 +59,17 @@ public class TraceMethodVisitor extends TraceAbstractVisitor implements
     /**
      * Tab for bytecode instructions.
      */
-    protected String tab2 = "    ";
+    protected String        tab2 = "    ";
 
     /**
      * Tab for table and lookup switch instructions.
      */
-    protected String tab3 = "      ";
+    protected String        tab3 = "      ";
 
     /**
      * Tab for labels.
      */
-    protected String ltab = "   ";
+    protected String        ltab = "   ";
 
     /**
      * The label names. This map associate String values to Label keys.
@@ -80,7 +80,7 @@ public class TraceMethodVisitor extends TraceAbstractVisitor implements
      * Constructs a new {@link TraceMethodVisitor}.
      */
     public TraceMethodVisitor() {
-        this(null);
+        this( null );
     }
 
     /**
@@ -98,370 +98,389 @@ public class TraceMethodVisitor extends TraceAbstractVisitor implements
     // Implementation of the MethodVisitor interface
     // ------------------------------------------------------------------------
 
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        AnnotationVisitor av = super.visitAnnotation(desc, visible);
-        if (mv != null) {
-            ((TraceAnnotationVisitor) av).av = mv.visitAnnotation(desc, visible);
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        final AnnotationVisitor av = super.visitAnnotation( desc,
+                                                            visible );
+        if ( this.mv != null ) {
+            ((TraceAnnotationVisitor) av).av = this.mv.visitAnnotation( desc,
+                                                                        visible );
         }
         return av;
     }
 
     public void visitAttribute(final Attribute attr) {
-        buf.setLength(0);
-        buf.append(tab).append("ATTRIBUTE ");
-        appendDescriptor(-1, attr.type);
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab ).append( "ATTRIBUTE " );
+        appendDescriptor( -1,
+                          attr.type );
 
-        if (attr instanceof Traceable) {
-            ((Traceable) attr).trace(buf, labelNames);
+        if ( attr instanceof Traceable ) {
+            ((Traceable) attr).trace( this.buf,
+                                      this.labelNames );
         } else {
-            buf.append(" : ").append(attr.toString()).append("\n");
+            this.buf.append( " : " ).append( attr.toString() ).append( "\n" );
         }
 
-        text.add(buf.toString());
-        if (mv != null) {
-            mv.visitAttribute(attr);
+        this.text.add( this.buf.toString() );
+        if ( this.mv != null ) {
+            this.mv.visitAttribute( attr );
         }
     }
 
     public AnnotationVisitor visitAnnotationDefault() {
-        text.add(tab2 + "default=");
-        TraceAnnotationVisitor tav = new TraceAnnotationVisitor();
-        text.add(tav.getText());
-        text.add("\n");
-        if (mv != null) {
-            tav.av = mv.visitAnnotationDefault();
+        this.text.add( this.tab2 + "default=" );
+        final TraceAnnotationVisitor tav = new TraceAnnotationVisitor();
+        this.text.add( tav.getText() );
+        this.text.add( "\n" );
+        if ( this.mv != null ) {
+            tav.av = this.mv.visitAnnotationDefault();
         }
         return tav;
     }
 
-    public AnnotationVisitor visitParameterAnnotation(
-        final int parameter,
-        final String desc,
-        final boolean visible)
-    {
-        buf.setLength(0);
-        buf.append(tab2).append('@');
-        appendDescriptor(FIELD_DESCRIPTOR, desc);
-        buf.append('(');
-        text.add(buf.toString());
-        TraceAnnotationVisitor tav = new TraceAnnotationVisitor();
-        text.add(tav.getText());
-        text.add(visible ? ") // parameter " : ") // invisible, parameter ");
-        text.add(new Integer(parameter));
-        text.add("\n");
-        if (mv != null) {
-            tav.av = mv.visitParameterAnnotation(parameter, desc, visible);
+    public AnnotationVisitor visitParameterAnnotation(final int parameter,
+                                                      final String desc,
+                                                      final boolean visible) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( '@' );
+        appendDescriptor( TraceAbstractVisitor.FIELD_DESCRIPTOR,
+                          desc );
+        this.buf.append( '(' );
+        this.text.add( this.buf.toString() );
+        final TraceAnnotationVisitor tav = new TraceAnnotationVisitor();
+        this.text.add( tav.getText() );
+        this.text.add( visible ? ") // parameter " : ") // invisible, parameter " );
+        this.text.add( new Integer( parameter ) );
+        this.text.add( "\n" );
+        if ( this.mv != null ) {
+            tav.av = this.mv.visitParameterAnnotation( parameter,
+                                                       desc,
+                                                       visible );
         }
         return tav;
     }
 
     public void visitCode() {
-        if (mv != null) {
-            mv.visitCode();
+        if ( this.mv != null ) {
+            this.mv.visitCode();
         }
     }
 
     public void visitInsn(final int opcode) {
-        buf.setLength(0);
-        buf.append(tab2).append(OPCODES[opcode]).append('\n');
-        text.add(buf.toString());
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( AbstractVisitor.OPCODES[opcode] ).append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitInsn(opcode);
+        if ( this.mv != null ) {
+            this.mv.visitInsn( opcode );
         }
     }
 
-    public void visitIntInsn(final int opcode, final int operand) {
-        buf.setLength(0);
-        buf.append(tab2)
-                .append(OPCODES[opcode])
-                .append(' ')
-                .append(opcode == Opcodes.NEWARRAY
-                        ? TYPES[operand]
-                        : Integer.toString(operand))
-                .append('\n');
-        text.add(buf.toString());
+    public void visitIntInsn(final int opcode,
+                             final int operand) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( AbstractVisitor.OPCODES[opcode] ).append( ' ' ).append( opcode == Opcodes.NEWARRAY ? AbstractVisitor.TYPES[operand] : Integer.toString( operand ) ).append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitIntInsn(opcode, operand);
+        if ( this.mv != null ) {
+            this.mv.visitIntInsn( opcode,
+                                  operand );
         }
     }
 
-    public void visitVarInsn(final int opcode, final int var) {
-        buf.setLength(0);
-        buf.append(tab2)
-                .append(OPCODES[opcode])
-                .append(' ')
-                .append(var)
-                .append('\n');
-        text.add(buf.toString());
+    public void visitVarInsn(final int opcode,
+                             final int var) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( AbstractVisitor.OPCODES[opcode] ).append( ' ' ).append( var ).append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitVarInsn(opcode, var);
+        if ( this.mv != null ) {
+            this.mv.visitVarInsn( opcode,
+                                  var );
         }
     }
 
-    public void visitTypeInsn(final int opcode, final String desc) {
-        buf.setLength(0);
-        buf.append(tab2).append(OPCODES[opcode]).append(' ');
-        if (desc.startsWith("[")) {
-            appendDescriptor(FIELD_DESCRIPTOR, desc);
+    public void visitTypeInsn(final int opcode,
+                              final String desc) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( AbstractVisitor.OPCODES[opcode] ).append( ' ' );
+        if ( desc.startsWith( "[" ) ) {
+            appendDescriptor( TraceAbstractVisitor.FIELD_DESCRIPTOR,
+                              desc );
         } else {
-            appendDescriptor(INTERNAL_NAME, desc);
+            appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                              desc );
         }
-        buf.append('\n');
-        text.add(buf.toString());
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitTypeInsn(opcode, desc);
-        }
-    }
-
-    public void visitFieldInsn(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        buf.setLength(0);
-        buf.append(tab2).append(OPCODES[opcode]).append(' ');
-        appendDescriptor(INTERNAL_NAME, owner);
-        buf.append('.').append(name).append(" : ");
-        appendDescriptor(FIELD_DESCRIPTOR, desc);
-        buf.append('\n');
-        text.add(buf.toString());
-
-        if (mv != null) {
-            mv.visitFieldInsn(opcode, owner, name, desc);
+        if ( this.mv != null ) {
+            this.mv.visitTypeInsn( opcode,
+                                   desc );
         }
     }
 
-    public void visitMethodInsn(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        buf.setLength(0);
-        buf.append(tab2).append(OPCODES[opcode]).append(' ');
-        appendDescriptor(INTERNAL_NAME, owner);
-        buf.append('.').append(name).append(' ');
-        appendDescriptor(METHOD_DESCRIPTOR, desc);
-        buf.append('\n');
-        text.add(buf.toString());
+    public void visitFieldInsn(final int opcode,
+                               final String owner,
+                               final String name,
+                               final String desc) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( AbstractVisitor.OPCODES[opcode] ).append( ' ' );
+        appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                          owner );
+        this.buf.append( '.' ).append( name ).append( " : " );
+        appendDescriptor( TraceAbstractVisitor.FIELD_DESCRIPTOR,
+                          desc );
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitMethodInsn(opcode, owner, name, desc);
+        if ( this.mv != null ) {
+            this.mv.visitFieldInsn( opcode,
+                                    owner,
+                                    name,
+                                    desc );
         }
     }
 
-    public void visitJumpInsn(final int opcode, final Label label) {
-        buf.setLength(0);
-        buf.append(tab2).append(OPCODES[opcode]).append(' ');
-        appendLabel(label);
-        buf.append('\n');
-        text.add(buf.toString());
+    public void visitMethodInsn(final int opcode,
+                                final String owner,
+                                final String name,
+                                final String desc) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( AbstractVisitor.OPCODES[opcode] ).append( ' ' );
+        appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                          owner );
+        this.buf.append( '.' ).append( name ).append( ' ' );
+        appendDescriptor( TraceAbstractVisitor.METHOD_DESCRIPTOR,
+                          desc );
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitJumpInsn(opcode, label);
+        if ( this.mv != null ) {
+            this.mv.visitMethodInsn( opcode,
+                                     owner,
+                                     name,
+                                     desc );
+        }
+    }
+
+    public void visitJumpInsn(final int opcode,
+                              final Label label) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( AbstractVisitor.OPCODES[opcode] ).append( ' ' );
+        appendLabel( label );
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
+
+        if ( this.mv != null ) {
+            this.mv.visitJumpInsn( opcode,
+                                   label );
         }
     }
 
     public void visitLabel(final Label label) {
-        buf.setLength(0);
-        buf.append(ltab);
-        appendLabel(label);
-        buf.append('\n');
-        text.add(buf.toString());
+        this.buf.setLength( 0 );
+        this.buf.append( this.ltab );
+        appendLabel( label );
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitLabel(label);
+        if ( this.mv != null ) {
+            this.mv.visitLabel( label );
         }
     }
 
     public void visitLdcInsn(final Object cst) {
-        buf.setLength(0);
-        buf.append(tab2).append("LDC ");
-        if (cst instanceof String) {
-            AbstractVisitor.appendString(buf, (String) cst);
-        } else if (cst instanceof Type) {
-            buf.append(((Type) cst).getDescriptor() + ".class");
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( "LDC " );
+        if ( cst instanceof String ) {
+            AbstractVisitor.appendString( this.buf,
+                                          (String) cst );
+        } else if ( cst instanceof Type ) {
+            this.buf.append( ((Type) cst).getDescriptor() + ".class" );
         } else {
-            buf.append(cst);
+            this.buf.append( cst );
         }
-        buf.append('\n');
-        text.add(buf.toString());
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitLdcInsn(cst);
-        }
-    }
-
-    public void visitIincInsn(final int var, final int increment) {
-        buf.setLength(0);
-        buf.append(tab2)
-                .append("IINC ")
-                .append(var)
-                .append(' ')
-                .append(increment)
-                .append('\n');
-        text.add(buf.toString());
-
-        if (mv != null) {
-            mv.visitIincInsn(var, increment);
+        if ( this.mv != null ) {
+            this.mv.visitLdcInsn( cst );
         }
     }
 
-    public void visitTableSwitchInsn(
-        final int min,
-        final int max,
-        final Label dflt,
-        final Label labels[])
-    {
-        buf.setLength(0);
-        buf.append(tab2).append("TABLESWITCH\n");
-        for (int i = 0; i < labels.length; ++i) {
-            buf.append(tab3).append(min + i).append(": ");
-            appendLabel(labels[i]);
-            buf.append('\n');
-        }
-        buf.append(tab3).append("default: ");
-        appendLabel(dflt);
-        buf.append('\n');
-        text.add(buf.toString());
+    public void visitIincInsn(final int var,
+                              final int increment) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( "IINC " ).append( var ).append( ' ' ).append( increment ).append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitTableSwitchInsn(min, max, dflt, labels);
+        if ( this.mv != null ) {
+            this.mv.visitIincInsn( var,
+                                   increment );
         }
     }
 
-    public void visitLookupSwitchInsn(
-        final Label dflt,
-        final int keys[],
-        final Label labels[])
-    {
-        buf.setLength(0);
-        buf.append(tab2).append("LOOKUPSWITCH\n");
-        for (int i = 0; i < labels.length; ++i) {
-            buf.append(tab3).append(keys[i]).append(": ");
-            appendLabel(labels[i]);
-            buf.append('\n');
+    public void visitTableSwitchInsn(final int min,
+                                     final int max,
+                                     final Label dflt,
+                                     final Label labels[]) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( "TABLESWITCH\n" );
+        for ( int i = 0; i < labels.length; ++i ) {
+            this.buf.append( this.tab3 ).append( min + i ).append( ": " );
+            appendLabel( labels[i] );
+            this.buf.append( '\n' );
         }
-        buf.append(tab3).append("default: ");
-        appendLabel(dflt);
-        buf.append('\n');
-        text.add(buf.toString());
+        this.buf.append( this.tab3 ).append( "default: " );
+        appendLabel( dflt );
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitLookupSwitchInsn(dflt, keys, labels);
-        }
-    }
-
-    public void visitMultiANewArrayInsn(final String desc, final int dims) {
-        buf.setLength(0);
-        buf.append(tab2).append("MULTIANEWARRAY ");
-        appendDescriptor(FIELD_DESCRIPTOR, desc);
-        buf.append(' ').append(dims).append('\n');
-        text.add(buf.toString());
-
-        if (mv != null) {
-            mv.visitMultiANewArrayInsn(desc, dims);
+        if ( this.mv != null ) {
+            this.mv.visitTableSwitchInsn( min,
+                                          max,
+                                          dflt,
+                                          labels );
         }
     }
 
-    public void visitTryCatchBlock(
-        final Label start,
-        final Label end,
-        final Label handler,
-        final String type)
-    {
-        buf.setLength(0);
-        buf.append(tab2).append("TRYCATCHBLOCK ");
-        appendLabel(start);
-        buf.append(' ');
-        appendLabel(end);
-        buf.append(' ');
-        appendLabel(handler);
-        buf.append(' ');
-        appendDescriptor(INTERNAL_NAME, type);
-        buf.append('\n');
-        text.add(buf.toString());
+    public void visitLookupSwitchInsn(final Label dflt,
+                                      final int keys[],
+                                      final Label labels[]) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( "LOOKUPSWITCH\n" );
+        for ( int i = 0; i < labels.length; ++i ) {
+            this.buf.append( this.tab3 ).append( keys[i] ).append( ": " );
+            appendLabel( labels[i] );
+            this.buf.append( '\n' );
+        }
+        this.buf.append( this.tab3 ).append( "default: " );
+        appendLabel( dflt );
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitTryCatchBlock(start, end, handler, type);
+        if ( this.mv != null ) {
+            this.mv.visitLookupSwitchInsn( dflt,
+                                           keys,
+                                           labels );
         }
     }
 
-    public void visitLocalVariable(
-        final String name,
-        final String desc,
-        final String signature,
-        final Label start,
-        final Label end,
-        final int index)
-    {
-        buf.setLength(0);
-        buf.append(tab2).append("LOCALVARIABLE ").append(name).append(' ');
-        appendDescriptor(FIELD_DESCRIPTOR, desc);
-        buf.append(' ');
-        appendLabel(start);
-        buf.append(' ');
-        appendLabel(end);
-        buf.append(' ').append(index).append('\n');
+    public void visitMultiANewArrayInsn(final String desc,
+                                        final int dims) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( "MULTIANEWARRAY " );
+        appendDescriptor( TraceAbstractVisitor.FIELD_DESCRIPTOR,
+                          desc );
+        this.buf.append( ' ' ).append( dims ).append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (signature != null) {
-            buf.append(tab2);
-            appendDescriptor(FIELD_SIGNATURE, signature);
-
-            TraceSignatureVisitor sv = new TraceSignatureVisitor(0);
-            SignatureReader r = new SignatureReader(signature);
-            r.acceptType(sv);
-            buf.append(tab2)
-                    .append("// declaration: ")
-                    .append(sv.getDeclaration())
-                    .append('\n');
-        }
-        text.add(buf.toString());
-
-        if (mv != null) {
-            mv.visitLocalVariable(name, desc, signature, start, end, index);
+        if ( this.mv != null ) {
+            this.mv.visitMultiANewArrayInsn( desc,
+                                             dims );
         }
     }
 
-    public void visitLineNumber(final int line, final Label start) {
-        buf.setLength(0);
-        buf.append(tab2).append("LINENUMBER ").append(line).append(' ');
-        appendLabel(start);
-        buf.append('\n');
-        text.add(buf.toString());
+    public void visitTryCatchBlock(final Label start,
+                                   final Label end,
+                                   final Label handler,
+                                   final String type) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( "TRYCATCHBLOCK " );
+        appendLabel( start );
+        this.buf.append( ' ' );
+        appendLabel( end );
+        this.buf.append( ' ' );
+        appendLabel( handler );
+        this.buf.append( ' ' );
+        appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                          type );
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (mv != null) {
-            mv.visitLineNumber(line, start);
+        if ( this.mv != null ) {
+            this.mv.visitTryCatchBlock( start,
+                                        end,
+                                        handler,
+                                        type );
         }
     }
 
-    public void visitMaxs(final int maxStack, final int maxLocals) {
-        buf.setLength(0);
-        buf.append(tab2).append("MAXSTACK = ").append(maxStack).append('\n');
-        text.add(buf.toString());
+    public void visitLocalVariable(final String name,
+                                   final String desc,
+                                   final String signature,
+                                   final Label start,
+                                   final Label end,
+                                   final int index) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( "LOCALVARIABLE " ).append( name ).append( ' ' );
+        appendDescriptor( TraceAbstractVisitor.FIELD_DESCRIPTOR,
+                          desc );
+        this.buf.append( ' ' );
+        appendLabel( start );
+        this.buf.append( ' ' );
+        appendLabel( end );
+        this.buf.append( ' ' ).append( index ).append( '\n' );
 
-        buf.setLength(0);
-        buf.append(tab2).append("MAXLOCALS = ").append(maxLocals).append('\n');
-        text.add(buf.toString());
+        if ( signature != null ) {
+            this.buf.append( this.tab2 );
+            appendDescriptor( TraceAbstractVisitor.FIELD_SIGNATURE,
+                              signature );
 
-        if (mv != null) {
-            mv.visitMaxs(maxStack, maxLocals);
+            final TraceSignatureVisitor sv = new TraceSignatureVisitor( 0 );
+            final SignatureReader r = new SignatureReader( signature );
+            r.acceptType( sv );
+            this.buf.append( this.tab2 ).append( "// declaration: " ).append( sv.getDeclaration() ).append( '\n' );
+        }
+        this.text.add( this.buf.toString() );
+
+        if ( this.mv != null ) {
+            this.mv.visitLocalVariable( name,
+                                        desc,
+                                        signature,
+                                        start,
+                                        end,
+                                        index );
+        }
+    }
+
+    public void visitLineNumber(final int line,
+                                final Label start) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( "LINENUMBER " ).append( line ).append( ' ' );
+        appendLabel( start );
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
+
+        if ( this.mv != null ) {
+            this.mv.visitLineNumber( line,
+                                     start );
+        }
+    }
+
+    public void visitMaxs(final int maxStack,
+                          final int maxLocals) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( "MAXSTACK = " ).append( maxStack ).append( '\n' );
+        this.text.add( this.buf.toString() );
+
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab2 ).append( "MAXLOCALS = " ).append( maxLocals ).append( '\n' );
+        this.text.add( this.buf.toString() );
+
+        if ( this.mv != null ) {
+            this.mv.visitMaxs( maxStack,
+                               maxLocals );
         }
     }
 
     public void visitEnd() {
         super.visitEnd();
 
-        if (mv != null) {
-            mv.visitEnd();
+        if ( this.mv != null ) {
+            this.mv.visitEnd();
         }
     }
 
@@ -476,11 +495,12 @@ public class TraceMethodVisitor extends TraceAbstractVisitor implements
      * @param l a label.
      */
     public void appendLabel(final Label l) {
-        String name = (String) labelNames.get(l);
-        if (name == null) {
-            name = "L" + labelNames.size();
-            labelNames.put(l, name);
+        String name = (String) this.labelNames.get( l );
+        if ( name == null ) {
+            name = "L" + this.labelNames.size();
+            this.labelNames.put( l,
+                                 name );
         }
-        buf.append(name);
+        this.buf.append( name );
     }
 }

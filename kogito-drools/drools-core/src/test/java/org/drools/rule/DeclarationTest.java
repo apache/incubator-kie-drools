@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -31,14 +30,14 @@ import org.drools.spi.FieldExtractor;
 public class DeclarationTest extends TestCase {
 
     public void testDeclaration() throws IntrospectionException {
-        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            "type" );
+        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                  "type" );
 
         /* Bind the extractor to a decleration */
         /* Declarations know the column they derive their value from */
-        Declaration declaration = new Declaration( "typeOfCheese",
-                                                   extractor,
-                                                   5 );
+        final Declaration declaration = new Declaration( "typeOfCheese",
+                                                         extractor,
+                                                         5 );
 
         assertEquals( "typeOfCheese",
                       declaration.getIdentifier() );
@@ -55,27 +54,27 @@ public class DeclarationTest extends TestCase {
     }
 
     public void testGetFieldValue() throws IntrospectionException {
-        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            "type" );
+        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                  "type" );
 
         /* Bind the extractor to a decleration */
         /* Declarations know the column they derive their value from */
-        Declaration declaration = new Declaration( "typeOfCheese",
-                                                   extractor,
-                                                   5 );
+        final Declaration declaration = new Declaration( "typeOfCheese",
+                                                         extractor,
+                                                         5 );
 
         /* Create some facts */
-        Cheese cheddar = new Cheese( "cheddar",
-                                     5 );
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           5 );
 
         /* Check we can extract Declarations correctly */
         assertEquals( "cheddar",
                       declaration.getValue( cheddar ) );
     }
 
-    public static int getIndex(Class clazz,
-                               String name) throws IntrospectionException {
-        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
+    public static int getIndex(final Class clazz,
+                               final String name) throws IntrospectionException {
+        final PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
         for ( int i = 0; i < descriptors.length; i++ ) {
             if ( descriptors[i].getName().equals( name ) ) {
                 return i;

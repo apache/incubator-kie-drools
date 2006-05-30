@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.common;
  * limitations under the License.
  */
 
-
-
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.FieldConstraint;
@@ -25,11 +24,16 @@ import org.drools.spi.Tuple;
 public class InstanceEqualsConstraint
     implements
     FieldConstraint {
-    private Declaration[] declarations = new Declaration[0];
+    /**
+     * 
+     */
+    private static final long   serialVersionUID = -4913836428340400997L;
 
-    private int           otherColumn;
+    private final Declaration[] declarations     = new Declaration[0];
 
-    public InstanceEqualsConstraint(int otherColumn) {
+    private int                 otherColumn;
+
+    public InstanceEqualsConstraint(final int otherColumn) {
         this.otherColumn = otherColumn;
     }
 
@@ -37,21 +41,21 @@ public class InstanceEqualsConstraint
         return this.declarations;
     }
 
-    public boolean isAllowed(InternalFactHandle handle,
-                             Tuple tuple,
-                             WorkingMemory workingMemory) {
-        return !(tuple.get( this.otherColumn ).getObject() == handle.getObject() );
+    public boolean isAllowed(final InternalFactHandle handle,
+                             final Tuple tuple,
+                             final WorkingMemory workingMemory) {
+        return !(tuple.get( this.otherColumn ).getObject() == handle.getObject());
     }
 
     public String toString() {
         return "[InstanceEqualsConstraint otherColumn=" + this.otherColumn + " ]";
     }
-    
+
     public int hashCode() {
         return this.otherColumn;
     }
-    
-    public boolean equals(Object object) {
+
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -59,9 +63,9 @@ public class InstanceEqualsConstraint
         if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
-        
-        InstanceEqualsConstraint other = ( InstanceEqualsConstraint ) object;
-        return this.otherColumn == other.otherColumn ;
+
+        final InstanceEqualsConstraint other = (InstanceEqualsConstraint) object;
+        return this.otherColumn == other.otherColumn;
     }
 
 }

@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.io.Serializable;
 import java.util.AbstractCollection;
@@ -53,31 +50,36 @@ public class PriorityQueue extends AbstractCollection
     Serializable {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 640473968693160007L;
+
+    /**
      * The default capacity for the buffer.
      */
-    private static final int DEFAULT_CAPACITY = 13;
+    private static final int  DEFAULT_CAPACITY = 13;
 
     /**
      * The elements in this buffer.
      */
-    protected Object[]       elements;
+    protected Object[]        elements;
 
     /**
      * The number of elements currently in this buffer.
      */
-    protected int            size;
+    protected int             size;
 
     /**
      * If true, the first element as determined by the sort order will be
      * returned. If false, the last element as determined by the sort order will
      * be returned.
      */
-    protected boolean        ascendingOrder;
+    protected boolean         ascendingOrder;
 
     /**
      * The comparator used to order the elements
      */
-    protected Comparator     comparator;
+    protected Comparator      comparator;
 
     // -----------------------------------------------------------------------
     /**
@@ -98,7 +100,7 @@ public class PriorityQueue extends AbstractCollection
      *            the comparator used to order the elements, null means use
      *            natural order
      */
-    public PriorityQueue(Comparator comparator) {
+    public PriorityQueue(final Comparator comparator) {
         this( PriorityQueue.DEFAULT_CAPACITY,
               true,
               comparator );
@@ -112,7 +114,7 @@ public class PriorityQueue extends AbstractCollection
      *            if <code>true</code> the heap is created as a minimum heap;
      *            otherwise, the heap is created as a maximum heap
      */
-    public PriorityQueue(boolean ascendingOrder) {
+    public PriorityQueue(final boolean ascendingOrder) {
         this( PriorityQueue.DEFAULT_CAPACITY,
               ascendingOrder,
               null );
@@ -128,8 +130,8 @@ public class PriorityQueue extends AbstractCollection
      *            the comparator used to order the elements, null means use
      *            natural order
      */
-    public PriorityQueue(boolean ascendingOrder,
-                         Comparator comparator) {
+    public PriorityQueue(final boolean ascendingOrder,
+                         final Comparator comparator) {
         this( PriorityQueue.DEFAULT_CAPACITY,
               ascendingOrder,
               comparator );
@@ -144,7 +146,7 @@ public class PriorityQueue extends AbstractCollection
      * @throws IllegalArgumentException
      *             if <code>capacity</code> is &lt;= <code>0</code>
      */
-    public PriorityQueue(int capacity) {
+    public PriorityQueue(final int capacity) {
         this( capacity,
               true,
               null );
@@ -162,8 +164,8 @@ public class PriorityQueue extends AbstractCollection
      * @throws IllegalArgumentException
      *             if <code>capacity</code> is &lt;= <code>0</code>
      */
-    public PriorityQueue(int capacity,
-                         Comparator comparator) {
+    public PriorityQueue(final int capacity,
+                         final Comparator comparator) {
         this( capacity,
               true,
               comparator );
@@ -181,8 +183,8 @@ public class PriorityQueue extends AbstractCollection
      * @throws IllegalArgumentException
      *             if <code>capacity</code> is <code>&lt;= 0</code>
      */
-    public PriorityQueue(int capacity,
-                         boolean ascendingOrder) {
+    public PriorityQueue(final int capacity,
+                         final boolean ascendingOrder) {
         this( capacity,
               ascendingOrder,
               null );
@@ -203,9 +205,9 @@ public class PriorityQueue extends AbstractCollection
      * @throws IllegalArgumentException
      *             if <code>capacity</code> is <code>&lt;= 0</code>
      */
-    public PriorityQueue(int capacity,
-                         boolean ascendingOrder,
-                         Comparator comparator) {
+    public PriorityQueue(final int capacity,
+                         final boolean ascendingOrder,
+                         final Comparator comparator) {
         super();
         if ( capacity <= 0 ) {
             throw new IllegalArgumentException( "invalid capacity" );
@@ -262,7 +264,7 @@ public class PriorityQueue extends AbstractCollection
      *            the element to be added
      * @return true always
      */
-    public boolean add(Object element) {
+    public boolean add(final Object element) {
         if ( isAtCapacity() ) {
             grow();
         }
@@ -406,7 +408,7 @@ public class PriorityQueue extends AbstractCollection
      */
     protected void percolateUpMinHeap(final int index) {
         int hole = index;
-        Object element = this.elements[hole];
+        final Object element = this.elements[hole];
         while ( hole > 1 && compare( element,
                                      this.elements[hole / 2] ) < 0 ) {
             // save element that is being pushed down
@@ -439,7 +441,7 @@ public class PriorityQueue extends AbstractCollection
      */
     protected void percolateUpMaxHeap(final int index) {
         int hole = index;
-        Object element = this.elements[hole];
+        final Object element = this.elements[hole];
 
         while ( hole > 1 && compare( element,
                                      this.elements[hole / 2] ) > 0 ) {
@@ -476,8 +478,8 @@ public class PriorityQueue extends AbstractCollection
      * @return -ve if a less than b, 0 if they are equal, +ve if a greater than
      *         b
      */
-    protected int compare(Object a,
-                          Object b) {
+    protected int compare(final Object a,
+                          final Object b) {
         if ( this.comparator != null ) {
             return this.comparator.compare( a,
                                             b );

@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaNodeBinder;
+import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -63,9 +64,9 @@ abstract class BetaNode extends TupleSource
      * @param rightInput
      *            The right input <code>ObjectSource</code>.
      */
-    BetaNode(int id,
-             TupleSource leftInput,
-             ObjectSource rightInput) {
+    BetaNode(final int id,
+             final TupleSource leftInput,
+             final ObjectSource rightInput) {
         this( id,
               leftInput,
               rightInput,
@@ -80,18 +81,18 @@ abstract class BetaNode extends TupleSource
      * @param rightInput
      *            The right input <code>ObjectSource</code>.
      */
-    BetaNode(int id,
-             TupleSource leftInput,
-             ObjectSource rightInput,
-             BetaNodeBinder joinNodeBinder) {
+    BetaNode(final int id,
+             final TupleSource leftInput,
+             final ObjectSource rightInput,
+             final BetaNodeBinder joinNodeBinder) {
         super( id );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.joinNodeBinder = joinNodeBinder;
 
     }
-    
-    public FieldConstraint[] getConstraints(){
+
+    public FieldConstraint[] getConstraints() {
         return this.joinNodeBinder.getConstraints();
     }
 
@@ -103,15 +104,15 @@ abstract class BetaNode extends TupleSource
         this.rightInput.addObjectSink( this );
     }
 
-    public void attach(WorkingMemoryImpl[] workingMemories) {
+    public void attach(final ReteooWorkingMemory[] workingMemories) {
         attach();
 
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            WorkingMemoryImpl workingMemory = workingMemories[i];
-            PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                PropagationContext.RULE_ADDITION,
-                                                                                null,
-                                                                                null );
+            final ReteooWorkingMemory workingMemory = workingMemories[i];
+            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.RULE_ADDITION,
+                                                                                      null,
+                                                                                      null );
             this.leftInput.updateNewNode( workingMemory,
                                           propagationContext );
             this.rightInput.updateNewNode( workingMemory,
@@ -120,8 +121,8 @@ abstract class BetaNode extends TupleSource
 
     }
 
-    public void remove(BaseNode node,
-                       WorkingMemoryImpl[] workingMemories) {
+    public void remove(final BaseNode node,
+                       final ReteooWorkingMemory[] workingMemories) {
         getTupleSinks().remove( node );
         removeShare();
 
@@ -163,7 +164,7 @@ abstract class BetaNode extends TupleSource
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -172,7 +173,7 @@ abstract class BetaNode extends TupleSource
             return false;
         }
 
-        BetaNode other = (BetaNode) object;
+        final BetaNode other = (BetaNode) object;
 
         return this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.joinNodeBinder.equals( other.joinNodeBinder );
     }
@@ -180,8 +181,9 @@ abstract class BetaNode extends TupleSource
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */
-    public Object createMemory( RuleBaseConfiguration config ) {
-        return new BetaMemory( config, this.getJoinNodeBinder() );
+    public Object createMemory(final RuleBaseConfiguration config) {
+        return new BetaMemory( config,
+                               this.getJoinNodeBinder() );
     }
 
 }

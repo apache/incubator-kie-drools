@@ -59,13 +59,12 @@ public interface ClassVisitor {
      *        {@link Type#getInternalName() getInternalName}). May be
      *        <tt>null</tt>.
      */
-    void visit(
-        int version,
-        int access,
-        String name,
-        String signature,
-        String superName,
-        String[] interfaces);
+    void visit(int version,
+               int access,
+               String name,
+               String signature,
+               String superName,
+               String[] interfaces);
 
     /**
      * Visits the source of the class.
@@ -76,7 +75,8 @@ public interface ClassVisitor {
      *        between source and compiled elements of the class. May be
      *        <tt>null</tt>.
      */
-    void visitSource(String source, String debug);
+    void visitSource(String source,
+                     String debug);
 
     /**
      * Visits the enclosing class of the class. This method must be called only
@@ -90,7 +90,9 @@ public interface ClassVisitor {
      *        <tt>null</tt> if the class is not enclosed in a method of its
      *        enclosing class.
      */
-    void visitOuterClass(String owner, String name, String desc);
+    void visitOuterClass(String owner,
+                         String name,
+                         String desc);
 
     /**
      * Visits an annotation of the class.
@@ -99,7 +101,8 @@ public interface ClassVisitor {
      * @param visible <tt>true</tt> if the annotation is visible at runtime.
      * @return a non null visitor to visit the annotation values.
      */
-    AnnotationVisitor visitAnnotation(String desc, boolean visible);
+    AnnotationVisitor visitAnnotation(String desc,
+                                      boolean visible);
 
     /**
      * Visits a non standard attribute of the class.
@@ -123,11 +126,10 @@ public interface ClassVisitor {
      * @param access the access flags of the inner class as originally declared
      *        in the enclosing class.
      */
-    void visitInnerClass(
-        String name,
-        String outerName,
-        String innerName,
-        int access);
+    void visitInnerClass(String name,
+                         String outerName,
+                         String innerName,
+                         int access);
 
     /**
      * Visits a field of the class.
@@ -152,12 +154,11 @@ public interface ClassVisitor {
      *         <tt>null</tt> if this class visitor is not interested in
      *         visiting these annotations and attributes.
      */
-    FieldVisitor visitField(
-        int access,
-        String name,
-        String desc,
-        String signature,
-        Object value);
+    FieldVisitor visitField(int access,
+                            String name,
+                            String desc,
+                            String signature,
+                            Object value);
 
     /**
      * Visits a method of the class. This method <i>must</i> return a new
@@ -179,12 +180,11 @@ public interface ClassVisitor {
      *         if this class visitor is not interested in visiting the code of
      *         this method.
      */
-    MethodVisitor visitMethod(
-        int access,
-        String name,
-        String desc,
-        String signature,
-        String[] exceptions);
+    MethodVisitor visitMethod(int access,
+                              String name,
+                              String desc,
+                              String signature,
+                              String[] exceptions);
 
     /**
      * Visits the end of the class. This method, which is the last one to be

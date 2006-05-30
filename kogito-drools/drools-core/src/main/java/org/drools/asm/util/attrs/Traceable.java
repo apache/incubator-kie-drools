@@ -48,5 +48,6 @@ public interface Traceable {
      * @param buf A buffer used for printing Java code.
      * @param labelNames map of label instances to their names.
      */
-    void trace(StringBuffer buf, Map labelNames);
+    void trace(StringBuffer buf,
+               Map labelNames);
 }

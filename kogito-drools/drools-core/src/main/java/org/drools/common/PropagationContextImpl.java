@@ -31,10 +31,10 @@ public class PropagationContextImpl
 
     private final long       propagationNumber;
 
-    public PropagationContextImpl(long number,
-                                  int type,
-                                  Rule rule,
-                                  Activation activation) {
+    public PropagationContextImpl(final long number,
+                                  final int type,
+                                  final Rule rule,
+                                  final Activation activation) {
         this.type = type;
         this.rule = rule;
         this.activation = activation;

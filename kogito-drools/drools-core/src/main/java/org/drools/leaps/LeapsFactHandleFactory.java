@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,30 +16,34 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import org.drools.FactHandle;
+import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.spi.FactHandleFactory;
 
 /**
  * @author Alexander Bagerman
  * 
  */
-class HandleFactory implements FactHandleFactory {
+class LeapsFactHandleFactory
+    implements
+    FactHandleFactory {
     private static final long serialVersionUID = 8510623248591449450L;
 
     private long              counter;
 
-    protected HandleFactory() {
+    protected LeapsFactHandleFactory() {
         this.counter = 0L;
     }
 
     /**
-     * fact handle with no object
+     * it does not make sense in leaps context. so we generate fact handle as we
+     * did with no counter supplied
      * 
      * @see org.drools.reteoo.FactHandleFactory
      */
-    public final FactHandle newFactHandle() {
+    public final InternalFactHandle newFactHandle(final Object object) {
         return new FactHandleImpl( this.getNextId(),
-                                   null );
+                                   object );
     }
 
     /**
@@ -47,8 +52,9 @@ class HandleFactory implements FactHandleFactory {
      * @param object
      * @return leaps handle
      */
-    public final FactHandle newFactHandle( Object object ) {
-        return new FactHandleImpl( this.getNextId( ), object );
+    public final InternalFactHandle newFactHandle(final long newId,
+                                                  final Object object) {
+        return newFactHandle( object );
     }
 
     /**
@@ -60,28 +66,26 @@ class HandleFactory implements FactHandleFactory {
     }
 
     /**
-     * it does not make sense in leaps context. so we generate fact handle as we
-     * did with no counter supplied
-     * 
-     * @see org.drools.reteoo.FactHandleFactory
-     */
-    public final FactHandle newFactHandle(long newId) {
-        return this.newFactHandle();
-    }
-
-    /**
      * does nothing in leaps context
      * 
      * @see org.drools.reteoo.FactHandleFactory
      */
-    public final void increaseFactHandleRecency(FactHandle factHandle) {
+    public final void increaseFactHandleRecency(final InternalFactHandle factHandle) {
         ;
+    }
+
+    public void destroyFactHandle(final InternalFactHandle factHandle) {
+        factHandle.invalidate();
     }
 
     /**
      * @see org.drools.reteoo.FactHandleFactory
      */
     public FactHandleFactory newInstance() {
-        return new HandleFactory();
+        return new LeapsFactHandleFactory();
+    }
+    
+    public Class getFactHandleType() {
+        return FactHandleImpl.class;
     }
 }

@@ -29,13 +29,13 @@
  */
 package org.drools.asm.tree;
 
-import org.drools.asm.Label;
-import org.drools.asm.MethodVisitor;
-import org.drools.asm.Opcodes;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.drools.asm.Label;
+import org.drools.asm.MethodVisitor;
+import org.drools.asm.Opcodes;
 
 /**
  * A node that represents a TABLESWITCH instruction.
@@ -47,12 +47,12 @@ public class TableSwitchInsnNode extends AbstractInsnNode {
     /**
      * The minimum key value.
      */
-    public int min;
+    public int   min;
 
     /**
      * The maximum key value.
      */
-    public int max;
+    public int   max;
 
     /**
      * Beginning of the default handler block.
@@ -63,7 +63,7 @@ public class TableSwitchInsnNode extends AbstractInsnNode {
      * Beginnings of the handler blocks. This list is a list of {@link Label}
      * objects.
      */
-    public List labels;
+    public List  labels;
 
     /**
      * Constructs a new {@link TableSwitchInsnNode}.
@@ -74,29 +74,30 @@ public class TableSwitchInsnNode extends AbstractInsnNode {
      * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is
      *        the beginning of the handler block for the <tt>min + i</tt> key.
      */
-    public TableSwitchInsnNode(
-        final int min,
-        final int max,
-        final Label dflt,
-        final Label[] labels)
-    {
-        super(Opcodes.TABLESWITCH);
+    public TableSwitchInsnNode(final int min,
+                               final int max,
+                               final Label dflt,
+                               final Label[] labels) {
+        super( Opcodes.TABLESWITCH );
         this.min = min;
         this.max = max;
         this.dflt = dflt;
         this.labels = new ArrayList();
-        if (labels != null) {
-            this.labels.addAll(Arrays.asList(labels));
+        if ( labels != null ) {
+            this.labels.addAll( Arrays.asList( labels ) );
         }
     }
 
     public void accept(final MethodVisitor mv) {
-        Label[] labels = new Label[this.labels.size()];
-        this.labels.toArray(labels);
-        mv.visitTableSwitchInsn(min, max, dflt, labels);
+        final Label[] labels = new Label[this.labels.size()];
+        this.labels.toArray( labels );
+        mv.visitTableSwitchInsn( this.min,
+                                 this.max,
+                                 this.dflt,
+                                 labels );
     }
 
     public int getType() {
-        return TABLESWITCH_INSN;
+        return AbstractInsnNode.TABLESWITCH_INSN;
     }
 }

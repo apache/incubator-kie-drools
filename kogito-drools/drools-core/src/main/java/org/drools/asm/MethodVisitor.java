@@ -68,7 +68,8 @@ public interface MethodVisitor {
      * @param visible <tt>true</tt> if the annotation is visible at runtime.
      * @return a non null visitor to visit the annotation values.
      */
-    AnnotationVisitor visitAnnotation(String desc, boolean visible);
+    AnnotationVisitor visitAnnotation(String desc,
+                                      boolean visible);
 
     /**
      * Visits an annotation of a parameter this method.
@@ -78,10 +79,9 @@ public interface MethodVisitor {
      * @param visible <tt>true</tt> if the annotation is visible at runtime.
      * @return a non null visitor to visit the annotation values.
      */
-    AnnotationVisitor visitParameterAnnotation(
-        int parameter,
-        String desc,
-        boolean visible);
+    AnnotationVisitor visitParameterAnnotation(int parameter,
+                                               String desc,
+                                               boolean visible);
 
     /**
      * Visits a non standard attribute of this method.
@@ -135,7 +135,8 @@ public interface MethodVisitor {
      *        {@link Opcodes#T_BYTE}, {@link Opcodes#T_SHORT},
      *        {@link Opcodes#T_INT} or {@link Opcodes#T_LONG}.
      */
-    void visitIntInsn(int opcode, int operand);
+    void visitIntInsn(int opcode,
+                      int operand);
 
     /**
      * Visits a local variable instruction. A local variable instruction is an
@@ -147,7 +148,8 @@ public interface MethodVisitor {
      * @param var the operand of the instruction to be visited. This operand is
      *        the index of a local variable.
      */
-    void visitVarInsn(int opcode, int var);
+    void visitVarInsn(int opcode,
+                      int var);
 
     /**
      * Visits a type instruction. A type instruction is an instruction that
@@ -159,7 +161,8 @@ public interface MethodVisitor {
      *        must be a fully qualified class name in internal form, or the type
      *        descriptor of an array type (see {@link Type Type}).
      */
-    void visitTypeInsn(int opcode, String desc);
+    void visitTypeInsn(int opcode,
+                       String desc);
 
     /**
      * Visits a field instruction. A field instruction is an instruction that
@@ -172,7 +175,10 @@ public interface MethodVisitor {
      * @param name the field's name.
      * @param desc the field's descriptor (see {@link Type Type}).
      */
-    void visitFieldInsn(int opcode, String owner, String name, String desc);
+    void visitFieldInsn(int opcode,
+                        String owner,
+                        String name,
+                        String desc);
 
     /**
      * Visits a method instruction. A method instruction is an instruction that
@@ -186,7 +192,10 @@ public interface MethodVisitor {
      * @param name the method's name.
      * @param desc the method's descriptor (see {@link Type Type}).
      */
-    void visitMethodInsn(int opcode, String owner, String name, String desc);
+    void visitMethodInsn(int opcode,
+                         String owner,
+                         String name,
+                         String desc);
 
     /**
      * Visits a jump instruction. A jump instruction is an instruction that may
@@ -200,7 +209,8 @@ public interface MethodVisitor {
      *        is a label that designates the instruction to which the jump
      *        instruction may jump.
      */
-    void visitJumpInsn(int opcode, Label label);
+    void visitJumpInsn(int opcode,
+                       Label label);
 
     /**
      * Visits a label. A label designates the instruction that will be visited
@@ -231,7 +241,8 @@ public interface MethodVisitor {
      * @param var index of the local variable to be incremented.
      * @param increment amount to increment the local variable by.
      */
-    void visitIincInsn(int var, int increment);
+    void visitIincInsn(int var,
+                       int increment);
 
     /**
      * Visits a TABLESWITCH instruction.
@@ -242,7 +253,10 @@ public interface MethodVisitor {
      * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is
      *        the beginning of the handler block for the <tt>min + i</tt> key.
      */
-    void visitTableSwitchInsn(int min, int max, Label dflt, Label labels[]);
+    void visitTableSwitchInsn(int min,
+                              int max,
+                              Label dflt,
+                              Label labels[]);
 
     /**
      * Visits a LOOKUPSWITCH instruction.
@@ -252,7 +266,9 @@ public interface MethodVisitor {
      * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is
      *        the beginning of the handler block for the <tt>keys[i]</tt> key.
      */
-    void visitLookupSwitchInsn(Label dflt, int keys[], Label labels[]);
+    void visitLookupSwitchInsn(Label dflt,
+                               int keys[],
+                               Label labels[]);
 
     /**
      * Visits a MULTIANEWARRAY instruction.
@@ -260,7 +276,8 @@ public interface MethodVisitor {
      * @param desc an array type descriptor (see {@link Type Type}).
      * @param dims number of dimensions of the array to allocate.
      */
-    void visitMultiANewArrayInsn(String desc, int dims);
+    void visitMultiANewArrayInsn(String desc,
+                                 int dims);
 
     // -------------------------------------------------------------------------
     // Exceptions table entries, debug information,
@@ -277,7 +294,10 @@ public interface MethodVisitor {
      *        handler, or <tt>null</tt> to catch any exceptions (for "finally"
      *        blocks).
      */
-    void visitTryCatchBlock(Label start, Label end, Label handler, String type);
+    void visitTryCatchBlock(Label start,
+                            Label end,
+                            Label handler,
+                            String type);
 
     /**
      * Visits a local variable declaration.
@@ -296,13 +316,12 @@ public interface MethodVisitor {
      *         been visited by this visitor (by the
      *         {@link #visitLabel visitLabel} method).
      */
-    void visitLocalVariable(
-        String name,
-        String desc,
-        String signature,
-        Label start,
-        Label end,
-        int index);
+    void visitLocalVariable(String name,
+                            String desc,
+                            String signature,
+                            Label start,
+                            Label end,
+                            int index);
 
     /**
      * Visits a line number declaration.
@@ -314,7 +333,8 @@ public interface MethodVisitor {
      *         visited by this visitor (by the {@link #visitLabel visitLabel}
      *         method).
      */
-    void visitLineNumber(int line, Label start);
+    void visitLineNumber(int line,
+                         Label start);
 
     /**
      * Visits the maximum stack size and the maximum number of local variables
@@ -323,7 +343,8 @@ public interface MethodVisitor {
      * @param maxStack maximum stack size of the method.
      * @param maxLocals maximum number of local variables for the method.
      */
-    void visitMaxs(int maxStack, int maxLocals);
+    void visitMaxs(int maxStack,
+                   int maxLocals);
 
     /**
      * Visits the end of the method. This method, which is the last one to be

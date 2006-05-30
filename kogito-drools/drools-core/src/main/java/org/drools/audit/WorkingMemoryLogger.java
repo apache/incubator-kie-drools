@@ -59,7 +59,7 @@ public abstract class WorkingMemoryLogger
     WorkingMemoryEventListener,
     AgendaEventListener {
 
-    private List          filters = new ArrayList();
+    private final List    filters = new ArrayList();
     private WorkingMemory workingMemory;
 
     /**
@@ -67,7 +67,7 @@ public abstract class WorkingMemoryLogger
      * 
      * @param workingMemory
      */
-    public WorkingMemoryLogger(WorkingMemory workingMemory) {
+    public WorkingMemoryLogger(final WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         workingMemory.addEventListener( (WorkingMemoryEventListener) this );
         workingMemory.addEventListener( (AgendaEventListener) this );
@@ -88,10 +88,10 @@ public abstract class WorkingMemoryLogger
      * 
      * @param logEvent
      */
-    private void filterLogEvent(LogEvent logEvent) {
-        Iterator iterator = filters.iterator();
+    private void filterLogEvent(final LogEvent logEvent) {
+        final Iterator iterator = this.filters.iterator();
         while ( iterator.hasNext() ) {
-            ILogEventFilter filter = (ILogEventFilter) iterator.next();
+            final ILogEventFilter filter = (ILogEventFilter) iterator.next();
             // do nothing if one of the filters doesn't accept the event
             if ( !filter.acceptEvent( logEvent ) ) {
                 return;
@@ -109,11 +109,11 @@ public abstract class WorkingMemoryLogger
      *
      * @param filter The filter that should be added.
      */
-    public void addFilter(ILogEventFilter filter) {
+    public void addFilter(final ILogEventFilter filter) {
         if ( filter == null ) {
             throw new NullPointerException();
         }
-        filters.add( filter );
+        this.filters.add( filter );
     }
 
     /**
@@ -123,21 +123,21 @@ public abstract class WorkingMemoryLogger
      *
      * @param filter The filter that should be removed.
      */
-    public void removeFilter(ILogEventFilter filter) {
-        filters.remove( filter );
+    public void removeFilter(final ILogEventFilter filter) {
+        this.filters.remove( filter );
     }
 
     /**
      * Clears all filters of this event log.
      */
     public void clearFilters() {
-        filters.clear();
+        this.filters.clear();
     }
 
     /**
      * @see org.drools.event.WorkingMemoryEventListener
      */
-    public void objectAsserted(ObjectAssertedEvent event) {
+    public void objectAsserted(final ObjectAssertedEvent event) {
         filterLogEvent( new ObjectLogEvent( LogEvent.OBJECT_ASSERTED,
                                             ((InternalFactHandle) event.getFactHandle()).getId(),
                                             event.getObject().toString() ) );
@@ -146,7 +146,7 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.WorkingMemoryEventListener
      */
-    public void objectModified(ObjectModifiedEvent event) {
+    public void objectModified(final ObjectModifiedEvent event) {
         filterLogEvent( new ObjectLogEvent( LogEvent.OBJECT_MODIFIED,
                                             ((InternalFactHandle) event.getFactHandle()).getId(),
                                             event.getObject().toString() ) );
@@ -155,7 +155,7 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.WorkingMemoryEventListener
      */
-    public void objectRetracted(ObjectRetractedEvent event) {
+    public void objectRetracted(final ObjectRetractedEvent event) {
         filterLogEvent( new ObjectLogEvent( LogEvent.OBJECT_RETRACTED,
                                             ((InternalFactHandle) event.getFactHandle()).getId(),
                                             event.getOldObject().toString() ) );
@@ -164,7 +164,7 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void activationCreated(ActivationCreatedEvent event) {
+    public void activationCreated(final ActivationCreatedEvent event) {
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CREATED,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
@@ -174,7 +174,7 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void activationCancelled(ActivationCancelledEvent event) {
+    public void activationCancelled(final ActivationCancelledEvent event) {
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CANCELLED,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
@@ -184,7 +184,7 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void beforeActivationFired(BeforeActivationFiredEvent event) {
+    public void beforeActivationFired(final BeforeActivationFiredEvent event) {
         filterLogEvent( new ActivationLogEvent( LogEvent.BEFORE_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
@@ -194,7 +194,7 @@ public abstract class WorkingMemoryLogger
     /**
      * @see org.drools.event.AgendaEventListener
      */
-    public void afterActivationFired(AfterActivationFiredEvent event) {
+    public void afterActivationFired(final AfterActivationFiredEvent event) {
         filterLogEvent( new ActivationLogEvent( LogEvent.AFTER_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
@@ -211,16 +211,16 @@ public abstract class WorkingMemoryLogger
      * @param activation The activation from which the declarations should be extracted
      * @return A String represetation of the declarations of the activation.
      */
-    private String extractDeclarations(Activation activation) {
-        StringBuffer result = new StringBuffer();
-        Tuple tuple = activation.getTuple();
-        Declaration[] declarations = activation.getRule().getDeclarations();
+    private String extractDeclarations(final Activation activation) {
+        final StringBuffer result = new StringBuffer();
+        final Tuple tuple = activation.getTuple();
+        final Declaration[] declarations = activation.getRule().getDeclarations();
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            Declaration declaration = declarations[i];
-            FactHandle handle = tuple.get( declaration );
+            final Declaration declaration = declarations[i];
+            final FactHandle handle = tuple.get( declaration );
             if ( handle instanceof InternalFactHandle ) {
-                InternalFactHandle handleImpl = (InternalFactHandle) handle;
-                Object value = declaration.getValue( workingMemory.getObject( handle ) );
+                final InternalFactHandle handleImpl = (InternalFactHandle) handle;
+                final Object value = declaration.getValue( this.workingMemory.getObject( handle ) );
 
                 result.append( declaration.getIdentifier() );
                 result.append( "=" );
@@ -251,11 +251,11 @@ public abstract class WorkingMemoryLogger
      * @param activation The activation for which a unique id should be generated
      * @return A unique id for the activation
      */
-    private static String getActivationId(Activation activation) {
-        StringBuffer result = new StringBuffer( activation.getRule().getName() );
+    private static String getActivationId(final Activation activation) {
+        final StringBuffer result = new StringBuffer( activation.getRule().getName() );
         result.append( " [" );
-        Tuple tuple = activation.getTuple();
-        FactHandle[] handles = tuple.getFactHandles();
+        final Tuple tuple = activation.getTuple();
+        final FactHandle[] handles = tuple.getFactHandles();
         for ( int i = 0; i < handles.length; i++ ) {
             result.append( ((InternalFactHandle) handles[i]).getId() );
             if ( i < handles.length - 1 ) {

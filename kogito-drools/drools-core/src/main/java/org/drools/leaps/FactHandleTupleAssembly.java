@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -31,8 +32,8 @@ class FactHandleTupleAssembly {
 
     final int        index;
 
-    FactHandleTupleAssembly(LeapsTuple tuple,
-                            int index) {
+    FactHandleTupleAssembly(final LeapsTuple tuple,
+                            final int index) {
         this.tuple = tuple;
         this.index = index;
     }

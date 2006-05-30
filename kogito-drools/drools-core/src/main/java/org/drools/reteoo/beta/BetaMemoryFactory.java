@@ -33,7 +33,7 @@ import org.drools.spi.FieldConstraint;
  * Created: 12/02/2006
  */
 public class BetaMemoryFactory {
-    
+
     protected BetaMemoryFactory() {
     }
 
@@ -46,20 +46,21 @@ public class BetaMemoryFactory {
      * 
      * @return the newly created BetaLeftMemory 
      */
-    public static BetaLeftMemory newLeftMemory(RuleBaseConfiguration config, BetaNodeBinder binder) {
+    public static BetaLeftMemory newLeftMemory(final RuleBaseConfiguration config,
+                                               final BetaNodeBinder binder) {
         BetaLeftMemory memory = null;
         BetaLeftMemory innerMostMemory = null;
-        FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
-        if ( (constraints != null) && (config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_INDEX_LEFT_BETA_MEMORY ))) {
+        final FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
+        if ( (constraints != null) && (config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_INDEX_LEFT_BETA_MEMORY )) ) {
             for ( int i = 0; i < constraints.length; i++ ) {
                 if ( constraints[i] instanceof BoundVariableConstraint ) {
-                    BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
+                    final BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
                     BetaLeftMemory innerMemory = null;
                     switch ( bvc.getEvaluator().getType() ) {
                         case Evaluator.BOOLEAN_TYPE :
                             innerMemory = new BooleanConstrainedLeftMemory( bvc.getFieldExtractor(),
-                                                                       bvc.getRequiredDeclarations()[0],
-                                                                       bvc.getEvaluator());
+                                                                            bvc.getRequiredDeclarations()[0],
+                                                                            bvc.getEvaluator() );
                             break;
                         case Evaluator.OBJECT_TYPE :
                         case Evaluator.SHORT_TYPE :
@@ -69,22 +70,23 @@ public class BetaMemoryFactory {
                         case Evaluator.BYTE_TYPE :
                             if ( bvc.getEvaluator().getOperator() == Evaluator.EQUAL ) {
                                 innerMemory = new ObjectEqualConstrLeftMemory( bvc.getFieldExtractor(),
-                                                                          bvc.getRequiredDeclarations()[0],
-                                                                          bvc.getEvaluator());
+                                                                               bvc.getRequiredDeclarations()[0],
+                                                                               bvc.getEvaluator() );
                             } else if ( bvc.getEvaluator().getOperator() == Evaluator.NOT_EQUAL ) {
                                 innerMemory = new ObjectNotEqualConstrLeftMemory( bvc.getFieldExtractor(),
-                                                                             bvc.getRequiredDeclarations()[0],
-                                                                             bvc.getEvaluator());
+                                                                                  bvc.getRequiredDeclarations()[0],
+                                                                                  bvc.getEvaluator() );
                             }
                             break;
                     }
-                    if( innerMemory != null ) {
-                        if (innerMostMemory != null) {
+                    if ( innerMemory != null ) {
+                        if ( innerMostMemory != null ) {
                             try {
                                 innerMostMemory.setInnerMemory( innerMemory );
                                 innerMostMemory = innerMemory;
-                            } catch ( OperationNotSupportedException e ) {
-                                throw new RuntimeException("BUG: Exception was not supposed to be raised", e);
+                            } catch ( final OperationNotSupportedException e ) {
+                                throw new RuntimeException( "BUG: Exception was not supposed to be raised",
+                                                            e );
                             }
                         } else {
                             memory = innerMemory;
@@ -109,20 +111,21 @@ public class BetaMemoryFactory {
      * 
      * @return the newly created BetaRightMemory 
      */
-    public static BetaRightMemory newRightMemory(RuleBaseConfiguration config, BetaNodeBinder binder) {
+    public static BetaRightMemory newRightMemory(final RuleBaseConfiguration config,
+                                                 final BetaNodeBinder binder) {
         BetaRightMemory memory = null;
         BetaRightMemory innerMostMemory = null;
-        FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
-        if ( (constraints != null) && ( config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_INDEX_RIGHT_BETA_MEMORY ))) {
+        final FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
+        if ( (constraints != null) && (config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_INDEX_RIGHT_BETA_MEMORY )) ) {
             for ( int i = 0; i < constraints.length; i++ ) {
                 if ( constraints[i] instanceof BoundVariableConstraint ) {
-                    BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
+                    final BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
                     BetaRightMemory innerMemory = null;
                     switch ( bvc.getEvaluator().getType() ) {
                         case Evaluator.BOOLEAN_TYPE :
                             innerMemory = new BooleanConstrainedRightMemory( bvc.getFieldExtractor(),
-                                                                        bvc.getRequiredDeclarations()[0],
-                                                                        bvc.getEvaluator());
+                                                                             bvc.getRequiredDeclarations()[0],
+                                                                             bvc.getEvaluator() );
                             break;
                         case Evaluator.OBJECT_TYPE :
                         case Evaluator.SHORT_TYPE :
@@ -132,22 +135,23 @@ public class BetaMemoryFactory {
                         case Evaluator.BYTE_TYPE :
                             if ( bvc.getEvaluator().getOperator() == Evaluator.EQUAL ) {
                                 innerMemory = new ObjectEqualConstrRightMemory( bvc.getFieldExtractor(),
-                                                                           bvc.getRequiredDeclarations()[0],
-                                                                           bvc.getEvaluator());
+                                                                                bvc.getRequiredDeclarations()[0],
+                                                                                bvc.getEvaluator() );
                             } else if ( bvc.getEvaluator().getOperator() == Evaluator.NOT_EQUAL ) {
                                 innerMemory = new ObjectNotEqualConstrRightMemory( bvc.getFieldExtractor(),
-                                                                              bvc.getRequiredDeclarations()[0],
-                                                                              bvc.getEvaluator());
+                                                                                   bvc.getRequiredDeclarations()[0],
+                                                                                   bvc.getEvaluator() );
                             }
                             break;
                     }
-                    if( innerMemory != null ) {
-                        if (innerMostMemory != null) {
+                    if ( innerMemory != null ) {
+                        if ( innerMostMemory != null ) {
                             try {
                                 innerMostMemory.setInnerMemory( innerMemory );
                                 innerMostMemory = innerMemory;
-                            } catch ( OperationNotSupportedException e ) {
-                                throw new RuntimeException("BUG: Exception was not supposed to be raised", e);
+                            } catch ( final OperationNotSupportedException e ) {
+                                throw new RuntimeException( "BUG: Exception was not supposed to be raised",
+                                                            e );
                             }
                         } else {
                             memory = innerMemory;

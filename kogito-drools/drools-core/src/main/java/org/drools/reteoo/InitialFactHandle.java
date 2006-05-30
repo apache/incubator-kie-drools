@@ -1,4 +1,8 @@
 package org.drools.reteoo;
+
+import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,14 +19,17 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+public class InitialFactHandle extends DefaultFactHandle {
+    /**
+     * 
+     */
+    private static final long        serialVersionUID = -9081273269528006282L;
 
+    private final InternalFactHandle delegate;
 
-public class InitialFactHandle extends FactHandleImpl {
-    private final FactHandleImpl delegate;
+    private Object                   object;
 
-    private Object               object;
-
-    public InitialFactHandle(FactHandleImpl delegate) {
+    public InitialFactHandle(final InternalFactHandle delegate) {
         super();
         this.delegate = delegate;
         this.object = InitialFactImpl.getInstance();
@@ -35,7 +42,7 @@ public class InitialFactHandle extends FactHandleImpl {
     /**
      * @see Object
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         return this.delegate.equals( object );
     }
 
@@ -57,7 +64,7 @@ public class InitialFactHandle extends FactHandleImpl {
         return this.delegate.getRecency();
     }
 
-    public void setRecency(long recency) {
+    public void setRecency(final long recency) {
         this.delegate.setRecency( recency );
     }
 
@@ -65,7 +72,7 @@ public class InitialFactHandle extends FactHandleImpl {
         return this.delegate.getId();
     }
 
-    void invalidate() {
+    public void invalidate() {
         this.delegate.invalidate();
     }
 
@@ -73,7 +80,7 @@ public class InitialFactHandle extends FactHandleImpl {
         return this.object;
     }
 
-    public void setObject(Object object) {
+    public void setObject(final Object object) {
         // do nothign
     }
 

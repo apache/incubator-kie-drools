@@ -1,4 +1,5 @@
 package org.drools.visualize;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.visualize;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,29 +31,29 @@ public class RowList {
         this.rows = new ArrayList();
     }
 
-    public void add(int depth,
-                    Vertex vertex) {
-        if ( rows.size() < (depth + 1) ) {
-            int addRows = depth - rows.size() + 1;
+    public void add(final int depth,
+                    final Vertex vertex) {
+        if ( this.rows.size() < (depth + 1) ) {
+            final int addRows = depth - this.rows.size() + 1;
 
             for ( int i = 0; i < addRows; ++i ) {
                 this.rows.add( new Row( (depth - addRows) + i ) );
             }
         }
 
-        ((Row) rows.get( depth )).add( vertex );
+        ((Row) this.rows.get( depth )).add( vertex );
     }
 
     public int getDepth() {
-        return rows.size();
+        return this.rows.size();
     }
 
-    public Row get(int row) {
-        return (Row) rows.get( row );
+    public Row get(final int row) {
+        return (Row) this.rows.get( row );
     }
 
-    public int getRow(Vertex vertex) {
-        int numRows = rows.size();
+    public int getRow(final Vertex vertex) {
+        final int numRows = this.rows.size();
 
         for ( int i = 0; i < numRows; ++i ) {
             if ( ((Row) this.rows.get( i )).contains( vertex ) ) {
@@ -68,9 +67,9 @@ public class RowList {
     public int getWidth() {
         int width = 0;
 
-        for ( Iterator rowIter = rows.iterator(); rowIter.hasNext(); ) {
-            Row row = (Row) rowIter.next();
-            int rowWidth = row.getWidth();
+        for ( final Iterator rowIter = this.rows.iterator(); rowIter.hasNext(); ) {
+            final Row row = (Row) rowIter.next();
+            final int rowWidth = row.getWidth();
 
             if ( rowWidth > width ) {
                 width = rowWidth;
@@ -80,20 +79,20 @@ public class RowList {
         return width;
     }
 
-    public int getWidth(int row) {
+    public int getWidth(final int row) {
         return ((Row) this.rows.get( row )).getWidth();
     }
 
-    public int getColumn(Vertex vertex) {
-        int row = getRow( vertex );
+    public int getColumn(final Vertex vertex) {
+        final int row = getRow( vertex );
 
         if ( row < 0 ) {
             return -1;
         }
 
-        List rowVertices = get( row ).getVertices();
+        final List rowVertices = get( row ).getVertices();
 
-        int numCols = rowVertices.size();
+        final int numCols = rowVertices.size();
 
         for ( int i = 0; i < numCols; ++i ) {
             if ( rowVertices.get( i ).equals( vertex ) ) {
@@ -105,7 +104,7 @@ public class RowList {
     }
 
     public void dump() {
-        int numRows = rows.size();
+        final int numRows = this.rows.size();
 
         for ( int i = 0; i < numRows; ++i ) {
             System.err.println( i + ": " + get( i ).getVertices() );
@@ -113,7 +112,7 @@ public class RowList {
     }
 
     public void optimize() {
-        int numRows = rows.size();
+        final int numRows = this.rows.size();
 
         for ( int i = 0; i < numRows; ++i ) {
             get( i ).optimize();

@@ -1,4 +1,5 @@
 package org.drools.examples.manners;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.examples.manners;
  * limitations under the License.
  */
 
-
-
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
@@ -27,20 +26,20 @@ public class LeapsMannersTest extends BaseMannersTest {
 
     public void testManners() throws Exception {
 
-        final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
+        final org.drools.leaps.LeapsRuleBase ruleBase = new org.drools.leaps.LeapsRuleBase();
         ruleBase.addPackage( this.pkg );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        InputStream is = getClass().getResourceAsStream( "/manners64.dat" );
-        List list = getInputObjects( is );
-        for ( Iterator it = list.iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        final InputStream is = getClass().getResourceAsStream( "/manners64.dat" );
+        final List list = getInputObjects( is );
+        for ( final Iterator it = list.iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             workingMemory.assertObject( object );
         }
 
         workingMemory.assertObject( new Count( 1 ) );
 
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
         System.err.println( System.currentTimeMillis() - start );
 

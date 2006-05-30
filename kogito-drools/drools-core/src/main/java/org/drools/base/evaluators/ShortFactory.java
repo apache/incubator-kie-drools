@@ -1,4 +1,5 @@
 package org.drools.base.evaluators;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,11 @@ package org.drools.base.evaluators;
  * limitations under the License.
  */
 
-
-
 import org.drools.base.BaseEvaluator;
 import org.drools.spi.Evaluator;
 
 public class ShortFactory {
-    public static Evaluator getShortEvaluator(int operator) {
+    public static Evaluator getShortEvaluator(final int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
                 return ShortEqualEvaluator.getInstance();
@@ -41,13 +40,17 @@ public class ShortFactory {
     }
 
     static class ShortEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 8933390138182317179L;
+        private static Evaluator  INSTANCE;
 
         public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new ShortEqualEvaluator();
+            if ( ShortEqualEvaluator.INSTANCE == null ) {
+                ShortEqualEvaluator.INSTANCE = new ShortEqualEvaluator();
             }
-            return INSTANCE;
+            return ShortEqualEvaluator.INSTANCE;
         }
 
         private ShortEqualEvaluator() {
@@ -55,9 +58,11 @@ public class ShortFactory {
                    Evaluator.EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 == null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 == null;
+            }
             return ((Number) object1).equals( object2 );
         }
 
@@ -67,13 +72,17 @@ public class ShortFactory {
     }
 
     static class ShortNotEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -273350270376804828L;
+        private static Evaluator  INSTANCE;
 
         public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new ShortNotEqualEvaluator();
+            if ( ShortNotEqualEvaluator.INSTANCE == null ) {
+                ShortNotEqualEvaluator.INSTANCE = new ShortNotEqualEvaluator();
             }
-            return INSTANCE;
+            return ShortNotEqualEvaluator.INSTANCE;
         }
 
         private ShortNotEqualEvaluator() {
@@ -81,9 +90,11 @@ public class ShortFactory {
                    Evaluator.NOT_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return !(object2 == null);
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return !(object2 == null);
+            }
             return !((Number) object1).equals( object2 );
         }
 
@@ -93,13 +104,17 @@ public class ShortFactory {
     }
 
     static class ShortLessEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -1562867187426899162L;
+        private static Evaluator  INSTANCE;
 
         public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new ShortLessEvaluator();
+            if ( ShortLessEvaluator.INSTANCE == null ) {
+                ShortLessEvaluator.INSTANCE = new ShortLessEvaluator();
             }
-            return INSTANCE;
+            return ShortLessEvaluator.INSTANCE;
         }
 
         private ShortLessEvaluator() {
@@ -107,8 +122,8 @@ public class ShortFactory {
                    Evaluator.LESS );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).shortValue() < ((Number) object2).shortValue();
         }
 
@@ -118,13 +133,17 @@ public class ShortFactory {
     }
 
     static class ShortLessOrEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -1541816846266081605L;
+        private static Evaluator  INSTANCE;
 
         public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new ShortLessOrEqualEvaluator();
+            if ( ShortLessOrEqualEvaluator.INSTANCE == null ) {
+                ShortLessOrEqualEvaluator.INSTANCE = new ShortLessOrEqualEvaluator();
             }
-            return INSTANCE;
+            return ShortLessOrEqualEvaluator.INSTANCE;
         }
 
         private ShortLessOrEqualEvaluator() {
@@ -132,8 +151,8 @@ public class ShortFactory {
                    Evaluator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).shortValue() <= ((Number) object2).shortValue();
         }
 
@@ -143,13 +162,17 @@ public class ShortFactory {
     }
 
     static class ShortGreaterEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -3260955087091852509L;
+        private static Evaluator  INSTANCE;
 
         public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new ShortGreaterEvaluator();
+            if ( ShortGreaterEvaluator.INSTANCE == null ) {
+                ShortGreaterEvaluator.INSTANCE = new ShortGreaterEvaluator();
             }
-            return INSTANCE;
+            return ShortGreaterEvaluator.INSTANCE;
         }
 
         private ShortGreaterEvaluator() {
@@ -157,8 +180,8 @@ public class ShortFactory {
                    Evaluator.GREATER );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).shortValue() > ((Number) object2).shortValue();
         }
 
@@ -168,13 +191,17 @@ public class ShortFactory {
     }
 
     static class ShortGreaterOrEqualEvaluator extends BaseEvaluator {
-        private static Evaluator INSTANCE;
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1254418853497580320L;
+        private static Evaluator  INSTANCE;
 
         public static Evaluator getInstance() {
-            if ( INSTANCE == null ) {
-                INSTANCE = new ShortGreaterOrEqualEvaluator();
+            if ( ShortGreaterOrEqualEvaluator.INSTANCE == null ) {
+                ShortGreaterOrEqualEvaluator.INSTANCE = new ShortGreaterOrEqualEvaluator();
             }
-            return INSTANCE;
+            return ShortGreaterOrEqualEvaluator.INSTANCE;
         }
 
         private ShortGreaterOrEqualEvaluator() {
@@ -182,8 +209,8 @@ public class ShortFactory {
                    Evaluator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).shortValue() >= ((Number) object2).shortValue();
         }
 

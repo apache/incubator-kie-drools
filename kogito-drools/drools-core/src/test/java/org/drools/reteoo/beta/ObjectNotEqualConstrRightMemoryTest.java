@@ -23,7 +23,7 @@ import junit.framework.Assert;
 
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.EvaluatorFactory;
-import org.drools.reteoo.FactHandleImpl;
+import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
@@ -43,13 +43,13 @@ public class ObjectNotEqualConstrRightMemoryTest extends BaseBetaRightMemoryTest
 
     protected void setUp() throws Exception {
         super.setUp();
-        ClassFieldExtractor extractor = new ClassFieldExtractor( DummyValueObject.class,
-                                                                 "objectAttr" );
-        Declaration declaration = new Declaration( "myObject",
-                                                   extractor,
-                                                   0 );
-        Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
-                                                             Evaluator.NOT_EQUAL );
+        final ClassFieldExtractor extractor = new ClassFieldExtractor( DummyValueObject.class,
+                                                                       "objectAttr" );
+        final Declaration declaration = new Declaration( "myObject",
+                                                         extractor,
+                                                         0 );
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                   Evaluator.NOT_EQUAL );
 
         this.memory = new ObjectNotEqualConstrRightMemory( extractor,
                                                            declaration,
@@ -67,27 +67,27 @@ public class ObjectNotEqualConstrRightMemoryTest extends BaseBetaRightMemoryTest
     public void testIterator() {
         try {
             this.memory.add( this.workingMemory,
-                             matches0 );
+                             this.matches0 );
             this.memory.add( this.workingMemory,
-                             matches1 );
+                             this.matches1 );
             Assert.assertEquals( "Memory should have size 2",
                                  2,
                                  this.memory.size() );
 
-            Iterator iterator = this.memory.iterator( workingMemory,
-                                                      tuple0 );
+            Iterator iterator = this.memory.iterator( this.workingMemory,
+                                                      this.tuple0 );
 
             Assert.assertTrue( "There should be a next element",
                                iterator.hasNext() );
             ObjectMatches om1 = (ObjectMatches) iterator.next();
             Assert.assertSame( "The first object to return should have been matches1",
-                               matches1,
+                               this.matches1,
                                om1 );
 
             try {
                 iterator.remove();
                 Assert.fail( "Right side memory Iterators are not supposed to support remove()" );
-            } catch ( UnsupportedOperationException uoe ) {
+            } catch ( final UnsupportedOperationException uoe ) {
                 // working fine
             }
             Assert.assertEquals( "Memory should have size 2",
@@ -100,31 +100,30 @@ public class ObjectNotEqualConstrRightMemoryTest extends BaseBetaRightMemoryTest
             try {
                 iterator.next();
                 Assert.fail( "Iterator is supposed to throw an Exception when there are no more elements" );
-            } catch ( NoSuchElementException nse ) {
+            } catch ( final NoSuchElementException nse ) {
                 // working fine
             }
 
-            DummyValueObject obj2 = new DummyValueObject( false,
-                                                          "string3",
-                                                          30,
-                                                          "object3" );
-            FactHandleImpl f2 = (FactHandleImpl) this.factory.newFactHandle( 2 );
-            f2.setObject( obj2 );
-            ReteTuple tuple2 = new ReteTuple( f2 );
+            final DummyValueObject obj2 = new DummyValueObject( false,
+                                                                "string3",
+                                                                30,
+                                                                "object3" );
+            final DefaultFactHandle f2 = (DefaultFactHandle) this.factory.newFactHandle( obj2 );
+            final ReteTuple tuple2 = new ReteTuple( f2 );
 
-            iterator = this.memory.iterator( workingMemory,
+            iterator = this.memory.iterator( this.workingMemory,
                                              tuple2 );
             Assert.assertTrue( "There should be a next element",
                                iterator.hasNext() );
 
-            ObjectMatches om0 = (ObjectMatches) iterator.next();
+            final ObjectMatches om0 = (ObjectMatches) iterator.next();
             Assert.assertSame( "The first object to return should have been matches0",
-                               matches0,
+                               this.matches0,
                                om0 );
 
             om1 = (ObjectMatches) iterator.next();
             Assert.assertSame( "The second object to return should have been matches1",
-                               matches1,
+                               this.matches1,
                                om1 );
 
             Assert.assertFalse( "There should not be a next element",
@@ -133,10 +132,10 @@ public class ObjectNotEqualConstrRightMemoryTest extends BaseBetaRightMemoryTest
             try {
                 iterator.next();
                 Assert.fail( "Iterator is supposed to throw an Exception when there are no more elements" );
-            } catch ( NoSuchElementException nse ) {
+            } catch ( final NoSuchElementException nse ) {
                 // working fine
             }
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
             Assert.fail( "Memory is not supposed to throw any exception during iteration" );
         }
@@ -146,17 +145,17 @@ public class ObjectNotEqualConstrRightMemoryTest extends BaseBetaRightMemoryTest
      * Test method for 'org.drools.reteoo.beta.ObjectNotEqualConstrRightMemory.selectPossibleMatches(WorkingMemory, ReteTuple)'
      */
     public void testSelectPossibleMatches() {
-        MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper( matches0 );
-        MultiLinkedListNodeWrapper wrapper1 = new MultiLinkedListNodeWrapper( matches1 );
-        MultiLinkedListNodeWrapper wrapper2 = new MultiLinkedListNodeWrapper( matches1 );
+        final MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper( this.matches0 );
+        final MultiLinkedListNodeWrapper wrapper1 = new MultiLinkedListNodeWrapper( this.matches1 );
+        final MultiLinkedListNodeWrapper wrapper2 = new MultiLinkedListNodeWrapper( this.matches1 );
 
         this.memory.add( this.workingMemory,
                          wrapper0 );
         this.memory.add( this.workingMemory,
                          wrapper1 );
 
-        this.memory.selectPossibleMatches( workingMemory,
-                                           tuple0 );
+        this.memory.selectPossibleMatches( this.workingMemory,
+                                           this.tuple0 );
 
         Assert.assertFalse( "Wrapper0 was not a possible match",
                             this.memory.isPossibleMatch( wrapper0 ) );
@@ -165,15 +164,14 @@ public class ObjectNotEqualConstrRightMemoryTest extends BaseBetaRightMemoryTest
         Assert.assertFalse( "Wrapper2 was not a possible match",
                             this.memory.isPossibleMatch( wrapper2 ) );
 
-        DummyValueObject obj2 = new DummyValueObject( false,
-                                                      "string3",
-                                                      30,
-                                                      "object3" );
-        FactHandleImpl f2 = (FactHandleImpl) this.factory.newFactHandle( 2 );
-        f2.setObject( obj2 );
-        ReteTuple tuple2 = new ReteTuple( f2 );
+        final DummyValueObject obj2 = new DummyValueObject( false,
+                                                            "string3",
+                                                            30,
+                                                            "object3" );
+        final DefaultFactHandle f2 = (DefaultFactHandle) this.factory.newFactHandle( obj2 );
+        final ReteTuple tuple2 = new ReteTuple( f2 );
 
-        this.memory.selectPossibleMatches( workingMemory,
+        this.memory.selectPossibleMatches( this.workingMemory,
                                            tuple2 );
         Assert.assertTrue( "Wrapper0 was a possible match",
                            this.memory.isPossibleMatch( wrapper0 ) );
@@ -185,13 +183,12 @@ public class ObjectNotEqualConstrRightMemoryTest extends BaseBetaRightMemoryTest
     }
 
     public void testModifyObjectAttribute() {
-        DummyValueObject obj2 = new DummyValueObject( true,
-                                                      "string20",
-                                                      20,
-                                                      "object20" );
-        FactHandleImpl f2 = (FactHandleImpl) factory.newFactHandle( 2 );
-        f2.setObject( obj2 );
-        ObjectMatches matches2 = new ObjectMatches( f2 );
+        final DummyValueObject obj2 = new DummyValueObject( true,
+                                                            "string20",
+                                                            20,
+                                                            "object20" );
+        final DefaultFactHandle f2 = (DefaultFactHandle) this.factory.newFactHandle( obj2 );
+        final ObjectMatches matches2 = new ObjectMatches( f2 );
 
         this.memory.add( this.workingMemory,
                          matches2 );

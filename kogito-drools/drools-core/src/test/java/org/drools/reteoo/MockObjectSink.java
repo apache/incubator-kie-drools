@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,39 +16,38 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.common.DefaultFactHandle;
 import org.drools.spi.PropagationContext;
 
 public class MockObjectSink
     implements
     ObjectSink {
-    private List asserted  = new ArrayList();
-    private List retracted = new ArrayList();
-    private List modified = new ArrayList();    
+    private final List asserted  = new ArrayList();
+    private final List retracted = new ArrayList();
+    private final List modified  = new ArrayList();
 
-    public void assertObject(FactHandleImpl handle,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
+    public void assertObject(final DefaultFactHandle handle,
+                             final PropagationContext context,
+                             final ReteooWorkingMemory workingMemory) {
         this.asserted.add( new Object[]{handle, context, workingMemory} );
     }
 
-    public void retractObject(FactHandleImpl handle,
-                              PropagationContext context,
-                              WorkingMemoryImpl workingMemory) {
+    public void retractObject(final DefaultFactHandle handle,
+                              final PropagationContext context,
+                              final ReteooWorkingMemory workingMemory) {
         this.retracted.add( new Object[]{handle, context, workingMemory} );
     }
 
-    public void modifyObject(FactHandleImpl handle,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
+    public void modifyObject(final DefaultFactHandle handle,
+                             final PropagationContext context,
+                             final ReteooWorkingMemory workingMemory) {
         this.modified.add( new Object[]{handle, context, workingMemory} );
 
-    }    
-    
+    }
+
     public List getAsserted() {
         return this.asserted;
     }

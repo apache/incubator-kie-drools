@@ -1,4 +1,5 @@
 package org.drools.examples.waltz;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.examples.waltz;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * @author Alexander Bagerman
  * 
@@ -29,8 +26,8 @@ public class Line {
 
     private int p2;
 
-    public Line(int p1,
-                int p2) {
+    public Line(final int p1,
+                final int p2) {
         this.p1 = p1;
         this.p2 = p2;
     }
@@ -39,7 +36,7 @@ public class Line {
         return this.p1;
     }
 
-    protected void setP1(int p1) {
+    protected void setP1(final int p1) {
         this.p1 = p1;
     }
 
@@ -47,7 +44,7 @@ public class Line {
         return this.p2;
     }
 
-    protected void setP2(int p2) {
+    protected void setP2(final int p2) {
         this.p2 = p2;
     }
 

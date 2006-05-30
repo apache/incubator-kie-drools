@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,17 +16,15 @@ package org.drools.base;
  * limitations under the License.
  */
 
-
-
 public class TestBean {
-    private String name = "michael";
-    private int    age  = 42;
+    private final String name = "michael";
+    private final int    age  = 42;
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public int getAge() {
-        return age;
+        return this.age;
     }
 }

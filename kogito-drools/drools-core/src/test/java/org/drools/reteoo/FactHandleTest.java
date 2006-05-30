@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,7 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
+import org.drools.common.DefaultFactHandle;
 
 import junit.framework.TestCase;
 
@@ -24,7 +25,8 @@ public class FactHandleTest extends TestCase {
      * Class under test for void FactHandleImpl(long)
      */
     public void testFactHandleImpllong() {
-        FactHandleImpl f0 = new FactHandleImpl( 134 );
+        final DefaultFactHandle f0 = new DefaultFactHandle( 134,
+                                                            "cheese" );
         assertEquals( 134,
                       f0.getId() );
         assertEquals( 134,
@@ -35,8 +37,9 @@ public class FactHandleTest extends TestCase {
      * Class under test for void FactHandleImpl(long, long)
      */
     public void testFactHandleImpllonglong() {
-        FactHandleImpl f0 = new FactHandleImpl( 134,
-                                                678 );
+        final DefaultFactHandle f0 = new DefaultFactHandle( 134,
+                                                            "cheese",
+                                                            678 );
         assertEquals( 134,
                       f0.getId() );
         assertEquals( 678,
@@ -47,9 +50,12 @@ public class FactHandleTest extends TestCase {
      * Class under test for boolean equals(Object)
      */
     public void testEqualsObject() {
-        FactHandleImpl f0 = new FactHandleImpl( 134 );
-        FactHandleImpl f1 = new FactHandleImpl( 96 );
-        FactHandleImpl f3 = new FactHandleImpl( 96 );
+        final DefaultFactHandle f0 = new DefaultFactHandle( 134,
+                                                            "cheese" );
+        final DefaultFactHandle f1 = new DefaultFactHandle( 96,
+                                                            "cheese" );
+        final DefaultFactHandle f3 = new DefaultFactHandle( 96,
+                                                            "cheese" );
 
         assertFalse( "f0 should not equal f1",
                      f0.equals( f1 ) );
@@ -60,13 +66,18 @@ public class FactHandleTest extends TestCase {
     }
 
     public void testHashCode() {
-        FactHandleImpl f0 = new FactHandleImpl( 234 );
+        final DefaultFactHandle f0 = new DefaultFactHandle( 234,
+                                                            "cheese" );
+        assertEquals( "cheese".hashCode(),
+                      f0.getObjectHashCode() );
+        
         assertEquals( 234,
-                      f0.hashCode() );
+                      f0.hashCode() );        
     }
 
     public void testToExternalForm() {
-        FactHandleImpl f0 = new FactHandleImpl( 134 );
+        final DefaultFactHandle f0 = new DefaultFactHandle( 134,
+                                                            "cheese" );
 
         assertEquals( "[fid:134:134]",
                       f0.toExternalForm() );
@@ -76,14 +87,16 @@ public class FactHandleTest extends TestCase {
      * Class under test for String toString()
      */
     public void testToString() {
-        FactHandleImpl f0 = new FactHandleImpl( 134 );
+        final DefaultFactHandle f0 = new DefaultFactHandle( 134,
+                                                            "cheese" );
 
         assertEquals( "[fid:134:134]",
                       f0.toString() );
     }
 
     public void testInvalidate() {
-        FactHandleImpl f0 = new FactHandleImpl( 134 );
+        final DefaultFactHandle f0 = new DefaultFactHandle( 134,
+                                                            "cheese" );
         assertEquals( 134,
                       f0.getId() );
 

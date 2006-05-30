@@ -1,4 +1,5 @@
 package org.drools.event;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.event;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,20 +31,24 @@ import org.drools.spi.PropagationContext;
 public class WorkingMemoryEventSupport
     implements
     Serializable {
-    private final List          listeners = Collections.synchronizedList( new ArrayList() );
+    /**
+     * 
+     */
+    private static final long   serialVersionUID = -7572714148615479288L;
+    private final List          listeners        = Collections.synchronizedList( new ArrayList() );
     private final WorkingMemory workingMemory;
 
-    public WorkingMemoryEventSupport(WorkingMemory workingMemory) {
+    public WorkingMemoryEventSupport(final WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
     }
 
-    public void addEventListener(WorkingMemoryEventListener listener) {
+    public void addEventListener(final WorkingMemoryEventListener listener) {
         if ( !this.listeners.contains( listener ) ) {
             this.listeners.add( listener );
         }
     }
 
-    public void removeEventListener(WorkingMemoryEventListener listener) {
+    public void removeEventListener(final WorkingMemoryEventListener listener) {
         this.listeners.remove( listener );
     }
 
@@ -63,53 +64,53 @@ public class WorkingMemoryEventSupport
         return this.listeners.isEmpty();
     }
 
-    public void fireObjectAsserted(PropagationContext propagationContext,
-                                   FactHandle handle,
-                                   Object object) {
+    public void fireObjectAsserted(final PropagationContext propagationContext,
+                                   final FactHandle handle,
+                                   final Object object) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        ObjectAssertedEvent event = new ObjectAssertedEvent( this.workingMemory,
-                                                             propagationContext,
-                                                             handle,
-                                                             object );
+        final ObjectAssertedEvent event = new ObjectAssertedEvent( this.workingMemory,
+                                                                   propagationContext,
+                                                                   handle,
+                                                                   object );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((WorkingMemoryEventListener) this.listeners.get( i )).objectAsserted( event );
         }
     }
 
-    public void fireObjectModified(PropagationContext propagationContext,
-                                   FactHandle handle,
-                                   Object oldObject,
-                                   Object object) {
+    public void fireObjectModified(final PropagationContext propagationContext,
+                                   final FactHandle handle,
+                                   final Object oldObject,
+                                   final Object object) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        ObjectModifiedEvent event = new ObjectModifiedEvent( this.workingMemory,
-                                                             propagationContext,
-                                                             handle,
-                                                             oldObject,
-                                                             object );
+        final ObjectModifiedEvent event = new ObjectModifiedEvent( this.workingMemory,
+                                                                   propagationContext,
+                                                                   handle,
+                                                                   oldObject,
+                                                                   object );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((WorkingMemoryEventListener) this.listeners.get( i )).objectModified( event );
         }
     }
 
-    public void fireObjectRetracted(PropagationContext propagationContext,
-                                    FactHandle handle,
-                                    Object oldObject) {
+    public void fireObjectRetracted(final PropagationContext propagationContext,
+                                    final FactHandle handle,
+                                    final Object oldObject) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        ObjectRetractedEvent event = new ObjectRetractedEvent( this.workingMemory,
-                                                               propagationContext,
-                                                               handle,
-                                                               oldObject );
+        final ObjectRetractedEvent event = new ObjectRetractedEvent( this.workingMemory,
+                                                                     propagationContext,
+                                                                     handle,
+                                                                     oldObject );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((WorkingMemoryEventListener) this.listeners.get( i )).objectRetracted( event );

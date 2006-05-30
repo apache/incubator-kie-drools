@@ -23,7 +23,7 @@ import junit.framework.Assert;
 
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.EvaluatorFactory;
-import org.drools.reteoo.FactHandleImpl;
+import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
@@ -42,18 +42,18 @@ public class BooleanConstrainedLeftMemoryTest extends BaseBetaLeftMemoryTestClas
 
     protected void setUp() throws Exception {
         super.setUp();
-        ClassFieldExtractor extractor = new ClassFieldExtractor( DummyValueObject.class,
-                                                                 "booleanAttr" );
-        Declaration declaration = new Declaration( "myBoolean",
-                                                   extractor,
-                                                   0 );
-        Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.BOOLEAN_TYPE,
-                                                             Evaluator.EQUAL );
+        final ClassFieldExtractor extractor = new ClassFieldExtractor( DummyValueObject.class,
+                                                                       "booleanAttr" );
+        final Declaration declaration = new Declaration( "myBoolean",
+                                                         extractor,
+                                                         0 );
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.BOOLEAN_TYPE,
+                                                                   Evaluator.EQUAL );
 
         this.memory = new BooleanConstrainedLeftMemory( extractor,
                                                         declaration,
                                                         evaluator,
-                                                        this.child);
+                                                        this.child );
     }
 
     protected void tearDown() throws Exception {
@@ -66,21 +66,21 @@ public class BooleanConstrainedLeftMemoryTest extends BaseBetaLeftMemoryTestClas
     public void testIterator() {
         try {
             this.memory.add( this.workingMemory,
-                             tuple0 );
+                             this.tuple0 );
             this.memory.add( this.workingMemory,
-                             tuple1 );
+                             this.tuple1 );
             Assert.assertEquals( "Memory should have size 2",
                                  2,
                                  this.memory.size() );
 
-            Iterator iterator = this.memory.iterator( workingMemory,
-                                                      f0 );
+            Iterator iterator = this.memory.iterator( this.workingMemory,
+                                                      this.f0 );
 
             Assert.assertTrue( "There should be a next element",
                                iterator.hasNext() );
-            ReteTuple t0 = (ReteTuple) iterator.next();
+            final ReteTuple t0 = (ReteTuple) iterator.next();
             Assert.assertSame( "The first object to return should have been tuple0",
-                               tuple0,
+                               this.tuple0,
                                t0 );
 
             iterator.remove();
@@ -90,22 +90,21 @@ public class BooleanConstrainedLeftMemoryTest extends BaseBetaLeftMemoryTestClas
 
             Assert.assertTrue( "There should be a next element",
                                iterator.hasNext() );
-            ReteTuple t1 = (ReteTuple) iterator.next();
+            final ReteTuple t1 = (ReteTuple) iterator.next();
             Assert.assertSame( "The second object to return should have been tuple1",
-                               tuple1,
+                               this.tuple1,
                                t1 );
 
             Assert.assertFalse( "There should not be a next element",
                                 iterator.hasNext() );
 
-            DummyValueObject obj2 = new DummyValueObject( false,
-                                                          "string3",
-                                                          30,
-                                                          "object3" );
-            FactHandleImpl f2 = (FactHandleImpl) this.factory.newFactHandle( 2 );
-            f2.setObject( obj2 );
+            final DummyValueObject obj2 = new DummyValueObject( false,
+                                                                "string3",
+                                                                30,
+                                                                "object3" );
+            final DefaultFactHandle f2 = (DefaultFactHandle) this.factory.newFactHandle( obj2 );
 
-            iterator = this.memory.iterator( workingMemory,
+            iterator = this.memory.iterator( this.workingMemory,
                                              f2 );
             Assert.assertFalse( "There should not be a next element",
                                 iterator.hasNext() );
@@ -113,11 +112,11 @@ public class BooleanConstrainedLeftMemoryTest extends BaseBetaLeftMemoryTestClas
             try {
                 iterator.next();
                 Assert.fail( "Iterator is supposed to throw an Exception when there are no more elements" );
-            } catch ( NoSuchElementException nse ) {
+            } catch ( final NoSuchElementException nse ) {
                 // working fine
             }
 
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
             Assert.fail( "Memory is not supposed to throw any exception during iteration" );
         }
@@ -127,17 +126,17 @@ public class BooleanConstrainedLeftMemoryTest extends BaseBetaLeftMemoryTestClas
      * Test method for 'org.drools.reteoo.beta.BooleanConstrainedLeftMemory.selectPossibleMatches(WorkingMemory, FactHandleImpl)'
      */
     public void testSelectPossibleMatches() {
-        MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper( tuple0 );
-        MultiLinkedListNodeWrapper wrapper1 = new MultiLinkedListNodeWrapper( tuple1 );
-        MultiLinkedListNodeWrapper wrapper2 = new MultiLinkedListNodeWrapper( tuple1 );
+        final MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper( this.tuple0 );
+        final MultiLinkedListNodeWrapper wrapper1 = new MultiLinkedListNodeWrapper( this.tuple1 );
+        final MultiLinkedListNodeWrapper wrapper2 = new MultiLinkedListNodeWrapper( this.tuple1 );
 
         this.memory.add( this.workingMemory,
                          wrapper0 );
         this.memory.add( this.workingMemory,
                          wrapper1 );
 
-        this.memory.selectPossibleMatches( workingMemory,
-                                           f0 );
+        this.memory.selectPossibleMatches( this.workingMemory,
+                                           this.f0 );
 
         Assert.assertTrue( "Wrapper0 was a possible match",
                            this.memory.isPossibleMatch( wrapper0 ) );
@@ -146,14 +145,13 @@ public class BooleanConstrainedLeftMemoryTest extends BaseBetaLeftMemoryTestClas
         Assert.assertFalse( "Wrapper2 was not a possible match",
                             this.memory.isPossibleMatch( wrapper2 ) );
 
-        DummyValueObject obj2 = new DummyValueObject( false,
-                                                      "string3",
-                                                      30,
-                                                      "object3" );
-        FactHandleImpl f2 = (FactHandleImpl) this.factory.newFactHandle( 2 );
-        f2.setObject( obj2 );
+        final DummyValueObject obj2 = new DummyValueObject( false,
+                                                            "string3",
+                                                            30,
+                                                            "object3" );
+        final DefaultFactHandle f2 = (DefaultFactHandle) this.factory.newFactHandle( obj2 );
 
-        this.memory.selectPossibleMatches( workingMemory,
+        this.memory.selectPossibleMatches( this.workingMemory,
                                            f2 );
         Assert.assertFalse( "Wrapper0 was not a possible match",
                             this.memory.isPossibleMatch( wrapper0 ) );
@@ -164,13 +162,12 @@ public class BooleanConstrainedLeftMemoryTest extends BaseBetaLeftMemoryTestClas
     }
 
     public void testModifyObjectAttribute() {
-        DummyValueObject obj2 = new DummyValueObject( true,
-                                                      "string20",
-                                                      20,
-                                                      "object20" );
-        FactHandleImpl f2 = (FactHandleImpl) factory.newFactHandle( 2 );
-        f2.setObject( obj2 );
-        ReteTuple tuple2 = new ReteTuple( f2 );
+        final DummyValueObject obj2 = new DummyValueObject( true,
+                                                            "string20",
+                                                            20,
+                                                            "object20" );
+        final DefaultFactHandle f2 = (DefaultFactHandle) this.factory.newFactHandle( obj2 );
+        final ReteTuple tuple2 = new ReteTuple( f2 );
 
         this.memory.add( this.workingMemory,
                          tuple2 );

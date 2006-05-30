@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -62,14 +59,14 @@ public class ColumnConstraintsTest extends DroolsTestCase {
      * WorkingMemoryImpl)'
      */
     public void testEvaluateAlphasSuccess() throws Exception {
-        RuleBaseImpl base = new RuleBaseImpl();
-        ArrayList alphas = new ArrayList();
+        final LeapsRuleBase base = new LeapsRuleBase();
+        final ArrayList alphas = new ArrayList();
         ColumnConstraints columnConstraints;
         FieldConstraint constraint;
-        ClassObjectType contextType = new ClassObjectType( Context.class );
-        Column testColumn = new Column( 0,
-                                        contextType,
-                                        "state" );
+        final ClassObjectType contextType = new ClassObjectType( Context.class );
+        final Column testColumn = new Column( 0,
+                                              contextType,
+                                              "state" );
 
         constraint = getLiteralConstraint( testColumn,
                                            "state",
@@ -88,9 +85,9 @@ public class ColumnConstraintsTest extends DroolsTestCase {
                                                    alphas,
                                                    null );
 
-        LeapsTuple tuple = new LeapsTuple( new FactHandleImpl[0],
-                                           null,
-                                           null );
+        final LeapsTuple tuple = new LeapsTuple( new FactHandleImpl[0],
+                                                 null,
+                                                 null );
         assertTrue( columnConstraints.isAllowed( new FactHandleImpl( 23,
                                                                      new Context( Context.START_UP ) ),
                                                  tuple,
@@ -103,14 +100,14 @@ public class ColumnConstraintsTest extends DroolsTestCase {
      * WorkingMemoryImpl)'
      */
     public void testEvaluateAlphasFalure() throws Exception {
-        RuleBaseImpl base = new RuleBaseImpl();
-        ArrayList alphas = new ArrayList();
+        final LeapsRuleBase base = new LeapsRuleBase();
+        final ArrayList alphas = new ArrayList();
         ColumnConstraints columnConstraints;
         FieldConstraint constraint;
-        ClassObjectType contextType = new ClassObjectType( Context.class );
-        Column testColumn = new Column( 0,
-                                        contextType,
-                                        "state" );
+        final ClassObjectType contextType = new ClassObjectType( Context.class );
+        final Column testColumn = new Column( 0,
+                                              contextType,
+                                              "state" );
 
         constraint = getLiteralConstraint( testColumn,
                                            "state",
@@ -136,25 +133,25 @@ public class ColumnConstraintsTest extends DroolsTestCase {
 
     }
 
-    private FieldConstraint getLiteralConstraint(Column column,
-                                                 String fieldName,
-                                                 Object fieldValue,
-                                                 Evaluator evaluator) throws IntrospectionException {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+    private FieldConstraint getLiteralConstraint(final Column column,
+                                                 final String fieldName,
+                                                 final Object fieldValue,
+                                                 final Evaluator evaluator) throws IntrospectionException {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldValue field = new MockField( fieldValue );
+        final FieldValue field = new MockField( fieldValue );
 
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
         return new LiteralConstraint( field,
                                       extractor,
                                       evaluator );
     }
 
-    public static int getIndex(Class clazz,
-                               String name) throws IntrospectionException {
-        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
+    public static int getIndex(final Class clazz,
+                               final String name) throws IntrospectionException {
+        final PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
         for ( int i = 0; i < descriptors.length; i++ ) {
             if ( descriptors[i].getName().equals( name ) ) {
                 return i;

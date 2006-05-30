@@ -32,24 +32,24 @@ public abstract class ReflectiveVisitor
     Visitor {
     static final String newline = System.getProperty( "line.separator" );
 
-    public void visit(Object object) {
+    public void visit(final Object object) {
         try {
             if ( object != null ) {
-                Method method = getMethod( object.getClass() );
+                final Method method = getMethod( object.getClass() );
                 method.invoke( this,
                                new Object[]{object} );
             } else {
-                Method method = getClass().getMethod( "visitNull",
-                                                      (Class[]) null );
+                final Method method = getClass().getMethod( "visitNull",
+                                                            (Class[]) null );
                 method.invoke( this,
                                (Object[]) null );
             }
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             e.printStackTrace();
         }
     }
 
-    private Method getMethod(Class clazz) {
+    private Method getMethod(final Class clazz) {
         Class newClazz = clazz;
         Method method = null;
 
@@ -60,21 +60,21 @@ public abstract class ReflectiveVisitor
             try {
                 method = getClass().getMethod( methodName,
                                                new Class[]{newClazz} );
-            } catch ( NoSuchMethodException e ) {
+            } catch ( final NoSuchMethodException e ) {
                 newClazz = newClazz.getSuperclass();
             }
         }
 
         // Try the interfaces.
         if ( newClazz == Object.class ) {
-            Class[] interfaces = clazz.getInterfaces();
+            final Class[] interfaces = clazz.getInterfaces();
             for ( int i = 0; i < interfaces.length; i++ ) {
                 String methodName = interfaces[i].getName();
                 methodName = "visit" + methodName.substring( methodName.lastIndexOf( '.' ) + 1 );
                 try {
                     method = getClass().getMethod( methodName,
                                                    new Class[]{interfaces[i]} );
-                } catch ( NoSuchMethodException e ) {
+                } catch ( final NoSuchMethodException e ) {
                     // swallow
                 }
             }
@@ -83,7 +83,7 @@ public abstract class ReflectiveVisitor
             try {
                 method = getClass().getMethod( "visitObject",
                                                new Class[]{Object.class} );
-            } catch ( Exception e ) {
+            } catch ( final Exception e ) {
                 // Shouldn't happen as long as all Visitors extend this class
                 // and this class continues to implement visitObject(Object).
                 e.printStackTrace();
@@ -92,7 +92,7 @@ public abstract class ReflectiveVisitor
         return method;
     }
 
-    public void visitObject(Object object) {
+    public void visitObject(final Object object) {
         System.err.println( "no visitor implementation for : " + object.getClass() + " : " + object );
     }
 }

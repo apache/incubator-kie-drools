@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * Indicates an attempt to add a <code>Rule</code> to a <code>Package</code>
  * that already contains a <code>Rule</code> with the same name.
@@ -29,14 +26,19 @@ package org.drools.rule;
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
 public class DuplicateRuleNameException extends RuleConstructionException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7940684712885535254L;
+
     /** The rule-set. */
-    private Package pkg;
+    private Package           pkg;
 
     /** The member rule. */
-    private Rule    originalRule;
+    private Rule              originalRule;
 
     /** The conflicting rule. */
-    private Rule    conflictingRule;
+    private Rule              conflictingRule;
 
     /**
      * @see java.lang.Exception#Exception()
@@ -48,9 +50,9 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      * @param conflictingRule
      *            The new, conflicting <code>Rule</code>.
      */
-    public DuplicateRuleNameException(Package pkg,
-                                      Rule originalRule,
-                                      Rule conflictingRule) {
+    public DuplicateRuleNameException(final Package pkg,
+                                      final Rule originalRule,
+                                      final Rule conflictingRule) {
         super( createMessage( pkg,
                               conflictingRule ) );
         this.pkg = pkg;
@@ -68,10 +70,10 @@ public class DuplicateRuleNameException extends RuleConstructionException {
      * @param conflictingRule
      *            The new, conflicting <code>Rule</code>.
      */
-    public DuplicateRuleNameException(Package pkg,
-                                      Rule originalRule,
-                                      Rule conflictingRule,
-                                      Throwable cause) {
+    public DuplicateRuleNameException(final Package pkg,
+                                      final Rule originalRule,
+                                      final Rule conflictingRule,
+                                      final Throwable cause) {
         super( createMessage( pkg,
                               conflictingRule ),
                cause );
@@ -107,8 +109,8 @@ public class DuplicateRuleNameException extends RuleConstructionException {
         return this.conflictingRule;
     }
 
-    private static String createMessage(Package pkg,
-                                        Rule rule) {
+    private static String createMessage(final Package pkg,
+                                        final Rule rule) {
         return "Package " + ((pkg.getName() != null) ? pkg.getName() : "<no-name>") + " already contains rule with name " + rule.getName();
     }
 }

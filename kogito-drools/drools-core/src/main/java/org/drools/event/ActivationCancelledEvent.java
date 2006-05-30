@@ -1,4 +1,5 @@
 package org.drools.event;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,14 +16,15 @@ package org.drools.event;
  * limitations under the License.
  */
 
-
-
-
-
 import org.drools.spi.Activation;
 
 public class ActivationCancelledEvent extends ActivationEvent {
-    public ActivationCancelledEvent(Activation activation) {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3765849430015366508L;
+
+    public ActivationCancelledEvent(final Activation activation) {
         super( activation );
     }
 

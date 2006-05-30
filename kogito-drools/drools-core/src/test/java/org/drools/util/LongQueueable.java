@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,18 +16,16 @@ package org.drools.util;
  * limitations under the License.
  */
 
-
-
 public class LongQueueable extends BaseQueueable
     implements
     Comparable {
     private final Long value;
 
-    public LongQueueable(long value) {
+    public LongQueueable(final long value) {
         this.value = new Long( value );
     }
 
-    public int compareTo(Object object) {
+    public int compareTo(final Object object) {
         return this.value.compareTo( ((LongQueueable) object).value );
     }
 

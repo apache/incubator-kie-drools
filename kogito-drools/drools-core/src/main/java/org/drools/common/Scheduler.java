@@ -71,10 +71,10 @@ final class Scheduler {
      * @param workingMemory
      *            The working memory session.
      */
-    void scheduleAgendaItem(ScheduledAgendaItem item) {
-        Date now = new Date();
+    void scheduleAgendaItem(final ScheduledAgendaItem item) {
+        final Date now = new Date();
 
-        Date then = new Date( now.getTime() + item.getRule().getDuration().getDuration( item.getTuple() ) );
+        final Date then = new Date( now.getTime() + item.getRule().getDuration().getDuration( item.getTuple() ) );
 
         this.scheduler.schedule( item,
                                  then );

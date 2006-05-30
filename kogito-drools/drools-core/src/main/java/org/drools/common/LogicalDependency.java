@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,32 +16,37 @@ package org.drools.common;
  * limitations under the License.
  */
 
-
-
 import org.drools.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.util.AbstractBaseLinkedListNode;
 
+/**
+ * LogicalDependency is a special node for LinkedLists that maintains
+ * references for the Activation justifier and the justified FactHandle.
+ *   
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
+ *
+ */
 public class LogicalDependency extends AbstractBaseLinkedListNode {
     private Activation justifier;
     private FactHandle factHandle;
 
-    public LogicalDependency(Activation justifier,
-                             FactHandle factHandle) {
+    public LogicalDependency(final Activation justifier,
+                             final FactHandle factHandle) {
         super();
         this.justifier = justifier;
         this.factHandle = factHandle;
     }
 
     public FactHandle getFactHandle() {
-        return factHandle;
+        return this.factHandle;
     }
 
     public Activation getJustifier() {
-        return justifier;
+        return this.justifier;
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( object == null || !(object.getClass() != this.getClass()) ) {
             return false;
         }
@@ -49,7 +55,7 @@ public class LogicalDependency extends AbstractBaseLinkedListNode {
             return true;
         }
 
-        LogicalDependency other = (LogicalDependency) object;
+        final LogicalDependency other = (LogicalDependency) object;
         return (this.getJustifier() == other.getJustifier() && this.getFactHandle() == other.getFactHandle());
     }
 

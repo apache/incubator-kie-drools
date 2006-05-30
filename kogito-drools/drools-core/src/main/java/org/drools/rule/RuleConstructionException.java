@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,9 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
-
 import org.drools.RuntimeDroolsException;
 
 /**
@@ -28,6 +26,11 @@ import org.drools.RuntimeDroolsException;
  */
 public class RuleConstructionException extends RuntimeDroolsException {
     /**
+     * 
+     */
+    private static final long serialVersionUID = 1589136521202357674L;
+
+    /**
      * @see java.lang.Exception#Exception()
      */
     RuleConstructionException() {
@@ -37,15 +40,15 @@ public class RuleConstructionException extends RuntimeDroolsException {
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    RuleConstructionException(String message) {
+    RuleConstructionException(final String message) {
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    RuleConstructionException(String message,
-                              Throwable cause) {
+    RuleConstructionException(final String message,
+                              final Throwable cause) {
         super( message,
                cause );
     }
@@ -53,7 +56,7 @@ public class RuleConstructionException extends RuntimeDroolsException {
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    RuleConstructionException(Throwable cause) {
+    RuleConstructionException(final Throwable cause) {
         super( cause );
     }
 }

@@ -42,103 +42,115 @@ import org.drools.spi.MockField;
  */
 public class QueryResultsTest extends TestCase {
     public void testQueryTerminalNode() throws PackageIntegrationException {
-        RuleBaseImpl ruleBase = new RuleBaseImpl( );
+        final LeapsRuleBase ruleBase = new LeapsRuleBase();
 
-        ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
-        Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
-                Evaluator.EQUAL );
+        final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
+                                                                   Evaluator.EQUAL );
         // fires on context.state == integer(1)
-        Query query = new Query( "query-1" );
+        final Query query = new Query( "query-1" );
 
-        Column cheeseColumn = new Column( 0, cheeseObjectType, "cheese" );
-        cheeseColumn.addConstraint( getLiteralConstraint( cheeseColumn, "type", "stilton",
-                evaluator ) );
+        final Column cheeseColumn = new Column( 0,
+                                                cheeseObjectType,
+                                                "cheese" );
+        cheeseColumn.addConstraint( getLiteralConstraint( cheeseColumn,
+                                                          "type",
+                                                          "stilton",
+                                                          evaluator ) );
         query.addPattern( cheeseColumn );
 
         ruleBase.addRule( query );
 
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory( );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        workingMemory.fireAllRules( );
+        workingMemory.fireAllRules();
 
-        LeapsQueryResults results = (LeapsQueryResults) workingMemory
-                .getQueryResults( "query-1" );
+        LeapsQueryResults results = (LeapsQueryResults) workingMemory.getQueryResults( "query-1" );
 
         assertNull( results );
 
-        Cheese stilton1 = new Cheese( "stilton", 100 );
+        final Cheese stilton1 = new Cheese( "stilton",
+                                            100 );
 
-        FactHandle handle1 = workingMemory.assertObject( stilton1 );
+        final FactHandle handle1 = workingMemory.assertObject( stilton1 );
 
-        workingMemory.fireAllRules( );
+        workingMemory.fireAllRules();
 
         results = (LeapsQueryResults) workingMemory.getQueryResults( "query-1" );
 
-        assertEquals( 1, results.size( ) );
+        assertEquals( 1,
+                      results.size() );
 
-        Cheese cheddar = new Cheese( "cheddar", 55 );
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           55 );
         workingMemory.assertObject( cheddar );
 
-        workingMemory.fireAllRules( );
+        workingMemory.fireAllRules();
 
         results = (LeapsQueryResults) workingMemory.getQueryResults( "query-1" );
 
-        assertEquals( 1, results.size( ) );
+        assertEquals( 1,
+                      results.size() );
 
-        Cheese stilton2 = new Cheese( "stilton", 5 );
+        final Cheese stilton2 = new Cheese( "stilton",
+                                            5 );
 
-        FactHandle handle2 = workingMemory.assertObject( stilton2 );
+        final FactHandle handle2 = workingMemory.assertObject( stilton2 );
 
-        workingMemory.fireAllRules( );
+        workingMemory.fireAllRules();
 
         results = (LeapsQueryResults) workingMemory.getQueryResults( "query-1" );
 
-        assertEquals( 2, results.size( ) );
+        assertEquals( 2,
+                      results.size() );
 
         LeapsQueryResult result = (LeapsQueryResult) results.get( 0 );
 
-        assertEquals( 1, result.size( ) );
+        assertEquals( 1,
+                      result.size() );
 
-        boolean wasStilton1 = ( stilton1 == result.get( 0 ) );
+        boolean wasStilton1 = (stilton1 == result.get( 0 ));
 
         // assertSame( stilton1, result.get( 0 ) );
 
         result = (LeapsQueryResult) results.get( 1 );
 
-        boolean wasStilton2 = ( stilton2 == result.get( 0 ) );
+        boolean wasStilton2 = (stilton2 == result.get( 0 ));
 
-        assertEquals( 1, result.size( ) );
+        assertEquals( 1,
+                      result.size() );
 
         // assertSame( stilton2, result.get( 0 ) );
-        assertTrue( ( wasStilton1 && wasStilton2 ) || ( !wasStilton1 && !wasStilton2 ) );
+        assertTrue( (wasStilton1 && wasStilton2) || (!wasStilton1 && !wasStilton2) );
         Object result1 = null, result2 = null;
         int i = 0;
-        for (Iterator it = results.iterator( ); it.hasNext( );) {
-            result = (LeapsQueryResult) it.next( );
-            assertEquals( 1, result.size( ) );
-            if (i == 0) {
+        for ( final Iterator it = results.iterator(); it.hasNext(); ) {
+            result = (LeapsQueryResult) it.next();
+            assertEquals( 1,
+                          result.size() );
+            if ( i == 0 ) {
                 result1 = result.get( 0 );
-            }
-            else {
+            } else {
                 result2 = result.get( 0 );
             }
             i++;
         }
-        wasStilton1 = ( stilton1 == result1 );
-        wasStilton2 = ( stilton2 == result2 );
-        assertTrue( ( wasStilton1 && wasStilton2 ) || ( !wasStilton1 && !wasStilton2 ) );
+        wasStilton1 = (stilton1 == result1);
+        wasStilton2 = (stilton2 == result2);
+        assertTrue( (wasStilton1 && wasStilton2) || (!wasStilton1 && !wasStilton2) );
 
         workingMemory.retractObject( handle1 );
 
-        workingMemory.fireAllRules( );
+        workingMemory.fireAllRules();
 
         results = (LeapsQueryResults) workingMemory.getQueryResults( "query-1" );
 
-        assertEquals( 1, results.size( ) );
+        assertEquals( 1,
+                      results.size() );
 
         workingMemory.retractObject( handle2 );
 
-        workingMemory.fireAllRules( );
+        workingMemory.fireAllRules();
 
         results = (LeapsQueryResults) workingMemory.getQueryResults( "query-1" );
 
@@ -150,18 +162,19 @@ public class QueryResultsTest extends TestCase {
 
         private int    price;
 
-        public Cheese(String type, int price) {
-            super( );
+        public Cheese(final String type,
+                      final int price) {
+            super();
             this.type = type;
             this.price = price;
         }
 
         public int getPrice() {
-            return price;
+            return this.price;
         }
 
         public String getType() {
-            return type;
+            return this.type;
         }
 
         public String toString() {
@@ -170,14 +183,19 @@ public class QueryResultsTest extends TestCase {
 
     }
 
-    private FieldConstraint getLiteralConstraint( Column column, String fieldName,
-            Object fieldValue, Evaluator evaluator ) {
-        Class clazz = ( (ClassObjectType) column.getObjectType( ) ).getClassType( );
+    private FieldConstraint getLiteralConstraint(final Column column,
+                                                 final String fieldName,
+                                                 final Object fieldValue,
+                                                 final Evaluator evaluator) {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = new ClassFieldExtractor( clazz, fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
-        FieldValue field = new MockField( fieldValue );
+        final FieldValue field = new MockField( fieldValue );
 
-        return new LiteralConstraint( field, extractor, evaluator );
+        return new LiteralConstraint( field,
+                                      extractor,
+                                      evaluator );
     }
 }

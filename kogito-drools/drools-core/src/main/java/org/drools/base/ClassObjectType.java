@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.base;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import org.drools.spi.Evaluator;
 import org.drools.spi.ObjectType;
@@ -36,10 +33,15 @@ public class ClassObjectType
     // Instance members
     // ------------------------------------------------------------
 
-    /** Java object class. */
-    protected Class objectTypeClass;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2527407693999309827L;
 
-    protected int   valueType;
+    /** Java object class. */
+    protected Class           objectTypeClass;
+
+    protected int             valueType;
 
     // ------------------------------------------------------------
     // Constructors
@@ -51,7 +53,7 @@ public class ClassObjectType
      * @param objectTypeClass
      *            Java object class.
      */
-    public ClassObjectType(Class objectTypeClass) {
+    public ClassObjectType(final Class objectTypeClass) {
         this.objectTypeClass = objectTypeClass;
         setValueType( objectTypeClass );
     }
@@ -83,7 +85,7 @@ public class ClassObjectType
      * @return <code>true</code> if the <code>Object</code> matches this
      *         object type, else <code>false</code>.
      */
-    public boolean matches(Object object) {
+    public boolean matches(final Object object) {
         return getClassType().isInstance( object );
     }
 
@@ -95,7 +97,7 @@ public class ClassObjectType
     // java.lang.Object
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    protected void setValueType(Class clazz) {
+    protected void setValueType(final Class clazz) {
         if ( clazz == null ) {
             this.valueType = Evaluator.NULL_TYPE;
         } else if ( clazz == Character.class ) {
@@ -140,7 +142,7 @@ public class ClassObjectType
      * @return <code>true</code> if <code>object</code> is equal to this,
      *         otherwise <code>false</code>.
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }

@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,9 @@ package org.drools.util;
  * limitations under the License.
  */
 
-
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
-
-
 
 /**
  * 
@@ -30,8 +27,18 @@ import java.util.Collection;
 public class PrimitiveLongMap
     implements
     Serializable {
-    private final static Object NULL = new Serializable() {
-                                     };
+    /**
+     * 
+     */
+    private static final long   serialVersionUID = 199618748057741463L;
+
+    private final static Object NULL             = new Serializable() {
+
+                                                     /**
+                                                      * 
+                                                      */
+                                                     private static final long serialVersionUID = -3636017371487047326L;
+                                                 };
 
     private final int           indexIntervals;
     private final int           intervalShifts;
@@ -51,13 +58,13 @@ public class PrimitiveLongMap
               8 );
     }
 
-    public PrimitiveLongMap(int tableSize) {
+    public PrimitiveLongMap(final int tableSize) {
         this( tableSize,
               8 );
     }
 
-    public PrimitiveLongMap(int tableSize,
-                            int indexIntervals) {
+    public PrimitiveLongMap(final int tableSize,
+                            final int indexIntervals) {
         // determine number of shifts for intervals
         int i = 1;
         int size = 2;
@@ -98,7 +105,7 @@ public class PrimitiveLongMap
         this.lastPage = this.firstPage;
     }
 
-    public Object put(long key,
+    public Object put(final long key,
                       Object value) {
         if ( key < 0 ) {
             throw new IllegalArgumentException( "-ve keys not supported: " + key );
@@ -110,10 +117,10 @@ public class PrimitiveLongMap
             value = PrimitiveLongMap.NULL;
         }
 
-        Page page = findPage( key );
+        final Page page = findPage( key );
 
-        Object oldValue = page.put( key,
-                                    value );
+        final Object oldValue = page.put( key,
+                                          value );
 
         if ( oldValue == null ) {
             this.totalSize++;
@@ -122,15 +129,15 @@ public class PrimitiveLongMap
         return oldValue;
     }
 
-    public Object remove(long key) {
+    public Object remove(final long key) {
         if ( key > this.maxKey || key < 0 ) {
             return null;
         }
 
-        Page page = findPage( key );
+        final Page page = findPage( key );
 
-        Object oldValue = page.put( key,
-                                    null );
+        final Object oldValue = page.put( key,
+                                          null );
 
         if ( this.lastPageId != 0 && this.lastPage.isEmpty() ) {
             shrinkPages( this.lastPageId );
@@ -143,7 +150,7 @@ public class PrimitiveLongMap
         return oldValue;
     }
 
-    public Object get(long key) {
+    public Object get(final long key) {
         if ( key > this.maxKey || key < 0 ) {
             return null;
         }
@@ -162,7 +169,7 @@ public class PrimitiveLongMap
     }
 
     public Collection values() {
-        CompositeCollection collection = new CompositeCollection();
+        final CompositeCollection collection = new CompositeCollection();
         Page page = this.firstPage;
 
         while ( page != null && page.getPageId() <= this.lastPageId ) {
@@ -172,7 +179,7 @@ public class PrimitiveLongMap
         return collection;
     }
 
-    public boolean containsKey(long key) {
+    public boolean containsKey(final long key) {
         if ( key < 0 ) {
             return false;
         }
@@ -183,14 +190,14 @@ public class PrimitiveLongMap
     /**
      * Expand index to accomodate given pageId Create empty TopNodes
      */
-    public Page expandPages(int toPageId) {
+    public Page expandPages(final int toPageId) {
         for ( int x = this.lastPageId; x < toPageId; x++ ) {
             this.lastPage = new Page( this.lastPage,
                                       ++this.lastPageId,
                                       this.tableSize );
             // index interval, so expand index
             if ( this.lastPage.getPageId() % this.indexIntervals == 0 ) {
-                int newSize = this.pageIndex.length + 1;
+                final int newSize = this.pageIndex.length + 1;
                 resizeIndex( newSize );
                 this.pageIndex[newSize - 1] = this.lastPage;
             }
@@ -202,14 +209,14 @@ public class PrimitiveLongMap
     /**
      * Shrink index to accomodate given pageId
      */
-    public void shrinkPages(int toPageId) {
+    public void shrinkPages(final int toPageId) {
         for ( int x = this.lastPageId; x >= toPageId; x-- ) {
             // last page is on index so shrink index
             if ( (this.lastPageId) % this.indexIntervals == 0 && this.lastPageId != 0 ) {
                 resizeIndex( this.pageIndex.length - 1 );
             }
 
-            Page page = this.lastPage.getPreviousSibling();
+            final Page page = this.lastPage.getPreviousSibling();
             page.setNextSibling( null );
             this.lastPage.clear();
             this.lastPage = page;
@@ -218,19 +225,19 @@ public class PrimitiveLongMap
         }
     }
 
-    public void resizeIndex(int newSize) {
-        Page[] newIndex = new Page[newSize];
+    public void resizeIndex(final int newSize) {
+        final Page[] newIndex = new Page[newSize];
         System.arraycopy( this.pageIndex,
                           0,
                           newIndex,
                           0,
-                          (newSize > this.pageIndex.length) ? this.pageIndex.length : newSize);
+                          (newSize > this.pageIndex.length) ? this.pageIndex.length : newSize );
         this.pageIndex = newIndex;
     }
 
-    private Page findPage(long key) {
+    private Page findPage(final long key) {
         // determine Page
-        int pageId = (int) key >> this.doubleShifts;
+        final int pageId = (int) key >> this.doubleShifts;
         Page page;
 
         // if pageId is lastNodeId use lastNode reference
@@ -246,7 +253,7 @@ public class PrimitiveLongMap
             page = expandPages( pageId );
         } else {
             // determine offset
-            int offset = pageId >> this.intervalShifts;
+            final int offset = pageId >> this.intervalShifts;
             // are we before or after the halfway point of an index interval
             if ( (offset != (this.pageIndex.length - 1)) && ((key - (offset << this.intervalShifts << this.doubleShifts)) > this.midIntervalPoint) ) {
                 // after so go to next node index and go backwards
@@ -269,18 +276,22 @@ public class PrimitiveLongMap
     private static class Page
         implements
         Serializable {
-        private final int  pageSize;
-        private final int  pageId;
-        private final int  shifts;
-        private final int  tableSize;
-        private Page       nextSibling;
-        private Page       previousSibling;
-        private Object[][] tables;
-        private int        filledSlots;
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -3301899266460094468L;
+        private final int         pageSize;
+        private final int         pageId;
+        private final int         shifts;
+        private final int         tableSize;
+        private Page              nextSibling;
+        private Page              previousSibling;
+        private Object[][]        tables;
+        private int               filledSlots;
 
-        Page(Page previousSibling,
-             int pageId,
-             int tableSize) {
+        Page(final Page previousSibling,
+             final int pageId,
+             final int tableSize) {
             // determine number of shifts
             int i = 1;
             int size = 2;
@@ -305,7 +316,7 @@ public class PrimitiveLongMap
             return this.pageId;
         }
 
-        void setNextSibling(Page nextSibling) {
+        void setNextSibling(final Page nextSibling) {
             this.nextSibling = nextSibling;
         }
 
@@ -313,7 +324,7 @@ public class PrimitiveLongMap
             return this.nextSibling;
         }
 
-        void setPreviousSibling(Page previousSibling) {
+        void setPreviousSibling(final Page previousSibling) {
             this.previousSibling = previousSibling;
         }
 
@@ -329,17 +340,17 @@ public class PrimitiveLongMap
             key -= this.pageSize * this.pageId;
 
             // determine page
-            int page = (int) key >> this.shifts;
+            final int page = (int) key >> this.shifts;
 
             // determine offset
-            int offset = page << this.shifts;
+            final int offset = page << this.shifts;
 
             // tables[page][slot]
             return this.tables[page][(int) key - offset];
         }
 
         public Object put(long key,
-                          Object newValue) {
+                          final Object newValue) {
             if ( this.tables == null ) {
                 // initiate tree;
                 this.tables = new Object[this.tableSize][this.tableSize];
@@ -349,16 +360,16 @@ public class PrimitiveLongMap
             key -= this.pageSize * this.pageId;
 
             // determine page
-            int table = (int) key >> this.shifts;
+            final int table = (int) key >> this.shifts;
 
             // determine offset
-            int offset = table << this.shifts;
+            final int offset = table << this.shifts;
 
             // determine slot
-            int slot = (int) key - offset;
+            final int slot = (int) key - offset;
 
             // get old value
-            Object oldValue = this.tables[table][slot];
+            final Object oldValue = this.tables[table][slot];
             this.tables[table][slot] = newValue;
 
             // update number of empty cells for TopNode
@@ -382,7 +393,7 @@ public class PrimitiveLongMap
         }
 
         Object[] getValues() {
-            Object[] values = new Object[this.filledSlots];
+            final Object[] values = new Object[this.filledSlots];
             if ( values.length == 0 ) {
                 return values;
             }

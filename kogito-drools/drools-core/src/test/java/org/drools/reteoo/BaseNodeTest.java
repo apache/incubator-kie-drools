@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import junit.framework.TestCase;
 
@@ -34,7 +33,12 @@ public class BaseNodeTest extends TestCase {
     }
 
     class MockBaseNode extends BaseNode {
-        public MockBaseNode(int id) {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 8794774251283685858L;
+
+        public MockBaseNode(final int id) {
             super( id );
         }
 
@@ -48,19 +52,19 @@ public class BaseNodeTest extends TestCase {
 
         }
 
-        public void updateNewNode(WorkingMemoryImpl workingMemory,
-                                  PropagationContext context) {
+        public void updateNewNode(final ReteooWorkingMemory workingMemory,
+                                  final PropagationContext context) {
             // TODO Auto-generated method stub
 
         }
 
-        public void remove(BaseNode node,
-                           WorkingMemoryImpl[] workingMemories) {
+        public void remove(final BaseNode node,
+                           final ReteooWorkingMemory[] workingMemories) {
             // TODO Auto-generated method stub
 
         }
 
-        public void attach(WorkingMemoryImpl[] workingMemories) {
+        public void attach(final ReteooWorkingMemory[] workingMemories) {
             // TODO Auto-generated method stub
 
         }

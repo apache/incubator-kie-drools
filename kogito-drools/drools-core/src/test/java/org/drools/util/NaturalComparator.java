@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.util;
  * limitations under the License.
  */
 
-
-
 import java.util.Comparator;
 
 public final class NaturalComparator
@@ -27,8 +26,8 @@ public final class NaturalComparator
     private NaturalComparator() {
     }
 
-    public int compare(Object a,
-                       Object b) {
+    public int compare(final Object a,
+                       final Object b) {
         return ((Comparable) a).compareTo( b );
     }
 }

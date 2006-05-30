@@ -55,17 +55,19 @@ public class IincInsnNode extends AbstractInsnNode {
      * @param var index of the local variable to be incremented.
      * @param incr increment amount to increment the local variable by.
      */
-    public IincInsnNode(final int var, final int incr) {
-        super(Opcodes.IINC);
+    public IincInsnNode(final int var,
+                        final int incr) {
+        super( Opcodes.IINC );
         this.var = var;
         this.incr = incr;
     }
 
     public void accept(final MethodVisitor mv) {
-        mv.visitIincInsn(var, incr);
+        mv.visitIincInsn( this.var,
+                          this.incr );
     }
 
     public int getType() {
-        return IINC_INSN;
+        return AbstractInsnNode.IINC_INSN;
     }
 }

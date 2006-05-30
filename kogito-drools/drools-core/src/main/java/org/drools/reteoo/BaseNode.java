@@ -43,7 +43,7 @@ abstract class BaseNode
      * @param id
      *      The unique id
      */
-    public BaseNode(int id) {
+    public BaseNode(final int id) {
         super();
         this.id = id;
     }
@@ -60,7 +60,7 @@ abstract class BaseNode
      * 
      * @param hasMemory
      */
-    protected void setHasMemory(boolean hasMemory) {
+    protected void setHasMemory(final boolean hasMemory) {
         this.hasMemory = hasMemory;
     }
 
@@ -78,14 +78,14 @@ abstract class BaseNode
      */
     public abstract void attach();
 
-    public abstract void attach(WorkingMemoryImpl[] workingMemories);
+    public abstract void attach(ReteooWorkingMemory[] workingMemories);
 
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
      *
      */
     public abstract void remove(BaseNode node,
-                                WorkingMemoryImpl[] workingMemories);
+                                ReteooWorkingMemory[] workingMemories);
 
     /**
      * When nodes are added to the network that already has data. that existing data must be repropagated to the new node.
@@ -98,7 +98,7 @@ abstract class BaseNode
      *      The PropagationContext
      *      
      */
-    public abstract void updateNewNode(WorkingMemoryImpl workingMemory,
+    public abstract void updateNewNode(ReteooWorkingMemory workingMemory,
                                        PropagationContext context);
 
     /**

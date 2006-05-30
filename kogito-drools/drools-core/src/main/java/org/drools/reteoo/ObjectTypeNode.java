@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.DefaultFactHandle;
+import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -55,11 +57,16 @@ class ObjectTypeNode extends ObjectSource
     // Instance members
     // ------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1397702820739948690L;
+
     /** The <code>ObjectType</code> semantic module. */
-    private final ObjectType objectType;
+    private final ObjectType  objectType;
 
     /** The parent Rete node */
-    private final Rete       rete;
+    private final Rete        rete;
 
     // ------------------------------------------------------------
     // Constructors
@@ -74,10 +81,13 @@ class ObjectTypeNode extends ObjectSource
      * @param objectType
      *           The semantic object-type differentiator.
      */
-    public ObjectTypeNode(int id,
-                          ObjectType objectType,
-                          Rete rete) {
-        this( id, null, objectType, rete );
+    public ObjectTypeNode(final int id,
+                          final ObjectType objectType,
+                          final Rete rete) {
+        this( id,
+              null,
+              objectType,
+              rete );
     }
 
     /**
@@ -89,11 +99,12 @@ class ObjectTypeNode extends ObjectSource
      * @param objectType The semantic object-type differentiator
      * @param rete The rete network reference
      */
-    public ObjectTypeNode(int id,
-                          ObjectSinkList sinklist,
-                          ObjectType objectType,
-                          Rete rete) {
-        super( id, sinklist );
+    public ObjectTypeNode(final int id,
+                          final ObjectSinkList sinklist,
+                          final ObjectType objectType,
+                          final Rete rete) {
+        super( id,
+               sinklist );
         this.rete = rete;
         this.objectType = objectType;
         setHasMemory( true );
@@ -121,7 +132,7 @@ class ObjectTypeNode extends ObjectSource
      * @return
      *      boolean value indicating whether the <code>ObjectTypeNode</code> can receive the object.
      */
-    public boolean matches(Object object) {
+    public boolean matches(final Object object) {
         return this.objectType.matches( object );
     }
 
@@ -137,10 +148,10 @@ class ObjectTypeNode extends ObjectSource
      * @param workingMemory
      *            The working memory session.
      */
-    public void assertObject(FactHandleImpl handle,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
-        PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
+    public void assertObject(final DefaultFactHandle handle,
+                             final PropagationContext context,
+                             final ReteooWorkingMemory workingMemory) {
+        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
         memory.put( handle.getId(),
                     handle );
 
@@ -160,10 +171,10 @@ class ObjectTypeNode extends ObjectSource
      * @param workingMemory
      *            The working memory session.
      */
-    public void retractObject(FactHandleImpl handle,
-                              PropagationContext context,
-                              WorkingMemoryImpl workingMemory) {
-        PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
+    public void retractObject(final DefaultFactHandle handle,
+                              final PropagationContext context,
+                              final ReteooWorkingMemory workingMemory) {
+        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
         memory.remove( handle.getId() );
 
         propagateRetractObject( handle,
@@ -171,10 +182,10 @@ class ObjectTypeNode extends ObjectSource
                                 workingMemory );
     }
 
-    public void modifyObject(FactHandleImpl handle,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
-        PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
+    public void modifyObject(final DefaultFactHandle handle,
+                             final PropagationContext context,
+                             final ReteooWorkingMemory workingMemory) {
+        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
 
         propagateModifyObject( handle,
                                context,
@@ -184,15 +195,15 @@ class ObjectTypeNode extends ObjectSource
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
-    public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) {
+    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+                              final PropagationContext context) {
         this.attachingNewNode = true;
 
-        PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
+        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( this );
 
-        for ( Iterator it = memory.values().iterator(); it.hasNext(); ) {
-            FactHandleImpl handle = (FactHandleImpl) it.next();
-            ObjectSink sink = this.objectSinks.getLastObjectSink();
+        for ( final Iterator it = memory.values().iterator(); it.hasNext(); ) {
+            final DefaultFactHandle handle = (DefaultFactHandle) it.next();
+            final ObjectSink sink = this.objectSinks.getLastObjectSink();
             if ( sink != null ) {
                 sink.assertObject( handle,
                                    context,
@@ -212,25 +223,25 @@ class ObjectTypeNode extends ObjectSource
         this.rete.addObjectSink( this );
     }
 
-    public void attach(WorkingMemoryImpl[] workingMemories) {
+    public void attach(final ReteooWorkingMemory[] workingMemories) {
         attach();
 
         // we need to call updateNewNode on Rete, because someone 
         // might have already added facts matching this ObjectTypeNode 
         // to working memories
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            WorkingMemoryImpl workingMemory = workingMemories[i];
-            PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                PropagationContext.RULE_ADDITION,
-                                                                                null,
-                                                                                null );
+            final ReteooWorkingMemory workingMemory = workingMemories[i];
+            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.RULE_ADDITION,
+                                                                                      null,
+                                                                                      null );
             this.rete.updateNewNode( workingMemory,
                                      propagationContext );
         }
     }
 
-    public void remove(BaseNode node,
-                       WorkingMemoryImpl[] workingMemories) {
+    public void remove(final BaseNode node,
+                       final ReteooWorkingMemory[] workingMemories) {
         this.objectSinks.remove( (ObjectSink) node );
         removeShare();
         if ( this.sharedCount < 0 ) {
@@ -254,7 +265,7 @@ class ObjectTypeNode extends ObjectSource
      * However PrimitiveLongMap is not ideal for spase data. So it should be monitored incase its more optimal
      * to switch back to a standard HashMap.
      */
-    public Object createMemory( RuleBaseConfiguration config ) {
+    public Object createMemory(final RuleBaseConfiguration config) {
         return new PrimitiveLongMap( 32,
                                      8 );
     }
@@ -268,9 +279,9 @@ class ObjectTypeNode extends ObjectSource
      */
     public int hashCode() {
         return this.objectType.hashCode();
-    }    
-    
-    public boolean equals(Object object) {
+    }
+
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -279,10 +290,9 @@ class ObjectTypeNode extends ObjectSource
             return false;
         }
 
-        ObjectTypeNode other = (ObjectTypeNode) object;
-        
+        final ObjectTypeNode other = (ObjectTypeNode) object;
+
         return this.objectType.equals( other.objectType );
     }
-
 
 }

@@ -36,39 +36,41 @@ package org.drools.asm;
  * 
  * @author Eric Bruneton
  */
-class MethodWriter implements MethodVisitor {
+class MethodWriter
+    implements
+    MethodVisitor {
 
     /**
      * Next method writer (see {@link ClassWriter#firstMethod firstMethod}).
      */
-    MethodWriter next;
+    MethodWriter               next;
 
     /**
      * The class writer to which this method must be added.
      */
-    ClassWriter cw;
+    ClassWriter                cw;
 
     /**
      * Access flags of this method.
      */
-    private int access;
+    private int                access;
 
     /**
      * The index of the constant pool item that contains the name of this
      * method.
      */
-    private int name;
+    private int                name;
 
     /**
      * The index of the constant pool item that contains the descriptor of this
      * method.
      */
-    private int desc;
+    private int                desc;
 
     /**
      * The descriptor of this method.
      */
-    private String descriptor;
+    private String             descriptor;
 
     /**
      * If not zero, indicates that the code of this method must be copied from
@@ -76,7 +78,7 @@ class MethodWriter implements MethodVisitor {
      * precisely, this field gives the index of the first byte to copied from
      * <code>cw.cr.b</code>.
      */
-    int classReaderOffset;
+    int                        classReaderOffset;
 
     /**
      * If not zero, indicates that the code of this method must be copied from
@@ -84,39 +86,39 @@ class MethodWriter implements MethodVisitor {
      * precisely, this field gives the number of bytes to copied from
      * <code>cw.cr.b</code>.
      */
-    int classReaderLength;
+    int                        classReaderLength;
 
     /**
      * The signature of this method.
      */
-    String signature;
+    String                     signature;
 
     /**
      * Number of exceptions that can be thrown by this method.
      */
-    int exceptionCount;
+    int                        exceptionCount;
 
     /**
      * The exceptions that can be thrown by this method. More precisely, this
      * array contains the indexes of the constant pool items that contain the
      * internal names of these exception classes.
      */
-    int[] exceptions;
+    int[]                      exceptions;
 
     /**
      * The annotation default attribute of this method. May be <tt>null</tt>.
      */
-    private ByteVector annd;
+    private ByteVector         annd;
 
     /**
      * The runtime visible annotations of this method. May be <tt>null</tt>.
      */
-    private AnnotationWriter anns;
+    private AnnotationWriter   anns;
 
     /**
      * The runtime invisible annotations of this method. May be <tt>null</tt>.
      */
-    private AnnotationWriter ianns;
+    private AnnotationWriter   ianns;
 
     /**
      * The runtime visible parameter annotations of this method. May be
@@ -133,77 +135,77 @@ class MethodWriter implements MethodVisitor {
     /**
      * The non standard attributes of the method.
      */
-    private Attribute attrs;
+    private Attribute          attrs;
 
     /**
      * The bytecode of this method.
      */
-    private ByteVector code = new ByteVector();
+    private ByteVector         code = new ByteVector();
 
     /**
      * Maximum stack size of this method.
      */
-    private int maxStack;
+    private int                maxStack;
 
     /**
      * Maximum number of local variables for this method.
      */
-    private int maxLocals;
+    private int                maxLocals;
 
     /**
      * Number of entries in the catch table of this method.
      */
-    private int catchCount;
+    private int                catchCount;
 
     /**
      * The catch table of this method.
      */
-    private Handler catchTable;
+    private Handler            catchTable;
 
     /**
      * The last element in the catchTable handler list.
      */
-    private Handler lastHandler;
+    private Handler            lastHandler;
 
     /**
      * Number of entries in the LocalVariableTable attribute.
      */
-    private int localVarCount;
+    private int                localVarCount;
 
     /**
      * The LocalVariableTable attribute.
      */
-    private ByteVector localVar;
+    private ByteVector         localVar;
 
     /**
      * Number of entries in the LocalVariableTypeTable attribute.
      */
-    private int localVarTypeCount;
+    private int                localVarTypeCount;
 
     /**
      * The LocalVariableTypeTable attribute.
      */
-    private ByteVector localVarType;
+    private ByteVector         localVarType;
 
     /**
      * Number of entries in the LineNumberTable attribute.
      */
-    private int lineNumberCount;
+    private int                lineNumberCount;
 
     /**
      * The LineNumberTable attribute.
      */
-    private ByteVector lineNumber;
+    private ByteVector         lineNumber;
 
     /**
      * The non standard attributes of the method's code.
      */
-    private Attribute cattrs;
+    private Attribute          cattrs;
 
     /**
      * Indicates if some jump instructions are too small and need to be resized.
      */
-    private boolean resize;
+    private boolean            resize;
 
     /*
      * Fields for the control flow graph analysis algorithm (used to compute the
@@ -219,7 +221,7 @@ class MethodWriter implements MethodVisitor {
      * <tt>true</tt> if the maximum stack size and number of local variables
      * must be automatically computed.
      */
-    private final boolean computeMaxs;
+    private final boolean      computeMaxs;
 
     /**
      * The (relative) stack size after the last visited instruction. This size
@@ -228,7 +230,7 @@ class MethodWriter implements MethodVisitor {
      * Label#beginStackSize beginStackSize} of the current basic block plus
      * <tt>stackSize</tt>.
      */
-    private int stackSize;
+    private int                stackSize;
 
     /**
      * The (relative) maximum stack size after the last visited instruction.
@@ -237,13 +239,13 @@ class MethodWriter implements MethodVisitor {
      * to the {@link Label#beginStackSize beginStackSize} of the current basic
      * block plus <tt>stackSize</tt>.
      */
-    private int maxStackSize;
+    private int                maxStackSize;
 
     /**
      * The current basic block. This block is the basic block to which the next
      * instruction to be visited must be added.
      */
-    private Label currentBlock;
+    private Label              currentBlock;
 
     /**
      * The basic block stack used by the control flow analysis algorithm. This
@@ -251,7 +253,7 @@ class MethodWriter implements MethodVisitor {
      * linked to each other by their {@link Label#next} field. This stack must
      * not be confused with the JVM stack used to execute the JVM instructions!
      */
-    private Label blockStack;
+    private Label              blockStack;
 
     /**
      * The stack size variation corresponding to each JVM instruction. This
@@ -269,13 +271,10 @@ class MethodWriter implements MethodVisitor {
      */
     static {
         int i;
-        int[] b = new int[202];
-        String s = "EFFFFFFFFGGFFFGGFFFEEFGFGFEEEEEEEEEEEEEEEEEEEEDEDEDDDDD"
-                + "CDCDEEEEEEEEEEEEEEEEEEEEBABABBBBDCFFFGGGEDCDCDCDCDCDCDCDCD"
-                + "CDCEEEEDDDDDDDCDCDCEFEFDDEEFFDEDEEEBDDBBDDDDDDCCCCCCCCEFED"
-                + "DDCDCDEEEEEEEEEEFEEEEEEDDEEDDEE";
-        for (i = 0; i < b.length; ++i) {
-            b[i] = s.charAt(i) - 'E';
+        final int[] b = new int[202];
+        final String s = "EFFFFFFFFGGFFFGGFFFEEFGFGFEEEEEEEEEEEEEEEEEEEEDEDEDDDDD" + "CDCDEEEEEEEEEEEEEEEEEEEEBABABBBBDCFFFGGGEDCDCDCDCDCDCDCDCD" + "CDCEEEEDDDDDDDCDCDCEFEFDDEEFFDEDEEEBDDBBDDDDDDCCCCCCCCEFED" + "DDCDCDEEEEEEEEEEFEEEEEEDDEEDDEE";
+        for ( i = 0; i < b.length; ++i ) {
+            b[i] = s.charAt( i ) - 'E';
         }
         SIZE = b;
 
@@ -510,16 +509,14 @@ class MethodWriter implements MethodVisitor {
      * @param computeMaxs <tt>true</tt> if the maximum stack size and number
      *        of local variables must be automatically computed.
      */
-    MethodWriter(
-        final ClassWriter cw,
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final String[] exceptions,
-        final boolean computeMaxs)
-    {
-        if (cw.firstMethod == null) {
+    MethodWriter(final ClassWriter cw,
+                 final int access,
+                 final String name,
+                 final String desc,
+                 final String signature,
+                 final String[] exceptions,
+                 final boolean computeMaxs) {
+        if ( cw.firstMethod == null ) {
             cw.firstMethod = this;
         } else {
             cw.lastMethod.next = this;
@@ -527,29 +524,29 @@ class MethodWriter implements MethodVisitor {
         cw.lastMethod = this;
         this.cw = cw;
         this.access = access;
-        this.name = cw.newUTF8(name);
-        this.desc = cw.newUTF8(desc);
+        this.name = cw.newUTF8( name );
+        this.desc = cw.newUTF8( desc );
         this.descriptor = desc;
         this.signature = signature;
-        if (exceptions != null && exceptions.length > 0) {
-            exceptionCount = exceptions.length;
-            this.exceptions = new int[exceptionCount];
-            for (int i = 0; i < exceptionCount; ++i) {
-                this.exceptions[i] = cw.newClass(exceptions[i]);
+        if ( exceptions != null && exceptions.length > 0 ) {
+            this.exceptionCount = exceptions.length;
+            this.exceptions = new int[this.exceptionCount];
+            for ( int i = 0; i < this.exceptionCount; ++i ) {
+                this.exceptions[i] = cw.newClass( exceptions[i] );
             }
         }
         this.computeMaxs = computeMaxs;
-        if (computeMaxs) {
+        if ( computeMaxs ) {
             // updates maxLocals
-            int size = getArgumentsAndReturnSizes(desc) >> 2;
-            if ((access & Opcodes.ACC_STATIC) != 0) {
+            int size = getArgumentsAndReturnSizes( desc ) >> 2;
+            if ( (access & Opcodes.ACC_STATIC) != 0 ) {
                 --size;
             }
-            maxLocals = size;
+            this.maxLocals = size;
             // pushes the first block onto the stack of blocks to be visited
-            currentBlock = new Label();
-            currentBlock.pushed = true;
-            blockStack = currentBlock;
+            this.currentBlock = new Label();
+            this.currentBlock.pushed = true;
+            this.blockStack = this.currentBlock;
         }
     }
 
@@ -558,60 +555,68 @@ class MethodWriter implements MethodVisitor {
     // ------------------------------------------------------------------------
 
     public AnnotationVisitor visitAnnotationDefault() {
-        annd = new ByteVector();
-        return new AnnotationWriter(cw, false, annd, null, 0);
+        this.annd = new ByteVector();
+        return new AnnotationWriter( this.cw,
+                                     false,
+                                     this.annd,
+                                     null,
+                                     0 );
     }
 
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        ByteVector bv = new ByteVector();
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        final ByteVector bv = new ByteVector();
         // write type, and reserve space for values count
-        bv.putShort(cw.newUTF8(desc)).putShort(0);
-        AnnotationWriter aw = new AnnotationWriter(cw, true, bv, bv, 2);
-        if (visible) {
-            aw.next = anns;
-            anns = aw;
+        bv.putShort( this.cw.newUTF8( desc ) ).putShort( 0 );
+        final AnnotationWriter aw = new AnnotationWriter( this.cw,
+                                                          true,
+                                                          bv,
+                                                          bv,
+                                                          2 );
+        if ( visible ) {
+            aw.next = this.anns;
+            this.anns = aw;
         } else {
-            aw.next = ianns;
-            ianns = aw;
+            aw.next = this.ianns;
+            this.ianns = aw;
         }
         return aw;
     }
 
-    public AnnotationVisitor visitParameterAnnotation(
-        final int parameter,
-        final String desc,
-        final boolean visible)
-    {
-        ByteVector bv = new ByteVector();
+    public AnnotationVisitor visitParameterAnnotation(final int parameter,
+                                                      final String desc,
+                                                      final boolean visible) {
+        final ByteVector bv = new ByteVector();
         // write type, and reserve space for values count
-        bv.putShort(cw.newUTF8(desc)).putShort(0);
-        AnnotationWriter aw = new AnnotationWriter(cw, true, bv, bv, 2);
-        if (visible) {
-            if (panns == null) {
-                panns = new AnnotationWriter[Type.getArgumentTypes(descriptor).length];
+        bv.putShort( this.cw.newUTF8( desc ) ).putShort( 0 );
+        final AnnotationWriter aw = new AnnotationWriter( this.cw,
+                                                          true,
+                                                          bv,
+                                                          bv,
+                                                          2 );
+        if ( visible ) {
+            if ( this.panns == null ) {
+                this.panns = new AnnotationWriter[Type.getArgumentTypes( this.descriptor ).length];
             }
-            aw.next = panns[parameter];
-            panns[parameter] = aw;
+            aw.next = this.panns[parameter];
+            this.panns[parameter] = aw;
         } else {
-            if (ipanns == null) {
-                ipanns = new AnnotationWriter[Type.getArgumentTypes(descriptor).length];
+            if ( this.ipanns == null ) {
+                this.ipanns = new AnnotationWriter[Type.getArgumentTypes( this.descriptor ).length];
             }
-            aw.next = ipanns[parameter];
-            ipanns[parameter] = aw;
+            aw.next = this.ipanns[parameter];
+            this.ipanns[parameter] = aw;
         }
         return aw;
     }
 
     public void visitAttribute(final Attribute attr) {
-        if (attr.isCodeAttribute()) {
-            attr.next = cattrs;
-            cattrs = attr;
+        if ( attr.isCodeAttribute() ) {
+            attr.next = this.cattrs;
+            this.cattrs = attr;
         } else {
-            attr.next = attrs;
-            attrs = attr;
+            attr.next = this.attrs;
+            this.attrs = attr;
         }
     }
 
@@ -619,151 +624,157 @@ class MethodWriter implements MethodVisitor {
     }
 
     public void visitInsn(final int opcode) {
-        if (computeMaxs) {
+        if ( this.computeMaxs ) {
             // updates current and max stack sizes
-            int size = stackSize + SIZE[opcode];
-            if (size > maxStackSize) {
-                maxStackSize = size;
+            final int size = this.stackSize + MethodWriter.SIZE[opcode];
+            if ( size > this.maxStackSize ) {
+                this.maxStackSize = size;
             }
-            stackSize = size;
+            this.stackSize = size;
             // if opcode == ATHROW or xRETURN, ends current block (no successor)
-            if ((opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN)
-                    || opcode == Opcodes.ATHROW)
-            {
-                if (currentBlock != null) {
-                    currentBlock.maxStackSize = maxStackSize;
-                    currentBlock = null;
+            if ( (opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN) || opcode == Opcodes.ATHROW ) {
+                if ( this.currentBlock != null ) {
+                    this.currentBlock.maxStackSize = this.maxStackSize;
+                    this.currentBlock = null;
                 }
             }
         }
         // adds the instruction to the bytecode of the method
-        code.putByte(opcode);
+        this.code.putByte( opcode );
     }
 
-    public void visitIntInsn(final int opcode, final int operand) {
-        if (computeMaxs && opcode != Opcodes.NEWARRAY) {
+    public void visitIntInsn(final int opcode,
+                             final int operand) {
+        if ( this.computeMaxs && opcode != Opcodes.NEWARRAY ) {
             // updates current and max stack sizes only if opcode == NEWARRAY
             // (stack size variation = 0 for BIPUSH or SIPUSH)
-            int size = stackSize + 1;
-            if (size > maxStackSize) {
-                maxStackSize = size;
+            final int size = this.stackSize + 1;
+            if ( size > this.maxStackSize ) {
+                this.maxStackSize = size;
             }
-            stackSize = size;
+            this.stackSize = size;
         }
         // adds the instruction to the bytecode of the method
-        if (opcode == Opcodes.SIPUSH) {
-            code.put12(opcode, operand);
+        if ( opcode == Opcodes.SIPUSH ) {
+            this.code.put12( opcode,
+                             operand );
         } else { // BIPUSH or NEWARRAY
-            code.put11(opcode, operand);
+            this.code.put11( opcode,
+                             operand );
         }
     }
 
-    public void visitVarInsn(final int opcode, final int var) {
-        if (computeMaxs) {
+    public void visitVarInsn(final int opcode,
+                             final int var) {
+        if ( this.computeMaxs ) {
             // updates current and max stack sizes
-            if (opcode == Opcodes.RET) {
+            if ( opcode == Opcodes.RET ) {
                 // no stack change, but end of current block (no successor)
-                if (currentBlock != null) {
-                    currentBlock.maxStackSize = maxStackSize;
-                    currentBlock = null;
+                if ( this.currentBlock != null ) {
+                    this.currentBlock.maxStackSize = this.maxStackSize;
+                    this.currentBlock = null;
                 }
             } else { // xLOAD or xSTORE
-                int size = stackSize + SIZE[opcode];
-                if (size > maxStackSize) {
-                    maxStackSize = size;
+                final int size = this.stackSize + MethodWriter.SIZE[opcode];
+                if ( size > this.maxStackSize ) {
+                    this.maxStackSize = size;
                 }
-                stackSize = size;
+                this.stackSize = size;
             }
             // updates max locals
             int n;
-            if (opcode == Opcodes.LLOAD || opcode == Opcodes.DLOAD
-                    || opcode == Opcodes.LSTORE || opcode == Opcodes.DSTORE)
-            {
+            if ( opcode == Opcodes.LLOAD || opcode == Opcodes.DLOAD || opcode == Opcodes.LSTORE || opcode == Opcodes.DSTORE ) {
                 n = var + 2;
             } else {
                 n = var + 1;
             }
-            if (n > maxLocals) {
-                maxLocals = n;
+            if ( n > this.maxLocals ) {
+                this.maxLocals = n;
             }
         }
         // adds the instruction to the bytecode of the method
-        if (var < 4 && opcode != Opcodes.RET) {
+        if ( var < 4 && opcode != Opcodes.RET ) {
             int opt;
-            if (opcode < Opcodes.ISTORE) {
+            if ( opcode < Opcodes.ISTORE ) {
                 /* ILOAD_0 */
                 opt = 26 + ((opcode - Opcodes.ILOAD) << 2) + var;
             } else {
                 /* ISTORE_0 */
                 opt = 59 + ((opcode - Opcodes.ISTORE) << 2) + var;
             }
-            code.putByte(opt);
-        } else if (var >= 256) {
-            code.putByte(196 /* WIDE */).put12(opcode, var);
+            this.code.putByte( opt );
+        } else if ( var >= 256 ) {
+            this.code.putByte( 196 /* WIDE */).put12( opcode,
+                                                       var );
         } else {
-            code.put11(opcode, var);
+            this.code.put11( opcode,
+                             var );
         }
     }
 
-    public void visitTypeInsn(final int opcode, final String desc) {
-        if (computeMaxs && opcode == Opcodes.NEW) {
+    public void visitTypeInsn(final int opcode,
+                              final String desc) {
+        if ( this.computeMaxs && opcode == Opcodes.NEW ) {
             // updates current and max stack sizes only if opcode == NEW
             // (stack size variation = 0 for ANEWARRAY, CHECKCAST, INSTANCEOF)
-            int size = stackSize + 1;
-            if (size > maxStackSize) {
-                maxStackSize = size;
+            final int size = this.stackSize + 1;
+            if ( size > this.maxStackSize ) {
+                this.maxStackSize = size;
             }
-            stackSize = size;
+            this.stackSize = size;
         }
         // adds the instruction to the bytecode of the method
-        code.put12(opcode, cw.newClass(desc));
+        this.code.put12( opcode,
+                         this.cw.newClass( desc ) );
     }
 
-    public void visitFieldInsn(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        if (computeMaxs) {
+    public void visitFieldInsn(final int opcode,
+                               final String owner,
+                               final String name,
+                               final String desc) {
+        if ( this.computeMaxs ) {
             int size;
             // computes the stack size variation
-            char c = desc.charAt(0);
-            switch (opcode) {
-                case Opcodes.GETSTATIC:
-                    size = stackSize + (c == 'D' || c == 'J' ? 2 : 1);
+            final char c = desc.charAt( 0 );
+            switch ( opcode ) {
+                case Opcodes.GETSTATIC :
+                    size = this.stackSize + (c == 'D' || c == 'J' ? 2 : 1);
                     break;
-                case Opcodes.PUTSTATIC:
-                    size = stackSize + (c == 'D' || c == 'J' ? -2 : -1);
+                case Opcodes.PUTSTATIC :
+                    size = this.stackSize + (c == 'D' || c == 'J' ? -2 : -1);
                     break;
-                case Opcodes.GETFIELD:
-                    size = stackSize + (c == 'D' || c == 'J' ? 1 : 0);
+                case Opcodes.GETFIELD :
+                    size = this.stackSize + (c == 'D' || c == 'J' ? 1 : 0);
                     break;
                 // case Constants.PUTFIELD:
-                default:
-                    size = stackSize + (c == 'D' || c == 'J' ? -3 : -2);
+                default :
+                    size = this.stackSize + (c == 'D' || c == 'J' ? -3 : -2);
                     break;
             }
             // updates current and max stack sizes
-            if (size > maxStackSize) {
-                maxStackSize = size;
+            if ( size > this.maxStackSize ) {
+                this.maxStackSize = size;
             }
-            stackSize = size;
+            this.stackSize = size;
         }
         // adds the instruction to the bytecode of the method
-        code.put12(opcode, cw.newField(owner, name, desc));
+        this.code.put12( opcode,
+                         this.cw.newField( owner,
+                                           name,
+                                           desc ) );
     }
 
-    public void visitMethodInsn(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        boolean itf = opcode == Opcodes.INVOKEINTERFACE;
-        Item i = cw.newMethodItem(owner, name, desc, itf);
+    public void visitMethodInsn(final int opcode,
+                                final String owner,
+                                final String name,
+                                final String desc) {
+        final boolean itf = opcode == Opcodes.INVOKEINTERFACE;
+        final Item i = this.cw.newMethodItem( owner,
+                                              name,
+                                              desc,
+                                              itf );
         int argSize = i.intVal;
-        if (computeMaxs) {
+        if ( this.computeMaxs ) {
             /*
              * computes the stack size variation. In order not to recompute
              * several times this variation for the same Item, we use the intVal
@@ -771,65 +782,72 @@ class MethodWriter implements MethodVisitor {
              * computed. More precisely this intVal field stores the sizes of
              * the arguments and of the return value corresponding to desc.
              */
-            if (argSize == 0) {
+            if ( argSize == 0 ) {
                 // the above sizes have not been computed yet, so we compute
                 // them...
-                argSize = getArgumentsAndReturnSizes(desc);
+                argSize = getArgumentsAndReturnSizes( desc );
                 // ... and we save them in order not to recompute them in the
                 // future
                 i.intVal = argSize;
             }
             int size;
-            if (opcode == Opcodes.INVOKESTATIC) {
-                size = stackSize - (argSize >> 2) + (argSize & 0x03) + 1;
+            if ( opcode == Opcodes.INVOKESTATIC ) {
+                size = this.stackSize - (argSize >> 2) + (argSize & 0x03) + 1;
             } else {
-                size = stackSize - (argSize >> 2) + (argSize & 0x03);
+                size = this.stackSize - (argSize >> 2) + (argSize & 0x03);
             }
             // updates current and max stack sizes
-            if (size > maxStackSize) {
-                maxStackSize = size;
+            if ( size > this.maxStackSize ) {
+                this.maxStackSize = size;
             }
-            stackSize = size;
+            this.stackSize = size;
         }
         // adds the instruction to the bytecode of the method
-        if (itf) {
-            if (!computeMaxs) {
-                if (argSize == 0) {
-                    argSize = getArgumentsAndReturnSizes(desc);
+        if ( itf ) {
+            if ( !this.computeMaxs ) {
+                if ( argSize == 0 ) {
+                    argSize = getArgumentsAndReturnSizes( desc );
                     i.intVal = argSize;
                 }
             }
-            code.put12(Opcodes.INVOKEINTERFACE, i.index).put11(argSize >> 2, 0);
+            this.code.put12( Opcodes.INVOKEINTERFACE,
+                             i.index ).put11( argSize >> 2,
+                                              0 );
         } else {
-            code.put12(opcode, i.index);
+            this.code.put12( opcode,
+                             i.index );
         }
     }
 
-    public void visitJumpInsn(final int opcode, final Label label) {
-        if (computeMaxs) {
-            if (opcode == Opcodes.GOTO) {
+    public void visitJumpInsn(final int opcode,
+                              final Label label) {
+        if ( this.computeMaxs ) {
+            if ( opcode == Opcodes.GOTO ) {
                 // no stack change, but end of current block (with one new
                 // successor)
-                if (currentBlock != null) {
-                    currentBlock.maxStackSize = maxStackSize;
-                    addSuccessor(stackSize, label);
-                    currentBlock = null;
+                if ( this.currentBlock != null ) {
+                    this.currentBlock.maxStackSize = this.maxStackSize;
+                    addSuccessor( this.stackSize,
+                                  label );
+                    this.currentBlock = null;
                 }
-            } else if (opcode == Opcodes.JSR) {
-                if (currentBlock != null) {
-                    addSuccessor(stackSize + 1, label);
+            } else if ( opcode == Opcodes.JSR ) {
+                if ( this.currentBlock != null ) {
+                    addSuccessor( this.stackSize + 1,
+                                  label );
                 }
             } else {
                 // updates current stack size (max stack size unchanged because
                 // stack size variation always negative in this case)
-                stackSize += SIZE[opcode];
-                if (currentBlock != null) {
-                    addSuccessor(stackSize, label);
+                this.stackSize += MethodWriter.SIZE[opcode];
+                if ( this.currentBlock != null ) {
+                    addSuccessor( this.stackSize,
+                                  label );
                 }
             }
         }
         // adds the instruction to the bytecode of the method
-        if (label.resolved && label.position - code.length < Short.MIN_VALUE) {
+        if ( label.resolved && label.position - this.code.length < Short.MIN_VALUE ) {
             /*
              * case of a backward jump with an offset < -32768. In this case we
              * automatically replace GOTO with GOTO_W, JSR with JSR_W and IFxxx
@@ -837,18 +855,19 @@ class MethodWriter implements MethodVisitor {
              * "opposite" opcode of IFxxx (i.e., IFNE for IFEQ) and where <l'>
              * designates the instruction just after the GOTO_W.
              */
-            if (opcode == Opcodes.GOTO) {
-                code.putByte(200); // GOTO_W
-            } else if (opcode == Opcodes.JSR) {
-                code.putByte(201); // JSR_W
+            if ( opcode == Opcodes.GOTO ) {
+                this.code.putByte( 200 ); // GOTO_W
+            } else if ( opcode == Opcodes.JSR ) {
+                this.code.putByte( 201 ); // JSR_W
             } else {
-                code.putByte(opcode <= 166
-                        ? ((opcode + 1) ^ 1) - 1
-                        : opcode ^ 1);
-                code.putShort(8); // jump offset
-                code.putByte(200); // GOTO_W
+                this.code.putByte( opcode <= 166 ? ((opcode + 1) ^ 1) - 1 : opcode ^ 1 );
+                this.code.putShort( 8 ); // jump offset
+                this.code.putByte( 200 ); // GOTO_W
             }
-            label.put(this, code, code.length - 1, true);
+            label.put( this,
+                       this.code,
+                       this.code.length - 1,
+                       true );
         } else {
             /*
              * case of a backward jump with an offset >= -32768, or of a forward
@@ -856,218 +875,232 @@ class MethodWriter implements MethodVisitor {
              * the offset in 2 bytes (which will be increased in
              * resizeInstructions, if needed).
              */
-            code.putByte(opcode);
-            label.put(this, code, code.length - 1, false);
+            this.code.putByte( opcode );
+            label.put( this,
+                       this.code,
+                       this.code.length - 1,
+                       false );
         }
     }
 
     public void visitLabel(final Label label) {
-        if (computeMaxs) {
-            if (currentBlock != null) {
+        if ( this.computeMaxs ) {
+            if ( this.currentBlock != null ) {
                 // ends current block (with one new successor)
-                currentBlock.maxStackSize = maxStackSize;
-                addSuccessor(stackSize, label);
+                this.currentBlock.maxStackSize = this.maxStackSize;
+                addSuccessor( this.stackSize,
+                              label );
             }
             // begins a new current block,
             // resets the relative current and max stack sizes
-            currentBlock = label;
-            stackSize = 0;
-            maxStackSize = 0;
+            this.currentBlock = label;
+            this.stackSize = 0;
+            this.maxStackSize = 0;
         }
         // resolves previous forward references to label, if any
-        resize |= label.resolve(this, code.length, code.data);
+        this.resize |= label.resolve( this,
+                                      this.code.length,
+                                      this.code.data );
     }
 
     public void visitLdcInsn(final Object cst) {
-        Item i = cw.newConstItem(cst);
-        if (computeMaxs) {
+        final Item i = this.cw.newConstItem( cst );
+        if ( this.computeMaxs ) {
             int size;
             // computes the stack size variation
-            if (i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE) {
-                size = stackSize + 2;
+            if ( i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE ) {
+                size = this.stackSize + 2;
             } else {
-                size = stackSize + 1;
+                size = this.stackSize + 1;
             }
             // updates current and max stack sizes
-            if (size > maxStackSize) {
-                maxStackSize = size;
+            if ( size > this.maxStackSize ) {
+                this.maxStackSize = size;
             }
-            stackSize = size;
+            this.stackSize = size;
         }
         // adds the instruction to the bytecode of the method
-        int index = i.index;
-        if (i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE) {
-            code.put12(20 /* LDC2_W */, index);
-        } else if (index >= 256) {
-            code.put12(19 /* LDC_W */, index);
+        final int index = i.index;
+        if ( i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE ) {
+            this.code.put12( 20 /* LDC2_W */,
+                             index );
+        } else if ( index >= 256 ) {
+            this.code.put12( 19 /* LDC_W */,
+                             index );
         } else {
-            code.put11(Opcodes.LDC, index);
+            this.code.put11( Opcodes.LDC,
+                             index );
         }
     }
 
-    public void visitIincInsn(final int var, final int increment) {
-        if (computeMaxs) {
+    public void visitIincInsn(final int var,
+                              final int increment) {
+        if ( this.computeMaxs ) {
             // updates max locals only (no stack change)
-            int n = var + 1;
-            if (n > maxLocals) {
-                maxLocals = n;
+            final int n = var + 1;
+            if ( n > this.maxLocals ) {
+                this.maxLocals = n;
             }
         }
         // adds the instruction to the bytecode of the method
-        if ((var > 255) || (increment > 127) || (increment < -128)) {
-            code.putByte(196 /* WIDE */)
-                    .put12(Opcodes.IINC, var)
-                    .putShort(increment);
+        if ( (var > 255) || (increment > 127) || (increment < -128) ) {
+            this.code.putByte( 196 /* WIDE */).put12( Opcodes.IINC,
+                                                       var ).putShort( increment );
         } else {
-            code.putByte(Opcodes.IINC).put11(var, increment);
+            this.code.putByte( Opcodes.IINC ).put11( var,
+                                                     increment );
         }
     }
 
-    public void visitTableSwitchInsn(
-        final int min,
-        final int max,
-        final Label dflt,
-        final Label labels[])
-    {
-        if (computeMaxs) {
+    public void visitTableSwitchInsn(final int min,
+                                     final int max,
+                                     final Label dflt,
+                                     final Label labels[]) {
+        if ( this.computeMaxs ) {
             // updates current stack size (max stack size unchanged)
-            --stackSize;
+            --this.stackSize;
             // ends current block (with many new successors)
-            if (currentBlock != null) {
-                currentBlock.maxStackSize = maxStackSize;
-                addSuccessor(stackSize, dflt);
-                for (int i = 0; i < labels.length; ++i) {
-                    addSuccessor(stackSize, labels[i]);
+            if ( this.currentBlock != null ) {
+                this.currentBlock.maxStackSize = this.maxStackSize;
+                addSuccessor( this.stackSize,
+                              dflt );
+                for ( int i = 0; i < labels.length; ++i ) {
+                    addSuccessor( this.stackSize,
+                                  labels[i] );
                 }
-                currentBlock = null;
+                this.currentBlock = null;
             }
         }
         // adds the instruction to the bytecode of the method
-        int source = code.length;
-        code.putByte(Opcodes.TABLESWITCH);
-        while (code.length % 4 != 0) {
-            code.putByte(0);
+        final int source = this.code.length;
+        this.code.putByte( Opcodes.TABLESWITCH );
+        while ( this.code.length % 4 != 0 ) {
+            this.code.putByte( 0 );
         }
-        dflt.put(this, code, source, true);
-        code.putInt(min).putInt(max);
-        for (int i = 0; i < labels.length; ++i) {
-            labels[i].put(this, code, source, true);
+        dflt.put( this,
+                  this.code,
+                  source,
+                  true );
+        this.code.putInt( min ).putInt( max );
+        for ( int i = 0; i < labels.length; ++i ) {
+            labels[i].put( this,
+                           this.code,
+                           source,
+                           true );
         }
     }
 
-    public void visitLookupSwitchInsn(
-        final Label dflt,
-        final int keys[],
-        final Label labels[])
-    {
-        if (computeMaxs) {
+    public void visitLookupSwitchInsn(final Label dflt,
+                                      final int keys[],
+                                      final Label labels[]) {
+        if ( this.computeMaxs ) {
             // updates current stack size (max stack size unchanged)
-            --stackSize;
+            --this.stackSize;
             // ends current block (with many new successors)
-            if (currentBlock != null) {
-                currentBlock.maxStackSize = maxStackSize;
-                addSuccessor(stackSize, dflt);
-                for (int i = 0; i < labels.length; ++i) {
-                    addSuccessor(stackSize, labels[i]);
+            if ( this.currentBlock != null ) {
+                this.currentBlock.maxStackSize = this.maxStackSize;
+                addSuccessor( this.stackSize,
+                              dflt );
+                for ( int i = 0; i < labels.length; ++i ) {
+                    addSuccessor( this.stackSize,
+                                  labels[i] );
                 }
-                currentBlock = null;
+                this.currentBlock = null;
             }
         }
         // adds the instruction to the bytecode of the method
-        int source = code.length;
-        code.putByte(Opcodes.LOOKUPSWITCH);
-        while (code.length % 4 != 0) {
-            code.putByte(0);
+        final int source = this.code.length;
+        this.code.putByte( Opcodes.LOOKUPSWITCH );
+        while ( this.code.length % 4 != 0 ) {
+            this.code.putByte( 0 );
         }
-        dflt.put(this, code, source, true);
-        code.putInt(labels.length);
-        for (int i = 0; i < labels.length; ++i) {
-            code.putInt(keys[i]);
-            labels[i].put(this, code, source, true);
+        dflt.put( this,
+                  this.code,
+                  source,
+                  true );
+        this.code.putInt( labels.length );
+        for ( int i = 0; i < labels.length; ++i ) {
+            this.code.putInt( keys[i] );
+            labels[i].put( this,
+                           this.code,
+                           source,
+                           true );
         }
     }
 
-    public void visitMultiANewArrayInsn(final String desc, final int dims) {
-        if (computeMaxs) {
+    public void visitMultiANewArrayInsn(final String desc,
+                                        final int dims) {
+        if ( this.computeMaxs ) {
             // updates current stack size (max stack size unchanged because
             // stack size variation always negative or null)
-            stackSize += 1 - dims;
+            this.stackSize += 1 - dims;
         }
         // adds the instruction to the bytecode of the method
-        code.put12(Opcodes.MULTIANEWARRAY, cw.newClass(desc)).putByte(dims);
+        this.code.put12( Opcodes.MULTIANEWARRAY,
+                         this.cw.newClass( desc ) ).putByte( dims );
     }
 
-    public void visitTryCatchBlock(
-        final Label start,
-        final Label end,
-        final Label handler,
-        final String type)
-    {
-        if (computeMaxs) {
+    public void visitTryCatchBlock(final Label start,
+                                   final Label end,
+                                   final Label handler,
+                                   final String type) {
+        if ( this.computeMaxs ) {
             // pushes handler block onto the stack of blocks to be visited
-            if (!handler.pushed) {
+            if ( !handler.pushed ) {
                 handler.beginStackSize = 1;
                 handler.pushed = true;
-                handler.next = blockStack;
-                blockStack = handler;
+                handler.next = this.blockStack;
+                this.blockStack = handler;
             }
         }
-        ++catchCount;
-        Handler h = new Handler();
+        ++this.catchCount;
+        final Handler h = new Handler();
         h.start = start;
         h.end = end;
         h.handler = handler;
         h.desc = type;
-        h.type = type != null ? cw.newClass(type) : 0;
-        if (lastHandler == null) {
-            catchTable = h;
+        h.type = type != null ? this.cw.newClass( type ) : 0;
+        if ( this.lastHandler == null ) {
+            this.catchTable = h;
         } else {
-            lastHandler.next = h;
+            this.lastHandler.next = h;
         }
-        lastHandler = h;
+        this.lastHandler = h;
     }
 
-    public void visitLocalVariable(
-        final String name,
-        final String desc,
-        final String signature,
-        final Label start,
-        final Label end,
-        final int index)
-    {
-        if (signature != null) {
-            if (localVarType == null) {
-                localVarType = new ByteVector();
+    public void visitLocalVariable(final String name,
+                                   final String desc,
+                                   final String signature,
+                                   final Label start,
+                                   final Label end,
+                                   final int index) {
+        if ( signature != null ) {
+            if ( this.localVarType == null ) {
+                this.localVarType = new ByteVector();
             }
-            ++localVarTypeCount;
-            localVarType.putShort(start.position)
-                    .putShort(end.position - start.position)
-                    .putShort(cw.newUTF8(name))
-                    .putShort(cw.newUTF8(signature))
-                    .putShort(index);
+            ++this.localVarTypeCount;
+            this.localVarType.putShort( start.position ).putShort( end.position - start.position ).putShort( this.cw.newUTF8( name ) ).putShort( this.cw.newUTF8( signature ) ).putShort( index );
         }
-        if (localVar == null) {
-            localVar = new ByteVector();
+        if ( this.localVar == null ) {
+            this.localVar = new ByteVector();
         }
-        ++localVarCount;
-        localVar.putShort(start.position)
-                .putShort(end.position - start.position)
-                .putShort(cw.newUTF8(name))
-                .putShort(cw.newUTF8(desc))
-                .putShort(index);
+        ++this.localVarCount;
+        this.localVar.putShort( start.position ).putShort( end.position - start.position ).putShort( this.cw.newUTF8( name ) ).putShort( this.cw.newUTF8( desc ) ).putShort( index );
     }
 
-    public void visitLineNumber(final int line, final Label start) {
-        if (lineNumber == null) {
-            lineNumber = new ByteVector();
+    public void visitLineNumber(final int line,
+                                final Label start) {
+        if ( this.lineNumber == null ) {
+            this.lineNumber = new ByteVector();
         }
-        ++lineNumberCount;
-        lineNumber.putShort(start.position);
-        lineNumber.putShort(line);
+        ++this.lineNumberCount;
+        this.lineNumber.putShort( start.position );
+        this.lineNumber.putShort( line );
     }
 
-    public void visitMaxs(final int maxStack, final int maxLocals) {
-        if (computeMaxs) {
+    public void visitMaxs(final int maxStack,
+                          final int maxLocals) {
+        if ( this.computeMaxs ) {
             // true (non relative) max stack size
             int max = 0;
             /*
@@ -1080,25 +1113,25 @@ class MethodWriter implements MethodVisitor {
              * blocks in the block stack are the true (non relative) beginning
              * stack sizes of these blocks.
              */
-            Label stack = blockStack;
-            while (stack != null) {
+            Label stack = this.blockStack;
+            while ( stack != null ) {
                 // pops a block from the stack
                 Label l = stack;
                 stack = stack.next;
                 // computes the true (non relative) max stack size of this block
-                int start = l.beginStackSize;
-                int blockMax = start + l.maxStackSize;
+                final int start = l.beginStackSize;
+                final int blockMax = start + l.maxStackSize;
                 // updates the global max stack size
-                if (blockMax > max) {
+                if ( blockMax > max ) {
                     max = blockMax;
                 }
                 // analyses the successors of the block
                 Edge b = l.successors;
-                while (b != null) {
+                while ( b != null ) {
                     l = b.successor;
                     // if this successor has not already been pushed onto the
                     // stack...
-                    if (!l.pushed) {
+                    if ( !l.pushed ) {
                         // computes the true beginning stack size of this
                         // successor block
                         l.beginStackSize = start + b.stackSize;
@@ -1137,24 +1170,23 @@ class MethodWriter implements MethodVisitor {
     private static int getArgumentsAndReturnSizes(final String desc) {
         int n = 1;
         int c = 1;
-        while (true) {
-            char car = desc.charAt(c++);
-            if (car == ')') {
-                car = desc.charAt(c);
-                return n << 2
-                        | (car == 'V' ? 0 : (car == 'D' || car == 'J' ? 2 : 1));
-            } else if (car == 'L') {
-                while (desc.charAt(c++) != ';') {
+        while ( true ) {
+            char car = desc.charAt( c++ );
+            if ( car == ')' ) {
+                car = desc.charAt( c );
+                return n << 2 | (car == 'V' ? 0 : (car == 'D' || car == 'J' ? 2 : 1));
+            } else if ( car == 'L' ) {
+                while ( desc.charAt( c++ ) != ';' ) {
                 }
                 n += 1;
-            } else if (car == '[') {
-                while ((car = desc.charAt(c)) == '[') {
+            } else if ( car == '[' ) {
+                while ( (car = desc.charAt( c )) == '[' ) {
                     ++c;
                 }
-                if (car == 'D' || car == 'J') {
+                if ( car == 'D' || car == 'J' ) {
                     n -= 1;
                 }
-            } else if (car == 'D' || car == 'J') {
+            } else if ( car == 'D' || car == 'J' ) {
                 n += 2;
             } else {
                 n += 1;
@@ -1168,14 +1200,15 @@ class MethodWriter implements MethodVisitor {
      * @param stackSize the current (relative) stack size in the current block.
      * @param successor the successor block to be added to the current block.
      */
-    private void addSuccessor(final int stackSize, final Label successor) {
-        Edge b = new Edge();
+    private void addSuccessor(final int stackSize,
+                              final Label successor) {
+        final Edge b = new Edge();
         // initializes the previous Edge object...
         b.stackSize = stackSize;
         b.successor = successor;
         // ...and adds it to the successor list of the currentBlock block
-        b.next = currentBlock.successors;
-        currentBlock.successors = b;
+        b.next = this.currentBlock.successors;
+        this.currentBlock.successors = b;
     }
 
     // ------------------------------------------------------------------------
@@ -1188,94 +1221,98 @@ class MethodWriter implements MethodVisitor {
      * @return the size of the bytecode of this method.
      */
     final int getSize() {
-        if (classReaderOffset != 0) {
-            return 6 + classReaderLength;
+        if ( this.classReaderOffset != 0 ) {
+            return 6 + this.classReaderLength;
         }
-        if (resize) {
+        if ( this.resize ) {
             // replaces the temporary jump opcodes introduced by Label.resolve.
-            resizeInstructions(new int[0], new int[0], 0);
+            resizeInstructions( new int[0],
+                                new int[0],
+                                0 );
         }
         int size = 8;
-        if (code.length > 0) {
-            cw.newUTF8("Code");
-            size += 18 + code.length + 8 * catchCount;
-            if (localVar != null) {
-                cw.newUTF8("LocalVariableTable");
-                size += 8 + localVar.length;
+        if ( this.code.length > 0 ) {
+            this.cw.newUTF8( "Code" );
+            size += 18 + this.code.length + 8 * this.catchCount;
+            if ( this.localVar != null ) {
+                this.cw.newUTF8( "LocalVariableTable" );
+                size += 8 + this.localVar.length;
             }
-            if (localVarType != null) {
-                cw.newUTF8("LocalVariableTypeTable");
-                size += 8 + localVarType.length;
+            if ( this.localVarType != null ) {
+                this.cw.newUTF8( "LocalVariableTypeTable" );
+                size += 8 + this.localVarType.length;
             }
-            if (lineNumber != null) {
-                cw.newUTF8("LineNumberTable");
-                size += 8 + lineNumber.length;
+            if ( this.lineNumber != null ) {
+                this.cw.newUTF8( "LineNumberTable" );
+                size += 8 + this.lineNumber.length;
             }
-            if (cattrs != null) {
-                size += cattrs.getSize(cw,
-                        code.data,
-                        code.length,
-                        maxStack,
-                        maxLocals);
+            if ( this.cattrs != null ) {
+                size += this.cattrs.getSize( this.cw,
+                                             this.code.data,
+                                             this.code.length,
+                                             this.maxStack,
+                                             this.maxLocals );
             }
         }
-        if (exceptionCount > 0) {
-            cw.newUTF8("Exceptions");
-            size += 8 + 2 * exceptionCount;
+        if ( this.exceptionCount > 0 ) {
+            this.cw.newUTF8( "Exceptions" );
+            size += 8 + 2 * this.exceptionCount;
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0
-                && (cw.version & 0xffff) < Opcodes.V1_5)
-        {
-            cw.newUTF8("Synthetic");
+        if ( (this.access & Opcodes.ACC_SYNTHETIC) != 0 && (this.cw.version & 0xffff) < Opcodes.V1_5 ) {
+            this.cw.newUTF8( "Synthetic" );
             size += 6;
         }
-        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
-            cw.newUTF8("Deprecated");
+        if ( (this.access & Opcodes.ACC_DEPRECATED) != 0 ) {
+            this.cw.newUTF8( "Deprecated" );
             size += 6;
         }
-        if (cw.version == Opcodes.V1_4) {
-            if ((access & Opcodes.ACC_VARARGS) != 0) {
-                cw.newUTF8("Varargs");
+        if ( this.cw.version == Opcodes.V1_4 ) {
+            if ( (this.access & Opcodes.ACC_VARARGS) != 0 ) {
+                this.cw.newUTF8( "Varargs" );
                 size += 6;
             }
-            if ((access & Opcodes.ACC_BRIDGE) != 0) {
-                cw.newUTF8("Bridge");
+            if ( (this.access & Opcodes.ACC_BRIDGE) != 0 ) {
+                this.cw.newUTF8( "Bridge" );
                 size += 6;
             }
         }
-        if (signature != null) {
-            cw.newUTF8("Signature");
-            cw.newUTF8(signature);
+        if ( this.signature != null ) {
+            this.cw.newUTF8( "Signature" );
+            this.cw.newUTF8( this.signature );
             size += 8;
         }
-        if (annd != null) {
-            cw.newUTF8("AnnotationDefault");
-            size += 6 + annd.length;
+        if ( this.annd != null ) {
+            this.cw.newUTF8( "AnnotationDefault" );
+            size += 6 + this.annd.length;
         }
-        if (anns != null) {
-            cw.newUTF8("RuntimeVisibleAnnotations");
-            size += 8 + anns.getSize();
+        if ( this.anns != null ) {
+            this.cw.newUTF8( "RuntimeVisibleAnnotations" );
+            size += 8 + this.anns.getSize();
         }
-        if (ianns != null) {
-            cw.newUTF8("RuntimeInvisibleAnnotations");
-            size += 8 + ianns.getSize();
+        if ( this.ianns != null ) {
+            this.cw.newUTF8( "RuntimeInvisibleAnnotations" );
+            size += 8 + this.ianns.getSize();
         }
-        if (panns != null) {
-            cw.newUTF8("RuntimeVisibleParameterAnnotations");
-            size += 7 + 2 * panns.length;
-            for (int i = panns.length - 1; i >= 0; --i) {
-                size += panns[i] == null ? 0 : panns[i].getSize();
+        if ( this.panns != null ) {
+            this.cw.newUTF8( "RuntimeVisibleParameterAnnotations" );
+            size += 7 + 2 * this.panns.length;
+            for ( int i = this.panns.length - 1; i >= 0; --i ) {
+                size += this.panns[i] == null ? 0 : this.panns[i].getSize();
             }
         }
-        if (ipanns != null) {
-            cw.newUTF8("RuntimeInvisibleParameterAnnotations");
-            size += 7 + 2 * ipanns.length;
-            for (int i = ipanns.length - 1; i >= 0; --i) {
-                size += ipanns[i] == null ? 0 : ipanns[i].getSize();
+        if ( this.ipanns != null ) {
+            this.cw.newUTF8( "RuntimeInvisibleParameterAnnotations" );
+            size += 7 + 2 * this.ipanns.length;
+            for ( int i = this.ipanns.length - 1; i >= 0; --i ) {
+                size += this.ipanns[i] == null ? 0 : this.ipanns[i].getSize();
             }
         }
-        if (attrs != null) {
-            size += attrs.getSize(cw, null, 0, -1, -1);
+        if ( this.attrs != null ) {
+            size += this.attrs.getSize( this.cw,
+                                        null,
+                                        0,
+                                        -1,
+                                        -1 );
         }
         return size;
     }
@@ -1287,173 +1324,187 @@ class MethodWriter implements MethodVisitor {
      *        copied.
      */
     final void put(final ByteVector out) {
-        out.putShort(access).putShort(name).putShort(desc);
-        if (classReaderOffset != 0) {
-            out.putByteArray(cw.cr.b, classReaderOffset, classReaderLength);
+        out.putShort( this.access ).putShort( this.name ).putShort( this.desc );
+        if ( this.classReaderOffset != 0 ) {
+            out.putByteArray( this.cw.cr.b,
+                              this.classReaderOffset,
+                              this.classReaderLength );
             return;
         }
         int attributeCount = 0;
-        if (code.length > 0) {
+        if ( this.code.length > 0 ) {
             ++attributeCount;
         }
-        if (exceptionCount > 0) {
+        if ( this.exceptionCount > 0 ) {
             ++attributeCount;
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0
-                && (cw.version & 0xffff) < Opcodes.V1_5)
-        {
+        if ( (this.access & Opcodes.ACC_SYNTHETIC) != 0 && (this.cw.version & 0xffff) < Opcodes.V1_5 ) {
             ++attributeCount;
         }
-        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
+        if ( (this.access & Opcodes.ACC_DEPRECATED) != 0 ) {
             ++attributeCount;
         }
-        if (cw.version == Opcodes.V1_4) {
-            if ((access & Opcodes.ACC_VARARGS) != 0) {
+        if ( this.cw.version == Opcodes.V1_4 ) {
+            if ( (this.access & Opcodes.ACC_VARARGS) != 0 ) {
                 ++attributeCount;
             }
-            if ((access & Opcodes.ACC_BRIDGE) != 0) {
+            if ( (this.access & Opcodes.ACC_BRIDGE) != 0 ) {
                 ++attributeCount;
             }
         }
-        if (signature != null) {
+        if ( this.signature != null ) {
             ++attributeCount;
         }
-        if (annd != null) {
+        if ( this.annd != null ) {
             ++attributeCount;
         }
-        if (anns != null) {
+        if ( this.anns != null ) {
             ++attributeCount;
         }
-        if (ianns != null) {
+        if ( this.ianns != null ) {
             ++attributeCount;
         }
-        if (panns != null) {
+        if ( this.panns != null ) {
             ++attributeCount;
         }
-        if (ipanns != null) {
+        if ( this.ipanns != null ) {
             ++attributeCount;
         }
-        if (attrs != null) {
-            attributeCount += attrs.getCount();
+        if ( this.attrs != null ) {
+            attributeCount += this.attrs.getCount();
         }
-        out.putShort(attributeCount);
-        if (code.length > 0) {
-            int size = 12 + code.length + 8 * catchCount;
-            if (localVar != null) {
-                size += 8 + localVar.length;
+        out.putShort( attributeCount );
+        if ( this.code.length > 0 ) {
+            int size = 12 + this.code.length + 8 * this.catchCount;
+            if ( this.localVar != null ) {
+                size += 8 + this.localVar.length;
             }
-            if (localVarType != null) {
-                size += 8 + localVarType.length;
+            if ( this.localVarType != null ) {
+                size += 8 + this.localVarType.length;
             }
-            if (lineNumber != null) {
-                size += 8 + lineNumber.length;
+            if ( this.lineNumber != null ) {
+                size += 8 + this.lineNumber.length;
             }
-            if (cattrs != null) {
-                size += cattrs.getSize(cw,
-                        code.data,
-                        code.length,
-                        maxStack,
-                        maxLocals);
+            if ( this.cattrs != null ) {
+                size += this.cattrs.getSize( this.cw,
+                                             this.code.data,
+                                             this.code.length,
+                                             this.maxStack,
+                                             this.maxLocals );
             }
-            out.putShort(cw.newUTF8("Code")).putInt(size);
-            out.putShort(maxStack).putShort(maxLocals);
-            out.putInt(code.length).putByteArray(code.data, 0, code.length);
-            out.putShort(catchCount);
-            if (catchCount > 0) {
-                Handler h = catchTable;
-                while (h != null) {
-                    out.putShort(h.start.position)
-                            .putShort(h.end.position)
-                            .putShort(h.handler.position)
-                            .putShort(h.type);
+            out.putShort( this.cw.newUTF8( "Code" ) ).putInt( size );
+            out.putShort( this.maxStack ).putShort( this.maxLocals );
+            out.putInt( this.code.length ).putByteArray( this.code.data,
+                                                         0,
+                                                         this.code.length );
+            out.putShort( this.catchCount );
+            if ( this.catchCount > 0 ) {
+                Handler h = this.catchTable;
+                while ( h != null ) {
+                    out.putShort( h.start.position ).putShort( h.end.position ).putShort( h.handler.position ).putShort( h.type );
                     h = h.next;
                 }
             }
             attributeCount = 0;
-            if (localVar != null) {
+            if ( this.localVar != null ) {
                 ++attributeCount;
             }
-            if (localVarType != null) {
+            if ( this.localVarType != null ) {
                 ++attributeCount;
             }
-            if (lineNumber != null) {
+            if ( this.lineNumber != null ) {
                 ++attributeCount;
             }
-            if (cattrs != null) {
-                attributeCount += cattrs.getCount();
+            if ( this.cattrs != null ) {
+                attributeCount += this.cattrs.getCount();
             }
-            out.putShort(attributeCount);
-            if (localVar != null) {
-                out.putShort(cw.newUTF8("LocalVariableTable"));
-                out.putInt(localVar.length + 2).putShort(localVarCount);
-                out.putByteArray(localVar.data, 0, localVar.length);
+            out.putShort( attributeCount );
+            if ( this.localVar != null ) {
+                out.putShort( this.cw.newUTF8( "LocalVariableTable" ) );
+                out.putInt( this.localVar.length + 2 ).putShort( this.localVarCount );
+                out.putByteArray( this.localVar.data,
+                                  0,
+                                  this.localVar.length );
             }
-            if (localVarType != null) {
-                out.putShort(cw.newUTF8("LocalVariableTypeTable"));
-                out.putInt(localVarType.length + 2).putShort(localVarTypeCount);
-                out.putByteArray(localVarType.data, 0, localVarType.length);
+            if ( this.localVarType != null ) {
+                out.putShort( this.cw.newUTF8( "LocalVariableTypeTable" ) );
+                out.putInt( this.localVarType.length + 2 ).putShort( this.localVarTypeCount );
+                out.putByteArray( this.localVarType.data,
+                                  0,
+                                  this.localVarType.length );
             }
-            if (lineNumber != null) {
-                out.putShort(cw.newUTF8("LineNumberTable"));
-                out.putInt(lineNumber.length + 2).putShort(lineNumberCount);
-                out.putByteArray(lineNumber.data, 0, lineNumber.length);
+            if ( this.lineNumber != null ) {
+                out.putShort( this.cw.newUTF8( "LineNumberTable" ) );
+                out.putInt( this.lineNumber.length + 2 ).putShort( this.lineNumberCount );
+                out.putByteArray( this.lineNumber.data,
+                                  0,
+                                  this.lineNumber.length );
             }
-            if (cattrs != null) {
-                cattrs.put(cw, code.data, code.length, maxLocals, maxStack, out);
-            }
-        }
-        if (exceptionCount > 0) {
-            out.putShort(cw.newUTF8("Exceptions"))
-                    .putInt(2 * exceptionCount + 2);
-            out.putShort(exceptionCount);
-            for (int i = 0; i < exceptionCount; ++i) {
-                out.putShort(exceptions[i]);
-            }
-        }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0
-                && (cw.version & 0xffff) < Opcodes.V1_5)
-        {
-            out.putShort(cw.newUTF8("Synthetic")).putInt(0);
-        }
-        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
-            out.putShort(cw.newUTF8("Deprecated")).putInt(0);
-        }
-        if (cw.version == Opcodes.V1_4) {
-            if ((access & Opcodes.ACC_VARARGS) != 0) {
-                out.putShort(cw.newUTF8("Varargs")).putInt(0);
-            }
-            if ((access & Opcodes.ACC_BRIDGE) != 0) {
-                out.putShort(cw.newUTF8("Bridge")).putInt(0);
+            if ( this.cattrs != null ) {
+                this.cattrs.put( this.cw,
+                                 this.code.data,
+                                 this.code.length,
+                                 this.maxLocals,
+                                 this.maxStack,
+                                 out );
             }
         }
-        if (signature != null) {
-            out.putShort(cw.newUTF8("Signature"))
-                    .putInt(2)
-                    .putShort(cw.newUTF8(signature));
+        if ( this.exceptionCount > 0 ) {
+            out.putShort( this.cw.newUTF8( "Exceptions" ) ).putInt( 2 * this.exceptionCount + 2 );
+            out.putShort( this.exceptionCount );
+            for ( int i = 0; i < this.exceptionCount; ++i ) {
+                out.putShort( this.exceptions[i] );
+            }
         }
-        if (annd != null) {
-            out.putShort(cw.newUTF8("AnnotationDefault"));
-            out.putInt(annd.length);
-            out.putByteArray(annd.data, 0, annd.length);
+        if ( (this.access & Opcodes.ACC_SYNTHETIC) != 0 && (this.cw.version & 0xffff) < Opcodes.V1_5 ) {
+            out.putShort( this.cw.newUTF8( "Synthetic" ) ).putInt( 0 );
         }
-        if (anns != null) {
-            out.putShort(cw.newUTF8("RuntimeVisibleAnnotations"));
-            anns.put(out);
+        if ( (this.access & Opcodes.ACC_DEPRECATED) != 0 ) {
+            out.putShort( this.cw.newUTF8( "Deprecated" ) ).putInt( 0 );
         }
-        if (ianns != null) {
-            out.putShort(cw.newUTF8("RuntimeInvisibleAnnotations"));
-            ianns.put(out);
+        if ( this.cw.version == Opcodes.V1_4 ) {
+            if ( (this.access & Opcodes.ACC_VARARGS) != 0 ) {
+                out.putShort( this.cw.newUTF8( "Varargs" ) ).putInt( 0 );
+            }
+            if ( (this.access & Opcodes.ACC_BRIDGE) != 0 ) {
+                out.putShort( this.cw.newUTF8( "Bridge" ) ).putInt( 0 );
+            }
         }
-        if (panns != null) {
-            out.putShort(cw.newUTF8("RuntimeVisibleParameterAnnotations"));
-            AnnotationWriter.put(panns, out);
+        if ( this.signature != null ) {
+            out.putShort( this.cw.newUTF8( "Signature" ) ).putInt( 2 ).putShort( this.cw.newUTF8( this.signature ) );
         }
-        if (ipanns != null) {
-            out.putShort(cw.newUTF8("RuntimeInvisibleParameterAnnotations"));
-            AnnotationWriter.put(ipanns, out);
+        if ( this.annd != null ) {
+            out.putShort( this.cw.newUTF8( "AnnotationDefault" ) );
+            out.putInt( this.annd.length );
+            out.putByteArray( this.annd.data,
+                              0,
+                              this.annd.length );
         }
-        if (attrs != null) {
-            attrs.put(cw, null, 0, -1, -1, out);
+        if ( this.anns != null ) {
+            out.putShort( this.cw.newUTF8( "RuntimeVisibleAnnotations" ) );
+            this.anns.put( out );
+        }
+        if ( this.ianns != null ) {
+            out.putShort( this.cw.newUTF8( "RuntimeInvisibleAnnotations" ) );
+            this.ianns.put( out );
+        }
+        if ( this.panns != null ) {
+            out.putShort( this.cw.newUTF8( "RuntimeVisibleParameterAnnotations" ) );
+            AnnotationWriter.put( this.panns,
+                                  out );
+        }
+        if ( this.ipanns != null ) {
+            out.putShort( this.cw.newUTF8( "RuntimeInvisibleParameterAnnotations" ) );
+            AnnotationWriter.put( this.ipanns,
+                                  out );
+        }
+        if ( this.attrs != null ) {
+            this.attrs.put( this.cw,
+                            null,
+                            0,
+                            -1,
+                            -1,
+                            out );
         }
     }
 
@@ -1493,12 +1544,10 @@ class MethodWriter implements MethodVisitor {
      * @return the <tt>indexes</tt> array, which now contains the new
      *         positions of the resized instructions (designated as above).
      */
-    private int[] resizeInstructions(
-        final int[] indexes,
-        final int[] sizes,
-        final int len)
-    {
-        byte[] b = code.data; // bytecode of the method
+    private int[] resizeInstructions(final int[] indexes,
+                                     final int[] sizes,
+                                     final int len) {
+        byte[] b = this.code.data; // bytecode of the method
         int u, v, label; // indexes in b
         int i, j; // loop indexes
 
@@ -1532,44 +1581,53 @@ class MethodWriter implements MethodVisitor {
         boolean[] resize; // instructions to be resized
         int newOffset; // future offset of a jump instruction
 
-        System.arraycopy(indexes, 0, allIndexes, 0, len);
-        System.arraycopy(sizes, 0, allSizes, 0, len);
-        resize = new boolean[code.length];
+        System.arraycopy( indexes,
+                          0,
+                          allIndexes,
+                          0,
+                          len );
+        System.arraycopy( sizes,
+                          0,
+                          allSizes,
+                          0,
+                          len );
+        resize = new boolean[this.code.length];
 
         // 3 = loop again, 2 = loop ended, 1 = last pass, 0 = done
         int state = 3;
         do {
-            if (state == 3) {
+            if ( state == 3 ) {
                 state = 2;
             }
             u = 0;
-            while (u < b.length) {
+            while ( u < b.length ) {
                 int opcode = b[u] & 0xFF; // opcode of current instruction
                 int insert = 0; // bytes to be added after this instruction
 
-                switch (ClassWriter.TYPE[opcode]) {
-                    case ClassWriter.NOARG_INSN:
-                    case ClassWriter.IMPLVAR_INSN:
+                switch ( ClassWriter.TYPE[opcode] ) {
+                    case ClassWriter.NOARG_INSN :
+                    case ClassWriter.IMPLVAR_INSN :
                         u += 1;
                         break;
-                    case ClassWriter.LABEL_INSN:
-                        if (opcode > 201) {
+                    case ClassWriter.LABEL_INSN :
+                        if ( opcode > 201 ) {
                             // converts temporary opcodes 202 to 217, 218 and
                             // 219 to IFEQ ... JSR (inclusive), IFNULL and
                             // IFNONNULL
                             opcode = opcode < 218 ? opcode - 49 : opcode - 20;
-                            label = u + readUnsignedShort(b, u + 1);
+                            label = u + readUnsignedShort( b,
+                                                           u + 1 );
                         } else {
-                            label = u + readShort(b, u + 1);
+                            label = u + readShort( b,
+                                                   u + 1 );
                         }
-                        newOffset = getNewOffset(allIndexes, allSizes, u, label);
-                        if (newOffset < Short.MIN_VALUE
-                                || newOffset > Short.MAX_VALUE)
-                        {
-                            if (!resize[u]) {
-                                if (opcode == Opcodes.GOTO
-                                        || opcode == Opcodes.JSR)
-                                {
+                        newOffset = getNewOffset( allIndexes,
+                                                  allSizes,
+                                                  u,
+                                                  label );
+                        if ( newOffset < Short.MIN_VALUE || newOffset > Short.MAX_VALUE ) {
+                            if ( !resize[u] ) {
+                                if ( opcode == Opcodes.GOTO || opcode == Opcodes.JSR ) {
                                     // two additional bytes will be required to
                                     // replace this GOTO or JSR instruction with
                                     // a GOTO_W or a JSR_W
@@ -1588,11 +1646,11 @@ class MethodWriter implements MethodVisitor {
                         }
                         u += 3;
                         break;
-                    case ClassWriter.LABELW_INSN:
+                    case ClassWriter.LABELW_INSN :
                         u += 5;
                         break;
-                    case ClassWriter.TABL_INSN:
-                        if (state == 1) {
+                    case ClassWriter.TABL_INSN :
+                        if ( state == 1 ) {
                             // true number of bytes to be added (or removed)
                             // from this instruction = (future number of padding
                             // bytes - current number of padding byte) -
@@ -1600,9 +1658,12 @@ class MethodWriter implements MethodVisitor {
                             // = ((3 - newOffset%4) - (3 - u%4)) - u%4
                             // = (-newOffset%4 + u%4) - u%4
                             // = -(newOffset & 3)
-                            newOffset = getNewOffset(allIndexes, allSizes, 0, u);
+                            newOffset = getNewOffset( allIndexes,
+                                                      allSizes,
+                                                      0,
+                                                      u );
                             insert = -(newOffset & 3);
-                        } else if (!resize[u]) {
+                        } else if ( !resize[u] ) {
                             // over estimation of the number of bytes to be
                             // added to this instruction = 3 - current number
                             // of padding bytes = 3 - (3 - u%4) = u%4 = u & 3
@@ -1611,88 +1672,100 @@ class MethodWriter implements MethodVisitor {
                         }
                         // skips instruction
                         u = u + 4 - (u & 3);
-                        u += 4 * (readInt(b, u + 8) - readInt(b, u + 4) + 1) + 12;
+                        u += 4 * (readInt( b,
+                                           u + 8 ) - readInt( b,
+                                                              u + 4 ) + 1) + 12;
                         break;
-                    case ClassWriter.LOOK_INSN:
-                        if (state == 1) {
+                    case ClassWriter.LOOK_INSN :
+                        if ( state == 1 ) {
                             // like TABL_INSN
-                            newOffset = getNewOffset(allIndexes, allSizes, 0, u);
+                            newOffset = getNewOffset( allIndexes,
+                                                      allSizes,
+                                                      0,
+                                                      u );
                             insert = -(newOffset & 3);
-                        } else if (!resize[u]) {
+                        } else if ( !resize[u] ) {
                             // like TABL_INSN
                             insert = u & 3;
                             resize[u] = true;
                         }
                         // skips instruction
                         u = u + 4 - (u & 3);
-                        u += 8 * readInt(b, u + 4) + 8;
+                        u += 8 * readInt( b,
+                                          u + 4 ) + 8;
                         break;
-                    case ClassWriter.WIDE_INSN:
+                    case ClassWriter.WIDE_INSN :
                         opcode = b[u + 1] & 0xFF;
-                        if (opcode == Opcodes.IINC) {
+                        if ( opcode == Opcodes.IINC ) {
                             u += 6;
                         } else {
                             u += 4;
                         }
                         break;
-                    case ClassWriter.VAR_INSN:
-                    case ClassWriter.SBYTE_INSN:
-                    case ClassWriter.LDC_INSN:
+                    case ClassWriter.VAR_INSN :
+                    case ClassWriter.SBYTE_INSN :
+                    case ClassWriter.LDC_INSN :
                         u += 2;
                         break;
-                    case ClassWriter.SHORT_INSN:
-                    case ClassWriter.LDCW_INSN:
-                    case ClassWriter.FIELDORMETH_INSN:
-                    case ClassWriter.TYPE_INSN:
-                    case ClassWriter.IINC_INSN:
+                    case ClassWriter.SHORT_INSN :
+                    case ClassWriter.LDCW_INSN :
+                    case ClassWriter.FIELDORMETH_INSN :
+                    case ClassWriter.TYPE_INSN :
+                    case ClassWriter.IINC_INSN :
                         u += 3;
                         break;
-                    case ClassWriter.ITFMETH_INSN:
+                    case ClassWriter.ITFMETH_INSN :
                         u += 5;
                         break;
                     // case ClassWriter.MANA_INSN:
-                    default:
+                    default :
                         u += 4;
                         break;
                 }
-                if (insert != 0) {
+                if ( insert != 0 ) {
                     // adds a new (u, insert) entry in the allIndexes and
                     // allSizes arrays
-                    int[] newIndexes = new int[allIndexes.length + 1];
-                    int[] newSizes = new int[allSizes.length + 1];
-                    System.arraycopy(allIndexes,
-                            0,
-                            newIndexes,
-                            0,
-                            allIndexes.length);
-                    System.arraycopy(allSizes, 0, newSizes, 0, allSizes.length);
+                    final int[] newIndexes = new int[allIndexes.length + 1];
+                    final int[] newSizes = new int[allSizes.length + 1];
+                    System.arraycopy( allIndexes,
+                                      0,
+                                      newIndexes,
+                                      0,
+                                      allIndexes.length );
+                    System.arraycopy( allSizes,
+                                      0,
+                                      newSizes,
+                                      0,
+                                      allSizes.length );
                     newIndexes[allIndexes.length] = u;
                     newSizes[allSizes.length] = insert;
                     allIndexes = newIndexes;
                     allSizes = newSizes;
-                    if (insert > 0) {
+                    if ( insert > 0 ) {
                         state = 3;
                     }
                 }
             }
-            if (state < 3) {
+            if ( state < 3 ) {
                 --state;
             }
-        } while (state != 0);
+        } while ( state != 0 );
 
         // 2nd step:
         // copies the bytecode of the method into a new bytevector, updates the
         // offsets, and inserts (or removes) bytes as requested.
 
-        ByteVector newCode = new ByteVector(code.length);
+        final ByteVector newCode = new ByteVector( this.code.length );
 
         u = 0;
-        while (u < code.length) {
-            for (i = allIndexes.length - 1; i >= 0; --i) {
-                if (allIndexes[i] == u) {
-                    if (i < len) {
-                        if (sizes[i] > 0) {
-                            newCode.putByteArray(null, 0, sizes[i]);
+        while ( u < this.code.length ) {
+            for ( i = allIndexes.length - 1; i >= 0; --i ) {
+                if ( allIndexes[i] == u ) {
+                    if ( i < len ) {
+                        if ( sizes[i] > 0 ) {
+                            newCode.putByteArray( null,
+                                                  0,
+                                                  sizes[i] );
                         } else {
                             newCode.length += sizes[i];
                         }
@@ -1701,189 +1774,249 @@ class MethodWriter implements MethodVisitor {
                 }
             }
             int opcode = b[u] & 0xFF;
-            switch (ClassWriter.TYPE[opcode]) {
-                case ClassWriter.NOARG_INSN:
-                case ClassWriter.IMPLVAR_INSN:
-                    newCode.putByte(opcode);
+            switch ( ClassWriter.TYPE[opcode] ) {
+                case ClassWriter.NOARG_INSN :
+                case ClassWriter.IMPLVAR_INSN :
+                    newCode.putByte( opcode );
                     u += 1;
                     break;
-                case ClassWriter.LABEL_INSN:
-                    if (opcode > 201) {
+                case ClassWriter.LABEL_INSN :
+                    if ( opcode > 201 ) {
                         // changes temporary opcodes 202 to 217 (inclusive), 218
                         // and 219 to IFEQ ... JSR (inclusive), IFNULL and
                         // IFNONNULL
                         opcode = opcode < 218 ? opcode - 49 : opcode - 20;
-                        label = u + readUnsignedShort(b, u + 1);
+                        label = u + readUnsignedShort( b,
+                                                       u + 1 );
                     } else {
-                        label = u + readShort(b, u + 1);
+                        label = u + readShort( b,
+                                               u + 1 );
                     }
-                    newOffset = getNewOffset(allIndexes, allSizes, u, label);
-                    if (resize[u]) {
+                    newOffset = getNewOffset( allIndexes,
+                                              allSizes,
+                                              u,
+                                              label );
+                    if ( resize[u] ) {
                         // replaces GOTO with GOTO_W, JSR with JSR_W and IFxxx
                         // <l> with IFNOTxxx <l'> GOTO_W <l>, where IFNOTxxx is
                         // the "opposite" opcode of IFxxx (i.e., IFNE for IFEQ)
                         // and where <l'> designates the instruction just after
                         // the GOTO_W.
-                        if (opcode == Opcodes.GOTO) {
-                            newCode.putByte(200); // GOTO_W
-                        } else if (opcode == Opcodes.JSR) {
-                            newCode.putByte(201); // JSR_W
+                        if ( opcode == Opcodes.GOTO ) {
+                            newCode.putByte( 200 ); // GOTO_W
+                        } else if ( opcode == Opcodes.JSR ) {
+                            newCode.putByte( 201 ); // JSR_W
                         } else {
-                            newCode.putByte(opcode <= 166
-                                    ? ((opcode + 1) ^ 1) - 1
-                                    : opcode ^ 1);
-                            newCode.putShort(8); // jump offset
-                            newCode.putByte(200); // GOTO_W
+                            newCode.putByte( opcode <= 166 ? ((opcode + 1) ^ 1) - 1 : opcode ^ 1 );
+                            newCode.putShort( 8 ); // jump offset
+                            newCode.putByte( 200 ); // GOTO_W
                             // newOffset now computed from start of GOTO_W
                             newOffset -= 3;
                         }
-                        newCode.putInt(newOffset);
+                        newCode.putInt( newOffset );
                     } else {
-                        newCode.putByte(opcode);
-                        newCode.putShort(newOffset);
+                        newCode.putByte( opcode );
+                        newCode.putShort( newOffset );
                     }
                     u += 3;
                     break;
-                case ClassWriter.LABELW_INSN:
-                    label = u + readInt(b, u + 1);
-                    newOffset = getNewOffset(allIndexes, allSizes, u, label);
-                    newCode.putByte(opcode);
-                    newCode.putInt(newOffset);
+                case ClassWriter.LABELW_INSN :
+                    label = u + readInt( b,
+                                         u + 1 );
+                    newOffset = getNewOffset( allIndexes,
+                                              allSizes,
+                                              u,
+                                              label );
+                    newCode.putByte( opcode );
+                    newCode.putInt( newOffset );
                     u += 5;
                     break;
-                case ClassWriter.TABL_INSN:
+                case ClassWriter.TABL_INSN :
                     // skips 0 to 3 padding bytes
                     v = u;
                     u = u + 4 - (v & 3);
                     // reads and copies instruction
-                    newCode.putByte(Opcodes.TABLESWITCH);
-                    while (newCode.length % 4 != 0) {
-                        newCode.putByte(0);
+                    newCode.putByte( Opcodes.TABLESWITCH );
+                    while ( newCode.length % 4 != 0 ) {
+                        newCode.putByte( 0 );
                     }
-                    label = v + readInt(b, u);
+                    label = v + readInt( b,
+                                         u );
                     u += 4;
-                    newOffset = getNewOffset(allIndexes, allSizes, v, label);
-                    newCode.putInt(newOffset);
-                    j = readInt(b, u);
+                    newOffset = getNewOffset( allIndexes,
+                                              allSizes,
+                                              v,
+                                              label );
+                    newCode.putInt( newOffset );
+                    j = readInt( b,
+                                 u );
                     u += 4;
-                    newCode.putInt(j);
-                    j = readInt(b, u) - j + 1;
+                    newCode.putInt( j );
+                    j = readInt( b,
+                                 u ) - j + 1;
                     u += 4;
-                    newCode.putInt(readInt(b, u - 4));
-                    for (; j > 0; --j) {
-                        label = v + readInt(b, u);
+                    newCode.putInt( readInt( b,
+                                             u - 4 ) );
+                    for ( ; j > 0; --j ) {
+                        label = v + readInt( b,
+                                             u );
                         u += 4;
-                        newOffset = getNewOffset(allIndexes, allSizes, v, label);
-                        newCode.putInt(newOffset);
+                        newOffset = getNewOffset( allIndexes,
+                                                  allSizes,
+                                                  v,
+                                                  label );
+                        newCode.putInt( newOffset );
                     }
                     break;
-                case ClassWriter.LOOK_INSN:
+                case ClassWriter.LOOK_INSN :
                     // skips 0 to 3 padding bytes
                     v = u;
                     u = u + 4 - (v & 3);
                     // reads and copies instruction
-                    newCode.putByte(Opcodes.LOOKUPSWITCH);
-                    while (newCode.length % 4 != 0) {
-                        newCode.putByte(0);
+                    newCode.putByte( Opcodes.LOOKUPSWITCH );
+                    while ( newCode.length % 4 != 0 ) {
+                        newCode.putByte( 0 );
                     }
-                    label = v + readInt(b, u);
+                    label = v + readInt( b,
+                                         u );
                     u += 4;
-                    newOffset = getNewOffset(allIndexes, allSizes, v, label);
-                    newCode.putInt(newOffset);
-                    j = readInt(b, u);
+                    newOffset = getNewOffset( allIndexes,
+                                              allSizes,
+                                              v,
+                                              label );
+                    newCode.putInt( newOffset );
+                    j = readInt( b,
+                                 u );
                     u += 4;
-                    newCode.putInt(j);
-                    for (; j > 0; --j) {
-                        newCode.putInt(readInt(b, u));
+                    newCode.putInt( j );
+                    for ( ; j > 0; --j ) {
+                        newCode.putInt( readInt( b,
+                                                 u ) );
                         u += 4;
-                        label = v + readInt(b, u);
+                        label = v + readInt( b,
+                                             u );
                         u += 4;
-                        newOffset = getNewOffset(allIndexes, allSizes, v, label);
-                        newCode.putInt(newOffset);
+                        newOffset = getNewOffset( allIndexes,
+                                                  allSizes,
+                                                  v,
+                                                  label );
+                        newCode.putInt( newOffset );
                     }
                     break;
-                case ClassWriter.WIDE_INSN:
+                case ClassWriter.WIDE_INSN :
                     opcode = b[u + 1] & 0xFF;
-                    if (opcode == Opcodes.IINC) {
-                        newCode.putByteArray(b, u, 6);
+                    if ( opcode == Opcodes.IINC ) {
+                        newCode.putByteArray( b,
+                                              u,
+                                              6 );
                         u += 6;
                     } else {
-                        newCode.putByteArray(b, u, 4);
+                        newCode.putByteArray( b,
+                                              u,
+                                              4 );
                         u += 4;
                     }
                     break;
-                case ClassWriter.VAR_INSN:
-                case ClassWriter.SBYTE_INSN:
-                case ClassWriter.LDC_INSN:
-                    newCode.putByteArray(b, u, 2);
+                case ClassWriter.VAR_INSN :
+                case ClassWriter.SBYTE_INSN :
+                case ClassWriter.LDC_INSN :
+                    newCode.putByteArray( b,
+                                          u,
+                                          2 );
                     u += 2;
                     break;
-                case ClassWriter.SHORT_INSN:
-                case ClassWriter.LDCW_INSN:
-                case ClassWriter.FIELDORMETH_INSN:
-                case ClassWriter.TYPE_INSN:
-                case ClassWriter.IINC_INSN:
-                    newCode.putByteArray(b, u, 3);
+                case ClassWriter.SHORT_INSN :
+                case ClassWriter.LDCW_INSN :
+                case ClassWriter.FIELDORMETH_INSN :
+                case ClassWriter.TYPE_INSN :
+                case ClassWriter.IINC_INSN :
+                    newCode.putByteArray( b,
+                                          u,
+                                          3 );
                     u += 3;
                     break;
-                case ClassWriter.ITFMETH_INSN:
-                    newCode.putByteArray(b, u, 5);
+                case ClassWriter.ITFMETH_INSN :
+                    newCode.putByteArray( b,
+                                          u,
+                                          5 );
                     u += 5;
                     break;
                 // case MANA_INSN:
-                default:
-                    newCode.putByteArray(b, u, 4);
+                default :
+                    newCode.putByteArray( b,
+                                          u,
+                                          4 );
                     u += 4;
                     break;
             }
         }
 
         // updates the exception handler block labels
-        Handler h = catchTable;
-        while (h != null) {
-            getNewOffset(allIndexes, allSizes, h.start);
-            getNewOffset(allIndexes, allSizes, h.end);
-            getNewOffset(allIndexes, allSizes, h.handler);
+        Handler h = this.catchTable;
+        while ( h != null ) {
+            getNewOffset( allIndexes,
+                          allSizes,
+                          h.start );
+            getNewOffset( allIndexes,
+                          allSizes,
+                          h.end );
+            getNewOffset( allIndexes,
+                          allSizes,
+                          h.handler );
             h = h.next;
         }
-        for (i = 0; i < 2; ++i) {
-            ByteVector bv = i == 0 ? localVar : localVarType;
-            if (bv != null) {
+        for ( i = 0; i < 2; ++i ) {
+            final ByteVector bv = i == 0 ? this.localVar : this.localVarType;
+            if ( bv != null ) {
                 b = bv.data;
                 u = 0;
-                while (u < bv.length) {
-                    label = readUnsignedShort(b, u);
-                    newOffset = getNewOffset(allIndexes, allSizes, 0, label);
-                    writeShort(b, u, newOffset);
-                    label += readUnsignedShort(b, u + 2);
-                    newOffset = getNewOffset(allIndexes, allSizes, 0, label)
-                            - newOffset;
-                    writeShort(b, u + 2, newOffset);
+                while ( u < bv.length ) {
+                    label = readUnsignedShort( b,
+                                               u );
+                    newOffset = getNewOffset( allIndexes,
+                                              allSizes,
+                                              0,
+                                              label );
+                    writeShort( b,
+                                u,
+                                newOffset );
+                    label += readUnsignedShort( b,
+                                                u + 2 );
+                    newOffset = getNewOffset( allIndexes,
+                                              allSizes,
+                                              0,
+                                              label ) - newOffset;
+                    writeShort( b,
+                                u + 2,
+                                newOffset );
                     u += 10;
                 }
             }
         }
-        if (lineNumber != null) {
-            b = lineNumber.data;
+        if ( this.lineNumber != null ) {
+            b = this.lineNumber.data;
             u = 0;
-            while (u < lineNumber.length) {
-                writeShort(b, u, getNewOffset(allIndexes,
-                        allSizes,
-                        0,
-                        readUnsignedShort(b, u)));
+            while ( u < this.lineNumber.length ) {
+                writeShort( b,
+                            u,
+                            getNewOffset( allIndexes,
+                                          allSizes,
+                                          0,
+                                          readUnsignedShort( b,
+                                                             u ) ) );
                 u += 4;
             }
         }
         // updates the labels of the other attributes
-        while (cattrs != null) {
-            Label[] labels = cattrs.getLabels();
-            if (labels != null) {
-                for (i = labels.length - 1; i >= 0; --i) {
-                    if (!labels[i].resized) {
-                        labels[i].position = getNewOffset(allIndexes,
-                                allSizes,
-                                0,
-                                labels[i].position);
+        while ( this.cattrs != null ) {
+            final Label[] labels = this.cattrs.getLabels();
+            if ( labels != null ) {
+                for ( i = labels.length - 1; i >= 0; --i ) {
+                    if ( !labels[i].resized ) {
+                        labels[i].position = getNewOffset( allIndexes,
+                                                           allSizes,
+                                                           0,
+                                                           labels[i].position );
                         labels[i].resized = true;
                     }
                 }
@@ -1891,7 +2024,7 @@ class MethodWriter implements MethodVisitor {
         }
 
         // replaces old bytecodes with new ones
-        code = newCode;
+        this.code = newCode;
 
         // returns the positions of the resized instructions
         return indexes;
@@ -1904,7 +2037,8 @@ class MethodWriter implements MethodVisitor {
      * @param index the start index of the value to be read.
      * @return the read value.
      */
-    static int readUnsignedShort(final byte[] b, final int index) {
+    static int readUnsignedShort(final byte[] b,
+                                 final int index) {
         return ((b[index] & 0xFF) << 8) | (b[index + 1] & 0xFF);
     }
 
@@ -1915,7 +2049,8 @@ class MethodWriter implements MethodVisitor {
      * @param index the start index of the value to be read.
      * @return the read value.
      */
-    static short readShort(final byte[] b, final int index) {
+    static short readShort(final byte[] b,
+                           final int index) {
         return (short) (((b[index] & 0xFF) << 8) | (b[index + 1] & 0xFF));
     }
 
@@ -1926,9 +2061,9 @@ class MethodWriter implements MethodVisitor {
      * @param index the start index of the value to be read.
      * @return the read value.
      */
-    static int readInt(final byte[] b, final int index) {
-        return ((b[index] & 0xFF) << 24) | ((b[index + 1] & 0xFF) << 16)
-                | ((b[index + 2] & 0xFF) << 8) | (b[index + 3] & 0xFF);
+    static int readInt(final byte[] b,
+                       final int index) {
+        return ((b[index] & 0xFF) << 24) | ((b[index + 1] & 0xFF) << 16) | ((b[index + 2] & 0xFF) << 8) | (b[index + 3] & 0xFF);
     }
 
     /**
@@ -1938,7 +2073,9 @@ class MethodWriter implements MethodVisitor {
      * @param index where the first byte of the short value must be written.
      * @param s the value to be written in the given byte array.
      */
-    static void writeShort(final byte[] b, final int index, final int s) {
+    static void writeShort(final byte[] b,
+                           final int index,
+                           final int s) {
         b[index] = (byte) (s >>> 8);
         b[index + 1] = (byte) s;
     }
@@ -1964,25 +2101,23 @@ class MethodWriter implements MethodVisitor {
      * @param end index of the first byte of the target instruction.
      * @return the future value of the given bytecode offset.
      */
-    static int getNewOffset(
-        final int[] indexes,
-        final int[] sizes,
-        final int begin,
-        final int end)
-    {
+    static int getNewOffset(final int[] indexes,
+                            final int[] sizes,
+                            final int begin,
+                            final int end) {
         int offset = end - begin;
-        for (int i = 0; i < indexes.length; ++i) {
-            if (begin < indexes[i] && indexes[i] <= end) {
+        for ( int i = 0; i < indexes.length; ++i ) {
+            if ( begin < indexes[i] && indexes[i] <= end ) {
                 // forward jump
                 offset += sizes[i];
-            } else if (end < indexes[i] && indexes[i] <= begin) {
+            } else if ( end < indexes[i] && indexes[i] <= begin ) {
                 // backward jump
                 offset -= sizes[i];
             }
         }
         return offset;
     }
-    
+
     /**
      * Updates the offset of the given label.
      * 
@@ -1999,13 +2134,14 @@ class MethodWriter implements MethodVisitor {
      *        <i>must not</i> become negative or null).
      * @param label the label whose offset must be updated.
      */
-    static void getNewOffset(
-        final int[] indexes,
-        final int[] sizes,
-        final Label label)
-    {
-        if (!label.resized) {
-            label.position = getNewOffset(indexes, sizes, 0, label.position);
+    static void getNewOffset(final int[] indexes,
+                             final int[] sizes,
+                             final Label label) {
+        if ( !label.resized ) {
+            label.position = getNewOffset( indexes,
+                                           sizes,
+                                           0,
+                                           label.position );
             label.resized = true;
         }
     }

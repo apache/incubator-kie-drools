@@ -45,14 +45,14 @@ public class ByteVector {
     /**
      * Actual number of bytes in this vector.
      */
-    int length;
+    int    length;
 
     /**
      * Constructs a new {@link ByteVector ByteVector} with a default initial
      * size.
      */
     public ByteVector() {
-        data = new byte[64];
+        this.data = new byte[64];
     }
 
     /**
@@ -62,7 +62,7 @@ public class ByteVector {
      * @param initialSize the initial size of the byte vector to be constructed.
      */
     public ByteVector(final int initialSize) {
-        data = new byte[initialSize];
+        this.data = new byte[initialSize];
     }
 
     /**
@@ -74,10 +74,10 @@ public class ByteVector {
      */
     public ByteVector putByte(final int b) {
         int length = this.length;
-        if (length + 1 > data.length) {
-            enlarge(1);
+        if ( length + 1 > this.data.length ) {
+            enlarge( 1 );
         }
-        data[length++] = (byte) b;
+        this.data[length++] = (byte) b;
         this.length = length;
         return this;
     }
@@ -90,12 +90,13 @@ public class ByteVector {
      * @param b2 another byte.
      * @return this byte vector.
      */
-    ByteVector put11(final int b1, final int b2) {
+    ByteVector put11(final int b1,
+                     final int b2) {
         int length = this.length;
-        if (length + 2 > data.length) {
-            enlarge(2);
+        if ( length + 2 > this.data.length ) {
+            enlarge( 2 );
         }
-        byte[] data = this.data;
+        final byte[] data = this.data;
         data[length++] = (byte) b1;
         data[length++] = (byte) b2;
         this.length = length;
@@ -111,10 +112,10 @@ public class ByteVector {
      */
     public ByteVector putShort(final int s) {
         int length = this.length;
-        if (length + 2 > data.length) {
-            enlarge(2);
+        if ( length + 2 > this.data.length ) {
+            enlarge( 2 );
         }
-        byte[] data = this.data;
+        final byte[] data = this.data;
         data[length++] = (byte) (s >>> 8);
         data[length++] = (byte) s;
         this.length = length;
@@ -129,12 +130,13 @@ public class ByteVector {
      * @param s a short.
      * @return this byte vector.
      */
-    ByteVector put12(final int b, final int s) {
+    ByteVector put12(final int b,
+                     final int s) {
         int length = this.length;
-        if (length + 3 > data.length) {
-            enlarge(3);
+        if ( length + 3 > this.data.length ) {
+            enlarge( 3 );
         }
-        byte[] data = this.data;
+        final byte[] data = this.data;
         data[length++] = (byte) b;
         data[length++] = (byte) (s >>> 8);
         data[length++] = (byte) s;
@@ -151,10 +153,10 @@ public class ByteVector {
      */
     public ByteVector putInt(final int i) {
         int length = this.length;
-        if (length + 4 > data.length) {
-            enlarge(4);
+        if ( length + 4 > this.data.length ) {
+            enlarge( 4 );
         }
-        byte[] data = this.data;
+        final byte[] data = this.data;
         data[length++] = (byte) (i >>> 24);
         data[length++] = (byte) (i >>> 16);
         data[length++] = (byte) (i >>> 8);
@@ -172,10 +174,10 @@ public class ByteVector {
      */
     public ByteVector putLong(final long l) {
         int length = this.length;
-        if (length + 8 > data.length) {
-            enlarge(8);
+        if ( length + 8 > this.data.length ) {
+            enlarge( 8 );
         }
-        byte[] data = this.data;
+        final byte[] data = this.data;
         int i = (int) (l >>> 32);
         data[length++] = (byte) (i >>> 24);
         data[length++] = (byte) (i >>> 16);
@@ -198,11 +200,11 @@ public class ByteVector {
      * @return this byte vector.
      */
     public ByteVector putUTF8(final String s) {
-        int charLength = s.length();
-        if (length + 2 + charLength > data.length) {
-            enlarge(2 + charLength);
+        final int charLength = s.length();
+        if ( this.length + 2 + charLength > this.data.length ) {
+            enlarge( 2 + charLength );
         }
-        int len = length;
+        int len = this.length;
         byte[] data = this.data;
         // optimistic algorithm: instead of computing the byte length and then
         // serializing the string (which requires two loops), we assume the byte
@@ -212,34 +214,34 @@ public class ByteVector {
         // general method.
         data[len++] = (byte) (charLength >>> 8);
         data[len++] = (byte) (charLength);
-        for (int i = 0; i < charLength; ++i) {
-            char c = s.charAt(i);
-            if (c >= '\001' && c <= '\177') {
+        for ( int i = 0; i < charLength; ++i ) {
+            char c = s.charAt( i );
+            if ( c >= '\001' && c <= '\177' ) {
                 data[len++] = (byte) c;
             } else {
                 int byteLength = i;
-                for (int j = i; j < charLength; ++j) {
-                    c = s.charAt(j);
-                    if (c >= '\001' && c <= '\177') {
+                for ( int j = i; j < charLength; ++j ) {
+                    c = s.charAt( j );
+                    if ( c >= '\001' && c <= '\177' ) {
                         byteLength++;
-                    } else if (c > '\u07FF') {
+                    } else if ( c > '\u07FF' ) {
                         byteLength += 3;
                     } else {
                         byteLength += 2;
                     }
                 }
-                data[length] = (byte) (byteLength >>> 8);
-                data[length + 1] = (byte) (byteLength);
-                if (length + 2 + byteLength > data.length) {
-                    length = len;
-                    enlarge(2 + byteLength);
+                data[this.length] = (byte) (byteLength >>> 8);
+                data[this.length + 1] = (byte) (byteLength);
+                if ( this.length + 2 + byteLength > data.length ) {
+                    this.length = len;
+                    enlarge( 2 + byteLength );
                     data = this.data;
                 }
-                for (int j = i; j < charLength; ++j) {
-                    c = s.charAt(j);
-                    if (c >= '\001' && c <= '\177') {
+                for ( int j = i; j < charLength; ++j ) {
+                    c = s.charAt( j );
+                    if ( c >= '\001' && c <= '\177' ) {
                         data[len++] = (byte) c;
-                    } else if (c > '\u07FF') {
+                    } else if ( c > '\u07FF' ) {
                         data[len++] = (byte) (0xE0 | c >> 12 & 0xF);
                         data[len++] = (byte) (0x80 | c >> 6 & 0x3F);
                         data[len++] = (byte) (0x80 | c & 0x3F);
@@ -251,7 +253,7 @@ public class ByteVector {
                 break;
             }
         }
-        length = len;
+        this.length = len;
         return this;
     }
 
@@ -265,15 +267,20 @@ public class ByteVector {
      * @param len number of bytes of b that must be copied.
      * @return this byte vector.
      */
-    public ByteVector putByteArray(final byte[] b, final int off, final int len)
-    {
-        if (length + len > data.length) {
-            enlarge(len);
+    public ByteVector putByteArray(final byte[] b,
+                                   final int off,
+                                   final int len) {
+        if ( this.length + len > this.data.length ) {
+            enlarge( len );
         }
-        if (b != null) {
-            System.arraycopy(b, off, data, length, len);
+        if ( b != null ) {
+            System.arraycopy( b,
+                              off,
+                              this.data,
+                              this.length,
+                              len );
         }
-        length += len;
+        this.length += len;
         return this;
     }
 
@@ -284,10 +291,14 @@ public class ByteVector {
      *        able to receive.
      */
     private void enlarge(final int size) {
-        int length1 = 2 * data.length;
-        int length2 = length + size;
-        byte[] newData = new byte[length1 > length2 ? length1 : length2];
-        System.arraycopy(data, 0, newData, 0, length);
-        data = newData;
+        final int length1 = 2 * this.data.length;
+        final int length2 = this.length + size;
+        final byte[] newData = new byte[length1 > length2 ? length1 : length2];
+        System.arraycopy( this.data,
+                          0,
+                          newData,
+                          0,
+                          this.length );
+        this.data = newData;
     }
 }

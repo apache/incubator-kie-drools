@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
 import org.drools.base.ClassObjectType;
@@ -27,16 +26,16 @@ public class AddRemoveTest extends DroolsTestCase {
          * create a RuleBase with a single ObjectTypeNode we attach a
          * MockObjectSink so we can detect assertions and retractions
          */
-        Rete rete = new Rete();
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
-                                                            new ClassObjectType( Object.class ),
-                                                            rete );
+        final Rete rete = new Rete();
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
+                                                                  new ClassObjectType( Object.class ),
+                                                                  rete );
         objectTypeNode.attach();
 
-        MockObjectSink sink = new MockObjectSink();
+        final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        RuleBase ruleBase = new RuleBaseImpl();
-        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        final RuleBase ruleBase = new ReteooRuleBase();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         // objectTypeNode.
     }

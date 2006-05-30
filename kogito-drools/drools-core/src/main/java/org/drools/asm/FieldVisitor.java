@@ -45,7 +45,8 @@ public interface FieldVisitor {
      * @param visible <tt>true</tt> if the annotation is visible at runtime.
      * @return a non null visitor to visit the annotation values.
      */
-    AnnotationVisitor visitAnnotation(String desc, boolean visible);
+    AnnotationVisitor visitAnnotation(String desc,
+                                      boolean visible);
 
     /**
      * Visits a non standard attribute of the field.

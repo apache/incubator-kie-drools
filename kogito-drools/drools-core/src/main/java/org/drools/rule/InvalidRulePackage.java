@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 /**
  * This exception is thrown when an invalid package (ie one that has errors)
  * it attempted to be added to a RuleBase.
@@ -28,7 +27,7 @@ public class InvalidRulePackage extends RuntimeException {
 
     private static final long serialVersionUID = 7244017661666655680L;
 
-    public InvalidRulePackage(String summary) {
+    public InvalidRulePackage(final String summary) {
         super( summary );
     }
 

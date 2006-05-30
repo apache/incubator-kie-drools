@@ -50,27 +50,29 @@ import org.drools.asm.tree.VarInsnNode;
  * 
  * @author Eric Bruneton
  */
-public class Analyzer implements Opcodes {
+public class Analyzer
+    implements
+    Opcodes {
 
-    private Interpreter interpreter;
+    private Interpreter  interpreter;
 
-    private int n;
+    private int          n;
 
-    private IntMap indexes;
+    private IntMap       indexes;
 
-    private List[] handlers;
+    private List[]       handlers;
 
-    private Frame[] frames;
+    private Frame[]      frames;
 
     private Subroutine[] subroutines;
 
-    private boolean[] queued;
+    private boolean[]    queued;
 
-    private int[] queue;
+    private int[]        queue;
 
-    private int top;
+    private int          top;
 
-    private boolean jsr;
+    private boolean      jsr;
 
     /**
      * Constructs a new {@link Analyzer}.
@@ -94,170 +96,194 @@ public class Analyzer implements Opcodes {
      *         instruction cannot be reached (dead code).
      * @throws AnalyzerException if a problem occurs during the analysis.
      */
-    public Frame[] analyze(final String owner, final MethodNode m)
-            throws AnalyzerException
-    {
-        n = m.instructions.size();
-        indexes = new IntMap(2 * n);
-        handlers = new List[n];
-        frames = new Frame[n];
-        subroutines = new Subroutine[n];
-        queued = new boolean[n];
-        queue = new int[n];
-        top = 0;
+    public Frame[] analyze(final String owner,
+                           final MethodNode m) throws AnalyzerException {
+        this.n = m.instructions.size();
+        this.indexes = new IntMap( 2 * this.n );
+        this.handlers = new List[this.n];
+        this.frames = new Frame[this.n];
+        this.subroutines = new Subroutine[this.n];
+        this.queued = new boolean[this.n];
+        this.queue = new int[this.n];
+        this.top = 0;
 
         // computes instruction indexes
-        for (int i = 0; i < n; ++i) {
-            Object insn = m.instructions.get(i);
-            if (insn instanceof LabelNode) {
+        for ( int i = 0; i < this.n; ++i ) {
+            Object insn = m.instructions.get( i );
+            if ( insn instanceof LabelNode ) {
                 insn = ((LabelNode) insn).label;
             }
-            indexes.put(insn, i);
+            this.indexes.put( insn,
+                              i );
         }
 
         // computes exception handlers for each instruction
-        for (int i = 0; i < m.tryCatchBlocks.size(); ++i) {
-            TryCatchBlockNode tcb = (TryCatchBlockNode) m.tryCatchBlocks.get(i);
-            int begin = indexes.get(tcb.start);
-            int end = indexes.get(tcb.end);
-            for (int j = begin; j < end; ++j) {
-                List insnHandlers = handlers[j];
-                if (insnHandlers == null) {
+        for ( int i = 0; i < m.tryCatchBlocks.size(); ++i ) {
+            final TryCatchBlockNode tcb = (TryCatchBlockNode) m.tryCatchBlocks.get( i );
+            final int begin = this.indexes.get( tcb.start );
+            final int end = this.indexes.get( tcb.end );
+            for ( int j = begin; j < end; ++j ) {
+                List insnHandlers = this.handlers[j];
+                if ( insnHandlers == null ) {
                     insnHandlers = new ArrayList();
-                    handlers[j] = insnHandlers;
+                    this.handlers[j] = insnHandlers;
                 }
-                insnHandlers.add(tcb);
+                insnHandlers.add( tcb );
             }
         }
 
         // initializes the data structures for the control flow analysis
         // algorithm
-        Frame current = newFrame(m.maxLocals, m.maxStack);
-        Frame handler = newFrame(m.maxLocals, m.maxStack);
-        Type[] args = Type.getArgumentTypes(m.desc);
+        final Frame current = newFrame( m.maxLocals,
+                                        m.maxStack );
+        final Frame handler = newFrame( m.maxLocals,
+                                        m.maxStack );
+        final Type[] args = Type.getArgumentTypes( m.desc );
         int local = 0;
-        if ((m.access & ACC_STATIC) == 0) {
-            Type ctype = Type.getType("L" + owner + ";");
-            current.setLocal(local++, interpreter.newValue(ctype));
+        if ( (m.access & Opcodes.ACC_STATIC) == 0 ) {
+            final Type ctype = Type.getType( "L" + owner + ";" );
+            current.setLocal( local++,
+                              this.interpreter.newValue( ctype ) );
         }
-        for (int i = 0; i < args.length; ++i) {
-            current.setLocal(local++, interpreter.newValue(args[i]));
-            if (args[i].getSize() == 2) {
-                current.setLocal(local++, interpreter.newValue(null));
+        for ( int i = 0; i < args.length; ++i ) {
+            current.setLocal( local++,
+                              this.interpreter.newValue( args[i] ) );
+            if ( args[i].getSize() == 2 ) {
+                current.setLocal( local++,
+                                  this.interpreter.newValue( null ) );
             }
         }
-        while (local < m.maxLocals) {
-            current.setLocal(local++, interpreter.newValue(null));
+        while ( local < m.maxLocals ) {
+            current.setLocal( local++,
+                              this.interpreter.newValue( null ) );
         }
-        merge(0, current, null);
+        merge( 0,
+               current,
+               null );
 
         // control flow analysis
-        while (top > 0) {
-            int insn = queue[--top];
-            Frame f = frames[insn];
-            Subroutine subroutine = subroutines[insn];
-            queued[insn] = false;
+        while ( this.top > 0 ) {
+            final int insn = this.queue[--this.top];
+            final Frame f = this.frames[insn];
+            Subroutine subroutine = this.subroutines[insn];
+            this.queued[insn] = false;
 
             try {
-                Object o = m.instructions.get(insn);
-                jsr = false;
+                final Object o = m.instructions.get( insn );
+                this.jsr = false;
 
-                if (o instanceof LabelNode) {
-                    merge(insn + 1, f, subroutine);
+                if ( o instanceof LabelNode ) {
+                    merge( insn + 1,
+                           f,
+                           subroutine );
                 } else {
-                    AbstractInsnNode insnNode = (AbstractInsnNode) o;
-                    int insnOpcode = insnNode.getOpcode();
+                    final AbstractInsnNode insnNode = (AbstractInsnNode) o;
+                    final int insnOpcode = insnNode.getOpcode();
 
-                    current.init(f).execute(insnNode, interpreter);
+                    current.init( f ).execute( insnNode,
+                                               this.interpreter );
                     subroutine = subroutine == null ? null : subroutine.copy();
 
-                    if (insnNode instanceof JumpInsnNode) {
-                        JumpInsnNode j = (JumpInsnNode) insnNode;
-                        if (insnOpcode != GOTO && insnOpcode != JSR) {
-                            merge(insn + 1, current, subroutine);
+                    if ( insnNode instanceof JumpInsnNode ) {
+                        final JumpInsnNode j = (JumpInsnNode) insnNode;
+                        if ( insnOpcode != Opcodes.GOTO && insnOpcode != Opcodes.JSR ) {
+                            merge( insn + 1,
+                                   current,
+                                   subroutine );
                         }
-                        if (insnOpcode == JSR) {
-                            jsr = true;
-                            merge(indexes.get(j.label),
-                                    current,
-                                    new Subroutine(j.label, m.maxLocals, j));
+                        if ( insnOpcode == Opcodes.JSR ) {
+                            this.jsr = true;
+                            merge( this.indexes.get( j.label ),
+                                   current,
+                                   new Subroutine( j.label,
+                                                   m.maxLocals,
+                                                   j ) );
                         } else {
-                            merge(indexes.get(j.label), current, subroutine);
+                            merge( this.indexes.get( j.label ),
+                                   current,
+                                   subroutine );
                         }
-                    } else if (insnNode instanceof LookupSwitchInsnNode) {
-                        LookupSwitchInsnNode lsi = (LookupSwitchInsnNode) insnNode;
-                        merge(indexes.get(lsi.dflt), current, subroutine);
-                        for (int j = 0; j < lsi.labels.size(); ++j) {
-                            Label label = (Label) lsi.labels.get(j);
-                            merge(indexes.get(label), current, subroutine);
+                    } else if ( insnNode instanceof LookupSwitchInsnNode ) {
+                        final LookupSwitchInsnNode lsi = (LookupSwitchInsnNode) insnNode;
+                        merge( this.indexes.get( lsi.dflt ),
+                               current,
+                               subroutine );
+                        for ( int j = 0; j < lsi.labels.size(); ++j ) {
+                            final Label label = (Label) lsi.labels.get( j );
+                            merge( this.indexes.get( label ),
+                                   current,
+                                   subroutine );
                         }
-                    } else if (insnNode instanceof TableSwitchInsnNode) {
-                        TableSwitchInsnNode tsi = (TableSwitchInsnNode) insnNode;
-                        merge(indexes.get(tsi.dflt), current, subroutine);
-                        for (int j = 0; j < tsi.labels.size(); ++j) {
-                            Label label = (Label) tsi.labels.get(j);
-                            merge(indexes.get(label), current, subroutine);
+                    } else if ( insnNode instanceof TableSwitchInsnNode ) {
+                        final TableSwitchInsnNode tsi = (TableSwitchInsnNode) insnNode;
+                        merge( this.indexes.get( tsi.dflt ),
+                               current,
+                               subroutine );
+                        for ( int j = 0; j < tsi.labels.size(); ++j ) {
+                            final Label label = (Label) tsi.labels.get( j );
+                            merge( this.indexes.get( label ),
+                                   current,
+                                   subroutine );
                         }
-                    } else if (insnOpcode == RET) {
-                        if (subroutine == null) {
-                            throw new AnalyzerException("RET instruction outside of a sub routine");
+                    } else if ( insnOpcode == Opcodes.RET ) {
+                        if ( subroutine == null ) {
+                            throw new AnalyzerException( "RET instruction outside of a sub routine" );
                         }
-                        for (int i = 0; i < subroutine.callers.size(); ++i) {
-                            int caller = indexes.get(subroutine.callers.get(i));
-                            merge(caller + 1,
-                                    frames[caller],
-                                    current,
-                                    subroutines[caller],
-                                    subroutine.access);
+                        for ( int i = 0; i < subroutine.callers.size(); ++i ) {
+                            final int caller = this.indexes.get( subroutine.callers.get( i ) );
+                            merge( caller + 1,
+                                   this.frames[caller],
+                                   current,
+                                   this.subroutines[caller],
+                                   subroutine.access );
                         }
-                    } else if (insnOpcode != ATHROW
-                            && (insnOpcode < IRETURN || insnOpcode > RETURN))
-                    {
-                        if (subroutine != null) {
-                            if (insnNode instanceof VarInsnNode) {
-                                int var = ((VarInsnNode) insnNode).var;
+                    } else if ( insnOpcode != Opcodes.ATHROW && (insnOpcode < Opcodes.IRETURN || insnOpcode > Opcodes.RETURN) ) {
+                        if ( subroutine != null ) {
+                            if ( insnNode instanceof VarInsnNode ) {
+                                final int var = ((VarInsnNode) insnNode).var;
                                 subroutine.access[var] = true;
-                                if (insnOpcode == LLOAD || insnOpcode == DLOAD
-                                        || insnOpcode == LSTORE
-                                        || insnOpcode == DSTORE)
-                                {
+                                if ( insnOpcode == Opcodes.LLOAD || insnOpcode == Opcodes.DLOAD || insnOpcode == Opcodes.LSTORE || insnOpcode == Opcodes.DSTORE ) {
                                     subroutine.access[var + 1] = true;
                                 }
-                            } else if (insnNode instanceof IincInsnNode) {
-                                int var = ((IincInsnNode) insnNode).var;
+                            } else if ( insnNode instanceof IincInsnNode ) {
+                                final int var = ((IincInsnNode) insnNode).var;
                                 subroutine.access[var] = true;
                             }
                         }
-                        merge(insn + 1, current, subroutine);
+                        merge( insn + 1,
+                               current,
+                               subroutine );
                     }
                 }
 
-                List insnHandlers = handlers[insn];
-                if (insnHandlers != null) {
-                    for (int i = 0; i < insnHandlers.size(); ++i) {
-                        TryCatchBlockNode tcb = (TryCatchBlockNode) insnHandlers.get(i);
+                final List insnHandlers = this.handlers[insn];
+                if ( insnHandlers != null ) {
+                    for ( int i = 0; i < insnHandlers.size(); ++i ) {
+                        final TryCatchBlockNode tcb = (TryCatchBlockNode) insnHandlers.get( i );
                         Type type;
-                        if (tcb.type == null) {
-                            type = Type.getType("Ljava/lang/Throwable;");
+                        if ( tcb.type == null ) {
+                            type = Type.getType( "Ljava/lang/Throwable;" );
                         } else {
-                            type = Type.getType("L" + tcb.type + ";");
+                            type = Type.getType( "L" + tcb.type + ";" );
                         }
-                        handler.init(f);
+                        handler.init( f );
                         handler.clearStack();
-                        handler.push(interpreter.newValue(type));
-                        merge(indexes.get(tcb.handler), handler, subroutine);
+                        handler.push( this.interpreter.newValue( type ) );
+                        merge( this.indexes.get( tcb.handler ),
+                               handler,
+                               subroutine );
                     }
                 }
-            } catch (AnalyzerException e) {
-                throw new AnalyzerException("Error at instruction " + insn
-                        + ": " + e.getMessage(), e);
-            } catch(Exception e) {
-                throw new AnalyzerException("Error at instruction " + insn
-                        + ": " + e.getMessage(), e);
+            } catch ( final AnalyzerException e ) {
+                throw new AnalyzerException( "Error at instruction " + insn + ": " + e.getMessage(),
+                                             e );
+            } catch ( final Exception e ) {
+                throw new AnalyzerException( "Error at instruction " + insn + ": " + e.getMessage(),
+                                             e );
             }
         }
 
-        return frames;
+        return this.frames;
     }
 
     /**
@@ -272,7 +298,7 @@ public class Analyzer implements Opcodes {
      *         the method.
      */
     public Frame[] getFrames() {
-        return frames;
+        return this.frames;
     }
 
     /**
@@ -284,7 +310,7 @@ public class Analyzer implements Opcodes {
      *         method.
      */
     public int getIndex(final Object insn) {
-        return indexes.get(insn);
+        return this.indexes.get( insn );
     }
 
     /**
@@ -295,7 +321,7 @@ public class Analyzer implements Opcodes {
      * @return a list of {@link TryCatchBlockNode} objects.
      */
     public List getHandlers(final int insn) {
-        return handlers[insn];
+        return this.handlers[insn];
     }
 
     /**
@@ -305,8 +331,10 @@ public class Analyzer implements Opcodes {
      * @param nStack the maximum stack size of the frame.
      * @return the created frame.
      */
-    protected Frame newFrame(final int nLocals, final int nStack) {
-        return new Frame(nLocals, nStack);
+    protected Frame newFrame(final int nLocals,
+                             final int nStack) {
+        return new Frame( nLocals,
+                          nStack );
     }
 
     /**
@@ -316,7 +344,7 @@ public class Analyzer implements Opcodes {
      * @return the created frame.
      */
     protected Frame newFrame(final Frame src) {
-        return new Frame(src);
+        return new Frame( src );
     }
 
     /**
@@ -328,89 +356,92 @@ public class Analyzer implements Opcodes {
      * @param frame the frame corresponding to an instruction.
      * @param successor the frame corresponding to a successor instruction.
      */
-    protected void newControlFlowEdge(final Frame frame, final Frame successor)
-    {
+    protected void newControlFlowEdge(final Frame frame,
+                                      final Frame successor) {
     }
 
     // -------------------------------------------------------------------------
 
-    private void merge(
-        final int insn,
-        final Frame frame,
-        final Subroutine subroutine) throws AnalyzerException
-    {
-        if (insn > n - 1) {
-            throw new AnalyzerException("Execution can fall off end of the code");
+    private void merge(final int insn,
+                       final Frame frame,
+                       final Subroutine subroutine) throws AnalyzerException {
+        if ( insn > this.n - 1 ) {
+            throw new AnalyzerException( "Execution can fall off end of the code" );
         }
 
-        Frame oldFrame = frames[insn];
-        Subroutine oldSubroutine = subroutines[insn];
+        final Frame oldFrame = this.frames[insn];
+        final Subroutine oldSubroutine = this.subroutines[insn];
         boolean changes = false;
 
-        if (oldFrame == null) {
-            frames[insn] = newFrame(frame);
+        if ( oldFrame == null ) {
+            this.frames[insn] = newFrame( frame );
             changes = true;
         } else {
-            changes |= oldFrame.merge(frame, interpreter);
+            changes |= oldFrame.merge( frame,
+                                       this.interpreter );
         }
 
-        newControlFlowEdge(frame, oldFrame);
+        newControlFlowEdge( frame,
+                            oldFrame );
 
-        if (oldSubroutine == null) {
-            if (subroutine != null) {
-                subroutines[insn] = subroutine.copy();
+        if ( oldSubroutine == null ) {
+            if ( subroutine != null ) {
+                this.subroutines[insn] = subroutine.copy();
                 changes = true;
             }
         } else {
-            if (subroutine != null) {
-                changes |= oldSubroutine.merge(subroutine, !jsr);
+            if ( subroutine != null ) {
+                changes |= oldSubroutine.merge( subroutine,
+                                                !this.jsr );
             }
         }
-        if (changes && !queued[insn]) {
-            queued[insn] = true;
-            queue[top++] = insn;
+        if ( changes && !this.queued[insn] ) {
+            this.queued[insn] = true;
+            this.queue[this.top++] = insn;
         }
     }
 
-    private void merge(
-        final int insn,
-        final Frame beforeJSR,
-        final Frame afterRET,
-        final Subroutine subroutineBeforeJSR,
-        final boolean[] access) throws AnalyzerException
-    {
-        if (insn > n - 1) {
-            throw new AnalyzerException("Execution can fall off end of the code");
+    private void merge(final int insn,
+                       final Frame beforeJSR,
+                       final Frame afterRET,
+                       final Subroutine subroutineBeforeJSR,
+                       final boolean[] access) throws AnalyzerException {
+        if ( insn > this.n - 1 ) {
+            throw new AnalyzerException( "Execution can fall off end of the code" );
         }
 
-        Frame oldFrame = frames[insn];
-        Subroutine oldSubroutine = subroutines[insn];
+        final Frame oldFrame = this.frames[insn];
+        final Subroutine oldSubroutine = this.subroutines[insn];
         boolean changes = false;
 
-        afterRET.merge(beforeJSR, access);
+        afterRET.merge( beforeJSR,
+                        access );
 
-        if (oldFrame == null) {
-            frames[insn] = newFrame(afterRET);
+        if ( oldFrame == null ) {
+            this.frames[insn] = newFrame( afterRET );
             changes = true;
         } else {
-            changes |= oldFrame.merge(afterRET, access);
+            changes |= oldFrame.merge( afterRET,
+                                       access );
         }
 
-        newControlFlowEdge(afterRET, oldFrame);
+        newControlFlowEdge( afterRET,
+                            oldFrame );
 
-        if (oldSubroutine == null) {
-            if (subroutineBeforeJSR != null) {
-                subroutines[insn] = subroutineBeforeJSR.copy();
+        if ( oldSubroutine == null ) {
+            if ( subroutineBeforeJSR != null ) {
+                this.subroutines[insn] = subroutineBeforeJSR.copy();
                 changes = true;
             }
         } else {
-            if (subroutineBeforeJSR != null) {
-                changes |= oldSubroutine.merge(subroutineBeforeJSR, !jsr);
+            if ( subroutineBeforeJSR != null ) {
+                changes |= oldSubroutine.merge( subroutineBeforeJSR,
+                                                !this.jsr );
             }
         }
-        if (changes && !queued[insn]) {
-            queued[insn] = true;
-            queue[top++] = insn;
+        if ( changes && !this.queued[insn] ) {
+            this.queued[insn] = true;
+            this.queue[this.top++] = insn;
         }
     }
 }

@@ -29,32 +29,34 @@
  */
 package org.drools.asm.tree;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.asm.Attribute;
 import org.drools.asm.ClassVisitor;
 import org.drools.asm.FieldVisitor;
 import org.drools.asm.MethodVisitor;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * A node that represents a class.
  * 
  * @author Eric Bruneton
  */
-public class ClassNode extends MemberNode implements ClassVisitor {
+public class ClassNode extends MemberNode
+    implements
+    ClassVisitor {
 
     /**
      * The class version.
      */
-    public int version;
+    public int    version;
 
     /**
      * The class's access flags (see {@link org.drools.asm.Opcodes}). This
      * field also indicates if the class is deprecated.
      */
-    public int access;
+    public int    access;
 
     /**
      * The internal name of the class (see
@@ -80,7 +82,7 @@ public class ClassNode extends MemberNode implements ClassVisitor {
      * {@link org.drools.asm.Type#getInternalName() getInternalName}). This
      * list is a list of {@link String} objects.
      */
-    public List interfaces;
+    public List   interfaces;
 
     /**
      * The name of the source file from which this class was compiled. May be
@@ -118,7 +120,7 @@ public class ClassNode extends MemberNode implements ClassVisitor {
      * 
      * @associates org.objectweb.asm.tree.InnerClassNode
      */
-    public List innerClasses;
+    public List   innerClasses;
 
     /**
      * The fields of this class. This list is a list of {@link FieldNode}
@@ -126,7 +128,7 @@ public class ClassNode extends MemberNode implements ClassVisitor {
      * 
      * @associates org.objectweb.asm.tree.FieldNode
      */
-    public List fields;
+    public List   fields;
 
     /**
      * The methods of this class. This list is a list of {@link MethodNode}
@@ -134,7 +136,7 @@ public class ClassNode extends MemberNode implements ClassVisitor {
      * 
      * @associates org.objectweb.asm.tree.MethodNode
      */
-    public List methods;
+    public List   methods;
 
     /**
      * Constructs a new {@link ClassNode}.
@@ -150,77 +152,72 @@ public class ClassNode extends MemberNode implements ClassVisitor {
     // Implementation of the ClassVisitor interface
     // ------------------------------------------------------------------------
 
-    public void visit(
-        final int version,
-        final int access,
-        final String name,
-        final String signature,
-        final String superName,
-        final String[] interfaces)
-    {
+    public void visit(final int version,
+                      final int access,
+                      final String name,
+                      final String signature,
+                      final String superName,
+                      final String[] interfaces) {
         this.version = version;
         this.access = access;
         this.name = name;
         this.signature = signature;
         this.superName = superName;
-        if (interfaces != null) {
-            this.interfaces.addAll(Arrays.asList(interfaces));
+        if ( interfaces != null ) {
+            this.interfaces.addAll( Arrays.asList( interfaces ) );
         }
     }
 
-    public void visitSource(final String file, final String debug) {
-        sourceFile = file;
-        sourceDebug = debug;
+    public void visitSource(final String file,
+                            final String debug) {
+        this.sourceFile = file;
+        this.sourceDebug = debug;
     }
 
-    public void visitOuterClass(
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        outerClass = owner;
-        outerMethod = name;
-        outerMethodDesc = desc;
+    public void visitOuterClass(final String owner,
+                                final String name,
+                                final String desc) {
+        this.outerClass = owner;
+        this.outerMethod = name;
+        this.outerMethodDesc = desc;
     }
 
-    public void visitInnerClass(
-        final String name,
-        final String outerName,
-        final String innerName,
-        final int access)
-    {
-        InnerClassNode icn = new InnerClassNode(name,
-                outerName,
-                innerName,
-                access);
-        innerClasses.add(icn);
+    public void visitInnerClass(final String name,
+                                final String outerName,
+                                final String innerName,
+                                final int access) {
+        final InnerClassNode icn = new InnerClassNode( name,
+                                                       outerName,
+                                                       innerName,
+                                                       access );
+        this.innerClasses.add( icn );
     }
 
-    public FieldVisitor visitField(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final Object value)
-    {
-        FieldNode fn = new FieldNode(access, name, desc, signature, value);
-        fields.add(fn);
+    public FieldVisitor visitField(final int access,
+                                   final String name,
+                                   final String desc,
+                                   final String signature,
+                                   final Object value) {
+        final FieldNode fn = new FieldNode( access,
+                                            name,
+                                            desc,
+                                            signature,
+                                            value );
+        this.fields.add( fn );
         return fn;
     }
 
-    public MethodVisitor visitMethod(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final String[] exceptions)
-    {
-        MethodNode mn = new MethodNode(access,
-                name,
-                desc,
-                signature,
-                exceptions);
-        methods.add(mn);
+    public MethodVisitor visitMethod(final int access,
+                                     final String name,
+                                     final String desc,
+                                     final String signature,
+                                     final String[] exceptions) {
+        final MethodNode mn = new MethodNode( access,
+                                              name,
+                                              desc,
+                                              signature,
+                                              exceptions );
+        this.methods.add( mn );
         return mn;
     }
 
@@ -238,44 +235,54 @@ public class ClassNode extends MemberNode implements ClassVisitor {
      */
     public void accept(final ClassVisitor cv) {
         // visits header
-        String[] interfaces = new String[this.interfaces.size()];
-        this.interfaces.toArray(interfaces);
-        cv.visit(version, access, name, signature, superName, interfaces);
+        final String[] interfaces = new String[this.interfaces.size()];
+        this.interfaces.toArray( interfaces );
+        cv.visit( this.version,
+                  this.access,
+                  this.name,
+                  this.signature,
+                  this.superName,
+                  interfaces );
         // visits source
-        if (sourceFile != null || sourceDebug != null) {
-            cv.visitSource(sourceFile, sourceDebug);
+        if ( this.sourceFile != null || this.sourceDebug != null ) {
+            cv.visitSource( this.sourceFile,
+                            this.sourceDebug );
         }
         // visits outer class
-        if (outerClass != null) {
-            cv.visitOuterClass(outerClass, outerMethod, outerMethodDesc);
+        if ( this.outerClass != null ) {
+            cv.visitOuterClass( this.outerClass,
+                                this.outerMethod,
+                                this.outerMethodDesc );
         }
         // visits attributes
         int i, n;
-        n = visibleAnnotations == null ? 0 : visibleAnnotations.size();
-        for (i = 0; i < n; ++i) {
-            AnnotationNode an = (AnnotationNode) visibleAnnotations.get(i);
-            an.accept(cv.visitAnnotation(an.desc, true));
+        n = this.visibleAnnotations == null ? 0 : this.visibleAnnotations.size();
+        for ( i = 0; i < n; ++i ) {
+            final AnnotationNode an = (AnnotationNode) this.visibleAnnotations.get( i );
+            an.accept( cv.visitAnnotation( an.desc,
+                                           true ) );
         }
-        n = invisibleAnnotations == null ? 0 : invisibleAnnotations.size();
-        for (i = 0; i < n; ++i) {
-            AnnotationNode an = (AnnotationNode) invisibleAnnotations.get(i);
-            an.accept(cv.visitAnnotation(an.desc, false));
+        n = this.invisibleAnnotations == null ? 0 : this.invisibleAnnotations.size();
+        for ( i = 0; i < n; ++i ) {
+            final AnnotationNode an = (AnnotationNode) this.invisibleAnnotations.get( i );
+            an.accept( cv.visitAnnotation( an.desc,
+                                           false ) );
         }
-        n = attrs == null ? 0 : attrs.size();
-        for (i = 0; i < n; ++i) {
-            cv.visitAttribute((Attribute) attrs.get(i));
+        n = this.attrs == null ? 0 : this.attrs.size();
+        for ( i = 0; i < n; ++i ) {
+            cv.visitAttribute( (Attribute) this.attrs.get( i ) );
         }
         // visits inner classes
-        for (i = 0; i < innerClasses.size(); ++i) {
-            ((InnerClassNode) innerClasses.get(i)).accept(cv);
+        for ( i = 0; i < this.innerClasses.size(); ++i ) {
+            ((InnerClassNode) this.innerClasses.get( i )).accept( cv );
         }
         // visits fields
-        for (i = 0; i < fields.size(); ++i) {
-            ((FieldNode) fields.get(i)).accept(cv);
+        for ( i = 0; i < this.fields.size(); ++i ) {
+            ((FieldNode) this.fields.get( i )).accept( cv );
         }
         // visits methods
-        for (i = 0; i < methods.size(); ++i) {
-            ((MethodNode) methods.get(i)).accept(cv);
+        for ( i = 0; i < this.methods.size(); ++i ) {
+            ((MethodNode) this.methods.get( i )).accept( cv );
         }
         // visits end
         cv.visitEnd();

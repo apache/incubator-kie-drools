@@ -50,8 +50,8 @@ public class TupleMatch extends AbstractBaseLinkedListNode {
      * @param tuple
      * @param objectMatches
      */
-    public TupleMatch(ReteTuple tuple,
-                      ObjectMatches objectMatches) {
+    public TupleMatch(final ReteTuple tuple,
+                      final ObjectMatches objectMatches) {
         this.tuple = tuple;
         this.objectMatches = objectMatches;
     }
@@ -80,7 +80,7 @@ public class TupleMatch extends AbstractBaseLinkedListNode {
      * 
      * @param tuple
      */
-    public void addJoinedTuple(ReteTuple tuple) {
+    public void addJoinedTuple(final ReteTuple tuple) {
         if ( this.joined == Collections.EMPTY_LIST ) {
             this.joined = new ArrayList( 1 );
         }

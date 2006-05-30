@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * Base exception indicating an error in manipulating facts.
  * 
@@ -26,6 +23,11 @@ package org.drools;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public class FactException extends RuntimeDroolsException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4883321236259632979L;
+
     /**
      * @see java.lang.Exception#Exception()
      */
@@ -36,15 +38,15 @@ public class FactException extends RuntimeDroolsException {
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public FactException(String message) {
+    public FactException(final String message) {
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    public FactException(String message,
-                         Throwable cause) {
+    public FactException(final String message,
+                         final Throwable cause) {
         super( message,
                cause );
     }
@@ -52,7 +54,7 @@ public class FactException extends RuntimeDroolsException {
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public FactException(Throwable cause) {
+    public FactException(final Throwable cause) {
         super( cause );
     }
 }

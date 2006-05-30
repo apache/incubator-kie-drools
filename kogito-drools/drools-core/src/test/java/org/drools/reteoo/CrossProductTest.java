@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -37,17 +35,17 @@ import org.drools.spi.ObjectType;
 
 public class CrossProductTest extends TestCase {
     public void test1() throws Exception {
-        ObjectType list1ObjectType = new ClassObjectType( String.class );
-        ObjectType list2ObjectType = new ClassObjectType( String.class );
+        final ObjectType list1ObjectType = new ClassObjectType( String.class );
+        final ObjectType list2ObjectType = new ClassObjectType( String.class );
 
-        Rule rule = new Rule( "rule-1" );
+        final Rule rule = new Rule( "rule-1" );
 
-        Column list1Column = new Column( 0,
-                                         list1ObjectType,
-                                         "s1" );
-        Column list2Column = new Column( 1,
-                                         list2ObjectType,
-                                         "s2" );
+        final Column list1Column = new Column( 0,
+                                               list1ObjectType,
+                                               "s1" );
+        final Column list2Column = new Column( 1,
+                                               list2ObjectType,
+                                               "s2" );
 
         rule.addPattern( list1Column );
         rule.addPattern( list2Column );
@@ -59,22 +57,27 @@ public class CrossProductTest extends TestCase {
 
         rule.setConsequence( new Consequence() {
 
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) throws Exception {
-                String s1 = (String) knowledgeHelper.get( s1Declaration );
-                String s2 = (String) knowledgeHelper.get( s2Declaration );
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -276571982531422972L;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) throws Exception {
+                final String s1 = (String) knowledgeHelper.get( s1Declaration );
+                final String s2 = (String) knowledgeHelper.get( s2Declaration );
                 values.add( new String[]{s1, s2} );
             }
 
         } );
 
-        Package pkg = new Package( "org.drools" );
+        final Package pkg = new Package( "org.drools" );
         pkg.addRule( rule );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
 
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( "F1" );
         workingMemory.assertObject( "F2" );
         workingMemory.assertObject( "F3" );

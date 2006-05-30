@@ -141,12 +141,12 @@ public interface BetaRightMemory {
      * @param innerMemory
      */
     public void setInnerMemory(BetaRightMemory innerMemory) throws OperationNotSupportedException;
-    
+
     /**
      * Returns the inner beta right memory in case of a multi-indexed memory
      *  
      * @return the inner beta right memory or null in case it is not a multi-indexed memory
      */
     public BetaRightMemory getInnerMemory() throws OperationNotSupportedException;
-    
+
 }

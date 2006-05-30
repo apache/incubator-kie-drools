@@ -40,27 +40,27 @@ public class Label {
     /**
      * The line number corresponding to this label, if known.
      */
-    int line;
+    int           line;
 
     /**
      * Indicates if the position of this label is known.
      */
-    boolean resolved;
+    boolean       resolved;
 
     /**
      * The position of this label in the code, if known.
      */
-    int position;
+    int           position;
 
     /**
      * If the label position has been updated, after instruction resizing.
      */
-    boolean resized;
+    boolean       resized;
 
     /**
      * Number of forward references to this label, times two.
      */
-    private int referenceCount;
+    private int   referenceCount;
 
     /**
      * Informations about forward references. Each forward reference is
@@ -88,7 +88,7 @@ public class Label {
      * initially unknown. It is computed by the control flow analysis algorithm
      * (see {@link MethodWriter#visitMaxs visitMaxs}).
      */
-    int beginStackSize;
+    int           beginStackSize;
 
     /**
      * The (relative) maximum stack size corresponding to this basic block. This
@@ -96,26 +96,26 @@ public class Label {
      * i.e., the true maximum stack size is equal to {@link #beginStackSize
      * beginStackSize} + {@link #maxStackSize maxStackSize}.
      */
-    int maxStackSize;
+    int           maxStackSize;
 
     /**
      * The successors of this node in the control flow graph. These successors
      * are stored in a linked list of {@link Edge Edge} objects, linked to each
      * other by their {@link Edge#next} field.
      */
-    Edge successors;
+    Edge          successors;
 
     /**
      * The next basic block in the basic block stack. See
      * {@link MethodWriter#visitMaxs visitMaxs}.
      */
-    Label next;
+    Label         next;
 
     /**
      * <tt>true</tt> if this basic block has been pushed in the basic block
      * stack. See {@link MethodWriter#visitMaxs visitMaxs}.
      */
-    boolean pushed;
+    boolean       pushed;
 
     // ------------------------------------------------------------------------
     // Constructor
@@ -141,10 +141,10 @@ public class Label {
      * @throws IllegalStateException if this label is not resolved yet.
      */
     public int getOffset() {
-        if (!resolved) {
-            throw new IllegalStateException("Label offset position has not been resolved yet");
+        if ( !this.resolved ) {
+            throw new IllegalStateException( "Label offset position has not been resolved yet" );
         }
-        return position;
+        return this.position;
     }
 
     /**
@@ -162,25 +162,25 @@ public class Label {
      * @throws IllegalArgumentException if this label has not been created by
      *         the given code writer.
      */
-    void put(
-        final MethodWriter owner,
-        final ByteVector out,
-        final int source,
-        final boolean wideOffset)
-    {
-        if (resolved) {
-            if (wideOffset) {
-                out.putInt(position - source);
+    void put(final MethodWriter owner,
+             final ByteVector out,
+             final int source,
+             final boolean wideOffset) {
+        if ( this.resolved ) {
+            if ( wideOffset ) {
+                out.putInt( this.position - source );
             } else {
-                out.putShort(position - source);
+                out.putShort( this.position - source );
             }
         } else {
-            if (wideOffset) {
-                addReference(-1 - source, out.length);
-                out.putInt(-1);
+            if ( wideOffset ) {
+                addReference( -1 - source,
+                              out.length );
+                out.putInt( -1 );
             } else {
-                addReference(source, out.length);
-                out.putShort(-1);
+                addReference( source,
+                              out.length );
+                out.putShort( -1 );
             }
         }
     }
@@ -197,24 +197,22 @@ public class Label {
      * @param referencePosition the position where the offset for this forward
      *        reference must be stored.
      */
-    private void addReference(
-        final int sourcePosition,
-        final int referencePosition)
-    {
-        if (srcAndRefPositions == null) {
-            srcAndRefPositions = new int[6];
+    private void addReference(final int sourcePosition,
+                              final int referencePosition) {
+        if ( this.srcAndRefPositions == null ) {
+            this.srcAndRefPositions = new int[6];
         }
-        if (referenceCount >= srcAndRefPositions.length) {
-            int[] a = new int[srcAndRefPositions.length + 6];
-            System.arraycopy(srcAndRefPositions,
-                    0,
-                    a,
-                    0,
-                    srcAndRefPositions.length);
-            srcAndRefPositions = a;
+        if ( this.referenceCount >= this.srcAndRefPositions.length ) {
+            final int[] a = new int[this.srcAndRefPositions.length + 6];
+            System.arraycopy( this.srcAndRefPositions,
+                              0,
+                              a,
+                              0,
+                              this.srcAndRefPositions.length );
+            this.srcAndRefPositions = a;
         }
-        srcAndRefPositions[referenceCount++] = sourcePosition;
-        srcAndRefPositions[referenceCount++] = referencePosition;
+        this.srcAndRefPositions[this.referenceCount++] = sourcePosition;
+        this.srcAndRefPositions[this.referenceCount++] = referencePosition;
     }
 
     /**
@@ -236,22 +234,20 @@ public class Label {
      * @throws IllegalArgumentException if this label has already been resolved,
      *         or if it has not been created by the given code writer.
      */
-    boolean resolve(
-        final MethodWriter owner,
-        final int position,
-        final byte[] data)
-    {
+    boolean resolve(final MethodWriter owner,
+                    final int position,
+                    final byte[] data) {
         boolean needUpdate = false;
         this.resolved = true;
         this.position = position;
         int i = 0;
-        while (i < referenceCount) {
-            int source = srcAndRefPositions[i++];
-            int reference = srcAndRefPositions[i++];
+        while ( i < this.referenceCount ) {
+            final int source = this.srcAndRefPositions[i++];
+            int reference = this.srcAndRefPositions[i++];
             int offset;
-            if (source >= 0) {
+            if ( source >= 0 ) {
                 offset = position - source;
-                if (offset < Short.MIN_VALUE || offset > Short.MAX_VALUE) {
+                if ( offset < Short.MIN_VALUE || offset > Short.MAX_VALUE ) {
                     /*
                      * changes the opcode of the jump instruction, in order to
                      * be able to find it later (see resizeInstructions in
@@ -261,8 +257,8 @@ public class Label {
                      * 65535, which is sufficient since the size of a method is
                      * limited to 65535 bytes).
                      */
-                    int opcode = data[reference - 1] & 0xFF;
-                    if (opcode <= Opcodes.JSR) {
+                    final int opcode = data[reference - 1] & 0xFF;
+                    if ( opcode <= Opcodes.JSR ) {
                         // changes IFEQ ... JSR to opcodes 202 to 217
                         data[reference - 1] = (byte) (opcode + 49);
                     } else {
@@ -294,6 +290,6 @@ public class Label {
      * @return a string representation of this label.
      */
     public String toString() {
-        return "L" + System.identityHashCode(this);
+        return "L" + System.identityHashCode( this );
     }
 }

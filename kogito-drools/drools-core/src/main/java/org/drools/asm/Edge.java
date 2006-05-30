@@ -42,7 +42,7 @@ class Edge {
      * instruction to which this edge corresponds, relatively to the stack size
      * at the beginning of the originating basic block.
      */
-    int stackSize;
+    int   stackSize;
 
     /**
      * The successor block of the basic block from which this edge originates.
@@ -53,5 +53,5 @@ class Edge {
      * The next edge in the list of successors of the originating basic block.
      * See {@link Label#successors successors}.
      */
-    Edge next;
+    Edge  next;
 }

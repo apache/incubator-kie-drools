@@ -1,4 +1,5 @@
 package org.drools.leaps.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -54,16 +55,16 @@ public class BaseTableReverseOrderIterator
      * @param record
      *            to iterate over
      */
-    protected BaseTableReverseOrderIterator(TableRecord record) {
+    protected BaseTableReverseOrderIterator(final TableRecord record) {
         this.firstRecord = record;
         this.lastRecord = record;
         this.currentRecord = null;
         this.nextRecord = this.firstRecord;
     }
 
-    protected BaseTableReverseOrderIterator(TableRecord startRecord,
-                                TableRecord currentRecord,
-                                TableRecord lastRecord) {
+    protected BaseTableReverseOrderIterator(final TableRecord startRecord,
+                                            final TableRecord currentRecord,
+                                            final TableRecord lastRecord) {
         this.firstRecord = startRecord;
         this.nextRecord = currentRecord;
         this.lastRecord = lastRecord;

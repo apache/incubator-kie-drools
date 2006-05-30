@@ -45,7 +45,6 @@ import org.drools.asm.Label;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
 import org.drools.asm.Type;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -60,92 +59,117 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  * @author Eugene Kuleshov
  */
-public class ASMContentHandler extends DefaultHandler implements Opcodes {
+public class ASMContentHandler extends DefaultHandler
+    implements
+    Opcodes {
     /**
      * Stack of the intermediate processing contexts.
      */
-    private List stack = new ArrayList();
+    private final List          stack = new ArrayList();
 
     /**
      * Complete name of the current element.
      */
-    private String match = "";
+    private String              match = "";
 
     /**
      * <tt>true</tt> if the maximum stack size and number of local variables
      * must be automatically computed.
      */
-    protected boolean computeMax;
+    protected boolean           computeMax;
 
     /**
      * Output stream to write result bytecode.
      */
-    protected OutputStream os;
+    protected OutputStream      os;
 
     /**
      * Current instance of the {@link ClassWriter ClassWriter} used to write
      * class bytecode.
      */
-    protected ClassWriter cw;
+    protected ClassWriter       cw;
 
     /**
      * Map of the active {@link Label Label} instances for current method.
      */
-    protected Map labels;
+    protected Map               labels;
 
-    private static final String BASE = "class";
+    private static final String BASE  = "class";
 
-    private final RuleSet RULES = new RuleSet();
+    private final RuleSet       RULES = new RuleSet();
     {
-        RULES.add(BASE, new ClassRule());
-        RULES.add(BASE + "/interfaces/interface", new InterfaceRule());
-        RULES.add(BASE + "/interfaces", new InterfacesRule());
-        RULES.add(BASE + "/outerclass", new OuterClassRule());
-        RULES.add(BASE + "/innerclass", new InnerClassRule());
-        RULES.add(BASE + "/source", new SourceRule());
-        RULES.add(BASE + "/field", new FieldRule());
+        this.RULES.add( ASMContentHandler.BASE,
+                        new ClassRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/interfaces/interface",
+                        new InterfaceRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/interfaces",
+                        new InterfacesRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/outerclass",
+                        new OuterClassRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/innerclass",
+                        new InnerClassRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/source",
+                        new SourceRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/field",
+                        new FieldRule() );
 
-        RULES.add(BASE + "/method", new MethodRule());
-        RULES.add(BASE + "/method/exceptions/exception", new ExceptionRule());
-        RULES.add(BASE + "/method/exceptions", new ExceptionsRule());
+        this.RULES.add( ASMContentHandler.BASE + "/method",
+                        new MethodRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/method/exceptions/exception",
+                        new ExceptionRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/method/exceptions",
+                        new ExceptionsRule() );
 
-        RULES.add(BASE + "/method/annotationDefault",
-                new AnnotationDefaultRule());
+        this.RULES.add( ASMContentHandler.BASE + "/method/annotationDefault",
+                        new AnnotationDefaultRule() );
 
-        RULES.add(BASE + "/method/code/*", new OpcodesRule()); // opcodes
+        this.RULES.add( ASMContentHandler.BASE + "/method/code/*",
+                        new OpcodesRule() ); // opcodes
 
-        RULES.add(BASE + "/method/code/TABLESWITCH", new TableSwitchRule());
-        RULES.add(BASE + "/method/code/TABLESWITCH/label",
-                new TableSwitchLabelRule());
-        RULES.add(BASE + "/method/code/LOOKUPSWITCH", new LookupSwitchRule());
-        RULES.add(BASE + "/method/code/LOOKUPSWITCH/label",
-                new LookupSwitchLabelRule());
+        this.RULES.add( ASMContentHandler.BASE + "/method/code/TABLESWITCH",
+                        new TableSwitchRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/method/code/TABLESWITCH/label",
+                        new TableSwitchLabelRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/method/code/LOOKUPSWITCH",
+                        new LookupSwitchRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/method/code/LOOKUPSWITCH/label",
+                        new LookupSwitchLabelRule() );
 
-        RULES.add(BASE + "/method/code/Label", new LabelRule());
-        RULES.add(BASE + "/method/code/TryCatch", new TryCatchRule());
-        RULES.add(BASE + "/method/code/LineNumber", new LineNumberRule());
-        RULES.add(BASE + "/method/code/LocalVar", new LocalVarRule());
-        RULES.add(BASE + "/method/code/Max", new MaxRule());
+        this.RULES.add( ASMContentHandler.BASE + "/method/code/Label",
+                        new LabelRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/method/code/TryCatch",
+                        new TryCatchRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/method/code/LineNumber",
+                        new LineNumberRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/method/code/LocalVar",
+                        new LocalVarRule() );
+        this.RULES.add( ASMContentHandler.BASE + "/method/code/Max",
+                        new MaxRule() );
 
-        RULES.add("*/annotation", new AnnotationRule());
-        RULES.add("*/parameterAnnotation", new AnnotationParameterRule());
-        RULES.add("*/annotationValue", new AnnotationValueRule());
-        RULES.add("*/annotationValueAnnotation",
-                new AnnotationValueAnnotationRule());
-        RULES.add("*/annotationValueEnum", new AnnotationValueEnumRule());
-        RULES.add("*/annotationValueArray", new AnnotationValueArrayRule());
+        this.RULES.add( "*/annotation",
+                        new AnnotationRule() );
+        this.RULES.add( "*/parameterAnnotation",
+                        new AnnotationParameterRule() );
+        this.RULES.add( "*/annotationValue",
+                        new AnnotationValueRule() );
+        this.RULES.add( "*/annotationValueAnnotation",
+                        new AnnotationValueAnnotationRule() );
+        this.RULES.add( "*/annotationValueEnum",
+                        new AnnotationValueEnumRule() );
+        this.RULES.add( "*/annotationValueArray",
+                        new AnnotationValueArrayRule() );
     };
 
     private static interface OpcodeGroup {
-        public static final int INSN = 0;
-        public static final int INSN_INT = 1;
-        public static final int INSN_VAR = 2;
-        public static final int INSN_TYPE = 3;
-        public static final int INSN_FIELD = 4;
-        public static final int INSN_METHOD = 5;
-        public static final int INSN_JUMP = 6;
-        public static final int INSN_LDC = 7;
-        public static final int INSN_IINC = 8;
+        public static final int INSN                = 0;
+        public static final int INSN_INT            = 1;
+        public static final int INSN_VAR            = 2;
+        public static final int INSN_TYPE           = 3;
+        public static final int INSN_FIELD          = 4;
+        public static final int INSN_METHOD         = 5;
+        public static final int INSN_JUMP           = 6;
+        public static final int INSN_LDC            = 7;
+        public static final int INSN_IINC           = 8;
         public static final int INSN_MULTIANEWARRAY = 9;
     }
 
@@ -154,169 +178,472 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     static final Map OPCODES = new HashMap();
     static {
-        OPCODES.put("NOP", new Opcode(NOP, OpcodeGroup.INSN));
-        OPCODES.put("ACONST_NULL", new Opcode(ACONST_NULL, OpcodeGroup.INSN));
-        OPCODES.put("ICONST_M1", new Opcode(ICONST_M1, OpcodeGroup.INSN));
-        OPCODES.put("ICONST_0", new Opcode(ICONST_0, OpcodeGroup.INSN));
-        OPCODES.put("ICONST_1", new Opcode(ICONST_1, OpcodeGroup.INSN));
-        OPCODES.put("ICONST_2", new Opcode(ICONST_2, OpcodeGroup.INSN));
-        OPCODES.put("ICONST_3", new Opcode(ICONST_3, OpcodeGroup.INSN));
-        OPCODES.put("ICONST_4", new Opcode(ICONST_4, OpcodeGroup.INSN));
-        OPCODES.put("ICONST_5", new Opcode(ICONST_5, OpcodeGroup.INSN));
-        OPCODES.put("LCONST_0", new Opcode(LCONST_0, OpcodeGroup.INSN));
-        OPCODES.put("LCONST_1", new Opcode(LCONST_1, OpcodeGroup.INSN));
-        OPCODES.put("FCONST_0", new Opcode(FCONST_0, OpcodeGroup.INSN));
-        OPCODES.put("FCONST_1", new Opcode(FCONST_1, OpcodeGroup.INSN));
-        OPCODES.put("FCONST_2", new Opcode(FCONST_2, OpcodeGroup.INSN));
-        OPCODES.put("DCONST_0", new Opcode(DCONST_0, OpcodeGroup.INSN));
-        OPCODES.put("DCONST_1", new Opcode(DCONST_1, OpcodeGroup.INSN));
-        OPCODES.put("BIPUSH", new Opcode(BIPUSH, OpcodeGroup.INSN_INT));
-        OPCODES.put("SIPUSH", new Opcode(SIPUSH, OpcodeGroup.INSN_INT));
-        OPCODES.put("LDC", new Opcode(LDC, OpcodeGroup.INSN_LDC));
-        OPCODES.put("ILOAD", new Opcode(ILOAD, OpcodeGroup.INSN_VAR));
-        OPCODES.put("LLOAD", new Opcode(LLOAD, OpcodeGroup.INSN_VAR));
-        OPCODES.put("FLOAD", new Opcode(FLOAD, OpcodeGroup.INSN_VAR));
-        OPCODES.put("DLOAD", new Opcode(DLOAD, OpcodeGroup.INSN_VAR));
-        OPCODES.put("ALOAD", new Opcode(ALOAD, OpcodeGroup.INSN_VAR));
-        OPCODES.put("IALOAD", new Opcode(IALOAD, OpcodeGroup.INSN));
-        OPCODES.put("LALOAD", new Opcode(LALOAD, OpcodeGroup.INSN));
-        OPCODES.put("FALOAD", new Opcode(FALOAD, OpcodeGroup.INSN));
-        OPCODES.put("DALOAD", new Opcode(DALOAD, OpcodeGroup.INSN));
-        OPCODES.put("AALOAD", new Opcode(AALOAD, OpcodeGroup.INSN));
-        OPCODES.put("BALOAD", new Opcode(BALOAD, OpcodeGroup.INSN));
-        OPCODES.put("CALOAD", new Opcode(CALOAD, OpcodeGroup.INSN));
-        OPCODES.put("SALOAD", new Opcode(SALOAD, OpcodeGroup.INSN));
-        OPCODES.put("ISTORE", new Opcode(ISTORE, OpcodeGroup.INSN_VAR));
-        OPCODES.put("LSTORE", new Opcode(LSTORE, OpcodeGroup.INSN_VAR));
-        OPCODES.put("FSTORE", new Opcode(FSTORE, OpcodeGroup.INSN_VAR));
-        OPCODES.put("DSTORE", new Opcode(DSTORE, OpcodeGroup.INSN_VAR));
-        OPCODES.put("ASTORE", new Opcode(ASTORE, OpcodeGroup.INSN_VAR));
-        OPCODES.put("IASTORE", new Opcode(IASTORE, OpcodeGroup.INSN));
-        OPCODES.put("LASTORE", new Opcode(LASTORE, OpcodeGroup.INSN));
-        OPCODES.put("FASTORE", new Opcode(FASTORE, OpcodeGroup.INSN));
-        OPCODES.put("DASTORE", new Opcode(DASTORE, OpcodeGroup.INSN));
-        OPCODES.put("AASTORE", new Opcode(AASTORE, OpcodeGroup.INSN));
-        OPCODES.put("BASTORE", new Opcode(BASTORE, OpcodeGroup.INSN));
-        OPCODES.put("CASTORE", new Opcode(CASTORE, OpcodeGroup.INSN));
-        OPCODES.put("SASTORE", new Opcode(SASTORE, OpcodeGroup.INSN));
-        OPCODES.put("POP", new Opcode(POP, OpcodeGroup.INSN));
-        OPCODES.put("POP2", new Opcode(POP2, OpcodeGroup.INSN));
-        OPCODES.put("DUP", new Opcode(DUP, OpcodeGroup.INSN));
-        OPCODES.put("DUP_X1", new Opcode(DUP_X1, OpcodeGroup.INSN));
-        OPCODES.put("DUP_X2", new Opcode(DUP_X2, OpcodeGroup.INSN));
-        OPCODES.put("DUP2", new Opcode(DUP2, OpcodeGroup.INSN));
-        OPCODES.put("DUP2_X1", new Opcode(DUP2_X1, OpcodeGroup.INSN));
-        OPCODES.put("DUP2_X2", new Opcode(DUP2_X2, OpcodeGroup.INSN));
-        OPCODES.put("SWAP", new Opcode(SWAP, OpcodeGroup.INSN));
-        OPCODES.put("IADD", new Opcode(IADD, OpcodeGroup.INSN));
-        OPCODES.put("LADD", new Opcode(LADD, OpcodeGroup.INSN));
-        OPCODES.put("FADD", new Opcode(FADD, OpcodeGroup.INSN));
-        OPCODES.put("DADD", new Opcode(DADD, OpcodeGroup.INSN));
-        OPCODES.put("ISUB", new Opcode(ISUB, OpcodeGroup.INSN));
-        OPCODES.put("LSUB", new Opcode(LSUB, OpcodeGroup.INSN));
-        OPCODES.put("FSUB", new Opcode(FSUB, OpcodeGroup.INSN));
-        OPCODES.put("DSUB", new Opcode(DSUB, OpcodeGroup.INSN));
-        OPCODES.put("IMUL", new Opcode(IMUL, OpcodeGroup.INSN));
-        OPCODES.put("LMUL", new Opcode(LMUL, OpcodeGroup.INSN));
-        OPCODES.put("FMUL", new Opcode(FMUL, OpcodeGroup.INSN));
-        OPCODES.put("DMUL", new Opcode(DMUL, OpcodeGroup.INSN));
-        OPCODES.put("IDIV", new Opcode(IDIV, OpcodeGroup.INSN));
-        OPCODES.put("LDIV", new Opcode(LDIV, OpcodeGroup.INSN));
-        OPCODES.put("FDIV", new Opcode(FDIV, OpcodeGroup.INSN));
-        OPCODES.put("DDIV", new Opcode(DDIV, OpcodeGroup.INSN));
-        OPCODES.put("IREM", new Opcode(IREM, OpcodeGroup.INSN));
-        OPCODES.put("LREM", new Opcode(LREM, OpcodeGroup.INSN));
-        OPCODES.put("FREM", new Opcode(FREM, OpcodeGroup.INSN));
-        OPCODES.put("DREM", new Opcode(DREM, OpcodeGroup.INSN));
-        OPCODES.put("INEG", new Opcode(INEG, OpcodeGroup.INSN));
-        OPCODES.put("LNEG", new Opcode(LNEG, OpcodeGroup.INSN));
-        OPCODES.put("FNEG", new Opcode(FNEG, OpcodeGroup.INSN));
-        OPCODES.put("DNEG", new Opcode(DNEG, OpcodeGroup.INSN));
-        OPCODES.put("ISHL", new Opcode(ISHL, OpcodeGroup.INSN));
-        OPCODES.put("LSHL", new Opcode(LSHL, OpcodeGroup.INSN));
-        OPCODES.put("ISHR", new Opcode(ISHR, OpcodeGroup.INSN));
-        OPCODES.put("LSHR", new Opcode(LSHR, OpcodeGroup.INSN));
-        OPCODES.put("IUSHR", new Opcode(IUSHR, OpcodeGroup.INSN));
-        OPCODES.put("LUSHR", new Opcode(LUSHR, OpcodeGroup.INSN));
-        OPCODES.put("IAND", new Opcode(IAND, OpcodeGroup.INSN));
-        OPCODES.put("LAND", new Opcode(LAND, OpcodeGroup.INSN));
-        OPCODES.put("IOR", new Opcode(IOR, OpcodeGroup.INSN));
-        OPCODES.put("LOR", new Opcode(LOR, OpcodeGroup.INSN));
-        OPCODES.put("IXOR", new Opcode(IXOR, OpcodeGroup.INSN));
-        OPCODES.put("LXOR", new Opcode(LXOR, OpcodeGroup.INSN));
-        OPCODES.put("IINC", new Opcode(IINC, OpcodeGroup.INSN_IINC));
-        OPCODES.put("I2L", new Opcode(I2L, OpcodeGroup.INSN));
-        OPCODES.put("I2F", new Opcode(I2F, OpcodeGroup.INSN));
-        OPCODES.put("I2D", new Opcode(I2D, OpcodeGroup.INSN));
-        OPCODES.put("L2I", new Opcode(L2I, OpcodeGroup.INSN));
-        OPCODES.put("L2F", new Opcode(L2F, OpcodeGroup.INSN));
-        OPCODES.put("L2D", new Opcode(L2D, OpcodeGroup.INSN));
-        OPCODES.put("F2I", new Opcode(F2I, OpcodeGroup.INSN));
-        OPCODES.put("F2L", new Opcode(F2L, OpcodeGroup.INSN));
-        OPCODES.put("F2D", new Opcode(F2D, OpcodeGroup.INSN));
-        OPCODES.put("D2I", new Opcode(D2I, OpcodeGroup.INSN));
-        OPCODES.put("D2L", new Opcode(D2L, OpcodeGroup.INSN));
-        OPCODES.put("D2F", new Opcode(D2F, OpcodeGroup.INSN));
-        OPCODES.put("I2B", new Opcode(I2B, OpcodeGroup.INSN));
-        OPCODES.put("I2C", new Opcode(I2C, OpcodeGroup.INSN));
-        OPCODES.put("I2S", new Opcode(I2S, OpcodeGroup.INSN));
-        OPCODES.put("LCMP", new Opcode(LCMP, OpcodeGroup.INSN));
-        OPCODES.put("FCMPL", new Opcode(FCMPL, OpcodeGroup.INSN));
-        OPCODES.put("FCMPG", new Opcode(FCMPG, OpcodeGroup.INSN));
-        OPCODES.put("DCMPL", new Opcode(DCMPL, OpcodeGroup.INSN));
-        OPCODES.put("DCMPG", new Opcode(DCMPG, OpcodeGroup.INSN));
-        OPCODES.put("IFEQ", new Opcode(IFEQ, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IFNE", new Opcode(IFNE, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IFLT", new Opcode(IFLT, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IFGE", new Opcode(IFGE, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IFGT", new Opcode(IFGT, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IFLE", new Opcode(IFLE, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IF_ICMPEQ", new Opcode(IF_ICMPEQ, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IF_ICMPNE", new Opcode(IF_ICMPNE, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IF_ICMPLT", new Opcode(IF_ICMPLT, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IF_ICMPGE", new Opcode(IF_ICMPGE, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IF_ICMPGT", new Opcode(IF_ICMPGT, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IF_ICMPLE", new Opcode(IF_ICMPLE, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IF_ACMPEQ", new Opcode(IF_ACMPEQ, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IF_ACMPNE", new Opcode(IF_ACMPNE, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("GOTO", new Opcode(GOTO, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("JSR", new Opcode(JSR, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("RET", new Opcode(RET, OpcodeGroup.INSN_VAR));
+        ASMContentHandler.OPCODES.put( "NOP",
+                                       new Opcode( Opcodes.NOP,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ACONST_NULL",
+                                       new Opcode( Opcodes.ACONST_NULL,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ICONST_M1",
+                                       new Opcode( Opcodes.ICONST_M1,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ICONST_0",
+                                       new Opcode( Opcodes.ICONST_0,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ICONST_1",
+                                       new Opcode( Opcodes.ICONST_1,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ICONST_2",
+                                       new Opcode( Opcodes.ICONST_2,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ICONST_3",
+                                       new Opcode( Opcodes.ICONST_3,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ICONST_4",
+                                       new Opcode( Opcodes.ICONST_4,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ICONST_5",
+                                       new Opcode( Opcodes.ICONST_5,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LCONST_0",
+                                       new Opcode( Opcodes.LCONST_0,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LCONST_1",
+                                       new Opcode( Opcodes.LCONST_1,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FCONST_0",
+                                       new Opcode( Opcodes.FCONST_0,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FCONST_1",
+                                       new Opcode( Opcodes.FCONST_1,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FCONST_2",
+                                       new Opcode( Opcodes.FCONST_2,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DCONST_0",
+                                       new Opcode( Opcodes.DCONST_0,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DCONST_1",
+                                       new Opcode( Opcodes.DCONST_1,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "BIPUSH",
+                                       new Opcode( Opcodes.BIPUSH,
+                                                   OpcodeGroup.INSN_INT ) );
+        ASMContentHandler.OPCODES.put( "SIPUSH",
+                                       new Opcode( Opcodes.SIPUSH,
+                                                   OpcodeGroup.INSN_INT ) );
+        ASMContentHandler.OPCODES.put( "LDC",
+                                       new Opcode( Opcodes.LDC,
+                                                   OpcodeGroup.INSN_LDC ) );
+        ASMContentHandler.OPCODES.put( "ILOAD",
+                                       new Opcode( Opcodes.ILOAD,
+                                                   OpcodeGroup.INSN_VAR ) );
+        ASMContentHandler.OPCODES.put( "LLOAD",
+                                       new Opcode( Opcodes.LLOAD,
+                                                   OpcodeGroup.INSN_VAR ) );
+        ASMContentHandler.OPCODES.put( "FLOAD",
+                                       new Opcode( Opcodes.FLOAD,
+                                                   OpcodeGroup.INSN_VAR ) );
+        ASMContentHandler.OPCODES.put( "DLOAD",
+                                       new Opcode( Opcodes.DLOAD,
+                                                   OpcodeGroup.INSN_VAR ) );
+        ASMContentHandler.OPCODES.put( "ALOAD",
+                                       new Opcode( Opcodes.ALOAD,
+                                                   OpcodeGroup.INSN_VAR ) );
+        ASMContentHandler.OPCODES.put( "IALOAD",
+                                       new Opcode( Opcodes.IALOAD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LALOAD",
+                                       new Opcode( Opcodes.LALOAD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FALOAD",
+                                       new Opcode( Opcodes.FALOAD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DALOAD",
+                                       new Opcode( Opcodes.DALOAD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "AALOAD",
+                                       new Opcode( Opcodes.AALOAD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "BALOAD",
+                                       new Opcode( Opcodes.BALOAD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "CALOAD",
+                                       new Opcode( Opcodes.CALOAD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "SALOAD",
+                                       new Opcode( Opcodes.SALOAD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ISTORE",
+                                       new Opcode( Opcodes.ISTORE,
+                                                   OpcodeGroup.INSN_VAR ) );
+        ASMContentHandler.OPCODES.put( "LSTORE",
+                                       new Opcode( Opcodes.LSTORE,
+                                                   OpcodeGroup.INSN_VAR ) );
+        ASMContentHandler.OPCODES.put( "FSTORE",
+                                       new Opcode( Opcodes.FSTORE,
+                                                   OpcodeGroup.INSN_VAR ) );
+        ASMContentHandler.OPCODES.put( "DSTORE",
+                                       new Opcode( Opcodes.DSTORE,
+                                                   OpcodeGroup.INSN_VAR ) );
+        ASMContentHandler.OPCODES.put( "ASTORE",
+                                       new Opcode( Opcodes.ASTORE,
+                                                   OpcodeGroup.INSN_VAR ) );
+        ASMContentHandler.OPCODES.put( "IASTORE",
+                                       new Opcode( Opcodes.IASTORE,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LASTORE",
+                                       new Opcode( Opcodes.LASTORE,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FASTORE",
+                                       new Opcode( Opcodes.FASTORE,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DASTORE",
+                                       new Opcode( Opcodes.DASTORE,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "AASTORE",
+                                       new Opcode( Opcodes.AASTORE,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "BASTORE",
+                                       new Opcode( Opcodes.BASTORE,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "CASTORE",
+                                       new Opcode( Opcodes.CASTORE,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "SASTORE",
+                                       new Opcode( Opcodes.SASTORE,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "POP",
+                                       new Opcode( Opcodes.POP,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "POP2",
+                                       new Opcode( Opcodes.POP2,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DUP",
+                                       new Opcode( Opcodes.DUP,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DUP_X1",
+                                       new Opcode( Opcodes.DUP_X1,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DUP_X2",
+                                       new Opcode( Opcodes.DUP_X2,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DUP2",
+                                       new Opcode( Opcodes.DUP2,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DUP2_X1",
+                                       new Opcode( Opcodes.DUP2_X1,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DUP2_X2",
+                                       new Opcode( Opcodes.DUP2_X2,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "SWAP",
+                                       new Opcode( Opcodes.SWAP,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "IADD",
+                                       new Opcode( Opcodes.IADD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LADD",
+                                       new Opcode( Opcodes.LADD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FADD",
+                                       new Opcode( Opcodes.FADD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DADD",
+                                       new Opcode( Opcodes.DADD,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ISUB",
+                                       new Opcode( Opcodes.ISUB,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LSUB",
+                                       new Opcode( Opcodes.LSUB,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FSUB",
+                                       new Opcode( Opcodes.FSUB,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DSUB",
+                                       new Opcode( Opcodes.DSUB,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "IMUL",
+                                       new Opcode( Opcodes.IMUL,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LMUL",
+                                       new Opcode( Opcodes.LMUL,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FMUL",
+                                       new Opcode( Opcodes.FMUL,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DMUL",
+                                       new Opcode( Opcodes.DMUL,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "IDIV",
+                                       new Opcode( Opcodes.IDIV,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LDIV",
+                                       new Opcode( Opcodes.LDIV,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FDIV",
+                                       new Opcode( Opcodes.FDIV,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DDIV",
+                                       new Opcode( Opcodes.DDIV,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "IREM",
+                                       new Opcode( Opcodes.IREM,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LREM",
+                                       new Opcode( Opcodes.LREM,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FREM",
+                                       new Opcode( Opcodes.FREM,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DREM",
+                                       new Opcode( Opcodes.DREM,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "INEG",
+                                       new Opcode( Opcodes.INEG,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LNEG",
+                                       new Opcode( Opcodes.LNEG,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FNEG",
+                                       new Opcode( Opcodes.FNEG,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DNEG",
+                                       new Opcode( Opcodes.DNEG,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ISHL",
+                                       new Opcode( Opcodes.ISHL,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LSHL",
+                                       new Opcode( Opcodes.LSHL,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ISHR",
+                                       new Opcode( Opcodes.ISHR,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LSHR",
+                                       new Opcode( Opcodes.LSHR,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "IUSHR",
+                                       new Opcode( Opcodes.IUSHR,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LUSHR",
+                                       new Opcode( Opcodes.LUSHR,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "IAND",
+                                       new Opcode( Opcodes.IAND,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LAND",
+                                       new Opcode( Opcodes.LAND,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "IOR",
+                                       new Opcode( Opcodes.IOR,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LOR",
+                                       new Opcode( Opcodes.LOR,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "IXOR",
+                                       new Opcode( Opcodes.IXOR,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LXOR",
+                                       new Opcode( Opcodes.LXOR,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "IINC",
+                                       new Opcode( Opcodes.IINC,
+                                                   OpcodeGroup.INSN_IINC ) );
+        ASMContentHandler.OPCODES.put( "I2L",
+                                       new Opcode( Opcodes.I2L,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "I2F",
+                                       new Opcode( Opcodes.I2F,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "I2D",
+                                       new Opcode( Opcodes.I2D,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "L2I",
+                                       new Opcode( Opcodes.L2I,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "L2F",
+                                       new Opcode( Opcodes.L2F,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "L2D",
+                                       new Opcode( Opcodes.L2D,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "F2I",
+                                       new Opcode( Opcodes.F2I,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "F2L",
+                                       new Opcode( Opcodes.F2L,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "F2D",
+                                       new Opcode( Opcodes.F2D,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "D2I",
+                                       new Opcode( Opcodes.D2I,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "D2L",
+                                       new Opcode( Opcodes.D2L,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "D2F",
+                                       new Opcode( Opcodes.D2F,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "I2B",
+                                       new Opcode( Opcodes.I2B,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "I2C",
+                                       new Opcode( Opcodes.I2C,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "I2S",
+                                       new Opcode( Opcodes.I2S,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LCMP",
+                                       new Opcode( Opcodes.LCMP,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FCMPL",
+                                       new Opcode( Opcodes.FCMPL,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FCMPG",
+                                       new Opcode( Opcodes.FCMPG,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DCMPL",
+                                       new Opcode( Opcodes.DCMPL,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DCMPG",
+                                       new Opcode( Opcodes.DCMPG,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "IFEQ",
+                                       new Opcode( Opcodes.IFEQ,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IFNE",
+                                       new Opcode( Opcodes.IFNE,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IFLT",
+                                       new Opcode( Opcodes.IFLT,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IFGE",
+                                       new Opcode( Opcodes.IFGE,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IFGT",
+                                       new Opcode( Opcodes.IFGT,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IFLE",
+                                       new Opcode( Opcodes.IFLE,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IF_ICMPEQ",
+                                       new Opcode( Opcodes.IF_ICMPEQ,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IF_ICMPNE",
+                                       new Opcode( Opcodes.IF_ICMPNE,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IF_ICMPLT",
+                                       new Opcode( Opcodes.IF_ICMPLT,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IF_ICMPGE",
+                                       new Opcode( Opcodes.IF_ICMPGE,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IF_ICMPGT",
+                                       new Opcode( Opcodes.IF_ICMPGT,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IF_ICMPLE",
+                                       new Opcode( Opcodes.IF_ICMPLE,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IF_ACMPEQ",
+                                       new Opcode( Opcodes.IF_ACMPEQ,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IF_ACMPNE",
+                                       new Opcode( Opcodes.IF_ACMPNE,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "GOTO",
+                                       new Opcode( Opcodes.GOTO,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "JSR",
+                                       new Opcode( Opcodes.JSR,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "RET",
+                                       new Opcode( Opcodes.RET,
+                                                   OpcodeGroup.INSN_VAR ) );
         // OPCODES.put( "TABLESWITCH", new Opcode( TABLESWITCH,
         // "visiTableSwitchInsn"));
         // OPCODES.put( "LOOKUPSWITCH", new Opcode( LOOKUPSWITCH,
         // "visitLookupSwitch"));
-        OPCODES.put("IRETURN", new Opcode(IRETURN, OpcodeGroup.INSN));
-        OPCODES.put("LRETURN", new Opcode(LRETURN, OpcodeGroup.INSN));
-        OPCODES.put("FRETURN", new Opcode(FRETURN, OpcodeGroup.INSN));
-        OPCODES.put("DRETURN", new Opcode(DRETURN, OpcodeGroup.INSN));
-        OPCODES.put("ARETURN", new Opcode(ARETURN, OpcodeGroup.INSN));
-        OPCODES.put("RETURN", new Opcode(RETURN, OpcodeGroup.INSN));
-        OPCODES.put("GETSTATIC", new Opcode(GETSTATIC, OpcodeGroup.INSN_FIELD));
-        OPCODES.put("PUTSTATIC", new Opcode(PUTSTATIC, OpcodeGroup.INSN_FIELD));
-        OPCODES.put("GETFIELD", new Opcode(GETFIELD, OpcodeGroup.INSN_FIELD));
-        OPCODES.put("PUTFIELD", new Opcode(PUTFIELD, OpcodeGroup.INSN_FIELD));
-        OPCODES.put("INVOKEVIRTUAL", new Opcode(INVOKEVIRTUAL,
-                OpcodeGroup.INSN_METHOD));
-        OPCODES.put("INVOKESPECIAL", new Opcode(INVOKESPECIAL,
-                OpcodeGroup.INSN_METHOD));
-        OPCODES.put("INVOKESTATIC", new Opcode(INVOKESTATIC,
-                OpcodeGroup.INSN_METHOD));
-        OPCODES.put("INVOKEINTERFACE", new Opcode(INVOKEINTERFACE,
-                OpcodeGroup.INSN_METHOD));
-        OPCODES.put("NEW", new Opcode(NEW, OpcodeGroup.INSN_TYPE));
-        OPCODES.put("NEWARRAY", new Opcode(NEWARRAY, OpcodeGroup.INSN_INT));
-        OPCODES.put("ANEWARRAY", new Opcode(ANEWARRAY, OpcodeGroup.INSN_TYPE));
-        OPCODES.put("ARRAYLENGTH", new Opcode(ARRAYLENGTH, OpcodeGroup.INSN));
-        OPCODES.put("ATHROW", new Opcode(ATHROW, OpcodeGroup.INSN));
-        OPCODES.put("CHECKCAST", new Opcode(CHECKCAST, OpcodeGroup.INSN_TYPE));
-        OPCODES.put("INSTANCEOF", new Opcode(INSTANCEOF, OpcodeGroup.INSN_TYPE));
-        OPCODES.put("MONITORENTER", new Opcode(MONITORENTER, OpcodeGroup.INSN));
-        OPCODES.put("MONITOREXIT", new Opcode(MONITOREXIT, OpcodeGroup.INSN));
-        OPCODES.put("MULTIANEWARRAY", new Opcode(MULTIANEWARRAY,
-                OpcodeGroup.INSN_MULTIANEWARRAY));
-        OPCODES.put("IFNULL", new Opcode(IFNULL, OpcodeGroup.INSN_JUMP));
-        OPCODES.put("IFNONNULL", new Opcode(IFNONNULL, OpcodeGroup.INSN_JUMP));
+        ASMContentHandler.OPCODES.put( "IRETURN",
+                                       new Opcode( Opcodes.IRETURN,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "LRETURN",
+                                       new Opcode( Opcodes.LRETURN,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "FRETURN",
+                                       new Opcode( Opcodes.FRETURN,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "DRETURN",
+                                       new Opcode( Opcodes.DRETURN,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ARETURN",
+                                       new Opcode( Opcodes.ARETURN,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "RETURN",
+                                       new Opcode( Opcodes.RETURN,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "GETSTATIC",
+                                       new Opcode( Opcodes.GETSTATIC,
+                                                   OpcodeGroup.INSN_FIELD ) );
+        ASMContentHandler.OPCODES.put( "PUTSTATIC",
+                                       new Opcode( Opcodes.PUTSTATIC,
+                                                   OpcodeGroup.INSN_FIELD ) );
+        ASMContentHandler.OPCODES.put( "GETFIELD",
+                                       new Opcode( Opcodes.GETFIELD,
+                                                   OpcodeGroup.INSN_FIELD ) );
+        ASMContentHandler.OPCODES.put( "PUTFIELD",
+                                       new Opcode( Opcodes.PUTFIELD,
+                                                   OpcodeGroup.INSN_FIELD ) );
+        ASMContentHandler.OPCODES.put( "INVOKEVIRTUAL",
+                                       new Opcode( Opcodes.INVOKEVIRTUAL,
+                                                   OpcodeGroup.INSN_METHOD ) );
+        ASMContentHandler.OPCODES.put( "INVOKESPECIAL",
+                                       new Opcode( Opcodes.INVOKESPECIAL,
+                                                   OpcodeGroup.INSN_METHOD ) );
+        ASMContentHandler.OPCODES.put( "INVOKESTATIC",
+                                       new Opcode( Opcodes.INVOKESTATIC,
+                                                   OpcodeGroup.INSN_METHOD ) );
+        ASMContentHandler.OPCODES.put( "INVOKEINTERFACE",
+                                       new Opcode( Opcodes.INVOKEINTERFACE,
+                                                   OpcodeGroup.INSN_METHOD ) );
+        ASMContentHandler.OPCODES.put( "NEW",
+                                       new Opcode( Opcodes.NEW,
+                                                   OpcodeGroup.INSN_TYPE ) );
+        ASMContentHandler.OPCODES.put( "NEWARRAY",
+                                       new Opcode( Opcodes.NEWARRAY,
+                                                   OpcodeGroup.INSN_INT ) );
+        ASMContentHandler.OPCODES.put( "ANEWARRAY",
+                                       new Opcode( Opcodes.ANEWARRAY,
+                                                   OpcodeGroup.INSN_TYPE ) );
+        ASMContentHandler.OPCODES.put( "ARRAYLENGTH",
+                                       new Opcode( Opcodes.ARRAYLENGTH,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "ATHROW",
+                                       new Opcode( Opcodes.ATHROW,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "CHECKCAST",
+                                       new Opcode( Opcodes.CHECKCAST,
+                                                   OpcodeGroup.INSN_TYPE ) );
+        ASMContentHandler.OPCODES.put( "INSTANCEOF",
+                                       new Opcode( Opcodes.INSTANCEOF,
+                                                   OpcodeGroup.INSN_TYPE ) );
+        ASMContentHandler.OPCODES.put( "MONITORENTER",
+                                       new Opcode( Opcodes.MONITORENTER,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "MONITOREXIT",
+                                       new Opcode( Opcodes.MONITOREXIT,
+                                                   OpcodeGroup.INSN ) );
+        ASMContentHandler.OPCODES.put( "MULTIANEWARRAY",
+                                       new Opcode( Opcodes.MULTIANEWARRAY,
+                                                   OpcodeGroup.INSN_MULTIANEWARRAY ) );
+        ASMContentHandler.OPCODES.put( "IFNULL",
+                                       new Opcode( Opcodes.IFNULL,
+                                                   OpcodeGroup.INSN_JUMP ) );
+        ASMContentHandler.OPCODES.put( "IFNONNULL",
+                                       new Opcode( Opcodes.IFNONNULL,
+                                                   OpcodeGroup.INSN_JUMP ) );
     }
 
     /**
@@ -327,7 +654,8 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      *        maximum number of local variables must be automatically computed.
      *        This value is passed to {@link ClassWriter ClassWriter} instance.
      */
-    public ASMContentHandler(OutputStream os, boolean computeMax) {
+    public ASMContentHandler(final OutputStream os,
+                             final boolean computeMax) {
         this.os = os;
         this.computeMax = computeMax;
     }
@@ -340,7 +668,7 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      *         writer or null if there are no classwriter created.
      */
     public byte[] toByteArray() {
-        return cw == null ? null : cw.toByteArray();
+        return this.cw == null ? null : this.cw.toByteArray();
     }
 
     /**
@@ -356,31 +684,31 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      *        attributes, it shall be an empty Attributes object.
      * @exception SAXException if a parsing error is to be reported
      */
-    public final void startElement(
-        String ns,
-        String localName,
-        String qName,
-        Attributes list) throws SAXException
-    {
+    public final void startElement(final String ns,
+                                   final String localName,
+                                   final String qName,
+                                   final Attributes list) throws SAXException {
         // the actual element name is either in localName or qName, depending
         // on whether the parser is namespace aware
         String name = localName;
-        if (name == null || name.length() < 1) {
+        if ( name == null || name.length() < 1 ) {
             name = qName;
         }
 
         // Compute the current matching rule
-        StringBuffer sb = new StringBuffer(match);
-        if (match.length() > 0) {
-            sb.append('/');
+        final StringBuffer sb = new StringBuffer( this.match );
+        if ( this.match.length() > 0 ) {
+            sb.append( '/' );
         }
-        sb.append(name);
-        match = sb.toString();
+        sb.append( name );
+        this.match = sb.toString();
 
         // Fire "begin" events for all relevant rules
-        Rule r = (Rule) RULES.match(match);
-        if (r != null)
-            r.begin(name, list);
+        final Rule r = (Rule) this.RULES.match( this.match );
+        if ( r != null ) {
+            r.begin( name,
+                     list );
+        }
     }
 
     /**
@@ -395,27 +723,29 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      * 
      * @exception SAXException if a parsing error is to be reported
      */
-    public final void endElement(String ns, String localName, String qName)
-            throws SAXException
-    {
+    public final void endElement(final String ns,
+                                 final String localName,
+                                 final String qName) throws SAXException {
         // the actual element name is either in localName or qName, depending
         // on whether the parser is namespace aware
         String name = localName;
-        if (name == null || name.length() < 1) {
+        if ( name == null || name.length() < 1 ) {
             name = qName;
         }
 
         // Fire "end" events for all relevant rules in reverse order
-        Rule r = (Rule) RULES.match(match);
-        if (r != null)
-            r.end(name);
+        final Rule r = (Rule) this.RULES.match( this.match );
+        if ( r != null ) {
+            r.end( name );
+        }
 
         // Recover the previous match expression
-        int slash = match.lastIndexOf('/');
-        if (slash >= 0) {
-            match = match.substring(0, slash);
+        final int slash = this.match.lastIndexOf( '/' );
+        if ( slash >= 0 ) {
+            this.match = this.match.substring( 0,
+                                               slash );
         } else {
-            match = "";
+            this.match = "";
         }
     }
 
@@ -427,9 +757,10 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     public final void endDocument() throws SAXException {
         try {
-            os.write(cw.toByteArray());
-        } catch (IOException ex) {
-            throw new SAXException(ex.toString(), ex);
+            this.os.write( this.cw.toByteArray() );
+        } catch ( final IOException ex ) {
+            throw new SAXException( ex.toString(),
+                                    ex );
         }
     }
 
@@ -440,7 +771,7 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      * @return the top object on the stack without removing it.
      */
     final Object peek() {
-        return stack.size() == 0 ? null : stack.get(stack.size() - 1);
+        return this.stack.size() == 0 ? null : this.stack.get( this.stack.size() - 1 );
     }
 
     /**
@@ -452,8 +783,8 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      *        is the next element down, and so on.
      * @return the n'th object down the stack.
      */
-    final Object peek(int n) {
-        return stack.size() < (n + 1) ? null : stack.get(n);
+    final Object peek(final int n) {
+        return this.stack.size() < (n + 1) ? null : this.stack.get( n );
     }
 
     /**
@@ -463,7 +794,7 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      * @return the top object off of the stack.
      */
     final Object pop() {
-        return stack.size() == 0 ? null : stack.remove(stack.size() - 1);
+        return this.stack.size() == 0 ? null : this.stack.remove( this.stack.size() - 1 );
     }
 
     /**
@@ -471,46 +802,49 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      * 
      * @param object The new object
      */
-    final void push(Object object) {
-        stack.add(object);
+    final void push(final Object object) {
+        this.stack.add( object );
     }
 
     private static final class RuleSet {
-        private Map rules = new HashMap();
+        private final Map  rules     = new HashMap();
 
-        private List lpatterns = new ArrayList();
+        private final List lpatterns = new ArrayList();
 
-        private List rpatterns = new ArrayList();
+        private final List rpatterns = new ArrayList();
 
-        public void add(String path, Object rule) {
+        public void add(final String path,
+                        final Object rule) {
             String pattern = path;
-            if (path.startsWith("*/")) {
-                pattern = path.substring(1);
-                lpatterns.add(pattern);
-            } else if (path.endsWith("/*")) {
-                pattern = path.substring(0, path.length() - 1);
-                rpatterns.add(pattern);
+            if ( path.startsWith( "*/" ) ) {
+                pattern = path.substring( 1 );
+                this.lpatterns.add( pattern );
+            } else if ( path.endsWith( "/*" ) ) {
+                pattern = path.substring( 0,
+                                          path.length() - 1 );
+                this.rpatterns.add( pattern );
             }
-            rules.put(pattern, rule);
+            this.rules.put( pattern,
+                            rule );
         }
 
-        public Object match(String path) {
-            if (rules.containsKey(path)) {
-                return rules.get(path);
+        public Object match(final String path) {
+            if ( this.rules.containsKey( path ) ) {
+                return this.rules.get( path );
             }
 
-            int n = path.lastIndexOf('/');
-            for (Iterator it = lpatterns.iterator(); it.hasNext();) {
-                String pattern = (String) it.next();
-                if (path.substring(n).endsWith(pattern)) {
-                    return rules.get(pattern);
+            final int n = path.lastIndexOf( '/' );
+            for ( final Iterator it = this.lpatterns.iterator(); it.hasNext(); ) {
+                final String pattern = (String) it.next();
+                if ( path.substring( n ).endsWith( pattern ) ) {
+                    return this.rules.get( pattern );
                 }
             }
 
-            for (Iterator it = rpatterns.iterator(); it.hasNext();) {
-                String pattern = (String) it.next();
-                if (path.startsWith(pattern)) {
-                    return rules.get(pattern);
+            for ( final Iterator it = this.rpatterns.iterator(); it.hasNext(); ) {
+                final String pattern = (String) it.next();
+                if ( path.startsWith( pattern ) ) {
+                    return this.rules.get( pattern );
                 }
             }
 
@@ -524,35 +858,33 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     protected abstract class Rule {
 
-        public void begin(String name, Attributes attrs) {
+        public void begin(final String name,
+                          final Attributes attrs) {
         }
 
-        public void end(String name) {
+        public void end(final String name) {
         }
 
-        protected final Object getValue(String desc, String val) {
+        protected final Object getValue(final String desc,
+                                        final String val) {
             Object value = null;
-            if (val != null) {
-                if (desc.equals("Ljava/lang/String;")) {
-                    value = decode(val);
-                } else if ("Ljava/lang/Integer;".equals(desc)
-                        || "I".equals(desc) || "S".equals(desc)
-                        || "B".equals(desc) || "C".equals(desc)
-                        || desc.equals("Z"))
-                {
-                    value = new Integer(val);
+            if ( val != null ) {
+                if ( desc.equals( "Ljava/lang/String;" ) ) {
+                    value = decode( val );
+                } else if ( "Ljava/lang/Integer;".equals( desc ) || "I".equals( desc ) || "S".equals( desc ) || "B".equals( desc ) || "C".equals( desc ) || desc.equals( "Z" ) ) {
+                    value = new Integer( val );
 
-                } else if ("Ljava/lang/Short;".equals(desc)) {
-                    value = new Short(val);
+                } else if ( "Ljava/lang/Short;".equals( desc ) ) {
+                    value = new Short( val );
 
-                } else if ("Ljava/lang/Byte;".equals(desc)) {
-                    value = new Byte(val);
+                } else if ( "Ljava/lang/Byte;".equals( desc ) ) {
+                    value = new Byte( val );
 
-                } else if ("Ljava/lang/Character;".equals(desc)) {
-                    value = new Character(decode(val).charAt(0));
+                } else if ( "Ljava/lang/Character;".equals( desc ) ) {
+                    value = new Character( decode( val ).charAt( 0 ) );
 
-                } else if ("Ljava/lang/Boolean;".equals(desc)) {
-                    value = Boolean.valueOf(val);
+                } else if ( "Ljava/lang/Boolean;".equals( desc ) ) {
+                    value = Boolean.valueOf( val );
 
                     // } else if ("Ljava/lang/Integer;".equals(desc)
                     // || desc.equals("I"))
@@ -571,18 +903,14 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
                     // {
                     // value = Byte.valueOf(val);
 
-                } else if ("Ljava/lang/Long;".equals(desc) || desc.equals("J"))
-                {
-                    value = new Long(val);
-                } else if ("Ljava/lang/Float;".equals(desc) || desc.equals("F"))
-                {
-                    value = new Float(val);
-                } else if ("Ljava/lang/Double;".equals(desc)
-                        || desc.equals("D"))
-                {
-                    value = new Double(val);
-                } else if (Type.getDescriptor(Type.class).equals(desc)) {
-                    value = Type.getType(val);
+                } else if ( "Ljava/lang/Long;".equals( desc ) || desc.equals( "J" ) ) {
+                    value = new Long( val );
+                } else if ( "Ljava/lang/Float;".equals( desc ) || desc.equals( "F" ) ) {
+                    value = new Float( val );
+                } else if ( "Ljava/lang/Double;".equals( desc ) || desc.equals( "D" ) ) {
+                    value = new Double( val );
+                } else if ( Type.getDescriptor( Type.class ).equals( desc ) ) {
+                    value = Type.getType( val );
 
                     // } else if ("[I".equals(desc)) {
                     // value = new int[0]; // TODO
@@ -602,49 +930,50 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
                     // value = new double[0]; // TODO
 
                 } else {
-                    throw new RuntimeException("Invalid value:" + val
-                            + " desc:" + desc + " ctx:" + this);
+                    throw new RuntimeException( "Invalid value:" + val + " desc:" + desc + " ctx:" + this );
                 }
             }
             return value;
         }
 
-        private final String decode(String val) {
-            StringBuffer sb = new StringBuffer(val.length());
+        private final String decode(final String val) {
+            final StringBuffer sb = new StringBuffer( val.length() );
             try {
                 int n = 0;
-                while (n < val.length()) {
-                    char c = val.charAt(n);
-                    if (c == '\\') {
+                while ( n < val.length() ) {
+                    char c = val.charAt( n );
+                    if ( c == '\\' ) {
                         n++;
-                        c = val.charAt(n);
-                        if (c == '\\') {
-                            sb.append('\\');
+                        c = val.charAt( n );
+                        if ( c == '\\' ) {
+                            sb.append( '\\' );
                         } else {
                             n++; // skip 'u'
-                            sb.append((char) Integer.parseInt(val.substring(n,
-                                    n + 4), 16));
+                            sb.append( (char) Integer.parseInt( val.substring( n,
+                                                                               n + 4 ),
+                                                                16 ) );
                             n += 3;
                         }
                     } else {
-                        sb.append(c);
+                        sb.append( c );
                     }
                     n++;
                 }
 
-            } catch (RuntimeException ex) {
-                System.err.println(val + "\n" + ex.toString());
+            } catch ( final RuntimeException ex ) {
+                System.err.println( val + "\n" + ex.toString() );
                 ex.printStackTrace();
                 throw ex;
             }
             return sb.toString();
         }
 
-        protected final Label getLabel(Object label) {
-            Label lbl = (Label) labels.get(label);
-            if (lbl == null) {
+        protected final Label getLabel(final Object label) {
+            Label lbl = (Label) ASMContentHandler.this.labels.get( label );
+            if ( lbl == null ) {
                 lbl = new Label();
-                labels.put(label, lbl);
+                ASMContentHandler.this.labels.put( label,
+                                                   lbl );
             }
             return lbl;
         }
@@ -653,47 +982,66 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
         protected final MethodVisitor getCodeVisitor() {
             return (MethodVisitor) peek();
         }
-        
-        protected final int getAccess(String s) {
+
+        protected final int getAccess(final String s) {
             int access = 0;
-            if (s.indexOf("public") != -1)
+            if ( s.indexOf( "public" ) != -1 ) {
                 access |= Opcodes.ACC_PUBLIC;
-            if (s.indexOf("private") != -1)
+            }
+            if ( s.indexOf( "private" ) != -1 ) {
                 access |= Opcodes.ACC_PRIVATE;
-            if (s.indexOf("protected") != -1)
+            }
+            if ( s.indexOf( "protected" ) != -1 ) {
                 access |= Opcodes.ACC_PROTECTED;
-            if (s.indexOf("static") != -1)
+            }
+            if ( s.indexOf( "static" ) != -1 ) {
                 access |= Opcodes.ACC_STATIC;
-            if (s.indexOf("final") != -1)
+            }
+            if ( s.indexOf( "final" ) != -1 ) {
                 access |= Opcodes.ACC_FINAL;
-            if (s.indexOf("super") != -1)
+            }
+            if ( s.indexOf( "super" ) != -1 ) {
                 access |= Opcodes.ACC_SUPER;
-            if (s.indexOf("synchronized") != -1)
+            }
+            if ( s.indexOf( "synchronized" ) != -1 ) {
                 access |= Opcodes.ACC_SYNCHRONIZED;
-            if (s.indexOf("volatile") != -1)
+            }
+            if ( s.indexOf( "volatile" ) != -1 ) {
                 access |= Opcodes.ACC_VOLATILE;
-            if (s.indexOf("bridge") != -1)
+            }
+            if ( s.indexOf( "bridge" ) != -1 ) {
                 access |= Opcodes.ACC_BRIDGE;
-            if (s.indexOf("varargs") != -1)
+            }
+            if ( s.indexOf( "varargs" ) != -1 ) {
                 access |= Opcodes.ACC_VARARGS;
-            if (s.indexOf("transient") != -1)
+            }
+            if ( s.indexOf( "transient" ) != -1 ) {
                 access |= Opcodes.ACC_TRANSIENT;
-            if (s.indexOf("native") != -1)
+            }
+            if ( s.indexOf( "native" ) != -1 ) {
                 access |= Opcodes.ACC_NATIVE;
-            if (s.indexOf("interface") != -1)
+            }
+            if ( s.indexOf( "interface" ) != -1 ) {
                 access |= Opcodes.ACC_INTERFACE;
-            if (s.indexOf("abstract") != -1)
+            }
+            if ( s.indexOf( "abstract" ) != -1 ) {
                 access |= Opcodes.ACC_ABSTRACT;
-            if (s.indexOf("strict") != -1)
+            }
+            if ( s.indexOf( "strict" ) != -1 ) {
                 access |= Opcodes.ACC_STRICT;
-            if (s.indexOf("synthetic") != -1)
+            }
+            if ( s.indexOf( "synthetic" ) != -1 ) {
                 access |= Opcodes.ACC_SYNTHETIC;
-            if (s.indexOf("annotation") != -1)
+            }
+            if ( s.indexOf( "annotation" ) != -1 ) {
                 access |= Opcodes.ACC_ANNOTATION;
-            if (s.indexOf("enum") != -1)
+            }
+            if ( s.indexOf( "enum" ) != -1 ) {
                 access |= Opcodes.ACC_ENUM;
-            if (s.indexOf("deprecated") != -1)
+            }
+            if ( s.indexOf( "deprecated" ) != -1 ) {
                 access |= Opcodes.ACC_DEPRECATED;
+            }
             return access;
         }
 
@@ -704,19 +1052,27 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class ClassRule extends Rule {
 
-        public final void begin(String name, Attributes attrs) {
-            int major = Integer.parseInt(attrs.getValue("major"));
-            int minor = Integer.parseInt(attrs.getValue("minor"));
-            cw = new ClassWriter(computeMax);
-            Map vals = new HashMap();
-            vals.put("version", new Integer(minor << 16 | major));
-            vals.put("access", attrs.getValue("access"));
-            vals.put("name", attrs.getValue("name"));
-            vals.put("parent", attrs.getValue("parent"));
-            vals.put("source", attrs.getValue("source"));
-            vals.put("signature", attrs.getValue("signature"));
-            vals.put("interfaces", new ArrayList());
-            push(vals);
+        public final void begin(final String name,
+                                final Attributes attrs) {
+            final int major = Integer.parseInt( attrs.getValue( "major" ) );
+            final int minor = Integer.parseInt( attrs.getValue( "minor" ) );
+            ASMContentHandler.this.cw = new ClassWriter( ASMContentHandler.this.computeMax );
+            final Map vals = new HashMap();
+            vals.put( "version",
+                      new Integer( minor << 16 | major ) );
+            vals.put( "access",
+                      attrs.getValue( "access" ) );
+            vals.put( "name",
+                      attrs.getValue( "name" ) );
+            vals.put( "parent",
+                      attrs.getValue( "parent" ) );
+            vals.put( "source",
+                      attrs.getValue( "source" ) );
+            vals.put( "signature",
+                      attrs.getValue( "signature" ) );
+            vals.put( "interfaces",
+                      new ArrayList() );
+            push( vals );
             // values will be extracted in InterfacesRule.end();
         }
 
@@ -724,10 +1080,12 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
 
     private final class SourceRule extends Rule {
 
-        public void begin(String name, Attributes attrs) {
-            String file = attrs.getValue("file");
-            String debug = attrs.getValue("debug");
-            cw.visitSource(file, debug);
+        public void begin(final String name,
+                          final Attributes attrs) {
+            final String file = attrs.getValue( "file" );
+            final String debug = attrs.getValue( "debug" );
+            ASMContentHandler.this.cw.visitSource( file,
+                                                   debug );
         }
 
     }
@@ -737,8 +1095,9 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class InterfaceRule extends Rule {
 
-        public final void begin(String name, Attributes attrs) {
-            ((List) ((Map) peek()).get("interfaces")).add(attrs.getValue("name"));
+        public final void begin(final String name,
+                                final Attributes attrs) {
+            ((List) ((Map) peek()).get( "interfaces" )).add( attrs.getValue( "name" ) );
         }
 
     }
@@ -748,17 +1107,22 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class InterfacesRule extends Rule {
 
-        public final void end(String element) {
-            Map vals = (Map) pop();
-            int version = ((Integer) vals.get("version")).intValue();
-            int access = getAccess((String) vals.get("access"));
-            String name = (String) vals.get("name");
-            String signature = (String) vals.get("signature");
-            String parent = (String) vals.get("parent");
-            List infs = (List) vals.get("interfaces");
-            String[] interfaces = (String[]) infs.toArray(new String[infs.size()]);
-            cw.visit(version, access, name, signature, parent, interfaces);
-            push(cw);
+        public final void end(final String element) {
+            final Map vals = (Map) pop();
+            final int version = ((Integer) vals.get( "version" )).intValue();
+            final int access = getAccess( (String) vals.get( "access" ) );
+            final String name = (String) vals.get( "name" );
+            final String signature = (String) vals.get( "signature" );
+            final String parent = (String) vals.get( "parent" );
+            final List infs = (List) vals.get( "interfaces" );
+            final String[] interfaces = (String[]) infs.toArray( new String[infs.size()] );
+            ASMContentHandler.this.cw.visit( version,
+                                             access,
+                                             name,
+                                             signature,
+                                             parent,
+                                             interfaces );
+            push( ASMContentHandler.this.cw );
         }
 
     }
@@ -768,11 +1132,14 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class OuterClassRule extends Rule {
 
-        public final void begin(String element, Attributes attrs) {
-            String owner = attrs.getValue("owner");
-            String name = attrs.getValue("name");
-            String desc = attrs.getValue("desc");
-            cw.visitOuterClass(owner, name, desc);
+        public final void begin(final String element,
+                                final Attributes attrs) {
+            final String owner = attrs.getValue( "owner" );
+            final String name = attrs.getValue( "name" );
+            final String desc = attrs.getValue( "desc" );
+            ASMContentHandler.this.cw.visitOuterClass( owner,
+                                                       name,
+                                                       desc );
         }
 
     }
@@ -782,12 +1149,16 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class InnerClassRule extends Rule {
 
-        public final void begin(String element, Attributes attrs) {
-            int access = getAccess(attrs.getValue("access"));
-            String name = attrs.getValue("name");
-            String outerName = attrs.getValue("outerName");
-            String innerName = attrs.getValue("innerName");
-            cw.visitInnerClass(name, outerName, innerName, access);
+        public final void begin(final String element,
+                                final Attributes attrs) {
+            final int access = getAccess( attrs.getValue( "access" ) );
+            final String name = attrs.getValue( "name" );
+            final String outerName = attrs.getValue( "outerName" );
+            final String innerName = attrs.getValue( "innerName" );
+            ASMContentHandler.this.cw.visitInnerClass( name,
+                                                       outerName,
+                                                       innerName,
+                                                       access );
         }
 
     }
@@ -797,16 +1168,22 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class FieldRule extends Rule {
 
-        public final void begin(String element, Attributes attrs) {
-            int access = getAccess(attrs.getValue("access"));
-            String name = attrs.getValue("name");
-            String signature = attrs.getValue("signature");
-            String desc = attrs.getValue("desc");
-            Object value = getValue(desc, attrs.getValue("value"));
-            push(cw.visitField(access, name, desc, signature, value));
+        public final void begin(final String element,
+                                final Attributes attrs) {
+            final int access = getAccess( attrs.getValue( "access" ) );
+            final String name = attrs.getValue( "name" );
+            final String signature = attrs.getValue( "signature" );
+            final String desc = attrs.getValue( "desc" );
+            final Object value = getValue( desc,
+                                           attrs.getValue( "value" ) );
+            push( ASMContentHandler.this.cw.visitField( access,
+                                                        name,
+                                                        desc,
+                                                        signature,
+                                                        value ) );
         }
 
-        public void end(String name) {
+        public void end(final String name) {
             ((FieldVisitor) pop()).visitEnd();
         }
 
@@ -817,21 +1194,27 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class MethodRule extends Rule {
 
-        public final void begin(String name, Attributes attrs) {
-            labels = new HashMap();
-            Map vals = new HashMap();
-            vals.put("access", attrs.getValue("access"));
-            vals.put("name", attrs.getValue("name"));
-            vals.put("desc", attrs.getValue("desc"));
-            vals.put("signature", attrs.getValue("signature"));
-            vals.put("exceptions", new ArrayList());
-            push(vals);
+        public final void begin(final String name,
+                                final Attributes attrs) {
+            ASMContentHandler.this.labels = new HashMap();
+            final Map vals = new HashMap();
+            vals.put( "access",
+                      attrs.getValue( "access" ) );
+            vals.put( "name",
+                      attrs.getValue( "name" ) );
+            vals.put( "desc",
+                      attrs.getValue( "desc" ) );
+            vals.put( "signature",
+                      attrs.getValue( "signature" ) );
+            vals.put( "exceptions",
+                      new ArrayList() );
+            push( vals );
             // values will be extracted in ExceptionsRule.end();
         }
 
-        public final void end(String name) {
+        public final void end(final String name) {
             ((MethodVisitor) pop()).visitEnd();
-            labels = null;
+            ASMContentHandler.this.labels = null;
         }
 
     }
@@ -841,8 +1224,9 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class ExceptionRule extends Rule {
 
-        public final void begin(String name, Attributes attrs) {
-            ((List) ((Map) peek()).get("exceptions")).add(attrs.getValue("name"));
+        public final void begin(final String name,
+                                final Attributes attrs) {
+            ((List) ((Map) peek()).get( "exceptions" )).add( attrs.getValue( "name" ) );
         }
 
     }
@@ -852,16 +1236,20 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class ExceptionsRule extends Rule {
 
-        public final void end(String element) {
-            Map vals = (Map) pop();
-            int access = getAccess((String) vals.get("access"));
-            String name = (String) vals.get("name");
-            String desc = (String) vals.get("desc");
-            String signature = (String) vals.get("signature");
-            List excs = (List) vals.get("exceptions");
-            String[] exceptions = (String[]) excs.toArray(new String[excs.size()]);
+        public final void end(final String element) {
+            final Map vals = (Map) pop();
+            final int access = getAccess( (String) vals.get( "access" ) );
+            final String name = (String) vals.get( "name" );
+            final String desc = (String) vals.get( "desc" );
+            final String signature = (String) vals.get( "signature" );
+            final List excs = (List) vals.get( "exceptions" );
+            final String[] exceptions = (String[]) excs.toArray( new String[excs.size()] );
 
-            push(cw.visitMethod(access, name, desc, signature, exceptions));
+            push( ASMContentHandler.this.cw.visitMethod( access,
+                                                         name,
+                                                         desc,
+                                                         signature,
+                                                         exceptions ) );
         }
 
     }
@@ -871,23 +1259,31 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private class TableSwitchRule extends Rule {
 
-        public final void begin(String name, Attributes attrs) {
-            Map vals = new HashMap();
-            vals.put("min", attrs.getValue("min"));
-            vals.put("max", attrs.getValue("max"));
-            vals.put("dflt", attrs.getValue("dflt"));
-            vals.put("labels", new ArrayList());
-            push(vals);
+        public final void begin(final String name,
+                                final Attributes attrs) {
+            final Map vals = new HashMap();
+            vals.put( "min",
+                      attrs.getValue( "min" ) );
+            vals.put( "max",
+                      attrs.getValue( "max" ) );
+            vals.put( "dflt",
+                      attrs.getValue( "dflt" ) );
+            vals.put( "labels",
+                      new ArrayList() );
+            push( vals );
         }
 
-        public final void end(String name) {
-            Map vals = (Map) pop();
-            int min = Integer.parseInt((String) vals.get("min"));
-            int max = Integer.parseInt((String) vals.get("max"));
-            Label dflt = getLabel(vals.get("dflt"));
-            List lbls = (List) vals.get("labels");
-            Label[] labels = (Label[]) lbls.toArray(new Label[lbls.size()]);
-            getCodeVisitor().visitTableSwitchInsn(min, max, dflt, labels);
+        public final void end(final String name) {
+            final Map vals = (Map) pop();
+            final int min = Integer.parseInt( (String) vals.get( "min" ) );
+            final int max = Integer.parseInt( (String) vals.get( "max" ) );
+            final Label dflt = getLabel( vals.get( "dflt" ) );
+            final List lbls = (List) vals.get( "labels" );
+            final Label[] labels = (Label[]) lbls.toArray( new Label[lbls.size()] );
+            getCodeVisitor().visitTableSwitchInsn( min,
+                                                   max,
+                                                   dflt,
+                                                   labels );
         }
 
     }
@@ -897,8 +1293,9 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class TableSwitchLabelRule extends Rule {
 
-        public final void begin(String name, Attributes attrs) {
-            ((List) ((Map) peek()).get("labels")).add(getLabel(attrs.getValue("name")));
+        public final void begin(final String name,
+                                final Attributes attrs) {
+            ((List) ((Map) peek()).get( "labels" )).add( getLabel( attrs.getValue( "name" ) ) );
         }
 
     }
@@ -908,25 +1305,31 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class LookupSwitchRule extends Rule {
 
-        public final void begin(String name, Attributes attrs) {
-            Map vals = new HashMap();
-            vals.put("dflt", attrs.getValue("dflt"));
-            vals.put("labels", new ArrayList());
-            vals.put("keys", new ArrayList());
-            push(vals);
+        public final void begin(final String name,
+                                final Attributes attrs) {
+            final Map vals = new HashMap();
+            vals.put( "dflt",
+                      attrs.getValue( "dflt" ) );
+            vals.put( "labels",
+                      new ArrayList() );
+            vals.put( "keys",
+                      new ArrayList() );
+            push( vals );
         }
 
-        public final void end(String name) {
-            Map vals = (Map) pop();
-            Label dflt = getLabel(vals.get("dflt"));
-            List keyList = (List) vals.get("keys");
-            List lbls = (List) vals.get("labels");
-            Label[] labels = (Label[]) lbls.toArray(new Label[lbls.size()]);
-            int[] keys = new int[keyList.size()];
-            for (int i = 0; i < keys.length; i++) {
-                keys[i] = Integer.parseInt((String) keyList.get(i));
+        public final void end(final String name) {
+            final Map vals = (Map) pop();
+            final Label dflt = getLabel( vals.get( "dflt" ) );
+            final List keyList = (List) vals.get( "keys" );
+            final List lbls = (List) vals.get( "labels" );
+            final Label[] labels = (Label[]) lbls.toArray( new Label[lbls.size()] );
+            final int[] keys = new int[keyList.size()];
+            for ( int i = 0; i < keys.length; i++ ) {
+                keys[i] = Integer.parseInt( (String) keyList.get( i ) );
             }
-            getCodeVisitor().visitLookupSwitchInsn(dflt, keys, labels);
+            getCodeVisitor().visitLookupSwitchInsn( dflt,
+                                                    keys,
+                                                    labels );
         }
 
     }
@@ -936,10 +1339,11 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class LookupSwitchLabelRule extends Rule {
 
-        public final void begin(String name, Attributes attrs) {
-            Map vals = (Map) peek();
-            ((List) vals.get("labels")).add(getLabel(attrs.getValue("name")));
-            ((List) vals.get("keys")).add(attrs.getValue("key"));
+        public final void begin(final String name,
+                                final Attributes attrs) {
+            final Map vals = (Map) peek();
+            ((List) vals.get( "labels" )).add( getLabel( attrs.getValue( "name" ) ) );
+            ((List) vals.get( "keys" )).add( attrs.getValue( "key" ) );
         }
 
     }
@@ -949,8 +1353,9 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class LabelRule extends Rule {
 
-        public final void begin(String name, Attributes attrs) {
-            getCodeVisitor().visitLabel(getLabel(attrs.getValue("name")));
+        public final void begin(final String name,
+                                final Attributes attrs) {
+            getCodeVisitor().visitLabel( getLabel( attrs.getValue( "name" ) ) );
         }
 
     }
@@ -960,12 +1365,16 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class TryCatchRule extends Rule {
 
-        public final void begin(String name, Attributes attrs) {
-            Label start = getLabel(attrs.getValue("start"));
-            Label end = getLabel(attrs.getValue("end"));
-            Label handler = getLabel(attrs.getValue("handler"));
-            String type = attrs.getValue("type");
-            getCodeVisitor().visitTryCatchBlock(start, end, handler, type);
+        public final void begin(final String name,
+                                final Attributes attrs) {
+            final Label start = getLabel( attrs.getValue( "start" ) );
+            final Label end = getLabel( attrs.getValue( "end" ) );
+            final Label handler = getLabel( attrs.getValue( "handler" ) );
+            final String type = attrs.getValue( "type" );
+            getCodeVisitor().visitTryCatchBlock( start,
+                                                 end,
+                                                 handler,
+                                                 type );
         }
 
     }
@@ -975,10 +1384,12 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class LineNumberRule extends Rule {
 
-        public final void begin(String name, Attributes attrs) {
-            int line = Integer.parseInt(attrs.getValue("line"));
-            Label start = getLabel(attrs.getValue("start"));
-            getCodeVisitor().visitLineNumber(line, start);
+        public final void begin(final String name,
+                                final Attributes attrs) {
+            final int line = Integer.parseInt( attrs.getValue( "line" ) );
+            final Label start = getLabel( attrs.getValue( "start" ) );
+            getCodeVisitor().visitLineNumber( line,
+                                              start );
         }
 
     }
@@ -988,19 +1399,20 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class LocalVarRule extends Rule {
 
-        public final void begin(String element, Attributes attrs) {
-            String name = attrs.getValue("name");
-            String desc = attrs.getValue("desc");
-            String signature = attrs.getValue("signature");
-            Label start = getLabel(attrs.getValue("start"));
-            Label end = getLabel(attrs.getValue("end"));
-            int var = Integer.parseInt(attrs.getValue("var"));
-            getCodeVisitor().visitLocalVariable(name,
-                    desc,
-                    signature,
-                    start,
-                    end,
-                    var);
+        public final void begin(final String element,
+                                final Attributes attrs) {
+            final String name = attrs.getValue( "name" );
+            final String desc = attrs.getValue( "desc" );
+            final String signature = attrs.getValue( "signature" );
+            final Label start = getLabel( attrs.getValue( "start" ) );
+            final Label end = getLabel( attrs.getValue( "end" ) );
+            final int var = Integer.parseInt( attrs.getValue( "var" ) );
+            getCodeVisitor().visitLocalVariable( name,
+                                                 desc,
+                                                 signature,
+                                                 start,
+                                                 end,
+                                                 var );
         }
 
     }
@@ -1014,68 +1426,69 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
         // return match.startsWith( path) && OPCODES.containsKey( element);
         // }
 
-        public final void begin(String element, Attributes attrs) {
-            Opcode o = ((Opcode) OPCODES.get(element));
-            if (o == null)
+        public final void begin(final String element,
+                                final Attributes attrs) {
+            final Opcode o = ((Opcode) ASMContentHandler.OPCODES.get( element ));
+            if ( o == null ) {
                 return;
+            }
 
-            switch (o.type) {
-                case OpcodeGroup.INSN:
-                    getCodeVisitor().visitInsn(o.opcode);
+            switch ( o.type ) {
+                case OpcodeGroup.INSN :
+                    getCodeVisitor().visitInsn( o.opcode );
                     break;
 
-                case OpcodeGroup.INSN_FIELD:
-                    getCodeVisitor().visitFieldInsn(o.opcode,
-                            attrs.getValue("owner"),
-                            attrs.getValue("name"),
-                            attrs.getValue("desc"));
+                case OpcodeGroup.INSN_FIELD :
+                    getCodeVisitor().visitFieldInsn( o.opcode,
+                                                     attrs.getValue( "owner" ),
+                                                     attrs.getValue( "name" ),
+                                                     attrs.getValue( "desc" ) );
                     break;
 
-                case OpcodeGroup.INSN_INT:
-                    getCodeVisitor().visitIntInsn(o.opcode,
-                            Integer.parseInt(attrs.getValue("value")));
+                case OpcodeGroup.INSN_INT :
+                    getCodeVisitor().visitIntInsn( o.opcode,
+                                                   Integer.parseInt( attrs.getValue( "value" ) ) );
                     break;
 
-                case OpcodeGroup.INSN_JUMP:
-                    getCodeVisitor().visitJumpInsn(o.opcode,
-                            getLabel(attrs.getValue("label")));
+                case OpcodeGroup.INSN_JUMP :
+                    getCodeVisitor().visitJumpInsn( o.opcode,
+                                                    getLabel( attrs.getValue( "label" ) ) );
                     break;
 
-                case OpcodeGroup.INSN_METHOD:
-                    getCodeVisitor().visitMethodInsn(o.opcode,
-                            attrs.getValue("owner"),
-                            attrs.getValue("name"),
-                            attrs.getValue("desc"));
+                case OpcodeGroup.INSN_METHOD :
+                    getCodeVisitor().visitMethodInsn( o.opcode,
+                                                      attrs.getValue( "owner" ),
+                                                      attrs.getValue( "name" ),
+                                                      attrs.getValue( "desc" ) );
                     break;
 
-                case OpcodeGroup.INSN_TYPE:
-                    getCodeVisitor().visitTypeInsn(o.opcode,
-                            attrs.getValue("desc"));
+                case OpcodeGroup.INSN_TYPE :
+                    getCodeVisitor().visitTypeInsn( o.opcode,
+                                                    attrs.getValue( "desc" ) );
                     break;
 
-                case OpcodeGroup.INSN_VAR:
-                    getCodeVisitor().visitVarInsn(o.opcode,
-                            Integer.parseInt(attrs.getValue("var")));
+                case OpcodeGroup.INSN_VAR :
+                    getCodeVisitor().visitVarInsn( o.opcode,
+                                                   Integer.parseInt( attrs.getValue( "var" ) ) );
                     break;
 
-                case OpcodeGroup.INSN_IINC:
-                    getCodeVisitor().visitIincInsn(Integer.parseInt(attrs.getValue("var")),
-                            Integer.parseInt(attrs.getValue("inc")));
+                case OpcodeGroup.INSN_IINC :
+                    getCodeVisitor().visitIincInsn( Integer.parseInt( attrs.getValue( "var" ) ),
+                                                    Integer.parseInt( attrs.getValue( "inc" ) ) );
                     break;
 
-                case OpcodeGroup.INSN_LDC:
-                    getCodeVisitor().visitLdcInsn(getValue(attrs.getValue("desc"),
-                            attrs.getValue("cst")));
+                case OpcodeGroup.INSN_LDC :
+                    getCodeVisitor().visitLdcInsn( getValue( attrs.getValue( "desc" ),
+                                                             attrs.getValue( "cst" ) ) );
                     break;
 
-                case OpcodeGroup.INSN_MULTIANEWARRAY:
-                    getCodeVisitor().visitMultiANewArrayInsn(attrs.getValue("desc"),
-                            Integer.parseInt(attrs.getValue("dims")));
+                case OpcodeGroup.INSN_MULTIANEWARRAY :
+                    getCodeVisitor().visitMultiANewArrayInsn( attrs.getValue( "desc" ),
+                                                              Integer.parseInt( attrs.getValue( "dims" ) ) );
                     break;
 
-                default:
-                    throw new RuntimeException("Invalid element: " + element
-                            + " at " + match);
+                default :
+                    throw new RuntimeException( "Invalid element: " + element + " at " + ASMContentHandler.this.match );
 
             }
         }
@@ -1086,32 +1499,37 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
      */
     private final class MaxRule extends Rule {
 
-        public final void begin(String element, Attributes attrs) {
-            int maxStack = Integer.parseInt(attrs.getValue("maxStack"));
-            int maxLocals = Integer.parseInt(attrs.getValue("maxLocals"));
-            getCodeVisitor().visitMaxs(maxStack, maxLocals);
+        public final void begin(final String element,
+                                final Attributes attrs) {
+            final int maxStack = Integer.parseInt( attrs.getValue( "maxStack" ) );
+            final int maxLocals = Integer.parseInt( attrs.getValue( "maxLocals" ) );
+            getCodeVisitor().visitMaxs( maxStack,
+                                        maxLocals );
         }
 
     }
 
     private final class AnnotationRule extends Rule {
 
-        public void begin(String name, Attributes attrs) {
-            String desc = attrs.getValue("desc");
-            boolean visible = Boolean.valueOf(attrs.getValue("visible"))
-                    .booleanValue();
+        public void begin(final String name,
+                          final Attributes attrs) {
+            final String desc = attrs.getValue( "desc" );
+            final boolean visible = Boolean.valueOf( attrs.getValue( "visible" ) ).booleanValue();
 
-            Object v = peek();
-            if (v instanceof ClassVisitor) {
-                push(((ClassVisitor) v).visitAnnotation(desc, visible));
-            } else if (v instanceof FieldVisitor) {
-                push(((FieldVisitor) v).visitAnnotation(desc, visible));
-            } else if (v instanceof MethodVisitor) {
-                push(((MethodVisitor) v).visitAnnotation(desc, visible));
+            final Object v = peek();
+            if ( v instanceof ClassVisitor ) {
+                push( ((ClassVisitor) v).visitAnnotation( desc,
+                                                          visible ) );
+            } else if ( v instanceof FieldVisitor ) {
+                push( ((FieldVisitor) v).visitAnnotation( desc,
+                                                          visible ) );
+            } else if ( v instanceof MethodVisitor ) {
+                push( ((MethodVisitor) v).visitAnnotation( desc,
+                                                           visible ) );
             }
         }
 
-        public void end(String name) {
+        public void end(final String name) {
             ((AnnotationVisitor) pop()).visitEnd();
         }
 
@@ -1119,18 +1537,18 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
 
     private final class AnnotationParameterRule extends Rule {
 
-        public void begin(String name, Attributes attrs) {
-            int parameter = Integer.parseInt(attrs.getValue("parameter"));
-            String desc = attrs.getValue("desc");
-            boolean visible = Boolean.valueOf(attrs.getValue("visible"))
-                    .booleanValue();
+        public void begin(final String name,
+                          final Attributes attrs) {
+            final int parameter = Integer.parseInt( attrs.getValue( "parameter" ) );
+            final String desc = attrs.getValue( "desc" );
+            final boolean visible = Boolean.valueOf( attrs.getValue( "visible" ) ).booleanValue();
 
-            push(((MethodVisitor) peek()).visitParameterAnnotation(parameter,
-                    desc,
-                    visible));
+            push( ((MethodVisitor) peek()).visitParameterAnnotation( parameter,
+                                                                     desc,
+                                                                     visible ) );
         }
 
-        public void end(String name) {
+        public void end(final String name) {
             ((AnnotationVisitor) pop()).visitEnd();
         }
 
@@ -1138,35 +1556,43 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
 
     private final class AnnotationValueRule extends Rule {
 
-        public void begin(String nm, Attributes attrs) {
-            String name = attrs.getValue("name");
-            String desc = attrs.getValue("desc");
-            String value = attrs.getValue("value");
-            ((AnnotationVisitor) peek()).visit(name, getValue(desc, value));
+        public void begin(final String nm,
+                          final Attributes attrs) {
+            final String name = attrs.getValue( "name" );
+            final String desc = attrs.getValue( "desc" );
+            final String value = attrs.getValue( "value" );
+            ((AnnotationVisitor) peek()).visit( name,
+                                                getValue( desc,
+                                                          value ) );
         }
 
     }
 
     private final class AnnotationValueEnumRule extends Rule {
 
-        public void begin(String nm, Attributes attrs) {
-            String name = attrs.getValue("name");
-            String desc = attrs.getValue("desc");
-            String value = attrs.getValue("value");
-            ((AnnotationVisitor) peek()).visitEnum(name, desc, value);
+        public void begin(final String nm,
+                          final Attributes attrs) {
+            final String name = attrs.getValue( "name" );
+            final String desc = attrs.getValue( "desc" );
+            final String value = attrs.getValue( "value" );
+            ((AnnotationVisitor) peek()).visitEnum( name,
+                                                    desc,
+                                                    value );
         }
 
     }
 
     private final class AnnotationValueAnnotationRule extends Rule {
 
-        public void begin(String nm, Attributes attrs) {
-            String name = attrs.getValue("name");
-            String desc = attrs.getValue("desc");
-            push(((AnnotationVisitor) peek()).visitAnnotation(name, desc));
+        public void begin(final String nm,
+                          final Attributes attrs) {
+            final String name = attrs.getValue( "name" );
+            final String desc = attrs.getValue( "desc" );
+            push( ((AnnotationVisitor) peek()).visitAnnotation( name,
+                                                                desc ) );
         }
 
-        public void end(String name) {
+        public void end(final String name) {
             ((AnnotationVisitor) pop()).visitEnd();
         }
 
@@ -1174,12 +1600,13 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
 
     private final class AnnotationValueArrayRule extends Rule {
 
-        public void begin(String nm, Attributes attrs) {
-            String name = attrs.getValue("name");
-            push(((AnnotationVisitor) peek()).visitArray(name));
+        public void begin(final String nm,
+                          final Attributes attrs) {
+            final String name = attrs.getValue( "name" );
+            push( ((AnnotationVisitor) peek()).visitArray( name ) );
         }
 
-        public void end(String name) {
+        public void end(final String name) {
             ((AnnotationVisitor) pop()).visitEnd();
         }
 
@@ -1187,11 +1614,12 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
 
     private final class AnnotationDefaultRule extends Rule {
 
-        public void begin(String nm, Attributes attrs) {
-            push(((MethodVisitor) peek()).visitAnnotationDefault());
+        public void begin(final String nm,
+                          final Attributes attrs) {
+            push( ((MethodVisitor) peek()).visitAnnotationDefault() );
         }
 
-        public void end(String name) {
+        public void end(final String name) {
             ((AnnotationVisitor) pop()).visitEnd();
         }
 
@@ -1205,7 +1633,8 @@ public class ASMContentHandler extends DefaultHandler implements Opcodes {
 
         public int type;
 
-        public Opcode(int opcode, int type) {
+        public Opcode(final int opcode,
+                      final int type) {
             this.opcode = opcode;
             this.type = type;
         }

@@ -40,7 +40,7 @@ final class Item {
     /**
      * Index of this item in the constant pool.
      */
-    int index;
+    int    index;
 
     /**
      * Type of this constant pool item. A single class is used to represent all
@@ -52,22 +52,22 @@ final class Item {
      * {@link ClassWriter#NAME_TYPE}, {@link ClassWriter#FIELD},
      * {@link ClassWriter#METH}, {@link ClassWriter#IMETH}.
      */
-    int type;
+    int    type;
 
     /**
      * Value of this item, for an integer item.
      */
-    int intVal;
+    int    intVal;
 
     /**
      * Value of this item, for a long item.
      */
-    long longVal;
+    long   longVal;
 
     /**
      * Value of this item, for a float item.
      */
-    float floatVal;
+    float  floatVal;
 
     /**
      * Value of this item, for a double item.
@@ -95,13 +95,13 @@ final class Item {
     /**
      * The hash code value of this constant pool item.
      */
-    int hashCode;
+    int    hashCode;
 
     /**
      * Link to another constant pool item, used for collision lists in the
      * constant pool's hash table.
      */
-    Item next;
+    Item   next;
 
     /**
      * Constructs an uninitialized {@link Item}.
@@ -109,7 +109,7 @@ final class Item {
     Item() {
     }
 
-    Item(int index) {
+    Item(final int index) {
         this.index = index;
     }
 
@@ -119,17 +119,18 @@ final class Item {
      * @param index index of the item to be constructed.
      * @param i the item that must be copied into the item to be constructed.
      */
-    Item(final int index, final Item i) {
+    Item(final int index,
+         final Item i) {
         this.index = index;
-        type = i.type;
-        intVal = i.intVal;
-        longVal = i.longVal;
-        floatVal = i.floatVal;
-        doubleVal = i.doubleVal;
-        strVal1 = i.strVal1;
-        strVal2 = i.strVal2;
-        strVal3 = i.strVal3;
-        hashCode = i.hashCode;
+        this.type = i.type;
+        this.intVal = i.intVal;
+        this.longVal = i.longVal;
+        this.floatVal = i.floatVal;
+        this.doubleVal = i.doubleVal;
+        this.strVal1 = i.strVal1;
+        this.strVal2 = i.strVal2;
+        this.strVal3 = i.strVal3;
+        this.hashCode = i.hashCode;
     }
 
     /**
@@ -140,7 +141,7 @@ final class Item {
     void set(final int intVal) {
         this.type = ClassWriter.INT;
         this.intVal = intVal;
-        this.hashCode = 0x7FFFFFFF & (type + intVal);
+        this.hashCode = 0x7FFFFFFF & (this.type + intVal);
     }
 
     /**
@@ -151,7 +152,7 @@ final class Item {
     void set(final long longVal) {
         this.type = ClassWriter.LONG;
         this.longVal = longVal;
-        this.hashCode = 0x7FFFFFFF & (type + (int) longVal);
+        this.hashCode = 0x7FFFFFFF & (this.type + (int) longVal);
     }
 
     /**
@@ -162,7 +163,7 @@ final class Item {
     void set(final float floatVal) {
         this.type = ClassWriter.FLOAT;
         this.floatVal = floatVal;
-        this.hashCode = 0x7FFFFFFF & (type + (int) floatVal);
+        this.hashCode = 0x7FFFFFFF & (this.type + (int) floatVal);
     }
 
     /**
@@ -173,7 +174,7 @@ final class Item {
     void set(final double doubleVal) {
         this.type = ClassWriter.DOUBLE;
         this.doubleVal = doubleVal;
-        this.hashCode = 0x7FFFFFFF & (type + (int) doubleVal);
+        this.hashCode = 0x7FFFFFFF & (this.type + (int) doubleVal);
     }
 
     /**
@@ -184,32 +185,28 @@ final class Item {
      * @param strVal2 second part of the value of this item.
      * @param strVal3 third part of the value of this item.
      */
-    void set(
-        final int type,
-        final String strVal1,
-        final String strVal2,
-        final String strVal3)
-    {
+    void set(final int type,
+             final String strVal1,
+             final String strVal2,
+             final String strVal3) {
         this.type = type;
         this.strVal1 = strVal1;
         this.strVal2 = strVal2;
         this.strVal3 = strVal3;
-        switch (type) {
-            case ClassWriter.UTF8:
-            case ClassWriter.STR:
-            case ClassWriter.CLASS:
-                hashCode = 0x7FFFFFFF & (type + strVal1.hashCode());
+        switch ( type ) {
+            case ClassWriter.UTF8 :
+            case ClassWriter.STR :
+            case ClassWriter.CLASS :
+                this.hashCode = 0x7FFFFFFF & (type + strVal1.hashCode());
                 return;
-            case ClassWriter.NAME_TYPE:
-                hashCode = 0x7FFFFFFF & (type + strVal1.hashCode()
-                        * strVal2.hashCode());
+            case ClassWriter.NAME_TYPE :
+                this.hashCode = 0x7FFFFFFF & (type + strVal1.hashCode() * strVal2.hashCode());
                 return;
-            // ClassWriter.FIELD:
-            // ClassWriter.METH:
-            // ClassWriter.IMETH:                    
-            default:
-                hashCode = 0x7FFFFFFF & (type + strVal1.hashCode()
-                        * strVal2.hashCode() * strVal3.hashCode());
+                // ClassWriter.FIELD:
+                // ClassWriter.METH:
+                // ClassWriter.IMETH:                    
+            default :
+                this.hashCode = 0x7FFFFFFF & (type + strVal1.hashCode() * strVal2.hashCode() * strVal3.hashCode());
         }
     }
 
@@ -221,30 +218,27 @@ final class Item {
      *         <tt>false</tt> otherwise.
      */
     boolean isEqualTo(final Item i) {
-        if (i.type == type) {
-            switch (type) {
-                case ClassWriter.INT:
-                    return i.intVal == intVal;
-                case ClassWriter.LONG:
-                    return i.longVal == longVal;
-                case ClassWriter.FLOAT:
-                    return i.floatVal == floatVal;
-                case ClassWriter.DOUBLE:
-                    return i.doubleVal == doubleVal;
-                case ClassWriter.UTF8:
-                case ClassWriter.STR:
-                case ClassWriter.CLASS:
-                    return i.strVal1.equals(strVal1);
-                case ClassWriter.NAME_TYPE:
-                    return i.strVal1.equals(strVal1)
-                            && i.strVal2.equals(strVal2);
-                // ClassWriter.FIELD:
-                // ClassWriter.METH:
-                // ClassWriter.IMETH:                    
-                default:
-                    return i.strVal1.equals(strVal1)
-                            && i.strVal2.equals(strVal2)
-                            && i.strVal3.equals(strVal3);
+        if ( i.type == this.type ) {
+            switch ( this.type ) {
+                case ClassWriter.INT :
+                    return i.intVal == this.intVal;
+                case ClassWriter.LONG :
+                    return i.longVal == this.longVal;
+                case ClassWriter.FLOAT :
+                    return i.floatVal == this.floatVal;
+                case ClassWriter.DOUBLE :
+                    return i.doubleVal == this.doubleVal;
+                case ClassWriter.UTF8 :
+                case ClassWriter.STR :
+                case ClassWriter.CLASS :
+                    return i.strVal1.equals( this.strVal1 );
+                case ClassWriter.NAME_TYPE :
+                    return i.strVal1.equals( this.strVal1 ) && i.strVal2.equals( this.strVal2 );
+                    // ClassWriter.FIELD:
+                    // ClassWriter.METH:
+                    // ClassWriter.IMETH:                    
+                default :
+                    return i.strVal1.equals( this.strVal1 ) && i.strVal2.equals( this.strVal2 ) && i.strVal3.equals( this.strVal3 );
             }
         }
         return false;

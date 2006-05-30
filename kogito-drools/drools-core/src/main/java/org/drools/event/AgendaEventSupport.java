@@ -1,4 +1,5 @@
 package org.drools.event;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.event;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,20 +30,24 @@ import org.drools.spi.Activation;
 public class AgendaEventSupport
     implements
     Serializable {
-    private final List          listeners = Collections.synchronizedList( new ArrayList() );
+    /**
+     * 
+     */
+    private static final long   serialVersionUID = 9072017367081307109L;
+    private final List          listeners        = Collections.synchronizedList( new ArrayList() );
     private final WorkingMemory workingMemory;
 
-    public AgendaEventSupport(WorkingMemory workingMemory) {
+    public AgendaEventSupport(final WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
     }
 
-    public void addEventListener(AgendaEventListener listener) {
+    public void addEventListener(final AgendaEventListener listener) {
         if ( !this.listeners.contains( listener ) ) {
             this.listeners.add( listener );
         }
     }
 
-    public void removeEventListener(AgendaEventListener listener) {
+    public void removeEventListener(final AgendaEventListener listener) {
         this.listeners.remove( listener );
     }
 
@@ -62,48 +63,48 @@ public class AgendaEventSupport
         return this.listeners.isEmpty();
     }
 
-    public void fireActivationCreated(Activation activation) {
+    public void fireActivationCreated(final Activation activation) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        ActivationCreatedEvent event = new ActivationCreatedEvent( activation );
+        final ActivationCreatedEvent event = new ActivationCreatedEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).activationCreated( event );
         }
     }
 
-    public void fireActivationCancelled(Activation activation) {
+    public void fireActivationCancelled(final Activation activation) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        ActivationCancelledEvent event = new ActivationCancelledEvent( activation );
+        final ActivationCancelledEvent event = new ActivationCancelledEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).activationCancelled( event );
         }
     }
 
-    public void fireBeforeActivationFired(Activation activation) {
+    public void fireBeforeActivationFired(final Activation activation) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        BeforeActivationFiredEvent event = new BeforeActivationFiredEvent( activation );
+        final BeforeActivationFiredEvent event = new BeforeActivationFiredEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).beforeActivationFired( event );
         }
     }
 
-    public void fireAfterActivationFired(Activation activation) {
+    public void fireAfterActivationFired(final Activation activation) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        AfterActivationFiredEvent event = new AfterActivationFiredEvent( activation );
+        final AfterActivationFiredEvent event = new AfterActivationFiredEvent( activation );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).afterActivationFired( event );

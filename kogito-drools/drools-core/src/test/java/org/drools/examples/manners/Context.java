@@ -21,23 +21,21 @@ public final class Context
     implements
     Serializable {
 
-    public static final int START_UP      = 0;
-    public static final int ASSIGN_SEATS  = 1;
-    public static final int MAKE_PATH     = 2;
-    public static final int CHECK_DONE    = 3;
-    public static final int PRINT_RESULTS = 4;
-    
-    public static final String[] stateStrings = {
-                                  "START_UP",
-                                  "ASSIGN_SEATS",
-                                  "MAKE_PATH",
-                                  "CHECK_DONE",
-                                  "PRINT_RESULTS"
-    };
+    /**
+     * 
+     */
+    private static final long    serialVersionUID = -5876473269153584875L;
+    public static final int      START_UP         = 0;
+    public static final int      ASSIGN_SEATS     = 1;
+    public static final int      MAKE_PATH        = 2;
+    public static final int      CHECK_DONE       = 3;
+    public static final int      PRINT_RESULTS    = 4;
 
-    private int             state;
+    public static final String[] stateStrings     = {"START_UP", "ASSIGN_SEATS", "MAKE_PATH", "CHECK_DONE", "PRINT_RESULTS"};
 
-    public Context(String state) {
+    private int                  state;
+
+    public Context(final String state) {
         if ( "start".equals( state ) ) {
             this.state = Context.START_UP;
         } else {
@@ -45,15 +43,15 @@ public final class Context
         }
     }
 
-    public Context(int state) {
+    public Context(final int state) {
         this.state = state;
     }
 
-    public final void setState(int state) {
+    public final void setState(final int state) {
         this.state = state;
     }
 
-    public final boolean isState(int state) {
+    public final boolean isState(final int state) {
         return this.state == state;
     }
 
@@ -62,7 +60,7 @@ public final class Context
     }
 
     public final String getStringValue() {
-        return stateStrings[this.state];
+        return Context.stateStrings[this.state];
     }
 
     public final String toString() {

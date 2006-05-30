@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.base;
  * limitations under the License.
  */
 
-
-
-
-
 import org.drools.rule.Rule;
 import org.drools.spi.Duration;
 import org.drools.spi.Tuple;
@@ -30,18 +27,23 @@ import org.drools.spi.Tuple;
 public class BaseDuration
     implements
     Duration {
-    /** The number of seconds of the duration. */
-    private long seconds;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8677999540061540878L;
 
-    private Rule rule;
+    /** The number of seconds of the duration. */
+    private long              seconds;
+
+    private Rule              rule;
 
     /**
      * Constructor.
      * 
      * @param seconds the number of seconds of the duration
      */
-    public BaseDuration(Rule rule,
-                        long seconds) {
+    public BaseDuration(final Rule rule,
+                        final long seconds) {
         this.rule = rule;
         this.seconds = seconds;
     }
@@ -54,7 +56,7 @@ public class BaseDuration
      * 
      * @return the duration in seconds
      */
-    public long getDuration(Tuple tuple) {
+    public long getDuration(final Tuple tuple) {
         return this.seconds;
     }
 

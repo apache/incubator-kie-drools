@@ -32,19 +32,21 @@ package org.drools.asm.util;
 import org.drools.asm.Opcodes;
 import org.drools.asm.signature.SignatureVisitor;
 
-public class TraceSignatureVisitor implements SignatureVisitor {
+public class TraceSignatureVisitor
+    implements
+    SignatureVisitor {
 
     private StringBuffer declaration;
 
-    private boolean isInterface;
+    private boolean      isInterface;
 
-    private boolean seenFormalParameter;
+    private boolean      seenFormalParameter;
 
-    private boolean seenInterfaceBound;
+    private boolean      seenInterfaceBound;
 
-    private boolean seenParameter;
+    private boolean      seenParameter;
 
-    private boolean seenInterface;
+    private boolean      seenInterface;
 
     private StringBuffer returnType;
 
@@ -56,68 +58,66 @@ public class TraceSignatureVisitor implements SignatureVisitor {
      * the lowest order bit. Pushing false = *2, pushing true = *2+1, popping =
      * /2.
      */
-    private int argumentStack;
+    private int          argumentStack;
 
     /**
      * Stack used to keep track of array class types. Each element of this stack
      * is a boolean encoded in one bit. The top of the stack is the lowest order
      * bit. Pushing false = *2, pushing true = *2+1, popping = /2.
      */
-    private int arrayStack;
+    private int          arrayStack;
 
-    private String separator = "";
+    private String       separator = "";
 
-    public TraceSignatureVisitor(int access) {
-        isInterface = (access & Opcodes.ACC_INTERFACE) != 0;
+    public TraceSignatureVisitor(final int access) {
+        this.isInterface = (access & Opcodes.ACC_INTERFACE) != 0;
         this.declaration = new StringBuffer();
     }
 
-    private TraceSignatureVisitor(StringBuffer buf) {
+    private TraceSignatureVisitor(final StringBuffer buf) {
         this.declaration = buf;
     }
 
-    public void visitFormalTypeParameter(String name) {
-        declaration.append(seenFormalParameter ? ", " : "<").append(name);
-        seenFormalParameter = true;
-        seenInterfaceBound = false;
+    public void visitFormalTypeParameter(final String name) {
+        this.declaration.append( this.seenFormalParameter ? ", " : "<" ).append( name );
+        this.seenFormalParameter = true;
+        this.seenInterfaceBound = false;
     }
 
     public SignatureVisitor visitClassBound() {
-        separator = " extends ";
+        this.separator = " extends ";
         startType();
         return this;
     }
 
     public SignatureVisitor visitInterfaceBound() {
-        separator = seenInterfaceBound ? ", " : " extends ";
-        seenInterfaceBound = true;
+        this.separator = this.seenInterfaceBound ? ", " : " extends ";
+        this.seenInterfaceBound = true;
         startType();
         return this;
     }
 
     public SignatureVisitor visitSuperclass() {
         endFormals();
-        separator = " extends ";
+        this.separator = " extends ";
         startType();
         return this;
     }
 
     public SignatureVisitor visitInterface() {
-        separator = seenInterface ? ", " : (isInterface
-                ? " extends "
-                : " implements ");
-        seenInterface = true;
+        this.separator = this.seenInterface ? ", " : (this.isInterface ? " extends " : " implements ");
+        this.seenInterface = true;
         startType();
         return this;
     }
 
     public SignatureVisitor visitParameterType() {
         endFormals();
-        if (!seenParameter) {
-            seenParameter = true;
-            declaration.append('(');
+        if ( !this.seenParameter ) {
+            this.seenParameter = true;
+            this.declaration.append( '(' );
         } else {
-            declaration.append(", ");
+            this.declaration.append( ", " );
         }
         startType();
         return this;
@@ -125,120 +125,122 @@ public class TraceSignatureVisitor implements SignatureVisitor {
 
     public SignatureVisitor visitReturnType() {
         endFormals();
-        if (!seenParameter) {
-            declaration.append('(');
+        if ( !this.seenParameter ) {
+            this.declaration.append( '(' );
         } else {
-            seenParameter = false;
+            this.seenParameter = false;
         }
-        declaration.append(')');
-        returnType = new StringBuffer();
-        return new TraceSignatureVisitor(returnType);
+        this.declaration.append( ')' );
+        this.returnType = new StringBuffer();
+        return new TraceSignatureVisitor( this.returnType );
     }
 
     public SignatureVisitor visitExceptionType() {
-        if (exceptions == null) {
-            exceptions = new StringBuffer();
+        if ( this.exceptions == null ) {
+            this.exceptions = new StringBuffer();
         } else {
-            exceptions.append(", ");
+            this.exceptions.append( ", " );
         }
         // startType();
-        return new TraceSignatureVisitor(exceptions);
+        return new TraceSignatureVisitor( this.exceptions );
     }
 
-    public void visitBaseType(char descriptor) {
-        switch (descriptor) {
-            case 'V':
-                declaration.append("void");
+    public void visitBaseType(final char descriptor) {
+        switch ( descriptor ) {
+            case 'V' :
+                this.declaration.append( "void" );
                 break;
-            case 'B':
-                declaration.append("byte");
+            case 'B' :
+                this.declaration.append( "byte" );
                 break;
-            case 'J':
-                declaration.append("long");
+            case 'J' :
+                this.declaration.append( "long" );
                 break;
-            case 'Z':
-                declaration.append("boolean");
+            case 'Z' :
+                this.declaration.append( "boolean" );
                 break;
-            case 'I':
-                declaration.append("int");
+            case 'I' :
+                this.declaration.append( "int" );
                 break;
-            case 'S':
-                declaration.append("short");
+            case 'S' :
+                this.declaration.append( "short" );
                 break;
-            case 'C':
-                declaration.append("char");
+            case 'C' :
+                this.declaration.append( "char" );
                 break;
-            case 'F':
-                declaration.append("float");
+            case 'F' :
+                this.declaration.append( "float" );
                 break;
-            case 'D':
-                declaration.append("double");
+            case 'D' :
+                this.declaration.append( "double" );
                 break;
-            default:
-                throw new IllegalArgumentException("Invalid descriptor "
-                        + descriptor);
+            default :
+                throw new IllegalArgumentException( "Invalid descriptor " + descriptor );
         }
         endType();
     }
 
-    public void visitTypeVariable(String name) {
-        declaration.append(name);
+    public void visitTypeVariable(final String name) {
+        this.declaration.append( name );
         endType();
     }
 
     public SignatureVisitor visitArrayType() {
         startType();
-        arrayStack |= 1;
+        this.arrayStack |= 1;
         return this;
     }
 
-    public void visitClassType(String name) {
-        if (!"java/lang/Object".equals(name)) {
-            declaration.append(separator).append(name.replace('/', '.'));
+    public void visitClassType(final String name) {
+        if ( !"java/lang/Object".equals( name ) ) {
+            this.declaration.append( this.separator ).append( name.replace( '/',
+                                                                            '.' ) );
         } else {
             // Map<java.lang.Object,java.util.List>
             // or
             // abstract public V get(Object key); (seen in Dictionary.class)
             // should have Object
             // but java.lang.String extends java.lang.Object is unnecessary
-            boolean needObjectClass = argumentStack % 2 == 1 || seenParameter;
-            if (needObjectClass) {
-                declaration.append(separator).append(name.replace('/', '.'));
+            final boolean needObjectClass = this.argumentStack % 2 == 1 || this.seenParameter;
+            if ( needObjectClass ) {
+                this.declaration.append( this.separator ).append( name.replace( '/',
+                                                                                '.' ) );
             }
         }
-        separator = "";
-        argumentStack *= 2;
+        this.separator = "";
+        this.argumentStack *= 2;
     }
 
-    public void visitInnerClassType(String name) {
+    public void visitInnerClassType(final String name) {
         // TODO tests
-        declaration.append(separator).append(name.replace('/', '.'));
-        separator = "";
-        argumentStack *= 2;
+        this.declaration.append( this.separator ).append( name.replace( '/',
+                                                                        '.' ) );
+        this.separator = "";
+        this.argumentStack *= 2;
     }
 
     public void visitTypeArgument() {
-        if (argumentStack % 2 == 0) {
-            ++argumentStack;
-            declaration.append("<");
+        if ( this.argumentStack % 2 == 0 ) {
+            ++this.argumentStack;
+            this.declaration.append( "<" );
         } else {
-            declaration.append(", ");
+            this.declaration.append( ", " );
         }
-        declaration.append("?");
+        this.declaration.append( "?" );
     }
 
-    public SignatureVisitor visitTypeArgument(char tag) {
-        if (argumentStack % 2 == 0) {
-            ++argumentStack;
-            declaration.append("<");
+    public SignatureVisitor visitTypeArgument(final char tag) {
+        if ( this.argumentStack % 2 == 0 ) {
+            ++this.argumentStack;
+            this.declaration.append( "<" );
         } else {
-            declaration.append(", ");
+            this.declaration.append( ", " );
         }
 
-        if (tag == SignatureVisitor.EXTENDS) {
-            declaration.append("? extends ");
-        } else if (tag == SignatureVisitor.SUPER) {
-            declaration.append("? super ");
+        if ( tag == SignatureVisitor.EXTENDS ) {
+            this.declaration.append( "? extends " );
+        } else if ( tag == SignatureVisitor.SUPER ) {
+            this.declaration.append( "? super " );
         }
 
         startType();
@@ -246,46 +248,46 @@ public class TraceSignatureVisitor implements SignatureVisitor {
     }
 
     public void visitEnd() {
-        if (argumentStack % 2 == 1) {
-            declaration.append(">");
+        if ( this.argumentStack % 2 == 1 ) {
+            this.declaration.append( ">" );
         }
-        argumentStack /= 2;
+        this.argumentStack /= 2;
         endType();
     }
 
     public String getDeclaration() {
-        return declaration.toString();
+        return this.declaration.toString();
     }
 
     public String getReturnType() {
-        return returnType == null ? null : returnType.toString();
+        return this.returnType == null ? null : this.returnType.toString();
     }
 
     public String getExceptions() {
-        return exceptions == null ? null : exceptions.toString();
+        return this.exceptions == null ? null : this.exceptions.toString();
     }
 
     // -----------------------------------------------
 
     private void endFormals() {
-        if (seenFormalParameter) {
-            declaration.append(">");
-            seenFormalParameter = false;
+        if ( this.seenFormalParameter ) {
+            this.declaration.append( ">" );
+            this.seenFormalParameter = false;
         }
     }
 
     private void startType() {
-        arrayStack *= 2;
+        this.arrayStack *= 2;
     }
 
     private void endType() {
-        if (arrayStack % 2 == 1) {
-            while (arrayStack % 2 == 1) {
-                arrayStack /= 2;
-                declaration.append("[]");
+        if ( this.arrayStack % 2 == 1 ) {
+            while ( this.arrayStack % 2 == 1 ) {
+                this.arrayStack /= 2;
+                this.declaration.append( "[]" );
             }
         } else {
-            arrayStack /= 2;
+            this.arrayStack /= 2;
         }
     }
 }

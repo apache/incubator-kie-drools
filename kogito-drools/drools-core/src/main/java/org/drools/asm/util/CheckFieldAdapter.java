@@ -36,40 +36,44 @@ import org.drools.asm.FieldVisitor;
 /**
  * A {@link FieldVisitor} that checks that its methods are properly used.
  */
-public class CheckFieldAdapter implements FieldVisitor {
+public class CheckFieldAdapter
+    implements
+    FieldVisitor {
 
     private FieldVisitor fv;
 
-    private boolean end;
+    private boolean      end;
 
     public CheckFieldAdapter(final FieldVisitor fv) {
         this.fv = fv;
     }
 
-    public AnnotationVisitor visitAnnotation(final String desc, boolean visible)
-    {
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
         checkEnd();
-        CheckMethodAdapter.checkDesc(desc, false);
-        return new CheckAnnotationAdapter(fv.visitAnnotation(desc, visible));
+        CheckMethodAdapter.checkDesc( desc,
+                                      false );
+        return new CheckAnnotationAdapter( this.fv.visitAnnotation( desc,
+                                                                    visible ) );
     }
 
     public void visitAttribute(final Attribute attr) {
         checkEnd();
-        if (attr == null) {
-            throw new IllegalArgumentException("Invalid attribute (must not be null)");
+        if ( attr == null ) {
+            throw new IllegalArgumentException( "Invalid attribute (must not be null)" );
         }
-        fv.visitAttribute(attr);
+        this.fv.visitAttribute( attr );
     }
 
     public void visitEnd() {
         checkEnd();
-        end = true;
-        fv.visitEnd();
+        this.end = true;
+        this.fv.visitEnd();
     }
 
     private void checkEnd() {
-        if (end) {
-            throw new IllegalStateException("Cannot call a visit method after visitEnd has been called");
+        if ( this.end ) {
+            throw new IllegalStateException( "Cannot call a visit method after visitEnd has been called" );
         }
     }
 }

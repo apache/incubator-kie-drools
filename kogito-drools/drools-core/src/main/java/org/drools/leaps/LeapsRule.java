@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -47,11 +48,11 @@ class LeapsRule {
 
     final Class[]             existsNotsClasses;
 
-    public LeapsRule(Rule rule,
-                     ArrayList columns,
-                     ArrayList notColumns,
-                     ArrayList existsColumns,
-                     ArrayList evalConditions) {
+    public LeapsRule(final Rule rule,
+                     final ArrayList columns,
+                     final ArrayList notColumns,
+                     final ArrayList existsColumns,
+                     final ArrayList evalConditions) {
         this.rule = rule;
         this.columnConstraints = (ColumnConstraints[]) columns.toArray( new ColumnConstraints[0] );
         this.notColumnConstraints = (ColumnConstraints[]) notColumns.toArray( new ColumnConstraints[0] );
@@ -61,7 +62,7 @@ class LeapsRule {
         this.existsColumnsPresent = (this.existsColumnConstraints.length != 0);
         this.evalCoditionsPresent = (this.evalConditions.length != 0);
 
-        ArrayList classes = new ArrayList();
+        final ArrayList classes = new ArrayList();
         for ( int i = 0; i < this.notColumnConstraints.length; i++ ) {
             if ( !classes.contains( this.notColumnConstraints[i].getClassType() ) ) {
                 classes.add( this.notColumnConstraints[i].getClassType() );
@@ -96,11 +97,11 @@ class LeapsRule {
         return this.evalConditions.length;
     }
 
-    Class getColumnClassObjectTypeAtPosition(int idx) {
+    Class getColumnClassObjectTypeAtPosition(final int idx) {
         return this.columnConstraints[idx].getClassType();
     }
 
-    ColumnConstraints getColumnConstraintsAtPosition(int idx) {
+    ColumnConstraints getColumnConstraintsAtPosition(final int idx) {
         return this.columnConstraints[idx];
     }
 
@@ -132,7 +133,7 @@ class LeapsRule {
         return this.rule.hashCode();
     }
 
-    public boolean equals(Object that) {
+    public boolean equals(final Object that) {
         return this == that;
     }
 
@@ -151,7 +152,7 @@ class LeapsRule {
         return this.agendaGroup;
     }
 
-    public void setAgendaGroup(AgendaGroupImpl agendaGroup) {
+    public void setAgendaGroup(final AgendaGroupImpl agendaGroup) {
         this.agendaGroup = agendaGroup;
     }
 }

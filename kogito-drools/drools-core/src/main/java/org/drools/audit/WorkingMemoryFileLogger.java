@@ -45,16 +45,16 @@ import com.thoughtworks.xstream.XStream;
  */
 public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 
-    private List   events            = new ArrayList();
-    private String fileName          = "event";
-    private int    maxEventsInMemory = 1000;
-    private int    nbOfFile          = 0;
+    private final List events            = new ArrayList();
+    private String     fileName          = "event";
+    private int        maxEventsInMemory = 1000;
+    private int        nbOfFile          = 0;
 
     /**
      * Creates a new WorkingMemoryFileLogger for the given working memory.
      * @param workingMemory
      */
-    public WorkingMemoryFileLogger(WorkingMemory workingMemory) {
+    public WorkingMemoryFileLogger(final WorkingMemory workingMemory) {
         super( workingMemory );
     }
 
@@ -69,7 +69,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
      * 
      * @param fileName The name of the file the events should be logged in.
      */
-    public void setFileName(String fileName) {
+    public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
 
@@ -79,16 +79,16 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
      */
     public void writeToDisk() {
         try {
-            XStream xstream = new XStream();
-            ObjectOutputStream out = xstream.createObjectOutputStream( new FileWriter( fileName + (nbOfFile == 0 ? ".log" : nbOfFile + ".log"),
-                                                                                       false ) );
-            out.writeObject( events );
+            final XStream xstream = new XStream();
+            final ObjectOutputStream out = xstream.createObjectOutputStream( new FileWriter( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
+                                                                                             false ) );
+            out.writeObject( this.events );
             out.close();
-            nbOfFile++;
+            this.nbOfFile++;
             clear();
-        } catch ( FileNotFoundException exc ) {
+        } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
-        } catch ( Throwable t ) {
+        } catch ( final Throwable t ) {
             t.printStackTrace( System.err );
         }
     }
@@ -97,7 +97,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
      * Clears all the events in the log.
      */
     public void clear() {
-        events.clear();
+        this.events.clear();
     }
 
     /**
@@ -107,16 +107,16 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
      * 
      * @param maxEventsInMemory The maximum number of events in memory.
      */
-    public void setMaxEventsInMemory(int maxEventsInMemory) {
+    public void setMaxEventsInMemory(final int maxEventsInMemory) {
         this.maxEventsInMemory = maxEventsInMemory;
     }
 
     /**
      * @see org.drools.audit.WorkingMemoryLogger
      */
-    public void logEventCreated(LogEvent logEvent) {
-        events.add( logEvent );
-        if ( events.size() > maxEventsInMemory ) {
+    public void logEventCreated(final LogEvent logEvent) {
+        this.events.add( logEvent );
+        if ( this.events.size() > this.maxEventsInMemory ) {
             writeToDisk();
         }
     }

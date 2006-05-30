@@ -1,4 +1,5 @@
 package org.drools.spi;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-
-
 import org.drools.rule.Rule;
 
 public interface PropagationContext {
@@ -25,7 +24,7 @@ public interface PropagationContext {
     public static final int RETRACTION    = 1;
     public static final int MODIFICATION  = 2;
     public static final int RULE_ADDITION = 3;
-    public static final int RULE_REMOVAL = 4;    
+    public static final int RULE_REMOVAL  = 4;
 
     public long getPropagationNumber();
 

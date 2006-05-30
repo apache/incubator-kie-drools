@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +25,7 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.EvaluatorFactory;
+import org.drools.common.DefaultFactHandle;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
@@ -37,7 +37,7 @@ public class HashedObjectSinkListTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        list = new HashedObjectSinkList();
+        this.list = new HashedObjectSinkList();
     }
 
     protected void tearDown() throws Exception {
@@ -48,160 +48,159 @@ public class HashedObjectSinkListTest extends TestCase {
      * Test method for 'org.drools.reteoo.HashedObjectSinkList.contains(ObjectSink)'
      */
     public void testContains() {
-        MockObjectSink mock = new MockObjectSink();
-        MockObjectSource source = new MockObjectSource( 1 );
-        AlphaNode node = new AlphaNode( 10,
-                                        null,
-                                        source );
+        final MockObjectSink mock = new MockObjectSink();
+        final MockObjectSource source = new MockObjectSource( 1 );
+        final AlphaNode node = new AlphaNode( 10,
+                                              null,
+                                              source );
 
-        list.add( mock );
-        list.add( node );
+        this.list.add( mock );
+        this.list.add( node );
 
         Assert.assertTrue( "List should contain the added sink",
-                           list.contains( mock ) );
+                           this.list.contains( mock ) );
         Assert.assertTrue( "List should contain the added sink",
-                           list.contains( node ) );
+                           this.list.contains( node ) );
     }
 
     /*
      * Test method for 'org.drools.reteoo.HashedObjectSinkList.add(ObjectSink)'
      */
     public void testAdd() {
-        MockObjectSink mock = new MockObjectSink();
-        MockObjectSource source = new MockObjectSource( 1 );
-        AlphaNode node = new AlphaNode( 10,
-                                        null,
-                                        source );
+        final MockObjectSink mock = new MockObjectSink();
+        final MockObjectSource source = new MockObjectSource( 1 );
+        final AlphaNode node = new AlphaNode( 10,
+                                              null,
+                                              source );
 
-        list.add( mock );
-        list.add( node );
+        this.list.add( mock );
+        this.list.add( node );
 
         Assert.assertEquals( "List should contain the 2 sinks",
                              2,
-                             list.getObjectsAsList().size() );
+                             this.list.getObjectsAsList().size() );
     }
 
     /*
      * Test method for 'org.drools.reteoo.HashedObjectSinkList.remove(ObjectSink)'
      */
     public void testRemove() {
-        MockObjectSink mock = new MockObjectSink();
-        MockObjectSource source = new MockObjectSource( 1 );
-        AlphaNode node = new AlphaNode( 10,
-                                        null,
-                                        source );
+        final MockObjectSink mock = new MockObjectSink();
+        final MockObjectSource source = new MockObjectSource( 1 );
+        final AlphaNode node = new AlphaNode( 10,
+                                              null,
+                                              source );
 
-        list.add( mock );
-        list.add( node );
+        this.list.add( mock );
+        this.list.add( node );
 
         Assert.assertEquals( "List should contain the 2 sinks",
                              2,
-                             list.getObjectsAsList().size() );
+                             this.list.getObjectsAsList().size() );
         Assert.assertTrue( "List should contain the added sink",
-                           list.contains( mock ) );
+                           this.list.contains( mock ) );
         Assert.assertTrue( "List should contain the added sink",
-                           list.contains( node ) );
-        list.remove( mock );
+                           this.list.contains( node ) );
+        this.list.remove( mock );
         Assert.assertEquals( "List should contain the 1 sink",
                              1,
-                             list.getObjectsAsList().size() );
+                             this.list.getObjectsAsList().size() );
         Assert.assertFalse( "List should contain not containt a removed sink",
-                            list.contains( mock ) );
+                            this.list.contains( mock ) );
         Assert.assertTrue( "List should contain the added sink",
-                           list.contains( node ) );
-        list.remove( node );
+                           this.list.contains( node ) );
+        this.list.remove( node );
         Assert.assertEquals( "List should contain no sink",
                              0,
-                             list.getObjectsAsList().size() );
+                             this.list.getObjectsAsList().size() );
         Assert.assertFalse( "List should contain not containt a removed sink",
-                            list.contains( mock ) );
+                            this.list.contains( mock ) );
         Assert.assertFalse( "List should contain not containt a removed sink",
-                            list.contains( node ) );
+                            this.list.contains( node ) );
     }
 
     /*
      * Test method for 'org.drools.reteoo.HashedObjectSinkList.getLastObjectSink()'
      */
     public void testGetLastObjectSink() {
-        MockObjectSink mock = new MockObjectSink();
-        MockObjectSource source = new MockObjectSource( 1 );
-        AlphaNode node = new AlphaNode( 10,
-                                        null,
-                                        source );
+        final MockObjectSink mock = new MockObjectSink();
+        final MockObjectSource source = new MockObjectSource( 1 );
+        final AlphaNode node = new AlphaNode( 10,
+                                              null,
+                                              source );
 
         Assert.assertNull( "Invalid last added sink",
-                           list.getLastObjectSink() );
-        list.add( mock );
+                           this.list.getLastObjectSink() );
+        this.list.add( mock );
         Assert.assertSame( "Invalid last added sink",
                            mock,
-                           list.getLastObjectSink() );
-        list.add( node );
+                           this.list.getLastObjectSink() );
+        this.list.add( node );
         Assert.assertSame( "Invalid last added sink",
                            node,
-                           list.getLastObjectSink() );
-        list.remove( mock );
+                           this.list.getLastObjectSink() );
+        this.list.remove( mock );
         Assert.assertSame( "Invalid last added sink",
                            node,
-                           list.getLastObjectSink() );
-        list.remove( node );
+                           this.list.getLastObjectSink() );
+        this.list.remove( node );
         Assert.assertNull( "Invalid last added sink",
-                           list.getLastObjectSink() );
+                           this.list.getLastObjectSink() );
     }
 
     /*
      * Test method for 'org.drools.reteoo.HashedObjectSinkList.iterator(WorkingMemory, FactHandleImpl)'
      */
     public void testIterator() {
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
-        MockObjectSource source = new MockObjectSource( 15 );
-        MockObjectSink sink = new MockObjectSink();
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSink sink = new MockObjectSink();
 
-        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            "type" );
-        FieldExtractor extractor2 = new ClassFieldExtractor( Cheese.class,
-                                                             "price" );
-        FieldValue field1 = new MockField( "cheddar" );
-        FieldValue field2 = new MockField( "mussarela" );
+        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                  "type" );
+        final FieldExtractor extractor2 = new ClassFieldExtractor( Cheese.class,
+                                                                   "price" );
+        final FieldValue field1 = new MockField( "cheddar" );
+        final FieldValue field2 = new MockField( "mussarela" );
 
-        Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
-                                                             Evaluator.EQUAL );
-        LiteralConstraint constraint1 = new LiteralConstraint( field1,
-                                                               extractor,
-                                                               evaluator );
-        LiteralConstraint constraint2 = new LiteralConstraint( field2,
-                                                               extractor,
-                                                               evaluator );
-        LiteralConstraint constraint3 = new LiteralConstraint( field2,
-                                                               extractor2,
-                                                               evaluator );
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                   Evaluator.EQUAL );
+        final LiteralConstraint constraint1 = new LiteralConstraint( field1,
+                                                                     extractor,
+                                                                     evaluator );
+        final LiteralConstraint constraint2 = new LiteralConstraint( field2,
+                                                                     extractor,
+                                                                     evaluator );
+        final LiteralConstraint constraint3 = new LiteralConstraint( field2,
+                                                                     extractor2,
+                                                                     evaluator );
 
-        AlphaNode alphaNode1 = new AlphaNode( 2,
-                                              constraint1,
-                                              source );
+        final AlphaNode alphaNode1 = new AlphaNode( 2,
+                                                    constraint1,
+                                                    source );
         alphaNode1.addObjectSink( sink );
 
-        AlphaNode alphaNode2 = new AlphaNode( 2,
-                                              constraint2,
-                                              source );
+        final AlphaNode alphaNode2 = new AlphaNode( 2,
+                                                    constraint2,
+                                                    source );
         alphaNode2.addObjectSink( sink );
 
-        Cheese cheddar = new Cheese( "mussarela",
-                                     5 );
+        final Cheese cheddar = new Cheese( "mussarela",
+                                           5 );
 
-        FactHandleImpl f0 = new FactHandleImpl( 0 );
-        workingMemory.putObject( f0,
-                                 cheddar );
+        final DefaultFactHandle f0 = new DefaultFactHandle( 0,
+                                                            cheddar );
 
-        MockObjectSink mock = new MockObjectSink();
+        final MockObjectSink mock = new MockObjectSink();
 
-        list.add( mock );
-        list.add( alphaNode1 );
-        list.add( alphaNode2 );
+        this.list.add( mock );
+        this.list.add( alphaNode1 );
+        this.list.add( alphaNode2 );
 
         int flag = 0;
-        for ( Iterator i = list.iterator( workingMemory,
-                                          f0 ); i.hasNext(); ) {
-            ObjectSink objsink = (ObjectSink) i.next();
+        for ( final Iterator i = this.list.iterator( workingMemory,
+                                                     f0 ); i.hasNext(); ) {
+            final ObjectSink objsink = (ObjectSink) i.next();
             if ( objsink == alphaNode2 ) {
                 flag += 1;
             } else if ( objsink == mock ) {
@@ -219,16 +218,16 @@ public class HashedObjectSinkListTest extends TestCase {
      * Test method for 'org.drools.reteoo.HashedObjectSinkList.getObjectsAsList()'
      */
     public void testGetObjectsAsList() {
-        MockObjectSink mock = new MockObjectSink();
-        MockObjectSource source = new MockObjectSource( 1 );
-        AlphaNode node = new AlphaNode( 10,
-                                        null,
-                                        source );
+        final MockObjectSink mock = new MockObjectSink();
+        final MockObjectSource source = new MockObjectSource( 1 );
+        final AlphaNode node = new AlphaNode( 10,
+                                              null,
+                                              source );
 
-        list.add( mock );
-        list.add( node );
+        this.list.add( mock );
+        this.list.add( node );
 
-        List newList = list.getObjectsAsList();
+        final List newList = this.list.getObjectsAsList();
 
         Assert.assertEquals( "List should contain the 2 sinks",
                              2,

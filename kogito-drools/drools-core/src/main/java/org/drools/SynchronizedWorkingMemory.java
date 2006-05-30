@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.util.List;
 import java.util.Map;
@@ -44,23 +41,27 @@ import org.drools.spi.AsyncExceptionHandler;
 public class SynchronizedWorkingMemory
     implements
     WorkingMemory {
-    final WorkingMemory workingMemory;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8304004224308319285L;
+    final WorkingMemory       workingMemory;
 
-    public SynchronizedWorkingMemory(WorkingMemory workingMemory) {
+    public SynchronizedWorkingMemory(final WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
     }
 
-    public synchronized void addEventListener(WorkingMemoryEventListener listener) {
+    public synchronized void addEventListener(final WorkingMemoryEventListener listener) {
         this.workingMemory.addEventListener( listener );
     }
 
-    public synchronized FactHandle assertObject(Object object,
-                                                boolean dynamic) throws FactException {
+    public synchronized FactHandle assertObject(final Object object,
+                                                final boolean dynamic) throws FactException {
         return this.workingMemory.assertObject( object,
                                                 dynamic );
     }
 
-    public synchronized FactHandle assertObject(Object object) throws FactException {
+    public synchronized FactHandle assertObject(final Object object) throws FactException {
         return this.workingMemory.assertObject( object );
     }
 
@@ -68,23 +69,19 @@ public class SynchronizedWorkingMemory
         this.workingMemory.clearAgenda();
     }
 
-    public synchronized void clearAgendaGroup(String group) {
-        this.workingMemory.clearAgendaGroup(group);
-    }
-    
-    public synchronized boolean containsObject(FactHandle handle) {
-        return this.workingMemory.containsObject( handle );
+    public synchronized void clearAgendaGroup(final String group) {
+        this.workingMemory.clearAgendaGroup( group );
     }
 
     public synchronized void fireAllRules() throws FactException {
         this.workingMemory.fireAllRules();
     }
 
-    public synchronized void fireAllRules(AgendaFilter agendaFilter) throws FactException {
+    public synchronized void fireAllRules(final AgendaFilter agendaFilter) throws FactException {
         this.workingMemory.fireAllRules( agendaFilter );
     }
 
-    public synchronized FactHandle getFactHandle(Object object) throws NoSuchFactHandleException {
+    public synchronized FactHandle getFactHandle(final Object object) throws NoSuchFactHandleException {
         return this.workingMemory.getFactHandle( object );
     }
 
@@ -92,7 +89,7 @@ public class SynchronizedWorkingMemory
         return this.workingMemory.getFactHandles();
     }
 
-    public synchronized Object getObject(FactHandle handle) throws NoSuchFactObjectException {
+    public synchronized Object getObject(final FactHandle handle) throws NoSuchFactObjectException {
         return this.workingMemory.getObject( handle );
     }
 
@@ -100,7 +97,7 @@ public class SynchronizedWorkingMemory
         return this.workingMemory.getObjects();
     }
 
-    public synchronized List getObjects(Class objectClass) {
+    public synchronized List getObjects(final Class objectClass) {
         return this.workingMemory.getObjects( objectClass );
     }
 
@@ -108,25 +105,25 @@ public class SynchronizedWorkingMemory
         return this.workingMemory.getRuleBase();
     }
 
-    public synchronized void modifyObject(FactHandle handle,
-                                          Object object) throws FactException {
+    public synchronized void modifyObject(final FactHandle handle,
+                                          final Object object) throws FactException {
         this.workingMemory.modifyObject( handle,
                                          object );
     }
 
-    public synchronized void removeEventListener(WorkingMemoryEventListener listener) {
+    public synchronized void removeEventListener(final WorkingMemoryEventListener listener) {
         this.workingMemory.removeEventListener( listener );
     }
 
-    public synchronized void retractObject(FactHandle handle) throws FactException {
+    public synchronized void retractObject(final FactHandle handle) throws FactException {
         this.workingMemory.retractObject( handle );
     }
 
-    public synchronized void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
+    public synchronized void setAsyncExceptionHandler(final AsyncExceptionHandler handler) {
         this.workingMemory.setAsyncExceptionHandler( handler );
     }
 
-    public void addEventListener(AgendaEventListener listener) {
+    public void addEventListener(final AgendaEventListener listener) {
         this.workingMemory.addEventListener( listener );
 
     }
@@ -148,7 +145,7 @@ public class SynchronizedWorkingMemory
         return this.workingMemory.getFocus();
     }
 
-    public Object getGlobal(String name) {
+    public Object getGlobal(final String name) {
         return this.workingMemory.getGlobal( name );
     }
 
@@ -156,7 +153,7 @@ public class SynchronizedWorkingMemory
         return this.workingMemory.getGlobals();
     }
 
-    public QueryResults getQueryResults(String query) {
+    public QueryResults getQueryResults(final String query) {
         return this.workingMemory.getQueryResults( query );
     }
 
@@ -164,20 +161,20 @@ public class SynchronizedWorkingMemory
         return this.workingMemory.getWorkingMemoryEventListeners();
     }
 
-    public void removeEventListener(AgendaEventListener listener) {
+    public void removeEventListener(final AgendaEventListener listener) {
         this.workingMemory.removeEventListener( listener );
     }
 
-    public void setFocus(String focus) {
+    public void setFocus(final String focus) {
         this.workingMemory.setFocus( focus );
     }
 
-    public void setFocus(AgendaGroup focus) {
+    public void setFocus(final AgendaGroup focus) {
         this.workingMemory.setFocus( focus );
     }
 
-    public void setGlobal(String name,
-                          Object value) {
+    public void setGlobal(final String name,
+                          final Object value) {
         this.workingMemory.setGlobal( name,
                                       value );
     }

@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.rule;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -69,10 +66,10 @@ public class OrTest extends TestCase {
         super.setUp();
         this.stageType = new ClassObjectType( Stage.class );
         this.edgeType = new ClassObjectType( Edge.class );
-        this.integerEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                                  Evaluator.EQUAL );
-        this.integerNotEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                                     Evaluator.NOT_EQUAL );
+        this.integerEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
+                                                                    Evaluator.EQUAL );
+        this.integerNotEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
+                                                                       Evaluator.NOT_EQUAL );
         this.pkg = new Package( "or" );
     }
 
@@ -82,9 +79,9 @@ public class OrTest extends TestCase {
 
         this.pkg.addRule( this.getNeverGetsToConsequenceRule() );
 
-        final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
+        final org.drools.leaps.LeapsRuleBase ruleBase = new org.drools.leaps.LeapsRuleBase();
         ruleBase.addPackage( this.pkg );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage( Stage.LABELING ) );
         workingMemory.assertObject( new Edge( 1000,
                                               1,
@@ -113,9 +110,9 @@ public class OrTest extends TestCase {
 
         this.pkg.addRule( this.getNeverGetsToConsequenceRule() );
 
-        final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
+        final org.drools.reteoo.ReteooRuleBase ruleBase = new org.drools.reteoo.ReteooRuleBase();
         ruleBase.addPackage( this.pkg );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage( Stage.LABELING ) );
         workingMemory.assertObject( new Edge( 1000,
                                               1,
@@ -144,9 +141,9 @@ public class OrTest extends TestCase {
 
         this.pkg.addRule( this.getWorkingButCanNotResolveOrObjectInConsequenceOrder() );
 
-        final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
+        final org.drools.leaps.LeapsRuleBase ruleBase = new org.drools.leaps.LeapsRuleBase();
         ruleBase.addPackage( this.pkg );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage( Stage.LABELING ) );
         workingMemory.assertObject( new Edge( 1000,
                                               1,
@@ -175,9 +172,9 @@ public class OrTest extends TestCase {
 
         this.pkg.addRule( this.getWorkingButCanNotResolveOrObjectInConsequenceOrder() );
 
-        final org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        final org.drools.reteoo.ReteooRuleBase ruleBase = new org.drools.reteoo.ReteooRuleBase();
         ruleBase.addPackage( this.pkg );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage( Stage.LABELING ) );
         workingMemory.assertObject( new Edge( 1000,
                                               1,
@@ -208,30 +205,30 @@ public class OrTest extends TestCase {
     public Rule getNeverGetsToConsequenceRule() throws Exception {
         final Rule rule = new Rule( "NeverGetsToConsequence" );
 
-        Column stageColumn1 = new Column( 0,
-                                          stageType,
-                                          "stage" );
+        final Column stageColumn1 = new Column( 0,
+                                                this.stageType,
+                                                "stage" );
         stageColumn1.addConstraint( getLiteralConstraint( stageColumn1,
                                                           "value",
                                                           new Integer( Stage.DETECT_JUNCTIONS ),
                                                           this.integerEqualEvaluator ) );
 
-        Column stageColumn2 = new Column( 0,
-                                          stageType,
-                                          "stage" );
+        final Column stageColumn2 = new Column( 0,
+                                                this.stageType,
+                                                "stage" );
         stageColumn2.addConstraint( getLiteralConstraint( stageColumn2,
                                                           "value",
                                                           new Integer( Stage.LABELING ),
                                                           this.integerEqualEvaluator ) );
-        Or or = new Or();
+        final Or or = new Or();
         or.addChild( stageColumn1 );
         or.addChild( stageColumn2 );
         rule.addPattern( or );
         final Declaration stageDeclaration = rule.getDeclaration( "stage" );
 
-        Column edgeColumn1 = new Column( 1,
-                                         edgeType,
-                                         "edge1" );
+        final Column edgeColumn1 = new Column( 1,
+                                               this.edgeType,
+                                               "edge1" );
         setFieldDeclaration( edgeColumn1,
                              "p1",
                              "edge1p1" );
@@ -243,21 +240,26 @@ public class OrTest extends TestCase {
         final Declaration edge1P1Declaration = rule.getDeclaration( "edge1p1" );
         final Declaration edge1P2Declaration = rule.getDeclaration( "edge1p2" );
 
-        Column edgeColumn2 = new Column( 2,
-                                         edgeType,
-                                         "edge2" );
+        final Column edgeColumn2 = new Column( 2,
+                                               this.edgeType,
+                                               "edge2" );
         rule.addPattern( edgeColumn2 );
         final Declaration edge2Declaration = rule.getDeclaration( "edge2" );
         edgeColumn2.addConstraint( getBoundVariableConstraint( edgeColumn2,
                                                                "p1",
                                                                edge1P1Declaration,
-                                                               integerEqualEvaluator ) );
+                                                               this.integerEqualEvaluator ) );
         edgeColumn2.addConstraint( getBoundVariableConstraint( edgeColumn2,
                                                                "p2",
                                                                edge1P2Declaration,
-                                                               integerNotEqualEvaluator ) );
+                                                               this.integerNotEqualEvaluator ) );
 
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -9201168516267126280L;
+
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
@@ -266,7 +268,7 @@ public class OrTest extends TestCase {
 
                     Stage stage = (Stage) drools.get( stageDeclaration );
 
-                    markStage = stage;
+                    OrTest.this.markStage = stage;
                 } catch ( Exception e ) {
                     e.printStackTrace();
                     throw new ConsequenceException( e );
@@ -287,9 +289,9 @@ public class OrTest extends TestCase {
     public Rule getWorkingButCanNotResolveOrObjectInConsequenceOrder() throws Exception {
         final Rule rule = new Rule( "WorkingButCanNotResolveOrObjectInConsequence" );
 
-        Column edgeColumn1 = new Column( 0,
-                                         edgeType,
-                                         "edge1" );
+        final Column edgeColumn1 = new Column( 0,
+                                               this.edgeType,
+                                               "edge1" );
         setFieldDeclaration( edgeColumn1,
                              "p1",
                              "edge1p1" );
@@ -301,42 +303,47 @@ public class OrTest extends TestCase {
         final Declaration edge1P1Declaration = rule.getDeclaration( "edge1p1" );
         final Declaration edge1P2Declaration = rule.getDeclaration( "edge1p2" );
 
-        Column edgeColumn2 = new Column( 1,
-                                         edgeType,
-                                         "edge2" );
+        final Column edgeColumn2 = new Column( 1,
+                                               this.edgeType,
+                                               "edge2" );
         rule.addPattern( edgeColumn2 );
         final Declaration edge2Declaration = rule.getDeclaration( "edge2" );
         edgeColumn2.addConstraint( getBoundVariableConstraint( edgeColumn2,
                                                                "p1",
                                                                edge1P1Declaration,
-                                                               integerEqualEvaluator ) );
+                                                               this.integerEqualEvaluator ) );
         edgeColumn2.addConstraint( getBoundVariableConstraint( edgeColumn2,
                                                                "p2",
                                                                edge1P2Declaration,
-                                                               integerNotEqualEvaluator ) );
+                                                               this.integerNotEqualEvaluator ) );
 
-        Column stageColumn1 = new Column( 2,
-                                          stageType,
-                                          "stage1" );
+        final Column stageColumn1 = new Column( 2,
+                                                this.stageType,
+                                                "stage1" );
         stageColumn1.addConstraint( getLiteralConstraint( stageColumn1,
                                                           "value",
                                                           new Integer( Stage.DETECT_JUNCTIONS ),
                                                           this.integerEqualEvaluator ) );
 
-        Column stageColumn2 = new Column( 2,
-                                          stageType,
-                                          "stage" );
+        final Column stageColumn2 = new Column( 2,
+                                                this.stageType,
+                                                "stage" );
         stageColumn2.addConstraint( getLiteralConstraint( stageColumn2,
                                                           "value",
                                                           new Integer( Stage.LABELING ),
                                                           this.integerEqualEvaluator ) );
-        Or or = new Or();
+        final Or or = new Or();
         or.addChild( stageColumn1 );
         or.addChild( stageColumn2 );
         rule.addPattern( or );
         final Declaration stageDeclaration = rule.getDeclaration( "stage" );
 
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -4956304333289545872L;
+
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
                 try {
@@ -344,7 +351,7 @@ public class OrTest extends TestCase {
                     Tuple tuple = drools.getTuple();
 
                     Stage stage = (Stage) drools.get( stageDeclaration );
-                    markStage = stage;
+                    OrTest.this.markStage = stage;
                 } catch ( Exception e ) {
                     e.printStackTrace();
                     throw new ConsequenceException( e );
@@ -357,54 +364,54 @@ public class OrTest extends TestCase {
         return rule;
     }
 
-    private void setFieldDeclaration(Column column,
-                                     String fieldName,
-                                     String identifier) throws IntrospectionException {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+    private void setFieldDeclaration(final Column column,
+                                     final String fieldName,
+                                     final String identifier) throws IntrospectionException {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
         column.addDeclaration( identifier,
                                extractor );
     }
 
-    private FieldConstraint getLiteralConstraint(Column column,
-                                                 String fieldName,
-                                                 Object fieldValue,
-                                                 Evaluator evaluator) throws IntrospectionException {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+    private FieldConstraint getLiteralConstraint(final Column column,
+                                                 final String fieldName,
+                                                 final Object fieldValue,
+                                                 final Evaluator evaluator) throws IntrospectionException {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        int index = getIndex( clazz,
-                              fieldName );
+        final int index = getIndex( clazz,
+                                    fieldName );
 
-        FieldValue field = new MockField( fieldValue );
+        final FieldValue field = new MockField( fieldValue );
 
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
         return new LiteralConstraint( field,
                                       extractor,
                                       evaluator );
     }
 
-    private FieldConstraint getBoundVariableConstraint(Column column,
-                                                       String fieldName,
-                                                       Declaration declaration,
-                                                       Evaluator evaluator) throws IntrospectionException {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+    private FieldConstraint getBoundVariableConstraint(final Column column,
+                                                       final String fieldName,
+                                                       final Declaration declaration,
+                                                       final Evaluator evaluator) throws IntrospectionException {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
         return new BoundVariableConstraint( extractor,
                                             declaration,
                                             evaluator );
     }
 
-    public static int getIndex(Class clazz,
-                               String name) throws IntrospectionException {
-        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
+    public static int getIndex(final Class clazz,
+                               final String name) throws IntrospectionException {
+        final PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
         for ( int i = 0; i < descriptors.length; i++ ) {
             if ( descriptors[i].getName().equals( name ) ) {
                 return i;

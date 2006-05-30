@@ -24,6 +24,7 @@ import java.util.Map;
 import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.common.BetaNodeBinder;
+import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.beta.BetaLeftMemory;
 import org.drools.reteoo.beta.BetaMemoryFactory;
 import org.drools.reteoo.beta.BetaRightMemory;
@@ -47,17 +48,22 @@ class BetaMemory
     // Instance members
     // ------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -5494203883277782421L;
+
     /** Left-side tuples. */
-    private BetaLeftMemory  leftMemory;
+    private BetaLeftMemory    leftMemory;
 
     /** Right-side tuples. */
-    private BetaRightMemory rightMemory;
+    private BetaRightMemory   rightMemory;
 
     /** 
      * This map is needed to link FactHandles to ObjectMatches specifically to
      * support random access operations like remove(fact);
      */
-    private Map             rightObjectMap;
+    private Map               rightObjectMap;
 
     // ------------------------------------------------------------
     // Constructors
@@ -67,9 +73,12 @@ class BetaMemory
      * Construct a BetaMemory with a LinkedList for the <code>Tuples</code> and a <code>LinkedHashMap</code> for the 
      * <code>FactHandle</code>s
      */
-    BetaMemory(RuleBaseConfiguration config, BetaNodeBinder binder) {
-        this.leftMemory = BetaMemoryFactory.newLeftMemory( config, binder );
-        this.rightMemory = BetaMemoryFactory.newRightMemory( config, binder );
+    BetaMemory(final RuleBaseConfiguration config,
+               final BetaNodeBinder binder) {
+        this.leftMemory = BetaMemoryFactory.newLeftMemory( config,
+                                                           binder );
+        this.rightMemory = BetaMemoryFactory.newRightMemory( config,
+                                                             binder );
         this.rightObjectMap = new HashMap();
     }
 
@@ -84,8 +93,8 @@ class BetaMemory
     /**
      * @return A tuple iterator with possible matches for the handle
      */
-    public Iterator leftTupleIterator(WorkingMemory wm,
-                                      FactHandleImpl handle) {
+    public Iterator leftTupleIterator(final WorkingMemory wm,
+                                      final DefaultFactHandle handle) {
         return this.leftMemory.iterator( wm,
                                          handle );
     }
@@ -94,8 +103,8 @@ class BetaMemory
      * The iterator iterates the propagated FactHandles in assertion order
      * @return The an Iterator for the right memory
      */
-    Iterator rightObjectIterator(WorkingMemory wm,
-                                 ReteTuple tuple) {
+    Iterator rightObjectIterator(final WorkingMemory wm,
+                                 final ReteTuple tuple) {
         return this.rightMemory.iterator( wm,
                                           tuple );
     }
@@ -104,8 +113,8 @@ class BetaMemory
      * Add a <code>ReteTuple</code> to the memory.
      * @param tuple
      */
-    void add(WorkingMemory wm,
-             ReteTuple tuple) {
+    void add(final WorkingMemory wm,
+             final ReteTuple tuple) {
         this.leftMemory.add( wm,
                              tuple );
     }
@@ -114,8 +123,8 @@ class BetaMemory
      * Remove the <code>ReteTuple</code> from the left memory.
      * @param tuple
      */
-    void remove(WorkingMemory wm,
-                ReteTuple tuple) {
+    void remove(final WorkingMemory wm,
+                final ReteTuple tuple) {
         this.leftMemory.remove( wm,
                                 tuple );
     }
@@ -130,9 +139,9 @@ class BetaMemory
      * @return
      *      The ObjectMatches to hold the tuples that match with the <code>FactHandleImpl</code>
      */
-    ObjectMatches add(WorkingMemory wm,
-                      FactHandleImpl handle) {
-        ObjectMatches objectMatches = new ObjectMatches( handle );
+    ObjectMatches add(final WorkingMemory wm,
+                      final DefaultFactHandle handle) {
+        final ObjectMatches objectMatches = new ObjectMatches( handle );
         this.rightObjectMap.put( handle,
                                  objectMatches );
         this.rightMemory.add( wm,
@@ -140,8 +149,8 @@ class BetaMemory
         return objectMatches;
     }
 
-    ObjectMatches add(WorkingMemory wm,
-                      ObjectMatches objectMatches) {
+    ObjectMatches add(final WorkingMemory wm,
+                      final ObjectMatches objectMatches) {
         this.rightObjectMap.put( objectMatches.getFactHandle(),
                                  objectMatches );
         this.rightMemory.add( wm,
@@ -157,9 +166,9 @@ class BetaMemory
      * @return
      *      The ObjectMatches that held the tuples that match with the <code>FactHandleImpl</code>
      */
-    ObjectMatches remove(WorkingMemory wm,
-                         FactHandleImpl handle) {
-        ObjectMatches matches = (ObjectMatches) this.rightObjectMap.remove( handle );
+    ObjectMatches remove(final WorkingMemory wm,
+                         final DefaultFactHandle handle) {
+        final ObjectMatches matches = (ObjectMatches) this.rightObjectMap.remove( handle );
         this.rightMemory.remove( wm,
                                  matches );
         return matches;

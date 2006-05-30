@@ -91,9 +91,9 @@ import org.drools.asm.signature.SignatureReader;
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
-public class TraceClassVisitor extends TraceAbstractVisitor implements
-        ClassVisitor
-{
+public class TraceClassVisitor extends TraceAbstractVisitor
+    implements
+    ClassVisitor {
 
     /**
      * The {@link ClassVisitor} to which this visitor delegates calls. May be
@@ -104,7 +104,7 @@ public class TraceClassVisitor extends TraceAbstractVisitor implements
     /**
      * The print writer to be used to print the class.
      */
-    protected final PrintWriter pw;
+    protected final PrintWriter  pw;
 
     /**
      * Prints a disassembled view of the given class to the standard output. <p>
@@ -121,33 +121,30 @@ public class TraceClassVisitor extends TraceAbstractVisitor implements
         boolean skipDebug = true;
 
         boolean ok = true;
-        if (args.length < 1 || args.length > 2) {
+        if ( args.length < 1 || args.length > 2 ) {
             ok = false;
         }
-        if (ok && args[0].equals("-debug")) {
+        if ( ok && args[0].equals( "-debug" ) ) {
             i = 1;
             skipDebug = false;
-            if (args.length != 2) {
+            if ( args.length != 2 ) {
                 ok = false;
             }
         }
-        if (!ok) {
-            System.err.println("Prints a disassembled view of the given class.");
-            System.err.println("Usage: TraceClassVisitor [-debug] "
-                    + "<fully qualified class name or class file name>");
+        if ( !ok ) {
+            System.err.println( "Prints a disassembled view of the given class." );
+            System.err.println( "Usage: TraceClassVisitor [-debug] " + "<fully qualified class name or class file name>" );
             return;
         }
         ClassReader cr;
-        if (args[i].endsWith(".class") || args[i].indexOf('\\') > -1
-                || args[i].indexOf('/') > -1)
-        {
-            cr = new ClassReader(new FileInputStream(args[i]));
+        if ( args[i].endsWith( ".class" ) || args[i].indexOf( '\\' ) > -1 || args[i].indexOf( '/' ) > -1 ) {
+            cr = new ClassReader( new FileInputStream( args[i] ) );
         } else {
-            cr = new ClassReader(args[i]);
+            cr = new ClassReader( args[i] );
         }
-        cr.accept(new TraceClassVisitor(new PrintWriter(System.out)),
-                getDefaultAttributes(),
-                skipDebug);
+        cr.accept( new TraceClassVisitor( new PrintWriter( System.out ) ),
+                   getDefaultAttributes(),
+                   skipDebug );
     }
 
     /**
@@ -156,7 +153,8 @@ public class TraceClassVisitor extends TraceAbstractVisitor implements
      * @param pw the print writer to be used to print the class.
      */
     public TraceClassVisitor(final PrintWriter pw) {
-        this(null, pw);
+        this( null,
+              pw );
     }
 
     /**
@@ -166,7 +164,8 @@ public class TraceClassVisitor extends TraceAbstractVisitor implements
      *        May be <tt>null</tt>.
      * @param pw the print writer to be used to print the class.
      */
-    public TraceClassVisitor(final ClassVisitor cv, final PrintWriter pw) {
+    public TraceClassVisitor(final ClassVisitor cv,
+                             final PrintWriter pw) {
         this.cv = cv;
         this.pw = pw;
     }
@@ -175,303 +174,303 @@ public class TraceClassVisitor extends TraceAbstractVisitor implements
     // Implementation of the ClassVisitor interface
     // ------------------------------------------------------------------------
 
-    public void visit(
-        final int version,
-        final int access,
-        final String name,
-        final String signature,
-        final String superName,
-        final String[] interfaces)
-    {
-        int major = version & 0xFFFF;
-        int minor = version >>> 16;
-        buf.setLength(0);
-        buf.append("// class version ")
-                .append(major)
-                .append('.')
-                .append(minor)
-                .append(" (")
-                .append(version)
-                .append(")\n");
-        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
-            buf.append("// DEPRECATED\n");
+    public void visit(final int version,
+                      final int access,
+                      final String name,
+                      final String signature,
+                      final String superName,
+                      final String[] interfaces) {
+        final int major = version & 0xFFFF;
+        final int minor = version >>> 16;
+        this.buf.setLength( 0 );
+        this.buf.append( "// class version " ).append( major ).append( '.' ).append( minor ).append( " (" ).append( version ).append( ")\n" );
+        if ( (access & Opcodes.ACC_DEPRECATED) != 0 ) {
+            this.buf.append( "// DEPRECATED\n" );
         }
-        buf.append("// access flags ").append(access).append('\n');
+        this.buf.append( "// access flags " ).append( access ).append( '\n' );
 
-        appendDescriptor(CLASS_SIGNATURE, signature);
-        if (signature != null) {
-            TraceSignatureVisitor sv = new TraceSignatureVisitor(access);
-            SignatureReader r = new SignatureReader(signature);
-            r.accept(sv);
-            buf.append("// declaration: ")
-                    .append(name)
-                    .append(sv.getDeclaration())
-                    .append('\n');
+        appendDescriptor( TraceAbstractVisitor.CLASS_SIGNATURE,
+                          signature );
+        if ( signature != null ) {
+            final TraceSignatureVisitor sv = new TraceSignatureVisitor( access );
+            final SignatureReader r = new SignatureReader( signature );
+            r.accept( sv );
+            this.buf.append( "// declaration: " ).append( name ).append( sv.getDeclaration() ).append( '\n' );
         }
 
-        appendAccess(access & ~Opcodes.ACC_SUPER);
-        if ((access & Opcodes.ACC_ANNOTATION) != 0) {
-            buf.append("@interface ");
-        } else if ((access & Opcodes.ACC_INTERFACE) != 0) {
-            buf.append("interface ");
-        } else if ((access & Opcodes.ACC_ENUM) != 0) {
-            buf.append("enum ");
+        appendAccess( access & ~Opcodes.ACC_SUPER );
+        if ( (access & Opcodes.ACC_ANNOTATION) != 0 ) {
+            this.buf.append( "@interface " );
+        } else if ( (access & Opcodes.ACC_INTERFACE) != 0 ) {
+            this.buf.append( "interface " );
+        } else if ( (access & Opcodes.ACC_ENUM) != 0 ) {
+            this.buf.append( "enum " );
         } else {
-            buf.append("class ");
+            this.buf.append( "class " );
         }
-        appendDescriptor(INTERNAL_NAME, name);
+        appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                          name );
 
-        if (superName != null && !superName.equals("java/lang/Object")) {
-            buf.append(" extends ");
-            appendDescriptor(INTERNAL_NAME, superName);
-            buf.append(' ');
+        if ( superName != null && !superName.equals( "java/lang/Object" ) ) {
+            this.buf.append( " extends " );
+            appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                              superName );
+            this.buf.append( ' ' );
         }
-        if (interfaces != null && interfaces.length > 0) {
-            buf.append(" implements ");
-            for (int i = 0; i < interfaces.length; ++i) {
-                appendDescriptor(INTERNAL_NAME, interfaces[i]);
-                buf.append(' ');
+        if ( interfaces != null && interfaces.length > 0 ) {
+            this.buf.append( " implements " );
+            for ( int i = 0; i < interfaces.length; ++i ) {
+                appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                                  interfaces[i] );
+                this.buf.append( ' ' );
             }
         }
-        buf.append(" {\n\n");
+        this.buf.append( " {\n\n" );
 
-        text.add(buf.toString());
+        this.text.add( this.buf.toString() );
 
-        if (cv != null) {
-            cv.visit(version, access, name, signature, superName, interfaces);
+        if ( this.cv != null ) {
+            this.cv.visit( version,
+                           access,
+                           name,
+                           signature,
+                           superName,
+                           interfaces );
         }
     }
 
-    public void visitSource(final String file, final String debug) {
-        buf.setLength(0);
-        if (file != null) {
-            buf.append(tab)
-                    .append("// compiled from: ")
-                    .append(file)
-                    .append('\n');
+    public void visitSource(final String file,
+                            final String debug) {
+        this.buf.setLength( 0 );
+        if ( file != null ) {
+            this.buf.append( this.tab ).append( "// compiled from: " ).append( file ).append( '\n' );
         }
-        if (debug != null) {
-            buf.append(tab)
-                    .append("// debug info: ")
-                    .append(debug)
-                    .append('\n');
+        if ( debug != null ) {
+            this.buf.append( this.tab ).append( "// debug info: " ).append( debug ).append( '\n' );
         }
-        if (buf.length() > 0) {
-            text.add(buf.toString());
+        if ( this.buf.length() > 0 ) {
+            this.text.add( this.buf.toString() );
         }
 
-        if (cv != null) {
-            cv.visitSource(file, debug);
+        if ( this.cv != null ) {
+            this.cv.visitSource( file,
+                                 debug );
         }
     }
 
-    public void visitOuterClass(
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        buf.setLength(0);
-        buf.append(tab).append("OUTERCLASS ");
-        appendDescriptor(INTERNAL_NAME, owner);
+    public void visitOuterClass(final String owner,
+                                final String name,
+                                final String desc) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab ).append( "OUTERCLASS " );
+        appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                          owner );
         // if enclosing name is null, so why should we show this info?
-        if (name != null) {
-            buf.append(' ').append(name).append(' ');
+        if ( name != null ) {
+            this.buf.append( ' ' ).append( name ).append( ' ' );
         } else {
-            buf.append(' ');
+            this.buf.append( ' ' );
         }
-        appendDescriptor(METHOD_DESCRIPTOR, desc);
-        buf.append('\n');
-        text.add(buf.toString());
+        appendDescriptor( TraceAbstractVisitor.METHOD_DESCRIPTOR,
+                          desc );
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (cv != null) {
-            cv.visitOuterClass(owner, name, desc);
+        if ( this.cv != null ) {
+            this.cv.visitOuterClass( owner,
+                                     name,
+                                     desc );
         }
     }
 
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        text.add("\n");
-        AnnotationVisitor tav = super.visitAnnotation(desc, visible);
-        if (cv != null) {
-            ((TraceAnnotationVisitor) tav).av = cv.visitAnnotation(desc,
-                    visible);
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        this.text.add( "\n" );
+        final AnnotationVisitor tav = super.visitAnnotation( desc,
+                                                             visible );
+        if ( this.cv != null ) {
+            ((TraceAnnotationVisitor) tav).av = this.cv.visitAnnotation( desc,
+                                                                         visible );
         }
         return tav;
     }
 
     public void visitAttribute(final Attribute attr) {
-        text.add("\n");
-        super.visitAttribute(attr);
+        this.text.add( "\n" );
+        super.visitAttribute( attr );
 
-        if (cv != null) {
-            cv.visitAttribute(attr);
+        if ( this.cv != null ) {
+            this.cv.visitAttribute( attr );
         }
     }
 
-    public void visitInnerClass(
-        final String name,
-        final String outerName,
-        final String innerName,
-        final int access)
-    {
-        buf.setLength(0);
-        buf.append(tab).append("// access flags ").append(access
-                & ~Opcodes.ACC_SUPER).append('\n');
-        buf.append(tab);
-        appendAccess(access);
-        buf.append("INNERCLASS ");
-        if ((access & Opcodes.ACC_ENUM) != 0) {
-            buf.append("enum ");
+    public void visitInnerClass(final String name,
+                                final String outerName,
+                                final String innerName,
+                                final int access) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab ).append( "// access flags " ).append( access & ~Opcodes.ACC_SUPER ).append( '\n' );
+        this.buf.append( this.tab );
+        appendAccess( access );
+        this.buf.append( "INNERCLASS " );
+        if ( (access & Opcodes.ACC_ENUM) != 0 ) {
+            this.buf.append( "enum " );
         }
-        appendDescriptor(INTERNAL_NAME, name);
-        buf.append(' ');
-        appendDescriptor(INTERNAL_NAME, outerName);
-        buf.append(' ');
-        appendDescriptor(INTERNAL_NAME, innerName);
-        buf.append('\n');
-        text.add(buf.toString());
+        appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                          name );
+        this.buf.append( ' ' );
+        appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                          outerName );
+        this.buf.append( ' ' );
+        appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                          innerName );
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        if (cv != null) {
-            cv.visitInnerClass(name, outerName, innerName, access);
+        if ( this.cv != null ) {
+            this.cv.visitInnerClass( name,
+                                     outerName,
+                                     innerName,
+                                     access );
         }
     }
 
-    public FieldVisitor visitField(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final Object value)
-    {
-        buf.setLength(0);
-        buf.append('\n');
-        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
-            buf.append(tab).append("// DEPRECATED\n");
+    public FieldVisitor visitField(final int access,
+                                   final String name,
+                                   final String desc,
+                                   final String signature,
+                                   final Object value) {
+        this.buf.setLength( 0 );
+        this.buf.append( '\n' );
+        if ( (access & Opcodes.ACC_DEPRECATED) != 0 ) {
+            this.buf.append( this.tab ).append( "// DEPRECATED\n" );
         }
-        buf.append(tab).append("// access flags ").append(access).append('\n');
-        if (signature != null) {
-            buf.append(tab);
-            appendDescriptor(FIELD_SIGNATURE, signature);
+        this.buf.append( this.tab ).append( "// access flags " ).append( access ).append( '\n' );
+        if ( signature != null ) {
+            this.buf.append( this.tab );
+            appendDescriptor( TraceAbstractVisitor.FIELD_SIGNATURE,
+                              signature );
 
-            TraceSignatureVisitor sv = new TraceSignatureVisitor(0);
-            SignatureReader r = new SignatureReader(signature);
-            r.acceptType(sv);
-            buf.append(tab)
-                    .append("// declaration: ")
-                    .append(sv.getDeclaration())
-                    .append('\n');
+            final TraceSignatureVisitor sv = new TraceSignatureVisitor( 0 );
+            final SignatureReader r = new SignatureReader( signature );
+            r.acceptType( sv );
+            this.buf.append( this.tab ).append( "// declaration: " ).append( sv.getDeclaration() ).append( '\n' );
         }
 
-        buf.append(tab);
-        appendAccess(access);
-        if ((access & Opcodes.ACC_ENUM) != 0) {
-            buf.append("enum ");
+        this.buf.append( this.tab );
+        appendAccess( access );
+        if ( (access & Opcodes.ACC_ENUM) != 0 ) {
+            this.buf.append( "enum " );
         }
 
-        appendDescriptor(FIELD_DESCRIPTOR, desc);
-        buf.append(' ').append(name);
-        if (value != null) {
-            buf.append(" = ");
-            if (value instanceof String) {
-                buf.append("\"").append(value).append("\"");
+        appendDescriptor( TraceAbstractVisitor.FIELD_DESCRIPTOR,
+                          desc );
+        this.buf.append( ' ' ).append( name );
+        if ( value != null ) {
+            this.buf.append( " = " );
+            if ( value instanceof String ) {
+                this.buf.append( "\"" ).append( value ).append( "\"" );
             } else {
-                buf.append(value);
+                this.buf.append( value );
             }
         }
 
-        buf.append('\n');
-        text.add(buf.toString());
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        TraceFieldVisitor tav = createTraceFieldVisitor();
-        text.add(tav.getText());
+        final TraceFieldVisitor tav = createTraceFieldVisitor();
+        this.text.add( tav.getText() );
 
-        if (cv != null) {
-            tav.fv = cv.visitField(access, name, desc, signature, value);
+        if ( this.cv != null ) {
+            tav.fv = this.cv.visitField( access,
+                                         name,
+                                         desc,
+                                         signature,
+                                         value );
         }
 
         return tav;
     }
 
-    public MethodVisitor visitMethod(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final String[] exceptions)
-    {
-        buf.setLength(0);
-        buf.append('\n');
-        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
-            buf.append(tab).append("// DEPRECATED\n");
+    public MethodVisitor visitMethod(final int access,
+                                     final String name,
+                                     final String desc,
+                                     final String signature,
+                                     final String[] exceptions) {
+        this.buf.setLength( 0 );
+        this.buf.append( '\n' );
+        if ( (access & Opcodes.ACC_DEPRECATED) != 0 ) {
+            this.buf.append( this.tab ).append( "// DEPRECATED\n" );
         }
-        buf.append(tab).append("// access flags ").append(access).append('\n');
-        buf.append(tab);
-        appendDescriptor(METHOD_SIGNATURE, signature);
+        this.buf.append( this.tab ).append( "// access flags " ).append( access ).append( '\n' );
+        this.buf.append( this.tab );
+        appendDescriptor( TraceAbstractVisitor.METHOD_SIGNATURE,
+                          signature );
 
-        if (signature != null) {
-            TraceSignatureVisitor v = new TraceSignatureVisitor(0);
-            SignatureReader r = new SignatureReader(signature);
-            r.accept(v);
-            String genericDecl = v.getDeclaration();
-            String genericReturn = v.getReturnType();
-            String genericExceptions = v.getExceptions();
+        if ( signature != null ) {
+            final TraceSignatureVisitor v = new TraceSignatureVisitor( 0 );
+            final SignatureReader r = new SignatureReader( signature );
+            r.accept( v );
+            final String genericDecl = v.getDeclaration();
+            final String genericReturn = v.getReturnType();
+            final String genericExceptions = v.getExceptions();
 
-            buf.append(tab)
-                    .append("// declaration: ")
-                    .append(genericReturn)
-                    .append(' ')
-                    .append(name)
-                    .append(genericDecl);
-            if (genericExceptions != null) {
-                buf.append(" throws ").append(genericExceptions);
+            this.buf.append( this.tab ).append( "// declaration: " ).append( genericReturn ).append( ' ' ).append( name ).append( genericDecl );
+            if ( genericExceptions != null ) {
+                this.buf.append( " throws " ).append( genericExceptions );
             }
-            buf.append('\n');
+            this.buf.append( '\n' );
         }
 
-        appendAccess(access);
-        if ((access & Opcodes.ACC_NATIVE) != 0) {
-            buf.append("native ");
+        appendAccess( access );
+        if ( (access & Opcodes.ACC_NATIVE) != 0 ) {
+            this.buf.append( "native " );
         }
-        if ((access & Opcodes.ACC_VARARGS) != 0) {
-            buf.append("varargs ");
+        if ( (access & Opcodes.ACC_VARARGS) != 0 ) {
+            this.buf.append( "varargs " );
         }
-        if ((access & Opcodes.ACC_BRIDGE) != 0) {
-            buf.append("bridge ");
+        if ( (access & Opcodes.ACC_BRIDGE) != 0 ) {
+            this.buf.append( "bridge " );
         }
 
-        buf.append(name);
-        appendDescriptor(METHOD_DESCRIPTOR, desc);
-        if (exceptions != null && exceptions.length > 0) {
-            buf.append(" throws ");
-            for (int i = 0; i < exceptions.length; ++i) {
-                appendDescriptor(INTERNAL_NAME, exceptions[i]);
-                buf.append(' ');
+        this.buf.append( name );
+        appendDescriptor( TraceAbstractVisitor.METHOD_DESCRIPTOR,
+                          desc );
+        if ( exceptions != null && exceptions.length > 0 ) {
+            this.buf.append( " throws " );
+            for ( int i = 0; i < exceptions.length; ++i ) {
+                appendDescriptor( TraceAbstractVisitor.INTERNAL_NAME,
+                                  exceptions[i] );
+                this.buf.append( ' ' );
             }
         }
 
-        buf.append('\n');
-        text.add(buf.toString());
+        this.buf.append( '\n' );
+        this.text.add( this.buf.toString() );
 
-        TraceMethodVisitor tcv = createTraceMethodVisitor();
-        text.add(tcv.getText());
+        final TraceMethodVisitor tcv = createTraceMethodVisitor();
+        this.text.add( tcv.getText() );
 
-        if (cv != null) {
-            tcv.mv = cv.visitMethod(access, name, desc, signature, exceptions);
+        if ( this.cv != null ) {
+            tcv.mv = this.cv.visitMethod( access,
+                                          name,
+                                          desc,
+                                          signature,
+                                          exceptions );
         }
 
         return tcv;
     }
 
     public void visitEnd() {
-        text.add("}\n");
+        this.text.add( "}\n" );
 
-        printList(pw, text);
-        pw.flush();
+        printList( this.pw,
+                   this.text );
+        this.pw.flush();
 
-        if (cv != null) {
-            cv.visitEnd();
+        if ( this.cv != null ) {
+            this.cv.visitEnd();
         }
     }
 
@@ -494,41 +493,41 @@ public class TraceClassVisitor extends TraceAbstractVisitor implements
      * @param access some access modifiers.
      */
     private void appendAccess(final int access) {
-        if ((access & Opcodes.ACC_PUBLIC) != 0) {
-            buf.append("public ");
+        if ( (access & Opcodes.ACC_PUBLIC) != 0 ) {
+            this.buf.append( "public " );
         }
-        if ((access & Opcodes.ACC_PRIVATE) != 0) {
-            buf.append("private ");
+        if ( (access & Opcodes.ACC_PRIVATE) != 0 ) {
+            this.buf.append( "private " );
         }
-        if ((access & Opcodes.ACC_PROTECTED) != 0) {
-            buf.append("protected ");
+        if ( (access & Opcodes.ACC_PROTECTED) != 0 ) {
+            this.buf.append( "protected " );
         }
-        if ((access & Opcodes.ACC_FINAL) != 0) {
-            buf.append("final ");
+        if ( (access & Opcodes.ACC_FINAL) != 0 ) {
+            this.buf.append( "final " );
         }
-        if ((access & Opcodes.ACC_STATIC) != 0) {
-            buf.append("static ");
+        if ( (access & Opcodes.ACC_STATIC) != 0 ) {
+            this.buf.append( "static " );
         }
-        if ((access & Opcodes.ACC_SYNCHRONIZED) != 0) {
-            buf.append("synchronized ");
+        if ( (access & Opcodes.ACC_SYNCHRONIZED) != 0 ) {
+            this.buf.append( "synchronized " );
         }
-        if ((access & Opcodes.ACC_VOLATILE) != 0) {
-            buf.append("volatile ");
+        if ( (access & Opcodes.ACC_VOLATILE) != 0 ) {
+            this.buf.append( "volatile " );
         }
-        if ((access & Opcodes.ACC_TRANSIENT) != 0) {
-            buf.append("transient ");
+        if ( (access & Opcodes.ACC_TRANSIENT) != 0 ) {
+            this.buf.append( "transient " );
         }
         // if ((access & Constants.ACC_NATIVE) != 0) {
         // buf.append("native ");
         // }
-        if ((access & Opcodes.ACC_ABSTRACT) != 0) {
-            buf.append("abstract ");
+        if ( (access & Opcodes.ACC_ABSTRACT) != 0 ) {
+            this.buf.append( "abstract " );
         }
-        if ((access & Opcodes.ACC_STRICT) != 0) {
-            buf.append("strictfp ");
+        if ( (access & Opcodes.ACC_STRICT) != 0 ) {
+            this.buf.append( "strictfp " );
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0) {
-            buf.append("synthetic ");
+        if ( (access & Opcodes.ACC_SYNTHETIC) != 0 ) {
+            this.buf.append( "synthetic " );
         }
     }
 }

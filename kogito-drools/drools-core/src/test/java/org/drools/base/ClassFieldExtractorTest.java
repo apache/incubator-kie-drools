@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.base;
  * limitations under the License.
  */
 
-
-
 import junit.framework.TestCase;
 
 import org.drools.util.asm.BeanInherit;
@@ -30,17 +29,17 @@ import org.drools.util.asm.TestInterfaceImpl;
 public class ClassFieldExtractorTest extends TestCase {
 
     public void testBasic() throws Exception {
-        TestBean obj = new TestBean();
+        final TestBean obj = new TestBean();
         obj.setBlah( false );
         obj.setSomething( "no" );
 
-        ClassFieldExtractor ext = new ClassFieldExtractor( TestBean.class,
-                                                           "blah" );
+        final ClassFieldExtractor ext = new ClassFieldExtractor( TestBean.class,
+                                                                 "blah" );
         assertEquals( false,
                       ((Boolean) ext.getValue( obj )).booleanValue() );
 
-        ClassFieldExtractor ext2 = new ClassFieldExtractor( TestBean.class,
-                                                            "fooBar" );
+        final ClassFieldExtractor ext2 = new ClassFieldExtractor( TestBean.class,
+                                                                  "fooBar" );
         assertEquals( "fooBar",
                       ext2.getValue( obj ) );
 
@@ -48,9 +47,9 @@ public class ClassFieldExtractorTest extends TestCase {
 
     public void testInterface() throws Exception {
 
-        TestInterface obj = new TestInterfaceImpl();
-        ClassFieldExtractor ext = new ClassFieldExtractor( TestInterface.class,
-                                                           "something" );
+        final TestInterface obj = new TestInterfaceImpl();
+        final ClassFieldExtractor ext = new ClassFieldExtractor( TestInterface.class,
+                                                                 "something" );
 
         assertEquals( "foo",
                       (String) ext.getValue( obj ) );
@@ -59,35 +58,35 @@ public class ClassFieldExtractorTest extends TestCase {
 
     public void testAbstract() throws Exception {
 
-        ClassFieldExtractor ext = new ClassFieldExtractor( TestAbstract.class,
-                                                           "something" );
-        TestAbstract obj = new TestAbstractImpl();
+        final ClassFieldExtractor ext = new ClassFieldExtractor( TestAbstract.class,
+                                                                 "something" );
+        final TestAbstract obj = new TestAbstractImpl();
         assertEquals( "foo",
                       (String) ext.getValue( obj ) );
 
     }
 
     public void testInherited() throws Exception {
-        ClassFieldExtractor ext = new ClassFieldExtractor( BeanInherit.class,
-                                                           "text" );
-        BeanInherit obj = new BeanInherit();
+        final ClassFieldExtractor ext = new ClassFieldExtractor( BeanInherit.class,
+                                                                 "text" );
+        final BeanInherit obj = new BeanInherit();
         assertEquals( "hola",
                       (String) ext.getValue( obj ) );
 
     }
 
     public void testMultipleInterfaces() throws Exception {
-        ConcreteChild obj = new ConcreteChild();
-        ClassFieldExtractor ext = new ClassFieldExtractor( InterfaceChild.class,
-                                                           "foo" );
+        final ConcreteChild obj = new ConcreteChild();
+        final ClassFieldExtractor ext = new ClassFieldExtractor( InterfaceChild.class,
+                                                                 "foo" );
         assertEquals( 42,
                       ((Integer) ext.getValue( obj )).intValue() );
     }
 
     public void testLong() throws Exception {
-        ClassFieldExtractor ext = new ClassFieldExtractor( TestBean.class,
-                                                           "longField" );
-        TestBean bean = new TestBean();
+        final ClassFieldExtractor ext = new ClassFieldExtractor( TestBean.class,
+                                                                 "longField" );
+        final TestBean bean = new TestBean();
         assertEquals( 424242,
                       ((Long) ext.getValue( bean )).longValue() );
     }

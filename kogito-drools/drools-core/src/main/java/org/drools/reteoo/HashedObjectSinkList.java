@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.drools.WorkingMemory;
+import org.drools.common.DefaultFactHandle;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
@@ -44,30 +45,34 @@ public class HashedObjectSinkList
     ObjectSinkList,
     Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3031367588747727946L;
     /** A switch map for hashed alpha nodes */
-    private Map        alphaSwitch = new HashMap();
+    private final Map         alphaSwitch      = new HashMap();
     /** The hashed sinks list, for simple and quick retrieval */
-    private List       hashedSinks = new ArrayList( 1 );
+    private final List        hashedSinks      = new ArrayList( 1 );
     /** A list for not hashed sinks */
-    private List       otherSinks  = new ArrayList( 1 );
+    private final List        otherSinks       = new ArrayList( 1 );
     /** The last added objectSink */
-    private ObjectSink lastObjectSink;
+    private ObjectSink        lastObjectSink;
 
     /**
      * @inheritDoc
      */
-    public boolean contains(ObjectSink objectSink) {
+    public boolean contains(final ObjectSink objectSink) {
         return this.otherSinks.contains( objectSink ) || this.alphaSwitch.containsValue( objectSink );
     }
 
     /**
      * @inheritDoc
      */
-    public boolean add(ObjectSink objectSink) {
+    public boolean add(final ObjectSink objectSink) {
         if ( (objectSink instanceof AlphaNode) && (((AlphaNode) objectSink).getConstraint() instanceof LiteralConstraint) && (((LiteralConstraint) ((AlphaNode) objectSink).getConstraint()).getEvaluator().getOperator() == Evaluator.EQUAL) ) {
 
-            FieldConstraint constraint = ((AlphaNode) objectSink).getConstraint();
-            AlphaNodeSwitch wrapper = new AlphaNodeSwitch( (LiteralConstraint) constraint );
+            final FieldConstraint constraint = ((AlphaNode) objectSink).getConstraint();
+            final AlphaNodeSwitch wrapper = new AlphaNodeSwitch( (LiteralConstraint) constraint );
 
             AlphaNodeSwitch aux = (AlphaNodeSwitch) this.alphaSwitch.get( wrapper );
             if ( aux == null ) {
@@ -87,10 +92,10 @@ public class HashedObjectSinkList
     /**
      * @inheritDoc
      */
-    public boolean remove(ObjectSink objectSink) {
+    public boolean remove(final ObjectSink objectSink) {
         if ( (objectSink instanceof AlphaNode) && (((AlphaNode) objectSink).getConstraint() instanceof LiteralConstraint) && (((LiteralConstraint) ((AlphaNode) objectSink).getConstraint()).getEvaluator().getOperator() == Evaluator.EQUAL) ) {
 
-            FieldConstraint constraint = ((AlphaNode) objectSink).getConstraint();
+            final FieldConstraint constraint = ((AlphaNode) objectSink).getConstraint();
             AlphaNodeSwitch wrapper = new AlphaNodeSwitch( (LiteralConstraint) constraint );
 
             wrapper = (AlphaNodeSwitch) this.alphaSwitch.get( wrapper );
@@ -119,45 +124,45 @@ public class HashedObjectSinkList
      * @inheritDoc
      */
     public Iterator iterator(final WorkingMemory workingMemory,
-                             final FactHandleImpl handle) {
+                             final DefaultFactHandle handle) {
         return new Iterator() {
             private static final int FLAG_ITER_HASH = 0;
             private static final int FLAG_ITER_LIST = 1;
 
-            private Iterator         it             = alphaSwitch.values().iterator();
+            private Iterator         it             = HashedObjectSinkList.this.alphaSwitch.values().iterator();
             private ObjectSink       current        = null;
             private ObjectSink       next           = null;
             private int              flag           = FLAG_ITER_HASH;
 
             public boolean hasNext() {
                 boolean hasnext = false;
-                if ( next == null ) {
-                    switch ( flag ) {
+                if ( this.next == null ) {
+                    switch ( this.flag ) {
                         // iterating over hashed list
                         case FLAG_ITER_HASH :
-                            while ( it.hasNext() ) {
-                                AlphaNodeSwitch wrapper = (AlphaNodeSwitch) it.next();
-                                next = wrapper.getNode( workingMemory,
-                                                        handle );
-                                if ( next != null ) {
+                            while ( this.it.hasNext() ) {
+                                final AlphaNodeSwitch wrapper = (AlphaNodeSwitch) this.it.next();
+                                this.next = wrapper.getNode( workingMemory,
+                                                             handle );
+                                if ( this.next != null ) {
                                     hasnext = true;
                                     break;
                                 }
                             }
                             if ( hasnext == false ) {
-                                it = otherSinks.iterator();
-                                hasnext = it.hasNext();
+                                this.it = HashedObjectSinkList.this.otherSinks.iterator();
+                                hasnext = this.it.hasNext();
                                 if ( hasnext ) {
-                                    next = (ObjectSink) it.next();
+                                    this.next = (ObjectSink) this.it.next();
                                 }
-                                flag = FLAG_ITER_LIST;
+                                this.flag = FLAG_ITER_LIST;
                             }
                             break;
                         // interating over other not hashed sinks
                         case FLAG_ITER_LIST :
-                            hasnext = it.hasNext();
+                            hasnext = this.it.hasNext();
                             if ( hasnext ) {
-                                next = (ObjectSink) it.next();
+                                this.next = (ObjectSink) this.it.next();
                             }
                             break;
                     }
@@ -181,7 +186,7 @@ public class HashedObjectSinkList
 
             public void remove() {
                 if ( this.current != null ) {
-                    HashedObjectSinkList.this.remove( current );
+                    HashedObjectSinkList.this.remove( this.current );
                     this.current = null;
                 } else {
                     throw new IllegalStateException( "No item to remove. Call next() before calling remove()." );
@@ -198,34 +203,34 @@ public class HashedObjectSinkList
             private static final int FLAG_ITER_HASH = 0;
             private static final int FLAG_ITER_LIST = 1;
 
-            private Iterator         it             = hashedSinks.iterator();
+            private Iterator         it             = HashedObjectSinkList.this.hashedSinks.iterator();
             private ObjectSink       current        = null;
             private ObjectSink       next           = null;
             private int              flag           = FLAG_ITER_HASH;
 
             public boolean hasNext() {
                 boolean hasnext = false;
-                if ( next == null ) {
-                    switch ( flag ) {
+                if ( this.next == null ) {
+                    switch ( this.flag ) {
                         // iterating over hashed list
                         case FLAG_ITER_HASH :
-                            hasnext = it.hasNext();
+                            hasnext = this.it.hasNext();
                             if ( hasnext ) {
-                                next = (ObjectSink) it.next();
+                                this.next = (ObjectSink) this.it.next();
                             } else {
-                                it = otherSinks.iterator();
-                                hasnext = it.hasNext();
+                                this.it = HashedObjectSinkList.this.otherSinks.iterator();
+                                hasnext = this.it.hasNext();
                                 if ( hasnext ) {
-                                    next = (ObjectSink) it.next();
+                                    this.next = (ObjectSink) this.it.next();
                                 }
-                                flag = FLAG_ITER_LIST;
+                                this.flag = FLAG_ITER_LIST;
                             }
                             break;
                         // interating over other not hashed sinks
                         case FLAG_ITER_LIST :
-                            hasnext = it.hasNext();
+                            hasnext = this.it.hasNext();
                             if ( hasnext ) {
-                                next = (ObjectSink) it.next();
+                                this.next = (ObjectSink) this.it.next();
                             }
                             break;
                     }
@@ -249,7 +254,7 @@ public class HashedObjectSinkList
 
             public void remove() {
                 if ( this.current != null ) {
-                    HashedObjectSinkList.this.remove( current );
+                    HashedObjectSinkList.this.remove( this.current );
                     this.current = null;
                 } else {
                     throw new IllegalStateException( "No item to remove. Call next() before calling remove()." );
@@ -266,9 +271,9 @@ public class HashedObjectSinkList
      * Also, the list returned is an unmodifiable list to prevent misusage of it.
      */
     public List getObjectsAsList() {
-        List list = new ArrayList();
-        for ( Iterator i = this.alphaSwitch.values().iterator(); i.hasNext(); ) {
-            AlphaNodeSwitch wrapper = (AlphaNodeSwitch) i.next();
+        final List list = new ArrayList();
+        for ( final Iterator i = this.alphaSwitch.values().iterator(); i.hasNext(); ) {
+            final AlphaNodeSwitch wrapper = (AlphaNodeSwitch) i.next();
             list.addAll( wrapper.getAllNodes() );
         }
         list.addAll( this.otherSinks );
@@ -276,7 +281,7 @@ public class HashedObjectSinkList
     }
 
     public int size() {
-        return this.hashedSinks.size()+this.otherSinks.size();
+        return this.hashedSinks.size() + this.otherSinks.size();
     }
 
 }

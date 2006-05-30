@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 import junit.framework.TestCase;
 
 import org.drools.FactException;
@@ -31,24 +28,24 @@ import org.drools.FactHandle;
  */
 public class FactHandleImplTest extends TestCase {
 
-    private RuleBaseImpl ruleBase;
+    private LeapsRuleBase ruleBase;
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.ruleBase = new RuleBaseImpl();
+        this.ruleBase = new LeapsRuleBase();
     }
 
     /*
      * Test method for 'leaps.LeapsFactHandle.getId()'
      */
     public void testGetId() {
-        WorkingMemoryImpl memory = (WorkingMemoryImpl) this.ruleBase.newWorkingMemory();
+        final LeapsWorkingMemory memory = (LeapsWorkingMemory) this.ruleBase.newWorkingMemory();
 
         try {
-            FactHandle fh1 = memory.assertObject( "object1" );
+            final FactHandle fh1 = memory.assertObject( "object1" );
             assertEquals( ((FactHandleImpl) fh1).getId(),
-                          ((FactHandleImpl) memory.newFactHandle( "dummy" )).getId() - 1 );
-        } catch ( FactException fe ) {
+                          ((FactHandleImpl) memory.getFactHandleFactory().newFactHandle( "dummy" )).getId() - 1 );
+        } catch ( final FactException fe ) {
         }
     }
 

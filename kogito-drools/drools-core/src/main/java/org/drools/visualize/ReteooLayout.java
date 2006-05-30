@@ -1,4 +1,5 @@
 package org.drools.visualize;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.visualize;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.util.Iterator;
 import java.util.Set;
@@ -40,9 +39,9 @@ public class ReteooLayout extends AbstractLayout {
     private int                columnWidth;
     private int                rowHeight;
 
-    public ReteooLayout(Graph g,
-                        VertexFunctions vertexFunctions,
-                        RowList rowList) {
+    public ReteooLayout(final Graph g,
+                        final VertexFunctions vertexFunctions,
+                        final RowList rowList) {
         super( g );
         this.vertexFunctions = vertexFunctions;
         this.rowList = rowList;
@@ -54,58 +53,58 @@ public class ReteooLayout extends AbstractLayout {
     }
 
     public int getColumnWidth() {
-        return columnWidth;
+        return this.columnWidth;
     }
 
     public int getRowHeight() {
-        return rowHeight;
+        return this.rowHeight;
     }
 
     public int getPreferredWidth() {
-        return rowList.getWidth() * columnWidth;
+        return this.rowList.getWidth() * this.columnWidth;
     }
 
     public int getPreferredHeight() {
-        return rowList.getDepth() * getRowHeight() * ROW_HEIGHT_MULTIPLIER;
+        return this.rowList.getDepth() * getRowHeight() * ReteooLayout.ROW_HEIGHT_MULTIPLIER;
     }
 
     protected void computeSize() {
-        Set vertices = getGraph().getVertices();
+        final Set vertices = getGraph().getVertices();
 
-        for ( Iterator vertexIter = vertices.iterator(); vertexIter.hasNext(); ) {
-            Vertex vertex = (Vertex) vertexIter.next();
+        for ( final Iterator vertexIter = vertices.iterator(); vertexIter.hasNext(); ) {
+            final Vertex vertex = (Vertex) vertexIter.next();
 
-            int width = vertexFunctions.getShapeDimension( vertex ).width;
-            int height = vertexFunctions.getShapeDimension( vertex ).height;
+            final int width = this.vertexFunctions.getShapeDimension( vertex ).width;
+            final int height = this.vertexFunctions.getShapeDimension( vertex ).height;
 
-            if ( width > columnWidth ) {
-                columnWidth = width;
+            if ( width > this.columnWidth ) {
+                this.columnWidth = width;
             }
 
-            if ( height > rowHeight ) {
-                rowHeight = height;
+            if ( height > this.rowHeight ) {
+                this.rowHeight = height;
             }
         }
 
-        columnWidth = columnWidth + COLUMN_SPACE;
+        this.columnWidth = this.columnWidth + ReteooLayout.COLUMN_SPACE;
     }
 
-    protected void initialize_local_vertex(Vertex vertex) {
-        int row = rowList.getRow( vertex );
-        int col = rowList.getColumn( vertex );
+    protected void initialize_local_vertex(final Vertex vertex) {
+        final int row = this.rowList.getRow( vertex );
+        final int col = this.rowList.getColumn( vertex );
 
-        int widthPx = this.getCurrentSize().width;
-        int heightPx = this.getCurrentSize().height;
+        final int widthPx = this.getCurrentSize().width;
+        final int heightPx = this.getCurrentSize().height;
 
-        int rowWidth = rowList.getWidth( row );
+        final int rowWidth = this.rowList.getWidth( row );
 
-        int columnWidthPx = getColumnWidth();
-        int rowHeightPx = getRowHeight();
+        final int columnWidthPx = getColumnWidth();
+        final int rowHeightPx = getRowHeight();
 
-        Coordinates coords = new Coordinates();
+        final Coordinates coords = new Coordinates();
 
         double x = (col * columnWidthPx);
-        double y = (row * (rowHeightPx * ROW_HEIGHT_MULTIPLIER));
+        double y = (row * (rowHeightPx * ReteooLayout.ROW_HEIGHT_MULTIPLIER));
 
         x = x + (widthPx / 2) - ((rowWidth - 1) * (columnWidthPx / 2));
         y = y + (rowHeightPx / 2) + 3;
@@ -115,24 +114,24 @@ public class ReteooLayout extends AbstractLayout {
 
         //System.err.println( vertex + " -> " + coords.getX() + "," + coords.getY() + " / " + row + "," + col );
 
-        vertex.setUserDatum( COORDS,
+        vertex.setUserDatum( ReteooLayout.COORDS,
                              coords,
                              new UserDataContainer.CopyAction.Shared() );
     }
 
-    public double getX(Vertex vertex) {
+    public double getX(final Vertex vertex) {
         //System.err.println( "getX" );
         return getCoordinates( vertex ).getX();
     }
 
-    public double getY(Vertex vertex) {
+    public double getY(final Vertex vertex) {
         //System.err.println( "getY" );
         return getCoordinates( vertex ).getY();
     }
 
-    public Coordinates getCoordinates(ArchetypeVertex vertex) {
+    public Coordinates getCoordinates(final ArchetypeVertex vertex) {
         //System.err.println( vertex + " --> " + (Coordinates) vertex.getUserDatum( COORDS ) );
-        return (Coordinates) vertex.getUserDatum( COORDS );
+        return (Coordinates) vertex.getUserDatum( ReteooLayout.COORDS );
     }
 
     public void advancePositions() {

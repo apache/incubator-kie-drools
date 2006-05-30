@@ -1,4 +1,5 @@
 package org.drools.spi;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-
-
 import org.drools.base.ClassObjectType;
 
 /**
@@ -27,20 +26,29 @@ import org.drools.base.ClassObjectType;
 public class ClassObjectTypeResolver
     implements
     ObjectTypeResolver {
-    ModifieableClassObjectType objectType = new ModifieableClassObjectType( null );
+    /**
+     * 
+     */
+    private static final long  serialVersionUID = 181508463735714027L;
+    ModifieableClassObjectType objectType       = new ModifieableClassObjectType( null );
 
-    public ObjectType resolve(Object object) {
+    public ObjectType resolve(final Object object) {
         this.objectType.setClass( object.getClass() );
         return this.objectType;
     }
 
     static class ModifieableClassObjectType extends ClassObjectType {
 
-        public ModifieableClassObjectType(Class objectTypeClass) {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 4946548417917090613L;
+
+        public ModifieableClassObjectType(final Class objectTypeClass) {
             super( objectTypeClass );
         }
 
-        public void setClass(Class clazz) {
+        public void setClass(final Class clazz) {
             this.objectTypeClass = clazz;
         }
 

@@ -1,4 +1,5 @@
 package org.drools.util.asm;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,22 +16,20 @@ package org.drools.util.asm;
  * limitations under the License.
  */
 
-
-
 public class BaseBean {
 
-    private String text   = "hola";
-    private int    number = 42;
+    private final String text   = "hola";
+    private int          number = 42;
 
     public String getText() {
-        return text;
+        return this.text;
     }
 
     public int getNumber() {
-        return number;
+        return this.number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(final int number) {
         this.number = number;
     }
 

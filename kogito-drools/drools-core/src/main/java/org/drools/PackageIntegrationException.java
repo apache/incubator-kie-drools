@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
-
-
 import org.drools.rule.Package;
 
 /**
@@ -34,8 +31,12 @@ import org.drools.rule.Package;
  *          mproctor Exp $
  */
 public class PackageIntegrationException extends IntegrationException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8186145333819048883L;
     /** The rule. */
-    private final Package pkg;
+    private final Package     pkg;
 
     /**
      * @see java.lang.Exception#Exception()
@@ -43,8 +44,8 @@ public class PackageIntegrationException extends IntegrationException {
      * @param pkg
      *            The offending rule.
      */
-    public PackageIntegrationException(String message,
-                                       Package pkg) {
+    public PackageIntegrationException(final String message,
+                                       final Package pkg) {
         super( message );
         this.pkg = pkg;
     }
@@ -55,7 +56,7 @@ public class PackageIntegrationException extends IntegrationException {
      * @param pkg
      *            The offending rule.
      */
-    public PackageIntegrationException(Package pkg) {
+    public PackageIntegrationException(final Package pkg) {
         super( createMessage( pkg ) );
         this.pkg = pkg;
     }
@@ -66,8 +67,8 @@ public class PackageIntegrationException extends IntegrationException {
      * @param pkg
      *            The offending rule.
      */
-    public PackageIntegrationException(Package pkg,
-                                       Throwable cause) {
+    public PackageIntegrationException(final Package pkg,
+                                       final Throwable cause) {
         super( createMessage( pkg ),
                cause );
         this.pkg = pkg;
@@ -82,7 +83,7 @@ public class PackageIntegrationException extends IntegrationException {
         return this.pkg;
     }
 
-    private static String createMessage(Package pkg) {
+    private static String createMessage(final Package pkg) {
         return pkg.getName() + " cannot be integrated";
     }
 }

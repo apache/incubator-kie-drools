@@ -200,7 +200,6 @@ public interface Lock {
      */
     void lockInterruptibly() throws InterruptedException;
 
-
     /**
      * Acquires the lock only if it is free at the time of invocation.
      * <p>Acquires the lock if it is available and returns immediately

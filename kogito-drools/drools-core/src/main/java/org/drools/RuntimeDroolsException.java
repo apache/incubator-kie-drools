@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
 /**
  * The base Drools exception for all internal thrown exceptions. If any exceptions are thrown during the
  * runtime execution of Drools they are considered non-recoverable and thus thrown as  Runtime exceptions
@@ -30,6 +29,11 @@ package org.drools;
  */
 public class RuntimeDroolsException extends RuntimeException {
     /**
+     * 
+     */
+    private static final long serialVersionUID = 2047943370647227549L;
+
+    /**
      * @see java.lang.Exception#Exception()
      */
     public RuntimeDroolsException() {
@@ -39,22 +43,22 @@ public class RuntimeDroolsException extends RuntimeException {
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public RuntimeDroolsException(String message) {
+    public RuntimeDroolsException(final String message) {
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    public RuntimeDroolsException(String message,
-                                  Throwable cause) {
+    public RuntimeDroolsException(final String message,
+                                  final Throwable cause) {
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public RuntimeDroolsException(Throwable cause) {
+    public RuntimeDroolsException(final Throwable cause) {
         super( cause );
     }
 

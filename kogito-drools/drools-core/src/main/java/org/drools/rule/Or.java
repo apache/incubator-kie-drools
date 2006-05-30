@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,11 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 public class Or extends GroupElement {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1519832383109314339L;
 
 }

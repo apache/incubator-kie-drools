@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -25,11 +26,18 @@ package org.drools.leaps;
  * 
  */
 public class RuleHandle extends Handle {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2506069324992187726L;
     // ce position for which handle is created
-    private final int dominantPosition;
+    private final int         dominantPosition;
 
-    public RuleHandle(long id, LeapsRule rule, int dominantPosition) {
-        super( id, rule );
+    public RuleHandle(final long id,
+                      final LeapsRule rule,
+                      final int dominantPosition) {
+        super( id,
+               rule );
         this.dominantPosition = dominantPosition;
     }
 
@@ -64,16 +72,14 @@ public class RuleHandle extends Handle {
     /**
      * @see java.lang.Object
      */
-    public boolean equals( Object that ) {
-        return super.equals( that )
-                && ( this.getDominantPosition( ) == ( (RuleHandle) that ).getDominantPosition( ) );
+    public boolean equals(final Object that) {
+        return super.equals( that ) && (this.getDominantPosition() == ((RuleHandle) that).getDominantPosition());
     }
 
     /**
      * @see java.lang.Object
      */
     public String toString() {
-        return "R-" + this.getId( ) + " \"" + this.getLeapsRule( ).toString( )
-                + "\" [pos - " + this.dominantPosition + "]";
+        return "R-" + this.getId() + " \"" + this.getLeapsRule().toString() + "\" [pos - " + this.dominantPosition + "]";
     }
 }

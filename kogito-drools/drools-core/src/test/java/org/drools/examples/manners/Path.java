@@ -20,9 +20,9 @@ public final class Path {
     private final String guestName;
     private final int    seat;
 
-    public Path(int id,
-                int seat,
-                String guestName) {
+    public Path(final int id,
+                final int seat,
+                final String guestName) {
         this.id = id;
         this.seat = seat;
         this.guestName = guestName;

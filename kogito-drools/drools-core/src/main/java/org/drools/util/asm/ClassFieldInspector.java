@@ -1,4 +1,5 @@
 package org.drools.util.asm;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.util.asm;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,34 +45,34 @@ import org.drools.asm.Opcodes;
  */
 public class ClassFieldInspector {
 
-    private List methods     = new ArrayList();
-    private Map  fieldNames  = new HashMap();
-    private Map  fieldTypes  = new HashMap();
-    private Map  methodNames = new HashMap();
-    private Set  nonGetters  = new HashSet();
+    private final List methods     = new ArrayList();
+    private final Map  fieldNames  = new HashMap();
+    private final Map  fieldTypes  = new HashMap();
+    private final Map  methodNames = new HashMap();
+    private final Set  nonGetters  = new HashSet();
 
     /**
      * @param clazz The class that the fields to be shadowed are extracted for.
      * @throws IOException
      */
-    public ClassFieldInspector(Class clazz) throws IOException {
+    public ClassFieldInspector(final Class clazz) throws IOException {
         processClass( clazz );
     }
 
     /** Walk up the inheritance hierarchy recursively, reading in fields */
-    private void processClass(Class clazz) throws IOException {
-        String name = getResourcePath( clazz );
-        InputStream stream = clazz.getResourceAsStream( name );
-        ClassReader reader = new ClassReader( stream );
-        ClassFieldVisitor visitor = new ClassFieldVisitor( clazz,
-                                                           this );
+    private void processClass(final Class clazz) throws IOException {
+        final String name = getResourcePath( clazz );
+        final InputStream stream = clazz.getResourceAsStream( name );
+        final ClassReader reader = new ClassReader( stream );
+        final ClassFieldVisitor visitor = new ClassFieldVisitor( clazz,
+                                                                 this );
         reader.accept( visitor,
                        false );
         if ( clazz.getSuperclass() != null ) {
             processClass( clazz.getSuperclass() );
         }
         if ( clazz.isInterface() ) {
-            Class[] interfaces = clazz.getInterfaces();
+            final Class[] interfaces = clazz.getInterfaces();
             for ( int i = 0; i < interfaces.length; i++ ) {
                 processClass( interfaces[i] );
             }
@@ -83,9 +82,9 @@ public class ClassFieldInspector {
     /**
      * Convert it to a form so we can load the bytes from the classpath.
      */
-    private String getResourcePath(Class clazz) {
+    private String getResourcePath(final Class clazz) {
         return "/" + clazz.getName().replace( '.',
-                                                 '/' ) + ".class";
+                                              '/' ) + ".class";
     }
 
     /** 
@@ -93,7 +92,7 @@ public class ClassFieldInspector {
      * This should only be done once when compiling a rulebase ideally.
      */
     public List getPropertyGetters() {
-        return methods;
+        return this.methods;
     }
 
     /**
@@ -101,21 +100,21 @@ public class ClassFieldInspector {
      * to the numerical index by which they can be accessed.
      */
     public Map getFieldNames() {
-        return fieldNames;
+        return this.fieldNames;
     }
 
     /**
      * @return A mapping of field types (unboxed).
      */
     public Map getFieldTypes() {
-        return fieldTypes;
+        return this.fieldTypes;
     }
 
     /** 
      * @return A mapping of methods for the getters. 
      */
     public Map getGetterMethods() {
-        return methodNames;
+        return this.methodNames;
     }
 
     /**
@@ -129,30 +128,30 @@ public class ClassFieldInspector {
         private Class               clazz;
         private ClassFieldInspector inspector;
 
-        ClassFieldVisitor(Class cls,
-                          ClassFieldInspector inspector) {
+        ClassFieldVisitor(final Class cls,
+                          final ClassFieldInspector inspector) {
             this.clazz = cls;
             this.inspector = inspector;
         }
 
-        public MethodVisitor visitMethod(int access,
-                                         String name,
-                                         String desc,
-                                         String signature,
-                                         String[] exceptions) {
+        public MethodVisitor visitMethod(final int access,
+                                         final String name,
+                                         final String desc,
+                                         final String signature,
+                                         final String[] exceptions) {
             //only want public methods that start with 'get' or 'is'
             //and have no args, and return a value
             if ( (access & Opcodes.ACC_PUBLIC) > 0 ) {
                 if ( desc.startsWith( "()" ) && !(name.equals( "<init>" )) ) {// && ( name.startsWith("get") || name.startsWith("is") ) ) {
                     try {
-                        Method method = clazz.getMethod( name,
-                                                         (Class[]) null );
+                        final Method method = this.clazz.getMethod( name,
+                                                                    (Class[]) null );
                         if ( method.getReturnType() != void.class ) {
-                            int fieldIndex = inspector.methods.size();
+                            final int fieldIndex = this.inspector.methods.size();
                             addToMapping( method,
                                           fieldIndex );
                         }
-                    } catch ( NoSuchMethodException e ) {
+                    } catch ( final NoSuchMethodException e ) {
                         throw new IllegalStateException( "Error in getting field access method." );
                     }
                 }
@@ -160,71 +159,71 @@ public class ClassFieldInspector {
             return null;
         }
 
-        public void visit(int arg0,
-                          int arg1,
-                          String arg2,
-                          String arg3,
-                          String[] arg4,
-                          String arg5) {
+        public void visit(final int arg0,
+                          final int arg1,
+                          final String arg2,
+                          final String arg3,
+                          final String[] arg4,
+                          final String arg5) {
         }
 
-        public void visitInnerClass(String arg0,
-                                    String arg1,
-                                    String arg2,
-                                    int arg3) {
+        public void visitInnerClass(final String arg0,
+                                    final String arg1,
+                                    final String arg2,
+                                    final int arg3) {
         }
 
-        public void visitField(int access,
-                               String arg1,
-                               String arg2,
-                               Object arg3,
-                               Attribute arg4) {
+        public void visitField(final int access,
+                               final String arg1,
+                               final String arg2,
+                               final Object arg3,
+                               final Attribute arg4) {
         }
 
-        public void visitAttribute(Attribute arg0) {
+        public void visitAttribute(final Attribute arg0) {
         }
 
         public void visitEnd() {
         }
 
-        public void visit(int arg0,
-                          int arg1,
-                          String arg2,
-                          String arg3,
-                          String arg4,
-                          String[] arg5) {
+        public void visit(final int arg0,
+                          final int arg1,
+                          final String arg2,
+                          final String arg3,
+                          final String arg4,
+                          final String[] arg5) {
 
         }
 
-        public void visitSource(String arg0,
-                                String arg1) {
+        public void visitSource(final String arg0,
+                                final String arg1) {
 
         }
 
-        public void visitOuterClass(String arg0,
-                                    String arg1,
-                                    String arg2) {
+        public void visitOuterClass(final String arg0,
+                                    final String arg1,
+                                    final String arg2) {
 
         }
 
-        public AnnotationVisitor visitAnnotation(String arg0,
-                                                 boolean arg1) {
+        public AnnotationVisitor visitAnnotation(final String arg0,
+                                                 final boolean arg1) {
 
             return new ClassFieldAnnotationVisitor();
         }
 
-        public FieldVisitor visitField(int arg0,
-                                       String arg1,
-                                       String arg2,
-                                       String arg3,
-                                       Object arg4) {
+        public FieldVisitor visitField(final int arg0,
+                                       final String arg1,
+                                       final String arg2,
+                                       final String arg3,
+                                       final Object arg4) {
 
             return null;
         }
 
-        private void addToMapping(Method method,
-                                  int index) {
-            String name = method.getName();
+        private void addToMapping(final Method method,
+                                  final int index) {
+            final String name = method.getName();
             int offset;
             if ( name.startsWith( "is" ) ) {
                 offset = 2;
@@ -233,52 +232,52 @@ public class ClassFieldInspector {
             } else {
                 offset = 0;
             }
-            String fieldName = calcFieldName( name,
-                                              offset );
-            if ( inspector.fieldNames.containsKey( fieldName ) ) {
+            final String fieldName = calcFieldName( name,
+                                                    offset );
+            if ( this.inspector.fieldNames.containsKey( fieldName ) ) {
                 //only want it once, the first one thats found
-                if ( offset != 0 && inspector.nonGetters.contains( fieldName ) ) {
+                if ( offset != 0 && this.inspector.nonGetters.contains( fieldName ) ) {
                     //replace the non getter method with the getter one
                     removeOldField( fieldName );
                     storeField( method,
                                 index,
                                 fieldName );
-                    inspector.nonGetters.remove( fieldName );
+                    this.inspector.nonGetters.remove( fieldName );
                 }
             } else {
                 storeField( method,
                             index,
                             fieldName );
                 if ( offset == 0 ) {
-                    inspector.nonGetters.add( fieldName );
+                    this.inspector.nonGetters.add( fieldName );
                 }
             }
         }
 
-        private void removeOldField(String fieldName) {
-            inspector.fieldNames.remove( fieldName );
-            inspector.fieldTypes.remove( fieldName );
-            inspector.methods.remove( inspector.methodNames.get( fieldName ) );
-            inspector.methodNames.remove( fieldName );
+        private void removeOldField(final String fieldName) {
+            this.inspector.fieldNames.remove( fieldName );
+            this.inspector.fieldTypes.remove( fieldName );
+            this.inspector.methods.remove( this.inspector.methodNames.get( fieldName ) );
+            this.inspector.methodNames.remove( fieldName );
 
         }
 
-        private void storeField(Method method,
-                                int index,
-                                String fieldName) {
-            inspector.fieldNames.put( fieldName,
-                                      new Integer( index ) );
-            inspector.fieldTypes.put( fieldName,
-                                      method.getReturnType() );
-            inspector.methodNames.put( fieldName,
-                                       method );
-            inspector.methods.add( method );
+        private void storeField(final Method method,
+                                final int index,
+                                final String fieldName) {
+            this.inspector.fieldNames.put( fieldName,
+                                           new Integer( index ) );
+            this.inspector.fieldTypes.put( fieldName,
+                                           method.getReturnType() );
+            this.inspector.methodNames.put( fieldName,
+                                            method );
+            this.inspector.methods.add( method );
         }
 
         private String calcFieldName(String name,
-                                     int offset) {
+                                     final int offset) {
             name = name.substring( offset );
-            char first = Character.toLowerCase( name.charAt( 0 ) );
+            final char first = Character.toLowerCase( name.charAt( 0 ) );
             name = first + name.substring( 1 );
             return name;
         }
@@ -293,21 +292,21 @@ public class ClassFieldInspector {
         implements
         AnnotationVisitor {
 
-        public void visit(String arg0,
-                          Object arg1) {
+        public void visit(final String arg0,
+                          final Object arg1) {
         }
 
-        public void visitEnum(String arg0,
-                              String arg1,
-                              String arg2) {
+        public void visitEnum(final String arg0,
+                              final String arg1,
+                              final String arg2) {
         }
 
-        public AnnotationVisitor visitAnnotation(String arg0,
-                                                 String arg1) {
+        public AnnotationVisitor visitAnnotation(final String arg0,
+                                                 final String arg1) {
             return new ClassFieldAnnotationVisitor();
         }
 
-        public AnnotationVisitor visitArray(String arg0) {
+        public AnnotationVisitor visitArray(final String arg0) {
             return new ClassFieldAnnotationVisitor();
         }
 

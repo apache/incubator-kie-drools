@@ -1,4 +1,5 @@
 package org.drools.util.asm;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.util.asm;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -50,22 +49,22 @@ public class FieldAccessorGenerator {
     }
 
     public static FieldAccessorGenerator getInstance() {
-        if ( INSTANCE == null ) {
-            INSTANCE = new FieldAccessorGenerator();
+        if ( FieldAccessorGenerator.INSTANCE == null ) {
+            FieldAccessorGenerator.INSTANCE = new FieldAccessorGenerator();
         }
-        return INSTANCE;
+        return FieldAccessorGenerator.INSTANCE;
     }
 
     /**
      * Looks up an instance of a field accessor for the given class.
      * If none is found it will generate one, and then cache it.
      */
-    public FieldAccessorMap getInstanceFor(Class cls) throws Exception {
-        Object obj = cache.get( cls );
+    public FieldAccessorMap getInstanceFor(final Class cls) throws Exception {
+        Object obj = this.cache.get( cls );
         if ( obj == null ) {
             obj = newInstanceFor( cls );
-            cache.put( cls,
-                       obj );
+            this.cache.put( cls,
+                            obj );
         }
         return (FieldAccessorMap) obj;
     }
@@ -74,22 +73,22 @@ public class FieldAccessorGenerator {
      * Generate a new implementation for of a FieldAccessor for the given class.
      * No caching. Uses ASM.
      */
-    public FieldAccessorMap newInstanceFor(Class cls) throws Exception {
+    public FieldAccessorMap newInstanceFor(final Class cls) throws Exception {
 
-        ClassFieldInspector inspector = new ClassFieldInspector( cls );
-        Method[] getters = (Method[]) inspector.getPropertyGetters().toArray( new Method[]{} );
+        final ClassFieldInspector inspector = new ClassFieldInspector( cls );
+        final Method[] getters = (Method[]) inspector.getPropertyGetters().toArray( new Method[]{} );
 
-        String generatedClassName = GEN_PACKAGE_PREFIX + cls.getName();
+        final String generatedClassName = FieldAccessorGenerator.GEN_PACKAGE_PREFIX + cls.getName();
 
-        byte[] generatedClass = AccessorClassFactory.generateClass( getters,
-                                                                    cls,
-                                                                    generatedClassName );
-        ByteArrayClassLoader cl = new ByteArrayClassLoader( Thread.currentThread().getContextClassLoader() );
+        final byte[] generatedClass = AccessorClassFactory.generateClass( getters,
+                                                                          cls,
+                                                                          generatedClassName );
+        final ByteArrayClassLoader cl = new ByteArrayClassLoader( Thread.currentThread().getContextClassLoader() );
         cl.addByteArray( generatedClassName,
                          generatedClass );
-        FieldAccessor accessor = (FieldAccessor) cl.loadClass( generatedClassName ).newInstance();
-        FieldAccessorMap map = new FieldAccessorMap( accessor,
-                                                     inspector.getFieldNames() );
+        final FieldAccessor accessor = (FieldAccessor) cl.loadClass( generatedClassName ).newInstance();
+        final FieldAccessorMap map = new FieldAccessorMap( accessor,
+                                                           inspector.getFieldNames() );
         return map;
     }
 
@@ -105,24 +104,24 @@ public class FieldAccessorGenerator {
 
         private static final String GET_FIELD_BY_INDEX_METHOD_NAME = "getFieldByIndex";
 
-        private static String getShortName(Class cls) {
-            String name = cls.getName();
-            String packageName = cls.getPackage().getName();
+        private static String getShortName(final Class cls) {
+            final String name = cls.getName();
+            final String packageName = cls.getPackage().getName();
             return name.substring( packageName.length() + 1,
                                    name.length() );
         }
 
-        public static byte[] generateClass(Method getters[],
-                                           Class targetClass,
+        public static byte[] generateClass(final Method getters[],
+                                           final Class targetClass,
                                            String generatedClassName) throws Exception {
 
-            ClassWriter cw = new ClassWriter( true );
+            final ClassWriter cw = new ClassWriter( true );
 
             generatedClassName = generatedClassName.replaceAll( "\\.",
                                                                 "/" );
 
-            cw.visit( V1_2,
-                      ACC_PUBLIC + ACC_SUPER,
+            cw.visit( Opcodes.V1_2,
+                      Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
                       generatedClassName,
                       null,
                       "java/lang/Object",
@@ -143,41 +142,41 @@ public class FieldAccessorGenerator {
             return cw.toByteArray();
         }
 
-        private static void doMethods(ClassWriter cw,
-                                      String targetType,
-                                      Method[] getters,
-                                      boolean isInterface) {
+        private static void doMethods(final ClassWriter cw,
+                                      final String targetType,
+                                      final Method[] getters,
+                                      final boolean isInterface) {
 
             MethodVisitor mv;
-            mv = cw.visitMethod( ACC_PUBLIC,
-                                 GET_FIELD_BY_INDEX_METHOD_NAME,
+            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                                 AccessorClassFactory.GET_FIELD_BY_INDEX_METHOD_NAME,
                                  "(Ljava/lang/Object;I)Ljava/lang/Object;",
                                  null,
                                  null );
             mv.visitCode();
-            Label entry = new Label();
+            final Label entry = new Label();
             mv.visitLabel( entry );
-            mv.visitVarInsn( ALOAD,
+            mv.visitVarInsn( Opcodes.ALOAD,
                              1 );
-            mv.visitTypeInsn( CHECKCAST,
+            mv.visitTypeInsn( Opcodes.CHECKCAST,
                               targetType );
-            int target = 3;
-            mv.visitVarInsn( ASTORE,
+            final int target = 3;
+            mv.visitVarInsn( Opcodes.ASTORE,
                              target ); //this is the actual casted object
-            Label start = new Label();
+            final Label start = new Label();
             mv.visitLabel( start );
 
-            mv.visitVarInsn( ILOAD,
+            mv.visitVarInsn( Opcodes.ILOAD,
                              2 ); //the index, I think.
             //END BOILERPLATE
 
-            Label[] switchItems = new Label[getters.length];
+            final Label[] switchItems = new Label[getters.length];
             for ( int i = 0; i < getters.length; i++ ) {
                 switchItems[i] = new Label();
             }
 
             //setup switch statment (with default)
-            Label defaultSwitch = new Label();
+            final Label defaultSwitch = new Label();
             mv.visitTableSwitchInsn( 0,
                                      switchItems.length - 1,
                                      defaultSwitch,
@@ -186,7 +185,7 @@ public class FieldAccessorGenerator {
             //START switch items
             for ( int i = 0; i < getters.length; i++ ) {
 
-                Method method = getters[i];
+                final Method method = getters[i];
                 if ( method.getReturnType().isPrimitive() ) {
                     doSwitchItemBoxed( mv,
                                        switchItems[i],
@@ -208,10 +207,10 @@ public class FieldAccessorGenerator {
 
             //the default item...
             mv.visitLabel( defaultSwitch );
-            mv.visitInsn( ACONST_NULL );
-            mv.visitInsn( ARETURN );
+            mv.visitInsn( Opcodes.ACONST_NULL );
+            mv.visitInsn( Opcodes.ARETURN );
 
-            Label endLabel = new Label();
+            final Label endLabel = new Label();
             mv.visitLabel( endLabel );
 
             mv.visitMaxs( 0,
@@ -220,45 +219,45 @@ public class FieldAccessorGenerator {
         }
 
         /** a switch item that requires autoboxing */
-        private static void doSwitchItemBoxed(MethodVisitor mv,
-                                              Label switchItem,
-                                              int target,
-                                              String targetType,
-                                              String targetMethod,
-                                              Class scalarType,
-                                              boolean isInterface) {
+        private static void doSwitchItemBoxed(final MethodVisitor mv,
+                                              final Label switchItem,
+                                              final int target,
+                                              final String targetType,
+                                              final String targetMethod,
+                                              final Class scalarType,
+                                              final boolean isInterface) {
             Class boxType = null;
             boxType = getBoxType( scalarType );
-            String scalarDescriptor = Type.getDescriptor( scalarType );
-            String internalBoxName = Type.getInternalName( boxType );
+            final String scalarDescriptor = Type.getDescriptor( scalarType );
+            final String internalBoxName = Type.getInternalName( boxType );
             mv.visitLabel( switchItem );
-            mv.visitTypeInsn( NEW,
+            mv.visitTypeInsn( Opcodes.NEW,
                               internalBoxName );
-            mv.visitInsn( DUP );
-            mv.visitVarInsn( ALOAD,
+            mv.visitInsn( Opcodes.DUP );
+            mv.visitVarInsn( Opcodes.ALOAD,
                              target );
             if ( isInterface ) {
-                mv.visitMethodInsn( INVOKEINTERFACE,
+                mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
                                     targetType,
                                     targetMethod,
                                     "()" + scalarDescriptor );
 
             } else {
-                mv.visitMethodInsn( INVOKEVIRTUAL,
+                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                                     targetType,
                                     targetMethod,
                                     "()" + scalarDescriptor );
 
             }
-            mv.visitMethodInsn( INVOKESPECIAL,
+            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
                                 internalBoxName,
                                 "<init>",
                                 "(" + scalarDescriptor + ")V" );
-            mv.visitInsn( ARETURN );
+            mv.visitInsn( Opcodes.ARETURN );
         }
 
         /** Work out the appropriate box type for a scalar/primitive class */
-        private static Class getBoxType(Class scalarType) {
+        private static Class getBoxType(final Class scalarType) {
 
             if ( scalarType == int.class ) {
                 return Integer.class;
@@ -285,52 +284,52 @@ public class FieldAccessorGenerator {
         }
 
         /** A regular switch item, which doesn't require boxing */
-        private static void doSwitchItemObject(MethodVisitor mv,
-                                               Label label,
-                                               int target,
-                                               String targetType,
-                                               String targetMethod,
-                                               Class returnClass,
-                                               boolean isInterface) {
+        private static void doSwitchItemObject(final MethodVisitor mv,
+                                               final Label label,
+                                               final int target,
+                                               final String targetType,
+                                               final String targetMethod,
+                                               final Class returnClass,
+                                               final boolean isInterface) {
 
-            String returnType = "()" + Type.getDescriptor( returnClass );
+            final String returnType = "()" + Type.getDescriptor( returnClass );
             mv.visitLabel( label );
-            mv.visitVarInsn( ALOAD,
+            mv.visitVarInsn( Opcodes.ALOAD,
                              target );
             if ( isInterface ) {
-                mv.visitMethodInsn( INVOKEINTERFACE,
+                mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
                                     targetType,
                                     targetMethod,
                                     returnType );
             } else {
-                mv.visitMethodInsn( INVOKEVIRTUAL,
+                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                                     targetType,
                                     targetMethod,
                                     returnType );
             }
-            mv.visitInsn( ARETURN );
+            mv.visitInsn( Opcodes.ARETURN );
         }
 
-        private static void doConstructor(ClassWriter cw) {
+        private static void doConstructor(final ClassWriter cw) {
             MethodVisitor mv;
-            mv = cw.visitMethod( ACC_PUBLIC,
+            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                  "<init>",
                                  "()V",
                                  null,
                                  null );
             mv.visitCode();
-            Label l0 = new Label();
+            final Label l0 = new Label();
             mv.visitLabel( l0 );
             mv.visitLineNumber( 5,
                                 l0 );
-            mv.visitVarInsn( ALOAD,
+            mv.visitVarInsn( Opcodes.ALOAD,
                              0 );
-            mv.visitMethodInsn( INVOKESPECIAL,
+            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
                                 "java/lang/Object",
                                 "<init>",
                                 "()V" );
-            mv.visitInsn( RETURN );
-            Label l1 = new Label();
+            mv.visitInsn( Opcodes.RETURN );
+            final Label l1 = new Label();
             mv.visitLabel( l1 );
             //            mv.visitLocalVariable( "this",
             //                                   "Lcom/something/MyObjectFieldAccessor;",
@@ -350,12 +349,12 @@ public class FieldAccessorGenerator {
      */
     static class ByteArrayClassLoader extends ClassLoader {
 
-        public ByteArrayClassLoader(ClassLoader parent) {
+        public ByteArrayClassLoader(final ClassLoader parent) {
             super( parent );
         }
 
-        public void addByteArray(String name,
-                                 byte[] bytes) {
+        public void addByteArray(final String name,
+                                 final byte[] bytes) {
             defineClass( name,
                          bytes,
                          0,

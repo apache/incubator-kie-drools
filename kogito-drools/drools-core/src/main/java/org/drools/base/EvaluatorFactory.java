@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.base;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import org.drools.base.evaluators.ArrayFactory;
 import org.drools.base.evaluators.BooleanFactory;
@@ -53,8 +52,8 @@ public class EvaluatorFactory {
 
     }
 
-    public static Evaluator getEvaluator(int type,
-                                         String operator) {
+    public static Evaluator getEvaluator(final int type,
+                                         final String operator) {
         Evaluator evaluator = null;
         if ( operator.equals( "==" ) ) {
             evaluator = getEvaluator( type,
@@ -90,8 +89,8 @@ public class EvaluatorFactory {
         return evaluator;
     }
 
-    public static Evaluator getEvaluator(int type,
-                                         int operator) {
+    public static Evaluator getEvaluator(final int type,
+                                         final int operator) {
         switch ( type ) {
             case Evaluator.STRING_TYPE :
                 return StringFactory.getStringEvaluator( operator );

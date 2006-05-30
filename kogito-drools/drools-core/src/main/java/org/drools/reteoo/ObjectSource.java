@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.common.DefaultFactHandle;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -30,7 +31,7 @@ import org.drools.spi.PropagationContext;
  * </p>
  * 
  * @see ObjectSource
- * @see FactHandleImpl
+ * @see DefaultFactHandle
  * 
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
@@ -54,7 +55,7 @@ abstract class ObjectSource extends BaseNode
      * 
      * @param id
      */
-    ObjectSource(int id) {
+    ObjectSource(final int id) {
         this( id,
               null );
     }
@@ -64,12 +65,10 @@ abstract class ObjectSource extends BaseNode
      * 
      * @param id
      */
-    ObjectSource(int id,
-                 ObjectSinkList objectSinks) {
+    ObjectSource(final int id,
+                 final ObjectSinkList objectSinks) {
         super( id );
-        this.objectSinks = (objectSinks != null) ? 
-                            objectSinks : 
-                            ObjectSinkListFactory.newDefaultObjectSinkList();
+        this.objectSinks = (objectSinks != null) ? objectSinks : ObjectSinkListFactory.newDefaultObjectSinkList();
     }
 
     // ------------------------------------------------------------
@@ -85,7 +84,7 @@ abstract class ObjectSource extends BaseNode
      *            The <code>ObjectSink</code> to receive propagated
      *            <code>FactHandleImpl</code>.
      */
-    protected void addObjectSink(ObjectSink objectSink) {
+    protected void addObjectSink(final ObjectSink objectSink) {
         if ( !this.objectSinks.contains( objectSink ) ) {
             this.objectSinks.add( objectSink );
         }
@@ -97,7 +96,7 @@ abstract class ObjectSource extends BaseNode
      * @param objectSink
      *            The <code>ObjectSink</code> to remove
      */
-    protected void removeObjectSink(ObjectSink objectSink) {
+    protected void removeObjectSink(final ObjectSink objectSink) {
         this.objectSinks.remove( objectSink );
     }
 
@@ -112,11 +111,11 @@ abstract class ObjectSource extends BaseNode
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
-    protected void propagateAssertObject(FactHandleImpl handle,
-                                         PropagationContext context,
-                                         WorkingMemoryImpl workingMemory) {
-        for ( Iterator i = this.objectSinks.iterator( workingMemory,
-                                                      handle ); i.hasNext(); ) {
+    protected void propagateAssertObject(final DefaultFactHandle handle,
+                                         final PropagationContext context,
+                                         final ReteooWorkingMemory workingMemory) {
+        for ( final Iterator i = this.objectSinks.iterator( workingMemory,
+                                                            handle ); i.hasNext(); ) {
             ((ObjectSink) i.next()).assertObject( handle,
                                                   context,
                                                   workingMemory );
@@ -135,20 +134,20 @@ abstract class ObjectSource extends BaseNode
      *            the <code>WorkingMemory</code> session.
      *
      */
-    protected void propagateRetractObject(FactHandleImpl handle,
-                                          PropagationContext context,
-                                          WorkingMemoryImpl workingMemory) {
-        for ( Iterator i = this.objectSinks.iterator(); i.hasNext(); ) {
+    protected void propagateRetractObject(final DefaultFactHandle handle,
+                                          final PropagationContext context,
+                                          final ReteooWorkingMemory workingMemory) {
+        for ( final Iterator i = this.objectSinks.iterator(); i.hasNext(); ) {
             ((ObjectSink) i.next()).retractObject( handle,
                                                    context,
                                                    workingMemory );
         }
     }
 
-    protected void propagateModifyObject(FactHandleImpl handle,
-                                         PropagationContext context,
-                                         WorkingMemoryImpl workingMemory) {
-        for ( Iterator i = this.objectSinks.iterator(); i.hasNext(); ) {
+    protected void propagateModifyObject(final DefaultFactHandle handle,
+                                         final PropagationContext context,
+                                         final ReteooWorkingMemory workingMemory) {
+        for ( final Iterator i = this.objectSinks.iterator(); i.hasNext(); ) {
             ((ObjectSink) i.next()).modifyObject( handle,
                                                   context,
                                                   workingMemory );

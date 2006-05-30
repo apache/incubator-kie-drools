@@ -34,46 +34,48 @@ package org.drools.asm;
  * 
  * @author Eric Bruneton
  */
-final class FieldWriter implements FieldVisitor {
+final class FieldWriter
+    implements
+    FieldVisitor {
 
     /**
      * Next field writer (see {@link ClassWriter#firstField firstField}).
      */
-    FieldWriter next;
+    FieldWriter              next;
 
     /**
      * The class writer to which this field must be added.
      */
-    private ClassWriter cw;
+    private ClassWriter      cw;
 
     /**
      * Access flags of this field.
      */
-    private int access;
+    private int              access;
 
     /**
      * The index of the constant pool item that contains the name of this
      * method.
      */
-    private int name;
+    private int              name;
 
     /**
      * The index of the constant pool item that contains the descriptor of this
      * field.
      */
-    private int desc;
+    private int              desc;
 
     /**
      * The index of the constant pool item that contains the signature of this
      * field.
      */
-    private int signature;
+    private int              signature;
 
     /**
      * The index of the constant pool item that contains the constant value of
      * this field.
      */
-    private int value;
+    private int              value;
 
     /**
      * The runtime visible annotations of this field. May be <tt>null</tt>.
@@ -88,7 +90,7 @@ final class FieldWriter implements FieldVisitor {
     /**
      * The non standard attributes of this field. May be <tt>null</tt>.
      */
-    private Attribute attrs;
+    private Attribute        attrs;
 
     // ------------------------------------------------------------------------
     // Constructor
@@ -104,15 +106,13 @@ final class FieldWriter implements FieldVisitor {
      * @param signature the field's signature. May be <tt>null</tt>.
      * @param value the field's constant value. May be <tt>null</tt>.
      */
-    protected FieldWriter(
-        final ClassWriter cw,
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final Object value)
-    {
-        if (cw.firstField == null) {
+    protected FieldWriter(final ClassWriter cw,
+                          final int access,
+                          final String name,
+                          final String desc,
+                          final String signature,
+                          final Object value) {
+        if ( cw.firstField == null ) {
             cw.firstField = this;
         } else {
             cw.lastField.next = this;
@@ -120,13 +120,13 @@ final class FieldWriter implements FieldVisitor {
         cw.lastField = this;
         this.cw = cw;
         this.access = access;
-        this.name = cw.newUTF8(name);
-        this.desc = cw.newUTF8(desc);
-        if (signature != null) {
-            this.signature = cw.newUTF8(signature);
+        this.name = cw.newUTF8( name );
+        this.desc = cw.newUTF8( desc );
+        if ( signature != null ) {
+            this.signature = cw.newUTF8( signature );
         }
-        if (value != null) {
-            this.value = cw.newConstItem(value).index;
+        if ( value != null ) {
+            this.value = cw.newConstItem( value ).index;
         }
     }
 
@@ -134,27 +134,29 @@ final class FieldWriter implements FieldVisitor {
     // Implementation of the FieldVisitor interface
     // ------------------------------------------------------------------------
 
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        ByteVector bv = new ByteVector();
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        final ByteVector bv = new ByteVector();
         // write type, and reserve space for values count
-        bv.putShort(cw.newUTF8(desc)).putShort(0);
-        AnnotationWriter aw = new AnnotationWriter(cw, true, bv, bv, 2);
-        if (visible) {
-            aw.next = anns;
-            anns = aw;
+        bv.putShort( this.cw.newUTF8( desc ) ).putShort( 0 );
+        final AnnotationWriter aw = new AnnotationWriter( this.cw,
+                                                          true,
+                                                          bv,
+                                                          bv,
+                                                          2 );
+        if ( visible ) {
+            aw.next = this.anns;
+            this.anns = aw;
         } else {
-            aw.next = ianns;
-            ianns = aw;
+            aw.next = this.ianns;
+            this.ianns = aw;
         }
         return aw;
     }
 
     public void visitAttribute(final Attribute attr) {
-        attr.next = attrs;
-        attrs = attr;
+        attr.next = this.attrs;
+        this.attrs = attr;
     }
 
     public void visitEnd() {
@@ -171,38 +173,40 @@ final class FieldWriter implements FieldVisitor {
      */
     int getSize() {
         int size = 8;
-        if (value != 0) {
-            cw.newUTF8("ConstantValue");
+        if ( this.value != 0 ) {
+            this.cw.newUTF8( "ConstantValue" );
             size += 8;
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0
-                && (cw.version & 0xffff) < Opcodes.V1_5)
-        {
-            cw.newUTF8("Synthetic");
+        if ( (this.access & Opcodes.ACC_SYNTHETIC) != 0 && (this.cw.version & 0xffff) < Opcodes.V1_5 ) {
+            this.cw.newUTF8( "Synthetic" );
             size += 6;
         }
-        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
-            cw.newUTF8("Deprecated");
+        if ( (this.access & Opcodes.ACC_DEPRECATED) != 0 ) {
+            this.cw.newUTF8( "Deprecated" );
             size += 6;
         }
-        if (cw.version == Opcodes.V1_4 && (access & Opcodes.ACC_ENUM) != 0) {
-            cw.newUTF8("Enum");
+        if ( this.cw.version == Opcodes.V1_4 && (this.access & Opcodes.ACC_ENUM) != 0 ) {
+            this.cw.newUTF8( "Enum" );
             size += 6;
         }
-        if (signature != 0) {
-            cw.newUTF8("Signature");
+        if ( this.signature != 0 ) {
+            this.cw.newUTF8( "Signature" );
             size += 8;
         }
-        if (anns != null) {
-            cw.newUTF8("RuntimeVisibleAnnotations");
-            size += 8 + anns.getSize();
+        if ( this.anns != null ) {
+            this.cw.newUTF8( "RuntimeVisibleAnnotations" );
+            size += 8 + this.anns.getSize();
         }
-        if (ianns != null) {
-            cw.newUTF8("RuntimeInvisibleAnnotations");
-            size += 8 + ianns.getSize();
+        if ( this.ianns != null ) {
+            this.cw.newUTF8( "RuntimeInvisibleAnnotations" );
+            size += 8 + this.ianns.getSize();
         }
-        if (attrs != null) {
-            size += attrs.getSize(cw, null, 0, -1, -1);
+        if ( this.attrs != null ) {
+            size += this.attrs.getSize( this.cw,
+                                        null,
+                                        0,
+                                        -1,
+                                        -1 );
         }
         return size;
     }
@@ -213,64 +217,65 @@ final class FieldWriter implements FieldVisitor {
      * @param out where the content of this field must be put.
      */
     void put(final ByteVector out) {
-        out.putShort(access).putShort(name).putShort(desc);
+        out.putShort( this.access ).putShort( this.name ).putShort( this.desc );
         int attributeCount = 0;
-        if (value != 0) {
+        if ( this.value != 0 ) {
             ++attributeCount;
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0
-                && (cw.version & 0xffff) < Opcodes.V1_5)
-        {
+        if ( (this.access & Opcodes.ACC_SYNTHETIC) != 0 && (this.cw.version & 0xffff) < Opcodes.V1_5 ) {
             ++attributeCount;
         }
-        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
+        if ( (this.access & Opcodes.ACC_DEPRECATED) != 0 ) {
             ++attributeCount;
         }
-        if (cw.version == Opcodes.V1_4 && (access & Opcodes.ACC_ENUM) != 0) {
+        if ( this.cw.version == Opcodes.V1_4 && (this.access & Opcodes.ACC_ENUM) != 0 ) {
             ++attributeCount;
         }
-        if (signature != 0) {
+        if ( this.signature != 0 ) {
             ++attributeCount;
         }
-        if (anns != null) {
+        if ( this.anns != null ) {
             ++attributeCount;
         }
-        if (ianns != null) {
+        if ( this.ianns != null ) {
             ++attributeCount;
         }
-        if (attrs != null) {
-            attributeCount += attrs.getCount();
+        if ( this.attrs != null ) {
+            attributeCount += this.attrs.getCount();
         }
-        out.putShort(attributeCount);
-        if (value != 0) {
-            out.putShort(cw.newUTF8("ConstantValue"));
-            out.putInt(2).putShort(value);
+        out.putShort( attributeCount );
+        if ( this.value != 0 ) {
+            out.putShort( this.cw.newUTF8( "ConstantValue" ) );
+            out.putInt( 2 ).putShort( this.value );
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0
-                && (cw.version & 0xffff) < Opcodes.V1_5)
-        {
-            out.putShort(cw.newUTF8("Synthetic")).putInt(0);
+        if ( (this.access & Opcodes.ACC_SYNTHETIC) != 0 && (this.cw.version & 0xffff) < Opcodes.V1_5 ) {
+            out.putShort( this.cw.newUTF8( "Synthetic" ) ).putInt( 0 );
         }
-        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
-            out.putShort(cw.newUTF8("Deprecated")).putInt(0);
+        if ( (this.access & Opcodes.ACC_DEPRECATED) != 0 ) {
+            out.putShort( this.cw.newUTF8( "Deprecated" ) ).putInt( 0 );
         }
-        if (cw.version == Opcodes.V1_4 && (access & Opcodes.ACC_ENUM) != 0) {
-            out.putShort(cw.newUTF8("Enum")).putInt(0);
+        if ( this.cw.version == Opcodes.V1_4 && (this.access & Opcodes.ACC_ENUM) != 0 ) {
+            out.putShort( this.cw.newUTF8( "Enum" ) ).putInt( 0 );
         }
-        if (signature != 0) {
-            out.putShort(cw.newUTF8("Signature"));
-            out.putInt(2).putShort(signature);
+        if ( this.signature != 0 ) {
+            out.putShort( this.cw.newUTF8( "Signature" ) );
+            out.putInt( 2 ).putShort( this.signature );
         }
-        if (anns != null) {
-            out.putShort(cw.newUTF8("RuntimeVisibleAnnotations"));
-            anns.put(out);
+        if ( this.anns != null ) {
+            out.putShort( this.cw.newUTF8( "RuntimeVisibleAnnotations" ) );
+            this.anns.put( out );
         }
-        if (ianns != null) {
-            out.putShort(cw.newUTF8("RuntimeInvisibleAnnotations"));
-            ianns.put(out);
+        if ( this.ianns != null ) {
+            out.putShort( this.cw.newUTF8( "RuntimeInvisibleAnnotations" ) );
+            this.ianns.put( out );
         }
-        if (attrs != null) {
-            attrs.put(cw, null, 0, -1, -1, out);
+        if ( this.attrs != null ) {
+            this.attrs.put( this.cw,
+                            null,
+                            0,
+                            -1,
+                            -1,
+                            out );
         }
     }
 }

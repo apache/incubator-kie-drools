@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -17,36 +17,44 @@ package org.drools.reteoo;
  */
 
 import org.drools.FactHandle;
-import org.drools.common.InternalFactHandle;
 
 /**
  * Implementation of <code>FactHandle</code>.
- * 
+ * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
-public class FactHandleImpl
+public class DefaultFactHandle
     implements
     InternalFactHandle {
     // ----------------------------------------------------------------------
     // Instance members
     // ----------------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1035305202846367106L;
     /** Handle id. */
-    private long             id;
-    private long             recency;
-    private Object object;
-
+    private long        id;
+    private long        recency;
+    private Object      object;
+    private EqualityKey key;
+    private int         objectHashCode;
+    
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------
 
-    protected FactHandleImpl() {
+    public DefaultFactHandle() {
 
     }
 
-    protected FactHandleImpl(long id) {
+    public DefaultFactHandle(final long id,
+                             final Object object) {
         this.id = id;
         this.recency = id;
+        this.object = object;
+        this.objectHashCode = object.hashCode();
     }
 
     /**
@@ -55,10 +63,13 @@ public class FactHandleImpl
      * @param id
      *            Handle id.
      */
-    protected FactHandleImpl(long id,
-                             long recency) {
+    public DefaultFactHandle(final long id,
+                             final Object object,
+                             final long recency) {
         this.id = id;
         this.recency = recency;
+        this.object = object;
+        this.objectHashCode = object.hashCode();
     }
 
     // ----------------------------------------------------------------------
@@ -68,23 +79,27 @@ public class FactHandleImpl
     /**
      * @see Object
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
 
-        if ( object == null || !(object instanceof FactHandleImpl) ) {
+        if ( object == null || !(object instanceof DefaultFactHandle) ) {
             return false;
         }
 
-        return this.id == ((FactHandleImpl) object).id;
+        return this.id == ((DefaultFactHandle) object).id;
+    }
+    
+    public  int getObjectHashCode()  {
+        return this.objectHashCode;
     }
 
     /**
      * @see Object
      */
     public int hashCode() {
-        return (int) this.id;
+        return (int)  this.id;
     }
 
     /**
@@ -105,7 +120,7 @@ public class FactHandleImpl
         return this.recency;
     }
 
-    public void setRecency(long recency) {
+    public void setRecency(final long recency) {
         this.recency = recency;
     }
 
@@ -113,16 +128,30 @@ public class FactHandleImpl
         return this.id;
     }
 
-    void invalidate() {
+    public void invalidate() {
         this.id = -1;
+        this.object = null;
     }
 
     public Object getObject() {
         return this.object;
     }
 
-    public void setObject(Object object) {
+    public void setObject(final Object object) {
         this.object = object;
     }
 
+    /**
+     * @return the key
+     */
+    public EqualityKey getEqualityKey() {
+        return this.key;
+    }
+
+    /**
+     * @param key the key to set
+     */
+    public void setEqualityKey(final EqualityKey key) {
+        this.key = key;
+    }
 }

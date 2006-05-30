@@ -39,153 +39,203 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @author Eugene Kuleshov
  */
-public class SAXAnnotationAdapter extends SAXAdapter implements
-        AnnotationVisitor
-{
+public class SAXAnnotationAdapter extends SAXAdapter
+    implements
+    AnnotationVisitor {
     private final String elementName;
 
-    public SAXAnnotationAdapter(
-        ContentHandler h,
-        String elementName,
-        int visible,
-        String name,
-        String desc)
-    {
-        this(h, elementName, visible, desc, name, -1);
+    public SAXAnnotationAdapter(final ContentHandler h,
+                                final String elementName,
+                                final int visible,
+                                final String name,
+                                final String desc) {
+        this( h,
+              elementName,
+              visible,
+              desc,
+              name,
+              -1 );
     }
 
-    public SAXAnnotationAdapter(
-        ContentHandler h,
-        String elementName,
-        int visible,
-        int parameter,
-        String desc)
-    {
-        this(h, elementName, visible, desc, null, parameter);
+    public SAXAnnotationAdapter(final ContentHandler h,
+                                final String elementName,
+                                final int visible,
+                                final int parameter,
+                                final String desc) {
+        this( h,
+              elementName,
+              visible,
+              desc,
+              null,
+              parameter );
     }
 
-    private SAXAnnotationAdapter(
-        ContentHandler h,
-        String elementName,
-        int visible,
-        String desc,
-        String name,
-        int parameter)
-    {
-        super(h);
+    private SAXAnnotationAdapter(final ContentHandler h,
+                                 final String elementName,
+                                 final int visible,
+                                 final String desc,
+                                 final String name,
+                                 final int parameter) {
+        super( h );
         this.elementName = elementName;
 
-        AttributesImpl att = new AttributesImpl();
-        if (name != null)
-            att.addAttribute("", "name", "name", "", name);
-        if (visible != 0)
-            att.addAttribute("", "visible", "visible", "", visible > 0
-                    ? "true"
-                    : "false");
-        if (parameter != -1)
-            att.addAttribute("",
-                    "parameter",
-                    "parameter",
-                    "",
-                    Integer.toString(parameter));
-        if (desc != null)
-            att.addAttribute("", "desc", "desc", "", desc);
+        final AttributesImpl att = new AttributesImpl();
+        if ( name != null ) {
+            att.addAttribute( "",
+                              "name",
+                              "name",
+                              "",
+                              name );
+        }
+        if ( visible != 0 ) {
+            att.addAttribute( "",
+                              "visible",
+                              "visible",
+                              "",
+                              visible > 0 ? "true" : "false" );
+        }
+        if ( parameter != -1 ) {
+            att.addAttribute( "",
+                              "parameter",
+                              "parameter",
+                              "",
+                              Integer.toString( parameter ) );
+        }
+        if ( desc != null ) {
+            att.addAttribute( "",
+                              "desc",
+                              "desc",
+                              "",
+                              desc );
+        }
 
-        addStart(elementName, att);
+        addStart( elementName,
+                  att );
     }
 
-    public void visit(String name, Object value) {
-        Class c = value.getClass();
-        if (c.isArray()) {
-            AnnotationVisitor av = visitArray(name);
-            if (value instanceof byte[]) {
-                byte[] b = (byte[]) value;
-                for (int i = 0; i < b.length; i++)
-                    av.visit(null, new Byte(b[i]));
+    public void visit(final String name,
+                      final Object value) {
+        final Class c = value.getClass();
+        if ( c.isArray() ) {
+            final AnnotationVisitor av = visitArray( name );
+            if ( value instanceof byte[] ) {
+                final byte[] b = (byte[]) value;
+                for ( int i = 0; i < b.length; i++ ) {
+                    av.visit( null,
+                              new Byte( b[i] ) );
+                }
 
-            } else if (value instanceof char[]) {
-                char[] b = (char[]) value;
-                for (int i = 0; i < b.length; i++)
-                    av.visit(null, new Character(b[i]));
+            } else if ( value instanceof char[] ) {
+                final char[] b = (char[]) value;
+                for ( int i = 0; i < b.length; i++ ) {
+                    av.visit( null,
+                              new Character( b[i] ) );
+                }
 
-            } else if (value instanceof boolean[]) {
-                boolean[] b = (boolean[]) value;
-                for (int i = 0; i < b.length; i++)
-                    av.visit(null, Boolean.valueOf(b[i]));
+            } else if ( value instanceof boolean[] ) {
+                final boolean[] b = (boolean[]) value;
+                for ( int i = 0; i < b.length; i++ ) {
+                    av.visit( null,
+                              Boolean.valueOf( b[i] ) );
+                }
 
-            } else if (value instanceof int[]) {
-                int[] b = (int[]) value;
-                for (int i = 0; i < b.length; i++)
-                    av.visit(null, new Integer(b[i]));
+            } else if ( value instanceof int[] ) {
+                final int[] b = (int[]) value;
+                for ( int i = 0; i < b.length; i++ ) {
+                    av.visit( null,
+                              new Integer( b[i] ) );
+                }
 
-            } else if (value instanceof long[]) {
-                long[] b = (long[]) value;
-                for (int i = 0; i < b.length; i++)
-                    av.visit(null, new Long(b[i]));
+            } else if ( value instanceof long[] ) {
+                final long[] b = (long[]) value;
+                for ( int i = 0; i < b.length; i++ ) {
+                    av.visit( null,
+                              new Long( b[i] ) );
+                }
 
-            } else if (value instanceof float[]) {
-                float[] b = (float[]) value;
-                for (int i = 0; i < b.length; i++)
-                    av.visit(null, new Float(b[i]));
+            } else if ( value instanceof float[] ) {
+                final float[] b = (float[]) value;
+                for ( int i = 0; i < b.length; i++ ) {
+                    av.visit( null,
+                              new Float( b[i] ) );
+                }
 
-            } else if (value instanceof double[]) {
-                double[] b = (double[]) value;
-                for (int i = 0; i < b.length; i++)
-                    av.visit(null, new Double(b[i]));
+            } else if ( value instanceof double[] ) {
+                final double[] b = (double[]) value;
+                for ( int i = 0; i < b.length; i++ ) {
+                    av.visit( null,
+                              new Double( b[i] ) );
+                }
 
             }
             av.visitEnd();
         } else {
-            addValueElement("annotationValue",
-                    name,
-                    Type.getDescriptor(c),
-                    value.toString());
+            addValueElement( "annotationValue",
+                             name,
+                             Type.getDescriptor( c ),
+                             value.toString() );
         }
     }
 
-    public void visitEnum(String name, String desc, String value) {
-        addValueElement("annotationValueEnum", name, desc, value);
+    public void visitEnum(final String name,
+                          final String desc,
+                          final String value) {
+        addValueElement( "annotationValueEnum",
+                         name,
+                         desc,
+                         value );
     }
 
-    public AnnotationVisitor visitAnnotation(String name, String desc) {
-        return new SAXAnnotationAdapter(getContentHandler(),
-                "annotationValueAnnotation",
-                0,
-                name,
-                desc);
+    public AnnotationVisitor visitAnnotation(final String name,
+                                             final String desc) {
+        return new SAXAnnotationAdapter( getContentHandler(),
+                                         "annotationValueAnnotation",
+                                         0,
+                                         name,
+                                         desc );
     }
 
-    public AnnotationVisitor visitArray(String name) {
-        return new SAXAnnotationAdapter(getContentHandler(),
-                "annotationValueArray",
-                0,
-                name,
-                null);
+    public AnnotationVisitor visitArray(final String name) {
+        return new SAXAnnotationAdapter( getContentHandler(),
+                                         "annotationValueArray",
+                                         0,
+                                         name,
+                                         null );
     }
 
     public void visitEnd() {
-        addEnd(elementName);
+        addEnd( this.elementName );
     }
 
-    private void addValueElement(
-        String element,
-        String name,
-        String desc,
-        String value)
-    {
-        AttributesImpl att = new AttributesImpl();
-        if (name != null)
-            att.addAttribute("", "name", "name", "", name);
-        if (desc != null)
-            att.addAttribute("", "desc", "desc", "", desc);
-        if (value != null)
-            att.addAttribute("",
-                    "value",
-                    "value",
-                    "",
-                    SAXClassAdapter.encode(value));
+    private void addValueElement(final String element,
+                                 final String name,
+                                 final String desc,
+                                 final String value) {
+        final AttributesImpl att = new AttributesImpl();
+        if ( name != null ) {
+            att.addAttribute( "",
+                              "name",
+                              "name",
+                              "",
+                              name );
+        }
+        if ( desc != null ) {
+            att.addAttribute( "",
+                              "desc",
+                              "desc",
+                              "",
+                              desc );
+        }
+        if ( value != null ) {
+            att.addAttribute( "",
+                              "value",
+                              "value",
+                              "",
+                              SAXClassAdapter.encode( value ) );
+        }
 
-        addElement(element, att);
+        addElement( element,
+                    att );
     }
 
 }

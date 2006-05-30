@@ -48,7 +48,8 @@ public interface AnnotationVisitor {
      *        {@link Integer}, {@link Long}, {@link Float}, {@link Double},
      *        {@link String} or {@link Type}.
      */
-    void visit(String name, Object value);
+    void visit(String name,
+               Object value);
 
     /**
      * Visits an enumeration value of the annotation.
@@ -57,7 +58,9 @@ public interface AnnotationVisitor {
      * @param desc the class descriptor of the enumeration class.
      * @param value the actual enumeration value.
      */
-    void visitEnum(String name, String desc, String value);
+    void visitEnum(String name,
+                   String desc,
+                   String value);
 
     /**
      * Visits a nested annotation value of the annotation.
@@ -68,7 +71,8 @@ public interface AnnotationVisitor {
      *         <i>The nested annotation value must be fully visited before
      *         calling other methods on this annotation visitor</i>.
      */
-    AnnotationVisitor visitAnnotation(String name, String desc);
+    AnnotationVisitor visitAnnotation(String name,
+                                      String desc);
 
     /**
      * Visits an array value of the annotation.

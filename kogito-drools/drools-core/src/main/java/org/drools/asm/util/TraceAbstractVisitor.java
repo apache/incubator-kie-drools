@@ -44,50 +44,50 @@ public abstract class TraceAbstractVisitor extends AbstractVisitor {
      * Constant used in {@link #appendDescriptor appendDescriptor} for internal
      * type names in bytecode notation.
      */
-    public final static int INTERNAL_NAME = 0;
+    public final static int INTERNAL_NAME          = 0;
 
     /**
      * Constant used in {@link #appendDescriptor appendDescriptor} for field
      * descriptors, formatted in bytecode notation
      */
-    public final static int FIELD_DESCRIPTOR = 1;
+    public final static int FIELD_DESCRIPTOR       = 1;
 
     /**
      * Constant used in {@link #appendDescriptor appendDescriptor} for field
      * signatures, formatted in bytecode notation
      */
-    public final static int FIELD_SIGNATURE = 2;
+    public final static int FIELD_SIGNATURE        = 2;
 
     /**
      * Constant used in {@link #appendDescriptor appendDescriptor} for method
      * descriptors, formatted in bytecode notation
      */
-    public final static int METHOD_DESCRIPTOR = 3;
+    public final static int METHOD_DESCRIPTOR      = 3;
 
     /**
      * Constant used in {@link #appendDescriptor appendDescriptor} for method
      * signatures, formatted in bytecode notation
      */
-    public final static int METHOD_SIGNATURE = 4;
+    public final static int METHOD_SIGNATURE       = 4;
 
     /**
      * Constant used in {@link #appendDescriptor appendDescriptor} for class
      * signatures, formatted in bytecode notation
      */
-    public final static int CLASS_SIGNATURE = 5;
+    public final static int CLASS_SIGNATURE        = 5;
 
     /**
      * Constant used in {@link #appendDescriptor appendDescriptor} for field or
      * method return value signatures, formatted in default Java notation
      * (non-bytecode)
      */
-    public final static int TYPE_DECLARATION = 6;
+    public final static int TYPE_DECLARATION       = 6;
 
     /**
      * Constant used in {@link #appendDescriptor appendDescriptor} for class
      * signatures, formatted in default Java notation (non-bytecode)
      */
-    public final static int CLASS_DECLARATION = 7;
+    public final static int CLASS_DECLARATION      = 7;
 
     /**
      * Constant used in {@link #appendDescriptor appendDescriptor} for method
@@ -98,7 +98,7 @@ public abstract class TraceAbstractVisitor extends AbstractVisitor {
     /**
      * Tab for class members.
      */
-    protected String tab = "  ";
+    protected String        tab                    = "  ";
 
     /**
      * Prints a disassembled view of the given annotation.
@@ -107,18 +107,17 @@ public abstract class TraceAbstractVisitor extends AbstractVisitor {
      * @param visible <tt>true</tt> if the annotation is visible at runtime.
      * @return a visitor to visit the annotation values.
      */
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        buf.setLength(0);
-        buf.append(tab).append('@');
-        appendDescriptor(FIELD_DESCRIPTOR, desc);
-        buf.append('(');
-        text.add(buf.toString());
-        TraceAnnotationVisitor tav = createTraceAnnotationVisitor();
-        text.add(tav.getText());
-        text.add(visible ? ")\n" : ") // invisible\n");
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab ).append( '@' );
+        appendDescriptor( TraceAbstractVisitor.FIELD_DESCRIPTOR,
+                          desc );
+        this.buf.append( '(' );
+        this.text.add( this.buf.toString() );
+        final TraceAnnotationVisitor tav = createTraceAnnotationVisitor();
+        this.text.add( tav.getText() );
+        this.text.add( visible ? ")\n" : ") // invisible\n" );
         return tav;
     }
 
@@ -128,17 +127,19 @@ public abstract class TraceAbstractVisitor extends AbstractVisitor {
      * @param attr an attribute.
      */
     public void visitAttribute(final Attribute attr) {
-        buf.setLength(0);
-        buf.append(tab).append("ATTRIBUTE ");
-        appendDescriptor(-1, attr.type);
+        this.buf.setLength( 0 );
+        this.buf.append( this.tab ).append( "ATTRIBUTE " );
+        appendDescriptor( -1,
+                          attr.type );
 
-        if (attr instanceof Traceable) {
-            ((Traceable) attr).trace(buf, null);
+        if ( attr instanceof Traceable ) {
+            ((Traceable) attr).trace( this.buf,
+                                      null );
         } else {
-            buf.append(" : ").append(attr.toString()).append("\n");
+            this.buf.append( " : " ).append( attr.toString() ).append( "\n" );
         }
 
-        text.add(buf.toString());
+        this.text.add( this.buf.toString() );
     }
 
     /**
@@ -165,15 +166,14 @@ public abstract class TraceAbstractVisitor extends AbstractVisitor {
      * @param desc an internal name, type descriptor, or type signature. May be
      *        <tt>null</tt>.
      */
-    protected void appendDescriptor(final int type, final String desc) {
-        if (type == CLASS_SIGNATURE || type == FIELD_SIGNATURE
-                || type == METHOD_SIGNATURE)
-        {
-            if (desc != null) {
-                buf.append("// signature ").append(desc).append('\n');
+    protected void appendDescriptor(final int type,
+                                    final String desc) {
+        if ( type == TraceAbstractVisitor.CLASS_SIGNATURE || type == TraceAbstractVisitor.FIELD_SIGNATURE || type == TraceAbstractVisitor.METHOD_SIGNATURE ) {
+            if ( desc != null ) {
+                this.buf.append( "// signature " ).append( desc ).append( '\n' );
             }
         } else {
-            buf.append(desc);
+            this.buf.append( desc );
         }
     }
 

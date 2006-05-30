@@ -1,4 +1,5 @@
 package org.drools.event;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,23 +16,24 @@ package org.drools.event;
  * limitations under the License.
  */
 
-
-
-
-
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.PropagationContext;
 
 public class ObjectRetractedEvent extends WorkingMemoryEvent {
-    private final FactHandle handle;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6306584011196320279L;
 
-    private final Object     oldObject;
+    private final FactHandle  handle;
 
-    public ObjectRetractedEvent(WorkingMemory workingMemory,
-                                PropagationContext propagationContext,
-                                FactHandle handle,
-                                Object oldObject) {
+    private final Object      oldObject;
+
+    public ObjectRetractedEvent(final WorkingMemory workingMemory,
+                                final PropagationContext propagationContext,
+                                final FactHandle handle,
+                                final Object oldObject) {
         super( workingMemory,
                propagationContext );
         this.handle = handle;

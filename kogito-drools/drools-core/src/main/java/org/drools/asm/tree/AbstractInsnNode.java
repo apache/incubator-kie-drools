@@ -41,62 +41,62 @@ public abstract class AbstractInsnNode {
     /**
      * The type of {@link InsnNode} instructions.
      */
-    public final static int INSN = 0;
+    public final static int INSN                = 0;
 
     /**
      * The type of {@link IntInsnNode} instructions.
      */
-    public final static int INT_INSN = 1;
+    public final static int INT_INSN            = 1;
 
     /**
      * The type of {@link VarInsnNode} instructions.
      */
-    public final static int VAR_INSN = 2;
+    public final static int VAR_INSN            = 2;
 
     /**
      * The type of {@link TypeInsnNode} instructions.
      */
-    public final static int TYPE_INSN = 3;
+    public final static int TYPE_INSN           = 3;
 
     /**
      * The type of {@link FieldInsnNode} instructions.
      */
-    public final static int FIELD_INSN = 4;
+    public final static int FIELD_INSN          = 4;
 
     /**
      * The type of {@link MethodInsnNode} instructions.
      */
-    public final static int METHOD_INSN = 5;
+    public final static int METHOD_INSN         = 5;
 
     /**
      * The type of {@link JumpInsnNode} instructions.
      */
-    public final static int JUMP_INSN = 6;
+    public final static int JUMP_INSN           = 6;
 
     /**
      * The type of {@link LabelNode} "instructions".
      */
-    public final static int LABEL = 7;
+    public final static int LABEL               = 7;
 
     /**
      * The type of {@link LdcInsnNode} instructions.
      */
-    public final static int LDC_INSN = 8;
+    public final static int LDC_INSN            = 8;
 
     /**
      * The type of {@link IincInsnNode} instructions.
      */
-    public final static int IINC_INSN = 9;
+    public final static int IINC_INSN           = 9;
 
     /**
      * The type of {@link TableSwitchInsnNode} instructions.
      */
-    public final static int TABLESWITCH_INSN = 10;
+    public final static int TABLESWITCH_INSN    = 10;
 
     /**
      * The type of {@link LookupSwitchInsnNode} instructions.
      */
-    public final static int LOOKUPSWITCH_INSN = 11;
+    public final static int LOOKUPSWITCH_INSN   = 11;
 
     /**
      * The type of {@link MultiANewArrayInsnNode} instructions.
@@ -106,7 +106,7 @@ public abstract class AbstractInsnNode {
     /**
      * The opcode of this instruction.
      */
-    protected int opcode;
+    protected int           opcode;
 
     /**
      * Constructs a new {@link AbstractInsnNode}.
@@ -123,7 +123,7 @@ public abstract class AbstractInsnNode {
      * @return the opcode of this instruction.
      */
     public int getOpcode() {
-        return opcode;
+        return this.opcode;
     }
 
     /**

@@ -66,13 +66,11 @@ public class MethodInsnNode extends AbstractInsnNode {
      * @param name the method's name.
      * @param desc the method's descriptor (see {@link org.drools.asm.Type}).
      */
-    public MethodInsnNode(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        super(opcode);
+    public MethodInsnNode(final int opcode,
+                          final String owner,
+                          final String name,
+                          final String desc) {
+        super( opcode );
         this.owner = owner;
         this.name = name;
         this.desc = desc;
@@ -89,10 +87,13 @@ public class MethodInsnNode extends AbstractInsnNode {
     }
 
     public void accept(final MethodVisitor mv) {
-        mv.visitMethodInsn(opcode, owner, name, desc);
+        mv.visitMethodInsn( this.opcode,
+                            this.owner,
+                            this.name,
+                            this.desc );
     }
 
     public int getType() {
-        return METHOD_INSN;
+        return AbstractInsnNode.METHOD_INSN;
     }
 }

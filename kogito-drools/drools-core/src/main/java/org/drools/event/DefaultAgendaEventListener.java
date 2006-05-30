@@ -1,4 +1,5 @@
 package org.drools.event;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.event;
  * limitations under the License.
  */
 
-
-
-
-
 public class DefaultAgendaEventListener
     implements
     AgendaEventListener {
@@ -26,19 +23,19 @@ public class DefaultAgendaEventListener
         // intentionally left blank
     }
 
-    public void activationCreated(ActivationCreatedEvent event) {
+    public void activationCreated(final ActivationCreatedEvent event) {
         // intentionally left blank
     }
 
-    public void activationCancelled(ActivationCancelledEvent event) {
+    public void activationCancelled(final ActivationCancelledEvent event) {
         // intentionally left blank
     }
 
-    public void beforeActivationFired(BeforeActivationFiredEvent event) {
+    public void beforeActivationFired(final BeforeActivationFiredEvent event) {
         // intentionally left blank
     }
 
-    public void afterActivationFired(AfterActivationFiredEvent event) {
+    public void afterActivationFired(final AfterActivationFiredEvent event) {
         // intentionally left blank
     }
 }

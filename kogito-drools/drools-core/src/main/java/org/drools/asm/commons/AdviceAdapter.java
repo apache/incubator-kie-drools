@@ -55,19 +55,20 @@ import org.drools.asm.Type;
  * @author Eugene Kuleshov
  * @author Eric Bruneton
  */
-public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes {
-    private static final Object THIS = new Object();
+public abstract class AdviceAdapter extends GeneratorAdapter
+    implements
+    Opcodes {
+    private static final Object THIS  = new Object();
     private static final Object OTHER = new Object();
 
-    protected int methodAccess;
-    protected String methodDesc;
-    
-    private boolean constructor;
-    private boolean superInitialized;
-    private ArrayList stackFrame;
-    private HashMap branches;
+    protected int               methodAccess;
+    protected String            methodDesc;
 
-    
+    private boolean             constructor;
+    private boolean             superInitialized;
+    private ArrayList           stackFrame;
+    private HashMap             branches;
+
     /**
      * Creates a new {@link AdviceAdapter}.
      * 
@@ -76,294 +77,302 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
      * @param name the method's name.
      * @param desc the method's descriptor (see {@link Type Type}).
      */
-    public AdviceAdapter(MethodVisitor mv, int access, String name, String desc) {
-        super(mv, access, name, desc);
-        methodAccess = access;
-        methodDesc = desc;
+    public AdviceAdapter(final MethodVisitor mv,
+                         final int access,
+                         final String name,
+                         final String desc) {
+        super( mv,
+               access,
+               name,
+               desc );
+        this.methodAccess = access;
+        this.methodDesc = desc;
 
-        constructor = "<init>".equals(name);
-        if (!constructor) {
-            superInitialized = true;
+        this.constructor = "<init>".equals( name );
+        if ( !this.constructor ) {
+            this.superInitialized = true;
             onMethodEnter();
         } else {
-            stackFrame = new ArrayList();
-            branches = new HashMap();
+            this.stackFrame = new ArrayList();
+            this.branches = new HashMap();
         }
     }
 
-    public void visitLabel(Label label) {
-        mv.visitLabel(label);
+    public void visitLabel(final Label label) {
+        this.mv.visitLabel( label );
 
-        if (constructor && branches != null) {
-            ArrayList frame = (ArrayList) branches.get(label);
-            if (frame != null) {
-                stackFrame = frame;
-                branches.remove(label);
+        if ( this.constructor && this.branches != null ) {
+            final ArrayList frame = (ArrayList) this.branches.get( label );
+            if ( frame != null ) {
+                this.stackFrame = frame;
+                this.branches.remove( label );
             }
         }
     }
 
-    public void visitInsn(int opcode) {
-        if (constructor) {
-            switch (opcode) {
-                case RETURN: // empty stack
-                    onMethodExit(opcode);
+    public void visitInsn(final int opcode) {
+        if ( this.constructor ) {
+            switch ( opcode ) {
+                case RETURN : // empty stack
+                    onMethodExit( opcode );
                     break;
 
-                case IRETURN: // 1 before n/a after
-                case FRETURN: // 1 before n/a after
-                case ARETURN: // 1 before n/a after
-                case ATHROW: // 1 before n/a after
+                case IRETURN : // 1 before n/a after
+                case FRETURN : // 1 before n/a after
+                case ARETURN : // 1 before n/a after
+                case ATHROW : // 1 before n/a after
                     popValue();
                     popValue();
-                    onMethodExit(opcode);
+                    onMethodExit( opcode );
                     break;
 
-                case LRETURN: // 2 before n/a after
-                case DRETURN: // 2 before n/a after
+                case LRETURN : // 2 before n/a after
+                case DRETURN : // 2 before n/a after
                     popValue();
                     popValue();
-                    onMethodExit(opcode);
+                    onMethodExit( opcode );
                     break;
 
-                case NOP:
-                case LALOAD: // remove 2 add 2
-                case DALOAD: // remove 2 add 2
-                case LNEG:
-                case DNEG:
-                case FNEG:
-                case INEG:
-                case L2D:
-                case D2L:
-                case F2I:
-                case I2B:
-                case I2C:
-                case I2S:
-                case I2F:
-                case Opcodes.ARRAYLENGTH:
+                case NOP :
+                case LALOAD : // remove 2 add 2
+                case DALOAD : // remove 2 add 2
+                case LNEG :
+                case DNEG :
+                case FNEG :
+                case INEG :
+                case L2D :
+                case D2L :
+                case F2I :
+                case I2B :
+                case I2C :
+                case I2S :
+                case I2F :
+                case Opcodes.ARRAYLENGTH :
                     break;
 
-                case ACONST_NULL:
-                case ICONST_M1:
-                case ICONST_0:
-                case ICONST_1:
-                case ICONST_2:
-                case ICONST_3:
-                case ICONST_4:
-                case ICONST_5:
-                case FCONST_0:
-                case FCONST_1:
-                case FCONST_2:
-                case F2L: // 1 before 2 after
-                case F2D:
-                case I2L:
-                case I2D:
-                    pushValue(OTHER);
+                case ACONST_NULL :
+                case ICONST_M1 :
+                case ICONST_0 :
+                case ICONST_1 :
+                case ICONST_2 :
+                case ICONST_3 :
+                case ICONST_4 :
+                case ICONST_5 :
+                case FCONST_0 :
+                case FCONST_1 :
+                case FCONST_2 :
+                case F2L : // 1 before 2 after
+                case F2D :
+                case I2L :
+                case I2D :
+                    pushValue( AdviceAdapter.OTHER );
                     break;
 
-                case LCONST_0:
-                case LCONST_1:
-                case DCONST_0:
-                case DCONST_1:
-                    pushValue(OTHER);
-                    pushValue(OTHER);
+                case LCONST_0 :
+                case LCONST_1 :
+                case DCONST_0 :
+                case DCONST_1 :
+                    pushValue( AdviceAdapter.OTHER );
+                    pushValue( AdviceAdapter.OTHER );
                     break;
 
-                case IALOAD: // remove 2 add 1
-                case FALOAD: // remove 2 add 1
-                case AALOAD: // remove 2 add 1
-                case BALOAD: // remove 2 add 1
-                case CALOAD: // remove 2 add 1
-                case SALOAD: // remove 2 add 1
-                case POP:
-                case IADD:
-                case FADD:
-                case ISUB:
-                case LSHL: // 3 before 2 after
-                case LSHR: // 3 before 2 after
-                case LUSHR: // 3 before 2 after
-                case L2I: // 2 before 1 after
-                case L2F: // 2 before 1 after
-                case D2I: // 2 before 1 after
-                case D2F: // 2 before 1 after
-                case FSUB:
-                case FMUL:
-                case FDIV:
-                case FREM:
-                case FCMPL: // 2 before 1 after
-                case FCMPG: // 2 before 1 after
-                case IMUL:
-                case IDIV:
-                case IREM:
-                case ISHL:
-                case ISHR:
-                case IUSHR:
-                case IAND:
-                case IOR:
-                case IXOR:
-                case MONITORENTER:
-                case MONITOREXIT:
-                    popValue();
-                    break;
-
-                case POP2:
-                case LSUB:
-                case LMUL:
-                case LDIV:
-                case LREM:
-                case LADD:
-                case LAND:
-                case LOR:
-                case LXOR:
-                case DADD:
-                case DMUL:
-                case DSUB:
-                case DDIV:
-                case DREM:
-                    popValue();
+                case IALOAD : // remove 2 add 1
+                case FALOAD : // remove 2 add 1
+                case AALOAD : // remove 2 add 1
+                case BALOAD : // remove 2 add 1
+                case CALOAD : // remove 2 add 1
+                case SALOAD : // remove 2 add 1
+                case POP :
+                case IADD :
+                case FADD :
+                case ISUB :
+                case LSHL : // 3 before 2 after
+                case LSHR : // 3 before 2 after
+                case LUSHR : // 3 before 2 after
+                case L2I : // 2 before 1 after
+                case L2F : // 2 before 1 after
+                case D2I : // 2 before 1 after
+                case D2F : // 2 before 1 after
+                case FSUB :
+                case FMUL :
+                case FDIV :
+                case FREM :
+                case FCMPL : // 2 before 1 after
+                case FCMPG : // 2 before 1 after
+                case IMUL :
+                case IDIV :
+                case IREM :
+                case ISHL :
+                case ISHR :
+                case IUSHR :
+                case IAND :
+                case IOR :
+                case IXOR :
+                case MONITORENTER :
+                case MONITOREXIT :
                     popValue();
                     break;
 
-                case IASTORE:
-                case FASTORE:
-                case AASTORE:
-                case BASTORE:
-                case CASTORE:
-                case SASTORE:
-                case LCMP: // 4 before 1 after
-                case DCMPL:
-                case DCMPG:
-                    popValue();
+                case POP2 :
+                case LSUB :
+                case LMUL :
+                case LDIV :
+                case LREM :
+                case LADD :
+                case LAND :
+                case LOR :
+                case LXOR :
+                case DADD :
+                case DMUL :
+                case DSUB :
+                case DDIV :
+                case DREM :
                     popValue();
                     popValue();
                     break;
 
-                case LASTORE:
-                case DASTORE:
-                    popValue();
+                case IASTORE :
+                case FASTORE :
+                case AASTORE :
+                case BASTORE :
+                case CASTORE :
+                case SASTORE :
+                case LCMP : // 4 before 1 after
+                case DCMPL :
+                case DCMPG :
                     popValue();
                     popValue();
                     popValue();
                     break;
 
-                case DUP:
-                    pushValue(peekValue());
+                case LASTORE :
+                case DASTORE :
+                    popValue();
+                    popValue();
+                    popValue();
+                    popValue();
                     break;
 
-                case DUP_X1:
-                // TODO optimize this
+                case DUP :
+                    pushValue( peekValue() );
+                    break;
+
+                case DUP_X1 :
+                    // TODO optimize this
                 {
-                    Object o1 = popValue();
-                    Object o2 = popValue();
-                    pushValue(o1);
-                    pushValue(o2);
-                    pushValue(o1);
+                    final Object o1 = popValue();
+                    final Object o2 = popValue();
+                    pushValue( o1 );
+                    pushValue( o2 );
+                    pushValue( o1 );
                 }
                     break;
 
-                case DUP_X2:
-                // TODO optimize this
+                case DUP_X2 :
+                    // TODO optimize this
                 {
-                    Object o1 = popValue();
-                    Object o2 = popValue();
-                    Object o3 = popValue();
-                    pushValue(o1);
-                    pushValue(o3);
-                    pushValue(o2);
-                    pushValue(o1);
+                    final Object o1 = popValue();
+                    final Object o2 = popValue();
+                    final Object o3 = popValue();
+                    pushValue( o1 );
+                    pushValue( o3 );
+                    pushValue( o2 );
+                    pushValue( o1 );
                 }
                     break;
 
-                case DUP2:
-                // TODO optimize this
+                case DUP2 :
+                    // TODO optimize this
                 {
-                    Object o1 = popValue();
-                    Object o2 = popValue();
-                    pushValue(o2);
-                    pushValue(o1);
-                    pushValue(o2);
-                    pushValue(o1);
+                    final Object o1 = popValue();
+                    final Object o2 = popValue();
+                    pushValue( o2 );
+                    pushValue( o1 );
+                    pushValue( o2 );
+                    pushValue( o1 );
                 }
                     break;
 
-                case DUP2_X1:
-                // TODO optimize this
+                case DUP2_X1 :
+                    // TODO optimize this
                 {
-                    Object o1 = popValue();
-                    Object o2 = popValue();
-                    Object o3 = popValue();
-                    pushValue(o2);
-                    pushValue(o1);
-                    pushValue(o3);
-                    pushValue(o2);
-                    pushValue(o1);
+                    final Object o1 = popValue();
+                    final Object o2 = popValue();
+                    final Object o3 = popValue();
+                    pushValue( o2 );
+                    pushValue( o1 );
+                    pushValue( o3 );
+                    pushValue( o2 );
+                    pushValue( o1 );
                 }
                     break;
 
-                case DUP2_X2:
-                // TODO optimize this
+                case DUP2_X2 :
+                    // TODO optimize this
                 {
-                    Object o1 = popValue();
-                    Object o2 = popValue();
-                    Object o3 = popValue();
-                    Object o4 = popValue();
-                    pushValue(o2);
-                    pushValue(o1);
-                    pushValue(o4);
-                    pushValue(o3);
-                    pushValue(o2);
-                    pushValue(o1);
+                    final Object o1 = popValue();
+                    final Object o2 = popValue();
+                    final Object o3 = popValue();
+                    final Object o4 = popValue();
+                    pushValue( o2 );
+                    pushValue( o1 );
+                    pushValue( o4 );
+                    pushValue( o3 );
+                    pushValue( o2 );
+                    pushValue( o1 );
                 }
                     break;
 
-                case SWAP: {
-                    Object o1 = popValue();
-                    Object o2 = popValue();
-                    pushValue(o1);
-                    pushValue(o2);
+                case SWAP : {
+                    final Object o1 = popValue();
+                    final Object o2 = popValue();
+                    pushValue( o1 );
+                    pushValue( o2 );
                 }
                     break;
             }
         } else {
-            switch (opcode) {
-                case RETURN:
-                case IRETURN:
-                case FRETURN:
-                case ARETURN:
-                case LRETURN:
-                case DRETURN:
-                case ATHROW:
-                    onMethodExit(opcode);
+            switch ( opcode ) {
+                case RETURN :
+                case IRETURN :
+                case FRETURN :
+                case ARETURN :
+                case LRETURN :
+                case DRETURN :
+                case ATHROW :
+                    onMethodExit( opcode );
                     break;
             }
         }
-        mv.visitInsn(opcode);
+        this.mv.visitInsn( opcode );
     }
 
-    public void visitVarInsn(int opcode, int var) {
-        super.visitVarInsn(opcode, var);
+    public void visitVarInsn(final int opcode,
+                             final int var) {
+        super.visitVarInsn( opcode,
+                            var );
 
-        if (constructor) {
-            switch (opcode) {
-                case ILOAD:
-                case FLOAD:
-                    pushValue(OTHER);
+        if ( this.constructor ) {
+            switch ( opcode ) {
+                case ILOAD :
+                case FLOAD :
+                    pushValue( AdviceAdapter.OTHER );
                     break;
-                case LLOAD:
-                case DLOAD:
-                    pushValue(OTHER);
-                    pushValue(OTHER);
+                case LLOAD :
+                case DLOAD :
+                    pushValue( AdviceAdapter.OTHER );
+                    pushValue( AdviceAdapter.OTHER );
                     break;
-                case ALOAD:
-                    pushValue(var == 0 ? THIS : OTHER);
+                case ALOAD :
+                    pushValue( var == 0 ? AdviceAdapter.THIS : AdviceAdapter.OTHER );
                     break;
-                case ASTORE:
-                case ISTORE:
-                case FSTORE:
+                case ASTORE :
+                case ISTORE :
+                case FSTORE :
                     popValue();
                     break;
-                case LSTORE:
-                case DSTORE:
+                case LSTORE :
+                case DSTORE :
                     popValue();
                     popValue();
                     break;
@@ -371,223 +380,242 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
         }
     }
 
-    public void visitFieldInsn(
-        int opcode,
-        String owner,
-        String name,
-        String desc)
-    {
-        mv.visitFieldInsn(opcode, owner, name, desc);
+    public void visitFieldInsn(final int opcode,
+                               final String owner,
+                               final String name,
+                               final String desc) {
+        this.mv.visitFieldInsn( opcode,
+                                owner,
+                                name,
+                                desc );
 
-        if (constructor) {
-            char c = desc.charAt(0);
-            boolean longOrDouble = c == 'J' || c == 'D';
-            switch (opcode) {
-                case GETSTATIC:
-                    pushValue(OTHER);
-                    if (longOrDouble) {
-                        pushValue(OTHER);
+        if ( this.constructor ) {
+            final char c = desc.charAt( 0 );
+            final boolean longOrDouble = c == 'J' || c == 'D';
+            switch ( opcode ) {
+                case GETSTATIC :
+                    pushValue( AdviceAdapter.OTHER );
+                    if ( longOrDouble ) {
+                        pushValue( AdviceAdapter.OTHER );
                     }
                     break;
-                case PUTSTATIC:
+                case PUTSTATIC :
                     popValue();
-                    if(longOrDouble) {
+                    if ( longOrDouble ) {
                         popValue();
                     }
                     break;
-                case PUTFIELD:
+                case PUTFIELD :
                     popValue();
-                    if(longOrDouble) {
+                    if ( longOrDouble ) {
                         popValue();
                         popValue();
                     }
                     break;
                 // case GETFIELD:
-                default:
-                    if (longOrDouble) {
-                        pushValue(OTHER);
+                default :
+                    if ( longOrDouble ) {
+                        pushValue( AdviceAdapter.OTHER );
                     }
             }
         }
     }
 
-    public void visitIntInsn(int opcode, int operand) {
-        mv.visitIntInsn(opcode, operand);
+    public void visitIntInsn(final int opcode,
+                             final int operand) {
+        this.mv.visitIntInsn( opcode,
+                              operand );
 
-        if (constructor) {
-            switch (opcode) {
-                case BIPUSH:
-                case SIPUSH:
-                    pushValue(OTHER);
+        if ( this.constructor ) {
+            switch ( opcode ) {
+                case BIPUSH :
+                case SIPUSH :
+                    pushValue( AdviceAdapter.OTHER );
             }
         }
     }
 
-    public void visitLdcInsn(Object cst) {
-        mv.visitLdcInsn(cst);
+    public void visitLdcInsn(final Object cst) {
+        this.mv.visitLdcInsn( cst );
 
-        if (constructor) {
-            pushValue(OTHER);
-            if (cst instanceof Double || cst instanceof Long) {
-                pushValue(OTHER);
+        if ( this.constructor ) {
+            pushValue( AdviceAdapter.OTHER );
+            if ( cst instanceof Double || cst instanceof Long ) {
+                pushValue( AdviceAdapter.OTHER );
             }
         }
     }
 
-    public void visitMultiANewArrayInsn(String desc, int dims) {
-        mv.visitMultiANewArrayInsn(desc, dims);
+    public void visitMultiANewArrayInsn(final String desc,
+                                        final int dims) {
+        this.mv.visitMultiANewArrayInsn( desc,
+                                         dims );
 
-        if (constructor) {
-            for (int i = 0; i < dims; i++) {
+        if ( this.constructor ) {
+            for ( int i = 0; i < dims; i++ ) {
                 popValue();
             }
-            pushValue(OTHER);
+            pushValue( AdviceAdapter.OTHER );
         }
     }
 
-    public void visitTypeInsn(int opcode, String name) {
-        mv.visitTypeInsn(opcode, name);
+    public void visitTypeInsn(final int opcode,
+                              final String name) {
+        this.mv.visitTypeInsn( opcode,
+                               name );
 
         // ANEWARRAY, CHECKCAST or INSTANCEOF don't change stack
-        if (constructor && opcode == NEW) {
-            pushValue(OTHER);
+        if ( this.constructor && opcode == Opcodes.NEW ) {
+            pushValue( AdviceAdapter.OTHER );
         }
     }
 
-    public void visitMethodInsn(
-        int opcode,
-        String owner,
-        String name,
-        String desc)
-    {
-        mv.visitMethodInsn(opcode, owner, name, desc);
+    public void visitMethodInsn(final int opcode,
+                                final String owner,
+                                final String name,
+                                final String desc) {
+        this.mv.visitMethodInsn( opcode,
+                                 owner,
+                                 name,
+                                 desc );
 
-        if (constructor) {
-            Type[] types = Type.getArgumentTypes(desc);
-            for (int i = 0; i < types.length; i++) {
+        if ( this.constructor ) {
+            final Type[] types = Type.getArgumentTypes( desc );
+            for ( int i = 0; i < types.length; i++ ) {
                 popValue();
-                if (types[i].getSize() == 2) {
+                if ( types[i].getSize() == 2 ) {
                     popValue();
                 }
             }
-            switch (opcode) {
+            switch ( opcode ) {
                 // case INVOKESTATIC:
                 // break;
 
-                case INVOKEINTERFACE:
-                case INVOKEVIRTUAL:
+                case INVOKEINTERFACE :
+                case INVOKEVIRTUAL :
                     popValue(); // objectref
                     break;
 
-                case INVOKESPECIAL:
-                    Object type = popValue(); // objectref
-                    if (type == THIS && !superInitialized) {
+                case INVOKESPECIAL :
+                    final Object type = popValue(); // objectref
+                    if ( type == AdviceAdapter.THIS && !this.superInitialized ) {
                         onMethodEnter();
-                        superInitialized = true;
+                        this.superInitialized = true;
                         // once super has been initialized it is no longer 
                         // necessary to keep track of stack state                        
-                        constructor = false;
+                        this.constructor = false;
                     }
                     break;
             }
 
-            Type returnType = Type.getReturnType(desc);
-            if (returnType != Type.VOID_TYPE) {
-                pushValue(OTHER);
-                if (returnType.getSize() == 2) {
-                    pushValue(OTHER);
+            final Type returnType = Type.getReturnType( desc );
+            if ( returnType != Type.VOID_TYPE ) {
+                pushValue( AdviceAdapter.OTHER );
+                if ( returnType.getSize() == 2 ) {
+                    pushValue( AdviceAdapter.OTHER );
                 }
             }
         }
     }
 
-    public void visitJumpInsn(int opcode, Label label) {
-        mv.visitJumpInsn(opcode, label);
+    public void visitJumpInsn(final int opcode,
+                              final Label label) {
+        this.mv.visitJumpInsn( opcode,
+                               label );
 
-        if (constructor) {
-            switch (opcode) {
-                case IFEQ:
-                case IFNE:
-                case IFLT:
-                case IFGE:
-                case IFGT:
-                case IFLE:
-                case IFNULL:
-                case IFNONNULL:
+        if ( this.constructor ) {
+            switch ( opcode ) {
+                case IFEQ :
+                case IFNE :
+                case IFLT :
+                case IFGE :
+                case IFGT :
+                case IFLE :
+                case IFNULL :
+                case IFNONNULL :
                     popValue();
                     break;
 
-                case IF_ICMPEQ:
-                case IF_ICMPNE:
-                case IF_ICMPLT:
-                case IF_ICMPGE:
-                case IF_ICMPGT:
-                case IF_ICMPLE:
-                case IF_ACMPEQ:
-                case IF_ACMPNE:
+                case IF_ICMPEQ :
+                case IF_ICMPNE :
+                case IF_ICMPLT :
+                case IF_ICMPGE :
+                case IF_ICMPGT :
+                case IF_ICMPLE :
+                case IF_ACMPEQ :
+                case IF_ACMPNE :
                     popValue();
                     popValue();
                     break;
 
-                case JSR:
-                    pushValue(OTHER);
+                case JSR :
+                    pushValue( AdviceAdapter.OTHER );
                     break;
             }
-            addBranch(label);
+            addBranch( label );
         }
     }
 
-    public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
-        mv.visitLookupSwitchInsn(dflt, keys, labels);
+    public void visitLookupSwitchInsn(final Label dflt,
+                                      final int[] keys,
+                                      final Label[] labels) {
+        this.mv.visitLookupSwitchInsn( dflt,
+                                       keys,
+                                       labels );
 
-        if (constructor) {
+        if ( this.constructor ) {
             popValue();
-            addBranches(dflt, labels);
+            addBranches( dflt,
+                         labels );
         }
     }
 
-    public void visitTableSwitchInsn(
-        int min,
-        int max,
-        Label dflt,
-        Label[] labels)
-    {
-        mv.visitTableSwitchInsn(min, max, dflt, labels);
+    public void visitTableSwitchInsn(final int min,
+                                     final int max,
+                                     final Label dflt,
+                                     final Label[] labels) {
+        this.mv.visitTableSwitchInsn( min,
+                                      max,
+                                      dflt,
+                                      labels );
 
-        if (constructor) {
+        if ( this.constructor ) {
             popValue();
-            addBranches(dflt, labels);
+            addBranches( dflt,
+                         labels );
         }
     }
 
-    private void addBranches(Label dflt, Label[] labels) {
-        addBranch(dflt);
-        for (int i = 0; i < labels.length; i++) {
-            addBranch(labels[i]);
+    private void addBranches(final Label dflt,
+                             final Label[] labels) {
+        addBranch( dflt );
+        for ( int i = 0; i < labels.length; i++ ) {
+            addBranch( labels[i] );
         }
     }
 
-    private void addBranch(Label label) {
-        if (branches.containsKey(label)) {
+    private void addBranch(final Label label) {
+        if ( this.branches.containsKey( label ) ) {
             return;
         }
-        ArrayList frame = new ArrayList();
-        frame.addAll(stackFrame);
-        branches.put(label, frame);
+        final ArrayList frame = new ArrayList();
+        frame.addAll( this.stackFrame );
+        this.branches.put( label,
+                           frame );
     }
 
     private Object popValue() {
-        return stackFrame.remove(stackFrame.size()-1);
+        return this.stackFrame.remove( this.stackFrame.size() - 1 );
     }
 
     private Object peekValue() {
-        return stackFrame.get(stackFrame.size()-1);
+        return this.stackFrame.get( this.stackFrame.size() - 1 );
     }
-    
-    private void pushValue(Object o) {
-        stackFrame.add(o);
+
+    private void pushValue(final Object o) {
+        this.stackFrame.add( o );
     }
-    
+
     /**
      * Called at the beginning of the method or after super 
      * class class call in the constructor.
@@ -638,6 +666,5 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
     protected abstract void onMethodExit(int opcode);
 
     // TODO onException, onMethodCall
-    
-}
 
+}

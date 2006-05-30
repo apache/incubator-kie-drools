@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +23,7 @@ import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.common.Agenda;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Duration;
@@ -39,9 +37,9 @@ import org.drools.spi.Tuple;
 
 public class SchedulerTest extends DroolsTestCase {
     public void testScheduledActivation() throws Exception {
-        RuleBase ruleBase = new RuleBaseImpl();
+        final RuleBase ruleBase = new ReteooRuleBase();
 
-        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final Rule rule = new Rule( "test-rule" );
         final TerminalNode node = new TerminalNode( 1,
@@ -51,14 +49,24 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -7225205391633485219L;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) {
                 data.add( "tested" );
             }
         } );
 
         /* 1/10th of a second */
-        Duration duration = new Duration() {
+        final Duration duration = new Duration() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 5737133396760056769L;
+
             public long getDuration(Tuple tuple) {
                 return 100;
             }
@@ -66,19 +74,20 @@ public class SchedulerTest extends DroolsTestCase {
         };
         rule.setDuration( duration );
 
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 null,
-                                                                 null );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
 
-        ReteTuple tuple = new ReteTuple( new FactHandleImpl( 1 ) );
+        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+                                                                      "cheese" ) );
 
         assertEquals( 0,
                       data.size() );
 
         node.assertTuple( tuple,
                           context,
-                          (WorkingMemoryImpl) workingMemory );
+                          workingMemory );
 
         // sleep for 300ms
         Thread.sleep( 300 );
@@ -89,9 +98,9 @@ public class SchedulerTest extends DroolsTestCase {
     }
 
     public void testDoLoopScheduledActivation() throws Exception {
-        RuleBase ruleBase = new RuleBaseImpl();
+        final RuleBase ruleBase = new ReteooRuleBase();
 
-        final WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
         final Agenda agenda = workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
@@ -101,7 +110,12 @@ public class SchedulerTest extends DroolsTestCase {
         final List data = new ArrayList();
 
         /* 1/10th of a second */
-        Duration duration = new Duration() {
+        final Duration duration = new Duration() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 6465323213679604468L;
+
             public long getDuration(Tuple tuple) {
                 return 100;
             }
@@ -112,33 +126,40 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 8128944672361208508L;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) {
                 /* on first invoke add another one to the agenda */
                 if ( data.size() < 3 ) {
-                    PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                              0,
-                                                                              rule,
-                                                                              knowledgeHelper.getActivation() );
-                    ReteTuple tuple2 = new ReteTuple( new FactHandleImpl( 2 ) );
+                    final PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                                    0,
+                                                                                    rule,
+                                                                                    knowledgeHelper.getActivation() );
+                    final ReteTuple tuple2 = new ReteTuple( new DefaultFactHandle( 2,
+                                                                                   "cheese" ) );
                     node.assertTuple( tuple2,
                                       context2,
-                                      (WorkingMemoryImpl) workingMemory );
+                                      (ReteooWorkingMemory) workingMemory );
                 }
                 data.add( "tested" );
             }
         } );
 
-        PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  null,
-                                                                  null );
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        null,
+                                                                        null );
 
-        ReteTuple tuple1 = new ReteTuple( new FactHandleImpl( 1 ) );
+        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
+                                                                       "cheese" ) );
 
         node.assertTuple( tuple1,
                           context1,
-                          (WorkingMemoryImpl) workingMemory );
+                          workingMemory );
 
         assertEquals( 0,
                       data.size() );
@@ -153,9 +174,9 @@ public class SchedulerTest extends DroolsTestCase {
     }
 
     public void testNoLoopScheduledActivation() throws Exception {
-        RuleBase ruleBase = new RuleBaseImpl();
+        final RuleBase ruleBase = new ReteooRuleBase();
 
-        final WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
         final Agenda agenda = workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
@@ -166,7 +187,12 @@ public class SchedulerTest extends DroolsTestCase {
                                                     rule );
 
         /* 1/10th of a second */
-        Duration duration = new Duration() {
+        final Duration duration = new Duration() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -2288407417074884302L;
+
             public long getDuration(Tuple tuple) {
                 return 100;
             }
@@ -178,32 +204,39 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -4822730789394039868L;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) {
                 /* on first invoke add another one to the agenda */
                 if ( data.size() < 5 ) {
-                    PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                              0,
-                                                                              rule,
-                                                                              knowledgeHelper.getActivation() );
-                    ReteTuple tuple2 = new ReteTuple( new FactHandleImpl( 2 ) );
+                    final PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                                    0,
+                                                                                    rule,
+                                                                                    knowledgeHelper.getActivation() );
+                    final ReteTuple tuple2 = new ReteTuple( new DefaultFactHandle( 2,
+                                                                                   "cheese" ) );
                     node.assertTuple( tuple2,
                                       context2,
-                                      (WorkingMemoryImpl) workingMemory );
+                                      (ReteooWorkingMemory) workingMemory );
                 }
                 data.add( "tested" );
             }
         } );
 
-        PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  null,
-                                                                  null );
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        null,
+                                                                        null );
 
-        ReteTuple tuple1 = new ReteTuple( new FactHandleImpl( 1 ) );
+        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
+                                                                       "cheese" ) );
         node.assertTuple( tuple1,
                           context1,
-                          (WorkingMemoryImpl) workingMemory );
+                          workingMemory );
         assertEquals( 0,
                       data.size() );
 

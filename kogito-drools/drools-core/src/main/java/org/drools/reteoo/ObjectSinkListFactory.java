@@ -28,22 +28,20 @@ import org.drools.RuleBaseConfiguration;
  */
 public class ObjectSinkListFactory {
     private final RuleBaseConfiguration config;
-    
-    public ObjectSinkListFactory(RuleBaseConfiguration config) {
+
+    public ObjectSinkListFactory(final RuleBaseConfiguration config) {
         this.config = config;
     }
-    
-    public final ObjectSinkList newObjectSinkList(Class owner) {
-        if ( config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_HASH_OBJECT_TYPE_NODES) && 
-             (ObjectTypeNode.class.isAssignableFrom( owner )) ) {
+
+    public final ObjectSinkList newObjectSinkList(final Class owner) {
+        if ( this.config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_HASH_OBJECT_TYPE_NODES ) && (ObjectTypeNode.class.isAssignableFrom( owner )) ) {
             return new HashedObjectSinkList();
-        } else if ( config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_HASH_ALPHA_NODES ) && 
-                   (AlphaNode.class.isAssignableFrom( owner )) ) {
+        } else if ( this.config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_HASH_ALPHA_NODES ) && (AlphaNode.class.isAssignableFrom( owner )) ) {
             return new HashedObjectSinkList();
         }
         return new DefaultObjectSinkList( 1 );
     }
-    
+
     public static final ObjectSinkList newDefaultObjectSinkList() {
         return new DefaultObjectSinkList( 1 );
     }

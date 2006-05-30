@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,28 +16,26 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
 import junit.framework.TestCase;
 
 public class RuleBaseFactoryTest extends TestCase {
 
     public void testReteOO() {
-        RuleBase rb = RuleBaseFactory.getInstance().newRuleBase();
-        assertTrue( rb instanceof org.drools.reteoo.RuleBaseImpl );
+        final RuleBase rb = RuleBaseFactory.newRuleBase();
+        assertTrue( rb instanceof org.drools.reteoo.ReteooRuleBase );
 
-        RuleBase rb2 = RuleBaseFactory.getInstance().newRuleBase( RuleBase.RETEOO );
+        final RuleBase rb2 = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
 
-        assertTrue( rb2 instanceof org.drools.reteoo.RuleBaseImpl );
+        assertTrue( rb2 instanceof org.drools.reteoo.ReteooRuleBase );
         assertNotSame( rb2,
                        rb );
     }
 
     public void testLeaps() {
-        RuleBase rb = RuleBaseFactory.getInstance().newRuleBase( RuleBase.LEAPS );
-        assertTrue( rb instanceof org.drools.leaps.RuleBaseImpl );
-        RuleBase rb2 = RuleBaseFactory.getInstance().newRuleBase( RuleBase.LEAPS );
-        assertTrue( rb2 instanceof org.drools.leaps.RuleBaseImpl );
+        final RuleBase rb = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
+        assertTrue( rb instanceof org.drools.leaps.LeapsRuleBase );
+        final RuleBase rb2 = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
+        assertTrue( rb2 instanceof org.drools.leaps.LeapsRuleBase );
         assertNotSame( rb2,
                        rb );
     }

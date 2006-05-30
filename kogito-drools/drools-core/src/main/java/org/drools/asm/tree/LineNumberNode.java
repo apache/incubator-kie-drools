@@ -43,7 +43,7 @@ public class LineNumberNode {
      * A line number. This number refers to the source file from which the class
      * was compiled.
      */
-    public int line;
+    public int   line;
 
     /**
      * The first instruction corresponding to this line number.
@@ -57,7 +57,8 @@ public class LineNumberNode {
      *        which the class was compiled.
      * @param start the first instruction corresponding to this line number.
      */
-    public LineNumberNode(final int line, final Label start) {
+    public LineNumberNode(final int line,
+                          final Label start) {
         this.line = line;
         this.start = start;
     }
@@ -68,6 +69,7 @@ public class LineNumberNode {
      * @param mv a method visitor.
      */
     public void accept(final MethodVisitor mv) {
-        mv.visitLineNumber(line, start);
+        mv.visitLineNumber( this.line,
+                            this.start );
     }
 }

@@ -1,4 +1,5 @@
 package org.drools.conflict;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.conflict;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import org.drools.common.InternalFactHandle;
 import org.drools.spi.Activation;
@@ -38,8 +35,12 @@ public class RecencyConflictResolver extends AbstractConflictResolver {
     // Class members
     // ----------------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long                    serialVersionUID = -1418542215680672535L;
     /** Singleton instance. */
-    private static final RecencyConflictResolver INSTANCE = new RecencyConflictResolver();
+    private static final RecencyConflictResolver INSTANCE         = new RecencyConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -70,64 +71,66 @@ public class RecencyConflictResolver extends AbstractConflictResolver {
     /**
      * @see ConflictResolver
      */
-    public int compare(Activation lhs,
-                       Activation rhs) {
-        InternalFactHandle[] lFacts = ( InternalFactHandle[] ) lhs.getTuple().getFactHandles();
-        InternalFactHandle[] rFacts = ( InternalFactHandle[] ) rhs.getTuple().getFactHandles();
-        
-        InternalFactHandle leftMostRecent = getMostRecentFact(lFacts);
-        InternalFactHandle rightMostRecent = getMostRecentFact(rFacts);
-        
-        int lastIndex = ( lFacts.length < rFacts.length ) ?  lFacts.length : rFacts.length ;
-        
-        if (leftMostRecent.getRecency() == rightMostRecent.getRecency() && lastIndex > 1) {
-            
+    public int compare(final Activation lhs,
+                       final Activation rhs) {
+        final InternalFactHandle[] lFacts = lhs.getTuple().getFactHandles();
+        final InternalFactHandle[] rFacts = rhs.getTuple().getFactHandles();
+
+        InternalFactHandle leftMostRecent = getMostRecentFact( lFacts );
+        InternalFactHandle rightMostRecent = getMostRecentFact( rFacts );
+
+        final int lastIndex = (lFacts.length < rFacts.length) ? lFacts.length : rFacts.length;
+
+        if ( leftMostRecent.getRecency() == rightMostRecent.getRecency() && lastIndex > 1 ) {
+
             for ( int i = 0; i < lastIndex; i++ ) {
-                leftMostRecent = getMostRecentFact( lFacts, leftMostRecent );
-                rightMostRecent = getMostRecentFact( rFacts, rightMostRecent );
+                leftMostRecent = getMostRecentFact( lFacts,
+                                                    leftMostRecent );
+                rightMostRecent = getMostRecentFact( rFacts,
+                                                     rightMostRecent );
                 if ( leftMostRecent == null || rightMostRecent == null ) {
-                    if( leftMostRecent == null && rightMostRecent != null ) {
+                    if ( leftMostRecent == null && rightMostRecent != null ) {
                         return (int) rightMostRecent.getRecency();
-                    } 
+                    }
                 } else if ( leftMostRecent.getRecency() != rightMostRecent.getRecency() ) {
-                    return (int) ( rightMostRecent.getRecency() - leftMostRecent.getRecency() );
+                    return (int) (rightMostRecent.getRecency() - leftMostRecent.getRecency());
                 }
             }
         } else {
-            return (int) ( rightMostRecent.getRecency() - leftMostRecent.getRecency() );
+            return (int) (rightMostRecent.getRecency() - leftMostRecent.getRecency());
         }
-        
-        return  rFacts.length - lFacts.length;
+
+        return rFacts.length - lFacts.length;
     }
-    
-    private InternalFactHandle  getMostRecentFact(InternalFactHandle[] handles) {
-        InternalFactHandle  mostRecent = handles[0];
+
+    private InternalFactHandle getMostRecentFact(final InternalFactHandle[] handles) {
+        InternalFactHandle mostRecent = handles[0];
         for ( int i = 1; i < handles.length; i++ ) {
-            InternalFactHandle eachHandle = handles[i];
-            
-            if ( eachHandle.getRecency() > mostRecent.getRecency()) {
+            final InternalFactHandle eachHandle = handles[i];
+
+            if ( eachHandle.getRecency() > mostRecent.getRecency() ) {
                 mostRecent = eachHandle;
             }
-        }  
+        }
         return mostRecent;
     }
-    
-    private InternalFactHandle getMostRecentFact(InternalFactHandle[] handles, InternalFactHandle handle) {
+
+    private InternalFactHandle getMostRecentFact(final InternalFactHandle[] handles,
+                                                 final InternalFactHandle handle) {
         InternalFactHandle mostRecent = null;
-        
-        for ( int i =  0; i < handles.length; i++ ) {
-            InternalFactHandle eachHandle = handles[i];
-            
+
+        for ( int i = 0; i < handles.length; i++ ) {
+            final InternalFactHandle eachHandle = handles[i];
+
             if ( mostRecent == null && eachHandle.getRecency() < handle.getRecency() ) {
                 mostRecent = eachHandle;
             }
-            
-            if ( mostRecent != null && eachHandle.getRecency() > mostRecent.getRecency() &&  eachHandle.getRecency() < handle.getRecency() ) {
+
+            if ( mostRecent != null && eachHandle.getRecency() > mostRecent.getRecency() && eachHandle.getRecency() < handle.getRecency() ) {
                 mostRecent = eachHandle;
-            }            
-        }  
+            }
+        }
         return mostRecent;
-    }    
-    
-    
+    }
+
 }

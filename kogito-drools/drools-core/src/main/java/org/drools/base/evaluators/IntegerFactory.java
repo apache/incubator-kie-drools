@@ -1,4 +1,5 @@
 package org.drools.base.evaluators;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,11 @@ package org.drools.base.evaluators;
  * limitations under the License.
  */
 
-
-
 import org.drools.base.BaseEvaluator;
 import org.drools.spi.Evaluator;
 
 public class IntegerFactory {
-    public static Evaluator getIntegerEvaluator(int operator) {
+    public static Evaluator getIntegerEvaluator(final int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
                 return IntegerEqualEvaluator.INSTANCE;
@@ -41,16 +40,22 @@ public class IntegerFactory {
     }
 
     static class IntegerEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new IntegerEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 7723739052946963265L;
+        public final static Evaluator INSTANCE         = new IntegerEqualEvaluator();
 
         private IntegerEqualEvaluator() {
             super( Evaluator.INTEGER_TYPE,
                    Evaluator.EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 == null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 == null;
+            }
             return ((Number) object1).equals( object2 );
         }
 
@@ -60,16 +65,22 @@ public class IntegerFactory {
     }
 
     static class IntegerNotEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new IntegerNotEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -9113145485945747879L;
+        public final static Evaluator INSTANCE         = new IntegerNotEqualEvaluator();
 
         private IntegerNotEqualEvaluator() {
             super( Evaluator.INTEGER_TYPE,
                    Evaluator.NOT_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return (object2 != null);
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return (object2 != null);
+            }
             return !((Number) object1).equals( object2 );
         }
 
@@ -79,15 +90,19 @@ public class IntegerFactory {
     }
 
     static class IntegerLessEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new IntegerLessEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 4190533166100633474L;
+        public final static Evaluator INSTANCE         = new IntegerLessEvaluator();
 
         private IntegerLessEvaluator() {
             super( Evaluator.INTEGER_TYPE,
                    Evaluator.LESS );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).intValue() < ((Number) object2).intValue();
         }
 
@@ -97,15 +112,19 @@ public class IntegerFactory {
     }
 
     static class IntegerLessOrEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new IntegerLessOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -4044888400673214480L;
+        public final static Evaluator INSTANCE         = new IntegerLessOrEqualEvaluator();
 
         private IntegerLessOrEqualEvaluator() {
             super( Evaluator.INTEGER_TYPE,
                    Evaluator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).intValue() <= ((Number) object2).intValue();
         }
 
@@ -115,15 +134,19 @@ public class IntegerFactory {
     }
 
     static class IntegerGreaterEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new IntegerGreaterEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -5347620757145017588L;
+        public final static Evaluator INSTANCE         = new IntegerGreaterEvaluator();
 
         private IntegerGreaterEvaluator() {
             super( Evaluator.INTEGER_TYPE,
                    Evaluator.GREATER );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).intValue() > ((Number) object2).intValue();
         }
 
@@ -133,15 +156,19 @@ public class IntegerFactory {
     }
 
     static class IntegerGreaterOrEqualEvaluator extends BaseEvaluator {
-        private final static Evaluator INSTANCE = new IntegerGreaterOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long      serialVersionUID = 7520187005496650583L;
+        private final static Evaluator INSTANCE         = new IntegerGreaterOrEqualEvaluator();
 
         private IntegerGreaterOrEqualEvaluator() {
             super( Evaluator.INTEGER_TYPE,
                    Evaluator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).intValue() >= ((Number) object2).intValue();
         }
 

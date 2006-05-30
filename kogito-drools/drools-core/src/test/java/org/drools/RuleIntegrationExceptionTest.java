@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,19 +16,15 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
-
-
 import junit.framework.TestCase;
 
 import org.drools.rule.Rule;
 
 public class RuleIntegrationExceptionTest extends TestCase {
     public void testConstruct() {
-        Rule rule = new Rule( "cheese" );
+        final Rule rule = new Rule( "cheese" );
 
-        RuleIntegrationException e = new RuleIntegrationException( rule );
+        final RuleIntegrationException e = new RuleIntegrationException( rule );
 
         assertSame( rule,
                     e.getRule() );

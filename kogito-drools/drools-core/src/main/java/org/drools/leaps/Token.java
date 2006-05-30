@@ -22,10 +22,10 @@ import java.util.Iterator;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.TableIterator;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
+import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
 /**
@@ -40,37 +40,37 @@ public class Token
     Tuple,
     Serializable {
 
-    private static final long            serialVersionUID   = 1L;
+    private static final long        serialVersionUID   = 1L;
 
-    private WorkingMemoryImpl            workingMemory;
+    private LeapsWorkingMemory       workingMemory;
 
-    private final FactHandleImpl         dominantFactHandle;
+    private final InternalFactHandle dominantFactHandle;
 
-    private RuleHandle                   currentRuleHandle  = null;
+    private RuleHandle               currentRuleHandle  = null;
 
-    private FactHandleImpl[]             currentFactHandles = new FactHandleImpl[0];
+    private FactHandleImpl[]         currentFactHandles = new FactHandleImpl[0];
 
-    boolean                              resume             = false;
+    boolean                          resume             = false;
 
-    private Iterator                     rules              = null;
+    private Iterator                 rules              = null;
 
-    private final PropagationContextImpl propagationContext;
+    private final PropagationContext propagationContext;
 
     /**
      * 
      */
-    public Token(WorkingMemoryImpl workingMemory, FactHandleImpl factHandle,
-            PropagationContextImpl propagationContext) {
+    public Token(final LeapsWorkingMemory workingMemory,
+                 final InternalFactHandle factHandle,
+                 final PropagationContext propagationContext) {
         this.workingMemory = workingMemory;
         this.dominantFactHandle = factHandle;
         this.propagationContext = propagationContext;
     }
 
     private Iterator rulesIterator() {
-        if (this.rules == null) {
-            if (this.dominantFactHandle != null) {
-                this.rules = this.workingMemory.getFactTable(
-                        this.dominantFactHandle.getObject().getClass()).getRulesIterator();
+        if ( this.rules == null ) {
+            if ( this.dominantFactHandle != null ) {
+                this.rules = this.workingMemory.getFactTable( this.dominantFactHandle.getObject().getClass() ).getRulesIterator();
             }
         }
         return this.rules;
@@ -90,53 +90,49 @@ public class Token
 
     public boolean hasNextRuleHandle() {
         boolean ret = false;
-        if (this.rulesIterator() != null) {
+        if ( this.rulesIterator() != null ) {
             // starting with calling rulesIterator() to make sure that we picks
             // rules because fact can be asserted before rules added
-            long levelId = this.workingMemory.getIdLastFireAllAt();
-            if (this.dominantFactHandle == null
-                    || this.dominantFactHandle.getId() >= levelId) {
+            final long levelId = this.workingMemory.getIdLastFireAllAt();
+            if ( this.dominantFactHandle == null || this.dominantFactHandle.getId() >= levelId ) {
                 ret = this.rules.hasNext();
-            }
-            else {
+            } else {
                 // then we need to skip rules that have id lower than
                 // workingMemory.idLastFireAllAt
                 boolean done = false;
-                while (!done) {
-                    if (this.rules.hasNext()) {
-                        if (((RuleHandle) ((TableIterator) this.rules).peekNext()).getId() > levelId) {
+                while ( !done ) {
+                    if ( this.rules.hasNext() ) {
+                        if ( ((RuleHandle) ((TableIterator) this.rules).peekNext()).getId() > levelId ) {
                             ret = true;
                             done = true;
-                        }
-                        else {
+                        } else {
                             this.rules.next();
                         }
-                    }
-                    else {
+                    } else {
                         ret = false;
                         done = true;
                     }
                 }
             }
         }
-        
+
         return ret;
     }
 
     public int hashCode() {
-        if (this.dominantFactHandle != null) {
+        if ( this.dominantFactHandle != null ) {
             return this.dominantFactHandle.hashCode();
-        }
-        else {
+        } else {
             return 0;
         }
     }
 
-    public void set(int idx, FactHandleImpl factHandle) {
+    public void set(final int idx,
+                    final FactHandleImpl factHandle) {
         this.currentFactHandles[idx] = factHandle;
     }
 
-    public FactHandleImpl getDominantFactHandle() {
+    public InternalFactHandle getDominantFactHandle() {
         return this.dominantFactHandle;
     }
 
@@ -148,7 +144,7 @@ public class Token
         return this.resume;
     }
 
-    public void setResume(boolean resume) {
+    public void setResume(final boolean resume) {
         this.resume = resume;
     }
 
@@ -157,7 +153,7 @@ public class Token
      * 
      * @see Object
      */
-    public boolean equals(Object that) {
+    public boolean equals(final Object that) {
         return this.dominantFactHandle.getId() == ((Token) that).dominantFactHandle.getId();
     }
 
@@ -168,14 +164,14 @@ public class Token
      * @return The currently bound <code>Object</code> value.
      * @see org.drools.spi.Tuple
      */
-    public InternalFactHandle get(int idx) {
+    public InternalFactHandle get(final int idx) {
         return this.currentFactHandles[idx];
     }
 
     /**
      * @see org.drools.spi.Tuple
      */
-    public InternalFactHandle get(Declaration declaration) {
+    public InternalFactHandle get(final Declaration declaration) {
         return this.get( declaration.getColumn() );
     }
 
@@ -185,7 +181,7 @@ public class Token
     public InternalFactHandle[] getFactHandles() {
         return this.currentFactHandles;
     }
-    
+
     public long getRecency() {
         return 0;
     }
@@ -219,8 +215,9 @@ public class Token
      * @return LeapsTuple
      */
     LeapsTuple getTuple() {
-        return new LeapsTuple(this.currentFactHandles, this.currentRuleHandle
-                .getLeapsRule(), this.propagationContext);
+        return new LeapsTuple( this.currentFactHandles,
+                               this.currentRuleHandle.getLeapsRule(),
+                               this.propagationContext );
     }
 
     /**
@@ -232,7 +229,7 @@ public class Token
      * @return <code>true</code> if this tuple depends upon the specified
      *         object, otherwise <code>false</code>.
      */
-    public boolean dependsOn(FactHandle handle) {
+    public boolean dependsOn(final FactHandle handle) {
         for ( int i = 0, length = this.currentFactHandles.length; i < length; i++ ) {
             if ( this.currentFactHandles[i].equals( handle ) ) {
                 return true;
@@ -248,11 +245,11 @@ public class Token
      * @see getTuple()
      * @see org.drools.spi.Tuple
      */
-    public void setActivation(Activation activation) {
+    public void setActivation(final Activation activation) {
         // do nothing
     }
 
-    public PropagationContextImpl getPropagationContext() {
-        return propagationContext;
+    public PropagationContext getPropagationContext() {
+        return this.propagationContext;
     }
 }

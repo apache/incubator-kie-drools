@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
-
-
 import org.drools.rule.Rule;
 
 /**
@@ -34,8 +31,12 @@ import org.drools.rule.Rule;
  *          mproctor Exp $
  */
 public class RuleIntegrationException extends IntegrationException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4907967959683936312L;
     /** The rule. */
-    private final Rule rule;
+    private final Rule        rule;
 
     /**
      * @see java.lang.Exception#Exception()
@@ -43,7 +44,7 @@ public class RuleIntegrationException extends IntegrationException {
      * @param rule
      *            The offending rule.
      */
-    public RuleIntegrationException(Rule rule) {
+    public RuleIntegrationException(final Rule rule) {
         super( createMessage( rule ) );
         this.rule = rule;
     }
@@ -54,8 +55,8 @@ public class RuleIntegrationException extends IntegrationException {
      * @param rule
      *            The offending rule.
      */
-    public RuleIntegrationException(Rule rule,
-                                    Throwable cause) {
+    public RuleIntegrationException(final Rule rule,
+                                    final Throwable cause) {
         super( createMessage( rule ),
                cause );
         this.rule = rule;
@@ -70,7 +71,7 @@ public class RuleIntegrationException extends IntegrationException {
         return this.rule;
     }
 
-    private static String createMessage(Rule rule) {
+    private static String createMessage(final Rule rule) {
         return rule.getName() + " cannot be integrated";
     }
 }

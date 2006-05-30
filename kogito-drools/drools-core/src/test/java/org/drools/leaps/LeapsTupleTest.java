@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import junit.framework.TestCase;
 
@@ -51,7 +48,7 @@ public class LeapsTupleTest extends TestCase {
                                       "three" );
         this.h4 = new FactHandleImpl( 4,
                                       "four" );
-        FactHandleImpl arr[] = {this.h1, this.h2, this.h3, this.h4};
+        final FactHandleImpl arr[] = {this.h1, this.h2, this.h3, this.h4};
         this.tuple = new LeapsTuple( arr,
                                      null,
                                      null );
@@ -88,7 +85,7 @@ public class LeapsTupleTest extends TestCase {
      * Test method for 'org.drools.leaps.LeapsTuple.getFactHandles()'
      */
     public void testGetFactHandles() {
-        FactHandle[] arr = this.tuple.getFactHandles();
+        final FactHandle[] arr = this.tuple.getFactHandles();
         for ( int i = 0; i < arr.length; i++ ) {
             assertEquals( arr[0],
                           this.h1 );
@@ -106,10 +103,10 @@ public class LeapsTupleTest extends TestCase {
      * Test method for 'org.drools.leaps.LeapsTuple.isActivationNull()'
      */
     public void testIsActivationNull() {
-        AgendaItem item = new AgendaItem( 0L,
-                                          this.tuple,
-                                          null,
-                                          null );
+        final AgendaItem item = new AgendaItem( 0L,
+                                                this.tuple,
+                                                null,
+                                                null );
         assertTrue( this.tuple.isActivationNull() );
         this.tuple.setActivation( item );
         assertFalse( this.tuple.isActivationNull() );
@@ -119,10 +116,10 @@ public class LeapsTupleTest extends TestCase {
      * Test method for 'org.drools.leaps.LeapsTuple.equals(Object)'
      */
     public void testEqualsObject() {
-        FactHandleImpl arr[] = {this.h1, this.h2, this.h3, this.h4};
-        LeapsTuple tupleToCompare = new LeapsTuple( arr,
-                                                    null,
-                                                    null );
+        final FactHandleImpl arr[] = {this.h1, this.h2, this.h3, this.h4};
+        final LeapsTuple tupleToCompare = new LeapsTuple( arr,
+                                                          null,
+                                                          null );
         assertEquals( this.tuple,
                       tupleToCompare );
 

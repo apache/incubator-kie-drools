@@ -41,36 +41,45 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @author Eugene Kuleshov
  */
-public class SAXFieldAdapter implements FieldVisitor {
+public class SAXFieldAdapter
+    implements
+    FieldVisitor {
     private final ContentHandler h;
 
-    public SAXFieldAdapter(ContentHandler h, AttributesImpl att) {
+    public SAXFieldAdapter(final ContentHandler h,
+                           final AttributesImpl att) {
         this.h = h;
 
         try {
-            h.startElement("", "field", "field", att);
-        } catch (SAXException ex) {
-            throw new RuntimeException(ex.toString());
+            h.startElement( "",
+                            "field",
+                            "field",
+                            att );
+        } catch ( final SAXException ex ) {
+            throw new RuntimeException( ex.toString() );
         }
     }
 
-    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-        return new SAXAnnotationAdapter(h,
-                "annotation",
-                visible ? 1 : -1,
-                null,
-                desc);
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        return new SAXAnnotationAdapter( this.h,
+                                         "annotation",
+                                         visible ? 1 : -1,
+                                         null,
+                                         desc );
     }
 
-    public void visitAttribute(Attribute attr) {
+    public void visitAttribute(final Attribute attr) {
         // TODO Auto-generated method stub
     }
 
     public void visitEnd() {
         try {
-            h.endElement("", "field", "field");
-        } catch (SAXException ex) {
-            throw new RuntimeException(ex.toString());
+            this.h.endElement( "",
+                               "field",
+                               "field" );
+        } catch ( final SAXException ex ) {
+            throw new RuntimeException( ex.toString() );
         }
     }
 

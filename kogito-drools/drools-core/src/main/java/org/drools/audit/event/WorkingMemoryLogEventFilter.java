@@ -32,9 +32,9 @@ public class WorkingMemoryLogEventFilter
     private boolean allowModifyEvents  = true;
     private boolean allowRetractEvents = true;
 
-    public WorkingMemoryLogEventFilter(boolean allowAssertEvents,
-                                       boolean allowModifyEvents,
-                                       boolean allowRetractEvents) {
+    public WorkingMemoryLogEventFilter(final boolean allowAssertEvents,
+                                       final boolean allowModifyEvents,
+                                       final boolean allowRetractEvents) {
         setAllowAssertEvents( allowAssertEvents );
         setAllowModifyEvents( allowModifyEvents );
         setAllowRetractEvents( allowRetractEvents );
@@ -43,28 +43,28 @@ public class WorkingMemoryLogEventFilter
     /**
      * @see org.drools.audit.event.ILogEventFilter
      */
-    public boolean acceptEvent(LogEvent event) {
+    public boolean acceptEvent(final LogEvent event) {
         switch ( event.getType() ) {
             case LogEvent.OBJECT_ASSERTED :
-                return allowAssertEvents;
+                return this.allowAssertEvents;
             case LogEvent.OBJECT_MODIFIED :
-                return allowModifyEvents;
+                return this.allowModifyEvents;
             case LogEvent.OBJECT_RETRACTED :
-                return allowRetractEvents;
+                return this.allowRetractEvents;
             default :
                 return true;
         }
     }
 
-    public void setAllowAssertEvents(boolean allowAssertEvents) {
+    public void setAllowAssertEvents(final boolean allowAssertEvents) {
         this.allowAssertEvents = allowAssertEvents;
     }
 
-    public void setAllowModifyEvents(boolean allowModifyEvents) {
+    public void setAllowModifyEvents(final boolean allowModifyEvents) {
         this.allowModifyEvents = allowModifyEvents;
     }
 
-    public void setAllowRetractEvents(boolean allowRetractEvents) {
+    public void setAllowRetractEvents(final boolean allowRetractEvents) {
         this.allowRetractEvents = allowRetractEvents;
     }
 }

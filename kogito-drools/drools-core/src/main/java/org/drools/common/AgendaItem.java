@@ -19,13 +19,11 @@ package org.drools.common;
 import java.io.Serializable;
 
 import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedListObjectWrapper;
 import org.drools.util.Queue;
 import org.drools.util.Queueable;
 
@@ -43,6 +41,11 @@ public class AgendaItem
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
+
+    /**
+     * 
+     */
+    private static final long        serialVersionUID = -4040142320609432740L;
 
     /** The tuple. */
     private final Tuple              tuple;
@@ -79,10 +82,10 @@ public class AgendaItem
      * @param rule
      *            The rule.
      */
-    public AgendaItem(long activationNumber,
-                      Tuple tuple,
-                      PropagationContext context,
-                      Rule rule) {
+    public AgendaItem(final long activationNumber,
+                      final Tuple tuple,
+                      final PropagationContext context,
+                      final Rule rule) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
@@ -115,7 +118,7 @@ public class AgendaItem
      * @return <code>true<code> if this agenda item depends
      *          upon the item, otherwise <code>false</code>.
      */
-    boolean dependsOn(FactHandle handle) {
+    boolean dependsOn(final FactHandle handle) {
         return this.tuple.dependsOn( handle );
     }
 
@@ -137,7 +140,7 @@ public class AgendaItem
         return this.activationNumber;
     }
 
-    public void addLogicalDependency(LogicalDependency node) {
+    public void addLogicalDependency(final LogicalDependency node) {
         if ( this.justified == null ) {
             this.justified = new LinkedList();
         }
@@ -153,7 +156,7 @@ public class AgendaItem
         return this.activated;
     }
 
-    public void setActivated(boolean activated) {
+    public void setActivated(final boolean activated) {
         this.activated = activated;
     }
 
@@ -166,7 +169,7 @@ public class AgendaItem
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( object == this ) {
             return true;
         }
@@ -175,7 +178,7 @@ public class AgendaItem
             return false;
         }
 
-        AgendaItem otherItem = (AgendaItem) object;
+        final AgendaItem otherItem = (AgendaItem) object;
 
         return (this.rule.equals( otherItem.getRule() ) && this.tuple.equals( otherItem.getTuple() ));
     }
@@ -189,8 +192,8 @@ public class AgendaItem
         return this.tuple.hashCode();
     }
 
-    public void enqueued(Queue queue,
-                         int index) {
+    public void enqueued(final Queue queue,
+                         final int index) {
         this.queue = queue;
         this.index = index;
     }
@@ -208,7 +211,7 @@ public class AgendaItem
         return this.activationGroupNode;
     }
 
-    public void setActivationGroupNode(ActivationGroupNode activationNode) {
+    public void setActivationGroupNode(final ActivationGroupNode activationNode) {
         this.activationGroupNode = activationNode;
     }
 }

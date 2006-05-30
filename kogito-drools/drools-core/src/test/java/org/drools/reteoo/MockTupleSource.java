@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import java.util.Collections;
 import java.util.List;
 
@@ -24,11 +23,16 @@ import org.drools.spi.PropagationContext;
 
 public class MockTupleSource extends TupleSource {
 
-    private int attached;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2831490656596388807L;
 
-    private int updated;
+    private int               attached;
 
-    public MockTupleSource(int id) {
+    private int               updated;
+
+    public MockTupleSource(final int id) {
         super( id );
     }
 
@@ -45,24 +49,24 @@ public class MockTupleSource extends TupleSource {
         return this.updated;
     }
 
-    public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) {
+    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+                              final PropagationContext context) {
         this.updated++;
     }
 
-    public void remove(BaseNode node,
-                       WorkingMemoryImpl[] workingMemories) {
+    public void remove(final BaseNode node,
+                       final ReteooWorkingMemory[] workingMemories) {
         // TODO Auto-generated method stub
 
     }
 
-    public void attach(WorkingMemoryImpl[] workingMemories) {
+    public void attach(final ReteooWorkingMemory[] workingMemories) {
         // TODO Auto-generated method stub
 
     }
 
-    public List getPropagatedTuples(WorkingMemoryImpl workingMemory,
-                                    TupleSink sink) {
+    public List getPropagatedTuples(final ReteooWorkingMemory workingMemory,
+                                    final TupleSink sink) {
         // TODO Auto-generated method stub
         return Collections.EMPTY_LIST;
     }

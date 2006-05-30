@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
@@ -24,35 +23,46 @@ import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
 
 public class MockEvalCondition extends EvalCondition {
-    
-    private Boolean isAllowed ;
 
-    private final EvalExpression expression  = new EvalExpression() {
+    /**
+     * 
+     */
+    private static final long    serialVersionUID = -6857668014487224697L;
+
+    private Boolean              isAllowed;
+
+    private final EvalExpression expression       = new EvalExpression() {
+                                                      /**
+                                                       * 
+                                                       */
+                                                      private static final long serialVersionUID = 5706933277222496253L;
+
                                                       public boolean evaluate(Tuple tuple,
                                                                               Declaration[] requiredDeclarations,
                                                                               WorkingMemory workingMemory) {
-                                                          return isAllowed .booleanValue();
+                                                          return MockEvalCondition.this.isAllowed.booleanValue();
                                                       }
                                                   };
 
-    public MockEvalCondition(boolean isAllowed) {
+    public MockEvalCondition(final boolean isAllowed) {
         this( isAllowed,
               null );
     }
 
-    public MockEvalCondition(boolean isAllowed,
-                             Declaration[] requiredDeclarations) {
+    public MockEvalCondition(final boolean isAllowed,
+                             final Declaration[] requiredDeclarations) {
         super( requiredDeclarations );
         setEvalExpression( this.expression );
         setIsAllowed( isAllowed );
     }
 
-    public MockEvalCondition(EvalExpression eval,
-                             Declaration[] requiredDeclarations) {
-        super( eval, requiredDeclarations );
+    public MockEvalCondition(final EvalExpression eval,
+                             final Declaration[] requiredDeclarations) {
+        super( eval,
+               requiredDeclarations );
     }
-    
-    public void setIsAllowed(boolean isAllowed ) {
-        this.isAllowed  = new Boolean( isAllowed );
+
+    public void setIsAllowed(final boolean isAllowed) {
+        this.isAllowed = new Boolean( isAllowed );
     }
 }

@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.base;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -36,20 +35,24 @@ import org.drools.spi.ObjectType;
 public class ClassFieldExtractor
     implements
     FieldExtractor {
+    /**
+     * 
+     */
+    private static final long        serialVersionUID = 1865123571023540643L;
     private String                   fieldName;
     private Class                    clazz;
     private transient FieldExtractor extractor;
 
-    public ClassFieldExtractor(Class clazz,
-                               String fieldName) {
+    public ClassFieldExtractor(final Class clazz,
+                               final String fieldName) {
         this.clazz = clazz;
         this.fieldName = fieldName;
         init();
     }
 
-    private void readObject(ObjectInputStream is) throws ClassNotFoundException,
-                                                 IOException,
-                                                 Exception {
+    private void readObject(final ObjectInputStream is) throws ClassNotFoundException,
+                                                       IOException,
+                                                       Exception {
         //always perform the default de-serialization first
         is.defaultReadObject();
         init();
@@ -57,9 +60,9 @@ public class ClassFieldExtractor
 
     public void init() {
         try {
-            this.extractor = ClassFieldExtractorFactory.getClassFieldExtractor( clazz,
-                                                                                fieldName );
-        } catch ( Exception e ) {
+            this.extractor = ClassFieldExtractorFactory.getClassFieldExtractor( this.clazz,
+                                                                                this.fieldName );
+        } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
     }
@@ -67,12 +70,12 @@ public class ClassFieldExtractor
     public int getIndex() {
         return this.extractor.getIndex();
     }
-    
+
     public String getFieldName() {
         return this.fieldName;
     }
 
-    public Object getValue(Object object) {
+    public Object getValue(final Object object) {
         return this.extractor.getValue( object );
     }
 
@@ -81,24 +84,24 @@ public class ClassFieldExtractor
     }
 
     public String toString() {
-        return "[ClassFieldExtractor class=" + this.clazz + " field=" + this.fieldName  + "]";
+        return "[ClassFieldExtractor class=" + this.clazz + " field=" + this.fieldName + "]";
     }
-    
+
     public int hashCode() {
         return this.getObjectType().hashCode() * 17 + this.getIndex();
     }
-    
-    public boolean equals(Object object) {
+
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
-        
+
         if ( object == null || object.getClass() != ClassFieldExtractor.class ) {
             return false;
         }
-        
-        ClassFieldExtractor other = (ClassFieldExtractor) object;
-        
+
+        final ClassFieldExtractor other = (ClassFieldExtractor) object;
+
         return this.extractor.getObjectType().equals( other.getObjectType() ) && this.extractor.getIndex() == other.getIndex();
     }
 }

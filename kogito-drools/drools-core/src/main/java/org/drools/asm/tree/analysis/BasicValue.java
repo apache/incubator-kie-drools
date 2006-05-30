@@ -38,49 +38,50 @@ import org.drools.asm.Type;
  * 
  * @author Eric Bruneton
  */
-public class BasicValue implements Value {
+public class BasicValue
+    implements
+    Value {
 
-    public final static Value UNINITIALIZED_VALUE = new BasicValue(null);
+    public final static Value UNINITIALIZED_VALUE = new BasicValue( null );
 
-    public final static Value INT_VALUE = new BasicValue(Type.INT_TYPE);
+    public final static Value INT_VALUE           = new BasicValue( Type.INT_TYPE );
 
-    public final static Value FLOAT_VALUE = new BasicValue(Type.FLOAT_TYPE);
+    public final static Value FLOAT_VALUE         = new BasicValue( Type.FLOAT_TYPE );
 
-    public final static Value LONG_VALUE = new BasicValue(Type.LONG_TYPE);
+    public final static Value LONG_VALUE          = new BasicValue( Type.LONG_TYPE );
 
-    public final static Value DOUBLE_VALUE = new BasicValue(Type.DOUBLE_TYPE);
+    public final static Value DOUBLE_VALUE        = new BasicValue( Type.DOUBLE_TYPE );
 
-    public final static Value REFERENCE_VALUE = new BasicValue(Type.getType("Ljava/lang/Object;"));
+    public final static Value REFERENCE_VALUE     = new BasicValue( Type.getType( "Ljava/lang/Object;" ) );
 
-    public final static Value RETURNADDRESS_VALUE = new BasicValue(null);
+    public final static Value RETURNADDRESS_VALUE = new BasicValue( null );
 
-    private Type type;
+    private Type              type;
 
     public BasicValue(final Type type) {
         this.type = type;
     }
 
     public Type getType() {
-        return type;
+        return this.type;
     }
 
     public int getSize() {
-        return type == Type.LONG_TYPE || type == Type.DOUBLE_TYPE ? 2 : 1;
+        return this.type == Type.LONG_TYPE || this.type == Type.DOUBLE_TYPE ? 2 : 1;
     }
 
     public boolean isReference() {
-        return type != null
-                && (type.getSort() == Type.OBJECT || type.getSort() == Type.ARRAY);
+        return this.type != null && (this.type.getSort() == Type.OBJECT || this.type.getSort() == Type.ARRAY);
     }
 
     public boolean equals(final Object value) {
-        if (value == this) {
+        if ( value == this ) {
             return true;
-        } else if (value instanceof BasicValue) {
-            if (type == null) {
+        } else if ( value instanceof BasicValue ) {
+            if ( this.type == null ) {
                 return ((BasicValue) value).type == null;
             } else {
-                return type.equals(((BasicValue) value).type);
+                return this.type.equals( ((BasicValue) value).type );
             }
         } else {
             return false;
@@ -88,18 +89,18 @@ public class BasicValue implements Value {
     }
 
     public int hashCode() {
-        return type == null ? 0 : type.hashCode();
+        return this.type == null ? 0 : this.type.hashCode();
     }
 
     public String toString() {
-        if (this == UNINITIALIZED_VALUE) {
+        if ( this == BasicValue.UNINITIALIZED_VALUE ) {
             return ".";
-        } else if (this == RETURNADDRESS_VALUE) {
+        } else if ( this == BasicValue.RETURNADDRESS_VALUE ) {
             return "A";
-        } else if (this == REFERENCE_VALUE) {
+        } else if ( this == BasicValue.REFERENCE_VALUE ) {
             return "R";
         } else {
-            return type.getDescriptor();
+            return this.type.getDescriptor();
         }
     }
 }

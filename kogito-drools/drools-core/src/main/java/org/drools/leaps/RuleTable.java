@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -27,7 +28,12 @@ import org.drools.leaps.util.Table;
  * 
  */
 class RuleTable extends Table {
-    public RuleTable(Comparator ruleConflictResolver) {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -1855260276968132243L;
+
+    public RuleTable(final Comparator ruleConflictResolver) {
         super( ruleConflictResolver );
     }
 }

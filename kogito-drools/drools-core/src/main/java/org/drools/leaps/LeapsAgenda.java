@@ -30,31 +30,26 @@ public class LeapsAgenda extends Agenda {
     /**
      * 
      */
-    private static final long serialVersionUID = 7985611305408622557L;
+    private static final long  serialVersionUID = 7985611305408622557L;
 
-    private WorkingMemoryImpl workingMemory;
+    private LeapsWorkingMemory workingMemory;
 
-    public LeapsAgenda(WorkingMemoryImpl workingMemory) {
+    public LeapsAgenda(final LeapsWorkingMemory workingMemory) {
         super( workingMemory );
         this.workingMemory = workingMemory;
     }
 
-    public synchronized void fireActivation( Activation activation )
-            throws ConsequenceException {
-        if (activation.getRule( ) instanceof Query) {
+    public synchronized void fireActivation(final Activation activation) throws ConsequenceException {
+        if ( activation.getRule() instanceof Query ) {
             // put query results to the working memory location
-            this.workingMemory.addToQueryResults( activation.getRule( ).getName( ),
-                                                  activation.getTuple( ) );
-        }
-        else {
-            if (activation.getRule( ).getActivationGroup( ) == null
-                    || ( activation.getRule( ).getActivationGroup( ) != null && this.getActivationGroup( activation.getRule( )
-                                                                                                     .getActivationGroup( ) )
-                                                                             .isEmpty( ) )) {
+            this.workingMemory.addToQueryResults( activation.getRule().getName(),
+                                                  activation.getTuple() );
+        } else {
+            if ( activation.getRule().getActivationGroup() == null || (activation.getRule().getActivationGroup() != null && this.getActivationGroup( activation.getRule().getActivationGroup() ).isEmpty()) ) {
                 // fire regular rule
                 super.fireActivation( activation );
-                if (activation.getRule( ).getActivationGroup( ) != null) {
-                    this.getActivationGroup( activation.getRule( ).getActivationGroup( ) );
+                if ( activation.getRule().getActivationGroup() != null ) {
+                    this.getActivationGroup( activation.getRule().getActivationGroup() );
                 }
             }
         }

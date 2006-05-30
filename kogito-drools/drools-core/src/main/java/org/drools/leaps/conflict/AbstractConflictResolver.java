@@ -1,4 +1,5 @@
 package org.drools.leaps.conflict;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.leaps.conflict;
  * limitations under the License.
  */
 
-
-
-
-
 import java.util.Comparator;
 
 import org.drools.leaps.ConflictResolver;
@@ -34,13 +31,13 @@ abstract class AbstractConflictResolver
     implements
     ConflictResolver {
     // need for comparator
-    static int compare(int i1,
-                       int i2) {
+    static int compare(final int i1,
+                       final int i2) {
         return i1 - i2;
     }
 
-    static int compare(long l1,
-                       long l2) {
+    static int compare(final long l1,
+                       final long l2) {
         return (int) (l1 - l2);
     }
 

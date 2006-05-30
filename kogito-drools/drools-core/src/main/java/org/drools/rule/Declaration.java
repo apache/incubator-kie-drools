@@ -74,12 +74,17 @@ public class Declaration
     // Instance members
     // ------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 248608383490386902L;
+
     /** The identifier for the variable. */
-    private final String    identifier;
+    private final String      identifier;
 
-    private final Extractor extractor;
+    private final Extractor   extractor;
 
-    private int             column;
+    private int               column;
 
     // ------------------------------------------------------------
     // Constructors
@@ -95,9 +100,9 @@ public class Declaration
      * @param order
      *            The index within a rule.
      */
-    public Declaration(String identifier,
-                       Extractor extractor,
-                       int column) {
+    public Declaration(final String identifier,
+                       final Extractor extractor,
+                       final int column) {
         this.identifier = identifier;
         this.extractor = extractor;
         this.column = column;
@@ -134,7 +139,7 @@ public class Declaration
         return this.column;
     }
 
-    public void setColumn(int column) {
+    public void setColumn(final int column) {
         this.column = column;
     }
 
@@ -147,7 +152,7 @@ public class Declaration
         return this.extractor;
     }
 
-    public Object getValue(Object object) {
+    public Object getValue(final Object object) {
         return this.extractor.getValue( object );
     }
 
@@ -161,7 +166,7 @@ public class Declaration
         return this.identifier.hashCode();
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -170,7 +175,7 @@ public class Declaration
             return false;
         }
 
-        Declaration other = (Declaration) object;
+        final Declaration other = (Declaration) object;
 
         return this.column == other.column && this.identifier.equals( other.identifier ) && this.extractor.getObjectType().equals( other.extractor.getObjectType() );
     }

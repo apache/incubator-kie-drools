@@ -1,4 +1,5 @@
 package org.drools.leaps.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -54,16 +55,16 @@ public class BaseTableIterator
      * @param record
      *            to iterate over
      */
-    protected BaseTableIterator(TableRecord record) {
+    protected BaseTableIterator(final TableRecord record) {
         this.firstRecord = record;
         this.lastRecord = record;
         this.currentRecord = null;
         this.nextRecord = this.firstRecord;
     }
 
-    protected BaseTableIterator(TableRecord startRecord,
-                                TableRecord currentRecord,
-                                TableRecord lastRecord) {
+    protected BaseTableIterator(final TableRecord startRecord,
+                                final TableRecord currentRecord,
+                                final TableRecord lastRecord) {
         this.firstRecord = startRecord;
         this.nextRecord = currentRecord;
         this.lastRecord = lastRecord;

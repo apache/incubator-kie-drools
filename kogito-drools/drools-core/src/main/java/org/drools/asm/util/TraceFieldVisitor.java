@@ -39,9 +39,9 @@ import org.drools.asm.FieldVisitor;
  * 
  * @author Eric Bruneton
  */
-public class TraceFieldVisitor extends TraceAbstractVisitor implements
-        FieldVisitor
-{
+public class TraceFieldVisitor extends TraceAbstractVisitor
+    implements
+    FieldVisitor {
 
     /**
      * The {@link FieldVisitor} to which this visitor delegates calls. May be
@@ -49,30 +49,30 @@ public class TraceFieldVisitor extends TraceAbstractVisitor implements
      */
     protected FieldVisitor fv;
 
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        AnnotationVisitor av = super.visitAnnotation(desc, visible);
-        if (fv != null) {
-            ((TraceAnnotationVisitor) av).av = fv.visitAnnotation(desc, visible);
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        final AnnotationVisitor av = super.visitAnnotation( desc,
+                                                            visible );
+        if ( this.fv != null ) {
+            ((TraceAnnotationVisitor) av).av = this.fv.visitAnnotation( desc,
+                                                                        visible );
         }
         return av;
     }
 
     public void visitAttribute(final Attribute attr) {
-        super.visitAttribute(attr);
+        super.visitAttribute( attr );
 
-        if (fv != null) {
-            fv.visitAttribute(attr);
+        if ( this.fv != null ) {
+            this.fv.visitAttribute( attr );
         }
     }
 
     public void visitEnd() {
         super.visitEnd();
 
-        if (fv != null) {
-            fv.visitEnd();
+        if ( this.fv != null ) {
+            this.fv.visitEnd();
         }
     }
 }

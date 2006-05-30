@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.base;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import org.drools.spi.Evaluator;
 
@@ -33,8 +32,8 @@ public abstract class BaseEvaluator
 
     private final int type;
 
-    public BaseEvaluator(int type,
-                         int operator) {
+    public BaseEvaluator(final int type,
+                         final int operator) {
         this.type = type;
         this.operator = operator;
     }
@@ -50,7 +49,7 @@ public abstract class BaseEvaluator
     public abstract boolean evaluate(Object object1,
                                      Object object2);
 
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
         if ( this == other ) {
             return true;
         }

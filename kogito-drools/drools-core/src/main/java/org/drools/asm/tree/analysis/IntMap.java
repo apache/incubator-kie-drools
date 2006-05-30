@@ -36,11 +36,11 @@ package org.drools.asm.tree.analysis;
  */
 class IntMap {
 
-    private int size;
+    private int      size;
 
     private Object[] keys;
 
-    private int[] values;
+    private int[]    values;
 
     public IntMap(final int size) {
         this.size = size;
@@ -49,25 +49,26 @@ class IntMap {
     }
 
     public int get(final Object key) {
-        int n = size;
-        int h = (key.hashCode() & 0x7FFFFFFF) % n; 
+        final int n = this.size;
+        final int h = (key.hashCode() & 0x7FFFFFFF) % n;
         int i = h;
-        while (keys[i] != key) {
+        while ( this.keys[i] != key ) {
             i = (i + 1) % n;
-            if (i == h) {
-                throw new RuntimeException("Cannot find index of " + key);
+            if ( i == h ) {
+                throw new RuntimeException( "Cannot find index of " + key );
             }
         }
-        return values[i];
+        return this.values[i];
     }
 
-    public void put(final Object key, final int value) {
-        int n = size;
+    public void put(final Object key,
+                    final int value) {
+        final int n = this.size;
         int i = (key.hashCode() & 0x7FFFFFFF) % n;
-        while (keys[i] != null) {
+        while ( this.keys[i] != null ) {
             i = (i + 1) % n;
         }
-        keys[i] = key;
-        values[i] = value;
+        this.keys[i] = key;
+        this.values[i] = value;
     }
 }

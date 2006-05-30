@@ -50,40 +50,40 @@ public class DefaultLeftMemory
      *
      * @see org.drools.reteoo.beta.BetaLeftMemory#add(org.drools.WorkingMemory, org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public final void add(WorkingMemory workingMemory,
-                    MultiLinkedListNodeWrapper tuple) {
+    public final void add(final WorkingMemory workingMemory,
+                          final MultiLinkedListNodeWrapper tuple) {
         this.memory.add( tuple );
     }
 
     /**
      * @inheritDoc
      */
-    public final void remove(WorkingMemory workingMemory,
-                       MultiLinkedListNodeWrapper tuple) {
+    public final void remove(final WorkingMemory workingMemory,
+                             final MultiLinkedListNodeWrapper tuple) {
         this.memory.remove( tuple );
     }
 
     /**
      * @inheritDoc
      */
-    public final void add(WorkingMemory workingMemory,
-                    ReteTuple tuple) {
+    public final void add(final WorkingMemory workingMemory,
+                          final ReteTuple tuple) {
         this.memory.add( tuple );
     }
 
     /**
      * @inheritDoc
      */
-    public final void remove(WorkingMemory workingMemory,
-                       ReteTuple tuple) {
+    public final void remove(final WorkingMemory workingMemory,
+                             final ReteTuple tuple) {
         this.memory.remove( tuple );
     }
 
     /**
      * @inheritDoc
      */
-    public final Iterator iterator(WorkingMemory workingMemory,
-                             InternalFactHandle handle) {
+    public final Iterator iterator(final WorkingMemory workingMemory,
+                                   final InternalFactHandle handle) {
         return this.memory.iterator();
     }
 
@@ -104,15 +104,15 @@ public class DefaultLeftMemory
     /**
      * @inheritDoc
      */
-    public final void selectPossibleMatches(WorkingMemory workingMemory,
-                                      InternalFactHandle handle) {
+    public final void selectPossibleMatches(final WorkingMemory workingMemory,
+                                            final InternalFactHandle handle) {
         // nothing to do. all tuples are possible matches
     }
 
     /**
      * @inheritDoc
      */
-    public final boolean isPossibleMatch(MultiLinkedListNodeWrapper tuple) {
+    public final boolean isPossibleMatch(final MultiLinkedListNodeWrapper tuple) {
         return tuple.getLinkedList() == this.memory;
     }
 
@@ -127,14 +127,14 @@ public class DefaultLeftMemory
      * @inheritDoc
      */
     public BetaLeftMemory getInnerMemory() throws OperationNotSupportedException {
-        throw new OperationNotSupportedException("Default left memory does not support inner memory");
+        throw new OperationNotSupportedException( "Default left memory does not support inner memory" );
     }
 
     /**
      * @inheritDoc
      */
-    public void setInnerMemory(BetaLeftMemory innerMemory) throws OperationNotSupportedException  {
-        throw new OperationNotSupportedException("Default left memory does not support inner memory");
+    public void setInnerMemory(final BetaLeftMemory innerMemory) throws OperationNotSupportedException {
+        throw new OperationNotSupportedException( "Default left memory does not support inner memory" );
     }
 
 }

@@ -30,29 +30,32 @@ import org.drools.spi.Tuple;
  * 
  * @author Alexander Bagerman
  */
-class LeapsTuple implements Tuple, Serializable {
-    private static final long        serialVersionUID       = 1L;
+class LeapsTuple
+    implements
+    Tuple,
+    Serializable {
+    private static final long      serialVersionUID       = 1L;
 
-    private PropagationContext context;
+    private PropagationContext     context;
 
-    private boolean                  readyForActivation;
+    private boolean                readyForActivation;
 
-    private final FactHandleImpl[]   factHandles;
+    private final FactHandleImpl[] factHandles;
 
-    private FactHandleImpl[]         blockingNotFactHandles = null;
+    private FactHandleImpl[]       blockingNotFactHandles = null;
 
-    private FactHandleImpl[]         existsFactHandles      = null;
+    private FactHandleImpl[]       existsFactHandles      = null;
 
-    private Activation               activation;
+    private Activation             activation;
 
-    private final LeapsRule          leapsRule;
+    private final LeapsRule        leapsRule;
 
     /**
      * agendaItem parts
      */
-    LeapsTuple(FactHandleImpl factHandles[],
-               LeapsRule leapsRule,
-               PropagationContext context) {
+    LeapsTuple(final FactHandleImpl factHandles[],
+               final LeapsRule leapsRule,
+               final PropagationContext context) {
         this.factHandles = factHandles;
         this.leapsRule = leapsRule;
         this.context = context;
@@ -94,7 +97,7 @@ class LeapsTuple implements Tuple, Serializable {
      * 
      * @see org.drools.spi.Tuple
      */
-    public boolean dependsOn(FactHandle handle) {
+    public boolean dependsOn(final FactHandle handle) {
         for ( int i = 0, length = this.factHandles.length; i < length; i++ ) {
             if ( handle.equals( this.factHandles[i] ) ) {
                 return true;
@@ -106,14 +109,14 @@ class LeapsTuple implements Tuple, Serializable {
     /**
      * @see org.drools.spi.Tuple
      */
-    public InternalFactHandle get(int col) {
+    public InternalFactHandle get(final int col) {
         return this.factHandles[col];
     }
 
     /**
      * @see org.drools.spi.Tuple
      */
-    public InternalFactHandle get(Declaration declaration) {
+    public InternalFactHandle get(final Declaration declaration) {
         return this.get( declaration.getColumn() );
     }
 
@@ -127,7 +130,7 @@ class LeapsTuple implements Tuple, Serializable {
     /**
      * @see org.drools.spi.Tuple
      */
-    public void setActivation(Activation activation) {
+    public void setActivation(final Activation activation) {
         this.activation = activation;
     }
 
@@ -144,7 +147,7 @@ class LeapsTuple implements Tuple, Serializable {
     protected Activation getActivation() {
         return this.activation;
     }
-    
+
     public long getRecency() {
         return 0;
     }
@@ -152,7 +155,7 @@ class LeapsTuple implements Tuple, Serializable {
     /**
      * @see java.lang.Object
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -161,7 +164,7 @@ class LeapsTuple implements Tuple, Serializable {
             return false;
         }
 
-        FactHandle[] thatFactHandles = ((LeapsTuple) object).getFactHandles();
+        final FactHandle[] thatFactHandles = ((LeapsTuple) object).getFactHandles();
         if ( thatFactHandles.length != this.factHandles.length ) {
             return false;
         }
@@ -188,7 +191,7 @@ class LeapsTuple implements Tuple, Serializable {
      * @see java.lang.Object
      */
     public String toString() {
-        StringBuffer buffer = new StringBuffer( "LeapsTuple [" + this.leapsRule.getRule().getName() + "] " );
+        final StringBuffer buffer = new StringBuffer( "LeapsTuple [" + this.leapsRule.getRule().getName() + "] " );
 
         for ( int i = 0, length = this.factHandles.length; i < length; i++ ) {
             buffer.append( ((i == 0) ? "" : ", ") + this.factHandles[i] );
@@ -210,32 +213,32 @@ class LeapsTuple implements Tuple, Serializable {
         return buffer.toString();
     }
 
-    protected void setBlockingNotFactHandle(FactHandleImpl factHandle,
-                                  int index) {
+    protected void setBlockingNotFactHandle(final FactHandleImpl factHandle,
+                                            final int index) {
         this.readyForActivation = false;
         this.blockingNotFactHandles[index] = factHandle;
     }
 
-    protected boolean isBlockingNotFactHandle(int index ) {
+    protected boolean isBlockingNotFactHandle(final int index) {
         return this.blockingNotFactHandles[index] != null;
     }
-    
-    protected void removeBlockingNotFactHandle(int index) {
+
+    protected void removeBlockingNotFactHandle(final int index) {
         this.blockingNotFactHandles[index] = null;
         this.setReadyForActivation();
     }
 
-    protected void setExistsFactHandle(FactHandleImpl factHandle,
-                             int index) {
+    protected void setExistsFactHandle(final FactHandleImpl factHandle,
+                                       final int index) {
         this.existsFactHandles[index] = factHandle;
         this.setReadyForActivation();
     }
 
-    protected boolean isExistsFactHandle(int index) {
+    protected boolean isExistsFactHandle(final int index) {
         return this.existsFactHandles[index] != null;
     }
 
-    protected void removeExistsFactHandle(int index) {
+    protected void removeExistsFactHandle(final int index) {
         this.existsFactHandles[index] = null;
         this.setReadyForActivation();
     }
@@ -266,7 +269,7 @@ class LeapsTuple implements Tuple, Serializable {
         return this.context;
     }
 
-    protected void setContext( PropagationContext context ) {
+    protected void setContext(final PropagationContext context) {
         this.context = context;
     }
 }

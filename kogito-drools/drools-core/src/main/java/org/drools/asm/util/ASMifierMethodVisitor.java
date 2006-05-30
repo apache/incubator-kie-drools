@@ -29,12 +29,12 @@
  */
 package org.drools.asm.util;
 
+import java.util.HashMap;
+
 import org.drools.asm.AnnotationVisitor;
 import org.drools.asm.Label;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
-
-import java.util.HashMap;
 
 /**
  * A {@link MethodVisitor} that prints the ASM code that generates the methods
@@ -43,279 +43,248 @@ import java.util.HashMap;
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
-public class ASMifierMethodVisitor extends ASMifierAbstractVisitor implements
-        MethodVisitor
-{
+public class ASMifierMethodVisitor extends ASMifierAbstractVisitor
+    implements
+    MethodVisitor {
 
     /**
      * Constructs a new {@link ASMifierMethodVisitor} object.
      */
     public ASMifierMethodVisitor() {
-        super("mv");
+        super( "mv" );
         this.labelNames = new HashMap();
     }
 
     public AnnotationVisitor visitAnnotationDefault() {
-        buf.setLength(0);
-        buf.append("{\n").append("av0 = mv.visitAnnotationDefault();\n");
-        text.add(buf.toString());
-        ASMifierAnnotationVisitor av = new ASMifierAnnotationVisitor(0);
-        text.add(av.getText());
-        text.add("}\n");
+        this.buf.setLength( 0 );
+        this.buf.append( "{\n" ).append( "av0 = mv.visitAnnotationDefault();\n" );
+        this.text.add( this.buf.toString() );
+        final ASMifierAnnotationVisitor av = new ASMifierAnnotationVisitor( 0 );
+        this.text.add( av.getText() );
+        this.text.add( "}\n" );
         return av;
     }
 
-    public AnnotationVisitor visitParameterAnnotation(
-        final int parameter,
-        final String desc,
-        final boolean visible)
-    {
-        buf.setLength(0);
-        buf.append("{\n")
-                .append("av0 = mv.visitParameterAnnotation(")
-                .append(parameter)
-                .append(", ");
-        appendConstant(desc);
-        buf.append(", ").append(visible).append(");\n");
-        text.add(buf.toString());
-        ASMifierAnnotationVisitor av = new ASMifierAnnotationVisitor(0);
-        text.add(av.getText());
-        text.add("}\n");
+    public AnnotationVisitor visitParameterAnnotation(final int parameter,
+                                                      final String desc,
+                                                      final boolean visible) {
+        this.buf.setLength( 0 );
+        this.buf.append( "{\n" ).append( "av0 = mv.visitParameterAnnotation(" ).append( parameter ).append( ", " );
+        appendConstant( desc );
+        this.buf.append( ", " ).append( visible ).append( ");\n" );
+        this.text.add( this.buf.toString() );
+        final ASMifierAnnotationVisitor av = new ASMifierAnnotationVisitor( 0 );
+        this.text.add( av.getText() );
+        this.text.add( "}\n" );
         return av;
     }
 
     public void visitCode() {
-        text.add("mv.visitCode();\n");
+        this.text.add( "mv.visitCode();\n" );
     }
 
     public void visitInsn(final int opcode) {
-        buf.setLength(0);
-        buf.append("mv.visitInsn(").append(OPCODES[opcode]).append(");\n");
-        text.add(buf.toString());
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitInsn(" ).append( AbstractVisitor.OPCODES[opcode] ).append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitIntInsn(final int opcode, final int operand) {
-        buf.setLength(0);
-        buf.append("mv.visitIntInsn(")
-                .append(OPCODES[opcode])
-                .append(", ")
-                .append(opcode == Opcodes.NEWARRAY
-                        ? TYPES[operand]
-                        : Integer.toString(operand))
-                .append(");\n");
-        text.add(buf.toString());
+    public void visitIntInsn(final int opcode,
+                             final int operand) {
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitIntInsn(" ).append( AbstractVisitor.OPCODES[opcode] ).append( ", " ).append( opcode == Opcodes.NEWARRAY ? AbstractVisitor.TYPES[operand] : Integer.toString( operand ) ).append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitVarInsn(final int opcode, final int var) {
-        buf.setLength(0);
-        buf.append("mv.visitVarInsn(")
-                .append(OPCODES[opcode])
-                .append(", ")
-                .append(var)
-                .append(");\n");
-        text.add(buf.toString());
+    public void visitVarInsn(final int opcode,
+                             final int var) {
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitVarInsn(" ).append( AbstractVisitor.OPCODES[opcode] ).append( ", " ).append( var ).append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitTypeInsn(final int opcode, final String desc) {
-        buf.setLength(0);
-        buf.append("mv.visitTypeInsn(").append(OPCODES[opcode]).append(", ");
-        appendConstant(desc);
-        buf.append(");\n");
-        text.add(buf.toString());
+    public void visitTypeInsn(final int opcode,
+                              final String desc) {
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitTypeInsn(" ).append( AbstractVisitor.OPCODES[opcode] ).append( ", " );
+        appendConstant( desc );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitFieldInsn(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        buf.setLength(0);
-        buf.append("mv.visitFieldInsn(").append(OPCODES[opcode]).append(", ");
-        appendConstant(owner);
-        buf.append(", ");
-        appendConstant(name);
-        buf.append(", ");
-        appendConstant(desc);
-        buf.append(");\n");
-        text.add(buf.toString());
+    public void visitFieldInsn(final int opcode,
+                               final String owner,
+                               final String name,
+                               final String desc) {
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitFieldInsn(" ).append( AbstractVisitor.OPCODES[opcode] ).append( ", " );
+        appendConstant( owner );
+        this.buf.append( ", " );
+        appendConstant( name );
+        this.buf.append( ", " );
+        appendConstant( desc );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitMethodInsn(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        buf.setLength(0);
-        buf.append("mv.visitMethodInsn(").append(OPCODES[opcode]).append(", ");
-        appendConstant(owner);
-        buf.append(", ");
-        appendConstant(name);
-        buf.append(", ");
-        appendConstant(desc);
-        buf.append(");\n");
-        text.add(buf.toString());
+    public void visitMethodInsn(final int opcode,
+                                final String owner,
+                                final String name,
+                                final String desc) {
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitMethodInsn(" ).append( AbstractVisitor.OPCODES[opcode] ).append( ", " );
+        appendConstant( owner );
+        this.buf.append( ", " );
+        appendConstant( name );
+        this.buf.append( ", " );
+        appendConstant( desc );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitJumpInsn(final int opcode, final Label label) {
-        buf.setLength(0);
-        declareLabel(label);
-        buf.append("mv.visitJumpInsn(").append(OPCODES[opcode]).append(", ");
-        appendLabel(label);
-        buf.append(");\n");
-        text.add(buf.toString());
+    public void visitJumpInsn(final int opcode,
+                              final Label label) {
+        this.buf.setLength( 0 );
+        declareLabel( label );
+        this.buf.append( "mv.visitJumpInsn(" ).append( AbstractVisitor.OPCODES[opcode] ).append( ", " );
+        appendLabel( label );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
     public void visitLabel(final Label label) {
-        buf.setLength(0);
-        declareLabel(label);
-        buf.append("mv.visitLabel(");
-        appendLabel(label);
-        buf.append(");\n");
-        text.add(buf.toString());
+        this.buf.setLength( 0 );
+        declareLabel( label );
+        this.buf.append( "mv.visitLabel(" );
+        appendLabel( label );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
     public void visitLdcInsn(final Object cst) {
-        buf.setLength(0);
-        buf.append("mv.visitLdcInsn(");
-        appendConstant(cst);
-        buf.append(");\n");
-        text.add(buf.toString());
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitLdcInsn(" );
+        appendConstant( cst );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitIincInsn(final int var, final int increment) {
-        buf.setLength(0);
-        buf.append("mv.visitIincInsn(")
-                .append(var)
-                .append(", ")
-                .append(increment)
-                .append(");\n");
-        text.add(buf.toString());
+    public void visitIincInsn(final int var,
+                              final int increment) {
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitIincInsn(" ).append( var ).append( ", " ).append( increment ).append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitTableSwitchInsn(
-        final int min,
-        final int max,
-        final Label dflt,
-        final Label labels[])
-    {
-        buf.setLength(0);
-        for (int i = 0; i < labels.length; ++i) {
-            declareLabel(labels[i]);
+    public void visitTableSwitchInsn(final int min,
+                                     final int max,
+                                     final Label dflt,
+                                     final Label labels[]) {
+        this.buf.setLength( 0 );
+        for ( int i = 0; i < labels.length; ++i ) {
+            declareLabel( labels[i] );
         }
-        declareLabel(dflt);
+        declareLabel( dflt );
 
-        buf.append("mv.visitTableSwitchInsn(")
-                .append(min)
-                .append(", ")
-                .append(max)
-                .append(", ");
-        appendLabel(dflt);
-        buf.append(", new Label[] {");
-        for (int i = 0; i < labels.length; ++i) {
-            buf.append(i == 0 ? " " : ", ");
-            appendLabel(labels[i]);
+        this.buf.append( "mv.visitTableSwitchInsn(" ).append( min ).append( ", " ).append( max ).append( ", " );
+        appendLabel( dflt );
+        this.buf.append( ", new Label[] {" );
+        for ( int i = 0; i < labels.length; ++i ) {
+            this.buf.append( i == 0 ? " " : ", " );
+            appendLabel( labels[i] );
         }
-        buf.append(" });\n");
-        text.add(buf.toString());
+        this.buf.append( " });\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitLookupSwitchInsn(
-        final Label dflt,
-        final int keys[],
-        final Label labels[])
-    {
-        buf.setLength(0);
-        for (int i = 0; i < labels.length; ++i) {
-            declareLabel(labels[i]);
+    public void visitLookupSwitchInsn(final Label dflt,
+                                      final int keys[],
+                                      final Label labels[]) {
+        this.buf.setLength( 0 );
+        for ( int i = 0; i < labels.length; ++i ) {
+            declareLabel( labels[i] );
         }
-        declareLabel(dflt);
+        declareLabel( dflt );
 
-        buf.append("mv.visitLookupSwitchInsn(");
-        appendLabel(dflt);
-        buf.append(", new int[] {");
-        for (int i = 0; i < keys.length; ++i) {
-            buf.append(i == 0 ? " " : ", ").append(keys[i]);
+        this.buf.append( "mv.visitLookupSwitchInsn(" );
+        appendLabel( dflt );
+        this.buf.append( ", new int[] {" );
+        for ( int i = 0; i < keys.length; ++i ) {
+            this.buf.append( i == 0 ? " " : ", " ).append( keys[i] );
         }
-        buf.append(" }, new Label[] {");
-        for (int i = 0; i < labels.length; ++i) {
-            buf.append(i == 0 ? " " : ", ");
-            appendLabel(labels[i]);
+        this.buf.append( " }, new Label[] {" );
+        for ( int i = 0; i < labels.length; ++i ) {
+            this.buf.append( i == 0 ? " " : ", " );
+            appendLabel( labels[i] );
         }
-        buf.append(" });\n");
-        text.add(buf.toString());
+        this.buf.append( " });\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitMultiANewArrayInsn(final String desc, final int dims) {
-        buf.setLength(0);
-        buf.append("mv.visitMultiANewArrayInsn(");
-        appendConstant(desc);
-        buf.append(", ").append(dims).append(");\n");
-        text.add(buf.toString());
+    public void visitMultiANewArrayInsn(final String desc,
+                                        final int dims) {
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitMultiANewArrayInsn(" );
+        appendConstant( desc );
+        this.buf.append( ", " ).append( dims ).append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitTryCatchBlock(
-        final Label start,
-        final Label end,
-        final Label handler,
-        final String type)
-    {
-        buf.setLength(0);
-        declareLabel(start);
-        declareLabel(end);
-        declareLabel(handler);
-        buf.append("mv.visitTryCatchBlock(");
-        appendLabel(start);
-        buf.append(", ");
-        appendLabel(end);
-        buf.append(", ");
-        appendLabel(handler);
-        buf.append(", ");
-        appendConstant(type);
-        buf.append(");\n");
-        text.add(buf.toString());
+    public void visitTryCatchBlock(final Label start,
+                                   final Label end,
+                                   final Label handler,
+                                   final String type) {
+        this.buf.setLength( 0 );
+        declareLabel( start );
+        declareLabel( end );
+        declareLabel( handler );
+        this.buf.append( "mv.visitTryCatchBlock(" );
+        appendLabel( start );
+        this.buf.append( ", " );
+        appendLabel( end );
+        this.buf.append( ", " );
+        appendLabel( handler );
+        this.buf.append( ", " );
+        appendConstant( type );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitLocalVariable(
-        final String name,
-        final String desc,
-        final String signature,
-        final Label start,
-        final Label end,
-        final int index)
-    {
-        buf.setLength(0);
-        buf.append("mv.visitLocalVariable(");
-        appendConstant(name);
-        buf.append(", ");
-        appendConstant(desc);
-        buf.append(", ");
-        appendConstant(signature);
-        buf.append(", ");
-        appendLabel(start);
-        buf.append(", ");
-        appendLabel(end);
-        buf.append(", ").append(index).append(");\n");
-        text.add(buf.toString());
+    public void visitLocalVariable(final String name,
+                                   final String desc,
+                                   final String signature,
+                                   final Label start,
+                                   final Label end,
+                                   final int index) {
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitLocalVariable(" );
+        appendConstant( name );
+        this.buf.append( ", " );
+        appendConstant( desc );
+        this.buf.append( ", " );
+        appendConstant( signature );
+        this.buf.append( ", " );
+        appendLabel( start );
+        this.buf.append( ", " );
+        appendLabel( end );
+        this.buf.append( ", " ).append( index ).append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitLineNumber(final int line, final Label start) {
-        buf.setLength(0);
-        buf.append("mv.visitLineNumber(").append(line).append(", ");
-        appendLabel(start);
-        buf.append(");\n");
-        text.add(buf.toString());
+    public void visitLineNumber(final int line,
+                                final Label start) {
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitLineNumber(" ).append( line ).append( ", " );
+        appendLabel( start );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitMaxs(final int maxStack, final int maxLocals) {
-        buf.setLength(0);
-        buf.append("mv.visitMaxs(")
-                .append(maxStack)
-                .append(", ")
-                .append(maxLocals)
-                .append(");\n");
-        text.add(buf.toString());
+    public void visitMaxs(final int maxStack,
+                          final int maxLocals) {
+        this.buf.setLength( 0 );
+        this.buf.append( "mv.visitMaxs(" ).append( maxStack ).append( ", " ).append( maxLocals ).append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
     /**
@@ -326,11 +295,12 @@ public class ASMifierMethodVisitor extends ASMifierAbstractVisitor implements
      * @param l a label.
      */
     private void declareLabel(final Label l) {
-        String name = (String) labelNames.get(l);
-        if (name == null) {
-            name = "l" + labelNames.size();
-            labelNames.put(l, name);
-            buf.append("Label ").append(name).append(" = new Label();\n");
+        String name = (String) this.labelNames.get( l );
+        if ( name == null ) {
+            name = "l" + this.labelNames.size();
+            this.labelNames.put( l,
+                                 name );
+            this.buf.append( "Label " ).append( name ).append( " = new Label();\n" );
         }
     }
 
@@ -342,6 +312,6 @@ public class ASMifierMethodVisitor extends ASMifierAbstractVisitor implements
      * @param l a label.
      */
     private void appendLabel(final Label l) {
-        buf.append((String) labelNames.get(l));
+        this.buf.append( (String) this.labelNames.get( l ) );
     }
 }

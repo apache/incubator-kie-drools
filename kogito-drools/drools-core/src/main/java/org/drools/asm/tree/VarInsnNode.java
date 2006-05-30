@@ -55,8 +55,9 @@ public class VarInsnNode extends AbstractInsnNode {
      * @param var the operand of the instruction to be constructed. This operand
      *        is the index of a local variable.
      */
-    public VarInsnNode(final int opcode, final int var) {
-        super(opcode);
+    public VarInsnNode(final int opcode,
+                       final int var) {
+        super( opcode );
         this.var = var;
     }
 
@@ -72,10 +73,11 @@ public class VarInsnNode extends AbstractInsnNode {
     }
 
     public void accept(final MethodVisitor mv) {
-        mv.visitVarInsn(opcode, var);
+        mv.visitVarInsn( this.opcode,
+                         this.var );
     }
 
     public int getType() {
-        return VAR_INSN;
+        return AbstractInsnNode.VAR_INSN;
     }
 }

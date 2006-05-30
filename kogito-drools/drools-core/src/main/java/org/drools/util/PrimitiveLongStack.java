@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,24 +16,24 @@ package org.drools.util;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.Serializable;
 
 public class PrimitiveLongStack
     implements
     Serializable {
-    private final int tableSize;
-    private int       currentPageId;
-    private Page      currentPage;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1121303319795490425L;
+    private final int         tableSize;
+    private int               currentPageId;
+    private Page              currentPage;
 
     public PrimitiveLongStack() {
         this( 256 );
     }
 
-    public PrimitiveLongStack(int tableSize) {
+    public PrimitiveLongStack(final int tableSize) {
         this.tableSize = tableSize;
         this.currentPageId = 0;
 
@@ -44,12 +45,12 @@ public class PrimitiveLongStack
                                      this.tableSize );
     }
 
-    public void push(long value) {
+    public void push(final long value) {
         if ( this.currentPage.getPosition() == this.tableSize - 1 ) {
 
-            Page node = new Page( this.currentPage,
-                                  ++this.currentPageId,
-                                  this.tableSize );
+            final Page node = new Page( this.currentPage,
+                                        ++this.currentPageId,
+                                        this.tableSize );
             this.currentPage = node;
         }
 
@@ -62,7 +63,7 @@ public class PrimitiveLongStack
                 throw new RuntimeException( "Unable to pop" );
             }
 
-            Page node = this.currentPage;
+            final Page node = this.currentPage;
             this.currentPage = node.getPreviousSibling();
             this.currentPageId--;
             node.remove();
@@ -79,15 +80,19 @@ public class PrimitiveLongStack
     private static final class Page
         implements
         Serializable {
-        private final int pageId;
-        private Page      nextSibling;
-        private Page      previousSibling;
-        private long[]    table;
-        private int       lastKey;
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 3287090599941407636L;
+        private final int         pageId;
+        private Page              nextSibling;
+        private Page              previousSibling;
+        private long[]            table;
+        private int               lastKey;
 
-        Page(Page previousSibling,
-             int nodeId,
-             int tableSize) {
+        Page(final Page previousSibling,
+             final int nodeId,
+             final int tableSize) {
             // create bi-directional link
             this.previousSibling = previousSibling;
             if ( this.previousSibling != null ) {
@@ -104,7 +109,7 @@ public class PrimitiveLongStack
             return this.pageId;
         }
 
-        void setNextSibling(Page nextSibling) {
+        void setNextSibling(final Page nextSibling) {
             this.nextSibling = nextSibling;
         }
 
@@ -120,7 +125,7 @@ public class PrimitiveLongStack
             return this.table[this.lastKey--];
         }
 
-        public void push(long value) {
+        public void push(final long value) {
             this.table[++this.lastKey] = value;
         }
 

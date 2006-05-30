@@ -1,4 +1,5 @@
 package org.drools.examples.waltz;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.examples.waltz;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * @author Alexander Bagerman
  * 
@@ -34,25 +31,30 @@ import java.io.Serializable;
 public class Stage
     implements
     Serializable {
-    final public static int START                 = 0;
+    /**
+     * 
+     */
+    private static final long serialVersionUID      = -7237280009615815252L;
 
-    final public static int DUPLICATE             = 1;
+    final public static int   START                 = 0;
 
-    final public static int DETECT_JUNCTIONS      = 2;
+    final public static int   DUPLICATE             = 1;
 
-    final public static int FIND_INITIAL_BOUNDARY = 3;
+    final public static int   DETECT_JUNCTIONS      = 2;
 
-    final public static int FIND_SECOND_BOUNDARY  = 4;
+    final public static int   FIND_INITIAL_BOUNDARY = 3;
 
-    final public static int LABELING              = 5;
+    final public static int   FIND_SECOND_BOUNDARY  = 4;
 
-    final public static int PLOT_REMAINING_EDGES  = 9;
+    final public static int   LABELING              = 5;
 
-    final public static int DONE                  = 10;
+    final public static int   PLOT_REMAINING_EDGES  = 9;
 
-    private int             value;
+    final public static int   DONE                  = 10;
 
-    public Stage(int value) {
+    private int               value;
+
+    public Stage(final int value) {
         this.value = value;
     }
 
@@ -60,11 +62,11 @@ public class Stage
         return this.value;
     }
 
-    public void setValue(int value) {
+    public void setValue(final int value) {
         this.value = value;
     }
 
-    public static int resolveStageValue(String str) {
+    public static int resolveStageValue(final String str) {
         if ( str.equals( "start" ) ) {
             return 0;
 
@@ -88,7 +90,9 @@ public class Stage
 
         } else if ( str.equals( "done" ) ) {
             return 10;
-        } else return -9999999;
+        } else {
+            return -9999999;
+        }
     }
 
     public String toString() {

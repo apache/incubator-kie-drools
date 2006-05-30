@@ -50,8 +50,8 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#add(org.drools.WorkingMemory, org.drools.reteoo.ObjectMatches)
      */
-    public final void add(WorkingMemory workingMemory,
-                    ObjectMatches matches) {
+    public final void add(final WorkingMemory workingMemory,
+                          final ObjectMatches matches) {
         this.memory.add( matches );
     }
 
@@ -61,8 +61,8 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#remove(org.drools.WorkingMemory, org.drools.reteoo.ObjectMatches)
      */
-    public final void remove(WorkingMemory workingMemory,
-                       ObjectMatches matches) {
+    public final void remove(final WorkingMemory workingMemory,
+                             final ObjectMatches matches) {
         matches.getLinkedList().remove( matches );
     }
 
@@ -72,8 +72,8 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#add(org.drools.WorkingMemory, org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public final void add(WorkingMemory workingMemory,
-                    MultiLinkedListNodeWrapper wrapper) {
+    public final void add(final WorkingMemory workingMemory,
+                          final MultiLinkedListNodeWrapper wrapper) {
         this.memory.add( wrapper );
     }
 
@@ -83,8 +83,8 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#remove(org.drools.WorkingMemory, org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public final void remove(WorkingMemory workingMemory,
-                       MultiLinkedListNodeWrapper wrapper) {
+    public final void remove(final WorkingMemory workingMemory,
+                             final MultiLinkedListNodeWrapper wrapper) {
         wrapper.getLinkedList().remove( wrapper );
     }
 
@@ -94,7 +94,7 @@ public class DefaultRightMemory
      * @see org.drools.reteoo.beta.BetaRightMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
     public final Iterator iterator(final WorkingMemory workingMemory,
-                             final ReteTuple tuple) {
+                                   final ReteTuple tuple) {
         return this.memory.iterator();
     }
 
@@ -113,8 +113,8 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
-    public final void selectPossibleMatches(WorkingMemory workingMemory,
-                                      ReteTuple tuple) {
+    public final void selectPossibleMatches(final WorkingMemory workingMemory,
+                                            final ReteTuple tuple) {
         // nothing to do
     }
 
@@ -124,7 +124,7 @@ public class DefaultRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#isPossibleMatch(org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public final boolean isPossibleMatch(MultiLinkedListNodeWrapper matches) {
+    public final boolean isPossibleMatch(final MultiLinkedListNodeWrapper matches) {
         return matches.getLinkedList() == this.memory;
     }
 
@@ -144,21 +144,21 @@ public class DefaultRightMemory
      * @see org.drools.reteoo.beta.BetaRightMemory#iterator()
      */
     public final Iterator iterator() {
-        return memory.iterator();
+        return this.memory.iterator();
     }
 
     /**
      * @inheritDoc
      */
     public BetaRightMemory getInnerMemory() throws OperationNotSupportedException {
-        throw new OperationNotSupportedException("Default right memory does not support inner memory");
+        throw new OperationNotSupportedException( "Default right memory does not support inner memory" );
     }
 
     /**
      * @inheritDoc
      */
-    public void setInnerMemory(BetaRightMemory innerMemory) throws OperationNotSupportedException  {
-        throw new OperationNotSupportedException("Default right memory does not support inner memory");
+    public void setInnerMemory(final BetaRightMemory innerMemory) throws OperationNotSupportedException {
+        throw new OperationNotSupportedException( "Default right memory does not support inner memory" );
     }
 
 }

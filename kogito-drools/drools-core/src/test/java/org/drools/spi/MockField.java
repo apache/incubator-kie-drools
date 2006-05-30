@@ -1,4 +1,5 @@
 package org.drools.spi;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,16 +16,17 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-
-
-
 public final class MockField
     implements
     FieldValue {
 
-    private final Object value;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 6399579773906347733L;
+    private final Object      value;
 
-    public MockField(Object value) {
+    public MockField(final Object value) {
         this.value = value;
     }
 
@@ -32,14 +34,14 @@ public final class MockField
         return this.value;
     }
 
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
         if ( this == other ) {
             return true;
         }
         if ( !(other instanceof MockField) ) {
             return false;
         }
-        MockField field = (MockField) other;
+        final MockField field = (MockField) other;
 
         return (((this.value == null) && (field.value == null)) || ((this.value != null) && (this.value.equals( field.value ))));
     }

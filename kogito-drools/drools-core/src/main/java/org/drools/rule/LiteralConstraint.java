@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.spi.Evaluator;
@@ -29,6 +28,11 @@ public class LiteralConstraint
     implements
     FieldConstraint {
 
+    /**
+     * 
+     */
+    private static final long          serialVersionUID     = 257543929585046195L;
+
     private final FieldValue           field;
 
     private final FieldExtractor       extractor;
@@ -37,9 +41,9 @@ public class LiteralConstraint
 
     private static final Declaration[] requiredDeclarations = new Declaration[0];
 
-    public LiteralConstraint(FieldValue field,
-                             FieldExtractor extractor,
-                             Evaluator evaluator) {
+    public LiteralConstraint(final FieldValue field,
+                             final FieldExtractor extractor,
+                             final Evaluator evaluator) {
         this.field = field;
         this.extractor = extractor;
         this.evaluator = evaluator;
@@ -66,30 +70,30 @@ public class LiteralConstraint
         return LiteralConstraint.requiredDeclarations;
     }
 
-    public boolean isAllowed(InternalFactHandle handle,
-                             Tuple tuple,
-                             WorkingMemory workingMemory) {
-        return evaluator.evaluate( this.extractor.getValue( handle.getObject() ),
-                                   this.field.getValue() );
+    public boolean isAllowed(final InternalFactHandle handle,
+                             final Tuple tuple,
+                             final WorkingMemory workingMemory) {
+        return this.evaluator.evaluate( this.extractor.getValue( handle.getObject() ),
+                                        this.field.getValue() );
     }
 
     public String toString() {
         return "[LiteralConstraint fieldExtractor=" + this.extractor + " evaluator=" + this.evaluator + " value=" + this.field.getValue() + "]";
     }
-    
+
     public int hashCode() {
         return (this.field.hashCode() * 17) ^ (this.extractor.hashCode() * 11) ^ (this.evaluator.hashCode());
 
-    }    
-    
-    public boolean equals(Object object) {
+    }
+
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
         if ( object == null || object.getClass() != LiteralConstraint.class ) {
             return false;
         }
-        LiteralConstraint other = (LiteralConstraint) object;
+        final LiteralConstraint other = (LiteralConstraint) object;
 
         return this.field.equals( other.field ) && this.extractor.equals( other.extractor ) && this.evaluator.equals( other.evaluator );
     }

@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,18 +16,22 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import org.drools.FactHandle;
+import org.drools.common.DefaultFactHandle;
 
 public class InstrumentedReteTuple extends ReteTuple {
-    public InstrumentedReteTuple(ReteTuple left,
-                                 FactHandle handle) {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -5225370016555785111L;
+
+    public InstrumentedReteTuple(final ReteTuple left,
+                                 final FactHandle handle) {
         super( left,
-               (FactHandleImpl) handle );
+               (DefaultFactHandle) handle );
     }
 
-    public InstrumentedReteTuple(FactHandle handle) {
-        super( (FactHandleImpl) handle );
+    public InstrumentedReteTuple(final FactHandle handle) {
+        super( (DefaultFactHandle) handle );
     }
 }

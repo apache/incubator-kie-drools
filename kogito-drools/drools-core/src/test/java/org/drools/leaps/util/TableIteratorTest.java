@@ -1,4 +1,5 @@
 package org.drools.leaps.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.util.Iterator;
 
@@ -59,15 +56,15 @@ public class TableIteratorTest extends TestCase {
      * 'org.drools..util.TableIterator.TableIterator()'
      */
     public void testTableIterator() {
-        BaseTableIterator it = new BaseTableIterator( null,
-                                                      null,
-                                                      null );
+        final BaseTableIterator it = new BaseTableIterator( null,
+                                                            null,
+                                                            null );
         assertFalse( it.hasNext() );
         assertTrue( it.isEmpty() );
     }
 
     public void testGetDominantFactIterator() {
-        Iterator it = Table.singleItemIterator( this.h1000 );
+        final Iterator it = Table.singleItemIterator( this.h1000 );
         assertTrue( it.hasNext() );
         assertEquals( it.next(),
                       this.h1000 );
@@ -79,7 +76,7 @@ public class TableIteratorTest extends TestCase {
      * 'org.drools..util.TableIterator.TableIterator(TableRecord)'
      */
     public void testTableIteratorTableRecord() {
-        BaseTableIterator it = new BaseTableIterator( new TableRecord( this.h1 ) );
+        final BaseTableIterator it = new BaseTableIterator( new TableRecord( this.h1 ) );
         assertTrue( it.hasNext() );
         assertFalse( it.isEmpty() );
         assertEquals( this.h1,

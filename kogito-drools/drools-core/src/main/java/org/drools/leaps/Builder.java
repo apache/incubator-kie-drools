@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -47,9 +48,9 @@ class Builder {
      * @return list of leaps rule
      * @throws InvalidPatternException
      */
-    final protected static List processRule(Rule rule) throws InvalidPatternException {
-        ArrayList leapsRules = new ArrayList();
-        And[] and = rule.getTransformedLhs();
+    final protected static List processRule(final Rule rule) throws InvalidPatternException {
+        final ArrayList leapsRules = new ArrayList();
+        final And[] and = rule.getTransformedLhs();
         for ( int i = 0, length = and.length; i < length; i++ ) {
             leapsRules.addAll( processRuleForAnd( and[i],
                                                   rule ) );
@@ -64,18 +65,18 @@ class Builder {
      * @param rule
      * @return list of leaps rules for the given And
      */
-    final private static List processRuleForAnd(And and,
-                                                Rule rule) {
+    final private static List processRuleForAnd(final And and,
+                                                final Rule rule) {
         ColumnConstraints constraints;
-        ArrayList leapsRules = new ArrayList();
-        ArrayList cols = new ArrayList();
-        ArrayList notCols = new ArrayList();
-        ArrayList existsCols = new ArrayList();
-        ArrayList evalConditions = new ArrayList();
-        for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        final ArrayList leapsRules = new ArrayList();
+        final ArrayList cols = new ArrayList();
+        final ArrayList notCols = new ArrayList();
+        final ArrayList existsCols = new ArrayList();
+        final ArrayList evalConditions = new ArrayList();
+        for ( final Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             if ( object instanceof EvalCondition ) {
-                EvalCondition eval = (EvalCondition) object;
+                final EvalCondition eval = (EvalCondition) object;
                 evalConditions.add( eval );
             } else {
                 if ( object instanceof Column ) {
@@ -118,12 +119,12 @@ class Builder {
      * @param declarations
      * @throws InvalidPatternException
      */
-    static void checkEvalUnboundDeclarations(Rule rule,
-                                             ArrayList evals) throws InvalidPatternException {
-        List list = new ArrayList();
-        for ( Iterator it = evals.iterator(); it.hasNext(); ) {
-            EvalCondition ec = (EvalCondition) it.next();
-            Declaration[] declarations = ec.getRequiredDeclarations();
+    static void checkEvalUnboundDeclarations(final Rule rule,
+                                             final ArrayList evals) throws InvalidPatternException {
+        final List list = new ArrayList();
+        for ( final Iterator it = evals.iterator(); it.hasNext(); ) {
+            final EvalCondition ec = (EvalCondition) it.next();
+            final Declaration[] declarations = ec.getRequiredDeclarations();
             for ( int i = 0, length = declarations.length; i < length; i++ ) {
                 if ( rule.getDeclaration( declarations[i].getIdentifier() ) == null ) {
                     list.add( declarations[i].getIdentifier() );
@@ -133,7 +134,7 @@ class Builder {
 
         // Make sure the required declarations
         if ( list.size() != 0 ) {
-            StringBuffer buffer = new StringBuffer();
+            final StringBuffer buffer = new StringBuffer();
             buffer.append( list.get( 0 ) );
             for ( int i = 1, size = list.size(); i < size; i++ ) {
                 buffer.append( ", " + list.get( i ) );
@@ -151,18 +152,18 @@ class Builder {
      * @param and
      * @return leaps packaged ColumnConstraints
      */
-    final private static ColumnConstraints processColumn(Column column) {
+    final private static ColumnConstraints processColumn(final Column column) {
         BetaNodeBinder binder;
-        List alphaConstraints = new ArrayList();
-        List betaConstraints = new ArrayList();
+        final List alphaConstraints = new ArrayList();
+        final List betaConstraints = new ArrayList();
 
-        for ( Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        for ( final Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             if ( !(object instanceof FieldConstraint) ) {
                 continue;
             }
 
-            FieldConstraint fieldConstraint = (FieldConstraint) object;
+            final FieldConstraint fieldConstraint = (FieldConstraint) object;
             if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
                 alphaConstraints.add( fieldConstraint );
             } else {

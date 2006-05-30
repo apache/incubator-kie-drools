@@ -1,4 +1,5 @@
 package org.drools.visualize;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.visualize;
  * limitations under the License.
  */
 
-
-
 import java.awt.Color;
 
 public class VertexColorSet {
@@ -25,9 +24,9 @@ public class VertexColorSet {
     private Color stroke;
     private Color text;
 
-    public VertexColorSet(Color fill,
-                          Color stroke,
-                          Color text) {
+    public VertexColorSet(final Color fill,
+                          final Color stroke,
+                          final Color text) {
         this.fill = fill;
         this.stroke = stroke;
         this.text = text;
@@ -43,7 +42,7 @@ public class VertexColorSet {
         return this.fill;
     }
 
-    public void setFill(Color fill) {
+    public void setFill(final Color fill) {
         this.fill = fill;
     }
 
@@ -51,7 +50,7 @@ public class VertexColorSet {
         return this.stroke;
     }
 
-    public void setStroke(Color stroke) {
+    public void setStroke(final Color stroke) {
         this.stroke = stroke;
     }
 
@@ -59,7 +58,7 @@ public class VertexColorSet {
         return this.text;
     }
 
-    public void setText(Color text) {
+    public void setText(final Color text) {
         this.text = text;
     }
 

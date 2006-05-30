@@ -29,13 +29,13 @@
  */
 package org.drools.asm.tree;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.asm.Label;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * A node that represents a LOOKUPSWITCH instruction.
@@ -52,13 +52,13 @@ public class LookupSwitchInsnNode extends AbstractInsnNode {
     /**
      * The values of the keys. This list is a list of {@link Integer} objects.
      */
-    public List keys;
+    public List  keys;
 
     /**
      * Beginnings of the handler blocks. This list is a list of {@link Label}
      * objects.
      */
-    public List labels;
+    public List  labels;
 
     /**
      * Constructs a new {@link LookupSwitchInsnNode}.
@@ -68,36 +68,36 @@ public class LookupSwitchInsnNode extends AbstractInsnNode {
      * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is
      *        the beginning of the handler block for the <tt>keys[i]</tt> key.
      */
-    public LookupSwitchInsnNode(
-        final Label dflt,
-        final int[] keys,
-        final Label[] labels)
-    {
-        super(Opcodes.LOOKUPSWITCH);
+    public LookupSwitchInsnNode(final Label dflt,
+                                final int[] keys,
+                                final Label[] labels) {
+        super( Opcodes.LOOKUPSWITCH );
         this.dflt = dflt;
-        this.keys = new ArrayList(keys == null ? 0 : keys.length);
-        this.labels = new ArrayList(labels == null ? 0 : labels.length);
-        if (keys != null) {
-            for (int i = 0; i < keys.length; ++i) {
-                this.keys.add(new Integer(keys[i]));
+        this.keys = new ArrayList( keys == null ? 0 : keys.length );
+        this.labels = new ArrayList( labels == null ? 0 : labels.length );
+        if ( keys != null ) {
+            for ( int i = 0; i < keys.length; ++i ) {
+                this.keys.add( new Integer( keys[i] ) );
             }
         }
-        if (labels != null) {
-            this.labels.addAll(Arrays.asList(labels));
+        if ( labels != null ) {
+            this.labels.addAll( Arrays.asList( labels ) );
         }
     }
 
     public void accept(final MethodVisitor mv) {
-        int[] keys = new int[this.keys.size()];
-        for (int i = 0; i < keys.length; ++i) {
-            keys[i] = ((Integer) this.keys.get(i)).intValue();
+        final int[] keys = new int[this.keys.size()];
+        for ( int i = 0; i < keys.length; ++i ) {
+            keys[i] = ((Integer) this.keys.get( i )).intValue();
         }
-        Label[] labels = new Label[this.labels.size()];
-        this.labels.toArray(labels);
-        mv.visitLookupSwitchInsn(dflt, keys, labels);
+        final Label[] labels = new Label[this.labels.size()];
+        this.labels.toArray( labels );
+        mv.visitLookupSwitchInsn( this.dflt,
+                                  keys,
+                                  labels );
     }
 
     public int getType() {
-        return LOOKUPSWITCH_INSN;
+        return AbstractInsnNode.LOOKUPSWITCH_INSN;
     }
 }

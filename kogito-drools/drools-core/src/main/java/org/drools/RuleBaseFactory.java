@@ -23,13 +23,13 @@ package org.drools;
  */
 public class RuleBaseFactory {
 
-    private static RuleBaseFactory INSTANCE = new RuleBaseFactory();
+    private static final RuleBaseFactory INSTANCE = new RuleBaseFactory();
 
     private RuleBaseFactory() {
     }
 
     public static RuleBaseFactory getInstance() {
-        return INSTANCE;
+        return RuleBaseFactory.INSTANCE;
     }
 
     /** Create a new default rule base (RETEOO type engine) */
@@ -38,14 +38,14 @@ public class RuleBaseFactory {
     }
 
     /** Create a new RuleBase of the appropriate type */
-    public static RuleBase newRuleBase(int type) {
+    public static RuleBase newRuleBase(final int type) {
         switch ( type ) {
             case RuleBase.RETEOO :
-                return new org.drools.reteoo.RuleBaseImpl();
+                return new org.drools.reteoo.ReteooRuleBase();
             case RuleBase.LEAPS :
                 try {
-                    return new org.drools.leaps.RuleBaseImpl();
-                } catch ( PackageIntegrationException e ) {
+                    return new org.drools.leaps.LeapsRuleBase();
+                } catch ( final PackageIntegrationException e ) {
                     throw new IllegalStateException( "Unable to create Leaps engine. Error: " + e.getMessage() );
                 }
             default :

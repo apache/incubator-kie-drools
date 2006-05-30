@@ -27,7 +27,7 @@ import org.drools.base.ClassFieldExtractor;
 import org.drools.base.EvaluatorFactory;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.InstrumentedReteTuple;
-import org.drools.reteoo.RuleBaseImpl;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
@@ -56,34 +56,34 @@ public class FieldConstraintTest extends TestCase {
      * @throws IntrospectionException
      */
     public void testLiteralConstraint() throws IntrospectionException {
-        RuleBaseImpl ruleBase = new RuleBaseImpl();
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                 "type" );
+        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                       "type" );
 
-        FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = new MockField( "cheddar" );
 
-        Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                           Evaluator.EQUAL );
-        LiteralConstraint constraint = new LiteralConstraint( field,
-                                                              extractor,
-                                                              evaluator );
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                   Evaluator.EQUAL );
+        final LiteralConstraint constraint = new LiteralConstraint( field,
+                                                                    extractor,
+                                                                    evaluator );
 
-        Cheese cheddar = new Cheese( "cheddar",
-                                     5 );
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           5 );
 
-        InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
+        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle,
                                           null,
                                           workingMemory ) );
 
-        Cheese stilton = new Cheese( "stilton",
-                                     5 );
+        final Cheese stilton = new Cheese( "stilton",
+                                           5 );
 
-        InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.assertObject( stilton );
+        final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.assertObject( stilton );
 
         // check constraint
         assertFalse( constraint.isAllowed( stiltonHandle,
@@ -104,25 +104,30 @@ public class FieldConstraintTest extends TestCase {
      * @throws IntrospectionException
      */
     public void testPredicateConstraint() throws IntrospectionException {
-        RuleBaseImpl ruleBase = new RuleBaseImpl();
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
-                                                                 "price" );
-
-        // Bind the extractor to a decleration
-        // Declarations know the column they derive their value form
-        Declaration price1Declaration = new Declaration( "price1",
-                                                         priceExtractor,
-                                                         0 );
+        final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
+                                                                       "price" );
 
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
-        Declaration price2Declaration = new Declaration( "price2",
-                                                         priceExtractor,
-                                                         1 );
+        final Declaration price1Declaration = new Declaration( "price1",
+                                                               priceExtractor,
+                                                               0 );
 
-        PredicateExpression evaluator = new PredicateExpression() {
+        // Bind the extractor to a decleration
+        // Declarations know the column they derive their value form
+        final Declaration price2Declaration = new Declaration( "price2",
+                                                               priceExtractor,
+                                                               1 );
+
+        final PredicateExpression evaluator = new PredicateExpression() {
+
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -7805842671538257493L;
 
             public boolean evaluate(Tuple tuple,
                                     FactHandle factHandle,
@@ -137,18 +142,18 @@ public class FieldConstraintTest extends TestCase {
             }
         };
 
-        PredicateConstraint constraint1 = new PredicateConstraint( evaluator,
-                                                                   price2Declaration,
-                                                                   new Declaration[]{price1Declaration} );
+        final PredicateConstraint constraint1 = new PredicateConstraint( evaluator,
+                                                                         price2Declaration,
+                                                                         new Declaration[]{price1Declaration} );
 
-        Cheese cheddar0 = new Cheese( "cheddar",
-                                      5 );
-        FactHandle f0 = workingMemory.assertObject( cheddar0 );
+        final Cheese cheddar0 = new Cheese( "cheddar",
+                                            5 );
+        final FactHandle f0 = workingMemory.assertObject( cheddar0 );
         InstrumentedReteTuple tuple = new InstrumentedReteTuple( f0 );
 
-        Cheese cheddar1 = new Cheese( "cheddar",
-                                      10 );
-        InternalFactHandle f1 = (InternalFactHandle) workingMemory.assertObject( cheddar1 );
+        final Cheese cheddar1 = new Cheese( "cheddar",
+                                            10 );
+        final InternalFactHandle f1 = (InternalFactHandle) workingMemory.assertObject( cheddar1 );
 
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
@@ -172,19 +177,24 @@ public class FieldConstraintTest extends TestCase {
      * @throws IntrospectionException
      */
     public void testReturnValueConstraint() throws IntrospectionException {
-        RuleBaseImpl ruleBase = new RuleBaseImpl();
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
-                                                                 "price" );
+        final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
+                                                                       "price" );
 
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
-        Declaration priceDeclaration = new Declaration( "price1",
-                                                        priceExtractor,
-                                                        0 );
+        final Declaration priceDeclaration = new Declaration( "price1",
+                                                              priceExtractor,
+                                                              0 );
 
-        ReturnValueExpression isDoubleThePrice = new ReturnValueExpression() {
+        final ReturnValueExpression isDoubleThePrice = new ReturnValueExpression() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 5673999834006100045L;
+
             public Object evaluate(Tuple tuple, // ?price
                                    Declaration[] declarations,
                                    WorkingMemory workingMemory) {
@@ -194,27 +204,27 @@ public class FieldConstraintTest extends TestCase {
             }
         };
 
-        ReturnValueConstraint constraint1 = new ReturnValueConstraint( priceExtractor,
-                                                                       isDoubleThePrice,
-                                                                       new Declaration[]{priceDeclaration},
-                                                                       EvaluatorFactory.getInstance().getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                                                                    Evaluator.EQUAL ) );
+        final ReturnValueConstraint constraint1 = new ReturnValueConstraint( priceExtractor,
+                                                                             isDoubleThePrice,
+                                                                             new Declaration[]{priceDeclaration},
+                                                                             EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
+                                                                                                            Evaluator.EQUAL ) );
 
-        ReturnValueConstraint constraint2 = new ReturnValueConstraint( priceExtractor,
-                                                                       isDoubleThePrice,
-                                                                       new Declaration[]{priceDeclaration},
-                                                                       EvaluatorFactory.getInstance().getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                                                                    Evaluator.GREATER ) );
+        final ReturnValueConstraint constraint2 = new ReturnValueConstraint( priceExtractor,
+                                                                             isDoubleThePrice,
+                                                                             new Declaration[]{priceDeclaration},
+                                                                             EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
+                                                                                                            Evaluator.GREATER ) );
 
-        Cheese cheddar0 = new Cheese( "cheddar",
-                                      5 );
-        FactHandle f0 = workingMemory.assertObject( cheddar0 );
+        final Cheese cheddar0 = new Cheese( "cheddar",
+                                            5 );
+        final FactHandle f0 = workingMemory.assertObject( cheddar0 );
 
         InstrumentedReteTuple tuple = new InstrumentedReteTuple( f0 );
 
-        Cheese cheddar1 = new Cheese( "cheddar",
-                                      10 );
-        InternalFactHandle f1 = (InternalFactHandle) workingMemory.assertObject( cheddar1 );
+        final Cheese cheddar1 = new Cheese( "cheddar",
+                                            10 );
+        final InternalFactHandle f1 = (InternalFactHandle) workingMemory.assertObject( cheddar1 );
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
 
@@ -226,10 +236,10 @@ public class FieldConstraintTest extends TestCase {
                                             tuple,
                                             workingMemory ) );
 
-        Cheese cheddar2 = new Cheese( "cheddar",
-                                      11 );
+        final Cheese cheddar2 = new Cheese( "cheddar",
+                                            11 );
 
-        InternalFactHandle f2 = (InternalFactHandle) workingMemory.assertObject( cheddar2 );
+        final InternalFactHandle f2 = (InternalFactHandle) workingMemory.assertObject( cheddar2 );
 
         assertTrue( constraint2.isAllowed( f2,
                                            tuple,

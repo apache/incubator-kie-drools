@@ -1,4 +1,5 @@
 package org.drools.spi;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,11 +16,7 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-
-
 import java.io.Serializable;
-
-
 
 /**
  * Semantic object type differentiator.

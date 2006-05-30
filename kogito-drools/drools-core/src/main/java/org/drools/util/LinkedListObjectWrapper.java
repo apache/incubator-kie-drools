@@ -24,7 +24,7 @@ package org.drools.util;
 public class LinkedListObjectWrapper extends AbstractBaseLinkedListNode {
     private Object object;
 
-    public LinkedListObjectWrapper(Object object) {
+    public LinkedListObjectWrapper(final Object object) {
         this.object = object;
     }
 

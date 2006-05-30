@@ -11,27 +11,27 @@ import org.drools.rule.Query;
 import org.drools.spi.Tuple;
 
 public class QueryResults {
-    private Query         query;
+    private Query           query;
 
-    private Map           declarations;
+    private Map             declarations;
 
     protected List          results;
     protected WorkingMemory workingMemory;
 
-    public QueryResults(List results,
-                        Query query,
-                        WorkingMemory workingMemory) {
+    public QueryResults(final List results,
+                        final Query query,
+                        final WorkingMemory workingMemory) {
         this.results = results;
         this.query = query;
         this.workingMemory = workingMemory;
     }
 
-    public QueryResult get(int i) {
+    public QueryResult get(final int i) {
         if ( i > this.results.size() ) {
             throw new NoSuchElementException();
         }
         return new QueryResult( (Tuple) this.results.get( i ),
-                                workingMemory,
+                                this.workingMemory,
                                 this );
     }
 
@@ -41,8 +41,8 @@ public class QueryResults {
 
     public Map getDeclarations() {
 
-        Declaration[] declarations = this.query.getDeclarations();
-        Map map = new HashMap( declarations.length );
+        final Declaration[] declarations = this.query.getDeclarations();
+        final Map map = new HashMap( declarations.length );
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
             map.put( declarations[i].getIdentifier(),
                      declarations );
@@ -55,11 +55,13 @@ public class QueryResults {
     public int size() {
         return this.results.size();
     }
-    
-    class QueryResultsIterator implements Iterator {
+
+    class QueryResultsIterator
+        implements
+        Iterator {
         private Iterator iterator;
-        
-        public QueryResultsIterator(Iterator iterator) {
+
+        public QueryResultsIterator(final Iterator iterator) {
             this.iterator = iterator;
         }
 
@@ -68,12 +70,14 @@ public class QueryResults {
         }
 
         public Object next() {
-            return new QueryResult( ( Tuple ) this.iterator.next(), QueryResults.this.workingMemory, QueryResults.this );
+            return new QueryResult( (Tuple) this.iterator.next(),
+                                    QueryResults.this.workingMemory,
+                                    QueryResults.this );
         }
 
         public void remove() {
             this.iterator.remove();
         }
-        
+
     }
 }

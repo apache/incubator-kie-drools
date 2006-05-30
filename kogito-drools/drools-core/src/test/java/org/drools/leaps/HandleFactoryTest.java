@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 import junit.framework.TestCase;
 
 /**
@@ -28,18 +25,19 @@ import junit.framework.TestCase;
  */
 public class HandleFactoryTest extends TestCase {
 
-    HandleFactory factory;
+    LeapsFactHandleFactory factory;
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.factory = new HandleFactory();
+        this.factory = new LeapsFactHandleFactory();
     }
 
     /*
      * Test method for 'org.drools.leaps.Handlethis.factory.newFactHandle()'
      */
     public void testNewFactHandle() {
-        assertTrue( ((Handle) this.factory.newFactHandle()).getObject() == null );
+        final Object object = new Object();
+        assertTrue( ((Handle) this.factory.newFactHandle( object )).getObject() == object );
     }
 
     /*
@@ -51,7 +49,7 @@ public class HandleFactoryTest extends TestCase {
         this.factory.getNextId();
         this.factory.getNextId();
 
-        long nextId = this.factory.getNextId() + 1;
+        final long nextId = this.factory.getNextId() + 1;
         assertEquals( nextId,
                       this.factory.getNextId() );
     }
@@ -64,9 +62,9 @@ public class HandleFactoryTest extends TestCase {
         this.factory.getNextId();
         this.factory.getNextId();
 
-        String testObject = new String( "test object" );
-        long nextId = this.factory.getNextId() + 1;
-        Handle handle = (Handle) this.factory.newFactHandle( testObject );
+        final String testObject = new String( "test object" );
+        final long nextId = this.factory.getNextId() + 1;
+        final Handle handle = (Handle) this.factory.newFactHandle( testObject );
         assertEquals( nextId,
                       handle.getId() );
         assertEquals( testObject,
@@ -81,9 +79,10 @@ public class HandleFactoryTest extends TestCase {
         this.factory.getNextId();
         this.factory.getNextId();
 
-        long nextId = this.factory.getNextId() + 1;
+        final long nextId = this.factory.getNextId() + 1;
         assertEquals( nextId,
-                      ((Handle) this.factory.newFactHandle( 984393L )).getId() );
+                      ((Handle) this.factory.newFactHandle( 984393L,
+                                                            new Object() )).getId() );
 
     }
 

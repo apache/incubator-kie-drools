@@ -38,253 +38,255 @@ package org.drools.asm;
  * 
  * @author Eric Bruneton
  */
-public class ClassWriter implements ClassVisitor {
+public class ClassWriter
+    implements
+    ClassVisitor {
 
     /**
      * The type of instructions without any argument.
      */
-    final static int NOARG_INSN = 0;
+    final static int         NOARG_INSN       = 0;
 
     /**
      * The type of instructions with an signed byte argument.
      */
-    final static int SBYTE_INSN = 1;
+    final static int         SBYTE_INSN       = 1;
 
     /**
      * The type of instructions with an signed short argument.
      */
-    final static int SHORT_INSN = 2;
+    final static int         SHORT_INSN       = 2;
 
     /**
      * The type of instructions with a local variable index argument.
      */
-    final static int VAR_INSN = 3;
+    final static int         VAR_INSN         = 3;
 
     /**
      * The type of instructions with an implicit local variable index argument.
      */
-    final static int IMPLVAR_INSN = 4;
+    final static int         IMPLVAR_INSN     = 4;
 
     /**
      * The type of instructions with a type descriptor argument.
      */
-    final static int TYPE_INSN = 5;
+    final static int         TYPE_INSN        = 5;
 
     /**
      * The type of field and method invocations instructions.
      */
-    final static int FIELDORMETH_INSN = 6;
+    final static int         FIELDORMETH_INSN = 6;
 
     /**
      * The type of the INVOKEINTERFACE instruction.
      */
-    final static int ITFMETH_INSN = 7;
+    final static int         ITFMETH_INSN     = 7;
 
     /**
      * The type of instructions with a 2 bytes bytecode offset label.
      */
-    final static int LABEL_INSN = 8;
+    final static int         LABEL_INSN       = 8;
 
     /**
      * The type of instructions with a 4 bytes bytecode offset label.
      */
-    final static int LABELW_INSN = 9;
+    final static int         LABELW_INSN      = 9;
 
     /**
      * The type of the LDC instruction.
      */
-    final static int LDC_INSN = 10;
+    final static int         LDC_INSN         = 10;
 
     /**
      * The type of the LDC_W and LDC2_W instructions.
      */
-    final static int LDCW_INSN = 11;
+    final static int         LDCW_INSN        = 11;
 
     /**
      * The type of the IINC instruction.
      */
-    final static int IINC_INSN = 12;
+    final static int         IINC_INSN        = 12;
 
     /**
      * The type of the TABLESWITCH instruction.
      */
-    final static int TABL_INSN = 13;
+    final static int         TABL_INSN        = 13;
 
     /**
      * The type of the LOOKUPSWITCH instruction.
      */
-    final static int LOOK_INSN = 14;
+    final static int         LOOK_INSN        = 14;
 
     /**
      * The type of the MULTIANEWARRAY instruction.
      */
-    final static int MANA_INSN = 15;
+    final static int         MANA_INSN        = 15;
 
     /**
      * The type of the WIDE instruction.
      */
-    final static int WIDE_INSN = 16;
+    final static int         WIDE_INSN        = 16;
 
     /**
      * The instruction types of all JVM opcodes.
      */
-    static byte[] TYPE;
+    static byte[]            TYPE;
 
     /**
      * The type of CONSTANT_Class constant pool items.
      */
-    final static int CLASS = 7;
+    final static int         CLASS            = 7;
 
     /**
      * The type of CONSTANT_Fieldref constant pool items.
      */
-    final static int FIELD = 9;
+    final static int         FIELD            = 9;
 
     /**
      * The type of CONSTANT_Methodref constant pool items.
      */
-    final static int METH = 10;
+    final static int         METH             = 10;
 
     /**
      * The type of CONSTANT_InterfaceMethodref constant pool items.
      */
-    final static int IMETH = 11;
+    final static int         IMETH            = 11;
 
     /**
      * The type of CONSTANT_String constant pool items.
      */
-    final static int STR = 8;
+    final static int         STR              = 8;
 
     /**
      * The type of CONSTANT_Integer constant pool items.
      */
-    final static int INT = 3;
+    final static int         INT              = 3;
 
     /**
      * The type of CONSTANT_Float constant pool items.
      */
-    final static int FLOAT = 4;
+    final static int         FLOAT            = 4;
 
     /**
      * The type of CONSTANT_Long constant pool items.
      */
-    final static int LONG = 5;
+    final static int         LONG             = 5;
 
     /**
      * The type of CONSTANT_Double constant pool items.
      */
-    final static int DOUBLE = 6;
+    final static int         DOUBLE           = 6;
 
     /**
      * The type of CONSTANT_NameAndType constant pool items.
      */
-    final static int NAME_TYPE = 12;
+    final static int         NAME_TYPE        = 12;
 
     /**
      * The type of CONSTANT_Utf8 constant pool items.
      */
-    final static int UTF8 = 1;
+    final static int         UTF8             = 1;
 
     /**
      * The class reader from which this class writer was constructed, if any.
      */
-    ClassReader cr;
+    ClassReader              cr;
 
     /**
      * Minor and major version numbers of the class to be generated.
      */
-    int version;
+    int                      version;
 
     /**
      * Index of the next item to be added in the constant pool.
      */
-    int index;
+    int                      index;
 
     /**
      * The constant pool of this class.
      */
-    ByteVector pool;
+    ByteVector               pool;
 
     /**
      * The constant pool's hash table data.
      */
-    Item[] items;
+    Item[]                   items;
 
     /**
      * The threshold of the constant pool's hash table.
      */
-    int threshold;
+    int                      threshold;
 
     /**
      * A reusable key used to look for items in the hash {@link #items items}.
      */
-    Item key;
+    Item                     key;
 
     /**
      * A reusable key used to look for items in the hash {@link #items items}.
      */
-    Item key2;
+    Item                     key2;
 
     /**
      * A reusable key used to look for items in the hash {@link #items items}.
      */
-    Item key3;
+    Item                     key3;
 
     /**
      * The access flags of this class.
      */
-    private int access;
+    private int              access;
 
     /**
      * The constant pool item that contains the internal name of this class.
      */
-    private int name;
+    private int              name;
 
     /**
      * The constant pool item that contains the signature of this class.
      */
-    private int signature;
+    private int              signature;
 
     /**
      * The constant pool item that contains the internal name of the super class
      * of this class.
      */
-    private int superName;
+    private int              superName;
 
     /**
      * Number of interfaces implemented or extended by this class or interface.
      */
-    private int interfaceCount;
+    private int              interfaceCount;
 
     /**
      * The interfaces implemented or extended by this class or interface. More
      * precisely, this array contains the indexes of the constant pool items
      * that contain the internal names of these interfaces.
      */
-    private int[] interfaces;
+    private int[]            interfaces;
 
     /**
      * The index of the constant pool item that contains the name of the source
      * file from which this class was compiled.
      */
-    private int sourceFile;
+    private int              sourceFile;
 
     /**
      * The SourceDebug attribute of this class.
      */
-    private ByteVector sourceDebug;
+    private ByteVector       sourceDebug;
 
     /**
      * The constant pool item that contains the name of the enclosing class of
      * this class.
      */
-    private int enclosingMethodOwner;
+    private int              enclosingMethodOwner;
 
     /**
      * The constant pool item that contains the name and descriptor of the
      * enclosing method of this class.
      */
-    private int enclosingMethod;
+    private int              enclosingMethod;
 
     /**
      * The runtime visible annotations of this class.
@@ -299,17 +301,17 @@ public class ClassWriter implements ClassVisitor {
     /**
      * The non standard attributes of this class.
      */
-    private Attribute attrs;
+    private Attribute        attrs;
 
     /**
      * The number of entries in the InnerClasses attribute.
      */
-    private int innerClassesCount;
+    private int              innerClassesCount;
 
     /**
      * The InnerClasses attribute.
      */
-    private ByteVector innerClasses;
+    private ByteVector       innerClasses;
 
     /**
      * The fields of this class. These fields are stored in a linked list of
@@ -317,7 +319,7 @@ public class ClassWriter implements ClassVisitor {
      * {@link FieldWriter#next} field. This field stores the first element of
      * this list.
      */
-    FieldWriter firstField;
+    FieldWriter              firstField;
 
     /**
      * The fields of this class. These fields are stored in a linked list of
@@ -325,7 +327,7 @@ public class ClassWriter implements ClassVisitor {
      * {@link FieldWriter#next} field. This field stores the last element of
      * this list.
      */
-    FieldWriter lastField;
+    FieldWriter              lastField;
 
     /**
      * The methods of this class. These methods are stored in a linked list of
@@ -333,7 +335,7 @@ public class ClassWriter implements ClassVisitor {
      * {@link MethodWriter#next} field. This field stores the first element of
      * this list.
      */
-    MethodWriter firstMethod;
+    MethodWriter             firstMethod;
 
     /**
      * The methods of this class. These methods are stored in a linked list of
@@ -341,13 +343,13 @@ public class ClassWriter implements ClassVisitor {
      * {@link MethodWriter#next} field. This field stores the last element of
      * this list.
      */
-    MethodWriter lastMethod;
+    MethodWriter             lastMethod;
 
     /**
      * <tt>true</tt> if the maximum stack size and number of local variables
      * must be automatically computed.
      */
-    private boolean computeMaxs;
+    private boolean          computeMaxs;
 
     // ------------------------------------------------------------------------
     // Static initializer
@@ -358,15 +360,13 @@ public class ClassWriter implements ClassVisitor {
      */
     static {
         int i;
-        byte[] b = new byte[220];
-        String s = "AAAAAAAAAAAAAAAABCKLLDDDDDEEEEEEEEEEEEEEEEEEEEAAAAAAAADD"
-                + "DDDEEEEEEEEEEEEEEEEEEEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                + "AAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAIIIIIIIIIIIIIIIIDNOAA"
-                + "AAAAGGGGGGGHAFBFAAFFAAQPIIJJIIIIIIIIIIIIIIIIII";
-        for (i = 0; i < b.length; ++i) {
-            b[i] = (byte) (s.charAt(i) - 'A');
+        final byte[] b = new byte[220];
+        final String s = "AAAAAAAAAAAAAAAABCKLLDDDDDEEEEEEEEEEEEEEEEEEEEAAAAAAAADD" + "DDDEEEEEEEEEEEEEEEEEEEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + "AAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAIIIIIIIIIIIIIIIIDNOAA"
+                         + "AAAAGGGGGGGHAFBFAAFFAAQPIIJJIIIIIIIIIIIIIIIIII";
+        for ( i = 0; i < b.length; ++i ) {
+            b[i] = (byte) (s.charAt( i ) - 'A');
         }
-        TYPE = b;
+        ClassWriter.TYPE = b;
 
         // code to generate the above string
         //
@@ -453,7 +453,8 @@ public class ClassWriter implements ClassVisitor {
      *        method.
      */
     public ClassWriter(final boolean computeMaxs) {
-        this(computeMaxs, false);
+        this( computeMaxs,
+              false );
     }
 
     /**
@@ -470,17 +471,15 @@ public class ClassWriter implements ClassVisitor {
      * @param skipUnknownAttributes <b>Deprecated</b>. The value of this
      *        parameter is ignored.
      */
-    public ClassWriter(
-        final boolean computeMaxs,
-        final boolean skipUnknownAttributes)
-    {
-        index = 1;
-        pool = new ByteVector();
-        items = new Item[256];
-        threshold = (int) (0.75d * items.length);
-        key = new Item();
-        key2 = new Item();
-        key3 = new Item();
+    public ClassWriter(final boolean computeMaxs,
+                       final boolean skipUnknownAttributes) {
+        this.index = 1;
+        this.pool = new ByteVector();
+        this.items = new Item[256];
+        this.threshold = (int) (0.75d * this.items.length);
+        this.key = new Item();
+        this.key2 = new Item();
+        this.key3 = new Item();
         this.computeMaxs = computeMaxs;
     }
 
@@ -514,12 +513,11 @@ public class ClassWriter implements ClassVisitor {
      *        computed automatically from the signature and the bytecode of each
      *        method.
      */
-    public ClassWriter(
-        final ClassReader classReader,
-        final boolean computeMaxs)
-    {
-        this(computeMaxs, false);
-        classReader.copyPool(this);
+    public ClassWriter(final ClassReader classReader,
+                       final boolean computeMaxs) {
+        this( computeMaxs,
+              false );
+        classReader.copyPool( this );
         this.cr = classReader;
     }
 
@@ -527,110 +525,112 @@ public class ClassWriter implements ClassVisitor {
     // Implementation of the ClassVisitor interface
     // ------------------------------------------------------------------------
 
-    public void visit(
-        final int version,
-        final int access,
-        final String name,
-        final String signature,
-        final String superName,
-        final String[] interfaces)
-    {
+    public void visit(final int version,
+                      final int access,
+                      final String name,
+                      final String signature,
+                      final String superName,
+                      final String[] interfaces) {
         this.version = version;
         this.access = access;
-        this.name = newClass(name);
-        if (signature != null) {
-            this.signature = newUTF8(signature);
+        this.name = newClass( name );
+        if ( signature != null ) {
+            this.signature = newUTF8( signature );
         }
-        this.superName = superName == null ? 0 : newClass(superName);
-        if (interfaces != null && interfaces.length > 0) {
-            interfaceCount = interfaces.length;
-            this.interfaces = new int[interfaceCount];
-            for (int i = 0; i < interfaceCount; ++i) {
-                this.interfaces[i] = newClass(interfaces[i]);
+        this.superName = superName == null ? 0 : newClass( superName );
+        if ( interfaces != null && interfaces.length > 0 ) {
+            this.interfaceCount = interfaces.length;
+            this.interfaces = new int[this.interfaceCount];
+            for ( int i = 0; i < this.interfaceCount; ++i ) {
+                this.interfaces[i] = newClass( interfaces[i] );
             }
         }
     }
 
-    public void visitSource(final String file, final String debug) {
-        if (file != null) {
-            sourceFile = newUTF8(file);
+    public void visitSource(final String file,
+                            final String debug) {
+        if ( file != null ) {
+            this.sourceFile = newUTF8( file );
         }
-        if (debug != null) {
-            sourceDebug = new ByteVector().putUTF8(debug);
-        }
-    }
-
-    public void visitOuterClass(
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        enclosingMethodOwner = newClass(owner);
-        if (name != null && desc != null) {
-            enclosingMethod = newNameType(name, desc);
+        if ( debug != null ) {
+            this.sourceDebug = new ByteVector().putUTF8( debug );
         }
     }
 
-    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-        ByteVector bv = new ByteVector();
+    public void visitOuterClass(final String owner,
+                                final String name,
+                                final String desc) {
+        this.enclosingMethodOwner = newClass( owner );
+        if ( name != null && desc != null ) {
+            this.enclosingMethod = newNameType( name,
+                                                desc );
+        }
+    }
+
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        final ByteVector bv = new ByteVector();
         // write type, and reserve space for values count
-        bv.putShort(newUTF8(desc)).putShort(0);
-        AnnotationWriter aw = new AnnotationWriter(this, true, bv, bv, 2);
-        if (visible) {
-            aw.next = anns;
-            anns = aw;
+        bv.putShort( newUTF8( desc ) ).putShort( 0 );
+        final AnnotationWriter aw = new AnnotationWriter( this,
+                                                          true,
+                                                          bv,
+                                                          bv,
+                                                          2 );
+        if ( visible ) {
+            aw.next = this.anns;
+            this.anns = aw;
         } else {
-            aw.next = ianns;
-            ianns = aw;
+            aw.next = this.ianns;
+            this.ianns = aw;
         }
         return aw;
     }
 
     public void visitAttribute(final Attribute attr) {
-        attr.next = attrs;
-        attrs = attr;
+        attr.next = this.attrs;
+        this.attrs = attr;
     }
 
-    public void visitInnerClass(
-        final String name,
-        final String outerName,
-        final String innerName,
-        final int access)
-    {
-        if (innerClasses == null) {
-            innerClasses = new ByteVector();
+    public void visitInnerClass(final String name,
+                                final String outerName,
+                                final String innerName,
+                                final int access) {
+        if ( this.innerClasses == null ) {
+            this.innerClasses = new ByteVector();
         }
-        ++innerClassesCount;
-        innerClasses.putShort(name == null ? 0 : newClass(name));
-        innerClasses.putShort(outerName == null ? 0 : newClass(outerName));
-        innerClasses.putShort(innerName == null ? 0 : newUTF8(innerName));
-        innerClasses.putShort(access);
+        ++this.innerClassesCount;
+        this.innerClasses.putShort( name == null ? 0 : newClass( name ) );
+        this.innerClasses.putShort( outerName == null ? 0 : newClass( outerName ) );
+        this.innerClasses.putShort( innerName == null ? 0 : newUTF8( innerName ) );
+        this.innerClasses.putShort( access );
     }
 
-    public FieldVisitor visitField(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final Object value)
-    {
-        return new FieldWriter(this, access, name, desc, signature, value);
+    public FieldVisitor visitField(final int access,
+                                   final String name,
+                                   final String desc,
+                                   final String signature,
+                                   final Object value) {
+        return new FieldWriter( this,
+                                access,
+                                name,
+                                desc,
+                                signature,
+                                value );
     }
 
-    public MethodVisitor visitMethod(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final String[] exceptions)
-    {
-        return new MethodWriter(this,
-                access,
-                name,
-                desc,
-                signature,
-                exceptions,
-                computeMaxs);
+    public MethodVisitor visitMethod(final int access,
+                                     final String name,
+                                     final String desc,
+                                     final String signature,
+                                     final String[] exceptions) {
+        return new MethodWriter( this,
+                                 access,
+                                 name,
+                                 desc,
+                                 signature,
+                                 exceptions,
+                                 this.computeMaxs );
     }
 
     public void visitEnd() {
@@ -647,155 +647,166 @@ public class ClassWriter implements ClassVisitor {
      */
     public byte[] toByteArray() {
         // computes the real size of the bytecode of this class
-        int size = 24 + 2 * interfaceCount;
+        int size = 24 + 2 * this.interfaceCount;
         int nbFields = 0;
-        FieldWriter fb = firstField;
-        while (fb != null) {
+        FieldWriter fb = this.firstField;
+        while ( fb != null ) {
             ++nbFields;
             size += fb.getSize();
             fb = fb.next;
         }
         int nbMethods = 0;
-        MethodWriter mb = firstMethod;
-        while (mb != null) {
+        MethodWriter mb = this.firstMethod;
+        while ( mb != null ) {
             ++nbMethods;
             size += mb.getSize();
             mb = mb.next;
         }
         int attributeCount = 0;
-        if (signature != 0) {
+        if ( this.signature != 0 ) {
             ++attributeCount;
             size += 8;
-            newUTF8("Signature");
+            newUTF8( "Signature" );
         }
-        if (sourceFile != 0) {
+        if ( this.sourceFile != 0 ) {
             ++attributeCount;
             size += 8;
-            newUTF8("SourceFile");
+            newUTF8( "SourceFile" );
         }
-        if (sourceDebug != null) {
+        if ( this.sourceDebug != null ) {
             ++attributeCount;
-            size += sourceDebug.length + 4;
-            newUTF8("SourceDebugExtension");
+            size += this.sourceDebug.length + 4;
+            newUTF8( "SourceDebugExtension" );
         }
-        if (enclosingMethodOwner != 0) {
+        if ( this.enclosingMethodOwner != 0 ) {
             ++attributeCount;
             size += 10;
-            newUTF8("EnclosingMethod");
+            newUTF8( "EnclosingMethod" );
         }
-        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
+        if ( (this.access & Opcodes.ACC_DEPRECATED) != 0 ) {
             ++attributeCount;
             size += 6;
-            newUTF8("Deprecated");
+            newUTF8( "Deprecated" );
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0
-                && (version & 0xffff) < Opcodes.V1_5)
-        {
+        if ( (this.access & Opcodes.ACC_SYNTHETIC) != 0 && (this.version & 0xffff) < Opcodes.V1_5 ) {
             ++attributeCount;
             size += 6;
-            newUTF8("Synthetic");
+            newUTF8( "Synthetic" );
         }
-        if (version == Opcodes.V1_4) {
-            if ((access & Opcodes.ACC_ANNOTATION) != 0) {
+        if ( this.version == Opcodes.V1_4 ) {
+            if ( (this.access & Opcodes.ACC_ANNOTATION) != 0 ) {
                 ++attributeCount;
                 size += 6;
-                newUTF8("Annotation");
+                newUTF8( "Annotation" );
             }
-            if ((access & Opcodes.ACC_ENUM) != 0) {
+            if ( (this.access & Opcodes.ACC_ENUM) != 0 ) {
                 ++attributeCount;
                 size += 6;
-                newUTF8("Enum");
+                newUTF8( "Enum" );
             }
         }
-        if (innerClasses != null) {
+        if ( this.innerClasses != null ) {
             ++attributeCount;
-            size += 8 + innerClasses.length;
-            newUTF8("InnerClasses");
+            size += 8 + this.innerClasses.length;
+            newUTF8( "InnerClasses" );
         }
-        if (anns != null) {
+        if ( this.anns != null ) {
             ++attributeCount;
-            size += 8 + anns.getSize();
-            newUTF8("RuntimeVisibleAnnotations");
+            size += 8 + this.anns.getSize();
+            newUTF8( "RuntimeVisibleAnnotations" );
         }
-        if (ianns != null) {
+        if ( this.ianns != null ) {
             ++attributeCount;
-            size += 8 + ianns.getSize();
-            newUTF8("RuntimeInvisibleAnnotations");
+            size += 8 + this.ianns.getSize();
+            newUTF8( "RuntimeInvisibleAnnotations" );
         }
-        if (attrs != null) {
-            attributeCount += attrs.getCount();
-            size += attrs.getSize(this, null, 0, -1, -1);
+        if ( this.attrs != null ) {
+            attributeCount += this.attrs.getCount();
+            size += this.attrs.getSize( this,
+                                        null,
+                                        0,
+                                        -1,
+                                        -1 );
         }
-        size += pool.length;
+        size += this.pool.length;
         // allocates a byte vector of this size, in order to avoid unnecessary
         // arraycopy operations in the ByteVector.enlarge() method
-        ByteVector out = new ByteVector(size);
-        out.putInt(0xCAFEBABE).putInt(version);
-        out.putShort(index).putByteArray(pool.data, 0, pool.length);
-        out.putShort(access).putShort(name).putShort(superName);
-        out.putShort(interfaceCount);
-        for (int i = 0; i < interfaceCount; ++i) {
-            out.putShort(interfaces[i]);
+        final ByteVector out = new ByteVector( size );
+        out.putInt( 0xCAFEBABE ).putInt( this.version );
+        out.putShort( this.index ).putByteArray( this.pool.data,
+                                                 0,
+                                                 this.pool.length );
+        out.putShort( this.access ).putShort( this.name ).putShort( this.superName );
+        out.putShort( this.interfaceCount );
+        for ( int i = 0; i < this.interfaceCount; ++i ) {
+            out.putShort( this.interfaces[i] );
         }
-        out.putShort(nbFields);
-        fb = firstField;
-        while (fb != null) {
-            fb.put(out);
+        out.putShort( nbFields );
+        fb = this.firstField;
+        while ( fb != null ) {
+            fb.put( out );
             fb = fb.next;
         }
-        out.putShort(nbMethods);
-        mb = firstMethod;
-        while (mb != null) {
-            mb.put(out);
+        out.putShort( nbMethods );
+        mb = this.firstMethod;
+        while ( mb != null ) {
+            mb.put( out );
             mb = mb.next;
         }
-        out.putShort(attributeCount);
-        if (signature != 0) {
-            out.putShort(newUTF8("Signature")).putInt(2).putShort(signature);
+        out.putShort( attributeCount );
+        if ( this.signature != 0 ) {
+            out.putShort( newUTF8( "Signature" ) ).putInt( 2 ).putShort( this.signature );
         }
-        if (sourceFile != 0) {
-            out.putShort(newUTF8("SourceFile")).putInt(2).putShort(sourceFile);
+        if ( this.sourceFile != 0 ) {
+            out.putShort( newUTF8( "SourceFile" ) ).putInt( 2 ).putShort( this.sourceFile );
         }
-        if (sourceDebug != null) {
-            int len = sourceDebug.length - 2;
-            out.putShort(newUTF8("SourceDebugExtension")).putInt(len);
-            out.putByteArray(sourceDebug.data, 2, len);
+        if ( this.sourceDebug != null ) {
+            final int len = this.sourceDebug.length - 2;
+            out.putShort( newUTF8( "SourceDebugExtension" ) ).putInt( len );
+            out.putByteArray( this.sourceDebug.data,
+                              2,
+                              len );
         }
-        if (enclosingMethodOwner != 0) {
-            out.putShort(newUTF8("EnclosingMethod")).putInt(4);
-            out.putShort(enclosingMethodOwner).putShort(enclosingMethod);
+        if ( this.enclosingMethodOwner != 0 ) {
+            out.putShort( newUTF8( "EnclosingMethod" ) ).putInt( 4 );
+            out.putShort( this.enclosingMethodOwner ).putShort( this.enclosingMethod );
         }
-        if ((access & Opcodes.ACC_DEPRECATED) != 0) {
-            out.putShort(newUTF8("Deprecated")).putInt(0);
+        if ( (this.access & Opcodes.ACC_DEPRECATED) != 0 ) {
+            out.putShort( newUTF8( "Deprecated" ) ).putInt( 0 );
         }
-        if ((access & Opcodes.ACC_SYNTHETIC) != 0
-                && (version & 0xffff) < Opcodes.V1_5)
-        {
-            out.putShort(newUTF8("Synthetic")).putInt(0);
+        if ( (this.access & Opcodes.ACC_SYNTHETIC) != 0 && (this.version & 0xffff) < Opcodes.V1_5 ) {
+            out.putShort( newUTF8( "Synthetic" ) ).putInt( 0 );
         }
-        if (version == Opcodes.V1_4) {
-            if ((access & Opcodes.ACC_ANNOTATION) != 0) {
-                out.putShort(newUTF8("Annotation")).putInt(0);
+        if ( this.version == Opcodes.V1_4 ) {
+            if ( (this.access & Opcodes.ACC_ANNOTATION) != 0 ) {
+                out.putShort( newUTF8( "Annotation" ) ).putInt( 0 );
             }
-            if ((access & Opcodes.ACC_ENUM) != 0) {
-                out.putShort(newUTF8("Enum")).putInt(0);
+            if ( (this.access & Opcodes.ACC_ENUM) != 0 ) {
+                out.putShort( newUTF8( "Enum" ) ).putInt( 0 );
             }
         }
-        if (innerClasses != null) {
-            out.putShort(newUTF8("InnerClasses"));
-            out.putInt(innerClasses.length + 2).putShort(innerClassesCount);
-            out.putByteArray(innerClasses.data, 0, innerClasses.length);
+        if ( this.innerClasses != null ) {
+            out.putShort( newUTF8( "InnerClasses" ) );
+            out.putInt( this.innerClasses.length + 2 ).putShort( this.innerClassesCount );
+            out.putByteArray( this.innerClasses.data,
+                              0,
+                              this.innerClasses.length );
         }
-        if (anns != null) {
-            out.putShort(newUTF8("RuntimeVisibleAnnotations"));
-            anns.put(out);
+        if ( this.anns != null ) {
+            out.putShort( newUTF8( "RuntimeVisibleAnnotations" ) );
+            this.anns.put( out );
         }
-        if (ianns != null) {
-            out.putShort(newUTF8("RuntimeInvisibleAnnotations"));
-            ianns.put(out);
+        if ( this.ianns != null ) {
+            out.putShort( newUTF8( "RuntimeInvisibleAnnotations" ) );
+            this.ianns.put( out );
         }
-        if (attrs != null) {
-            attrs.put(this, null, 0, -1, -1, out);
+        if ( this.attrs != null ) {
+            this.attrs.put( this,
+                            null,
+                            0,
+                            -1,
+                            -1,
+                            out );
         }
         return out.data;
     }
@@ -815,39 +826,37 @@ public class ClassWriter implements ClassVisitor {
      * @return a new or already existing constant item with the given value.
      */
     Item newConstItem(final Object cst) {
-        if (cst instanceof Integer) {
-            int val = ((Integer) cst).intValue();
-            return newInteger(val);
-        } else if (cst instanceof Byte) {
-            int val = ((Byte) cst).intValue();
-            return newInteger(val);
-        } else if (cst instanceof Character) {
-            int val = ((Character) cst).charValue();
-            return newInteger(val);
-        } else if (cst instanceof Short) {
-            int val = ((Short) cst).intValue();
-            return newInteger(val);
-        } else if (cst instanceof Boolean) {
-            int val = ((Boolean) cst).booleanValue() ? 1 : 0;
-            return newInteger(val);
-        } else if (cst instanceof Float) {
-            float val = ((Float) cst).floatValue();
-            return newFloat(val);
-        } else if (cst instanceof Long) {
-            long val = ((Long) cst).longValue();
-            return newLong(val);
-        } else if (cst instanceof Double) {
-            double val = ((Double) cst).doubleValue();
-            return newDouble(val);
-        } else if (cst instanceof String) {
-            return newString((String) cst);
-        } else if (cst instanceof Type) {
-            Type t = (Type) cst;
-            return newClassItem(t.getSort() == Type.OBJECT
-                    ? t.getInternalName()
-                    : t.getDescriptor());
+        if ( cst instanceof Integer ) {
+            final int val = ((Integer) cst).intValue();
+            return newInteger( val );
+        } else if ( cst instanceof Byte ) {
+            final int val = ((Byte) cst).intValue();
+            return newInteger( val );
+        } else if ( cst instanceof Character ) {
+            final int val = ((Character) cst).charValue();
+            return newInteger( val );
+        } else if ( cst instanceof Short ) {
+            final int val = ((Short) cst).intValue();
+            return newInteger( val );
+        } else if ( cst instanceof Boolean ) {
+            final int val = ((Boolean) cst).booleanValue() ? 1 : 0;
+            return newInteger( val );
+        } else if ( cst instanceof Float ) {
+            final float val = ((Float) cst).floatValue();
+            return newFloat( val );
+        } else if ( cst instanceof Long ) {
+            final long val = ((Long) cst).longValue();
+            return newLong( val );
+        } else if ( cst instanceof Double ) {
+            final double val = ((Double) cst).doubleValue();
+            return newDouble( val );
+        } else if ( cst instanceof String ) {
+            return newString( (String) cst );
+        } else if ( cst instanceof Type ) {
+            final Type t = (Type) cst;
+            return newClassItem( t.getSort() == Type.OBJECT ? t.getInternalName() : t.getDescriptor() );
         } else {
-            throw new IllegalArgumentException("value " + cst);
+            throw new IllegalArgumentException( "value " + cst );
         }
     }
 
@@ -864,7 +873,7 @@ public class ClassWriter implements ClassVisitor {
      *         given value.
      */
     public int newConst(final Object cst) {
-        return newConstItem(cst).index;
+        return newConstItem( cst ).index;
     }
 
     /**
@@ -877,12 +886,16 @@ public class ClassWriter implements ClassVisitor {
      * @return the index of a new or already existing UTF8 item.
      */
     public int newUTF8(final String value) {
-        key.set(UTF8, value, null, null);
-        Item result = get(key);
-        if (result == null) {
-            pool.putByte(UTF8).putUTF8(value);
-            result = new Item(index++, key);
-            put(result);
+        this.key.set( ClassWriter.UTF8,
+                      value,
+                      null,
+                      null );
+        Item result = get( this.key );
+        if ( result == null ) {
+            this.pool.putByte( ClassWriter.UTF8 ).putUTF8( value );
+            result = new Item( this.index++,
+                               this.key );
+            put( result );
         }
         return result.index;
     }
@@ -897,7 +910,7 @@ public class ClassWriter implements ClassVisitor {
      * @return the index of a new or already existing class reference item.
      */
     public int newClass(final String value) {
-        return newClassItem(value).index;
+        return newClassItem( value ).index;
     }
 
     /**
@@ -910,12 +923,17 @@ public class ClassWriter implements ClassVisitor {
      * @return a new or already existing class reference item.
      */
     private Item newClassItem(final String value) {
-        key2.set(CLASS, value, null, null);
-        Item result = get(key2);
-        if (result == null) {
-            pool.put12(CLASS, newUTF8(value));
-            result = new Item(index++, key2);
-            put(result);
+        this.key2.set( ClassWriter.CLASS,
+                       value,
+                       null,
+                       null );
+        Item result = get( this.key2 );
+        if ( result == null ) {
+            this.pool.put12( ClassWriter.CLASS,
+                             newUTF8( value ) );
+            result = new Item( this.index++,
+                               this.key2 );
+            put( result );
         }
         return result;
     }
@@ -931,14 +949,22 @@ public class ClassWriter implements ClassVisitor {
      * @param desc the field's descriptor.
      * @return the index of a new or already existing field reference item.
      */
-    public int newField(final String owner, final String name, final String desc)
-    {
-        key3.set(FIELD, owner, name, desc);
-        Item result = get(key3);
-        if (result == null) {
-            put122(FIELD, newClass(owner), newNameType(name, desc));
-            result = new Item(index++, key3);
-            put(result);
+    public int newField(final String owner,
+                        final String name,
+                        final String desc) {
+        this.key3.set( ClassWriter.FIELD,
+                       owner,
+                       name,
+                       desc );
+        Item result = get( this.key3 );
+        if ( result == null ) {
+            put122( ClassWriter.FIELD,
+                    newClass( owner ),
+                    newNameType( name,
+                                 desc ) );
+            result = new Item( this.index++,
+                               this.key3 );
+            put( result );
         }
         return result.index;
     }
@@ -953,19 +979,24 @@ public class ClassWriter implements ClassVisitor {
      * @param itf <tt>true</tt> if <tt>owner</tt> is an interface.
      * @return a new or already existing method reference item.
      */
-    Item newMethodItem(
-        final String owner,
-        final String name,
-        final String desc,
-        final boolean itf)
-    {
-        int type = itf ? IMETH : METH;
-        key3.set(type, owner, name, desc);
-        Item result = get(key3);
-        if (result == null) {
-            put122(type, newClass(owner), newNameType(name, desc));
-            result = new Item(index++, key3);
-            put(result);
+    Item newMethodItem(final String owner,
+                       final String name,
+                       final String desc,
+                       final boolean itf) {
+        final int type = itf ? ClassWriter.IMETH : ClassWriter.METH;
+        this.key3.set( type,
+                       owner,
+                       name,
+                       desc );
+        Item result = get( this.key3 );
+        if ( result == null ) {
+            put122( type,
+                    newClass( owner ),
+                    newNameType( name,
+                                 desc ) );
+            result = new Item( this.index++,
+                               this.key3 );
+            put( result );
         }
         return result;
     }
@@ -982,13 +1013,14 @@ public class ClassWriter implements ClassVisitor {
      * @param itf <tt>true</tt> if <tt>owner</tt> is an interface.
      * @return the index of a new or already existing method reference item.
      */
-    public int newMethod(
-        final String owner,
-        final String name,
-        final String desc,
-        final boolean itf)
-    {
-        return newMethodItem(owner, name, desc, itf).index;
+    public int newMethod(final String owner,
+                         final String name,
+                         final String desc,
+                         final boolean itf) {
+        return newMethodItem( owner,
+                              name,
+                              desc,
+                              itf ).index;
     }
 
     /**
@@ -999,12 +1031,13 @@ public class ClassWriter implements ClassVisitor {
      * @return a new or already existing int item.
      */
     Item newInteger(final int value) {
-        key.set(value);
-        Item result = get(key);
-        if (result == null) {
-            pool.putByte(INT).putInt(value);
-            result = new Item(index++, key);
-            put(result);
+        this.key.set( value );
+        Item result = get( this.key );
+        if ( result == null ) {
+            this.pool.putByte( ClassWriter.INT ).putInt( value );
+            result = new Item( this.index++,
+                               this.key );
+            put( result );
         }
         return result;
     }
@@ -1017,12 +1050,13 @@ public class ClassWriter implements ClassVisitor {
      * @return a new or already existing float item.
      */
     Item newFloat(final float value) {
-        key.set(value);
-        Item result = get(key);
-        if (result == null) {
-            pool.putByte(FLOAT).putInt(Float.floatToIntBits(value));
-            result = new Item(index++, key);
-            put(result);
+        this.key.set( value );
+        Item result = get( this.key );
+        if ( result == null ) {
+            this.pool.putByte( ClassWriter.FLOAT ).putInt( Float.floatToIntBits( value ) );
+            result = new Item( this.index++,
+                               this.key );
+            put( result );
         }
         return result;
     }
@@ -1035,13 +1069,14 @@ public class ClassWriter implements ClassVisitor {
      * @return a new or already existing long item.
      */
     Item newLong(final long value) {
-        key.set(value);
-        Item result = get(key);
-        if (result == null) {
-            pool.putByte(LONG).putLong(value);
-            result = new Item(index, key);
-            put(result);
-            index += 2;
+        this.key.set( value );
+        Item result = get( this.key );
+        if ( result == null ) {
+            this.pool.putByte( ClassWriter.LONG ).putLong( value );
+            result = new Item( this.index,
+                               this.key );
+            put( result );
+            this.index += 2;
         }
         return result;
     }
@@ -1054,13 +1089,14 @@ public class ClassWriter implements ClassVisitor {
      * @return a new or already existing double item.
      */
     Item newDouble(final double value) {
-        key.set(value);
-        Item result = get(key);
-        if (result == null) {
-            pool.putByte(DOUBLE).putLong(Double.doubleToLongBits(value));
-            result = new Item(index, key);
-            put(result);
-            index += 2;
+        this.key.set( value );
+        Item result = get( this.key );
+        if ( result == null ) {
+            this.pool.putByte( ClassWriter.DOUBLE ).putLong( Double.doubleToLongBits( value ) );
+            result = new Item( this.index,
+                               this.key );
+            put( result );
+            this.index += 2;
         }
         return result;
     }
@@ -1073,12 +1109,17 @@ public class ClassWriter implements ClassVisitor {
      * @return a new or already existing string item.
      */
     private Item newString(final String value) {
-        key2.set(STR, value, null, null);
-        Item result = get(key2);
-        if (result == null) {
-            pool.put12(STR, newUTF8(value));
-            result = new Item(index++, key2);
-            put(result);
+        this.key2.set( ClassWriter.STR,
+                       value,
+                       null,
+                       null );
+        Item result = get( this.key2 );
+        if ( result == null ) {
+            this.pool.put12( ClassWriter.STR,
+                             newUTF8( value ) );
+            result = new Item( this.index++,
+                               this.key2 );
+            put( result );
         }
         return result;
     }
@@ -1093,13 +1134,20 @@ public class ClassWriter implements ClassVisitor {
      * @param desc a type descriptor.
      * @return the index of a new or already existing name and type item.
      */
-    public int newNameType(final String name, final String desc) {
-        key2.set(NAME_TYPE, name, desc, null);
-        Item result = get(key2);
-        if (result == null) {
-            put122(NAME_TYPE, newUTF8(name), newUTF8(desc));
-            result = new Item(index++, key2);
-            put(result);
+    public int newNameType(final String name,
+                           final String desc) {
+        this.key2.set( ClassWriter.NAME_TYPE,
+                       name,
+                       desc,
+                       null );
+        Item result = get( this.key2 );
+        if ( result == null ) {
+            put122( ClassWriter.NAME_TYPE,
+                    newUTF8( name ),
+                    newUTF8( desc ) );
+            result = new Item( this.index++,
+                               this.key2 );
+            put( result );
         }
         return result.index;
     }
@@ -1113,8 +1161,8 @@ public class ClassWriter implements ClassVisitor {
      *         item, or <tt>null</tt> if there is no such item.
      */
     private Item get(final Item key) {
-        Item i = items[key.hashCode % items.length];
-        while (i != null && !key.isEqualTo(i)) {
+        Item i = this.items[key.hashCode % this.items.length];
+        while ( i != null && !key.isEqualTo( i ) ) {
             i = i.next;
         }
         return i;
@@ -1127,26 +1175,26 @@ public class ClassWriter implements ClassVisitor {
      * @param i the item to be added to the constant pool's hash table.
      */
     private void put(final Item i) {
-        if (index > threshold) {
-            int ll = items.length;
-            int nl = ll * 2 + 1;
-            Item[] newItems = new Item[nl];
-            for (int l = ll - 1; l >= 0; --l) {
-                Item j = items[l];
-                while (j != null) {
-                    int index = j.hashCode % newItems.length;
-                    Item k = j.next;
+        if ( this.index > this.threshold ) {
+            final int ll = this.items.length;
+            final int nl = ll * 2 + 1;
+            final Item[] newItems = new Item[nl];
+            for ( int l = ll - 1; l >= 0; --l ) {
+                Item j = this.items[l];
+                while ( j != null ) {
+                    final int index = j.hashCode % newItems.length;
+                    final Item k = j.next;
                     j.next = newItems[index];
                     newItems[index] = j;
                     j = k;
                 }
             }
-            items = newItems;
-            threshold = (int) (nl * 0.75);
+            this.items = newItems;
+            this.threshold = (int) (nl * 0.75);
         }
-        int index = i.hashCode % items.length;
-        i.next = items[index];
-        items[index] = i;
+        final int index = i.hashCode % this.items.length;
+        i.next = this.items[index];
+        this.items[index] = i;
     }
 
     /**
@@ -1156,7 +1204,10 @@ public class ClassWriter implements ClassVisitor {
      * @param s1 a short.
      * @param s2 another short.
      */
-    private void put122(final int b, final int s1, final int s2) {
-        pool.put12(b, s1).putShort(s2);
+    private void put122(final int b,
+                        final int s1,
+                        final int s2) {
+        this.pool.put12( b,
+                         s1 ).putShort( s2 );
     }
 }
