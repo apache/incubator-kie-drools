@@ -1,4 +1,5 @@
 package org.drools.decisiontable.model;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,6 @@ package org.drools.decisiontable.model;
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  * 
@@ -30,29 +24,26 @@ package org.drools.decisiontable.model;
  */
 public class Import extends DRLElement
     implements
-    DRLJavaEmitter
-{
+    DRLJavaEmitter {
 
     private String className;
 
     /**
      * @return Returns the className.
      */
-    public String getClassName()
-    {
-        return className;
+    public String getClassName() {
+        return this.className;
     }
 
     /**
      * @param className
      *            The className to set.
      */
-    public void setClassName(String clazz)
-    {
-        className = clazz;
+    public void setClassName(final String clazz) {
+        this.className = clazz;
     }
 
-	public void renderDRL(DRLOutput out) {
-		out.writeLine("import " + className + ";");
-	}
+    public void renderDRL(final DRLOutput out) {
+        out.writeLine( "import " + this.className + ";" );
+    }
 }

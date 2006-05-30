@@ -1,4 +1,5 @@
 package org.drools.decisiontable.model;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -20,25 +21,20 @@ package org.drools.decisiontable.model;
  * 
  * The LayerSupertype for this model/parse tree.
  */
-public abstract class DRLElement
-{
+public abstract class DRLElement {
 
     private String _comment;
 
-    public void setComment(String comment)
-    {
-        _comment = comment;
+    public void setComment(final String comment) {
+        this._comment = comment;
     }
 
-    String getComment()
-    {
-        return _comment;
+    String getComment() {
+        return this._comment;
     }
-    
+
     boolean isCommented() {
-    	return (_comment != null && !("".equals(_comment)));
+        return (this._comment != null && !("".equals( this._comment )));
     }
-
-
 
 }

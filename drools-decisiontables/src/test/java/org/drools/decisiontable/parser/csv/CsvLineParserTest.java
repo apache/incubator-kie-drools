@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser.csv;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,51 +16,55 @@ package org.drools.decisiontable.parser.csv;
  * limitations under the License.
  */
 
-
-
-
-
 import java.util.List;
 
 import junit.framework.TestCase;
 
-public class CsvLineParserTest extends TestCase
-{
+public class CsvLineParserTest extends TestCase {
 
     public void testSimpleLineParse() {
-        CsvLineParser parser = new CsvLineParser();
-        String s = "a,b,c";
-        List list = parser.parse(s);
-        assertEquals(3, list.size());
-        
-        assertEquals("a", list.get(0));
-        assertEquals("b", list.get(1));
-        assertEquals("c", list.get(2));        
+        final CsvLineParser parser = new CsvLineParser();
+        final String s = "a,b,c";
+        final List list = parser.parse( s );
+        assertEquals( 3,
+                      list.size() );
+
+        assertEquals( "a",
+                      list.get( 0 ) );
+        assertEquals( "b",
+                      list.get( 1 ) );
+        assertEquals( "c",
+                      list.get( 2 ) );
     }
-    
+
     public void testLineParse() {
-        CsvLineParser parser = new CsvLineParser();
-        String s = "a,\"b\",c";
-        List list = parser.parse(s);
-        assertEquals(3, list.size());
-        
-        assertEquals("a", list.get(0));
-        assertEquals("b", list.get(1));
-        assertEquals("c", list.get(2));        
+        final CsvLineParser parser = new CsvLineParser();
+        final String s = "a,\"b\",c";
+        final List list = parser.parse( s );
+        assertEquals( 3,
+                      list.size() );
+
+        assertEquals( "a",
+                      list.get( 0 ) );
+        assertEquals( "b",
+                      list.get( 1 ) );
+        assertEquals( "c",
+                      list.get( 2 ) );
     }
-    
+
     public void testDoubleQuotes() {
-        CsvLineParser parser = new CsvLineParser();
-        String s = "a,\"\"\"b\"\"\",c";
-        List list = parser.parse(s);
-        assertEquals(3, list.size());
-        
-        assertEquals("a", list.get(0));
-        assertEquals("\"b\"", list.get(1));
-        assertEquals("c", list.get(2));        
+        final CsvLineParser parser = new CsvLineParser();
+        final String s = "a,\"\"\"b\"\"\",c";
+        final List list = parser.parse( s );
+        assertEquals( 3,
+                      list.size() );
+
+        assertEquals( "a",
+                      list.get( 0 ) );
+        assertEquals( "\"b\"",
+                      list.get( 1 ) );
+        assertEquals( "c",
+                      list.get( 2 ) );
     }
-    
-    
-    
 
 }

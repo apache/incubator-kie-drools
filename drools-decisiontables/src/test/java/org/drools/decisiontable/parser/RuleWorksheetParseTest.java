@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,6 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -31,9 +25,8 @@ import junit.framework.TestCase;
 import org.drools.decisiontable.model.Condition;
 import org.drools.decisiontable.model.Consequence;
 import org.drools.decisiontable.model.Import;
-
-import org.drools.decisiontable.model.Rule;
 import org.drools.decisiontable.model.Package;
+import org.drools.decisiontable.model.Rule;
 
 /**
  * @author Shaun Addison, Michael Neale
@@ -43,17 +36,15 @@ import org.drools.decisiontable.model.Package;
  * Assumes it has a sheet called "Decision Tables" with a rule table identified
  * by a "RuleTable" cell
  */
-public class RuleWorksheetParseTest extends TestCase
-{
+public class RuleWorksheetParseTest extends TestCase {
 
-    public void testBasicWorkbookProperties() throws Exception
-    {
+    public void testBasicWorkbookProperties() throws Exception {
 
-        InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/BasicWorkbook.xls" );
+        final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/BasicWorkbook.xls" );
 
-        RuleSheetListener listener = getRuleSheetListener( stream );
+        final RuleSheetListener listener = getRuleSheetListener( stream );
 
-        Properties props = listener.getProperties( );
+        final Properties props = listener.getProperties();
         assertNotNull( props );
         assertEquals( "myruleset",
                       props.getProperty( "RuleSet" ) );
@@ -65,67 +56,65 @@ public class RuleWorksheetParseTest extends TestCase
          */
     }
 
-    public void testComplexWorkbookProperties() throws Exception
-    {
+    public void testComplexWorkbookProperties() throws Exception {
 
-        InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/ComplexWorkbook.xls" );
-        RuleSheetListener listener = getRuleSheetListener( stream );
+        final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/ComplexWorkbook.xls" );
+        final RuleSheetListener listener = getRuleSheetListener( stream );
 
-        Properties props = listener.getProperties( );
+        final Properties props = listener.getProperties();
         assertNotNull( props );
-        String ruleSetName = props.getProperty( "RuleSet" );
+        final String ruleSetName = props.getProperty( "RuleSet" );
         assertEquals( "ruleSetName",
                       ruleSetName );
 
     }
 
-    public void testWorkbookParse() throws Exception
-    {
-        InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/BasicWorkbook.xls" );
-        RuleSheetListener listener = getRuleSheetListener( stream );
+    public void testWorkbookParse() throws Exception {
+        final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/BasicWorkbook.xls" );
+        final RuleSheetListener listener = getRuleSheetListener( stream );
 
-        Package ruleset = listener.getRuleSet( );
+        final Package ruleset = listener.getRuleSet();
         assertNotNull( ruleset );
 
-        Rule firstRule = (Rule) ruleset.getRules( ).get( 0 );
-        assertNotNull(firstRule.getSalience( ));
-        assertTrue(firstRule.getSalience( ).intValue() > 0);
+        final Rule firstRule = (Rule) ruleset.getRules().get( 0 );
+        assertNotNull( firstRule.getSalience() );
+        assertTrue( firstRule.getSalience().intValue() > 0 );
 
         // System.out.println(ruleset.toXML());
 
         assertEquals( "myruleset",
-                      ruleset.getName( ) );
+                      ruleset.getName() );
         assertEquals( 2,
-                      ruleset.getImports( ).size( ) );
+                      ruleset.getImports().size() );
         assertEquals( 6,
-                      ruleset.getRules( ).size( ) );
+                      ruleset.getRules().size() );
 
         // check imports
-        Import imp = (Import) ruleset.getImports( ).get( 0 );
+        Import imp = (Import) ruleset.getImports().get( 0 );
         assertEquals( "blah.class1",
-                      imp.getClassName( ) );
-        imp = (Import) ruleset.getImports( ).get( 1 );
+                      imp.getClassName() );
+        imp = (Import) ruleset.getImports().get( 1 );
         assertEquals( "blah.class2",
-                      imp.getClassName( ) );
+                      imp.getClassName() );
 
         // check rules
-        Rule rule = (Rule) ruleset.getRules( ).get( 0 );
-        Condition cond = (Condition) rule.getConditions( ).get( 0 );
+        Rule rule = (Rule) ruleset.getRules().get( 0 );
+        Condition cond = (Condition) rule.getConditions().get( 0 );
         assertEquals( "myObject.getColour().equals(red)",
-                      cond.getSnippet( ) );
+                      cond.getSnippet() );
 
-        Consequence cons = (Consequence) rule.getConsequences( ).get( 0 );
+        Consequence cons = (Consequence) rule.getConsequences().get( 0 );
         assertNotNull( cons );
         assertEquals( "myObject.setIsValid(Y)",
-                      cons.getSnippet( ) );
+                      cons.getSnippet() );
 
-        rule = (Rule) ruleset.getRules( ).get( 5 );
-        cond = (Condition) rule.getConditions( ).get( 1 );
+        rule = (Rule) ruleset.getRules().get( 5 );
+        cond = (Condition) rule.getConditions().get( 1 );
         assertEquals( "myObject.size () > 7",
-                      cond.getSnippet( ) );
-        cons = (Consequence) rule.getConsequences( ).get( 0 );
+                      cond.getSnippet() );
+        cons = (Consequence) rule.getConsequences().get( 0 );
         assertEquals( "myObject.setIsValid(10-Jul-1974)",
-                      cons.getSnippet( ) );
+                      cons.getSnippet() );
 
     }
 
@@ -133,48 +122,46 @@ public class RuleWorksheetParseTest extends TestCase
      * See if it can cope with odd shaped rule table, including missing
      * conditions. Also is not "sequential".
      */
-    public void testComplexWorksheetMissingConditions() throws Exception
-    {
-        InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/ComplexWorkbook.xls" );
-        RuleSheetListener listener = getRuleSheetListener( stream );
+    public void testComplexWorksheetMissingConditions() throws Exception {
+        final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/ComplexWorkbook.xls" );
+        final RuleSheetListener listener = getRuleSheetListener( stream );
 
-        Package ruleset = listener.getRuleSet( );
+        final Package ruleset = listener.getRuleSet();
         assertEquals( 6,
-                      ruleset.getRules( ).size( ) );
+                      ruleset.getRules().size() );
         assertEquals( 0,
-                      ruleset.getImports( ).size( ) );
+                      ruleset.getImports().size() );
 
-        Rule rule = (Rule) ruleset.getRules( ).get( 0 );
+        Rule rule = (Rule) ruleset.getRules().get( 0 );
         assertEquals( 3,
-                      rule.getConditions( ).size( ) );
+                      rule.getConditions().size() );
         assertEquals( 2,
-                      rule.getConsequences( ).size( ) );
-        Consequence cons = (Consequence) rule.getConsequences( ).get( 1 );
+                      rule.getConsequences().size() );
+        final Consequence cons = (Consequence) rule.getConsequences().get( 1 );
         assertEquals( "myObject.setIsValid(1, 2)",
-                      cons.getSnippet( ) );
-        Condition con = (Condition) rule.getConditions( ).get( 2 );
+                      cons.getSnippet() );
+        final Condition con = (Condition) rule.getConditions().get( 2 );
         assertEquals( "myObject.size() < 3",
-                      con.getSnippet( ) );
+                      con.getSnippet() );
 
-        rule = (Rule) ruleset.getRules( ).get( 4 );
+        rule = (Rule) ruleset.getRules().get( 4 );
 
         // this should have less conditions
         assertEquals( 1,
-                      rule.getConditions( ).size( ) );
+                      rule.getConditions().size() );
 
-        rule = (Rule) ruleset.getRules( ).get( 5 );
+        rule = (Rule) ruleset.getRules().get( 5 );
         assertEquals( 2,
-                      rule.getConditions( ).size( ) );
+                      rule.getConditions().size() );
         assertEquals( 1,
-                      rule.getConsequences( ).size( ) );
+                      rule.getConsequences().size() );
 
     }
 
     /**
      * Utility method showing how to get a rule sheet listener from a stream.
      */
-    public static RuleSheetListener getRuleSheetListener(InputStream stream) throws IOException
-    {
+    public static RuleSheetListener getRuleSheetListener(final InputStream stream) throws IOException {
         return RulesheetUtil.getRuleSheetListener( stream );
     }
 

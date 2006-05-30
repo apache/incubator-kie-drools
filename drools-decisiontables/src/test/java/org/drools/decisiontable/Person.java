@@ -1,4 +1,5 @@
 package org.drools.decisiontable;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,69 +16,71 @@ package org.drools.decisiontable;
  * limitations under the License.
  */
 
-
-
 public class Person {
     private final String name;
     private final String likes;
-    private final int age;
-    
-    private char sex;
-    
-    private boolean alive;
-    
-    private String status;
-    
-    public Person( String name  ) {
-        this( name, "", 0 );
+    private final int    age;
+
+    private char         sex;
+
+    private boolean      alive;
+
+    private String       status;
+
+    public Person(final String name) {
+        this( name,
+              "",
+              0 );
     }
-    
-    
-    public Person( String name, String likes ) {
-        this( name, likes, 0 );
+
+    public Person(final String name,
+                  final String likes) {
+        this( name,
+              likes,
+              0 );
     }
-    
-    public Person( String name, String likes, int age ) {
+
+    public Person(final String name,
+                  final String likes,
+                  final int age) {
         this.name = name;
         this.likes = likes;
         this.age = age;
     }
 
     public String getStatus() {
-        return status;
+        return this.status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status;
     }
 
     public String getLikes() {
-        return likes;
+        return this.likes;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
-        
+
     public int getAge() {
         return this.age;
     }
-    
-    
-    
+
     public boolean isAlive() {
-        return alive;
+        return this.alive;
     }
 
-    public void setAlive(boolean alive) {
+    public void setAlive(final boolean alive) {
         this.alive = alive;
     }
 
     public char getSex() {
-        return sex;
+        return this.sex;
     }
 
-    public void setSex(char sex) {
+    public void setSex(final char sex) {
         this.sex = sex;
     }
 

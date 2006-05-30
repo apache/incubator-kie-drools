@@ -1,4 +1,5 @@
 package org.drools.decisiontable.model;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.decisiontable.model;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  * 
@@ -28,7 +25,7 @@ package org.drools.decisiontable.model;
  */
 public interface DRLJavaEmitter {
 
-	/** Each node can add its contribution to the output */
-	void renderDRL(DRLOutput out);
+    /** Each node can add its contribution to the output */
+    void renderDRL(DRLOutput out);
 
 }

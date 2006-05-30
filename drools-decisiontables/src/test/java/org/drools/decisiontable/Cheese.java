@@ -1,4 +1,5 @@
 package org.drools.decisiontable;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,28 +16,26 @@ package org.drools.decisiontable;
  * limitations under the License.
  */
 
-
-
 public class Cheese {
     private String type;
     private int    price;
 
-    public Cheese(String type,
-                  int price) {
+    public Cheese(final String type,
+                  final int price) {
         super();
         this.type = type;
         this.price = price;
     }
 
     public int getPrice() {
-        return price;
+        return this.price;
     }
 
     public String getType() {
-        return type;
+        return this.type;
     }
-    
-    public void setPrice(int price) {
+
+    public void setPrice(final int price) {
         this.price = price;
     }
 

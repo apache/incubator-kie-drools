@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser.csv;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,11 +16,6 @@ package org.drools.decisiontable.parser.csv;
  * limitations under the License.
  */
 
-
-
-
-
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,66 +23,70 @@ import junit.framework.TestCase;
 
 import org.drools.decisiontable.parser.SheetListener;
 
-public class CsvParserTest extends TestCase
-{
+public class CsvParserTest extends TestCase {
 
-    public void testCsv()
-    {
-        MockSheetListener listener = new MockSheetListener();
-        CsvLineParser lineParser = new CsvLineParser();
-        CsvParser parser = new CsvParser(listener, lineParser);
-        
-        parser.parseFile(getClass().getResourceAsStream("/data/TestCsv.csv"));
-        assertEquals("A", listener.getCell(0, 0));
-        assertEquals("B", listener.getCell(0, 1));
-        assertEquals("", listener.getCell(2, 0));
-        assertEquals("C", listener.getCell(1, 0));
-        assertEquals("D", listener.getCell(1, 1));  
-        assertEquals("E", listener.getCell(1, 3));
+    public void testCsv() {
+        final MockSheetListener listener = new MockSheetListener();
+        final CsvLineParser lineParser = new CsvLineParser();
+        final CsvParser parser = new CsvParser( listener,
+                                          lineParser );
+
+        parser.parseFile( getClass().getResourceAsStream( "/data/TestCsv.csv" ) );
+        assertEquals( "A",
+                      listener.getCell( 0,
+                                        0 ) );
+        assertEquals( "B",
+                      listener.getCell( 0,
+                                        1 ) );
+        assertEquals( "",
+                      listener.getCell( 2,
+                                        0 ) );
+        assertEquals( "C",
+                      listener.getCell( 1,
+                                        0 ) );
+        assertEquals( "D",
+                      listener.getCell( 1,
+                                        1 ) );
+        assertEquals( "E",
+                      listener.getCell( 1,
+                                        3 ) );
 
     }
 
     static class MockSheetListener
         implements
-        SheetListener
-    {
+        SheetListener {
 
-        Map data = new HashMap( );
+        Map data = new HashMap();
 
-        public String getCell(int row,
-                              int col)
-        {
-            return (String) data.get( cellKey( row,
+        public String getCell(final int row,
+                              final int col) {
+            return (String) this.data.get( cellKey( row,
                                                col ) );
         }
 
-        public void startSheet(String name)
-        {
+        public void startSheet(final String name) {
         }
 
-        public void finishSheet()
-        {
+        public void finishSheet() {
         }
 
-        public void newRow(int rowNumber,
-                           int columns)
-        {
+        public void newRow(final int rowNumber,
+                           final int columns) {
 
         }
 
-        public void newCell(int row,
-                            int column,
-                            String value)
-        {
+        public void newCell(final int row,
+                            final int column,
+                            final String value) {
 
-            data.put( cellKey( row,
+            this.data.put( cellKey( row,
                                column ),
                       value );
         }
 
-        String cellKey(int row,
-                       int column)
-        {
+        String cellKey(final int row,
+                       final int column) {
             return "R" + row + "C" + column;
         }
 

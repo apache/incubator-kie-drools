@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -30,21 +27,19 @@ import org.drools.decisiontable.parser.xls.ExcelParser;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  * 
  */
-public class RulesheetUtil
-{
+public class RulesheetUtil {
 
     /**
      * Utility method showing how to get a rule sheet listener from a stream.
      */
-    public static RuleSheetListener getRuleSheetListener(InputStream stream) throws IOException
-    {
-        Map listners = new HashMap( );
-        RuleSheetListener listener = new RuleSheetListener( );
+    public static RuleSheetListener getRuleSheetListener(final InputStream stream) throws IOException {
+        final Map listners = new HashMap();
+        final RuleSheetListener listener = new RuleSheetListener();
         listners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
                       listener );
-        ExcelParser parser = new ExcelParser( listners );
+        final ExcelParser parser = new ExcelParser( listners );
         parser.parseFile( stream );
-        stream.close( );
+        stream.close();
         return listener;
     }
 }

@@ -1,4 +1,5 @@
 package org.drools.decisiontable;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,11 +16,6 @@ package org.drools.decisiontable;
  * limitations under the License.
  */
 
-
-
-
-
-
 import org.drools.decisiontable.parser.DecisionTableParser;
 import org.drools.decisiontable.parser.SheetListener;
 import org.drools.decisiontable.parser.csv.CsvLineParser;
@@ -32,15 +28,14 @@ import org.drools.decisiontable.parser.xls.ExcelParser;
  * 
  * @author Michael Neale
  */
-public abstract class InputType
-{
-    public static final InputType XLS = new XlsInput( );
-    public static final InputType CSV = new CsvInput( );
+public abstract class InputType {
+    public static final InputType XLS = new XlsInput();
+    public static final InputType CSV = new CsvInput();
 
     protected InputType() {
-        
+
     }
-    
+
     /**
      * @param listener
      * @return The appropriate Parser. 
@@ -49,27 +44,19 @@ public abstract class InputType
 
 }
 
-class XlsInput
-    extends
-    InputType
-{
+class XlsInput extends InputType {
 
-    public DecisionTableParser createParser(SheetListener listener)
-    {
+    public DecisionTableParser createParser(final SheetListener listener) {
         return new ExcelParser( listener );
     }
 
 }
 
-class CsvInput
-    extends
-    InputType
-{
+class CsvInput extends InputType {
 
-    public DecisionTableParser createParser(SheetListener listener)
-    {
+    public DecisionTableParser createParser(final SheetListener listener) {
         return new CsvParser( listener,
-                              new CsvLineParser( ) );
+                              new CsvLineParser() );
     }
 
 }

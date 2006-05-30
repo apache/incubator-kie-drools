@@ -24,30 +24,26 @@ import java.util.List;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a> Break up
  *         a CSV line, with all the normal CSV features.
  */
-public class CsvLineParser
-{
+public class CsvLineParser {
     private ICsvParser lineParser;
 
-    public CsvLineParser()
-    {
-        lineParser = new CsvParserImpl( );
+    public CsvLineParser() {
+        this.lineParser = new CsvParserImpl();
     }
 
     /**
      * Use the current lineParser implementation to return a CSV line as a List
      * of cells. (Strings).
      */
-    public List parse(CharSequence line)
-    {
-        return lineParser.parse( line.toString( ) );
+    public List parse(final CharSequence line) {
+        return this.lineParser.parse( line.toString() );
     }
 
     /**
      * This is insurance incase I need to replace it with more complex Csv
      * handlers in the future.
      */
-    static interface ICsvParser
-    {
+    static interface ICsvParser {
         public List parse(String line);
     }
 
@@ -70,15 +66,13 @@ public class CsvLineParser
      */
     static class CsvParserImpl
         implements
-        ICsvParser
-    {
+        ICsvParser {
 
         public static final char DEFAULT_SEP = ',';
 
         /** Construct a CSV parser, with the default separator (','). */
-        public CsvParserImpl()
-        {
-            this( DEFAULT_SEP );
+        public CsvParserImpl() {
+            this( CsvParserImpl.DEFAULT_SEP );
         }
 
         /**
@@ -88,13 +82,12 @@ public class CsvLineParser
          *            The single char for the separator (not a list of separator
          *            characters)
          */
-        public CsvParserImpl(char sep)
-        {
-            fieldSep = sep;
+        public CsvParserImpl(final char sep) {
+            this.fieldSep = sep;
         }
 
         /** The fields in the current String */
-        protected List list = new ArrayList( );
+        protected List list = new ArrayList();
 
         /** the separator char for this parser */
         protected char fieldSep;
@@ -105,59 +98,49 @@ public class CsvLineParser
          * @return java.util.Iterator containing each field from the original as
          *         a String, in order.
          */
-        public List parse(String line)
-        {
-            StringBuffer sb = new StringBuffer( );
-            list.clear( ); // recycle to initial state
+        public List parse(final String line) {
+            final StringBuffer sb = new StringBuffer();
+            this.list.clear(); // recycle to initial state
             int i = 0;
 
-            if ( line.length( ) == 0 )
-            {
-                list.add( line );
-                return list;
+            if ( line.length() == 0 ) {
+                this.list.add( line );
+                return this.list;
             }
 
-            do
-            {
+            do {
                 sb.setLength( 0 );
-                if ( i < line.length( ) && line.charAt( i ) == '"' ) i = advQuoted( line,
-                                                                                    sb,
-                                                                                    ++i ); // skip
-                // quote
-                else i = advPlain( line,
-                                   sb,
-                                   i );
-                list.add( sb.toString( ) );
+                if ( i < line.length() && line.charAt( i ) == '"' ) {
+                    i = advQuoted( line,
+                                                                                       sb,
+                                                                                       ++i ); // skip
+                } else {
+                    i = advPlain( line,
+                                       sb,
+                                       i );
+                }
+                this.list.add( sb.toString() );
                 i++;
-            }
-            while ( i < line.length( ) );
+            } while ( i < line.length() );
 
-            return list;
+            return this.list;
         }
 
         /** advQuoted: quoted field; return index of next separator */
-        protected int advQuoted(String s,
-                                StringBuffer sb,
-                                int i)
-        {
+        protected int advQuoted(final String s,
+                                final StringBuffer sb,
+                                final int i) {
             int j;
-            int len = s.length( );
-            for ( j = i; j < len; j++ )
-            {
-                if ( s.charAt( j ) == '"' && j + 1 < len )
-                {
-                    if ( s.charAt( j + 1 ) == '"' )
-                    {
+            final int len = s.length();
+            for ( j = i; j < len; j++ ) {
+                if ( s.charAt( j ) == '"' && j + 1 < len ) {
+                    if ( s.charAt( j + 1 ) == '"' ) {
                         j++; // skip escape char
-                    }
-                    else if ( s.charAt( j + 1 ) == fieldSep )
-                    { // next delimeter
+                    } else if ( s.charAt( j + 1 ) == this.fieldSep ) { // next delimeter
                         j++; // skip end quotes
                         break;
                     }
-                }
-                else if ( s.charAt( j ) == '"' && j + 1 == len )
-                { // end quotes at end of line
+                } else if ( s.charAt( j ) == '"' && j + 1 == len ) { // end quotes at end of line
                     break; // done
                 }
                 sb.append( s.charAt( j ) ); // regular character.
@@ -166,21 +149,17 @@ public class CsvLineParser
         }
 
         /** advPlain: unquoted field; return index of next separator */
-        protected int advPlain(String s,
-                               StringBuffer sb,
-                               int i)
-        {
+        protected int advPlain(final String s,
+                               final StringBuffer sb,
+                               final int i) {
             int j;
 
-            j = s.indexOf( fieldSep,
+            j = s.indexOf( this.fieldSep,
                            i ); // look for separator
-            if ( j == -1 )
-            { // none found
+            if ( j == -1 ) { // none found
                 sb.append( s.substring( i ) );
-                return s.length( );
-            }
-            else
-            {
+                return s.length();
+            } else {
                 sb.append( s.substring( i,
                                         j ) );
                 return j;

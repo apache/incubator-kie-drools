@@ -1,4 +1,5 @@
 package org.drools.decisiontable.model;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.decisiontable.model;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -29,213 +26,232 @@ import java.util.List;
  * 
  * Represents a rule.
  */
-public class Rule extends DRLElement implements DRLJavaEmitter {
+public class Rule extends DRLElement
+    implements
+    DRLJavaEmitter {
 
-	private static final int MAX_ROWS = 65535;
+    private static final int MAX_ROWS = 65535;
 
-	private Integer _salience; // Integer as it may be null
+    private Integer          _salience;       // Integer as it may be null
 
-	private String _name;
+    private String           _name;
 
-	private Duration _duration; // RIK: New variable to the Rule class (Defines
-								// a Duration tag for the rule)
+    private Duration         _duration;       // RIK: New variable to the Rule class (Defines
+    // a Duration tag for the rule)
 
-	private String _description; // RIK: New variable to the Rule class (Set
-									// the description parameter of the rule
-									// tag)
+    private String           _description;    // RIK: New variable to the Rule class (Set
+    // the description parameter of the rule
+    // tag)
 
-	private String _noLoop; // RIK: New variable to the Rule class (Set the
-							// no-loop parameter of the rule tag)
+    private String           _noLoop;         // RIK: New variable to the Rule class (Set the
+    // no-loop parameter of the rule tag)
 
-	private String _activationGroup; // RIK: New variable to the Rule class (Set the
-								// activation-group parameter of the rule tag)
+    private String           _activationGroup; // RIK: New variable to the Rule class (Set the
+    // activation-group parameter of the rule tag)
 
-	private List _lhs;
+    private List             _lhs;
 
-	private List _rhs;
+    private List             _rhs;
 
-	private int _spreadsheetRow;
+    private int              _spreadsheetRow;
 
-	/**
-	 * Create a new rule. Note that the rule name should be post-fixed with the row number,
-	 * as one way of providing tracability for errors back to the originating spreadsheet.
-	 * @param name The name of the rule. This may be used to calculate DRL row error 
-	 * to Spreadsheet row error (just need to keep track of output lines, and map spreadsheetRow to a start
-	 * and end range in the rendered output).
-	 * @param salience 
-	 * @param spreadsheetRow The phyical row number from the spreadsheet.
-	 */
-	public Rule(String name, Integer salience, int spreadsheetRow) {
-		_name = name;
-		_salience = salience;
-		_description = "";
+    /**
+     * Create a new rule. Note that the rule name should be post-fixed with the row number,
+     * as one way of providing tracability for errors back to the originating spreadsheet.
+     * @param name The name of the rule. This may be used to calculate DRL row error 
+     * to Spreadsheet row error (just need to keep track of output lines, and map spreadsheetRow to a start
+     * and end range in the rendered output).
+     * @param salience 
+     * @param spreadsheetRow The phyical row number from the spreadsheet.
+     */
+    public Rule(final String name,
+                final Integer salience,
+                final int spreadsheetRow) {
+        this._name = name;
+        this._salience = salience;
+        this._description = "";
 
-		_lhs = new LinkedList();
-		_rhs = new LinkedList();
-		_spreadsheetRow = spreadsheetRow;
-	}
+        this._lhs = new LinkedList();
+        this._rhs = new LinkedList();
+        this._spreadsheetRow = spreadsheetRow;
+    }
 
-	public void addCondition(Condition con) {
-		_lhs.add(con);
-	}
+    public void addCondition(final Condition con) {
+        this._lhs.add( con );
+    }
 
-	public void addConsequence(Consequence con) {
-		_rhs.add(con);
-	}
+    public void addConsequence(final Consequence con) {
+        this._rhs.add( con );
+    }
 
-	public void renderDRL(DRLOutput out) {
-		if (isCommented()) out.writeLine("#" + getComment());
-		out.writeLine("rule " + "\"" + _name + "\"");
-		if (_description != null) out.writeLine("\t" + _description);
-		if (_salience != null) out.writeLine("\tsalience " + _salience);
-		if (_activationGroup != null) out.writeLine("\tactivation-group" + _activationGroup);
-		if (_noLoop != null) out.writeLine("\tno-loop" + _noLoop);
-		if (_duration != null) out.writeLine("\tduration" + _duration);
-		
-		out.writeLine("\twhen");
-		renderDRL(_lhs, out);
-		out.writeLine("\tthen");
-		renderDRL(_rhs, out);
-		
-		out.writeLine("end\n");
-	}	
+    public void renderDRL(final DRLOutput out) {
+        if ( isCommented() ) {
+            out.writeLine( "#" + getComment() );
+        }
+        out.writeLine( "rule " + "\"" + this._name + "\"" );
+        if ( this._description != null ) {
+            out.writeLine( "\t" + this._description );
+        }
+        if ( this._salience != null ) {
+            out.writeLine( "\tsalience " + this._salience );
+        }
+        if ( this._activationGroup != null ) {
+            out.writeLine( "\tactivation-group" + this._activationGroup );
+        }
+        if ( this._noLoop != null ) {
+            out.writeLine( "\tno-loop" + this._noLoop );
+        }
+        if ( this._duration != null ) {
+            out.writeLine( "\tduration" + this._duration );
+        }
 
-	
-	private void renderDRL(List list, DRLOutput out) {
-		for (Iterator iter = list.iterator(); iter.hasNext();) {
-			DRLJavaEmitter item = (DRLJavaEmitter) iter.next();
-			item.renderDRL(out);
-		}
-	}
+        out.writeLine( "\twhen" );
+        renderDRL( this._lhs,
+                   out );
+        out.writeLine( "\tthen" );
+        renderDRL( this._rhs,
+                   out );
 
-	public static int calcSalience(int rowNumber) {
-		if (rowNumber > MAX_ROWS) {
-			throw new IllegalArgumentException(
-					"That row number is above the max: " + MAX_ROWS);
-		}
-		return MAX_ROWS - rowNumber;
-	}
+        out.writeLine( "end\n" );
+    }
 
-	/**
-	 * @param col -
-	 *            the column number. Start with zero.
-	 * @return The spreadsheet name for this col number, such as "AA" or "AB" or
-	 *         "A" and such and such.
-	 */
-	public static String convertColNumToColName(int i) {
+    private void renderDRL(final List list,
+                           final DRLOutput out) {
+        for ( final Iterator iter = list.iterator(); iter.hasNext(); ) {
+            final DRLJavaEmitter item = (DRLJavaEmitter) iter.next();
+            item.renderDRL( out );
+        }
+    }
 
-		String result;
-		int div = i / 26;
-		int mod = i % 26;
+    public static int calcSalience(final int rowNumber) {
+        if ( rowNumber > Rule.MAX_ROWS ) {
+            throw new IllegalArgumentException( "That row number is above the max: " + Rule.MAX_ROWS );
+        }
+        return Rule.MAX_ROWS - rowNumber;
+    }
 
-		if (div == 0) {
-			byte[] c = new byte[1];
-			c[0] = (byte) (mod + 65);
-			result = byteToString(c);
-		} else {
-			byte[] firstChar = new byte[1];
-			firstChar[0] = (byte) ((div - 1) + 65);
+    /**
+     * @param col -
+     *            the column number. Start with zero.
+     * @return The spreadsheet name for this col number, such as "AA" or "AB" or
+     *         "A" and such and such.
+     */
+    public static String convertColNumToColName(final int i) {
 
-			byte[] secondChar = new byte[1];
-			secondChar[0] = (byte) (mod + 65);
-			String first = byteToString(firstChar);
-			String second = byteToString(secondChar);
-			result = first + second;
-		}
-		return result;
+        String result;
+        final int div = i / 26;
+        final int mod = i % 26;
 
-	}
+        if ( div == 0 ) {
+            final byte[] c = new byte[1];
+            c[0] = (byte) (mod + 65);
+            result = byteToString( c );
+        } else {
+            final byte[] firstChar = new byte[1];
+            firstChar[0] = (byte) ((div - 1) + 65);
 
-	private static String byteToString(byte[] secondChar) {
-		try {
-			return new String(secondChar, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Unable to convert char to string.", e);
-		}
-	}
+            final byte[] secondChar = new byte[1];
+            secondChar[0] = (byte) (mod + 65);
+            final String first = byteToString( firstChar );
+            final String second = byteToString( secondChar );
+            result = first + second;
+        }
+        return result;
 
-	public List getConditions() {
-		return _lhs;
-	}
+    }
 
-	public List getConsequences() {
-		return _rhs;
-	}
+    private static String byteToString(final byte[] secondChar) {
+        try {
+            return new String( secondChar,
+                               "UTF-8" );
+        } catch ( final UnsupportedEncodingException e ) {
+            throw new RuntimeException( "Unable to convert char to string.",
+                                        e );
+        }
+    }
 
-	public void setSalience(Integer value) // Set the salience of the rule
-	{
-		_salience = value;
-	}
+    public List getConditions() {
+        return this._lhs;
+    }
 
-	public Integer getSalience() {
-		return _salience;
-	}
+    public List getConsequences() {
+        return this._rhs;
+    }
 
-	public void setName(String value) // Set the name of the rule
-	{
-		_name = value;
-	}
+    public void setSalience(final Integer value) // Set the salience of the rule
+    {
+        this._salience = value;
+    }
 
-	public String getName() {
-		return _name;
-	}
+    public Integer getSalience() {
+        return this._salience;
+    }
 
-	public void setDescription(String value) // Set the description of the
-												// rule
-	{
-		_description = value;
-	}
+    public void setName(final String value) // Set the name of the rule
+    {
+        this._name = value;
+    }
 
-	public void appendDescription(String value) // Set the description of the
-												// rule
-	{
-		_description += value;
-	}
+    public String getName() {
+        return this._name;
+    }
 
-	public String getDescription() {
-		return _description;
-	}
+    public void setDescription(final String value) // Set the description of the
+    // rule
+    {
+        this._description = value;
+    }
 
-	public void setDuration(Duration value) // Set the duration of the rule
-	{
-		_duration = value;
-	}
+    public void appendDescription(final String value) // Set the description of the
+    // rule
+    {
+        this._description += value;
+    }
 
-	public String getDuration() {
-		return _duration.getSnippet();
-	}
+    public String getDescription() {
+        return this._description;
+    }
 
-	public void setActivationrGroup(String value) // Set the duration of the rule
-	{
-		_activationGroup = value;
-	}
+    public void setDuration(final Duration value) // Set the duration of the rule
+    {
+        this._duration = value;
+    }
 
-	public String getActivationGroup() {
-		return _activationGroup;
-	}
+    public String getDuration() {
+        return this._duration.getSnippet();
+    }
 
-	public void setNoLoop(String value) // Set the no-loop attribute of the rule
-	{
-		_noLoop = value;
-	}
+    public void setActivationrGroup(final String value) // Set the duration of the rule
+    {
+        this._activationGroup = value;
+    }
 
-	public boolean getNoLoop() {
-		String value = "false";
-		if (_noLoop.compareTo("true") != 0)
-			value = _noLoop;
-		Boolean b = new Boolean(value);
-		return b.booleanValue();
-	}
-	
-	/**
-	 * @return The row in the spreadsheet this represents. 
-	 * This can be handy when mapping a line error from Parser back to the rule row.
-	 * Will need to have a map of ranges of line numbers that each rule covers.
-	 * Then can find out the rule that cause it, and this will give the row number to report.
-	 */
-	public int getSpreadsheetRowNumber() {
-		return this._spreadsheetRow;
-	}
+    public String getActivationGroup() {
+        return this._activationGroup;
+    }
 
+    public void setNoLoop(final String value) // Set the no-loop attribute of the rule
+    {
+        this._noLoop = value;
+    }
+
+    public boolean getNoLoop() {
+        String value = "false";
+        if ( this._noLoop.compareTo( "true" ) != 0 ) {
+            value = this._noLoop;
+        }
+        final Boolean b = new Boolean( value );
+        return b.booleanValue();
+    }
+
+    /**
+     * @return The row in the spreadsheet this represents. 
+     * This can be handy when mapping a line error from Parser back to the rule row.
+     * Will need to have a map of ranges of line numbers that each rule covers.
+     * Then can find out the rule that cause it, and this will give the row number to report.
+     */
+    public int getSpreadsheetRowNumber() {
+        return this._spreadsheetRow;
+    }
 
 }

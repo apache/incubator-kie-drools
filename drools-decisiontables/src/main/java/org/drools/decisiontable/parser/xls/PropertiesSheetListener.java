@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser.xls;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,13 +15,6 @@ package org.drools.decisiontable.parser.xls;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
-
-
-
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,14 +38,13 @@ import org.drools.decisiontable.parser.SheetListener;
  */
 public class PropertiesSheetListener
     implements
-    SheetListener
-{
+    SheetListener {
 
     private static final String EMPTY_STRING   = "";
 
-    private Map                 _rowProperties = new HashMap( );
+    private final Map                 _rowProperties = new HashMap();
 
-    private Properties          _properties    = new Properties( );
+    private final Properties          _properties    = new Properties();
 
     /**
      * Return the key value pairs. If this is called before the sheet is
@@ -60,12 +53,11 @@ public class PropertiesSheetListener
      * 
      * @return properties
      */
-    public Properties getProperties()
-    {
-        finishSheet( ); // MN allows this to be called before the sheet is
+    public Properties getProperties() {
+        finishSheet(); // MN allows this to be called before the sheet is
         // finished, as
         // some properties are used whilst the sheet is being parsed.
-        return _properties;
+        return this._properties;
     }
 
     /*
@@ -73,8 +65,7 @@ public class PropertiesSheetListener
      * 
      * @see my.hssf.util.SheetListener#startSheet(java.lang.String)
      */
-    public void startSheet(String name)
-    {
+    public void startSheet(final String name) {
     }
 
     /*
@@ -82,12 +73,10 @@ public class PropertiesSheetListener
      * 
      * @see my.hssf.util.SheetListener#finishSheet()
      */
-    public void finishSheet()
-    {
-        for ( Iterator iter = _rowProperties.keySet( ).iterator( ); iter.hasNext( ); )
-        {
-            String[] keyValue = (String[]) _rowProperties.get( iter.next( ) );
-            _properties.setProperty( keyValue[0],
+    public void finishSheet() {
+        for ( final Iterator iter = this._rowProperties.keySet().iterator(); iter.hasNext(); ) {
+            final String[] keyValue = (String[]) this._rowProperties.get( iter.next() );
+            this._properties.setProperty( keyValue[0],
                                      keyValue[1] );
         }
     }
@@ -100,9 +89,8 @@ public class PropertiesSheetListener
      * @param columns
      *            The Colum number.
      */
-    public void newRow(int rowNumber,
-                       int columns)
-    {
+    public void newRow(final int rowNumber,
+                       final int columns) {
         // nothing to do.
     }
 
@@ -111,34 +99,28 @@ public class PropertiesSheetListener
      * 
      * @see my.hssf.util.SheetListener#newCell(int, int, java.lang.String)
      */
-    public void newCell(int row,
-                        int column,
-                        String value)
-    {
-        if (emptyCellValue( value )) {
+    public void newCell(final int row,
+                        final int column,
+                        final String value) {
+        if ( emptyCellValue( value ) ) {
             return;
         }
-        Integer rowInt = new Integer( row );
-        if ( _rowProperties.containsKey( rowInt ) )
-        {
-            String[] keyValue = (String[]) _rowProperties.get( rowInt );
+        final Integer rowInt = new Integer( row );
+        if ( this._rowProperties.containsKey( rowInt ) ) {
+            final String[] keyValue = (String[]) this._rowProperties.get( rowInt );
 
-            if ( keyValue[1] == EMPTY_STRING )
-            {
+            if ( keyValue[1] == PropertiesSheetListener.EMPTY_STRING ) {
                 keyValue[1] = value;
             }
-        }
-        else
-        {
-            String[] keyValue = {value, EMPTY_STRING};
-            _rowProperties.put( rowInt,
+        } else {
+            final String[] keyValue = {value, PropertiesSheetListener.EMPTY_STRING};
+            this._rowProperties.put( rowInt,
                                 keyValue );
         }
     }
 
-    private boolean emptyCellValue(String value)
-    {
-        return value == null || value.trim().equals("");
+    private boolean emptyCellValue(final String value) {
+        return value == null || value.trim().equals( "" );
     }
 
 }

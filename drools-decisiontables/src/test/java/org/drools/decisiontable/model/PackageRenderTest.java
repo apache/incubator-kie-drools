@@ -1,4 +1,5 @@
 package org.drools.decisiontable.model;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.decisiontable.model;
  * limitations under the License.
  */
 
-
-
-
-
 import junit.framework.TestCase;
 
 /**
@@ -29,50 +26,52 @@ import junit.framework.TestCase;
  */
 public class PackageRenderTest extends TestCase {
 
-	public Rule buildRule() {
-		Rule rule = new Rule("myrule", new Integer(42), 1);
-		rule.setComment("rule comments");
+    public Rule buildRule() {
+        final Rule rule = new Rule( "myrule",
+                              new Integer( 42 ),
+                              1 );
+        rule.setComment( "rule comments" );
 
-		Condition cond = new Condition();
-		cond.setComment("cond comment");
-		cond.setSnippet("cond snippet");
-		rule.addCondition(cond);
+        final Condition cond = new Condition();
+        cond.setComment( "cond comment" );
+        cond.setSnippet( "cond snippet" );
+        rule.addCondition( cond );
 
-		Consequence cons = new Consequence();
-		cons.setComment("cons comment");
-		cons.setSnippet("cons snippet");
-		rule.addConsequence(cons);
+        final Consequence cons = new Consequence();
+        cons.setComment( "cons comment" );
+        cons.setSnippet( "cons snippet" );
+        rule.addConsequence( cons );
 
-		return rule;
-	}
+        return rule;
+    }
 
-	public void testRulesetRender() {
-		Package ruleSet = new Package("my ruleset");
-		ruleSet.addFunctions("my functions");
-		ruleSet.addRule(buildRule());
-		
-		Rule rule = buildRule();
-		rule.setName("other rule");
-		ruleSet.addRule(rule);
-		
-		Import imp = new Import();
-		imp.setClassName("clazz name");
-		imp.setComment("import comment");
-		ruleSet.addImport(imp);
-		
-		DRLOutput out = new DRLOutput();
-		ruleSet.renderDRL(out);
-		
-		String drl = out.getDRL();
-		assertNotNull(drl);
-		System.out.println(drl);
-		assertTrue(drl.indexOf("rule \"myrule\"") > -1);
-		assertTrue(drl.indexOf("salience 42") > -1);
-		assertTrue(drl.indexOf("#rule comments") > -1);
-		assertTrue(drl.indexOf("my functions") > -1);
-		assertTrue(drl.indexOf( "package my_ruleset;" ) > -1);
-		assertTrue(drl.indexOf("rule \"other rule\"") > drl.indexOf("rule \"myrule\""));
-		
-	}
+    public void testRulesetRender() {
+        final Package ruleSet = new Package( "my ruleset" );
+        ruleSet.addFunctions( "my functions" );
+        ruleSet.addRule( buildRule() );
+
+        final Rule rule = buildRule();
+        rule.setName( "other rule" );
+        ruleSet.addRule( rule );
+
+        final Import imp = new Import();
+        imp.setClassName( "clazz name" );
+        imp.setComment( "import comment" );
+        ruleSet.addImport( imp );
+
+        final DRLOutput out = new DRLOutput();
+        ruleSet.renderDRL( out );
+
+        final String drl = out.getDRL();
+        assertNotNull( drl );
+        System.out.println( drl );
+        assertTrue( drl.indexOf( "rule \"myrule\"" ) > -1 );
+        assertTrue( drl.indexOf( "salience 42" ) > -1 );
+        assertTrue( drl.indexOf( "#rule comments" ) > -1 );
+        assertTrue( drl.indexOf( "my functions" ) > -1 );
+        assertTrue( drl.indexOf( "package my_ruleset;" ) > -1 );
+        assertTrue( drl.indexOf( "rule \"other rule\"" ) > drl.indexOf( "rule \"myrule\"" ) );
+
+    }
 
 }

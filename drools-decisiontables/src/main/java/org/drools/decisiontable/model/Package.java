@@ -1,4 +1,5 @@
 package org.drools.decisiontable.model;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.decisiontable.model;
  * limitations under the License.
  */
 
-
-
-
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,76 +27,80 @@ import java.util.List;
  * been parsed from the spreadsheet. Also is the launching point for dumping out
  * the DRL.
  */
-public class Package implements DRLJavaEmitter {
+public class Package
+    implements
+    DRLJavaEmitter {
 
-	private String _name;
+    private String    _name;
 
-	private List _imports;
+    private List      _imports;
 
-	private List _variables; // List of the application data Variable Objects
+    private List      _variables; // List of the application data Variable Objects
 
-	private List _rules;
+    private List      _rules;
 
-	private Functions _functions;
+    private Functions _functions;
 
-	public Package(String name) {
-		_name = name;
-		_imports = new LinkedList();
-		_variables = new LinkedList();
-		_rules = new LinkedList();
-		_functions = new Functions();
-	}
+    public Package(final String name) {
+        this._name = name;
+        this._imports = new LinkedList();
+        this._variables = new LinkedList();
+        this._rules = new LinkedList();
+        this._functions = new Functions();
+    }
 
-	public void addImport(Import imp) {
-		_imports.add(imp);
-	}
+    public void addImport(final Import imp) {
+        this._imports.add( imp );
+    }
 
-	public void addVariable(Global varz) {
-		_variables.add(varz);
-	}
+    public void addVariable(final Global varz) {
+        this._variables.add( varz );
+    }
 
-	public void addRule(Rule rule) {
-		_rules.add(rule);
-	}
+    public void addRule(final Rule rule) {
+        this._rules.add( rule );
+    }
 
-	public void addFunctions(String listing) {
-		_functions.setFunctionsListing(listing);
-	}
+    public void addFunctions(final String listing) {
+        this._functions.setFunctionsListing( listing );
+    }
 
+    public String getName() {
+        return this._name;
+    }
 
+    public List getImports() {
+        return this._imports;
+    }
 
-	public String getName() {
-		return _name;
-	}
+    public List getVariables() {
+        return this._variables;
+    }
 
-	public List getImports() {
-		return _imports;
-	}
+    public List getRules() {
+        return this._rules;
+    }
 
-	public List getVariables() {
-		return _variables;
-	}
+    public void renderDRL(final DRLOutput out) {
+        out.writeLine( "package " + this._name.replace( ' ',
+                                                   '_' ) + ";" );
+        out.writeLine( "#generated from Decision Table" );
+        renderDRL( this._imports,
+                   out );
+        renderDRL( this._variables,
+                   out );
+        this._functions.renderDRL( out );
+        renderDRL( this._rules,
+                   out );
 
-	public List getRules() {
-		return _rules;
-	}
+    }
 
-	public void renderDRL(DRLOutput out) {		
-        out.writeLine( "package " + _name.replace( ' ', '_' ) + ";" );
-        out.writeLine("#generated from Decision Table");
-		renderDRL(_imports, out);
-		renderDRL(_variables, out);
-		_functions.renderDRL(out);
-		renderDRL(_rules, out);
-		
-
-	}
-
-	private void renderDRL(List list, DRLOutput out) {
-		for (Iterator it = list.iterator(); it.hasNext();) {
-			DRLJavaEmitter emitter = (DRLJavaEmitter) it.next();
-			emitter.renderDRL(out);
-		}
-	}
+    private void renderDRL(final List list,
+                           final DRLOutput out) {
+        for ( final Iterator it = list.iterator(); it.hasNext(); ) {
+            final DRLJavaEmitter emitter = (DRLJavaEmitter) it.next();
+            emitter.renderDRL( out );
+        }
+    }
 
 }

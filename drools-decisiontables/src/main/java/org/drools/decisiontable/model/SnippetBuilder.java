@@ -1,4 +1,5 @@
 package org.drools.decisiontable.model;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.decisiontable.model;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  * 
@@ -32,13 +29,11 @@ package org.drools.decisiontable.model;
  * 12-Oct-2005 change: moved from regex to using simple character based interpolation.
  * Regex was overkill and couldn't not quite get it right.
  */
-public class SnippetBuilder
-{
+public class SnippetBuilder {
 
-    private static final String PARAM_PREFIX       = "$";
+    private static final String PARAM_PREFIX = "$";
 
-    private static final String PARAM              = PARAM_PREFIX + "param";    
-
+    private static final String PARAM        = SnippetBuilder.PARAM_PREFIX + "param";
 
     private String              _template;
 
@@ -47,9 +42,8 @@ public class SnippetBuilder
      *            The snippet including the "place holder" for a parameter. If
      *            no "place holder" is present,
      */
-    public SnippetBuilder(String snippetTemplate)
-    {
-        _template = snippetTemplate;
+    public SnippetBuilder(final String snippetTemplate) {
+        this._template = snippetTemplate;
     }
 
     /**
@@ -58,35 +52,28 @@ public class SnippetBuilder
      *            place holder exists, will just return the snippet.
      * @return The final snippet.
      */
-    public String build(String cellValue)
-    {
-        if ( _template == null )
-        {
+    public String build(final String cellValue) {
+        if ( this._template == null ) {
             throw new RuntimeException( "Script template is null - check for missing script definition." );
         }
-        
-        if ( _template.indexOf( PARAM_PREFIX + "1" ) > 0 )
-        {
+
+        if ( this._template.indexOf( SnippetBuilder.PARAM_PREFIX + "1" ) > 0 ) {
             return buildMulti( cellValue );
-        }
-        else
-        {
+        } else {
             return buildSingle( cellValue );
         }
     }
 
+    private String buildMulti(final String cellValue) {
+        final String[] cellVals = cellValue.split( "," );
+        String result = this._template;
 
-
-    private String buildMulti(String cellValue)
-    {
-        String[] cellVals = cellValue.split( "," );
-        String result = _template;
-
-        for ( int paramNumber = 0; paramNumber < cellVals.length; paramNumber++ )
-        {
-            String replace = PARAM_PREFIX + (paramNumber + 1);
-            result = replace(result, replace, cellVals[paramNumber].trim( ), 256 );
-
+        for ( int paramNumber = 0; paramNumber < cellVals.length; paramNumber++ ) {
+            final String replace = SnippetBuilder.PARAM_PREFIX + (paramNumber + 1);
+            result = replace( result,
+                              replace,
+                              cellVals[paramNumber].trim(),
+                              256 );
 
         }
         return result;
@@ -96,10 +83,12 @@ public class SnippetBuilder
      * @param cellValue
      * @return
      */
-    private String buildSingle(String cellValue)
-    {
+    private String buildSingle(final String cellValue) {
 
-        return replace(_template, PARAM, cellValue, 256);
+        return replace( this._template,
+                        SnippetBuilder.PARAM,
+                        cellValue,
+                        256 );
 
     }
 
@@ -107,32 +96,28 @@ public class SnippetBuilder
      * Simple replacer. 
      * jakarta commons provided the inspiration for this.
      */
-    private String replace(String text,
-                                  String repl,
-                                  String with,
-                                  int max)
-    {
-        if ( text == null || repl == null || repl.equals( "" ) || with == null || max == 0 )
-        {
+    private String replace(final String text,
+                           final String repl,
+                           final String with,
+                           int max) {
+        if ( text == null || repl == null || repl.equals( "" ) || with == null || max == 0 ) {
             return text;
         }
 
-        StringBuffer buf = new StringBuffer( text.length( ) );
+        final StringBuffer buf = new StringBuffer( text.length() );
         int start = 0, end = 0;
         while ( (end = text.indexOf( repl,
-                                     start )) != -1 )
-        {
+                                     start )) != -1 ) {
             buf.append( text.substring( start,
                                         end ) ).append( with );
-            start = end + repl.length( );
+            start = end + repl.length();
 
-            if ( --max == 0 )
-            {
+            if ( --max == 0 ) {
                 break;
             }
         }
         buf.append( text.substring( start ) );
-        return buf.toString( );
+        return buf.toString();
     }
 
 }

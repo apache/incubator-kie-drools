@@ -22,18 +22,20 @@ package org.drools.decisiontable.model;
  * 
  * @author Michael Neale
  */
-public class Functions implements DRLJavaEmitter {
+public class Functions
+    implements
+    DRLJavaEmitter {
 
-	private String functionsListing;
+    private String functionsListing;
 
-	public void setFunctionsListing(String functionsListing) {
-		this.functionsListing = functionsListing;
-	}
+    public void setFunctionsListing(final String functionsListing) {
+        this.functionsListing = functionsListing;
+    }
 
-	public void renderDRL(DRLOutput out) {
-		if (functionsListing != null) {
-			out.writeLine(functionsListing);
-		}
-	}
+    public void renderDRL(final DRLOutput out) {
+        if ( this.functionsListing != null ) {
+            out.writeLine( this.functionsListing );
+        }
+    }
 
 }

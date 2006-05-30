@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser.csv;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.decisiontable.parser.csv;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,61 +33,66 @@ import org.drools.decisiontable.parser.SheetListener;
  * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
-public class CsvParser implements DecisionTableParser
-{
+public class CsvParser
+    implements
+    DecisionTableParser {
 
     private SheetListener _listener;
     private CsvLineParser _lineParser;
 
-    public CsvParser(SheetListener listener, CsvLineParser lineParser) {
-        _listener = listener;
-        _lineParser = lineParser;
+    public CsvParser(final SheetListener listener,
+                     final CsvLineParser lineParser) {
+        this._listener = listener;
+        this._lineParser = lineParser;
     }
-        
-    public void parseFile(InputStream inStream) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
+
+    public void parseFile(final InputStream inStream) {
+        final BufferedReader reader = new BufferedReader( new InputStreamReader( inStream ) );
         try {
-        	_listener.startSheet("csv");
-        	processRows(reader);
-        	_listener.finishSheet();
-        } catch (IOException e) {
-            throw new DecisionTableParseException("An error occurred reading the CSV data.", e);
+            this._listener.startSheet( "csv" );
+            processRows( reader );
+            this._listener.finishSheet();
+        } catch ( final IOException e ) {
+            throw new DecisionTableParseException( "An error occurred reading the CSV data.",
+                                                   e );
         }
     }
 
-	private void processRows(BufferedReader reader) throws IOException {
-		String line = reader.readLine();
-		
-		int row = 0;
-		while (line != null) {
-			                        
-		    List cells = _lineParser.parse(line);
+    private void processRows(final BufferedReader reader) throws IOException {
+        String line = reader.readLine();
+
+        int row = 0;
+        while ( line != null ) {
+
+            final List cells = this._lineParser.parse( line );
             //remove the trailing empty "cells" which some tools smatter around
             //trimCells(cells);
-		    _listener.newRow(row, cells.size());
-		    
-		    for (int col = 0; col < cells.size(); col++) {
-		        String cell = (String) cells.get(col);
-                
-                _listener.newCell(row, col, cell);
-		    }
-		    row++;
-			line = reader.readLine();
-		}
-	}
+            this._listener.newRow( row,
+                              cells.size() );
+
+            for ( int col = 0; col < cells.size(); col++ ) {
+                final String cell = (String) cells.get( col );
+
+                this._listener.newCell( row,
+                                   col,
+                                   cell );
+            }
+            row++;
+            line = reader.readLine();
+        }
+    }
 
     /** remove the trailing empty cells */
-    private void trimCells(List cells)
-    {
-        for (int i = cells.size() - 1; i > 0; i--) {
-            String cell = (String) cells.get(i);
-            if (!cell.trim().equals("")) {
+    private void trimCells(final List cells) {
+        for ( int i = cells.size() - 1; i > 0; i-- ) {
+            final String cell = (String) cells.get( i );
+            if ( !cell.trim().equals( "" ) ) {
                 return;
             } else {
-                cells.remove(i);
+                cells.remove( i );
             }
         }
-        
+
     }
 
 }

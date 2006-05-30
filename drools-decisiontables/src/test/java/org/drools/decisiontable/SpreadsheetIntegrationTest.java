@@ -1,4 +1,5 @@
 package org.drools.decisiontable;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,11 @@ package org.drools.decisiontable;
  * limitations under the License.
  */
 
-
-
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import junit.framework.TestCase;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -29,44 +28,45 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 
-
-import junit.framework.TestCase;
-
 public class SpreadsheetIntegrationTest extends TestCase {
 
-    
-    
     public void testExecute() throws Exception {
-        SpreadsheetCompiler converter = new SpreadsheetCompiler( );
-        String drl = converter.compile( "/data/IntegrationExampleTest.xls", InputType.XLS );
-        assertNotNull(drl);
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final String drl = converter.compile( "/data/IntegrationExampleTest.xls",
+                                        InputType.XLS );
+        assertNotNull( drl );
         //System.out.println(drl);
-        
+
         //COMPILE
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader(drl) );
-        
-        Package pkg = builder.getPackage();
-        assertNotNull(pkg);    
-        System.out.println(pkg.getErrorSummary());
-        assertEquals(0, builder.getErrors().length);
-        
-        
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( drl ) );
+
+        final Package pkg = builder.getPackage();
+        assertNotNull( pkg );
+        System.out.println( pkg.getErrorSummary() );
+        assertEquals( 0,
+                      builder.getErrors().length );
+
         //BUILD RULEBASE
-        RuleBase rb = RuleBaseFactory.getInstance().newRuleBase();
+        final RuleBase rb = RuleBaseFactory.newRuleBase();
         rb.addPackage( pkg );
-        
+
         //NEW WORKING MEMORY
-        WorkingMemory wm = rb.newWorkingMemory();
-        
+        final WorkingMemory wm = rb.newWorkingMemory();
+
         //ASSERT AND FIRE
-        wm.assertObject( new Cheese("stilton", 42) );
-        wm.assertObject( new Person("michael","stilton", 42) );
-        List list = new ArrayList();
-        wm.setGlobal( "list", list );
+        wm.assertObject( new Cheese( "stilton",
+                                     42 ) );
+        wm.assertObject( new Person( "michael",
+                                     "stilton",
+                                     42 ) );
+        final List list = new ArrayList();
+        wm.setGlobal( "list",
+                      list );
         wm.fireAllRules();
-        assertEquals(1, list.size());
-        
+        assertEquals( 1,
+                      list.size() );
+
     }
-    
+
 }

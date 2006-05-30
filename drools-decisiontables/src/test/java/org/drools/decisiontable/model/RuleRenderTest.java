@@ -1,4 +1,5 @@
 package org.drools.decisiontable.model;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,6 @@ package org.drools.decisiontable.model;
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
 import junit.framework.TestCase;
 
 /**
@@ -29,53 +23,50 @@ import junit.framework.TestCase;
  * 
  * Tests how the rule parse tree renders itself to a rule XML fragment.
  */
-public class RuleRenderTest extends TestCase
-{
+public class RuleRenderTest extends TestCase {
 
-    public void testRuleRender()
-    {
-        Rule rule = new Rule( "myrule",
-                              new Integer(42), 1 );
+    public void testRuleRender() {
+        final Rule rule = new Rule( "myrule",
+                              new Integer( 42 ),
+                              1 );
         rule.setComment( "rule comments" );
 
-        Condition cond = new Condition( );
+        final Condition cond = new Condition();
         cond.setComment( "cond comment" );
         cond.setSnippet( "cond snippet" );
         rule.addCondition( cond );
 
-        Consequence cons = new Consequence( );
+        final Consequence cons = new Consequence();
         cons.setComment( "cons comment" );
         cons.setSnippet( "cons snippet;" );
         rule.addConsequence( cons );
         rule.addConsequence( cons );
 
-        DRLOutput out= new DRLOutput();
-        rule.renderDRL(out);
-        String xml = out.getDRL();
+        final DRLOutput out = new DRLOutput();
+        rule.renderDRL( out );
+        final String xml = out.getDRL();
         assertNotNull( xml );
 
         assertTrue( xml.indexOf( "cond snippet" ) != -1 );
         assertTrue( xml.indexOf( "cons snippet" ) != -1 );
         assertTrue( xml.indexOf( "salience 42" ) != -1 );
-        assertTrue( xml.indexOf( "salience 42" ) < xml.indexOf("when") );
-        assertTrue( xml.indexOf( "cond snippet" ) < xml.indexOf("then") );
-        assertTrue( xml.indexOf( "cons snippet;" ) > xml.indexOf("then") );
+        assertTrue( xml.indexOf( "salience 42" ) < xml.indexOf( "when" ) );
+        assertTrue( xml.indexOf( "cond snippet" ) < xml.indexOf( "then" ) );
+        assertTrue( xml.indexOf( "cons snippet;" ) > xml.indexOf( "then" ) );
         assertTrue( xml.indexOf( "rule" ) != -1 );
-        assertTrue( xml.indexOf("end") > xml.indexOf("rule "));
-        assertTrue( xml.indexOf( "#rule comments" ) > -1);
+        assertTrue( xml.indexOf( "end" ) > xml.indexOf( "rule " ) );
+        assertTrue( xml.indexOf( "#rule comments" ) > -1 );
 
     }
 
-    public void testSalienceCalculator()
-    {
-        int rowNumber = 2;
-        int salience = Rule.calcSalience( rowNumber );
+    public void testSalienceCalculator() {
+        final int rowNumber = 2;
+        final int salience = Rule.calcSalience( rowNumber );
         assertEquals( 65533,
                       salience );
     }
 
-    public void testColNumToColName()
-    {
+    public void testColNumToColName() {
         String colName = Rule.convertColNumToColName( 1 );
         assertEquals( "B",
                       colName );
@@ -98,18 +89,17 @@ public class RuleRenderTest extends TestCase
 
     }
 
-    public void testNotEscapeChars()
-    {
-    	//bit of a legacy from the olde XML dayes of yesteryeare
-        Condition cond = new Condition( );
+    public void testNotEscapeChars() {
+        //bit of a legacy from the olde XML dayes of yesteryeare
+        final Condition cond = new Condition();
         cond.setSnippet( "a < b" );
-        DRLOutput out = new DRLOutput();
-        cond.renderDRL(out);
-        
-        assertTrue(out.toString().indexOf("a < b") != -1);
-        
+        final DRLOutput out = new DRLOutput();
+        cond.renderDRL( out );
+
+        assertTrue( out.toString().indexOf( "a < b" ) != -1 );
+
     }
-    
+
     /**
      * This checks that if the rule has "nil" salience, then 
      * no salience value should be put in the rule definition.
@@ -117,20 +107,25 @@ public class RuleRenderTest extends TestCase
      *
      */
     public void testNilSalience() {
-        Rule rule = new Rule("MyRule", null, 1);
-        
+        Rule rule = new Rule( "MyRule",
+                              null,
+                              1 );
+
         DRLOutput out = new DRLOutput();
-        rule.renderDRL(out);
+        rule.renderDRL( out );
         String xml = out.toString();
-        int idx = xml.indexOf("salience");
-        assertEquals(-1, idx);
-        
-        rule = new Rule("MyRule", new Integer(42), 1);
+        int idx = xml.indexOf( "salience" );
+        assertEquals( -1,
+                      idx );
+
+        rule = new Rule( "MyRule",
+                         new Integer( 42 ),
+                         1 );
         out = new DRLOutput();
-        rule.renderDRL(out);
+        rule.renderDRL( out );
         xml = out.toString();
-        idx = xml.indexOf("salience");
-        assertTrue(idx > -1);        
+        idx = xml.indexOf( "salience" );
+        assertTrue( idx > -1 );
     }
 
 }

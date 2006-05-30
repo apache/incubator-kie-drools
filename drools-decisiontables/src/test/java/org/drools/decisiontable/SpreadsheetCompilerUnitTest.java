@@ -1,4 +1,5 @@
 package org.drools.decisiontable;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,6 @@ package org.drools.decisiontable;
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
 import java.io.InputStream;
 
 import junit.framework.TestCase;
@@ -31,50 +25,48 @@ import junit.framework.TestCase;
  * 
  * Some basic unit tests for converter utility.
  */
-public class SpreadsheetCompilerUnitTest extends TestCase
-{
+public class SpreadsheetCompilerUnitTest extends TestCase {
 
-    public void testLoadFromClassPath()
-    {
-        SpreadsheetCompiler converter = new SpreadsheetCompiler( );
-        String drl = converter.compile( "/data/MultiSheetDST.xls", InputType.XLS );
-        
+    public void testLoadFromClassPath() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final String drl = converter.compile( "/data/MultiSheetDST.xls",
+                                        InputType.XLS );
+
         assertNotNull( drl );
-        
-        assertTrue(drl.indexOf( "rule \"How cool am I_12\"") > drl.indexOf( "rule \"How cool am I_11\"") );
-        assertTrue(drl.indexOf("import example.model.User;") > -1);
-        assertTrue(drl.indexOf("import example.model.Car;") > -1);
+
+        assertTrue( drl.indexOf( "rule \"How cool am I_12\"" ) > drl.indexOf( "rule \"How cool am I_11\"" ) );
+        assertTrue( drl.indexOf( "import example.model.User;" ) > -1 );
+        assertTrue( drl.indexOf( "import example.model.Car;" ) > -1 );
     }
 
-    public void testLoadSpecificWorksheet()
-    {
-        SpreadsheetCompiler converter = new SpreadsheetCompiler( );
-        InputStream stream = this.getClass( ).getResourceAsStream( "/data/MultiSheetDST.xls" );
-        String drl = converter.compile( stream,
-                                             "Another Sheet" );
+    public void testLoadSpecificWorksheet() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream( "/data/MultiSheetDST.xls" );
+        final String drl = converter.compile( stream,
+                                        "Another Sheet" );
         assertNotNull( drl );
     }
-    
+
     public void testLoadCsv() {
-        SpreadsheetCompiler converter = new SpreadsheetCompiler( );
-        InputStream stream = this.getClass( ).getResourceAsStream( "/data/ComplexWorkbook.csv" );
-        String drl = converter.compile( stream,
-                                             InputType.CSV );
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream( "/data/ComplexWorkbook.csv" );
+        final String drl = converter.compile( stream,
+                                        InputType.CSV );
         assertNotNull( drl );
-        assertTrue(drl.indexOf("myObject.setIsValid(1, 2)") > 0);
-        assertTrue(drl.indexOf("myObject.size () > 50") > 0);
+        assertTrue( drl.indexOf( "myObject.setIsValid(1, 2)" ) > 0 );
+        assertTrue( drl.indexOf( "myObject.size () > 50" ) > 0 );
         //System.out.println(drl);
     }
-    
+
     public void testLoadBasic() {
-        SpreadsheetCompiler converter = new SpreadsheetCompiler( );
-        InputStream stream = this.getClass( ).getResourceAsStream( "/data/BasicWorkbook.xls" );
-        String drl = converter.compile( stream,
-                                             InputType.XLS );
-        
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream( "/data/BasicWorkbook.xls" );
+        final String drl = converter.compile( stream,
+                                        InputType.XLS );
+
         assertNotNull( drl );
-        assertTrue(drl.indexOf( "This is a function block" ) > -1);
-        assertTrue(drl.indexOf( "global Class1 obj1;" ) > -1);
+        assertTrue( drl.indexOf( "This is a function block" ) > -1 );
+        assertTrue( drl.indexOf( "global Class1 obj1;" ) > -1 );
         //System.out.println(drl);
     }
 
