@@ -55,13 +55,13 @@ public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
      * @throws RuleExecutionSetNotFoundException
      *             if there is no rule set under the given URI
      */
-    StatelessRuleSessionImpl(String bindUri,
-                             Map properties,
-                             RuleExecutionSetRepository repository) throws RuleExecutionSetNotFoundException {
+    StatelessRuleSessionImpl(final String bindUri,
+                             final Map properties,
+                             final RuleExecutionSetRepository repository) throws RuleExecutionSetNotFoundException {
         super( repository );
         this.setProperties( properties );
 
-        RuleExecutionSetImpl ruleSet = (RuleExecutionSetImpl) repository.getRuleExecutionSet( bindUri );
+        final RuleExecutionSetImpl ruleSet = (RuleExecutionSetImpl) repository.getRuleExecutionSet( bindUri );
 
         if ( ruleSet == null ) {
             throw new RuleExecutionSetNotFoundException( "RuleExecutionSet unbound: " + bindUri );
@@ -93,7 +93,7 @@ public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
      * @throws InvalidRuleSessionException
      *             on illegal rule session state.
      */
-    public List executeRules(List objects) throws InvalidRuleSessionException {
+    public List executeRules(final List objects) throws InvalidRuleSessionException {
         return this.executeRules( objects,
                                   this.getRuleExecutionSet().getObjectFilter() );
     }
@@ -122,22 +122,22 @@ public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
      * @throws InvalidRuleSessionException
      *             on illegal rule session state.
      */
-    public List executeRules(List objects,
-                             ObjectFilter filter) throws InvalidRuleSessionException {
-        WorkingMemory workingMemory = this.newWorkingMemory();
+    public List executeRules(final List objects,
+                             final ObjectFilter filter) throws InvalidRuleSessionException {
+        final WorkingMemory workingMemory = this.newWorkingMemory();
 
         try {
-            for ( Iterator objectIter = objects.iterator(); objectIter.hasNext(); ) {
+            for ( final Iterator objectIter = objects.iterator(); objectIter.hasNext(); ) {
                 workingMemory.assertObject( objectIter.next() );
             }
 
             workingMemory.fireAllRules();
-        } catch ( FactException e ) {
+        } catch ( final FactException e ) {
             throw new InvalidRuleSessionException( e.getMessage(),
                                                    e );
         }
 
-        List results = workingMemory.getObjects();
+        final List results = workingMemory.getObjects();
 
         this.applyFilter( results,
                           filter );

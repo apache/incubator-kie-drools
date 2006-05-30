@@ -43,7 +43,7 @@ package org.drools.jsr94.rules;
 
 import javax.rules.Handle;
 
-import org.drools.reteoo.FactHandleImpl;
+import org.drools.common.DefaultFactHandle;
 
 /**
  * The Drools implementation of the <code>Handle</code> interface which provides
@@ -58,8 +58,9 @@ import org.drools.reteoo.FactHandleImpl;
  * <code>StatefulRuleSessions</code>, or using <code>Object.equals</code> or
  * <code>object1 == object2</code> reference equality.
  */
-public class Jsr94FactHandle extends FactHandleImpl implements Handle
-{
+public class Jsr94FactHandle extends DefaultFactHandle
+    implements
+    Handle {
     /**
      * Constructs a new <code>Handle</code>.
      *
@@ -70,8 +71,11 @@ public class Jsr94FactHandle extends FactHandleImpl implements Handle
      *
      * @see org.drools.conflict.RecencyConflictResolver
      */
-    Jsr94FactHandle( long id, long recency )
-    {
-        super( id, recency );
+    Jsr94FactHandle(final long id,
+                    final Object object,
+                    final long recency) {
+        super( id,
+               object,
+               recency );
     }
 }

@@ -17,7 +17,6 @@ import org.jcp.jsr94.tck.admin.RuleAdministrationExceptionTest;
 import org.jcp.jsr94.tck.admin.RuleAdministratorTest;
 import org.jcp.jsr94.tck.admin.RuleExecutionSetCreateExceptionTest;
 import org.jcp.jsr94.tck.admin.RuleExecutionSetDeregistrationExceptionTest;
-import org.jcp.jsr94.tck.admin.RuleExecutionSetProviderTest;
 import org.jcp.jsr94.tck.admin.RuleExecutionSetRegisterExceptionTest;
 import org.jcp.jsr94.tck.admin.RuleExecutionSetTest;
 import org.jcp.jsr94.tck.admin.RuleTest;
@@ -29,10 +28,10 @@ import org.jcp.jsr94.tck.admin.RuleTest;
 public class AllTests extends TestSuite {
 
     public static Test suite() {
-//        System.setProperty( "jsr94.tck.configuration",
-//                            "src/test/resources/org/drools/jsr94/tck" );
+        //        System.setProperty( "jsr94.tck.configuration",
+        //                            "src/test/resources/org/drools/jsr94/tck" );
 
-        TestSuite suite = new TestSuite( "JSR 94 Test Compatability Kit" );
+        final TestSuite suite = new TestSuite( "JSR 94 Test Compatability Kit" );
         suite.addTestSuite( ApiSignatureTest.class );
         suite.addTestSuite( ClassLoaderTest.class );
         suite.addTestSuite( ConfigurationExceptionTest.class );

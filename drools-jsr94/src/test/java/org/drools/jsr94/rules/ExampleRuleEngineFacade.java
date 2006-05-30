@@ -61,60 +61,58 @@ import javax.rules.admin.RuleExecutionSet;
  *
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  */
-public class ExampleRuleEngineFacade
-{
-    public static final String RULE_SERVICE_PROVIDER = "http://drools.org/";
+public class ExampleRuleEngineFacade {
+    public static final String            RULE_SERVICE_PROVIDER = "http://drools.org/";
 
-    private RuleAdministrator ruleAdministrator;
+    private RuleAdministrator             ruleAdministrator;
 
-    private RuleServiceProvider ruleServiceProvider;
+    private RuleServiceProvider           ruleServiceProvider;
 
     private LocalRuleExecutionSetProvider ruleSetProvider;
 
-    private RuleRuntime ruleRuntime;
+    private RuleRuntime                   ruleRuntime;
 
     // configuration parameters
-    String ruleFilesDirectory;
+    String                                ruleFilesDirectory;
 
-    String ruleFilesIncludes;
+    String                                ruleFilesIncludes;
 
-    public ExampleRuleEngineFacade( ) throws Exception
-    {
-        RuleServiceProviderManager.registerRuleServiceProvider(
-            RULE_SERVICE_PROVIDER, RuleServiceProviderImpl.class );
+    public ExampleRuleEngineFacade() throws Exception {
+        RuleServiceProviderManager.registerRuleServiceProvider( ExampleRuleEngineFacade.RULE_SERVICE_PROVIDER,
+                                                                RuleServiceProviderImpl.class );
 
-        ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider(
-            RULE_SERVICE_PROVIDER );
+        this.ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider( ExampleRuleEngineFacade.RULE_SERVICE_PROVIDER );
 
-        ruleAdministrator = ruleServiceProvider.getRuleAdministrator( );
+        this.ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
 
-        ruleSetProvider =
-            ruleAdministrator.getLocalRuleExecutionSetProvider( null );
+        this.ruleSetProvider = this.ruleAdministrator.getLocalRuleExecutionSetProvider( null );
     }
 
-    public void addRuleExecutionSet(
-        String bindUri, InputStream resourceAsStream ) throws Exception
-    {
-        Reader ruleReader = new InputStreamReader( resourceAsStream );
+    public void addRuleExecutionSet(final String bindUri,
+                                    final InputStream resourceAsStream) throws Exception {
+        final Reader ruleReader = new InputStreamReader( resourceAsStream );
 
-        RuleExecutionSet ruleExecutionSet =
-            ruleSetProvider.createRuleExecutionSet( ruleReader, null );
+        final RuleExecutionSet ruleExecutionSet = this.ruleSetProvider.createRuleExecutionSet( ruleReader,
+                                                                                               null );
 
-        ruleAdministrator.registerRuleExecutionSet(
-            bindUri, ruleExecutionSet, null );
+        this.ruleAdministrator.registerRuleExecutionSet( bindUri,
+                                                         ruleExecutionSet,
+                                                         null );
     }
-    
-    public void addRuleExecutionSet(
-            String bindUri, InputStream resourceAsStream, java.util.Map properties ) throws Exception
-        {
-            Reader ruleReader = new InputStreamReader( resourceAsStream );
 
-            RuleExecutionSet ruleExecutionSet =
-                ruleSetProvider.createRuleExecutionSet( ruleReader, properties );
+    public void addRuleExecutionSet(final String bindUri,
+                                    final InputStream resourceAsStream,
+                                    final java.util.Map properties) throws Exception {
+        final Reader ruleReader = new InputStreamReader( resourceAsStream );
 
-            ruleAdministrator.registerRuleExecutionSet(
-                bindUri, ruleExecutionSet, properties );
-        }
+        final RuleExecutionSet ruleExecutionSet = this.ruleSetProvider.createRuleExecutionSet( ruleReader,
+                                                                                               properties );
+
+        this.ruleAdministrator.registerRuleExecutionSet( bindUri,
+                                                         ruleExecutionSet,
+                                                         properties );
+    }
+
     /**
      * Returns a named <code>StatelessRuleSession</code>.
      *
@@ -122,14 +120,15 @@ public class ExampleRuleEngineFacade
      * @return StatelessRuleSession
      * @throws Exception
      */
-    public StatelessRuleSession getStatelessRuleSession( String key, java.util.Map properties)
-        throws Exception
-    {
-        ruleRuntime = ruleServiceProvider.getRuleRuntime( );
+    public StatelessRuleSession getStatelessRuleSession(final String key,
+                                                        final java.util.Map properties) throws Exception {
+        this.ruleRuntime = this.ruleServiceProvider.getRuleRuntime();
 
-        return ( StatelessRuleSession ) ruleRuntime.createRuleSession(
-            key, properties, RuleRuntime.STATELESS_SESSION_TYPE );
+        return (StatelessRuleSession) this.ruleRuntime.createRuleSession( key,
+                                                                          properties,
+                                                                          RuleRuntime.STATELESS_SESSION_TYPE );
     }
+
     /**
      * Returns a named <code>StatelessRuleSession</code>.
      *
@@ -137,29 +136,26 @@ public class ExampleRuleEngineFacade
      * @return StatelessRuleSession
      * @throws Exception
      */
-    public StatelessRuleSession getStatelessRuleSession( String key )
-        throws Exception
-    {
-        return this.getStatelessRuleSession( key, null );
+    public StatelessRuleSession getStatelessRuleSession(final String key) throws Exception {
+        return this.getStatelessRuleSession( key,
+                                             null );
     }
 
-    public StatefulRuleSession getStatefulRuleSession( String key )
-        throws Exception
-    {
-        return this.getStatefulRuleSession(key, null);
+    public StatefulRuleSession getStatefulRuleSession(final String key) throws Exception {
+        return this.getStatefulRuleSession( key,
+                                            null );
     }
-    
-    public StatefulRuleSession getStatefulRuleSession( String key, java.util.Map properties )
-    throws Exception
-{
-    ruleRuntime = ruleServiceProvider.getRuleRuntime( );
 
-    return ( StatefulRuleSession ) ruleRuntime.createRuleSession(
-        key, properties, RuleRuntime.STATEFUL_SESSION_TYPE );
-}
+    public StatefulRuleSession getStatefulRuleSession(final String key,
+                                                      final java.util.Map properties) throws Exception {
+        this.ruleRuntime = this.ruleServiceProvider.getRuleRuntime();
 
-    public RuleServiceProvider getRuleServiceProvider( )
-    {
+        return (StatefulRuleSession) this.ruleRuntime.createRuleSession( key,
+                                                                         properties,
+                                                                         RuleRuntime.STATEFUL_SESSION_TYPE );
+    }
+
+    public RuleServiceProvider getRuleServiceProvider() {
         return this.ruleServiceProvider;
     }
 }

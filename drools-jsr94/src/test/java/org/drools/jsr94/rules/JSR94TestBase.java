@@ -56,31 +56,29 @@ import junit.framework.TestCase;
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
-public abstract class JSR94TestBase extends TestCase
-{
-    protected StatefulRuleSession statefulSession;
+public abstract class JSR94TestBase extends TestCase {
+    protected StatefulRuleSession     statefulSession;
 
-    protected StatelessRuleSession statelessSession;
+    protected StatelessRuleSession    statelessSession;
 
     protected ExampleRuleEngineFacade engine;
 
-    protected String bindUri = "sisters.drl";
+    protected String                  bindUri = "sisters.drl";
 
-    protected RuleServiceProvider ruleServiceProvider;
+    protected RuleServiceProvider     ruleServiceProvider;
 
     /**
      * Setup the test case.
      */
-    protected void setUp( ) throws Exception
-    {
-        super.setUp( );
-        engine = new ExampleRuleEngineFacade( );
-        engine.addRuleExecutionSet( bindUri,
-            StatelessRuleSessionTest.class.getResourceAsStream( bindUri ) );
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.engine = new ExampleRuleEngineFacade();
+        this.engine.addRuleExecutionSet( this.bindUri,
+                                         StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri ) );
 
-        this.ruleServiceProvider = engine.getRuleServiceProvider( );
-        this.statelessSession = engine.getStatelessRuleSession( bindUri );
-        this.statefulSession = engine.getStatefulRuleSession( bindUri );
+        this.ruleServiceProvider = this.engine.getRuleServiceProvider();
+        this.statelessSession = this.engine.getStatelessRuleSession( this.bindUri );
+        this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
     }
 
     /**
@@ -88,9 +86,8 @@ public abstract class JSR94TestBase extends TestCase
      *
      * @see ClassLoader#getResource
      */
-    protected URL getResource( String res )
-    {
-        return getClass( ).getClassLoader( ).getResource( res );
+    protected URL getResource(final String res) {
+        return getClass().getClassLoader().getResource( res );
     }
 
     /**
@@ -98,8 +95,7 @@ public abstract class JSR94TestBase extends TestCase
      *
      * @see ClassLoader#getResourceAsStream
      */
-    protected InputStream getResourceAsStream( String res )
-    {
-        return getClass( ).getClassLoader( ).getResourceAsStream( res );
+    protected InputStream getResourceAsStream(final String res) {
+        return getClass().getClassLoader().getResourceAsStream( res );
     }
 }

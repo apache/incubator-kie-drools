@@ -55,7 +55,7 @@ public class RuleRuntimeImpl
     /**
      * Create a new <code>RuleRuntimeImpl</code>.
      */
-    public RuleRuntimeImpl(RuleExecutionSetRepository repository) {
+    public RuleRuntimeImpl(final RuleExecutionSetRepository repository) {
         this.repository = repository;
         // no special initialization required
     }
@@ -81,22 +81,22 @@ public class RuleRuntimeImpl
      * 
      * @return The created <code>RuleSession</code>.
      */
-    public RuleSession createRuleSession(String uri,
-                                         Map properties,
-                                         int ruleSessionType) throws RuleSessionTypeUnsupportedException,
-                                                             RuleExecutionSetNotFoundException {
+    public RuleSession createRuleSession(final String uri,
+                                         final Map properties,
+                                         final int ruleSessionType) throws RuleSessionTypeUnsupportedException,
+                                                                   RuleExecutionSetNotFoundException {
 
         if ( ruleSessionType == RuleRuntime.STATELESS_SESSION_TYPE ) {
-            StatelessRuleSessionImpl session = new StatelessRuleSessionImpl( uri,
-                                                                             properties,
-                                                                             repository );
+            final StatelessRuleSessionImpl session = new StatelessRuleSessionImpl( uri,
+                                                                                   properties,
+                                                                                   this.repository );
             return session;
         }
 
         if ( ruleSessionType == RuleRuntime.STATEFUL_SESSION_TYPE ) {
-            StatefulRuleSessionImpl session = new StatefulRuleSessionImpl( uri,
-                                                                           properties,
-                                                                           repository );
+            final StatefulRuleSessionImpl session = new StatefulRuleSessionImpl( uri,
+                                                                                 properties,
+                                                                                 this.repository );
             return session;
         }
 
@@ -111,6 +111,6 @@ public class RuleRuntimeImpl
      * @return a <code>List</code> of <code>String</code>s (URIs)
      */
     public List getRegistrations() {
-        return repository.getRegistrations();
+        return this.repository.getRegistrations();
     }
 }

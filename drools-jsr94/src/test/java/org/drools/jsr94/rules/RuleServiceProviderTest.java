@@ -50,28 +50,26 @@ import javax.rules.admin.RuleAdministrator;
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
-public class RuleServiceProviderTest extends RuleEngineTestBase
-{
+public class RuleServiceProviderTest extends RuleEngineTestBase {
     /**
      * Test getRuleRuntime.
      */
-    public void testRuleRuntime( ) throws Exception
-    {
-        RuleRuntime ruleRuntime = ruleServiceProvider.getRuleRuntime( );
-        assertNotNull( "cannot obtain RuleRuntime", ruleRuntime );
+    public void testRuleRuntime() throws Exception {
+        final RuleRuntime ruleRuntime = this.ruleServiceProvider.getRuleRuntime();
+        assertNotNull( "cannot obtain RuleRuntime",
+                       ruleRuntime );
         assertTrue( "not a class instance",
-                    ruleRuntime == ruleServiceProvider.getRuleRuntime( ) );
+                    ruleRuntime == this.ruleServiceProvider.getRuleRuntime() );
     }
 
     /**
      * Test getRuleAdministrator.
      */
-    public void testRuleAdministrator( ) throws Exception
-    {
-        RuleAdministrator ruleAdministrator =
-            ruleServiceProvider.getRuleAdministrator( );
-        assertNotNull( "cannot obtain RuleAdministrator", ruleAdministrator );
+    public void testRuleAdministrator() throws Exception {
+        final RuleAdministrator ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
+        assertNotNull( "cannot obtain RuleAdministrator",
+                       ruleAdministrator );
         assertTrue( "not a class instance",
-            ruleAdministrator == ruleServiceProvider.getRuleAdministrator( ) );
+                    ruleAdministrator == this.ruleServiceProvider.getRuleAdministrator() );
     }
 }

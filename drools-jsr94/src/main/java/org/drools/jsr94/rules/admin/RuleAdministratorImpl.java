@@ -52,7 +52,7 @@ public class RuleAdministratorImpl
     private RuleExecutionSetRepository repository;
 
     /** Default constructor. */
-    public RuleAdministratorImpl(RuleExecutionSetRepository repository) {
+    public RuleAdministratorImpl(final RuleExecutionSetRepository repository) {
         super();
         this.repository = repository;
     }
@@ -65,7 +65,7 @@ public class RuleAdministratorImpl
      * 
      * @return The created <code>RuleExecutionSetProvider</code>.
      */
-    public RuleExecutionSetProvider getRuleExecutionSetProvider(Map properties) {
+    public RuleExecutionSetProvider getRuleExecutionSetProvider(final Map properties) {
         return new RuleExecutionSetProviderImpl();
     }
 
@@ -81,7 +81,7 @@ public class RuleAdministratorImpl
      * 
      * @return The created <code>LocalRuleExecutionSetProvider</code>.
      */
-    public LocalRuleExecutionSetProvider getLocalRuleExecutionSetProvider(Map properties) {
+    public LocalRuleExecutionSetProvider getLocalRuleExecutionSetProvider(final Map properties) {
         return new LocalRuleExecutionSetProviderImpl();
     }
 
@@ -104,12 +104,12 @@ public class RuleAdministratorImpl
      * @throws RuleExecutionSetRegisterException
      *             if an error occurred that prevented registration
      */
-    public void registerRuleExecutionSet(String bindUri,
-                                         RuleExecutionSet set,
-                                         Map properties) throws RuleExecutionSetRegisterException {
+    public void registerRuleExecutionSet(final String bindUri,
+                                         final RuleExecutionSet set,
+                                         final Map properties) throws RuleExecutionSetRegisterException {
         // Note: an existing RuleExecutionSet is simply replaced
-        repository.registerRuleExecutionSet( bindUri,
-                                             set );
+        this.repository.registerRuleExecutionSet( bindUri,
+                                                  set );
     }
 
     /**
@@ -124,12 +124,12 @@ public class RuleAdministratorImpl
      * @throws RuleExecutionSetDeregistrationException
      *             if an error occurred that prevented unregistration
      */
-    public void deregisterRuleExecutionSet(String bindUri,
-                                           Map properties) throws RuleExecutionSetDeregistrationException {
-        if ( repository.getRuleExecutionSet( bindUri ) == null ) {
+    public void deregisterRuleExecutionSet(final String bindUri,
+                                           final Map properties) throws RuleExecutionSetDeregistrationException {
+        if ( this.repository.getRuleExecutionSet( bindUri ) == null ) {
             throw new RuleExecutionSetDeregistrationException( "no execution set bound to: " + bindUri );
         }
 
-        repository.unregisterRuleExecutionSet( bindUri );
+        this.repository.unregisterRuleExecutionSet( bindUri );
     }
 }

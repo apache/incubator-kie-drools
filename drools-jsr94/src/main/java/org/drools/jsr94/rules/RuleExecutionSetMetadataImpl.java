@@ -34,13 +34,13 @@ public class RuleExecutionSetMetadataImpl
     private static final long serialVersionUID = 1L;
 
     /** The URI for this <code>RuleExecutionSet</code>. */
-    private final String uri;
+    private final String      uri;
 
     /** The name of this RuleExecutionSet. */
-    private final String name;
+    private final String      name;
 
     /** The description of this <code>RuleExecutionSet</code>. */
-    private final String description;
+    private final String      description;
 
     /**
      * Constructs an instance of <code>RuleExecutionSetMetadata</code>.
@@ -49,9 +49,9 @@ public class RuleExecutionSetMetadataImpl
      * @param name The name of this <code>RuleExecutionSet</code>.
      * @param description The description of this <code>RuleExecutionSet</code>.
      */
-    public RuleExecutionSetMetadataImpl(String uri,
-                                        String name,
-                                        String description) {
+    public RuleExecutionSetMetadataImpl(final String uri,
+                                        final String name,
+                                        final String description) {
         this.uri = uri;
         this.name = name;
         this.description = description;

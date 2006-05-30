@@ -103,8 +103,8 @@ public class RuleExecutionSetImpl
      *         a <code>Rule</code> or <code>Package</code>
      *         into the <code>RuleBase</code>
      */
-    RuleExecutionSetImpl(Package pkg,
-                         Map properties) throws IntegrationException {
+    RuleExecutionSetImpl(final Package pkg,
+                         final Map properties) throws IntegrationException {
         if ( null == properties ) {
             this.properties = new HashMap();
         } else {
@@ -113,7 +113,7 @@ public class RuleExecutionSetImpl
         this.pkg = pkg;
         this.description = pkg.getName();//..getDocumentation( );
 
-        org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl(new Jsr94FactHandleFactory());
+        final org.drools.reteoo.ReteooRuleBase ruleBase = new org.drools.reteoo.ReteooRuleBase( new Jsr94FactHandleFactory() );
         ruleBase.addPackage( pkg );
 
         this.ruleBase = ruleBase;
@@ -137,13 +137,13 @@ public class RuleExecutionSetImpl
             }
 
             try {
-                Class filterClass = cl.loadClass( this.defaultObjectFilterClassName );
+                final Class filterClass = cl.loadClass( this.defaultObjectFilterClassName );
                 this.objectFilter = (ObjectFilter) filterClass.newInstance();
-            } catch ( ClassNotFoundException e ) {
+            } catch ( final ClassNotFoundException e ) {
                 throw new RuntimeException( e.toString() );
-            } catch ( InstantiationException e ) {
+            } catch ( final InstantiationException e ) {
                 throw new RuntimeException( e.toString() );
-            } catch ( IllegalAccessException e ) {
+            } catch ( final IllegalAccessException e ) {
                 throw new RuntimeException( e.toString() );
             }
         }
@@ -188,7 +188,7 @@ public class RuleExecutionSetImpl
      *
      * @return the value bound to the key or null
      */
-    public Object getProperty(Object key) {
+    public Object getProperty(final Object key) {
         return this.properties.get( key );
     }
 
@@ -198,8 +198,8 @@ public class RuleExecutionSetImpl
      * @param key the key for the property value
      * @param value the value to associate with the key
      */
-    public void setProperty(Object key,
-                            Object value) {
+    public void setProperty(final Object key,
+                            final Object value) {
         this.properties.put( key,
                              value );
     }
@@ -215,7 +215,7 @@ public class RuleExecutionSetImpl
      *
      * @param objectFilterClassname the default <code>ObjectFilter</code> class
      */
-    public void setDefaultObjectFilter(String objectFilterClassname) {
+    public void setDefaultObjectFilter(final String objectFilterClassname) {
         this.defaultObjectFilterClassName = objectFilterClassname;
     }
 
@@ -237,9 +237,9 @@ public class RuleExecutionSetImpl
      *         <code>RuleExecutionSet</code>.
      */
     public List getRules() {
-        List jsr94Rules = new ArrayList();
+        final List jsr94Rules = new ArrayList();
 
-        Rule[] rules = (this.pkg.getRules());
+        final Rule[] rules = (this.pkg.getRules());
         for ( int i = 0; i < rules.length; ++i ) {
             jsr94Rules.add( new RuleImpl( rules[i] ) );
         }

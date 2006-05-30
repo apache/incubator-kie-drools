@@ -49,7 +49,7 @@ public class RuleImpl
     private String               description;
 
     /** A <code>Map</code> of user-defined and Drools-defined properties. */
-    private Map                  properties       = new HashMap();
+    private final Map            properties       = new HashMap();
 
     /**
      * The <code>org.drools.rule.Rule</code> that lies at the core of
@@ -63,7 +63,7 @@ public class RuleImpl
      *
      * @param rule the <code>org.drools.rule.Rule</code> object to be wrapped.
      */
-    RuleImpl(org.drools.rule.Rule rule) {
+    RuleImpl(final org.drools.rule.Rule rule) {
         this.rule = rule;
         this.name = rule.getName();
         this.description = rule.getName();// the name of a rule is the only description
@@ -107,7 +107,7 @@ public class RuleImpl
      *
      * @return the value bound to the key or <code>null</code>
      */
-    public Object getProperty(Object key) {
+    public Object getProperty(final Object key) {
         // TODO certain keys should reference internal rule accessor methods
         return this.properties.get( key );
     }
@@ -118,8 +118,8 @@ public class RuleImpl
      * @param key the key for the property value
      * @param value the value to associate with the key
      */
-    public void setProperty(Object key,
-                            Object value) {
+    public void setProperty(final Object key,
+                            final Object value) {
         // TODO certain keys should alter internal rule accessor methods
         this.properties.put( key,
                              value );
