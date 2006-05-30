@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.base;
  * limitations under the License.
  */
 
-
-
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 
@@ -31,7 +30,7 @@ public class FieldFactory {
 
     }
 
-    public static FieldValue getFieldValue(String value,
+    public static FieldValue getFieldValue(final String value,
                                            int valueType) {
         FieldValue field = null;
         if ( value == null ) {

@@ -41,50 +41,58 @@ import org.xml.sax.SAXException;
 public abstract class SAXAdapter {
     private final ContentHandler h;
 
-    public SAXAdapter(ContentHandler h) {
+    public SAXAdapter(final ContentHandler h) {
         this.h = h;
     }
 
     protected ContentHandler getContentHandler() {
-        return h;
+        return this.h;
     }
 
-    protected final void addEnd(String name) {
+    protected final void addEnd(final String name) {
         try {
-            h.endElement("", name, name);
-        } catch (SAXException ex) {
-            throw new RuntimeException(ex.toString());
+            this.h.endElement( "",
+                               name,
+                               name );
+        } catch ( final SAXException ex ) {
+            throw new RuntimeException( ex.toString() );
         }
     }
 
-    protected final void addStart(String name, Attributes attrs) {
+    protected final void addStart(final String name,
+                                  final Attributes attrs) {
         try {
-            h.startElement("", name, name, attrs);
-        } catch (SAXException ex) {
-            throw new RuntimeException(ex.toString());
+            this.h.startElement( "",
+                                 name,
+                                 name,
+                                 attrs );
+        } catch ( final SAXException ex ) {
+            throw new RuntimeException( ex.toString() );
         }
     }
 
-    protected final void addElement(String name, Attributes attrs) {
-        addStart(name, attrs);
-        addEnd(name);
+    protected final void addElement(final String name,
+                                    final Attributes attrs) {
+        addStart( name,
+                  attrs );
+        addEnd( name );
     }
 
     protected void addDocumentStart() {
         try {
-            h.startDocument();
-        } catch (SAXException ex) {
-            throw new RuntimeException(ex.getException());
+            this.h.startDocument();
+        } catch ( final SAXException ex ) {
+            throw new RuntimeException( ex.getException() );
         }
     }
 
     protected void addDocumentEnd() {
         try {
-            h.endDocument();
-        } catch (SAXException ex) {
+            this.h.endDocument();
+        } catch ( final SAXException ex ) {
             // ex.getException().printStackTrace();
             // ex.printStackTrace();
-            throw new RuntimeException(ex.toString());
+            throw new RuntimeException( ex.toString() );
         }
     }
 

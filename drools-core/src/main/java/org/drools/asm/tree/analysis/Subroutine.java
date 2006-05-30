@@ -42,52 +42,53 @@ import org.drools.asm.tree.JumpInsnNode;
  */
 class Subroutine {
 
-    Label start;
+    Label     start;
 
     boolean[] access;
 
-    List callers;
+    List      callers;
 
     private Subroutine() {
     }
 
-    public Subroutine(
-        final Label start,
-        final int maxLocals,
-        final JumpInsnNode caller)
-    {
+    public Subroutine(final Label start,
+                      final int maxLocals,
+                      final JumpInsnNode caller) {
         this.start = start;
         this.access = new boolean[maxLocals];
         this.callers = new ArrayList();
-        callers.add(caller);
+        this.callers.add( caller );
     }
 
     public Subroutine copy() {
-        Subroutine result = new Subroutine();
-        result.start = start;
-        result.access = new boolean[access.length];
-        System.arraycopy(access, 0, result.access, 0, access.length);
-        result.callers = new ArrayList(callers);
+        final Subroutine result = new Subroutine();
+        result.start = this.start;
+        result.access = new boolean[this.access.length];
+        System.arraycopy( this.access,
+                          0,
+                          result.access,
+                          0,
+                          this.access.length );
+        result.callers = new ArrayList( this.callers );
         return result;
     }
 
-    public boolean merge(final Subroutine subroutine, boolean checkOverlap)
-            throws AnalyzerException
-    {
-        if (checkOverlap && subroutine.start != start) {
-            throw new AnalyzerException("Overlapping sub routines");
+    public boolean merge(final Subroutine subroutine,
+                         final boolean checkOverlap) throws AnalyzerException {
+        if ( checkOverlap && subroutine.start != this.start ) {
+            throw new AnalyzerException( "Overlapping sub routines" );
         }
         boolean changes = false;
-        for (int i = 0; i < access.length; ++i) {
-            if (subroutine.access[i] && !access[i]) {
-                access[i] = true;
+        for ( int i = 0; i < this.access.length; ++i ) {
+            if ( subroutine.access[i] && !this.access[i] ) {
+                this.access[i] = true;
                 changes = true;
             }
         }
-        for (int i = 0; i < subroutine.callers.size(); ++i) {
-            Object caller = subroutine.callers.get(i);
-            if (!callers.contains(caller)) {
-                callers.add(caller);
+        for ( int i = 0; i < subroutine.callers.size(); ++i ) {
+            final Object caller = subroutine.callers.get( i );
+            if ( !this.callers.contains( caller ) ) {
+                this.callers.add( caller );
                 changes = true;
             }
         }

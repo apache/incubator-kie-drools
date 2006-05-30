@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
-
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,6 +26,7 @@ import java.util.Map;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.base.ClassObjectType;
+import org.drools.common.DefaultFactHandle;
 
 /**
  * @author mproctor
@@ -42,21 +40,21 @@ public class ReteTest extends DroolsTestCase {
      * @throws Exception
      */
     public void testObjectTypeNodes() throws Exception {
-        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        final ReteooRuleBase ruleBase = new ReteooRuleBase();
 
-        Rete rete = ruleBase.getRete();
+        final Rete rete = ruleBase.getRete();
 
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
-                                                            new ClassObjectType( Object.class ),
-                                                            rete );
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  new ClassObjectType( Object.class ),
+                                                                  rete );
         objectTypeNode.attach();
 
-        ObjectTypeNode stringTypeNode = new ObjectTypeNode( 2,
-                                                            new ClassObjectType( String.class ),
-                                                            rete );
+        final ObjectTypeNode stringTypeNode = new ObjectTypeNode( 2,
+                                                                  new ClassObjectType( String.class ),
+                                                                  rete );
         stringTypeNode.attach();
 
-        Collection objectTypeNodes = rete.getObjectTypeNodes();
+        final Collection objectTypeNodes = rete.getObjectTypeNodes();
 
         // Check the ObjectTypeNodes are correctly added to Rete
         assertEquals( 2,
@@ -74,11 +72,11 @@ public class ReteTest extends DroolsTestCase {
      * @throws FactException
      */
     public void testCache() throws FactException {
-        RuleBaseImpl ruleBase = new RuleBaseImpl();
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( ruleBase );
+        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( ruleBase );
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
-        Rete rete = ruleBase.getRete();
+        final Rete rete = ruleBase.getRete();
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( List.class ),
                                                             rete );
@@ -93,8 +91,8 @@ public class ReteTest extends DroolsTestCase {
         objectTypeNode.attach();
 
         // ArrayList matches all three ObjectTypeNodes
-        FactHandleImpl h1 = new FactHandleImpl( 1 );
-        h1.setObject( new ArrayList() );
+        final DefaultFactHandle h1 = new DefaultFactHandle( 1,
+                                                            new ArrayList() );
         rete.assertObject( h1,
                            null,
                            workingMemory );
@@ -105,7 +103,7 @@ public class ReteTest extends DroolsTestCase {
                            null,
                            workingMemory );
 
-        Map map = (HashMap) workingMemory.getNodeMemory( rete );
+        final Map map = (HashMap) workingMemory.getNodeMemory( rete );
         assertLength( 3,
                       (ObjectTypeNode[]) map.get( ArrayList.class ) );
 
@@ -120,46 +118,47 @@ public class ReteTest extends DroolsTestCase {
      * @throws Exception
      */
     public void testAssertObject() throws Exception {
-        RuleBaseImpl ruleBase = new RuleBaseImpl();
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( ruleBase );
+        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( ruleBase );
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
-        Rete rete = ruleBase.getRete();
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
-                                                            new ClassObjectType( List.class ),
-                                                            rete );
+        final Rete rete = ruleBase.getRete();
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  new ClassObjectType( List.class ),
+                                                                  rete );
         objectTypeNode.attach();
         objectTypeNode.addObjectSink( new MockObjectSink() );
 
         // There are no String ObjectTypeNodes, make sure its not propagated
-        FactHandleImpl h1 = new FactHandleImpl( 1 );
-        String string = "String";
-        h1.setObject( string );
+
+        final String string = "String";
+        final DefaultFactHandle h1 = new DefaultFactHandle( 1,
+                                                            string );
 
         rete.assertObject( h1,
                            null,
                            workingMemory );
 
-        MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinksAsList().get( 0 );
+        final MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinksAsList().get( 0 );
         assertLength( 0,
                       sink1.getAsserted() );
 
         // There is a List ObjectTypeNode, make sure it was propagated
-        FactHandleImpl h2 = new FactHandleImpl( 1 );
-        List list = new ArrayList();
-        h2.setObject( list );
+        final List list = new ArrayList();
+        final DefaultFactHandle h2 = new DefaultFactHandle( 1,
+                                                            list );
 
         rete.assertObject( h2,
                            null,
                            workingMemory );
 
-        List asserted = sink1.getAsserted();
+        final List asserted = sink1.getAsserted();
         assertLength( 1,
                       asserted );
 
-        Object[] results = (Object[]) asserted.get( 0 );
+        final Object[] results = (Object[]) asserted.get( 0 );
         assertSame( list,
-                    ((FactHandleImpl) results[0]).getObject() );
+                    ((DefaultFactHandle) results[0]).getObject() );
     }
 
     /**
@@ -167,46 +166,46 @@ public class ReteTest extends DroolsTestCase {
      * ObjectTypeNodes.
      */
     public void testRetractObject() throws Exception {
-        RuleBaseImpl ruleBase = new RuleBaseImpl();
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( ruleBase );
+        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( ruleBase );
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
-        Rete rete = ruleBase.getRete();
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
-                                                            new ClassObjectType( List.class ),
-                                                            rete );
+        final Rete rete = ruleBase.getRete();
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  new ClassObjectType( List.class ),
+                                                                  rete );
         objectTypeNode.attach();
         objectTypeNode.addObjectSink( new MockObjectSink() );
 
         // There are no String ObjectTypeNodes, make sure its not propagated
-        FactHandleImpl h1 = new FactHandleImpl( 1 );
-        String string = "String";
-        h1.setObject( string );
+        final String string = "String";
+        final DefaultFactHandle h1 = new DefaultFactHandle( 1,
+                                                            string );
 
         rete.assertObject( h1,
                            null,
                            workingMemory );
 
-        MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinksAsList().get( 0 );
+        final MockObjectSink sink1 = (MockObjectSink) objectTypeNode.getObjectSinksAsList().get( 0 );
         assertLength( 0,
                       sink1.getRetracted() );
 
         // There is a List ObjectTypeNode, make sure it was propagated
-        FactHandleImpl h2 = new FactHandleImpl( 1 );
-        List list = new ArrayList();
-        h2.setObject( list );
+        final List list = new ArrayList();
+        final DefaultFactHandle h2 = new DefaultFactHandle( 1,
+                                                            list );
 
         rete.retractObject( h2,
                             null,
                             workingMemory );
 
-        List retracted = sink1.getRetracted();
+        final List retracted = sink1.getRetracted();
         assertLength( 1,
                       retracted );
 
-        Object[] results = (Object[]) retracted.get( 0 );
+        final Object[] results = (Object[]) retracted.get( 0 );
         assertSame( list,
-                    ((FactHandleImpl) results[0]).getObject() );
+                    ((DefaultFactHandle) results[0]).getObject() );
     }
 
 }

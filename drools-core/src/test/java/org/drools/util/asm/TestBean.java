@@ -1,4 +1,5 @@
 package org.drools.util.asm;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.util.asm;
  * limitations under the License.
  */
 
-
-
 public class TestBean {
 
     private String  something;
@@ -24,26 +23,26 @@ public class TestBean {
     private boolean blah;
 
     public boolean isBlah() {
-        return blah;
+        return this.blah;
     }
 
-    public void setBlah(boolean blah) {
+    public void setBlah(final boolean blah) {
         this.blah = blah;
     }
 
     public int getNumber() {
-        return number;
+        return this.number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(final int number) {
         this.number = number;
     }
 
     public String getSomething() {
-        return something;
+        return this.something;
     }
 
-    public void setSomething(String something) {
+    public void setSomething(final String something) {
         this.something = something;
     }
 

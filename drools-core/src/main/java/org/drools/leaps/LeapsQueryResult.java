@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -28,21 +29,28 @@ import org.drools.spi.Tuple;
  */
 
 public class LeapsQueryResult extends QueryResult {
-    public LeapsQueryResult(Tuple tuple, WorkingMemory workingMemory,
-            QueryResults queryResults) {
-        super( tuple, workingMemory, queryResults );
+    public LeapsQueryResult(final Tuple tuple,
+                            final WorkingMemory workingMemory,
+                            final QueryResults queryResults) {
+        super( tuple,
+               workingMemory,
+               queryResults );
     }
 
-    public Object get( int i ) {
+    public Object get(final int i) {
         // adjust for the DroolsQuery object
-        return super.get(i - 1);
+        return super.get( i - 1 );
     }
 
     public FactHandle[] getFactHandles() {
         // Strip the DroolsQuery fact
-        FactHandle[] src = super.tuple.getFactHandles( );
-        FactHandle[] dst = new FactHandle[src.length - 1];
-        System.arraycopy( src, 0, dst, 0, dst.length );
+        final FactHandle[] src = super.tuple.getFactHandles();
+        final FactHandle[] dst = new FactHandle[src.length - 1];
+        System.arraycopy( src,
+                          0,
+                          dst,
+                          0,
+                          dst.length );
         return dst;
     }
 

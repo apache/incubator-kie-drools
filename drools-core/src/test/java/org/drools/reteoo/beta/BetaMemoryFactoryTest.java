@@ -34,14 +34,14 @@ import org.drools.spi.MockConstraint;
  * Created: 28/02/2006
  */
 public class BetaMemoryFactoryTest extends TestCase {
-    BetaNodeBinder binder = null;
+    BetaNodeBinder        binder = null;
     RuleBaseConfiguration config;
 
     protected void setUp() throws Exception {
         super.setUp();
-        config = new RuleBaseConfiguration();
-        FieldConstraint[] constraints = new FieldConstraint[]{new MockConstraint()};
-        binder = new BetaNodeBinder( constraints );
+        this.config = new RuleBaseConfiguration();
+        final FieldConstraint[] constraints = new FieldConstraint[]{new MockConstraint()};
+        this.binder = new BetaNodeBinder( constraints );
     }
 
     protected void tearDown() throws Exception {
@@ -53,18 +53,20 @@ public class BetaMemoryFactoryTest extends TestCase {
      */
     public void testNewLeftMemory() {
         try {
-            BetaLeftMemory memory = BetaMemoryFactory.newLeftMemory( config, null );
+            BetaLeftMemory memory = BetaMemoryFactory.newLeftMemory( this.config,
+                                                                     null );
 
             Assert.assertNotNull( "BetaMemoryFactory should not return null",
                                   memory );
             Assert.assertTrue( "Without constraints, BetaMemoryFactory should " + "return an instance of DefaultLeftMemory",
                                memory instanceof DefaultLeftMemory );
 
-            memory = BetaMemoryFactory.newLeftMemory( config, binder );
+            memory = BetaMemoryFactory.newLeftMemory( this.config,
+                                                      this.binder );
             Assert.assertNotNull( "BetaMemoryFactory should not return null",
                                   memory );
 
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             Assert.fail( "BetaLeftMemory is not supposed to throw exceptions" );
         }
     }
@@ -74,18 +76,20 @@ public class BetaMemoryFactoryTest extends TestCase {
      */
     public void testNewRightMemory() {
         try {
-            BetaRightMemory memory = BetaMemoryFactory.newRightMemory( config, null );
+            BetaRightMemory memory = BetaMemoryFactory.newRightMemory( this.config,
+                                                                       null );
 
             Assert.assertNotNull( "BetaMemoryFactory should not return null",
                                   memory );
             Assert.assertTrue( "Without constraints, BetaMemoryFactory should " + "return an instance of DefaultRightMemory",
                                memory instanceof DefaultRightMemory );
 
-            memory = BetaMemoryFactory.newRightMemory( config, binder );
+            memory = BetaMemoryFactory.newRightMemory( this.config,
+                                                       this.binder );
             Assert.assertNotNull( "BetaMemoryFactory should not return null",
                                   memory );
 
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             Assert.fail( "BetaLeftMemory is not supposed to throw exceptions" );
         }
     }

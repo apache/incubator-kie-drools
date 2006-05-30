@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-
-
-
-
 import junit.framework.TestCase;
 
 /**
@@ -32,8 +29,8 @@ public class HandleTest extends TestCase {
      * Test method for 'leaps.LeapsFactHandle.getId()'
      */
     public void testGetId() {
-        Handle handle = new Handle( 123456789,
-                                    new String( "test124" ) );
+        final Handle handle = new Handle( 123456789,
+                                          new String( "test124" ) );
         assertEquals( handle.getId(),
                       123456789 );
         assertEquals( handle.getObject(),

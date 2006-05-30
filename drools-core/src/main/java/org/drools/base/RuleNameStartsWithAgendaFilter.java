@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,12 +16,8 @@ package org.drools.base;
  * limitations under the License.
  */
 
-
-
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
-
-
 
 /**
  * Filters activations based on a specified rule name prefix.
@@ -34,18 +31,18 @@ public class RuleNameStartsWithAgendaFilter
 
     private final boolean accept;
 
-    public RuleNameStartsWithAgendaFilter(String prefix) {
+    public RuleNameStartsWithAgendaFilter(final String prefix) {
         this( prefix,
               true );
     }
 
-    public RuleNameStartsWithAgendaFilter(String prefix,
-                                          boolean accept) {
+    public RuleNameStartsWithAgendaFilter(final String prefix,
+                                          final boolean accept) {
         this.prefix = prefix;
         this.accept = accept;
     }
 
-    public boolean accept(Activation activation) {
+    public boolean accept(final Activation activation) {
         if ( activation.getRule().getName().startsWith( this.prefix ) ) {
             return this.accept;
         } else {

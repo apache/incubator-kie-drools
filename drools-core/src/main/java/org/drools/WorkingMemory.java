@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,9 +15,6 @@ package org.drools;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
 
 import java.io.Serializable;
 import java.util.List;
@@ -196,17 +194,6 @@ public interface WorkingMemory
     List getFactHandles();
 
     /**
-     * Determine if an object is associated with a <code>FactHandle</code>.
-     * 
-     * @param handle
-     *            The fact handle.
-     * 
-     * @return <code>true</code> if an object is known to be associated with
-     *         the specified handle, otherwise <code>false</code>.
-     */
-    boolean containsObject(FactHandle handle);
-
-    /**
      * Assert a fact.
      * 
      * @param object
@@ -278,11 +265,11 @@ public interface WorkingMemory
      * 
      */
     void clearAgenda();
-    
+
     /**
      * Clear the Agenda Group
      */
-    public void clearAgendaGroup(String group);     
+    public void clearAgendaGroup(String group);
 
     /**
      * Forces the workingMemory to be derefenced from

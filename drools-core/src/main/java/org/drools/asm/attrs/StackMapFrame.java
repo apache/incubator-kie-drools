@@ -58,25 +58,27 @@ public class StackMapFrame {
      * A List of <code>StackMapType</code> instances that represent locals for
      * this frame.
      */
-    public List locals;
+    public List  locals;
 
     /**
      * A List of <code>StackMapType</code> instances that represent stack for
      * this frame.
      */
-    public List stack;
+    public List  stack;
 
-    public StackMapFrame(Label label, List locals, List stack) {
+    public StackMapFrame(final Label label,
+                         final List locals,
+                         final List stack) {
         this.label = label;
         this.locals = locals;
         this.stack = stack;
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer("Frame:L");
-        sb.append(System.identityHashCode(label));
-        sb.append(" locals").append(locals);
-        sb.append(" stack").append(stack);
+        final StringBuffer sb = new StringBuffer( "Frame:L" );
+        sb.append( System.identityHashCode( this.label ) );
+        sb.append( " locals" ).append( this.locals );
+        sb.append( " stack" ).append( this.stack );
         return sb.toString();
     }
 }

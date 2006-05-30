@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * Validity exception indicating that a <code>Rule</code> does not contain a
  * <code>Consequence</code>s.
@@ -31,12 +28,17 @@ public class NoConsequenceException extends InvalidRuleException {
     // ------------------------------------------------------------
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 689390109396320998L;
+
+    /**
      * Construct.
      * 
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public NoConsequenceException(Rule rule) {
+    public NoConsequenceException(final Rule rule) {
         super( rule );
     }
 }

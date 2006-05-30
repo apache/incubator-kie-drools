@@ -1,4 +1,5 @@
 package org.drools.leaps.conflict;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps.conflict;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.util.Comparator;
 
@@ -45,7 +42,7 @@ class RuleSalienceConflictResolver
      * @return The singleton instance.
      */
     public static Comparator getInstance() {
-        return INSTANCE;
+        return RuleSalienceConflictResolver.INSTANCE;
     }
 
     /**
@@ -58,8 +55,8 @@ class RuleSalienceConflictResolver
     /**
      * @see LeapsRuleConflictResolver
      */
-    public int compare(Object o1,
-                       Object o2) {
+    public int compare(final Object o1,
+                       final Object o2) {
         return (-1) * AbstractConflictResolver.compare( ((RuleHandle) o1).getSalience(),
                                                         ((RuleHandle) o2).getSalience() );
     };

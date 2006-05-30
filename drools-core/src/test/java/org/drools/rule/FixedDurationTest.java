@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.rule;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import junit.framework.TestCase;
 
@@ -35,7 +32,7 @@ public class FixedDurationTest extends TestCase {
     }
 
     public void testAdd() throws Exception {
-        FixedDuration dur = new FixedDuration();
+        final FixedDuration dur = new FixedDuration();
 
         assertEquals( 0,
                       dur.getDuration( null ) );

@@ -1,4 +1,5 @@
 package org.drools.base.evaluators;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,14 +16,12 @@ package org.drools.base.evaluators;
  * limitations under the License.
  */
 
-
-
 import org.drools.base.BaseEvaluator;
 import org.drools.spi.Evaluator;
 
 public class FloatFactory {
 
-    public static Evaluator getFloatEvaluator(int operator) {
+    public static Evaluator getFloatEvaluator(final int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
                 return FloatEqualEvaluator.INSTANCE;
@@ -42,16 +41,22 @@ public class FloatFactory {
     }
 
     static class FloatEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new FloatEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -3295563005669423883L;
+        public final static Evaluator INSTANCE         = new FloatEqualEvaluator();
 
         private FloatEqualEvaluator() {
             super( Evaluator.FLOAT_TYPE,
                    Evaluator.EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 == null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 == null;
+            }
             return ((Number) object1).equals( object2 );
         }
 
@@ -61,16 +66,22 @@ public class FloatFactory {
     }
 
     static class FloatNotEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new FloatNotEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -4852271063945330337L;
+        public final static Evaluator INSTANCE         = new FloatNotEqualEvaluator();
 
         private FloatNotEqualEvaluator() {
             super( Evaluator.FLOAT_TYPE,
                    Evaluator.NOT_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 != null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 != null;
+            }
             return !((Number) object1).equals( object2 );
         }
 
@@ -80,15 +91,19 @@ public class FloatFactory {
     }
 
     static class FloatLessEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new FloatLessEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -4971007931169565583L;
+        public final static Evaluator INSTANCE         = new FloatLessEvaluator();
 
         private FloatLessEvaluator() {
             super( Evaluator.FLOAT_TYPE,
                    Evaluator.LESS );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).floatValue() < ((Number) object2).floatValue();
         }
 
@@ -98,15 +113,19 @@ public class FloatFactory {
     }
 
     static class FloatLessOrEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new FloatLessOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 8475866839302691518L;
+        public final static Evaluator INSTANCE         = new FloatLessOrEqualEvaluator();
 
         private FloatLessOrEqualEvaluator() {
             super( Evaluator.FLOAT_TYPE,
                    Evaluator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).floatValue() <= ((Number) object2).floatValue();
         }
 
@@ -116,15 +135,19 @@ public class FloatFactory {
     }
 
     static class FloatGreaterEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new FloatGreaterEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 7121251641514162807L;
+        public final static Evaluator INSTANCE         = new FloatGreaterEvaluator();
 
         private FloatGreaterEvaluator() {
             super( Evaluator.FLOAT_TYPE,
                    Evaluator.GREATER );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).floatValue() > ((Number) object2).floatValue();
         }
 
@@ -134,15 +157,19 @@ public class FloatFactory {
     }
 
     static class FloatGreaterOrEqualEvaluator extends BaseEvaluator {
-        private final static Evaluator INSTANCE = new FloatGreaterOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long      serialVersionUID = -6885383763349349798L;
+        private final static Evaluator INSTANCE         = new FloatGreaterOrEqualEvaluator();
 
         private FloatGreaterOrEqualEvaluator() {
             super( Evaluator.FLOAT_TYPE,
                    Evaluator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).floatValue() >= ((Number) object2).floatValue();
         }
 

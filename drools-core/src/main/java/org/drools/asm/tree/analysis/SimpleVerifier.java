@@ -46,17 +46,17 @@ public class SimpleVerifier extends BasicVerifier {
     /**
      * The class that is verified.
      */
-    private final Type currentClass;
+    private final Type    currentClass;
 
     /**
      * The super class of the class that is verified.
      */
-    private final Type currentSuperClass;
+    private final Type    currentSuperClass;
 
     /**
      * The interfaces implemented by the class that is verified.
      */
-    private final List currentClassInterfaces;
+    private final List    currentClassInterfaces;
 
     /**
      * If the class that is verified is an interface.
@@ -67,7 +67,9 @@ public class SimpleVerifier extends BasicVerifier {
      * Constructs a new {@link SimpleVerifier}.
      */
     public SimpleVerifier() {
-        this(null, null, false);
+        this( null,
+              null,
+              false );
     }
 
     /**
@@ -78,12 +80,13 @@ public class SimpleVerifier extends BasicVerifier {
      * @param currentSuperClass the super class of the class that is verified.
      * @param isInterface if the class that is verified is an interface.
      */
-    public SimpleVerifier(
-        final Type currentClass,
-        final Type currentSuperClass,
-        final boolean isInterface)
-    {
-        this(currentClass, currentSuperClass, null, isInterface);
+    public SimpleVerifier(final Type currentClass,
+                          final Type currentSuperClass,
+                          final boolean isInterface) {
+        this( currentClass,
+              currentSuperClass,
+              null,
+              isInterface );
     }
 
     /**
@@ -96,12 +99,10 @@ public class SimpleVerifier extends BasicVerifier {
      *        that is verified.
      * @param isInterface if the class that is verified is an interface.
      */
-    public SimpleVerifier(
-        final Type currentClass,
-        final Type currentSuperClass,
-        final List currentClassInterfaces,
-        final boolean isInterface)
-    {
+    public SimpleVerifier(final Type currentClass,
+                          final Type currentSuperClass,
+                          final List currentClassInterfaces,
+                          final boolean isInterface) {
         this.currentClass = currentClass;
         this.currentSuperClass = currentSuperClass;
         this.currentClassInterfaces = currentClassInterfaces;
@@ -109,89 +110,83 @@ public class SimpleVerifier extends BasicVerifier {
     }
 
     public Value newValue(final Type type) {
-        Value v = super.newValue(type);
-        if (v == BasicValue.REFERENCE_VALUE) {
-            v = new BasicValue(type);
+        Value v = super.newValue( type );
+        if ( v == BasicValue.REFERENCE_VALUE ) {
+            v = new BasicValue( type );
         }
         return v;
     }
 
     protected boolean isArrayValue(final Value value) {
-        Type t = ((BasicValue) value).getType();
-        if (t != null) {
-            return t.getDescriptor().equals("Lnull;")
-                    || t.getSort() == Type.ARRAY;
+        final Type t = ((BasicValue) value).getType();
+        if ( t != null ) {
+            return t.getDescriptor().equals( "Lnull;" ) || t.getSort() == Type.ARRAY;
         }
         return false;
     }
 
-    protected Value getElementValue(final Value objectArrayValue)
-            throws AnalyzerException
-    {
-        Type arrayType = ((BasicValue) objectArrayValue).getType();
-        if (arrayType != null) {
-            if (arrayType.getSort() == Type.ARRAY) {
-                return newValue(Type.getType(arrayType.getDescriptor()
-                        .substring(1)));
-            } else if (arrayType.getDescriptor().equals("Lnull;")) {
+    protected Value getElementValue(final Value objectArrayValue) throws AnalyzerException {
+        final Type arrayType = ((BasicValue) objectArrayValue).getType();
+        if ( arrayType != null ) {
+            if ( arrayType.getSort() == Type.ARRAY ) {
+                return newValue( Type.getType( arrayType.getDescriptor().substring( 1 ) ) );
+            } else if ( arrayType.getDescriptor().equals( "Lnull;" ) ) {
                 return objectArrayValue;
             }
         }
-        throw new AnalyzerException("Not an array type");
+        throw new AnalyzerException( "Not an array type" );
     }
 
-    protected boolean isSubTypeOf(final Value value, final Value expected) {
-        Type expectedType = ((BasicValue) expected).getType();
-        Type type = ((BasicValue) value).getType();
-        if (expectedType == null) {
+    protected boolean isSubTypeOf(final Value value,
+                                  final Value expected) {
+        final Type expectedType = ((BasicValue) expected).getType();
+        final Type type = ((BasicValue) value).getType();
+        if ( expectedType == null ) {
             return type == null;
         }
-        switch (expectedType.getSort()) {
-            case Type.INT:
-            case Type.FLOAT:
-            case Type.LONG:
-            case Type.DOUBLE:
+        switch ( expectedType.getSort() ) {
+            case Type.INT :
+            case Type.FLOAT :
+            case Type.LONG :
+            case Type.DOUBLE :
                 return type == expectedType;
-            case Type.ARRAY:
-            case Type.OBJECT:
-                if (expectedType.getDescriptor().equals("Lnull;")) {
-                    return type.getSort() == Type.OBJECT
-                            || type.getSort() == Type.ARRAY;
+            case Type.ARRAY :
+            case Type.OBJECT :
+                if ( expectedType.getDescriptor().equals( "Lnull;" ) ) {
+                    return type.getSort() == Type.OBJECT || type.getSort() == Type.ARRAY;
                 }
-                if (type.getDescriptor().equals("Lnull;")) {
+                if ( type.getDescriptor().equals( "Lnull;" ) ) {
                     return true;
-                } else if (type.getSort() == Type.OBJECT
-                        || type.getSort() == Type.ARRAY)
-                {
-                    return isAssignableFrom(expectedType, type);
+                } else if ( type.getSort() == Type.OBJECT || type.getSort() == Type.ARRAY ) {
+                    return isAssignableFrom( expectedType,
+                                             type );
                 } else {
                     return false;
                 }
-            default:
-                throw new RuntimeException("Internal error");
+            default :
+                throw new RuntimeException( "Internal error" );
         }
     }
 
-    public Value merge(final Value v, final Value w) {
-        if (!v.equals(w)) {
+    public Value merge(final Value v,
+                       final Value w) {
+        if ( !v.equals( w ) ) {
             Type t = ((BasicValue) v).getType();
-            Type u = ((BasicValue) w).getType();
-            if (t != null
-                    && (t.getSort() == Type.OBJECT || t.getSort() == Type.ARRAY))
-            {
-                if (u != null
-                        && (u.getSort() == Type.OBJECT || u.getSort() == Type.ARRAY))
-                {
-                    if (t.getDescriptor().equals("Lnull;")) {
+            final Type u = ((BasicValue) w).getType();
+            if ( t != null && (t.getSort() == Type.OBJECT || t.getSort() == Type.ARRAY) ) {
+                if ( u != null && (u.getSort() == Type.OBJECT || u.getSort() == Type.ARRAY) ) {
+                    if ( t.getDescriptor().equals( "Lnull;" ) ) {
                         return w;
                     }
-                    if (u.getDescriptor().equals("Lnull;")) {
+                    if ( u.getDescriptor().equals( "Lnull;" ) ) {
                         return v;
                     }
-                    if (isAssignableFrom(t, u)) {
+                    if ( isAssignableFrom( t,
+                                           u ) ) {
                         return v;
                     }
-                    if (isAssignableFrom(u, t)) {
+                    if ( isAssignableFrom( u,
+                                           t ) ) {
                         return w;
                     }
                     // TODO case of array classes of the same dimension
@@ -199,14 +194,15 @@ public class SimpleVerifier extends BasicVerifier {
                     // problem: there may be several possible common super
                     // interfaces
                     do {
-                        if (t == null || isInterface(t)) {
+                        if ( t == null || isInterface( t ) ) {
                             return BasicValue.REFERENCE_VALUE;
                         }
-                        t = getSuperClass(t);
-                        if (isAssignableFrom(t, u)) {
-                            return newValue(t);
+                        t = getSuperClass( t );
+                        if ( isAssignableFrom( t,
+                                               u ) ) {
+                            return newValue( t );
                         }
-                    } while (true);
+                    } while ( true );
                 }
             }
             return BasicValue.UNINITIALIZED_VALUE;
@@ -215,52 +211,57 @@ public class SimpleVerifier extends BasicVerifier {
     }
 
     private boolean isInterface(final Type t) {
-        if (currentClass != null && t.equals(currentClass)) {
-            return isInterface;
+        if ( this.currentClass != null && t.equals( this.currentClass ) ) {
+            return this.isInterface;
         }
-        return getClass(t).isInterface();
+        return getClass( t ).isInterface();
     }
 
     private Type getSuperClass(final Type t) {
-        if (currentClass != null && t.equals(currentClass)) {
-            return currentSuperClass;
+        if ( this.currentClass != null && t.equals( this.currentClass ) ) {
+            return this.currentSuperClass;
         }
-        Class c = getClass(t).getSuperclass();
-        return c == null ? null : Type.getType(c);
+        final Class c = getClass( t ).getSuperclass();
+        return c == null ? null : Type.getType( c );
     }
 
-    private boolean isAssignableFrom(final Type t, final Type u) {
-        if (t.equals(u)) {
+    private boolean isAssignableFrom(final Type t,
+                                     final Type u) {
+        if ( t.equals( u ) ) {
             return true;
         }
-        if (currentClass != null && t.equals(currentClass)) {
-            return isAssignableFrom(t, getSuperClass(u));
+        if ( this.currentClass != null && t.equals( this.currentClass ) ) {
+            return isAssignableFrom( t,
+                                     getSuperClass( u ) );
         }
-        if (currentClass != null && u.equals(currentClass)) {
-            if (isAssignableFrom(t, currentSuperClass)) {
+        if ( this.currentClass != null && u.equals( this.currentClass ) ) {
+            if ( isAssignableFrom( t,
+                                   this.currentSuperClass ) ) {
                 return true;
             }
-            if (currentClassInterfaces != null) {
-                for (int i = 0; i < currentClassInterfaces.size(); ++i) {
-                    Type v = (Type) currentClassInterfaces.get(i);
-                    if (isAssignableFrom(t, v)) {
+            if ( this.currentClassInterfaces != null ) {
+                for ( int i = 0; i < this.currentClassInterfaces.size(); ++i ) {
+                    final Type v = (Type) this.currentClassInterfaces.get( i );
+                    if ( isAssignableFrom( t,
+                                           v ) ) {
                         return true;
                     }
                 }
             }
             return false;
         }
-        return getClass(t).isAssignableFrom(getClass(u));
+        return getClass( t ).isAssignableFrom( getClass( u ) );
     }
 
     protected Class getClass(final Type t) {
         try {
-            if (t.getSort() == Type.ARRAY) {
-                return Class.forName(t.getDescriptor().replace('/', '.'));
+            if ( t.getSort() == Type.ARRAY ) {
+                return Class.forName( t.getDescriptor().replace( '/',
+                                                                 '.' ) );
             }
-            return Class.forName(t.getClassName());
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e.toString());
+            return Class.forName( t.getClassName() );
+        } catch ( final ClassNotFoundException e ) {
+            throw new RuntimeException( e.toString() );
         }
     }
 }

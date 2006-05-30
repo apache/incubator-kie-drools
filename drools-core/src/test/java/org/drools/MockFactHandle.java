@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,16 +16,16 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
-
-
 public class MockFactHandle
     implements
     FactHandle {
-    private int id;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8539029446957595947L;
+    private int               id;
 
-    public MockFactHandle(int id) {
+    public MockFactHandle(final int id) {
         this.id = id;
     }
 
@@ -36,7 +37,7 @@ public class MockFactHandle
         return this.id;
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }

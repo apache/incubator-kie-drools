@@ -50,8 +50,9 @@ public class IntInsnNode extends AbstractInsnNode {
      *        opcode must be BIPUSH, SIPUSH or NEWARRAY.
      * @param operand the operand of the instruction to be constructed.
      */
-    public IntInsnNode(final int opcode, final int operand) {
-        super(opcode);
+    public IntInsnNode(final int opcode,
+                       final int operand) {
+        super( opcode );
         this.operand = operand;
     }
 
@@ -66,10 +67,11 @@ public class IntInsnNode extends AbstractInsnNode {
     }
 
     public void accept(final MethodVisitor mv) {
-        mv.visitIntInsn(opcode, operand);
+        mv.visitIntInsn( this.opcode,
+                         this.operand );
     }
 
     public int getType() {
-        return INT_INSN;
+        return AbstractInsnNode.INT_INSN;
     }
 }

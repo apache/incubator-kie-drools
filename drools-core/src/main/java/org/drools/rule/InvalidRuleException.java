@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,18 +16,18 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * Indicates an error regarding the semantic validity of a rule.
  * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
 public class InvalidRuleException extends RuleConstructionException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8022715021861853591L;
     /** The invalid rule. */
-    private Rule rule;
+    private Rule              rule;
 
     /**
      * @see java.lang.Exception#Exception()
@@ -34,7 +35,7 @@ public class InvalidRuleException extends RuleConstructionException {
      * @param rule
      *            The invalid <code>Rule</code>.
      */
-    public InvalidRuleException(Rule rule) {
+    public InvalidRuleException(final Rule rule) {
         super();
         this.rule = rule;
     }
@@ -45,8 +46,8 @@ public class InvalidRuleException extends RuleConstructionException {
      * @param message
      * @param rule
      */
-    public InvalidRuleException(String message,
-                                Rule rule) {
+    public InvalidRuleException(final String message,
+                                final Rule rule) {
         super( message );
         this.rule = rule;
     }
@@ -57,9 +58,9 @@ public class InvalidRuleException extends RuleConstructionException {
      * @param message
      * @param rule
      */
-    public InvalidRuleException(String message,
-                                Rule rule,
-                                Throwable cause) {
+    public InvalidRuleException(final String message,
+                                final Rule rule,
+                                final Throwable cause) {
         super( message,
                cause );
         this.rule = rule;

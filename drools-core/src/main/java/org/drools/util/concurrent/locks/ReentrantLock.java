@@ -16,33 +16,36 @@ import java.util.Collection;
  * @author Doug Lea
  * @author Dawid Kurzyniec
  */
-public class ReentrantLock implements Lock, java.io.Serializable {
+public class ReentrantLock
+    implements
+    Lock,
+    java.io.Serializable {
     private static final long serialVersionUID = 7373984872572414699L;
 
     private final NonfairSync sync;
 
     final static class NonfairSync {
-        private static final long serialVersionUID = 7316153563782823691L;
+        private static final long  serialVersionUID = 7316153563782823691L;
 
-        protected transient Thread owner_ = null;
-        protected transient int holds_ = 0;
+        protected transient Thread owner_           = null;
+        protected transient int    holds_           = 0;
 
         final void incHolds() {
-            int nextHolds = ++holds_;
-            if (nextHolds < 0)
-                throw new Error("Maximum lock count exceeded");
-            holds_ = nextHolds;
+            final int nextHolds = ++this.holds_;
+            if ( nextHolds < 0 ) {
+                throw new Error( "Maximum lock count exceeded" );
+            }
+            this.holds_ = nextHolds;
         }
 
         public boolean tryLock() {
-            Thread caller = Thread.currentThread();
-            synchronized (this) {
-                if (owner_ == null) {
-                    owner_ = caller;
-                    holds_ = 1;
+            final Thread caller = Thread.currentThread();
+            synchronized ( this ) {
+                if ( this.owner_ == null ) {
+                    this.owner_ = caller;
+                    this.holds_ = 1;
                     return true;
-                }
-                else if (caller == owner_) {
+                } else if ( caller == this.owner_ ) {
                     incHolds();
                     return true;
                 }
@@ -51,98 +54,99 @@ public class ReentrantLock implements Lock, java.io.Serializable {
         }
 
         public synchronized int getHoldCount() {
-            return isHeldByCurrentThread() ? holds_ : 0;
+            return isHeldByCurrentThread() ? this.holds_ : 0;
         }
 
         public synchronized boolean isHeldByCurrentThread() {
-            return holds_ > 0 && Thread.currentThread() == owner_;
+            return this.holds_ > 0 && Thread.currentThread() == this.owner_;
         }
 
         public synchronized boolean isLocked() {
-            return owner_ != null;
+            return this.owner_ != null;
         }
 
         protected synchronized Thread getOwner() {
-            return owner_;
+            return this.owner_;
         }
 
         public boolean hasQueuedThreads() {
-            throw new UnsupportedOperationException("Use FAIR version");
+            throw new UnsupportedOperationException( "Use FAIR version" );
         }
 
         public int getQueueLength() {
-            throw new UnsupportedOperationException("Use FAIR version");
+            throw new UnsupportedOperationException( "Use FAIR version" );
         }
 
         public Collection getQueuedThreads() {
-            throw new UnsupportedOperationException("Use FAIR version");
+            throw new UnsupportedOperationException( "Use FAIR version" );
         }
 
-        public boolean isQueued(Thread thread) {
-            throw new UnsupportedOperationException("Use FAIR version");
+        public boolean isQueued(final Thread thread) {
+            throw new UnsupportedOperationException( "Use FAIR version" );
         }
 
         public void lock() {
-            Thread caller = Thread.currentThread();
-            synchronized (this) {
-                if (owner_ == null) {
-                    owner_ = caller;
-                    holds_ = 1;
+            final Thread caller = Thread.currentThread();
+            synchronized ( this ) {
+                if ( this.owner_ == null ) {
+                    this.owner_ = caller;
+                    this.holds_ = 1;
                     return;
-                }
-                else if (caller == owner_) {
+                } else if ( caller == this.owner_ ) {
                     incHolds();
                     return;
-                }
-                else {
+                } else {
                     boolean wasInterrupted = Thread.interrupted();
                     try {
-                        while (true) {
+                        while ( true ) {
                             try {
                                 wait();
-                            }
-                            catch (InterruptedException e) {
+                            } catch ( final InterruptedException e ) {
                                 wasInterrupted = true;
                                 // no need to notify; if we were signalled, we
                                 // will act as signalled, ignoring the
                                 // interruption
                             }
-                            if (owner_ == null) {
-                                owner_ = caller;
-                                holds_ = 1;
+                            if ( this.owner_ == null ) {
+                                this.owner_ = caller;
+                                this.holds_ = 1;
                                 return;
                             }
                         }
-                    }
-                    finally {
-                        if (wasInterrupted) Thread.currentThread().interrupt();
+                    } finally {
+                        if ( wasInterrupted ) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
                 }
             }
         }
 
         public void lockInterruptibly() throws InterruptedException {
-            if (Thread.interrupted()) throw new InterruptedException();
-            Thread caller = Thread.currentThread();
-            synchronized (this) {
-                if (owner_ == null) {
-                    owner_ = caller;
-                    holds_ = 1;
+            if ( Thread.interrupted() ) {
+                throw new InterruptedException();
+            }
+            final Thread caller = Thread.currentThread();
+            synchronized ( this ) {
+                if ( this.owner_ == null ) {
+                    this.owner_ = caller;
+                    this.holds_ = 1;
                     return;
-                }
-                else if (caller == owner_) {
+                } else if ( caller == this.owner_ ) {
                     incHolds();
                     return;
-                }
-                else {
+                } else {
                     try {
-                        do { wait(); } while (owner_ != null);
-                        owner_ = caller;
-                        holds_ = 1;
+                        do {
+                            wait();
+                        } while ( this.owner_ != null );
+                        this.owner_ = caller;
+                        this.holds_ = 1;
                         return;
-                    }
-                    catch (InterruptedException ex) {
-                        if (owner_ == null) notify();
+                    } catch ( final InterruptedException ex ) {
+                        if ( this.owner_ == null ) {
+                            notify();
+                        }
                         throw ex;
                     }
                 }
@@ -150,11 +154,12 @@ public class ReentrantLock implements Lock, java.io.Serializable {
         }
 
         public synchronized void unlock() {
-            if (Thread.currentThread() != owner_)
-                throw new IllegalMonitorStateException("Not owner");
+            if ( Thread.currentThread() != this.owner_ ) {
+                throw new IllegalMonitorStateException( "Not owner" );
+            }
 
-            if (--holds_ == 0) {
-                owner_ = null;
+            if ( --this.holds_ == 0 ) {
+                this.owner_ = null;
                 notify();
             }
         }
@@ -165,7 +170,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * This is equivalent to using <tt>ReentrantLock(false)</tt>.
      */
     public ReentrantLock() {
-        sync = new NonfairSync();
+        this.sync = new NonfairSync();
     }
 
     /**
@@ -184,7 +189,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * at which time the lock hold count is set to one.
      */
     public void lock() {
-        sync.lock();
+        this.sync.lock();
     }
 
     /**
@@ -235,7 +240,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @throws InterruptedException if the current thread is interrupted
      */
     public void lockInterruptibly() throws InterruptedException {
-        sync.lockInterruptibly();
+        this.sync.lockInterruptibly();
     }
 
     /**
@@ -266,9 +271,8 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * <tt>false</tt> otherwise.
      */
     public boolean tryLock() {
-        return sync.tryLock();
+        return this.sync.tryLock();
     }
-
 
     /**
      * Attempts to release this lock.
@@ -282,7 +286,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * hold this lock.
      */
     public void unlock() {
-        sync.unlock();
+        this.sync.unlock();
     }
 
     /**
@@ -316,7 +320,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * or zero if this lock is not held by the current thread.
      */
     public int getHoldCount() {
-        return sync.getHoldCount();
+        return this.sync.getHoldCount();
     }
 
     /**
@@ -362,7 +366,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * <tt>false</tt> otherwise.
      */
     public boolean isHeldByCurrentThread() {
-        return sync.isHeldByCurrentThread();
+        return this.sync.isHeldByCurrentThread();
     }
 
     /**
@@ -373,7 +377,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * <tt>false</tt> otherwise.
      */
     public boolean isLocked() {
-        return sync.isLocked();
+        return this.sync.isLocked();
     }
 
     /**
@@ -389,7 +393,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @return the owner, or <tt>null</tt> if not owned
      */
     protected Thread getOwner() {
-        return sync.getOwner();
+        return this.sync.getOwner();
     }
 
     /**
@@ -403,9 +407,8 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * the lock.
      */
     public final boolean hasQueuedThreads() {
-        return sync.hasQueuedThreads();
+        return this.sync.hasQueuedThreads();
     }
-
 
     /**
      * Queries whether the given thread is waiting to acquire this
@@ -418,10 +421,9 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @return true if the given thread is queued waiting for this lock.
      * @throws NullPointerException if thread is null
      */
-    public final boolean hasQueuedThread(Thread thread) {
-        return sync.isQueued(thread);
+    public final boolean hasQueuedThread(final Thread thread) {
+        return this.sync.isQueued( thread );
     }
-
 
     /**
      * Returns an estimate of the number of threads waiting to
@@ -433,7 +435,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @return the estimated number of threads waiting for this lock
      */
     public final int getQueueLength() {
-        return sync.getQueueLength();
+        return this.sync.getQueueLength();
     }
 
     /**
@@ -447,7 +449,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @return the collection of threads
      */
     protected Collection getQueuedThreads() {
-        return sync.getQueuedThreads();
+        return this.sync.getQueuedThreads();
     }
 
     /**
@@ -458,9 +460,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @return a string identifying this lock, as well as its lock state.
      */
     public String toString() {
-        Thread o = getOwner();
-        return super.toString() + ((o == null) ?
-                                   "[Unlocked]" :
-                                   "[Locked by thread " + o.getName() + "]");
+        final Thread o = getOwner();
+        return super.toString() + ((o == null) ? "[Unlocked]" : "[Locked by thread " + o.getName() + "]");
     }
 }

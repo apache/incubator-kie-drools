@@ -1,4 +1,5 @@
 package org.drools.event;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.event;
  * limitations under the License.
  */
 
-
-
-
-
 public class DebugWorkingMemoryEventListener
     implements
     WorkingMemoryEventListener {
@@ -26,15 +23,15 @@ public class DebugWorkingMemoryEventListener
         // intentionally left blank
     }
 
-    public void objectAsserted(ObjectAssertedEvent event) {
+    public void objectAsserted(final ObjectAssertedEvent event) {
         System.err.println( event );
     }
 
-    public void objectModified(ObjectModifiedEvent event) {
+    public void objectModified(final ObjectModifiedEvent event) {
         System.err.println( event );
     }
 
-    public void objectRetracted(ObjectRetractedEvent event) {
+    public void objectRetracted(final ObjectRetractedEvent event) {
         System.err.println( event );
     }
 

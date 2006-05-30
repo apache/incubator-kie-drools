@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 package org.drools.util;
 
@@ -90,7 +88,7 @@ public class IteratorChain
      * @throws NullPointerException
      *             if the iterator is null
      */
-    public IteratorChain(Iterator iterator) {
+    public IteratorChain(final Iterator iterator) {
         super();
         addIterator( iterator );
     }
@@ -106,8 +104,8 @@ public class IteratorChain
      * @throws NullPointerException
      *             if either iterator is null
      */
-    public IteratorChain(Iterator a,
-                         Iterator b) {
+    public IteratorChain(final Iterator a,
+                         final Iterator b) {
         super();
         addIterator( a );
         addIterator( b );
@@ -122,7 +120,7 @@ public class IteratorChain
      * @throws NullPointerException
      *             if iterators array is or contains null
      */
-    public IteratorChain(Iterator[] iterators) {
+    public IteratorChain(final Iterator[] iterators) {
         super();
         for ( int i = 0; i < iterators.length; i++ ) {
             addIterator( iterators[i] );
@@ -140,10 +138,10 @@ public class IteratorChain
      * @throws ClassCastException
      *             if iterators collection doesn't contain an iterator
      */
-    public IteratorChain(Collection iterators) {
+    public IteratorChain(final Collection iterators) {
         super();
-        for ( Iterator it = iterators.iterator(); it.hasNext(); ) {
-            Iterator item = (Iterator) it.next();
+        for ( final Iterator it = iterators.iterator(); it.hasNext(); ) {
+            final Iterator item = (Iterator) it.next();
             addIterator( item );
         }
     }
@@ -159,7 +157,7 @@ public class IteratorChain
      * @throws NullPointerException
      *             if the iterator is null
      */
-    public void addIterator(Iterator iterator) {
+    public void addIterator(final Iterator iterator) {
         checkLocked();
         if ( iterator == null ) {
             throw new NullPointerException( "Iterator must not be null" );
@@ -181,8 +179,8 @@ public class IteratorChain
      * @throws NullPointerException
      *             if the iterator is null
      */
-    public void setIterator(int index,
-                            Iterator iterator) throws IndexOutOfBoundsException {
+    public void setIterator(final int index,
+                            final Iterator iterator) throws IndexOutOfBoundsException {
         checkLocked();
         if ( iterator == null ) {
             throw new NullPointerException( "Iterator must not be null" );

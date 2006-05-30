@@ -30,8 +30,8 @@ class InitialFactImpl
     implements
     InitialFact {
     private static final InitialFact INSTANCE = new InitialFactImpl();
-    
-    private final int hashCode = "InitialFactImpl".hashCode();
+
+    private final int                hashCode = "InitialFactImpl".hashCode();
 
     public static InitialFact getInstance() {
         return InitialFactImpl.INSTANCE;
@@ -39,12 +39,12 @@ class InitialFactImpl
 
     private InitialFactImpl() {
     }
-    
+
     public int hashCode() {
         return this.hashCode;
     }
-    
-    public boolean equals(Object object) {
+
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -54,5 +54,5 @@ class InitialFactImpl
         }
 
         return true;
-    }   
+    }
 }

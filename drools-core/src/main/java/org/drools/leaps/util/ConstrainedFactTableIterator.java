@@ -1,4 +1,5 @@
 package org.drools.leaps.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -54,11 +55,11 @@ public class ConstrainedFactTableIterator
 
     private TableRecord     lastTableRecord;
 
-    protected ConstrainedFactTableIterator(WorkingMemory workingMemory,
-                                           ColumnConstraints constraints,
-                                           TableRecord startRecord,
-                                           TableRecord currentRecord,
-                                           TableRecord lastRecord) {
+    protected ConstrainedFactTableIterator(final WorkingMemory workingMemory,
+                                           final ColumnConstraints constraints,
+                                           final TableRecord startRecord,
+                                           final TableRecord currentRecord,
+                                           final TableRecord lastRecord) {
         this.workingMemory = workingMemory;
         this.constraints = constraints;
         this.lastTableRecord = lastRecord;
@@ -87,8 +88,8 @@ public class ConstrainedFactTableIterator
         this.nextRecord = this.lastRecord;
     }
 
-    private void add(Object object) {
-        TableRecord record = new TableRecord( object );
+    private void add(final Object object) {
+        final TableRecord record = new TableRecord( object );
         if ( this.firstRecord == null ) {
             this.firstRecord = record;
             this.lastRecord = record;

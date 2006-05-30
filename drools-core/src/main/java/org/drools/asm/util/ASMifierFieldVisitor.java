@@ -37,14 +37,14 @@ import org.drools.asm.FieldVisitor;
  * 
  * @author Eric Bruneton
  */
-public class ASMifierFieldVisitor extends ASMifierAbstractVisitor implements
-        FieldVisitor
-{
+public class ASMifierFieldVisitor extends ASMifierAbstractVisitor
+    implements
+    FieldVisitor {
 
     /**
      * Constructs a new {@link ASMifierFieldVisitor}.
      */
     public ASMifierFieldVisitor() {
-        super("fv");
+        super( "fv" );
     }
 }

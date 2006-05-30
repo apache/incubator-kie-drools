@@ -36,28 +36,32 @@ import org.drools.rule.LiteralConstraint;
 public class AlphaNodeSwitch
     implements
     Serializable {
+    /**
+     * 
+     */
+    private static final long       serialVersionUID = 3574628117634649074L;
     private final LiteralConstraint constraint;
     private final Map               alphaSwitch;
 
-    public AlphaNodeSwitch(LiteralConstraint constraint) {
-        this.constraint = (LiteralConstraint) constraint;
+    public AlphaNodeSwitch(final LiteralConstraint constraint) {
+        this.constraint = constraint;
         this.alphaSwitch = new HashMap();
     }
 
-    public void addAlphaNode(AlphaNode node) {
-        LiteralConstraint constraint = (LiteralConstraint) node.getConstraint();
+    public void addAlphaNode(final AlphaNode node) {
+        final LiteralConstraint constraint = (LiteralConstraint) node.getConstraint();
         this.alphaSwitch.put( constraint.getField().getValue(),
                               node );
     }
 
-    public boolean removeAlphaNode(AlphaNode node) {
-        LiteralConstraint constraint = (LiteralConstraint) node.getConstraint();
+    public boolean removeAlphaNode(final AlphaNode node) {
+        final LiteralConstraint constraint = (LiteralConstraint) node.getConstraint();
         return this.alphaSwitch.remove( constraint.getField().getValue() ) != null;
     }
 
-    public AlphaNode getNode(WorkingMemory workingMemory,
-                             InternalFactHandle handle) {
-        Object value = this.constraint.getFieldExtractor().getValue( handle.getObject() );
+    public AlphaNode getNode(final WorkingMemory workingMemory,
+                             final InternalFactHandle handle) {
+        final Object value = this.constraint.getFieldExtractor().getValue( handle.getObject() );
         return (AlphaNode) this.alphaSwitch.get( value );
     }
 
@@ -69,13 +73,13 @@ public class AlphaNodeSwitch
         return this.alphaSwitch.values();
     }
 
-    public boolean equals(Object otherConstraint) {
+    public boolean equals(final Object otherConstraint) {
         if ( this == otherConstraint ) {
             return true;
         }
 
         if ( (otherConstraint != null) && (otherConstraint instanceof AlphaNodeSwitch) ) {
-            AlphaNodeSwitch other = (AlphaNodeSwitch) otherConstraint;
+            final AlphaNodeSwitch other = (AlphaNodeSwitch) otherConstraint;
             if ( (this.constraint.getEvaluator().getOperator() == other.constraint.getEvaluator().getOperator()) && (this.constraint.getFieldExtractor().getIndex() == other.constraint.getFieldExtractor().getIndex()) ) {
                 return true;
             }

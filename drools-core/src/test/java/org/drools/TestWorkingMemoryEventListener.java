@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.Serializable;
 
 import org.drools.event.ActivationCancelledEvent;
@@ -34,42 +31,46 @@ public class TestWorkingMemoryEventListener
     WorkingMemoryEventListener,
     Serializable {
 
-    public int asserted;
-    public int modified;
-    public int retracted;
-    public int tested;
-    public int created;
-    public int cancelled;
-    public int fired;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5049624024436577561L;
+    public int                asserted;
+    public int                modified;
+    public int                retracted;
+    public int                tested;
+    public int                created;
+    public int                cancelled;
+    public int                fired;
 
     public TestWorkingMemoryEventListener() {
         // intentionally left blank
     }
 
-    public void objectAsserted(ObjectAssertedEvent event) {
+    public void objectAsserted(final ObjectAssertedEvent event) {
         this.asserted++;
     }
 
-    public void objectModified(ObjectModifiedEvent event) {
+    public void objectModified(final ObjectModifiedEvent event) {
         this.modified++;
     }
 
-    public void objectRetracted(ObjectRetractedEvent event) {
+    public void objectRetracted(final ObjectRetractedEvent event) {
         this.retracted++;
     }
 
     /*
      * public void conditionTested(ConditionTestedEvent event) { tested++; }
      */
-    public void activationCreated(ActivationCreatedEvent event) {
+    public void activationCreated(final ActivationCreatedEvent event) {
         this.created++;
     }
 
-    public void activationCancelled(ActivationCancelledEvent event) {
+    public void activationCancelled(final ActivationCancelledEvent event) {
         this.cancelled++;
     }
 
-    public void activationFired(AfterActivationFiredEvent event) {
+    public void activationFired(final AfterActivationFiredEvent event) {
         this.fired++;
     }
 }

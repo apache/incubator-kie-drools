@@ -65,13 +65,11 @@ public class FieldInsnNode extends AbstractInsnNode {
      * @param name the field's name.
      * @param desc the field's descriptor (see {@link org.drools.asm.Type}).
      */
-    public FieldInsnNode(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        super(opcode);
+    public FieldInsnNode(final int opcode,
+                         final String owner,
+                         final String name,
+                         final String desc) {
+        super( opcode );
         this.owner = owner;
         this.name = name;
         this.desc = desc;
@@ -88,10 +86,13 @@ public class FieldInsnNode extends AbstractInsnNode {
     }
 
     public void accept(final MethodVisitor cv) {
-        cv.visitFieldInsn(opcode, owner, name, desc);
+        cv.visitFieldInsn( this.opcode,
+                           this.owner,
+                           this.name,
+                           this.desc );
     }
 
     public int getType() {
-        return FIELD_INSN;
+        return AbstractInsnNode.FIELD_INSN;
     }
 }

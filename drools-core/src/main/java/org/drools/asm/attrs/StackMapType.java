@@ -45,69 +45,60 @@ import org.drools.asm.Label;
 
 public class StackMapType {
 
-    public static final int ITEM_Top = 0;
-    public static final int ITEM_Integer = 1;
-    public static final int ITEM_Float = 2;
-    public static final int ITEM_Double = 3;
-    public static final int ITEM_Long = 4;
-    public static final int ITEM_Null = 5;
-    public static final int ITEM_UninitializedThis = 6;
-    public static final int ITEM_Object = 7;
-    public static final int ITEM_Uninitialized = 8;
+    public static final int      ITEM_Top               = 0;
+    public static final int      ITEM_Integer           = 1;
+    public static final int      ITEM_Float             = 2;
+    public static final int      ITEM_Double            = 3;
+    public static final int      ITEM_Long              = 4;
+    public static final int      ITEM_Null              = 5;
+    public static final int      ITEM_UninitializedThis = 6;
+    public static final int      ITEM_Object            = 7;
+    public static final int      ITEM_Uninitialized     = 8;
 
-    public static final String[] ITEM_NAMES = {
-        "Top",
-        "Integer",
-        "Float",
-        "Double",
-        "Long",
-        "Null",
-        "UninitializedThis",
-        "Object",
-        "Uninitialized" };
+    public static final String[] ITEM_NAMES             = {"Top", "Integer", "Float", "Double", "Long", "Null", "UninitializedThis", "Object", "Uninitialized"};
 
-    private int type;
-    private Label offset;
-    private String object;
+    private int                  type;
+    private Label                offset;
+    private String               object;
 
-    private StackMapType(int type) {
+    private StackMapType(final int type) {
         this.type = type;
     }
 
     public int getType() {
-        return type;
+        return this.type;
     }
 
-    public static StackMapType getTypeInfo(int itemType) {
-        if (itemType < ITEM_Top || itemType > ITEM_Uninitialized) {
-            throw new IllegalArgumentException("" + itemType);
+    public static StackMapType getTypeInfo(final int itemType) {
+        if ( itemType < StackMapType.ITEM_Top || itemType > StackMapType.ITEM_Uninitialized ) {
+            throw new IllegalArgumentException( "" + itemType );
         }
-        return new StackMapType(itemType);
+        return new StackMapType( itemType );
     }
 
-    public void setLabel(Label offset) {
+    public void setLabel(final Label offset) {
         this.offset = offset;
     }
 
-    public void setObject(String object) {
+    public void setObject(final String object) {
         this.object = object;
     }
 
     public Label getLabel() {
-        return offset;
+        return this.offset;
     }
 
     public String getObject() {
-        return object;
+        return this.object;
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer(ITEM_NAMES[type]);
-        if (type == ITEM_Object) {
-            sb.append(":").append(object);
+        final StringBuffer sb = new StringBuffer( StackMapType.ITEM_NAMES[this.type] );
+        if ( this.type == StackMapType.ITEM_Object ) {
+            sb.append( ":" ).append( this.object );
         }
-        if (type == ITEM_Uninitialized) {
-            sb.append(":L").append(System.identityHashCode(offset));
+        if ( this.type == StackMapType.ITEM_Uninitialized ) {
+            sb.append( ":L" ).append( System.identityHashCode( this.offset ) );
         }
         return sb.toString();
     }

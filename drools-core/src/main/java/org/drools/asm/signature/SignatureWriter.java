@@ -35,7 +35,9 @@ package org.drools.asm.signature;
  * @author Thomas Hallgren
  * @author Eric Bruneton
  */
-public class SignatureWriter implements SignatureVisitor {
+public class SignatureWriter
+    implements
+    SignatureVisitor {
 
     /**
      * Buffer used to construct the signature.
@@ -45,12 +47,12 @@ public class SignatureWriter implements SignatureVisitor {
     /**
      * Indicates if the signature contains formal type parameters.
      */
-    private boolean hasFormals;
+    private boolean            hasFormals;
 
     /**
      * Indicates if the signature contains method parameter types.
      */
-    private boolean hasParameters;
+    private boolean            hasParameters;
 
     /**
      * Stack used to keep track of class types that have arguments. Each element
@@ -58,7 +60,7 @@ public class SignatureWriter implements SignatureVisitor {
      * the lowest order bit. Pushing false = *2, pushing true = *2+1, popping =
      * /2.
      */
-    private int argumentStack;
+    private int                argumentStack;
 
     /**
      * Constructs a new {@link SignatureWriter} object.
@@ -70,13 +72,13 @@ public class SignatureWriter implements SignatureVisitor {
     // Implementation of the SignatureVisitor interface
     // ------------------------------------------------------------------------
 
-    public void visitFormalTypeParameter(String name) {
-        if (!hasFormals) {
-            hasFormals = true;
-            buf.append('<');
+    public void visitFormalTypeParameter(final String name) {
+        if ( !this.hasFormals ) {
+            this.hasFormals = true;
+            this.buf.append( '<' );
         }
-        buf.append(name);
-        buf.append(':');
+        this.buf.append( name );
+        this.buf.append( ':' );
     }
 
     public SignatureVisitor visitClassBound() {
@@ -84,7 +86,7 @@ public class SignatureWriter implements SignatureVisitor {
     }
 
     public SignatureVisitor visitInterfaceBound() {
-        buf.append(':');
+        this.buf.append( ':' );
         return this;
     }
 
@@ -99,77 +101,77 @@ public class SignatureWriter implements SignatureVisitor {
 
     public SignatureVisitor visitParameterType() {
         endFormals();
-        if (!hasParameters) {
-            hasParameters = true;
-            buf.append('(');
+        if ( !this.hasParameters ) {
+            this.hasParameters = true;
+            this.buf.append( '(' );
         }
         return this;
     }
 
     public SignatureVisitor visitReturnType() {
         endFormals();
-        if (!hasParameters) {
-            buf.append('(');
+        if ( !this.hasParameters ) {
+            this.buf.append( '(' );
         }
-        buf.append(')');
+        this.buf.append( ')' );
         return this;
     }
 
     public SignatureVisitor visitExceptionType() {
-        buf.append('^');
+        this.buf.append( '^' );
         return this;
     }
 
-    public void visitBaseType(char descriptor) {
-        buf.append(descriptor);
+    public void visitBaseType(final char descriptor) {
+        this.buf.append( descriptor );
     }
 
-    public void visitTypeVariable(String name) {
-        buf.append('T');
-        buf.append(name);
-        buf.append(';');
+    public void visitTypeVariable(final String name) {
+        this.buf.append( 'T' );
+        this.buf.append( name );
+        this.buf.append( ';' );
     }
 
     public SignatureVisitor visitArrayType() {
-        buf.append('[');
+        this.buf.append( '[' );
         return this;
     }
 
-    public void visitClassType(String name) {
-        buf.append('L');
-        buf.append(name);
-        argumentStack *= 2;
+    public void visitClassType(final String name) {
+        this.buf.append( 'L' );
+        this.buf.append( name );
+        this.argumentStack *= 2;
     }
 
-    public void visitInnerClassType(String name) {
+    public void visitInnerClassType(final String name) {
         endArguments();
-        buf.append('.');
-        buf.append(name);
-        argumentStack *= 2;
+        this.buf.append( '.' );
+        this.buf.append( name );
+        this.argumentStack *= 2;
     }
 
     public void visitTypeArgument() {
-        if (argumentStack % 2 == 0) {
-            ++argumentStack;
-            buf.append('<');
+        if ( this.argumentStack % 2 == 0 ) {
+            ++this.argumentStack;
+            this.buf.append( '<' );
         }
-        buf.append('*');
+        this.buf.append( '*' );
     }
 
-    public SignatureVisitor visitTypeArgument(char wildcard) {
-        if (argumentStack % 2 == 0) {
-            ++argumentStack;
-            buf.append('<');
+    public SignatureVisitor visitTypeArgument(final char wildcard) {
+        if ( this.argumentStack % 2 == 0 ) {
+            ++this.argumentStack;
+            this.buf.append( '<' );
         }
-        if (wildcard != '=') {
-            buf.append(wildcard);
+        if ( wildcard != '=' ) {
+            this.buf.append( wildcard );
         }
         return this;
     }
 
     public void visitEnd() {
         endArguments();
-        buf.append(';');
+        this.buf.append( ';' );
     }
 
     /**
@@ -178,7 +180,7 @@ public class SignatureWriter implements SignatureVisitor {
      * @return the signature that was built by this signature writer.
      */
     public String toString() {
-        return buf.toString();
+        return this.buf.toString();
     }
 
     // ------------------------------------------------------------------------
@@ -189,9 +191,9 @@ public class SignatureWriter implements SignatureVisitor {
      * Ends the formal type parameters section of the signature.
      */
     private void endFormals() {
-        if (hasFormals) {
-            hasFormals = false;
-            buf.append('>');
+        if ( this.hasFormals ) {
+            this.hasFormals = false;
+            this.buf.append( '>' );
         }
     }
 
@@ -199,9 +201,9 @@ public class SignatureWriter implements SignatureVisitor {
      * Ends the type arguments of a class or inner class type.
      */
     private void endArguments() {
-        if (argumentStack % 2 == 1) {
-            buf.append('>');
+        if ( this.argumentStack % 2 == 1 ) {
+            this.buf.append( '>' );
         }
-        argumentStack /= 2;
+        this.argumentStack /= 2;
     }
 }

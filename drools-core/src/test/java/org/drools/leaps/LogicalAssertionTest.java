@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.util.ArrayList;
 
@@ -37,19 +34,24 @@ import org.drools.spi.PropagationContext;
  */
 public class LogicalAssertionTest extends DroolsTestCase {
 
-    Consequence       consequence;
+    Consequence        consequence;
 
-    RuleBaseImpl      ruleBase;
+    LeapsRuleBase      ruleBase;
 
-    WorkingMemoryImpl workingMemory;
+    LeapsWorkingMemory workingMemory;
 
     public void setUp() throws Exception {
         super.setUp();
-        this.ruleBase = new RuleBaseImpl();
-        this.workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        this.ruleBase = new LeapsRuleBase();
+        this.workingMemory = (LeapsWorkingMemory) this.ruleBase.newWorkingMemory();
         this.consequence = new Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -3536436180370109113L;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) {
                 // do nothing
             }
         };
@@ -63,18 +65,18 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         rule1.setConsequence( this.consequence );
 
-        LeapsRule leapsRule1 = new LeapsRule( rule1,
-                                              new ArrayList(),
-                                              new ArrayList(),
-                                              new ArrayList(),
-                                              new ArrayList() );
+        final LeapsRule leapsRule1 = new LeapsRule( rule1,
+                                                    new ArrayList(),
+                                                    new ArrayList(),
+                                                    new ArrayList(),
+                                                    new ArrayList() );
 
-        FactHandleImpl[] factHandles = new FactHandleImpl[1];
+        final FactHandleImpl[] factHandles = new FactHandleImpl[1];
         PropagationContext context1;
         LeapsTuple tuple1;
 
-        String logicalString1 = new String( "logical" );
-        FactHandle handle1 = ((HandleFactory) ruleBase.getFactHandleFactory()).newFactHandle( logicalString1 );
+        final String logicalString1 = new String( "logical" );
+        final FactHandle handle1 = ((LeapsFactHandleFactory) this.ruleBase.getFactHandleFactory()).newFactHandle( logicalString1 );
         context1 = new PropagationContextImpl( 1,
                                                PropagationContext.ASSERTION,
                                                rule1,
@@ -90,7 +92,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                      null,
                                                                      this.workingMemory.getAgenda().getActivations()[0] );
 
-        String logicalString2 = new String( "logical" );
+        final String logicalString2 = new String( "logical" );
         FactHandle logicalHandle2 = this.workingMemory.assertObject( logicalString2,
                                                                      false,
                                                                      true,
@@ -123,18 +125,18 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         rule1.setConsequence( this.consequence );
 
-        LeapsRule leapsRule1 = new LeapsRule( rule1,
-                                              new ArrayList(),
-                                              new ArrayList(),
-                                              new ArrayList(),
-                                              new ArrayList() );
+        final LeapsRule leapsRule1 = new LeapsRule( rule1,
+                                                    new ArrayList(),
+                                                    new ArrayList(),
+                                                    new ArrayList(),
+                                                    new ArrayList() );
 
-        FactHandleImpl[] factHandles = new FactHandleImpl[1];
+        final FactHandleImpl[] factHandles = new FactHandleImpl[1];
         PropagationContext context1;
         LeapsTuple tuple1;
 
         String logicalString1 = new String( "logical" );
-        FactHandle handle1 = ((HandleFactory) ruleBase.getFactHandleFactory()).newFactHandle( logicalString1 );
+        final FactHandle handle1 = ((LeapsFactHandleFactory) this.ruleBase.getFactHandleFactory()).newFactHandle( logicalString1 );
         context1 = new PropagationContextImpl( 1,
                                                PropagationContext.ASSERTION,
                                                rule1,
@@ -187,30 +189,30 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // and return null
         assertNull( logicalHandle1 );
 
-//        // Alreyad identify same so return previously assigned handle
-//        logicalHandle1 = this.workingMemory.assertObject( logicalString2,
-//                                                          false,
-//                                                          true,
-//                                                          null,
-//                                                          this.workingMemory.getAgenda().getActivations()[0] );
-//        // return the matched handle
-//        assertSame( logicalHandle2,
-//                    logicalHandle1 );
-//
-//        this.workingMemory.retractObject( handle1 );
-//
-//        // Should keep the same handle when overriding
-//        assertSame( logicalHandle1,
-//                    logicalHandle2 );
-//
-//        // so while new STATED assertion is equal
-//        assertEquals( logicalString1,
-//                      this.workingMemory.getObject( logicalHandle2 ) );
-//
-//        // they are not identity same
-//        assertNotSame( logicalString1,
-//                       this.workingMemory.getObject( logicalHandle2 ) );
-//
+        //        // Alreyad identify same so return previously assigned handle
+        //        logicalHandle1 = this.workingMemory.assertObject( logicalString2,
+        //                                                          false,
+        //                                                          true,
+        //                                                          null,
+        //                                                          this.workingMemory.getAgenda().getActivations()[0] );
+        //        // return the matched handle
+        //        assertSame( logicalHandle2,
+        //                    logicalHandle1 );
+        //
+        //        this.workingMemory.retractObject( handle1 );
+        //
+        //        // Should keep the same handle when overriding
+        //        assertSame( logicalHandle1,
+        //                    logicalHandle2 );
+        //
+        //        // so while new STATED assertion is equal
+        //        assertEquals( logicalString1,
+        //                      this.workingMemory.getObject( logicalHandle2 ) );
+        //
+        //        // they are not identity same
+        //        assertNotSame( logicalString1,
+        //                       this.workingMemory.getObject( logicalHandle2 ) );
+        //
     }
 
     public void testRetract() throws Exception {
@@ -218,61 +220,61 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create the first agendaItem which will justify the fact "logical"
         rule1.setConsequence( this.consequence );
 
-        LeapsRule leapsRule1 = new LeapsRule( rule1,
-                                              new ArrayList(),
-                                              new ArrayList(),
-                                              new ArrayList(),
-                                              new ArrayList() );
+        final LeapsRule leapsRule1 = new LeapsRule( rule1,
+                                                    new ArrayList(),
+                                                    new ArrayList(),
+                                                    new ArrayList(),
+                                                    new ArrayList() );
 
-        FactHandleImpl tuple1FactHandle = (FactHandleImpl) this.workingMemory.assertObject( "tuple1 object" );
-        FactHandleImpl tuple2FactHandle = (FactHandleImpl) this.workingMemory.assertObject( "tuple2 object" );
-        FactHandleImpl[] factHandlesTuple1 = new FactHandleImpl[1];
-        FactHandleImpl[] factHandlesTuple2 = new FactHandleImpl[1];
+        final FactHandleImpl tuple1FactHandle = (FactHandleImpl) this.workingMemory.assertObject( "tuple1 object" );
+        final FactHandleImpl tuple2FactHandle = (FactHandleImpl) this.workingMemory.assertObject( "tuple2 object" );
+        final FactHandleImpl[] factHandlesTuple1 = new FactHandleImpl[1];
+        final FactHandleImpl[] factHandlesTuple2 = new FactHandleImpl[1];
         factHandlesTuple1[0] = tuple1FactHandle;
         factHandlesTuple2[0] = tuple2FactHandle;
 
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 rule1,
-                                                                 null );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       rule1,
+                                                                       null );
         LeapsTuple tuple1 = new LeapsTuple( factHandlesTuple1,
                                             leapsRule1,
                                             context );
-        LeapsTuple tuple2 = new LeapsTuple( factHandlesTuple2,
-                                            leapsRule1,
-                                            context );
+        final LeapsTuple tuple2 = new LeapsTuple( factHandlesTuple2,
+                                                  leapsRule1,
+                                                  context );
         this.workingMemory.assertTuple( tuple1 );
-        Activation activation1 = this.workingMemory.getAgenda().getActivations()[0];
+        final Activation activation1 = this.workingMemory.getAgenda().getActivations()[0];
 
         // Assert the logical "logical" fact
-        String logicalString1 = new String( "logical" );
-        FactHandle logicalHandle1 = this.workingMemory.assertObject( logicalString1,
-                                                                     false,
-                                                                     true,
-                                                                     rule1,
-                                                                     activation1 );
+        final String logicalString1 = new String( "logical" );
+        final FactHandle logicalHandle1 = this.workingMemory.assertObject( logicalString1,
+                                                                           false,
+                                                                           true,
+                                                                           rule1,
+                                                                           activation1 );
         assertEquals( 3,
                       this.workingMemory.getObjects().size() );
 
         // create the second agendaItem to justify the "logical" fact
         final Rule rule2 = new Rule( "test-rule2" );
         rule2.setConsequence( this.consequence );
-        PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  rule2,
-                                                                  null );
+        final PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule2,
+                                                                        null );
         tuple1 = new LeapsTuple( factHandlesTuple2,
                                  leapsRule1,
                                  context2 );
         this.workingMemory.assertTuple( tuple1 );
-        Activation activation2 = this.workingMemory.getAgenda().getActivations()[1];
+        final Activation activation2 = this.workingMemory.getAgenda().getActivations()[1];
         //
-        String logicalString2 = new String( "logical" );
-        FactHandle logicalHandle2 = this.workingMemory.assertObject( logicalString2,
-                                                                     false,
-                                                                     true,
-                                                                     rule1,
-                                                                     activation2 );
+        final String logicalString2 = new String( "logical" );
+        final FactHandle logicalHandle2 = this.workingMemory.assertObject( logicalString2,
+                                                                           false,
+                                                                           true,
+                                                                           rule1,
+                                                                           activation2 );
         // "logical" should only appear once
         assertEquals( 3,
                       this.workingMemory.getObjects().size() );
@@ -291,57 +293,57 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create the first agendaItem which will justify the fact "logical"
         rule1.setConsequence( this.consequence );
 
-        LeapsRule leapsRule1 = new LeapsRule( rule1,
-                                              new ArrayList(),
-                                              new ArrayList(),
-                                              new ArrayList(),
-                                              new ArrayList() );
+        final LeapsRule leapsRule1 = new LeapsRule( rule1,
+                                                    new ArrayList(),
+                                                    new ArrayList(),
+                                                    new ArrayList(),
+                                                    new ArrayList() );
 
-        FactHandleImpl tuple1Fact = (FactHandleImpl) this.workingMemory.assertObject( "tuple1 object" );
-        FactHandleImpl tuple2Fact = (FactHandleImpl) this.workingMemory.assertObject( "tuple2 object" );
-        FactHandleImpl[] tuple1Handles = new FactHandleImpl[1];
-        FactHandleImpl[] tuple2Handles = new FactHandleImpl[1];
+        final FactHandleImpl tuple1Fact = (FactHandleImpl) this.workingMemory.assertObject( "tuple1 object" );
+        final FactHandleImpl tuple2Fact = (FactHandleImpl) this.workingMemory.assertObject( "tuple2 object" );
+        final FactHandleImpl[] tuple1Handles = new FactHandleImpl[1];
+        final FactHandleImpl[] tuple2Handles = new FactHandleImpl[1];
         tuple1Handles[0] = tuple1Fact;
         tuple2Handles[0] = tuple2Fact;
 
-        PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  rule1,
-                                                                  null );
-        LeapsTuple tuple1 = new LeapsTuple( tuple1Handles,
-                                            leapsRule1,
-                                            context1 );
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule1,
+                                                                        null );
+        final LeapsTuple tuple1 = new LeapsTuple( tuple1Handles,
+                                                  leapsRule1,
+                                                  context1 );
         this.workingMemory.assertTuple( tuple1 );
-        Activation activation1 = this.workingMemory.getAgenda().getActivations()[0];
+        final Activation activation1 = this.workingMemory.getAgenda().getActivations()[0];
 
         // Assert the logical "logical" fact
-        String logicalString1 = new String( "logical" );
-        FactHandle logicalHandle1 = this.workingMemory.assertObject( logicalString1,
-                                                                     false,
-                                                                     true,
-                                                                     rule1,
-                                                                     activation1 );
+        final String logicalString1 = new String( "logical" );
+        final FactHandle logicalHandle1 = this.workingMemory.assertObject( logicalString1,
+                                                                           false,
+                                                                           true,
+                                                                           rule1,
+                                                                           activation1 );
 
         // create the second agendaItem to justify the "logical" fact
         final Rule rule2 = new Rule( "test-rule2" );
         rule2.setConsequence( this.consequence );
-        PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                  PropagationContext.ASSERTION,
-                                                                  rule2,
-                                                                  null );
-        LeapsTuple tuple2 = new LeapsTuple( tuple2Handles,
-                                            leapsRule1,
-                                            context2 );
+        final PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule2,
+                                                                        null );
+        final LeapsTuple tuple2 = new LeapsTuple( tuple2Handles,
+                                                  leapsRule1,
+                                                  context2 );
         this.workingMemory.assertTuple( tuple2 );
         // "logical" should only appear once
-        Activation activation2 = this.workingMemory.getAgenda().getActivations()[1];
+        final Activation activation2 = this.workingMemory.getAgenda().getActivations()[1];
         //
-        String logicalString2 = new String( "logical" );
-        FactHandle logicalHandle2 = this.workingMemory.assertObject( logicalString2,
-                                                                     false,
-                                                                     true,
-                                                                     rule2,
-                                                                     activation2 );
+        final String logicalString2 = new String( "logical" );
+        final FactHandle logicalHandle2 = this.workingMemory.assertObject( logicalString2,
+                                                                           false,
+                                                                           true,
+                                                                           rule2,
+                                                                           activation2 );
 
         assertEquals( 3,
                       this.workingMemory.getObjects().size() );

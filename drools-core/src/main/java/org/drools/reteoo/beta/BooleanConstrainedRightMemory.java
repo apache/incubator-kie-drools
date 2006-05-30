@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
 import org.drools.WorkingMemory;
-import org.drools.reteoo.FactHandleImpl;
+import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
@@ -54,19 +54,19 @@ public class BooleanConstrainedRightMemory
     private int             column;
     private Evaluator       evaluator    = null;
 
-    public BooleanConstrainedRightMemory(FieldExtractor extractor,
-                                         Declaration declaration,
-                                         Evaluator evaluator) {
+    public BooleanConstrainedRightMemory(final FieldExtractor extractor,
+                                         final Declaration declaration,
+                                         final Evaluator evaluator) {
         this( extractor,
               declaration,
               evaluator,
               null );
     }
 
-    public BooleanConstrainedRightMemory(FieldExtractor extractor,
-                                         Declaration declaration,
-                                         Evaluator evaluator,
-                                         BetaRightMemory childMemory) {
+    public BooleanConstrainedRightMemory(final FieldExtractor extractor,
+                                         final Declaration declaration,
+                                         final Evaluator evaluator,
+                                         final BetaRightMemory childMemory) {
         this.extractor = extractor;
         this.declaration = declaration;
         this.column = declaration.getColumn();
@@ -81,10 +81,10 @@ public class BooleanConstrainedRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#add(org.drools.WorkingMemory, org.drools.reteoo.ObjectMatches)
      */
-    public final void add(WorkingMemory workingMemory,
-                    ObjectMatches matches) {
-        MultiLinkedList list = this.getMatchingList( workingMemory,
-                                                     matches.getFactHandle() );
+    public final void add(final WorkingMemory workingMemory,
+                          final ObjectMatches matches) {
+        final MultiLinkedList list = this.getMatchingList( workingMemory,
+                                                           matches.getFactHandle() );
         list.add( matches );
 
         if ( this.innerMemory != null ) {
@@ -101,8 +101,8 @@ public class BooleanConstrainedRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#remove(org.drools.WorkingMemory, org.drools.reteoo.ObjectMatches)
      */
-    public final void remove(WorkingMemory workingMemory,
-                       ObjectMatches matches) {
+    public final void remove(final WorkingMemory workingMemory,
+                             final ObjectMatches matches) {
         if ( this.innerMemory != null ) {
             this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) matches.getChild() );
@@ -116,11 +116,11 @@ public class BooleanConstrainedRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#add(org.drools.WorkingMemory, org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public final void add(WorkingMemory workingMemory,
-                    MultiLinkedListNodeWrapper wrapper) {
-        ObjectMatches matches = (ObjectMatches) wrapper.getNode();
-        MultiLinkedList list = this.getMatchingList( workingMemory,
-                                                     matches.getFactHandle() );
+    public final void add(final WorkingMemory workingMemory,
+                          final MultiLinkedListNodeWrapper wrapper) {
+        final ObjectMatches matches = (ObjectMatches) wrapper.getNode();
+        final MultiLinkedList list = this.getMatchingList( workingMemory,
+                                                           matches.getFactHandle() );
         list.add( wrapper );
 
         if ( this.innerMemory != null ) {
@@ -136,8 +136,8 @@ public class BooleanConstrainedRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#remove(org.drools.WorkingMemory, org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public final void remove(WorkingMemory workingMemory,
-                       MultiLinkedListNodeWrapper wrapper) {
+    public final void remove(final WorkingMemory workingMemory,
+                             final MultiLinkedListNodeWrapper wrapper) {
         if ( this.innerMemory != null ) {
             this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) wrapper.getChild() );
@@ -151,25 +151,25 @@ public class BooleanConstrainedRightMemory
      * @see org.drools.reteoo.beta.BetaRightMemory#iterator(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
     public final Iterator iterator(final WorkingMemory workingMemory,
-                             final ReteTuple tuple) {
+                                   final ReteTuple tuple) {
         this.selectPossibleMatches( workingMemory,
                                     tuple );
-        Iterator iterator = new Iterator() {
+        final Iterator iterator = new Iterator() {
             ObjectMatches current   = null;
             ObjectMatches next      = null;
-            ObjectMatches candidate = (ObjectMatches) selectedList.getFirst();
+            ObjectMatches candidate = (ObjectMatches) BooleanConstrainedRightMemory.this.selectedList.getFirst();
 
             public final boolean hasNext() {
                 boolean hasnext = false;
-                if ( next == null ) {
-                    while ( candidate != null ) {
-                        if ( (innerMemory == null) || (innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) candidate.getChild() )) ) {
+                if ( this.next == null ) {
+                    while ( this.candidate != null ) {
+                        if ( (BooleanConstrainedRightMemory.this.innerMemory == null) || (BooleanConstrainedRightMemory.this.innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) this.candidate.getChild() )) ) {
                             hasnext = true;
-                            next = candidate;
-                            candidate = (ObjectMatches) candidate.getNext();
+                            this.next = this.candidate;
+                            this.candidate = (ObjectMatches) this.candidate.getNext();
                             break;
                         }
-                        candidate = (ObjectMatches) candidate.getNext();
+                        this.candidate = (ObjectMatches) this.candidate.getNext();
                     }
                 } else {
                     hasnext = true;
@@ -212,11 +212,11 @@ public class BooleanConstrainedRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#selectPossibleMatches(org.drools.WorkingMemory, org.drools.reteoo.ReteTuple)
      */
-    public final void selectPossibleMatches(WorkingMemory workingMemory,
-                                      ReteTuple tuple) {
-        boolean select = ((Boolean) declaration.getValue( tuple.get( this.column ).getObject() )).booleanValue();
-        select = (evaluator.getOperator()) == Evaluator.EQUAL ? select : !select;
-        this.selectedList = (select == true) ? trueList : falseList;
+    public final void selectPossibleMatches(final WorkingMemory workingMemory,
+                                            final ReteTuple tuple) {
+        boolean select = ((Boolean) this.declaration.getValue( tuple.get( this.column ).getObject() )).booleanValue();
+        select = (this.evaluator.getOperator()) == Evaluator.EQUAL ? select : !select;
+        this.selectedList = (select == true) ? this.trueList : this.falseList;
 
         if ( this.innerMemory != null ) {
             this.innerMemory.selectPossibleMatches( workingMemory,
@@ -230,7 +230,7 @@ public class BooleanConstrainedRightMemory
      *
      * @see org.drools.reteoo.beta.BetaRightMemory#isPossibleMatch(org.drools.util.MultiLinkedListNodeWrapper)
      */
-    public final boolean isPossibleMatch(MultiLinkedListNodeWrapper matches) {
+    public final boolean isPossibleMatch(final MultiLinkedListNodeWrapper matches) {
         boolean ret = false;
         if ( this.selectedList != null ) {
             ret = matches.getLinkedList() == this.selectedList;
@@ -248,10 +248,10 @@ public class BooleanConstrainedRightMemory
      * @param handle
      * @return
      */
-    private final MultiLinkedList getMatchingList(WorkingMemory workingMemory,
-                                            FactHandleImpl handle) {
-        boolean select = ((Boolean) this.extractor.getValue( handle.getObject() )).booleanValue();
-        MultiLinkedList list = (select == true) ? this.trueList : this.falseList;
+    private final MultiLinkedList getMatchingList(final WorkingMemory workingMemory,
+                                                  final DefaultFactHandle handle) {
+        final boolean select = ((Boolean) this.extractor.getValue( handle.getObject() )).booleanValue();
+        final MultiLinkedList list = (select == true) ? this.trueList : this.falseList;
         return list;
     }
 
@@ -269,19 +269,19 @@ public class BooleanConstrainedRightMemory
      * @inheritDoc
      */
     public final Iterator iterator() {
-        TreeSet set = new TreeSet( new Comparator() {
+        final TreeSet set = new TreeSet( new Comparator() {
             public int compare(Object arg0,
                                Object arg1) {
-                FactHandleImpl f0 = ((ObjectMatches) arg0).getFactHandle();
-                FactHandleImpl f1 = ((ObjectMatches) arg1).getFactHandle();
+                DefaultFactHandle f0 = ((ObjectMatches) arg0).getFactHandle();
+                DefaultFactHandle f1 = ((ObjectMatches) arg1).getFactHandle();
                 return (f0.getRecency() == f1.getRecency()) ? 0 : (f0.getRecency() > f1.getRecency()) ? 1 : -1;
             }
 
         } );
-        for ( Iterator i = this.trueList.iterator(); i.hasNext(); ) {
+        for ( final Iterator i = this.trueList.iterator(); i.hasNext(); ) {
             set.add( i.next() );
         }
-        for ( Iterator i = this.falseList.iterator(); i.hasNext(); ) {
+        for ( final Iterator i = this.falseList.iterator(); i.hasNext(); ) {
             set.add( i.next() );
         }
 
@@ -292,15 +292,14 @@ public class BooleanConstrainedRightMemory
      * @inheritDoc
      */
     public BetaRightMemory getInnerMemory() {
-        return innerMemory;
+        return this.innerMemory;
     }
 
     /**
      * @inheritDoc
      */
-    public void setInnerMemory(BetaRightMemory innerMemory) {
+    public void setInnerMemory(final BetaRightMemory innerMemory) {
         this.innerMemory = innerMemory;
     }
 
-    
 }

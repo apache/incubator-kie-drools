@@ -41,59 +41,77 @@ import org.drools.asm.Opcodes;
  */
 public class StaticInitMerger extends ClassAdapter {
 
-    private String name;
+    private String        name;
 
     private MethodVisitor clinit;
 
-    private String prefix;
+    private String        prefix;
 
-    private int counter;
+    private int           counter;
 
-    public StaticInitMerger(final String prefix, final ClassVisitor cv) {
-        super(cv);
+    public StaticInitMerger(final String prefix,
+                            final ClassVisitor cv) {
+        super( cv );
         this.prefix = prefix;
     }
 
-    public void visit(
-        final int version,
-        final int access,
-        final String name,
-        final String signature,
-        final String superName,
-        final String[] interfaces)
-    {
-        cv.visit(version, access, name, signature, superName, interfaces);
+    public void visit(final int version,
+                      final int access,
+                      final String name,
+                      final String signature,
+                      final String superName,
+                      final String[] interfaces) {
+        this.cv.visit( version,
+                       access,
+                       name,
+                       signature,
+                       superName,
+                       interfaces );
         this.name = name;
     }
 
-    public MethodVisitor visitMethod(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final String[] exceptions)
-    {
+    public MethodVisitor visitMethod(final int access,
+                                     final String name,
+                                     final String desc,
+                                     final String signature,
+                                     final String[] exceptions) {
         MethodVisitor mv;
-        if (name.equals("<clinit>")) {
-            int a = Opcodes.ACC_PRIVATE + Opcodes.ACC_STATIC;
-            String n = prefix + counter++;
-            mv = cv.visitMethod(a, n, desc, signature, exceptions);
+        if ( name.equals( "<clinit>" ) ) {
+            final int a = Opcodes.ACC_PRIVATE + Opcodes.ACC_STATIC;
+            final String n = this.prefix + this.counter++;
+            mv = this.cv.visitMethod( a,
+                                      n,
+                                      desc,
+                                      signature,
+                                      exceptions );
 
-            if (clinit == null) {
-                clinit = cv.visitMethod(a, name, desc, null, null);
+            if ( this.clinit == null ) {
+                this.clinit = this.cv.visitMethod( a,
+                                                   name,
+                                                   desc,
+                                                   null,
+                                                   null );
             }
-            clinit.visitMethodInsn(Opcodes.INVOKESTATIC, this.name, n, desc);
+            this.clinit.visitMethodInsn( Opcodes.INVOKESTATIC,
+                                         this.name,
+                                         n,
+                                         desc );
         } else {
-            mv = cv.visitMethod(access, name, desc, signature, exceptions);
+            mv = this.cv.visitMethod( access,
+                                      name,
+                                      desc,
+                                      signature,
+                                      exceptions );
         }
         return mv;
     }
 
     public void visitEnd() {
-        if (clinit != null) {
-            clinit.visitInsn(Opcodes.RETURN);
-            clinit.visitMaxs(0, 0);
+        if ( this.clinit != null ) {
+            this.clinit.visitInsn( Opcodes.RETURN );
+            this.clinit.visitMaxs( 0,
+                                   0 );
         }
-        cv.visitEnd();
+        this.cv.visitEnd();
     }
 }

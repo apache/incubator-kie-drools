@@ -1,4 +1,5 @@
 package org.drools.util.asm;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.util.asm;
  * limitations under the License.
  */
 
-
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -28,7 +27,7 @@ import junit.framework.TestCase;
 public class ClassFieldInspectorTest extends TestCase {
 
     public void testIt() throws Exception {
-        ClassFieldInspector ext = new ClassFieldInspector( Person.class );
+        final ClassFieldInspector ext = new ClassFieldInspector( Person.class );
         assertEquals( 6,
                       ext.getPropertyGetters().size() );
         assertEquals( "getAge",
@@ -38,7 +37,7 @@ public class ClassFieldInspectorTest extends TestCase {
         assertEquals( "getName",
                       ((Method) ext.getPropertyGetters().get( 2 )).getName() );
 
-        Map names = ext.getFieldNames();
+        final Map names = ext.getFieldNames();
         assertNotNull( names );
         assertEquals( 6,
                       names.size() );
@@ -52,7 +51,7 @@ public class ClassFieldInspectorTest extends TestCase {
     }
 
     public void testInterface() throws Exception {
-        ClassFieldInspector ext = new ClassFieldInspector( TestInterface.class );
+        final ClassFieldInspector ext = new ClassFieldInspector( TestInterface.class );
         assertEquals( 2,
                       ext.getPropertyGetters().size() );
         assertEquals( "getSomething",
@@ -60,7 +59,7 @@ public class ClassFieldInspectorTest extends TestCase {
         assertEquals( "getAnother",
                       ((Method) ext.getPropertyGetters().get( 1 )).getName() );
 
-        Map names = ext.getFieldNames();
+        final Map names = ext.getFieldNames();
         assertNotNull( names );
         assertEquals( 2,
                       names.size() );
@@ -72,7 +71,7 @@ public class ClassFieldInspectorTest extends TestCase {
     }
 
     public void testAbstract() throws Exception {
-        ClassFieldInspector ext = new ClassFieldInspector( TestAbstract.class );
+        final ClassFieldInspector ext = new ClassFieldInspector( TestAbstract.class );
         assertEquals( 5,
                       ext.getPropertyGetters().size() );
         assertEquals( "getSomething",
@@ -80,7 +79,7 @@ public class ClassFieldInspectorTest extends TestCase {
         assertEquals( "getAnother",
                       ((Method) ext.getPropertyGetters().get( 1 )).getName() );
 
-        Map names = ext.getFieldNames();
+        final Map names = ext.getFieldNames();
         assertNotNull( names );
         assertEquals( 5,
                       names.size() );
@@ -92,14 +91,14 @@ public class ClassFieldInspectorTest extends TestCase {
     }
 
     public void testInheritedFields() throws Exception {
-        ClassFieldInspector ext = new ClassFieldInspector( BeanInherit.class );
+        final ClassFieldInspector ext = new ClassFieldInspector( BeanInherit.class );
         assertEquals( 5,
                       ext.getPropertyGetters().size() );
     }
 
     public void testIntefaceInheritance() throws Exception {
-        ClassFieldInspector ext = new ClassFieldInspector( InterfaceChild.class );
-        Map fields = ext.getFieldNames();
+        final ClassFieldInspector ext = new ClassFieldInspector( InterfaceChild.class );
+        final Map fields = ext.getFieldNames();
         assertTrue( fields.containsKey( "foo" ) );
         assertTrue( fields.containsKey( "bar" ) );
         assertTrue( fields.containsKey( "baz" ) );
@@ -107,28 +106,28 @@ public class ClassFieldInspectorTest extends TestCase {
 
     public void testFieldIndexCalculation() {
         try {
-            ClassFieldInspector ext = new ClassFieldInspector( SubPerson.class );
-            Map map = ext.getFieldNames();
-            String[] fields = new String[map.size()];
-            for ( Iterator i = map.entrySet().iterator(); i.hasNext(); ) {
-                Map.Entry entry = (Map.Entry) i.next();
-                String fieldName = (String) entry.getKey();
-                int fieldIndex = ((Integer) entry.getValue()).intValue();
+            final ClassFieldInspector ext = new ClassFieldInspector( SubPerson.class );
+            final Map map = ext.getFieldNames();
+            final String[] fields = new String[map.size()];
+            for ( final Iterator i = map.entrySet().iterator(); i.hasNext(); ) {
+                final Map.Entry entry = (Map.Entry) i.next();
+                final String fieldName = (String) entry.getKey();
+                final int fieldIndex = ((Integer) entry.getValue()).intValue();
                 if ( fields[fieldIndex] == null ) {
                     fields[fieldIndex] = fieldName;
                 } else {
                     Assert.fail( "Duplicate index found for 2 fields: index[" + fieldIndex + "] = [" + fields[fieldIndex] + "] and [" + fieldName + "]" );
                 }
             }
-        } catch ( IOException e ) {
+        } catch ( final IOException e ) {
             e.printStackTrace();
             Assert.fail( "Unexpected exception thrown" );
         }
     }
 
     public void testGetReturnTypes() throws Exception {
-        ClassFieldInspector ext = new ClassFieldInspector( Person.class );
-        Map types = ext.getFieldTypes();
+        final ClassFieldInspector ext = new ClassFieldInspector( Person.class );
+        final Map types = ext.getFieldTypes();
         assertNotNull( types );
         assertEquals( boolean.class,
                       types.get( "happy" ) );
@@ -139,8 +138,8 @@ public class ClassFieldInspectorTest extends TestCase {
     }
 
     public void testGetMethodForField() throws Exception {
-        ClassFieldInspector ext = new ClassFieldInspector( Person.class );
-        Map methods = ext.getGetterMethods();
+        final ClassFieldInspector ext = new ClassFieldInspector( Person.class );
+        final Map methods = ext.getGetterMethods();
         assertNotNull( methods );
         assertEquals( "isHappy",
                       ((Method) methods.get( "happy" )).getName() );
@@ -152,8 +151,8 @@ public class ClassFieldInspectorTest extends TestCase {
     }
 
     public void testNonGetter() throws Exception {
-        ClassFieldInspector ext = new ClassFieldInspector( NonGetter.class );
-        Map methods = ext.getGetterMethods();
+        final ClassFieldInspector ext = new ClassFieldInspector( NonGetter.class );
+        final Map methods = ext.getGetterMethods();
         assertEquals( "getFoo",
                       ((Method) methods.get( "foo" )).getName() );
         assertEquals( 5,
@@ -190,26 +189,26 @@ public class ClassFieldInspectorTest extends TestCase {
         private int     age;
 
         public int getAge() {
-            return age;
+            return this.age;
         }
 
-        public void setAge(int age) {
+        public void setAge(final int age) {
             this.age = age;
         }
 
         public boolean isHappy() {
-            return happy;
+            return this.happy;
         }
 
-        public void setHappy(boolean happy) {
+        public void setHappy(final boolean happy) {
             this.happy = happy;
         }
 
         public String getName() {
-            return name;
+            return this.name;
         }
 
-        public void setName(String name) {
+        public void setName(final String name) {
             this.name = name;
         }
 
@@ -224,7 +223,7 @@ public class ClassFieldInspectorTest extends TestCase {
         }
 
         //this will not show up as it is a getter that takes an argument
-        public String getAlsoBad(String s) {
+        public String getAlsoBad(final String s) {
             return "ignored";
         }
     }
@@ -236,13 +235,13 @@ public class ClassFieldInspectorTest extends TestCase {
          * @return the childField
          */
         public int getChildField() {
-            return childField;
+            return this.childField;
         }
 
         /**
          * @param childField the childField to set
          */
-        public void setChildField(int childField) {
+        public void setChildField(final int childField) {
             this.childField = childField;
         }
 

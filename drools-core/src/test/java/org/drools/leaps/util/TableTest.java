@@ -1,4 +1,5 @@
 package org.drools.leaps.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.util.Iterator;
 
@@ -89,7 +86,7 @@ public class TableTest extends TestCase {
         assertTrue( this.testTable.contains( this.h1 ) );
         this.testTable.remove( this.h1 );
         assertFalse( this.testTable.contains( this.h1 ) );
-        Iterator it = this.testTable.iterator();
+        final Iterator it = this.testTable.iterator();
         assertTrue( it.hasNext() );
         assertEquals( it.next(),
                       this.h10 );
@@ -210,24 +207,24 @@ public class TableTest extends TestCase {
         assertFalse( it.hasNext() );
 
         this.testTable.clear();
-        Handle fh1 = new Handle( 1,
-                                 new Guest( "1",
-                                            Sex.resolve( "m" ),
-                                            Hobby.resolve( "h2" ) ) );
-        Handle fh2 = new Handle( 2,
-                                 new Guest( "1",
-                                            Sex.resolve( "m" ),
-                                            Hobby.resolve( "h1" ) ) );
-        Handle fh3 = new Handle( 3,
-                                 new Guest( "1",
-                                            Sex.resolve( "m" ),
-                                            Hobby.resolve( "h3" ) ) );
-        Handle fh4 = new Handle( 4,
-                                 new Guest( "3",
-                                            Sex.resolve( "f" ),
-                                            Hobby.resolve( "h2" ) ) );
-        Handle fhC = new Handle( 5,
-                                 new Context( "start" ) );
+        final Handle fh1 = new Handle( 1,
+                                       new Guest( "1",
+                                                  Sex.resolve( "m" ),
+                                                  Hobby.resolve( "h2" ) ) );
+        final Handle fh2 = new Handle( 2,
+                                       new Guest( "1",
+                                                  Sex.resolve( "m" ),
+                                                  Hobby.resolve( "h1" ) ) );
+        final Handle fh3 = new Handle( 3,
+                                       new Guest( "1",
+                                                  Sex.resolve( "m" ),
+                                                  Hobby.resolve( "h3" ) ) );
+        final Handle fh4 = new Handle( 4,
+                                       new Guest( "3",
+                                                  Sex.resolve( "f" ),
+                                                  Hobby.resolve( "h2" ) ) );
+        final Handle fhC = new Handle( 5,
+                                       new Context( "start" ) );
         this.testTable.add( fh1 );
         this.testTable.add( fh2 );
         this.testTable.add( fh3 );
@@ -244,7 +241,7 @@ public class TableTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h100 );
         this.testTable.add( this.h10 );
-        TableIterator it = this.testTable.headIterator( this.h10 );
+        final TableIterator it = this.testTable.headIterator( this.h10 );
         assertTrue( it.hasNext() );
         assertEquals( it.next(),
                       this.h1000 );

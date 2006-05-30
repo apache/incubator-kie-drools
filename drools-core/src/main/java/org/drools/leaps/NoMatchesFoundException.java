@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -32,7 +33,7 @@ class NoMatchesFoundException extends Exception {
         super();
     }
 
-    public NoMatchesFoundException(String msg) {
+    public NoMatchesFoundException(final String msg) {
         super( msg );
     }
 

@@ -1,4 +1,5 @@
 package org.drools.spi;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * Java class semantics <code>ObjectType</code>.
  * 
@@ -33,8 +30,12 @@ public class MockObjectType
     // Instance members
     // ------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7771710152014261852L;
     /** Java object class. */
-    private boolean matches;
+    private boolean           matches;
 
     // ------------------------------------------------------------
     // Constructors
@@ -46,7 +47,7 @@ public class MockObjectType
      * @param objectTypeClass
      *            Java object class.
      */
-    public MockObjectType(boolean matches) {
+    public MockObjectType(final boolean matches) {
         this.matches = matches;
     }
 
@@ -68,7 +69,7 @@ public class MockObjectType
      * @return <code>true</code> if the <code>Object</code> matches this
      *         object type, else <code>false</code>.
      */
-    public boolean matches(Object object) {
+    public boolean matches(final Object object) {
         return this.matches;
     }
 

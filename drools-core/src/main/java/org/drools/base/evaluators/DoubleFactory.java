@@ -1,4 +1,5 @@
 package org.drools.base.evaluators;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,14 +16,12 @@ package org.drools.base.evaluators;
  * limitations under the License.
  */
 
-
-
 import org.drools.base.BaseEvaluator;
 import org.drools.spi.Evaluator;
 
 public class DoubleFactory {
 
-    public static Evaluator getDoubleEvaluator(int operator) {
+    public static Evaluator getDoubleEvaluator(final int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
                 return DoubleEqualEvaluator.INSTANCE;
@@ -42,16 +41,22 @@ public class DoubleFactory {
     }
 
     static class DoubleEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new DoubleEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 8638265291388692160L;
+        public final static Evaluator INSTANCE         = new DoubleEqualEvaluator();
 
         private DoubleEqualEvaluator() {
             super( Evaluator.DOUBLE_TYPE,
                    Evaluator.EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 == null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 == null;
+            }
             return ((Number) object1).equals( object2 );
         }
 
@@ -61,16 +66,22 @@ public class DoubleFactory {
     }
 
     static class DoubleNotEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new DoubleNotEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -1605810860861480665L;
+        public final static Evaluator INSTANCE         = new DoubleNotEqualEvaluator();
 
         private DoubleNotEqualEvaluator() {
             super( Evaluator.DOUBLE_TYPE,
                    Evaluator.NOT_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 != null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 != null;
+            }
             return !((Number) object1).equals( object2 );
         }
 
@@ -80,15 +91,19 @@ public class DoubleFactory {
     }
 
     static class DoubleLessEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new DoubleLessEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -6256590818217451743L;
+        public final static Evaluator INSTANCE         = new DoubleLessEvaluator();
 
         private DoubleLessEvaluator() {
             super( Evaluator.DOUBLE_TYPE,
                    Evaluator.LESS );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).doubleValue() < ((Number) object2).doubleValue();
         }
 
@@ -98,15 +113,19 @@ public class DoubleFactory {
     }
 
     static class DoubleLessOrEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new DoubleLessOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -3663317930533546094L;
+        public final static Evaluator INSTANCE         = new DoubleLessOrEqualEvaluator();
 
         private DoubleLessOrEqualEvaluator() {
             super( Evaluator.DOUBLE_TYPE,
                    Evaluator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).doubleValue() <= ((Number) object2).doubleValue();
         }
 
@@ -116,15 +135,19 @@ public class DoubleFactory {
     }
 
     static class DoubleGreaterEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new DoubleGreaterEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 1420842292058943594L;
+        public final static Evaluator INSTANCE         = new DoubleGreaterEvaluator();
 
         private DoubleGreaterEvaluator() {
             super( Evaluator.DOUBLE_TYPE,
                    Evaluator.GREATER );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).doubleValue() > ((Number) object2).doubleValue();
         }
 
@@ -134,15 +157,19 @@ public class DoubleFactory {
     }
 
     static class DoubleGreaterOrEqualEvaluator extends BaseEvaluator {
-        private final static Evaluator INSTANCE = new DoubleGreaterOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long      serialVersionUID = 468558955316190757L;
+        private final static Evaluator INSTANCE         = new DoubleGreaterOrEqualEvaluator();
 
         private DoubleGreaterOrEqualEvaluator() {
             super( Evaluator.DOUBLE_TYPE,
                    Evaluator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).doubleValue() >= ((Number) object2).doubleValue();
         }
 

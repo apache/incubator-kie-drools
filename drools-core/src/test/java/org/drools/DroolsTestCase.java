@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
-
-
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -29,26 +26,26 @@ public abstract class DroolsTestCase extends TestCase {
         super();
     }
 
-    public DroolsTestCase(String name) {
+    public DroolsTestCase(final String name) {
         super( name );
     }
 
-    public void assertLength(int len,
-                             Object[] array) {
+    public void assertLength(final int len,
+                             final Object[] array) {
         assertEquals( Arrays.asList( array ) + " does not have length of " + len,
                       len,
                       array.length );
     }
 
-    public void assertLength(int len,
-                             Collection collection) {
+    public void assertLength(final int len,
+                             final Collection collection) {
         assertEquals( collection + " does not have length of " + len,
                       len,
                       collection.size() );
     }
 
-    public void assertContains(Object obj,
-                               Object[] array) {
+    public void assertContains(final Object obj,
+                               final Object[] array) {
         for ( int i = 0; i < array.length; ++i ) {
             if ( array[i] == obj ) {
                 return;
@@ -58,8 +55,8 @@ public abstract class DroolsTestCase extends TestCase {
         fail( Arrays.asList( array ) + " does not contain " + obj );
     }
 
-    public void assertContains(Object obj,
-                               Collection collection) {
+    public void assertContains(final Object obj,
+                               final Collection collection) {
         assertTrue( collection + " does not contain " + obj,
                     collection.contains( obj ) );
     }

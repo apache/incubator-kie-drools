@@ -16,44 +16,32 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import org.drools.FactHandle;
+import org.drools.common.AbstractFactHandleFactory;
+import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.spi.FactHandleFactory;
+import org.drools.util.PrimitiveLongStack;
 
-public class DefaultFactHandleFactory
-    implements
-    FactHandleFactory {
-    /** The fact id. */
-    private long id;
-
-    /** The number of facts created - used for recency. */
-    private long counter;
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#newFactHandle()
-     */
-    public final FactHandle newFactHandle() {
-        return newFactHandle( this.id++ );
-    }
-
+public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    public final FactHandle newFactHandle(long id) {
-        return new FactHandleImpl( id,
-                                   this.counter++ );
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)
-     */
-    public final void increaseFactHandleRecency(FactHandle factHandle) {
-        ((FactHandleImpl) factHandle).setRecency( ++this.counter );
+    protected final InternalFactHandle newFactHandle(final long id,
+                                                     final Object object,
+                                                     final long recency) {
+        return new DefaultFactHandle( id,
+                                      object,
+                                      recency );
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newInstance()
      */
     public FactHandleFactory newInstance() {
-        return new DefaultFactHandleFactory();
+        return new ReteooFactHandleFactory();
+    }
+    
+    public Class getFactHandleType() {
+        return DefaultFactHandle.class;
     }
 }

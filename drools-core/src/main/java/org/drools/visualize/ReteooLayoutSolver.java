@@ -1,4 +1,5 @@
 package org.drools.visualize;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.visualize;
  * limitations under the License.
  */
 
-
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -31,38 +30,38 @@ public class ReteooLayoutSolver {
 
     private RowList rowList;
 
-    public ReteooLayoutSolver(Vertex root) {
+    public ReteooLayoutSolver(final Vertex root) {
         this.root = root;
         solve();
     }
 
     protected void solve() {
-        rowList = new RowList();
+        this.rowList = new RowList();
 
-        rowList.add( 0,
-                     root );
+        this.rowList.add( 0,
+                          this.root );
 
         int curRow = 0;
 
-        Set seenVertices = new HashSet();
-        seenVertices.add( root );
+        final Set seenVertices = new HashSet();
+        seenVertices.add( this.root );
 
-        while ( curRow < rowList.getDepth() ) {
-            List rowVertices = rowList.get( curRow ).getVertices();
+        while ( curRow < this.rowList.getDepth() ) {
+            final List rowVertices = this.rowList.get( curRow ).getVertices();
 
-            for ( Iterator rowVertexIter = rowVertices.iterator(); rowVertexIter.hasNext(); ) {
-                Vertex rowVertex = (Vertex) rowVertexIter.next();
+            for ( final Iterator rowVertexIter = rowVertices.iterator(); rowVertexIter.hasNext(); ) {
+                final Vertex rowVertex = (Vertex) rowVertexIter.next();
 
-                Set edges = rowVertex.getOutEdges();
+                final Set edges = rowVertex.getOutEdges();
 
-                for ( Iterator edgeIter = edges.iterator(); edgeIter.hasNext(); ) {
+                for ( final Iterator edgeIter = edges.iterator(); edgeIter.hasNext(); ) {
 
-                    Edge edge = (Edge) edgeIter.next();
-                    Vertex destVertex = edge.getOpposite( rowVertex );
+                    final Edge edge = (Edge) edgeIter.next();
+                    final Vertex destVertex = edge.getOpposite( rowVertex );
 
                     if ( !seenVertices.contains( destVertex ) ) {
-                        rowList.add( curRow + 1,
-                                     destVertex );
+                        this.rowList.add( curRow + 1,
+                                          destVertex );
                         seenVertices.add( destVertex );
                     }
                 }
@@ -73,12 +72,12 @@ public class ReteooLayoutSolver {
             ++curRow;
         }
 
-        rowList.optimize();
+        this.rowList.optimize();
 
-        rowList.dump();
+        this.rowList.dump();
     }
 
     public RowList getRowList() {
-        return rowList;
+        return this.rowList;
     }
 }

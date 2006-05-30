@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.common;
  * limitations under the License.
  */
 
-
-
 import org.drools.FactHandle;
 
 public interface InternalFactHandle
@@ -25,7 +24,18 @@ public interface InternalFactHandle
     public long getId();
 
     public long getRecency();
-    
+
     public Object getObject();
 
+    public void setObject(Object object);
+
+    public void setEqualityKey(EqualityKey key);
+
+    public EqualityKey getEqualityKey();
+
+    public void setRecency(long recency);
+
+    public void invalidate();
+    
+    public int getObjectHashCode();
 }

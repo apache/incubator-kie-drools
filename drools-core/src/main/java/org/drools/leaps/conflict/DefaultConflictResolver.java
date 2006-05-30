@@ -1,4 +1,5 @@
 package org.drools.leaps.conflict;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps.conflict;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.util.Comparator;
 
@@ -53,14 +50,14 @@ public class DefaultConflictResolver extends CompositeConflictResolver {
      * @return The singleton instance.
      */
     public static ConflictResolver getInstance() {
-        return INSTANCE;
+        return DefaultConflictResolver.INSTANCE;
     }
 
     /**
      * Setup a default ConflictResolver configuration
      */
     public DefaultConflictResolver() {
-        super( FACT_CONFLICT_RESOLVERS,
-               RULE_CONFLICT_RESOLVERS );
+        super( DefaultConflictResolver.FACT_CONFLICT_RESOLVERS,
+               DefaultConflictResolver.RULE_CONFLICT_RESOLVERS );
     }
 }

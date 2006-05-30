@@ -116,27 +116,27 @@ public class SerialVersionUIDAdder extends ClassAdapter {
     /**
      * Flag that indicates if we need to compute SVUID.
      */
-    protected boolean computeSVUID;
+    protected boolean    computeSVUID;
 
     /**
      * Set to true if the class already has SVUID.
      */
-    protected boolean hasSVUID;
+    protected boolean    hasSVUID;
 
     /**
      * Classes access flags.
      */
-    protected int access;
+    protected int        access;
 
     /**
      * Internal name of the class
      */
-    protected String name;
+    protected String     name;
 
     /**
      * Interfaces implemented by the class.
      */
-    protected String[] interfaces;
+    protected String[]   interfaces;
 
     /**
      * Collection of fields. (except private static and private transient
@@ -147,7 +147,7 @@ public class SerialVersionUIDAdder extends ClassAdapter {
     /**
      * Set to true if the class has static initializer.
      */
-    protected boolean hasStaticInitializer;
+    protected boolean    hasStaticInitializer;
 
     /**
      * Collection of non-private constructors.
@@ -166,10 +166,10 @@ public class SerialVersionUIDAdder extends ClassAdapter {
      *        calls.
      */
     public SerialVersionUIDAdder(final ClassVisitor cv) {
-        super(cv);
-        svuidFields = new ArrayList();
-        svuidConstructors = new ArrayList();
-        svuidMethods = new ArrayList();
+        super( cv );
+        this.svuidFields = new ArrayList();
+        this.svuidConstructors = new ArrayList();
+        this.svuidMethods = new ArrayList();
     }
 
     // ------------------------------------------------------------------------
@@ -180,39 +180,40 @@ public class SerialVersionUIDAdder extends ClassAdapter {
      * Visit class header and get class name, access , and intefraces
      * informatoin (step 1,2, and 3) for SVUID computation.
      */
-    public void visit(
-        final int version,
-        final int access,
-        final String name,
-        final String signature,
-        final String superName,
-        final String[] interfaces)
-    {
-        computeSVUID = (access & Opcodes.ACC_INTERFACE) == 0;
+    public void visit(final int version,
+                      final int access,
+                      final String name,
+                      final String signature,
+                      final String superName,
+                      final String[] interfaces) {
+        this.computeSVUID = (access & Opcodes.ACC_INTERFACE) == 0;
 
-        if (computeSVUID) {
+        if ( this.computeSVUID ) {
             this.name = name;
             this.access = access;
             this.interfaces = interfaces;
         }
 
-        super.visit(version, access, name, signature, superName, interfaces);
+        super.visit( version,
+                     access,
+                     name,
+                     signature,
+                     superName,
+                     interfaces );
     }
 
     /*
      * Visit the methods and get constructor and method information (step 5 and
      * 7). Also determince if there is a class initializer (step 6).
      */
-    public MethodVisitor visitMethod(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final String[] exceptions)
-    {
-        if (computeSVUID) {
-            if (name.equals("<clinit>")) {
-                hasStaticInitializer = true;
+    public MethodVisitor visitMethod(final int access,
+                                     final String name,
+                                     final String desc,
+                                     final String signature,
+                                     final String[] exceptions) {
+        if ( this.computeSVUID ) {
+            if ( name.equals( "<clinit>" ) ) {
+                this.hasStaticInitializer = true;
             }
             /*
              * Remembers non private constructors and methods for SVUID
@@ -221,41 +222,43 @@ public class SerialVersionUIDAdder extends ClassAdapter {
              * ACC_SYNCHRONIZED, ACC_NATIVE, ACC_ABSTRACT and ACC_STRICT flags
              * are used.
              */
-            int mods = access
-                    & (Opcodes.ACC_PUBLIC | Opcodes.ACC_PRIVATE
-                            | Opcodes.ACC_PROTECTED | Opcodes.ACC_STATIC
-                            | Opcodes.ACC_FINAL | Opcodes.ACC_SYNCHRONIZED
-                            | Opcodes.ACC_NATIVE | Opcodes.ACC_ABSTRACT | Opcodes.ACC_STRICT);
+            final int mods = access & (Opcodes.ACC_PUBLIC | Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL | Opcodes.ACC_SYNCHRONIZED | Opcodes.ACC_NATIVE | Opcodes.ACC_ABSTRACT | Opcodes.ACC_STRICT);
 
             // all non private methods
-            if ((access & Opcodes.ACC_PRIVATE) == 0) {
-                if (name.equals("<init>")) {
-                    svuidConstructors.add(new Item(name, mods, desc));
-                } else if (!name.equals("<clinit>")) {
-                    svuidMethods.add(new Item(name, mods, desc));
+            if ( (access & Opcodes.ACC_PRIVATE) == 0 ) {
+                if ( name.equals( "<init>" ) ) {
+                    this.svuidConstructors.add( new Item( name,
+                                                          mods,
+                                                          desc ) );
+                } else if ( !name.equals( "<clinit>" ) ) {
+                    this.svuidMethods.add( new Item( name,
+                                                     mods,
+                                                     desc ) );
                 }
             }
         }
 
-        return cv.visitMethod(access, name, desc, signature, exceptions);
+        return this.cv.visitMethod( access,
+                                    name,
+                                    desc,
+                                    signature,
+                                    exceptions );
     }
 
     /*
      * Gets class field information for step 4 of the alogrithm. Also determines
      * if the class already has a SVUID.
      */
-    public FieldVisitor visitField(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final Object value)
-    {
-        if (computeSVUID) {
-            if (name.equals("serialVersionUID")) {
+    public FieldVisitor visitField(final int access,
+                                   final String name,
+                                   final String desc,
+                                   final String signature,
+                                   final Object value) {
+        if ( this.computeSVUID ) {
+            if ( name.equals( "serialVersionUID" ) ) {
                 // since the class already has SVUID, we won't be computing it.
-                computeSVUID = false;
-                hasSVUID = true;
+                this.computeSVUID = false;
+                this.hasSVUID = true;
             }
             /*
              * Remember field for SVUID computation For field modifiers, only
@@ -263,19 +266,20 @@ public class SerialVersionUIDAdder extends ClassAdapter {
              * ACC_FINAL, ACC_VOLATILE, and ACC_TRANSIENT flags are used when
              * computing serialVersionUID values.
              */
-            int mods = access
-                    & (Opcodes.ACC_PUBLIC | Opcodes.ACC_PRIVATE
-                            | Opcodes.ACC_PROTECTED | Opcodes.ACC_STATIC
-                            | Opcodes.ACC_FINAL | Opcodes.ACC_VOLATILE | Opcodes.ACC_TRANSIENT);
+            final int mods = access & (Opcodes.ACC_PUBLIC | Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL | Opcodes.ACC_VOLATILE | Opcodes.ACC_TRANSIENT);
 
-            if (((access & Opcodes.ACC_PRIVATE) == 0)
-                    || ((access & (Opcodes.ACC_STATIC | Opcodes.ACC_TRANSIENT)) == 0))
-            {
-                svuidFields.add(new Item(name, mods, desc));
+            if ( ((access & Opcodes.ACC_PRIVATE) == 0) || ((access & (Opcodes.ACC_STATIC | Opcodes.ACC_TRANSIENT)) == 0) ) {
+                this.svuidFields.add( new Item( name,
+                                                mods,
+                                                desc ) );
             }
         }
 
-        return super.visitField(access, name, desc, signature, value);
+        return super.visitField( access,
+                                 name,
+                                 desc,
+                                 signature,
+                                 value );
     }
 
     /*
@@ -283,16 +287,16 @@ public class SerialVersionUIDAdder extends ClassAdapter {
      */
     public void visitEnd() {
         // compute SVUID and add it to the class
-        if (computeSVUID && !hasSVUID) {
+        if ( this.computeSVUID && !this.hasSVUID ) {
             try {
-                cv.visitField(Opcodes.ACC_FINAL + Opcodes.ACC_STATIC,
-                        "serialVersionUID",
-                        "J",
-                        null,
-                        new Long(computeSVUID()));
-            } catch (Throwable e) {
-                throw new RuntimeException("Error while computing SVUID for "
-                        + name, e);
+                this.cv.visitField( Opcodes.ACC_FINAL + Opcodes.ACC_STATIC,
+                                    "serialVersionUID",
+                                    "J",
+                                    null,
+                                    new Long( computeSVUID() ) );
+            } catch ( final Throwable e ) {
+                throw new RuntimeException( "Error while computing SVUID for " + this.name,
+                                            e );
             }
         }
 
@@ -312,8 +316,9 @@ public class SerialVersionUIDAdder extends ClassAdapter {
      * @throws IOException
      * @throws NoSuchAlgorithmException
      */
-    protected long computeSVUID() throws IOException, NoSuchAlgorithmException {
-        if (hasSVUID) {
+    protected long computeSVUID() throws IOException,
+                                 NoSuchAlgorithmException {
+        if ( this.hasSVUID ) {
             return 0;
         }
 
@@ -323,27 +328,27 @@ public class SerialVersionUIDAdder extends ClassAdapter {
 
         try {
             bos = new ByteArrayOutputStream();
-            dos = new DataOutputStream(bos);
+            dos = new DataOutputStream( bos );
 
             /*
              * 1. The class name written using UTF encoding.
              */
-            dos.writeUTF(name.replace('/', '.'));
+            dos.writeUTF( this.name.replace( '/',
+                                             '.' ) );
 
             /*
              * 2. The class modifiers written as a 32-bit integer.
              */
-            dos.writeInt(access
-                    & (Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL
-                            | Opcodes.ACC_INTERFACE | Opcodes.ACC_ABSTRACT));
+            dos.writeInt( this.access & (Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL | Opcodes.ACC_INTERFACE | Opcodes.ACC_ABSTRACT) );
 
             /*
              * 3. The name of each interface sorted by name written using UTF
              * encoding.
              */
-            Arrays.sort(interfaces);
-            for (int i = 0; i < interfaces.length; i++) {
-                dos.writeUTF(interfaces[i].replace('/', '.'));
+            Arrays.sort( this.interfaces );
+            for ( int i = 0; i < this.interfaces.length; i++ ) {
+                dos.writeUTF( this.interfaces[i].replace( '/',
+                                                          '.' ) );
             }
 
             /*
@@ -357,7 +362,9 @@ public class SerialVersionUIDAdder extends ClassAdapter {
              * Note that field signatutes are not dot separated. Method and
              * constructor signatures are dot separated. Go figure...
              */
-            writeItems(svuidFields, dos, false);
+            writeItems( this.svuidFields,
+                        dos,
+                        false );
 
             /*
              * 5. If a class initializer exists, write out the following: 1. The
@@ -366,10 +373,10 @@ public class SerialVersionUIDAdder extends ClassAdapter {
              * 32-bit integer. 3. The descriptor of the method, ()V, in UTF
              * encoding.
              */
-            if (hasStaticInitializer) {
-                dos.writeUTF("<clinit>");
-                dos.writeInt(Opcodes.ACC_STATIC);
-                dos.writeUTF("()V");
+            if ( this.hasStaticInitializer ) {
+                dos.writeUTF( "<clinit>" );
+                dos.writeInt( Opcodes.ACC_STATIC );
+                dos.writeUTF( "()V" );
             } // if..
 
             /*
@@ -378,7 +385,9 @@ public class SerialVersionUIDAdder extends ClassAdapter {
              * The modifiers of the method written as a 32-bit integer. 3. The
              * descriptor of the method in UTF encoding.
              */
-            writeItems(svuidConstructors, dos, true);
+            writeItems( this.svuidConstructors,
+                        dos,
+                        true );
 
             /*
              * 7. For each non-private method sorted by method name and
@@ -386,7 +395,9 @@ public class SerialVersionUIDAdder extends ClassAdapter {
              * modifiers of the method written as a 32-bit integer. 3. The
              * descriptor of the method in UTF encoding.
              */
-            writeItems(svuidMethods, dos, true);
+            writeItems( this.svuidMethods,
+                        dos,
+                        true );
 
             dos.flush();
 
@@ -395,7 +406,7 @@ public class SerialVersionUIDAdder extends ClassAdapter {
              * produced by DataOutputStream and produces five 32-bit values
              * sha[0..4].
              */
-            MessageDigest md = MessageDigest.getInstance("SHA");
+            final MessageDigest md = MessageDigest.getInstance( "SHA" );
 
             /*
              * 9. The hash value is assembled from the first and second 32-bit
@@ -410,13 +421,14 @@ public class SerialVersionUIDAdder extends ClassAdapter {
              * 40 | ((sha[1] >>> 8) & 0xFF) << 48 | ((sha[1] >>> 0) & 0xFF) <<
              * 56;
              */
-            byte[] hashBytes = md.digest(bos.toByteArray());
-            for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
+            final byte[] hashBytes = md.digest( bos.toByteArray() );
+            for ( int i = Math.min( hashBytes.length,
+                                    8 ) - 1; i >= 0; i-- ) {
                 svuid = (svuid << 8) | (hashBytes[i] & 0xFF);
             }
         } finally {
             // close the stream (if open)
-            if (dos != null) {
+            if ( dos != null ) {
                 dos.close();
             }
         }
@@ -432,20 +444,17 @@ public class SerialVersionUIDAdder extends ClassAdapter {
      * @param dotted a <code>boolean</code> value
      * @exception IOException if an error occurs
      */
-    private void writeItems(
-        final Collection itemCollection,
-        final DataOutputStream dos,
-        final boolean dotted) throws IOException
-    {
-        int size = itemCollection.size();
-        Item items[] = (Item[]) itemCollection.toArray(new Item[size]);
-        Arrays.sort(items);
-        for (int i = 0; i < size; i++) {
-            dos.writeUTF(items[i].name);
-            dos.writeInt(items[i].access);
-            dos.writeUTF(dotted
-                    ? items[i].desc.replace('/', '.')
-                    : items[i].desc);
+    private void writeItems(final Collection itemCollection,
+                            final DataOutputStream dos,
+                            final boolean dotted) throws IOException {
+        final int size = itemCollection.size();
+        final Item items[] = (Item[]) itemCollection.toArray( new Item[size] );
+        Arrays.sort( items );
+        for ( int i = 0; i < size; i++ ) {
+            dos.writeUTF( items[i].name );
+            dos.writeInt( items[i].access );
+            dos.writeUTF( dotted ? items[i].desc.replace( '/',
+                                                          '.' ) : items[i].desc );
         }
     }
 
@@ -453,25 +462,29 @@ public class SerialVersionUIDAdder extends ClassAdapter {
     // Inner classes
     // ------------------------------------------------------------------------
 
-    static class Item implements Comparable {
+    static class Item
+        implements
+        Comparable {
 
         String name;
 
-        int access;
+        int    access;
 
         String desc;
 
-        Item(final String name, final int access, final String desc) {
+        Item(final String name,
+             final int access,
+             final String desc) {
             this.name = name;
             this.access = access;
             this.desc = desc;
         }
 
         public int compareTo(final Object o) {
-            Item other = (Item) o;
-            int retVal = name.compareTo(other.name);
-            if (retVal == 0) {
-                retVal = desc.compareTo(other.desc);
+            final Item other = (Item) o;
+            int retVal = this.name.compareTo( other.name );
+            if ( retVal == 0 ) {
+                retVal = this.desc.compareTo( other.desc );
             }
             return retVal;
         }

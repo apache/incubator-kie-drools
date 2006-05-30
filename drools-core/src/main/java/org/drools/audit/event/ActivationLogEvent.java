@@ -50,10 +50,10 @@ public class ActivationLogEvent extends LogEvent {
      * @param declarations A String representation of the declarations in the
      * activation.
      */
-    public ActivationLogEvent(int type,
-                              String activationId,
-                              String rule,
-                              String declarations) {
+    public ActivationLogEvent(final int type,
+                              final String activationId,
+                              final String rule,
+                              final String declarations) {
         super( type );
         this.activationId = activationId;
         this.rule = rule;
@@ -66,7 +66,7 @@ public class ActivationLogEvent extends LogEvent {
      * @return The id of the activation
      */
     public String getActivationId() {
-        return activationId;
+        return this.activationId;
     }
 
     /**
@@ -75,7 +75,7 @@ public class ActivationLogEvent extends LogEvent {
      * @return The name of the rule
      */
     public String getRule() {
-        return rule;
+        return this.rule;
     }
 
     /**
@@ -85,6 +85,6 @@ public class ActivationLogEvent extends LogEvent {
      * @return A String representation of the declarations.
      */
     public String getDeclarations() {
-        return declarations;
+        return this.declarations;
     }
 }

@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,42 +35,52 @@ import org.drools.spi.Tuple;
 
 public class SchedulerTest extends DroolsTestCase {
     public void testScheduledActivation() throws Exception {
-        RuleBase ruleBase = new RuleBaseImpl();
+        final RuleBase ruleBase = new LeapsRuleBase();
 
-        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        final LeapsWorkingMemory workingMemory = (LeapsWorkingMemory) ruleBase.newWorkingMemory();
 
         final Rule rule = new Rule( "scheduled-test-rule" );
         final List data = new ArrayList();
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -1991405634414239175L;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) {
                 data.add( "tested" );
             }
         } );
 
         /* 1/10th of a second */
-        Duration duration = new Duration() {
+        final Duration duration = new Duration() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -1650013015631329969L;
+
             public long getDuration(Tuple tuple) {
                 return 100;
             }
         };
         rule.setDuration( duration );
 
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 rule,
-                                                                 null );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       rule,
+                                                                       null );
 
-        FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory.assertObject( "tuple object" );
-        FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
+        final FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory.assertObject( "tuple object" );
+        final FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
         factHandlesTuple[0] = tupleFactHandle;
 
-        ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
-        LeapsTuple tuple = new LeapsTuple( factHandlesTuple,
-                                           (LeapsRule) leapsRules.get( 0 ),
-                                           context );
+        final ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
+        final LeapsTuple tuple = new LeapsTuple( factHandlesTuple,
+                                                 (LeapsRule) leapsRules.get( 0 ),
+                                                 context );
 
         assertEquals( 0,
                       data.size() );
@@ -89,15 +96,20 @@ public class SchedulerTest extends DroolsTestCase {
     }
 
     public void testDoLoopScheduledActivation() throws Exception {
-        RuleBase ruleBase = new RuleBaseImpl();
+        final RuleBase ruleBase = new LeapsRuleBase();
 
-        final WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        final LeapsWorkingMemory workingMemory = (LeapsWorkingMemory) ruleBase.newWorkingMemory();
 
         final Rule rule = new Rule( "do-loop-scheduled-test-rule" );
         final List data = new ArrayList();
 
         /* 1/10th of a second */
-        Duration duration = new Duration() {
+        final Duration duration = new Duration() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -65249353062404118L;
+
             public long getDuration(Tuple tuple) {
                 return 100;
             }
@@ -107,41 +119,46 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 5431138295939934840L;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) {
                 /* on first invoke add another one to the agenda */
                 if ( data.size() < 3 ) {
-                    PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                              0,
-                                                                              rule,
-                                                                              knowledgeHelper.getActivation() );
+                    final PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                                    0,
+                                                                                    rule,
+                                                                                    knowledgeHelper.getActivation() );
 
-                    FactHandleImpl tupleFactHandleIn = (FactHandleImpl) workingMemory.assertObject( "tuple object in" );
-                    FactHandleImpl[] factHandlesTupleIn = new FactHandleImpl[1];
+                    final FactHandleImpl tupleFactHandleIn = (FactHandleImpl) workingMemory.assertObject( "tuple object in" );
+                    final FactHandleImpl[] factHandlesTupleIn = new FactHandleImpl[1];
                     factHandlesTupleIn[0] = tupleFactHandleIn;
-                    ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
-                    LeapsTuple tupleIn = new LeapsTuple( factHandlesTupleIn,
-                                                         (LeapsRule) leapsRules.get( 0 ),
-                                                         context2 );
-                    ((WorkingMemoryImpl) workingMemory).assertTuple( tupleIn );
+                    final ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
+                    final LeapsTuple tupleIn = new LeapsTuple( factHandlesTupleIn,
+                                                               (LeapsRule) leapsRules.get( 0 ),
+                                                               context2 );
+                    ((LeapsWorkingMemory) workingMemory).assertTuple( tupleIn );
                 }
                 data.add( "tested" );
             }
         } );
 
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 rule,
-                                                                 null );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       rule,
+                                                                       null );
 
-        FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory.assertObject( "tuple object" );
-        FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
+        final FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory.assertObject( "tuple object" );
+        final FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
         factHandlesTuple[0] = tupleFactHandle;
 
-        ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
-        LeapsTuple tuple = new LeapsTuple( factHandlesTuple,
-                                           (LeapsRule) leapsRules.get( 0 ),
-                                           context );
+        final ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
+        final LeapsTuple tuple = new LeapsTuple( factHandlesTuple,
+                                                 (LeapsRule) leapsRules.get( 0 ),
+                                                 context );
 
         workingMemory.assertTuple( tuple );
 

@@ -1,4 +1,5 @@
 package org.drools.conflict;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.conflict;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
@@ -38,8 +35,12 @@ public class LifoConflictResolver extends AbstractConflictResolver {
     // Class members
     // ----------------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long                 serialVersionUID = -2948840369812341044L;
     /** Singleton instance. */
-    private static final LifoConflictResolver INSTANCE = new LifoConflictResolver();
+    private static final LifoConflictResolver INSTANCE         = new LifoConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -70,8 +71,8 @@ public class LifoConflictResolver extends AbstractConflictResolver {
     /**
      * @see ConflictResolver
      */
-    public int compare(Activation lhs,
-                       Activation rhs) {
+    public int compare(final Activation lhs,
+                       final Activation rhs) {
         return (int) (rhs.getActivationNumber() - lhs.getActivationNumber());
     }
 }

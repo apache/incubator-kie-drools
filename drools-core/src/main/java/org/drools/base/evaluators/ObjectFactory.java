@@ -16,8 +16,6 @@ package org.drools.base.evaluators;
  * limitations under the License.
  */
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.base.BaseEvaluator;
@@ -36,7 +34,7 @@ import org.drools.spi.Evaluator;
  */
 public class ObjectFactory {
 
-    public static Evaluator getObjectEvaluator(int operator) {
+    public static Evaluator getObjectEvaluator(final int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
                 return ObjectEqualEvaluator.INSTANCE;
@@ -60,16 +58,22 @@ public class ObjectFactory {
     }
 
     static class ObjectEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new ObjectEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 4532849170161094887L;
+        public final static Evaluator INSTANCE         = new ObjectEqualEvaluator();
 
         private ObjectEqualEvaluator() {
             super( Evaluator.OBJECT_TYPE,
                    Evaluator.EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 == null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 == null;
+            }
             return object1.equals( object2 );
         }
 
@@ -79,16 +83,22 @@ public class ObjectFactory {
     }
 
     static class ObjectNotEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new ObjectNotEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -6995475512317781516L;
+        public final static Evaluator INSTANCE         = new ObjectNotEqualEvaluator();
 
         private ObjectNotEqualEvaluator() {
             super( Evaluator.OBJECT_TYPE,
                    Evaluator.NOT_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return !(object2 == null);
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return !(object2 == null);
+            }
             return !object1.equals( object2 );
         }
 
@@ -98,17 +108,21 @@ public class ObjectFactory {
     }
 
     static class ObjectLessEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new ObjectLessEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 5327278696364237380L;
+        public final static Evaluator INSTANCE         = new ObjectLessEvaluator();
 
         private ObjectLessEvaluator() {
             super( Evaluator.OBJECT_TYPE,
                    Evaluator.LESS );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            Comparable comp = (Comparable) object1;
-            int val = comp.compareTo( object2 );
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            final Comparable comp = (Comparable) object1;
+            final int val = comp.compareTo( object2 );
             return val < 0;
         }
 
@@ -118,16 +132,20 @@ public class ObjectFactory {
     }
 
     static class ObjectLessOrEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new ObjectLessOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 3463248146201714137L;
+        public final static Evaluator INSTANCE         = new ObjectLessOrEqualEvaluator();
 
         private ObjectLessOrEqualEvaluator() {
             super( Evaluator.OBJECT_TYPE,
                    Evaluator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            Comparable comp = (Comparable) object1;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            final Comparable comp = (Comparable) object1;
             return comp.compareTo( object2 ) <= 0;
         }
 
@@ -137,16 +155,20 @@ public class ObjectFactory {
     }
 
     static class ObjectGreaterEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new ObjectGreaterEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 7808425299326128881L;
+        public final static Evaluator INSTANCE         = new ObjectGreaterEvaluator();
 
         private ObjectGreaterEvaluator() {
             super( Evaluator.OBJECT_TYPE,
                    Evaluator.GREATER );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            Comparable comp = (Comparable) object1;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            final Comparable comp = (Comparable) object1;
             return comp.compareTo( object2 ) > 0;
         }
 
@@ -156,16 +178,20 @@ public class ObjectFactory {
     }
 
     static class ObjectGreaterOrEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new ObjectGreaterOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -3337081388987517878L;
+        public final static Evaluator INSTANCE         = new ObjectGreaterOrEqualEvaluator();
 
         private ObjectGreaterOrEqualEvaluator() {
             super( Evaluator.OBJECT_TYPE,
                    Evaluator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            Comparable comp = (Comparable) object1;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            final Comparable comp = (Comparable) object1;
             return comp.compareTo( object2 ) >= 0;
         }
 
@@ -175,17 +201,23 @@ public class ObjectFactory {
     }
 
     static class ObjectContainsEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new ObjectContainsEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 6607233589136455455L;
+        public final static Evaluator INSTANCE         = new ObjectContainsEvaluator();
 
         private ObjectContainsEvaluator() {
             super( Evaluator.OBJECT_TYPE,
                    Evaluator.CONTAINS );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object2 == null ) return false;
-            Collection col = (Collection) object1;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object2 == null ) {
+                return false;
+            }
+            final Collection col = (Collection) object1;
             return col.contains( object2 );
         }
 
@@ -193,25 +225,31 @@ public class ObjectFactory {
             return "Object contains";
         }
     }
-    
+
     static class ObjectExcludesEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new ObjectExcludesEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 4353038775000051165L;
+        public final static Evaluator INSTANCE         = new ObjectExcludesEvaluator();
 
         private ObjectExcludesEvaluator() {
             super( Evaluator.OBJECT_TYPE,
                    Evaluator.EXCLUDES );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object2 == null ) return false;
-            Collection col = (Collection) object1;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object2 == null ) {
+                return false;
+            }
+            final Collection col = (Collection) object1;
             return !col.contains( object2 );
         }
 
         public String toString() {
             return "Object excludes";
         }
-    }    
+    }
 
 }

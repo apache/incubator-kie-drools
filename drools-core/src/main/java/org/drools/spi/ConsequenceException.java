@@ -1,4 +1,5 @@
 package org.drools.spi;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-
-
-
-
 import org.drools.RuntimeDroolsException;
 import org.drools.rule.Rule;
 
@@ -31,8 +28,12 @@ import org.drools.rule.Rule;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public class ConsequenceException extends RuntimeDroolsException {
-    private Rule   rule;
-    private String info;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4110574597794545184L;
+    private Rule              rule;
+    private String            info;
 
     // ------------------------------------------------------------
     // Constructors
@@ -45,7 +46,7 @@ public class ConsequenceException extends RuntimeDroolsException {
         // intentionally left blank
     }
 
-    public ConsequenceException(String message) {
+    public ConsequenceException(final String message) {
         super( message );
     }
 
@@ -55,11 +56,11 @@ public class ConsequenceException extends RuntimeDroolsException {
      * @param rootCause
      *            The root cause of this exception.
      */
-    public ConsequenceException(Throwable rootCause) {
+    public ConsequenceException(final Throwable rootCause) {
         super( rootCause );
     }
 
-    public ConsequenceException(Rule rule) {
+    public ConsequenceException(final Rule rule) {
         this.rule = rule;
     }
 
@@ -72,8 +73,8 @@ public class ConsequenceException extends RuntimeDroolsException {
      * 
      * 
      */
-    public ConsequenceException(String message,
-                                Rule rule) {
+    public ConsequenceException(final String message,
+                                final Rule rule) {
         super( message );
         this.rule = rule;
     }
@@ -87,15 +88,15 @@ public class ConsequenceException extends RuntimeDroolsException {
      * 
      * 
      */
-    public ConsequenceException(Throwable rootCause,
-                                Rule rule) {
+    public ConsequenceException(final Throwable rootCause,
+                                final Rule rule) {
         super( rootCause );
         this.rule = rule;
     }
 
-    public ConsequenceException(String message,
-                                Rule rule,
-                                String info) {
+    public ConsequenceException(final String message,
+                                final Rule rule,
+                                final String info) {
         super( message );
         this.rule = rule;
         this.info = info;
@@ -107,9 +108,9 @@ public class ConsequenceException extends RuntimeDroolsException {
      * @param rootCause
      *            The root cause of this exception.
      */
-    public ConsequenceException(Throwable rootCause,
-                                Rule rule,
-                                String info) {
+    public ConsequenceException(final Throwable rootCause,
+                                final Rule rule,
+                                final String info) {
         super( rootCause );
         this.rule = rule;
         this.info = info;
@@ -127,7 +128,7 @@ public class ConsequenceException extends RuntimeDroolsException {
      * other information in the case that Consequence does not have block text.
      * </p>
      */
-    public void setInfo(String info) {
+    public void setInfo(final String info) {
         this.info = info;
     }
 

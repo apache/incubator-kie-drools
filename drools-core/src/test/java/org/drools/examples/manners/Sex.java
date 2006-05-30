@@ -16,27 +16,27 @@
 package org.drools.examples.manners;
 
 public final class Sex {
-    public static final Sex    M       = new Sex( 0 );
-    public static final Sex    F       = new Sex( 1 );
+    public static final Sex      M       = new Sex( 0 );
+    public static final Sex      F       = new Sex( 1 );
 
-    public static final String stringM = "m";
-    public static final String stringF = "f";
-    public static final String[] sexList = new String[] { stringM, stringF };
+    public static final String   stringM = "m";
+    public static final String   stringF = "f";
+    public static final String[] sexList = new String[]{Sex.stringM, Sex.stringF};
 
-    private final int          sex;
+    private final int            sex;
 
-    private Sex(int sex) {
+    private Sex(final int sex) {
         this.sex = sex;
     }
 
     public final String getSex() {
-        return sexList[this.sex];
+        return Sex.sexList[this.sex];
     }
 
-    public final static Sex resolve(String sex) {
-        if ( stringM.equals( sex ) ) {
+    public final static Sex resolve(final String sex) {
+        if ( Sex.stringM.equals( sex ) ) {
             return Sex.M;
-        } else if ( stringF.equals( sex ) ) {
+        } else if ( Sex.stringF.equals( sex ) ) {
             return Sex.F;
         } else {
             throw new RuntimeException( "Sex '" + sex + "' does not exist for Sex Enum" );
@@ -47,7 +47,7 @@ public final class Sex {
         return getSex();
     }
 
-    public final boolean equals(Object object) {
+    public final boolean equals(final Object object) {
         return this == object;
     }
 

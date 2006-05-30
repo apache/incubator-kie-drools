@@ -45,129 +45,141 @@ import org.drools.asm.tree.MethodInsnNode;
  * 
  * @author Eric Bruneton
  */
-public class DataflowInterpreter implements Opcodes, Interpreter {
+public class DataflowInterpreter
+    implements
+    Opcodes,
+    Interpreter {
 
     public Value newValue(final Type type) {
-        return new DataflowValue(type == null ? 1 : type.getSize());
+        return new DataflowValue( type == null ? 1 : type.getSize() );
     }
 
     public Value newOperation(final AbstractInsnNode insn) {
         int size;
-        switch (insn.getOpcode()) {
-            case LCONST_0:
-            case LCONST_1:
-            case DCONST_0:
-            case DCONST_1:
+        switch ( insn.getOpcode() ) {
+            case LCONST_0 :
+            case LCONST_1 :
+            case DCONST_0 :
+            case DCONST_1 :
                 size = 2;
                 break;
-            case LDC:
-                Object cst = ((LdcInsnNode) insn).cst;
+            case LDC :
+                final Object cst = ((LdcInsnNode) insn).cst;
                 size = cst instanceof Long || cst instanceof Double ? 2 : 1;
                 break;
-            case GETSTATIC:
-                size = Type.getType(((FieldInsnNode) insn).desc).getSize();
+            case GETSTATIC :
+                size = Type.getType( ((FieldInsnNode) insn).desc ).getSize();
                 break;
-            default:
+            default :
                 size = 1;
         }
-        return new DataflowValue(size, insn);
+        return new DataflowValue( size,
+                                  insn );
     }
 
-    public Value copyOperation(final AbstractInsnNode insn, final Value value) {
-        return new DataflowValue(value.getSize(), insn);
+    public Value copyOperation(final AbstractInsnNode insn,
+                               final Value value) {
+        return new DataflowValue( value.getSize(),
+                                  insn );
     }
 
-    public Value unaryOperation(final AbstractInsnNode insn, final Value value)
-    {
+    public Value unaryOperation(final AbstractInsnNode insn,
+                                final Value value) {
         int size;
-        switch (insn.getOpcode()) {
-            case LNEG:
-            case DNEG:
-            case I2L:
-            case I2D:
-            case L2D:
-            case F2L:
-            case F2D:
-            case D2L:
+        switch ( insn.getOpcode() ) {
+            case LNEG :
+            case DNEG :
+            case I2L :
+            case I2D :
+            case L2D :
+            case F2L :
+            case F2D :
+            case D2L :
                 size = 2;
                 break;
-            case GETFIELD:
-                size = Type.getType(((FieldInsnNode) insn).desc).getSize();
+            case GETFIELD :
+                size = Type.getType( ((FieldInsnNode) insn).desc ).getSize();
                 break;
-            default:
+            default :
                 size = 1;
         }
-        return new DataflowValue(size, insn);
+        return new DataflowValue( size,
+                                  insn );
     }
 
-    public Value binaryOperation(
-        final AbstractInsnNode insn,
-        final Value value1,
-        final Value value2)
-    {
+    public Value binaryOperation(final AbstractInsnNode insn,
+                                 final Value value1,
+                                 final Value value2) {
         int size;
-        switch (insn.getOpcode()) {
-            case LALOAD:
-            case DALOAD:
-            case LADD:
-            case DADD:
-            case LSUB:
-            case DSUB:
-            case LMUL:
-            case DMUL:
-            case LDIV:
-            case DDIV:
-            case LREM:
-            case DREM:
-            case LSHL:
-            case LSHR:
-            case LUSHR:
-            case LAND:
-            case LOR:
-            case LXOR:
+        switch ( insn.getOpcode() ) {
+            case LALOAD :
+            case DALOAD :
+            case LADD :
+            case DADD :
+            case LSUB :
+            case DSUB :
+            case LMUL :
+            case DMUL :
+            case LDIV :
+            case DDIV :
+            case LREM :
+            case DREM :
+            case LSHL :
+            case LSHR :
+            case LUSHR :
+            case LAND :
+            case LOR :
+            case LXOR :
                 size = 2;
                 break;
-            default:
+            default :
                 size = 1;
         }
-        return new DataflowValue(size, insn);
+        return new DataflowValue( size,
+                                  insn );
     }
 
-    public Value ternaryOperation(
-        final AbstractInsnNode insn,
-        final Value value1,
-        final Value value2,
-        final Value value3)
-    {
-        return new DataflowValue(1, insn);
+    public Value ternaryOperation(final AbstractInsnNode insn,
+                                  final Value value1,
+                                  final Value value2,
+                                  final Value value3) {
+        return new DataflowValue( 1,
+                                  insn );
     }
 
-    public Value naryOperation(final AbstractInsnNode insn, final List values) {
+    public Value naryOperation(final AbstractInsnNode insn,
+                               final List values) {
         int size;
-        if (insn.getOpcode() == MULTIANEWARRAY) {
+        if ( insn.getOpcode() == Opcodes.MULTIANEWARRAY ) {
             size = 1;
         } else {
-            size = Type.getReturnType(((MethodInsnNode) insn).desc).getSize();
+            size = Type.getReturnType( ((MethodInsnNode) insn).desc ).getSize();
         }
-        return new DataflowValue(size, insn);
+        return new DataflowValue( size,
+                                  insn );
     }
 
-    public Value merge(final Value v, final Value w) {
-        DataflowValue dv = (DataflowValue) v;
-        DataflowValue dw = (DataflowValue) w;
-        if (dv.insns instanceof SmallSet && dw.insns instanceof SmallSet) {
-            Set s = ((SmallSet) dv.insns).union((SmallSet) dw.insns);
-            if (s == dv.insns && dv.size == dw.size) {
+    public Value merge(final Value v,
+                       final Value w) {
+        final DataflowValue dv = (DataflowValue) v;
+        final DataflowValue dw = (DataflowValue) w;
+        if ( dv.insns instanceof SmallSet && dw.insns instanceof SmallSet ) {
+            final Set s = ((SmallSet) dv.insns).union( (SmallSet) dw.insns );
+            if ( s == dv.insns && dv.size == dw.size ) {
                 return v;
             } else {
-                return new DataflowValue(Math.min(dv.size, dw.size), s);
+                return new DataflowValue( Math.min( dv.size,
+                                                    dw.size ),
+                                          s );
             }
         }
-        if (dv.size != dw.size || !dv.insns.containsAll(dw.insns)) {
-            Set s = new HashSet();
-            s.addAll(dv.insns);
-            s.addAll(dw.insns);
-            return new DataflowValue(Math.min(dv.size, dw.size), s);
+        if ( dv.size != dw.size || !dv.insns.containsAll( dw.insns ) ) {
+            final Set s = new HashSet();
+            s.addAll( dv.insns );
+            s.addAll( dw.insns );
+            return new DataflowValue( Math.min( dv.size,
+                                                dw.size ),
+                                      s );
         }
         return v;
     }

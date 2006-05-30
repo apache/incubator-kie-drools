@@ -35,7 +35,6 @@ import org.drools.common.BetaNodeBinder;
 import org.drools.common.InstanceEqualsConstraint;
 import org.drools.rule.And;
 import org.drools.rule.Column;
-import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Exists;
@@ -66,36 +65,40 @@ class ReteooBuilder
     // Instance members
     // ------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long               serialVersionUID = 1737643968218792944L;
+
     /** The RuleBase */
-    private transient RuleBaseImpl        ruleBase;
+    private transient ReteooRuleBase        ruleBase;
 
     /** Rete network to build against. */
-    private transient Rete                rete;
+    private transient Rete                  rete;
 
-    private transient WorkingMemoryImpl[] workingMemories;
+    private transient ReteooWorkingMemory[] workingMemories;
 
-    private final ObjectTypeResolver      resolver;
+    private final ObjectTypeResolver        resolver;
 
     /** Nodes that have been attached. */
-    private final Map                     attachedNodes;
+    private final Map                       attachedNodes;
 
-    private TupleSource                   tupleSource;
+    private TupleSource                     tupleSource;
 
-    private ObjectSource                  objectSource;
+    private ObjectSource                    objectSource;
 
-    private Map                           declarations;
+    private Map                             declarations;
 
-    private int                           id;
+    private int                             id;
 
-    private Map                           rules;
+    private Map                             rules;
 
-    private Map                           objectType;
+    private Map                             objectType;
 
-    private int                           currentOffsetAdjustment;
-    
+    private int                             currentOffsetAdjustment;
+
     /** A factory for object sink lists */
-    private transient ObjectSinkListFactory       sinklistFactory;
-    
+    private transient ObjectSinkListFactory sinklistFactory;
 
     // ------------------------------------------------------------
     // Constructors
@@ -105,8 +108,8 @@ class ReteooBuilder
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    ReteooBuilder(RuleBaseImpl ruleBase,
-                  ObjectTypeResolver resolver) {
+    ReteooBuilder(final ReteooRuleBase ruleBase,
+                  final ObjectTypeResolver resolver) {
         this.ruleBase = ruleBase;
         this.rete = this.ruleBase.getRete();
         this.resolver = resolver;
@@ -117,14 +120,14 @@ class ReteooBuilder
         this.id = 1;
 
         // creating factory
-        this.sinklistFactory = new ObjectSinkListFactory(this.ruleBase.getConfiguration());
+        this.sinklistFactory = new ObjectSinkListFactory( this.ruleBase.getConfiguration() );
     }
 
     /**
      * Allow this to be settable, otherwise we get infinite recursion on serialisation
      * @param ruleBase
      */
-    void setRuleBase(RuleBaseImpl ruleBase) {
+    void setRuleBase(final ReteooRuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
 
@@ -132,7 +135,7 @@ class ReteooBuilder
      * Allow this to be settable, otherwise we get infinite recursion on serialisation
      * @param ruleBase
      */
-    void setRete(Rete rete) {
+    void setRete(final Rete rete) {
 
     }
 
@@ -151,13 +154,13 @@ class ReteooBuilder
      *             the <code>Rule</code>.
      * @throws InvalidPatternException
      */
-    void addRule(Rule rule) throws InvalidPatternException {
+    void addRule(final Rule rule) throws InvalidPatternException {
         // reset working memories for potential propagation
-        this.workingMemories = (WorkingMemoryImpl[]) this.ruleBase.getWorkingMemories().toArray( new WorkingMemoryImpl[this.ruleBase.getWorkingMemories().size()] );
+        this.workingMemories = (ReteooWorkingMemory[]) this.ruleBase.getWorkingMemories().toArray( new ReteooWorkingMemory[this.ruleBase.getWorkingMemories().size()] );
         this.currentOffsetAdjustment = 0;
 
-        List nodes = new ArrayList();
-        And[] and = rule.getTransformedLhs();
+        final List nodes = new ArrayList();
+        final And[] and = rule.getTransformedLhs();
 
         for ( int i = 0; i < and.length; i++ ) {
             if ( !hasColumns( and[i] ) ) {
@@ -190,17 +193,17 @@ class ReteooBuilder
             if ( this.workingMemories.length == 0 ) {
                 node.attach();
             } else {
-                node.attach( workingMemories );
+                node.attach( this.workingMemories );
             }
         }
 
         this.rules.put( rule,
-                        (BaseNode[]) nodes.toArray( new BaseNode[nodes.size()] ) );
+                        nodes.toArray( new BaseNode[nodes.size()] ) );
     }
 
-    private boolean hasColumns(GroupElement ge) {
-        for ( Iterator it = ge.getChildren().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+    private boolean hasColumns(final GroupElement ge) {
+        for ( final Iterator it = ge.getChildren().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             if ( object instanceof Column || (object instanceof GroupElement && hasColumns( (GroupElement) object )) ) {
                 return true;
             }
@@ -208,26 +211,26 @@ class ReteooBuilder
         return false;
     }
 
-    private void addInitialFactMatch(And and) {
+    private void addInitialFactMatch(final And and) {
         And temp = null;
-        
+
         // If we have children we know there are no columns but we need to make sure that InitialFact is first
         if ( !and.getChildren().isEmpty() ) {
             temp = (And) and.clone();
             and.getChildren().clear();
         }
-        Column column = new Column( 0,
-                                    new ClassObjectType( InitialFact.class ) );
+        final Column column = new Column( 0,
+                                          new ClassObjectType( InitialFact.class ) );
         and.addChild( column );
-        
+
         // now we know InitialFact is first add all the previous constrains
         if ( temp != null ) {
             and.getChildren().addAll( temp.getChildren() );
         }
     }
 
-    private void addRule(And and,
-                         Rule rule) throws InvalidPatternException {
+    private void addRule(final And and,
+                         final Rule rule) throws InvalidPatternException {
         this.objectSource = null;
         this.tupleSource = null;
         this.declarations = new HashMap();
@@ -237,11 +240,11 @@ class ReteooBuilder
             attachQuery( rule.getName() );
         }
 
-        for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        for ( final Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
 
             if ( object instanceof EvalCondition ) {
-                EvalCondition eval = (EvalCondition) object;
+                final EvalCondition eval = (EvalCondition) object;
                 checkUnboundDeclarations( eval.getRequiredDeclarations() );
                 this.tupleSource = attachNode( new EvalConditionNode( this.id++,
                                                                       this.tupleSource,
@@ -287,10 +290,10 @@ class ReteooBuilder
                     // adjusting offset as all tuples will now contain initial-fact at index 0
                     this.currentOffsetAdjustment = 1;
 
-                    ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
-                                                                                this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
-                                                                                new ClassObjectType( InitialFact.class ),
-                                                                                this.rete ) );
+                    final ObjectSource objectSource = attachNode( new ObjectTypeNode( this.id++,
+                                                                                      this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
+                                                                                      new ClassObjectType( InitialFact.class ),
+                                                                                      this.rete ) );
 
                     this.tupleSource = attachNode( new LeftInputAdapterNode( this.id++,
                                                                              objectSource ) );
@@ -322,59 +325,59 @@ class ReteooBuilder
         }
     }
 
-    public BaseNode[] getTerminalNodes(Rule rule) {
+    public BaseNode[] getTerminalNodes(final Rule rule) {
         return (BaseNode[]) this.rules.remove( rule );
     }
 
-    private void attachQuery(String queryName) {
-        ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
-        ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( this.id++,
-                                                                 this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
-                                                                 queryObjectType,
-                                                                 rete );
+    private void attachQuery(final String queryName) {
+        final ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
+        final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( this.id++,
+                                                                       this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
+                                                                       queryObjectType,
+                                                                       this.rete );
         queryObjectTypeNode.attach();
 
-        ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
-                                                                 "name" );
+        final ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
+                                                                       "name" );
 
-        FieldValue field = FieldFactory.getFieldValue( queryName,
-                                                       Evaluator.STRING_TYPE );
+        final FieldValue field = FieldFactory.getFieldValue( queryName,
+                                                             Evaluator.STRING_TYPE );
 
-        Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
-                                                             Evaluator.EQUAL );
-        LiteralConstraint constraint = new LiteralConstraint( field,
-                                                              extractor,
-                                                              evaluator );
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
+                                                                   Evaluator.EQUAL );
+        final LiteralConstraint constraint = new LiteralConstraint( field,
+                                                                    extractor,
+                                                                    evaluator );
 
-        AlphaNode alphaNode = new AlphaNode( this.id++,
-                                             this.sinklistFactory.newObjectSinkList( AlphaNode.class ),
-                                             constraint,
-                                             queryObjectTypeNode );
+        final AlphaNode alphaNode = new AlphaNode( this.id++,
+                                                   this.sinklistFactory.newObjectSinkList( AlphaNode.class ),
+                                                   constraint,
+                                                   queryObjectTypeNode );
         alphaNode.attach();
 
-        LeftInputAdapterNode liaNode = new LeftInputAdapterNode( this.id++,
-                                                                 alphaNode );
+        final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( this.id++,
+                                                                       alphaNode );
         liaNode.attach();
 
         this.tupleSource = liaNode;
     }
 
-    private BetaNodeBinder attachColumn(Column column,
-                                        GroupElement parent,
-                                        boolean removeIdentities) throws InvalidPatternException {
+    private BetaNodeBinder attachColumn(final Column column,
+                                        final GroupElement parent,
+                                        final boolean removeIdentities) throws InvalidPatternException {
         // Adjusting offset in case a previous Initial-Fact was added to the network
         column.adjustOffset( this.currentOffsetAdjustment );
 
         // Check if the Column is bound
         if ( column.getDeclaration() != null ) {
-            Declaration declaration = column.getDeclaration();
+            final Declaration declaration = column.getDeclaration();
             // Add the declaration the map of previously bound declarations
             this.declarations.put( declaration.getIdentifier(),
                                    declaration );
         }
 
-        List predicates = attachAlphaNodes( column,
-                                            removeIdentities );
+        final List predicates = attachAlphaNodes( column,
+                                                  removeIdentities );
 
         BetaNodeBinder binder;
 
@@ -387,25 +390,25 @@ class ReteooBuilder
         return binder;
     }
 
-    public List attachAlphaNodes(Column column,
-                                 boolean removeIdentities) throws InvalidPatternException {
-        List constraints = column.getConstraints();
+    public List attachAlphaNodes(final Column column,
+                                 final boolean removeIdentities) throws InvalidPatternException {
+        final List constraints = column.getConstraints();
 
-        Class thisClass = ((ClassObjectType) column.getObjectType()).getClassType();
+        final Class thisClass = ((ClassObjectType) column.getObjectType()).getClassType();
 
         this.objectSource = attachNode( new ObjectTypeNode( this.id++,
                                                             this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
                                                             column.getObjectType(),
                                                             this.rete ) );
 
-        List predicateConstraints = new ArrayList();
+        final List predicateConstraints = new ArrayList();
 
         if ( removeIdentities ) {
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
-            for ( Iterator it = this.objectType.entrySet().iterator(); it.hasNext(); ) {
-                Map.Entry entry = (Map.Entry) it.next();
-                Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
+            for ( final Iterator it = this.objectType.entrySet().iterator(); it.hasNext(); ) {
+                final Map.Entry entry = (Map.Entry) it.next();
+                final Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
                     predicateConstraints.add( new InstanceEqualsConstraint( ((Integer) entry.getValue()).intValue() ) );
                 }
@@ -416,23 +419,23 @@ class ReteooBuilder
                                  new Integer( column.getFactIndex() ) );
         }
 
-        for ( Iterator it = constraints.iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             // Check if its a declaration
             if ( object instanceof Declaration ) {
-                Declaration declaration = (Declaration) object;
+                final Declaration declaration = (Declaration) object;
                 // Add the declaration the map of previously bound declarations
                 this.declarations.put( declaration.getIdentifier(),
                                        declaration );
                 continue;
             }
 
-            FieldConstraint fieldConstraint = (FieldConstraint) object;
+            final FieldConstraint fieldConstraint = (FieldConstraint) object;
             if ( fieldConstraint instanceof LiteralConstraint ) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
                                                                this.sinklistFactory.newObjectSinkList( AlphaNode.class ),
                                                                fieldConstraint,
-                                                               objectSource ) );
+                                                               this.objectSource ) );
             } else {
                 checkUnboundDeclarations( fieldConstraint.getRequiredDeclarations() );
                 predicateConstraints.add( fieldConstraint );
@@ -442,29 +445,29 @@ class ReteooBuilder
         return predicateConstraints;
     }
 
-    private void attachNot(TupleSource tupleSource,
-                           Not not,
-                           ObjectSource ObjectSource,
-                           BetaNodeBinder binder,
-                           Column column) {
-        NotNode notNode = (NotNode) attachNode( new NotNode( this.id++,
-                                                             tupleSource,
-                                                             ObjectSource,
-                                                             binder ) );
+    private void attachNot(final TupleSource tupleSource,
+                           final Not not,
+                           final ObjectSource ObjectSource,
+                           final BetaNodeBinder binder,
+                           final Column column) {
+        final NotNode notNode = (NotNode) attachNode( new NotNode( this.id++,
+                                                                   tupleSource,
+                                                                   ObjectSource,
+                                                                   binder ) );
         if ( not.getChild() instanceof Not ) {
 
-            RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                                           column.getFactIndex(),
-                                                                                                           notNode ) );
+            final RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
+                                                                                                                 column.getFactIndex(),
+                                                                                                                 notNode ) );
             attachNot( tupleSource,
                        (Not) not.getChild(),
                        adapter,
                        new BetaNodeBinder(),
                        column );
         } else if ( not.getChild() instanceof Exists ) {
-            RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
-                                                                                                           column.getFactIndex(),
-                                                                                                           notNode ) );
+            final RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
+                                                                                                                 column.getFactIndex(),
+                                                                                                                 notNode ) );
             attachExists( tupleSource,
                           (Exists) not.getChild(),
                           adapter,
@@ -475,11 +478,11 @@ class ReteooBuilder
         }
     }
 
-    private void attachExists(TupleSource tupleSource,
-                              Exists exists,
-                              ObjectSource ObjectSource,
-                              BetaNodeBinder binder,
-                              Column column) {
+    private void attachExists(final TupleSource tupleSource,
+                              final Exists exists,
+                              final ObjectSource ObjectSource,
+                              final BetaNodeBinder binder,
+                              final Column column) {
         NotNode notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                              tupleSource,
                                                              ObjectSource,
@@ -524,14 +527,14 @@ class ReteooBuilder
      * @param leafNodes
      *            The list to which the newly added node will be added.
      */
-    private TupleSource attachNode(TupleSource candidate) {
+    private TupleSource attachNode(final TupleSource candidate) {
         TupleSource node = (TupleSource) this.attachedNodes.get( candidate );
 
         if ( node == null ) {
             if ( this.workingMemories.length == 0 ) {
                 candidate.attach();
             } else {
-                candidate.attach( workingMemories );
+                candidate.attach( this.workingMemories );
             }
 
             this.attachedNodes.put( candidate,
@@ -546,14 +549,14 @@ class ReteooBuilder
         return node;
     }
 
-    private ObjectSource attachNode(ObjectSource candidate) {
+    private ObjectSource attachNode(final ObjectSource candidate) {
         ObjectSource node = (ObjectSource) this.attachedNodes.get( candidate );
 
         if ( node == null ) {
             if ( this.workingMemories.length == 0 ) {
                 candidate.attach();
             } else {
-                candidate.attach( workingMemories );
+                candidate.attach( this.workingMemories );
             }
 
             this.attachedNodes.put( candidate,
@@ -567,15 +570,15 @@ class ReteooBuilder
         return node;
     }
 
-    public void removeRule(Rule rule) {
+    public void removeRule(final Rule rule) {
         // reset working memories for potential propagation
-        this.workingMemories = (WorkingMemoryImpl[]) this.ruleBase.getWorkingMemories().toArray( new WorkingMemoryImpl[this.ruleBase.getWorkingMemories().size()] );
+        this.workingMemories = (ReteooWorkingMemory[]) this.ruleBase.getWorkingMemories().toArray( new ReteooWorkingMemory[this.ruleBase.getWorkingMemories().size()] );
 
-        Object object = this.rules.get( rule );
+        final Object object = this.rules.get( rule );
 
-        BaseNode[] nodes = (BaseNode[]) object;
+        final BaseNode[] nodes = (BaseNode[]) object;
         for ( int i = 0, length = nodes.length; i < length; i++ ) {
-            BaseNode node = nodes[i];
+            final BaseNode node = nodes[i];
             node.remove( null,
                          this.workingMemories );
         }
@@ -587,8 +590,8 @@ class ReteooBuilder
      * @param declarations
      * @throws InvalidPatternException
      */
-    private void checkUnboundDeclarations(Declaration[] declarations) throws InvalidPatternException {
-        List list = new ArrayList();
+    private void checkUnboundDeclarations(final Declaration[] declarations) throws InvalidPatternException {
+        final List list = new ArrayList();
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
             if ( this.declarations.get( declarations[i].getIdentifier() ) == null ) {
                 list.add( declarations[i].getIdentifier() );
@@ -597,7 +600,7 @@ class ReteooBuilder
 
         // Make sure the required declarations        
         if ( list.size() != 0 ) {
-            StringBuffer buffer = new StringBuffer();
+            final StringBuffer buffer = new StringBuffer();
             buffer.append( list.get( 0 ) );
             for ( int i = 1, size = list.size(); i < size; i++ ) {
                 buffer.append( ", " + list.get( i ) );

@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.drools.FactHandle;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 
@@ -42,20 +43,25 @@ final class FactHandleList
     implements
     Serializable {
 
+    /**
+     * 
+     */
+    private static final long          serialVersionUID = -6767210501355521967L;
+
     /** Empty list for testing purposes only. */
-    static final FactHandleList    EMPTY_LIST = new FactHandleList();
+    static final FactHandleList        EMPTY_LIST       = new FactHandleList();
 
     /** The list of handles. */
     private final InternalFactHandle[] handles;
 
     /** The cached hash code value. */
-    private final int              hashCode;
+    private final int                  hashCode;
 
     /**
      * Private constructor for creating the {@link #EMPTY_LIST}.
      */
     private FactHandleList() {
-        this.handles = new FactHandleImpl[0];
+        this.handles = new DefaultFactHandle[0];
         this.hashCode = 0;
     }
 
@@ -67,9 +73,9 @@ final class FactHandleList
      * @param right
      *            The right list.
      */
-    public FactHandleList(FactHandleList left,
-                          InternalFactHandle handle) {
-        this.handles = new FactHandleImpl[left.handles.length + 1];
+    public FactHandleList(final FactHandleList left,
+                          final InternalFactHandle handle) {
+        this.handles = new DefaultFactHandle[left.handles.length + 1];
 
         System.arraycopy( left.handles,
                           0,
@@ -90,8 +96,8 @@ final class FactHandleList
      * @param handle
      *            The handle to use.
      */
-    public FactHandleList(FactHandleImpl handle) {
-        this.handles = new FactHandleImpl[]{handle};
+    public FactHandleList(final DefaultFactHandle handle) {
+        this.handles = new DefaultFactHandle[]{handle};
         this.hashCode = handle.hashCode();
     }
 
@@ -104,7 +110,7 @@ final class FactHandleList
      * @throws ArrayIndexOutOfBoundsException
      *             if <code>index</code> &gt; {@link #size()}.
      */
-    public InternalFactHandle get(int index) {
+    public InternalFactHandle get(final int index) {
         return this.handles[index];
     }
 
@@ -116,7 +122,7 @@ final class FactHandleList
      * @return <code>true</code> if the handle is found; otherwise
      *         <code>false</code>
      */
-    public boolean contains(FactHandle handle) {
+    public boolean contains(final FactHandle handle) {
         for ( int i = this.handles.length - 1; i >= 0; i-- ) {
             if ( handle.equals( this.handles[i] ) ) {
                 return true;
@@ -134,7 +140,7 @@ final class FactHandleList
      * @return <code>true</code> if this list contains all values from the
      *         other list; <code>false</code> otherwise.
      */
-    public boolean containsAll(FactHandleList other) {
+    public boolean containsAll(final FactHandleList other) {
         if ( other.handles.length > this.handles.length ) {
             return false;
         }
@@ -166,7 +172,7 @@ final class FactHandleList
         return this.hashCode;
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }

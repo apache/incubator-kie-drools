@@ -39,7 +39,9 @@ import org.drools.asm.AnnotationVisitor;
  * 
  * @author Eric Bruneton
  */
-public class AnnotationNode implements AnnotationVisitor {
+public class AnnotationNode
+    implements
+    AnnotationVisitor {
 
     /**
      * The class descriptor of the annotation class.
@@ -57,7 +59,7 @@ public class AnnotationNode implements AnnotationVisitor {
      * preceding types. The list may be <tt>null</tt> if there is no name
      * value pair.
      */
-    public List values;
+    public List   values;
 
     /**
      * Constructs a new {@link AnnotationNode}.
@@ -81,55 +83,52 @@ public class AnnotationNode implements AnnotationVisitor {
     // Implementation of the AnnotationVisitor interface
     // ------------------------------------------------------------------------
 
-    public void visit(final String name, final Object value) {
-        if (values == null) {
-            values = new ArrayList(this.desc != null ? 2 : 1);
+    public void visit(final String name,
+                      final Object value) {
+        if ( this.values == null ) {
+            this.values = new ArrayList( this.desc != null ? 2 : 1 );
         }
-        if (this.desc != null) {
-            values.add(name);
+        if ( this.desc != null ) {
+            this.values.add( name );
         }
-        values.add(value);
+        this.values.add( value );
     }
 
-    public void visitEnum(
-        final String name,
-        final String desc,
-        final String value)
-    {
-        if (values == null) {
-            values = new ArrayList(this.desc != null ? 2 : 1);
+    public void visitEnum(final String name,
+                          final String desc,
+                          final String value) {
+        if ( this.values == null ) {
+            this.values = new ArrayList( this.desc != null ? 2 : 1 );
         }
-        if (this.desc != null) {
-            values.add(name);
+        if ( this.desc != null ) {
+            this.values.add( name );
         }
-        values.add(new String[] { desc, value });
+        this.values.add( new String[]{desc, value} );
     }
 
-    public AnnotationVisitor visitAnnotation(
-        final String name,
-        final String desc)
-    {
-        if (values == null) {
-            values = new ArrayList(this.desc != null ? 2 : 1);
+    public AnnotationVisitor visitAnnotation(final String name,
+                                             final String desc) {
+        if ( this.values == null ) {
+            this.values = new ArrayList( this.desc != null ? 2 : 1 );
         }
-        if (this.desc != null) {
-            values.add(name);
+        if ( this.desc != null ) {
+            this.values.add( name );
         }
-        AnnotationNode annotation = new AnnotationNode(desc);
-        values.add(annotation);
+        final AnnotationNode annotation = new AnnotationNode( desc );
+        this.values.add( annotation );
         return annotation;
     }
 
     public AnnotationVisitor visitArray(final String name) {
-        if (values == null) {
-            values = new ArrayList(this.desc != null ? 2 : 1);
+        if ( this.values == null ) {
+            this.values = new ArrayList( this.desc != null ? 2 : 1 );
         }
-        if (this.desc != null) {
-            values.add(name);
+        if ( this.desc != null ) {
+            this.values.add( name );
         }
-        List array = new ArrayList();
-        values.add(array);
-        return new AnnotationNode(array);
+        final List array = new ArrayList();
+        this.values.add( array );
+        return new AnnotationNode( array );
     }
 
     public void visitEnd() {
@@ -145,11 +144,13 @@ public class AnnotationNode implements AnnotationVisitor {
      * @param av an annotation visitor.
      */
     public void accept(final AnnotationVisitor av) {
-        if (values != null) {
-            for (int i = 0; i < values.size(); i += 2) {
-                String name = (String) values.get(i);
-                Object value = values.get(i + 1);
-                accept(av, name, value);
+        if ( this.values != null ) {
+            for ( int i = 0; i < this.values.size(); i += 2 ) {
+                final String name = (String) this.values.get( i );
+                final Object value = this.values.get( i + 1 );
+                accept( av,
+                        name,
+                        value );
             }
         }
         av.visitEnd();
@@ -162,26 +163,30 @@ public class AnnotationNode implements AnnotationVisitor {
      * @param name the value name.
      * @param value the actual value.
      */
-    static void accept(
-        final AnnotationVisitor av,
-        final String name,
-        final Object value)
-    {
-        if (value instanceof String[]) {
-            String[] typeconst = (String[]) value;
-            av.visitEnum(name, typeconst[0], typeconst[1]);
-        } else if (value instanceof AnnotationNode) {
-            AnnotationNode an = (AnnotationNode) value;
-            an.accept(av.visitAnnotation(name, an.desc));
-        } else if (value instanceof List) {
-            AnnotationVisitor v = av.visitArray(name);
-            List array = (List) value;
-            for (int j = 0; j < array.size(); ++j) {
-                accept(v, null, array.get(j));
+    static void accept(final AnnotationVisitor av,
+                       final String name,
+                       final Object value) {
+        if ( value instanceof String[] ) {
+            final String[] typeconst = (String[]) value;
+            av.visitEnum( name,
+                          typeconst[0],
+                          typeconst[1] );
+        } else if ( value instanceof AnnotationNode ) {
+            final AnnotationNode an = (AnnotationNode) value;
+            an.accept( av.visitAnnotation( name,
+                                           an.desc ) );
+        } else if ( value instanceof List ) {
+            final AnnotationVisitor v = av.visitArray( name );
+            final List array = (List) value;
+            for ( int j = 0; j < array.size(); ++j ) {
+                accept( v,
+                        null,
+                        array.get( j ) );
             }
             v.visitEnd();
         } else {
-            av.visit(name, value);
+            av.visit( name,
+                      value );
         }
     }
 }

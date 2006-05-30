@@ -1,4 +1,5 @@
 package org.drools.base.evaluators;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.base.evaluators;
  * limitations under the License.
  */
 
-
-
 import org.drools.base.BaseEvaluator;
 import org.drools.spi.Evaluator;
 
@@ -29,7 +28,7 @@ import org.drools.spi.Evaluator;
  */
 public class StringFactory {
 
-    public static Evaluator getStringEvaluator(int operator) {
+    public static Evaluator getStringEvaluator(final int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
                 return StringEqualEvaluator.INSTANCE;
@@ -43,15 +42,19 @@ public class StringFactory {
     }
 
     static class StringEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new StringEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 5282693491345148054L;
+        public final static Evaluator INSTANCE         = new StringEqualEvaluator();
 
         private StringEqualEvaluator() {
             super( Evaluator.STRING_TYPE,
                    Evaluator.EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             if ( object1 == null ) {
                 return object2 == null;
             }
@@ -64,15 +67,19 @@ public class StringFactory {
     }
 
     static class StringNotEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new StringNotEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -3385245390840913608L;
+        public final static Evaluator INSTANCE         = new StringNotEqualEvaluator();
 
         private StringNotEqualEvaluator() {
             super( Evaluator.STRING_TYPE,
                    Evaluator.NOT_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             if ( object1 == null ) {
                 return !(object2 == null);
             }
@@ -86,19 +93,25 @@ public class StringFactory {
     }
 
     static class StringMatchesEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new StringMatchesEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 5934192092501066510L;
+        public final static Evaluator INSTANCE         = new StringMatchesEvaluator();
 
         private StringMatchesEvaluator() {
             super( Evaluator.STRING_TYPE,
                    Evaluator.MATCHES );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            String pattern = (String) object2;
-            String target = (String) object1;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            final String pattern = (String) object2;
+            final String target = (String) object1;
 
-            if ( object1 == null ) return false;
+            if ( object1 == null ) {
+                return false;
+            }
 
             //TODO: possibly use a WeakHashMap cache of regex expressions
             //downside is could cause a lot of hashing if the patterns are dynamic

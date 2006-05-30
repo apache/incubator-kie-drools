@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.leaps;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -37,17 +36,17 @@ import org.drools.spi.ObjectType;
 
 public class CrossProductTest extends TestCase {
     public void test1() throws Exception {
-        ObjectType list1ObjectType = new ClassObjectType( List.class );
-        ObjectType list2ObjectType = new ClassObjectType( List.class );
+        final ObjectType list1ObjectType = new ClassObjectType( List.class );
+        final ObjectType list2ObjectType = new ClassObjectType( List.class );
 
-        Rule rule = new Rule( "rule-1" );
+        final Rule rule = new Rule( "rule-1" );
 
-        Column list1Column = new Column( 0,
-                                         list1ObjectType,
-                                         "list1" );
-        Column list2Column = new Column( 1,
-                                         list2ObjectType,
-                                         "list2" );
+        final Column list1Column = new Column( 0,
+                                               list1ObjectType,
+                                               "list1" );
+        final Column list2Column = new Column( 1,
+                                               list2ObjectType,
+                                               "list2" );
 
         rule.addPattern( list1Column );
         rule.addPattern( list2Column );
@@ -59,22 +58,27 @@ public class CrossProductTest extends TestCase {
 
         rule.setConsequence( new Consequence() {
 
-            public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) throws Exception {
-                List list1 = (List) knowledgeHelper.get( list1Declaration );
-                List list2 = (List) knowledgeHelper.get( list2Declaration );
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -958666414598812063L;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) throws Exception {
+                final List list1 = (List) knowledgeHelper.get( list1Declaration );
+                final List list2 = (List) knowledgeHelper.get( list2Declaration );
                 values.add( new List[]{list1, list2} );
             }
 
         } );
 
-        Package pkg = new Package( "org.drools" );
+        final Package pkg = new Package( "org.drools" );
         pkg.addRule( rule );
 
-        RuleBase ruleBase = RuleBaseFactory.getInstance().newRuleBase( RuleBase.LEAPS );
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         ruleBase.addPackage( pkg );
 
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new ArrayList() );
         workingMemory.assertObject( new ArrayList() );
         workingMemory.assertObject( new LinkedList() );

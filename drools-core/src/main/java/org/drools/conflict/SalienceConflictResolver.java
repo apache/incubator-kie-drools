@@ -1,4 +1,5 @@
 package org.drools.conflict;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.conflict;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
@@ -40,8 +37,12 @@ public class SalienceConflictResolver extends AbstractConflictResolver {
     // Class members
     // ----------------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long                     serialVersionUID = 5472580281375896966L;
     /** Singleton instance. */
-    private static final SalienceConflictResolver INSTANCE = new SalienceConflictResolver();
+    private static final SalienceConflictResolver INSTANCE         = new SalienceConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -72,8 +73,8 @@ public class SalienceConflictResolver extends AbstractConflictResolver {
     /**
      * @see ConflictResolver
      */
-    public int compare(Activation lhs,
-                       Activation rhs) {
+    public int compare(final Activation lhs,
+                       final Activation rhs) {
         return rhs.getRule().getSalience() - lhs.getRule().getSalience();
     }
 }

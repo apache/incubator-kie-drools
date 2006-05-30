@@ -1,4 +1,5 @@
 package org.drools.examples.waltz;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.examples.waltz;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 /**
  * @author Alexander Bagerman
@@ -43,18 +40,18 @@ import org.drools.rule.InvalidRuleException;
 public class ReteooWaltzTest extends BaseWaltzTest {
 
     public void testWaltz() throws DuplicateRuleNameException,
-                              InvalidRuleException,
-                              IntrospectionException,
-                              RuleIntegrationException,
-                              PackageIntegrationException,
-                              InvalidPatternException,
-                              FactException,
-                              IOException,
-                              InterruptedException {
+                           InvalidRuleException,
+                           IntrospectionException,
+                           RuleIntegrationException,
+                           PackageIntegrationException,
+                           InvalidPatternException,
+                           FactException,
+                           IOException,
+                           InterruptedException {
 
-        final org.drools.reteoo.RuleBaseImpl ruleBase = new org.drools.reteoo.RuleBaseImpl();
+        final org.drools.reteoo.ReteooRuleBase ruleBase = new org.drools.reteoo.ReteooRuleBase();
         ruleBase.addPackage( this.pkg );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         //        InputStream is = getClass().getResourceAsStream( "/waltz12.dat" );
         //        List list = getInputObjects( is );
@@ -65,7 +62,7 @@ public class ReteooWaltzTest extends BaseWaltzTest {
 
         workingMemory.assertObject( new Stage( Stage.START ) );
 
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
         System.err.println( System.currentTimeMillis() - start );
 

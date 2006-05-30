@@ -1,4 +1,5 @@
 package org.drools.leaps.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -25,16 +26,21 @@ import java.io.Serializable;
 public class TableRecord
     implements
     Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2894253746310217052L;
+
     // left neigbor
-    TableRecord left;
+    TableRecord               left;
 
     // right neigbor
-    TableRecord right;
+    TableRecord               right;
 
     // content of the record
-    Object      object;
+    Object                    object;
 
-    TableRecord(Object o) {
+    TableRecord(final Object o) {
         this.left = null;
         this.right = null;
         this.object = o;
@@ -44,7 +50,7 @@ public class TableRecord
         return this.object.hashCode();
     }
 
-    public boolean equals(Object that) {
+    public boolean equals(final Object that) {
         if ( this.object != null ) {
             return this.object.equals( that );
         } else {

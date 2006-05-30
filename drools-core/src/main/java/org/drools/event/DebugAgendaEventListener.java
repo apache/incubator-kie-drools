@@ -1,4 +1,5 @@
 package org.drools.event;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.event;
  * limitations under the License.
  */
 
-
-
-
-
 public class DebugAgendaEventListener
     implements
     AgendaEventListener {
@@ -26,19 +23,19 @@ public class DebugAgendaEventListener
         // intentionally left blank
     }
 
-    public void activationCreated(ActivationCreatedEvent event) {
+    public void activationCreated(final ActivationCreatedEvent event) {
         System.err.println( event );
     }
 
-    public void activationCancelled(ActivationCancelledEvent event) {
+    public void activationCancelled(final ActivationCancelledEvent event) {
         System.err.println( event );
     }
 
-    public void beforeActivationFired(BeforeActivationFiredEvent event) {
+    public void beforeActivationFired(final BeforeActivationFiredEvent event) {
         System.err.println( event );
     }
 
-    public void afterActivationFired(AfterActivationFiredEvent event) {
+    public void afterActivationFired(final AfterActivationFiredEvent event) {
         System.err.println( event );
     }
 

@@ -16,7 +16,6 @@
 
 package org.drools.conflict;
 
-import org.drools.WorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
@@ -34,8 +33,12 @@ public class TotalRecencyConflictResolver extends AbstractConflictResolver {
     // Class members
     // ----------------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long                         serialVersionUID = 1525679879305714538L;
     /** Singleton instance. */
-    private static final TotalRecencyConflictResolver INSTANCE = new TotalRecencyConflictResolver();
+    private static final TotalRecencyConflictResolver INSTANCE         = new TotalRecencyConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -66,19 +69,17 @@ public class TotalRecencyConflictResolver extends AbstractConflictResolver {
     /**
      * @see ConflictResolver
      */
-    public int compare(Activation lhs,
-                       Activation rhs) {
+    public int compare(final Activation lhs,
+                       final Activation rhs) {
         long leftRecency = 0;
         long rightRecency = 0;
-        if(lhs.getTuple() instanceof ReteTuple) {
+        if ( lhs.getTuple() instanceof ReteTuple ) {
             leftRecency = ((ReteTuple) lhs.getTuple()).getRecency();
         }
-        if(rhs.getTuple() instanceof ReteTuple) {
+        if ( rhs.getTuple() instanceof ReteTuple ) {
             rightRecency = ((ReteTuple) rhs.getTuple()).getRecency();
         }
-        return (rightRecency > leftRecency) ? 1  :
-               (rightRecency < leftRecency) ? -1 :
-               0;
+        return (rightRecency > leftRecency) ? 1 : (rightRecency < leftRecency) ? -1 : 0;
     }
 
 }

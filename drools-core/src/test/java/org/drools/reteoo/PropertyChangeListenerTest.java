@@ -9,22 +9,22 @@ import org.drools.base.ClassObjectType;
 
 public class PropertyChangeListenerTest extends TestCase {
     public void test1() {
-        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        final ReteooRuleBase ruleBase = new ReteooRuleBase();
 
-        WorkingMemoryImpl workingMemory = (WorkingMemoryImpl) ruleBase.newWorkingMemory();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
-        Rete rete = ruleBase.getRete();
+        final Rete rete = ruleBase.getRete();
 
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
-                                                            new ClassObjectType( State.class ),
-                                                            rete );
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  new ClassObjectType( State.class ),
+                                                                  rete );
 
         objectTypeNode.attach();
 
-        MockObjectSink sink = new MockObjectSink();
+        final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
-        State a = new State( "go" );
+        final State a = new State( "go" );
         workingMemory.assertObject( a,
                                     true );
 
@@ -40,11 +40,11 @@ public class PropertyChangeListenerTest extends TestCase {
     }
 
     public static class State {
-        private PropertyChangeSupport changes = new PropertyChangeSupport( this );
+        private final PropertyChangeSupport changes = new PropertyChangeSupport( this );
 
-        private String                state;
+        private String                      state;
 
-        public State(String state) {
+        public State(final String state) {
             this.state = state;
         }
 
@@ -52,20 +52,20 @@ public class PropertyChangeListenerTest extends TestCase {
             return this.state;
         }
 
-        public void setState(String newState) {
-            String oldState = this.state;
+        public void setState(final String newState) {
+            final String oldState = this.state;
             this.state = newState;
             this.changes.firePropertyChange( "state",
                                              oldState,
                                              newState );
         }
 
-        public void addPropertyChangeListener(PropertyChangeListener l) {
-            changes.addPropertyChangeListener( l );
+        public void addPropertyChangeListener(final PropertyChangeListener l) {
+            this.changes.addPropertyChangeListener( l );
         }
 
-        public void removePropertyChangeListener(PropertyChangeListener l) {
-            changes.removePropertyChangeListener( l );
+        public void removePropertyChangeListener(final PropertyChangeListener l) {
+            this.changes.removePropertyChangeListener( l );
         }
     }
 }

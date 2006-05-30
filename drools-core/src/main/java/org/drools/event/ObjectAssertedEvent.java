@@ -1,4 +1,5 @@
 package org.drools.event;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,23 +16,24 @@ package org.drools.event;
  * limitations under the License.
  */
 
-
-
-
-
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.PropagationContext;
 
 public class ObjectAssertedEvent extends WorkingMemoryEvent {
-    private final FactHandle handle;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4034827684101547060L;
 
-    private final Object     object;
+    private final FactHandle  handle;
 
-    public ObjectAssertedEvent(WorkingMemory workingMemory,
-                               PropagationContext propagationContext,
-                               FactHandle handle,
-                               Object object) {
+    private final Object      object;
+
+    public ObjectAssertedEvent(final WorkingMemory workingMemory,
+                               final PropagationContext propagationContext,
+                               final FactHandle handle,
+                               final Object object) {
         super( workingMemory,
                propagationContext );
         this.handle = handle;

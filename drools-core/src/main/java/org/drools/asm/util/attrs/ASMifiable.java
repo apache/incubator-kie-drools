@@ -49,5 +49,7 @@ public interface ASMifiable {
      *        attribute instance.
      * @param labelNames map of label instances to their names.
      */
-    void asmify(StringBuffer buf, String varName, Map labelNames);
+    void asmify(StringBuffer buf,
+                String varName,
+                Map labelNames);
 }

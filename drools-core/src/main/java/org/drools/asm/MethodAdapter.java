@@ -37,7 +37,9 @@ package org.drools.asm;
  * 
  * @author Eric Bruneton
  */
-public class MethodAdapter implements MethodVisitor {
+public class MethodAdapter
+    implements
+    MethodVisitor {
 
     /**
      * The {@link MethodVisitor} to which this adapter delegates calls.
@@ -54,132 +56,154 @@ public class MethodAdapter implements MethodVisitor {
     }
 
     public AnnotationVisitor visitAnnotationDefault() {
-        return mv.visitAnnotationDefault();
+        return this.mv.visitAnnotationDefault();
     }
 
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        return mv.visitAnnotation(desc, visible);
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        return this.mv.visitAnnotation( desc,
+                                        visible );
     }
 
-    public AnnotationVisitor visitParameterAnnotation(
-        final int parameter,
-        final String desc,
-        final boolean visible)
-    {
-        return mv.visitParameterAnnotation(parameter, desc, visible);
+    public AnnotationVisitor visitParameterAnnotation(final int parameter,
+                                                      final String desc,
+                                                      final boolean visible) {
+        return this.mv.visitParameterAnnotation( parameter,
+                                                 desc,
+                                                 visible );
     }
 
     public void visitAttribute(final Attribute attr) {
-        mv.visitAttribute(attr);
+        this.mv.visitAttribute( attr );
     }
 
     public void visitCode() {
-        mv.visitCode();
+        this.mv.visitCode();
     }
 
     public void visitInsn(final int opcode) {
-        mv.visitInsn(opcode);
+        this.mv.visitInsn( opcode );
     }
 
-    public void visitIntInsn(final int opcode, final int operand) {
-        mv.visitIntInsn(opcode, operand);
+    public void visitIntInsn(final int opcode,
+                             final int operand) {
+        this.mv.visitIntInsn( opcode,
+                              operand );
     }
 
-    public void visitVarInsn(final int opcode, final int var) {
-        mv.visitVarInsn(opcode, var);
+    public void visitVarInsn(final int opcode,
+                             final int var) {
+        this.mv.visitVarInsn( opcode,
+                              var );
     }
 
-    public void visitTypeInsn(final int opcode, final String desc) {
-        mv.visitTypeInsn(opcode, desc);
+    public void visitTypeInsn(final int opcode,
+                              final String desc) {
+        this.mv.visitTypeInsn( opcode,
+                               desc );
     }
 
-    public void visitFieldInsn(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        mv.visitFieldInsn(opcode, owner, name, desc);
+    public void visitFieldInsn(final int opcode,
+                               final String owner,
+                               final String name,
+                               final String desc) {
+        this.mv.visitFieldInsn( opcode,
+                                owner,
+                                name,
+                                desc );
     }
 
-    public void visitMethodInsn(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        mv.visitMethodInsn(opcode, owner, name, desc);
+    public void visitMethodInsn(final int opcode,
+                                final String owner,
+                                final String name,
+                                final String desc) {
+        this.mv.visitMethodInsn( opcode,
+                                 owner,
+                                 name,
+                                 desc );
     }
 
-    public void visitJumpInsn(final int opcode, final Label label) {
-        mv.visitJumpInsn(opcode, label);
+    public void visitJumpInsn(final int opcode,
+                              final Label label) {
+        this.mv.visitJumpInsn( opcode,
+                               label );
     }
 
     public void visitLabel(final Label label) {
-        mv.visitLabel(label);
+        this.mv.visitLabel( label );
     }
 
     public void visitLdcInsn(final Object cst) {
-        mv.visitLdcInsn(cst);
+        this.mv.visitLdcInsn( cst );
     }
 
-    public void visitIincInsn(final int var, final int increment) {
-        mv.visitIincInsn(var, increment);
+    public void visitIincInsn(final int var,
+                              final int increment) {
+        this.mv.visitIincInsn( var,
+                               increment );
     }
 
-    public void visitTableSwitchInsn(
-        final int min,
-        final int max,
-        final Label dflt,
-        final Label labels[])
-    {
-        mv.visitTableSwitchInsn(min, max, dflt, labels);
+    public void visitTableSwitchInsn(final int min,
+                                     final int max,
+                                     final Label dflt,
+                                     final Label labels[]) {
+        this.mv.visitTableSwitchInsn( min,
+                                      max,
+                                      dflt,
+                                      labels );
     }
 
-    public void visitLookupSwitchInsn(
-        final Label dflt,
-        final int keys[],
-        final Label labels[])
-    {
-        mv.visitLookupSwitchInsn(dflt, keys, labels);
+    public void visitLookupSwitchInsn(final Label dflt,
+                                      final int keys[],
+                                      final Label labels[]) {
+        this.mv.visitLookupSwitchInsn( dflt,
+                                       keys,
+                                       labels );
     }
 
-    public void visitMultiANewArrayInsn(final String desc, final int dims) {
-        mv.visitMultiANewArrayInsn(desc, dims);
+    public void visitMultiANewArrayInsn(final String desc,
+                                        final int dims) {
+        this.mv.visitMultiANewArrayInsn( desc,
+                                         dims );
     }
 
-    public void visitTryCatchBlock(
-        final Label start,
-        final Label end,
-        final Label handler,
-        final String type)
-    {
-        mv.visitTryCatchBlock(start, end, handler, type);
+    public void visitTryCatchBlock(final Label start,
+                                   final Label end,
+                                   final Label handler,
+                                   final String type) {
+        this.mv.visitTryCatchBlock( start,
+                                    end,
+                                    handler,
+                                    type );
     }
 
-    public void visitLocalVariable(
-        final String name,
-        final String desc,
-        final String signature,
-        final Label start,
-        final Label end,
-        final int index)
-    {
-        mv.visitLocalVariable(name, desc, signature, start, end, index);
+    public void visitLocalVariable(final String name,
+                                   final String desc,
+                                   final String signature,
+                                   final Label start,
+                                   final Label end,
+                                   final int index) {
+        this.mv.visitLocalVariable( name,
+                                    desc,
+                                    signature,
+                                    start,
+                                    end,
+                                    index );
     }
 
-    public void visitLineNumber(final int line, final Label start) {
-        mv.visitLineNumber(line, start);
+    public void visitLineNumber(final int line,
+                                final Label start) {
+        this.mv.visitLineNumber( line,
+                                 start );
     }
 
-    public void visitMaxs(final int maxStack, final int maxLocals) {
-        mv.visitMaxs(maxStack, maxLocals);
+    public void visitMaxs(final int maxStack,
+                          final int maxLocals) {
+        this.mv.visitMaxs( maxStack,
+                           maxLocals );
     }
 
     public void visitEnd() {
-        mv.visitEnd();
+        this.mv.visitEnd();
     }
 }

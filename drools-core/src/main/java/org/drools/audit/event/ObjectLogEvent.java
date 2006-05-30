@@ -37,9 +37,9 @@ public class ObjectLogEvent extends LogEvent {
      * @param factId The id of the fact
      * @param objectToString A toString of the fact 
      */
-    public ObjectLogEvent(int type,
-                          long factId,
-                          String objectToString) {
+    public ObjectLogEvent(final int type,
+                          final long factId,
+                          final String objectToString) {
         super( type );
         this.factId = factId;
         this.objectToString = objectToString;
@@ -51,7 +51,7 @@ public class ObjectLogEvent extends LogEvent {
      * @return the id of the fact
      */
     public long getFactId() {
-        return factId;
+        return this.factId;
     }
 
     /**
@@ -61,6 +61,6 @@ public class ObjectLogEvent extends LogEvent {
      * @return the toString of the fact
      */
     public String getObjectToString() {
-        return objectToString;
+        return this.objectToString;
     }
 }

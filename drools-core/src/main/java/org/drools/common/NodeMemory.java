@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.common;
 
 import org.drools.RuleBaseConfiguration;
 
@@ -21,6 +21,6 @@ import org.drools.RuleBaseConfiguration;
 public interface NodeMemory {
     public int getId();
 
-    public Object createMemory( RuleBaseConfiguration config );
+    public Object createMemory(RuleBaseConfiguration config);
 
 }

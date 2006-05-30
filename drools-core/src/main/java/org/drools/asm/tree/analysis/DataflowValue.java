@@ -39,7 +39,9 @@ import org.drools.asm.tree.AbstractInsnNode;
  * 
  * @author Eric Bruneton
  */
-public class DataflowValue implements Value {
+public class DataflowValue
+    implements
+    Value {
 
     /**
      * The size of this value.
@@ -64,29 +66,33 @@ public class DataflowValue implements Value {
     public final Set insns;
 
     public DataflowValue(final int size) {
-        this(size, SmallSet.EMPTY_SET);
+        this( size,
+              SmallSet.EMPTY_SET );
     }
 
-    public DataflowValue(final int size, final AbstractInsnNode insn) {
+    public DataflowValue(final int size,
+                         final AbstractInsnNode insn) {
         this.size = size;
-        this.insns = new SmallSet(insn, null);
+        this.insns = new SmallSet( insn,
+                                   null );
     }
 
-    public DataflowValue(final int size, final Set insns) {
+    public DataflowValue(final int size,
+                         final Set insns) {
         this.size = size;
         this.insns = insns;
     }
 
     public int getSize() {
-        return size;
+        return this.size;
     }
 
     public boolean equals(final Object value) {
-        DataflowValue v = (DataflowValue) value;
-        return size == v.size && insns.equals(v.insns);
+        final DataflowValue v = (DataflowValue) value;
+        return this.size == v.size && this.insns.equals( v.insns );
     }
 
     public int hashCode() {
-        return insns.hashCode();
+        return this.insns.hashCode();
     }
 }

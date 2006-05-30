@@ -356,76 +356,76 @@ public class StackMapTableAttribute extends Attribute {
      * Frame has exactly the same locals as the previous stack map frame and
      * number of stack items is zero.
      */
-    public static final int SAME_FRAME = 0; // to 63 (0-3f)
+    public static final int  SAME_FRAME                              = 0;    // to 63 (0-3f)
 
     /**
      * Frame has exactly the same locals as the previous stack map frame and
      * number of stack items is 1
      */
-    public static final int SAME_LOCALS_1_STACK_ITEM_FRAME = 64; // to 127
+    public static final int  SAME_LOCALS_1_STACK_ITEM_FRAME          = 64;   // to 127
 
     // (40-7f)
 
     /**
      * Reserved for future use
      */
-    public static final int RESERVED = 128;
+    public static final int  RESERVED                                = 128;
 
     /**
      * Frame has exactly the same locals as the previous stack map frame and
      * number of stack items is 1. Offset is bigger then 63;
      */
-    public static final int SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED = 247; // f7
+    public static final int  SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED = 247;  // f7
 
     /**
      * Frame where current locals are the same as the locals in the previous
      * frame, except that the k last locals are absent. The value of k is given
      * by the formula 251-frame_type.
      */
-    public static final int CHOP_FRAME = 248; // to 250 (f8-fA)
+    public static final int  CHOP_FRAME                              = 248;  // to 250 (f8-fA)
 
     /**
      * Frame has exactly the same locals as the previous stack map frame and
      * number of stack items is zero. Offset is bigger then 63;
      */
-    public static final int SAME_FRAME_EXTENDED = 251; // fb
+    public static final int  SAME_FRAME_EXTENDED                     = 251;  // fb
 
     /**
      * Frame where current locals are the same as the locals in the previous
      * frame, except that k additional locals are defined. The value of k is
      * given by the formula frame_type-251.
      */
-    public static final int APPEND_FRAME = 252; // to 254 // fc-fe
+    public static final int  APPEND_FRAME                            = 252;  // to 254 // fc-fe
 
     /**
      * Full frame
      */
-    public static final int FULL_FRAME = 255; // ff
+    public static final int  FULL_FRAME                              = 255;  // ff
 
-    private static final int MAX_SHORT = 65535;
+    private static final int MAX_SHORT                               = 65535;
 
     /**
      * A <code>List</code> of <code>StackMapFrame</code> instances.
      */
-    private List frames;
+    private List             frames;
 
     public StackMapTableAttribute() {
-        super("StackMapTable");
+        super( "StackMapTable" );
     }
 
-    public StackMapTableAttribute(List frames) {
+    public StackMapTableAttribute(final List frames) {
         this();
         this.frames = frames;
     }
 
     public List getFrames() {
-        return frames;
+        return this.frames;
     }
 
-    public StackMapFrame getFrame(Label label) {
-        for (int i = 0; i < frames.size(); i++) {
-            StackMapFrame frame = (StackMapFrame) frames.get(i);
-            if (frame.label == label) {
+    public StackMapFrame getFrame(final Label label) {
+        for ( int i = 0; i < this.frames.size(); i++ ) {
+            final StackMapFrame frame = (StackMapFrame) this.frames.get( i );
+            if ( frame.label == label ) {
                 return frame;
             }
         }
@@ -440,273 +440,318 @@ public class StackMapTableAttribute extends Attribute {
         return true;
     }
 
-    protected Attribute read(
-        ClassReader cr,
-        int off,
-        int len,
-        char[] buf,
-        int codeOff,
-        Label[] labels)
-    {
+    protected Attribute read(final ClassReader cr,
+                             int off,
+                             final int len,
+                             final char[] buf,
+                             final int codeOff,
+                             final Label[] labels) {
 
-        ArrayList frames = new ArrayList();
+        final ArrayList frames = new ArrayList();
 
         // note that this is not the size of Code attribute
-        boolean isExtCodeSize = cr.readInt(codeOff + 4) > MAX_SHORT;
-        boolean isExtLocals = cr.readUnsignedShort(codeOff + 2) > MAX_SHORT;
-        boolean isExtStack = cr.readUnsignedShort(codeOff) > MAX_SHORT;
+        final boolean isExtCodeSize = cr.readInt( codeOff + 4 ) > StackMapTableAttribute.MAX_SHORT;
+        final boolean isExtLocals = cr.readUnsignedShort( codeOff + 2 ) > StackMapTableAttribute.MAX_SHORT;
+        final boolean isExtStack = cr.readUnsignedShort( codeOff ) > StackMapTableAttribute.MAX_SHORT;
 
         int offset = 0;
 
-        int methodOff = getMethodOff(cr, codeOff, buf);
-        StackMapFrame frame = new StackMapFrame(getLabel(offset, labels),
-                calculateLocals(cr.readClass(cr.header + 2, buf), // owner
-                        cr.readUnsignedShort(methodOff), // method access
-                        cr.readUTF8(methodOff + 2, buf), // method name
-                        cr.readUTF8(methodOff + 4, buf)), // method desc
-                Collections.EMPTY_LIST);
-        frames.add(frame);
+        final int methodOff = getMethodOff( cr,
+                                            codeOff,
+                                            buf );
+        StackMapFrame frame = new StackMapFrame( getLabel( offset,
+                                                           labels ),
+                                                 calculateLocals( cr.readClass( cr.header + 2,
+                                                                                buf ), // owner
+                                                                  cr.readUnsignedShort( methodOff ), // method access
+                                                                  cr.readUTF8( methodOff + 2,
+                                                                               buf ), // method name
+                                                                  cr.readUTF8( methodOff + 4,
+                                                                               buf ) ), // method desc
+                                                 Collections.EMPTY_LIST );
+        frames.add( frame );
 
         // System.err.println( cr.readUTF8( methodOff + 2, buf));
         // System.err.println( offset +" delta:" + 0 +" : "+ frame);
 
         int size;
-        if (isExtCodeSize) {
-            size = cr.readInt(off);
+        if ( isExtCodeSize ) {
+            size = cr.readInt( off );
             off += 4;
         } else {
-            size = cr.readUnsignedShort(off);
+            size = cr.readUnsignedShort( off );
             off += 2;
         }
 
-        for (; size > 0; size--) {
-            int tag = cr.readByte(off); // & 0xff;
+        for ( ; size > 0; size-- ) {
+            final int tag = cr.readByte( off ); // & 0xff;
             off++;
 
             List stack;
             List locals;
 
             int offsetDelta;
-            if (tag < SAME_LOCALS_1_STACK_ITEM_FRAME) {  // SAME_FRAME
+            if ( tag < StackMapTableAttribute.SAME_LOCALS_1_STACK_ITEM_FRAME ) { // SAME_FRAME
                 offsetDelta = tag;
 
-                locals = new ArrayList(frame.locals);
+                locals = new ArrayList( frame.locals );
                 stack = Collections.EMPTY_LIST;
 
-            } else if (tag < RESERVED) {  // SAME_LOCALS_1_STACK_ITEM_FRAME
-                offsetDelta = tag - SAME_LOCALS_1_STACK_ITEM_FRAME;
+            } else if ( tag < StackMapTableAttribute.RESERVED ) { // SAME_LOCALS_1_STACK_ITEM_FRAME
+                offsetDelta = tag - StackMapTableAttribute.SAME_LOCALS_1_STACK_ITEM_FRAME;
 
-                locals = new ArrayList(frame.locals);
+                locals = new ArrayList( frame.locals );
                 stack = new ArrayList();
                 // read verification_type_info stack[1];
-                off = readType(stack, isExtCodeSize, cr, off, labels, buf);
-
-            } else {
-                if (isExtCodeSize) {
-                    offsetDelta = cr.readInt(off);
-                    off += 4;
-                } else {
-                    offsetDelta = cr.readUnsignedShort(off);
-                    off += 2;
-                }
-
-                if (tag == SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED) {  // SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED
-                    locals = new ArrayList(frame.locals);
-                    stack = new ArrayList();
-                    // read verification_type_info stack[1];
-                    off = readType(stack, isExtCodeSize, cr, off, labels, buf);
-
-                } else if (tag >= CHOP_FRAME && tag < SAME_FRAME_EXTENDED) {  // CHOP_FRAME
-                    stack = Collections.EMPTY_LIST;
-
-                    int k = SAME_FRAME_EXTENDED - tag;
-                    // copy locals from prev frame and chop last k
-                    locals = new ArrayList(frame.locals.subList(0,
-                            frame.locals.size() - k));
-
-                } else if (tag == SAME_FRAME_EXTENDED) {  // SAME_FRAME_EXTENDED
-                    stack = Collections.EMPTY_LIST;
-                    locals = new ArrayList(frame.locals);
-
-                } else if ( /* tag>=APPEND && */tag < FULL_FRAME) {  // APPEND_FRAME
-                    stack = Collections.EMPTY_LIST;
-
-                    // copy locals from prev frame and append new k
-                    locals = new ArrayList(frame.locals);
-                    for (int k = tag - SAME_FRAME_EXTENDED; k > 0; k--) {
-                        off = readType(locals,
+                off = readType( stack,
                                 isExtCodeSize,
                                 cr,
                                 off,
                                 labels,
-                                buf);
+                                buf );
+
+            } else {
+                if ( isExtCodeSize ) {
+                    offsetDelta = cr.readInt( off );
+                    off += 4;
+                } else {
+                    offsetDelta = cr.readUnsignedShort( off );
+                    off += 2;
+                }
+
+                if ( tag == StackMapTableAttribute.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED ) { // SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED
+                    locals = new ArrayList( frame.locals );
+                    stack = new ArrayList();
+                    // read verification_type_info stack[1];
+                    off = readType( stack,
+                                    isExtCodeSize,
+                                    cr,
+                                    off,
+                                    labels,
+                                    buf );
+
+                } else if ( tag >= StackMapTableAttribute.CHOP_FRAME && tag < StackMapTableAttribute.SAME_FRAME_EXTENDED ) { // CHOP_FRAME
+                    stack = Collections.EMPTY_LIST;
+
+                    final int k = StackMapTableAttribute.SAME_FRAME_EXTENDED - tag;
+                    // copy locals from prev frame and chop last k
+                    locals = new ArrayList( frame.locals.subList( 0,
+                                                                  frame.locals.size() - k ) );
+
+                } else if ( tag == StackMapTableAttribute.SAME_FRAME_EXTENDED ) { // SAME_FRAME_EXTENDED
+                    stack = Collections.EMPTY_LIST;
+                    locals = new ArrayList( frame.locals );
+
+                } else if ( /* tag>=APPEND && */tag < StackMapTableAttribute.FULL_FRAME ) { // APPEND_FRAME
+                    stack = Collections.EMPTY_LIST;
+
+                    // copy locals from prev frame and append new k
+                    locals = new ArrayList( frame.locals );
+                    for ( int k = tag - StackMapTableAttribute.SAME_FRAME_EXTENDED; k > 0; k-- ) {
+                        off = readType( locals,
+                                        isExtCodeSize,
+                                        cr,
+                                        off,
+                                        labels,
+                                        buf );
                     }
 
-                } else if (tag == FULL_FRAME) {  // FULL_FRAME
+                } else if ( tag == StackMapTableAttribute.FULL_FRAME ) { // FULL_FRAME
                     // read verification_type_info locals[number_of_locals];
                     locals = new ArrayList();
-                    off = readTypes(locals,
-                            isExtLocals,
-                            isExtCodeSize,
-                            cr,
-                            off,
-                            labels,
-                            buf);
+                    off = readTypes( locals,
+                                     isExtLocals,
+                                     isExtCodeSize,
+                                     cr,
+                                     off,
+                                     labels,
+                                     buf );
 
                     // read verification_type_info stack[number_of_stack_items];
                     stack = new ArrayList();
-                    off = readTypes(stack,
-                            isExtStack,
-                            isExtCodeSize,
-                            cr,
-                            off,
-                            labels,
-                            buf);
+                    off = readTypes( stack,
+                                     isExtStack,
+                                     isExtCodeSize,
+                                     cr,
+                                     off,
+                                     labels,
+                                     buf );
 
                 } else {
-                    throw new RuntimeException("Unknown frame type " + tag
-                            + " after offset " + offset);
+                    throw new RuntimeException( "Unknown frame type " + tag + " after offset " + offset );
 
                 }
             }
 
             offset += offsetDelta;
 
-            Label offsetLabel = getLabel(offset, labels);
+            final Label offsetLabel = getLabel( offset,
+                                                labels );
 
-            frame = new StackMapFrame(offsetLabel, locals, stack);
-            frames.add(frame);
+            frame = new StackMapFrame( offsetLabel,
+                                       locals,
+                                       stack );
+            frames.add( frame );
             // System.err.println( tag +" " + offset +" delta:" + offsetDelta +
             // " frameType:"+ frameType+" : "+ frame);
 
             offset++;
         }
 
-        return new StackMapTableAttribute(frames);
+        return new StackMapTableAttribute( frames );
     }
 
-    protected ByteVector write(
-        ClassWriter cw,
-        byte[] code,
-        int len,
-        int maxStack,
-        int maxLocals)
-    {
-        ByteVector bv = new ByteVector();
+    protected ByteVector write(final ClassWriter cw,
+                               final byte[] code,
+                               final int len,
+                               final int maxStack,
+                               final int maxLocals) {
+        final ByteVector bv = new ByteVector();
         // TODO verify this value (MAX_SHORT)
-        boolean isExtCodeSize = code != null && code.length > MAX_SHORT;
-        writeSize(frames.size() - 1, bv, isExtCodeSize);
+        final boolean isExtCodeSize = code != null && code.length > StackMapTableAttribute.MAX_SHORT;
+        writeSize( this.frames.size() - 1,
+                   bv,
+                   isExtCodeSize );
 
-        if (frames.size() < 2) {
+        if ( this.frames.size() < 2 ) {
             return bv;
         }
 
-        boolean isExtLocals = maxLocals > MAX_SHORT;
-        boolean isExtStack = maxStack > MAX_SHORT;
+        final boolean isExtLocals = maxLocals > StackMapTableAttribute.MAX_SHORT;
+        final boolean isExtStack = maxStack > StackMapTableAttribute.MAX_SHORT;
 
         // skip the first frame
-        StackMapFrame frame = (StackMapFrame) frames.get(0);
+        StackMapFrame frame = (StackMapFrame) this.frames.get( 0 );
         List locals = frame.locals;
         int offset = frame.label.getOffset();
 
-        for (int i = 1; i < frames.size(); i++) {
-            frame = (StackMapFrame) frames.get(i);
+        for ( int i = 1; i < this.frames.size(); i++ ) {
+            frame = (StackMapFrame) this.frames.get( i );
 
-            List clocals = frame.locals;
-            List cstack = frame.stack;
-            int coffset = frame.label.getOffset();
+            final List clocals = frame.locals;
+            final List cstack = frame.stack;
+            final int coffset = frame.label.getOffset();
 
-            int clocalsSize = clocals.size();
-            int cstackSize = cstack.size();
+            final int clocalsSize = clocals.size();
+            final int cstackSize = cstack.size();
 
             int localsSize = locals.size();
 
-            int delta = coffset - offset;
+            final int delta = coffset - offset;
 
-            int type = FULL_FRAME;
+            int type = StackMapTableAttribute.FULL_FRAME;
             int k = 0;
-            if (cstackSize == 0) {
+            if ( cstackSize == 0 ) {
                 k = clocalsSize - localsSize;
-                switch (k) {
-                    case -3:
-                    case -2:
-                    case -1:
-                        type = CHOP_FRAME; // CHOP or FULL
+                switch ( k ) {
+                    case -3 :
+                    case -2 :
+                    case -1 :
+                        type = StackMapTableAttribute.CHOP_FRAME; // CHOP or FULL
                         localsSize = clocalsSize; // for full_frame check
                         break;
 
-                    case 0:
+                    case 0 :
                         // SAME, SAME_EXTENDED or FULL
-                        type = delta < 64 ? SAME_FRAME : SAME_FRAME_EXTENDED;
+                        type = delta < 64 ? StackMapTableAttribute.SAME_FRAME : StackMapTableAttribute.SAME_FRAME_EXTENDED;
                         break;
 
-                    case 1:
-                    case 2:
-                    case 3:
-                        type = APPEND_FRAME; // APPEND or FULL
+                    case 1 :
+                    case 2 :
+                    case 3 :
+                        type = StackMapTableAttribute.APPEND_FRAME; // APPEND or FULL
                         break;
                 }
-            } else if (localsSize == clocalsSize && cstackSize == 1) {
+            } else if ( localsSize == clocalsSize && cstackSize == 1 ) {
                 // SAME_LOCAL_1_STACK or FULL
-                type = delta < 63
-                        ? SAME_LOCALS_1_STACK_ITEM_FRAME
-                        : SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED;
+                type = delta < 63 ? StackMapTableAttribute.SAME_LOCALS_1_STACK_ITEM_FRAME : StackMapTableAttribute.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED;
             }
 
-            if (type != FULL_FRAME) {
+            if ( type != StackMapTableAttribute.FULL_FRAME ) {
                 // verify if stack and locals are the same
-                for (int j = 0; j < localsSize && type != FULL_FRAME; j++) {
-                    if (!locals.get(j).equals(clocals.get(j)))
-                        type = FULL_FRAME;
+                for ( int j = 0; j < localsSize && type != StackMapTableAttribute.FULL_FRAME; j++ ) {
+                    if ( !locals.get( j ).equals( clocals.get( j ) ) ) {
+                        type = StackMapTableAttribute.FULL_FRAME;
+                    }
                 }
             }
 
-            switch (type) {
-                case SAME_FRAME:
-                    bv.putByte(delta);
+            switch ( type ) {
+                case SAME_FRAME :
+                    bv.putByte( delta );
                     break;
 
-                case SAME_LOCALS_1_STACK_ITEM_FRAME:
-                    bv.putByte(SAME_LOCALS_1_STACK_ITEM_FRAME + delta);
-                    writeTypeInfos(bv, cw, cstack, 0, 1);
+                case SAME_LOCALS_1_STACK_ITEM_FRAME :
+                    bv.putByte( StackMapTableAttribute.SAME_LOCALS_1_STACK_ITEM_FRAME + delta );
+                    writeTypeInfos( bv,
+                                    cw,
+                                    cstack,
+                                    0,
+                                    1 );
                     break;
 
-                case SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED:
-                    bv.putByte(SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED);
-                    writeSize(delta, bv, isExtCodeSize);
-                    writeTypeInfos(bv, cw, cstack, 0, 1);
+                case SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED :
+                    bv.putByte( StackMapTableAttribute.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED );
+                    writeSize( delta,
+                               bv,
+                               isExtCodeSize );
+                    writeTypeInfos( bv,
+                                    cw,
+                                    cstack,
+                                    0,
+                                    1 );
                     break;
 
-                case SAME_FRAME_EXTENDED:
-                    bv.putByte(SAME_FRAME_EXTENDED);
-                    writeSize(delta, bv, isExtCodeSize);
+                case SAME_FRAME_EXTENDED :
+                    bv.putByte( StackMapTableAttribute.SAME_FRAME_EXTENDED );
+                    writeSize( delta,
+                               bv,
+                               isExtCodeSize );
                     break;
 
-                case CHOP_FRAME:
-                    bv.putByte(SAME_FRAME_EXTENDED + k); // negative k
-                    writeSize(delta, bv, isExtCodeSize);
+                case CHOP_FRAME :
+                    bv.putByte( StackMapTableAttribute.SAME_FRAME_EXTENDED + k ); // negative k
+                    writeSize( delta,
+                               bv,
+                               isExtCodeSize );
                     break;
 
-                case APPEND_FRAME:
-                    bv.putByte(SAME_FRAME_EXTENDED + k); // positive k
-                    writeSize(delta, bv, isExtCodeSize);
-                    writeTypeInfos(bv,
-                            cw,
-                            clocals,
-                            clocalsSize - 1,
-                            clocalsSize);
+                case APPEND_FRAME :
+                    bv.putByte( StackMapTableAttribute.SAME_FRAME_EXTENDED + k ); // positive k
+                    writeSize( delta,
+                               bv,
+                               isExtCodeSize );
+                    writeTypeInfos( bv,
+                                    cw,
+                                    clocals,
+                                    clocalsSize - 1,
+                                    clocalsSize );
                     break;
 
-                case FULL_FRAME:
-                    bv.putByte(FULL_FRAME);
-                    writeSize(delta, bv, isExtCodeSize);
-                    writeSize(clocalsSize, bv, isExtLocals);
-                    writeTypeInfos(bv, cw, clocals, 0, clocalsSize);
-                    writeSize(cstackSize, bv, isExtStack);
-                    writeTypeInfos(bv, cw, cstack, 0, cstackSize);
+                case FULL_FRAME :
+                    bv.putByte( StackMapTableAttribute.FULL_FRAME );
+                    writeSize( delta,
+                               bv,
+                               isExtCodeSize );
+                    writeSize( clocalsSize,
+                               bv,
+                               isExtLocals );
+                    writeTypeInfos( bv,
+                                    cw,
+                                    clocals,
+                                    0,
+                                    clocalsSize );
+                    writeSize( cstackSize,
+                               bv,
+                               isExtStack );
+                    writeTypeInfos( bv,
+                                    cw,
+                                    cstack,
+                                    0,
+                                    cstackSize );
                     break;
 
-                default:
+                default :
                     throw new RuntimeException();
             }
             offset = coffset + 1; // compensating non first offset
@@ -715,69 +760,72 @@ public class StackMapTableAttribute extends Attribute {
         return bv;
     }
 
-    private void writeSize(int delta, ByteVector bv, boolean isExt) {
-        if (isExt) {
-            bv.putInt(delta);
+    private void writeSize(final int delta,
+                           final ByteVector bv,
+                           final boolean isExt) {
+        if ( isExt ) {
+            bv.putInt( delta );
         } else {
-            bv.putShort(delta);
+            bv.putShort( delta );
         }
     }
 
-    private void writeTypeInfos(
-        ByteVector bv,
-        ClassWriter cw,
-        List info,
-        int start,
-        int end)
-    {
-        for (int j = start; j < end; j++) {
-            StackMapType typeInfo = (StackMapType) info.get(j);
-            bv.putByte(typeInfo.getType());
+    private void writeTypeInfos(final ByteVector bv,
+                                final ClassWriter cw,
+                                final List info,
+                                final int start,
+                                final int end) {
+        for ( int j = start; j < end; j++ ) {
+            final StackMapType typeInfo = (StackMapType) info.get( j );
+            bv.putByte( typeInfo.getType() );
 
-            switch (typeInfo.getType()) {
-                case StackMapType.ITEM_Object: //
-                    bv.putShort(cw.newClass(typeInfo.getObject()));
+            switch ( typeInfo.getType() ) {
+                case StackMapType.ITEM_Object : //
+                    bv.putShort( cw.newClass( typeInfo.getObject() ) );
                     break;
 
-                case StackMapType.ITEM_Uninitialized: //
-                    bv.putShort(typeInfo.getLabel().getOffset());
+                case StackMapType.ITEM_Uninitialized : //
+                    bv.putShort( typeInfo.getLabel().getOffset() );
                     break;
 
             }
         }
     }
 
-    public static int getMethodOff(ClassReader cr, int codeOff, char[] buf) {
+    public static int getMethodOff(final ClassReader cr,
+                                   final int codeOff,
+                                   final char[] buf) {
         int off = cr.header + 6;
 
-        int interfacesCount = cr.readUnsignedShort(off);
+        final int interfacesCount = cr.readUnsignedShort( off );
         off += 2 + interfacesCount * 2;
 
-        int fieldsCount = cr.readUnsignedShort(off);
+        int fieldsCount = cr.readUnsignedShort( off );
         off += 2;
-        for (; fieldsCount > 0; --fieldsCount) {
-            int attrCount = cr.readUnsignedShort(off + 6); // field attributes
+        for ( ; fieldsCount > 0; --fieldsCount ) {
+            int attrCount = cr.readUnsignedShort( off + 6 ); // field attributes
             off += 8;
-            for (; attrCount > 0; --attrCount) {
-                off += 6 + cr.readInt(off + 2);
+            for ( ; attrCount > 0; --attrCount ) {
+                off += 6 + cr.readInt( off + 2 );
             }
         }
 
-        int methodsCount = cr.readUnsignedShort(off);
+        int methodsCount = cr.readUnsignedShort( off );
         off += 2;
-        for (; methodsCount > 0; --methodsCount) {
-            int methodOff = off;
-            int attrCount = cr.readUnsignedShort(off + 6); // method attributes
+        for ( ; methodsCount > 0; --methodsCount ) {
+            final int methodOff = off;
+            int attrCount = cr.readUnsignedShort( off + 6 ); // method attributes
             off += 8;
-            for (; attrCount > 0; --attrCount) {
-                String attrName = cr.readUTF8(off, buf);
+            for ( ; attrCount > 0; --attrCount ) {
+                final String attrName = cr.readUTF8( off,
+                                                     buf );
                 off += 6;
-                if (attrName.equals("Code")) {
-                    if (codeOff == off) {
+                if ( attrName.equals( "Code" ) ) {
+                    if ( codeOff == off ) {
                         return methodOff;
                     }
                 }
-                off += cr.readInt(off - 4);
+                off += cr.readInt( off - 4 );
             }
         }
 
@@ -794,51 +842,47 @@ public class StackMapTableAttribute extends Attribute {
      * @return list of <code>StackMapType</code> instances representing locals
      *         for an initial frame.
      */
-    public static List calculateLocals(
-        String className,
-        int access,
-        String methodName,
-        String methodDesc)
-    {
-        List locals = new ArrayList();
+    public static List calculateLocals(final String className,
+                                       final int access,
+                                       final String methodName,
+                                       final String methodDesc) {
+        final List locals = new ArrayList();
 
         // TODO
-        if ("<init>".equals(methodName)
-                && !className.equals("java/lang/Object"))
-        {
-            StackMapType typeInfo = StackMapType.getTypeInfo(StackMapType.ITEM_UninitializedThis);
-            typeInfo.setObject(className); // this
-            locals.add(typeInfo);
-        } else if ((access & Opcodes.ACC_STATIC) == 0) {
-            StackMapType typeInfo = StackMapType.getTypeInfo(StackMapType.ITEM_Object);
-            typeInfo.setObject(className); // this
-            locals.add(typeInfo);
+        if ( "<init>".equals( methodName ) && !className.equals( "java/lang/Object" ) ) {
+            final StackMapType typeInfo = StackMapType.getTypeInfo( StackMapType.ITEM_UninitializedThis );
+            typeInfo.setObject( className ); // this
+            locals.add( typeInfo );
+        } else if ( (access & Opcodes.ACC_STATIC) == 0 ) {
+            final StackMapType typeInfo = StackMapType.getTypeInfo( StackMapType.ITEM_Object );
+            typeInfo.setObject( className ); // this
+            locals.add( typeInfo );
         }
 
-        Type[] types = Type.getArgumentTypes(methodDesc);
-        for (int i = 0; i < types.length; i++) {
-            Type t = types[i];
+        final Type[] types = Type.getArgumentTypes( methodDesc );
+        for ( int i = 0; i < types.length; i++ ) {
+            final Type t = types[i];
             StackMapType smt;
-            switch (t.getSort()) {
-                case Type.LONG:
-                    smt = StackMapType.getTypeInfo(StackMapType.ITEM_Long);
+            switch ( t.getSort() ) {
+                case Type.LONG :
+                    smt = StackMapType.getTypeInfo( StackMapType.ITEM_Long );
                     break;
-                case Type.DOUBLE:
-                    smt = StackMapType.getTypeInfo(StackMapType.ITEM_Double);
-                    break;
-
-                case Type.FLOAT:
-                    smt = StackMapType.getTypeInfo(StackMapType.ITEM_Float);
+                case Type.DOUBLE :
+                    smt = StackMapType.getTypeInfo( StackMapType.ITEM_Double );
                     break;
 
-                case Type.ARRAY:
-                case Type.OBJECT:
-                    smt = StackMapType.getTypeInfo(StackMapType.ITEM_Object);
-                    smt.setObject(t.getDescriptor()); // TODO verify name
+                case Type.FLOAT :
+                    smt = StackMapType.getTypeInfo( StackMapType.ITEM_Float );
                     break;
 
-                default:
-                    smt = StackMapType.getTypeInfo(StackMapType.ITEM_Integer);
+                case Type.ARRAY :
+                case Type.OBJECT :
+                    smt = StackMapType.getTypeInfo( StackMapType.ITEM_Object );
+                    smt.setObject( t.getDescriptor() ); // TODO verify name
+                    break;
+
+                default :
+                    smt = StackMapType.getTypeInfo( StackMapType.ITEM_Integer );
                     break;
             }
         }
@@ -846,82 +890,86 @@ public class StackMapTableAttribute extends Attribute {
         return locals;
     }
 
-    private int readTypes(
-        List info,
-        boolean isExt,
-        boolean isExtCodeSize,
-        ClassReader cr,
-        int off,
-        Label[] labels,
-        char[] buf)
-    {
+    private int readTypes(final List info,
+                          final boolean isExt,
+                          final boolean isExtCodeSize,
+                          final ClassReader cr,
+                          int off,
+                          final Label[] labels,
+                          final char[] buf) {
         int n = 0;
-        if (isExt) {
-            n = cr.readInt(off);
+        if ( isExt ) {
+            n = cr.readInt( off );
             off += 4;
         } else {
-            n = cr.readUnsignedShort(off);
+            n = cr.readUnsignedShort( off );
             off += 2;
         }
 
-        for (; n > 0; n--) {
-            off = readType(info, isExtCodeSize, cr, off, labels, buf);
+        for ( ; n > 0; n-- ) {
+            off = readType( info,
+                            isExtCodeSize,
+                            cr,
+                            off,
+                            labels,
+                            buf );
         }
         return off;
     }
 
-    private int readType(
-        List info,
-        boolean isExtCodeSize,
-        ClassReader cr,
-        int off,
-        Label[] labels,
-        char[] buf)
-    {
-        int itemType = cr.readByte(off++);
-        StackMapType typeInfo = StackMapType.getTypeInfo(itemType);
-        info.add(typeInfo);
-        switch (itemType) {
+    private int readType(final List info,
+                         final boolean isExtCodeSize,
+                         final ClassReader cr,
+                         int off,
+                         final Label[] labels,
+                         final char[] buf) {
+        final int itemType = cr.readByte( off++ );
+        final StackMapType typeInfo = StackMapType.getTypeInfo( itemType );
+        info.add( typeInfo );
+        switch ( itemType ) {
             // case StackMapType.ITEM_Long: //
             // case StackMapType.ITEM_Double: //
             // info.add(StackMapType.getTypeInfo(StackMapType.ITEM_Top));
             // break;
 
-            case StackMapType.ITEM_Object: //
-                typeInfo.setObject(cr.readClass(off, buf));
+            case StackMapType.ITEM_Object : //
+                typeInfo.setObject( cr.readClass( off,
+                                                  buf ) );
                 off += 2;
                 break;
 
-            case StackMapType.ITEM_Uninitialized: //
+            case StackMapType.ITEM_Uninitialized : //
                 int offset;
-                if (isExtCodeSize) {
-                    offset = cr.readInt(off);
+                if ( isExtCodeSize ) {
+                    offset = cr.readInt( off );
                     off += 4;
                 } else {
-                    offset = cr.readUnsignedShort(off);
+                    offset = cr.readUnsignedShort( off );
                     off += 2;
                 }
 
-                typeInfo.setLabel(getLabel(offset, labels));
+                typeInfo.setLabel( getLabel( offset,
+                                             labels ) );
                 break;
         }
         return off;
     }
 
-    private Label getLabel(int offset, Label[] labels) {
-        Label l = labels[offset];
-        if (l != null) {
+    private Label getLabel(final int offset,
+                           final Label[] labels) {
+        final Label l = labels[offset];
+        if ( l != null ) {
             return l;
         }
         return labels[offset] = new Label();
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer("StackMapTable[");
-        for (int i = 0; i < frames.size(); i++) {
-            sb.append('\n').append('[').append(frames.get(i)).append(']');
+        final StringBuffer sb = new StringBuffer( "StackMapTable[" );
+        for ( int i = 0; i < this.frames.size(); i++ ) {
+            sb.append( '\n' ).append( '[' ).append( this.frames.get( i ) ).append( ']' );
         }
-        sb.append("\n]");
+        sb.append( "\n]" );
         return sb.toString();
     }
 }

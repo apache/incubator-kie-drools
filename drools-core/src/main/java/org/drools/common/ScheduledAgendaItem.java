@@ -24,10 +24,8 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.spi.ActivationGroup;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
-import org.drools.util.LinkedListObjectWrapper;
 
 /**
  * Item entry in the <code>Agenda</code>.
@@ -42,6 +40,11 @@ public class ScheduledAgendaItem extends TimerTask
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
+
+    /**
+     * 
+     */
+    private static final long        serialVersionUID = -860479286586425918L;
 
     private LinkedListNode           previous;
 
@@ -62,8 +65,8 @@ public class ScheduledAgendaItem extends TimerTask
     private LinkedList               justified;
 
     private boolean                  activated;
-    
-    private ActivationGroupNode             activationGroupNode;    
+
+    private ActivationGroupNode      activationGroupNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -77,11 +80,11 @@ public class ScheduledAgendaItem extends TimerTask
      * @param rule
      *            The rule.
      */
-    public ScheduledAgendaItem(long activationNumber,
-                               Tuple tuple,
-                               Agenda agenda,
-                               PropagationContext context,
-                               Rule rule) {
+    public ScheduledAgendaItem(final long activationNumber,
+                               final Tuple tuple,
+                               final Agenda agenda,
+                               final PropagationContext context,
+                               final Rule rule) {
         this.tuple = tuple;
         this.context = context;
         this.rule = rule;
@@ -115,7 +118,7 @@ public class ScheduledAgendaItem extends TimerTask
      * @return <code>true<code> if this agenda item depends
      *          upon the item, otherwise <code>false</code>.
      */
-    boolean dependsOn(FactHandle handle) {
+    boolean dependsOn(final FactHandle handle) {
         return this.tuple.dependsOn( handle );
     }
 
@@ -132,7 +135,7 @@ public class ScheduledAgendaItem extends TimerTask
      * Handle the firing of an alarm.
      */
     public void run() {
-        this.agenda.fireActivation( this );           
+        this.agenda.fireActivation( this );
         this.agenda.getWorkingMemory().fireAllRules();
     }
 
@@ -144,7 +147,7 @@ public class ScheduledAgendaItem extends TimerTask
         return this.next;
     }
 
-    public void setNext(LinkedListNode next) {
+    public void setNext(final LinkedListNode next) {
         this.next = next;
     }
 
@@ -152,19 +155,19 @@ public class ScheduledAgendaItem extends TimerTask
         return this.previous;
     }
 
-    public void setPrevious(LinkedListNode previous) {
+    public void setPrevious(final LinkedListNode previous) {
         this.previous = previous;
     }
 
     public void remove() {
-        agenda.removeScheduleItem( this );
+        this.agenda.removeScheduleItem( this );
     }
 
     public String toString() {
         return "[Activation rule=" + this.rule.getName() + ", tuple=" + this.tuple + "]";
     }
 
-    public void addLogicalDependency(LogicalDependency node) {
+    public void addLogicalDependency(final LogicalDependency node) {
         if ( this.justified == null ) {
             this.justified = new LinkedList();
         }
@@ -180,24 +183,24 @@ public class ScheduledAgendaItem extends TimerTask
         return this.activated;
     }
 
-    public void setActivated(boolean activated) {
+    public void setActivated(final boolean activated) {
         this.activated = activated;
     }
-    
+
     public ActivationGroupNode getActivationGroupNode() {
         return this.activationGroupNode;
     }
 
-    public void setActivationGroupNode(ActivationGroupNode activationGroupNode) {
+    public void setActivationGroupNode(final ActivationGroupNode activationGroupNode) {
         this.activationGroupNode = activationGroupNode;
-    }    
+    }
 
     /*
      * (non-Javadoc)
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( object == this ) {
             return true;
         }
@@ -206,7 +209,7 @@ public class ScheduledAgendaItem extends TimerTask
             return false;
         }
 
-        AgendaItem otherItem = (AgendaItem) object;
+        final AgendaItem otherItem = (AgendaItem) object;
 
         return (this.rule.equals( otherItem.getRule() ) && this.tuple.equals( otherItem.getTuple() ));
     }

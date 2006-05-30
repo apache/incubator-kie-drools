@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,36 +30,40 @@ import org.drools.spi.ObjectType;
 public class Column
     implements
     Serializable {
-    private final ObjectType objectType;
-    private List             constraints = Collections.EMPTY_LIST;
-    final Declaration        declaration;
-    private final int        index;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 9167552040211010022L;
+    private final ObjectType  objectType;
+    private List              constraints      = Collections.EMPTY_LIST;
+    final Declaration         declaration;
+    private final int         index;
 
     // this is the negative offset of the related fact inside a tuple. i.e:
     // tuple_fact_index = column_index + offset; 
-    private int              offset;
+    private int               offset;
 
-    public Column(int index,
-                  ObjectType objectType) {
+    public Column(final int index,
+                  final ObjectType objectType) {
         this( index,
               0,
               objectType,
               null );
     }
 
-    public Column(int index,
-                  ObjectType objectType,
-                  String identifier) {
+    public Column(final int index,
+                  final ObjectType objectType,
+                  final String identifier) {
         this( index,
               0,
               objectType,
               identifier );
     }
 
-    public Column(int index,
-                  int offset,
-                  ObjectType objectType,
-                  String identifier) {
+    public Column(final int index,
+                  final int offset,
+                  final ObjectType objectType,
+                  final String identifier) {
         this.index = index;
         this.offset = offset;
         this.objectType = objectType;
@@ -81,21 +84,21 @@ public class Column
         return Collections.unmodifiableList( this.constraints );
     }
 
-    public void addConstraint(FieldConstraint constraint) {
+    public void addConstraint(final FieldConstraint constraint) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
             this.constraints = new ArrayList( 1 );
         }
         this.constraints.add( constraint );
     }
 
-    public Declaration addDeclaration(String identifier,
-                                      Extractor extractor) {
+    public Declaration addDeclaration(final String identifier,
+                                      final Extractor extractor) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
             this.constraints = new ArrayList( 1 );
         }
-        Declaration declaration = new Declaration( identifier,
-                                                   extractor,
-                                                   this.getFactIndex() );
+        final Declaration declaration = new Declaration( identifier,
+                                                         extractor,
+                                                         this.getFactIndex() );
         this.constraints.add( declaration );
         return declaration;
 
@@ -117,7 +120,7 @@ public class Column
      * @return the offset
      */
     public int getOffset() {
-        return offset;
+        return this.offset;
     }
 
     public int getFactIndex() {
@@ -128,14 +131,14 @@ public class Column
      * A simple method to adjust offset of all declarations using the specified value
      * @param adjust
      */
-    public void adjustOffset(int adjust) {
+    public void adjustOffset(final int adjust) {
         this.offset += adjust;
 
         if ( this.declaration != null ) {
             this.declaration.setColumn( this.getFactIndex() );
         }
-        for ( Iterator i = this.constraints.iterator(); i.hasNext(); ) {
-            Object constr = i.next();
+        for ( final Iterator i = this.constraints.iterator(); i.hasNext(); ) {
+            final Object constr = i.next();
             if ( constr instanceof Declaration ) {
                 ((Declaration) constr).setColumn( this.getFactIndex() );
             }

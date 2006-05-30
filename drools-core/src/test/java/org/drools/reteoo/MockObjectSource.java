@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,16 +16,19 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import org.drools.spi.PropagationContext;
 
 public class MockObjectSource extends ObjectSource {
-    private int attached;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5137841417495725497L;
 
-    private int updated;
+    private int               attached;
 
-    public MockObjectSource(int id) {
+    private int               updated;
+
+    public MockObjectSource(final int id) {
         super( id );
     }
 
@@ -41,18 +45,18 @@ public class MockObjectSource extends ObjectSource {
         return this.updated;
     }
 
-    public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) {
+    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+                              final PropagationContext context) {
         this.updated++;
     }
 
-    public void remove(BaseNode node,
-                       WorkingMemoryImpl[] workingMemories) {
+    public void remove(final BaseNode node,
+                       final ReteooWorkingMemory[] workingMemories) {
         // TODO Auto-generated method stub
 
     }
 
-    public void attach(WorkingMemoryImpl[] workingMemories) {
+    public void attach(final ReteooWorkingMemory[] workingMemories) {
         // TODO Auto-generated method stub
 
     }

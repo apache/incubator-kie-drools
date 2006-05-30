@@ -1,4 +1,5 @@
 package org.drools.visualize;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.visualize;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -67,31 +66,36 @@ import edu.uci.ics.jung.visualization.control.ViewScalingGraphMousePlugin;
 public class ReteooJungViewer extends JFrame {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 7932462960592652709L;
+
+    /**
      * the graph
      */
-    Graph               graph;
+    Graph                     graph;
 
     /**
      * the visual component and renderer for the graph
      */
-    VisualizationViewer vv;
+    VisualizationViewer       vv;
 
-    private boolean     running = true;
+    private boolean           running          = true;
 
-    public ReteooJungViewer(RuleBase ruleBase) {
+    public ReteooJungViewer(final RuleBase ruleBase) {
         // Setup a standard left/right splitPane
-        JPanel leftPanel = new JPanel( new BorderLayout() );
-        JPanel rightPanel = new JPanel( new BorderLayout() );
-        JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
-                                               leftPanel,
-                                               rightPanel );
+        final JPanel leftPanel = new JPanel( new BorderLayout() );
+        final JPanel rightPanel = new JPanel( new BorderLayout() );
+        final JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
+                                                     leftPanel,
+                                                     rightPanel );
         splitPane.setDividerLocation( 0.75 );
         splitPane.setResizeWeight( 1 );
         getContentPane().add( splitPane );
 
         // Create the graph and parse it to the visitor where it will parse the rulebase and attach the vertices
         this.graph = new DirectedSparseGraph();
-        ReteooToJungVisitor visitor = new ReteooToJungVisitor( this.graph );
+        final ReteooToJungVisitor visitor = new ReteooToJungVisitor( this.graph );
         visitor.visit( ruleBase );
 
         final PluggableRenderer pr = new PluggableRenderer();
@@ -99,11 +103,11 @@ public class ReteooJungViewer extends JFrame {
         pr.setEdgeShapeFunction( new EdgeShape.QuadCurve() );
 
         pr.setVertexPaintFunction( new VertexPaintFunction() {
-            public Paint getFillPaint(Vertex v) {
+            public Paint getFillPaint(final Vertex v) {
                 return ((DroolsVertex) v).getFillPaint();
             }
 
-            public Paint getDrawPaint(Vertex v) {
+            public Paint getDrawPaint(final Vertex v) {
                 return ((DroolsVertex) v).getDrawPaint();
             }
         } );
@@ -118,11 +122,11 @@ public class ReteooJungViewer extends JFrame {
         pr.setVertexShapeFunction( new EllipseVertexShapeFunction( new ConstantVertexSizeFunction( 14 ),
                                                                    new ConstantVertexAspectRatioFunction( 1.0f ) ) );
 
-        ReteooLayoutSolver solver = new ReteooLayoutSolver( visitor.getRootVertex() );
+        final ReteooLayoutSolver solver = new ReteooLayoutSolver( visitor.getRootVertex() );
 
-        Layout layout = new ReteooLayout( this.graph,
-                                          new VertexFunctions(),
-                                          solver.getRowList() );
+        final Layout layout = new ReteooLayout( this.graph,
+                                                new VertexFunctions(),
+                                                solver.getRowList() );
         /*
          Layout layout = new DAGLayout( this.graph );
          */
@@ -146,17 +150,17 @@ public class ReteooJungViewer extends JFrame {
 
         final ScalingControl scaler = new CrossoverScalingControl();
 
-        JButton plus = new JButton( "+" );
+        final JButton plus = new JButton( "+" );
         plus.addActionListener( new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 scaler.scale( ReteooJungViewer.this.vv,
                               1.1f,
                               ReteooJungViewer.this.vv.getCenter() );
             }
         } );
-        JButton minus = new JButton( "-" );
+        final JButton minus = new JButton( "-" );
         minus.addActionListener( new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 scaler.scale( ReteooJungViewer.this.vv,
                               0.9f,
                               ReteooJungViewer.this.vv.getCenter() );
@@ -167,10 +171,10 @@ public class ReteooJungViewer extends JFrame {
         leftPanel.add( graphPanel );
 
         // Add the zoom controls
-        JPanel scaleGrid = new JPanel( new GridLayout( 1,
-                                                       0 ) );
+        final JPanel scaleGrid = new JPanel( new GridLayout( 1,
+                                                             0 ) );
         scaleGrid.setBorder( BorderFactory.createTitledBorder( "Zoom" ) );
-        JPanel controls = new JPanel();
+        final JPanel controls = new JPanel();
         scaleGrid.add( plus );
         scaleGrid.add( minus );
         controls.add( scaleGrid );
@@ -182,7 +186,7 @@ public class ReteooJungViewer extends JFrame {
         infoPane.setContentType( "text/html" );
 
         //        Put the editor pane in a scroll pane.
-        JScrollPane infoScrollPane = new JScrollPane( infoPane );
+        final JScrollPane infoScrollPane = new JScrollPane( infoPane );
         infoScrollPane.setPreferredSize( new Dimension( 250,
                                                         800 ) );
         infoScrollPane.setMinimumSize( new Dimension( 50,
@@ -191,17 +195,17 @@ public class ReteooJungViewer extends JFrame {
         // Add a mouse listener to update the info panel when a node is clicked
         this.vv.addGraphMouseListener( new GraphMouseListener() {
 
-            public void graphClicked(Vertex vertex,
-                                     MouseEvent e) {
+            public void graphClicked(final Vertex vertex,
+                                     final MouseEvent e) {
                 infoPane.setText( ((DroolsVertex) vertex).getHtml() );
             }
 
-            public void graphPressed(Vertex vertex,
-                                     MouseEvent e) {
+            public void graphPressed(final Vertex vertex,
+                                     final MouseEvent e) {
             }
 
-            public void graphReleased(Vertex vertex,
-                                      MouseEvent e) {
+            public void graphReleased(final Vertex vertex,
+                                      final MouseEvent e) {
             }
 
         } );
@@ -211,11 +215,11 @@ public class ReteooJungViewer extends JFrame {
 
     public void showGUI() {
         pack();
-        setVisible( true );        
+        setVisible( true );
 
         addWindowListener( new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                ReteooJungViewer viewer = (ReteooJungViewer) e.getSource();
+            public void windowClosing(final WindowEvent e) {
+                final ReteooJungViewer viewer = (ReteooJungViewer) e.getSource();
                 viewer.running = false;
             }
         } );

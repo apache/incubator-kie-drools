@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,24 +16,19 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
-import junit.framework.Assert;
-
 import org.drools.DroolsTestCase;
-import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 
 public class RuleBaseImplTest extends DroolsTestCase {
-    RuleBaseImpl  ruleBase;
+    ReteooRuleBase ruleBase;
 
-    WorkingMemory wm1;
-    WorkingMemory wm2;
-    WorkingMemory wm3;
-    WorkingMemory wm4;
+    WorkingMemory  wm1;
+    WorkingMemory  wm2;
+    WorkingMemory  wm3;
+    WorkingMemory  wm4;
 
     public void setUp() {
-        this.ruleBase = new RuleBaseImpl();
+        this.ruleBase = new ReteooRuleBase();
 
         this.wm1 = this.ruleBase.newWorkingMemory();
         this.wm2 = this.ruleBase.newWorkingMemory();
@@ -85,70 +81,91 @@ public class RuleBaseImplTest extends DroolsTestCase {
     }
 
     public void testNoKeepReference() throws Exception {
-        WorkingMemory wm5 = this.ruleBase.newWorkingMemory( false );
-        WorkingMemory wm6 = this.ruleBase.newWorkingMemory( false );
+        final WorkingMemory wm5 = this.ruleBase.newWorkingMemory( false );
+        final WorkingMemory wm6 = this.ruleBase.newWorkingMemory( false );
         assertLength( 4,
                       this.ruleBase.getWorkingMemories() );
         assertFalse( this.ruleBase.getWorkingMemories().contains( wm5 ) );
         assertFalse( this.ruleBase.getWorkingMemories().contains( wm6 ) );
     }
-    
+
     public void testAddPackage() throws Exception {
-        org.drools.rule.Package pkg1 = new org.drools.rule.Package("org.droos.test");
-        pkg1.addGlobal( "global1", Object.class );
-        pkg1.addGlobal( "global2", Object.class );
-        
-        org.drools.rule.Package pkg2 = new org.drools.rule.Package("org.droos.test");
-        pkg2.addGlobal( "global1", Object.class );
-        pkg2.addGlobal( "global3", Object.class );
-        
-        org.drools.rule.Package pkg3 = new org.drools.rule.Package("org.droos.test2");
-        pkg3.addGlobal( "global3", Object.class );
-        pkg3.addGlobal( "global4", Object.class );
-        
+        final org.drools.rule.Package pkg1 = new org.drools.rule.Package( "org.droos.test" );
+        pkg1.addGlobal( "global1",
+                        Object.class );
+        pkg1.addGlobal( "global2",
+                        Object.class );
+
+        final org.drools.rule.Package pkg2 = new org.drools.rule.Package( "org.droos.test" );
+        pkg2.addGlobal( "global1",
+                        Object.class );
+        pkg2.addGlobal( "global3",
+                        Object.class );
+
+        final org.drools.rule.Package pkg3 = new org.drools.rule.Package( "org.droos.test2" );
+        pkg3.addGlobal( "global3",
+                        Object.class );
+        pkg3.addGlobal( "global4",
+                        Object.class );
+
         this.ruleBase.addPackage( pkg1 );
         // one package
-        assertLength( 1, this.ruleBase.getPackages() );
+        assertLength( 1,
+                      this.ruleBase.getPackages() );
         // two globals
-        assertLength( 2, this.ruleBase.getGlobals().values() );
+        assertLength( 2,
+                      this.ruleBase.getGlobals().values() );
         // two globals in the package also
-        assertLength( 2, this.ruleBase.getPackages()[0].getGlobals().values() );
-        
+        assertLength( 2,
+                      this.ruleBase.getPackages()[0].getGlobals().values() );
+
         this.ruleBase.addPackage( pkg2 );
         // packages merged, so still 1 package
-        assertLength( 1, this.ruleBase.getPackages() );
+        assertLength( 1,
+                      this.ruleBase.getPackages() );
         // globals merged, so 3 globals total
-        assertLength( 3, this.ruleBase.getGlobals().values() );
+        assertLength( 3,
+                      this.ruleBase.getGlobals().values() );
         // three globals in the package also
-        assertLength( 3, this.ruleBase.getPackages()[0].getGlobals().values() );
+        assertLength( 3,
+                      this.ruleBase.getPackages()[0].getGlobals().values() );
 
         this.ruleBase.addPackage( pkg3 );
         // new package, so now we have 2 package
-        assertLength( 2, this.ruleBase.getPackages() );
+        assertLength( 2,
+                      this.ruleBase.getPackages() );
         // globals partially merged, so 4 globals total
-        assertLength( 4, this.ruleBase.getGlobals().values() );
+        assertLength( 4,
+                      this.ruleBase.getGlobals().values() );
         // two globals in the package
-        org.drools.rule.Package[] pkgs = this.ruleBase.getPackages();
-        for(int i = 0; i < pkgs.length; i++) {
-            if(pkgs[i].getName().equals( pkg3.getName() )) {
-                assertLength( 2, pkgs[i].getGlobals().values() );
+        final org.drools.rule.Package[] pkgs = this.ruleBase.getPackages();
+        for ( int i = 0; i < pkgs.length; i++ ) {
+            if ( pkgs[i].getName().equals( pkg3.getName() ) ) {
+                assertLength( 2,
+                              pkgs[i].getGlobals().values() );
             }
         }
     }
-    
+
     public void testRemovePackage() throws Exception {
-        org.drools.rule.Package pkg1 = new org.drools.rule.Package("org.droos.test");
-        pkg1.addGlobal( "global1", Object.class );
-        pkg1.addGlobal( "global2", Object.class );
-        
-        org.drools.rule.Package pkg2 = new org.drools.rule.Package("org.droos.test");
-        pkg2.addGlobal( "global1", Object.class );
-        pkg2.addGlobal( "global3", Object.class );
-        
-        org.drools.rule.Package pkg3 = new org.drools.rule.Package("org.droos.test2");
-        pkg3.addGlobal( "global3", Object.class );
-        pkg3.addGlobal( "global4", Object.class );
-        
+        final org.drools.rule.Package pkg1 = new org.drools.rule.Package( "org.droos.test" );
+        pkg1.addGlobal( "global1",
+                        Object.class );
+        pkg1.addGlobal( "global2",
+                        Object.class );
+
+        final org.drools.rule.Package pkg2 = new org.drools.rule.Package( "org.droos.test" );
+        pkg2.addGlobal( "global1",
+                        Object.class );
+        pkg2.addGlobal( "global3",
+                        Object.class );
+
+        final org.drools.rule.Package pkg3 = new org.drools.rule.Package( "org.droos.test2" );
+        pkg3.addGlobal( "global3",
+                        Object.class );
+        pkg3.addGlobal( "global4",
+                        Object.class );
+
         this.ruleBase.addPackage( pkg1 );
         this.ruleBase.addPackage( pkg2 );
         this.ruleBase.addPackage( pkg3 );
@@ -156,13 +173,17 @@ public class RuleBaseImplTest extends DroolsTestCase {
         this.ruleBase.removePackage( pkg1.getName() );
         // packages were partially merged when adding, so removal 
         // shall left only package 3 behind
-        assertLength( 1, this.ruleBase.getPackages() );
-        assertLength( 2, this.ruleBase.getGlobals().values() );
-        
+        assertLength( 1,
+                      this.ruleBase.getPackages() );
+        assertLength( 2,
+                      this.ruleBase.getGlobals().values() );
+
         this.ruleBase.removePackage( pkg3.getName() );
-        assertLength( 0, this.ruleBase.getPackages() );
-        assertLength( 0, this.ruleBase.getGlobals().values() );
-        
+        assertLength( 0,
+                      this.ruleBase.getPackages() );
+        assertLength( 0,
+                      this.ruleBase.getGlobals().values() );
+
     }
 
 }

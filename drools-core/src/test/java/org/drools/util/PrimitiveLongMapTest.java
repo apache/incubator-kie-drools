@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,21 +16,17 @@ package org.drools.util;
  * limitations under the License.
  */
 
-
-
-
-
 import java.util.Collection;
 
 import junit.framework.TestCase;
 
 public class PrimitiveLongMapTest extends TestCase {
     public void testValues() {
-        PrimitiveLongMap map = new PrimitiveLongMap();
+        final PrimitiveLongMap map = new PrimitiveLongMap();
         assertNotNull( "MapNotNullTest ",
                        map );
 
-        Collection values = map.values();
+        final Collection values = map.values();
         assertNotNull( "ValuesNotNullTest ",
                        values );
         assertEquals( "ValuesZeroSizeTest ",
@@ -38,14 +35,14 @@ public class PrimitiveLongMapTest extends TestCase {
     }
 
     public void testPaging() {
-        PrimitiveLongMap map = new PrimitiveLongMap( 32,
-                                                     8 );
+        final PrimitiveLongMap map = new PrimitiveLongMap( 32,
+                                                           8 );
 
         for ( int i = 0; i < 512; i++ ) {
-            Integer value = new Integer( i );
+            final Integer value = new Integer( i );
 
-            Object oldValue = map.put( i,
-                                       value );
+            final Object oldValue = map.put( i,
+                                             value );
             assertNull( "OldValueNullTest ",
                         oldValue );
             assertEquals( "OldValueNullTest ",
@@ -56,28 +53,28 @@ public class PrimitiveLongMapTest extends TestCase {
     }
 
     public void testGetWithNegativeKeyReturnsNull() {
-        PrimitiveLongMap map = new PrimitiveLongMap( 2,
-                                                     1 );
+        final PrimitiveLongMap map = new PrimitiveLongMap( 2,
+                                                           1 );
 
         assertNull( map.get( -1 ) );
     }
 
     public void testRemoveWithNegativeReturnsNull() {
-        PrimitiveLongMap map = new PrimitiveLongMap( 2,
-                                                     1 );
+        final PrimitiveLongMap map = new PrimitiveLongMap( 2,
+                                                           1 );
 
         assertNull( map.remove( -1 ) );
     }
 
     public void testPutWithNegativeKeyThrowsIllegalArgumentException() {
-        PrimitiveLongMap map = new PrimitiveLongMap( 2,
-                                                     1 );
+        final PrimitiveLongMap map = new PrimitiveLongMap( 2,
+                                                           1 );
 
         try {
             map.put( -1,
                      new Object() );
             fail();
-        } catch ( IllegalArgumentException e ) {
+        } catch ( final IllegalArgumentException e ) {
             // expected
         }
     }
@@ -89,8 +86,8 @@ public class PrimitiveLongMapTest extends TestCase {
      */
     public void testMaxKey() {
 
-        PrimitiveLongMap map = new PrimitiveLongMap( 8,
-                                                     4 );
+        final PrimitiveLongMap map = new PrimitiveLongMap( 8,
+                                                           4 );
 
         // Test maxKey for key 0
         map.put( 0,
@@ -139,8 +136,8 @@ public class PrimitiveLongMapTest extends TestCase {
     }
 
     public void testLastIndexBoundary() {
-        PrimitiveLongMap map = new PrimitiveLongMap( 32,
-                                                     8 );
+        final PrimitiveLongMap map = new PrimitiveLongMap( 32,
+                                                           8 );
         map.put( 8192,
                  new Object() );
         map.remove( 8192 );
@@ -151,13 +148,13 @@ public class PrimitiveLongMapTest extends TestCase {
     }
 
     public void testSize() {
-        PrimitiveLongMap map = new PrimitiveLongMap( 32,
-                                                     8 );
+        final PrimitiveLongMap map = new PrimitiveLongMap( 32,
+                                                           8 );
 
-        Object object = new Object();
+        final Object object = new Object();
         map.put( 231,
                  object );
-        Object string = new Object();
+        final Object string = new Object();
         map.put( 211,
                  string );
         map.put( 99822,

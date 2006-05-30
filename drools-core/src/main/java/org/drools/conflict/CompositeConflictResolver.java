@@ -1,4 +1,5 @@
 package org.drools.conflict;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.conflict;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
@@ -38,17 +35,21 @@ import org.drools.spi.ConflictResolver;
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
 public class CompositeConflictResolver extends AbstractConflictResolver {
+    /**
+     * 
+     */
+    private static final long        serialVersionUID = -6539946070667458957L;
     private final ConflictResolver[] components;
 
-    public CompositeConflictResolver(ConflictResolver[] components) {
+    public CompositeConflictResolver(final ConflictResolver[] components) {
         this.components = components;
     }
 
     /**
      * @see AbstractConflictResolver
      */
-    public final int compare(Activation lhs,
-                             Activation rhs) {
+    public final int compare(final Activation lhs,
+                             final Activation rhs) {
         int result = 0;
 
         for ( int i = 0; result == 0 && i < this.components.length; ++i ) {

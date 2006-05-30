@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.rule;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import org.drools.spi.Duration;
 import org.drools.spi.Tuple;
@@ -39,8 +36,12 @@ public class FixedDuration
     // Instance members
     // ------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -812460534301137795L;
     /** Duration, in seconds. */
-    private long duration;
+    private long              duration;
 
     // ------------------------------------------------------------
     // Constructors
@@ -59,7 +60,7 @@ public class FixedDuration
      * @param seconds
      *            Number of seconds.
      */
-    public FixedDuration(long ms) {
+    public FixedDuration(final long ms) {
         this.duration = ms;
     }
 
@@ -73,7 +74,7 @@ public class FixedDuration
      * @param seconds
      *            Number of seconds.
      */
-    public void addSeconds(long seconds) {
+    public void addSeconds(final long seconds) {
         this.duration += (seconds * 1000);
     }
 
@@ -83,7 +84,7 @@ public class FixedDuration
      * @param minutes
      *            Number of minutes.
      */
-    public void addMinutes(long minutes) {
+    public void addMinutes(final long minutes) {
         this.duration += ((minutes * 60) * 1000);
     }
 
@@ -93,7 +94,7 @@ public class FixedDuration
      * @param hours
      *            Number of hours.
      */
-    public void addHours(long hours) {
+    public void addHours(final long hours) {
         this.duration += ((hours * 60 * 60) * 1000);
     }
 
@@ -103,7 +104,7 @@ public class FixedDuration
      * @param days
      *            Number of days.
      */
-    public void addDays(long days) {
+    public void addDays(final long days) {
         this.duration += ((days * 60 * 60 * 24) * 1000);
     }
 
@@ -113,7 +114,7 @@ public class FixedDuration
      * @param weeks
      *            Number of weeks.
      */
-    public void addWeeks(long weeks) {
+    public void addWeeks(final long weeks) {
         this.duration += ((weeks * 60 * 60 * 24 * 7) * 1000);
     }
 
@@ -122,7 +123,7 @@ public class FixedDuration
     /**
      * @see Duration
      */
-    public long getDuration(Tuple tuple) {
+    public long getDuration(final Tuple tuple) {
         return this.duration;
     }
 }

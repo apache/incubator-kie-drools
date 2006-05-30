@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -42,9 +43,9 @@ public class ColumnConstraints {
 
     private final boolean           betaPresent;
 
-    public ColumnConstraints(Column column,
-                             List alpha,
-                             BetaNodeBinder beta) {
+    public ColumnConstraints(final Column column,
+                             final List alpha,
+                             final BetaNodeBinder beta) {
         this.classType = ((ClassObjectType) column.getObjectType()).getClassType();
 
         if ( beta != null ) {
@@ -67,9 +68,9 @@ public class ColumnConstraints {
         return this.classType;
     }
 
-    protected final boolean isAllowed(InternalFactHandle factHandle,
-                      Tuple tuple,
-                      WorkingMemory workingMemory) {
+    protected final boolean isAllowed(final InternalFactHandle factHandle,
+                                      final Tuple tuple,
+                                      final WorkingMemory workingMemory) {
         return this.isAllowedAlpha( factHandle,
                                     tuple,
                                     workingMemory ) && this.isAllowedBeta( factHandle,
@@ -77,9 +78,9 @@ public class ColumnConstraints {
                                                                            workingMemory );
     }
 
-    public final boolean isAllowedAlpha(InternalFactHandle factHandle,
-                                  Tuple tuple,
-                                  WorkingMemory workingMemory) {
+    public final boolean isAllowedAlpha(final InternalFactHandle factHandle,
+                                        final Tuple tuple,
+                                        final WorkingMemory workingMemory) {
         if ( this.alphaPresent ) {
             for ( int i = 0, length = this.alphaConstraints.length; i < length; i++ ) {
                 // escape immediately if some condition does not match
@@ -94,9 +95,9 @@ public class ColumnConstraints {
         return true;
     }
 
-    protected final boolean isAllowedBeta(InternalFactHandle factHandle,
-                          Tuple tuple,
-                          WorkingMemory workingMemory) {
+    protected final boolean isAllowedBeta(final InternalFactHandle factHandle,
+                                          final Tuple tuple,
+                                          final WorkingMemory workingMemory) {
         if ( this.betaPresent ) {
             return this.beta.isAllowed( factHandle,
                                         tuple,
@@ -107,7 +108,7 @@ public class ColumnConstraints {
     }
 
     protected final boolean isAlphaPresent() {
-        return alphaPresent;
+        return this.alphaPresent;
     }
 
 }

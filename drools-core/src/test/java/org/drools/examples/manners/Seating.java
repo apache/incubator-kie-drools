@@ -20,13 +20,18 @@ import java.io.Serializable;
 public final class Seating
     implements
     Serializable {
-    private final int id, pid;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -21267542036195318L;
 
-    private final int leftSeat, rightSeat;
+    private final int         id, pid;
 
-    private final String leftGuestName, rightGuestName;
+    private final int         leftSeat, rightSeat;
 
-    private boolean      pathDone;
+    private final String      leftGuestName, rightGuestName;
+
+    private boolean           pathDone;
 
     public Seating(final int id,
                    final int pid,
@@ -49,7 +54,7 @@ public final class Seating
         return this.pathDone;
     }
 
-    public final void setPathDone(boolean pathDone) {
+    public final void setPathDone(final boolean pathDone) {
         this.pathDone = pathDone;
     }
 

@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import java.util.Iterator;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -38,13 +36,13 @@ import org.drools.spi.MockField;
 
 public class QueryTerminalNodeTest extends TestCase {
     public void testQueryTerminalNode() {
-        RuleBaseImpl ruleBase = new RuleBaseImpl();
-        Rete rete = ruleBase.getRete();
+        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final Rete rete = ruleBase.getRete();
 
-        ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
-        ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( 1,
-                                                                 queryObjectType,
-                                                                 rete );
+        final ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
+        final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( 1,
+                                                                       queryObjectType,
+                                                                       rete );
         queryObjectTypeNode.attach();
 
         ClassFieldExtractor extractor = new ClassFieldExtractor( DroolsQuery.class,
@@ -52,8 +50,8 @@ public class QueryTerminalNodeTest extends TestCase {
 
         FieldValue field = new MockField( "query-1" );
 
-        Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
-                                                             Evaluator.EQUAL );
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
+                                                                   Evaluator.EQUAL );
         LiteralConstraint constraint = new LiteralConstraint( field,
                                                               extractor,
                                                               evaluator );
@@ -63,14 +61,14 @@ public class QueryTerminalNodeTest extends TestCase {
                                              queryObjectTypeNode );
         alphaNode.attach();
 
-        LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 3,
-                                                                 alphaNode );
+        final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 3,
+                                                                       alphaNode );
         liaNode.attach();
 
-        ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
-        ObjectTypeNode cheeseObjectTypeNode = new ObjectTypeNode( 4,
-                                                                  cheeseObjectType,
-                                                                  rete );
+        final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
+        final ObjectTypeNode cheeseObjectTypeNode = new ObjectTypeNode( 4,
+                                                                        cheeseObjectType,
+                                                                        rete );
         cheeseObjectTypeNode.attach();
 
         extractor = new ClassFieldExtractor( Cheese.class,
@@ -87,35 +85,35 @@ public class QueryTerminalNodeTest extends TestCase {
                                    cheeseObjectTypeNode );
         alphaNode.attach();
 
-        JoinNode joinNode = new JoinNode( 6,
-                                          liaNode,
-                                          alphaNode );
+        final JoinNode joinNode = new JoinNode( 6,
+                                                liaNode,
+                                                alphaNode );
         joinNode.attach();
 
-        Query query = new Query( "query-1" );
+        final Query query = new Query( "query-1" );
 
-        QueryTerminalNode queryNode = new QueryTerminalNode( 7,
-                                                             joinNode,
-                                                             query );
+        final QueryTerminalNode queryNode = new QueryTerminalNode( 7,
+                                                                   joinNode,
+                                                                   query );
 
         queryNode.attach();
 
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         QueryResults results = workingMemory.getQueryResults( "query-1" );
 
         assertNull( results );
 
-        Cheese stilton1 = new Cheese( "stilton",
-                                     100 );
-        FactHandle handle1 = workingMemory.assertObject( stilton1 );
+        final Cheese stilton1 = new Cheese( "stilton",
+                                            100 );
+        final FactHandle handle1 = workingMemory.assertObject( stilton1 );
 
         results = workingMemory.getQueryResults( "query-1" );
 
         assertEquals( 1,
                       results.size() );
 
-        Cheese cheddar = new Cheese( "cheddar",
-                                     55 );
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           55 );
         workingMemory.assertObject( cheddar );
 
         results = workingMemory.getQueryResults( "query-1" );
@@ -123,40 +121,45 @@ public class QueryTerminalNodeTest extends TestCase {
         assertEquals( 1,
                       results.size() );
 
-        Cheese stilton2 = new Cheese( "stilton",
-                              5 );
+        final Cheese stilton2 = new Cheese( "stilton",
+                                            5 );
 
-        FactHandle handle2 = workingMemory.assertObject( stilton2 );
+        final FactHandle handle2 = workingMemory.assertObject( stilton2 );
 
         results = workingMemory.getQueryResults( "query-1" );
 
         assertEquals( 2,
                       results.size() );
-        
+
         QueryResult result = results.get( 0 );
-        assertEquals(1, result.size() );        
-        assertSame( stilton1, result.get( 0 ) );
+        assertEquals( 1,
+                      result.size() );
+        assertSame( stilton1,
+                    result.get( 0 ) );
 
         result = results.get( 1 );
-        assertEquals(1, result.size() );        
-        assertSame( stilton2, result.get( 0 ) );
-        
+        assertEquals( 1,
+                      result.size() );
+        assertSame( stilton2,
+                    result.get( 0 ) );
+
         int i = 0;
-        for ( Iterator it = results.iterator(); it.hasNext(); ) {
-           result = ( QueryResult ) it.next();
-           assertEquals(1, result.size() );        
-           if ( i == 0 ) {
-               assertSame( stilton1, result.get( 0 ) );
-           } else {
-               assertSame( stilton2, result.get( 0 ) );
-           }
-           i++;
+        for ( final Iterator it = results.iterator(); it.hasNext(); ) {
+            result = (QueryResult) it.next();
+            assertEquals( 1,
+                          result.size() );
+            if ( i == 0 ) {
+                assertSame( stilton1,
+                            result.get( 0 ) );
+            } else {
+                assertSame( stilton2,
+                            result.get( 0 ) );
+            }
+            i++;
         }
-        
-        
+
         workingMemory.retractObject( handle1 );
         results = workingMemory.getQueryResults( "query-1" );
-        
 
         assertEquals( 1,
                       results.size() );
@@ -172,21 +175,21 @@ public class QueryTerminalNodeTest extends TestCase {
         private String type;
         private int    price;
 
-        public Cheese(String type,
-                      int price) {
+        public Cheese(final String type,
+                      final int price) {
             super();
             this.type = type;
             this.price = price;
         }
 
         public int getPrice() {
-            return price;
+            return this.price;
         }
 
         public String getType() {
-            return type;
+            return this.type;
         }
-        
+
         public String toString() {
             return "[Cheese type='" + this.type + "' price='" + this.price + "']";
         }

@@ -19,6 +19,7 @@ package org.drools.spi;
 import java.io.Serializable;
 
 import org.drools.FactHandle;
+import org.drools.common.InternalFactHandle;
 
 /**
  * Factory Interface to return new <code>FactHandle</code>s
@@ -36,16 +37,7 @@ public interface FactHandleFactory
      * 
      * @return The handle.
      */
-    FactHandle newFactHandle();
-
-    /**
-     * Construct a handle with a specified id.
-     * 
-     * @param id
-     *            The id to use.
-     * @return The handle.
-     */
-    FactHandle newFactHandle(long id);
+    InternalFactHandle newFactHandle(Object object);
 
     /**
      * Increases the recency of the FactHandle
@@ -53,10 +45,14 @@ public interface FactHandleFactory
      * @param factHandle
      *      The fact handle to have its recency increased.
      */
-    public void increaseFactHandleRecency(FactHandle factHandle);
+    public void increaseFactHandleRecency(InternalFactHandle factHandle);
+
+    public void destroyFactHandle(InternalFactHandle factHandle);
 
     /**
      * @return a fresh instance of the fact handle factory, with any IDs reset etc.
      */
-    FactHandleFactory newInstance();
+    public FactHandleFactory newInstance();
+    
+    public Class getFactHandleType();
 }

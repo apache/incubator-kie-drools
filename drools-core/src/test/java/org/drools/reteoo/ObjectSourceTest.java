@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,9 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
@@ -26,7 +26,7 @@ import org.drools.spi.PropagationContext;
 public class ObjectSourceTest extends DroolsTestCase {
 
     public void testObjectSourceConstructor() {
-        MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( 15 );
         assertEquals( 15,
                       source.getId() );
 
@@ -38,7 +38,7 @@ public class ObjectSourceTest extends DroolsTestCase {
     }
 
     public void testAddObjectSink() {
-        MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( 15 );
         assertLength( 0,
                       source.getObjectSinksAsList() );
 
@@ -52,20 +52,20 @@ public class ObjectSourceTest extends DroolsTestCase {
     }
 
     public void testPropagateAssertObject() throws Exception {
-        Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 null,
-                                                                 null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+        final Rule rule = new Rule( "test-rule" );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
 
-        MockObjectSource source = new MockObjectSource( 15 );
-        MockObjectSink sink1 = new MockObjectSink();
+        final MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSink sink1 = new MockObjectSink();
         source.addObjectSink( sink1 );
         assertLength( 0,
                       sink1.getAsserted() );
 
-        FactHandleImpl f1 = (FactHandleImpl) workingMemory.assertObject( new Integer( 1 ) );
+        final DefaultFactHandle f1 = (DefaultFactHandle) workingMemory.assertObject( new Integer( 1 ) );
         source.propagateAssertObject( f1,
                                       context,
                                       workingMemory );
@@ -75,12 +75,12 @@ public class ObjectSourceTest extends DroolsTestCase {
 
         Object[] list = (Object[]) sink1.getAsserted().get( 0 );
         assertEquals( new Integer( 1 ),
-                      workingMemory.getObject( (FactHandleImpl) list[0] ) );
+                      workingMemory.getObject( (DefaultFactHandle) list[0] ) );
 
-        MockObjectSink sink2 = new MockObjectSink();
+        final MockObjectSink sink2 = new MockObjectSink();
         source.addObjectSink( sink2 );
 
-        FactHandleImpl f2 = (FactHandleImpl) workingMemory.assertObject( new Integer( 2 ) );
+        final DefaultFactHandle f2 = (DefaultFactHandle) workingMemory.assertObject( new Integer( 2 ) );
         source.propagateAssertObject( f2,
                                       context,
                                       workingMemory );
@@ -117,22 +117,23 @@ public class ObjectSourceTest extends DroolsTestCase {
     }
 
     public void testPropagateRetractObject() throws Exception {
-        Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.RETRACTION,
-                                                                 null,
-                                                                 null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+        final Rule rule = new Rule( "test-rule" );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.RETRACTION,
+                                                                       null,
+                                                                       null );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
 
-        MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( 15 );
 
         // Test propagation with one ObjectSink
-        MockObjectSink sink1 = new MockObjectSink();
+        final MockObjectSink sink1 = new MockObjectSink();
         source.addObjectSink( sink1 );
         assertLength( 0,
                       sink1.getRetracted() );
 
-        source.propagateRetractObject( new FactHandleImpl( 2 ),
+        source.propagateRetractObject( new DefaultFactHandle( 2,
+                                                              "cheese" ),
                                        context,
                                        workingMemory );
 
@@ -140,7 +141,8 @@ public class ObjectSourceTest extends DroolsTestCase {
                       sink1.getRetracted() );
 
         Object[] list = (Object[]) sink1.getRetracted().get( 0 );
-        assertEquals( new FactHandleImpl( 2 ),
+        assertEquals( new DefaultFactHandle( 2,
+                                             "cheese" ),
                       list[0] );
         assertSame( context,
                     list[1] );
@@ -148,10 +150,11 @@ public class ObjectSourceTest extends DroolsTestCase {
                     list[2] );
 
         // Test propagation with two ObjectSinks
-        MockObjectSink sink2 = new MockObjectSink();
+        final MockObjectSink sink2 = new MockObjectSink();
         source.addObjectSink( sink2 );
 
-        source.propagateRetractObject( new FactHandleImpl( 3 ),
+        source.propagateRetractObject( new DefaultFactHandle( 3,
+                                                              "cheese" ),
                                        context,
                                        workingMemory );
 
@@ -162,7 +165,8 @@ public class ObjectSourceTest extends DroolsTestCase {
                       sink2.getRetracted() );
 
         list = (Object[]) sink1.getRetracted().get( 0 );
-        assertEquals( new FactHandleImpl( 2 ),
+        assertEquals( new DefaultFactHandle( 2,
+                                             "cheese" ),
                       list[0] );
         assertSame( context,
                     list[1] );
@@ -170,7 +174,8 @@ public class ObjectSourceTest extends DroolsTestCase {
                     list[2] );
 
         list = (Object[]) sink1.getRetracted().get( 1 );
-        assertEquals( new FactHandleImpl( 3 ),
+        assertEquals( new DefaultFactHandle( 3,
+                                             "cheese" ),
                       list[0] );
         assertSame( context,
                     list[1] );
@@ -178,7 +183,8 @@ public class ObjectSourceTest extends DroolsTestCase {
                     list[2] );
 
         list = (Object[]) sink2.getRetracted().get( 0 );
-        assertEquals( new FactHandleImpl( 3 ),
+        assertEquals( new DefaultFactHandle( 3,
+                                             "cheese" ),
                       list[0] );
         assertSame( context,
                     list[1] );

@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -33,39 +34,48 @@ import org.drools.spi.Tuple;
 
 public class LeapsQueryResults extends QueryResults {
 
-    public LeapsQueryResults(List results, Query query, WorkingMemory workingMemory) {
-        super( results, query, workingMemory );
+    public LeapsQueryResults(final List results,
+                             final Query query,
+                             final WorkingMemory workingMemory) {
+        super( results,
+               query,
+               workingMemory );
     }
 
-    public QueryResult get( int i ) {
-        if (i > this.results.size( )) {
-            throw new NoSuchElementException( );
+    public QueryResult get(final int i) {
+        if ( i > this.results.size() ) {
+            throw new NoSuchElementException();
         }
-        return new LeapsQueryResult( (Tuple) this.results.get( i ), workingMemory, this );
+        return new LeapsQueryResult( (Tuple) this.results.get( i ),
+                                     this.workingMemory,
+                                     this );
     }
 
     public Iterator iterator() {
         return new QueryResultsIterator( this.results.iterator() );
     }
 
-    class QueryResultsIterator implements Iterator {
+    class QueryResultsIterator
+        implements
+        Iterator {
         private Iterator iterator;
 
-        public QueryResultsIterator(Iterator iterator) {
+        public QueryResultsIterator(final Iterator iterator) {
             this.iterator = iterator;
         }
 
         public boolean hasNext() {
-            return this.iterator.hasNext( );
+            return this.iterator.hasNext();
         }
 
         public Object next() {
-            return new LeapsQueryResult( (Tuple) this.iterator.next( ),
-                    LeapsQueryResults.this.workingMemory, LeapsQueryResults.this );
+            return new LeapsQueryResult( (Tuple) this.iterator.next(),
+                                         LeapsQueryResults.this.workingMemory,
+                                         LeapsQueryResults.this );
         }
 
         public void remove() {
-            this.iterator.remove( );
+            this.iterator.remove();
         }
 
     }

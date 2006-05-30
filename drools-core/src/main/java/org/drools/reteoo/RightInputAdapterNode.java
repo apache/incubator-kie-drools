@@ -16,6 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import org.drools.common.DefaultFactHandle;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -29,6 +30,11 @@ import org.drools.spi.PropagationContext;
 public class RightInputAdapterNode extends ObjectSource
     implements
     TupleSink {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5777695177854269219L;
+
     private final TupleSource tupleSource;
 
     private final int         column;
@@ -44,9 +50,9 @@ public class RightInputAdapterNode extends ObjectSource
      * @param source
      *      The <code>TupleSource</code> which propagates the received <code>ReteTuple</code>
      */
-    public RightInputAdapterNode(int id,
-                                 int column,
-                                 TupleSource source) {
+    public RightInputAdapterNode(final int id,
+                                 final int column,
+                                 final TupleSource source) {
 
         super( id );
         this.column = column;
@@ -64,10 +70,10 @@ public class RightInputAdapterNode extends ObjectSource
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
-    public void assertTuple(ReteTuple tuple,
-                            PropagationContext context,
-                            WorkingMemoryImpl workingMemory) {
-        propagateAssertObject( (FactHandleImpl) tuple.get( this.column ),
+    public void assertTuple(final ReteTuple tuple,
+                            final PropagationContext context,
+                            final ReteooWorkingMemory workingMemory) {
+        propagateAssertObject( (DefaultFactHandle) tuple.get( this.column ),
                                context,
                                workingMemory );
     }
@@ -75,18 +81,18 @@ public class RightInputAdapterNode extends ObjectSource
     /* (non-Javadoc)
      * @see org.drools.reteoo.RetractionCallback#retractTuple(org.drools.reteoo.ReteTuple, org.drools.spi.PropagationContext, org.drools.reteoo.WorkingMemoryImpl)
      */
-    public void retractTuple(ReteTuple tuple,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
-        propagateRetractObject( (FactHandleImpl) tuple.get( this.column ),
+    public void retractTuple(final ReteTuple tuple,
+                             final PropagationContext context,
+                             final ReteooWorkingMemory workingMemory) {
+        propagateRetractObject( (DefaultFactHandle) tuple.get( this.column ),
                                 context,
                                 workingMemory );
     }
 
-    public void modifyTuple(ReteTuple tuple,
-                            PropagationContext context,
-                            WorkingMemoryImpl workingMemory) {
-        propagateModifyObject( (FactHandleImpl) tuple.get( this.column ),
+    public void modifyTuple(final ReteTuple tuple,
+                            final PropagationContext context,
+                            final ReteooWorkingMemory workingMemory) {
+        propagateModifyObject( (DefaultFactHandle) tuple.get( this.column ),
                                context,
                                workingMemory );
     }
@@ -98,7 +104,7 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleSource.addTupleSink( this );
     }
 
-    public void attach(WorkingMemoryImpl[] workingMemories) {
+    public void attach(final ReteooWorkingMemory[] workingMemories) {
         attach();
         // this node has no memory, no point requesting repropagation     
     }
@@ -106,8 +112,8 @@ public class RightInputAdapterNode extends ObjectSource
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
-    public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) {
+    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+                              final PropagationContext context) {
         // this node has no memory, so we need to get the parent node to repropagate. We simulate this be re-attaching
         this.attachingNewNode = true;
         // We need to detach and re-attach to make sure the node is at the top
@@ -119,8 +125,8 @@ public class RightInputAdapterNode extends ObjectSource
         this.attachingNewNode = false;
     }
 
-    public void remove(BaseNode node,
-                       WorkingMemoryImpl[] workingMemories) {
+    public void remove(final BaseNode node,
+                       final ReteooWorkingMemory[] workingMemories) {
         getObjectSinks().remove( (ObjectSink) node );
         removeShare();
         if ( this.sharedCount < 0 ) {

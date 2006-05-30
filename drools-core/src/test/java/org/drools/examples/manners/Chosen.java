@@ -21,15 +21,20 @@ public final class Chosen
     implements
     Serializable {
 
-    private final int    id;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -169447202790860427L;
 
-    private final String guestName;
+    private final int         id;
 
-    private final Hobby  hobby;
+    private final String      guestName;
 
-    public Chosen(int id,
-                  String guestName,
-                  Hobby hobby) {
+    private final Hobby       hobby;
+
+    public Chosen(final int id,
+                  final String guestName,
+                  final Hobby hobby) {
         this.id = id;
         this.guestName = guestName;
         this.hobby = hobby;

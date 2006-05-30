@@ -1,4 +1,5 @@
 package org.drools.util.asm;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.util.asm;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 public abstract class TestAbstract {
 

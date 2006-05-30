@@ -38,21 +38,21 @@ public class DefaultKnowledgeHelper
     private final Tuple                        tuple;
     private final InternalWorkingMemoryActions workingMemory;
 
-    public DefaultKnowledgeHelper(Activation agendaItem,
-                                  WorkingMemory workingMemory) {
+    public DefaultKnowledgeHelper(final Activation agendaItem,
+                                  final WorkingMemory workingMemory) {
         this.rule = agendaItem.getRule();
         this.activation = agendaItem;
         this.tuple = agendaItem.getTuple();
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
     }
 
-    public void assertObject(Object object) throws FactException {
+    public void assertObject(final Object object) throws FactException {
         assertObject( object,
                       false );
     }
 
-    public void assertObject(Object object,
-                             boolean dynamic) throws FactException {
+    public void assertObject(final Object object,
+                             final boolean dynamic) throws FactException {
         this.workingMemory.assertObject( object,
                                          dynamic,
                                          false,
@@ -60,13 +60,13 @@ public class DefaultKnowledgeHelper
                                          this.activation );
     }
 
-    public void assertLogicalObject(Object object) throws FactException {
+    public void assertLogicalObject(final Object object) throws FactException {
         assertLogicalObject( object,
                              false );
     }
 
-    public void assertLogicalObject(Object object,
-                                    boolean dynamic) throws FactException {
+    public void assertLogicalObject(final Object object,
+                                    final boolean dynamic) throws FactException {
         this.workingMemory.assertObject( object,
                                          dynamic,
                                          true,
@@ -74,15 +74,15 @@ public class DefaultKnowledgeHelper
                                          this.activation );
     }
 
-    public void modifyObject(FactHandle handle,
-                             Object newObject) throws FactException {
+    public void modifyObject(final FactHandle handle,
+                             final Object newObject) throws FactException {
         this.workingMemory.modifyObject( handle,
                                          newObject,
                                          this.rule,
                                          this.activation );
     }
 
-    public void retractObject(FactHandle handle) throws FactException {
+    public void retractObject(final FactHandle handle) throws FactException {
         this.workingMemory.retractObject( handle,
                                           true,
                                           true,
@@ -98,20 +98,20 @@ public class DefaultKnowledgeHelper
         return this.workingMemory.getObjects();
     }
 
-    public List getObjects(Class objectClass) {
+    public List getObjects(final Class objectClass) {
         return this.workingMemory.getObjects( objectClass );
     }
 
     public void clearAgenda() {
         this.workingMemory.clearAgenda();
     }
-    
-    public  void clearAgendaGroup(String group)  {
+
+    public void clearAgendaGroup(final String group) {
         this.workingMemory.clearAgendaGroup( group );
     }
 
-    public Object get(Declaration declaration) {
-        return declaration.getValue(  this.tuple.get( declaration ).getObject() );
+    public Object get(final Declaration declaration) {
+        return declaration.getValue( this.tuple.get( declaration ).getObject() );
     }
 
     public Tuple getTuple() {
@@ -126,7 +126,7 @@ public class DefaultKnowledgeHelper
         return this.activation;
     }
 
-    public QueryResults getQueryResults(String query) {
+    public QueryResults getQueryResults(final String query) {
         return this.workingMemory.getQueryResults( query );
     }
 
@@ -134,11 +134,11 @@ public class DefaultKnowledgeHelper
         return this.workingMemory.getFocus();
     }
 
-    public void setFocus(String focus) {
+    public void setFocus(final String focus) {
         this.workingMemory.setFocus( focus );
     }
 
-    public void setFocus(AgendaGroup focus) {
+    public void setFocus(final AgendaGroup focus) {
         this.workingMemory.setFocus( focus );
     }
 }

@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.base;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldExtractor;
@@ -37,14 +34,14 @@ abstract public class BaseClassFieldExtractor
 
     private final Class           fieldType;
 
-    public BaseClassFieldExtractor(Class clazz,
-                                   String fieldName) {
+    public BaseClassFieldExtractor(final Class clazz,
+                                   final String fieldName) {
         try {
-            ClassFieldInspector inspector = new ClassFieldInspector( clazz );
+            final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
             this.index = ((Integer) inspector.getFieldNames().get( fieldName )).intValue();
             this.fieldType = (Class) inspector.getFieldTypes().get( fieldName );
             this.objectType = ClassFieldExtractorFactory.getClassObjectType( this.fieldType );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
     }
@@ -64,14 +61,14 @@ abstract public class BaseClassFieldExtractor
         return this.objectType;
     }
 
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
         if ( this == other ) {
             return true;
         }
         if ( !(other instanceof BaseClassFieldExtractor) ) {
             return false;
         }
-        BaseClassFieldExtractor extr = (BaseClassFieldExtractor) other;
+        final BaseClassFieldExtractor extr = (BaseClassFieldExtractor) other;
         return this.objectType.equals( extr.objectType ) && this.index == extr.index;
     }
 

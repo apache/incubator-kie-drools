@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,12 +16,8 @@ package org.drools.base;
  * limitations under the License.
  */
 
-
-
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
-
-
 
 /**
  * Filters activations based on a specified rule name suffix.
@@ -34,18 +31,18 @@ public class RuleNameEndsWithAgendaFilter
 
     private final boolean accept;
 
-    public RuleNameEndsWithAgendaFilter(String suffix) {
+    public RuleNameEndsWithAgendaFilter(final String suffix) {
         this( suffix,
               true );
     }
 
-    public RuleNameEndsWithAgendaFilter(String suffix,
-                                        boolean accept) {
+    public RuleNameEndsWithAgendaFilter(final String suffix,
+                                        final boolean accept) {
         this.suffix = suffix;
         this.accept = accept;
     }
 
-    public boolean accept(Activation activation) {
+    public boolean accept(final Activation activation) {
         if ( activation.getRule().getName().endsWith( this.suffix ) ) {
             return this.accept;
         } else {

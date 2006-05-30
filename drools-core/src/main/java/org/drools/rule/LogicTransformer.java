@@ -78,9 +78,9 @@ class LogicTransformer {
                                new AndOrTransformation() );
     }
 
-    private void addTransformationPair(Class parent,
-                                       Class child) {
-        Map map = this.duplicateTransformations;
+    private void addTransformationPair(final Class parent,
+                                       final Class child) {
+        final Map map = this.duplicateTransformations;
         Set childSet = (Set) map.get( child );
         if ( childSet == null ) {
             childSet = new HashSet();
@@ -90,10 +90,10 @@ class LogicTransformer {
         childSet.add( child );
     }
 
-    private void addTransformationPair(Class parent,
-                                       Class child,
-                                       Object method) {
-        Map map = this.orTransformations;
+    private void addTransformationPair(final Class parent,
+                                       final Class child,
+                                       final Object method) {
+        final Map map = this.orTransformations;
         Map childMap = (Map) map.get( parent );
         if ( childMap == null ) {
             childMap = new HashMap();
@@ -104,8 +104,8 @@ class LogicTransformer {
                       method );
     }
 
-    And[] transform(And and) throws InvalidPatternException {
-        And cloned = (And) and.clone();
+    And[] transform(final And and) throws InvalidPatternException {
+        final And cloned = (And) and.clone();
 
         processTree( cloned );
 
@@ -113,8 +113,8 @@ class LogicTransformer {
         // AndOrTransformation
         // And assign the result to the null declared or
         Or or = null;
-        for ( Iterator it = cloned.getChildren().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        for ( final Iterator it = cloned.getChildren().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             if ( object instanceof Or ) {
                 or = (Or) applyOrTransformation( cloned,
                                                  (GroupElement) object );
@@ -130,18 +130,18 @@ class LogicTransformer {
         } else {
             ands = new And[or.getChildren().size()];
             int i = 0;
-            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
-                Object object = it.next();
+            for ( final Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+                final Object object = it.next();
                 if ( object.getClass() == And.class ) {
-                    ands[i] = (And) object;    
+                    ands[i] = (And) object;
                 } else {
-                    And newAnd = new And();
+                    final And newAnd = new And();
                     newAnd.addChild( and );
-                    ands[i] = newAnd; 
+                    ands[i] = newAnd;
                 }
-                
+
                 checkForAndRemoveDuplicates( ands[i] );
-                
+
                 i++;
             }
 
@@ -162,12 +162,12 @@ class LogicTransformer {
      * 
      * @param ce
      */
-    void processTree(GroupElement ce) throws InvalidPatternException {
+    void processTree(final GroupElement ce) throws InvalidPatternException {
 
-        for ( ListIterator it = ce.getChildren().listIterator(); it.hasNext(); ) {
-            Object object = it.next();
+        for ( final ListIterator it = ce.getChildren().listIterator(); it.hasNext(); ) {
+            final Object object = it.next();
             if ( object instanceof GroupElement ) {
-                GroupElement parent = (GroupElement) object;
+                final GroupElement parent = (GroupElement) object;
 
                 processTree( parent );
 
@@ -175,12 +175,12 @@ class LogicTransformer {
 
                 // Scan for any Child Ors, if found we need to move the Or
                 // upwards
-                for ( Iterator orIter = parent.getChildren().iterator(); orIter.hasNext(); ) {
-                    Object object2 = orIter.next();
+                for ( final Iterator orIter = parent.getChildren().iterator(); orIter.hasNext(); ) {
+                    final Object object2 = orIter.next();
                     if ( object2 instanceof Or ) {
                         it.remove();
                         it.add( applyOrTransformation( parent,
-                                                       (GroupElement) object2 ) );                        
+                                                       (GroupElement) object2 ) );
                         break;
                     }
                 }
@@ -197,8 +197,8 @@ class LogicTransformer {
      * @param child
      * @return
      */
-    boolean removeDuplicate(GroupElement parent,
-                            GroupElement child) {
+    boolean removeDuplicate(final GroupElement parent,
+                            final GroupElement child) {
         if ( this.duplicateTransformations.get( parent.getClass() ) != null ) {
             return ((HashSet) this.duplicateTransformations.get( parent.getClass() )).contains( child.getClass() );
         }
@@ -211,30 +211,30 @@ class LogicTransformer {
      * duplicate child is removed by the parent method.
      * 
      */
-    void checkForAndRemoveDuplicates(GroupElement parent) {
-        for ( ListIterator it = parent.getChildren().listIterator(); it.hasNext(); ) {
-            Object object = it.next();
+    void checkForAndRemoveDuplicates(final GroupElement parent) {
+        for ( final ListIterator it = parent.getChildren().listIterator(); it.hasNext(); ) {
+            final Object object = it.next();
             // Remove the duplicate if the classes are the same and
             // removeDuplicate method returns true
             if ( parent.getClass().isInstance( object ) && removeDuplicate( parent,
-                                                                           (GroupElement) object ) ) {
-                List newList = new ArrayList(); 
-                GroupElement child = (GroupElement) object;
-                for ( Iterator childIter = child.getChildren().iterator(); childIter.hasNext(); ) {
-                     newList.add( childIter.next() );
+                                                                            (GroupElement) object ) ) {
+                final List newList = new ArrayList();
+                final GroupElement child = (GroupElement) object;
+                for ( final Iterator childIter = child.getChildren().iterator(); childIter.hasNext(); ) {
+                    newList.add( childIter.next() );
                 }
                 it.remove();
-                for ( Iterator childIter = newList.iterator(); childIter.hasNext(); ) {
-                    it.add( childIter.next() );   
+                for ( final Iterator childIter = newList.iterator(); childIter.hasNext(); ) {
+                    it.add( childIter.next() );
                 }
             }
-        }                
+        }
     }
 
-    GroupElement applyOrTransformation(GroupElement parent,
-                                       GroupElement child) throws InvalidPatternException {
+    GroupElement applyOrTransformation(final GroupElement parent,
+                                       final GroupElement child) throws InvalidPatternException {
         Transformation transformation = null;
-        Map map = (HashMap) this.orTransformations.get( parent.getClass() );
+        final Map map = (HashMap) this.orTransformations.get( parent.getClass() );
         if ( map != null ) {
             transformation = (Transformation) map.get( child.getClass() );
         }
@@ -281,8 +281,8 @@ class LogicTransformer {
         implements
         Transformation {
 
-        public GroupElement transform(GroupElement and) throws InvalidPatternException {
-            Or or = new Or();
+        public GroupElement transform(final GroupElement and) throws InvalidPatternException {
+            final Or or = new Or();
             determinePermutations( 0,
                                    (And) and,
                                    null,
@@ -299,18 +299,18 @@ class LogicTransformer {
          * @param combination
          * @param or
          */
-        private void determinePermutations(int currentLevel,
-                                           And and,
+        private void determinePermutations(final int currentLevel,
+                                           final And and,
                                            And combination,
-                                           Or or) {
-            Object entry = and.getChildren().get( currentLevel );
+                                           final Or or) {
+            final Object entry = and.getChildren().get( currentLevel );
             if ( entry instanceof Or ) {
                 // Only OR nodes need to be iterated over
-                Or childOr = (Or) entry;
-                for ( Iterator it = childOr.getChildren().iterator(); it.hasNext(); ) {
+                final Or childOr = (Or) entry;
+                for ( final Iterator it = childOr.getChildren().iterator(); it.hasNext(); ) {
                     // Make a temp copy of combinations+new entry which will be
                     // sent forward
-                    And temp = new And();
+                    final And temp = new And();
                     if ( currentLevel == 0 ) {
                         // Always start with a clean combination
                         combination = new And();
@@ -319,11 +319,11 @@ class LogicTransformer {
                     }
 
                     // now check for and remove duplicates
-                    Object object = it.next();
+                    final Object object = it.next();
                     if ( object instanceof And ) {
                         // Can't have duplicate Ands so move up the children
-                        And childAnd = (And) object;
-                        for ( Iterator childIter = childAnd.getChildren().iterator(); childIter.hasNext(); ) {
+                        final And childAnd = (And) object;
+                        for ( final Iterator childIter = childAnd.getChildren().iterator(); childIter.hasNext(); ) {
                             temp.addChild( childIter.next() );
                         }
                     } else {
@@ -347,7 +347,7 @@ class LogicTransformer {
             } else {
                 // Make a temp copy of combinations+new entry which will be sent
                 // forward
-                And temp = new And();
+                final And temp = new And();
                 if ( currentLevel == 0 ) {
                     // Always start with a clean combination
                     combination = new And();
@@ -397,24 +397,24 @@ class LogicTransformer {
         implements
         Transformation {
 
-        public GroupElement transform(GroupElement exist) throws InvalidPatternException {
+        public GroupElement transform(final GroupElement exist) throws InvalidPatternException {
             throw new InvalidPatternException( "You cannot nest an OR within an Exists" );
-//            if ( !(exist.getChildren().get( 0 ) instanceof Or) ) {
-//                throw new RuntimeException( "ExistOrTransformation expected '" + Or.class.getName() + "' but instead found '" + exist.getChildren().get( 0 ).getClass().getName() + "'" );
-//            }
-//
-//            /*
-//             * we know a Not only ever has one child, and the previous algorithm
-//             * has confirmed the child is an OR
-//             */
-//            Or or = (Or) exist.getChildren().get( 0 );
-//            And and = new And();
-//            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
-//                Exists newExist = new Exists();
-//                newExist.addChild( it.next() );
-//                and.addChild( newExist );
-//            }
-//            return and;
+            //            if ( !(exist.getChildren().get( 0 ) instanceof Or) ) {
+            //                throw new RuntimeException( "ExistOrTransformation expected '" + Or.class.getName() + "' but instead found '" + exist.getChildren().get( 0 ).getClass().getName() + "'" );
+            //            }
+            //
+            //            /*
+            //             * we know a Not only ever has one child, and the previous algorithm
+            //             * has confirmed the child is an OR
+            //             */
+            //            Or or = (Or) exist.getChildren().get( 0 );
+            //            And and = new And();
+            //            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+            //                Exists newExist = new Exists();
+            //                newExist.addChild( it.next() );
+            //                and.addChild( newExist );
+            //            }
+            //            return and;
         }
     }
 
@@ -443,60 +443,60 @@ class LogicTransformer {
         implements
         Transformation {
 
-        public GroupElement transform(GroupElement not) throws InvalidPatternException {
+        public GroupElement transform(final GroupElement not) throws InvalidPatternException {
 
             throw new InvalidPatternException( "You cannot nest an OR within an Not" );
             // @todo for 3.1
-//            if ( !(not.getChildren().get( 0 ) instanceof Or) ) {
-//                throw new RuntimeException( "NotOrTransformation expected '" + Or.class.getName() + "' but instead found '" + not.getChildren().get( 0 ).getClass().getName() + "'" );
-//            }
-//
-//            /*
-//             * we know a Not only ever has one child, and the previous algorithm
-//             * has confirmed the child is an OR
-//             */
-//            Or or = (Or) not.getChildren().get( 0 );
-//            And and = new And();
-//            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
-//                Not newNot = new Not();
-//                newNot.addChild( it.next() );
-//                and.addChild( newNot );
-//            }
-//            return and;
+            //            if ( !(not.getChildren().get( 0 ) instanceof Or) ) {
+            //                throw new RuntimeException( "NotOrTransformation expected '" + Or.class.getName() + "' but instead found '" + not.getChildren().get( 0 ).getClass().getName() + "'" );
+            //            }
+            //
+            //            /*
+            //             * we know a Not only ever has one child, and the previous algorithm
+            //             * has confirmed the child is an OR
+            //             */
+            //            Or or = (Or) not.getChildren().get( 0 );
+            //            And and = new And();
+            //            for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+            //                Not newNot = new Not();
+            //                newNot.addChild( it.next() );
+            //                and.addChild( newNot );
+            //            }
+            //            return and;
         }
     }
 
     //@todo for 3.1
-//    public class NotAndTransformation
-//        implements
-//        Transformation {
-//
-//        public GroupElement transform(GroupElement not) throws InvalidPatternException {
-//            if ( !(not.getChildren().get( 0 ) instanceof And) ) {
-//                throw new RuntimeException( "NotAndTransformation expected '" + And.class.getName() + "' but instead found '" + not.getChildren().get( 0 ).getClass().getName() + "'" );
-//            }
-//
-//            /*
-//             * we know a Not only ever has one child, and the previous algorithm
-//             * has confirmed the child is an And
-//             */
-//            And and = (And) not.getChildren().get( 0 );
-//            for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
-//                Object object1 = it.next();
-//
-//                for ( Iterator it2 = and.getChildren().iterator(); it.hasNext(); ) {
-//                    Object object2 = it.next();
-//                    if ( object2 != object1 ) {
-//
-//                    }
-//                }
-//
-//                Not newNot = new Not();
-//                newNot.addChild( it.next() );
-//                and.addChild( newNot );
-//            }
-//
-//            return and;
-//        }
-//    }
+    //    public class NotAndTransformation
+    //        implements
+    //        Transformation {
+    //
+    //        public GroupElement transform(GroupElement not) throws InvalidPatternException {
+    //            if ( !(not.getChildren().get( 0 ) instanceof And) ) {
+    //                throw new RuntimeException( "NotAndTransformation expected '" + And.class.getName() + "' but instead found '" + not.getChildren().get( 0 ).getClass().getName() + "'" );
+    //            }
+    //
+    //            /*
+    //             * we know a Not only ever has one child, and the previous algorithm
+    //             * has confirmed the child is an And
+    //             */
+    //            And and = (And) not.getChildren().get( 0 );
+    //            for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
+    //                Object object1 = it.next();
+    //
+    //                for ( Iterator it2 = and.getChildren().iterator(); it.hasNext(); ) {
+    //                    Object object2 = it.next();
+    //                    if ( object2 != object1 ) {
+    //
+    //                    }
+    //                }
+    //
+    //                Not newNot = new Not();
+    //                newNot.addChild( it.next() );
+    //                and.addChild( newNot );
+    //            }
+    //
+    //            return and;
+    //        }
+    //    }
 }

@@ -39,29 +39,29 @@ class Handler {
     /**
      * Beginning of the exception handler's scope (inclusive).
      */
-    Label start;
+    Label   start;
 
     /**
      * End of the exception handler's scope (exclusive).
      */
-    Label end;
+    Label   end;
 
     /**
      * Beginning of the exception handler's code.
      */
-    Label handler;
+    Label   handler;
 
     /**
      * Internal name of the type of exceptions handled by this handler, or
      * <tt>null</tt> to catch any exceptions.
      */
-    String desc;
+    String  desc;
 
     /**
      * Constant pool index of the internal name of the type of exceptions
      * handled by this handler, or 0 to catch any exceptions.
      */
-    int type;
+    int     type;
 
     /**
      * Next exception handler block info.

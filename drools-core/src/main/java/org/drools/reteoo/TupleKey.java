@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.io.Serializable;
 
 import org.drools.FactHandle;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.spi.Tuple;
 
@@ -32,7 +33,12 @@ import org.drools.spi.Tuple;
 class TupleKey
     implements
     Serializable {
-    public static final TupleKey EMPTY_KEY = new TupleKey();
+    /**
+     * 
+     */
+    private static final long    serialVersionUID = -880184112928387666L;
+
+    public static final TupleKey EMPTY_KEY        = new TupleKey();
 
     // ------------------------------------------------------------
     // Instance members
@@ -45,7 +51,7 @@ class TupleKey
      * The recency of this tuple is given by the 
      * highest recency of all added fact handles
      */
-    private long                 recency   = 0;
+    private long                 recency          = 0;
 
     // ------------------------------------------------------------
     // Constructors
@@ -55,18 +61,18 @@ class TupleKey
         this.handles = FactHandleList.EMPTY_LIST;// FactHandleList.EMPTY_LIST;
     }
 
-    public TupleKey(TupleKey key) {
+    public TupleKey(final TupleKey key) {
         this.handles = key.handles;
         this.recency = key.recency;
     }
 
-    public TupleKey(FactHandleImpl handle) {
+    public TupleKey(final DefaultFactHandle handle) {
         this.handles = new FactHandleList( handle );
         this.recency = handle.getRecency();
     }
 
-    public TupleKey(TupleKey left,
-                    FactHandleImpl handle) {
+    public TupleKey(final TupleKey left,
+                    final DefaultFactHandle handle) {
         this.handles = new FactHandleList( left.handles,
                                            handle );
         this.recency = left.recency + handle.getRecency();
@@ -88,7 +94,7 @@ class TupleKey
      * 
      * @return The fact handle.
      */
-    public InternalFactHandle get(int index) {
+    public InternalFactHandle get(final int index) {
         return this.handles.get( index );
     }
 
@@ -101,7 +107,7 @@ class TupleKey
      * @return <code>true</code> if this key contains the specified root
      *         fact-handle, otherwise <code>false</code>.
      */
-    public boolean containsFactHandle(FactHandle handle) {
+    public boolean containsFactHandle(final FactHandle handle) {
         return this.handles.contains( handle );
     }
 
@@ -113,7 +119,7 @@ class TupleKey
      * 
      * @return <code>true</code> if the specified key is a subset of this key.
      */
-    public boolean containsAll(TupleKey that) {
+    public boolean containsAll(final TupleKey that) {
         return this.handles.containsAll( that.handles );
     }
 
@@ -134,7 +140,7 @@ class TupleKey
     /**
      * @see Object
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }

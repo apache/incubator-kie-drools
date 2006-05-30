@@ -20,9 +20,13 @@ import java.io.Serializable;
 public final class LastSeat
     implements
     Serializable {
-    private final int seat;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3331801742327121724L;
+    private final int         seat;
 
-    public LastSeat(int seat) {
+    public LastSeat(final int seat) {
         this.seat = seat;
     }
 

@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
@@ -50,6 +51,11 @@ class EvalConditionNode extends TupleSource
     // Instance members
     // ------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long   serialVersionUID = 1986131208174298080L;
+
     /** The semantic <code>Test</code>. */
     private final EvalCondition condition;
 
@@ -69,9 +75,9 @@ class EvalConditionNode extends TupleSource
      *            The source of incoming <code>Tuples</code>.
      * @param eval
      */
-    EvalConditionNode(int id,
-                      TupleSource tupleSource,
-                      EvalCondition eval) {
+    EvalConditionNode(final int id,
+                      final TupleSource tupleSource,
+                      final EvalCondition eval) {
         super( id );
         this.condition = eval;
         this.tupleSource = tupleSource;
@@ -85,15 +91,15 @@ class EvalConditionNode extends TupleSource
         this.tupleSource.addTupleSink( this );
     }
 
-    public void attach(WorkingMemoryImpl[] workingMemories) {
+    public void attach(final ReteooWorkingMemory[] workingMemories) {
         attach();
 
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            WorkingMemoryImpl workingMemory = workingMemories[i];
-            PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                PropagationContext.RULE_ADDITION,
-                                                                                null,
-                                                                                null );
+            final ReteooWorkingMemory workingMemory = workingMemories[i];
+            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.RULE_ADDITION,
+                                                                                      null,
+                                                                                      null );
             this.tupleSource.updateNewNode( workingMemory,
                                             propagationContext );
         }
@@ -126,15 +132,15 @@ class EvalConditionNode extends TupleSource
      * @throws AssertionException
      *             If an error occurs while asserting.
      */
-    public void assertTuple(ReteTuple tuple,
-                            PropagationContext context,
-                            WorkingMemoryImpl workingMemory) {
+    public void assertTuple(final ReteTuple tuple,
+                            final PropagationContext context,
+                            final ReteooWorkingMemory workingMemory) {
 
-        boolean allowed = this.condition.isAllowed( tuple,
-                                                    workingMemory );
+        final boolean allowed = this.condition.isAllowed( tuple,
+                                                          workingMemory );
 
         if ( allowed ) {
-            LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+            final LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
             memory.add( tuple );
 
             propagateAssertTuple( tuple,
@@ -143,13 +149,13 @@ class EvalConditionNode extends TupleSource
         }
     }
 
-    public void retractTuple(ReteTuple tuple,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
-        LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+    public void retractTuple(final ReteTuple tuple,
+                             final PropagationContext context,
+                             final ReteooWorkingMemory workingMemory) {
+        final LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
 
         // checks if the tuple is attach to tuple
-        if (tuple.getLinkedTuples() != null && !tuple.getLinkedTuples().isEmpty()) {
+        if ( tuple.getLinkedTuples() != null && !tuple.getLinkedTuples().isEmpty() ) {
             memory.remove( tuple );
 
             propagateRetractTuple( tuple,
@@ -158,19 +164,19 @@ class EvalConditionNode extends TupleSource
         }
     }
 
-    public void modifyTuple(ReteTuple tuple,
-                            PropagationContext context,
-                            WorkingMemoryImpl workingMemory) {
-        LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+    public void modifyTuple(final ReteTuple tuple,
+                            final PropagationContext context,
+                            final ReteooWorkingMemory workingMemory) {
+        final LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
         boolean exists = (tuple.getLinkedTuples() != null && !tuple.getLinkedTuples().isEmpty());
-        
+
         if ( exists ) {
             // Remove the tuple so it can be readded to the top of the list
             memory.remove( tuple );
         }
 
-        boolean allowed = this.condition.isAllowed( tuple,
-                                                    workingMemory );
+        final boolean allowed = this.condition.isAllowed( tuple,
+                                                          workingMemory );
 
         if ( allowed ) {
             memory.add( tuple );
@@ -190,20 +196,20 @@ class EvalConditionNode extends TupleSource
         }
     }
 
-    public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) {
+    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+                              final PropagationContext context) {
         this.attachingNewNode = true;
 
-        LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+        final LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
 
-        for ( Iterator it = memory.iterator(); it.hasNext(); ) {
-            ReteTuple tuple = (ReteTuple) it.next();
-            ReteTuple child = new ReteTuple( tuple );
+        for ( final Iterator it = memory.iterator(); it.hasNext(); ) {
+            final ReteTuple tuple = (ReteTuple) it.next();
+            final ReteTuple child = new ReteTuple( tuple );
             // no TupleMatch so instead add as a linked tuple
             tuple.addLinkedTuple( new LinkedListObjectWrapper( child ) );
             ((TupleSink) getTupleSinks().get( getTupleSinks().size() - 1 )).assertTuple( child,
-                                                                context,
-                                                                workingMemory );
+                                                                                         context,
+                                                                                         workingMemory );
         }
 
         this.attachingNewNode = false;
@@ -222,7 +228,7 @@ class EvalConditionNode extends TupleSource
         return this.tupleSource.hashCode() ^ this.condition.hashCode();
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -231,13 +237,13 @@ class EvalConditionNode extends TupleSource
             return false;
         }
 
-        EvalConditionNode other = (EvalConditionNode) object;
+        final EvalConditionNode other = (EvalConditionNode) object;
 
         return this.tupleSource.equals( other.tupleSource ) && this.condition.equals( other.condition );
     }
 
-    public void remove(BaseNode node,
-                       WorkingMemoryImpl[] workingMemories) {
+    public void remove(final BaseNode node,
+                       final ReteooWorkingMemory[] workingMemories) {
         getTupleSinks().remove( node );
         removeShare();
         if ( this.sharedCount < 0 ) {
@@ -249,29 +255,30 @@ class EvalConditionNode extends TupleSource
         }
     }
 
-    public Object createMemory( RuleBaseConfiguration config ) {
+    public Object createMemory(final RuleBaseConfiguration config) {
         return new LinkedList();
     }
-    
+
     /**
      * @inheritDoc
      */
-    public List getPropagatedTuples(WorkingMemoryImpl workingMemory, TupleSink sink) {
-        LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
-        int index = this.getTupleSinks().indexOf( sink );
-        List propagatedTuples = new ArrayList();
+    public List getPropagatedTuples(final ReteooWorkingMemory workingMemory,
+                                    final TupleSink sink) {
+        final LinkedList memory = (LinkedList) workingMemory.getNodeMemory( this );
+        final int index = this.getTupleSinks().indexOf( sink );
+        final List propagatedTuples = new ArrayList();
 
-        for ( Iterator it = memory.iterator(); it.hasNext(); ) {
-            ReteTuple leftTuple = (ReteTuple) it.next();
-            LinkedList linkedTuples = leftTuple.getLinkedTuples();
-            
+        for ( final Iterator it = memory.iterator(); it.hasNext(); ) {
+            final ReteTuple leftTuple = (ReteTuple) it.next();
+            final LinkedList linkedTuples = leftTuple.getLinkedTuples();
+
             LinkedListObjectWrapper wrapper = (LinkedListObjectWrapper) linkedTuples.getFirst();
-            for( int i = 0; i < index; i++) {
+            for ( int i = 0; i < index; i++ ) {
                 wrapper = (LinkedListObjectWrapper) wrapper.getNext();
             }
             propagatedTuples.add( wrapper.getObject() );
         }
         return propagatedTuples;
-    }   
-    
+    }
+
 }

@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import java.beans.IntrospectionException;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +25,7 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.EvaluatorFactory;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
@@ -38,11 +38,11 @@ import org.drools.spi.PropagationContext;
 public class AlphaNodeTest extends DroolsTestCase {
 
     public void testAttach() throws Exception {
-        MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( 15 );
 
-        AlphaNode alphaNode = new AlphaNode( 2,
-                                             null,
-                                             source );
+        final AlphaNode alphaNode = new AlphaNode( 2,
+                                                   null,
+                                                   source );
         assertEquals( 2,
                       alphaNode.getId() );
         assertLength( 0,
@@ -55,58 +55,56 @@ public class AlphaNodeTest extends DroolsTestCase {
     }
 
     public void testMemory() {
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
 
-        AlphaNode alphaNode = new AlphaNode( 2,
-                                             null,
-                                             null );
+        final AlphaNode alphaNode = new AlphaNode( 2,
+                                                   null,
+                                                   null );
 
-        Set memory = (HashSet) workingMemory.getNodeMemory( alphaNode );
+        final Set memory = (HashSet) workingMemory.getNodeMemory( alphaNode );
 
         assertNotNull( memory );
     }
 
     public void testLiteralConstraintAssertObjectWithMemory() throws Exception {
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
-        Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 null,
-                                                                 null );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final Rule rule = new Rule( "test-rule" );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
 
-        MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( 15 );
 
-        ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                                 "type" );
+        final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                       "type" );
 
-        FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = new MockField( "cheddar" );
 
-        Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                           Evaluator.EQUAL );
-        LiteralConstraint constraint = new LiteralConstraint( field,
-                                                              extractor,
-                                                              evaluator );
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                   Evaluator.EQUAL );
+        final LiteralConstraint constraint = new LiteralConstraint( field,
+                                                                    extractor,
+                                                                    evaluator );
 
         // With Memory
-        AlphaNode alphaNode = new AlphaNode( 2,
-                                             constraint,
-                                             source );
+        final AlphaNode alphaNode = new AlphaNode( 2,
+                                                   constraint,
+                                                   source );
 
-        MockObjectSink sink = new MockObjectSink();
+        final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
 
-        FactHandleImpl f0 = new FactHandleImpl( 0 );
-        Cheese cheddar = new Cheese( "cheddar",
-                                     5 );
-        workingMemory.putObject( f0,
-                                 cheddar );
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           5 );
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( cheddar );
 
         // check sink is empty
         assertLength( 0,
                       sink.getAsserted() );
 
         // check alpha memory is empty 
-        Set memory = (Set) workingMemory.getNodeMemory( alphaNode );
+        final Set memory = (Set) workingMemory.getNodeMemory( alphaNode );
         assertLength( 0,
                       memory );
 
@@ -121,15 +119,14 @@ public class AlphaNodeTest extends DroolsTestCase {
                       memory );
         Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    workingMemory.getObject( (FactHandleImpl) list[0] ) );
+                    workingMemory.getObject( (DefaultFactHandle) list[0] ) );
         assertTrue( "Should contain 'cheddar handle'",
                     memory.contains( f0 ) );
 
-        FactHandleImpl f1 = new FactHandleImpl( 1 );
-        Cheese stilton = new Cheese( "stilton",
-                                     6 );
-        workingMemory.putObject( f1,
-                                 stilton );
+        final Cheese stilton = new Cheese( "stilton",
+                                           6 );
+        final DefaultFactHandle f1 = new DefaultFactHandle( 1,
+                                                            stilton );
 
         // object should NOT assert as it does not pass test
         alphaNode.assertObject( f1,
@@ -142,7 +139,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       memory );
         list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    workingMemory.getObject( (FactHandleImpl) list[0] ) );
+                    workingMemory.getObject( (DefaultFactHandle) list[0] ) );
         assertTrue( "Should contain 'cheddar handle'",
                     memory.contains( f0 ) );
 
@@ -154,38 +151,36 @@ public class AlphaNodeTest extends DroolsTestCase {
      * Constraint type.
      */
     public void testReturnValueConstraintAssertObject() throws Exception {
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
-        Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 null,
-                                                                 null );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final Rule rule = new Rule( "test-rule" );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
 
-        MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( 15 );
 
-        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            "type" );
+        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                  "type" );
 
-        FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = new MockField( "cheddar" );
 
-        Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                           Evaluator.EQUAL );
-        LiteralConstraint constraint = new LiteralConstraint( field,
-                                                              extractor,
-                                                              evaluator );
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                   Evaluator.EQUAL );
+        final LiteralConstraint constraint = new LiteralConstraint( field,
+                                                                    extractor,
+                                                                    evaluator );
 
-        AlphaNode alphaNode = new AlphaNode( 2,
-                                             constraint,
-                                             source );
-        MockObjectSink sink = new MockObjectSink();
+        final AlphaNode alphaNode = new AlphaNode( 2,
+                                                   constraint,
+                                                   source );
+        final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
 
-        Cheese cheddar = new Cheese( "cheddar",
-                                     5 );
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           5 );
 
-        FactHandleImpl f0 = new FactHandleImpl( 0 );
-        workingMemory.putObject( f0,
-                                 cheddar );
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.assertObject( cheddar );
 
         assertLength( 0,
                       sink.getAsserted() );
@@ -197,14 +192,13 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         assertLength( 1,
                       sink.getAsserted() );
-        Object[] list = (Object[]) sink.getAsserted().get( 0 );
+        final Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
-                    workingMemory.getObject( (FactHandleImpl) list[0] ) );
+                    workingMemory.getObject( (DefaultFactHandle) list[0] ) );
 
-        Cheese stilton = new Cheese( "stilton",
-                                     6 );
-        workingMemory.putObject( f0,
-                                 stilton );
+        final Cheese stilton = new Cheese( "stilton",
+                                           6 );
+        f0.setObject( stilton );
 
         sink.getAsserted().clear();
 
@@ -218,41 +212,40 @@ public class AlphaNodeTest extends DroolsTestCase {
     }
 
     public void testRetractObject() throws Exception {
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
-        Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 null,
-                                                                 null );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final Rule rule = new Rule( "test-rule" );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
 
-        MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( 15 );
 
-        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            "type" );
+        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                  "type" );
 
-        FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = new MockField( "cheddar" );
 
-        Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                           Evaluator.EQUAL );
-        LiteralConstraint constraint = new LiteralConstraint( field,
-                                                              extractor,
-                                                              evaluator );
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                   Evaluator.EQUAL );
+        final LiteralConstraint constraint = new LiteralConstraint( field,
+                                                                    extractor,
+                                                                    evaluator );
 
-        AlphaNode alphaNode = new AlphaNode( 2,
-                                             constraint,
-                                             source );
-        MockObjectSink sink = new MockObjectSink();
+        final AlphaNode alphaNode = new AlphaNode( 2,
+                                                   constraint,
+                                                   source );
+        final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
 
-        Cheese cheddar = new Cheese( "cheddar",
-                                     5 );
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           5 );
 
-        FactHandleImpl f0 = new FactHandleImpl( 0 );
-        workingMemory.putObject( f0,
-                                 cheddar );
+        final DefaultFactHandle f0 = new DefaultFactHandle( 0,
+                                                            cheddar );
 
         // check alpha memory is empty
-        Set memory = (Set) workingMemory.getNodeMemory( alphaNode );
+        final Set memory = (Set) workingMemory.getNodeMemory( alphaNode );
         assertLength( 0,
                       memory );
 
@@ -264,7 +257,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertLength( 1,
                       memory );
 
-        FactHandleImpl f1 = new FactHandleImpl( 1 );
+        final DefaultFactHandle f1 = new DefaultFactHandle( 1,
+                                                            "cheese" );
 
         // object should NOT retract as it doesn't exist
         alphaNode.retractObject( f1,
@@ -287,7 +281,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getRetracted() );
         assertLength( 0,
                       memory );
-        Object[] list = (Object[]) sink.getRetracted().get( 0 );
+        final Object[] list = (Object[]) sink.getRetracted().get( 0 );
         assertSame( f0,
                     list[0] );
 
@@ -299,43 +293,42 @@ public class AlphaNodeTest extends DroolsTestCase {
         // source
         // Also it should only update the latest tuple sinky
 
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
-        Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 null,
-                                                                 null );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final Rule rule = new Rule( "test-rule" );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
 
-        MockObjectSource source = new MockObjectSource( 1 );
+        final MockObjectSource source = new MockObjectSource( 1 );
 
-        FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
-                                                            "type" );
+        final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
+                                                                  "type" );
 
-        FieldValue field = new MockField( "cheddar" );
+        final FieldValue field = new MockField( "cheddar" );
 
-        Evaluator evaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                           Evaluator.EQUAL );
-        LiteralConstraint constraint = new LiteralConstraint( field,
-                                                              extractor,
-                                                              evaluator );
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
+                                                                   Evaluator.EQUAL );
+        final LiteralConstraint constraint = new LiteralConstraint( field,
+                                                                    extractor,
+                                                                    evaluator );
 
-        AlphaNode alphaNode = new AlphaNode( 2,
-                                             constraint,
-                                             source );
+        final AlphaNode alphaNode = new AlphaNode( 2,
+                                                   constraint,
+                                                   source );
 
         alphaNode.attach();
 
-        MockObjectSink sink1 = new MockObjectSink();
+        final MockObjectSink sink1 = new MockObjectSink();
         alphaNode.addObjectSink( sink1 );
 
         // Assert a single fact which should be in the AlphaNode memory and also
         // propagated to the
         // the tuple sink
-        Cheese cheese = new Cheese( "cheddar",
-                                    0 );
-        FactHandleImpl handle1 = new FactHandleImpl( 1 );
-        workingMemory.putObject( handle1,
-                                 cheese );
+        final Cheese cheese = new Cheese( "cheddar",
+                                          0 );
+        final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
+                                                                 cheese );
 
         source.propagateAssertObject( handle1,
                                       context,
@@ -345,7 +338,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink1.getAsserted() );
 
         // Attach a new tuple sink
-        MockObjectSink sink2 = new MockObjectSink();
+        final MockObjectSink sink2 = new MockObjectSink();
         alphaNode.addObjectSink( sink2 );
 
         // Tell the alphanode to update the new node. Make sure the first sink1

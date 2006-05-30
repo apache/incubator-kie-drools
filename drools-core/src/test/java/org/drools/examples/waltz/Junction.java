@@ -1,4 +1,5 @@
 package org.drools.examples.waltz;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.examples.waltz;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 /**
  * @author Alexander Bagerman
@@ -43,11 +40,11 @@ public class Junction {
 
     private String       type;
 
-    public Junction(int p1,
-                    int p2,
-                    int p3,
-                    int basePoint,
-                    String type) {
+    public Junction(final int p1,
+                    final int p2,
+                    final int p3,
+                    final int basePoint,
+                    final String type) {
         this.p1 = p1;
         this.p2 = p2;
         this.p3 = p3;
@@ -59,7 +56,7 @@ public class Junction {
         return this.p1;
     }
 
-    public void setP1(int p1) {
+    public void setP1(final int p1) {
         this.p1 = p1;
     }
 
@@ -67,7 +64,7 @@ public class Junction {
         return this.p2;
     }
 
-    public void setP2(int p2) {
+    public void setP2(final int p2) {
         this.p2 = p2;
     }
 
@@ -79,7 +76,7 @@ public class Junction {
         return this.basePoint;
     }
 
-    public void setBasePoint(int basePoint) {
+    public void setBasePoint(final int basePoint) {
         this.basePoint = basePoint;
     }
 
@@ -87,7 +84,7 @@ public class Junction {
         return this.p3;
     }
 
-    public void setP3(int p3) {
+    public void setP3(final int p3) {
         this.p3 = p3;
     }
 
@@ -95,7 +92,7 @@ public class Junction {
         return this.type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 }

@@ -42,46 +42,51 @@ import org.drools.spi.Duration;
 public class Rule
     implements
     Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID  = 7952983928232702826L;
+
     /**   */
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
     /** The parent pkg */
-    private String        pkg;
+    private String            pkg;
 
     /** Name of the rule. */
-    private final String  name;
+    private final String      name;
 
     /** Salience value. */
-    private int           salience;
+    private int               salience;
 
-    private final Map     declarations      = new HashMap();
+    private final Map         declarations      = new HashMap();
 
-    private Declaration[] declarationArray;
+    private Declaration[]     declarationArray;
 
-    private final And     lhsRoot           = new And();
+    private final And         lhsRoot           = new And();
 
-    private String        agendaGroup;
+    private String            agendaGroup;
 
     /** Consequence. */
-    private Consequence   consequence;
+    private Consequence       consequence;
 
     /** Truthness duration. */
-    private Duration      duration;
+    private Duration          duration;
 
     /** Load order in Package */
-    private long          loadOrder;
+    private long              loadOrder;
 
     /** Is recursion of this rule allowed */
-    private boolean       noLoop;
+    private boolean           noLoop;
 
     /** makes the rule's much the current focus */
-    private boolean       autoFocus;
-    
-    private String        ActivationGroup;
+    private boolean           autoFocus;
+
+    private String            ActivationGroup;
 
     /** indicates that the rule is semantically correct. */
-    private boolean       semanticallyValid = true;
+    private boolean           semanticallyValid = true;
 
     // ------------------------------------------------------------
     // Constructors
@@ -94,9 +99,9 @@ public class Rule
      * @param name
      *            The name of this rule.
      */
-    public Rule(String name,
-                String pkg,
-                String agendaGroup) {
+    public Rule(final String name,
+                final String pkg,
+                final String agendaGroup) {
         this.name = name;
         this.pkg = pkg;
         this.agendaGroup = agendaGroup;
@@ -109,14 +114,14 @@ public class Rule
      * @param name
      *            The name of this rule.
      */
-    public Rule(String name,
-                String agendaGroup) {
+    public Rule(final String name,
+                final String agendaGroup) {
         this.name = name;
         this.pkg = null;
         this.agendaGroup = agendaGroup;
     }
 
-    public Rule(String name) {
+    public Rule(final String name) {
         this.name = name;
         this.pkg = null;
         this.agendaGroup = AgendaGroup.MAIN;
@@ -139,7 +144,7 @@ public class Rule
      *            The number of seconds the rule must hold true in order to
      *            fire.
      */
-    public void setDuration(long ms) {
+    public void setDuration(final long ms) {
         this.duration = new FixedDuration( ms );
     }
 
@@ -151,7 +156,7 @@ public class Rule
      * @param duration
      *            The truth duration object.
      */
-    public void setDuration(Duration duration) {
+    public void setDuration(final Duration duration) {
         this.duration = duration;
     }
 
@@ -217,7 +222,7 @@ public class Rule
      *
      *  @param salience The salience.
      */
-    public void setSalience(int salience) {
+    public void setSalience(final int salience) {
         this.salience = salience;
     }
 
@@ -225,7 +230,7 @@ public class Rule
         return this.agendaGroup;
     }
 
-    public void setAgendaGroup(String agendaGroup) {
+    public void setAgendaGroup(final String agendaGroup) {
         this.agendaGroup = agendaGroup;
     }
 
@@ -233,7 +238,7 @@ public class Rule
         return this.noLoop;
     }
 
-    public void setNoLoop(boolean noLoop) {
+    public void setNoLoop(final boolean noLoop) {
         this.noLoop = noLoop;
     }
 
@@ -241,17 +246,17 @@ public class Rule
         return this.autoFocus;
     }
 
-    public void setAutoFocus(boolean autoFocus) {
+    public void setAutoFocus(final boolean autoFocus) {
         this.autoFocus = autoFocus;
-    }    
+    }
 
     public String getActivationGroup() {
         return this.ActivationGroup;
     }
 
-    public void setXorGroup(String activationGroup) {
+    public void setXorGroup(final String activationGroup) {
         this.ActivationGroup = activationGroup;
-    }    
+    }
 
     /**
      * Retrieve a parameter <code>Declaration</code> by identifier.
@@ -262,7 +267,7 @@ public class Rule
      * @return The declaration or <code>null</code> if no declaration matches
      *         the <code>identifier</code>.
      */
-    public Declaration getDeclaration(String identifier) {
+    public Declaration getDeclaration(final String identifier) {
         return (Declaration) this.declarations.get( identifier );
     }
 
@@ -288,40 +293,40 @@ public class Rule
      *            The <code>Test</code> to add.
      * @throws InvalidRuleException 
      */
-    public void addPattern(ConditionalElement ce) {
+    public void addPattern(final ConditionalElement ce) {
         if ( ce instanceof GroupElement ) {
             addDeclarations( (GroupElement) ce );
         }
         this.lhsRoot.addChild( ce );
     }
 
-    public void addPattern(Column column) {
+    public void addPattern(final Column column) {
         addDeclarations( column );
         this.lhsRoot.addChild( column );
     }
 
-    private void addDeclarations(Column column) {
+    private void addDeclarations(final Column column) {
         // Check if the column is bound and if so add it as a declaration
         if ( column.isBound() ) {
-            Declaration declaration = column.getDeclaration();
+            final Declaration declaration = column.getDeclaration();
             this.declarations.put( declaration.getIdentifier(),
                                    declaration );
         }
 
         // Check if there are any bound fields and if so add it as a declaration
-        for ( Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        for ( final Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             if ( object instanceof Declaration ) {
-                Declaration declaration = (Declaration) object;
+                final Declaration declaration = (Declaration) object;
                 this.declarations.put( declaration.getIdentifier(),
                                        declaration );
             }
         }
     }
 
-    private void addDeclarations(GroupElement ce) {
-        for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+    private void addDeclarations(final GroupElement ce) {
+        for ( final Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             if ( object instanceof Column ) {
                 addDeclarations( (Column) object );
             } else if ( object instanceof GroupElement ) {
@@ -358,10 +363,10 @@ public class Rule
         return getSpecifity( this.lhsRoot );
     }
 
-    private int getSpecifity(GroupElement ce) {
+    private int getSpecifity(final GroupElement ce) {
         int specificity = 0;
-        for ( Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        for ( final Iterator it = ce.getChildren().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             if ( object instanceof Column ) {
                 specificity += getSpecifity( (Column) object );
             } else if ( object instanceof GroupElement ) {
@@ -371,9 +376,9 @@ public class Rule
         return specificity;
     }
 
-    private int getSpecifity(Column column) {
+    private int getSpecifity(final Column column) {
         int specificity = 0;
-        for ( Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
+        for ( final Iterator it = column.getConstraints().iterator(); it.hasNext(); ) {
             if ( !(it.next() instanceof Declaration) ) {
                 specificity++;
             }
@@ -390,7 +395,7 @@ public class Rule
      *            The <code>Consequence</code> to attach to this
      *            <code>Rule</code>.
      */
-    public void setConsequence(Consequence consequence) {
+    public void setConsequence(final Consequence consequence) {
         this.consequence = consequence;
     }
 
@@ -408,7 +413,7 @@ public class Rule
         return this.loadOrder;
     }
 
-    void setLoadOrder(long loadOrder) {
+    void setLoadOrder(final long loadOrder) {
         this.loadOrder = loadOrder;
     }
 
@@ -416,7 +421,7 @@ public class Rule
         return "[Rule name=" + this.name + ", agendaGroup=" + this.agendaGroup + ", salience=" + this.salience + ", no-loop=" + this.noLoop + "]";
     }
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -425,16 +430,16 @@ public class Rule
             return false;
         }
 
-        Rule other = (Rule) object;
+        final Rule other = (Rule) object;
 
-        return (this.name.equals( other.name ) && this.agendaGroup.equals( other.agendaGroup ) && this.ActivationGroup.equals( other.ActivationGroup )&& this.salience == other.salience && this.noLoop == other.noLoop);
+        return (this.name.equals( other.name ) && this.agendaGroup.equals( other.agendaGroup ) && this.ActivationGroup.equals( other.ActivationGroup ) && this.salience == other.salience && this.noLoop == other.noLoop);
     }
 
     public int hashCode() {
         return this.name.hashCode();
     }
 
-    public void setSemanticallyValid(boolean valid) {
+    public void setSemanticallyValid(final boolean valid) {
         this.semanticallyValid = valid;
     }
 
@@ -445,6 +450,6 @@ public class Rule
      * do not "compile" etc.
      */
     public boolean isSemanticallyValid() {
-        return semanticallyValid;
+        return this.semanticallyValid;
     }
 }

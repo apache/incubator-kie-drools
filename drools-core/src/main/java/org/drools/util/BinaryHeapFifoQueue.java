@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.util.Comparator;
 import java.util.NoSuchElementException;
@@ -151,7 +150,7 @@ public class BinaryHeapFifoQueue
      * @param index
      */
     public Queueable dequeue(final int index) {
-        if (index < 1 || index > this.size )  {
+        if ( index < 1 || index > this.size ) {
             //throw new NoSuchElementException();
             return null;
         }
@@ -305,7 +304,7 @@ public class BinaryHeapFifoQueue
     public Object[] toArray(Object a[]) {
         if ( a.length < this.size ) {
             a = (Object[]) java.lang.reflect.Array.newInstance( a.getClass().getComponentType(),
-                                                                                       this.size );
+                                                                this.size );
         }
 
         System.arraycopy( this.elements,

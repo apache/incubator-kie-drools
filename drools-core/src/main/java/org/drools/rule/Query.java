@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,11 +16,14 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 public class Query extends Rule {
 
-    public Query(String name) {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 9047611595977428676L;
+
+    public Query(final String name) {
         super( name );
     }
 

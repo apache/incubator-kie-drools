@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * Indicates an attempt to retract, modify or retrieve a fact object that is no
  * longer present.
@@ -34,8 +31,12 @@ package org.drools;
  *          Exp $
  */
 public class NoSuchFactObjectException extends FactException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7335134332412968869L;
     /** Invalid fact handle. */
-    private final FactHandle handle;
+    private final FactHandle  handle;
 
     /**
      * @see java.lang.Exception#Exception()
@@ -43,7 +44,7 @@ public class NoSuchFactObjectException extends FactException {
      * @param object
      *            The invalid fact object.
      */
-    public NoSuchFactObjectException(FactHandle handle) {
+    public NoSuchFactObjectException(final FactHandle handle) {
         super( createMessage( handle ) );
         this.handle = handle;
     }
@@ -54,8 +55,8 @@ public class NoSuchFactObjectException extends FactException {
      * @param object
      *            The invalid fact object.
      */
-    public NoSuchFactObjectException(FactHandle handle,
-                                     Throwable cause) {
+    public NoSuchFactObjectException(final FactHandle handle,
+                                     final Throwable cause) {
         super( createMessage( handle ) );
         this.handle = handle;
     }
@@ -69,7 +70,7 @@ public class NoSuchFactObjectException extends FactException {
         return this.handle;
     }
 
-    private static String createMessage(FactHandle handle) {
+    private static String createMessage(final FactHandle handle) {
         return handle == null ? "null fact object" : "no such fact object for handle:" + handle.toExternalForm();
     }
 }

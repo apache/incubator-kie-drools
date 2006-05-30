@@ -1,4 +1,5 @@
 package org.drools.base.evaluators;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,14 +16,12 @@ package org.drools.base.evaluators;
  * limitations under the License.
  */
 
-
-
 import org.drools.base.BaseEvaluator;
 import org.drools.spi.Evaluator;
 
 public class BooleanFactory {
 
-    public static Evaluator getBooleanEvaluator(int operator) {
+    public static Evaluator getBooleanEvaluator(final int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
                 return BooleanEqualEvaluator.INSTANCE;
@@ -34,16 +33,22 @@ public class BooleanFactory {
     }
 
     static class BooleanEqualEvaluator extends BaseEvaluator {
-        private final static Evaluator INSTANCE = new BooleanEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long      serialVersionUID = 7891019213259874134L;
+        private final static Evaluator INSTANCE         = new BooleanEqualEvaluator();
 
         private BooleanEqualEvaluator() {
             super( Evaluator.BOOLEAN_TYPE,
                    Evaluator.EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 == null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 == null;
+            }
             return ((Boolean) object1).equals( object2 );
         }
 
@@ -53,16 +58,22 @@ public class BooleanFactory {
     }
 
     static class BooleanNotEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new BooleanNotEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -451325761056297938L;
+        public final static Evaluator INSTANCE         = new BooleanNotEqualEvaluator();
 
         private BooleanNotEqualEvaluator() {
             super( Evaluator.BOOLEAN_TYPE,
                    Evaluator.NOT_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 != null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 != null;
+            }
             return !((Boolean) object1).equals( object2 );
         }
 

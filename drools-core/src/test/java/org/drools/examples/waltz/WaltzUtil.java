@@ -1,4 +1,5 @@
 package org.drools.examples.waltz;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,34 +16,30 @@ package org.drools.examples.waltz;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * @author Alexander Bagerman
  * 
  */
 
 class WaltzUtil {
-    private static double PI      = 3.1415927;
+    private static double    PI      = 3.1415927;
 
-    private static int    MOD_NUM = 100;
+    private static final int MOD_NUM = 100;
 
-    private static int get_y(int val) {
-        return val % MOD_NUM;
+    private static int get_y(final int val) {
+        return val % WaltzUtil.MOD_NUM;
     }
 
-    private static int get_x(double val) {
-        return (int) (val / MOD_NUM);
+    private static int get_x(final double val) {
+        return (int) (val / WaltzUtil.MOD_NUM);
     }
 
     /***************************************************************************
      * This function is passed two points and calculates the angle between the
      * line defined by these points and the x-axis.
      **************************************************************************/
-    private static double get_angle(int p1,
-                                    int p2) {
+    private static double get_angle(final int p1,
+                                    final int p2) {
         int delta_x, delta_y;
         double ret = 0.0;
         /*
@@ -55,15 +52,15 @@ class WaltzUtil {
 
         if ( delta_x == 0 ) {
             if ( delta_y > 0 ) {
-                ret = PI / 2;
+                ret = WaltzUtil.PI / 2;
             } else if ( delta_y < 0 ) {
-                ret = -PI / 2;
+                ret = -WaltzUtil.PI / 2;
             }
         } else if ( delta_y == 0 ) {
             if ( delta_x > 0 ) {
                 ret = 0.0;
             } else if ( delta_x < 0 ) {
-                ret = PI;
+                ret = WaltzUtil.PI;
             }
         } else {
             ret = Math.atan2( delta_y,
@@ -77,9 +74,9 @@ class WaltzUtil {
      * as well as the other two endpoints of the lines and calculates the angle
      * inscribed by these three points.
      **************************************************************************/
-    private static double inscribed_angle(int basepoint,
-                                          int p1,
-                                          int p2) {
+    private static double inscribed_angle(final int basepoint,
+                                          final int p1,
+                                          final int p2) {
         double angle1, angle2, temp;
 
         /*
@@ -91,22 +88,28 @@ class WaltzUtil {
         angle2 = get_angle( basepoint,
                             p2 );
         temp = angle1 - angle2;
-        if ( temp < 0.0 ) temp = -temp;
+        if ( temp < 0.0 ) {
+            temp = -temp;
+        }
 
         /*
          * We always want the smaller of the two angles inscribed, so if the
          * answer is greater than 180 degrees, calculate the smaller angle and
          * return it.
          */
-        if ( temp > PI ) temp = 2 * PI - temp;
-        if ( temp < 0.0 ) return (-temp);
+        if ( temp > WaltzUtil.PI ) {
+            temp = 2 * WaltzUtil.PI - temp;
+        }
+        if ( temp < 0.0 ) {
+            return (-temp);
+        }
         return (temp);
     }
 
-    protected static Junction make_3_junction(int basepoint,
-                                              int p1,
-                                              int p2,
-                                              int p3) {
+    protected static Junction make_3_junction(final int basepoint,
+                                              final int p1,
+                                              final int p2,
+                                              final int p3) {
         int shaft, barb1, barb2;
         double angle12, angle13, angle23;
         double sum, sum1213, sum1223, sum1323;
@@ -153,12 +156,14 @@ class WaltzUtil {
             }
         }
 
-        delta = sum - PI;
-        if ( delta < 0.0 ) delta = -delta;
+        delta = sum - WaltzUtil.PI;
+        if ( delta < 0.0 ) {
+            delta = -delta;
+        }
 
         if ( delta < 0.001 ) {
             j_type = Junction.TEE;
-        } else if ( sum > PI ) {
+        } else if ( sum > WaltzUtil.PI ) {
             j_type = Junction.FORK;
         } else {
             j_type = Junction.ARROW;

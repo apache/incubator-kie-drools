@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.DefaultFactHandle;
+import org.drools.common.NodeMemory;
 import org.drools.spi.ObjectType;
 import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.PropagationContext;
@@ -58,9 +60,13 @@ class Rete extends ObjectSource
     // Instance members
     // ------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long        serialVersionUID = -7166421271509211041L;
     /** The <code>Map</code> of <code>ObjectTypeNodes</code>. */
-    private final Map                objectTypeNodes = new HashMap();
-    private ObjectTypeNode           lastAddedNode   = null;
+    private final Map                objectTypeNodes  = new HashMap();
+    private ObjectTypeNode           lastAddedNode    = null;
 
     private final ObjectTypeResolver resolver;
 
@@ -75,7 +81,7 @@ class Rete extends ObjectSource
         this( null );
     }
 
-    public Rete(ObjectTypeResolver resolver) {
+    public Rete(final ObjectTypeResolver resolver) {
         super( 0 );
         this.resolver = resolver;
     }
@@ -96,12 +102,12 @@ class Rete extends ObjectSource
      * @param workingMemory
      *            The working memory session.
      */
-    public void assertObject(FactHandleImpl handle,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
-        HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
+    public void assertObject(final DefaultFactHandle handle,
+                             final PropagationContext context,
+                             final ReteooWorkingMemory workingMemory) {
+        final HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
 
-        Object object = handle.getObject();
+        final Object object = handle.getObject();
 
         ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );
         if ( cachedNodes == null ) {
@@ -126,12 +132,12 @@ class Rete extends ObjectSource
      * @param workingMemory
      *            The working memory session.
      */
-    public void retractObject(FactHandleImpl handle,
-                              PropagationContext context,
-                              WorkingMemoryImpl workingMemory) {
-        HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
+    public void retractObject(final DefaultFactHandle handle,
+                              final PropagationContext context,
+                              final ReteooWorkingMemory workingMemory) {
+        final HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
 
-        Object object = handle.getObject();
+        final Object object = handle.getObject();
 
         ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );
         if ( cachedNodes == null ) {
@@ -147,12 +153,12 @@ class Rete extends ObjectSource
         }
     }
 
-    public void modifyObject(FactHandleImpl handle,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
-        HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
+    public void modifyObject(final DefaultFactHandle handle,
+                             final PropagationContext context,
+                             final ReteooWorkingMemory workingMemory) {
+        final HashMap memory = (HashMap) workingMemory.getNodeMemory( this );
 
-        Object object = handle.getObject();
+        final Object object = handle.getObject();
 
         ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );
         if ( cachedNodes == null ) {
@@ -168,11 +174,11 @@ class Rete extends ObjectSource
         }
     }
 
-    private ObjectTypeNode[] getMatchingNodes(Object object) throws FactException {
-        List cache = new ArrayList();
+    private ObjectTypeNode[] getMatchingNodes(final Object object) throws FactException {
+        final List cache = new ArrayList();
 
-        for ( Iterator it = objectTypeNodeIterator(); it.hasNext(); ) {
-            ObjectTypeNode node = (ObjectTypeNode) it.next();
+        for ( final Iterator it = objectTypeNodeIterator(); it.hasNext(); ) {
+            final ObjectTypeNode node = (ObjectTypeNode) it.next();
             if ( node.matches( object ) ) {
                 cache.add( node );
             }
@@ -209,7 +215,7 @@ class Rete extends ObjectSource
      * @return The matching <code>ObjectTypeNode</code> if one has already
      *         been created, else <code>null</code>.
      */
-    ObjectTypeNode getObjectTypeNode(ObjectType objectType) {
+    ObjectTypeNode getObjectTypeNode(final ObjectType objectType) {
         return (ObjectTypeNode) this.objectTypeNodes.get( objectType );
     }
 
@@ -219,7 +225,7 @@ class Rete extends ObjectSource
      * @param node
      *            The node to add.
      */
-    private void addObjectTypeNode(ObjectTypeNode node) {
+    private void addObjectTypeNode(final ObjectTypeNode node) {
         this.lastAddedNode = node;
         this.objectTypeNodes.put( node.getObjectType(),
                                   node );
@@ -233,11 +239,11 @@ class Rete extends ObjectSource
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    protected void addObjectSink(ObjectSink objectSink) {
+    protected void addObjectSink(final ObjectSink objectSink) {
         addObjectTypeNode( (ObjectTypeNode) objectSink );
     }
 
-    protected void removeObjectSink(ObjectSink objectSink) {
+    protected void removeObjectSink(final ObjectSink objectSink) {
         this.objectTypeNodes.remove( objectSink );
     }
 
@@ -245,20 +251,21 @@ class Rete extends ObjectSource
         // do nothing this is the root node
     }
 
-    public void attach(WorkingMemoryImpl[] workingMemories) {
+    public void attach(final ReteooWorkingMemory[] workingMemories) {
         // do nothing this is the root node        
     }
 
     // when a new ObjectTypeNode is added, check for possible 
     // propagations into the new node
-    public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) {
+    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+                              final PropagationContext context) {
         if ( this.lastAddedNode != null ) {
-            ObjectType objType = this.lastAddedNode.getObjectType();
-            for ( Iterator i = workingMemory.getFactHandleMap().entrySet().iterator(); i.hasNext(); ) {
-                Map.Entry entry = (Map.Entry) i.next();
-                if ( objType.matches( entry.getKey() ) ) {
-                    this.lastAddedNode.assertObject( (FactHandleImpl) entry.getValue(),
+            final ObjectType objType = this.lastAddedNode.getObjectType();
+            for ( final Iterator i = workingMemory.getFactHandleMap().entrySet().iterator(); i.hasNext(); ) {
+                final Map.Entry entry = (Map.Entry) i.next();
+                final DefaultFactHandle handle = (DefaultFactHandle) entry.getValue();
+                if ( objType.matches( handle.getObject() ) ) {
+                    this.lastAddedNode.assertObject( handle,
                                                      context,
                                                      workingMemory );
                 }
@@ -267,22 +274,22 @@ class Rete extends ObjectSource
         }
     }
 
-    public void remove(BaseNode node,
-                       WorkingMemoryImpl[] workingMemories) {
-        ObjectTypeNode objectTypeNode = (ObjectTypeNode) node;
+    public void remove(final BaseNode node,
+                       final ReteooWorkingMemory[] workingMemories) {
+        final ObjectTypeNode objectTypeNode = (ObjectTypeNode) node;
         removeObjectSink( objectTypeNode );
         //@todo: we really should attempt to clear the memory cache for this ObjectTypeNode        
     }
 
-    public Object createMemory( RuleBaseConfiguration config ) {
+    public Object createMemory(final RuleBaseConfiguration config) {
         return new HashMap();
     }
-    
+
     public int hashCode() {
         return this.objectTypeNodes.hashCode();
     }
-    
-    public boolean equals(Object object) {
+
+    public boolean equals(final Object object) {
         if ( object == this ) {
             return true;
         }
@@ -291,7 +298,7 @@ class Rete extends ObjectSource
             return false;
         }
 
-        Rete other = (Rete) object;
+        final Rete other = (Rete) object;
         return this.objectTypeNodes.equals( other.objectTypeNodes );
     }
 

@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.base;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -36,27 +35,16 @@ public class EvaluatorFactoryTest extends TestCase {
 
     public void testObject() {
 
-        List list = new ArrayList();
+        final List list = new ArrayList();
         list.add( "foo" );
 
-        Object[][] data = {{"foo", "==", "bar", Boolean.FALSE}, 
-                           {"foo", "==", "foo", Boolean.TRUE}, 
-                           {"foo", "!=", "bar", Boolean.TRUE}, 
-                           {list, "contains", "foo", Boolean.TRUE}, 
-                           {list, "contains", "bar", Boolean.FALSE},
-                {list, "==", null, Boolean.FALSE}, 
-                {list, "!=", null, Boolean.TRUE}, 
-                {null, "==", null, Boolean.TRUE},
-                {new BigDecimal("42.42"), "<", new BigDecimal("43"), Boolean.TRUE},
-                {new BigDecimal("42.42"), ">", new BigDecimal("43"), Boolean.FALSE},
-                {new BigDecimal("42.42"), "<=", new BigDecimal("42.42"), Boolean.TRUE},
-                {new BigInteger("42"), ">=", new BigInteger("43"), Boolean.FALSE},
-                {new BigInteger("42"), ">=", new BigInteger("43"), Boolean.FALSE},
-                {list, "excludes", "baz", Boolean.TRUE},
-                {list, "excludes", "foo", Boolean.FALSE}
-                
+        final Object[][] data = {{"foo", "==", "bar", Boolean.FALSE}, {"foo", "==", "foo", Boolean.TRUE}, {"foo", "!=", "bar", Boolean.TRUE}, {list, "contains", "foo", Boolean.TRUE}, {list, "contains", "bar", Boolean.FALSE},
+                {list, "==", null, Boolean.FALSE}, {list, "!=", null, Boolean.TRUE}, {null, "==", null, Boolean.TRUE}, {new BigDecimal( "42.42" ), "<", new BigDecimal( "43" ), Boolean.TRUE},
+                {new BigDecimal( "42.42" ), ">", new BigDecimal( "43" ), Boolean.FALSE}, {new BigDecimal( "42.42" ), "<=", new BigDecimal( "42.42" ), Boolean.TRUE}, {new BigInteger( "42" ), ">=", new BigInteger( "43" ), Boolean.FALSE},
+                {new BigInteger( "42" ), ">=", new BigInteger( "43" ), Boolean.FALSE}, {list, "excludes", "baz", Boolean.TRUE}, {list, "excludes", "foo", Boolean.FALSE}
+
         };
-        
+
         runEvaluatorTest( data,
                           Evaluator.OBJECT_TYPE );
 
@@ -64,14 +52,10 @@ public class EvaluatorFactoryTest extends TestCase {
 
     public void testArrayType() {
 
-        Object[] field = new Object[]{"foo", "bar"};
+        final Object[] field = new Object[]{"foo", "bar"};
 
-        Object[][] data = {{field, "==", new Object[]{"foo"}, Boolean.FALSE}, 
-                           {field, "==", field, Boolean.TRUE}, 
-                           {field, "!=", new Object[]{"foo"}, Boolean.TRUE}, 
-                           {field, "contains", "foo", Boolean.TRUE}, 
-                           {field, "!=", null, Boolean.TRUE},
-                           {field, "==", null, Boolean.FALSE}};
+        final Object[][] data = {{field, "==", new Object[]{"foo"}, Boolean.FALSE}, {field, "==", field, Boolean.TRUE}, {field, "!=", new Object[]{"foo"}, Boolean.TRUE}, {field, "contains", "foo", Boolean.TRUE}, {field, "!=", null, Boolean.TRUE},
+                {field, "==", null, Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           Evaluator.ARRAY_TYPE );
@@ -80,7 +64,7 @@ public class EvaluatorFactoryTest extends TestCase {
 
     public void testString() {
 
-        Object[][] data = {{"foo", "==", "bar", Boolean.FALSE}, {"foo", "==", "foo", Boolean.TRUE}, {"foo", "!=", "bar", Boolean.TRUE}, {"something foo", "matches", ".*foo", Boolean.TRUE}, {"foo", "matches", ".*foo", Boolean.TRUE},
+        final Object[][] data = {{"foo", "==", "bar", Boolean.FALSE}, {"foo", "==", "foo", Boolean.TRUE}, {"foo", "!=", "bar", Boolean.TRUE}, {"something foo", "matches", ".*foo", Boolean.TRUE}, {"foo", "matches", ".*foo", Boolean.TRUE},
                 {"foo", "matches", "bar", Boolean.FALSE}, {null, "matches", ".*foo", Boolean.FALSE}, {"foo", "==", null, Boolean.FALSE}, {"foo", "!=", null, Boolean.TRUE}, {null, "==", null, Boolean.TRUE}, {"foo", "!=", null, Boolean.TRUE},
                 {null, "!=", "foo", Boolean.TRUE}, {null, "!=", null, Boolean.FALSE}
 
@@ -93,7 +77,7 @@ public class EvaluatorFactoryTest extends TestCase {
 
     public void testInteger() {
 
-        Object[][] data = {{new Integer( 42 ), "==", new Integer( 42 ), Boolean.TRUE}, {new Integer( 42 ), "<", new Integer( 43 ), Boolean.TRUE}, {new Integer( 42 ), ">=", new Integer( 41 ), Boolean.TRUE},
+        final Object[][] data = {{new Integer( 42 ), "==", new Integer( 42 ), Boolean.TRUE}, {new Integer( 42 ), "<", new Integer( 43 ), Boolean.TRUE}, {new Integer( 42 ), ">=", new Integer( 41 ), Boolean.TRUE},
                 {new Integer( 42 ), "!=", new Integer( 41 ), Boolean.TRUE}, {new Integer( 42 ), ">", new Integer( 41 ), Boolean.TRUE}, {new Integer( 42 ), "<=", new Integer( 42 ), Boolean.TRUE},
                 {new Integer( 42 ), ">", new Integer( 100 ), Boolean.FALSE}, {new Integer( 42 ), "==", null, Boolean.FALSE}, {new Integer( 42 ), "!=", null, Boolean.TRUE}, {null, "==", new Integer( 42 ), Boolean.FALSE},
                 {null, "!=", new Integer( 42 ), Boolean.TRUE}};
@@ -106,7 +90,7 @@ public class EvaluatorFactoryTest extends TestCase {
     public void testShort() {
 
         //Test data: Obj1, Operand, Obj2
-        Object[][] data = {{new Short( (short) 42 ), "==", new Short( (short) 42 ), Boolean.TRUE}, {new Short( (short) 42 ), "<", new Short( (short) 43 ), Boolean.TRUE}, {new Short( (short) 42 ), ">=", new Short( (short) 41 ), Boolean.TRUE},
+        final Object[][] data = {{new Short( (short) 42 ), "==", new Short( (short) 42 ), Boolean.TRUE}, {new Short( (short) 42 ), "<", new Short( (short) 43 ), Boolean.TRUE}, {new Short( (short) 42 ), ">=", new Short( (short) 41 ), Boolean.TRUE},
                 {new Short( (short) 42 ), "!=", new Short( (short) 41 ), Boolean.TRUE}, {new Short( (short) 42 ), "!=", null, Boolean.TRUE}};
 
         runEvaluatorTest( data,
@@ -116,7 +100,7 @@ public class EvaluatorFactoryTest extends TestCase {
     public void testBoolean() {
 
         //Test data: Obj1, Operand, Obj2
-        Object[][] data = {{new Boolean( true ), "==", new Boolean( true ), Boolean.TRUE}, {new Boolean( false ), "!=", new Boolean( true ), Boolean.TRUE}, {new Boolean( true ), "==", new Boolean( false ), Boolean.FALSE},
+        final Object[][] data = {{new Boolean( true ), "==", new Boolean( true ), Boolean.TRUE}, {new Boolean( false ), "!=", new Boolean( true ), Boolean.TRUE}, {new Boolean( true ), "==", new Boolean( false ), Boolean.FALSE},
                 {new Boolean( true ), "!=", new Boolean( false ), Boolean.TRUE}, {new Boolean( true ), "==", null, Boolean.FALSE}, {new Boolean( true ), "!=", null, Boolean.TRUE}, {null, "==", null, Boolean.TRUE}
 
         };
@@ -126,7 +110,7 @@ public class EvaluatorFactoryTest extends TestCase {
     }
 
     public void testDouble() {
-        Object[][] data = {{new Double( 42 ), "==", new Double( 42 ), Boolean.TRUE}, {new Double( 42 ), "<", new Double( 43 ), Boolean.TRUE}, {new Double( 42 ), ">=", new Double( 41 ), Boolean.TRUE},
+        final Object[][] data = {{new Double( 42 ), "==", new Double( 42 ), Boolean.TRUE}, {new Double( 42 ), "<", new Double( 43 ), Boolean.TRUE}, {new Double( 42 ), ">=", new Double( 41 ), Boolean.TRUE},
                 {new Double( 42 ), "!=", new Double( 41 ), Boolean.TRUE}, {new Double( 42 ), ">", new Double( 41 ), Boolean.TRUE}, {new Double( 42 ), ">=", new Double( 41 ), Boolean.TRUE}, {new Double( 42 ), ">=", new Double( 42 ), Boolean.TRUE},
                 {new Double( 42 ), ">=", new Double( 100 ), Boolean.FALSE}, {new Double( 42 ), "<", new Double( 1 ), Boolean.FALSE}, {new Double( 42 ), "==", null, Boolean.FALSE}, {null, "!=", new Double( 1 ), Boolean.TRUE}};
 
@@ -135,16 +119,16 @@ public class EvaluatorFactoryTest extends TestCase {
     }
 
     public void testFloat() {
-        Object[][] data = {{new Float( 42 ), "==", new Float( 42 ), Boolean.TRUE}, {new Float( 42 ), "<", new Float( 43 ), Boolean.TRUE}, {new Float( 42 ), ">=", new Float( 41 ), Boolean.TRUE}, {new Float( 42 ), "!=", new Float( 41 ), Boolean.TRUE},
-                {new Float( 42 ), ">", new Float( 41 ), Boolean.TRUE}, {new Float( 42 ), ">=", new Float( 41 ), Boolean.TRUE}, {new Float( 42 ), ">=", new Float( 42 ), Boolean.TRUE}, {new Float( 42 ), ">=", new Float( 100 ), Boolean.FALSE},
-                {new Float( 42 ), "<", new Float( 1 ), Boolean.FALSE}, {new Float( 42 ), "==", null, Boolean.FALSE}, {null, "!=", new Float( 1 ), Boolean.TRUE}};
+        final Object[][] data = {{new Float( 42 ), "==", new Float( 42 ), Boolean.TRUE}, {new Float( 42 ), "<", new Float( 43 ), Boolean.TRUE}, {new Float( 42 ), ">=", new Float( 41 ), Boolean.TRUE},
+                {new Float( 42 ), "!=", new Float( 41 ), Boolean.TRUE}, {new Float( 42 ), ">", new Float( 41 ), Boolean.TRUE}, {new Float( 42 ), ">=", new Float( 41 ), Boolean.TRUE}, {new Float( 42 ), ">=", new Float( 42 ), Boolean.TRUE},
+                {new Float( 42 ), ">=", new Float( 100 ), Boolean.FALSE}, {new Float( 42 ), "<", new Float( 1 ), Boolean.FALSE}, {new Float( 42 ), "==", null, Boolean.FALSE}, {null, "!=", new Float( 1 ), Boolean.TRUE}};
 
         runEvaluatorTest( data,
                           Evaluator.FLOAT_TYPE );
     }
 
     public void testLong() {
-        Object[][] data = {{new Long( 42 ), "==", new Long( 42 ), Boolean.TRUE}, {new Long( 42 ), "<", new Long( 43 ), Boolean.TRUE}, {new Long( 42 ), ">=", new Long( 41 ), Boolean.TRUE}, {new Long( 42 ), "!=", new Long( 41 ), Boolean.TRUE},
+        final Object[][] data = {{new Long( 42 ), "==", new Long( 42 ), Boolean.TRUE}, {new Long( 42 ), "<", new Long( 43 ), Boolean.TRUE}, {new Long( 42 ), ">=", new Long( 41 ), Boolean.TRUE}, {new Long( 42 ), "!=", new Long( 41 ), Boolean.TRUE},
                 {new Long( 42 ), ">", new Long( 41 ), Boolean.TRUE}, {new Long( 42 ), ">=", new Long( 41 ), Boolean.TRUE}, {new Long( 42 ), ">=", new Long( 42 ), Boolean.TRUE}, {new Long( 42 ), ">=", new Long( 100 ), Boolean.FALSE},
                 {new Long( 42 ), "<", new Long( 1 ), Boolean.FALSE}, {new Long( 42 ), "==", null, Boolean.FALSE}, {null, "!=", new Long( 1 ), Boolean.TRUE}};
 
@@ -153,7 +137,7 @@ public class EvaluatorFactoryTest extends TestCase {
     }
 
     public void testCharacter() {
-        Object[][] data = {{new Character( 'a' ), "==", new Character( 'a' ), Boolean.TRUE}, {new Character( 'a' ), "<", new Character( 'b' ), Boolean.TRUE}, {new Character( 'a' ), ">=", new Character( 'a' ), Boolean.TRUE},
+        final Object[][] data = {{new Character( 'a' ), "==", new Character( 'a' ), Boolean.TRUE}, {new Character( 'a' ), "<", new Character( 'b' ), Boolean.TRUE}, {new Character( 'a' ), ">=", new Character( 'a' ), Boolean.TRUE},
                 {new Character( 'a' ), "!=", new Character( 'Z' ), Boolean.TRUE}, {new Character( 'z' ), ">", new Character( 'a' ), Boolean.TRUE}, {new Character( 'z' ), ">=", new Character( 'z' ), Boolean.TRUE},
                 {new Character( 'z' ), ">=", new Character( 'a' ), Boolean.TRUE}, {new Character( 'a' ), ">=", new Character( 'z' ), Boolean.FALSE}, {new Character( 'z' ), "<", new Character( 'a' ), Boolean.FALSE},
                 {new Character( 'z' ), "==", null, Boolean.FALSE}, {null, "!=", new Character( 'a' ), Boolean.TRUE}};
@@ -163,10 +147,10 @@ public class EvaluatorFactoryTest extends TestCase {
 
     public void testDate() throws Exception {
 
-        SimpleDateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
+        final SimpleDateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
 
         //note that strings are also allowed on the right
-        Object[][] data = {{df.parse( "10-Jul-1974" ), "==", df.parse( "10-Jul-1974" ), Boolean.TRUE}, {df.parse( "10-Jul-1974" ), "<", df.parse( "11-Jul-1974" ), Boolean.TRUE},
+        final Object[][] data = {{df.parse( "10-Jul-1974" ), "==", df.parse( "10-Jul-1974" ), Boolean.TRUE}, {df.parse( "10-Jul-1974" ), "<", df.parse( "11-Jul-1974" ), Boolean.TRUE},
                 {df.parse( "10-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE}, {df.parse( "10-Jul-1974" ), "!=", df.parse( "11-Jul-1974" ), Boolean.TRUE}, {df.parse( "10-Jul-2000" ), ">", df.parse( "10-Jul-1974" ), Boolean.TRUE},
                 {df.parse( "10-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE}, {df.parse( "11-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE}, {df.parse( "10-Jul-1974" ), ">=", df.parse( "11-Jul-1974" ), Boolean.FALSE},
                 {df.parse( "10-Jul-2000" ), "<", df.parse( "10-Jul-1974" ), Boolean.FALSE}, {df.parse( "10-Jul-1974" ), "<", "11-Jul-1974", Boolean.TRUE}, {df.parse( "10-Jul-1974" ), ">=", "10-Jul-1974", Boolean.TRUE},
@@ -177,7 +161,7 @@ public class EvaluatorFactoryTest extends TestCase {
     }
 
     public void testByte() {
-        Object[][] data = {{new Byte( "1" ), "==", new Byte( "1" ), Boolean.TRUE}, {new Byte( "1" ), "==", new Byte( "2" ), Boolean.FALSE}, {new Byte( "1" ), "!=", new Byte( "2" ), Boolean.TRUE},
+        final Object[][] data = {{new Byte( "1" ), "==", new Byte( "1" ), Boolean.TRUE}, {new Byte( "1" ), "==", new Byte( "2" ), Boolean.FALSE}, {new Byte( "1" ), "!=", new Byte( "2" ), Boolean.TRUE},
                 {new Byte( "1" ), "!=", new Byte( "1" ), Boolean.FALSE}, {new Byte( "1" ), "<=", new Byte( "1" ), Boolean.TRUE}, {new Byte( "1" ), "==", null, Boolean.FALSE}, {null, "!=", new Byte( "1" ), Boolean.TRUE}};
         runEvaluatorTest( data,
                           Evaluator.BYTE_TYPE );
@@ -189,15 +173,15 @@ public class EvaluatorFactoryTest extends TestCase {
      * @param data The data to try out : Array of {arg1, operator, arg2}
      * @param evalType The Evaluator.**_TYPE to test
      */
-    private void runEvaluatorTest(Object[][] data,
-                                  int evalType) {
+    private void runEvaluatorTest(final Object[][] data,
+                                  final int evalType) {
         for ( int i = 0; i < data.length; i++ ) {
-            Object[] row = data[i];
-            Evaluator evaluator = EvaluatorFactory.getEvaluator( evalType,
-                                                                 (String) row[1] );
-            boolean result = evaluator.evaluate( row[0],
-                                                 row[2] );
-            String message = "The evaluator type: [" + evalType + "] incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
+            final Object[] row = data[i];
+            final Evaluator evaluator = EvaluatorFactory.getEvaluator( evalType,
+                                                                       (String) row[1] );
+            final boolean result = evaluator.evaluate( row[0],
+                                                       row[2] );
+            final String message = "The evaluator type: [" + evalType + "] incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
             if ( row[3] == Boolean.TRUE ) {
                 assertTrue( message,

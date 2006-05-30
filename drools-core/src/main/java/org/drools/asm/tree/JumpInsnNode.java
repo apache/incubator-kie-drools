@@ -57,8 +57,9 @@ public class JumpInsnNode extends AbstractInsnNode {
      *        operand is a label that designates the instruction to which the
      *        jump instruction may jump.
      */
-    public JumpInsnNode(final int opcode, final Label label) {
-        super(opcode);
+    public JumpInsnNode(final int opcode,
+                        final Label label) {
+        super( opcode );
         this.label = label;
     }
 
@@ -75,10 +76,11 @@ public class JumpInsnNode extends AbstractInsnNode {
     }
 
     public void accept(final MethodVisitor mv) {
-        mv.visitJumpInsn(opcode, label);
+        mv.visitJumpInsn( this.opcode,
+                          this.label );
     }
 
     public int getType() {
-        return JUMP_INSN;
+        return AbstractInsnNode.JUMP_INSN;
     }
 }

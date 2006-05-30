@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,7 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
+import org.drools.common.DefaultFactHandle;
 
 import junit.framework.TestCase;
 
@@ -25,48 +26,56 @@ public class DefaultFactHandleFactoryTest extends TestCase {
      * Class under test for FactHandle newFactHandle()
      */
     public void testNewFactHandle() {
-        DefaultFactHandleFactory factory = new DefaultFactHandleFactory();
-        FactHandleImpl handle = (FactHandleImpl) factory.newFactHandle();
+        final ReteooFactHandleFactory factory = new ReteooFactHandleFactory();
+        DefaultFactHandle handle = (DefaultFactHandle) factory.newFactHandle( "cheese" );
         assertEquals( 0,
                       handle.getId() );
         assertEquals( 0,
                       handle.getRecency() );
 
-        handle = (FactHandleImpl) factory.newFactHandle();
+        // issue  new handle
+        handle = (DefaultFactHandle) factory.newFactHandle( "cheese" );
         assertEquals( 1,
                       handle.getId() );
         assertEquals( 1,
                       handle.getRecency() );
 
-        handle = (FactHandleImpl) factory.newFactHandle();
+        // issue  new handle, under a different reference so we  can destroy later        
+        final DefaultFactHandle handle2 = (DefaultFactHandle) factory.newFactHandle( "cheese" );
         assertEquals( 2,
-                      handle.getId() );
+                      handle2.getId() );
         assertEquals( 2,
-                      handle.getRecency() );
-    }
+                      handle2.getRecency() );
 
-    /*
-     * Class under test for FactHandle newFactHandle(long)
-     */
-    public void testNewFactHandlelong() {
-        DefaultFactHandleFactory factory = new DefaultFactHandleFactory();
-        FactHandleImpl handle = (FactHandleImpl) factory.newFactHandle( 5 );
-        assertEquals( 5,
-                      handle.getId() );
-        assertEquals( 0,
+        // Check recency increasion works
+        factory.increaseFactHandleRecency( handle );
+        assertEquals( 3,
                       handle.getRecency() );
 
-        handle = (FactHandleImpl) factory.newFactHandle( 3 );
+        // issue new handle and make sure  recency is still inline
+        handle = (DefaultFactHandle) factory.newFactHandle( "cheese" );
         assertEquals( 3,
                       handle.getId() );
-        assertEquals( 1,
+        assertEquals( 4,
                       handle.getRecency() );
 
-        handle = (FactHandleImpl) factory.newFactHandle( 255 );
-        assertEquals( 255,
-                      handle.getId() );
+        // destroy handle
+        factory.destroyFactHandle( handle2 );
+
+        // issue  new  fact handle and  make sure it  recycled the  id=2
+        handle = (DefaultFactHandle) factory.newFactHandle( "cheese" );
         assertEquals( 2,
+                      handle.getId() );
+        assertEquals( 5,
                       handle.getRecency() );
+
+        // issue new  handle  making  sure it correctly resumes  ids  and recency
+        handle = (DefaultFactHandle) factory.newFactHandle( "cheese" );
+        assertEquals( 4,
+                      handle.getId() );
+        assertEquals( 6,
+                      handle.getRecency() );
+
     }
 
 }

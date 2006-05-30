@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -63,7 +60,7 @@ public class IdentityMap extends AbstractHashedMap
      * @throws IllegalArgumentException
      *             if the initial capacity is less than one
      */
-    public IdentityMap(int initialCapacity) {
+    public IdentityMap(final int initialCapacity) {
         super( initialCapacity );
     }
 
@@ -80,8 +77,8 @@ public class IdentityMap extends AbstractHashedMap
      * @throws IllegalArgumentException
      *             if the load factor is less than zero
      */
-    public IdentityMap(int initialCapacity,
-                       float loadFactor) {
+    public IdentityMap(final int initialCapacity,
+                       final float loadFactor) {
         super( initialCapacity,
                loadFactor );
     }
@@ -94,7 +91,7 @@ public class IdentityMap extends AbstractHashedMap
      * @throws NullPointerException
      *             if the map is null
      */
-    public IdentityMap(Map map) {
+    public IdentityMap(final Map map) {
         super( map );
     }
 
@@ -107,7 +104,7 @@ public class IdentityMap extends AbstractHashedMap
      *            the key to get a hash code for
      * @return the hash code
      */
-    protected int hash(Object key) {
+    protected int hash(final Object key) {
         return System.identityHashCode( key );
     }
 
@@ -120,8 +117,8 @@ public class IdentityMap extends AbstractHashedMap
      *            the second key to compare
      * @return true if equal by identity
      */
-    protected boolean isEqualKey(Object key1,
-                                 Object key2) {
+    protected boolean isEqualKey(final Object key1,
+                                 final Object key2) {
         return (key1 == key2);
     }
 
@@ -134,8 +131,8 @@ public class IdentityMap extends AbstractHashedMap
      *            the second value to compare
      * @return true if equal by identity
      */
-    protected boolean isEqualValue(Object value1,
-                                   Object value2) {
+    protected boolean isEqualValue(final Object value1,
+                                   final Object value2) {
         return (value1 == value2);
     }
 
@@ -153,10 +150,10 @@ public class IdentityMap extends AbstractHashedMap
      *            the value to store
      * @return the newly created entry
      */
-    protected HashEntry createEntry(HashEntry next,
-                                    int hashCode,
-                                    Object key,
-                                    Object value) {
+    protected HashEntry createEntry(final HashEntry next,
+                                    final int hashCode,
+                                    final Object key,
+                                    final Object value) {
         return new IdentityEntry( next,
                                   hashCode,
                                   key,
@@ -169,24 +166,24 @@ public class IdentityMap extends AbstractHashedMap
      */
     protected static class IdentityEntry extends HashEntry {
 
-        protected IdentityEntry(HashEntry next,
-                                int hashCode,
-                                Object key,
-                                Object value) {
+        protected IdentityEntry(final HashEntry next,
+                                final int hashCode,
+                                final Object key,
+                                final Object value) {
             super( next,
                    hashCode,
                    key,
                    value );
         }
 
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if ( obj == this ) {
                 return true;
             }
             if ( obj instanceof Map.Entry == false ) {
                 return false;
             }
-            Map.Entry other = (Map.Entry) obj;
+            final Map.Entry other = (Map.Entry) obj;
             return (getKey() == other.getKey()) && (getValue() == other.getValue());
         }
 
@@ -208,7 +205,7 @@ public class IdentityMap extends AbstractHashedMap
     /**
      * Write the map out using a custom routine.
      */
-    private void writeObject(ObjectOutputStream out) throws IOException {
+    private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         doWriteObject( out );
     }
@@ -216,8 +213,8 @@ public class IdentityMap extends AbstractHashedMap
     /**
      * Read the map in using a custom routine.
      */
-    private void readObject(ObjectInputStream in) throws IOException,
-                                                 ClassNotFoundException {
+    private void readObject(final ObjectInputStream in) throws IOException,
+                                                       ClassNotFoundException {
         in.defaultReadObject();
         doReadObject( in );
     }

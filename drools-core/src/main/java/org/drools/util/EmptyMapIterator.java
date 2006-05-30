@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,11 +16,7 @@ package org.drools.util;
  * limitations under the License.
  */
 
-
-
 import java.util.NoSuchElementException;
-
-
 
 /**
  * Provides an implementation of an empty map iterator.
@@ -70,11 +67,11 @@ public class EmptyMapIterator
         return -1;
     }
 
-    public void add(Object obj) {
+    public void add(final Object obj) {
         throw new UnsupportedOperationException( "add() not supported for empty Iterator" );
     }
 
-    public void set(Object obj) {
+    public void set(final Object obj) {
         throw new IllegalStateException( "Iterator contains no elements" );
     }
 
@@ -90,7 +87,7 @@ public class EmptyMapIterator
         throw new IllegalStateException( "Iterator contains no elements" );
     }
 
-    public Object setValue(Object value) {
+    public Object setValue(final Object value) {
         throw new IllegalStateException( "Iterator contains no elements" );
     }
 

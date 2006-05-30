@@ -42,8 +42,8 @@ public class InsnNode extends AbstractInsnNode {
 
     static {
         INSNS = new InsnNode[255];
-        for (int i = 0; i < INSNS.length; ++i) {
-            INSNS[i] = new InsnNode(i);
+        for ( int i = 0; i < InsnNode.INSNS.length; ++i ) {
+            InsnNode.INSNS[i] = new InsnNode( i );
         }
     }
 
@@ -56,7 +56,7 @@ public class InsnNode extends AbstractInsnNode {
      * @return the {@link InsnNode} corresponding to the given opcode.
      */
     public final static InsnNode getByOpcode(final int opcode) {
-        return INSNS[opcode];
+        return InsnNode.INSNS[opcode];
     }
 
     /**
@@ -78,7 +78,7 @@ public class InsnNode extends AbstractInsnNode {
      *        MONITORENTER, or MONITOREXIT.
      */
     public InsnNode(final int opcode) {
-        super(opcode);
+        super( opcode );
     }
 
     /**
@@ -87,10 +87,10 @@ public class InsnNode extends AbstractInsnNode {
      * @param mv a method visitor.
      */
     public void accept(final MethodVisitor mv) {
-        mv.visitInsn(opcode);
+        mv.visitInsn( this.opcode );
     }
 
     public int getType() {
-        return INSN;
+        return AbstractInsnNode.INSN;
     }
 }

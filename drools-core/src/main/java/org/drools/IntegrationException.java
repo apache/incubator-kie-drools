@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,11 +16,12 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
-
-
 public class IntegrationException extends CheckedDroolsException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -595899480857696387L;
+
     /**
      * @see java.lang.Exception#Exception()
      */
@@ -30,22 +32,22 @@ public class IntegrationException extends CheckedDroolsException {
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public IntegrationException(String message) {
+    public IntegrationException(final String message) {
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    public IntegrationException(String message,
-                                Throwable cause) {
+    public IntegrationException(final String message,
+                                final Throwable cause) {
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public IntegrationException(Throwable cause) {
+    public IntegrationException(final Throwable cause) {
         super( cause );
     }
 }

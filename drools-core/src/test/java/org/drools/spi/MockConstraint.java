@@ -1,4 +1,5 @@
 package org.drools.spi;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-
-
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
@@ -25,18 +24,23 @@ public class MockConstraint
     implements
     FieldConstraint {
 
-    public Declaration[] declarations;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2137215908326401659L;
 
-    public boolean       isAllowed = true;
+    public Declaration[]      declarations;
 
-    public boolean isAllowed(InternalFactHandle handle,
-                             Tuple tuple,
-                             WorkingMemory workingMemory) {
+    public boolean            isAllowed        = true;
+
+    public boolean isAllowed(final InternalFactHandle handle,
+                             final Tuple tuple,
+                             final WorkingMemory workingMemory) {
         return this.isAllowed;
     }
 
     public Declaration[] getRequiredDeclarations() {
-        return declarations;
+        return this.declarations;
     }
 
 }

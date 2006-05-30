@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,9 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import org.drools.DroolsTestCase;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
@@ -25,7 +25,7 @@ import org.drools.spi.PropagationContext;
 public class TupleSourceTest extends DroolsTestCase {
 
     public void testObjectTupleConstructor() {
-        MockTupleSource source = new MockTupleSource( 15 );
+        final MockTupleSource source = new MockTupleSource( 15 );
         assertEquals( 15,
                       source.getId() );
 
@@ -37,7 +37,7 @@ public class TupleSourceTest extends DroolsTestCase {
     }
 
     public void testAddTupleSink() {
-        MockTupleSource source = new MockTupleSource( 15 );
+        final MockTupleSource source = new MockTupleSource( 15 );
         assertLength( 0,
                       source.getTupleSinks() );
 
@@ -51,21 +51,22 @@ public class TupleSourceTest extends DroolsTestCase {
     }
 
     public void testPropagateAssertTuple() throws Exception {
-        Rule rule = new Rule( "test-rule" );
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.RETRACTION,
-                                                                 null,
-                                                                 null );
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+        final Rule rule = new Rule( "test-rule" );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.RETRACTION,
+                                                                       null,
+                                                                       null );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
 
-        MockTupleSource source = new MockTupleSource( 15 );
-        MockTupleSink sink1 = new MockTupleSink();
+        final MockTupleSource source = new MockTupleSource( 15 );
+        final MockTupleSink sink1 = new MockTupleSink();
 
         source.addTupleSink( sink1 );
         assertLength( 0,
                       sink1.getAsserted() );
 
-        ReteTuple tuple1 = new ReteTuple( new FactHandleImpl( 1 ) );
+        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
+                                                                       "cheese" ) );
 
         source.propagateAssertTuple( tuple1,
                                      context,
@@ -82,9 +83,10 @@ public class TupleSourceTest extends DroolsTestCase {
         assertSame( workingMemory,
                     list[2] );
 
-        ReteTuple tuple2 = new ReteTuple( new FactHandleImpl( 1 ) );
+        final ReteTuple tuple2 = new ReteTuple( new DefaultFactHandle( 1,
+                                                                       "cheese" ) );
 
-        MockTupleSink sink2 = new MockTupleSink();
+        final MockTupleSink sink2 = new MockTupleSink();
         source.addTupleSink( sink2 );
         // source.ruleAttached();
 

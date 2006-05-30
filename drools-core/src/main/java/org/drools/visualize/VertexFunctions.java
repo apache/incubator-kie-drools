@@ -1,4 +1,5 @@
 package org.drools.visualize;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.visualize;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -48,9 +47,9 @@ public class VertexFunctions
     private Font           font;
 
     public VertexFunctions() {
-        BufferedImage image = new BufferedImage( 100,
-                                                 100,
-                                                 BufferedImage.TYPE_INT_RGB );
+        final BufferedImage image = new BufferedImage( 100,
+                                                       100,
+                                                       BufferedImage.TYPE_INT_RGB );
         this.graphics = image.createGraphics();
         this.defaultColors = new VertexColorSet();
         this.font = new Font( "Verdana",
@@ -58,28 +57,28 @@ public class VertexFunctions
                               10 );
     }
 
-    public void setDefaultColors(Color fill,
-                                 Color stroke,
-                                 Color text) {
+    public void setDefaultColors(final Color fill,
+                                 final Color stroke,
+                                 final Color text) {
         this.defaultColors = new VertexColorSet( fill,
                                                  stroke,
                                                  text );
     }
 
-    public void setFont(Font font) {
+    public void setFont(final Font font) {
         this.font = font;
     }
 
-    public Paint getLabelDrawPaint(Vertex vertex) {
-        return defaultColors.getText();
+    public Paint getLabelDrawPaint(final Vertex vertex) {
+        return this.defaultColors.getText();
     }
 
-    public Font getFont(Vertex vertex) {
+    public Font getFont(final Vertex vertex) {
         return this.font;
     }
 
-    public Shape getShape(Vertex vertex) {
-        Dimension dim = getShapeDimension( vertex );
+    public Shape getShape(final Vertex vertex) {
+        final Dimension dim = getShapeDimension( vertex );
 
         return new RoundRectangle2D.Double( 0 - (dim.width / 2),
                                             0 - (dim.height / 2),
@@ -89,32 +88,32 @@ public class VertexFunctions
                                             10 );
     }
 
-    public Dimension getShapeDimension(Vertex vertex) {
-        String label = getLabel( vertex );
+    public Dimension getShapeDimension(final Vertex vertex) {
+        final String label = getLabel( vertex );
 
-        Font font = getFont( vertex );
+        final Font font = getFont( vertex );
 
-        FontMetrics fm = graphics.getFontMetrics( getFont( vertex ) );
+        final FontMetrics fm = this.graphics.getFontMetrics( getFont( vertex ) );
 
         int width = fm.stringWidth( label );
         int height = fm.getHeight();
 
-        width = (int) (width + font.getSize());
-        height = (int) (height + font.getSize());
+        width = (width + font.getSize());
+        height = (height + font.getSize());
 
         return new Dimension( width,
                               height );
     }
 
-    public Paint getFillPaint(Vertex vertex) {
-        return defaultColors.getFill();
+    public Paint getFillPaint(final Vertex vertex) {
+        return this.defaultColors.getFill();
     }
 
-    public Paint getDrawPaint(Vertex vertex) {
-        return defaultColors.getStroke();
+    public Paint getDrawPaint(final Vertex vertex) {
+        return this.defaultColors.getStroke();
     }
 
-    public String getLabel(ArchetypeVertex vertex) {
+    public String getLabel(final ArchetypeVertex vertex) {
         return "node";
     }
 

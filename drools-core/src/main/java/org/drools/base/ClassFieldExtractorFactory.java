@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.base;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
@@ -48,51 +45,51 @@ public class ClassFieldExtractorFactory {
 
     private static final String BASE_EXTRACTOR = "org/drools/base/BaseClassFieldExtractor";
 
-    public static BaseClassFieldExtractor getClassFieldExtractor(Class clazz,
-                                                                 String fieldName) {
+    public static BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
+                                                                 final String fieldName) {
         try {
-            ClassFieldInspector inspector = new ClassFieldInspector( clazz );
-            Class fieldType = (Class) inspector.getFieldTypes().get( fieldName );
-            String originalClassName = clazz.getName().replace( '.',
-                                                                '/' );
-            String getterName = ((Method) inspector.getGetterMethods().get( fieldName )).getName();
-            String className = BASE_PACKAGE + "/" + originalClassName + "$" + getterName;
-            String typeName = getTypeName( fieldType );
+            final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
+            final Class fieldType = (Class) inspector.getFieldTypes().get( fieldName );
+            final String originalClassName = clazz.getName().replace( '.',
+                                                                      '/' );
+            final String getterName = ((Method) inspector.getGetterMethods().get( fieldName )).getName();
+            final String className = ClassFieldExtractorFactory.BASE_PACKAGE + "/" + originalClassName + "$" + getterName;
+            final String typeName = getTypeName( fieldType );
             // generating byte array to create target class
-            byte[] bytes = dump( originalClassName,
-                                 className,
-                                 getterName,
-                                 typeName,
-                                 fieldType,
-                                 clazz.isInterface() );
+            final byte[] bytes = dump( originalClassName,
+                                       className,
+                                       getterName,
+                                       typeName,
+                                       fieldType,
+                                       clazz.isInterface() );
             // use bytes to get a class 
-            ByteArrayClassLoader classLoader = new ByteArrayClassLoader( Thread.currentThread().getContextClassLoader() );
-            Class newClass = classLoader.defineClass( className.replace( '/',
-                                                                         '.' ),
-                                                      bytes );
+            final ByteArrayClassLoader classLoader = new ByteArrayClassLoader( Thread.currentThread().getContextClassLoader() );
+            final Class newClass = classLoader.defineClass( className.replace( '/',
+                                                                               '.' ),
+                                                            bytes );
             // instantiating target class
-            Object[] params = {clazz, fieldName};
+            final Object[] params = {clazz, fieldName};
             return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
     }
 
-    private static byte[] dump(String originalClassName,
-                               String className,
-                               String getterName,
-                               String typeName,
-                               Class fieldType,
-                               boolean isInterface) throws Exception {
+    private static byte[] dump(final String originalClassName,
+                               final String className,
+                               final String getterName,
+                               final String typeName,
+                               final Class fieldType,
+                               final boolean isInterface) throws Exception {
 
-        ClassWriter cw = new ClassWriter( true );
+        final ClassWriter cw = new ClassWriter( true );
         MethodVisitor mv;
 
         cw.visit( Opcodes.V1_2,
                   Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
                   className,
                   null,
-                  BASE_EXTRACTOR,
+                  ClassFieldExtractorFactory.BASE_EXTRACTOR,
                   null );
 
         cw.visitSource( null,
@@ -106,7 +103,7 @@ public class ClassFieldExtractorFactory {
                                  null,
                                  null );
             mv.visitCode();
-            Label l0 = new Label();
+            final Label l0 = new Label();
             mv.visitLabel( l0 );
             mv.visitLineNumber( 10,
                                 l0 );
@@ -117,15 +114,15 @@ public class ClassFieldExtractorFactory {
             mv.visitVarInsn( Opcodes.ALOAD,
                              2 );
             mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                BASE_EXTRACTOR,
+                                ClassFieldExtractorFactory.BASE_EXTRACTOR,
                                 "<init>",
                                 "(Ljava/lang/Class;Ljava/lang/String;)V" );
-            Label l1 = new Label();
+            final Label l1 = new Label();
             mv.visitLabel( l1 );
             mv.visitLineNumber( 11,
                                 l1 );
             mv.visitInsn( Opcodes.RETURN );
-            Label l2 = new Label();
+            final Label l2 = new Label();
             mv.visitLabel( l2 );
             mv.visitLocalVariable( "this",
                                    "L" + className + ";",
@@ -153,7 +150,7 @@ public class ClassFieldExtractorFactory {
         // for primitive it's different because we special characters for 
         // return types and create corresponding Objects (e.g. int -> Integer, boolean -> Boolean, ..)
         if ( fieldType.isPrimitive() ) {
-            String primitiveTypeTag = getPrimitiveTag( fieldType );
+            final String primitiveTypeTag = getPrimitiveTag( fieldType );
 
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                  "getValue",
@@ -161,7 +158,7 @@ public class ClassFieldExtractorFactory {
                                  null,
                                  null );
             mv.visitCode();
-            Label l0 = new Label();
+            final Label l0 = new Label();
             mv.visitLabel( l0 );
             mv.visitLineNumber( 14,
                                 l0 );
@@ -190,7 +187,7 @@ public class ClassFieldExtractorFactory {
                                 "<init>",
                                 "(" + primitiveTypeTag + ")V" );
             mv.visitInsn( Opcodes.ARETURN );
-            Label l1 = new Label();
+            final Label l1 = new Label();
             mv.visitLabel( l1 );
             mv.visitLocalVariable( "this",
                                    "L" + className + ";",
@@ -214,7 +211,7 @@ public class ClassFieldExtractorFactory {
                                  null,
                                  null );
             mv.visitCode();
-            Label l0 = new Label();
+            final Label l0 = new Label();
             mv.visitLabel( l0 );
             mv.visitLineNumber( 15,
                                 l0 );
@@ -234,7 +231,7 @@ public class ClassFieldExtractorFactory {
                                     "()L" + typeName + ";" );
             }
             mv.visitInsn( Opcodes.ARETURN );
-            Label l1 = new Label();
+            final Label l1 = new Label();
             mv.visitLabel( l1 );
             mv.visitLocalVariable( "this",
                                    "L" + className + ";",
@@ -260,7 +257,7 @@ public class ClassFieldExtractorFactory {
     /**
      * Return the classObjectType, allowing for the fact that it will be autoboxed if it is a primitive.
      */
-    protected static ClassObjectType getClassObjectType(Class fieldType) throws IntrospectionException {
+    protected static ClassObjectType getClassObjectType(final Class fieldType) throws IntrospectionException {
         Class returnClass = null;
         // autobox primitives
         if ( fieldType.isPrimitive() ) {
@@ -288,7 +285,7 @@ public class ClassFieldExtractorFactory {
         return new ClassObjectType( returnClass );
     }
 
-    private static String getTypeName(Class fieldType) {
+    private static String getTypeName(final Class fieldType) {
         String ret = null;
 
         if ( fieldType.isPrimitive() ) {
@@ -317,7 +314,7 @@ public class ClassFieldExtractorFactory {
         return ret;
     }
 
-    private static String getPrimitiveTag(Class fieldType) {
+    private static String getPrimitiveTag(final Class fieldType) {
         String ret = null;
         if ( fieldType == char.class ) {
             ret = "C";
@@ -345,12 +342,12 @@ public class ClassFieldExtractorFactory {
      * @author Michael Neale
      */
     static class ByteArrayClassLoader extends ClassLoader {
-        public ByteArrayClassLoader(ClassLoader parent) {
+        public ByteArrayClassLoader(final ClassLoader parent) {
             super( parent );
         }
 
-        public Class defineClass(String name,
-                                 byte[] bytes) {
+        public Class defineClass(final String name,
+                                 final byte[] bytes) {
             return defineClass( name,
                                 bytes,
                                 0,

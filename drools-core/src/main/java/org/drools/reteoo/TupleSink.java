@@ -45,14 +45,14 @@ interface TupleSink
      */
     void assertTuple(ReteTuple tuple,
                      PropagationContext context,
-                     WorkingMemoryImpl workingMemory);
+                     ReteooWorkingMemory workingMemory);
 
     void retractTuple(ReteTuple tuple,
                       PropagationContext context,
-                      WorkingMemoryImpl workingMemory);
+                      ReteooWorkingMemory workingMemory);
 
     void modifyTuple(ReteTuple tuple,
                      PropagationContext context,
-                     WorkingMemoryImpl workingMemory);
+                     ReteooWorkingMemory workingMemory);
 
 }

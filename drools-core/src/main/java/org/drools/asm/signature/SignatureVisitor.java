@@ -57,12 +57,12 @@ public interface SignatureVisitor {
     /**
      * Wildcard for an "extends" type argument.
      */
-    char EXTENDS = '+';
+    char EXTENDS    = '+';
 
     /**
      * Wildcard for a "super" type argument.
      */
-    char SUPER = '-';
+    char SUPER      = '-';
 
     /**
      * Wildcard for a normal type argument.

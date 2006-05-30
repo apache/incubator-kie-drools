@@ -1,4 +1,5 @@
 package org.drools.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.common;
  * limitations under the License.
  */
 
-
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,27 +29,32 @@ public class BetaNodeBinder
     implements
     Serializable {
 
-    public final static BetaNodeBinder simpleBinder = new BetaNodeBinder();
+    /**
+     * 
+     */
+    private static final long              serialVersionUID  = -2793835336853071181L;
 
-    private final FieldConstraint[]    constraints;
-    
-    private static final FieldConstraint[] EMPTY_CONSTRAINTS = new FieldConstraint[0]; 
+    public final static BetaNodeBinder     simpleBinder      = new BetaNodeBinder();
+
+    private final FieldConstraint[]        constraints;
+
+    private static final FieldConstraint[] EMPTY_CONSTRAINTS = new FieldConstraint[0];
 
     public BetaNodeBinder() {
         this.constraints = BetaNodeBinder.EMPTY_CONSTRAINTS;
     }
 
-    public BetaNodeBinder(FieldConstraint constraint) {
+    public BetaNodeBinder(final FieldConstraint constraint) {
         this.constraints = new FieldConstraint[]{constraint};
     }
 
-    public BetaNodeBinder(FieldConstraint[] constraints) {
+    public BetaNodeBinder(final FieldConstraint[] constraints) {
         this.constraints = constraints;
     }
 
-    public boolean isAllowed(InternalFactHandle handle,
-                             Tuple tuple,
-                             WorkingMemory workingMemory) {
+    public boolean isAllowed(final InternalFactHandle handle,
+                             final Tuple tuple,
+                             final WorkingMemory workingMemory) {
         if ( this.constraints == null ) {
             return true;
         }
@@ -66,9 +70,9 @@ public class BetaNodeBinder
     }
 
     public Set getRequiredDeclarations() {
-        Set declarations = new HashSet();
+        final Set declarations = new HashSet();
         for ( int i = 0; i < this.constraints.length; i++ ) {
-            Declaration[] array = this.constraints[i].getRequiredDeclarations();
+            final Declaration[] array = this.constraints[i].getRequiredDeclarations();
             for ( int j = 0; j < array.length; j++ ) {
                 declarations.add( array[j] );
             }
@@ -93,7 +97,7 @@ public class BetaNodeBinder
      * @return <code>true</code> if <code>object</code> is equal to this,
      *         otherwise <code>false</code>.
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -102,15 +106,15 @@ public class BetaNodeBinder
             return false;
         }
 
-        BetaNodeBinder other = (BetaNodeBinder) object;
+        final BetaNodeBinder other = (BetaNodeBinder) object;
 
-        if  ( this.constraints == other.constraints ) {
+        if ( this.constraints == other.constraints ) {
             return true;
         }
-        
+
         if ( this.constraints.length != other.constraints.length ) {
             return false;
-        }        
+        }
 
         for ( int i = 0; i < this.constraints.length; i++ ) {
             if ( !this.constraints[i].equals( other.constraints[i] ) ) {

@@ -47,7 +47,7 @@ public class AbstractBaseLinkedListNode
     /* (non-Javadoc)
      * @see org.drools.reteoo.LinkedListNode#setNext(org.drools.reteoo.LinkedListNode)
      */
-    public void setNext(LinkedListNode next) {
+    public void setNext(final LinkedListNode next) {
         this.next = next;
     }
 
@@ -61,7 +61,7 @@ public class AbstractBaseLinkedListNode
     /* (non-Javadoc)
      * @see org.drools.reteoo.LinkedListNode#setPrevious(org.drools.reteoo.LinkedListNode)
      */
-    public void setPrevious(LinkedListNode previous) {
+    public void setPrevious(final LinkedListNode previous) {
         this.previous = previous;
     }
 }

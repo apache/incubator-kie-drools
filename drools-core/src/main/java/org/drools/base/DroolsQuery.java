@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,18 +16,16 @@ package org.drools.base;
  * limitations under the License.
  */
 
-
-
 public class DroolsQuery {
     private String name;
 
-    public DroolsQuery(String name) {
+    public DroolsQuery(final String name) {
         super();
         this.name = name;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
 }

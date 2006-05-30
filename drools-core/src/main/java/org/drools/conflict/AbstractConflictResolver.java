@@ -1,4 +1,5 @@
 package org.drools.conflict;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.conflict;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
@@ -36,8 +33,8 @@ public abstract class AbstractConflictResolver
     /**
      * @see ConflictResolver
      */
-    public final int compare(Object existing,
-                             Object adding) {
+    public final int compare(final Object existing,
+                             final Object adding) {
         return compare( (Activation) existing,
                         (Activation) adding );
     }

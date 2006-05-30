@@ -81,21 +81,19 @@ public abstract class MemberNode {
      * @param visible <tt>true</tt> if the annotation is visible at runtime.
      * @return a visitor to visit the annotation values.
      */
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        AnnotationNode an = new AnnotationNode(desc);
-        if (visible) {
-            if (visibleAnnotations == null) {
-                visibleAnnotations = new ArrayList(1);
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        final AnnotationNode an = new AnnotationNode( desc );
+        if ( visible ) {
+            if ( this.visibleAnnotations == null ) {
+                this.visibleAnnotations = new ArrayList( 1 );
             }
-            visibleAnnotations.add(an);
+            this.visibleAnnotations.add( an );
         } else {
-            if (invisibleAnnotations == null) {
-                invisibleAnnotations = new ArrayList(1);
+            if ( this.invisibleAnnotations == null ) {
+                this.invisibleAnnotations = new ArrayList( 1 );
             }
-            invisibleAnnotations.add(an);
+            this.invisibleAnnotations.add( an );
         }
         return an;
     }
@@ -106,10 +104,10 @@ public abstract class MemberNode {
      * @param attr an attribute.
      */
     public void visitAttribute(final Attribute attr) {
-        if (attrs == null) {
-            attrs = new ArrayList(1);
+        if ( this.attrs == null ) {
+            this.attrs = new ArrayList( 1 );
         }
-        attrs.add(attr);
+        this.attrs.add( attr );
     }
 
     /**

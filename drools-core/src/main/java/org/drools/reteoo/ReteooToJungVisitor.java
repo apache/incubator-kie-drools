@@ -26,7 +26,6 @@ import java.util.Map;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.FieldConstraint;
-import org.drools.spi.FieldValue;
 import org.drools.util.ReflectiveVisitor;
 import org.drools.visualize.ReteooJungViewer.DroolsVertex;
 
@@ -56,7 +55,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
      * existing nodes back together. This is vital to the Visitor being able to
      * link two JoinNodeInputs together through their common JoinNode.
      */
-    private Map                 visitedNodes = new HashMap();
+    private final Map           visitedNodes = new HashMap();
 
     private Graph               graph;
 
@@ -67,7 +66,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     /**
      * Constructor.
      */
-    public ReteooToJungVisitor(Graph graph) {
+    public ReteooToJungVisitor(final Graph graph) {
         this.graph = graph;
     }
 
@@ -82,14 +81,14 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     /**
      * RuleBaseImpl visits its Rete.
      */
-    public void visitRuleBaseImpl(RuleBaseImpl ruleBase) {
-        visit( ((RuleBaseImpl) ruleBase).getRete() );
+    public void visitReteooRuleBase(final ReteooRuleBase ruleBase) {
+        visit( (ruleBase).getRete() );
     }
 
     /**
      * Rete visits each of its ObjectTypeNodes.
      */
-    public void visitRete(Rete rete) {
+    public void visitRete(final Rete rete) {
         this.rootVertex = (ReteNodeVertex) this.visitedNodes.get( dotId( rete ) );
         if ( this.rootVertex == null ) {
             this.rootVertex = new ReteNodeVertex( rete );
@@ -99,21 +98,21 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
 
         this.graph.addVertex( this.rootVertex );
         this.parentVertex = this.rootVertex;
-        for ( Iterator i = rete.objectTypeNodeIterator(); i.hasNext(); ) {
-            Object nextNode = i.next();
+        for ( final Iterator i = rete.objectTypeNodeIterator(); i.hasNext(); ) {
+            final Object nextNode = i.next();
             visitNode( nextNode );
         }
     }
 
-    public void visitBaseNode(BaseNode node) {
+    public void visitBaseNode(final BaseNode node) {
         Vertex vertex = (Vertex) this.visitedNodes.get( dotId( node ) );
         if ( vertex == null ) {
             try {
                 String name = node.getClass().getName();
                 name = name.substring( name.lastIndexOf( '.' ) + 1 ) + "Vertex";
-                Class clazz = Class.forName( "org.drools.reteoo.ReteooToJungVisitor$" + name );
+                final Class clazz = Class.forName( "org.drools.reteoo.ReteooToJungVisitor$" + name );
                 vertex = (Vertex) clazz.getConstructor( new Class[]{node.getClass()} ).newInstance( new Object[]{node} );
-            } catch ( Exception e ) {
+            } catch ( final Exception e ) {
                 throw new RuntimeException( "problem visiting node " + node.getClass().getName(),
                                             e );
             }
@@ -122,7 +121,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
                                    vertex );
             this.graph.addEdge( new DroolsDirectedEdge( this.parentVertex,
                                                         vertex ) );
-            Vertex oldParentVertex = this.parentVertex;
+            final Vertex oldParentVertex = this.parentVertex;
             this.parentVertex = vertex;
 
             List list = null;
@@ -133,8 +132,8 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
             }
 
             if ( list != null ) {
-                for ( Iterator it = list.iterator(); it.hasNext(); ) {
-                    Object nextNode = it.next();
+                for ( final Iterator it = list.iterator(); it.hasNext(); ) {
+                    final Object nextNode = it.next();
                     visitNode( nextNode );
                 }
             }
@@ -148,7 +147,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     /**
      * Helper method to ensure nodes are not visited more than once.
      */
-    private void visitNode(Object node) {
+    private void visitNode(final Object node) {
         visit( node );
     }
 
@@ -156,13 +155,13 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
      * The identity hashCode for the given object is used as its unique DOT
      * identifier.
      */
-    private static String dotId(Object object) {
+    private static String dotId(final Object object) {
         return Integer.toHexString( System.identityHashCode( object ) ).toUpperCase();
     }
 
     class DroolsDirectedEdge extends DirectedSparseEdge {
-        public DroolsDirectedEdge(Vertex v1,
-                                  Vertex v2) {
+        public DroolsDirectedEdge(final Vertex v1,
+                                  final Vertex v2) {
             super( v1,
                    v2 );
         }
@@ -175,7 +174,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     static class ReteNodeVertex extends BaseNodeVertex {
         private final Rete node;
 
-        public ReteNodeVertex(Rete node) {
+        public ReteNodeVertex(final Rete node) {
             super();
             this.node = node;
         }
@@ -192,7 +191,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     static class ObjectTypeNodeVertex extends BaseNodeVertex {
         private final ObjectTypeNode node;
 
-        public ObjectTypeNodeVertex(ObjectTypeNode node) {
+        public ObjectTypeNodeVertex(final ObjectTypeNode node) {
             super();
             this.node = node;
         }
@@ -213,14 +212,14 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     static class AlphaNodeVertex extends BaseNodeVertex {
         private final AlphaNode node;
 
-        public AlphaNodeVertex(AlphaNode node) {
+        public AlphaNodeVertex(final AlphaNode node) {
             super();
             this.node = node;
         }
 
         public String getHtml() {
-            LiteralConstraint constraint = (LiteralConstraint) node.getConstraint();
-            ClassFieldExtractor extractor = ( ClassFieldExtractor ) constraint.getFieldExtractor();
+            final LiteralConstraint constraint = (LiteralConstraint) this.node.getConstraint();
+            final ClassFieldExtractor extractor = (ClassFieldExtractor) constraint.getFieldExtractor();
             return "AlphaNode<br>field : " + extractor.getFieldName() + "<br>evaluator : " + constraint.getEvaluator() + "<br>value :  " + constraint.getField();
         }
 
@@ -236,7 +235,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     static class LeftInputAdapterNodeVertex extends BaseNodeVertex {
         private final LeftInputAdapterNode node;
 
-        public LeftInputAdapterNodeVertex(LeftInputAdapterNode node) {
+        public LeftInputAdapterNodeVertex(final LeftInputAdapterNode node) {
             super();
             this.node = node;
         }
@@ -257,7 +256,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     static class RightInputAdapterNodeVertex extends BaseNodeVertex {
         private final RightInputAdapterNode node;
 
-        public RightInputAdapterNodeVertex(RightInputAdapterNode node) {
+        public RightInputAdapterNodeVertex(final RightInputAdapterNode node) {
             super();
             this.node = node;
         }
@@ -278,7 +277,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     static class JoinNodeVertex extends BaseNodeVertex {
         private final JoinNode node;
 
-        public JoinNodeVertex(JoinNode node) {
+        public JoinNodeVertex(final JoinNode node) {
             super();
             this.node = node;
         }
@@ -299,7 +298,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     static class NotNodeVertex extends BaseNodeVertex {
         private final NotNode node;
 
-        public NotNodeVertex(NotNode node) {
+        public NotNodeVertex(final NotNode node) {
             super();
             this.node = node;
         }
@@ -320,7 +319,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     static class EvalConditionNodeVertex extends BaseNodeVertex {
         private final EvalConditionNode node;
 
-        public EvalConditionNodeVertex(EvalConditionNode node) {
+        public EvalConditionNodeVertex(final EvalConditionNode node) {
             super();
             this.node = node;
         }
@@ -337,7 +336,7 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
     static class TerminalNodeVertex extends BaseNodeVertex {
         private final TerminalNode node;
 
-        public TerminalNodeVertex(TerminalNode node) {
+        public TerminalNodeVertex(final TerminalNode node) {
             super();
             this.node = node;
         }
@@ -375,9 +374,9 @@ public class ReteooToJungVisitor extends ReflectiveVisitor {
             return Color.BLACK;
         }
     }
-    
-    public static String dumpConstraints(FieldConstraint[] constraints) {
-        StringBuffer buffer = new StringBuffer();
+
+    public static String dumpConstraints(final FieldConstraint[] constraints) {
+        final StringBuffer buffer = new StringBuffer();
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             buffer.append( constraints[i].toString() + "<br>" );
         }

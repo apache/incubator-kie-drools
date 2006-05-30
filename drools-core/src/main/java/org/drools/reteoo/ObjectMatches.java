@@ -16,6 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import org.drools.common.DefaultFactHandle;
 import org.drools.util.BaseMultiLinkedListNode;
 import org.drools.util.LinkedList;
 
@@ -31,16 +32,16 @@ import org.drools.util.LinkedList;
  *
  */
 public class ObjectMatches extends BaseMultiLinkedListNode {
-    private LinkedList           list;
+    private LinkedList              list;
 
-    private final FactHandleImpl handle;
+    private final DefaultFactHandle handle;
 
     /**
      * Constructs an ObjectMatches which maintain a reference to its <code>FactHandleImpl</code> with an empty <code>LinkedList</code>.
      *  
      * @param handle
      */
-    public ObjectMatches(FactHandleImpl handle) {
+    public ObjectMatches(final DefaultFactHandle handle) {
         this.list = new LinkedList();
         this.handle = handle;
     }
@@ -52,9 +53,9 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
      * @param tuple
      * @return
      */
-    TupleMatch add(ReteTuple tuple) {
-        TupleMatch tupleMatch = new TupleMatch( tuple,
-                                                this );
+    TupleMatch add(final ReteTuple tuple) {
+        final TupleMatch tupleMatch = new TupleMatch( tuple,
+                                                      this );
 
         this.list.add( tupleMatch );
 
@@ -66,7 +67,7 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
      * 
      * @param tupleMatch
      */
-    void remove(TupleMatch tupleMatch) {
+    void remove(final TupleMatch tupleMatch) {
         this.list.remove( tupleMatch );
     }
 
@@ -74,7 +75,7 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
      * Return <code>FactHandleImpl</code> that this provides the <code>TupleMatch</code>es for.
      * @return
      */
-    public FactHandleImpl getFactHandle() {
+    public DefaultFactHandle getFactHandle() {
         return this.handle;
     }
 

@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -111,9 +108,9 @@ public class AbstractHashedMap extends AbstractMap {
      * @param threshold
      *            the threshold, must be sensible
      */
-    protected AbstractHashedMap(int initialCapacity,
-                                float loadFactor,
-                                int threshold) {
+    protected AbstractHashedMap(final int initialCapacity,
+                                final float loadFactor,
+                                final int threshold) {
         super();
         this.loadFactor = loadFactor;
         this.data = new HashEntry[initialCapacity];
@@ -130,7 +127,7 @@ public class AbstractHashedMap extends AbstractMap {
      * @throws IllegalArgumentException
      *             if the initial capacity is less than one
      */
-    protected AbstractHashedMap(int initialCapacity) {
+    protected AbstractHashedMap(final int initialCapacity) {
         this( initialCapacity,
               AbstractHashedMap.DEFAULT_LOAD_FACTOR );
     }
@@ -149,7 +146,7 @@ public class AbstractHashedMap extends AbstractMap {
      *             if the load factor is less than or equal to zero
      */
     protected AbstractHashedMap(int initialCapacity,
-                                float loadFactor) {
+                                final float loadFactor) {
         super();
         if ( initialCapacity < 1 ) {
             throw new IllegalArgumentException( "Initial capacity must be greater than 0" );
@@ -173,7 +170,7 @@ public class AbstractHashedMap extends AbstractMap {
      * @throws NullPointerException
      *             if the map is null
      */
-    protected AbstractHashedMap(Map map) {
+    protected AbstractHashedMap(final Map map) {
         this( Math.max( 2 * map.size(),
                         AbstractHashedMap.DEFAULT_CAPACITY ),
               AbstractHashedMap.DEFAULT_LOAD_FACTOR );
@@ -196,7 +193,7 @@ public class AbstractHashedMap extends AbstractMap {
      */
     public Object get(Object key) {
         key = convertKey( key );
-        int hashCode = hash( key );
+        final int hashCode = hash( key );
         HashEntry entry = this.data[hashIndex( hashCode,
                                                this.data.length )]; // no local
         // for hash
@@ -239,7 +236,7 @@ public class AbstractHashedMap extends AbstractMap {
      */
     public boolean containsKey(Object key) {
         key = convertKey( key );
-        int hashCode = hash( key );
+        final int hashCode = hash( key );
         HashEntry entry = this.data[hashIndex( hashCode,
                                                this.data.length )]; // no local
         // for hash
@@ -261,7 +258,7 @@ public class AbstractHashedMap extends AbstractMap {
      *            the value to search for
      * @return true if the map contains the value
      */
-    public boolean containsValue(Object value) {
+    public boolean containsValue(final Object value) {
         if ( value == null ) {
             for ( int i = 0, isize = this.data.length; i < isize; i++ ) {
                 HashEntry entry = this.data[i];
@@ -298,16 +295,16 @@ public class AbstractHashedMap extends AbstractMap {
      * @return the value previously mapped to this key, null if none
      */
     public Object put(Object key,
-                      Object value) {
+                      final Object value) {
         key = convertKey( key );
-        int hashCode = hash( key );
-        int index = hashIndex( hashCode,
-                               this.data.length );
+        final int hashCode = hash( key );
+        final int index = hashIndex( hashCode,
+                                     this.data.length );
         HashEntry entry = this.data[index];
         while ( entry != null ) {
             if ( entry.hashCode == hashCode && isEqualKey( key,
                                                            entry.key ) ) {
-                Object oldValue = entry.getValue();
+                final Object oldValue = entry.getValue();
                 updateEntry( entry,
                              value );
                 return oldValue;
@@ -333,15 +330,15 @@ public class AbstractHashedMap extends AbstractMap {
      * @throws NullPointerException
      *             if the map is null
      */
-    public void putAll(Map map) {
-        int mapSize = map.size();
+    public void putAll(final Map map) {
+        final int mapSize = map.size();
         if ( mapSize == 0 ) {
             return;
         }
-        int newSize = (int) ((this.size + mapSize) / this.loadFactor + 1);
+        final int newSize = (int) ((this.size + mapSize) / this.loadFactor + 1);
         ensureCapacity( calculateNewCapacity( newSize ) );
-        for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) it.next();
+        for ( final Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
+            final Map.Entry entry = (Map.Entry) it.next();
             put( entry.getKey(),
                  entry.getValue() );
         }
@@ -356,15 +353,15 @@ public class AbstractHashedMap extends AbstractMap {
      */
     public Object remove(Object key) {
         key = convertKey( key );
-        int hashCode = hash( key );
-        int index = hashIndex( hashCode,
-                               this.data.length );
+        final int hashCode = hash( key );
+        final int index = hashIndex( hashCode,
+                                     this.data.length );
         HashEntry entry = this.data[index];
         HashEntry previous = null;
         while ( entry != null ) {
             if ( entry.hashCode == hashCode && isEqualKey( key,
                                                            entry.key ) ) {
-                Object oldValue = entry.getValue();
+                final Object oldValue = entry.getValue();
                 removeMapping( entry,
                                index,
                                previous );
@@ -382,7 +379,7 @@ public class AbstractHashedMap extends AbstractMap {
      */
     public void clear() {
         this.modCount++;
-        HashEntry[] data = this.data;
+        final HashEntry[] data = this.data;
         for ( int i = data.length - 1; i >= 0; i-- ) {
             data[i] = null;
         }
@@ -402,7 +399,7 @@ public class AbstractHashedMap extends AbstractMap {
      *            the key convert
      * @return the converted key
      */
-    protected Object convertKey(Object key) {
+    protected Object convertKey(final Object key) {
         return (key == null ? AbstractHashedMap.NULL : key);
     }
 
@@ -415,7 +412,7 @@ public class AbstractHashedMap extends AbstractMap {
      *            the key to get a hash code for
      * @return the hash code
      */
-    protected int hash(Object key) {
+    protected int hash(final Object key) {
         // same as JDK 1.4
         int h = key.hashCode();
         h += ~(h << 9);
@@ -437,8 +434,8 @@ public class AbstractHashedMap extends AbstractMap {
      *            <code>entry.key</code>
      * @return true if equal
      */
-    protected boolean isEqualKey(Object key1,
-                                 Object key2) {
+    protected boolean isEqualKey(final Object key1,
+                                 final Object key2) {
         return (key1 == key2 || key1.equals( key2 ));
     }
 
@@ -454,8 +451,8 @@ public class AbstractHashedMap extends AbstractMap {
      *            <code>getValue()</code>
      * @return true if equal
      */
-    protected boolean isEqualValue(Object value1,
-                                   Object value2) {
+    protected boolean isEqualValue(final Object value1,
+                                   final Object value2) {
         return (value1 == value2 || value1.equals( value2 ));
     }
 
@@ -470,8 +467,8 @@ public class AbstractHashedMap extends AbstractMap {
      *            the size of the data to pick a bucket from
      * @return the bucket index
      */
-    protected int hashIndex(int hashCode,
-                            int dataSize) {
+    protected int hashIndex(final int hashCode,
+                            final int dataSize) {
         return hashCode & (dataSize - 1);
     }
 
@@ -489,7 +486,7 @@ public class AbstractHashedMap extends AbstractMap {
      */
     protected HashEntry getEntry(Object key) {
         key = convertKey( key );
-        int hashCode = hash( key );
+        final int hashCode = hash( key );
         HashEntry entry = this.data[hashIndex( hashCode,
                                                this.data.length )]; // no local
         // for hash
@@ -516,8 +513,8 @@ public class AbstractHashedMap extends AbstractMap {
      * @param newValue
      *            the new value to store
      */
-    protected void updateEntry(HashEntry entry,
-                               Object newValue) {
+    protected void updateEntry(final HashEntry entry,
+                               final Object newValue) {
         entry.setValue( newValue );
     }
 
@@ -538,11 +535,11 @@ public class AbstractHashedMap extends AbstractMap {
      * @param value
      *            the value to add
      */
-    protected void reuseEntry(HashEntry entry,
-                              int hashIndex,
-                              int hashCode,
-                              Object key,
-                              Object value) {
+    protected void reuseEntry(final HashEntry entry,
+                              final int hashIndex,
+                              final int hashCode,
+                              final Object key,
+                              final Object value) {
         entry.next = this.data[hashIndex];
         entry.hashCode = hashCode;
         entry.key = key;
@@ -567,15 +564,15 @@ public class AbstractHashedMap extends AbstractMap {
      * @param value
      *            the value to add
      */
-    protected void addMapping(int hashIndex,
-                              int hashCode,
-                              Object key,
-                              Object value) {
+    protected void addMapping(final int hashIndex,
+                              final int hashCode,
+                              final Object key,
+                              final Object value) {
         this.modCount++;
-        HashEntry entry = createEntry( this.data[hashIndex],
-                                       hashCode,
-                                       key,
-                                       value );
+        final HashEntry entry = createEntry( this.data[hashIndex],
+                                             hashCode,
+                                             key,
+                                             value );
         addEntry( entry,
                   hashIndex );
         this.size++;
@@ -598,10 +595,10 @@ public class AbstractHashedMap extends AbstractMap {
      *            the value to store
      * @return the newly created entry
      */
-    protected HashEntry createEntry(HashEntry next,
-                                    int hashCode,
-                                    Object key,
-                                    Object value) {
+    protected HashEntry createEntry(final HashEntry next,
+                                    final int hashCode,
+                                    final Object key,
+                                    final Object value) {
         return new HashEntry( next,
                               hashCode,
                               key,
@@ -619,8 +616,8 @@ public class AbstractHashedMap extends AbstractMap {
      * @param hashIndex
      *            the index into the data array to store at
      */
-    protected void addEntry(HashEntry entry,
-                            int hashIndex) {
+    protected void addEntry(final HashEntry entry,
+                            final int hashIndex) {
         this.data[hashIndex] = entry;
     }
 
@@ -640,9 +637,9 @@ public class AbstractHashedMap extends AbstractMap {
      * @param previous
      *            the previous entry in the chain
      */
-    protected void removeMapping(HashEntry entry,
-                                 int hashIndex,
-                                 HashEntry previous) {
+    protected void removeMapping(final HashEntry entry,
+                                 final int hashIndex,
+                                 final HashEntry previous) {
         this.modCount++;
         removeEntry( entry,
                      hashIndex,
@@ -665,9 +662,9 @@ public class AbstractHashedMap extends AbstractMap {
      * @param previous
      *            the previous entry in the chain
      */
-    protected void removeEntry(HashEntry entry,
-                               int hashIndex,
-                               HashEntry previous) {
+    protected void removeEntry(final HashEntry entry,
+                               final int hashIndex,
+                               final HashEntry previous) {
         if ( previous == null ) {
             this.data[hashIndex] = entry.next;
         } else {
@@ -685,7 +682,7 @@ public class AbstractHashedMap extends AbstractMap {
      * @param entry
      *            the entry to destroy
      */
-    protected void destroyEntry(HashEntry entry) {
+    protected void destroyEntry(final HashEntry entry) {
         entry.next = null;
         entry.key = null;
         entry.value = null;
@@ -700,7 +697,7 @@ public class AbstractHashedMap extends AbstractMap {
      */
     protected void checkCapacity() {
         if ( this.size >= this.threshold ) {
-            int newCapacity = this.data.length * 2;
+            final int newCapacity = this.data.length * 2;
             if ( newCapacity <= AbstractHashedMap.MAXIMUM_CAPACITY ) {
                 ensureCapacity( newCapacity );
             }
@@ -714,8 +711,8 @@ public class AbstractHashedMap extends AbstractMap {
      *            the new capacity of the array (a power of two, less or equal
      *            to max)
      */
-    protected void ensureCapacity(int newCapacity) {
-        int oldCapacity = this.data.length;
+    protected void ensureCapacity(final int newCapacity) {
+        final int oldCapacity = this.data.length;
         if ( newCapacity <= oldCapacity ) {
             return;
         }
@@ -724,8 +721,8 @@ public class AbstractHashedMap extends AbstractMap {
                                                  this.loadFactor );
             this.data = new HashEntry[newCapacity];
         } else {
-            HashEntry oldEntries[] = this.data;
-            HashEntry newEntries[] = new HashEntry[newCapacity];
+            final HashEntry oldEntries[] = this.data;
+            final HashEntry newEntries[] = new HashEntry[newCapacity];
 
             this.modCount++;
             for ( int i = oldCapacity - 1; i >= 0; i-- ) {
@@ -733,9 +730,9 @@ public class AbstractHashedMap extends AbstractMap {
                 if ( entry != null ) {
                     oldEntries[i] = null; // gc
                     do {
-                        HashEntry next = entry.next;
-                        int index = hashIndex( entry.hashCode,
-                                               newCapacity );
+                        final HashEntry next = entry.next;
+                        final int index = hashIndex( entry.hashCode,
+                                                     newCapacity );
                         entry.next = newEntries[index];
                         newEntries[index] = entry;
                         entry = next;
@@ -756,7 +753,7 @@ public class AbstractHashedMap extends AbstractMap {
      *            the proposed capacity
      * @return the normalized new capacity
      */
-    protected int calculateNewCapacity(int proposedCapacity) {
+    protected int calculateNewCapacity(final int proposedCapacity) {
         int newCapacity = 1;
         if ( proposedCapacity > AbstractHashedMap.MAXIMUM_CAPACITY ) {
             newCapacity = AbstractHashedMap.MAXIMUM_CAPACITY;
@@ -781,8 +778,8 @@ public class AbstractHashedMap extends AbstractMap {
      *            the load factor
      * @return the new resize threshold
      */
-    protected int calculateThreshold(int newCapacity,
-                                     float factor) {
+    protected int calculateThreshold(final int newCapacity,
+                                     final float factor) {
         return (int) (newCapacity * factor);
     }
 
@@ -798,7 +795,7 @@ public class AbstractHashedMap extends AbstractMap {
      *             if the entry is null
      * @since Commons Collections 3.1
      */
-    protected HashEntry entryNext(HashEntry entry) {
+    protected HashEntry entryNext(final HashEntry entry) {
         return entry.next;
     }
 
@@ -813,7 +810,7 @@ public class AbstractHashedMap extends AbstractMap {
      *             if the entry is null
      * @since Commons Collections 3.1
      */
-    protected int entryHashCode(HashEntry entry) {
+    protected int entryHashCode(final HashEntry entry) {
         return entry.hashCode;
     }
 
@@ -828,7 +825,7 @@ public class AbstractHashedMap extends AbstractMap {
      *             if the entry is null
      * @since Commons Collections 3.1
      */
-    protected Object entryKey(HashEntry entry) {
+    protected Object entryKey(final HashEntry entry) {
         return entry.key;
     }
 
@@ -843,7 +840,7 @@ public class AbstractHashedMap extends AbstractMap {
      *             if the entry is null
      * @since Commons Collections 3.1
      */
-    protected Object entryValue(HashEntry entry) {
+    protected Object entryValue(final HashEntry entry) {
         return entry.value;
     }
 
@@ -873,7 +870,7 @@ public class AbstractHashedMap extends AbstractMap {
         implements
         MapIterator {
 
-        protected HashMapIterator(AbstractHashedMap parent) {
+        protected HashMapIterator(final AbstractHashedMap parent) {
             super( parent );
         }
 
@@ -882,7 +879,7 @@ public class AbstractHashedMap extends AbstractMap {
         }
 
         public Object getKey() {
-            HashEntry current = currentEntry();
+            final HashEntry current = currentEntry();
             if ( current == null ) {
                 throw new IllegalStateException( AbstractHashedMap.GETKEY_INVALID );
             }
@@ -890,15 +887,15 @@ public class AbstractHashedMap extends AbstractMap {
         }
 
         public Object getValue() {
-            HashEntry current = currentEntry();
+            final HashEntry current = currentEntry();
             if ( current == null ) {
                 throw new IllegalStateException( AbstractHashedMap.GETVALUE_INVALID );
             }
             return current.getValue();
         }
 
-        public Object setValue(Object value) {
-            HashEntry current = currentEntry();
+        public Object setValue(final Object value) {
+            final HashEntry current = currentEntry();
             if ( current == null ) {
                 throw new IllegalStateException( AbstractHashedMap.SETVALUE_INVALID );
             }
@@ -940,7 +937,7 @@ public class AbstractHashedMap extends AbstractMap {
         /** The parent map */
         protected final AbstractHashedMap parent;
 
-        protected EntrySet(AbstractHashedMap parent) {
+        protected EntrySet(final AbstractHashedMap parent) {
             super();
             this.parent = parent;
         }
@@ -953,24 +950,24 @@ public class AbstractHashedMap extends AbstractMap {
             this.parent.clear();
         }
 
-        public boolean contains(Object entry) {
+        public boolean contains(final Object entry) {
             if ( entry instanceof Map.Entry ) {
-                Map.Entry e = (Map.Entry) entry;
-                Entry match = this.parent.getEntry( e.getKey() );
+                final Map.Entry e = (Map.Entry) entry;
+                final Entry match = this.parent.getEntry( e.getKey() );
                 return (match != null && match.equals( e ));
             }
             return false;
         }
 
-        public boolean remove(Object obj) {
+        public boolean remove(final Object obj) {
             if ( obj instanceof Map.Entry == false ) {
                 return false;
             }
             if ( contains( obj ) == false ) {
                 return false;
             }
-            Map.Entry entry = (Map.Entry) obj;
-            Object key = entry.getKey();
+            final Map.Entry entry = (Map.Entry) obj;
+            final Object key = entry.getKey();
             this.parent.remove( key );
             return true;
         }
@@ -985,7 +982,7 @@ public class AbstractHashedMap extends AbstractMap {
      */
     protected static class EntrySetIterator extends HashIterator {
 
-        protected EntrySetIterator(AbstractHashedMap parent) {
+        protected EntrySetIterator(final AbstractHashedMap parent) {
             super( parent );
         }
 
@@ -1028,7 +1025,7 @@ public class AbstractHashedMap extends AbstractMap {
         /** The parent map */
         protected final AbstractHashedMap parent;
 
-        protected KeySet(AbstractHashedMap parent) {
+        protected KeySet(final AbstractHashedMap parent) {
             super();
             this.parent = parent;
         }
@@ -1041,12 +1038,12 @@ public class AbstractHashedMap extends AbstractMap {
             this.parent.clear();
         }
 
-        public boolean contains(Object key) {
+        public boolean contains(final Object key) {
             return this.parent.containsKey( key );
         }
 
-        public boolean remove(Object key) {
-            boolean result = this.parent.containsKey( key );
+        public boolean remove(final Object key) {
+            final boolean result = this.parent.containsKey( key );
             this.parent.remove( key );
             return result;
         }
@@ -1061,7 +1058,7 @@ public class AbstractHashedMap extends AbstractMap {
      */
     protected static class KeySetIterator extends EntrySetIterator {
 
-        protected KeySetIterator(AbstractHashedMap parent) {
+        protected KeySetIterator(final AbstractHashedMap parent) {
             super( parent );
         }
 
@@ -1104,7 +1101,7 @@ public class AbstractHashedMap extends AbstractMap {
         /** The parent map */
         protected final AbstractHashedMap parent;
 
-        protected Values(AbstractHashedMap parent) {
+        protected Values(final AbstractHashedMap parent) {
             super();
             this.parent = parent;
         }
@@ -1117,7 +1114,7 @@ public class AbstractHashedMap extends AbstractMap {
             this.parent.clear();
         }
 
-        public boolean contains(Object value) {
+        public boolean contains(final Object value) {
             return this.parent.containsValue( value );
         }
 
@@ -1131,7 +1128,7 @@ public class AbstractHashedMap extends AbstractMap {
      */
     protected static class ValuesIterator extends HashIterator {
 
-        protected ValuesIterator(AbstractHashedMap parent) {
+        protected ValuesIterator(final AbstractHashedMap parent) {
             super( parent );
         }
 
@@ -1161,10 +1158,10 @@ public class AbstractHashedMap extends AbstractMap {
         /** The value */
         protected Object    value;
 
-        protected HashEntry(HashEntry next,
-                            int hashCode,
-                            Object key,
-                            Object value) {
+        protected HashEntry(final HashEntry next,
+                            final int hashCode,
+                            final Object key,
+                            final Object value) {
             super();
             this.next = next;
             this.hashCode = hashCode;
@@ -1180,20 +1177,20 @@ public class AbstractHashedMap extends AbstractMap {
             return this.value;
         }
 
-        public Object setValue(Object value) {
-            Object old = this.value;
+        public Object setValue(final Object value) {
+            final Object old = this.value;
             this.value = value;
             return old;
         }
 
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if ( obj == this ) {
                 return true;
             }
             if ( obj instanceof Map.Entry == false ) {
                 return false;
             }
-            Map.Entry other = (Map.Entry) obj;
+            final Map.Entry other = (Map.Entry) obj;
             return (getKey() == null ? other.getKey() == null : getKey().equals( other.getKey() )) && (getValue() == null ? other.getValue() == null : getValue().equals( other.getValue() ));
         }
 
@@ -1224,10 +1221,10 @@ public class AbstractHashedMap extends AbstractMap {
         /** The modification count expected */
         protected int                     expectedModCount;
 
-        protected HashIterator(AbstractHashedMap parent) {
+        protected HashIterator(final AbstractHashedMap parent) {
             super();
             this.parent = parent;
-            HashEntry[] data = parent.data;
+            final HashEntry[] data = parent.data;
             int i = data.length;
             HashEntry next = null;
             while ( i > 0 && next == null ) {
@@ -1246,11 +1243,11 @@ public class AbstractHashedMap extends AbstractMap {
             if ( this.parent.modCount != this.expectedModCount ) {
                 throw new ConcurrentModificationException();
             }
-            HashEntry newCurrent = this.next;
+            final HashEntry newCurrent = this.next;
             if ( newCurrent == null ) {
                 throw new NoSuchElementException( AbstractHashedMap.NO_NEXT_ENTRY );
             }
-            HashEntry[] data = this.parent.data;
+            final HashEntry[] data = this.parent.data;
             int i = this.hashIndex;
             HashEntry n = newCurrent.next;
             while ( n == null && i > 0 ) {
@@ -1308,11 +1305,11 @@ public class AbstractHashedMap extends AbstractMap {
      * @param out
      *            the output stream
      */
-    protected void doWriteObject(ObjectOutputStream out) throws IOException {
+    protected void doWriteObject(final ObjectOutputStream out) throws IOException {
         out.writeFloat( this.loadFactor );
         out.writeInt( this.data.length );
         out.writeInt( this.size );
-        for ( MapIterator it = mapIterator(); it.hasNext(); ) {
+        for ( final MapIterator it = mapIterator(); it.hasNext(); ) {
             out.writeObject( it.next() );
             out.writeObject( it.getValue() );
         }
@@ -1338,16 +1335,16 @@ public class AbstractHashedMap extends AbstractMap {
      * @param in
      *            the input stream
      */
-    protected void doReadObject(ObjectInputStream in) throws IOException,
-                                                     ClassNotFoundException {
+    protected void doReadObject(final ObjectInputStream in) throws IOException,
+                                                           ClassNotFoundException {
         this.loadFactor = in.readFloat();
-        int capacity = in.readInt();
-        int size = in.readInt();
+        final int capacity = in.readInt();
+        final int size = in.readInt();
         init();
         this.data = new HashEntry[capacity];
         for ( int i = 0; i < size; i++ ) {
-            Object key = in.readObject();
-            Object value = in.readObject();
+            final Object key = in.readObject();
+            final Object value = in.readObject();
             put( key,
                  value );
         }
@@ -1366,7 +1363,7 @@ public class AbstractHashedMap extends AbstractMap {
      */
     protected Object clone() {
         try {
-            AbstractHashedMap cloned = (AbstractHashedMap) super.clone();
+            final AbstractHashedMap cloned = (AbstractHashedMap) super.clone();
             cloned.data = new HashEntry[this.data.length];
             cloned.entrySet = null;
             cloned.keySet = null;
@@ -1377,7 +1374,7 @@ public class AbstractHashedMap extends AbstractMap {
             cloned.putAll( this );
             return cloned;
 
-        } catch ( CloneNotSupportedException ex ) {
+        } catch ( final CloneNotSupportedException ex ) {
             return null; // should never happen
         }
     }
@@ -1389,22 +1386,22 @@ public class AbstractHashedMap extends AbstractMap {
      *            the object to compare to
      * @return true if equal
      */
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if ( obj == this ) {
             return true;
         }
         if ( obj instanceof Map == false ) {
             return false;
         }
-        Map map = (Map) obj;
+        final Map map = (Map) obj;
         if ( map.size() != size() ) {
             return false;
         }
-        MapIterator it = mapIterator();
+        final MapIterator it = mapIterator();
         try {
             while ( it.hasNext() ) {
-                Object key = it.next();
-                Object value = it.getValue();
+                final Object key = it.next();
+                final Object value = it.getValue();
                 if ( value == null ) {
                     if ( map.get( key ) != null || map.containsKey( key ) == false ) {
                         return false;
@@ -1415,9 +1412,9 @@ public class AbstractHashedMap extends AbstractMap {
                     }
                 }
             }
-        } catch ( ClassCastException ignored ) {
+        } catch ( final ClassCastException ignored ) {
             return false;
-        } catch ( NullPointerException ignored ) {
+        } catch ( final NullPointerException ignored ) {
             return false;
         }
         return true;
@@ -1430,7 +1427,7 @@ public class AbstractHashedMap extends AbstractMap {
      */
     public int hashCode() {
         int total = 0;
-        Iterator it = createEntrySetIterator();
+        final Iterator it = createEntrySetIterator();
         while ( it.hasNext() ) {
             total += it.next().hashCode();
         }
@@ -1446,14 +1443,14 @@ public class AbstractHashedMap extends AbstractMap {
         if ( size() == 0 ) {
             return "{}";
         }
-        StringBuffer buf = new StringBuffer( 32 * size() );
+        final StringBuffer buf = new StringBuffer( 32 * size() );
         buf.append( '{' );
 
-        MapIterator it = mapIterator();
+        final MapIterator it = mapIterator();
         boolean hasNext = it.hasNext();
         while ( hasNext ) {
-            Object key = it.next();
-            Object value = it.getValue();
+            final Object key = it.next();
+            final Object value = it.getValue();
             buf.append( key == this ? "(this Map)" : key ).append( '=' ).append( value == this ? "(this Map)" : value );
 
             hasNext = it.hasNext();

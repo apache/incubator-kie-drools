@@ -62,7 +62,7 @@ public class LinkedList {
      * @param node
      *      The <code>LinkedListNode</code> to be added
      */
-    public void add(LinkedListNode node) {
+    public void add(final LinkedListNode node) {
         if ( this.firstNode == null ) {
             this.firstNode = node;
             this.lastNode = node;;
@@ -82,7 +82,7 @@ public class LinkedList {
      * @param node
      *      The <code>LinkedListNode</code> to be removed.
      */
-    public void remove(LinkedListNode node) {
+    public void remove(final LinkedListNode node) {
         if ( (this.firstNode != node) && (this.lastNode != node) ) {
             node.getPrevious().setNext( node.getNext() );
             node.getNext().setPrevious( node.getPrevious() );
@@ -128,7 +128,7 @@ public class LinkedList {
         if ( this.firstNode == null ) {
             return null;
         }
-        LinkedListNode node = this.firstNode;
+        final LinkedListNode node = this.firstNode;
         this.firstNode = node.getNext();
         node.setNext( null );
         if ( this.firstNode != null ) {
@@ -151,7 +151,7 @@ public class LinkedList {
         if ( this.lastNode == null ) {
             return null;
         }
-        LinkedListNode node = this.lastNode;
+        final LinkedListNode node = this.lastNode;
         this.lastNode = node.getPrevious();
         node.setPrevious( null );
         if ( this.lastNode != null ) {
@@ -197,23 +197,23 @@ public class LinkedList {
             private LinkedListNode nextNode    = getFirst();
 
             public boolean hasNext() {
-                return (nextNode != null);
+                return (this.nextNode != null);
             }
 
             public Object next() {
-                currentNode = nextNode;
-                if ( currentNode != null ) {
-                    nextNode = currentNode.getNext();
+                this.currentNode = this.nextNode;
+                if ( this.currentNode != null ) {
+                    this.nextNode = this.currentNode.getNext();
                 } else {
                     throw new NoSuchElementException( "No more elements to return" );
                 }
-                return currentNode;
+                return this.currentNode;
             }
 
             public void remove() {
-                if ( currentNode != null ) {
-                    LinkedList.this.remove( currentNode );
-                    currentNode = null;
+                if ( this.currentNode != null ) {
+                    LinkedList.this.remove( this.currentNode );
+                    this.currentNode = null;
                 } else {
                     throw new IllegalStateException( "No item to remove. Call next() before calling remove()." );
                 }

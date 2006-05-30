@@ -16,7 +16,6 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.conflict.DefaultConflictResolver;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
@@ -50,7 +49,7 @@ public class AgendaGroupImpl
      * @param name
      *      The <AgendaGroup> name.
      */
-    public AgendaGroupImpl(String name) {
+    public AgendaGroupImpl(final String name) {
         this.name = name;
         this.queue = new BinaryHeapFifoQueue( DepthConflictResolver.getInstance() );
     }
@@ -73,7 +72,7 @@ public class AgendaGroupImpl
         return this.queue.size();
     }
 
-    public void add(Activation activation) {
+    public void add(final Activation activation) {
         this.queue.enqueue( (Queueable) activation );
     }
 
@@ -93,7 +92,7 @@ public class AgendaGroupImpl
     }
 
     public Activation[] getActivations() {
-        return (Activation[]) this.queue.toArray(new AgendaItem[ this.queue.size() ] );
+        return (Activation[]) this.queue.toArray( new AgendaItem[this.queue.size()] );
     }
 
     public Queueable[] getQueueable() {
@@ -104,7 +103,7 @@ public class AgendaGroupImpl
         return "AgendaGroup '" + this.name + "'";
     }
 
-    public boolean equal(Object object) {
+    public boolean equal(final Object object) {
         if ( (object == null) || !(object instanceof AgendaGroupImpl) ) {
             return false;
         }

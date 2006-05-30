@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.util.LinkedList;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
@@ -39,6 +40,10 @@ final class QueryTerminalNode extends BaseNode
     // Instance members
     // ------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1010704050163661495L;
     /** The rule to invoke upon match. */
     private final Rule        rule;
     private final TupleSource tupleSource;
@@ -55,9 +60,9 @@ final class QueryTerminalNode extends BaseNode
      * @param rule
      *            The rule.
      */
-    QueryTerminalNode(int id,
-                      TupleSource source,
-                      Rule rule) {
+    QueryTerminalNode(final int id,
+                      final TupleSource source,
+                      final Rule rule) {
         super( id );
         this.rule = rule;
         this.tupleSource = source;
@@ -90,10 +95,10 @@ final class QueryTerminalNode extends BaseNode
      * @throws AssertionException
      *             If an error occurs while asserting.
      */
-    public void assertTuple(ReteTuple tuple,
-                            PropagationContext context,
-                            WorkingMemoryImpl workingMemory) {
-        LinkedList list = (LinkedList) workingMemory.getNodeMemory( this );
+    public void assertTuple(final ReteTuple tuple,
+                            final PropagationContext context,
+                            final ReteooWorkingMemory workingMemory) {
+        final LinkedList list = (LinkedList) workingMemory.getNodeMemory( this );
         if ( list.isEmpty() ) {
             workingMemory.setQueryResults( this.rule.getName(),
                                            this );
@@ -101,14 +106,14 @@ final class QueryTerminalNode extends BaseNode
         list.add( tuple );
     }
 
-    public void retractTuple(ReteTuple tuple,
-                             PropagationContext context,
-                             WorkingMemoryImpl workingMemory) {
+    public void retractTuple(final ReteTuple tuple,
+                             final PropagationContext context,
+                             final ReteooWorkingMemory workingMemory) {
     }
 
-    public void modifyTuple(ReteTuple tuple,
-                            PropagationContext context,
-                            WorkingMemoryImpl workingMemory) {
+    public void modifyTuple(final ReteTuple tuple,
+                            final PropagationContext context,
+                            final ReteooWorkingMemory workingMemory) {
 
     }
 
@@ -121,38 +126,38 @@ final class QueryTerminalNode extends BaseNode
     }
 
     public void attach() {
-        tupleSource.addTupleSink( this );
+        this.tupleSource.addTupleSink( this );
     }
 
-    public void attach(WorkingMemoryImpl[] workingMemories) {
+    public void attach(final ReteooWorkingMemory[] workingMemories) {
         attach();
 
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            WorkingMemoryImpl workingMemory = workingMemories[i];
-            PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                PropagationContext.RULE_ADDITION,
-                                                                                null,
-                                                                                null );
+            final ReteooWorkingMemory workingMemory = workingMemories[i];
+            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.RULE_ADDITION,
+                                                                                      null,
+                                                                                      null );
             this.tupleSource.updateNewNode( workingMemory,
                                             propagationContext );
         }
     }
 
-    public void remove(BaseNode node,
-                       WorkingMemoryImpl[] workingMemories) {
+    public void remove(final BaseNode node,
+                       final ReteooWorkingMemory[] workingMemories) {
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             workingMemories[i].clearNodeMemory( this );
         }
-        tupleSource.remove( this,
-                            workingMemories );
+        this.tupleSource.remove( this,
+                                 workingMemories );
     }
 
-    public void updateNewNode(WorkingMemoryImpl workingMemory,
-                              PropagationContext context) {
+    public void updateNewNode(final ReteooWorkingMemory workingMemory,
+                              final PropagationContext context) {
         // There are no child nodes to update, do nothing.
     }
 
-    public Object createMemory( RuleBaseConfiguration config ) {
+    public Object createMemory(final RuleBaseConfiguration config) {
         //return new QueryTerminalNodeMemory();
         return new LinkedList();
     }

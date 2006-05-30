@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,9 +16,12 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 public class Exists extends GroupElement {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2731485078261324186L;
+
     public Object getChild() {
         return getChildren().get( 0 );
     }

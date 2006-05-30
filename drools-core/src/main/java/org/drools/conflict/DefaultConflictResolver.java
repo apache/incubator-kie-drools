@@ -1,4 +1,5 @@
 package org.drools.conflict;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.conflict;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import org.drools.spi.ConflictResolver;
 
@@ -42,7 +39,12 @@ public class DefaultConflictResolver extends CompositeConflictResolver {
     // Class members
     // ----------------------------------------------------------------------
 
-     private static final ConflictResolver[] CONFLICT_RESOLVERS = new ConflictResolver[]{ DepthConflictResolver.getInstance() };
+    /**
+     * 
+     */
+    private static final long                    serialVersionUID   = 8177623789776261668L;
+
+    private static final ConflictResolver[]      CONFLICT_RESOLVERS = new ConflictResolver[]{DepthConflictResolver.getInstance()};
 
     /** Singleton instance. */
     private static final DefaultConflictResolver INSTANCE           = new DefaultConflictResolver();

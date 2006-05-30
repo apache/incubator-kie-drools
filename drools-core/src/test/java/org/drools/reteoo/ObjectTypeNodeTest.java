@@ -1,4 +1,5 @@
 package org.drools.reteoo;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,12 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-
-
 import java.util.List;
 
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.base.ClassObjectType;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -30,13 +30,13 @@ import org.drools.util.PrimitiveLongMap;
 public class ObjectTypeNodeTest extends DroolsTestCase {
 
     public void testAttach() throws Exception {
-        Rete source = new Rete();
+        final Rete source = new Rete();
 
-        ObjectType objectType = new ClassObjectType( String.class );
+        final ObjectType objectType = new ClassObjectType( String.class );
 
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
-                                                            objectType,
-                                                            source );
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  objectType,
+                                                                  source );
 
         assertEquals( 1,
                       objectTypeNode.getId() );
@@ -54,28 +54,25 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testAssertObject() throws Exception {
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 null,
-                                                                 null );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
 
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
 
-        Rete source = new Rete();
+        final Rete source = new Rete();
 
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
-                                                            new ClassObjectType( String.class ),
-                                                            source );
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  new ClassObjectType( String.class ),
+                                                                  source );
 
-        MockObjectSink sink = new MockObjectSink();
+        final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
-        Object string1 = "cheese";
+        final Object string1 = "cheese";
 
-        FactHandleImpl handle1 = new FactHandleImpl( 1 );
-
-        workingMemory.putObject( handle1,
-                                 string1 );
+        final DefaultFactHandle handle1 = (DefaultFactHandle) workingMemory.assertObject( string1 );
 
         /* should assert as ObjectType matches */
         objectTypeNode.assertObject( handle1,
@@ -83,14 +80,14 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                      workingMemory );
 
         /* make sure just string1 was asserted */
-        List asserted = sink.getAsserted();
+        final List asserted = sink.getAsserted();
         assertLength( 1,
                       asserted );
         assertSame( string1,
-                    workingMemory.getObject( (FactHandleImpl) ((Object[]) asserted.get( 0 ))[0] ) );
+                    workingMemory.getObject( (DefaultFactHandle) ((Object[]) asserted.get( 0 ))[0] ) );
 
         /* check asserted object was added to memory */
-        PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
+        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
         assertSame( handle1,
@@ -98,20 +95,20 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testMemory() {
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
 
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
-                                                            new ClassObjectType( String.class ),
-                                                            new Rete() );
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  new ClassObjectType( String.class ),
+                                                                  new Rete() );
 
-        PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
+        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
 
         assertNotNull( memory );
     }
 
     public void testMatches() {
 
-        Rete source = new Rete();
+        final Rete source = new Rete();
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( String.class ),
@@ -132,35 +129,33 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testRetractObject() throws Exception {
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 null,
-                                                                 null );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
 
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
 
-        Rete source = new Rete();
+        final Rete source = new Rete();
 
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
-                                                            new ClassObjectType( String.class ),
-                                                            source );
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  new ClassObjectType( String.class ),
+                                                                  source );
 
-        MockObjectSink sink = new MockObjectSink();
+        final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
-        Object string1 = "cheese";
+        final Object string1 = "cheese";
 
-        FactHandleImpl handle1 = new FactHandleImpl( 1 );
-
-        workingMemory.putObject( handle1,
-                                 string1 );
+        final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
+                                                                 string1 );
 
         /* should assert as ObjectType matches */
         objectTypeNode.assertObject( handle1,
                                      context,
                                      workingMemory );
         /* check asserted object was added to memory */
-        PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
+        final PrimitiveLongMap memory = (PrimitiveLongMap) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
 
@@ -173,7 +168,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                       memory.size() );
 
         /* make sure its just the handle1 for string1 that was propagated */
-        List retracted = sink.getRetracted();
+        final List retracted = sink.getRetracted();
         assertLength( 1,
                       retracted );
         assertSame( handle1,
@@ -184,34 +179,30 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         // Tests that when new child is added only the last added child is
         // updated
         // When the attachingNewNode flag is set
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
-                                                                 null,
-                                                                 null );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
 
-        WorkingMemoryImpl workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
 
-        Rete source = new Rete();
+        final Rete source = new Rete();
 
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
-                                                            new ClassObjectType( String.class ),
-                                                            source );
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  new ClassObjectType( String.class ),
+                                                                  source );
 
-        MockObjectSink sink1 = new MockObjectSink();
+        final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );
 
-        Object string1 = "cheese";
+        final Object string1 = "cheese";
 
-        Object string2 = "bread";
+        final Object string2 = "bread";
 
-        FactHandleImpl handle1 = new FactHandleImpl( 1 );
-        FactHandleImpl handle2 = new FactHandleImpl( 2 );
-
-        workingMemory.putObject( handle1,
-                                 string1 );
-
-        workingMemory.putObject( handle2,
-                                 string2 );
+        final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
+                                                                 string1 );
+        final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
+                                                                 string2 );
 
         objectTypeNode.assertObject( handle1,
                                      context,
@@ -226,7 +217,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         objectTypeNode.attachingNewNode = true;
 
-        MockObjectSink sink2 = new MockObjectSink();
+        final MockObjectSink sink2 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink2 );
 
         assertLength( 0,
@@ -242,11 +233,10 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertLength( 2,
                       sink2.getAsserted() );
 
-        Object string3 = "water";
+        final Object string3 = "water";
 
-        FactHandleImpl handle3 = new FactHandleImpl( 3 );
-        workingMemory.putObject( handle3,
-                                 string3 );
+        final DefaultFactHandle handle3 = new DefaultFactHandle( 3,
+                                                                 string3 );
 
         objectTypeNode.assertObject( handle3,
                                      context,

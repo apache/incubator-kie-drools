@@ -6,39 +6,37 @@ import java.util.List;
 
 import org.drools.rule.PackageCompilationData.PackageClassLoader;
 
-
 public class CompositePackageClassLoader extends ClassLoader {
-    
-    private List classLoaders = new ArrayList();
 
-    public CompositePackageClassLoader(ClassLoader parentClassLoader) {
+    private final List classLoaders = new ArrayList();
+
+    public CompositePackageClassLoader(final ClassLoader parentClassLoader) {
         super( parentClassLoader );
     }
-    
-    public void addClassLoader(ClassLoader classLoader) {
+
+    public void addClassLoader(final ClassLoader classLoader) {
         this.classLoaders.add( classLoader );
     }
-    
-    public void removeClassLoader(ClassLoader classLoader) {
-        for(Iterator it = classLoaders.iterator(); it.hasNext(); ) {
+
+    public void removeClassLoader(final ClassLoader classLoader) {
+        for ( final Iterator it = this.classLoaders.iterator(); it.hasNext(); ) {
             if ( it.next() == classLoader ) {
                 it.remove();
                 break;
             }
         }
     }
-    
-    private Class compositeFastFindClass(String name) {
-        for ( Iterator it = classLoaders.iterator(); it.hasNext(); ) {
-            PackageClassLoader classLoader = (PackageClassLoader) it.next();
-            Class clazz = classLoader.fastFindClass( name );
+
+    private Class compositeFastFindClass(final String name) {
+        for ( final Iterator it = this.classLoaders.iterator(); it.hasNext(); ) {
+            final PackageClassLoader classLoader = (PackageClassLoader) it.next();
+            final Class clazz = classLoader.fastFindClass( name );
             if ( clazz != null ) {
                 return clazz;
             }
         }
         return null;
     }
-    
 
     /**
      * Javadocs recommend that this method not be overloaded. We overload this so that we can prioritise the fastFindClass 
@@ -47,8 +45,8 @@ public class CompositePackageClassLoader extends ClassLoader {
      * higher priority than normal.
      * 
      */
-    protected synchronized Class loadClass(String name,
-                                           boolean resolve) throws ClassNotFoundException {
+    protected synchronized Class loadClass(final String name,
+                                           final boolean resolve) throws ClassNotFoundException {
         Class clazz = findLoadedClass( name );
 
         if ( clazz == null ) {

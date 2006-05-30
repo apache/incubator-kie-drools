@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,16 +16,12 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.RuntimeDroolsException;
-
 public abstract class GroupElement extends ConditionalElement {
-    private List children = new ArrayList();
+    private final List children = new ArrayList();
 
     /**
      * This removes single branch 'and' and 'or'
@@ -34,62 +31,62 @@ public abstract class GroupElement extends ConditionalElement {
      *  LogicTransformer does further, more complicated, transformations
      * @param child
      */
-    public void addChild(Object child) {
+    public void addChild(final Object child) {
         // @todo : I've commented this out for 3.0, but we want this working for 3.1
-//        if ( child instanceof Not ) {
-//            Not not = ( Not )  child;
-//            Object notChild = not.getChild();
-//            if ( notChild instanceof Or ) {
-//                Or or = (Or) notChild;
-//                And and = new And();
-//                for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
-//                    Not newNot = new Not();
-//                    newNot.addChild( it.next() );
-//                    and.addChild( newNot );
-//                }                
-//                child = and;
-//            } else if ( notChild instanceof And ) {
-//                
-//            }            
-//        }
-        
+        //        if ( child instanceof Not ) {
+        //            Not not = ( Not )  child;
+        //            Object notChild = not.getChild();
+        //            if ( notChild instanceof Or ) {
+        //                Or or = (Or) notChild;
+        //                And and = new And();
+        //                for ( Iterator it = or.getChildren().iterator(); it.hasNext(); ) {
+        //                    Not newNot = new Not();
+        //                    newNot.addChild( it.next() );
+        //                    and.addChild( newNot );
+        //                }                
+        //                child = and;
+        //            } else if ( notChild instanceof And ) {
+        //                
+        //            }            
+        //        }
+
         //@todo make this work for 3.1
-//        if ( child instanceof GroupElement && ( child instanceof And || child instanceof Or ) ) {
-//            GroupElement group = ( GroupElement )  child;
-//            
-//            // Removal single branch group elements 
-//            // If the child is a GroupElement iterate down until we either
-//            // find a GroupElement that has more than one children, or its not a GroupElement            
-//            if (  group.getChildren().size() == 1 ) {
-//                child = group.getChildren().get( 0 );
-//            }            
-//        }
-//        
-//        if ( child instanceof GroupElement && ( child instanceof And || child instanceof Or ) ) {
-//            GroupElement group = ( GroupElement )  child;
-//            
-//            // Remove nested Ands/Ors            
-//            if ( group.getClass() == this.getClass() ) {
-//                    
-//                    GroupElement newGroup = null;
-//                    if ( group instanceof And) {
-//                        newGroup = new And();
-//                    } else {
-//                        newGroup =  new Or();
-//                    }
-//                    
-//                    for ( Iterator it = group.getChildren().iterator(); it.hasNext(); ) {
-//                        this.children.add( it.next() );
-//                    }
-//            } else {
-//                this.children.add( child );
-//            }
-//        }   else {        
-//            this.children.add( child );
-//        }
-        
+        //        if ( child instanceof GroupElement && ( child instanceof And || child instanceof Or ) ) {
+        //            GroupElement group = ( GroupElement )  child;
+        //            
+        //            // Removal single branch group elements 
+        //            // If the child is a GroupElement iterate down until we either
+        //            // find a GroupElement that has more than one children, or its not a GroupElement            
+        //            if (  group.getChildren().size() == 1 ) {
+        //                child = group.getChildren().get( 0 );
+        //            }            
+        //        }
+        //        
+        //        if ( child instanceof GroupElement && ( child instanceof And || child instanceof Or ) ) {
+        //            GroupElement group = ( GroupElement )  child;
+        //            
+        //            // Remove nested Ands/Ors            
+        //            if ( group.getClass() == this.getClass() ) {
+        //                    
+        //                    GroupElement newGroup = null;
+        //                    if ( group instanceof And) {
+        //                        newGroup = new And();
+        //                    } else {
+        //                        newGroup =  new Or();
+        //                    }
+        //                    
+        //                    for ( Iterator it = group.getChildren().iterator(); it.hasNext(); ) {
+        //                        this.children.add( it.next() );
+        //                    }
+        //            } else {
+        //                this.children.add( child );
+        //            }
+        //        }   else {        
+        //            this.children.add( child );
+        //        }
+
         this.children.add( child );
-        
+
     }
 
     public List getChildren() {
@@ -104,7 +101,7 @@ public abstract class GroupElement extends ConditionalElement {
      * @param e2
      * @return
      */
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         // Return false if its null or not an instance of ConditionalElement
         if ( object == null || !(object instanceof GroupElement) ) {
             return false;
@@ -116,16 +113,16 @@ public abstract class GroupElement extends ConditionalElement {
         }
 
         // Now try a recurse manual check
-        GroupElement e2 = (GroupElement) object;
-        List e1Children = this.getChildren();
-        List e2Children = e2.getChildren();
+        final GroupElement e2 = (GroupElement) object;
+        final List e1Children = this.getChildren();
+        final List e2Children = e2.getChildren();
         if ( e1Children.size() != e2Children.size() ) {
             return false;
         }
 
         for ( int i = 0; i < e1Children.size(); i++ ) {
-            Object e1Object1 = e1Children.get( i );
-            Object e2Object1 = e2Children.get( i );
+            final Object e1Object1 = e1Children.get( i );
+            final Object e2Object1 = e2Children.get( i );
             if ( e1Object1 instanceof GroupElement ) {
                 if ( e1Object1.getClass().isInstance( e2Object1 ) ) {
                     if ( !e1Object1.equals( e2Object1 ) ) {
@@ -167,13 +164,13 @@ public abstract class GroupElement extends ConditionalElement {
 
         try {
             cloned = (GroupElement) this.getClass().newInstance();
-        } catch ( InstantiationException e ) {
+        } catch ( final InstantiationException e ) {
             throw new RuntimeException( "Could not clone '" + this.getClass().getName() + "'" );
-        } catch ( IllegalAccessException e ) {
+        } catch ( final IllegalAccessException e ) {
             throw new RuntimeException( "Could not clone '" + this.getClass().getName() + "'" );
         }
 
-        for ( Iterator it = this.children.iterator(); it.hasNext(); ) {
+        for ( final Iterator it = this.children.iterator(); it.hasNext(); ) {
             Object object = it.next();
             if ( object instanceof GroupElement ) {
                 object = ((GroupElement) object).clone();

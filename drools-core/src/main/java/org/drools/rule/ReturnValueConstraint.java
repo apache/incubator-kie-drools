@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
@@ -30,6 +29,11 @@ public class ReturnValueConstraint
     implements
     FieldConstraint {
 
+    /**
+     * 
+     */
+    private static final long          serialVersionUID       = -3888281054472597050L;
+
     private final FieldExtractor       fieldExtractor;
 
     private ReturnValueExpression      expression;
@@ -40,19 +44,19 @@ public class ReturnValueConstraint
 
     private static final Declaration[] noRequiredDeclarations = new Declaration[]{};
 
-    public ReturnValueConstraint(FieldExtractor fieldExtractor,
-                                 Declaration[] declarations,
-                                 Evaluator evaluator) {
+    public ReturnValueConstraint(final FieldExtractor fieldExtractor,
+                                 final Declaration[] declarations,
+                                 final Evaluator evaluator) {
         this( fieldExtractor,
               null,
               declarations,
               evaluator );
     }
 
-    public ReturnValueConstraint(FieldExtractor fieldExtractor,
-                                 ReturnValueExpression returnValueExpression,
-                                 Declaration[] declarations,
-                                 Evaluator evaluator) {
+    public ReturnValueConstraint(final FieldExtractor fieldExtractor,
+                                 final ReturnValueExpression returnValueExpression,
+                                 final Declaration[] declarations,
+                                 final Evaluator evaluator) {
         this.fieldExtractor = fieldExtractor;
 
         this.expression = returnValueExpression;
@@ -70,7 +74,7 @@ public class ReturnValueConstraint
         return this.requiredDeclarations;
     }
 
-    public void setReturnValueExpression(ReturnValueExpression expression) {
+    public void setReturnValueExpression(final ReturnValueExpression expression) {
         this.expression = expression;
     }
 
@@ -78,34 +82,34 @@ public class ReturnValueConstraint
         return this.expression;
     }
 
-    public boolean isAllowed(InternalFactHandle handle,
-                             Tuple tuple,
-                             WorkingMemory workingMemory) {
+    public boolean isAllowed(final InternalFactHandle handle,
+                             final Tuple tuple,
+                             final WorkingMemory workingMemory) {
         try {
-            return evaluator.evaluate( this.fieldExtractor.getValue( handle.getObject() ),
-                                       this.expression.evaluate( tuple,
-                                                                            this.requiredDeclarations,
-                                                                            workingMemory ) );
-        } catch ( Exception e ) {
+            return this.evaluator.evaluate( this.fieldExtractor.getValue( handle.getObject() ),
+                                            this.expression.evaluate( tuple,
+                                                                      this.requiredDeclarations,
+                                                                      workingMemory ) );
+        } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
     }
-    
+
     public int hashCode() {
         return this.expression.hashCode();
     }
-    
-    public boolean equals(Object object) {
+
+    public boolean equals(final Object object) {
         if ( object == this ) {
             return true;
         }
-        
-        if (object == null || object.getClass() != PredicateConstraint.class ) {
+
+        if ( object == null || object.getClass() != ReturnValueConstraint.class ) {
             return false;
         }
-            
-        ReturnValueConstraint other = ( ReturnValueConstraint ) object;
-        
+
+        final ReturnValueConstraint other = (ReturnValueConstraint) object;
+
         return this.expression.equals( other.expression );
-    }    
+    }
 }

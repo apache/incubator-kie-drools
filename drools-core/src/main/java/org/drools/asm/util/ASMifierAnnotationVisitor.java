@@ -37,9 +37,9 @@ import org.drools.asm.AnnotationVisitor;
  * 
  * @author Eric Bruneton
  */
-public class ASMifierAnnotationVisitor extends AbstractVisitor implements
-        AnnotationVisitor
-{
+public class ASMifierAnnotationVisitor extends AbstractVisitor
+    implements
+    AnnotationVisitor {
 
     /**
      * Identifier of the annotation visitor variable in the produced code.
@@ -60,68 +60,73 @@ public class ASMifierAnnotationVisitor extends AbstractVisitor implements
     // Implementation of the AnnotationVisitor interface
     // ------------------------------------------------------------------------
 
-    public void visit(final String name, final Object value) {
-        buf.setLength(0);
-        buf.append("av").append(id).append(".visit(");
-        ASMifierAbstractVisitor.appendConstant(buf, name);
-        buf.append(", ");
-        ASMifierAbstractVisitor.appendConstant(buf, value);
-        buf.append(");\n");
-        text.add(buf.toString());
+    public void visit(final String name,
+                      final Object value) {
+        this.buf.setLength( 0 );
+        this.buf.append( "av" ).append( this.id ).append( ".visit(" );
+        ASMifierAbstractVisitor.appendConstant( this.buf,
+                                                name );
+        this.buf.append( ", " );
+        ASMifierAbstractVisitor.appendConstant( this.buf,
+                                                value );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public void visitEnum(
-        final String name,
-        final String desc,
-        final String value)
-    {
-        buf.setLength(0);
-        buf.append("av").append(id).append(".visitEnum(");
-        ASMifierAbstractVisitor.appendConstant(buf, name);
-        buf.append(", ");
-        ASMifierAbstractVisitor.appendConstant(buf, desc);
-        buf.append(", ");
-        ASMifierAbstractVisitor.appendConstant(buf, value);
-        buf.append(");\n");
-        text.add(buf.toString());
+    public void visitEnum(final String name,
+                          final String desc,
+                          final String value) {
+        this.buf.setLength( 0 );
+        this.buf.append( "av" ).append( this.id ).append( ".visitEnum(" );
+        ASMifierAbstractVisitor.appendConstant( this.buf,
+                                                name );
+        this.buf.append( ", " );
+        ASMifierAbstractVisitor.appendConstant( this.buf,
+                                                desc );
+        this.buf.append( ", " );
+        ASMifierAbstractVisitor.appendConstant( this.buf,
+                                                value );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
     }
 
-    public AnnotationVisitor visitAnnotation(
-        final String name,
-        final String desc)
-    {
-        buf.setLength(0);
-        buf.append("{\n");
-        buf.append("AnnotationVisitor av").append(id + 1).append(" = av");
-        buf.append(id).append(".visitAnnotation(");
-        ASMifierAbstractVisitor.appendConstant(buf, name);
-        buf.append(", ");
-        ASMifierAbstractVisitor.appendConstant(buf, desc);
-        buf.append(");\n");
-        text.add(buf.toString());
-        ASMifierAnnotationVisitor av = new ASMifierAnnotationVisitor(id + 1);
-        text.add(av.getText());
-        text.add("}\n");
+    public AnnotationVisitor visitAnnotation(final String name,
+                                             final String desc) {
+        this.buf.setLength( 0 );
+        this.buf.append( "{\n" );
+        this.buf.append( "AnnotationVisitor av" ).append( this.id + 1 ).append( " = av" );
+        this.buf.append( this.id ).append( ".visitAnnotation(" );
+        ASMifierAbstractVisitor.appendConstant( this.buf,
+                                                name );
+        this.buf.append( ", " );
+        ASMifierAbstractVisitor.appendConstant( this.buf,
+                                                desc );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
+        final ASMifierAnnotationVisitor av = new ASMifierAnnotationVisitor( this.id + 1 );
+        this.text.add( av.getText() );
+        this.text.add( "}\n" );
         return av;
     }
 
     public AnnotationVisitor visitArray(final String name) {
-        buf.setLength(0);
-        buf.append("{\n");
-        buf.append("AnnotationVisitor av").append(id + 1).append(" = av");
-        buf.append(id).append(".visitArray(");
-        ASMifierAbstractVisitor.appendConstant(buf, name);
-        buf.append(");\n");
-        text.add(buf.toString());
-        ASMifierAnnotationVisitor av = new ASMifierAnnotationVisitor(id + 1);
-        text.add(av.getText());
-        text.add("}\n");
+        this.buf.setLength( 0 );
+        this.buf.append( "{\n" );
+        this.buf.append( "AnnotationVisitor av" ).append( this.id + 1 ).append( " = av" );
+        this.buf.append( this.id ).append( ".visitArray(" );
+        ASMifierAbstractVisitor.appendConstant( this.buf,
+                                                name );
+        this.buf.append( ");\n" );
+        this.text.add( this.buf.toString() );
+        final ASMifierAnnotationVisitor av = new ASMifierAnnotationVisitor( this.id + 1 );
+        this.text.add( av.getText() );
+        this.text.add( "}\n" );
         return av;
     }
 
     public void visitEnd() {
-        buf.setLength(0);
-        buf.append("av").append(id).append(".visitEnd();\n");
-        text.add(buf.toString());
+        this.buf.setLength( 0 );
+        this.buf.append( "av" ).append( this.id ).append( ".visitEnd();\n" );
+        this.text.add( this.buf.toString() );
     }
 }

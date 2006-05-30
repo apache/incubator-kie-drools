@@ -33,10 +33,10 @@ public class DummyValueObject {
     public DummyValueObject() {
     }
 
-    public DummyValueObject(boolean aBoolean,
-                            String aString,
-                            int anInteger,
-                            Object anObject) {
+    public DummyValueObject(final boolean aBoolean,
+                            final String aString,
+                            final int anInteger,
+                            final Object anObject) {
         this.booleanAttr = aBoolean;
         this.stringAttr = aString;
         this.intAttr = anInteger;
@@ -47,27 +47,27 @@ public class DummyValueObject {
      * @return Returns the booleanAttr.
      */
     public boolean isBooleanAttr() {
-        return booleanAttr;
+        return this.booleanAttr;
     }
 
     /**
      * @param boolean1 The booleanAttr to set.
      */
-    public void setBooleanAttr(boolean boolean1) {
-        booleanAttr = boolean1;
+    public void setBooleanAttr(final boolean boolean1) {
+        this.booleanAttr = boolean1;
     }
 
     /**
      * @return Returns the intAttr.
      */
     public int getIntAttr() {
-        return intAttr;
+        return this.intAttr;
     }
 
     /**
      * @param intAttr The intAttr to set.
      */
-    public void setIntAttr(int anInteger) {
+    public void setIntAttr(final int anInteger) {
         this.intAttr = anInteger;
     }
 
@@ -75,13 +75,13 @@ public class DummyValueObject {
      * @return Returns the objectAttr.
      */
     public Object getObjectAttr() {
-        return objectAttr;
+        return this.objectAttr;
     }
 
     /**
      * @param objectAttr The objectAttr to set.
      */
-    public void setObjectAttr(Object anObject) {
+    public void setObjectAttr(final Object anObject) {
         this.objectAttr = anObject;
     }
 
@@ -89,13 +89,13 @@ public class DummyValueObject {
      * @return Returns the stringAttr.
      */
     public String getStringAttr() {
-        return stringAttr;
+        return this.stringAttr;
     }
 
     /**
      * @param string The stringAttr to set.
      */
-    public void setStringAttr(String string) {
-        stringAttr = string;
+    public void setStringAttr(final String string) {
+        this.stringAttr = string;
     }
 }

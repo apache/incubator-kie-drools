@@ -1,4 +1,5 @@
 package org.drools.util.asm;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,19 +16,17 @@ package org.drools.util.asm;
  * limitations under the License.
  */
 
-
-
 import junit.framework.TestCase;
 
 public class FieldAccessorGeneratorTest extends TestCase {
 
     public void testBasic() throws Exception {
-        FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
-        FieldAccessorMap map = gen.newInstanceFor( TestObject.class );
-        FieldAccessor ac = map.getFieldAccessor();
+        final FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
+        final FieldAccessorMap map = gen.newInstanceFor( TestObject.class );
+        final FieldAccessor ac = map.getFieldAccessor();
         assertNotNull( ac );
 
-        TestObject obj = new TestObject();
+        final TestObject obj = new TestObject();
         obj.setHappy( true );
         obj.setPersonName( "michael" );
         obj.setPersonAge( 31 );
@@ -57,9 +56,9 @@ public class FieldAccessorGeneratorTest extends TestCase {
     }
 
     public void testAnother() throws Exception {
-        FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
-        FieldAccessor ac = gen.getInstanceFor( TestBean.class ).getFieldAccessor();
-        TestBean obj = new TestBean();
+        final FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
+        final FieldAccessor ac = gen.getInstanceFor( TestBean.class ).getFieldAccessor();
+        final TestBean obj = new TestBean();
         obj.setBlah( false );
         obj.setSomething( "no" );
         assertEquals( false,
@@ -67,18 +66,18 @@ public class FieldAccessorGeneratorTest extends TestCase {
                                                      0 )).booleanValue() );
 
         //check its being cached
-        FieldAccessor ac2 = gen.getInstanceFor( TestBean.class ).getFieldAccessor();
+        final FieldAccessor ac2 = gen.getInstanceFor( TestBean.class ).getFieldAccessor();
         assertEquals( ac,
                       ac2 );
     }
 
     public void testInterface() throws Exception {
-        FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
-        FieldAccessorMap map = gen.newInstanceFor( TestInterface.class );
-        FieldAccessor ac = map.getFieldAccessor();
+        final FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
+        final FieldAccessorMap map = gen.newInstanceFor( TestInterface.class );
+        final FieldAccessor ac = map.getFieldAccessor();
         assertNotNull( ac );
 
-        TestInterface obj = new TestInterfaceImpl();
+        final TestInterface obj = new TestInterfaceImpl();
 
         assertEquals( "foo",
                       (String) ac.getFieldByIndex( obj,
@@ -98,12 +97,12 @@ public class FieldAccessorGeneratorTest extends TestCase {
     }
 
     public void testAbstract() throws Exception {
-        FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
-        FieldAccessorMap map = gen.newInstanceFor( TestAbstract.class );
-        FieldAccessor ac = map.getFieldAccessor();
+        final FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
+        final FieldAccessorMap map = gen.newInstanceFor( TestAbstract.class );
+        final FieldAccessor ac = map.getFieldAccessor();
         assertNotNull( ac );
 
-        TestAbstract obj = new TestAbstractImpl();
+        final TestAbstract obj = new TestAbstractImpl();
 
         assertEquals( 42,
                       ((Integer) ac.getFieldByIndex( obj,
@@ -123,12 +122,12 @@ public class FieldAccessorGeneratorTest extends TestCase {
     }
 
     public void testInherited() throws Exception {
-        FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
-        FieldAccessorMap map = gen.newInstanceFor( BeanInherit.class );
-        FieldAccessor ac = map.getFieldAccessor();
+        final FieldAccessorGenerator gen = FieldAccessorGenerator.getInstance();
+        final FieldAccessorMap map = gen.newInstanceFor( BeanInherit.class );
+        final FieldAccessor ac = map.getFieldAccessor();
         assertNotNull( ac );
 
-        BeanInherit obj = new BeanInherit();
+        final BeanInherit obj = new BeanInherit();
 
         assertEquals( 42,
                       ((Integer) ac.getFieldByIndex( obj,

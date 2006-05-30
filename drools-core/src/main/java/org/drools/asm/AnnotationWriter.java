@@ -35,7 +35,9 @@ package org.drools.asm;
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
-final class AnnotationWriter implements AnnotationVisitor {
+final class AnnotationWriter
+    implements
+    AnnotationVisitor {
 
     /**
      * The class writer to which this annotation must be added.
@@ -45,43 +47,43 @@ final class AnnotationWriter implements AnnotationVisitor {
     /**
      * The number of values in this annotation.
      */
-    private int size;
+    private int               size;
 
     /**
      * <tt>true<tt> if values are named, <tt>false</tt> otherwise. Annotation 
      * writers used for annotation default and annotation arrays use unnamed
      * values.
      */
-    private final boolean named;
+    private final boolean     named;
 
     /**
      * The annotation values in bytecode form. This byte vector only contains
      * the values themselves, i.e. the number of values must be stored as a
      * unsigned short just before these bytes.
      */
-    private final ByteVector bv;
+    private final ByteVector  bv;
 
     /**
      * The byte vector to be used to store the number of values of this
      * annotation. See {@link #bv}.
      */
-    private final ByteVector parent;
+    private final ByteVector  parent;
 
     /**
      * Where the number of values of this annotation must be stored in
      * {@link #parent}.
      */
-    private final int offset;
+    private final int         offset;
 
     /**
      * Next annotation writer. This field is used to store annotation lists.
      */
-    AnnotationWriter next;
+    AnnotationWriter          next;
 
     /**
      * Previous annotation writer. This field is used to store annotation lists.
      */
-    AnnotationWriter prev;
+    AnnotationWriter          prev;
 
     // ------------------------------------------------------------------------
     // Constructor
@@ -97,13 +99,11 @@ final class AnnotationWriter implements AnnotationVisitor {
      * @param offset where in <tt>parent</tt> the number of annotation values must 
      *      be stored.
      */
-    AnnotationWriter(
-        final ClassWriter cw,
-        final boolean named,
-        final ByteVector bv,
-        final ByteVector parent,
-        final int offset)
-    {
+    AnnotationWriter(final ClassWriter cw,
+                     final boolean named,
+                     final ByteVector bv,
+                     final ByteVector parent,
+                     final int offset) {
         this.cw = cw;
         this.named = named;
         this.bv = bv;
@@ -115,118 +115,149 @@ final class AnnotationWriter implements AnnotationVisitor {
     // Implementation of the AnnotationVisitor interface
     // ------------------------------------------------------------------------
 
-    public void visit(final String name, final Object value) {
-        ++size;
-        if (named) {
-            bv.putShort(cw.newUTF8(name));
+    public void visit(final String name,
+                      final Object value) {
+        ++this.size;
+        if ( this.named ) {
+            this.bv.putShort( this.cw.newUTF8( name ) );
         }
-        if (value instanceof String) {
-            bv.put12('s', cw.newUTF8((String) value));
-        } else if (value instanceof Byte) {
-            bv.put12('B', cw.newInteger(((Byte) value).byteValue()).index);
-        } else if (value instanceof Boolean) {
-            int v = ((Boolean) value).booleanValue() ? 1 : 0;
-            bv.put12('Z', cw.newInteger(v).index);
-        } else if (value instanceof Character) {
-            bv.put12('C', cw.newInteger(((Character) value).charValue()).index);
-        } else if (value instanceof Short) {
-            bv.put12('S', cw.newInteger(((Short) value).shortValue()).index);
-        } else if (value instanceof Type) {
-            bv.put12('c', cw.newUTF8(((Type) value).getDescriptor()));
-        } else if (value instanceof byte[]) {
-            byte[] v = (byte[]) value;
-            bv.put12('[', v.length);
-            for (int i = 0; i < v.length; i++) {
-                bv.put12('B', cw.newInteger(v[i]).index);
+        if ( value instanceof String ) {
+            this.bv.put12( 's',
+                           this.cw.newUTF8( (String) value ) );
+        } else if ( value instanceof Byte ) {
+            this.bv.put12( 'B',
+                           this.cw.newInteger( ((Byte) value).byteValue() ).index );
+        } else if ( value instanceof Boolean ) {
+            final int v = ((Boolean) value).booleanValue() ? 1 : 0;
+            this.bv.put12( 'Z',
+                           this.cw.newInteger( v ).index );
+        } else if ( value instanceof Character ) {
+            this.bv.put12( 'C',
+                           this.cw.newInteger( ((Character) value).charValue() ).index );
+        } else if ( value instanceof Short ) {
+            this.bv.put12( 'S',
+                           this.cw.newInteger( ((Short) value).shortValue() ).index );
+        } else if ( value instanceof Type ) {
+            this.bv.put12( 'c',
+                           this.cw.newUTF8( ((Type) value).getDescriptor() ) );
+        } else if ( value instanceof byte[] ) {
+            final byte[] v = (byte[]) value;
+            this.bv.put12( '[',
+                           v.length );
+            for ( int i = 0; i < v.length; i++ ) {
+                this.bv.put12( 'B',
+                               this.cw.newInteger( v[i] ).index );
             }
-        } else if (value instanceof boolean[]) {
-            boolean[] v = (boolean[]) value;
-            bv.put12('[', v.length);
-            for (int i = 0; i < v.length; i++) {
-                bv.put12('Z', cw.newInteger(v[i] ? 1 : 0).index);
+        } else if ( value instanceof boolean[] ) {
+            final boolean[] v = (boolean[]) value;
+            this.bv.put12( '[',
+                           v.length );
+            for ( int i = 0; i < v.length; i++ ) {
+                this.bv.put12( 'Z',
+                               this.cw.newInteger( v[i] ? 1 : 0 ).index );
             }
-        } else if (value instanceof short[]) {
-            short[] v = (short[]) value;
-            bv.put12('[', v.length);
-            for (int i = 0; i < v.length; i++) {
-                bv.put12('S', cw.newInteger(v[i]).index);
+        } else if ( value instanceof short[] ) {
+            final short[] v = (short[]) value;
+            this.bv.put12( '[',
+                           v.length );
+            for ( int i = 0; i < v.length; i++ ) {
+                this.bv.put12( 'S',
+                               this.cw.newInteger( v[i] ).index );
             }
-        } else if (value instanceof char[]) {
-            char[] v = (char[]) value;
-            bv.put12('[', v.length);
-            for (int i = 0; i < v.length; i++) {
-                bv.put12('C', cw.newInteger(v[i]).index);
+        } else if ( value instanceof char[] ) {
+            final char[] v = (char[]) value;
+            this.bv.put12( '[',
+                           v.length );
+            for ( int i = 0; i < v.length; i++ ) {
+                this.bv.put12( 'C',
+                               this.cw.newInteger( v[i] ).index );
             }
-        } else if (value instanceof int[]) {
-            int[] v = (int[]) value;
-            bv.put12('[', v.length);
-            for (int i = 0; i < v.length; i++) {
-                bv.put12('I', cw.newInteger(v[i]).index);
+        } else if ( value instanceof int[] ) {
+            final int[] v = (int[]) value;
+            this.bv.put12( '[',
+                           v.length );
+            for ( int i = 0; i < v.length; i++ ) {
+                this.bv.put12( 'I',
+                               this.cw.newInteger( v[i] ).index );
             }
-        } else if (value instanceof long[]) {
-            long[] v = (long[]) value;
-            bv.put12('[', v.length);
-            for (int i = 0; i < v.length; i++) {
-                bv.put12('J', cw.newLong(v[i]).index);
+        } else if ( value instanceof long[] ) {
+            final long[] v = (long[]) value;
+            this.bv.put12( '[',
+                           v.length );
+            for ( int i = 0; i < v.length; i++ ) {
+                this.bv.put12( 'J',
+                               this.cw.newLong( v[i] ).index );
             }
-        } else if (value instanceof float[]) {
-            float[] v = (float[]) value;
-            bv.put12('[', v.length);
-            for (int i = 0; i < v.length; i++) {
-                bv.put12('F', cw.newFloat(v[i]).index);
+        } else if ( value instanceof float[] ) {
+            final float[] v = (float[]) value;
+            this.bv.put12( '[',
+                           v.length );
+            for ( int i = 0; i < v.length; i++ ) {
+                this.bv.put12( 'F',
+                               this.cw.newFloat( v[i] ).index );
             }
-        } else if (value instanceof double[]) {
-            double[] v = (double[]) value;
-            bv.put12('[', v.length);
-            for (int i = 0; i < v.length; i++) {
-                bv.put12('D', cw.newDouble(v[i]).index);
+        } else if ( value instanceof double[] ) {
+            final double[] v = (double[]) value;
+            this.bv.put12( '[',
+                           v.length );
+            for ( int i = 0; i < v.length; i++ ) {
+                this.bv.put12( 'D',
+                               this.cw.newDouble( v[i] ).index );
             }
         } else {
-            Item i = cw.newConstItem(value);
-            bv.put12(".s.IFJDCS".charAt(i.type), i.index);
+            final Item i = this.cw.newConstItem( value );
+            this.bv.put12( ".s.IFJDCS".charAt( i.type ),
+                           i.index );
         }
     }
 
-    public void visitEnum(
-        final String name,
-        final String desc,
-        final String value)
-    {
-        ++size;
-        if (named) {
-            bv.putShort(cw.newUTF8(name));
+    public void visitEnum(final String name,
+                          final String desc,
+                          final String value) {
+        ++this.size;
+        if ( this.named ) {
+            this.bv.putShort( this.cw.newUTF8( name ) );
         }
-        bv.put12('e', cw.newUTF8(desc)).putShort(cw.newUTF8(value));
+        this.bv.put12( 'e',
+                       this.cw.newUTF8( desc ) ).putShort( this.cw.newUTF8( value ) );
     }
 
-    public AnnotationVisitor visitAnnotation(
-        final String name,
-        final String desc)
-    {
-        ++size;
-        if (named) {
-            bv.putShort(cw.newUTF8(name));
+    public AnnotationVisitor visitAnnotation(final String name,
+                                             final String desc) {
+        ++this.size;
+        if ( this.named ) {
+            this.bv.putShort( this.cw.newUTF8( name ) );
         }
         // write tag and type, and reserve space for values count
-        bv.put12('@', cw.newUTF8(desc)).putShort(0);
-        return new AnnotationWriter(cw, true, bv, bv, bv.length - 2);
+        this.bv.put12( '@',
+                       this.cw.newUTF8( desc ) ).putShort( 0 );
+        return new AnnotationWriter( this.cw,
+                                     true,
+                                     this.bv,
+                                     this.bv,
+                                     this.bv.length - 2 );
     }
 
     public AnnotationVisitor visitArray(final String name) {
-        ++size;
-        if (named) {
-            bv.putShort(cw.newUTF8(name));
+        ++this.size;
+        if ( this.named ) {
+            this.bv.putShort( this.cw.newUTF8( name ) );
         }
         // write tag, and reserve space for array size
-        bv.put12('[', 0);
-        return new AnnotationWriter(cw, false, bv, bv, bv.length - 2);
+        this.bv.put12( '[',
+                       0 );
+        return new AnnotationWriter( this.cw,
+                                     false,
+                                     this.bv,
+                                     this.bv,
+                                     this.bv.length - 2 );
     }
 
     public void visitEnd() {
-        if (parent != null) {
-            byte[] data = parent.data;
-            data[offset] = (byte) (size >>> 8);
-            data[offset + 1] = (byte) size;
+        if ( this.parent != null ) {
+            final byte[] data = this.parent.data;
+            data[this.offset] = (byte) (this.size >>> 8);
+            data[this.offset + 1] = (byte) this.size;
         }
     }
 
@@ -242,7 +273,7 @@ final class AnnotationWriter implements AnnotationVisitor {
     int getSize() {
         int size = 0;
         AnnotationWriter aw = this;
-        while (aw != null) {
+        while ( aw != null ) {
             size += aw.bv.length;
             aw = aw.next;
         }
@@ -260,7 +291,7 @@ final class AnnotationWriter implements AnnotationVisitor {
         int size = 2;
         AnnotationWriter aw = this;
         AnnotationWriter last = null;
-        while (aw != null) {
+        while ( aw != null ) {
             ++n;
             size += aw.bv.length;
             aw.visitEnd(); // in case user forgot to call visitEnd
@@ -268,11 +299,13 @@ final class AnnotationWriter implements AnnotationVisitor {
             last = aw;
             aw = aw.next;
         }
-        out.putInt(size);
-        out.putShort(n);
+        out.putInt( size );
+        out.putShort( n );
         aw = last;
-        while (aw != null) {
-            out.putByteArray(aw.bv.data, 0, aw.bv.length);
+        while ( aw != null ) {
+            out.putByteArray( aw.bv.data,
+                              0,
+                              aw.bv.length );
             aw = aw.prev;
         }
     }
@@ -283,27 +316,30 @@ final class AnnotationWriter implements AnnotationVisitor {
      * @param panns an array of annotation writer lists.
      * @param out where the annotations must be put.
      */
-    static void put(final AnnotationWriter[] panns, final ByteVector out) {
+    static void put(final AnnotationWriter[] panns,
+                    final ByteVector out) {
         int size = 1 + 2 * panns.length;
-        for (int i = 0; i < panns.length; ++i) {
+        for ( int i = 0; i < panns.length; ++i ) {
             size += panns[i] == null ? 0 : panns[i].getSize();
         }
-        out.putInt(size).putByte(panns.length);
-        for (int i = 0; i < panns.length; ++i) {
+        out.putInt( size ).putByte( panns.length );
+        for ( int i = 0; i < panns.length; ++i ) {
             AnnotationWriter aw = panns[i];
             AnnotationWriter last = null;
             int n = 0;
-            while (aw != null) {
+            while ( aw != null ) {
                 ++n;
                 aw.visitEnd(); // in case user forgot to call visitEnd
                 aw.prev = last;
                 last = aw;
                 aw = aw.next;
             }
-            out.putShort(n);
+            out.putShort( n );
             aw = last;
-            while (aw != null) {
-                out.putByteArray(aw.bv.data, 0, aw.bv.length);
+            while ( aw != null ) {
+                out.putByteArray( aw.bv.data,
+                                  0,
+                                  aw.bv.length );
                 aw = aw.prev;
             }
         }

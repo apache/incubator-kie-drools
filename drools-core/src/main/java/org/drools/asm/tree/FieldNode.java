@@ -38,13 +38,15 @@ import org.drools.asm.FieldVisitor;
  * 
  * @author Eric Bruneton
  */
-public class FieldNode extends MemberNode implements FieldVisitor {
+public class FieldNode extends MemberNode
+    implements
+    FieldVisitor {
 
     /**
      * The field's access flags (see {@link org.drools.asm.Opcodes}). This
      * field also indicates if the field is synthetic and/or deprecated.
      */
-    public int access;
+    public int    access;
 
     /**
      * The field's name.
@@ -82,13 +84,11 @@ public class FieldNode extends MemberNode implements FieldVisitor {
      *        be an {@link Integer}, a {@link Float}, a {@link Long}, a
      *        {@link Double} or a {@link String}.
      */
-    public FieldNode(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final Object value)
-    {
+    public FieldNode(final int access,
+                     final String name,
+                     final String desc,
+                     final String signature,
+                     final Object value) {
         this.access = access;
         this.name = name;
         this.desc = desc;
@@ -102,21 +102,27 @@ public class FieldNode extends MemberNode implements FieldVisitor {
      * @param cv a class visitor.
      */
     public void accept(final ClassVisitor cv) {
-        FieldVisitor fv = cv.visitField(access, name, desc, signature, value);
+        final FieldVisitor fv = cv.visitField( this.access,
+                                               this.name,
+                                               this.desc,
+                                               this.signature,
+                                               this.value );
         int i, n;
-        n = visibleAnnotations == null ? 0 : visibleAnnotations.size();
-        for (i = 0; i < n; ++i) {
-            AnnotationNode an = (AnnotationNode) visibleAnnotations.get(i);
-            an.accept(fv.visitAnnotation(an.desc, true));
+        n = this.visibleAnnotations == null ? 0 : this.visibleAnnotations.size();
+        for ( i = 0; i < n; ++i ) {
+            final AnnotationNode an = (AnnotationNode) this.visibleAnnotations.get( i );
+            an.accept( fv.visitAnnotation( an.desc,
+                                           true ) );
         }
-        n = invisibleAnnotations == null ? 0 : invisibleAnnotations.size();
-        for (i = 0; i < n; ++i) {
-            AnnotationNode an = (AnnotationNode) invisibleAnnotations.get(i);
-            an.accept(fv.visitAnnotation(an.desc, false));
+        n = this.invisibleAnnotations == null ? 0 : this.invisibleAnnotations.size();
+        for ( i = 0; i < n; ++i ) {
+            final AnnotationNode an = (AnnotationNode) this.invisibleAnnotations.get( i );
+            an.accept( fv.visitAnnotation( an.desc,
+                                           false ) );
         }
-        n = attrs == null ? 0 : attrs.size();
-        for (i = 0; i < n; ++i) {
-            fv.visitAttribute((Attribute) attrs.get(i));
+        n = this.attrs == null ? 0 : this.attrs.size();
+        for ( i = 0; i < n; ++i ) {
+            fv.visitAttribute( (Attribute) this.attrs.get( i ) );
         }
         fv.visitEnd();
     }

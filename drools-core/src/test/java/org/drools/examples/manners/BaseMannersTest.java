@@ -1,4 +1,5 @@
 package org.drools.examples.manners;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.examples.manners;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -57,16 +56,16 @@ import org.drools.spi.Tuple;
 
 public abstract class BaseMannersTest extends TestCase {
     /** Number of guests at the dinner (default: 16). */
-    private int             numGuests  = 16;
+    private final int       numGuests  = 16;
 
     /** Number of seats at the table (default: 16). */
-    private int             numSeats   = 16;
+    private final int       numSeats   = 16;
 
     /** Minimum number of hobbies each guest should have (default: 2). */
-    private int             minHobbies = 2;
+    private final int       minHobbies = 2;
 
     /** Maximun number of hobbies each guest should have (default: 3). */
-    private int             maxHobbies = 3;
+    private final int       maxHobbies = 3;
 
     protected Package       pkg;
 
@@ -109,13 +108,13 @@ public abstract class BaseMannersTest extends TestCase {
                                                                                      Evaluator.NOT_EQUAL );
 
         this.pkg = new Package( "Miss Manners" );
-        pkg.addRule( getAssignFirstSeatRule() );
-        pkg.addRule( getFindSeating() );
-        pkg.addRule( getPathDone() );
-        pkg.addRule( getMakePath() );
-        pkg.addRule( getContinueProcessing() );
-        pkg.addRule( getAreWeDone() );
-        pkg.addRule( getAllDone() );
+        this.pkg.addRule( getAssignFirstSeatRule() );
+        this.pkg.addRule( getFindSeating() );
+        this.pkg.addRule( getPathDone() );
+        this.pkg.addRule( getMakePath() );
+        this.pkg.addRule( getContinueProcessing() );
+        this.pkg.addRule( getAreWeDone() );
+        this.pkg.addRule( getAllDone() );
 
     }
 
@@ -154,9 +153,9 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.START_UP )
         // -----------
-        Column contextColumn = new Column( 0,
-                                           contextType,
-                                           "context" );
+        final Column contextColumn = new Column( 0,
+                                                 this.contextType,
+                                                 "context" );
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
@@ -170,9 +169,9 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // guest: Guest()
         // -----------
-        Column guestColumn = new Column( 1,
-                                         guestType,
-                                         "guest" );
+        final Column guestColumn = new Column( 1,
+                                               this.guestType,
+                                               "guest" );
 
         rule.addPattern( guestColumn );
 
@@ -181,15 +180,15 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         // count : Count()
         // ------------
-        Column countColumn = new Column( 2,
-                                         countType,
-                                         "count" );
+        final Column countColumn = new Column( 2,
+                                               this.countType,
+                                               "count" );
 
         rule.addPattern( countColumn );
 
         final Declaration countDeclaration = rule.getDeclaration( "count" );
 
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
@@ -287,9 +286,9 @@ public abstract class BaseMannersTest extends TestCase {
         // ---------------
         // context : Context( state == Context.ASSIGN_SEATS )
         // ---------------
-        Column contextColumn = new Column( 0,
-                                           contextType,
-                                           "context" );
+        final Column contextColumn = new Column( 0,
+                                                 this.contextType,
+                                                 "context" );
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
@@ -304,8 +303,8 @@ public abstract class BaseMannersTest extends TestCase {
         // Seating( seatingId:id, seatingPid:pid, pathDone == true
         // seatingRightSeat:rightSeat seatingRightGuestName:rightGuestName )
         // -------------------------------
-        Column seatingColumn = new Column( 1,
-                                           seatingType );
+        final Column seatingColumn = new Column( 1,
+                                                 this.seatingType );
 
         setFieldDeclaration( seatingColumn,
                              "id",
@@ -338,13 +337,13 @@ public abstract class BaseMannersTest extends TestCase {
         // Guest( name == seatingRightGuestName, rightGuestSex:sex,
         // rightGuestHobby:hobby )
         // ---------------
-        Column rightGuestColumn = new Column( 2,
-                                              guestType );
+        final Column rightGuestColumn = new Column( 2,
+                                                    this.guestType );
 
         rightGuestColumn.addConstraint( getBoundVariableConstraint( rightGuestColumn,
                                                                     "name",
                                                                     seatingRightGuestNameDeclaration,
-                                                                    objectEqualEvaluator ) );
+                                                                    this.objectEqualEvaluator ) );
 
         setFieldDeclaration( rightGuestColumn,
                              "sex",
@@ -363,8 +362,8 @@ public abstract class BaseMannersTest extends TestCase {
         // Guest( leftGuestName:name , sex != rightGuestSex, hobby ==
         // rightGuestHobby )
         // ----------------
-        Column leftGuestColumn = new Column( 3,
-                                             guestType );
+        final Column leftGuestColumn = new Column( 3,
+                                                   this.guestType );
 
         setFieldDeclaration( leftGuestColumn,
                              "name",
@@ -373,21 +372,21 @@ public abstract class BaseMannersTest extends TestCase {
         leftGuestColumn.addConstraint( getBoundVariableConstraint( leftGuestColumn,
                                                                    "sex",
                                                                    rightGuestSexDeclaration,
-                                                                   objectNotEqualEvaluator ) );
+                                                                   this.objectNotEqualEvaluator ) );
 
         leftGuestColumn.addConstraint( getBoundVariableConstraint( rightGuestColumn,
                                                                    "hobby",
                                                                    rightGuestHobbyDeclaration,
-                                                                   objectEqualEvaluator ) );
+                                                                   this.objectEqualEvaluator ) );
         rule.addPattern( leftGuestColumn );
         final Declaration leftGuestNameDeclaration = rule.getDeclaration( "leftGuestName" );
 
         // ---------------
         // count : Count()
         // ---------------
-        Column count = new Column( 4,
-                                   countType,
-                                   "count" );
+        final Column count = new Column( 4,
+                                         this.countType,
+                                         "count" );
 
         rule.addPattern( count );
 
@@ -396,44 +395,44 @@ public abstract class BaseMannersTest extends TestCase {
         // --------------
         // not ( Path( id == seatingId, guestName == leftGuestName) )
         // --------------
-        Column notPathColumn = new Column( 5,
-                                           pathType );
+        final Column notPathColumn = new Column( 5,
+                                                 this.pathType );
 
         notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
                                                                  "id",
                                                                  seatingIdDeclaration,
-                                                                 integerEqualEvaluator ) );
+                                                                 this.integerEqualEvaluator ) );
 
         notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
                                                                  "guestName",
                                                                  leftGuestNameDeclaration,
-                                                                 objectEqualEvaluator ) );
-        Not notPath = new Not();
+                                                                 this.objectEqualEvaluator ) );
+        final Not notPath = new Not();
         notPath.addChild( notPathColumn );
         rule.addPattern( notPath );
         // ------------
         // not ( Chosen( id == seatingId, guestName == leftGuestName, hobby ==
         // rightGuestHobby ) )
         // ------------
-        Column notChosenColumn = new Column( 6,
-                                             chosenType );
+        final Column notChosenColumn = new Column( 6,
+                                                   this.chosenType );
 
         notChosenColumn.addConstraint( getBoundVariableConstraint( notChosenColumn,
                                                                    "id",
                                                                    seatingIdDeclaration,
-                                                                   integerEqualEvaluator ) );
+                                                                   this.integerEqualEvaluator ) );
 
         notChosenColumn.addConstraint( getBoundVariableConstraint( notChosenColumn,
                                                                    "guestName",
                                                                    leftGuestNameDeclaration,
-                                                                   objectEqualEvaluator ) );
+                                                                   this.objectEqualEvaluator ) );
 
         notChosenColumn.addConstraint( getBoundVariableConstraint( notChosenColumn,
                                                                    "hobby",
                                                                    rightGuestHobbyDeclaration,
-                                                                   objectEqualEvaluator ) );
+                                                                   this.objectEqualEvaluator ) );
 
-        Not notChosen = new Not();
+        final Not notChosen = new Not();
         notChosen.addChild( notChosenColumn );
 
         rule.addPattern( notChosen );
@@ -451,7 +450,7 @@ public abstract class BaseMannersTest extends TestCase {
         // count.setCount( countValue + 1 );
         // context.setPath( Context.MAKE_PATH );
         // ------------
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
@@ -549,8 +548,8 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.MAKE_PATH )
         // -----------
-        Column contextColumn = new Column( 0,
-                                           contextType );
+        final Column contextColumn = new Column( 0,
+                                                 this.contextType );
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
@@ -562,8 +561,8 @@ public abstract class BaseMannersTest extends TestCase {
         // ---------------
         // Seating( seatingId:id, seatingPid:pid, pathDone == false )
         // ---------------
-        Column seatingColumn = new Column( 1,
-                                           seatingType );
+        final Column seatingColumn = new Column( 1,
+                                                 this.seatingType );
 
         setFieldDeclaration( seatingColumn,
                              "id",
@@ -576,7 +575,7 @@ public abstract class BaseMannersTest extends TestCase {
         seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
                                                            "pathDone",
                                                            new Boolean( false ),
-                                                           booleanEqualEvaluator ) );
+                                                           this.booleanEqualEvaluator ) );
 
         rule.addPattern( seatingColumn );
 
@@ -586,13 +585,13 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
         // -----------
-        Column pathColumn = new Column( 2,
-                                        pathType );
+        final Column pathColumn = new Column( 2,
+                                              this.pathType );
 
         pathColumn.addConstraint( getBoundVariableConstraint( pathColumn,
                                                               "id",
                                                               seatingPidDeclaration,
-                                                              integerEqualEvaluator ) );
+                                                              this.integerEqualEvaluator ) );
 
         setFieldDeclaration( pathColumn,
                              "guestName",
@@ -609,19 +608,19 @@ public abstract class BaseMannersTest extends TestCase {
         // -------------
         // (not Path( id == seatingId, guestName == pathGuestName )
         // -------------
-        Column notPathColumn = new Column( 3,
-                                           pathType );
+        final Column notPathColumn = new Column( 3,
+                                                 this.pathType );
 
         notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
                                                                  "id",
                                                                  seatingIdDeclaration,
-                                                                 integerEqualEvaluator ) );
+                                                                 this.integerEqualEvaluator ) );
         notPathColumn.addConstraint( getBoundVariableConstraint( notPathColumn,
                                                                  "guestName",
                                                                  pathGuestNameDeclaration,
-                                                                 objectEqualEvaluator ) );
+                                                                 this.objectEqualEvaluator ) );
 
-        Not not = new Not();
+        final Not not = new Not();
 
         not.addChild( notPathColumn );
 
@@ -630,7 +629,7 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         // drools.assert( new Path( id, pathName, pathSeat ) );
         // ------------
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
@@ -688,9 +687,9 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.MAKE_PATH )
         // -----------
-        Column contextColumn = new Column( 0,
-                                           contextType,
-                                           "context" );
+        final Column contextColumn = new Column( 0,
+                                                 this.contextType,
+                                                 "context" );
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
@@ -703,14 +702,14 @@ public abstract class BaseMannersTest extends TestCase {
         // ---------------
         // seating : Seating( pathDone == false )
         // ---------------
-        Column seatingColumn = new Column( 1,
-                                           seatingType,
-                                           "seating" );
+        final Column seatingColumn = new Column( 1,
+                                                 this.seatingType,
+                                                 "seating" );
 
         seatingColumn.addConstraint( getLiteralConstraint( seatingColumn,
                                                            "pathDone",
                                                            new Boolean( false ),
-                                                           booleanEqualEvaluator ) );
+                                                           this.booleanEqualEvaluator ) );
 
         rule.addPattern( seatingColumn );
 
@@ -720,7 +719,7 @@ public abstract class BaseMannersTest extends TestCase {
         // context.setName( Context.CHECK_DONE );
         // seating.setPathDone( true );
         // ------------
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
@@ -780,9 +779,9 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.CHECK_DONE )
         // -----------
-        Column contextColumn = new Column( 0,
-                                           contextType,
-                                           "context" );
+        final Column contextColumn = new Column( 0,
+                                                 this.contextType,
+                                                 "context" );
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
@@ -795,8 +794,8 @@ public abstract class BaseMannersTest extends TestCase {
         // ---------------
         // LastSeat( lastSeat: seat )
         // ---------------
-        Column lastSeatColumn = new Column( 1,
-                                            lastSeatType );
+        final Column lastSeatColumn = new Column( 1,
+                                                  this.lastSeatType );
 
         setFieldDeclaration( lastSeatColumn,
                              "seat",
@@ -807,21 +806,21 @@ public abstract class BaseMannersTest extends TestCase {
         // -------------
         // Seating( rightSeat == lastSeat )
         // -------------
-        Column seatingColumn = new Column( 2,
-                                           seatingType,
-                                           null );
+        final Column seatingColumn = new Column( 2,
+                                                 this.seatingType,
+                                                 null );
 
         seatingColumn.addConstraint( getBoundVariableConstraint( seatingColumn,
                                                                  "rightSeat",
                                                                  lastSeatDeclaration,
-                                                                 integerEqualEvaluator ) );
+                                                                 this.integerEqualEvaluator ) );
 
         rule.addPattern( seatingColumn );
 
         // ------------
         // context.setName( Context.PRINT_RESULTS );
         // ------------
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
@@ -870,9 +869,9 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.CHECK_DONE )
         // -----------
-        Column contextColumn = new Column( 0,
-                                           contextType,
-                                           "context" );
+        final Column contextColumn = new Column( 0,
+                                                 this.contextType,
+                                                 "context" );
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
@@ -885,7 +884,7 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         // context.setName( Context.ASSIGN_SEATS );
         // ------------
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
@@ -935,8 +934,8 @@ public abstract class BaseMannersTest extends TestCase {
         // -----------
         // context : Context( state == Context.PRINT_RESULTS )
         // -----------
-        Column contextColumn = new Column( 0,
-                                           contextType );
+        final Column contextColumn = new Column( 0,
+                                                 this.contextType );
 
         contextColumn.addConstraint( getLiteralConstraint( contextColumn,
                                                            "state",
@@ -949,7 +948,7 @@ public abstract class BaseMannersTest extends TestCase {
         // ------------
         //     
         // ------------
-        Consequence consequence = new Consequence() {
+        final Consequence consequence = new Consequence() {
 
             public void evaluate(KnowledgeHelper drools,
                                  WorkingMemory workingMemory) throws ConsequenceException {
@@ -971,37 +970,37 @@ public abstract class BaseMannersTest extends TestCase {
      * Convert the facts from the <code>InputStream</code> to a list of
      * objects.
      */
-    protected List getInputObjects(InputStream inputStream) throws IOException {
-        List list = new ArrayList();
+    protected List getInputObjects(final InputStream inputStream) throws IOException {
+        final List list = new ArrayList();
 
-        BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );
+        final BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );
 
         String line;
         while ( (line = br.readLine()) != null ) {
             if ( line.trim().length() == 0 || line.trim().startsWith( ";" ) ) {
                 continue;
             }
-            StringTokenizer st = new StringTokenizer( line,
-                                                      "() " );
-            String type = st.nextToken();
+            final StringTokenizer st = new StringTokenizer( line,
+                                                            "() " );
+            final String type = st.nextToken();
 
             if ( "guest".equals( type ) ) {
                 if ( !"name".equals( st.nextToken() ) ) {
                     throw new IOException( "expected 'name' in: " + line );
                 }
-                String name = st.nextToken();
+                final String name = st.nextToken();
                 if ( !"sex".equals( st.nextToken() ) ) {
                     throw new IOException( "expected 'sex' in: " + line );
                 }
-                String sex = st.nextToken();
+                final String sex = st.nextToken();
                 if ( !"hobby".equals( st.nextToken() ) ) {
                     throw new IOException( "expected 'hobby' in: " + line );
                 }
-                String hobby = st.nextToken();
+                final String hobby = st.nextToken();
 
-                Guest guest = new Guest( name,
-                                         Sex.resolve( sex ),
-                                         Hobby.resolve( hobby ) );
+                final Guest guest = new Guest( name,
+                                               Sex.resolve( sex ),
+                                               Hobby.resolve( hobby ) );
 
                 list.add( guest );
             }
@@ -1028,22 +1027,22 @@ public abstract class BaseMannersTest extends TestCase {
     private InputStream generateData() {
         final String LINE_SEPARATOR = System.getProperty( "line.separator" );
 
-        StringWriter writer = new StringWriter();
+        final StringWriter writer = new StringWriter();
 
-        int maxMale = numGuests / 2;
-        int maxFemale = numGuests / 2;
+        final int maxMale = this.numGuests / 2;
+        final int maxFemale = this.numGuests / 2;
 
         int maleCount = 0;
         int femaleCount = 0;
 
         // init hobbies
-        List hobbyList = new ArrayList();
-        for ( int i = 1; i <= maxHobbies; i++ ) {
+        final List hobbyList = new ArrayList();
+        for ( int i = 1; i <= this.maxHobbies; i++ ) {
             hobbyList.add( "h" + i );
         }
 
-        Random rnd = new Random();
-        for ( int i = 1; i <= numGuests; i++ ) {
+        final Random rnd = new Random();
+        for ( int i = 1; i <= this.numGuests; i++ ) {
             char sex = rnd.nextBoolean() ? 'm' : 'f';
             if ( sex == 'm' && maleCount == maxMale ) {
                 sex = 'f';
@@ -1058,17 +1057,17 @@ public abstract class BaseMannersTest extends TestCase {
                 femaleCount++;
             }
 
-            List guestHobbies = new ArrayList( hobbyList );
+            final List guestHobbies = new ArrayList( hobbyList );
 
-            int numHobbies = minHobbies + rnd.nextInt( maxHobbies - minHobbies + 1 );
+            final int numHobbies = this.minHobbies + rnd.nextInt( this.maxHobbies - this.minHobbies + 1 );
             for ( int j = 0; j < numHobbies; j++ ) {
-                int hobbyIndex = rnd.nextInt( guestHobbies.size() );
-                String hobby = (String) guestHobbies.get( hobbyIndex );
+                final int hobbyIndex = rnd.nextInt( guestHobbies.size() );
+                final String hobby = (String) guestHobbies.get( hobbyIndex );
                 writer.write( "(guest (name n" + i + ") (sex " + sex + ") (hobby " + hobby + "))" + LINE_SEPARATOR );
                 guestHobbies.remove( hobbyIndex );
             }
         }
-        writer.write( "(last_seat (seat " + numSeats + "))" + LINE_SEPARATOR );
+        writer.write( "(last_seat (seat " + this.numSeats + "))" + LINE_SEPARATOR );
 
         writer.write( LINE_SEPARATOR );
         writer.write( "(context (state start))" + LINE_SEPARATOR );
@@ -1076,9 +1075,9 @@ public abstract class BaseMannersTest extends TestCase {
         return new ByteArrayInputStream( writer.getBuffer().toString().getBytes() );
     }
 
-    public static int getIndex(Class clazz,
-                               String name) throws IntrospectionException {
-        PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
+    public static int getIndex(final Class clazz,
+                               final String name) throws IntrospectionException {
+        final PropertyDescriptor[] descriptors = Introspector.getBeanInfo( clazz ).getPropertyDescriptors();
         for ( int i = 0; i < descriptors.length; i++ ) {
             if ( descriptors[i].getName().equals( name ) ) {
                 return i;
@@ -1087,42 +1086,42 @@ public abstract class BaseMannersTest extends TestCase {
         return -1;
     }
 
-    private FieldConstraint getLiteralConstraint(Column column,
-                                                 String fieldName,
-                                                 Object fieldValue,
-                                                 Evaluator evaluator) throws IntrospectionException {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+    private FieldConstraint getLiteralConstraint(final Column column,
+                                                 final String fieldName,
+                                                 final Object fieldValue,
+                                                 final Evaluator evaluator) throws IntrospectionException {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
-        FieldValue field = new MockField( fieldValue );
+        final FieldValue field = new MockField( fieldValue );
 
         return new LiteralConstraint( field,
                                       extractor,
                                       evaluator );
     }
 
-    private void setFieldDeclaration(Column column,
-                                     String fieldName,
-                                     String identifier) throws IntrospectionException {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+    private void setFieldDeclaration(final Column column,
+                                     final String fieldName,
+                                     final String identifier) throws IntrospectionException {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
         column.addDeclaration( identifier,
                                extractor );
     }
 
-    private FieldConstraint getBoundVariableConstraint(Column column,
-                                                       String fieldName,
-                                                       Declaration declaration,
-                                                       Evaluator evaluator) throws IntrospectionException {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+    private FieldConstraint getBoundVariableConstraint(final Column column,
+                                                       final String fieldName,
+                                                       final Declaration declaration,
+                                                       final Evaluator evaluator) throws IntrospectionException {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
         return new BoundVariableConstraint( extractor,
                                             declaration,

@@ -24,12 +24,12 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.WorkingMemory;
-import org.drools.reteoo.DefaultFactHandleFactory;
-import org.drools.reteoo.FactHandleImpl;
+import org.drools.common.DefaultFactHandle;
+import org.drools.reteoo.ReteooFactHandleFactory;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
-import org.drools.reteoo.RuleBaseImpl;
-import org.drools.reteoo.WorkingMemoryImpl;
+import org.drools.reteoo.ReteooRuleBase;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.MultiLinkedListNodeWrapper;
 
@@ -43,22 +43,22 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  * Created: 28/02/2006
  */
 public abstract class BaseBetaRightMemoryTestClass extends TestCase {
-    protected WorkingMemoryImpl workingMemory;
-    protected BetaRightMemory   memory;
+    protected ReteooWorkingMemory workingMemory;
+    protected BetaRightMemory     memory;
     protected MockBetaRightMemory child;
-    protected DummyValueObject  obj0;
-    protected DummyValueObject  obj1;
-    protected DummyValueObject  obj2;
-    protected FactHandleFactory factory;
-    protected FactHandleImpl    f0;
-    protected FactHandleImpl    f1;
-    protected FactHandleImpl    f2;
-    protected ObjectMatches     matches0;
-    protected ObjectMatches     matches1;
-    protected ObjectMatches     matches2;
-    protected ReteTuple         tuple0;
-    protected ReteTuple         tuple1;
-    protected ReteTuple         tuple2;
+    protected DummyValueObject    obj0;
+    protected DummyValueObject    obj1;
+    protected DummyValueObject    obj2;
+    protected FactHandleFactory   factory;
+    protected DefaultFactHandle   f0;
+    protected DefaultFactHandle   f1;
+    protected DefaultFactHandle   f2;
+    protected ObjectMatches       matches0;
+    protected ObjectMatches       matches1;
+    protected ObjectMatches       matches2;
+    protected ReteTuple           tuple0;
+    protected ReteTuple           tuple1;
+    protected ReteTuple           tuple2;
 
     public BaseBetaRightMemoryTestClass() {
         this.memory = null;
@@ -67,37 +67,34 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.workingMemory = new WorkingMemoryImpl( new RuleBaseImpl() );
-        obj0 = new DummyValueObject( true,
-                                     "string1",
-                                     10,
-                                     "object1" );
-        obj1 = new DummyValueObject( true,
-                                     "string2",
-                                     20,
-                                     "object2" );
-        obj2 = new DummyValueObject( true,
-                                     null,
-                                     20,
-                                     null );
+        this.workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        this.obj0 = new DummyValueObject( true,
+                                          "string1",
+                                          10,
+                                          "object1" );
+        this.obj1 = new DummyValueObject( true,
+                                          "string2",
+                                          20,
+                                          "object2" );
+        this.obj2 = new DummyValueObject( true,
+                                          null,
+                                          20,
+                                          null );
 
-        factory = new DefaultFactHandleFactory();
-        f0 = (FactHandleImpl) factory.newFactHandle( 0 );
-        f0.setObject( obj0 );
+        this.factory = new ReteooFactHandleFactory();
+        this.f0 = (DefaultFactHandle) this.factory.newFactHandle( this.obj0 );
 
-        f1 = (FactHandleImpl) factory.newFactHandle( 1 );
-        f1.setObject( obj1 );
+        this.f1 = (DefaultFactHandle) this.factory.newFactHandle( this.obj1 );
 
-        f2 = (FactHandleImpl) factory.newFactHandle( 2 );
-        f2.setObject( obj2 );
+        this.f2 = (DefaultFactHandle) this.factory.newFactHandle( this.obj2 );
 
-        matches0 = new ObjectMatches( f0 );
-        matches1 = new ObjectMatches( f1 );
-        matches2 = new ObjectMatches( f2 );
+        this.matches0 = new ObjectMatches( this.f0 );
+        this.matches1 = new ObjectMatches( this.f1 );
+        this.matches2 = new ObjectMatches( this.f2 );
 
-        tuple0 = new ReteTuple( f0 );
-        tuple1 = new ReteTuple( f1 );
-        tuple2 = new ReteTuple( f2 );
+        this.tuple0 = new ReteTuple( this.f0 );
+        this.tuple1 = new ReteTuple( this.f1 );
+        this.tuple2 = new ReteTuple( this.f2 );
     }
 
     protected void tearDown() throws Exception {
@@ -109,19 +106,19 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
      */
     public void testAddWorkingMemoryObjectMatches() {
         this.memory.add( this.workingMemory,
-                         matches0 );
+                         this.matches0 );
         Assert.assertEquals( "Memory should have size 1",
                              1,
                              this.memory.size() );
 
         this.memory.add( this.workingMemory,
-                         matches1 );
+                         this.matches1 );
         Assert.assertEquals( "Memory should have size 2",
                              2,
                              this.memory.size() );
 
         this.memory.add( this.workingMemory,
-                         matches2 );
+                         this.matches2 );
         Assert.assertEquals( "Memory should have size 3",
                              3,
                              this.memory.size() );
@@ -132,11 +129,11 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
      */
     public void testRemoveWorkingMemoryObjectMatches() {
         this.memory.add( this.workingMemory,
-                         matches0 );
+                         this.matches0 );
         this.memory.add( this.workingMemory,
-                         matches1 );
+                         this.matches1 );
         this.memory.add( this.workingMemory,
-                         matches2 );
+                         this.matches2 );
         Assert.assertEquals( "Memory should have size 3",
                              3,
                              this.memory.size() );
@@ -164,9 +161,9 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
      * Test method for 'org.drools.reteoo.beta.DefaultRightMemory.add(WorkingMemory, MultiLinkedListNodeWrapper)'
      */
     public void testAddWorkingMemoryMultiLinkedListNodeWrapper() {
-        MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper( matches0 );
-        MultiLinkedListNodeWrapper wrapper1 = new MultiLinkedListNodeWrapper( matches1 );
-        MultiLinkedListNodeWrapper wrapper2 = new MultiLinkedListNodeWrapper( matches2 );
+        final MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper( this.matches0 );
+        final MultiLinkedListNodeWrapper wrapper1 = new MultiLinkedListNodeWrapper( this.matches1 );
+        final MultiLinkedListNodeWrapper wrapper2 = new MultiLinkedListNodeWrapper( this.matches2 );
 
         this.memory.add( this.workingMemory,
                          wrapper0 );
@@ -191,9 +188,9 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
      * Test method for 'org.drools.reteoo.beta.DefaultRightMemory.remove(WorkingMemory, MultiLinkedListNodeWrapper)'
      */
     public void testRemoveWorkingMemoryMultiLinkedListNodeWrapper() {
-        MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper( matches0 );
-        MultiLinkedListNodeWrapper wrapper1 = new MultiLinkedListNodeWrapper( matches1 );
-        MultiLinkedListNodeWrapper wrapper2 = new MultiLinkedListNodeWrapper( matches2 );
+        final MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper( this.matches0 );
+        final MultiLinkedListNodeWrapper wrapper1 = new MultiLinkedListNodeWrapper( this.matches1 );
+        final MultiLinkedListNodeWrapper wrapper2 = new MultiLinkedListNodeWrapper( this.matches2 );
 
         this.memory.add( this.workingMemory,
                          wrapper0 );
@@ -232,29 +229,29 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
             this.memory.remove( this.workingMemory,
                                 this.matches0 );
             Assert.fail( "Trying to remove an element that does not exist in the memory should throw an exception" );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             // everything is fine
         }
         try {
-            MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper( matches0 );
+            final MultiLinkedListNodeWrapper wrapper0 = new MultiLinkedListNodeWrapper( this.matches0 );
             this.memory.remove( this.workingMemory,
                                 wrapper0 );
             Assert.fail( "Trying to remove an element that does not exist in the memory should throw an exception" );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             // everything is fine
         }
         try {
             this.memory.remove( this.workingMemory,
                                 (ObjectMatches) null );
             Assert.fail( "Trying to remove a null element from memory should throw an exception" );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             // everything is fine
         }
         try {
             this.memory.remove( this.workingMemory,
                                 (MultiLinkedListNodeWrapper) null );
             Assert.fail( "Trying to remove a null element from memory should throw an exception" );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             // everything is fine
         }
     }
@@ -267,7 +264,7 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
                            this.memory.isEmpty() );
 
         this.memory.add( this.workingMemory,
-                         matches0 );
+                         this.matches0 );
         Assert.assertFalse( "Memory should not be empty",
                             this.memory.isEmpty() );
     }
@@ -281,13 +278,13 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
                              this.memory.size() );
 
         this.memory.add( this.workingMemory,
-                         matches0 );
+                         this.matches0 );
         Assert.assertEquals( "Memory should have size 1",
                              1,
                              this.memory.size() );
 
         this.memory.add( this.workingMemory,
-                         matches1 );
+                         this.matches1 );
         Assert.assertEquals( "Memory should have size 2",
                              2,
                              this.memory.size() );
@@ -308,50 +305,53 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
     public void testParameterlessIterator() {
         try {
             this.memory.add( this.workingMemory,
-                             matches0 );
+                             this.matches0 );
             this.memory.add( this.workingMemory,
-                             matches1 );
+                             this.matches1 );
             this.memory.add( this.workingMemory,
-                             matches2 );
+                             this.matches2 );
             Assert.assertEquals( "Memory should have size 3",
                                  3,
                                  this.memory.size() );
 
-            Iterator i = this.memory.iterator();
+            final Iterator i = this.memory.iterator();
             Assert.assertTrue( "There should be a next match",
                                i.hasNext() );
             ObjectMatches matches = (ObjectMatches) i.next();
             Assert.assertSame( "Wrong returned match",
-                               matches0,
+                               this.matches0,
                                matches );
 
             Assert.assertTrue( "There should be a next match",
                                i.hasNext() );
             matches = (ObjectMatches) i.next();
             Assert.assertSame( "Wrong returned match",
-                               matches1,
+                               this.matches1,
                                matches );
 
             Assert.assertTrue( "There should be a next match",
                                i.hasNext() );
             matches = (ObjectMatches) i.next();
             Assert.assertSame( "Wrong returned match",
-                               matches2,
+                               this.matches2,
                                matches );
 
             Assert.assertFalse( "There should not be a next match",
                                 i.hasNext() );
-        } catch ( UnsupportedOperationException e ) {
+        } catch ( final UnsupportedOperationException e ) {
             Assert.fail( "Beta memory was not supposed to throw any exception: " + e.getMessage() );
-        } catch ( ClassCastException e ) {
+        } catch ( final ClassCastException e ) {
             Assert.fail( "BetaRightMemory was not supposed to throw ClassCastException: " + e.getMessage() );
         }
     }
 
     public void testSelectPossibleMatches2() {
-        int counter = this.child.getCounter();
-        this.memory.selectPossibleMatches( this.workingMemory, this.tuple0 );
-        Assert.assertEquals( "Should have called inner memory", counter+1, this.child.getCounter() );
+        final int counter = this.child.getCounter();
+        this.memory.selectPossibleMatches( this.workingMemory,
+                                           this.tuple0 );
+        Assert.assertEquals( "Should have called inner memory",
+                             counter + 1,
+                             this.child.getCounter() );
     }
 
     /*
@@ -369,17 +369,19 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
      * a remove;
      */
     public abstract void testModifyObjectAttribute();
-    
-    public static class MockBetaRightMemory implements BetaRightMemory {
+
+    public static class MockBetaRightMemory
+        implements
+        BetaRightMemory {
         private int callCounter = 0;
 
-        public void add(WorkingMemory workingMemory,
-                        ObjectMatches matches) {
+        public void add(final WorkingMemory workingMemory,
+                        final ObjectMatches matches) {
             this.callCounter++;
         }
 
-        public void add(WorkingMemory workingMemory,
-                        MultiLinkedListNodeWrapper matches) {
+        public void add(final WorkingMemory workingMemory,
+                        final MultiLinkedListNodeWrapper matches) {
             this.callCounter++;
         }
 
@@ -388,13 +390,13 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
             return false;
         }
 
-        public boolean isPossibleMatch(MultiLinkedListNodeWrapper matches) {
+        public boolean isPossibleMatch(final MultiLinkedListNodeWrapper matches) {
             this.callCounter++;
             return true;
         }
 
-        public Iterator iterator(WorkingMemory workingMemory,
-                                 ReteTuple tuple) {
+        public Iterator iterator(final WorkingMemory workingMemory,
+                                 final ReteTuple tuple) {
             this.callCounter++;
             return null;
         }
@@ -404,25 +406,25 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
             return null;
         }
 
-        public void remove(WorkingMemory workingMemory,
-                           ObjectMatches matches) {
+        public void remove(final WorkingMemory workingMemory,
+                           final ObjectMatches matches) {
             this.callCounter++;
         }
 
-        public void remove(WorkingMemory workingMemory,
-                           MultiLinkedListNodeWrapper matches) {
+        public void remove(final WorkingMemory workingMemory,
+                           final MultiLinkedListNodeWrapper matches) {
             this.callCounter++;
         }
 
-        public void selectPossibleMatches(WorkingMemory workingMemory,
-                                          ReteTuple tuple) {
+        public void selectPossibleMatches(final WorkingMemory workingMemory,
+                                          final ReteTuple tuple) {
             this.callCounter++;
         }
 
         public int size() {
             return 0;
         }
-        
+
         public int getCounter() {
             return this.callCounter;
         }
@@ -431,7 +433,7 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
             return null;
         }
 
-        public void setInnerMemory(BetaRightMemory innerMemory) throws OperationNotSupportedException {
+        public void setInnerMemory(final BetaRightMemory innerMemory) throws OperationNotSupportedException {
         }
     }
 }

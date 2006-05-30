@@ -83,8 +83,8 @@ public interface Interpreter {
      *         returned value must be <tt>equal</tt> to the given value.
      * @throws AnalyzerException if an error occured during the interpretation.
      */
-    Value copyOperation(AbstractInsnNode insn, Value value)
-            throws AnalyzerException;
+    Value copyOperation(AbstractInsnNode insn,
+                        Value value) throws AnalyzerException;
 
     /**
      * Interprets a bytecode instruction with a single argument. This method is
@@ -101,8 +101,8 @@ public interface Interpreter {
      * @return the result of the interpretation of the given instruction.
      * @throws AnalyzerException if an error occured during the interpretation.
      */
-    Value unaryOperation(AbstractInsnNode insn, Value value)
-            throws AnalyzerException;
+    Value unaryOperation(AbstractInsnNode insn,
+                         Value value) throws AnalyzerException;
 
     /**
      * Interprets a bytecode instruction with two arguments. This method is
@@ -121,8 +121,9 @@ public interface Interpreter {
      * @return the result of the interpretation of the given instruction.
      * @throws AnalyzerException if an error occured during the interpretation.
      */
-    Value binaryOperation(AbstractInsnNode insn, Value value1, Value value2)
-            throws AnalyzerException;
+    Value binaryOperation(AbstractInsnNode insn,
+                          Value value1,
+                          Value value2) throws AnalyzerException;
 
     /**
      * Interprets a bytecode instruction with three arguments. This method is
@@ -137,11 +138,10 @@ public interface Interpreter {
      * @return the result of the interpretation of the given instruction.
      * @throws AnalyzerException if an error occured during the interpretation.
      */
-    Value ternaryOperation(
-        AbstractInsnNode insn,
-        Value value1,
-        Value value2,
-        Value value3) throws AnalyzerException;
+    Value ternaryOperation(AbstractInsnNode insn,
+                           Value value1,
+                           Value value2,
+                           Value value3) throws AnalyzerException;
 
     /**
      * Interprets a bytecode instruction with a variable number of arguments.
@@ -155,8 +155,8 @@ public interface Interpreter {
      * @return the result of the interpretation of the given instruction.
      * @throws AnalyzerException if an error occured during the interpretation.
      */
-    Value naryOperation(AbstractInsnNode insn, List values)
-            throws AnalyzerException;
+    Value naryOperation(AbstractInsnNode insn,
+                        List values) throws AnalyzerException;
 
     /**
      * Merges two values. The merge operation must return a value that
@@ -170,5 +170,6 @@ public interface Interpreter {
      * @return the merged value. If the merged value is equal to <tt>v</tt>,
      *         this method <i>must</i> return <tt>v</tt>.
      */
-    Value merge(Value v, Value w);
+    Value merge(Value v,
+                Value w);
 }

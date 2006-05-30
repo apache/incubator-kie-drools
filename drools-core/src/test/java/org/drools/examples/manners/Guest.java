@@ -20,15 +20,20 @@ import java.io.Serializable;
 public final class Guest
     implements
     Serializable {
-    private final String name;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7806377320634586221L;
 
-    private final Sex    sex;
+    private final String      name;
 
-    private final Hobby  hobby;
+    private final Sex         sex;
 
-    public Guest(String name,
-                 Sex sex,
-                 Hobby hobby) {
+    private final Hobby       hobby;
+
+    public Guest(final String name,
+                 final Sex sex,
+                 final Hobby hobby) {
         this.name = name;
         this.sex = sex;
         this.hobby = hobby;

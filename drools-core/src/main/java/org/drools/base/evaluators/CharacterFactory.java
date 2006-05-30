@@ -1,4 +1,5 @@
 package org.drools.base.evaluators;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,14 +16,12 @@ package org.drools.base.evaluators;
  * limitations under the License.
  */
 
-
-
 import org.drools.base.BaseEvaluator;
 import org.drools.spi.Evaluator;
 
 public class CharacterFactory {
 
-    public static Evaluator getCharacterEvaluator(int operator) {
+    public static Evaluator getCharacterEvaluator(final int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
                 return CharacterEqualEvaluator.INSTANCE;
@@ -42,16 +41,22 @@ public class CharacterFactory {
     }
 
     static class CharacterEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new CharacterEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 8766645269581805269L;
+        public final static Evaluator INSTANCE         = new CharacterEqualEvaluator();
 
         private CharacterEqualEvaluator() {
             super( Evaluator.CHAR_TYPE,
                    Evaluator.EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 == null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 == null;
+            }
             return ((Character) object1).equals( object2 );
         }
 
@@ -61,16 +66,22 @@ public class CharacterFactory {
     }
 
     static class CharacterNotEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new CharacterNotEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 8010152240062213440L;
+        public final static Evaluator INSTANCE         = new CharacterNotEqualEvaluator();
 
         private CharacterNotEqualEvaluator() {
             super( Evaluator.CHAR_TYPE,
                    Evaluator.NOT_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 != null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 != null;
+            }
             return !((Character) object1).equals( object2 );
         }
 
@@ -80,15 +91,19 @@ public class CharacterFactory {
     }
 
     static class CharacterLessEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new CharacterLessEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 5236106171143422684L;
+        public final static Evaluator INSTANCE         = new CharacterLessEvaluator();
 
         private CharacterLessEvaluator() {
             super( Evaluator.CHAR_TYPE,
                    Evaluator.LESS );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Character) object1).charValue() < ((Character) object2).charValue();
         }
 
@@ -98,15 +113,19 @@ public class CharacterFactory {
     }
 
     static class CharacterLessOrEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new CharacterLessOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 8064001658173531244L;
+        public final static Evaluator INSTANCE         = new CharacterLessOrEqualEvaluator();
 
         private CharacterLessOrEqualEvaluator() {
             super( Evaluator.CHAR_TYPE,
                    Evaluator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Character) object1).charValue() <= ((Character) object2).charValue();
         }
 
@@ -116,15 +135,19 @@ public class CharacterFactory {
     }
 
     static class CharacterGreaterEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new CharacterGreaterEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 7622623046585316842L;
+        public final static Evaluator INSTANCE         = new CharacterGreaterEvaluator();
 
         private CharacterGreaterEvaluator() {
             super( Evaluator.CHAR_TYPE,
                    Evaluator.GREATER );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Character) object1).charValue() > ((Character) object2).charValue();
         }
 
@@ -134,15 +157,19 @@ public class CharacterFactory {
     }
 
     static class CharacterGreaterOrEqualEvaluator extends BaseEvaluator {
-        private final static Evaluator INSTANCE = new CharacterGreaterOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long      serialVersionUID = 8587935558617586015L;
+        private final static Evaluator INSTANCE         = new CharacterGreaterOrEqualEvaluator();
 
         private CharacterGreaterOrEqualEvaluator() {
             super( Evaluator.CHAR_TYPE,
                    Evaluator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Character) object1).charValue() >= ((Character) object2).charValue();
         }
 

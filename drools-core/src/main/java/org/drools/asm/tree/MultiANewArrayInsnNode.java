@@ -47,7 +47,7 @@ public class MultiANewArrayInsnNode extends AbstractInsnNode {
     /**
      * Number of dimensions of the array to allocate.
      */
-    public int dims;
+    public int    dims;
 
     /**
      * Constructs a new {@link MultiANewArrayInsnNode}.
@@ -55,17 +55,19 @@ public class MultiANewArrayInsnNode extends AbstractInsnNode {
      * @param desc an array type descriptor (see {@link org.drools.asm.Type}).
      * @param dims number of dimensions of the array to allocate.
      */
-    public MultiANewArrayInsnNode(final String desc, final int dims) {
-        super(Opcodes.MULTIANEWARRAY);
+    public MultiANewArrayInsnNode(final String desc,
+                                  final int dims) {
+        super( Opcodes.MULTIANEWARRAY );
         this.desc = desc;
         this.dims = dims;
     }
 
     public void accept(final MethodVisitor mv) {
-        mv.visitMultiANewArrayInsn(desc, dims);
+        mv.visitMultiANewArrayInsn( this.desc,
+                                    this.dims );
     }
 
     public int getType() {
-        return MULTIANEWARRAY_INSN;
+        return AbstractInsnNode.MULTIANEWARRAY_INSN;
     }
 }

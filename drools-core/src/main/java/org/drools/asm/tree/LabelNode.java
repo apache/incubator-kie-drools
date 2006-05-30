@@ -40,15 +40,15 @@ public class LabelNode extends AbstractInsnNode {
     public Label label;
 
     public LabelNode(final Label label) {
-        super(-1);
+        super( -1 );
         this.label = label;
     }
 
     public void accept(final MethodVisitor cv) {
-        cv.visitLabel(label);
+        cv.visitLabel( this.label );
     }
 
     public int getType() {
-        return LABEL;
+        return AbstractInsnNode.LABEL;
     }
 }

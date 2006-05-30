@@ -37,20 +37,24 @@ package org.drools.asm.tree.analysis;
  */
 public class AnalyzerException extends Exception {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3667955870330546089L;
+
     public AnalyzerException(final String msg) {
-        super(msg);
+        super( msg );
     }
 
-    public AnalyzerException(final String msg, final Throwable exception) {
-        super(msg, exception);
+    public AnalyzerException(final String msg,
+                             final Throwable exception) {
+        super( msg,
+               exception );
     }
 
-    public AnalyzerException(
-        final String msg,
-        final Object expected,
-        final Value encountered)
-    {
-        super((msg == null ? "Expected " : msg + ": expected ") + expected
-                + ", but found " + encountered);
+    public AnalyzerException(final String msg,
+                             final Object expected,
+                             final Value encountered) {
+        super( (msg == null ? "Expected " : msg + ": expected ") + expected + ", but found " + encountered );
     }
 }

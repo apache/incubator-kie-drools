@@ -1,4 +1,5 @@
 package org.drools.base.evaluators;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.base.evaluators;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,9 +38,9 @@ import org.drools.spi.Evaluator;
 public class DateFactory {
 
     private static final String DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
-    private static String       DATE_FORMAT_MASK    = getDateFormatMask();
+    private static final String DATE_FORMAT_MASK    = getDateFormatMask();
 
-    public static Evaluator getDateEvaluator(int operator) {
+    public static Evaluator getDateEvaluator(final int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
                 return DateEqualEvaluator.INSTANCE;
@@ -61,21 +60,32 @@ public class DateFactory {
     }
 
     static class DateEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new DateEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -7248999526793624416L;
+        public final static Evaluator INSTANCE         = new DateEqualEvaluator();
 
         private DateEqualEvaluator() {
             super( Evaluator.DATE_TYPE,
                    Evaluator.EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 == null;
-            if ( object2 == null ) return false;
-            Date left = (Date) object1;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 == null;
+            }
+            if ( object2 == null ) {
+                return false;
+            }
+            final Date left = (Date) object1;
 
-            if ( left.compareTo( getRightDate( object2 ) ) == 0 ) return true;
-            else return false;
+            if ( left.compareTo( getRightDate( object2 ) ) == 0 ) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         public String toString() {
@@ -84,20 +94,31 @@ public class DateFactory {
     }
 
     static class DateNotEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new DateNotEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -999744404766802074L;
+        public final static Evaluator INSTANCE         = new DateNotEqualEvaluator();
 
         private DateNotEqualEvaluator() {
             super( Evaluator.DATE_TYPE,
                    Evaluator.NOT_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 != null;
-            if ( object2 == null ) return true;
-            Date left = (Date) object1;
-            if ( left.compareTo( getRightDate( object2 ) ) != 0 ) return true;
-            else return false;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 != null;
+            }
+            if ( object2 == null ) {
+                return true;
+            }
+            final Date left = (Date) object1;
+            if ( left.compareTo( getRightDate( object2 ) ) != 0 ) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         public String toString() {
@@ -106,18 +127,25 @@ public class DateFactory {
     }
 
     static class DateLessEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new DateLessEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -4362504881470806670L;
+        public final static Evaluator INSTANCE         = new DateLessEvaluator();
 
         private DateLessEvaluator() {
             super( Evaluator.DATE_TYPE,
                    Evaluator.LESS );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            Date left = (Date) object1;
-            if ( left.compareTo( getRightDate( object2 ) ) < 0 ) return true;
-            else return false;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            final Date left = (Date) object1;
+            if ( left.compareTo( getRightDate( object2 ) ) < 0 ) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         public String toString() {
@@ -126,18 +154,25 @@ public class DateFactory {
     }
 
     static class DateLessOrEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new DateLessOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -1545183091770593710L;
+        public final static Evaluator INSTANCE         = new DateLessOrEqualEvaluator();
 
         private DateLessOrEqualEvaluator() {
             super( Evaluator.DATE_TYPE,
                    Evaluator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            Date left = (Date) object1;
-            if ( left.compareTo( getRightDate( object2 ) ) <= 0 ) return true;
-            else return false;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            final Date left = (Date) object1;
+            if ( left.compareTo( getRightDate( object2 ) ) <= 0 ) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         public String toString() {
@@ -146,18 +181,25 @@ public class DateFactory {
     }
 
     static class DateGreaterEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new DateGreaterEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 1450531664603794369L;
+        public final static Evaluator INSTANCE         = new DateGreaterEvaluator();
 
         private DateGreaterEvaluator() {
             super( Evaluator.DATE_TYPE,
                    Evaluator.GREATER );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            Date left = (Date) object1;
-            if ( left.compareTo( getRightDate( object2 ) ) > 0 ) return true;
-            else return false;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            final Date left = (Date) object1;
+            if ( left.compareTo( getRightDate( object2 ) ) > 0 ) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         public String toString() {
@@ -166,18 +208,25 @@ public class DateFactory {
     }
 
     static class DateGreaterOrEqualEvaluator extends BaseEvaluator {
-        private final static Evaluator INSTANCE = new DateGreaterOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long      serialVersionUID = -6149840707848164332L;
+        private final static Evaluator INSTANCE         = new DateGreaterOrEqualEvaluator();
 
         private DateGreaterOrEqualEvaluator() {
             super( Evaluator.DATE_TYPE,
                    Evaluator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            Date left = (Date) object1;
-            if ( left.compareTo( getRightDate( object2 ) ) >= 0 ) return true;
-            else return false;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            final Date left = (Date) object1;
+            if ( left.compareTo( getRightDate( object2 ) ) >= 0 ) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         public String toString() {
@@ -186,29 +235,35 @@ public class DateFactory {
     }
 
     /** Use the simple date formatter to read the date from a string */
-    private static Date parseDate(String input) {
+    private static Date parseDate(final String input) {
 
-        SimpleDateFormat df = new SimpleDateFormat( DATE_FORMAT_MASK );
+        final SimpleDateFormat df = new SimpleDateFormat( DateFactory.DATE_FORMAT_MASK );
         try {
             return df.parse( input );
-        } catch ( ParseException e ) {
-            throw new IllegalArgumentException( "Invalid date input format: [" + input + "] it should follow: [" + DATE_FORMAT_MASK + "]" );
+        } catch ( final ParseException e ) {
+            throw new IllegalArgumentException( "Invalid date input format: [" + input + "] it should follow: [" + DateFactory.DATE_FORMAT_MASK + "]" );
         }
     }
 
     /** Converts the right hand side date as appropriate */
-    private static Date getRightDate(Object object2) {
-        if ( object2 == null ) return null;
-        if ( object2 instanceof String ) return parseDate( (String) object2 );
-        else if ( object2 instanceof Date ) return (Date) object2;
-        else throw new IllegalArgumentException( "Unable to convert " + object2.getClass() + " to a Date." );
+    private static Date getRightDate(final Object object2) {
+        if ( object2 == null ) {
+            return null;
+        }
+        if ( object2 instanceof String ) {
+            return parseDate( (String) object2 );
+        } else if ( object2 instanceof Date ) {
+            return (Date) object2;
+        } else {
+            throw new IllegalArgumentException( "Unable to convert " + object2.getClass() + " to a Date." );
+        }
     }
 
     /** Check for the system property override, if it exists */
     private static String getDateFormatMask() {
         String fmt = System.getProperty( "drools.dateformat" );
         if ( fmt == null ) {
-            fmt = DEFAULT_FORMAT_MASK;
+            fmt = DateFactory.DEFAULT_FORMAT_MASK;
         }
         return fmt;
     }

@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.util.ArrayList;
 
@@ -48,8 +45,8 @@ import org.drools.spi.Tuple;
  *
  */
 public class QueryTest extends DroolsTestCase {
-    RuleBaseImpl    ruleBase;
-    RuleBaseImpl    ruleBaseAddRule;
+    LeapsRuleBase   ruleBase;
+    LeapsRuleBase   ruleBaseAddRule;
 
     WorkingMemory   wm1;
 
@@ -75,23 +72,23 @@ public class QueryTest extends DroolsTestCase {
     final Context   context2        = new Context( 1 );
 
     public void setUp() throws Exception {
-        this.ruleBase = new RuleBaseImpl();
+        this.ruleBase = new LeapsRuleBase();
 
         this.wm1 = this.ruleBase.newWorkingMemory();
         // add rules section
-        this.ruleBaseAddRule = new RuleBaseImpl();
+        this.ruleBaseAddRule = new LeapsRuleBase();
 
         this.workingMemory = this.ruleBaseAddRule.newWorkingMemory();
         // rules
-        ClassObjectType contextType = new ClassObjectType( Context.class );
-        Evaluator integerEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                         Evaluator.EQUAL );
+        final ClassObjectType contextType = new ClassObjectType( Context.class );
+        final Evaluator integerEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
+                                                                               Evaluator.EQUAL );
         // rule 1
         // fires on context.state == integer(1)
         this.rule1 = new Query( "query-to-execute" );
-        Column contextColumnRule1 = new Column( 0,
-                                                contextType,
-                                                "context1" );
+        final Column contextColumnRule1 = new Column( 0,
+                                                      contextType,
+                                                      "context1" );
         contextColumnRule1.addConstraint( getLiteralConstraint( contextColumnRule1,
                                                                 "state",
                                                                 new Integer( 1 ),
@@ -99,30 +96,35 @@ public class QueryTest extends DroolsTestCase {
         this.rule1.addPattern( contextColumnRule1 );
 
         this.rule2 = new Rule( "rule2" );
-        Column contextColumnRule2 = new Column( 0,
-                                                contextType,
-                                                "context2" );
+        final Column contextColumnRule2 = new Column( 0,
+                                                      contextType,
+                                                      "context2" );
         contextColumnRule2.addConstraint( getLiteralConstraint( contextColumnRule2,
                                                                 "state",
                                                                 new Integer( 1 ),
                                                                 integerEqualEvaluator ) );
         this.rule2.addPattern( contextColumnRule2 );
-        final Declaration contextRule2Declaration = rule2.getDeclaration( "context2" );
+        final Declaration contextRule2Declaration = this.rule2.getDeclaration( "context2" );
         this.rule2.setConsequence( new Consequence() {
-            public void evaluate(KnowledgeHelper drools,
-                                 WorkingMemory workingMemory) throws ConsequenceException {
-                try {
-                    Rule rule = drools.getRule();
-                    Tuple tuple = drools.getTuple();
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -5839841224218714327L;
 
-                    Context dummy = (Context) drools.get( contextRule2Declaration );
+            public void evaluate(final KnowledgeHelper drools,
+                                 final WorkingMemory workingMemory) throws ConsequenceException {
+                try {
+                    final Rule rule = drools.getRule();
+                    final Tuple tuple = drools.getTuple();
+
+                    final Context dummy = (Context) drools.get( contextRule2Declaration );
                     if ( dummy == QueryTest.this.context1 ) {
                         QueryTest.this.handlesForRules.add( QueryTest.this.handle1Rule2 );
                     } else if ( dummy == QueryTest.this.context2 ) {
                         QueryTest.this.handlesForRules.add( QueryTest.this.handle2Rule2 );
                     }
 
-                } catch ( Exception e ) {
+                } catch ( final Exception e ) {
                     throw new ConsequenceException( e );
                 }
             }
@@ -150,16 +152,16 @@ public class QueryTest extends DroolsTestCase {
         assertTrue( this.handlesForRules.contains( this.handle2Rule2 ) );
     }
 
-    private FieldConstraint getLiteralConstraint(Column column,
-                                                 String fieldName,
-                                                 Object fieldValue,
-                                                 Evaluator evaluator) {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+    private FieldConstraint getLiteralConstraint(final Column column,
+                                                 final String fieldName,
+                                                 final Object fieldValue,
+                                                 final Evaluator evaluator) {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = new ClassFieldExtractor( clazz,
-                                                            fieldName );
+        final FieldExtractor extractor = new ClassFieldExtractor( clazz,
+                                                                  fieldName );
 
-        FieldValue field = new MockField( fieldValue );
+        final FieldValue field = new MockField( fieldValue );
 
         return new LiteralConstraint( field,
                                       extractor,

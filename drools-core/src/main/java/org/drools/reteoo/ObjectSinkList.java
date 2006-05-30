@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.WorkingMemory;
+import org.drools.common.DefaultFactHandle;
 
 /**
  * ObjectSinkList
@@ -51,7 +52,7 @@ public interface ObjectSinkList {
      * @return
      */
     public boolean remove(ObjectSink objectSink);
-    
+
     /**
      * Returns the number of ObjectSinks in this list
      * @return
@@ -73,7 +74,7 @@ public interface ObjectSinkList {
      * @return
      */
     public Iterator iterator(WorkingMemory workingMemory,
-                             FactHandleImpl handle);
+                             DefaultFactHandle handle);
 
     /**
      * Iterates over all  object Sinks

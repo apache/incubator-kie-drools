@@ -1,4 +1,5 @@
 package org.drools.util.asm;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.util.asm;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.util.Map;
 
@@ -35,8 +34,8 @@ public class FieldAccessorMap {
      * @param fieldAccessMethods Will be used to calculate the "field name"
      * which is really like bean property names.
      */
-    FieldAccessorMap(FieldAccessor accessor,
-                     Map nameMap) {
+    FieldAccessorMap(final FieldAccessor accessor,
+                     final Map nameMap) {
         this.accessor = accessor;
         this.nameMap = nameMap;
     }
@@ -52,10 +51,10 @@ public class FieldAccessorMap {
      * @return The field index accessor itself.
      */
     public FieldAccessor getFieldAccessor() {
-        return accessor;
+        return this.accessor;
     }
 
-    public int getIndex(String name) {
+    public int getIndex(final String name) {
         return ((Integer) this.nameMap.get( name )).intValue();
     }
 }

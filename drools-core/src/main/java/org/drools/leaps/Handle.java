@@ -1,4 +1,5 @@
 package org.drools.leaps;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -26,13 +27,17 @@ import org.drools.FactHandle;
  * @author Alexander Bagerman
  * 
  */
-public class Handle implements Serializable {
+public class Handle
+    implements
+    Serializable {
     private static final long serialVersionUID = 1L;
 
     // object to handle
     final private Object      object;
 
     final private long        id;
+
+    private int               objectHashCode;
 
     /**
      * creates a handle for object
@@ -42,10 +47,11 @@ public class Handle implements Serializable {
      * @param object
      *            to handle
      */
-    public Handle(long id,
-                  Object object) {
+    public Handle(final long id,
+                  final Object object) {
         this.id = id;
         this.object = object;
+        this.objectHashCode = object.hashCode();
     }
 
     /**
@@ -59,7 +65,7 @@ public class Handle implements Serializable {
      * Leaps handles considered equal if ids match and content points to the
      * same object.
      */
-    public boolean equals(Object that) {
+    public boolean equals(final Object that) {
         return this.id == ((Handle) that).id && this.object == ((Handle) that).object;
     }
 
@@ -69,9 +75,13 @@ public class Handle implements Serializable {
     public Object getObject() {
         return this.object;
     }
+    
+    public  int getObjectHashCode()  {
+        return this.objectHashCode;
+    }    
 
     public int hashCode() {
-        return (int) this.id;
+        return ( int ) this.id;
     }
 
     /**

@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.base;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import junit.framework.TestCase;
 
@@ -45,8 +44,8 @@ public class ClassFieldExtractorFactoryTest extends TestCase {
     }
 
     public void testInterface() throws Exception {
-        FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestInterface.class,
-                                                                               "something" );
+        final FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestInterface.class,
+                                                                                     "something" );
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "foo",
@@ -54,8 +53,8 @@ public class ClassFieldExtractorFactoryTest extends TestCase {
     }
 
     public void testAbstract() throws Exception {
-        FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestAbstract.class,
-                                                                               "something" );
+        final FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestAbstract.class,
+                                                                                     "something" );
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "foo",
@@ -63,8 +62,8 @@ public class ClassFieldExtractorFactoryTest extends TestCase {
     }
 
     public void testInherited() throws Exception {
-        FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( BeanInherit.class,
-                                                                               "text" );
+        final FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( BeanInherit.class,
+                                                                                     "text" );
         assertEquals( "hola",
                       ex.getValue( new BeanInherit() ) );
     }

@@ -1,4 +1,5 @@
 package org.drools.base.evaluators;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,11 @@ package org.drools.base.evaluators;
  * limitations under the License.
  */
 
-
-
 import org.drools.base.BaseEvaluator;
 import org.drools.spi.Evaluator;
 
 public class LongFactory {
-    public static Evaluator getLongEvaluator(int operator) {
+    public static Evaluator getLongEvaluator(final int operator) {
         switch ( operator ) {
             case Evaluator.EQUAL :
                 return LongEqualEvaluator.INSTANCE;
@@ -41,16 +40,22 @@ public class LongFactory {
     }
 
     static class LongEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new LongEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = 952936509469163071L;
+        public final static Evaluator INSTANCE         = new LongEqualEvaluator();
 
         private LongEqualEvaluator() {
             super( Evaluator.LONG_TYPE,
                    Evaluator.EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 == null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 == null;
+            }
             return ((Number) object1).equals( object2 );
         }
 
@@ -60,16 +65,22 @@ public class LongFactory {
     }
 
     static class LongNotEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new LongNotEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -6007396753250538232L;
+        public final static Evaluator INSTANCE         = new LongNotEqualEvaluator();
 
         private LongNotEqualEvaluator() {
             super( Evaluator.LONG_TYPE,
                    Evaluator.NOT_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
-            if ( object1 == null ) return object2 != null;
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
+            if ( object1 == null ) {
+                return object2 != null;
+            }
             return !((Number) object1).equals( object2 );
         }
 
@@ -79,15 +90,19 @@ public class LongFactory {
     }
 
     static class LongLessEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new LongLessEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -4364068749553989563L;
+        public final static Evaluator INSTANCE         = new LongLessEvaluator();
 
         private LongLessEvaluator() {
             super( Evaluator.LONG_TYPE,
                    Evaluator.LESS );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).longValue() < ((Number) object2).longValue();
         }
 
@@ -97,15 +112,19 @@ public class LongFactory {
     }
 
     static class LongLessOrEqualEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new LongLessOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -6047195686511631405L;
+        public final static Evaluator INSTANCE         = new LongLessOrEqualEvaluator();
 
         private LongLessOrEqualEvaluator() {
             super( Evaluator.LONG_TYPE,
                    Evaluator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).longValue() <= ((Number) object2).longValue();
         }
 
@@ -115,15 +134,19 @@ public class LongFactory {
     }
 
     static class LongGreaterEvaluator extends BaseEvaluator {
-        public final static Evaluator INSTANCE = new LongGreaterEvaluator();
+        /**
+         * 
+         */
+        private static final long     serialVersionUID = -6931144987779205475L;
+        public final static Evaluator INSTANCE         = new LongGreaterEvaluator();
 
         private LongGreaterEvaluator() {
             super( Evaluator.LONG_TYPE,
                    Evaluator.GREATER );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).longValue() > ((Number) object2).longValue();
         }
 
@@ -133,15 +156,19 @@ public class LongFactory {
     }
 
     static class LongGreaterOrEqualEvaluator extends BaseEvaluator {
-        private final static Evaluator INSTANCE = new LongGreaterOrEqualEvaluator();
+        /**
+         * 
+         */
+        private static final long      serialVersionUID = 4533604086739451238L;
+        private final static Evaluator INSTANCE         = new LongGreaterOrEqualEvaluator();
 
         private LongGreaterOrEqualEvaluator() {
             super( Evaluator.LONG_TYPE,
                    Evaluator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(Object object1,
-                                Object object2) {
+        public boolean evaluate(final Object object1,
+                                final Object object2) {
             return ((Number) object1).longValue() >= ((Number) object2).longValue();
         }
 

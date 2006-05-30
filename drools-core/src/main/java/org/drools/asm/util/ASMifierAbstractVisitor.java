@@ -52,7 +52,7 @@ public class ASMifierAbstractVisitor extends AbstractVisitor {
      * The label names. This map associates String values to Label keys. It is
      * used only in ASMifierMethodVisitor.
      */
-    HashMap labelNames;
+    HashMap          labelNames;
 
     /**
      * Constructs a new {@link ASMifierAbstractVisitor}.
@@ -71,21 +71,16 @@ public class ASMifierAbstractVisitor extends AbstractVisitor {
      * @param visible <tt>true</tt> if the annotation is visible at runtime.
      * @return a visitor to visit the annotation values.
      */
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        buf.setLength(0);
-        buf.append("{\n")
-                .append("av0 = ")
-                .append(name)
-                .append(".visitAnnotation(");
-        appendConstant(desc);
-        buf.append(", ").append(visible).append(");\n");
-        text.add(buf.toString());
-        ASMifierAnnotationVisitor av = new ASMifierAnnotationVisitor(0);
-        text.add(av.getText());
-        text.add("}\n");
+    public AnnotationVisitor visitAnnotation(final String desc,
+                                             final boolean visible) {
+        this.buf.setLength( 0 );
+        this.buf.append( "{\n" ).append( "av0 = " ).append( this.name ).append( ".visitAnnotation(" );
+        appendConstant( desc );
+        this.buf.append( ", " ).append( visible ).append( ");\n" );
+        this.text.add( this.buf.toString() );
+        final ASMifierAnnotationVisitor av = new ASMifierAnnotationVisitor( 0 );
+        this.text.add( av.getText() );
+        this.text.add( "}\n" );
         return av;
     }
 
@@ -95,27 +90,29 @@ public class ASMifierAbstractVisitor extends AbstractVisitor {
      * @param attr an attribute.
      */
     public void visitAttribute(final Attribute attr) {
-        buf.setLength(0);
-        if (attr instanceof ASMifiable) {
-            buf.append("{\n");
-            buf.append("// ATTRIBUTE\n");
-            ((ASMifiable) attr).asmify(buf, "attr", labelNames);
-            buf.append(name).append(".visitAttribute(attr);\n");
-            buf.append("}\n");
+        this.buf.setLength( 0 );
+        if ( attr instanceof ASMifiable ) {
+            this.buf.append( "{\n" );
+            this.buf.append( "// ATTRIBUTE\n" );
+            ((ASMifiable) attr).asmify( this.buf,
+                                        "attr",
+                                        this.labelNames );
+            this.buf.append( this.name ).append( ".visitAttribute(attr);\n" );
+            this.buf.append( "}\n" );
         } else {
-            buf.append("// WARNING! skipped a non standard attribute of type \"");
-            buf.append(attr.type).append("\"\n");
+            this.buf.append( "// WARNING! skipped a non standard attribute of type \"" );
+            this.buf.append( attr.type ).append( "\"\n" );
         }
-        text.add(buf.toString());
+        this.text.add( this.buf.toString() );
     }
 
     /**
      * Prints the ASM code to end the visit.
      */
     public void visitEnd() {
-        buf.setLength(0);
-        buf.append(name).append(".visitEnd();\n");
-        text.add(buf.toString());
+        this.buf.setLength( 0 );
+        this.buf.append( this.name ).append( ".visitEnd();\n" );
+        this.text.add( this.buf.toString() );
     }
 
     /**
@@ -126,7 +123,8 @@ public class ASMifierAbstractVisitor extends AbstractVisitor {
      *        {@link Double} or {@link String} object. May be <tt>null</tt>.
      */
     void appendConstant(final Object cst) {
-        appendConstant(buf, cst);
+        appendConstant( this.buf,
+                        cst );
     }
 
     /**
@@ -137,90 +135,90 @@ public class ASMifierAbstractVisitor extends AbstractVisitor {
      * @param cst an {@link Integer}, {@link Float}, {@link Long},
      *        {@link Double} or {@link String} object. May be <tt>null</tt>.
      */
-    static void appendConstant(final StringBuffer buf, final Object cst) {
-        if (cst == null) {
-            buf.append("null");
-        } else if (cst instanceof String) {
-            appendString(buf, (String) cst);
-        } else if (cst instanceof Type) {
-            buf.append("Type.getType(\"");
-            buf.append(((Type) cst).getDescriptor());
-            buf.append("\")");
-        } else if (cst instanceof Byte) {
-            buf.append("new Byte((byte)").append(cst).append(")");
-        } else if (cst instanceof Boolean) {
-            buf.append("new Boolean(").append(cst).append(")");
-        } else if (cst instanceof Short) {
-            buf.append("new Short((short)").append(cst).append(")");
-        } else if (cst instanceof Character) {
-            int c = ((Character) cst).charValue();
-            buf.append("new Character((char)").append(c).append(")");
-        } else if (cst instanceof Integer) {
-            buf.append("new Integer(").append(cst).append(")");
-        } else if (cst instanceof Float) {
-            buf.append("new Float(\"").append(cst).append("\")");
-        } else if (cst instanceof Long) {
-            buf.append("new Long(").append(cst).append("L)");
-        } else if (cst instanceof Double) {
-            buf.append("new Double(\"").append(cst).append("\")");
-        } else if (cst instanceof byte[]) {
-            byte[] v = (byte[]) cst;
-            buf.append("new byte[] {");
-            for (int i = 0; i < v.length; i++) {
-                buf.append(i == 0 ? "" : ",").append(v[i]);
+    static void appendConstant(final StringBuffer buf,
+                               final Object cst) {
+        if ( cst == null ) {
+            buf.append( "null" );
+        } else if ( cst instanceof String ) {
+            appendString( buf,
+                          (String) cst );
+        } else if ( cst instanceof Type ) {
+            buf.append( "Type.getType(\"" );
+            buf.append( ((Type) cst).getDescriptor() );
+            buf.append( "\")" );
+        } else if ( cst instanceof Byte ) {
+            buf.append( "new Byte((byte)" ).append( cst ).append( ")" );
+        } else if ( cst instanceof Boolean ) {
+            buf.append( "new Boolean(" ).append( cst ).append( ")" );
+        } else if ( cst instanceof Short ) {
+            buf.append( "new Short((short)" ).append( cst ).append( ")" );
+        } else if ( cst instanceof Character ) {
+            final int c = ((Character) cst).charValue();
+            buf.append( "new Character((char)" ).append( c ).append( ")" );
+        } else if ( cst instanceof Integer ) {
+            buf.append( "new Integer(" ).append( cst ).append( ")" );
+        } else if ( cst instanceof Float ) {
+            buf.append( "new Float(\"" ).append( cst ).append( "\")" );
+        } else if ( cst instanceof Long ) {
+            buf.append( "new Long(" ).append( cst ).append( "L)" );
+        } else if ( cst instanceof Double ) {
+            buf.append( "new Double(\"" ).append( cst ).append( "\")" );
+        } else if ( cst instanceof byte[] ) {
+            final byte[] v = (byte[]) cst;
+            buf.append( "new byte[] {" );
+            for ( int i = 0; i < v.length; i++ ) {
+                buf.append( i == 0 ? "" : "," ).append( v[i] );
             }
-            buf.append("}");
-        } else if (cst instanceof boolean[]) {
-            boolean[] v = (boolean[]) cst;
-            buf.append("new boolean[] {");
-            for (int i = 0; i < v.length; i++) {
-                buf.append(i == 0 ? "" : ",").append(v[i]);
+            buf.append( "}" );
+        } else if ( cst instanceof boolean[] ) {
+            final boolean[] v = (boolean[]) cst;
+            buf.append( "new boolean[] {" );
+            for ( int i = 0; i < v.length; i++ ) {
+                buf.append( i == 0 ? "" : "," ).append( v[i] );
             }
-            buf.append("}");
-        } else if (cst instanceof short[]) {
-            short[] v = (short[]) cst;
-            buf.append("new short[] {");
-            for (int i = 0; i < v.length; i++) {
-                buf.append(i == 0 ? "" : ",").append("(short)").append(v[i]);
+            buf.append( "}" );
+        } else if ( cst instanceof short[] ) {
+            final short[] v = (short[]) cst;
+            buf.append( "new short[] {" );
+            for ( int i = 0; i < v.length; i++ ) {
+                buf.append( i == 0 ? "" : "," ).append( "(short)" ).append( v[i] );
             }
-            buf.append("}");
-        } else if (cst instanceof char[]) {
-            char[] v = (char[]) cst;
-            buf.append("new char[] {");
-            for (int i = 0; i < v.length; i++) {
-                buf.append(i == 0 ? "" : ",")
-                        .append("(char)")
-                        .append((int) v[i]);
+            buf.append( "}" );
+        } else if ( cst instanceof char[] ) {
+            final char[] v = (char[]) cst;
+            buf.append( "new char[] {" );
+            for ( int i = 0; i < v.length; i++ ) {
+                buf.append( i == 0 ? "" : "," ).append( "(char)" ).append( (int) v[i] );
             }
-            buf.append("}");
-        } else if (cst instanceof int[]) {
-            int[] v = (int[]) cst;
-            buf.append("new int[] {");
-            for (int i = 0; i < v.length; i++) {
-                buf.append(i == 0 ? "" : ",").append(v[i]);
+            buf.append( "}" );
+        } else if ( cst instanceof int[] ) {
+            final int[] v = (int[]) cst;
+            buf.append( "new int[] {" );
+            for ( int i = 0; i < v.length; i++ ) {
+                buf.append( i == 0 ? "" : "," ).append( v[i] );
             }
-            buf.append("}");
-        } else if (cst instanceof long[]) {
-            long[] v = (long[]) cst;
-            buf.append("new long[] {");
-            for (int i = 0; i < v.length; i++) {
-                buf.append(i == 0 ? "" : ",").append(v[i]).append("L");
+            buf.append( "}" );
+        } else if ( cst instanceof long[] ) {
+            final long[] v = (long[]) cst;
+            buf.append( "new long[] {" );
+            for ( int i = 0; i < v.length; i++ ) {
+                buf.append( i == 0 ? "" : "," ).append( v[i] ).append( "L" );
             }
-            buf.append("}");
-        } else if (cst instanceof float[]) {
-            float[] v = (float[]) cst;
-            buf.append("new float[] {");
-            for (int i = 0; i < v.length; i++) {
-                buf.append(i == 0 ? "" : ",").append(v[i]).append("f");
+            buf.append( "}" );
+        } else if ( cst instanceof float[] ) {
+            final float[] v = (float[]) cst;
+            buf.append( "new float[] {" );
+            for ( int i = 0; i < v.length; i++ ) {
+                buf.append( i == 0 ? "" : "," ).append( v[i] ).append( "f" );
             }
-            buf.append("}");
-        } else if (cst instanceof double[]) {
-            double[] v = (double[]) cst;
-            buf.append("new double[] {");
-            for (int i = 0; i < v.length; i++) {
-                buf.append(i == 0 ? "" : ",").append(v[i]).append("d");
+            buf.append( "}" );
+        } else if ( cst instanceof double[] ) {
+            final double[] v = (double[]) cst;
+            buf.append( "new double[] {" );
+            for ( int i = 0; i < v.length; i++ ) {
+                buf.append( i == 0 ? "" : "," ).append( v[i] ).append( "d" );
             }
-            buf.append("}");
+            buf.append( "}" );
         }
     }
 }

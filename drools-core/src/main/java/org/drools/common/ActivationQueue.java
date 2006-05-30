@@ -60,7 +60,7 @@ public class ActivationQueue
      * @param salience
      *      The salience queue that the queue is for.
      */
-    public ActivationQueue(int salience) {
+    public ActivationQueue(final int salience) {
         this.salience = salience;
         this.list = new LinkedList();
     }
@@ -91,15 +91,15 @@ public class ActivationQueue
      * @param active
      *      boolena value that sets the activate state. 
      */
-    public void setActivated(boolean active) {
+    public void setActivated(final boolean active) {
         this.active = active;
     }
 
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(T)
      */
-    public int compareTo(Object object) {
-        ActivationQueue other = (ActivationQueue) object;
+    public int compareTo(final Object object) {
+        final ActivationQueue other = (ActivationQueue) object;
         return this.salience - other.salience;
     }
 
@@ -108,7 +108,7 @@ public class ActivationQueue
      * @param activation
      *      the <code>Activation</code> to be placed onto the queue
      */
-    public void add(Activation activation) {
+    public void add(final Activation activation) {
         this.list.add( (LinkedListNode) activation );
     }
 
@@ -118,7 +118,7 @@ public class ActivationQueue
      *      The last <code>Activation</code>.
      */
     public Activation remove() {
-        AgendaItem item = (AgendaItem) this.list.getLast();
+        final AgendaItem item = (AgendaItem) this.list.getLast();
         item.remove();
         return item;
     }
@@ -129,7 +129,7 @@ public class ActivationQueue
      * @param activation
      *      The <code>Activation</code> to be removed.
      */
-    public void remove(Activation activation) {
+    public void remove(final Activation activation) {
         this.list.remove( (LinkedListNode) activation );
     }
 
@@ -138,7 +138,7 @@ public class ActivationQueue
     }
 
     public Activation[] getActivations() {
-        List activations = new ArrayList( this.list.size() );
+        final List activations = new ArrayList( this.list.size() );
         for ( LinkedListNode node = this.list.getFirst(); node != null; node = node.getNext() ) {
             activations.add( node );
         }

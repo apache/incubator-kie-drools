@@ -1,4 +1,5 @@
 package org.drools.examples.waltz;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.examples.waltz;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 /**
  * @author Alexander Bagerman
@@ -39,9 +36,9 @@ public class LeapsWaltzTest extends BaseWaltzTest {
 
     public void testWaltz() throws Exception {
 
-        final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
+        final org.drools.leaps.LeapsRuleBase ruleBase = new org.drools.leaps.LeapsRuleBase();
         ruleBase.addPackage( this.pkg );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         //        InputStream is = getClass().getResourceAsStream( "/waltz12.dat" );
         //        List list = getInputObjects( is );
@@ -52,31 +49,31 @@ public class LeapsWaltzTest extends BaseWaltzTest {
 
         workingMemory.assertObject( new Stage( Stage.START ) );
 
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
 
         System.out.println( "Elapsed time - " + ((System.currentTimeMillis() - start) / 1000.) + " sec." );
 
     }
 
-    public static void main(String[] argv) throws Exception {
-        LeapsWaltzTest waltz = new LeapsWaltzTest();
+    public static void main(final String[] argv) throws Exception {
+        final LeapsWaltzTest waltz = new LeapsWaltzTest();
         waltz.setUp();
 
-        final org.drools.leaps.RuleBaseImpl ruleBase = new org.drools.leaps.RuleBaseImpl();
+        final org.drools.leaps.LeapsRuleBase ruleBase = new org.drools.leaps.LeapsRuleBase();
         ruleBase.addPackage( waltz.pkg );
-        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        InputStream is = waltz.getClass().getResourceAsStream( "/waltz12.dat" );
-        List list = waltz.getInputObjects( is );
-        for ( Iterator it = list.iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        final InputStream is = waltz.getClass().getResourceAsStream( "/waltz12.dat" );
+        final List list = waltz.getInputObjects( is );
+        for ( final Iterator it = list.iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             workingMemory.assertObject( object );
         }
 
         //		workingMemory.assertObject(new Stage(Stage.START));
 
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
         System.err.println( System.currentTimeMillis() - start );
 

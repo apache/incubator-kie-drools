@@ -1,4 +1,5 @@
 package org.drools.base;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,12 +16,8 @@ package org.drools.base;
  * limitations under the License.
  */
 
-
-
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
-
-
 
 /**
  * Filters activations based on an exact match of a rule name.
@@ -34,18 +31,18 @@ public class RuleNameEqualsAgendaFilter
 
     private final boolean accept;
 
-    public RuleNameEqualsAgendaFilter(String name) {
+    public RuleNameEqualsAgendaFilter(final String name) {
         this( name,
               true );
     }
 
-    public RuleNameEqualsAgendaFilter(String name,
-                                      boolean accept) {
+    public RuleNameEqualsAgendaFilter(final String name,
+                                      final boolean accept) {
         this.name = name;
         this.accept = accept;
     }
 
-    public boolean accept(Activation activation) {
+    public boolean accept(final Activation activation) {
         if ( activation.getRule().getName().equals( this.name ) ) {
             return this.accept;
         } else {

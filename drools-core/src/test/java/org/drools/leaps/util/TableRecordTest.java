@@ -1,4 +1,5 @@
 package org.drools.leaps.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.leaps.util;
  * limitations under the License.
  */
 
-
-
-
-
 import junit.framework.TestCase;
 
 /**
@@ -28,27 +25,27 @@ import junit.framework.TestCase;
 public class TableRecordTest extends TestCase {
 
     public void testConstractor() {
-        String object = new String( "test object" );
-        TableRecord record = new TableRecord( object );
+        final String object = new String( "test object" );
+        final TableRecord record = new TableRecord( object );
         assertEquals( object,
                       record.object );
     }
 
     public void testLeft() {
-        String object1 = new String( "test object1" );
-        String object2 = new String( "test object2" );
-        TableRecord record1 = new TableRecord( object1 );
-        TableRecord record2 = new TableRecord( object2 );
+        final String object1 = new String( "test object1" );
+        final String object2 = new String( "test object2" );
+        final TableRecord record1 = new TableRecord( object1 );
+        final TableRecord record2 = new TableRecord( object2 );
         record1.left = record2;
         assertEquals( object2,
                       record1.left.object );
     }
 
     public void testRight() {
-        String object1 = new String( "test object1" );
-        String object2 = new String( "test object2" );
-        TableRecord record1 = new TableRecord( object1 );
-        TableRecord record2 = new TableRecord( object2 );
+        final String object1 = new String( "test object1" );
+        final String object2 = new String( "test object2" );
+        final TableRecord record1 = new TableRecord( object1 );
+        final TableRecord record2 = new TableRecord( object2 );
         record1.right = record2;
         assertEquals( object2,
                       record1.right.object );

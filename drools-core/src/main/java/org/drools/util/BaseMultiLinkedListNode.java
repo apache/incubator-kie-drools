@@ -49,7 +49,7 @@ public class BaseMultiLinkedListNode extends AbstractBaseLinkedListNode
      *
      * @see org.drools.util.MultiLinkedListNode#setChild(org.drools.util.LinkedListNode)
      */
-    public void setChild(MultiLinkedListNode child) {
+    public void setChild(final MultiLinkedListNode child) {
         this.child = child;
     }
 
@@ -67,7 +67,7 @@ public class BaseMultiLinkedListNode extends AbstractBaseLinkedListNode
      *
      * @see org.drools.util.MultiLinkedListNode#setLinkedList(org.drools.util.LinkedList)
      */
-    public void setLinkedList(LinkedList list) {
+    public void setLinkedList(final LinkedList list) {
         this.list = list;
     }
 

@@ -32,45 +32,42 @@ import org.drools.util.PrimitiveLongMap;
 
 public class TokenStack {
 
-    protected TableRecord tailRecord = null;
+    protected TableRecord          tailRecord = null;
 
-    private PrimitiveLongMap map = new PrimitiveLongMap();
-    
+    private final PrimitiveLongMap map        = new PrimitiveLongMap();
+
     public TokenStack() {
-        
+
     }
 
     public boolean empty() {
         return this.tailRecord == null;
     }
-    
+
     public Object peek() {
-        if(this.tailRecord != null){
+        if ( this.tailRecord != null ) {
             return this.tailRecord.object;
-        }
-        else {
+        } else {
             throw new EmptyStackException();
         }
     }
-    
-    public Object pop()  {
-        if(this.tailRecord != null){
-            Object ret = this.tailRecord.object;
-            TableRecord buf = this.tailRecord; 
+
+    public Object pop() {
+        if ( this.tailRecord != null ) {
+            final Object ret = this.tailRecord.object;
+            final TableRecord buf = this.tailRecord;
             this.tailRecord = buf.left;
-            if (buf.left != null) {
+            if ( buf.left != null ) {
                 this.tailRecord.right = null;
             }
             buf.left = null;
 
-            map.remove(((Token) ret).getDominantFactHandle().getId());
+            this.map.remove( ((Token) ret).getDominantFactHandle().getId() );
             return ret;
-        }
-        else {
+        } else {
             throw new EmptyStackException();
         }
     }
-    
 
     /**
      * Removes object from the table
@@ -78,18 +75,18 @@ public class TokenStack {
      * @param object
      *            to remove from the table
      */
-    public void remove(long factId) {
-        if (this.tailRecord != null) {
-            TableRecord record = (TableRecord) this.map.remove(factId);
+    public void remove(final long factId) {
+        if ( this.tailRecord != null ) {
+            final TableRecord record = (TableRecord) this.map.remove( factId );
 
-            if (record != null) {
-                if (record == this.tailRecord) {
+            if ( record != null ) {
+                if ( record == this.tailRecord ) {
                     this.tailRecord = record.left;
                 }
-                if (record.left != null) {
+                if ( record.left != null ) {
                     record.left.right = record.right;
                 }
-                if (record.right != null) {
+                if ( record.right != null ) {
                     record.right.left = record.left;
                 }
                 record.left = null;
@@ -97,29 +94,34 @@ public class TokenStack {
             }
         }
     }
-    public Object push(Object item) {
-        TableRecord record = new TableRecord(item);
-        if (this.tailRecord != null) {
+
+    public Object push(final Object item) {
+        final TableRecord record = new TableRecord( item );
+        if ( this.tailRecord != null ) {
             this.tailRecord.right = record;
             record.left = this.tailRecord;
         }
         this.tailRecord = record;
-        
-        this.map.put(((Token)item).getDominantFactHandle().getId(), record);
+
+        this.map.put( ((Token) item).getDominantFactHandle().getId(),
+                      record );
         return item;
     }
-    
+
     public Iterator iterator() {
         return new Iterator() {
-            Iterator it = map.values().iterator(); 
+            Iterator it = TokenStack.this.map.values().iterator();
+
             public boolean hasNext() {
-                return it.hasNext();
+                return this.it.hasNext();
             }
+
             public void remove() {
-                
+
             }
+
             public Object next() {
-                return it.next();
+                return this.it.next();
             }
         };
     }

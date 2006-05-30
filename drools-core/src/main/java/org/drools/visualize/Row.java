@@ -1,4 +1,5 @@
 package org.drools.visualize;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.visualize;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,44 +26,45 @@ import java.util.List;
 import edu.uci.ics.jung.graph.Vertex;
 
 public class Row {
-    private int  depth;
+    private final int depth;
 
-    private List /*Vertex*/vertices;
+    private List     /*Vertex*/vertices;
 
-    public Row(int depth) {
+    public Row(final int depth) {
         super();
         this.vertices = new ArrayList();
+        this.depth = depth;
     }
 
     public int getDepth() {
-        return depth;
+        return this.depth;
     }
 
-    public void add(Vertex vertex) {
+    public void add(final Vertex vertex) {
         this.vertices.add( vertex );
     }
 
     public List /*Vertex*/getVertices() {
-        return vertices;
+        return this.vertices;
     }
 
-    public boolean contains(Vertex vertex) {
-        return vertices.contains( vertex );
+    public boolean contains(final Vertex vertex) {
+        return this.vertices.contains( vertex );
     }
 
     public int getWidth() {
-        return vertices.size();
+        return this.vertices.size();
     }
 
     public void optimize() {
-        List sorted = new ArrayList( this.vertices );
+        final List sorted = new ArrayList( this.vertices );
 
         Collections.sort( sorted,
                           new Comparator() {
-                              public int compare(Object o1,
-                                                 Object o2) {
-                                  Vertex v1 = (Vertex) o1;
-                                  Vertex v2 = (Vertex) o2;
+                              public int compare(final Object o1,
+                                                 final Object o2) {
+                                  final Vertex v1 = (Vertex) o1;
+                                  final Vertex v2 = (Vertex) o2;
 
                                   if ( v1.outDegree() < v2.outDegree() ) {
                                       return 1;
@@ -78,12 +78,12 @@ public class Row {
                               }
                           } );
 
-        LinkedList optimized = new LinkedList();
+        final LinkedList optimized = new LinkedList();
 
         boolean front = false;
 
-        for ( Iterator vertexIter = sorted.iterator(); vertexIter.hasNext(); ) {
-            Vertex vertex = (Vertex) vertexIter.next();
+        for ( final Iterator vertexIter = sorted.iterator(); vertexIter.hasNext(); ) {
+            final Vertex vertex = (Vertex) vertexIter.next();
 
             if ( front ) {
                 optimized.addFirst( vertex );

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.FactHandle;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
@@ -57,16 +58,21 @@ public class ReteTuple extends BaseMultiLinkedListNode
     // Instance members
     // ------------------------------------------------------------
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4430322768472253111L;
+
     /** The </code>TupleKey</code> */
-    private final TupleKey key;
+    private final TupleKey    key;
 
     /** The <code>Map</code> of <code>FactHandleImpl</code> matches */
-    private Map            matches = Collections.EMPTY_MAP;
+    private Map               matches          = Collections.EMPTY_MAP;
 
     /** The resuling propagation when used in a <code>NotNode</code> */
-    private LinkedList     linkedTuples;
+    private LinkedList        linkedTuples;
 
-    private Activation     activation;
+    private Activation        activation;
 
     // ------------------------------------------------------------
     // Constructors
@@ -81,7 +87,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
      * @param workingMemory
      *      The <code>WorkingMemory</code> session.
      */
-    public ReteTuple(FactHandleImpl handle) {
+    public ReteTuple(final DefaultFactHandle handle) {
         this.key = new TupleKey( handle );
     }
 
@@ -90,7 +96,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
      * 
      * @param tuple
      */
-    ReteTuple(ReteTuple tuple) {
+    ReteTuple(final ReteTuple tuple) {
         this.key = new TupleKey( tuple.key );
     }
 
@@ -102,8 +108,8 @@ public class ReteTuple extends BaseMultiLinkedListNode
      * @param handle
      *      the <code>FactHandleImpl</code> to be joined.
      */
-    ReteTuple(ReteTuple left,
-              FactHandleImpl handle) {
+    ReteTuple(final ReteTuple left,
+              final DefaultFactHandle handle) {
         this.key = new TupleKey( left.key,
                                  handle );
     }
@@ -141,7 +147,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
      * @return <code>true</code> if this tuple depends upon the specified
      *         object, otherwise <code>false</code>.
      */
-    public boolean dependsOn(FactHandle handle) {
+    public boolean dependsOn(final FactHandle handle) {
         return this.key.containsFactHandle( handle );
     }
 
@@ -150,18 +156,18 @@ public class ReteTuple extends BaseMultiLinkedListNode
     /* (non-Javadoc)
      * @see org.drools.spi.Tuple#get(int)
      */
-    public InternalFactHandle get(int col) {
+    public InternalFactHandle get(final int col) {
         return this.key.get( col );
     }
 
     /* (non-Javadoc)
      * @see org.drools.spi.Tuple#get(org.drools.rule.Declaration)
      */
-    public InternalFactHandle get(Declaration declaration) {
+    public InternalFactHandle get(final Declaration declaration) {
         return get( declaration.getColumn() );
     }
 
-    public void setActivation(Activation activation) {
+    public void setActivation(final Activation activation) {
         this.activation = activation;
     }
 
@@ -175,7 +181,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
      * @param tuple
      *      The <code>ReteTuple</code>
      */
-    public void addLinkedTuple(LinkedListNode node) {
+    public void addLinkedTuple(final LinkedListNode node) {
         if ( this.linkedTuples == null ) {
             this.linkedTuples = new LinkedList();
         }
@@ -197,8 +203,8 @@ public class ReteTuple extends BaseMultiLinkedListNode
         this.linkedTuples.clear();
     }
 
-    public void addTupleMatch(FactHandleImpl handle,
-                              TupleMatch node) {
+    public void addTupleMatch(final DefaultFactHandle handle,
+                              final TupleMatch node) {
         if ( this.matches == Collections.EMPTY_MAP ) {
             this.matches = new HashMap();
         }
@@ -214,11 +220,11 @@ public class ReteTuple extends BaseMultiLinkedListNode
         return this.matches;
     }
 
-    public TupleMatch getTupleMatch(FactHandleImpl handle) {
+    public TupleMatch getTupleMatch(final DefaultFactHandle handle) {
         return (TupleMatch) this.matches.get( handle );
     }
 
-    public TupleMatch removeMatch(FactHandleImpl handle) {
+    public TupleMatch removeMatch(final DefaultFactHandle handle) {
         return (TupleMatch) this.matches.remove( handle );
     }
 
@@ -254,7 +260,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
     //        this.matches = null;
     //    }         
 
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -271,7 +277,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
     }
 
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         for ( int i = 0; i < this.key.size(); i++ ) {
             buffer.append( this.key.get( i ) + ", " );
         }

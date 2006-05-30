@@ -1,4 +1,5 @@
 package org.drools.rule;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-
-
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
@@ -28,6 +27,11 @@ public class PredicateConstraint
     implements
     FieldConstraint {
 
+    /**
+     * 
+     */
+    private static final long          serialVersionUID   = -103424847725754568L;
+
     private PredicateExpression        expression;
 
     private final Declaration          declaration;
@@ -36,23 +40,23 @@ public class PredicateConstraint
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
-    public PredicateConstraint(PredicateExpression evaluator,
-                               Declaration declaration) {
+    public PredicateConstraint(final PredicateExpression evaluator,
+                               final Declaration declaration) {
         this( evaluator,
               declaration,
               null );
     }
 
-    public PredicateConstraint(Declaration declaration,
-                               Declaration[] requiredDeclarations) {
+    public PredicateConstraint(final Declaration declaration,
+                               final Declaration[] requiredDeclarations) {
         this( null,
               declaration,
               requiredDeclarations );
     }
 
-    public PredicateConstraint(PredicateExpression expression,
-                               Declaration declaration,
-                               Declaration[] requiredDeclarations) {
+    public PredicateConstraint(final PredicateExpression expression,
+                               final Declaration declaration,
+                               final Declaration[] requiredDeclarations) {
 
         this.expression = expression;
 
@@ -69,7 +73,7 @@ public class PredicateConstraint
         return this.requiredDeclarations;
     }
 
-    public void setPredicateExpression(PredicateExpression expression) {
+    public void setPredicateExpression(final PredicateExpression expression) {
         this.expression = expression;
     }
 
@@ -77,16 +81,16 @@ public class PredicateConstraint
         return this.expression;
     }
 
-    public boolean isAllowed(InternalFactHandle handle,
-                             Tuple tuple,
-                             WorkingMemory workingMemory) {
+    public boolean isAllowed(final InternalFactHandle handle,
+                             final Tuple tuple,
+                             final WorkingMemory workingMemory) {
         try {
-            return expression.evaluate( tuple,
-                                        handle,
-                                        this.declaration,
-                                        this.requiredDeclarations,
-                                        workingMemory );
-        } catch ( Exception e ) {
+            return this.expression.evaluate( tuple,
+                                             handle,
+                                             this.declaration,
+                                             this.requiredDeclarations,
+                                             workingMemory );
+        } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
 
@@ -95,18 +99,18 @@ public class PredicateConstraint
     public int hashCode() {
         return this.expression.hashCode();
     }
-    
-    public boolean equals(Object object) {        
+
+    public boolean equals(final Object object) {
         if ( object == this ) {
             return true;
         }
-        
-        if (object == null || object.getClass() != PredicateConstraint.class ) {
+
+        if ( object == null || object.getClass() != PredicateConstraint.class ) {
             return false;
         }
-            
-        PredicateConstraint other = ( PredicateConstraint ) object;
-        
+
+        final PredicateConstraint other = (PredicateConstraint) object;
+
         return this.expression.equals( other.expression );
-    }    
+    }
 };

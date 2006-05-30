@@ -29,6 +29,10 @@
  */
 package org.drools.asm.tree;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.asm.AnnotationVisitor;
 import org.drools.asm.Attribute;
 import org.drools.asm.ClassVisitor;
@@ -37,22 +41,20 @@ import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
 import org.drools.asm.Type;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
  * A node that represents a method.
  * 
  * @author Eric Bruneton
  */
-public class MethodNode extends MemberNode implements MethodVisitor {
+public class MethodNode extends MemberNode
+    implements
+    MethodVisitor {
 
     /**
      * The method's access flags (see {@link Opcodes}). This field also
      * indicates if the method is synthetic and/or deprecated.
      */
-    public int access;
+    public int    access;
 
     /**
      * The method's name.
@@ -74,7 +76,7 @@ public class MethodNode extends MemberNode implements MethodVisitor {
      * {@link Type#getInternalName() getInternalName}). This list is a list of
      * {@link String} objects.
      */
-    public List exceptions;
+    public List   exceptions;
 
     /**
      * The default value of this annotation interface method. This field must be
@@ -111,7 +113,7 @@ public class MethodNode extends MemberNode implements MethodVisitor {
      * @associates org.objectweb.asm.tree.AbstractInsnNode
      * @label instructions
      */
-    public List instructions;
+    public List   instructions;
 
     /**
      * The try catch blocks of this method. This list is a list of
@@ -119,17 +121,17 @@ public class MethodNode extends MemberNode implements MethodVisitor {
      * 
      * @associates org.objectweb.asm.tree.TryCatchBlockNode
      */
-    public List tryCatchBlocks;
+    public List   tryCatchBlocks;
 
     /**
      * The maximum stack size of this method.
      */
-    public int maxStack;
+    public int    maxStack;
 
     /**
      * The maximum number of local variables of this method.
      */
-    public int maxLocals;
+    public int    maxLocals;
 
     /**
      * The local variables of this method. This list is a list of
@@ -137,7 +139,7 @@ public class MethodNode extends MemberNode implements MethodVisitor {
      * 
      * @associates org.objectweb.asm.tree.LocalVariableNode
      */
-    public List localVariables;
+    public List   localVariables;
 
     /**
      * The line numbers of this method. This list is a list of
@@ -145,7 +147,7 @@ public class MethodNode extends MemberNode implements MethodVisitor {
      * 
      * @associates org.objectweb.asm.tree.LineNumberNode
      */
-    public List lineNumbers;
+    public List   lineNumbers;
 
     /**
      * Constructs a new {@link MethodNode}.
@@ -160,29 +162,25 @@ public class MethodNode extends MemberNode implements MethodVisitor {
      *        (see {@link Type#getInternalName() getInternalName}). May be
      *        <tt>null</tt>.
      */
-    public MethodNode(
-        final int access,
-        final String name,
-        final String desc,
-        final String signature,
-        final String[] exceptions)
-    {
+    public MethodNode(final int access,
+                      final String name,
+                      final String desc,
+                      final String signature,
+                      final String[] exceptions) {
         this.access = access;
         this.name = name;
         this.desc = desc;
         this.signature = signature;
-        this.exceptions = new ArrayList(exceptions == null
-                ? 0
-                : exceptions.length);
+        this.exceptions = new ArrayList( exceptions == null ? 0 : exceptions.length );
         boolean isAbstract = (access & Opcodes.ACC_ABSTRACT) != 0;
-        this.instructions = new ArrayList(isAbstract ? 0 : 24);
-        if (!isAbstract) {
-            this.localVariables = new ArrayList(5);
-            this.lineNumbers = new ArrayList(5);
+        this.instructions = new ArrayList( isAbstract ? 0 : 24 );
+        if ( !isAbstract ) {
+            this.localVariables = new ArrayList( 5 );
+            this.lineNumbers = new ArrayList( 5 );
         }
         this.tryCatchBlocks = new ArrayList();
-        if (exceptions != null) {
-            this.exceptions.addAll(Arrays.asList(exceptions));
+        if ( exceptions != null ) {
+            this.exceptions.addAll( Arrays.asList( exceptions ) );
         }
     }
 
@@ -191,38 +189,41 @@ public class MethodNode extends MemberNode implements MethodVisitor {
     // ------------------------------------------------------------------------
 
     public AnnotationVisitor visitAnnotationDefault() {
-        return new AnnotationNode(new ArrayList(0) {
-            public boolean add(Object o) {
-                annotationDefault = o;
-                return super.add(o);
+        return new AnnotationNode( new ArrayList( 0 ) {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -774399273497432006L;
+
+            public boolean add(final Object o) {
+                MethodNode.this.annotationDefault = o;
+                return super.add( o );
             }
-        });
+        } );
     }
 
-    public AnnotationVisitor visitParameterAnnotation(
-        final int parameter,
-        final String desc,
-        final boolean visible)
-    {
-        AnnotationNode an = new AnnotationNode(desc);
-        if (visible) {
-            if (visibleParameterAnnotations == null) {
-                int params = Type.getArgumentTypes(this.desc).length;
-                visibleParameterAnnotations = new List[params];
+    public AnnotationVisitor visitParameterAnnotation(final int parameter,
+                                                      final String desc,
+                                                      final boolean visible) {
+        final AnnotationNode an = new AnnotationNode( desc );
+        if ( visible ) {
+            if ( this.visibleParameterAnnotations == null ) {
+                final int params = Type.getArgumentTypes( this.desc ).length;
+                this.visibleParameterAnnotations = new List[params];
             }
-            if (visibleParameterAnnotations[parameter] == null) {
-                visibleParameterAnnotations[parameter] = new ArrayList(1);
+            if ( this.visibleParameterAnnotations[parameter] == null ) {
+                this.visibleParameterAnnotations[parameter] = new ArrayList( 1 );
             }
-            visibleParameterAnnotations[parameter].add(an);
+            this.visibleParameterAnnotations[parameter].add( an );
         } else {
-            if (invisibleParameterAnnotations == null) {
-                int params = Type.getArgumentTypes(this.desc).length;
-                invisibleParameterAnnotations = new List[params];
+            if ( this.invisibleParameterAnnotations == null ) {
+                final int params = Type.getArgumentTypes( this.desc ).length;
+                this.invisibleParameterAnnotations = new List[params];
             }
-            if (invisibleParameterAnnotations[parameter] == null) {
-                invisibleParameterAnnotations[parameter] = new ArrayList(1);
+            if ( this.invisibleParameterAnnotations[parameter] == null ) {
+                this.invisibleParameterAnnotations[parameter] = new ArrayList( 1 );
             }
-            invisibleParameterAnnotations[parameter].add(an);
+            this.invisibleParameterAnnotations[parameter].add( an );
         }
         return an;
     }
@@ -231,106 +232,123 @@ public class MethodNode extends MemberNode implements MethodVisitor {
     }
 
     public void visitInsn(final int opcode) {
-        instructions.add(new InsnNode(opcode));
+        this.instructions.add( new InsnNode( opcode ) );
     }
 
-    public void visitIntInsn(final int opcode, final int operand) {
-        instructions.add(new IntInsnNode(opcode, operand));
+    public void visitIntInsn(final int opcode,
+                             final int operand) {
+        this.instructions.add( new IntInsnNode( opcode,
+                                                operand ) );
     }
 
-    public void visitVarInsn(final int opcode, final int var) {
-        instructions.add(new VarInsnNode(opcode, var));
+    public void visitVarInsn(final int opcode,
+                             final int var) {
+        this.instructions.add( new VarInsnNode( opcode,
+                                                var ) );
     }
 
-    public void visitTypeInsn(final int opcode, final String desc) {
-        instructions.add(new TypeInsnNode(opcode, desc));
+    public void visitTypeInsn(final int opcode,
+                              final String desc) {
+        this.instructions.add( new TypeInsnNode( opcode,
+                                                 desc ) );
     }
 
-    public void visitFieldInsn(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        instructions.add(new FieldInsnNode(opcode, owner, name, desc));
+    public void visitFieldInsn(final int opcode,
+                               final String owner,
+                               final String name,
+                               final String desc) {
+        this.instructions.add( new FieldInsnNode( opcode,
+                                                  owner,
+                                                  name,
+                                                  desc ) );
     }
 
-    public void visitMethodInsn(
-        final int opcode,
-        final String owner,
-        final String name,
-        final String desc)
-    {
-        instructions.add(new MethodInsnNode(opcode, owner, name, desc));
+    public void visitMethodInsn(final int opcode,
+                                final String owner,
+                                final String name,
+                                final String desc) {
+        this.instructions.add( new MethodInsnNode( opcode,
+                                                   owner,
+                                                   name,
+                                                   desc ) );
     }
 
-    public void visitJumpInsn(final int opcode, final Label label) {
-        instructions.add(new JumpInsnNode(opcode, label));
+    public void visitJumpInsn(final int opcode,
+                              final Label label) {
+        this.instructions.add( new JumpInsnNode( opcode,
+                                                 label ) );
     }
 
     public void visitLabel(final Label label) {
-        instructions.add(new LabelNode(label));
+        this.instructions.add( new LabelNode( label ) );
     }
 
     public void visitLdcInsn(final Object cst) {
-        instructions.add(new LdcInsnNode(cst));
+        this.instructions.add( new LdcInsnNode( cst ) );
     }
 
-    public void visitIincInsn(final int var, final int increment) {
-        instructions.add(new IincInsnNode(var, increment));
+    public void visitIincInsn(final int var,
+                              final int increment) {
+        this.instructions.add( new IincInsnNode( var,
+                                                 increment ) );
     }
 
-    public void visitTableSwitchInsn(
-        final int min,
-        final int max,
-        final Label dflt,
-        final Label[] labels)
-    {
-        instructions.add(new TableSwitchInsnNode(min, max, dflt, labels));
+    public void visitTableSwitchInsn(final int min,
+                                     final int max,
+                                     final Label dflt,
+                                     final Label[] labels) {
+        this.instructions.add( new TableSwitchInsnNode( min,
+                                                        max,
+                                                        dflt,
+                                                        labels ) );
     }
 
-    public void visitLookupSwitchInsn(
-        final Label dflt,
-        final int[] keys,
-        final Label[] labels)
-    {
-        instructions.add(new LookupSwitchInsnNode(dflt, keys, labels));
+    public void visitLookupSwitchInsn(final Label dflt,
+                                      final int[] keys,
+                                      final Label[] labels) {
+        this.instructions.add( new LookupSwitchInsnNode( dflt,
+                                                         keys,
+                                                         labels ) );
     }
 
-    public void visitMultiANewArrayInsn(final String desc, final int dims) {
-        instructions.add(new MultiANewArrayInsnNode(desc, dims));
+    public void visitMultiANewArrayInsn(final String desc,
+                                        final int dims) {
+        this.instructions.add( new MultiANewArrayInsnNode( desc,
+                                                           dims ) );
     }
 
-    public void visitTryCatchBlock(
-        final Label start,
-        final Label end,
-        final Label handler,
-        final String type)
-    {
-        tryCatchBlocks.add(new TryCatchBlockNode(start, end, handler, type));
+    public void visitTryCatchBlock(final Label start,
+                                   final Label end,
+                                   final Label handler,
+                                   final String type) {
+        this.tryCatchBlocks.add( new TryCatchBlockNode( start,
+                                                        end,
+                                                        handler,
+                                                        type ) );
     }
 
-    public void visitLocalVariable(
-        final String name,
-        final String desc,
-        final String signature,
-        final Label start,
-        final Label end,
-        final int index)
-    {
-        localVariables.add(new LocalVariableNode(name,
-                desc,
-                signature,
-                start,
-                end,
-                index));
+    public void visitLocalVariable(final String name,
+                                   final String desc,
+                                   final String signature,
+                                   final Label start,
+                                   final Label end,
+                                   final int index) {
+        this.localVariables.add( new LocalVariableNode( name,
+                                                        desc,
+                                                        signature,
+                                                        start,
+                                                        end,
+                                                        index ) );
     }
 
-    public void visitLineNumber(final int line, final Label start) {
-        lineNumbers.add(new LineNumberNode(line, start));
+    public void visitLineNumber(final int line,
+                                final Label start) {
+        this.lineNumbers.add( new LineNumberNode( line,
+                                                  start ) );
     }
 
-    public void visitMaxs(final int maxStack, final int maxLocals) {
+    public void visitMaxs(final int maxStack,
+                          final int maxLocals) {
         this.maxStack = maxStack;
         this.maxLocals = maxLocals;
     }
@@ -345,18 +363,18 @@ public class MethodNode extends MemberNode implements MethodVisitor {
      * @param cv a class visitor.
      */
     public void accept(final ClassVisitor cv) {
-        String[] exceptions = new String[this.exceptions.size()];
-        this.exceptions.toArray(exceptions);
-        MethodVisitor mv = cv.visitMethod(access,
-                name,
-                desc,
-                signature,
-                exceptions);
-        if (mv != null) {
-            accept(mv);
+        final String[] exceptions = new String[this.exceptions.size()];
+        this.exceptions.toArray( exceptions );
+        final MethodVisitor mv = cv.visitMethod( this.access,
+                                                 this.name,
+                                                 this.desc,
+                                                 this.signature,
+                                                 exceptions );
+        if ( mv != null ) {
+            accept( mv );
         }
     }
-    
+
     /**
      * Makes the given method visitor visit this method.
      * 
@@ -365,74 +383,79 @@ public class MethodNode extends MemberNode implements MethodVisitor {
     public void accept(final MethodVisitor mv) {
         // visits the method attributes
         int i, j, n;
-        if (annotationDefault != null) {
-            AnnotationVisitor av = mv.visitAnnotationDefault();
-            AnnotationNode.accept(av, null, annotationDefault);
+        if ( this.annotationDefault != null ) {
+            final AnnotationVisitor av = mv.visitAnnotationDefault();
+            AnnotationNode.accept( av,
+                                   null,
+                                   this.annotationDefault );
             av.visitEnd();
         }
-        n = visibleAnnotations == null ? 0 : visibleAnnotations.size();
-        for (i = 0; i < n; ++i) {
-            AnnotationNode an = (AnnotationNode) visibleAnnotations.get(i);
-            an.accept(mv.visitAnnotation(an.desc, true));
+        n = this.visibleAnnotations == null ? 0 : this.visibleAnnotations.size();
+        for ( i = 0; i < n; ++i ) {
+            final AnnotationNode an = (AnnotationNode) this.visibleAnnotations.get( i );
+            an.accept( mv.visitAnnotation( an.desc,
+                                           true ) );
         }
-        n = invisibleAnnotations == null ? 0 : invisibleAnnotations.size();
-        for (i = 0; i < n; ++i) {
-            AnnotationNode an = (AnnotationNode) invisibleAnnotations.get(i);
-            an.accept(mv.visitAnnotation(an.desc, false));
+        n = this.invisibleAnnotations == null ? 0 : this.invisibleAnnotations.size();
+        for ( i = 0; i < n; ++i ) {
+            final AnnotationNode an = (AnnotationNode) this.invisibleAnnotations.get( i );
+            an.accept( mv.visitAnnotation( an.desc,
+                                           false ) );
         }
-        n = visibleParameterAnnotations == null
-                ? 0
-                : visibleParameterAnnotations.length;
-        for (i = 0; i < n; ++i) {
-            List l = visibleParameterAnnotations[i];
-            if (l == null) {
+        n = this.visibleParameterAnnotations == null ? 0 : this.visibleParameterAnnotations.length;
+        for ( i = 0; i < n; ++i ) {
+            final List l = this.visibleParameterAnnotations[i];
+            if ( l == null ) {
                 continue;
             }
-            for (j = 0; j < l.size(); ++j) {
-                AnnotationNode an = (AnnotationNode) l.get(j);
-                an.accept(mv.visitParameterAnnotation(i, an.desc, true));
+            for ( j = 0; j < l.size(); ++j ) {
+                final AnnotationNode an = (AnnotationNode) l.get( j );
+                an.accept( mv.visitParameterAnnotation( i,
+                                                        an.desc,
+                                                        true ) );
             }
         }
-        n = invisibleParameterAnnotations == null
-                ? 0
-                : invisibleParameterAnnotations.length;
-        for (i = 0; i < n; ++i) {
-            List l = invisibleParameterAnnotations[i];
-            if (l == null) {
+        n = this.invisibleParameterAnnotations == null ? 0 : this.invisibleParameterAnnotations.length;
+        for ( i = 0; i < n; ++i ) {
+            final List l = this.invisibleParameterAnnotations[i];
+            if ( l == null ) {
                 continue;
             }
-            for (j = 0; j < l.size(); ++j) {
-                AnnotationNode an = (AnnotationNode) l.get(j);
-                an.accept(mv.visitParameterAnnotation(i, an.desc, false));
+            for ( j = 0; j < l.size(); ++j ) {
+                final AnnotationNode an = (AnnotationNode) l.get( j );
+                an.accept( mv.visitParameterAnnotation( i,
+                                                        an.desc,
+                                                        false ) );
             }
         }
-        n = attrs == null ? 0 : attrs.size();
-        for (i = 0; i < n; ++i) {
-            mv.visitAttribute((Attribute) attrs.get(i));
+        n = this.attrs == null ? 0 : this.attrs.size();
+        for ( i = 0; i < n; ++i ) {
+            mv.visitAttribute( (Attribute) this.attrs.get( i ) );
         }
         // visits the method's code
-        if (instructions.size() > 0) {
+        if ( this.instructions.size() > 0 ) {
             mv.visitCode();
             // visits try catch blocks
-            for (i = 0; i < tryCatchBlocks.size(); ++i) {
-                ((TryCatchBlockNode) tryCatchBlocks.get(i)).accept(mv);
+            for ( i = 0; i < this.tryCatchBlocks.size(); ++i ) {
+                ((TryCatchBlockNode) this.tryCatchBlocks.get( i )).accept( mv );
             }
             // visits instructions
-            for (i = 0; i < instructions.size(); ++i) {
-                ((AbstractInsnNode) instructions.get(i)).accept(mv);
+            for ( i = 0; i < this.instructions.size(); ++i ) {
+                ((AbstractInsnNode) this.instructions.get( i )).accept( mv );
             }
             // visits local variables
-            n = localVariables == null ? 0 : localVariables.size();
-            for (i = 0; i < n; ++i) {
-                ((LocalVariableNode) localVariables.get(i)).accept(mv);
+            n = this.localVariables == null ? 0 : this.localVariables.size();
+            for ( i = 0; i < n; ++i ) {
+                ((LocalVariableNode) this.localVariables.get( i )).accept( mv );
             }
             // visits line numbers
-            n = lineNumbers == null ? 0 : lineNumbers.size();
-            for (i = 0; i < n; ++i) {
-                ((LineNumberNode) lineNumbers.get(i)).accept(mv);
+            n = this.lineNumbers == null ? 0 : this.lineNumbers.size();
+            for ( i = 0; i < n; ++i ) {
+                ((LineNumberNode) this.lineNumbers.get( i )).accept( mv );
             }
             // visits maxs
-            mv.visitMaxs(maxStack, maxLocals);
+            mv.visitMaxs( this.maxStack,
+                          this.maxLocals );
         }
         mv.visitEnd();
     }

@@ -16,6 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import org.drools.common.DefaultFactHandle;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -40,9 +41,9 @@ public interface ObjectSink {
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
-    void assertObject(FactHandleImpl handle,
+    void assertObject(DefaultFactHandle handle,
                       PropagationContext context,
-                      WorkingMemoryImpl workingMemory);
+                      ReteooWorkingMemory workingMemory);
 
     /**
      * Retract an existing <code>FactHandleImpl</code>.
@@ -54,11 +55,11 @@ public interface ObjectSink {
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
-    void retractObject(FactHandleImpl handle,
+    void retractObject(DefaultFactHandle handle,
                        PropagationContext context,
-                       WorkingMemoryImpl workingMemory);
+                       ReteooWorkingMemory workingMemory);
 
-    void modifyObject(FactHandleImpl handle,
+    void modifyObject(DefaultFactHandle handle,
                       PropagationContext context,
-                      WorkingMemoryImpl workingMemory);
+                      ReteooWorkingMemory workingMemory);
 }

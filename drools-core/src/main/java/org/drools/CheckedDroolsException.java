@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
-
-
 /**
  * Base RuntimeException<code>drools Logic Engine</code> exception.
  * 
@@ -26,6 +23,11 @@ package org.drools;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public class CheckedDroolsException extends Exception {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8748057033307755380L;
+
     /**
      * @see java.lang.Exception#Exception()
      */
@@ -36,22 +38,22 @@ public class CheckedDroolsException extends Exception {
     /**
      * @see java.lang.Exception#Exception(String message)
      */
-    public CheckedDroolsException(String message) {
+    public CheckedDroolsException(final String message) {
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
-    public CheckedDroolsException(String message,
-                                  Throwable cause) {
+    public CheckedDroolsException(final String message,
+                                  final Throwable cause) {
         super( message );
     }
 
     /**
      * @see java.lang.Exception#Exception(Throwable cause)
      */
-    public CheckedDroolsException(Throwable cause) {
+    public CheckedDroolsException(final Throwable cause) {
         super( cause );
     }
 

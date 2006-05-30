@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.WorkingMemory;
+import org.drools.common.DefaultFactHandle;
 
 /**
  * DefaultObjectSinkList
@@ -34,11 +35,16 @@ public class DefaultObjectSinkList extends ArrayList
     implements
     ObjectSinkList {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -414815245412273791L;
+
     public DefaultObjectSinkList() {
         super();
     }
 
-    public DefaultObjectSinkList(int size) {
+    public DefaultObjectSinkList(final int size) {
         super( size );
     }
 
@@ -47,23 +53,23 @@ public class DefaultObjectSinkList extends ArrayList
     }
 
     public List getObjectsAsList() {
-        return (List) this;
+        return this;
     }
 
-    public boolean add(ObjectSink objectSink) {
-        return super.add( (Object) objectSink );
+    public boolean add(final ObjectSink objectSink) {
+        return super.add( objectSink );
     }
 
-    public boolean contains(ObjectSink objectSink) {
-        return super.contains( (Object) objectSink );
+    public boolean contains(final ObjectSink objectSink) {
+        return super.contains( objectSink );
     }
 
-    public boolean remove(ObjectSink objectSink) {
-        return super.remove( (Object) objectSink );
+    public boolean remove(final ObjectSink objectSink) {
+        return super.remove( objectSink );
     }
 
-    public Iterator iterator(WorkingMemory workingMemory,
-                             FactHandleImpl handle) {
+    public Iterator iterator(final WorkingMemory workingMemory,
+                             final DefaultFactHandle handle) {
         return super.iterator();
     }
 

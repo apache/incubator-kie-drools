@@ -1,4 +1,5 @@
 package org.drools.util;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 public interface Queueable {
     public void enqueued(Queue queue,

@@ -53,8 +53,9 @@ public class TypeInsnNode extends AbstractInsnNode {
      * @param desc the operand of the instruction to be constructed. This
      *        operand is a type descriptor (see {@link org.drools.asm.Type}).
      */
-    public TypeInsnNode(final int opcode, final String desc) {
-        super(opcode);
+    public TypeInsnNode(final int opcode,
+                        final String desc) {
+        super( opcode );
         this.desc = desc;
     }
 
@@ -69,10 +70,11 @@ public class TypeInsnNode extends AbstractInsnNode {
     }
 
     public void accept(final MethodVisitor mv) {
-        mv.visitTypeInsn(opcode, desc);
+        mv.visitTypeInsn( this.opcode,
+                          this.desc );
     }
 
     public int getType() {
-        return TYPE_INSN;
+        return AbstractInsnNode.TYPE_INSN;
     }
 }

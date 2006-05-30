@@ -1,4 +1,5 @@
 package org.drools.leaps.conflict;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.leaps.conflict;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.util.Comparator;
 
@@ -42,16 +39,16 @@ class CompositeConflictResolver extends AbstractConflictResolver {
 
     final Comparator[] ruleResolvers;
 
-    public CompositeConflictResolver(Comparator[] factResolvers,
-                                     Comparator[] ruleResolvers) {
+    public CompositeConflictResolver(final Comparator[] factResolvers,
+                                     final Comparator[] ruleResolvers) {
         this.factResolvers = factResolvers;
         this.ruleResolvers = ruleResolvers;
     }
 
     public final Comparator getFactConflictResolver() {
         return new Comparator() {
-            public int compare(Object o1,
-                               Object o2) {
+            public int compare(final Object o1,
+                               final Object o2) {
                 int ret = 0;
                 if ( o1 != o2 ) {
                     for ( int i = 0, length = CompositeConflictResolver.this.factResolvers.length; ret == 0 && i < length; ++i ) {
@@ -66,8 +63,8 @@ class CompositeConflictResolver extends AbstractConflictResolver {
 
     public final Comparator getRuleConflictResolver() {
         return new Comparator() {
-            public int compare(Object o1,
-                               Object o2) {
+            public int compare(final Object o1,
+                               final Object o2) {
                 int ret = 0;
                 if ( o1 != o2 ) {
                     for ( int i = 0, length = CompositeConflictResolver.this.ruleResolvers.length; ret == 0 && i < length; ++i ) {

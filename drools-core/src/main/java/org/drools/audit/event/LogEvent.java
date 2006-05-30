@@ -42,7 +42,7 @@ public class LogEvent {
      * OBJECT_MODIFIED, OBJECT_RETRACTED, ACTIVATION_CREATED, ACTIVATION_CANCELLED,
      * BEFORE_ACTIVATION_FIRE or AFTER_ACTIVATION_FIRE.
      */
-    public LogEvent(int type) {
+    public LogEvent(final int type) {
         this.type = type;
     }
 
@@ -52,7 +52,7 @@ public class LogEvent {
      * @return The type of the log event.
      */
     public int getType() {
-        return type;
+        return this.type;
     }
 
 }
