@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,19 +16,18 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 import java.io.Serializable;
 
 /**
  * This is the super type for all pattern AST nodes.
  */
-public class PatternDescr implements Serializable {
-	
+public class PatternDescr
+    implements
+    Serializable {
+
     private static final long serialVersionUID = 8250082341310416977L;
-    
-    private int line;
-	private int column;
+    private int               line;
+    private int               column;
 	private int endLine;
 	private int endColumn;
 

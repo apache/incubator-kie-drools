@@ -1,4 +1,5 @@
 package org.drools.compiler;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,16 +16,14 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-
-
 public class ParserError extends DroolsError {
     private int    row;
     private int    col;
     private String message;
 
-    public ParserError(String message,
-                        int row,
-                        int col) {
+    public ParserError(final String message,
+                       final int row,
+                       final int col) {
         super();
         this.message = message;
         this.row = row;
@@ -32,15 +31,15 @@ public class ParserError extends DroolsError {
     }
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
     public int getCol() {
-        return col;
+        return this.col;
     }
 
     public int getRow() {
-        return row;
+        return this.row;
     }
 
 }

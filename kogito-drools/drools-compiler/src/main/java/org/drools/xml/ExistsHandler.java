@@ -40,10 +40,10 @@ import org.xml.sax.SAXParseException;
 class ExistsHandler extends BaseAbstractHandler
     implements
     Handler {
-    ExistsHandler(XmlPackageReader xmlPackageReader) {
+    ExistsHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( AndDescr.class );
             this.validParents.add( OrDescr.class );
@@ -61,33 +61,33 @@ class ExistsHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
-        ExistsDescr existsDescr = new ExistsDescr();
+        final ExistsDescr existsDescr = new ExistsDescr();
 
         return existsDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        ExistsDescr existsDescr = (ExistsDescr) this.xmlPackageReader.getCurrent();
+        final ExistsDescr existsDescr = (ExistsDescr) this.xmlPackageReader.getCurrent();
 
         if ( (existsDescr.getDescrs().size() != 1) && (existsDescr.getDescrs().get( 0 ).getClass() != ColumnDescr.class) ) {
             throw new SAXParseException( "<exists> can only have a single <column...> as a child element",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        LinkedList parents = this.xmlPackageReader.getParents();
-        ListIterator it = parents.listIterator( parents.size() );
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        Object parent = it.previous();
+        final Object parent = it.previous();
 
-        ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
         parentDescr.addDescr( existsDescr );
 
         return null;

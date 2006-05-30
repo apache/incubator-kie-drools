@@ -39,10 +39,10 @@ import org.xml.sax.SAXParseException;
 class ReturnValueHandler extends BaseAbstractHandler
     implements
     Handler {
-    ReturnValueHandler(XmlPackageReader xmlPackageReader) {
+    ReturnValueHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( ColumnDescr.class );
 
@@ -57,49 +57,49 @@ class ReturnValueHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        String fieldName = attrs.getValue( "field-name" );
+        final String fieldName = attrs.getValue( "field-name" );
         if ( fieldName == null || fieldName.trim().equals( "" ) ) {
             throw new SAXParseException( "<return-value> requires a 'field-name' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        String evaluator = attrs.getValue( "evaluator" );
+        final String evaluator = attrs.getValue( "evaluator" );
         if ( evaluator == null || evaluator.trim().equals( "" ) ) {
             throw new SAXParseException( "<return-value> requires an 'evaluator' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        ReturnValueDescr returnValueDescr = new ReturnValueDescr( fieldName,
+        final ReturnValueDescr returnValueDescr = new ReturnValueDescr( fieldName,
                                                                   evaluator );
 
         return returnValueDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        ReturnValueDescr returnValueDescr = (ReturnValueDescr) this.xmlPackageReader.getCurrent();
-        
-        String expression = config.getText();
+        final ReturnValueDescr returnValueDescr = (ReturnValueDescr) this.xmlPackageReader.getCurrent();
+
+        final String expression = config.getText();
 
         if ( expression == null || expression.trim().equals( "" ) ) {
             throw new SAXParseException( "<return-value> must have some content",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
-        
-        returnValueDescr.setText( expression );           
 
-        LinkedList parents = this.xmlPackageReader.getParents();
-        ListIterator it = parents.listIterator( parents.size() );
+        returnValueDescr.setText( expression );
+
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        ColumnDescr columnDescr = (ColumnDescr) it.previous();
+        final ColumnDescr columnDescr = (ColumnDescr) it.previous();
 
         columnDescr.addDescr( returnValueDescr );
 

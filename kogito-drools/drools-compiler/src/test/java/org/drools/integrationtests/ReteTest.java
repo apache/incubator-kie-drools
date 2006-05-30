@@ -1,4 +1,5 @@
 package org.drools.integrationtests;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,17 +16,15 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
-
-
 import org.drools.RuleBase;
-import org.drools.reteoo.RuleBaseImpl;
+import org.drools.reteoo.ReteooRuleBase;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class ReteTest extends IntegrationCases {
 
     protected RuleBase getRuleBase() throws Exception {
-        
-        return new RuleBaseImpl();
+
+        return new ReteooRuleBase();
     }
 
 }

@@ -1,4 +1,5 @@
 package org.drools.lang;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,27 +16,27 @@ package org.drools.lang;
  * limitations under the License.
  */
 
-
-
 import java.util.HashSet;
 import java.util.Set;
 
-public class MockExpander implements Expander {
-	
-	private int timesCalled = 0;
-    public Set patterns = new HashSet();
-    
-    public String expand(String scope,
-    						String pattern) {
-        
-        patterns.add( scope + "," + pattern );
-        
-    	int grist = (++timesCalled);
+public class MockExpander
+    implements
+    Expander {
+
+    private int timesCalled = 0;
+    public Set  patterns    = new HashSet();
+
+    public String expand(final String scope,
+                         final String pattern) {
+
+        this.patterns.add( scope + "," + pattern );
+
+        final int grist = (++this.timesCalled);
         return "foo" + grist + " : Bar(a==" + grist + ")";
     }
-    
-    public boolean checkPattern(String pat) {
-        return patterns.contains( pat );
+
+    public boolean checkPattern(final String pat) {
+        return this.patterns.contains( pat );
     }
 
 }

@@ -1,4 +1,5 @@
 package org.drools.integrationtests.waltz;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,15 +16,13 @@ package org.drools.integrationtests.waltz;
  * limitations under the License.
  */
 
-
-
 import org.drools.RuleBase;
-import org.drools.reteoo.RuleBaseImpl;
+import org.drools.reteoo.ReteooRuleBase;
 
 public class ReteOOWaltzTest extends Waltz {
     protected RuleBase getRuleBase() throws Exception {
-        
-        return new RuleBaseImpl();
+
+        return new ReteooRuleBase();
     }
 
 }

@@ -16,7 +16,6 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-import org.apache.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.RuntimeDroolsException;
 
 /**
@@ -30,15 +29,15 @@ import org.drools.RuntimeDroolsException;
  * The valid values are "ECLIPSE" and "JANINO" only. 
  */
 public class PackageBuilderConfiguration {
-    public static final int ECLIPSE  = 0;
-    public static final int JANINO   = 1;
-    
-    /** This will be only setup once. It tries to look for a system property */
-    private static final int CONFIGURED_COMPILER   = getDefaultCompiler();
-    
-    private int             compiler = CONFIGURED_COMPILER;
+    public static final int  ECLIPSE             = 0;
+    public static final int  JANINO              = 1;
 
-    private ClassLoader     classLoader;
+    /** This will be only setup once. It tries to look for a system property */
+    private static final int CONFIGURED_COMPILER = getDefaultCompiler();
+
+    private int              compiler            = PackageBuilderConfiguration.CONFIGURED_COMPILER;
+
+    private ClassLoader      classLoader;
 
     public PackageBuilderConfiguration() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -56,7 +55,7 @@ public class PackageBuilderConfiguration {
      * Set the compiler to be used when building the rules semantic code blocks.
      * This overrides the default, and even what was set as a system property. 
      */
-    public void setCompiler(int compiler) {
+    public void setCompiler(final int compiler) {
         switch ( compiler ) {
             case PackageBuilderConfiguration.ECLIPSE :
                 this.compiler = PackageBuilderConfiguration.ECLIPSE;
@@ -74,12 +73,12 @@ public class PackageBuilderConfiguration {
     }
 
     /** Use this to override the classloader that will be used for the rules. */
-    public void setClassLoader(ClassLoader classLoader) {
+    public void setClassLoader(final ClassLoader classLoader) {
         if ( classLoader != null ) {
             this.classLoader = classLoader;
         }
     }
-    
+
     /**
      * This will attempt to read the System property to work out what default to set.
      * This should only be done once when the class is loaded. After that point, you will have
@@ -87,18 +86,19 @@ public class PackageBuilderConfiguration {
      */
     static int getDefaultCompiler() {
         try {
-            String prop = System.getProperty( "drools.compiler", "ECLIPSE" );
-            if (prop.equals( "ECLIPSE".intern() )) {
-                return ECLIPSE;
-            } else if (prop.equals( "JANINO" )) {
-                return JANINO;
+            final String prop = System.getProperty( "drools.compiler",
+                                              "ECLIPSE" );
+            if ( prop.equals( "ECLIPSE".intern() ) ) {
+                return PackageBuilderConfiguration.ECLIPSE;
+            } else if ( prop.equals( "JANINO" ) ) {
+                return PackageBuilderConfiguration.JANINO;
             } else {
-                System.err.println("Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop);
-                return ECLIPSE;
+                System.err.println( "Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop );
+                return PackageBuilderConfiguration.ECLIPSE;
             }
-        } catch (SecurityException e) {
-            System.err.println("Drools config: unable to read the drools.compiler property. Using default.");
-            return ECLIPSE;
+        } catch ( final SecurityException e ) {
+            System.err.println( "Drools config: unable to read the drools.compiler property. Using default." );
+            return PackageBuilderConfiguration.ECLIPSE;
         }
     }
 }

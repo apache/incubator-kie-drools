@@ -1,4 +1,5 @@
 package org.drools.semantics.java;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,91 +16,88 @@ package org.drools.semantics.java;
  * limitations under the License.
  */
 
-
-
 import junit.framework.TestCase;
 
 public class FunctionFixerTest extends TestCase {
 
-    private static FunctionFixer fixer = new FunctionFixer();
+    private static final FunctionFixer fixer = new FunctionFixer();
 
     public void testSimple() {
-        FunctionFixer fixer = new FunctionFixer();
+        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "Func.func()",
                       fixer.fix( "func( )" ) );
     }
 
     public void testSimpleWithPArams() {
-        FunctionFixer fixer = new FunctionFixer();
+        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "Func.func(yyy, iii)",
                       fixer.fix( "func(yyy, iii)" ) );
     }
 
     public void testMoreComplex() {
-        FunctionFixer fixer = new FunctionFixer();
+        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "xxx Func.func(yyy, iii) yyy",
                       fixer.fix( "xxx func(yyy, iii) yyy" ) );
     }
-    
+
     public void testLeaveAloneNew() {
-        FunctionFixer fixer = new FunctionFixer();
+        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "new Integer (5)",
                       fixer.fix( "new Integer (5)" ) );
-    }         
-    
+    }
+
     public void testLeaveAloneDrools() {
-        FunctionFixer fixer = new FunctionFixer();
+        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "xxx drools.org(iii) Func.func(yyy, iii) yyy",
                       fixer.fix( "xxx drools.org(iii) func(yyy, iii) yyy" ) );
     }
 
     public void testWorkWithDotAll() {
-        FunctionFixer fixer = new FunctionFixer();
+        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "\n\t\n\tAddFive.addFive(list) ;",
                       fixer.fix( "\n\t\n\taddFive ( list ) ;" ) );
-    } 
-    
+    }
+
     public void testWithDollarSigns() {
-        FunctionFixer fixer = new FunctionFixer();
+        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "\nFoo.foo($list);",
                       fixer.fix( "\nfoo($list);" ) );
-    }      
-    
+    }
+
     public void testReservedWordsInJava() {
-        FunctionFixer fixer = new FunctionFixer();
+        final FunctionFixer fixer = new FunctionFixer();
         assertEquals( "\nfor(int i=0; i < 2; i++) { /*do noithing*/ }",
                       fixer.fix( "\nfor(int i=0; i < 2; i++) { /*do noithing*/ }" ) );
     }
-    
+
     public void testMultipleInABracket() {
-        FunctionFixer fixer = new FunctionFixer();
-            assertEquals( "if (Foo.foo(bar)) { Bar.bar(baz); }",
-                          fixer.fix( "if (foo(bar)) { bar(baz); }" ) );    
-    }
-    
-    public void testInBrackets() {
-        FunctionFixer fixer = new FunctionFixer();
-        assertEquals( "if (Foo.foo(bar))",
-                      fixer.fix( "if (foo(bar))" ) );    
-    }
-    
-    public void testAlreadyAdded() {
-        FunctionFixer fixer = new FunctionFixer();
-        assertEquals( "Foo.foo(bar)",
-                      fixer.fix( "Foo.foo(bar)" ) );       
-    }
-    
-    public void testInString() {
-      FunctionFixer fixer = new FunctionFixer();
-      assertEquals( "\"if (foo(bar))\"",
-                    fixer.fix( "\"if (foo(bar))\"" ) );     
-    }
-    
-    public void testComplexWithBrackets() {
-      FunctionFixer fixer = new FunctionFixer();
-      assertEquals( "System.out.println(\"foo(\" + Foo.foo(bar) + Bar.bar(baz)",
-                    fixer.fix( "System.out.println(\"foo(\" + foo(bar) + bar(baz)" ) );     
+        final FunctionFixer fixer = new FunctionFixer();
+        assertEquals( "if (Foo.foo(bar)) { Bar.bar(baz); }",
+                      fixer.fix( "if (foo(bar)) { bar(baz); }" ) );
     }
 
-        
+    public void testInBrackets() {
+        final FunctionFixer fixer = new FunctionFixer();
+        assertEquals( "if (Foo.foo(bar))",
+                      fixer.fix( "if (foo(bar))" ) );
+    }
+
+    public void testAlreadyAdded() {
+        final FunctionFixer fixer = new FunctionFixer();
+        assertEquals( "Foo.foo(bar)",
+                      fixer.fix( "Foo.foo(bar)" ) );
+    }
+
+    public void testInString() {
+        final FunctionFixer fixer = new FunctionFixer();
+        assertEquals( "\"if (foo(bar))\"",
+                      fixer.fix( "\"if (foo(bar))\"" ) );
+    }
+
+    public void testComplexWithBrackets() {
+        final FunctionFixer fixer = new FunctionFixer();
+        assertEquals( "System.out.println(\"foo(\" + Foo.foo(bar) + Bar.bar(baz)",
+                      fixer.fix( "System.out.println(\"foo(\" + foo(bar) + bar(baz)" ) );
+    }
+
 }

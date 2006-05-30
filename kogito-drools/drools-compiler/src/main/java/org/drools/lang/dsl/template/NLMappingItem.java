@@ -1,4 +1,5 @@
 package org.drools.lang.dsl.template;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.lang.dsl.template;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,47 +35,43 @@ public class NLMappingItem
     implements
     Serializable {
 
+    private static final long    serialVersionUID = 7185580607729787497L;
+    private static final Pattern tokenPattern     = Pattern.compile( "\\{(\\w*)\\}" );
+    private static final Pattern invalidPattern1  = Pattern.compile( "\\{\\w*(\\z|[^\\}\\w])" );
+    private static final Pattern invalidPattern2  = Pattern.compile( "[^\\{\\w]\\w*\\}" );
 
-    private static final long serialVersionUID = 7185580607729787497L;
-    private static final Pattern tokenPattern = Pattern.compile( "\\{(\\w*)\\}" ); 
-    private static final Pattern invalidPattern1 = Pattern.compile( "\\{\\w*(\\z|[^\\}\\w])" );
-    private static final Pattern invalidPattern2 = Pattern.compile( "[^\\{\\w]\\w*\\}" );
+    private String               naturalTemplate;
+    private String               targetTemplate;
+    private String               scope;
 
-    
-    private String naturalTemplate;
-    private String targetTemplate;
-    private String scope;
-    
-
-    
-    public void setNaturalTemplate(String naturalTemplate) {
-        this.naturalTemplate = naturalTemplate.replaceAll( "\\s*,\\s*", " , " );
+    public void setNaturalTemplate(final String naturalTemplate) {
+        this.naturalTemplate = naturalTemplate.replaceAll( "\\s*,\\s*",
+                                                           " , " );
     }
 
-    public void setScope(String scope) {
+    public void setScope(final String scope) {
         this.scope = scope;
     }
 
-    public void setTargetTemplate(String targetTemplate) {
+    public void setTargetTemplate(final String targetTemplate) {
         this.targetTemplate = targetTemplate;
     }
 
-    public NLMappingItem(String naturalTemplate,
-                         String targetTemplate,
-                         String scope) {
+    public NLMappingItem(final String naturalTemplate,
+                         final String targetTemplate,
+                         final String scope) {
         this.setNaturalTemplate( naturalTemplate );
-        this.setTargetTemplate( targetTemplate );        
-        this.setScope( scope );        
+        this.setTargetTemplate( targetTemplate );
+        this.setScope( scope );
     }
-    
+
     public String getNaturalTemplate() {
-        return naturalTemplate;
+        return this.naturalTemplate;
     }
 
     public String getTargetTemplate() {
-        return targetTemplate;
+        return this.targetTemplate;
     }
-
 
     public String getScope() {
         return this.scope;
@@ -91,42 +86,43 @@ public class NLMappingItem
      * @return
      */
     public List validateTokenUsage() {
-        NLMappingItem item = this;
-        List result = new ArrayList();
-        Matcher natural = tokenPattern.matcher( item.getNaturalTemplate() );
-        Matcher target = tokenPattern.matcher( item.getTargetTemplate() );
-        Set naturalSet = new HashSet();
-        Set targetSet = new HashSet();
-        while(natural.find()) {
+        final NLMappingItem item = this;
+        final List result = new ArrayList();
+        final Matcher natural = NLMappingItem.tokenPattern.matcher( item.getNaturalTemplate() );
+        final Matcher target = NLMappingItem.tokenPattern.matcher( item.getTargetTemplate() );
+        final Set naturalSet = new HashSet();
+        final Set targetSet = new HashSet();
+        while ( natural.find() ) {
             naturalSet.add( natural.group() );
         }
-        while(target.find()) {
+        while ( target.find() ) {
             targetSet.add( target.group() );
         }
-        if( ! naturalSet.equals( targetSet )) {
-            Set aux = new HashSet(naturalSet);
+        if ( !naturalSet.equals( targetSet ) ) {
+            final Set aux = new HashSet( naturalSet );
             naturalSet.removeAll( targetSet );
             targetSet.removeAll( aux );
-            
-            for(Iterator i = naturalSet.iterator(); i.hasNext() ; ) {
-                String token = (String) i.next();
-                result.add( new MappingError(MappingError.ERROR_UNUSED_TOKEN,
-                                             MappingError.TEMPLATE_NATURAL,
-                                             item.getNaturalTemplate().indexOf( token ), 
-                                             token, this.naturalTemplate) );
+
+            for ( final Iterator i = naturalSet.iterator(); i.hasNext(); ) {
+                final String token = (String) i.next();
+                result.add( new MappingError( MappingError.ERROR_UNUSED_TOKEN,
+                                              MappingError.TEMPLATE_NATURAL,
+                                              item.getNaturalTemplate().indexOf( token ),
+                                              token,
+                                              this.naturalTemplate ) );
             }
-            for(Iterator i = targetSet.iterator(); i.hasNext() ; ) {
-                String token = (String) i.next();
-                result.add( new MappingError(MappingError.ERROR_UNDECLARED_TOKEN,
-                                             MappingError.TEMPLATE_TARGET,
-                                             item.getTargetTemplate().indexOf( token ),
-                                             token, this.naturalTemplate ) );
+            for ( final Iterator i = targetSet.iterator(); i.hasNext(); ) {
+                final String token = (String) i.next();
+                result.add( new MappingError( MappingError.ERROR_UNDECLARED_TOKEN,
+                                              MappingError.TEMPLATE_TARGET,
+                                              item.getTargetTemplate().indexOf( token ),
+                                              token,
+                                              this.naturalTemplate ) );
             }
         }
         return result;
     }
 
-    
     /**
      * Checks for unmatched brackets and invalid tokens
      * 
@@ -134,46 +130,50 @@ public class NLMappingItem
      * @return
      */
     public List validateUnmatchingBraces() {
-        NLMappingItem item = this;
-        List result = new ArrayList();
-        Matcher natural1 = invalidPattern1.matcher( item.getNaturalTemplate() );
-        Matcher natural2 = invalidPattern2.matcher( item.getNaturalTemplate() );
-        Matcher target1  = invalidPattern1.matcher( item.getTargetTemplate() );
-        Matcher target2  = invalidPattern2.matcher( item.getTargetTemplate() );
-        
-        while(natural1.find()) {
-            String token = natural1.group();
+        final NLMappingItem item = this;
+        final List result = new ArrayList();
+        final Matcher natural1 = NLMappingItem.invalidPattern1.matcher( item.getNaturalTemplate() );
+        final Matcher natural2 = NLMappingItem.invalidPattern2.matcher( item.getNaturalTemplate() );
+        final Matcher target1 = NLMappingItem.invalidPattern1.matcher( item.getTargetTemplate() );
+        final Matcher target2 = NLMappingItem.invalidPattern2.matcher( item.getTargetTemplate() );
+
+        while ( natural1.find() ) {
+            final String token = natural1.group();
             result.add( new MappingError( MappingError.ERROR_INVALID_TOKEN,
                                           MappingError.TEMPLATE_NATURAL,
                                           natural1.start(),
-                                          token, this.naturalTemplate));
+                                          token,
+                                          this.naturalTemplate ) );
         }
-        
-        while(natural2.find()) {
-            String token = natural2.group();
+
+        while ( natural2.find() ) {
+            final String token = natural2.group();
             result.add( new MappingError( MappingError.ERROR_UNMATCHED_BRACES,
                                           MappingError.TEMPLATE_NATURAL,
                                           natural2.start(),
-                                          token, this.naturalTemplate));
+                                          token,
+                                          this.naturalTemplate ) );
         }
-        
-        while(target1.find()) {
-            String token = target1.group();
+
+        while ( target1.find() ) {
+            final String token = target1.group();
             result.add( new MappingError( MappingError.ERROR_INVALID_TOKEN,
                                           MappingError.TEMPLATE_TARGET,
                                           target1.start(),
-                                          token, this.naturalTemplate));
+                                          token,
+                                          this.naturalTemplate ) );
         }
-        
-        while(target2.find()) {
-            String token = target2.group();
+
+        while ( target2.find() ) {
+            final String token = target2.group();
             result.add( new MappingError( MappingError.ERROR_UNMATCHED_BRACES,
                                           MappingError.TEMPLATE_TARGET,
                                           target2.start(),
-                                          token, this.naturalTemplate));
+                                          token,
+                                          this.naturalTemplate ) );
         }
-        
+
         return result;
-    }    
-    
+    }
+
 }

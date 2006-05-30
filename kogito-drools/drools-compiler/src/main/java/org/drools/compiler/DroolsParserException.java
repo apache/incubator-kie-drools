@@ -1,4 +1,5 @@
 package org.drools.compiler;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,37 +16,41 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-
-
 import org.drools.CheckedDroolsException;
 
 public class DroolsParserException extends CheckedDroolsException {
-	/**
-	 * @see java.lang.Exception#Exception()
-	 */
-	public DroolsParserException() {
-		super();
-	}
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5478531718450682607L;
 
-	/**
-	 * @see java.lang.Exception#Exception(String message)
-	 */
-	public DroolsParserException(String message) {
-		super(message);
-	}
+    /**
+     * @see java.lang.Exception#Exception()
+     */
+    public DroolsParserException() {
+        super();
+    }
 
-	/**
-	 * @see java.lang.Exception#Exception(String message, Throwable cause)
-	 */
-	public DroolsParserException(String message, Throwable cause) {
-		super(message);
-	}
+    /**
+     * @see java.lang.Exception#Exception(String message)
+     */
+    public DroolsParserException(final String message) {
+        super( message );
+    }
 
-	/**
-	 * @see java.lang.Exception#Exception(Throwable cause)
-	 */
-	public DroolsParserException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * @see java.lang.Exception#Exception(String message, Throwable cause)
+     */
+    public DroolsParserException(final String message,
+                                 final Throwable cause) {
+        super( message );
+    }
+
+    /**
+     * @see java.lang.Exception#Exception(Throwable cause)
+     */
+    public DroolsParserException(final Throwable cause) {
+        super( cause );
+    }
 
 }

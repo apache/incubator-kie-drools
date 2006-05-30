@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,27 +16,30 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 public class FieldBindingDescr extends PatternDescr {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1996404511986883239L;
     private String fieldName;
     private String identifier;
 
-    public FieldBindingDescr(String fieldName, String identifier) {
+    public FieldBindingDescr(final String fieldName,
+                             final String identifier) {
         this.fieldName = fieldName;
         this.identifier = identifier;
     }
 
     public String getFieldName() {
-        return fieldName;
+        return this.fieldName;
     }
-    
+
     public String getIdentifier() {
         return this.identifier;
     }
-    
+
     public String toString() {
-    		return "[FieldBinding: field=" + fieldName + "; identifier=" + identifier + "]";
+        return "[FieldBinding: field=" + this.fieldName + "; identifier=" + this.identifier + "]";
     }
-    
+
 }

@@ -2,6 +2,8 @@ package HelloWorld
  
 import org.drools.integrationtests.helloworld.Message
 
+global java.util.List list;
+
 rule "Hello World"
 	when
 		$m : Message(list contains "hello", 
@@ -11,6 +13,16 @@ rule "Hello World"
 					message matches ".*ho.*",
 					list excludes "wax")
 	then
-		System.out.println("hello world with collections " + $m.getMessage());
+	    // putting in a complex consequence, to make sure it picks up the variabels correctly
+		if (1==1)  {
+			int a = 0;
+		}
+		try {
+			System.out.println("hello world with collections " + $m.getMessage());
+	    } catch  ( Exception e ) {
+	    
+	    } finally {
+	        list.add( $m );
+	    }
 		$m.setFired(true); 
 end

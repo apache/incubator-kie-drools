@@ -1,4 +1,5 @@
 package org.drools.lang.dsl.template;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.lang.dsl.template;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.util.Map;
 
@@ -36,94 +35,100 @@ import org.apache.commons.lang.StringUtils;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
 class Chunk {
-    
+
     //the chunk of text from the dicitonary   
-    final String text;
+    final String  text;
     final boolean isHole;
-    
-    Chunk next;
-    
+
+    Chunk         next;
+
     //for building the substitution string, remember how the {0} was spaced with the rest of the string
     //for example: date of '{0}' ---- this needs to be handled as well as: date of ' {0} '
-    String padL = "";
-    String padR = "";
-    
+    String        padL = "";
+    String        padR = "";
+
     //value parsed out if it is a hole, starts out as null.
-    String value;
-    
-    Chunk(String text)  {
+    String        value;
+
+    Chunk(final String text) {
         this.text = text;
-        if (text.startsWith("{")) {
-            isHole = true;
+        if ( text.startsWith( "{" ) ) {
+            this.isHole = true;
         } else {
-            isHole = false;
+            this.isHole = false;
         }
     }
-    
+
     /**
      * This will build up a key to use to substitute the original string with.
      * Can then swap it with the target text.
      */
-    void buildSubtitutionKey(StringBuffer buffer) {
-        if (isHole) {
-            buffer.append(padL + value + padR);
+    void buildSubtitutionKey(final StringBuffer buffer) {
+        if ( this.isHole ) {
+            buffer.append( this.padL + this.value + this.padR );
         } else {
-            buffer.append(text);
+            buffer.append( this.text );
         }
-        if (next != null) {
-            next.buildSubtitutionKey(buffer);
+        if ( this.next != null ) {
+            this.next.buildSubtitutionKey( buffer );
         }
     }
 
-    void process(String expression) {
-        if (isHole) {
+    void process(final String expression) {
+        if ( this.isHole ) {
             //value = text until next next.text is found
-            if (next == null || next.text == null) {
+            if ( this.next == null || this.next.text == null ) {
                 storeSpacePadding( expression );
-                value = expression.trim();
+                this.value = expression.trim();
             } else {
-                String val = StringUtils.substringBefore(expression, next.text);
+                final String val = StringUtils.substringBefore( expression,
+                                                          this.next.text );
                 storeSpacePadding( val );
-                value = val.trim();
+                this.value = val.trim();
             }
-            
-        } else {
-            value = text;
-        }
-        if (next != null) {
-            next.process(StringUtils.substringAfter(expression, value));
-        }            
-    }
 
-    private void storeSpacePadding(String val) {
-        if (val.startsWith(" ")) padL = " ";
-        if (val.endsWith(" ")) padR = " ";
-    }
-    
-    void buildValueMap(Map map) {
-        if (isHole) {
-            map.put(text, value);
-        }
-        if (next != null) {
-            next.buildValueMap(map);
-        }
-    }
-    
-    void addToEnd(Chunk chunk) {
-        if (next == null) {
-            next = chunk;
         } else {
-            next.addToEnd(chunk);
+            this.value = this.text;
+        }
+        if ( this.next != null ) {
+            this.next.process( StringUtils.substringAfter( expression,
+                                                      this.value ) );
         }
     }
 
+    private void storeSpacePadding(final String val) {
+        if ( val.startsWith( " " ) ) {
+            this.padL = " ";
+        }
+        if ( val.endsWith( " " ) ) {
+            this.padR = " ";
+        }
+    }
+
+    void buildValueMap(final Map map) {
+        if ( this.isHole ) {
+            map.put( this.text,
+                     this.value );
+        }
+        if ( this.next != null ) {
+            this.next.buildValueMap( map );
+        }
+    }
+
+    void addToEnd(final Chunk chunk) {
+        if ( this.next == null ) {
+            this.next = chunk;
+        } else {
+            this.next.addToEnd( chunk );
+        }
+    }
 
     /** recursively reset the values */
     public void clearValues() {
         this.value = null;
-        if (this.next != null) {
-            next.clearValues();
+        if ( this.next != null ) {
+            this.next.clearValues();
         }
     }
-    
+
 }

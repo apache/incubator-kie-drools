@@ -39,10 +39,10 @@ import org.xml.sax.SAXParseException;
 class PredicateHandler extends BaseAbstractHandler
     implements
     Handler {
-    PredicateHandler(XmlPackageReader xmlPackageReader) {
+    PredicateHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( ColumnDescr.class );
 
@@ -57,49 +57,49 @@ class PredicateHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        String identifier = attrs.getValue( "identifier" );
+        final String identifier = attrs.getValue( "identifier" );
         if ( identifier == null || identifier.trim().equals( "" ) ) {
             throw new SAXParseException( "<predicate> requires an 'identifier' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        String fieldName = attrs.getValue( "field-name" );
+        final String fieldName = attrs.getValue( "field-name" );
         if ( fieldName == null || fieldName.trim().equals( "" ) ) {
             throw new SAXParseException( "<predicate> requires a 'field-name' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        PredicateDescr predicateDescr = new PredicateDescr( fieldName,
+        final PredicateDescr predicateDescr = new PredicateDescr( fieldName,
                                                             identifier );
 
         return predicateDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        PredicateDescr predicateDescr = (PredicateDescr) this.xmlPackageReader.getCurrent();
-        
-        String expression = config.getText();
+        final PredicateDescr predicateDescr = (PredicateDescr) this.xmlPackageReader.getCurrent();
+
+        final String expression = config.getText();
 
         if ( expression == null || expression.trim().equals( "" ) ) {
             throw new SAXParseException( "<predicate> must have some content",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
-        
-        predicateDescr.setText( expression );        
 
-        LinkedList parents = this.xmlPackageReader.getParents();
-        ListIterator it = parents.listIterator( parents.size() );
+        predicateDescr.setText( expression );
+
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        ColumnDescr columnDescr = (ColumnDescr) it.previous();
+        final ColumnDescr columnDescr = (ColumnDescr) it.previous();
 
         columnDescr.addDescr( predicateDescr );
 

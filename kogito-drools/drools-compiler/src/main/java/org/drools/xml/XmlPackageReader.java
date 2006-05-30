@@ -102,9 +102,9 @@ public class XmlPackageReader extends DefaultHandler {
 
     private boolean             inHandledRuleSubElement;
 
-    private MessageFormat       message                       = new MessageFormat( "({0}: {1}, {2}): {3}" );
+    private final MessageFormat       message                       = new MessageFormat( "({0}: {1}, {2}): {3}" );
 
-    private Map                 namespaces                    = new HashMap();
+    private final Map                 namespaces                    = new HashMap();
 
     EntityResolver              entityResolver;
 
@@ -180,7 +180,7 @@ public class XmlPackageReader extends DefaultHandler {
      * @param parser
      *            The SAX parser.
      */
-    public XmlPackageReader(SAXParser parser) {
+    public XmlPackageReader(final SAXParser parser) {
         this.parser = parser;
     }
 
@@ -196,7 +196,7 @@ public class XmlPackageReader extends DefaultHandler {
      *
      * @return The rule-set.
      */
-    public PackageDescr read(Reader reader) throws SAXException,
+    public PackageDescr read(final Reader reader) throws SAXException,
                                            IOException {
         return read( new InputSource( reader ) );
     }
@@ -209,7 +209,7 @@ public class XmlPackageReader extends DefaultHandler {
      *
      * @return The rule-set.
      */
-    public PackageDescr read(InputStream inputStream) throws SAXException,
+    public PackageDescr read(final InputStream inputStream) throws SAXException,
                                                      IOException {
         return read( new InputSource( inputStream ) );
     }
@@ -222,14 +222,14 @@ public class XmlPackageReader extends DefaultHandler {
      *
      * @return The rule-set.
      */
-    public PackageDescr read(InputSource in) throws SAXException,
+    public PackageDescr read(final InputSource in) throws SAXException,
                                             IOException {
         SAXParser localParser = null;
         if ( this.parser == null ) {
-            SAXParserFactory factory = SAXParserFactory.newInstance();
+            final SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware( true );
 
-            String isValidatingString = System.getProperty( "drools.schema.validating" );
+            final String isValidatingString = System.getProperty( "drools.schema.validating" );
             if ( System.getProperty( "drools.schema.validating" ) != null ) {
                 this.isValidating = Boolean.getBoolean( "drools.schema.validating" );
             }
@@ -238,14 +238,14 @@ public class XmlPackageReader extends DefaultHandler {
                 factory.setValidating( true );
                 try {
                     localParser = factory.newSAXParser();
-                } catch ( ParserConfigurationException e ) {
+                } catch ( final ParserConfigurationException e ) {
                     throw new RuntimeException( e.getMessage() );
                 }
 
                 try {
-                    localParser.setProperty( JAXP_SCHEMA_LANGUAGE,
-                                             W3C_XML_SCHEMA );
-                } catch ( SAXNotRecognizedException e ) {
+                    localParser.setProperty( XmlPackageReader.JAXP_SCHEMA_LANGUAGE,
+                                             XmlPackageReader.W3C_XML_SCHEMA );
+                } catch ( final SAXNotRecognizedException e ) {
                     boolean hideWarnings = Boolean.getBoolean( "drools.schema.hidewarnings" );
                     if ( !hideWarnings ) {
                         System.err.println( "Your SAX parser is not JAXP 1.2 compliant - turning off validation." );
@@ -260,7 +260,7 @@ public class XmlPackageReader extends DefaultHandler {
                     this.isValidating = false;
                     factory.setValidating( this.isValidating );
                     localParser = factory.newSAXParser();
-                } catch ( ParserConfigurationException e ) {
+                } catch ( final ParserConfigurationException e ) {
                     throw new RuntimeException( e.getMessage() );
                 }
             }
@@ -278,7 +278,7 @@ public class XmlPackageReader extends DefaultHandler {
         return this.packageDescr;
     }
 
-    void setPackageDescr(PackageDescr packageDescr) {
+    void setPackageDescr(final PackageDescr packageDescr) {
         this.packageDescr = packageDescr;
     }
 
@@ -289,7 +289,7 @@ public class XmlPackageReader extends DefaultHandler {
     /**
      * @see org.xml.sax.ContentHandler
      */
-    public void setDocumentLocator(Locator locator) {
+    public void setDocumentLocator(final Locator locator) {
         this.locator = locator;
     }
 
@@ -324,16 +324,16 @@ public class XmlPackageReader extends DefaultHandler {
      *
      * @todo: better way to manage unhandled elements
      */
-    public void startElement(String uri,
-                             String localName,
-                             String qname,
-                             Attributes attrs) throws SAXException {
+    public void startElement(final String uri,
+                             final String localName,
+                             final String qname,
+                             final Attributes attrs) throws SAXException {
         // going down so no peer
         if ( !this.lastWasEndElement ) {
             this.peer = null;
         }
 
-        Handler handler = getHandler( localName );
+        final Handler handler = getHandler( localName );
 
         if ( (handler != null) && (!this.parents.isEmpty() && this.parents.getLast() instanceof RuleDescr) ) {
             this.inHandledRuleSubElement = true;
@@ -354,7 +354,7 @@ public class XmlPackageReader extends DefaultHandler {
                   localName,
                   handler );
 
-        Object node = handler.start( uri,
+        final Object node = handler.start( uri,
                                      localName,
                                      attrs );
 
@@ -372,10 +372,10 @@ public class XmlPackageReader extends DefaultHandler {
      * @throws SAXException
      * @see org.xml.sax.ContentHandler
      */
-    public void endElement(String uri,
-                           String localName,
-                           String qname) throws SAXException {
-        Handler handler = getHandler( localName );
+    public void endElement(final String uri,
+                           final String localName,
+                           final String qname) throws SAXException {
+        final Handler handler = getHandler( localName );
 
         if ( (handler != null) && (!this.parents.isEmpty() && this.parents.getLast() instanceof RuleDescr) ) {
             this.inHandledRuleSubElement = false;
@@ -390,7 +390,7 @@ public class XmlPackageReader extends DefaultHandler {
 
         this.current = getParent( handler.generateNodeFor() );
 
-        Object node = handler.end( uri,
+        final Object node = handler.end( uri,
                                    localName );
 
         // next
@@ -405,15 +405,15 @@ public class XmlPackageReader extends DefaultHandler {
         this.lastWasEndElement = true;
     }
 
-    private void validate(String uri,
-                          String localName,
-                          Handler handler) throws SAXParseException {
+    private void validate(final String uri,
+                          final String localName,
+                          final Handler handler) throws SAXParseException {
         boolean validParent = false;
         boolean validPeer = false;
         boolean invalidNesting = false;
 
-        Set validParents = handler.getValidParents();
-        Set validPeers = handler.getValidPeers();
+        final Set validParents = handler.getValidParents();
+        final Set validPeers = handler.getValidPeers();
         boolean allowNesting = handler.allowNesting();
 
         // get parent
@@ -428,10 +428,10 @@ public class XmlPackageReader extends DefaultHandler {
         // null parent means localname is rule-set
         // dont process if elements are the same
         // instead check for allowed nesting
-        Class nodeClass = getHandler( localName ).generateNodeFor();
+        final Class nodeClass = getHandler( localName ).generateNodeFor();
         if ( !nodeClass.isInstance( parent ) ) {
             Object allowedParent;
-            Iterator it = validParents.iterator();
+            final Iterator it = validParents.iterator();
             while ( !validParent && it.hasNext() ) {
                 allowedParent = it.next();
                 if ( parent == null && allowedParent == null ) {
@@ -448,7 +448,7 @@ public class XmlPackageReader extends DefaultHandler {
 
         // check valid peers
         // null peer means localname is rule-set
-        Object peer = this.peer;
+        final Object peer = this.peer;
 
         Object allowedPeer;
         Iterator it = validPeers.iterator();
@@ -488,13 +488,13 @@ public class XmlPackageReader extends DefaultHandler {
      * @param attrs
      *            Tag attributes.
      */
-    protected void startConfiguration(String name,
-                                      Attributes attrs) {
+    protected void startConfiguration(final String name,
+                                      final Attributes attrs) {
         this.characters = new StringBuffer();
 
-        DefaultConfiguration config = new DefaultConfiguration( name );
+        final DefaultConfiguration config = new DefaultConfiguration( name );
 
-        int numAttrs = attrs.getLength();
+        final int numAttrs = attrs.getLength();
 
         for ( int i = 0; i < numAttrs; ++i ) {
             config.setAttribute( attrs.getLocalName( i ),
@@ -502,10 +502,10 @@ public class XmlPackageReader extends DefaultHandler {
         }
 
         // lets add the namespaces as attributes
-        for ( Iterator iter = namespaces.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
+        for ( final Iterator iter = this.namespaces.entrySet().iterator(); iter.hasNext(); ) {
+            final Map.Entry entry = (Map.Entry) iter.next();
             String ns = (String) entry.getKey();
-            String value = (String) entry.getValue();
+            final String value = (String) entry.getValue();
             if ( ns == null || ns.length() == 0 ) {
                 ns = "xmlns";
             } else {
@@ -523,7 +523,7 @@ public class XmlPackageReader extends DefaultHandler {
         }
     }
 
-    Handler getHandler(String localName) {
+    Handler getHandler(final String localName) {
         return (Handler) this.handlers.get( localName );
     }
 
@@ -533,9 +533,9 @@ public class XmlPackageReader extends DefaultHandler {
      * @param len
      * @see org.xml.sax.ContentHandler
      */
-    public void characters(char[] chars,
-                           int start,
-                           int len) {
+    public void characters(final char[] chars,
+                           final int start,
+                           final int len) {
         if ( this.characters != null ) {
             this.characters.append( chars,
                                     start,
@@ -549,7 +549,7 @@ public class XmlPackageReader extends DefaultHandler {
      * @return The configuration.
      */
     protected Configuration endConfiguration() {
-        DefaultConfiguration config = (DefaultConfiguration) this.configurationStack.removeLast();
+        final DefaultConfiguration config = (DefaultConfiguration) this.configurationStack.removeLast();
         if ( this.characters != null ) {
             config.setText( this.characters.toString() );
         }
@@ -563,12 +563,14 @@ public class XmlPackageReader extends DefaultHandler {
         return this.parents;
     }
 
-    Object getParent(Class parent) {
-        ListIterator it = this.parents.listIterator( this.parents.size() );
+    Object getParent(final Class parent) {
+        final ListIterator it = this.parents.listIterator( this.parents.size() );
         Object node = null;
         while ( it.hasPrevious() ) {
             node = it.previous();
-            if ( parent.isInstance( node ) ) break;
+            if ( parent.isInstance( node ) ) {
+                break;
+            }
         }
         return node;
     }
@@ -581,56 +583,56 @@ public class XmlPackageReader extends DefaultHandler {
         return this.current;
     }
 
-    public InputSource resolveEntity(String publicId,
-                                     String systemId) throws SAXException {
+    public InputSource resolveEntity(final String publicId,
+                                     final String systemId) throws SAXException {
         try {
-            InputSource inputSource = resolveSchema( publicId,
+            final InputSource inputSource = resolveSchema( publicId,
                                                      systemId );
             if ( inputSource != null ) {
                 return inputSource;
             }
-            if ( entityResolver != null ) {
-                return entityResolver.resolveEntity( publicId,
+            if ( this.entityResolver != null ) {
+                return this.entityResolver.resolveEntity( publicId,
                                                      systemId );
             }
-        } catch ( IOException ioe ) {
+        } catch ( final IOException ioe ) {
         }
         return null;
     }
 
-    public void startPrefixMapping(String prefix,
-                                   String uri) throws SAXException {
+    public void startPrefixMapping(final String prefix,
+                                   final String uri) throws SAXException {
         super.startPrefixMapping( prefix,
                                   uri );
-        namespaces.put( prefix,
+        this.namespaces.put( prefix,
                         uri );
     }
 
-    public void endPrefixMapping(String prefix) throws SAXException {
+    public void endPrefixMapping(final String prefix) throws SAXException {
         super.endPrefixMapping( prefix );
-        namespaces.remove( prefix );
+        this.namespaces.remove( prefix );
     }
 
-    private void print(SAXParseException x) {
-        String msg = this.message.format( new Object[]{x.getSystemId(), new Integer( x.getLineNumber() ), new Integer( x.getColumnNumber() ), x.getMessage()} );
+    private void print(final SAXParseException x) {
+        final String msg = this.message.format( new Object[]{x.getSystemId(), new Integer( x.getLineNumber() ), new Integer( x.getColumnNumber() ), x.getMessage()} );
         System.out.println( msg );
     }
 
-    public void warning(SAXParseException x) {
+    public void warning(final SAXParseException x) {
         print( x );
     }
 
-    public void error(SAXParseException x) {
+    public void error(final SAXParseException x) {
         print( x );
     }
 
-    public void fatalError(SAXParseException x) throws SAXParseException {
+    public void fatalError(final SAXParseException x) throws SAXParseException {
         print( x );
         throw x;
     }
 
-    private InputSource resolveSchema(String publicId,
-                                      String systemId) throws SAXException,
+    private InputSource resolveSchema(final String publicId,
+                                      final String systemId) throws SAXException,
                                                       IOException {
         // Schema files must end with xsd
         if ( !systemId.toLowerCase().endsWith( "xsd" ) ) {
@@ -639,9 +641,9 @@ public class XmlPackageReader extends DefaultHandler {
 
         // try the actual location given by systemId
         try {
-            URL url = new URL( systemId );
+            final URL url = new URL( systemId );
             return new InputSource( url.openStream() );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
         }
 
         // Try and get the index for the filename, else return null
@@ -665,7 +667,7 @@ public class XmlPackageReader extends DefaultHandler {
         // Try looking in META-INF
 
         {
-            InputStream is = cl.getResourceAsStream( "META-INF/" + xsd );
+            final InputStream is = cl.getResourceAsStream( "META-INF/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
@@ -673,7 +675,7 @@ public class XmlPackageReader extends DefaultHandler {
 
         // Try looking in /META-INF
         {
-            InputStream is = cl.getResourceAsStream( "/META-INF/" + xsd );
+            final InputStream is = cl.getResourceAsStream( "/META-INF/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
@@ -681,7 +683,7 @@ public class XmlPackageReader extends DefaultHandler {
 
         // Try looking at root of classpath
         {
-            InputStream is = cl.getResourceAsStream( "/" + xsd );
+            final InputStream is = cl.getResourceAsStream( "/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
@@ -689,7 +691,7 @@ public class XmlPackageReader extends DefaultHandler {
 
         // Try current working directory
         {
-            File file = new File( xsd );
+            final File file = new File( xsd );
             if ( file.exists() ) {
                 return new InputSource( new BufferedInputStream( new FileInputStream( file ) ) );
             }
@@ -699,7 +701,7 @@ public class XmlPackageReader extends DefaultHandler {
 
         // Try looking in META-INF
         {
-            InputStream is = cl.getResourceAsStream( "META-INF/" + xsd );
+            final InputStream is = cl.getResourceAsStream( "META-INF/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
@@ -707,7 +709,7 @@ public class XmlPackageReader extends DefaultHandler {
 
         // Try looking in /META-INF
         {
-            InputStream is = cl.getResourceAsStream( "/META-INF/" + xsd );
+            final InputStream is = cl.getResourceAsStream( "/META-INF/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
@@ -715,7 +717,7 @@ public class XmlPackageReader extends DefaultHandler {
 
         // Try looking at root of classpath
         {
-            InputStream is = cl.getResourceAsStream( "/" + xsd );
+            final InputStream is = cl.getResourceAsStream( "/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
@@ -728,12 +730,12 @@ public class XmlPackageReader extends DefaultHandler {
      * Intializes EntityResolver that is configured via system property ENTITY_RESOLVER_PROPERTY_NAME.
      */
     private void initEntityResolver() {
-        String entityResolveClazzName = System.getProperty( ENTITY_RESOLVER_PROPERTY_NAME );
+        final String entityResolveClazzName = System.getProperty( XmlPackageReader.ENTITY_RESOLVER_PROPERTY_NAME );
         if ( entityResolveClazzName != null && entityResolveClazzName.length() > 0 ) {
             try {
-                Class entityResolverClazz = Thread.currentThread().getContextClassLoader().loadClass( entityResolveClazzName );
-                entityResolver = (EntityResolver) entityResolverClazz.newInstance();
-            } catch ( Exception ignoreIt ) {
+                final Class entityResolverClazz = Thread.currentThread().getContextClassLoader().loadClass( entityResolveClazzName );
+                this.entityResolver = (EntityResolver) entityResolverClazz.newInstance();
+            } catch ( final Exception ignoreIt ) {
             }
         }
     }

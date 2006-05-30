@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -15,8 +14,6 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.PackageBuilder;
-import org.drools.reteoo.ObjectSink;
-import org.drools.rule.And;
 import org.drools.rule.Package;
 import org.drools.visualize.ReteooJungViewer;
 
@@ -24,75 +21,75 @@ import com.thoughtworks.xstream.XStream;
 
 public class ReteooBuilderTest extends TestCase {
 
-    private boolean writeTree = false;
-    
-    private boolean showRete = false;
+    private final boolean writeTree = false;
+
+    private final boolean showRete  = false;
 
     /** Implementation specific subclasses must provide this. */
     protected RuleBase getRuleBase() throws Exception {
         return RuleBaseFactory.newRuleBase();
     }
 
-    public void testThreeColumnsWithCosntraints() throws Exception {
-        checkRuleBase( "ThreeColumnsWithCosntraints" );
+    public void testThreeColumnsWithConstraints() throws Exception {
+        checkRuleBase( "ThreeColumnsWithConstraints" );
     }
 
     public void testOneAndTwoOrs() throws Exception {
         checkRuleBase( "OneAndTwoOrs" );
     }
-    
-    public void testX() throws Exception {
+
+    public void testOneAndTwoOrsPerson() throws Exception {
         checkRuleBase( "OneAndTwoOrsPerson" );
-    }        
+    }
 
-    private void writeRuleBase(RuleBase ruleBase,
-                               String fileName) throws IOException {
-        XStream xstream = new XStream();
+    private void writeRuleBase(final RuleBase ruleBase,
+                               final String fileName) throws IOException {
+        final XStream xstream = new XStream();
 
-        PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( "src/test/resources/org/drools/reteoo/" + fileName ) ) );
+        final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( "src/test/resources/org/drools/reteoo/" + fileName ) ) );
 
         xstream.toXML( ruleBase,
                        out );
     }
 
-    private void checkRuleBase(String name) throws Exception {
-        PackageBuilder builder = new PackageBuilder();
+    private void checkRuleBase(final String name) throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_" + name + ".drl" ) ) );
-        Package pkg = builder.getPackage();
+        final Package pkg = builder.getPackage();
 
-        RuleBaseImpl ruleBase = (RuleBaseImpl) getRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) getRuleBase();
         ruleBase.addPackage( pkg );
 
-        if ( showRete ) {
+        if ( this.showRete ) {
             final ReteooJungViewer viewer = new ReteooJungViewer( ruleBase );
-    
+
             javax.swing.SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
                     viewer.showGUI();
                 }
             } );
-    
+
             while ( viewer.isRunning() ) {
                 Thread.yield();
                 Thread.sleep( 100 );
-            }        
+            }
         }
-        
-        if ( writeTree ) {
+
+        if ( this.writeTree ) {
             writeRuleBase( ruleBase,
                            name );
         }
 
-        XStream xstream = new XStream();
+        final XStream xstream = new XStream();
 
-        RuleBase goodRuleBase = (RuleBase) xstream.fromXML( new BufferedReader( new FileReader( "src/test/resources/org/drools/reteoo/" + name ) ) );
+        final RuleBase goodRuleBase = (RuleBase) xstream.fromXML( getClass().getResourceAsStream( name ) );
 
-        nodesEquals( ((RuleBaseImpl) goodRuleBase).getRete(),
-                     ((RuleBaseImpl) ruleBase).getRete() );
+        nodesEquals( ((ReteooRuleBase) goodRuleBase).getRete(),
+                     (ruleBase).getRete() );
     }
 
-    private void nodesEquals(Object object1,
-                             Object object2) {
+    private void nodesEquals(final Object object1,
+                             final Object object2) {
         assertEquals( object1 + " is not of the same type as " + object2,
                       object1.getClass(),
                       object2.getClass() );
@@ -105,14 +102,14 @@ public class ReteooBuilderTest extends TestCase {
         List list2 = null;
 
         if ( object1 instanceof ObjectSource ) {
-            ObjectSource source1 = (ObjectSource) object1;
-            ObjectSource source2 = (ObjectSource) object2;
+            final ObjectSource source1 = (ObjectSource) object1;
+            final ObjectSource source2 = (ObjectSource) object2;
 
             list1 = source1.getObjectSinksAsList();
             list2 = source2.getObjectSinksAsList();
         } else if ( object1 instanceof TupleSource ) {
-            TupleSource source1 = (TupleSource) object1;
-            TupleSource source2 = (TupleSource) object2;
+            final TupleSource source1 = (TupleSource) object1;
+            final TupleSource source2 = (TupleSource) object2;
 
             list1 = source1.getTupleSinks();
             list2 = source2.getTupleSinks();

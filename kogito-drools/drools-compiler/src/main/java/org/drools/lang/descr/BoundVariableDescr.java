@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,27 +16,29 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 public class BoundVariableDescr extends PatternDescr {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7739599208890839005L;
     private String fieldName;
     private String evaluator;
     private String declarationIdentifier;
 
-    public BoundVariableDescr(String fieldName,
-                              String evaluator,
-                              String identifier) {
+    public BoundVariableDescr(final String fieldName,
+                              final String evaluator,
+                              final String identifier) {
         this.fieldName = fieldName;
         this.declarationIdentifier = identifier;
         this.evaluator = evaluator;
     }
 
     public String getFieldName() {
-        return fieldName;
+        return this.fieldName;
     }
 
     public String getEvaluator() {
-        return evaluator;
+        return this.evaluator;
     }
 
     public String getIdentifier() {

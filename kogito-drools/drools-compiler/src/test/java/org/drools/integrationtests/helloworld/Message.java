@@ -1,4 +1,5 @@
 package org.drools.integrationtests.helloworld;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,63 +16,60 @@ package org.drools.integrationtests.helloworld;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Message {
 
-	private String message;
-	private List list = new ArrayList(  );
-    private int number = 0;
-    private Date birthday = new Date();
-    private boolean fired = false;
-    
-	public boolean isFired() {
-        return fired;
+    private String  message;
+    private List    list     = new ArrayList();
+    private int     number   = 0;
+    private Date    birthday = new Date();
+    private boolean fired    = false;
+
+    public boolean isFired() {
+        return this.fired;
     }
 
-    public void setFired(boolean fired) {
+    public void setFired(final boolean fired) {
         this.fired = fired;
     }
 
     public Date getBirthday() {
-        return birthday;
+        return this.birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(final Date birthday) {
         this.birthday = birthday;
     }
 
     public int getNumber() {
-        return number;
+        return this.number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(final int number) {
         this.number = number;
     }
 
-    public Message(String msg) {
-		this.message = msg;
-	}
-	
-	public String getMessage() {
-		return message;
-	}
+    public Message(final String msg) {
+        this.message = msg;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
 
     public List getList() {
-        return list;
+        return this.list;
     }
 
-    public void setList(List list) {
+    public void setList(final List list) {
         this.list = list;
     }
-    
-    public void addToList(String s) {
+
+    public void addToList(final String s) {
         this.list.add( s );
     }
 
-	
 }

@@ -1,4 +1,5 @@
 package org.drools.semantics.java;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.semantics.java;
  * limitations under the License.
  */
 
-
-
 import org.apache.commons.jci.stores.ResourceStore;
 import org.drools.rule.PackageCompilationData;
 
@@ -27,39 +26,39 @@ public class PackageStore
 
     public PackageStore() {
     }
-    
-    public PackageStore(PackageCompilationData packageCompiationData) {
-        this.packageCompilationData = packageCompiationData;
-    }
-    
-    public void setPackageCompilationData(PackageCompilationData packageCompiationData) {
+
+    public PackageStore(final PackageCompilationData packageCompiationData) {
         this.packageCompilationData = packageCompiationData;
     }
 
-    public void write(String resourceName,
-                      byte[] clazzData) {
+    public void setPackageCompilationData(final PackageCompilationData packageCompiationData) {
+        this.packageCompilationData = packageCompiationData;
+    }
+
+    public void write(final String resourceName,
+                      final byte[] clazzData) {
         try {
             this.packageCompilationData.write( resourceName,
                                                clazzData );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
 
         }
     }
 
-    public byte[] read(String resourceName) {
+    public byte[] read(final String resourceName) {
         byte[] clazz = null;
         try {
             clazz = this.packageCompilationData.read( resourceName );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
 
         }
         return clazz;
     }
 
-    public void remove(String resourceName) {
+    public void remove(final String resourceName) {
         try {
             this.packageCompilationData.remove( resourceName );
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
 
         }
     }

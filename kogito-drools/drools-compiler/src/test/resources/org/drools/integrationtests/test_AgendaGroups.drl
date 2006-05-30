@@ -41,6 +41,7 @@ rule "test group2"
     when
     	Cheese( )
     then
+        System.out.println("help");
 		list.add( "group2" );
 end  
 

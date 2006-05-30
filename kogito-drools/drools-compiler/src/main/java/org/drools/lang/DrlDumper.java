@@ -21,8 +21,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.lang.descr.*;
-
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BoundVariableDescr;
+import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.LiteralDescr;
+import org.drools.lang.descr.NotDescr;
+import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PackageDescrDumper;
+import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.QueryDescr;
+import org.drools.lang.descr.ReturnValueDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.util.ReflectiveVisitor;
 
 /**
@@ -35,7 +50,7 @@ public class DrlDumper extends ReflectiveVisitor
     PackageDescrDumper {
 
     private StringBuffer        drlDump;
-    private static final String eol     = System.getProperty( "line.separator" );
+    private static final String eol = System.getProperty( "line.separator" );
 
     public synchronized String dump(final PackageDescr packageDescr) {
         this.drlDump = new StringBuffer();
@@ -54,7 +69,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitAttributeDescr(final AttributeDescr attributeDescr) {
         this.template = new String();
-        this.template = "\t " + attributeDescr.getName() + " " + attributeDescr.getValue() + this.eol;
+        this.template = "\t " + attributeDescr.getName() + " " + attributeDescr.getValue() + DrlDumper.eol;
     }
 
     public void visitBoundVariableDescr(final BoundVariableDescr descr) {
@@ -82,7 +97,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitEvalDescr(final EvalDescr descr) {
         this.template = new String();
-        this.template = "\t\teval ( " + descr.getText() + " )" + this.eol;
+        this.template = "\t\teval ( " + descr.getText() + " )" + DrlDumper.eol;
     }
 
     public void visitExistsDescr(final ExistsDescr descr) {
@@ -106,7 +121,7 @@ public class DrlDumper extends ReflectiveVisitor
 
         this.template = "function " + functionDescr.getReturnType() + " " + functionDescr.getName() + "(" + parameterTemplate + "){" +
 
-        functionDescr.getText() + this.eol + "}" + this.eol;
+        functionDescr.getText() + DrlDumper.eol + "}" + DrlDumper.eol;
 
     }
 
@@ -143,7 +158,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitPackageDescr(final PackageDescr packageDescr) {
         final String packageName = packageDescr.getName();
-        final String xmlString = "package " + packageName + ";" + this.eol + this.eol;
+        final String xmlString = "package " + packageName + ";" + DrlDumper.eol + DrlDumper.eol;
 
         appendDrlDump( xmlString );
         if ( packageDescr.getImports() != null ) {
@@ -183,11 +198,11 @@ public class DrlDumper extends ReflectiveVisitor
         String ruleList = "";
         for ( final Iterator iterator = rules.iterator(); iterator.hasNext(); ) {
             final RuleDescr ruleDescr = (RuleDescr) iterator.next();
-            String rule = "rule \"" + ruleDescr.getName() + "\" " + this.eol;
+            String rule = "rule \"" + ruleDescr.getName() + "\" " + DrlDumper.eol;
             final String attribute = processAttribute( ruleDescr.getAttributes() );
             String lhs = "";
             if ( ruleDescr.getLhs().getDescrs() != Collections.EMPTY_LIST ) {
-                lhs = "\t when" + this.eol + processDescrList( ruleDescr.getLhs().getDescrs() ) + this.eol;
+                lhs = "\t when" + DrlDumper.eol + processDescrList( ruleDescr.getLhs().getDescrs() ) + DrlDumper.eol;
             } else {
 
                 lhs = "\t when";
@@ -195,19 +210,19 @@ public class DrlDumper extends ReflectiveVisitor
 
             String rhs = ruleDescr.getConsequence();
             if ( rhs == null ) {
-                rhs = "\t then" + this.eol + "\t";
+                rhs = "\t then" + DrlDumper.eol + "\t";
             } else {
-                rhs = "\t then" + this.eol + "\t\t" + ruleDescr.getConsequence();
+                rhs = "\t then" + DrlDumper.eol + "\t\t" + ruleDescr.getConsequence();
             }
 
             rule += attribute;
             rule += lhs;
             rule += rhs;
-            rule += "end" + this.eol;
+            rule += "end" + DrlDumper.eol;
             ruleList += rule;
         }
 
-        return ruleList + this.eol;
+        return ruleList + DrlDumper.eol;
     }
 
     private String processOrDescrList(final List descr) {
@@ -215,9 +230,9 @@ public class DrlDumper extends ReflectiveVisitor
         for ( final Iterator iterator = descr.iterator(); iterator.hasNext(); ) {
             visit( iterator.next() );
             descrString += this.template;
-            if ( descrString.endsWith( this.eol ) ) {
+            if ( descrString.endsWith( DrlDumper.eol ) ) {
                 descrString = descrString.substring( 0,
-                                                     descrString.indexOf( this.eol ) );
+                                                     descrString.indexOf( DrlDumper.eol ) );
             }
             descrString += " || ";
         }
@@ -246,7 +261,7 @@ public class DrlDumper extends ReflectiveVisitor
         for ( final Iterator iterator = descr.iterator(); iterator.hasNext(); ) {
             visit( iterator.next() );
             descrString += this.template;
-            descrString += this.eol;
+            descrString += DrlDumper.eol;
         }
         return descrString;
     }
@@ -259,7 +274,7 @@ public class DrlDumper extends ReflectiveVisitor
             functionList += this.template;
         }
 
-        return functionList + this.eol;
+        return functionList + DrlDumper.eol;
     }
 
     private String processAttribute(final List attributes) {
@@ -294,11 +309,11 @@ public class DrlDumper extends ReflectiveVisitor
         for ( final Iterator iterator = globals.keySet().iterator(); iterator.hasNext(); ) {
             final String key = (String) iterator.next();
             final String value = (String) globals.get( key );
-            final String globalTemplate = "global " + value + " " + key + ";" + this.eol;
+            final String globalTemplate = "global " + value + " " + key + ";" + DrlDumper.eol;
             globalList += globalTemplate;
         }
 
-        return globalList + this.eol;
+        return globalList + DrlDumper.eol;
     }
 
     private String processImportsList(final List imports) {
@@ -306,10 +321,10 @@ public class DrlDumper extends ReflectiveVisitor
 
         for ( final Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
             final String importString = (String) iterator.next();
-            final String importTemplate = "import " + importString + ";" + this.eol;
+            final String importTemplate = "import " + importString + ";" + DrlDumper.eol;
             importList += importTemplate;
         }
-        return importList + this.eol;
+        return importList + DrlDumper.eol;
     }
 
     private void appendDrlDump(final String temp) {

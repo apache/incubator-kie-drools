@@ -3,8 +3,9 @@ package org.drools;
 public class Sensor {
     private int temperature;
     private int pressure;
-    
-    public Sensor(int temp, int press) {
+
+    public Sensor(final int temp,
+                  final int press) {
         this.temperature = temp;
         this.pressure = press;
     }
@@ -13,13 +14,13 @@ public class Sensor {
      * @return the pressure
      */
     public int getPressure() {
-        return pressure;
+        return this.pressure;
     }
 
     /**
      * @param pressure the pressure to set
      */
-    public void setPressure(int pressure) {
+    public void setPressure(final int pressure) {
         this.pressure = pressure;
     }
 
@@ -27,18 +28,18 @@ public class Sensor {
      * @return the temperature
      */
     public int getTemperature() {
-        return temperature;
+        return this.temperature;
     }
 
     /**
      * @param temperature the temperature to set
      */
-    public void setTemperature(int temperature) {
+    public void setTemperature(final int temperature) {
         this.temperature = temperature;
     }
-    
+
     public String toString() {
-        return "Sensor [ temperature = "+this.temperature+", pressure = "+this.pressure+" ]";
+        return "Sensor [ temperature = " + this.temperature + ", pressure = " + this.pressure + " ]";
     }
 
 }

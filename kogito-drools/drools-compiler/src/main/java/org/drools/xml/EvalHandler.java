@@ -40,10 +40,10 @@ import org.xml.sax.SAXParseException;
 class EvalHandler extends BaseAbstractHandler
     implements
     Handler {
-    EvalHandler(XmlPackageReader xmlPackageReader) {
+    EvalHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( AndDescr.class );
             this.validParents.add( OrDescr.class );
@@ -61,40 +61,38 @@ class EvalHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-
-        EvalDescr evalDescr = new EvalDescr( );
+        final EvalDescr evalDescr = new EvalDescr();
 
         return evalDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        EvalDescr evalDescr = (EvalDescr) this.xmlPackageReader.getCurrent();
-        
+        final EvalDescr evalDescr = (EvalDescr) this.xmlPackageReader.getCurrent();
 
-        String expression = config.getText();
+        final String expression = config.getText();
 
         if ( expression == null || expression.trim().equals( "" ) ) {
             throw new SAXParseException( "<eval> must have some content",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
-        
+
         evalDescr.setText( expression );
 
-        LinkedList parents = this.xmlPackageReader.getParents();
-        ListIterator it = parents.listIterator( parents.size() );
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        Object parent = it.previous();
+        final Object parent = it.previous();
 
-        ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
         parentDescr.addDescr( evalDescr );
 
         return null;

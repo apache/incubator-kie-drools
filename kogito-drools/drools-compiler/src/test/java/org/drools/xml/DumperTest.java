@@ -21,15 +21,15 @@ public class DumperTest extends TestCase {
 
         XmlPackageReader xmlPackageReader = new XmlPackageReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRule.xml" ) ) );
-        PackageDescr pkgOriginal = xmlPackageReader.getPackageDescr();
+        final PackageDescr pkgOriginal = xmlPackageReader.getPackageDescr();
 
-        XmlDumper dumper = new XmlDumper();
-        String result = dumper.dump( pkgOriginal );
+        final XmlDumper dumper = new XmlDumper();
+        final String result = dumper.dump( pkgOriginal );
         assertNotNull( result );
 
         //now lest slurp it back up
         xmlPackageReader = new XmlPackageReader();
-        PackageDescr pkgDumped = xmlPackageReader.read( new StringReader( result ) );
+        final PackageDescr pkgDumped = xmlPackageReader.read( new StringReader( result ) );
 
         assertEquals( pkgOriginal.getName(),
                       pkgDumped.getName() );
@@ -40,8 +40,8 @@ public class DumperTest extends TestCase {
         assertEquals( pkgOriginal.getGlobals().size(),
                       pkgDumped.getGlobals().size() );
 
-        RuleDescr ruleOriginal = (RuleDescr) pkgOriginal.getRules().get( 0 );
-        RuleDescr ruleDumped = (RuleDescr) pkgDumped.getRules().get( 0 );
+        final RuleDescr ruleOriginal = (RuleDescr) pkgOriginal.getRules().get( 0 );
+        final RuleDescr ruleDumped = (RuleDescr) pkgDumped.getRules().get( 0 );
 
         assertEquals( ruleOriginal.getName(),
                       ruleDumped.getName() );
@@ -56,14 +56,14 @@ public class DumperTest extends TestCase {
     public void testRoundTripDrl() throws Exception {
 
         DrlParser parser = new DrlParser();
-        PackageDescr pkgOriginal = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dump.drl" ) ));
-        DrlDumper dumper = new DrlDumper();
-        String result = dumper.dump( pkgOriginal );
-        assertNotNull(result);
-        
+        final PackageDescr pkgOriginal = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dump.drl" ) ) );
+        final DrlDumper dumper = new DrlDumper();
+        final String result = dumper.dump( pkgOriginal );
+        assertNotNull( result );
+
         parser = new DrlParser();
-        PackageDescr pkgDumped = parser.parse( new StringReader(result) );
-        
+        final PackageDescr pkgDumped = parser.parse( new StringReader( result ) );
+
         assertEquals( pkgOriginal.getName(),
                       pkgDumped.getName() );
         assertEquals( pkgOriginal.getFunctions().size(),
@@ -73,8 +73,8 @@ public class DumperTest extends TestCase {
         assertEquals( pkgOriginal.getGlobals().size(),
                       pkgDumped.getGlobals().size() );
 
-        RuleDescr ruleOriginal = (RuleDescr) pkgOriginal.getRules().get( 0 );
-        RuleDescr ruleDumped = (RuleDescr) pkgDumped.getRules().get( 0 );
+        final RuleDescr ruleOriginal = (RuleDescr) pkgOriginal.getRules().get( 0 );
+        final RuleDescr ruleDumped = (RuleDescr) pkgDumped.getRules().get( 0 );
 
         assertEquals( ruleOriginal.getName(),
                       ruleDumped.getName() );
@@ -82,28 +82,27 @@ public class DumperTest extends TestCase {
         assertEquals( ruleOriginal.getLhs().getDescrs().size(),
                       ruleDumped.getLhs().getDescrs().size() );
         assertEquals( ruleOriginal.getConsequence(),
-                      ruleDumped.getConsequence() );        
-        
+                      ruleDumped.getConsequence() );
 
     }
 
-    private void assertEqualsIgnoreWhitespace(String expected,
-                                              String actual) {
-        String cleanExpected = expected.replaceAll( "\\s+",
+    private void assertEqualsIgnoreWhitespace(final String expected,
+                                              final String actual) {
+        final String cleanExpected = expected.replaceAll( "\\s+",
                                                     "" );
-        String cleanActual = actual.replaceAll( "\\s+",
+        final String cleanActual = actual.replaceAll( "\\s+",
                                                 "" );
 
         assertEquals( cleanExpected,
                       cleanActual );
     }
 
-    private String readFile(String file) throws IOException {
-        InputStreamReader reader = new InputStreamReader( getClass().getResourceAsStream( file ) );
+    private String readFile(final String file) throws IOException {
+        final InputStreamReader reader = new InputStreamReader( getClass().getResourceAsStream( file ) );
 
-        StringBuffer text = new StringBuffer();
+        final StringBuffer text = new StringBuffer();
 
-        char[] buf = new char[1024];
+        final char[] buf = new char[1024];
         int len = 0;
 
         while ( (len = reader.read( buf )) >= 0 ) {

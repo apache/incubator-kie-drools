@@ -39,10 +39,10 @@ import org.xml.sax.SAXException;
 class OrHandler extends BaseAbstractHandler
     implements
     Handler {
-    OrHandler(XmlPackageReader xmlPackageReader) {
+    OrHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( AndDescr.class );
             this.validParents.add( OrDescr.class );
@@ -60,28 +60,28 @@ class OrHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
-        OrDescr orDescr = new OrDescr();
+        final OrDescr orDescr = new OrDescr();
 
         return orDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        OrDescr orDescr = (OrDescr) this.xmlPackageReader.getCurrent();
+        final OrDescr orDescr = (OrDescr) this.xmlPackageReader.getCurrent();
 
-        LinkedList parents = this.xmlPackageReader.getParents();
-        ListIterator it = parents.listIterator( parents.size() );
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        Object parent = it.previous();
+        final Object parent = it.previous();
 
-        ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
         parentDescr.addDescr( orDescr );
 
         return null;

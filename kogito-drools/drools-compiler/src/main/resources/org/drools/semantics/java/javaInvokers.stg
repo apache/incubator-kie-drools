@@ -62,7 +62,7 @@ public class <invokerClassName> implements org.drools.spi.ReturnValueExpression,
                             org.drools.rule.Declaration[] declarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
 
-        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( workingMemory.getObject( tuple.get( declarations[<i0>] ) ) );<\n>}>
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>( 
@@ -90,7 +90,7 @@ public class <invokerClassName> implements org.drools.spi.PredicateExpression, o
                             org.drools.rule.Declaration[] declarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
 		<declarationType> <declaration.identifier> = (<declarationType>) declaration.getValue( workingMemory.getObject( factHandle ) );
-        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( workingMemory.getObject( tuple.get( declarations[<i0>] ) ) );<\n>}>
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>( 
@@ -121,7 +121,7 @@ public class <invokerClassName> implements org.drools.spi.EvalExpression, org.dr
                             org.drools.rule.Declaration[] declarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
 
-        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( workingMemory.getObject( tuple.get( declarations[<i0>] ) ) );<\n>}>
+        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>( 
@@ -137,7 +137,7 @@ public class <invokerClassName> implements org.drools.spi.EvalExpression, org.dr
 }     
 >>
 
-consequenceInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, globals, globalTypes, text) ::= <<
+consequenceInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, indexes, globals, globalTypes, text) ::= <<
 package <package>;
 
 public class <invokerClassName> implements org.drools.spi.Consequence
@@ -149,9 +149,9 @@ public class <invokerClassName> implements org.drools.spi.Consequence
         org.drools.rule.Rule rule = knowledgeHelper.getRule();
         org.drools.rule.Declaration[] declarations = rule.getDeclarations();                                                  
 
-        <declarations:{ declr| org.drools.FactHandle <declr.identifier>__Handle__ = ( org.drools.FactHandle ) tuple.get( declarations[<i0>] );<\n>}>
+        <declarations, indexes:{ declr, index| org.drools.common.InternalFactHandle <declr.identifier>__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( declarations[<index>] );<\n>}>
 
-        <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> )  declarations[<i0>].getValue( workingMemory.getObject( <declr.identifier>__Handle__ ) );<\n>}>
+        <declarationTypes, declarations, indexes :{ type, declr, index| <type> <declr.identifier> = ( <type> )  declarations[<index>].getValue( <declr.identifier>__Handle__.getObject() );<\n>}>
         
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         

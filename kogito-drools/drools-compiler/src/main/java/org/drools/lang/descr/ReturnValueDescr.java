@@ -17,53 +17,56 @@ package org.drools.lang.descr;
  */
 
 public class ReturnValueDescr extends PatternDescr {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 478782161375380651L;
     private String   fieldName;
     private String   evaluator;
     private String   text;
     private String[] declarations;
 
     private String   classMethodName;
-    
-    public ReturnValueDescr(String fieldName,
-                            String evaluator) {
+
+    public ReturnValueDescr(final String fieldName,
+                            final String evaluator) {
         this.fieldName = fieldName;
         this.evaluator = evaluator;
     }
-    
 
-    public ReturnValueDescr(String fieldName,
-                            String evaluator,
-                            String text) {
+    public ReturnValueDescr(final String fieldName,
+                            final String evaluator,
+                            final String text) {
         this.fieldName = fieldName;
         this.evaluator = evaluator;
         this.text = text;
     }
 
     public String getFieldName() {
-        return fieldName;
+        return this.fieldName;
     }
 
     public String getClassMethodName() {
         return this.classMethodName;
     }
 
-    public void setClassMethodName(String classMethodName) {
+    public void setClassMethodName(final String classMethodName) {
         this.classMethodName = classMethodName;
     }
 
     public String getEvaluator() {
-        return evaluator;
+        return this.evaluator;
     }
 
     public String getText() {
         return this.text;
     }
-    
-    public void setText(String text) {
-        this.text = text;
-    }    
 
-    public void setDeclarations(String[] declarations) {
+    public void setText(final String text) {
+        this.text = text;
+    }
+
+    public void setDeclarations(final String[] declarations) {
         this.declarations = declarations;
     }
 
@@ -72,6 +75,6 @@ public class ReturnValueDescr extends PatternDescr {
     }
 
     public String toString() {
-        return "[ReturnValue: field=" + fieldName + "; evaluator=" + evaluator + "; text=" + text + "]";
+        return "[ReturnValue: field=" + this.fieldName + "; evaluator=" + this.evaluator + "; text=" + this.text + "]";
     }
 }

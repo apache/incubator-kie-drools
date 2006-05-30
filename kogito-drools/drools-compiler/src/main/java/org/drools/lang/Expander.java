@@ -1,4 +1,5 @@
 package org.drools.lang;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.lang;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 /**
  * Expanders are extension points for expanding 
@@ -52,7 +51,7 @@ public interface Expander {
      * @param expression The line of text to be expanded.
      * @return A correct expression for the parser to reparse.
      */
-    public String expand(String scope, String pattern);
-    
-    
+    public String expand(String scope,
+                         String pattern);
+
 }

@@ -1,4 +1,5 @@
 package org.drools.integrationtests.waltz;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,86 +16,83 @@ package org.drools.integrationtests.waltz;
  * limitations under the License.
  */
 
-
-
-
-
-
 /**
  * @author Alexander Bagerman
  * 
  */
 
 public class Junction {
-	public static String TEE = "tee";
+    public static String TEE   = "tee";
 
-	public static String FORK = "fork";
+    public static String FORK  = "fork";
 
-	public static String ARROW = "arrow";
-	
-	public static String L = "L";
+    public static String ARROW = "arrow";
 
-	private int p1;
+    public static String L     = "L";
 
-	private int p2;
+    private int          p1;
 
-	private int p3;
+    private int          p2;
 
-	private int basePoint;
+    private int          p3;
 
-	private String type;
+    private int          basePoint;
 
-	public Junction(int p1, int p2, int p3, int basePoint, String type) {
-		this.p1 = p1;
-		this.p2 = p2;
-		this.p3 = p3;
-		this.basePoint = basePoint;
-		this.type = type;
-	}
+    private String       type;
 
-	public int getP1() {
-		return this.p1;
-	}
+    public Junction(final int p1,
+                    final int p2,
+                    final int p3,
+                    final int basePoint,
+                    final String type) {
+        this.p1 = p1;
+        this.p2 = p2;
+        this.p3 = p3;
+        this.basePoint = basePoint;
+        this.type = type;
+    }
 
-	public void setP1(int p1) {
-		this.p1 = p1;
-	}
+    public int getP1() {
+        return this.p1;
+    }
 
-	public int getP2() {
-		return this.p2;
-	}
+    public void setP1(final int p1) {
+        this.p1 = p1;
+    }
 
-	public void setP2(int p2) {
-		this.p2 = p2;
-	}
+    public int getP2() {
+        return this.p2;
+    }
 
-	public String toString() {
-		return "{Junction p1=" + this.p1 + ", p2=" + this.p2 + ", p3="
-				+ this.p3 + ", basePoint=" + this.basePoint + ", type="
-				+ this.type + "}";
-	}
+    public void setP2(final int p2) {
+        this.p2 = p2;
+    }
 
-	public int getBasePoint() {
-		return this.basePoint;
-	}
+    public String toString() {
+        return "{Junction p1=" + this.p1 + ", p2=" + this.p2 + ", p3=" + this.p3 + ", basePoint=" + this.basePoint + ", type=" + this.type + "}";
+    }
 
-	public void setBasePoint(int basePoint) {
-		this.basePoint = basePoint;
-	}
+    public int getBasePoint() {
+        return this.basePoint;
+    }
 
-	public int getP3() {
-		return this.p3;
-	}
+    public void setBasePoint(final int basePoint) {
+        this.basePoint = basePoint;
+    }
 
-	public void setP3(int p3) {
-		this.p3 = p3;
-	}
+    public int getP3() {
+        return this.p3;
+    }
 
-	public String getType() {
-		return this.type;
-	}
+    public void setP3(final int p3) {
+        this.p3 = p3;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(final String type) {
+        this.type = type;
+    }
 }

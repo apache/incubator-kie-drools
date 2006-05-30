@@ -35,10 +35,10 @@ import org.xml.sax.SAXParseException;
 class FunctionHandler extends BaseAbstractHandler
     implements
     Handler {
-    FunctionHandler(XmlPackageReader xmlPackageReader) {
+    FunctionHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( PackageDescr.class );
 
@@ -52,46 +52,46 @@ class FunctionHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
         return null;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        String name = config.getAttribute( "name" );
+        final String name = config.getAttribute( "name" );
         if ( name == null || name.trim().equals( "" ) ) {
             throw new SAXParseException( "<function> requires a 'name' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        String returnType = config.getAttribute( "return-type" );
+        final String returnType = config.getAttribute( "return-type" );
         if ( returnType == null || returnType.trim().equals( "" ) ) {
             throw new SAXParseException( "<function> requires a 'return-type' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        FunctionDescr functionDescr = new FunctionDescr( name,
+        final FunctionDescr functionDescr = new FunctionDescr( name,
                                                          returnType );
 
-        Configuration[] parameters = config.getChildren( "parameter" );
+        final Configuration[] parameters = config.getChildren( "parameter" );
 
         for ( int i = 0, length = parameters.length; i < length; i++ ) {
-            String identifier = parameters[i].getAttribute( "identifier" );
+            final String identifier = parameters[i].getAttribute( "identifier" );
             if ( name == null || identifier.trim().equals( "" ) ) {
                 throw new SAXParseException( "function's <parameter> requires an 'identifier' attribute",
-                                             xmlPackageReader.getLocator() );
+                                             this.xmlPackageReader.getLocator() );
             }
 
-            String type =  parameters[i].getAttribute( "type" );
+            final String type = parameters[i].getAttribute( "type" );
             if ( type == null || type.trim().equals( "" ) ) {
                 throw new SAXParseException( "function's <parameter> requires an 'type' attribute",
-                                             xmlPackageReader.getLocator() );
+                                             this.xmlPackageReader.getLocator() );
             }
 
             functionDescr.addParameter( type,
@@ -99,15 +99,15 @@ class FunctionHandler extends BaseAbstractHandler
         }
 
         // we allow empty, "", bodies - but make sure that we atleast have a body element
-        Configuration body = config.getChild( "body" );
+        final Configuration body = config.getChild( "body" );
         if ( body == null ) {
             throw new SAXParseException( "function must have a <body>",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
         functionDescr.setText( body.getText() );
 
-        PackageDescr packageDescr = this.xmlPackageReader.getPackageDescr();
+        final PackageDescr packageDescr = this.xmlPackageReader.getPackageDescr();
 
         packageDescr.addFunction( functionDescr );
 

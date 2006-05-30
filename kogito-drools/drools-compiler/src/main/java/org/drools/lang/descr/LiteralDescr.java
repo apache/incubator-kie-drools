@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,44 +16,50 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 /**
  * This represents a literal node in the rule language. This is
  * a constraint on a single field of a column. 
  * The "text" contains the content, which may also be an enumeration. 
  */
 public class LiteralDescr extends PatternDescr {
-    private String fieldName;
-    private String evaluator;
-    private String text;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3738269402511714153L;
+    private String  fieldName;
+    private String  evaluator;
+    private String  text;
     private boolean staticFieldValue;
 
-    public LiteralDescr(String fieldName,
-                        String evaluator,
-                        String text) {
-        this(fieldName, evaluator, text, false);
+    public LiteralDescr(final String fieldName,
+                        final String evaluator,
+                        final String text) {
+        this( fieldName,
+              evaluator,
+              text,
+              false );
     }
-    
-    public LiteralDescr(String fieldName,
-                        String evaluator,
-                        String text, boolean staticFieldValue) {
+
+    public LiteralDescr(final String fieldName,
+                        final String evaluator,
+                        final String text,
+                        final boolean staticFieldValue) {
         this.fieldName = fieldName;
         this.text = text;
         this.evaluator = evaluator;
         this.staticFieldValue = staticFieldValue;
     }
-    
+
     public boolean isStaticFieldValue() {
-        return staticFieldValue;
+        return this.staticFieldValue;
     }
 
     public String getFieldName() {
-        return fieldName;
+        return this.fieldName;
     }
 
     public String getEvaluator() {
-        return evaluator;
+        return this.evaluator;
     }
 
     public String getText() {

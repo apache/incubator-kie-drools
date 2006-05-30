@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,29 +16,30 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ExistsDescr extends PatternDescr
     implements
     ConditionalElementDescr {
 
-    private List descrs = new  ArrayList(1);
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -1617901384156245788L;
+    private final List descrs = new ArrayList( 1 );
 
     public ExistsDescr() {
     }
-    
-    public ExistsDescr(ColumnDescr column) {
+
+    public ExistsDescr(final ColumnDescr column) {
         addDescr( column );
     }
 
-    public void addDescr(PatternDescr patternDescr) {
+    public void addDescr(final PatternDescr patternDescr) {
         this.descrs.add( patternDescr );
     }
-    
+
     public List getDescrs() {
         return this.descrs;
     }

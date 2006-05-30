@@ -1,4 +1,5 @@
 package org.drools.lang.dsl.template;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.lang.dsl.template;
  * limitations under the License.
  */
 
-
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -24,10 +23,8 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,41 +37,40 @@ import org.apache.commons.lang.StringUtils;
 public class NLGrammar
     implements
     Serializable {
-    
-    private static final long serialVersionUID = 1L;
-    private List mappings = new ArrayList();
-    private static final Pattern itemPrefix = Pattern.compile( "\\[\\s*(when|then)\\s*\\].*" );
-    
-    private String description;
+
+    private static final long    serialVersionUID = 1L;
+    private final List                 mappings         = new ArrayList();
+    private static final Pattern itemPrefix       = Pattern.compile( "\\[\\s*(when|then)\\s*\\].*" );
+
+    private String               description;
 
     public NLGrammar() {
     }
-    
-    public void addNLItem(NLMappingItem item) {
-        this.mappings.add(item);
+
+    public void addNLItem(final NLMappingItem item) {
+        this.mappings.add( item );
     }
-    
-    public List getMappings() {        
-        return mappings;
+
+    public List getMappings() {
+        return this.mappings;
     }
-    
+
     /** Get the human readable description of this language definition. This should just be a comment. */
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     /** Set the human readable description of this language definition. This should just be a comment. */
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
-    
+
     /**
      * Will remove the mapping from the grammar.
      */
-    public void removeMapping(NLMappingItem item) {
+    public void removeMapping(final NLMappingItem item) {
         this.mappings.remove( item );
     }
-    
 
     /** 
      * This will load from a reader to an appropriate text DSL config.
@@ -91,57 +87,58 @@ public class NLGrammar
      * If the "XXX" part if left out, then it will apply to the whole rule when looking for a 
      * match to expand.
      */
-    public void load(Reader reader) {
-        BufferedReader buf = new BufferedReader(reader);
+    public void load(final Reader reader) {
+        final BufferedReader buf = new BufferedReader( reader );
         try {
             String line = null;
-            while ((line = buf.readLine())  != null) {
-                while (line.endsWith( "\\") ) {
-                    line = line.substring( 0, line.length() - 1 ) + buf.readLine();
+            while ( (line = buf.readLine()) != null ) {
+                while ( line.endsWith( "\\" ) ) {
+                    line = line.substring( 0,
+                                           line.length() - 1 ) + buf.readLine();
                 }
                 line = line.trim();
-                if (line.startsWith( "#" )) {
+                if ( line.startsWith( "#" ) ) {
                     this.description = line.substring( 1 );
-                } else if (line.equals( "" )) {
+                } else if ( line.equals( "" ) ) {
                     //ignore
-                } else {                        
+                } else {
                     this.mappings.add( parseLine( line ) );
                 }
             }
-            
-        } catch ( IOException e ) {
-            throw new IllegalArgumentException("Unable to read DSL configuration.");
+
+        } catch ( final IOException e ) {
+            throw new IllegalArgumentException( "Unable to read DSL configuration." );
         }
     }
-    
+
     /** Save out the grammar configuration */
-    public void save(Writer writer) {
-        BufferedWriter buffer = new BufferedWriter(writer);
+    public void save(final Writer writer) {
+        final BufferedWriter buffer = new BufferedWriter( writer );
         try {
-            buffer.write( "#" + this.description + "\n");
-            for ( Iterator iter = this.mappings.iterator(); iter.hasNext(); ) {
-                NLMappingItem item = (NLMappingItem) iter.next();
-                if (item.getScope().equals( "*" )) {
-                    buffer.write( item.getNaturalTemplate() + "=" + item.getTargetTemplate() + "\n");
+            buffer.write( "#" + this.description + "\n" );
+            for ( final Iterator iter = this.mappings.iterator(); iter.hasNext(); ) {
+                final NLMappingItem item = (NLMappingItem) iter.next();
+                if ( item.getScope().equals( "*" ) ) {
+                    buffer.write( item.getNaturalTemplate() + "=" + item.getTargetTemplate() + "\n" );
                 } else {
-                    buffer.write( "[" + item.getScope() + "]" + item.getNaturalTemplate() + "=" + item.getTargetTemplate() + "\n");
+                    buffer.write( "[" + item.getScope() + "]" + item.getNaturalTemplate() + "=" + item.getTargetTemplate() + "\n" );
                 }
             }
             buffer.flush();
-        } catch ( IOException e ) {
-            throw new IllegalStateException("Unable to save DSL configuration.");
+        } catch ( final IOException e ) {
+            throw new IllegalStateException( "Unable to save DSL configuration." );
         }
     }
-    
+
     /**
      * Filter the items for the appropriate scope.
      * Will include global ones.
      */
-    public List getMappings(String scope) {
-        List list = new ArrayList();
-        for ( Iterator iter = mappings.iterator(); iter.hasNext(); ) {
-            NLMappingItem item = (NLMappingItem) iter.next();
-            if (item.getScope().equals( "*" ) || item.getScope().equals( scope )) {
+    public List getMappings(final String scope) {
+        final List list = new ArrayList();
+        for ( final Iterator iter = this.mappings.iterator(); iter.hasNext(); ) {
+            final NLMappingItem item = (NLMappingItem) iter.next();
+            if ( item.getScope().equals( "*" ) || item.getScope().equals( scope ) ) {
                 list.add( item );
             }
         }
@@ -151,40 +148,43 @@ public class NLGrammar
     /**
      * This will parse a line into a NLMapping item.
      */
-    public NLMappingItem parseLine(String line) {
-        int split = line.indexOf( "=" );
-        String left = line.substring( 0, split ).trim();
-        String right = line.substring( split + 1 ).trim();
-        
-        left = StringUtils.replace( left, "\\", "" );
-        
-        Matcher matcher = itemPrefix.matcher( left );        
-        if (matcher.matches()) {
+    public NLMappingItem parseLine(final String line) {
+        final int split = line.indexOf( "=" );
+        String left = line.substring( 0,
+                                      split ).trim();
+        final String right = line.substring( split + 1 ).trim();
+
+        left = StringUtils.replace( left,
+                                    "\\",
+                                    "" );
+
+        final Matcher matcher = NLGrammar.itemPrefix.matcher( left );
+        if ( matcher.matches() ) {
             //get out priority, association
-            String type = matcher.group( 1 );
+            final String type = matcher.group( 1 );
             left = left.substring( left.indexOf( "]" ) + 1 ).trim();
-            return new NLMappingItem(left, right, type);
-            
-            
+            return new NLMappingItem( left,
+                                      right,
+                                      type );
+
         } else {
-            return new NLMappingItem(left, right, "*");
-            
+            return new NLMappingItem( left,
+                                      right,
+                                      "*" );
+
         }
     }
-    
+
     /**
      * Validades the mapping returning a list of errors found 
      * or an empty list in case of no errors
      * 
      * @return a List of MappingError's found or an empty list in case no one was found
      */
-    public List validateMapping(NLMappingItem item) {
-        List errors = item.validateTokenUsage();
+    public List validateMapping(final NLMappingItem item) {
+        final List errors = item.validateTokenUsage();
         errors.addAll( item.validateUnmatchingBraces() );
         return errors;
     }
-    
-    
 
-    
 }

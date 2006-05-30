@@ -1,4 +1,5 @@
 package org.drools.lang;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,9 @@ package org.drools.lang;
  * limitations under the License.
  */
 
-
-
 public interface ExpanderResolver {
-	
-	Expander get(String name, String config);
+
+    Expander get(String name,
+                 String config);
 
 }

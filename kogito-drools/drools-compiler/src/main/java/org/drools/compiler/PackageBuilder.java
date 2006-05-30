@@ -19,7 +19,6 @@ package org.drools.compiler;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,8 @@ import java.util.Map;
 import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.JavaCompiler;
 import org.apache.commons.jci.compilers.JavaCompilerFactory;
-import org.apache.commons.jci.readers.ResourceReader;
 import org.apache.commons.jci.readers.MemoryResourceReader;
+import org.apache.commons.jci.readers.ResourceReader;
 import org.apache.commons.jci.stores.ResourceStore;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -73,7 +72,7 @@ public class PackageBuilder {
     /**
      * This will allow you to merge rules into this pre existing package.
      */
-    public PackageBuilder(Package pkg) {
+    public PackageBuilder(final Package pkg) {
         this( pkg,
               null );
     }
@@ -83,7 +82,7 @@ public class PackageBuilder {
      * @param pkg A pre existing package (can be null if none exists)
      * @param configuration Optional configuration for this builder.
      */
-    public PackageBuilder(Package pkg,
+    public PackageBuilder(final Package pkg,
                           PackageBuilderConfiguration configuration) {
         if ( configuration == null ) {
             configuration = new PackageBuilderConfiguration();
@@ -110,10 +109,10 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl(Reader reader) throws DroolsParserException,
+    public void addPackageFromDrl(final Reader reader) throws DroolsParserException,
                                                 IOException {
-        DrlParser parser = new DrlParser();
-        PackageDescr pkg = parser.parse( reader );
+        final DrlParser parser = new DrlParser();
+        final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
         addPackage( pkg );
     }
@@ -124,13 +123,13 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromXml(Reader reader) throws DroolsParserException,
+    public void addPackageFromXml(final Reader reader) throws DroolsParserException,
                                                 IOException {
-        XmlPackageReader xmlReader = new XmlPackageReader();
+        final XmlPackageReader xmlReader = new XmlPackageReader();
 
         try {
             xmlReader.read( reader );
-        } catch ( SAXException e ) {
+        } catch ( final SAXException e ) {
             throw new DroolsParserException( e.getCause() );
         }
 
@@ -144,18 +143,17 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl(Reader source,
-                                  Reader dsl) throws DroolsParserException,
+    public void addPackageFromDrl(final Reader source,
+                                  final Reader dsl) throws DroolsParserException,
                                              IOException {
-        DrlParser parser = new DrlParser();
-        PackageDescr pkg = parser.parse( source,
+        final DrlParser parser = new DrlParser();
+        final PackageDescr pkg = parser.parse( source,
                                          dsl );
         this.results.addAll( parser.getErrors() );
         addPackage( pkg );
     }
 
-    public void addPackage(PackageDescr packageDescr) {
-
+    public void addPackage(final PackageDescr packageDescr) {
 
         if ( packageDescr.getName() == null || "".equals( packageDescr.getName() ) ) {
 
@@ -171,21 +169,21 @@ public class PackageBuilder {
         }
 
         //only try to compile if there are no parse errors
-        if (!hasErrors()) {
+        if ( !hasErrors() ) {
             //iterate and compile
-            for ( Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
+            for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
                 addFunction( (FunctionDescr) it.next() );
             }
-    
+
             //iterate and compile
-            for ( Iterator it = packageDescr.getRules().iterator(); it.hasNext(); ) {
+            for ( final Iterator it = packageDescr.getRules().iterator(); it.hasNext(); ) {
                 addRule( (RuleDescr) it.next() );
             }
         }
     }
 
-    private Package newPackage(PackageDescr packageDescr) {
-        Package pkg = new Package( packageDescr.getName(),
+    private Package newPackage(final PackageDescr packageDescr) {
+        final Package pkg = new Package( packageDescr.getName(),
                                    this.configuration.getClassLoader() );
 
         this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
@@ -196,53 +194,53 @@ public class PackageBuilder {
         return pkg;
     }
 
-    private void mergePackage(Package pkg,
-                              PackageDescr packageDescr) {
-        List imports = packageDescr.getImports();
-        for ( Iterator it = imports.iterator(); it.hasNext(); ) {
+    private void mergePackage(final Package pkg,
+                              final PackageDescr packageDescr) {
+        final List imports = packageDescr.getImports();
+        for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             pkg.addImport( (String) it.next() );
         }
 
-        TypeResolver typeResolver = new ClassTypeResolver( imports,
+        final TypeResolver typeResolver = new ClassTypeResolver( imports,
                                                            pkg.getPackageCompilationData().getClassLoader() );
 
-        Map globals = packageDescr.getGlobals();
-        for ( Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
-            String identifier = (String) it.next();
-            String className = (String) globals.get( identifier );
+        final Map globals = packageDescr.getGlobals();
+        for ( final Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
+            final String identifier = (String) it.next();
+            final String className = (String) globals.get( identifier );
 
             Class clazz;
             try {
                 clazz = typeResolver.resolveType( className );
                 pkg.addGlobal( identifier,
                                clazz );
-            } catch ( ClassNotFoundException e ) {
+            } catch ( final ClassNotFoundException e ) {
                 new GlobalError( identifier );
             }
         }
     }
 
-    private CompilationResult compile(String className,
-                                      String text,
-                                      MemoryResourceReader src,
-                                      ResourceStore dst) {
+    private CompilationResult compile(final String className,
+                                      final String text,
+                                      final MemoryResourceReader src,
+                                      final ResourceStore dst) {
         src.add( className.replace( '.',
                                     '/' ) + ".java",
                  text.getBytes() );
-        CompilationResult result = compiler.compile( new String[]{className},
+        final CompilationResult result = this.compiler.compile( new String[]{className},
                                                      src,
                                                      dst,
-                                                     pkg.getPackageCompilationData().getClassLoader() );
+                                                     this.pkg.getPackageCompilationData().getClassLoader() );
 
         return result;
     }
 
-    private void addFunction(FunctionDescr functionDescr) {
-        FunctionBuilder buidler = new FunctionBuilder();
-        CompilationResult result = compile( this.pkg.getName() + "." + ucFirst( functionDescr.getName() ),
+    private void addFunction(final FunctionDescr functionDescr) {
+        final FunctionBuilder buidler = new FunctionBuilder();
+        final CompilationResult result = compile( this.pkg.getName() + "." + ucFirst( functionDescr.getName() ),
                                             buidler.build( this.pkg,
                                                            functionDescr ),
-                                            src,
+                                            this.src,
                                             this.packageStoreWrapper );
 
         if ( result.getErrors().length > 0 ) {
@@ -252,22 +250,22 @@ public class PackageBuilder {
         }
     }
 
-    private void addRule(RuleDescr ruleDescr) {
+    private void addRule(final RuleDescr ruleDescr) {
 
-        String ruleClassName = getUniqueLegalName( this.pkg.getName(),
+        final String ruleClassName = getUniqueLegalName( this.pkg.getName(),
                                                    ruleDescr.getName(),
                                                    "java",
-                                                   src );
+                                                   this.src );
         ruleDescr.SetClassName( ucFirst( ruleClassName ) );
 
-        RuleBuilder builder = new RuleBuilder();
+        final RuleBuilder builder = new RuleBuilder();
 
         builder.build( this.pkg,
                        ruleDescr );
 
         this.results.addAll( builder.getErrors() );
 
-        Rule rule = builder.getRule();
+        final Rule rule = builder.getRule();
 
         // Check if there is any code to compile. If so compile it.       
         if ( builder.getRuleClass() != null ) {
@@ -279,13 +277,13 @@ public class PackageBuilder {
         this.pkg.addRule( rule );
     }
 
-    public void compileRule(RuleBuilder builder,
-                            Rule rule,
-                            RuleDescr ruleDescr) {
+    public void compileRule(final RuleBuilder builder,
+                            final Rule rule,
+                            final RuleDescr ruleDescr) {
         // The compilation result is for th entire rule, so difficult to associate with any descr
         CompilationResult result = compile( this.pkg.getName() + "." + ruleDescr.getClassName(),
                                             builder.getRuleClass(),
-                                            src,
+                                            this.src,
                                             this.packageStoreWrapper );
 
         if ( result.getErrors().length > 0 ) {
@@ -295,27 +293,27 @@ public class PackageBuilder {
                                              "Rule Compilation error" ) );
         } else {
 
-            for ( Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
-                String className = (String) it.next();
+            for ( final Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
+                final String className = (String) it.next();
 
                 // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
                 // If so we add it to the PackageCompilationData as it will get wired up on compilation
-                Object invoker = builder.getInvokerLookups().get( className );
+                final Object invoker = builder.getInvokerLookups().get( className );
                 if ( invoker != null ) {
                     this.pkg.getPackageCompilationData().putInvoker( className,
                                                                      invoker );
                 }
-                String text = (String) builder.getInvokers().get( className );
+                final String text = (String) builder.getInvokers().get( className );
 
                 //System.out.println( className + ":\n" + text );
 
                 result = compile( className,
                                   text,
-                                  src,
+                                  this.src,
                                   this.packageStoreWrapper );
 
                 if ( result.getErrors().length > 0 ) {
-                    PatternDescr descr = (PatternDescr) builder.getDescrLookups().get( className );
+                    final PatternDescr descr = (PatternDescr) builder.getDescrLookups().get( className );
                     this.results.add( new RuleError( rule,
                                                      descr,
                                                      result.getErrors(),
@@ -356,9 +354,9 @@ public class PackageBuilder {
      * into lines.
      */
     public String printErrors() {
-        StringBuffer buf = new StringBuffer();
-        for ( Iterator iter = this.results.iterator(); iter.hasNext(); ) {
-            DroolsError err = (DroolsError) iter.next();
+        final StringBuffer buf = new StringBuffer();
+        for ( final Iterator iter = this.results.iterator(); iter.hasNext(); ) {
+            final DroolsError err = (DroolsError) iter.next();
             buf.append( err.getMessage() );
             buf.append( "\n" );
         }
@@ -373,10 +371,10 @@ public class PackageBuilder {
      * @param ext
      * @return
      */
-    private String getUniqueLegalName(String packageName,
-                                      String name,
-                                      String ext,
-                                      ResourceReader src) {
+    private String getUniqueLegalName(final String packageName,
+                                      final String name,
+                                      final String ext,
+                                      final ResourceReader src) {
         // replaces all non alphanumeric or $ chars with _
         String newName = "Rule_" + name.replaceAll( "[^\\w$]",
                                                     "_" );
@@ -387,7 +385,7 @@ public class PackageBuilder {
         while ( exists ) {
 
             counter++;
-            String fileName = packageName.replaceAll( "\\.",
+            final String fileName = packageName.replaceAll( "\\.",
                                                       "/" ) + newName + "_" + counter + ext;
 
             exists = src.isAvailable( fileName );
@@ -400,7 +398,7 @@ public class PackageBuilder {
         return newName;
     }
 
-    private JavaCompiler getCompiler(int compiler) {
+    private JavaCompiler getCompiler(final int compiler) {
         switch ( compiler ) {
             case PackageBuilderConfiguration.JANINO :
                 return JavaCompilerFactory.getInstance().createCompiler( "janino" );
@@ -410,13 +408,18 @@ public class PackageBuilder {
         }
     }
 
-    private String ucFirst(String name) {
+    private String ucFirst(final String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 
     public static class MissingPackageNameException extends IllegalArgumentException {
 
-        public MissingPackageNameException(String message) {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 4056984379574366454L;
+
+        public MissingPackageNameException(final String message) {
             super( message );
         }
 

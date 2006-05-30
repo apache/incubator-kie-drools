@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,22 +16,19 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
 public class Cell {
 
-	int value = 0;
-	
-	public Cell(int value)
-	{
-		this.value = value;
-	}
+    int value = 0;
 
-	public int getValue() {
-		return value;
-	}
+    public Cell(final int value) {
+        this.value = value;
+    }
 
-	public void setValue(int value) {
-		this.value = value;
-	}
+    public int getValue() {
+        return this.value;
+    }
+
+    public void setValue(final int value) {
+        this.value = value;
+    }
 }

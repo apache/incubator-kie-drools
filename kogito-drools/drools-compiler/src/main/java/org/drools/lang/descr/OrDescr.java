@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,26 +16,29 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class OrDescr extends PatternDescr 
-    implements ConditionalElementDescr {
+public class OrDescr extends PatternDescr
+    implements
+    ConditionalElementDescr {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6499901868693501867L;
     private List descrs = Collections.EMPTY_LIST;
-    
+
     public OrDescr() {
-    }    
-    
-    public void addDescr(PatternDescr patternDescr) {
+    }
+
+    public void addDescr(final PatternDescr patternDescr) {
         if ( this.descrs == Collections.EMPTY_LIST ) {
-            this.descrs = new ArrayList(1);
+            this.descrs = new ArrayList( 1 );
         }
         this.descrs.add( patternDescr );
     }
-    
+
     public List getDescrs() {
         return this.descrs;
     }

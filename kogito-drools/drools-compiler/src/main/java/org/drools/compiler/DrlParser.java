@@ -1,4 +1,5 @@
 package org.drools.compiler;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.compiler;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.io.IOException;
 import java.io.Reader;
@@ -36,36 +35,38 @@ import org.drools.lang.dsl.DefaultExpanderResolver;
  * of the DRL source, including with DSL expanders if appropriate.
  */
 public class DrlParser {
-    
-    private List results = new ArrayList();
-	
-	public DrlParser() {
-		
-	}
-	
+
+    private final List results = new ArrayList();
+
+    public DrlParser() {
+
+    }
+
     /** Parse a rule from text */
-	public PackageDescr parse(String text) throws DroolsParserException {
-        RuleParser parser = getParser( text );
+    public PackageDescr parse(final String text) throws DroolsParserException {
+        final RuleParser parser = getParser( text );
         compile( parser );
-        return parser.getPackageDescr();			
-		
-	}
-    
-    private void compile(RuleParser parser) throws DroolsParserException {
+        return parser.getPackageDescr();
+
+    }
+
+    private void compile(final RuleParser parser) throws DroolsParserException {
         try {
             parser.compilation_unit();
-            
+
             makeErrorList( parser );
-        } catch ( RecognitionException e ) {
+        } catch ( final RecognitionException e ) {
             throw new DroolsParserException( e );
         }
     }
 
     /** Convert the antlr exceptions to drools parser exceptions */
-    private void makeErrorList(RuleParser parser) {
-        for ( Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
-            RecognitionException recogErr = (RecognitionException) iter.next();
-            ParserError err = new ParserError(parser.createErrorMessage( recogErr ), recogErr.line, recogErr.charPositionInLine);
+    private void makeErrorList(final RuleParser parser) {
+        for ( final Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
+            final RecognitionException recogErr = (RecognitionException) iter.next();
+            final ParserError err = new ParserError( parser.createErrorMessage( recogErr ),
+                                               recogErr.line,
+                                               recogErr.charPositionInLine );
             this.results.add( err );
         }
     }
@@ -73,25 +74,27 @@ public class DrlParser {
     /**
      * @return An instance of a RuleParser should you need one (most folks will not).
      */
-    private RuleParser getParser(String text) {
+    private RuleParser getParser(final String text) {
         return new RuleParser( new CommonTokenStream( new RuleParserLexer( new ANTLRStringStream( text ) ) ) );
     }
 
-    
-    
     /** Parse and build a rule package from a DRL source */
-	public PackageDescr parse(Reader reader) throws IOException, DroolsParserException {
-	       StringBuffer text = getDRLText( reader );
-	       return parse( text.toString() );
-	}
-    
+    public PackageDescr parse(final Reader reader) throws IOException,
+                                            DroolsParserException {
+        final StringBuffer text = getDRLText( reader );
+        return parse( text.toString() );
+    }
+
     /** 
      * Parse and build a rule package from a DRL source with a 
      * domain specific language.
      */
-    public PackageDescr parse(Reader drl, Reader dsl) throws DroolsParserException, IOException {
-        StringBuffer text = getDRLText( drl );
-        return parse( text.toString(), dsl );
+    public PackageDescr parse(final Reader drl,
+                              final Reader dsl) throws DroolsParserException,
+                                         IOException {
+        final StringBuffer text = getDRLText( drl );
+        return parse( text.toString(),
+                      dsl );
     }
 
     /**
@@ -101,35 +104,36 @@ public class DrlParser {
      * @return
      * @throws DroolsParserException
      */
-    public PackageDescr parse(String source, Reader dsl) throws DroolsParserException {
-        DefaultExpanderResolver resolver = new DefaultExpanderResolver(dsl);
-        RuleParser parser = getParser( source );
+    public PackageDescr parse(final String source,
+                              final Reader dsl) throws DroolsParserException {
+        final DefaultExpanderResolver resolver = new DefaultExpanderResolver( dsl );
+        final RuleParser parser = getParser( source );
         parser.setExpanderResolver( resolver );
         compile( parser );
         return parser.getPackageDescr();
     }
 
-    private StringBuffer getDRLText(Reader reader) throws IOException {
-        StringBuffer text = new StringBuffer();
+    private StringBuffer getDRLText(final Reader reader) throws IOException {
+        final StringBuffer text = new StringBuffer();
 
-	        char[] buf = new char[1024];
-	        int len = 0;
+        final char[] buf = new char[1024];
+        int len = 0;
 
-	        while ( (len = reader.read( buf )) >= 0 ) {
-	            text.append( buf,
-	                         0,
-	                         len );
-	        }
+        while ( (len = reader.read( buf )) >= 0 ) {
+            text.append( buf,
+                         0,
+                         len );
+        }
         return text;
     }
-    
+
     /**
      * @return true if there were parser errors.
      */
     public boolean hasErrors() {
         return this.results.size() > 0;
     }
-    
+
     /**
      * @return a list of ParserError's.
      */

@@ -32,10 +32,10 @@ import org.xml.sax.SAXParseException;
 class PackageHandler extends BaseAbstractHandler
     implements
     Handler {
-    PackageHandler(XmlPackageReader xmlPackageReader) {
+    PackageHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( null );
 
@@ -46,56 +46,56 @@ class PackageHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        String ruleSetName = attrs.getValue( "name" );
+        final String ruleSetName = attrs.getValue( "name" );
 
         if ( ruleSetName == null || ruleSetName.trim().equals( "" ) ) {
             throw new SAXParseException( "<package> requires a 'name' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        PackageDescr packageDescr = new PackageDescr( ruleSetName.trim() );
+        final PackageDescr packageDescr = new PackageDescr( ruleSetName.trim() );
 
-        xmlPackageReader.setPackageDescr( packageDescr );
+        this.xmlPackageReader.setPackageDescr( packageDescr );
         return packageDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        PackageDescr packageDescr = this.xmlPackageReader.getPackageDescr();
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final PackageDescr packageDescr = this.xmlPackageReader.getPackageDescr();
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        Configuration[] imports = config.getChildren( "import" );
+        final Configuration[] imports = config.getChildren( "import" );
 
         for ( int i = 0, length = imports.length; i < length; i++ ) {
-            String importEntry = imports[i].getAttribute( "name" );
+            final String importEntry = imports[i].getAttribute( "name" );
 
             if ( importEntry == null || importEntry.trim().equals( "" ) ) {
                 throw new SAXParseException( "<import> cannot be blank",
-                                             xmlPackageReader.getLocator() );
+                                             this.xmlPackageReader.getLocator() );
             }
             packageDescr.addImport( importEntry );
         }
 
-        Configuration[] globals = config.getChildren( "global" );
+        final Configuration[] globals = config.getChildren( "global" );
 
         for ( int i = 0, length = globals.length; i < length; i++ ) {
-            String identifier = globals[i].getAttribute( "identifier" );
+            final String identifier = globals[i].getAttribute( "identifier" );
 
             if ( identifier == null || identifier.trim().equals( "" ) ) {
                 throw new SAXParseException( "<global> must have an identifier",
-                                             xmlPackageReader.getLocator() );
+                                             this.xmlPackageReader.getLocator() );
             }
 
-            String type = globals[i].getAttribute( "type" );
+            final String type = globals[i].getAttribute( "type" );
             if ( type == null || type.trim().equals( "" ) ) {
                 throw new SAXParseException( "<global> must have specify a type",
-                                             xmlPackageReader.getLocator() );
+                                             this.xmlPackageReader.getLocator() );
             }
             packageDescr.addGlobal( identifier,
                                     type );
