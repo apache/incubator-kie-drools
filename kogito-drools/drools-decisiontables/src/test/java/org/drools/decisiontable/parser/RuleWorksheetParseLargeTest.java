@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,6 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
 import junit.framework.TestCase;
 
 /**
@@ -30,8 +24,7 @@ import junit.framework.TestCase;
  * A special test for parsing a large workbook, to see how it scales.
  * 
  */
-public class RuleWorksheetParseLargeTest extends TestCase
-{
+public class RuleWorksheetParseLargeTest extends TestCase {
 
     private long startTimer;
 
@@ -50,18 +43,17 @@ public class RuleWorksheetParseLargeTest extends TestCase
      * 
      * @throws Exception
      */
-    public void testLargeWorkSheetParseToRuleset() throws Exception
-    {
-//  Test removed until have streaming sorted in future. No one using Uber Tables just yet !        
-//        InputStream stream = RuleWorksheetParseLargeTest.class.getResourceAsStream( "/data/VeryLargeWorkbook.xls" );
-//
-//        startTimer( );
-//        RuleSheetListener listener = RuleWorksheetParseTest.getRuleSheetListener( stream );
-//        stopTimer( );
-//
-//        System.out.println( "Time to parse large table : " + getTime( ) );
-//        Ruleset ruleset = listener.getRuleSet( );
-//        assertNotNull( ruleset );
+    public void testLargeWorkSheetParseToRuleset() throws Exception {
+        //  Test removed until have streaming sorted in future. No one using Uber Tables just yet !        
+        //        InputStream stream = RuleWorksheetParseLargeTest.class.getResourceAsStream( "/data/VeryLargeWorkbook.xls" );
+        //
+        //        startTimer( );
+        //        RuleSheetListener listener = RuleWorksheetParseTest.getRuleSheetListener( stream );
+        //        stopTimer( );
+        //
+        //        System.out.println( "Time to parse large table : " + getTime( ) );
+        //        Ruleset ruleset = listener.getRuleSet( );
+        //        assertNotNull( ruleset );
         /*
          * System.out.println("Time taken for 20K rows parsed: " + getTime());
          * 
@@ -71,19 +63,16 @@ public class RuleWorksheetParseLargeTest extends TestCase
          */
     }
 
-    private void startTimer()
-    {
-        startTimer = System.currentTimeMillis( );
+    private void startTimer() {
+        this.startTimer = System.currentTimeMillis();
     }
 
-    private void stopTimer()
-    {
-        endTimer = System.currentTimeMillis( );
+    private void stopTimer() {
+        this.endTimer = System.currentTimeMillis();
     }
 
-    private long getTime()
-    {
-        return endTimer - startTimer;
+    private long getTime() {
+        return this.endTimer - this.startTimer;
     }
 
 }

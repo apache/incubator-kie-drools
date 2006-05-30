@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser.xls;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,6 @@ package org.drools.decisiontable.parser.xls;
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
 import junit.framework.TestCase;
 
 /**
@@ -30,11 +24,9 @@ import junit.framework.TestCase;
  * Some unit tests for the corners of ExcelParser that are not explicitly
  * covered by integration tests.
  */
-public class ExcelParserTest extends TestCase
-{
+public class ExcelParserTest extends TestCase {
 
-    public void testRemoveTrailingZero()
-    {
+    public void testRemoveTrailingZero() {
         String test = "1.0";
         assertEquals( "1",
                       ExcelParser.removeTrailingZero( test ) );

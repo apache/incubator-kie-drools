@@ -1,4 +1,5 @@
 package org.drools.decisiontable;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.decisiontable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -45,12 +42,12 @@ public class SpreadsheetCompiler {
      *            for the decision tables, ignores others.
      * @return DRL xml, ready for use in drools.
      */
-    public String compile(InputStream xlsStream,
-                               InputType type) {
-        RuleSheetListener listener = getRuleSheetListener( xlsStream,
+    public String compile(final InputStream xlsStream,
+                          final InputType type) {
+        final RuleSheetListener listener = getRuleSheetListener( xlsStream,
                                                            type );
-        Package rulePackage = listener.getRuleSet();
-        DRLOutput out = new DRLOutput();
+        final Package rulePackage = listener.getRuleSet();
+        final DRLOutput out = new DRLOutput();
         rulePackage.renderDRL( out );
         return out.getDRL();
     }
@@ -65,12 +62,12 @@ public class SpreadsheetCompiler {
      *            Uses the first worksheet for the decision tables.
      * @return DRL.
      */
-    public String compile(String classPathResource,
-                               InputType inputType) {
-        InputStream stream = this.getClass().getResourceAsStream( classPathResource );
+    public String compile(final String classPathResource,
+                          final InputType inputType) {
+        final InputStream stream = this.getClass().getResourceAsStream( classPathResource );
         try {
-            String drl = compile( stream,
-                                       inputType );
+            final String drl = compile( stream,
+                                  inputType );
             return drl;
         } finally {
             closeStream( stream );
@@ -87,40 +84,40 @@ public class SpreadsheetCompiler {
      *            The name of the worksheet that the decision tables live on.
      * @return DRL, ready to go.
      */
-    public String compile(InputStream stream,
-                               String worksheetName) {
-        RuleSheetListener listener = getRuleSheetListener( stream,
+    public String compile(final InputStream stream,
+                          final String worksheetName) {
+        final RuleSheetListener listener = getRuleSheetListener( stream,
                                                            worksheetName );
-        Package rulePackage = listener.getRuleSet();
-        DRLOutput out = new DRLOutput();
+        final Package rulePackage = listener.getRuleSet();
+        final DRLOutput out = new DRLOutput();
         rulePackage.renderDRL( out );
         return out.getDRL();
     }
 
-    private RuleSheetListener getRuleSheetListener(InputStream stream,
-                                                   InputType type) {
-        RuleSheetListener listener = new RuleSheetListener();
+    private RuleSheetListener getRuleSheetListener(final InputStream stream,
+                                                   final InputType type) {
+        final RuleSheetListener listener = new RuleSheetListener();
 
-        DecisionTableParser parser = type.createParser( listener );
+        final DecisionTableParser parser = type.createParser( listener );
         parser.parseFile( stream );
         return listener;
     }
 
-    private RuleSheetListener getRuleSheetListener(InputStream stream,
-                                                   String worksheetName) {
-        RuleSheetListener listener = new RuleSheetListener();
-        Map listeners = new HashMap();
+    private RuleSheetListener getRuleSheetListener(final InputStream stream,
+                                                   final String worksheetName) {
+        final RuleSheetListener listener = new RuleSheetListener();
+        final Map listeners = new HashMap();
         listeners.put( worksheetName,
                        listener );
-        ExcelParser parser = new ExcelParser( listeners );
+        final ExcelParser parser = new ExcelParser( listeners );
         parser.parseFile( stream );
         return listener;
     }
 
-    private void closeStream(InputStream stream) {
+    private void closeStream(final InputStream stream) {
         try {
             stream.close();
-        } catch ( Exception e ) {
+        } catch ( final Exception e ) {
             System.err.print( "WARNING: Wasn't able to " + "correctly close stream for decision table. " + e.getMessage() );
         }
     }

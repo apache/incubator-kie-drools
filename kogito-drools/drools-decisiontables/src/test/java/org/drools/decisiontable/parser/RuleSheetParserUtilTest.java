@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,53 +16,41 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
 import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.drools.decisiontable.model.Import;
 import org.drools.decisiontable.model.Global;
+import org.drools.decisiontable.model.Import;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  * 
  * Nuff said...
  */
-public class RuleSheetParserUtilTest extends TestCase
-{
+public class RuleSheetParserUtilTest extends TestCase {
 
-    public void testRuleName()
-    {
-        String row = "  RuleTable       This is my rule name";
-        String result = RuleSheetParserUtil.getRuleName( row );
+    public void testRuleName() {
+        final String row = "  RuleTable       This is my rule name";
+        final String result = RuleSheetParserUtil.getRuleName( row );
         assertEquals( "This is my rule name",
                       result );
     }
-    
+
     /**
      * This is hear as the old way was to do this.
      */
     public void testInvalidRuleName() {
-        String row = "RuleTable       This is my rule name (type class)";
+        final String row = "RuleTable       This is my rule name (type class)";
         try {
-        	String result = RuleSheetParserUtil.getRuleName( row );
-        	fail("should have failed, but get result: " + result);
-        } catch (IllegalArgumentException e) {
-        	assertNotNull(e.getMessage());
+            final String result = RuleSheetParserUtil.getRuleName( row );
+            fail( "should have failed, but get result: " + result );
+        } catch ( final IllegalArgumentException e ) {
+            assertNotNull( e.getMessage() );
         }
     }
 
-
-
-    public void testIsStringMeaningTrue()
-    {
+    public void testIsStringMeaningTrue() {
         assertTrue( RuleSheetParserUtil.isStringMeaningTrue( "true" ) );
         assertTrue( RuleSheetParserUtil.isStringMeaningTrue( "TRUE" ) );
         assertTrue( RuleSheetParserUtil.isStringMeaningTrue( "yes" ) );
@@ -72,48 +61,50 @@ public class RuleSheetParserUtilTest extends TestCase
         assertFalse( RuleSheetParserUtil.isStringMeaningTrue( null ) );
     }
 
-    public void testListImports()
-    {
+    public void testListImports() {
         String cellVal = null;
         List list = RuleSheetParserUtil.getImportList( cellVal );
         assertNotNull( list );
         assertEquals( 0,
-                      list.size( ) );
+                      list.size() );
 
         assertEquals( 0,
-                      RuleSheetParserUtil.getImportList( "" ).size( ) );
+                      RuleSheetParserUtil.getImportList( "" ).size() );
 
         cellVal = "com.something.Yeah, com.something.No,com.something.yeah.*";
         list = RuleSheetParserUtil.getImportList( cellVal );
         assertEquals( 3,
-                      list.size( ) );
+                      list.size() );
         assertEquals( "com.something.Yeah",
-                      ((Import) list.get( 0 )).getClassName( ) );
+                      ((Import) list.get( 0 )).getClassName() );
         assertEquals( "com.something.No",
-                      ((Import) list.get( 1 )).getClassName( ) );
+                      ((Import) list.get( 1 )).getClassName() );
         assertEquals( "com.something.yeah.*",
-                      ((Import) list.get( 2 )).getClassName( ) );
+                      ((Import) list.get( 2 )).getClassName() );
     }
-    
-    public void testListVariables() 
-    {
-        List varList = RuleSheetParserUtil.getVariableList("Var1 var1, Var2 var2,Var3 var3");
-        assertNotNull(varList);
-        assertEquals(3, varList.size());
-        Global var = (Global) varList.get(0);
-        assertEquals("Var1", var.getClassName());
-        var = (Global) varList.get(2);
-        assertEquals("Var3", var.getClassName());
-        assertEquals("var3", var.getIdentifier());
+
+    public void testListVariables() {
+        final List varList = RuleSheetParserUtil.getVariableList( "Var1 var1, Var2 var2,Var3 var3" );
+        assertNotNull( varList );
+        assertEquals( 3,
+                      varList.size() );
+        Global var = (Global) varList.get( 0 );
+        assertEquals( "Var1",
+                      var.getClassName() );
+        var = (Global) varList.get( 2 );
+        assertEquals( "Var3",
+                      var.getClassName() );
+        assertEquals( "var3",
+                      var.getIdentifier() );
     }
-    
+
     public void testBadVariableFormat() {
-        String bad = "class1, object2";
+        final String bad = "class1, object2";
         try {
             RuleSheetParserUtil.getVariableList( bad );
-            fail("should not work");
-        } catch (DecisionTableParseException e) {
-            assertNotNull(e.getMessage());
+            fail( "should not work" );
+        } catch ( final DecisionTableParseException e ) {
+            assertNotNull( e.getMessage() );
         }
     }
 }

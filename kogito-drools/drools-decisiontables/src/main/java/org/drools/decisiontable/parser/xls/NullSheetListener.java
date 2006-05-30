@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser.xls;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,13 +16,6 @@ package org.drools.decisiontable.parser.xls;
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
 import org.drools.decisiontable.parser.SheetListener;
 
 /**
@@ -31,26 +25,21 @@ import org.drools.decisiontable.parser.SheetListener;
  */
 public class NullSheetListener
     implements
-    SheetListener
-{
+    SheetListener {
 
-    public void startSheet(String name)
-    {
+    public void startSheet(final String name) {
     }
 
-    public void finishSheet()
-    {
+    public void finishSheet() {
     }
 
-    public void newRow(int rowNumber,
-                       int columns)
-    {
+    public void newRow(final int rowNumber,
+                       final int columns) {
     }
 
-    public void newCell(int row,
-                        int column,
-                        String value)
-    {
+    public void newCell(final int row,
+                        final int column,
+                        final String value) {
     }
 
 }

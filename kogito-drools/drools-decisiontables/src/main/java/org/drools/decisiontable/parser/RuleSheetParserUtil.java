@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,51 +16,36 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.drools.decisiontable.model.Import;
 import org.drools.decisiontable.model.Global;
+import org.drools.decisiontable.model.Import;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  * 
  * Parking lot for utility methods that don't belong anywhere else.
  */
-public class RuleSheetParserUtil
-{
+public class RuleSheetParserUtil {
 
-    private RuleSheetParserUtil()
-    {
+    private RuleSheetParserUtil() {
         // strictly util
     }
 
-    public static String getRuleName(String ruleRow)
-    {
-        int left = ruleRow.indexOf( RuleSheetListener.RULE_TABLE_TAG );
-        
-        if ( ruleRow.indexOf('(') > -1 || ruleRow.indexOf(')') > -1 )
-        {
+    public static String getRuleName(final String ruleRow) {
+        final int left = ruleRow.indexOf( RuleSheetListener.RULE_TABLE_TAG );
+
+        if ( ruleRow.indexOf( '(' ) > -1 || ruleRow.indexOf( ')' ) > -1 ) {
             invalidRuleTableDef( ruleRow );
         }
-        return ruleRow.substring( left + RuleSheetListener.RULE_TABLE_TAG.length( )).trim( );
+        return ruleRow.substring( left + RuleSheetListener.RULE_TABLE_TAG.length() ).trim();
     }
 
-    private static void invalidRuleTableDef(String ruleRow)
-    {
-        throw new IllegalArgumentException( "Invalid rule table header cell. Should be in the format of 'RuleTable YourRuleName'. " + 
-        		"It was: \n [" + ruleRow + "] \n" );
+    private static void invalidRuleTableDef(final String ruleRow) {
+        throw new IllegalArgumentException( "Invalid rule table header cell. Should be in the format of 'RuleTable YourRuleName'. " + "It was: \n [" + ruleRow + "] \n" );
     }
-
 
     /**
      * 
@@ -67,19 +53,16 @@ public class RuleSheetParserUtil
      *            The cell text for all the classes to import.
      * @return A list of Import classes, which can be added to the ruleset.
      */
-    public static List getImportList(String importCell)
-    {
-        List importList = new LinkedList( );
-        if ( importCell == null )
-        {
+    public static List getImportList(final String importCell) {
+        final List importList = new LinkedList();
+        if ( importCell == null ) {
             return importList;
         }
-        StringTokenizer tokens = new StringTokenizer( importCell,
+        final StringTokenizer tokens = new StringTokenizer( importCell,
                                                       "," );
-        while ( tokens.hasMoreTokens( ) )
-        {
-            Import imp = new Import( );
-            imp.setClassName( tokens.nextToken( ).trim( ) );
+        while ( tokens.hasMoreTokens() ) {
+            final Import imp = new Import();
+            imp.setClassName( tokens.nextToken().trim() );
             importList.add( imp );
         }
         return importList;
@@ -92,60 +75,45 @@ public class RuleSheetParserUtil
      *            The cell text for all the application data variables to set.
      * @return A list of Variable classes, which can be added to the ruleset.
      */
-    public static List getVariableList(String variableCell)
-    {
-        List variableList = new LinkedList( );
-        if ( variableCell == null )
-        {
+    public static List getVariableList(final String variableCell) {
+        final List variableList = new LinkedList();
+        if ( variableCell == null ) {
             return variableList;
         }
-        StringTokenizer tokens = new StringTokenizer( variableCell, "," );
-		while ( tokens.hasMoreTokens( ) )
-		{
-			String token = tokens.nextToken( );
-			Global vars = new Global( );
-			StringTokenizer paramTokens = new StringTokenizer( token, " " );
-			vars.setClassName( paramTokens.nextToken( ) );
-            if (!paramTokens.hasMoreTokens()) {
-                throw new DecisionTableParseException("The format for global variables is incorrect. " +
-                        "It should be: [Class name, Class otherName]. But it was: [" + variableCell + "]");
+        final StringTokenizer tokens = new StringTokenizer( variableCell,
+                                                      "," );
+        while ( tokens.hasMoreTokens() ) {
+            final String token = tokens.nextToken();
+            final Global vars = new Global();
+            final StringTokenizer paramTokens = new StringTokenizer( token,
+                                                               " " );
+            vars.setClassName( paramTokens.nextToken() );
+            if ( !paramTokens.hasMoreTokens() ) {
+                throw new DecisionTableParseException( "The format for global variables is incorrect. " + "It should be: [Class name, Class otherName]. But it was: [" + variableCell + "]" );
             }
-			vars.setIdentifier( paramTokens.nextToken( ) );
-			variableList.add( vars );
-		}
+            vars.setIdentifier( paramTokens.nextToken() );
+            variableList.add( vars );
+        }
         return variableList;
     }
 
     /**
      * @return true is the String could possibly mean true. False otherwise !
      */
-    public static boolean isStringMeaningTrue(String property)
-    {
-        if ( property == null )
-        {
+    public static boolean isStringMeaningTrue(String property) {
+        if ( property == null ) {
             return false;
-        }
-        else
-        {
-            property = property.trim( );
-            if ( property.equalsIgnoreCase( "true" ) )
-            {
+        } else {
+            property = property.trim();
+            if ( property.equalsIgnoreCase( "true" ) ) {
                 return true;
-            }
-            else if ( property.startsWith( "Y" ) )
-            {
+            } else if ( property.startsWith( "Y" ) ) {
                 return true;
-            }
-            else if ( property.startsWith( "y" ) )
-            {
+            } else if ( property.startsWith( "y" ) ) {
                 return true;
-            }
-            else if ( property.equalsIgnoreCase( "on" ) )
-            {
+            } else if ( property.equalsIgnoreCase( "on" ) ) {
                 return true;
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }

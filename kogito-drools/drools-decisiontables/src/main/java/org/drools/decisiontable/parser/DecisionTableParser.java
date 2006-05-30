@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,6 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.InputStream;
 
 /**
@@ -27,8 +24,7 @@ import java.io.InputStream;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
-public interface DecisionTableParser
-{
+public interface DecisionTableParser {
     /**
      * Parse an input stream, store the resulting rulebase.
      */

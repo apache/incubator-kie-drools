@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,20 +16,12 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
 /**
  * @author <a href="mailto:shaun.addison@gmail.com"> Shaun Addison </a>
  * 
  * Callback interface for scanning an spreadsheet.
  */
-public interface SheetListener
-{
+public interface SheetListener {
 
     /**
      * Start a new sheet

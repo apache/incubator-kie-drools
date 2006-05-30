@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser.xls;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,13 +15,6 @@ package org.drools.decisiontable.parser.xls;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
-
-
-
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,8 +58,7 @@ import org.drools.decisiontable.parser.SheetListener;
 public class ExcelParser
     implements
     DecisionTableParser,
-    HSSFListener
-{
+    HSSFListener {
 
     public static final String  DEFAULT_RULESHEET_NAME = "Decision Tables";
 
@@ -73,11 +66,11 @@ public class ExcelParser
 
     public static final String  DATE_TARGET_FORMAT     = "dd-MMM-yyyy";
 
-    private Map                 _listners              = new HashMap( );
+    private Map                 _listners              = new HashMap();
 
-    private SheetListener       _currentSheetListener  = new NullSheetListener( );
+    private SheetListener       _currentSheetListener  = new NullSheetListener();
 
-    private List                _sheetNames            = new ArrayList( );
+    private final List                _sheetNames            = new ArrayList();
 
     private int                 _currentSheetNumber    = 0;
 
@@ -85,25 +78,22 @@ public class ExcelParser
 
     private boolean             _useFirstSheet         = false;
 
-    private HSSFWorkbook        _workbook                     = null;
-    
-    
+    private HSSFWorkbook        _workbook              = null;
+
     /**
      * Define a map of sheet name to listner handlers.
      * 
      * @param sheetListners
      *            map of String to SheetListener
      */
-    public ExcelParser(Map sheetListners)
-    {
-        _listners = sheetListners;
+    public ExcelParser(final Map sheetListners) {
+        this._listners = sheetListners;
     }
 
-    public ExcelParser(SheetListener listener)
-    {
-        _listners.put( DEFAULT_RULESHEET_NAME,
+    public ExcelParser(final SheetListener listener) {
+        this._listners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
                        listener );
-        _useFirstSheet = true;
+        this._useFirstSheet = true;
     }
 
     /**
@@ -112,31 +102,24 @@ public class ExcelParser
      * @param record
      *            the new record
      */
-    private void newSheet(String sheetName)
-    {
-        _currentSheetListener.finishSheet( );
-        _currentSheetListener = new NullSheetListener( );
+    private void newSheet(final String sheetName) {
+        this._currentSheetListener.finishSheet();
+        this._currentSheetListener = new NullSheetListener();
 
-        if ( _useFirstSheet && _currentSheetNumber == 1 )
-        {
-            _currentSheetListener = getFirstSheetListener( );
-        }
-        else
-        {
-            if ( _listners.containsKey( sheetName ) )
-            {
-                _currentSheetListener = (SheetListener) _listners.get( sheetName );
+        if ( this._useFirstSheet && this._currentSheetNumber == 1 ) {
+            this._currentSheetListener = getFirstSheetListener();
+        } else {
+            if ( this._listners.containsKey( sheetName ) ) {
+                this._currentSheetListener = (SheetListener) this._listners.get( sheetName );
             }
         }
 
-        _currentSheetListener.startSheet( sheetName );
+        this._currentSheetListener.startSheet( sheetName );
     }
 
-    private SheetListener getFirstSheetListener()
-    {
-        SheetListener listener = (SheetListener) _listners.values( ).iterator( ).next( );
-        if ( listener == null )
-        {
+    private SheetListener getFirstSheetListener() {
+        final SheetListener listener = (SheetListener) this._listners.values().iterator().next();
+        if ( listener == null ) {
             throw new IllegalStateException( "No default first sheet listener found !" );
         }
         return listener;
@@ -148,101 +131,88 @@ public class ExcelParser
      * This receives the events for the Excel file format scan. A bunch of
      * document data OLE style and the sheet content.
      */
-    public void processRecord(Record record)
-    {
+    public void processRecord(final Record record) {
 
-        switch ( record.getSid( ) )
-        {
-        case BoundSheetRecord.sid :
-            BoundSheetRecord bsr = (BoundSheetRecord) record;
-            _sheetNames.add( bsr.getSheetname( ) );
-            break;
-        case BOFRecord.sid :
-            BOFRecord bof = (BOFRecord) record;
-            if ( bof.getType( ) == BOFRecord.TYPE_WORKSHEET )
-            {
-                newSheet( (String) _sheetNames.get( _currentSheetNumber++ ) );
-            }
-            break;
-        case RowRecord.sid :
-            RowRecord rowRec = (RowRecord) record;
-            _currentSheetListener.newRow( rowRec.getRowNumber( ),
-                                          rowRec.getLastCol( ) - rowRec.getFirstCol( ) + 1 );
-            break;
-        case SSTRecord.sid :
-            _sstRec = (SSTRecord) record;
-            break;
-        case LabelSSTRecord.sid :
-            handleText( record );
-            break;
+        switch ( record.getSid() ) {
+            case BoundSheetRecord.sid :
+                final BoundSheetRecord bsr = (BoundSheetRecord) record;
+                this._sheetNames.add( bsr.getSheetname() );
+                break;
+            case BOFRecord.sid :
+                final BOFRecord bof = (BOFRecord) record;
+                if ( bof.getType() == BOFRecord.TYPE_WORKSHEET ) {
+                    newSheet( (String) this._sheetNames.get( this._currentSheetNumber++ ) );
+                }
+                break;
+            case RowRecord.sid :
+                final RowRecord rowRec = (RowRecord) record;
+                this._currentSheetListener.newRow( rowRec.getRowNumber(),
+                                              rowRec.getLastCol() - rowRec.getFirstCol() + 1 );
+                break;
+            case SSTRecord.sid :
+                this._sstRec = (SSTRecord) record;
+                break;
+            case LabelSSTRecord.sid :
+                handleText( record );
+                break;
 
-        case NumberRecord.sid :
-            handleNumber( record );
-            break;
-        case BoolErrRecord.sid :
-            handleBool( record );
-            break;
-        
-        case FormulaRecord.sid :            
-            handleFormula( record );
-            break;
-            
-        default :          
-            break;
+            case NumberRecord.sid :
+                handleNumber( record );
+                break;
+            case BoolErrRecord.sid :
+                handleBool( record );
+                break;
+
+            case FormulaRecord.sid :
+                handleFormula( record );
+                break;
+
+            default :
+                break;
         }
-        
-        
-        
+
     }
 
+    private void handleFormula(final Record record) {
 
-    private void handleFormula(Record record)
-    {
-            
-        FormulaRecord formulaRec = (FormulaRecord) record;
-            
-        
-        Ptg ptg = formulaRec.peekExpressionToken();
-        
-        
-        if (ptg instanceof Ref3DPtg)
-        {
-            
-            Ref3DPtg ptg3D = (Ref3DPtg)ptg;
-            
-            HSSFSheet sheet = _workbook.getSheetAt(ptg3D.getExternSheetIndex() + 1 );      
-            HSSFRow row     = sheet.getRow(ptg3D.getRow());  
-            HSSFCell cell   = row.getCell(ptg3D.getColumn());
-            
-            _currentSheetListener.newCell( formulaRec.getRow( ),
-                    formulaRec.getColumn( ),
-                                       "" + cell.getStringCellValue() );
-                    
+        final FormulaRecord formulaRec = (FormulaRecord) record;
+
+        final Ptg ptg = formulaRec.peekExpressionToken();
+
+        if ( ptg instanceof Ref3DPtg ) {
+
+            final Ref3DPtg ptg3D = (Ref3DPtg) ptg;
+
+            final HSSFSheet sheet = this._workbook.getSheetAt( ptg3D.getExternSheetIndex() + 1 );
+            final HSSFRow row = sheet.getRow( ptg3D.getRow() );
+            final HSSFCell cell = row.getCell( ptg3D.getColumn() );
+
+            this._currentSheetListener.newCell( formulaRec.getRow(),
+                                           formulaRec.getColumn(),
+                                           "" + cell.getStringCellValue() );
+
         }
     }
 
-    private void handleBool(Record record)
-    {
-        BoolErrRecord boolRec = (BoolErrRecord) record;
-        _currentSheetListener.newCell( boolRec.getRow( ),
-                                       boolRec.getColumn( ),
-                                       "" + boolRec.getBooleanValue( ) );
+    private void handleBool(final Record record) {
+        final BoolErrRecord boolRec = (BoolErrRecord) record;
+        this._currentSheetListener.newCell( boolRec.getRow(),
+                                       boolRec.getColumn(),
+                                       "" + boolRec.getBooleanValue() );
     }
 
-    private void handleText(Record record)
-    {
-        LabelSSTRecord labelRec = (LabelSSTRecord) record;
-        String value = _sstRec.getString( labelRec.getSSTIndex( ) );
-        _currentSheetListener.newCell( labelRec.getRow( ),
-                                       labelRec.getColumn( ),
+    private void handleText(final Record record) {
+        final LabelSSTRecord labelRec = (LabelSSTRecord) record;
+        final String value = this._sstRec.getString( labelRec.getSSTIndex() );
+        this._currentSheetListener.newCell( labelRec.getRow(),
+                                       labelRec.getColumn(),
                                        value );
     }
 
-    private void handleNumber(Record record)
-    {
+    private void handleNumber(final Record record) {
         // MN have to do with stupid numbers with ".0" as well as
         // freaking excel freaking dates freakin.
-        NumberRecord numRec = (NumberRecord) record;
+        final NumberRecord numRec = (NumberRecord) record;
 
         String stringVal = null;
 
@@ -252,20 +222,18 @@ public class ExcelParser
          * SimpleDateFormat(DATE_TARGET_FORMAT); stringVal =
          * format.format(date); } else {
          */
-        stringVal = "" + numRec.getValue( );
+        stringVal = "" + numRec.getValue();
         stringVal = removeTrailingZero( stringVal );
         /* } */
-        _currentSheetListener.newCell( numRec.getRow( ),
-                                       numRec.getColumn( ),
+        this._currentSheetListener.newCell( numRec.getRow(),
+                                       numRec.getColumn(),
                                        "" + stringVal );
     }
 
-    static String removeTrailingZero(String stringVal)
-    {
-        if ( stringVal.endsWith( ".0" ) )
-        {
+    static String removeTrailingZero(String stringVal) {
+        if ( stringVal.endsWith( ".0" ) ) {
             stringVal = stringVal.substring( 0,
-                                             stringVal.length( ) - 2 );
+                                             stringVal.length() - 2 );
         }
         return stringVal;
     }
@@ -276,32 +244,27 @@ public class ExcelParser
      * @param inStream
      *            the ms-excel data stream
      */
-    public void parseFile(InputStream inStream)
-    {
+    public void parseFile(final InputStream inStream) {
         InputStream din = null;
-        POIFSFileSystem poifs=null;
-        
-        try
-        {
+        POIFSFileSystem poifs = null;
+
+        try {
             poifs = new POIFSFileSystem( inStream );
-            
+
             // Get the workbook for further references
-            _workbook = new HSSFWorkbook(poifs);           
-            
+            this._workbook = new HSSFWorkbook( poifs );
+
             // get the Workbook (excel part) stream in a InputStream
-            din = poifs.createDocumentInputStream( WORKBOOK );
-            HSSFRequest req = new HSSFRequest( );
+            din = poifs.createDocumentInputStream( ExcelParser.WORKBOOK );
+            final HSSFRequest req = new HSSFRequest();
             // lazy listen for ALL records with the listener shown above
             req.addListenerForAllRecords( this );
-            HSSFEventFactory factory = new HSSFEventFactory( );
+            final HSSFEventFactory factory = new HSSFEventFactory();
             factory.processEvents( req,
                                    din );
-        }
-        catch ( IOException ex )
-        {
-            throw new DecisionTableParseException( "Failed to open Excel stream, " +
-                    "please check that the content is xls97 format.",
-                                        ex );
+        } catch ( final IOException ex ) {
+            throw new DecisionTableParseException( "Failed to open Excel stream, " + "please check that the content is xls97 format.",
+                                                   ex );
         }
     }
 

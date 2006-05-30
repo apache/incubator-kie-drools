@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,22 +16,17 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 
-
-
-
-
-
-public class DecisionTableParseException extends RuntimeException
-{
-
+public class DecisionTableParseException extends RuntimeException {
 
     private static final long serialVersionUID = 2655710832124783733L;
 
-    public DecisionTableParseException(String message) {
-        super(message);        
+    public DecisionTableParseException(final String message) {
+        super( message );
     }
-    
-    public DecisionTableParseException(String message, Throwable cause) {
-        super(message, cause);
+
+    public DecisionTableParseException(final String message,
+                                       final Throwable cause) {
+        super( message,
+               cause );
     }
 }

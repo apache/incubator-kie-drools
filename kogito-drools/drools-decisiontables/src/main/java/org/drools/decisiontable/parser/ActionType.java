@@ -1,4 +1,5 @@
 package org.drools.decisiontable.parser;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,11 +16,6 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 
-
-
-
-
-
 import java.util.Map;
 
 import org.drools.decisiontable.model.SnippetBuilder;
@@ -32,47 +28,44 @@ import org.drools.decisiontable.model.SnippetBuilder;
  * There are five types of columns relevant to a rule table.
  * @author <a href="mailto:Michael.Neale@gmail.com"> Michael Neale</a>
  */
-public class ActionType
-{
+public class ActionType {
 
-    public static final int CONDITION = 0;
+    public static final int CONDITION       = 0;
 
-    public static final int ACTION    = 1;
+    public static final int ACTION          = 1;
 
     // 08 - 16 - 2005 RIK: Define 3 new ActionType types
     // PRIORITY is used to set the salience parameter of a rule tag
-    public static final int PRIORITY  = 2;
+    public static final int PRIORITY        = 2;
 
     // DURATION is used to set a duration tag inside a rule tag
-    public static final int DURATION  = 3;
+    public static final int DURATION        = 3;
 
     // NAME is used to set the name parameter of a rule tag
-    public static final int NAME      = 4;
+    public static final int NAME            = 4;
 
     // 10 - 05 - 2005 RIK: Add 2 new AtcionType types
     // DESCRIPTION is used to set the description parameter of a rule tag
-    public static final int DESCRIPTION      = 5;
+    public static final int DESCRIPTION     = 5;
 
     //  NOLOOP is used to set the no-loop parameter of a rule tag
-    public static final int NOLOOP      = 6;
+    public static final int NOLOOP          = 6;
 
     //  XOR-GROUP is used to set the activation-group parameter of a rule tag
-    public static final int ACTIVATIONGROUP      = 7;
+    public static final int ACTIVATIONGROUP = 7;
 
     int                     type;
 
     String                  value;
 
-    ActionType(int actionType,
-               String cellValue)
-    {
-        type = actionType;
-        value = cellValue;
+    ActionType(final int actionType,
+               final String cellValue) {
+        this.type = actionType;
+        this.value = cellValue;
     }
 
-    String getSnippet(String cellValue)
-    {
-        SnippetBuilder builder = new SnippetBuilder( value );
+    String getSnippet(final String cellValue) {
+        final SnippetBuilder builder = new SnippetBuilder( this.value );
         return builder.build( cellValue );
     }
 
@@ -80,94 +73,80 @@ public class ActionType
      * Create a new action type that matches this cell, and add it to the map,
      * keyed on that column.
      */
-    public static void addNewActionType(Map actionTypeMap,
-                                 String value,
-                                 int column,
-                                 int row)
-    {
-        if ( value.toUpperCase( ).startsWith( "C" ) )
-        {
+    public static void addNewActionType(final Map actionTypeMap,
+                                        final String value,
+                                        final int column,
+                                        final int row) {
+        if ( value.toUpperCase().startsWith( "C" ) ) {
             actionTypeMap.put( new Integer( column ),
                                new ActionType( ActionType.CONDITION,
                                                null ) );
-        }
-        else if ( value.toUpperCase( ).startsWith( "A" ) )
-        {
+        } else if ( value.toUpperCase().startsWith( "A" ) ) {
             actionTypeMap.put( new Integer( column ),
                                new ActionType( ActionType.ACTION,
                                                null ) );
-        }
-        else if ( value.toUpperCase( ).startsWith( "P" ) ) // if the title cell
-                                                            // value starts with
-                                                            // "P" then put a
-                                                            // ActionType.PRIORITY
-                                                            // to the _actions
-                                                            // list
+        } else if ( value.toUpperCase().startsWith( "P" ) ) // if the title cell
+        // value starts with
+        // "P" then put a
+        // ActionType.PRIORITY
+        // to the _actions
+        // list
         {
             actionTypeMap.put( new Integer( column ),
                                new ActionType( ActionType.PRIORITY,
                                                null ) );
-        }
-        else if ( value.toUpperCase( ).startsWith( "D" ) ) // if the title cell
-                                                            // value starts with
-                                                            // "D" then put a
-                                                            // ActionType.DURATION
-                                                            // to the _actions
-                                                            // list
+        } else if ( value.toUpperCase().startsWith( "D" ) ) // if the title cell
+        // value starts with
+        // "D" then put a
+        // ActionType.DURATION
+        // to the _actions
+        // list
         {
             actionTypeMap.put( new Integer( column ),
                                new ActionType( ActionType.DURATION,
                                                null ) );
-        }
-        else if ( value.toUpperCase( ).startsWith( "N" ) ) // if the title cell
-                                                            // value starts with
-                                                            // "N" then put a
-                                                            // ActionType.NAME
-                                                            // to the _actions
-                                                            // list
+        } else if ( value.toUpperCase().startsWith( "N" ) ) // if the title cell
+        // value starts with
+        // "N" then put a
+        // ActionType.NAME
+        // to the _actions
+        // list
         {
             actionTypeMap.put( new Integer( column ),
                                new ActionType( ActionType.NAME,
                                                null ) );
-        }
-        else if ( value.toUpperCase( ).startsWith( "I" ) ) // if the title cell
-												            // value starts with
-												            // "I" then put a
-												            // ActionType.DESCRIPTION
-												            // to the _actions	
-												            // list
-		{
-			actionTypeMap.put( new Integer( column ),
-  							   new ActionType( ActionType.DESCRIPTION,
-  									   		   null ) );
-		}
-        else if ( value.toUpperCase( ).startsWith( "U" ) ) // if the title cell
-												            // value starts with
-												            // "U" then put a
-												            // ActionType.NOLOOP
-												            // to the _actions	
-												            // list
+        } else if ( value.toUpperCase().startsWith( "I" ) ) // if the title cell
+        // value starts with
+        // "I" then put a
+        // ActionType.DESCRIPTION
+        // to the _actions	
+        // list
         {
-			actionTypeMap.put( new Integer( column ),
-							   new ActionType( ActionType.NOLOOP,
-				                               null ) );
-		}
-        else if ( value.toUpperCase( ).startsWith( "X" ) ) // if the title cell
-												            // value starts with
-												            // "X" then put a
-												            // ActionType.XORGROUP
-												            // to the _actions	
-												            // list
-		{
-			actionTypeMap.put( new Integer( column ),
-			                   new ActionType( ActionType.ACTIVATIONGROUP,
-					                           null ) );
-		}
-        else
+            actionTypeMap.put( new Integer( column ),
+                               new ActionType( ActionType.DESCRIPTION,
+                                               null ) );
+        } else if ( value.toUpperCase().startsWith( "U" ) ) // if the title cell
+        // value starts with
+        // "U" then put a
+        // ActionType.NOLOOP
+        // to the _actions	
+        // list
         {
-            throw new DecisionTableParseException( "Invalid column header (ACTION type), " +
-                    "should be CONDITION or ACTION (etc..) row number:" + (row + 1) + " cell number:" + 
-                    (column + 1) + " - does not contain a leading C or A identifer." );
+            actionTypeMap.put( new Integer( column ),
+                               new ActionType( ActionType.NOLOOP,
+                                               null ) );
+        } else if ( value.toUpperCase().startsWith( "X" ) ) // if the title cell
+        // value starts with
+        // "X" then put a
+        // ActionType.XORGROUP
+        // to the _actions	
+        // list
+        {
+            actionTypeMap.put( new Integer( column ),
+                               new ActionType( ActionType.ACTIVATIONGROUP,
+                                               null ) );
+        } else {
+            throw new DecisionTableParseException( "Invalid column header (ACTION type), " + "should be CONDITION or ACTION (etc..) row number:" + (row + 1) + " cell number:" + (column + 1) + " - does not contain a leading C or A identifer." );
         }
     }
 

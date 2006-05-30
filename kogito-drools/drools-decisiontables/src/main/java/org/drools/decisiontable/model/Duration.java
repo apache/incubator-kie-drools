@@ -1,4 +1,5 @@
 package org.drools.decisiontable.model;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,19 +17,13 @@ package org.drools.decisiontable.model;
  */
 
 
-
-
-
-import java.util.StringTokenizer;
-
 /**
  * @author <a href="mailto:ricardo.rojas@bluesoft.cl"> Ricardo Rojas </a>
  * 
  */
 public class Duration extends DRLElement
     implements
-    DRLJavaEmitter
-{
+    DRLJavaEmitter {
 
     public String _snippet;
 
@@ -36,19 +31,19 @@ public class Duration extends DRLElement
      * @param snippet
      *            The snippet to set.
      */
-    public void setSnippet(String snippet)
-    {
-        _snippet = snippet;
+    public void setSnippet(final String snippet) {
+        this._snippet = snippet;
     }
 
-    public String getSnippet()
-    {
-        return _snippet;
+    public String getSnippet() {
+        return this._snippet;
     }
 
-	public void renderDRL(DRLOutput out) {
-		if (isCommented()) out.writeLine("#" + getComment());
-		out.writeLine("\tduration " + _snippet);
-		
-	}
+    public void renderDRL(final DRLOutput out) {
+        if ( isCommented() ) {
+            out.writeLine( "#" + getComment() );
+        }
+        out.writeLine( "\tduration " + this._snippet );
+
+    }
 }
