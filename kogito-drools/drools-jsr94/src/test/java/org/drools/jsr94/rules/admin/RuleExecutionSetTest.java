@@ -42,17 +42,17 @@ public class RuleExecutionSetTest extends RuleEngineTestBase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
-        ruleSetProvider = ruleAdministrator.getLocalRuleExecutionSetProvider( null );
+        this.ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
+        this.ruleSetProvider = this.ruleAdministrator.getLocalRuleExecutionSetProvider( null );
     }
 
     /**
      * Test rule set name and description.
      */
     public void testRule() throws Exception {
-        InputStream in = RuleEngineTestBase.class.getResourceAsStream( bindUri );
-        RuleExecutionSet ruleSet = ruleSetProvider.createRuleExecutionSet( in,
-                                                                           null );
+        final InputStream in = RuleEngineTestBase.class.getResourceAsStream( this.bindUri );
+        final RuleExecutionSet ruleSet = this.ruleSetProvider.createRuleExecutionSet( in,
+                                                                                      null );
         assertEquals( "number of rules",
                       1,
                       ruleSet.getRules().size() );

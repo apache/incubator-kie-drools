@@ -44,35 +44,29 @@ package org.drools.jsr94.rules;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Person
-{
+public class Person {
     private String name;
 
-    private Set sisters;
+    private Set    sisters;
 
-    public Person( String name )
-    {
+    public Person(final String name) {
         this.name = name;
-        sisters = new HashSet( );
+        this.sisters = new HashSet();
     }
 
-    public String getName( )
-    {
-        return name;
+    public String getName() {
+        return this.name;
     }
 
-    public void addSister( String sistersName )
-    {
-        sisters.add( sistersName );
+    public void addSister(final String sistersName) {
+        this.sisters.add( sistersName );
     }
 
-    public boolean hasSister( Person person )
-    {
-        return sisters.contains( person.getName( ) );
+    public boolean hasSister(final Person person) {
+        return this.sisters.contains( person.getName() );
     }
 
-    public String toString( )
-    {
-        return name;
+    public String toString() {
+        return this.name;
     }
 }

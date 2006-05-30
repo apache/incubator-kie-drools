@@ -62,65 +62,61 @@ import junit.framework.TestCase;
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  * @author <a href="mailto:michael.frandsen@syngenio.de">Michael Frandsen </a>
  */
-public abstract class RuleEngineTestBase extends TestCase
-{
-    protected StatefulRuleSession statefulSession;
+public abstract class RuleEngineTestBase extends TestCase {
+    protected StatefulRuleSession     statefulSession;
 
-    protected StatelessRuleSession statelessSession;
+    protected StatelessRuleSession    statelessSession;
 
     protected ExampleRuleEngineFacade engine;
 
-    protected String bindUri = "sisters.drl";
-    protected String bindUri_drl = "sisters_expander.drl";
-    protected String bindUri_dsl = "sisters_expander.dsl";
-    protected String bindUri_globals = "sisters_globals.drl";
+    protected String                  bindUri         = "sisters.drl";
+    protected String                  bindUri_drl     = "sisters_expander.drl";
+    protected String                  bindUri_dsl     = "sisters_expander.dsl";
+    protected String                  bindUri_globals = "sisters_globals.drl";
 
-    protected RuleServiceProvider ruleServiceProvider;
+    protected RuleServiceProvider     ruleServiceProvider;
 
     /**
      * Setup the test case.
      */
-    protected void setUp( ) throws Exception
-    {
-        super.setUp( );
-        engine = new ExampleRuleEngineFacade( );
-        engine.addRuleExecutionSet( bindUri,
-                                    RuleEngineTestBase.class.getResourceAsStream( bindUri ) );
-        
-        Map map = new HashMap(); 
-        Reader reader = new InputStreamReader(RuleEngineTestBase.class.getResourceAsStream( bindUri_dsl ) );
-        
-        
-        map.put("dsl",this.getDSLText(reader).toString());
-        engine.addRuleExecutionSet( bindUri_drl,
-                                    RuleEngineTestBase.class.getResourceAsStream( bindUri_drl ), map );
-        
-        engine.addRuleExecutionSet( bindUri_globals,
-                                    RuleEngineTestBase.class.getResourceAsStream( bindUri_globals ) );
-        
-        
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.engine = new ExampleRuleEngineFacade();
+        this.engine.addRuleExecutionSet( this.bindUri,
+                                         RuleEngineTestBase.class.getResourceAsStream( this.bindUri ) );
 
-        this.ruleServiceProvider = engine.getRuleServiceProvider( );
-//        this.statelessSession = engine.getStatelessRuleSession( bindUri );
-//        this.statefulSession = engine.getStatefulRuleSession( bindUri );
-        
-        
+        final Map map = new HashMap();
+        final Reader reader = new InputStreamReader( RuleEngineTestBase.class.getResourceAsStream( this.bindUri_dsl ) );
+
+        map.put( "dsl",
+                 this.getDSLText( reader ).toString() );
+        this.engine.addRuleExecutionSet( this.bindUri_drl,
+                                         RuleEngineTestBase.class.getResourceAsStream( this.bindUri_drl ),
+                                         map );
+
+        this.engine.addRuleExecutionSet( this.bindUri_globals,
+                                         RuleEngineTestBase.class.getResourceAsStream( this.bindUri_globals ) );
+
+        this.ruleServiceProvider = this.engine.getRuleServiceProvider();
+        //        this.statelessSession = engine.getStatelessRuleSession( bindUri );
+        //        this.statefulSession = engine.getStatefulRuleSession( bindUri );
+
     }
-    
+
     /*
      * Taken from DRLParser
      */
-    private StringBuffer getDSLText(Reader reader) throws IOException {
-        StringBuffer text = new StringBuffer();
+    private StringBuffer getDSLText(final Reader reader) throws IOException {
+        final StringBuffer text = new StringBuffer();
 
-            char[] buf = new char[1024];
-            int len = 0;
+        final char[] buf = new char[1024];
+        int len = 0;
 
-            while ( (len = reader.read( buf )) >= 0 ) {
-                text.append( buf,
-                             0,
-                             len );
-            }
+        while ( (len = reader.read( buf )) >= 0 ) {
+            text.append( buf,
+                         0,
+                         len );
+        }
         return text;
     }
 
@@ -129,9 +125,8 @@ public abstract class RuleEngineTestBase extends TestCase
      *
      * @see ClassLoader#getResource
      */
-    protected URL getResource( String res )
-    {
-        return getClass( ).getClassLoader( ).getResource( res );
+    protected URL getResource(final String res) {
+        return getClass().getClassLoader().getResource( res );
     }
 
     /**
@@ -139,8 +134,7 @@ public abstract class RuleEngineTestBase extends TestCase
      *
      * @see ClassLoader#getResourceAsStream
      */
-    protected InputStream getResourceAsStream( String res )
-    {
-        return getClass( ).getClassLoader( ).getResourceAsStream( res );
+    protected InputStream getResourceAsStream(final String res) {
+        return getClass().getClassLoader().getResourceAsStream( res );
     }
 }

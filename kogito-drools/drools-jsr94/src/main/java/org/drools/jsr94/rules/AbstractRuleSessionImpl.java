@@ -29,7 +29,6 @@ import javax.rules.StatefulRuleSession;
 import javax.rules.StatelessRuleSession;
 import javax.rules.admin.RuleExecutionSet;
 
-import org.drools.InitialFact;
 import org.drools.WorkingMemory;
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
 import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
@@ -52,20 +51,21 @@ import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
-abstract class AbstractRuleSessionImpl implements RuleSession
-{
-	private RuleExecutionSetRepository repository;
-	
-	public AbstractRuleSessionImpl(RuleExecutionSetRepository repository) {
-		super();
-		this.repository = repository;
-	}
-	
+abstract class AbstractRuleSessionImpl
+    implements
+    RuleSession {
+    private RuleExecutionSetRepository repository;
+
+    public AbstractRuleSessionImpl(final RuleExecutionSetRepository repository) {
+        super();
+        this.repository = repository;
+    }
+
     /**
      * The Drools <code>WorkingMemory</code> associated
      * with this <code>RuleSession</code>.
      */
-    private WorkingMemory workingMemory;
+    private WorkingMemory        workingMemory;
 
     /**
      * The Drools <code>RuleExecutionSet</code> associated
@@ -77,7 +77,7 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * A <code>Map</code> of <code>String</code>/<code>Object</code> pairs
      * passed as application data to the Drools <code>WorkingMemory</code>.
      */
-    private Map properties;
+    private Map                  properties;
 
     /**
      * Initialize this <code>RuleSession</code>
@@ -85,9 +85,8 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      *
      * @see #newWorkingMemory()
      */
-    protected void initWorkingMemory( )
-    {
-        this.setWorkingMemory( this.newWorkingMemory( ) );
+    protected void initWorkingMemory() {
+        this.setWorkingMemory( this.newWorkingMemory() );
     }
 
     /**
@@ -102,20 +101,15 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * @see #setProperties(Map)
      * @see WorkingMemory#setApplicationData(String, Object)
      */
-    protected WorkingMemory newWorkingMemory( )
-    {
-        WorkingMemory newWorkingMemory =
-            this.getRuleExecutionSet( ).newWorkingMemory( );
+    protected WorkingMemory newWorkingMemory() {
+        final WorkingMemory newWorkingMemory = this.getRuleExecutionSet().newWorkingMemory();
 
-        Map props = this.getProperties( );
-        if ( props != null )
-        {
-            for ( Iterator iterator = props.entrySet( ).iterator( );
-                  iterator.hasNext( ); )
-            {
-                Map.Entry entry = ( Map.Entry ) iterator.next( );
-                newWorkingMemory.setGlobal(
-                    ( String ) entry.getKey( ), entry.getValue( ) );
+        final Map props = this.getProperties();
+        if ( props != null ) {
+            for ( final Iterator iterator = props.entrySet().iterator(); iterator.hasNext(); ) {
+                final Map.Entry entry = (Map.Entry) iterator.next();
+                newWorkingMemory.setGlobal( (String) entry.getKey(),
+                                            entry.getValue() );
             }
         }
 
@@ -128,8 +122,7 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * @param properties additional properties used to create the
      *        <code>RuleSession</code> implementation.
      */
-    protected void setProperties( Map properties )
-    {
+    protected void setProperties(final Map properties) {
         this.properties = properties;
     }
 
@@ -140,8 +133,7 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * @return the additional properties used to create this
      *         <code>RuleSession</code>.
      */
-    protected Map getProperties( )
-    {
+    protected Map getProperties() {
         return this.properties;
     }
 
@@ -152,8 +144,7 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * @param workingMemory the <code>WorkingMemory</code> to associate
      *        with this <code>RuleSession</code>.
      */
-    protected void setWorkingMemory( WorkingMemory workingMemory )
-    {
+    protected void setWorkingMemory(final WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
     }
 
@@ -164,8 +155,7 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * @return the Drools <code>WorkingMemory</code> to associate
      *         with this <code>RuleSession</code>.
      */
-    protected WorkingMemory getWorkingMemory( )
-    {
+    protected WorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
 
@@ -176,8 +166,7 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * @param ruleExecutionSet the Drools <code>RuleExecutionSet</code> to associate
      *        with this <code>RuleSession</code>.
      */
-    protected void setRuleExecutionSet( RuleExecutionSetImpl ruleExecutionSet )
-    {
+    protected void setRuleExecutionSet(final RuleExecutionSetImpl ruleExecutionSet) {
         this.ruleExecutionSet = ruleExecutionSet;
     }
 
@@ -188,8 +177,7 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * @return the Drools <code>RuleExecutionSet</code> associated
      * with this <code>RuleSession</code>.
      */
-    protected RuleExecutionSetImpl getRuleExecutionSet( )
-    {
+    protected RuleExecutionSetImpl getRuleExecutionSet() {
         return this.ruleExecutionSet;
     }
 
@@ -199,11 +187,8 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      *
      * @throws InvalidRuleSessionException on illegal rule session state.
      */
-    protected void checkRuleSessionValidity( )
-        throws InvalidRuleSessionException
-    {
-        if ( this.workingMemory == null )
-        {
+    protected void checkRuleSessionValidity() throws InvalidRuleSessionException {
+        if ( this.workingMemory == null ) {
             throw new InvalidRuleSessionException( "invalid rule session" );
         }
     }
@@ -216,17 +201,13 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * @param objects <code>List</code> of <code>Object</code>s to be filtered
      * @param objectFilter the <code>ObjectFilter</code> to be applied
      */
-    protected void applyFilter( List objects, ObjectFilter objectFilter )
-    {
-        if ( objectFilter != null )
-        {
-            for ( Iterator objectIter = objects.iterator( );
-                  objectIter.hasNext( ); )
-            {
-                Object object = objectIter.next( );
-                if ( objectFilter.filter( object ) == null )
-                {
-                    objectIter.remove( );
+    protected void applyFilter(final List objects,
+                               final ObjectFilter objectFilter) {
+        if ( objectFilter != null ) {
+            for ( final Iterator objectIter = objects.iterator(); objectIter.hasNext(); ) {
+                final Object object = objectIter.next();
+                if ( objectFilter.filter( object ) == null ) {
+                    objectIter.remove();
                 }
             }
         }
@@ -240,26 +221,20 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      *
      * @return the RuleExecutionSetMetaData bound to this rule session.
      */
-    public RuleExecutionSetMetadata getRuleExecutionSetMetadata( )
-    {
+    public RuleExecutionSetMetadata getRuleExecutionSetMetadata() {
         String theBindUri = null;
-        for ( Iterator i = repository.getRegistrations( ).iterator( );
-              i.hasNext( ); )
-        {
-            String aBindUri = ( String ) i.next( );
-            RuleExecutionSet aRuleSet =
-                repository.getRuleExecutionSet( aBindUri );
-            if ( aRuleSet == this.ruleExecutionSet )
-            {
+        for ( final Iterator i = this.repository.getRegistrations().iterator(); i.hasNext(); ) {
+            final String aBindUri = (String) i.next();
+            final RuleExecutionSet aRuleSet = this.repository.getRuleExecutionSet( aBindUri );
+            if ( aRuleSet == this.ruleExecutionSet ) {
                 theBindUri = aBindUri;
                 break;
             }
         }
 
-        return new RuleExecutionSetMetadataImpl(
-            theBindUri,
-            this.ruleExecutionSet.getName( ),
-            this.ruleExecutionSet.getDescription( ) );
+        return new RuleExecutionSetMetadataImpl( theBindUri,
+                                                 this.ruleExecutionSet.getName(),
+                                                 this.ruleExecutionSet.getDescription() );
     }
 
     /**
@@ -273,15 +248,12 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * @see RuleRuntime#STATEFUL_SESSION_TYPE
      * @see RuleRuntime#STATELESS_SESSION_TYPE
      */
-    public int getType( ) throws InvalidRuleSessionException
-    {
-        if ( this instanceof StatelessRuleSession )
-        {
+    public int getType() throws InvalidRuleSessionException {
+        if ( this instanceof StatelessRuleSession ) {
             return RuleRuntime.STATELESS_SESSION_TYPE;
         }
 
-        if ( this instanceof StatefulRuleSession )
-        {
+        if ( this instanceof StatefulRuleSession ) {
             return RuleRuntime.STATEFUL_SESSION_TYPE;
         }
 
@@ -293,8 +265,7 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * This method renders this rule session unusable until
      * it is reacquired through the <code>RuleRuntime</code>.
      */
-    public void release( )
-    {
+    public void release() {
         this.setProperties( null );
         this.setWorkingMemory( null );
         this.setRuleExecutionSet( null );
@@ -308,8 +279,7 @@ abstract class AbstractRuleSessionImpl implements RuleSession
      * A reset will not reset the state on the default object filter for a
      * <code>RuleExecutionSet</code>.
      */
-    public void reset( )
-    {
-        this.initWorkingMemory( );
+    public void reset() {
+        this.initWorkingMemory();
     }
 }

@@ -38,14 +38,14 @@ public class RuleAdministratorTest extends RuleEngineTestBase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
+        this.ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
     }
 
     /**
      * Test getRuleExecutionSetProvider.
      */
     public void testRuleExecutionSetProvider() throws Exception {
-        RuleExecutionSetProvider ruleExecutionSetProvider = ruleAdministrator.getRuleExecutionSetProvider( null );
+        final RuleExecutionSetProvider ruleExecutionSetProvider = this.ruleAdministrator.getRuleExecutionSetProvider( null );
         assertNotNull( "cannot obtain RuleExecutionSetProvider",
                        ruleExecutionSetProvider );
     }
@@ -54,7 +54,7 @@ public class RuleAdministratorTest extends RuleEngineTestBase {
      * Test getLocalRuleExecutionSetProvider.
      */
     public void testLocalRuleExecutionSetProvider() throws Exception {
-        LocalRuleExecutionSetProvider localRuleExecutionSetProvider = ruleAdministrator.getLocalRuleExecutionSetProvider( null );
+        final LocalRuleExecutionSetProvider localRuleExecutionSetProvider = this.ruleAdministrator.getLocalRuleExecutionSetProvider( null );
         assertNotNull( "cannot obtain LocalRuleExecutionSetProvider",
                        localRuleExecutionSetProvider );
     }
@@ -65,11 +65,11 @@ public class RuleAdministratorTest extends RuleEngineTestBase {
     public void testRegisterRuleExecutionSet() throws Exception {
         try {
             // that it works is tested elsewhere
-            ruleAdministrator.registerRuleExecutionSet( "test URI",
-                                                        null,
-                                                        null );
+            this.ruleAdministrator.registerRuleExecutionSet( "test URI",
+                                                             null,
+                                                             null );
             fail( "RuleExecutionSetRegisterException expected" );
-        } catch ( RuleExecutionSetRegisterException ex ) {
+        } catch ( final RuleExecutionSetRegisterException ex ) {
             // ignore exception
         }
     }
@@ -80,10 +80,10 @@ public class RuleAdministratorTest extends RuleEngineTestBase {
     public void testDeregisterRuleExecutionSet() throws Exception {
         try {
             // that it works is tested else where
-            ruleAdministrator.deregisterRuleExecutionSet( "test URI",
-                                                          null );
+            this.ruleAdministrator.deregisterRuleExecutionSet( "test URI",
+                                                               null );
             fail( "RuleExecutionSetUnregisterException expected" );
-        } catch ( RuleExecutionSetDeregistrationException ex ) {
+        } catch ( final RuleExecutionSetDeregistrationException ex ) {
             // ignore exception
         }
     }

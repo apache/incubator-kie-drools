@@ -33,37 +33,38 @@ import org.drools.jsr94.rules.RuleEngineTestBase;
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
-public class RuleTest extends RuleEngineTestBase
-{
-    private RuleAdministrator ruleAdministrator;
+public class RuleTest extends RuleEngineTestBase {
+    private RuleAdministrator             ruleAdministrator;
 
     private LocalRuleExecutionSetProvider ruleSetProvider;
 
     /**
      * Setup the test case.
      */
-    protected void setUp( ) throws Exception
-    {
-        super.setUp( );
-        ruleAdministrator = ruleServiceProvider.getRuleAdministrator( );
-        ruleSetProvider =
-            ruleAdministrator.getLocalRuleExecutionSetProvider( null );
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
+        this.ruleSetProvider = this.ruleAdministrator.getLocalRuleExecutionSetProvider( null );
     }
 
     /**
      * Test rule name and description.
      */
-    public void testRule( ) throws Exception
-    {
-        InputStream in =
-            RuleEngineTestBase.class.getResourceAsStream( bindUri );
-        RuleExecutionSet ruleExecutionSet =
-            ruleSetProvider.createRuleExecutionSet( in, null );
-        List rules = ruleExecutionSet.getRules( );
-        assertEquals( "number of rules", 1, rules.size( ) );
+    public void testRule() throws Exception {
+        final InputStream in = RuleEngineTestBase.class.getResourceAsStream( this.bindUri );
+        final RuleExecutionSet ruleExecutionSet = this.ruleSetProvider.createRuleExecutionSet( in,
+                                                                                               null );
+        final List rules = ruleExecutionSet.getRules();
+        assertEquals( "number of rules",
+                      1,
+                      rules.size() );
 
-        Rule rule01 = ( Rule ) ruleExecutionSet.getRules( ).get( 0 );
-        assertEquals( "rule name", "FindSisters", rule01.getName( ) );
-        assertEquals( "rule description", "FindSisters",rule01.getDescription( ) );
+        final Rule rule01 = (Rule) ruleExecutionSet.getRules().get( 0 );
+        assertEquals( "rule name",
+                      "FindSisters",
+                      rule01.getName() );
+        assertEquals( "rule description",
+                      "FindSisters",
+                      rule01.getDescription() );
     }
 }

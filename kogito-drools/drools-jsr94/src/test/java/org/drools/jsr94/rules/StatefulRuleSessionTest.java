@@ -47,7 +47,6 @@ import java.util.List;
 
 import javax.rules.Handle;
 import javax.rules.ObjectFilter;
-import javax.rules.StatelessRuleSession;
 
 /**
  * Test the <code>StatefulRuleSession</code> implementation.
@@ -57,307 +56,329 @@ import javax.rules.StatelessRuleSession;
  * @author <a href="mailto:michael.frandsen@syngenio.de">Michael Frandsen </a>
  * @see javax.rules.StatefulRuleSession
  */
-public class StatefulRuleSessionTest extends RuleEngineTestBase
-{
+public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Setup the test case.
      */
-    protected void setUp( ) throws Exception
-    {
-        super.setUp( );
+    protected void setUp() throws Exception {
+        super.setUp();
     }
 
     /**
      * Test containsObject.
      */
-    public void testContainsObject( ) throws Exception
-    {
-        this.statefulSession = engine.getStatefulRuleSession( bindUri );
-        Person bob = new Person( "bob" );
-        Handle handle = statefulSession.addObject( bob );
-        assertTrue( "where is bob", statefulSession.containsObject( handle ) );
+    public void testContainsObject() throws Exception {
+        this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
+        final Person bob = new Person( "bob" );
+        final Handle handle = this.statefulSession.addObject( bob );
+        assertTrue( "where is bob",
+                    this.statefulSession.containsObject( handle ) );
     }
 
     /**
      * Test addObject.
      */
-    public void testAddObject( ) throws Exception
-    {
+    public void testAddObject() throws Exception {
         // tested in testContainsObject
     }
 
-    public void testJsr94FactHandleFactoryAvailable( )
-        throws ClassNotFoundException
-    {
-        this.getClass( ).getClassLoader( ).loadClass(
-            "org.drools.jsr94.rules.Jsr94FactHandleFactory" );
+    public void testJsr94FactHandleFactoryAvailable() throws ClassNotFoundException {
+        this.getClass().getClassLoader().loadClass( "org.drools.jsr94.rules.Jsr94FactHandleFactory" );
     }
 
     /**
      * Test addObjects.
      */
-    public void testAddObjects( ) throws Exception
-    {
-        this.statefulSession = engine.getStatefulRuleSession( bindUri );
-        List inObjects = new ArrayList( );
+    public void testAddObjects() throws Exception {
+        this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
+        final List inObjects = new ArrayList();
 
-        Person bob = new Person( "bob" );
+        final Person bob = new Person( "bob" );
         inObjects.add( bob );
 
-        Person rebecca = new Person( "rebecca" );
+        final Person rebecca = new Person( "rebecca" );
         rebecca.addSister( "jeannie" );
         inObjects.add( rebecca );
 
-        Person jeannie = new Person( "jeannie" );
+        final Person jeannie = new Person( "jeannie" );
         jeannie.addSister( "rebecca" );
         inObjects.add( jeannie );
 
-        List handleList = statefulSession.addObjects( inObjects );
-        assertEquals( "incorrect size", 3, handleList.size( ) );
-        assertEquals( "where is bob", bob,
-            statefulSession.getObject( ( Handle ) handleList.get( 0 ) ) );
-        assertEquals( "where is rebecca", rebecca,
-            statefulSession.getObject( ( Handle ) handleList.get( 1 ) ) );
-        assertEquals( "where is jeannie", jeannie,
-            statefulSession.getObject( ( Handle ) handleList.get( 2 ) ) );
+        final List handleList = this.statefulSession.addObjects( inObjects );
+        assertEquals( "incorrect size",
+                      3,
+                      handleList.size() );
+        assertEquals( "where is bob",
+                      bob,
+                      this.statefulSession.getObject( (Handle) handleList.get( 0 ) ) );
+        assertEquals( "where is rebecca",
+                      rebecca,
+                      this.statefulSession.getObject( (Handle) handleList.get( 1 ) ) );
+        assertEquals( "where is jeannie",
+                      jeannie,
+                      this.statefulSession.getObject( (Handle) handleList.get( 2 ) ) );
     }
 
     /**
      * Test getObject.
      */
-    public void testGetObject( ) throws Exception
-    {
+    public void testGetObject() throws Exception {
         // tested in testAddObjects
     }
 
     /**
      * Test updateObject.
      */
-    public void testUpdateObject( ) throws Exception
-    {
-        this.statefulSession = engine.getStatefulRuleSession( bindUri );
+    public void testUpdateObject() throws Exception {
+        this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
         Person bob = new Person( "bob" );
-        Handle handle = statefulSession.addObject( bob );
-        statefulSession.updateObject( handle, bob = new Person( "boby" ) );
-        assertEquals(
-            "where is boby", bob, statefulSession.getObject( handle ) );
+        final Handle handle = this.statefulSession.addObject( bob );
+        this.statefulSession.updateObject( handle,
+                                           bob = new Person( "boby" ) );
+        assertEquals( "where is boby",
+                      bob,
+                      this.statefulSession.getObject( handle ) );
     }
 
     /**
      * Test removeObject.
      */
-    public void testRemoveObject( ) throws Exception
-    {
-        this.statefulSession = engine.getStatefulRuleSession( bindUri );
-        Person bob = new Person( "bob" );
-        Handle handle = statefulSession.addObject( bob );
-        assertTrue( "where is bob", statefulSession.containsObject( handle ) );
+    public void testRemoveObject() throws Exception {
+        this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
+        final Person bob = new Person( "bob" );
+        final Handle handle = this.statefulSession.addObject( bob );
+        assertTrue( "where is bob",
+                    this.statefulSession.containsObject( handle ) );
 
-        statefulSession.removeObject( handle );
-        assertTrue(
-            "bob still there", !statefulSession.containsObject( handle ) );
+        this.statefulSession.removeObject( handle );
+        assertTrue( "bob still there",
+                    !this.statefulSession.containsObject( handle ) );
     }
 
     /**
      * Test getObjects.
      */
-    public void testGetObjects( ) throws Exception
-    {
-        this.statefulSession = engine.getStatefulRuleSession( bindUri );
+    public void testGetObjects() throws Exception {
+        this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
 
-        Person bob = new Person( "bob" );
-        statefulSession.addObject( bob );
+        final Person bob = new Person( "bob" );
+        this.statefulSession.addObject( bob );
 
-        Person rebecca = new Person( "rebecca" );
+        final Person rebecca = new Person( "rebecca" );
         rebecca.addSister( "jeannie" );
-        statefulSession.addObject( rebecca );
+        this.statefulSession.addObject( rebecca );
 
-        Person jeannie = new Person( "jeannie" );
+        final Person jeannie = new Person( "jeannie" );
         jeannie.addSister( "rebecca" );
-        statefulSession.addObject( jeannie );
+        this.statefulSession.addObject( jeannie );
 
         // execute the rules
-        statefulSession.executeRules( );
-        List outList = statefulSession.getObjects( );
-        assertEquals( "incorrect size", 5, outList.size( ) );
+        this.statefulSession.executeRules();
+        final List outList = this.statefulSession.getObjects();
+        assertEquals( "incorrect size",
+                      5,
+                      outList.size() );
 
-        assertTrue( "where is bob", outList.contains( bob ) );
-        assertTrue( "where is rebecca", outList.contains( rebecca ) );
-        assertTrue( "where is jeannie", outList.contains( jeannie ) );
+        assertTrue( "where is bob",
+                    outList.contains( bob ) );
+        assertTrue( "where is rebecca",
+                    outList.contains( rebecca ) );
+        assertTrue( "where is jeannie",
+                    outList.contains( jeannie ) );
 
         assertTrue( outList.contains( "rebecca and jeannie are sisters" ) );
         assertTrue( outList.contains( "jeannie and rebecca are sisters" ) );
 
-        statefulSession.release( );
+        this.statefulSession.release();
     }
 
     /**
      * Test getObjects with ObjectFilter.
      */
-    public void testGetObjectsWithFilter( ) throws Exception
-    {
-        this.statefulSession = engine.getStatefulRuleSession( bindUri );
+    public void testGetObjectsWithFilter() throws Exception {
+        this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
 
-        Person bob = new Person( "bob" );
-        statefulSession.addObject( bob );
+        final Person bob = new Person( "bob" );
+        this.statefulSession.addObject( bob );
 
-        Person rebecca = new Person( "rebecca" );
+        final Person rebecca = new Person( "rebecca" );
         rebecca.addSister( "jeannie" );
-        statefulSession.addObject( rebecca );
+        this.statefulSession.addObject( rebecca );
 
-        Person jeannie = new Person( "jeannie" );
+        final Person jeannie = new Person( "jeannie" );
         jeannie.addSister( "rebecca" );
-        statefulSession.addObject( jeannie );
+        this.statefulSession.addObject( jeannie );
 
         // execute the rules
-        statefulSession.executeRules( );
-        List outList = statefulSession.getObjects( new PersonFilter( ) );
-        assertEquals( "incorrect size", 3, outList.size( ) );
+        this.statefulSession.executeRules();
+        final List outList = this.statefulSession.getObjects( new PersonFilter() );
+        assertEquals( "incorrect size",
+                      3,
+                      outList.size() );
 
-        assertTrue( "where is bob", outList.contains( bob ) );
-        assertTrue( "where is rebecca", outList.contains( rebecca ) );
-        assertTrue( "where is jeannie", outList.contains( jeannie ) );
+        assertTrue( "where is bob",
+                    outList.contains( bob ) );
+        assertTrue( "where is rebecca",
+                    outList.contains( rebecca ) );
+        assertTrue( "where is jeannie",
+                    outList.contains( jeannie ) );
 
-        statefulSession.release( );
+        this.statefulSession.release();
     }
 
     /**
      * Test executeRules.
      */
-    public void testExecuteRules( ) throws Exception
-    {
+    public void testExecuteRules() throws Exception {
         // tested in testGetObjects, testGetObjectsWithFilter
     }
 
     /**
      * Test reset.
      */
-    public void testReset( ) throws Exception
-    {
-        this.statefulSession = engine.getStatefulRuleSession( bindUri );
-        
-        Person bob = new Person( "bob" );
-        Handle handle = statefulSession.addObject( bob );
-        assertTrue( "where is bob", statefulSession.containsObject( handle ) );
+    public void testReset() throws Exception {
+        this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
 
-        statefulSession.reset( );
-        assertTrue(
-            "bob still there", !statefulSession.containsObject( handle ) );
+        final Person bob = new Person( "bob" );
+        final Handle handle = this.statefulSession.addObject( bob );
+        assertTrue( "where is bob",
+                    this.statefulSession.containsObject( handle ) );
+
+        this.statefulSession.reset();
+        assertTrue( "bob still there",
+                    !this.statefulSession.containsObject( handle ) );
     }
-    
+
     /**
      * Test executeRules with globals.
      */
-    public void testExecuteRulesGlobals( ) throws Exception
-    {
-        java.util.Map map = new HashMap();
-        java.util.Vector v = new java.util.Vector( );
-        map.put("vector",  v);
-        this.statefulSession = engine.getStatefulRuleSession( bindUri_globals, map );
-        
-        Person bob = new Person( "bob" );
-        statefulSession.addObject( bob );
+    public void testExecuteRulesGlobals() throws Exception {
+        final java.util.Map map = new HashMap();
+        java.util.Vector v = new java.util.Vector();
+        map.put( "vector",
+                 v );
+        this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri_globals,
+                                                                   map );
 
-        Person rebecca = new Person( "rebecca" );
+        final Person bob = new Person( "bob" );
+        this.statefulSession.addObject( bob );
+
+        final Person rebecca = new Person( "rebecca" );
         rebecca.addSister( "jeannie" );
-        statefulSession.addObject( rebecca );
+        this.statefulSession.addObject( rebecca );
 
-        Person jeannie = new Person( "jeannie" );
+        final Person jeannie = new Person( "jeannie" );
         jeannie.addSister( "rebecca" );
-        statefulSession.addObject( jeannie );
+        this.statefulSession.addObject( jeannie );
 
         // execute the rules
-        statefulSession.executeRules( );
-        
-        List outList = statefulSession.getObjects( );
+        this.statefulSession.executeRules();
 
-        assertEquals( "incorrect size", 5, outList.size( ) );
+        final List outList = this.statefulSession.getObjects();
 
-        assertContains( outList, bob );
+        assertEquals( "incorrect size",
+                      5,
+                      outList.size() );
 
-        assertContains( outList, rebecca );
+        assertContains( outList,
+                        bob );
 
-        assertContains( outList, jeannie );
+        assertContains( outList,
+                        rebecca );
 
-        assertContains( outList, "rebecca and jeannie are sisters" );
+        assertContains( outList,
+                        jeannie );
 
-        assertContains( outList, "jeannie and rebecca are sisters" );
-        
-        v = (java.util.Vector)map.get("vector");
-        
-        assertNotNull("Global Vector null", v );
-        
-        assertContains( v, "rebecca and jeannie are sisters" );
-        
-        assertContains( v, "jeannie and rebecca are sisters" );
-        
-        assertEquals("Vector v incorrect size", 2, v.size());
+        assertContains( outList,
+                        "rebecca and jeannie are sisters" );
 
-        statefulSession.release( );
+        assertContains( outList,
+                        "jeannie and rebecca are sisters" );
+
+        v = (java.util.Vector) map.get( "vector" );
+
+        assertNotNull( "Global Vector null",
+                       v );
+
+        assertContains( v,
+                        "rebecca and jeannie are sisters" );
+
+        assertContains( v,
+                        "jeannie and rebecca are sisters" );
+
+        assertEquals( "Vector v incorrect size",
+                      2,
+                      v.size() );
+
+        this.statefulSession.release();
     }
-    
+
     /**
      * Test executeRules drl with dsl.
      */
-    public void testExecuteRules_dsl( ) throws Exception
-    {
-        this.statefulSession = engine.getStatefulRuleSession( bindUri_drl );
+    public void testExecuteRules_dsl() throws Exception {
+        this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri_drl );
 
-        Person bob = new Person( "bob" );
-        statefulSession.addObject( bob );
+        final Person bob = new Person( "bob" );
+        this.statefulSession.addObject( bob );
 
-        Person rebecca = new Person( "rebecca" );
+        final Person rebecca = new Person( "rebecca" );
         rebecca.addSister( "jeannie" );
-        statefulSession.addObject( rebecca );
+        this.statefulSession.addObject( rebecca );
 
-        Person jeannie = new Person( "jeannie" );
+        final Person jeannie = new Person( "jeannie" );
         jeannie.addSister( "rebecca" );
-        statefulSession.addObject( jeannie );
+        this.statefulSession.addObject( jeannie );
 
         // execute the rules
-        statefulSession.executeRules( );
-        
-        List outList = statefulSession.getObjects( );
+        this.statefulSession.executeRules();
 
-        assertEquals( "incorrect size", 5, outList.size( ) );
+        final List outList = this.statefulSession.getObjects();
 
-        assertContains( outList, bob );
+        assertEquals( "incorrect size",
+                      5,
+                      outList.size() );
 
-        assertContains( outList, rebecca );
+        assertContains( outList,
+                        bob );
 
-        assertContains( outList, jeannie );
+        assertContains( outList,
+                        rebecca );
 
-        assertContains( outList, "rebecca and jeannie are sisters" );
+        assertContains( outList,
+                        jeannie );
 
-        assertContains( outList, "jeannie and rebecca are sisters" );
+        assertContains( outList,
+                        "rebecca and jeannie are sisters" );
 
-        statefulSession.release( );
+        assertContains( outList,
+                        "jeannie and rebecca are sisters" );
+
+        this.statefulSession.release();
     }
 
-    protected void assertContains( List expected, Object object )
-    {
-        if ( expected.contains( object ) )
-        {
+    protected void assertContains(final List expected,
+                                  final Object object) {
+        if ( expected.contains( object ) ) {
             return;
         }
 
         fail( object + " not in " + expected );
     }
-    
+
     /**
      * Filter accepts only objects of type Person.
      */
-    static class PersonFilter implements ObjectFilter
-    {
-        public Object filter( Object object )
-        {
-            return ( object instanceof Person ? object : null );
+    static class PersonFilter
+        implements
+        ObjectFilter {
+        public Object filter(final Object object) {
+            return (object instanceof Person ? object : null);
         }
 
-        public void reset( )
-        {
+        public void reset() {
             // nothing to reset
         }
     }
-    
+
 }

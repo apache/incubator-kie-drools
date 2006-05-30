@@ -21,31 +21,24 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.net.URL;
 import java.util.Map;
 
 import javax.rules.admin.RuleExecutionSet;
 import javax.rules.admin.RuleExecutionSetCreateException;
 import javax.rules.admin.RuleExecutionSetProvider;
-
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.drools.compiler.PackageBuilder;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.rule.Package;
-import org.drools.xml.XmlPackageReader;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
+
+import org.drools.compiler.PackageBuilder;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.rule.Package;
+import org.drools.xml.XmlPackageReader;
+import org.w3c.dom.Element;
 
 /**
  * The Drools implementation of the <code>RuleExecutionSetProvider</code>
@@ -78,41 +71,36 @@ public class RuleExecutionSetProviderImpl
      *
      * @return The created <code>RuleExecutionSet</code>.
      */
-    public RuleExecutionSet createRuleExecutionSet(Element ruleExecutionSetElement,
-                                                   Map properties) throws RuleExecutionSetCreateException {
-    	  try
-          {
-//    		 Prepare the DOM source
-    	      Source source = new DOMSource( ruleExecutionSetElement );
+    public RuleExecutionSet createRuleExecutionSet(final Element ruleExecutionSetElement,
+                                                   final Map properties) throws RuleExecutionSetCreateException {
+        try {
+            //    		 Prepare the DOM source
+            final Source source = new DOMSource( ruleExecutionSetElement );
 
-    		  XmlPackageReader xmlPackageReader = new XmlPackageReader( );
-              // Prepare the result
-              SAXResult result = new SAXResult( xmlPackageReader );
+            final XmlPackageReader xmlPackageReader = new XmlPackageReader();
+            // Prepare the result
+            final SAXResult result = new SAXResult( xmlPackageReader );
 
-              // Create a transformer
-              Transformer xformer =
-                  TransformerFactory.newInstance( ).newTransformer( );
+            // Create a transformer
+            final Transformer xformer = TransformerFactory.newInstance().newTransformer();
 
-              // Traverse the DOM tree
-              xformer.transform( source, result );
+            // Traverse the DOM tree
+            xformer.transform( source,
+                               result );
 
-              PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
+            final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
 
-              //          pre build the package
-              PackageBuilder builder = new PackageBuilder();
-              builder.addPackage( packageDescr );
-              Package pkg = builder.getPackage();
+            //          pre build the package
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackage( packageDescr );
+            final Package pkg = builder.getPackage();
 
-              LocalRuleExecutionSetProviderImpl localRuleExecutionSetProvider = new LocalRuleExecutionSetProviderImpl();
-              return localRuleExecutionSetProvider.createRuleExecutionSet( pkg,
-                                                                           properties );
-          }
-          catch ( TransformerException e )
-          {
-              throw new RuleExecutionSetCreateException(
-                  "could not create RuleExecutionSet: " + e );
-          }
-
+            final LocalRuleExecutionSetProviderImpl localRuleExecutionSetProvider = new LocalRuleExecutionSetProviderImpl();
+            return localRuleExecutionSetProvider.createRuleExecutionSet( pkg,
+                                                                         properties );
+        } catch ( final TransformerException e ) {
+            throw new RuleExecutionSetCreateException( "could not create RuleExecutionSet: " + e );
+        }
 
     }
 
@@ -135,10 +123,10 @@ public class RuleExecutionSetProviderImpl
      *
      * @return The created <code>RuleExecutionSet</code>.
      */
-    public RuleExecutionSet createRuleExecutionSet(Serializable ruleExecutionSetAst,
-                                                   Map properties) throws RuleExecutionSetCreateException {
+    public RuleExecutionSet createRuleExecutionSet(final Serializable ruleExecutionSetAst,
+                                                   final Map properties) throws RuleExecutionSetCreateException {
         if ( ruleExecutionSetAst instanceof Package ) {
-            LocalRuleExecutionSetProviderImpl localRuleExecutionSetProvider = new LocalRuleExecutionSetProviderImpl();
+            final LocalRuleExecutionSetProviderImpl localRuleExecutionSetProvider = new LocalRuleExecutionSetProviderImpl();
             return localRuleExecutionSetProvider.createRuleExecutionSet( ruleExecutionSetAst,
                                                                          properties );
         } else {
@@ -162,17 +150,17 @@ public class RuleExecutionSetProviderImpl
      *
      * @return The created <code>RuleExecutionSet</code>.
      */
-    public RuleExecutionSet createRuleExecutionSet(String ruleExecutionSetUri,
-                                                   Map properties) throws RuleExecutionSetCreateException,
-                                                                  IOException {
+    public RuleExecutionSet createRuleExecutionSet(final String ruleExecutionSetUri,
+                                                   final Map properties) throws RuleExecutionSetCreateException,
+                                                                        IOException {
         InputStream in = null;
         try {
-            LocalRuleExecutionSetProviderImpl localRuleExecutionSetProvider = new LocalRuleExecutionSetProviderImpl();
+            final LocalRuleExecutionSetProviderImpl localRuleExecutionSetProvider = new LocalRuleExecutionSetProviderImpl();
             in = new URL( ruleExecutionSetUri ).openStream();
-            Reader reader = new InputStreamReader( in );
+            final Reader reader = new InputStreamReader( in );
             return localRuleExecutionSetProvider.createRuleExecutionSet( reader,
                                                                          properties );
-        } catch ( IOException ex ) {
+        } catch ( final IOException ex ) {
             throw ex;
         } finally {
             if ( in != null ) {

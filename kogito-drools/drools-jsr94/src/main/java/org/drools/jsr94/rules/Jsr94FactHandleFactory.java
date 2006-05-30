@@ -16,47 +16,26 @@ package org.drools.jsr94.rules;
  * limitations under the License.
  */
 
-import org.drools.FactHandle;
+import org.drools.common.AbstractFactHandleFactory;
+import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.spi.FactHandleFactory;
 
 /**
  * A factory for creating <code>Handle</code>s.
  * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
-public final class Jsr94FactHandleFactory
-    implements
-    FactHandleFactory {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-
-    /** The fact id. */
-    private long id;
-
-    /** The number of facts created - used for recency. */
-    private long counter;
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#newFactHandle()
-     */
-    public final FactHandle newFactHandle() {
-        return newFactHandle( this.id++ );
-    }
+public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    public final FactHandle newFactHandle(long id) {
+    protected final InternalFactHandle newFactHandle(final long id,
+                                                     final Object object,
+                                                     final long recency) {
         return new Jsr94FactHandle( id,
-                                   this.counter++ );
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)
-     */
-    public final void increaseFactHandleRecency(FactHandle factHandle) {
-        ((Jsr94FactHandle) factHandle).setRecency( ++this.counter );
+                                    object,
+                                    recency );
     }
 
     /* (non-Javadoc)
@@ -64,5 +43,9 @@ public final class Jsr94FactHandleFactory
      */
     public FactHandleFactory newInstance() {
         return new Jsr94FactHandleFactory();
+    }
+
+    public Class getFactHandleType() {
+        return DefaultFactHandle.class;
     }
 }

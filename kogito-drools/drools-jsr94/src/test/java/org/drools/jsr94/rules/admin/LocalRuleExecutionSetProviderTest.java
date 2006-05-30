@@ -43,14 +43,14 @@ public class LocalRuleExecutionSetProviderTest extends RuleEngineTestBase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
-        ruleSetProvider = ruleAdministrator.getLocalRuleExecutionSetProvider( null );
+        this.ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
+        this.ruleSetProvider = this.ruleAdministrator.getLocalRuleExecutionSetProvider( null );
     }
 
     public void testCreateFromInputStream() throws Exception {
-        InputStream rulesStream = RuleEngineTestBase.class.getResourceAsStream( bindUri );
-        RuleExecutionSet ruleSet = ruleSetProvider.createRuleExecutionSet( rulesStream,
-                                                                           null );
+        final InputStream rulesStream = RuleEngineTestBase.class.getResourceAsStream( this.bindUri );
+        final RuleExecutionSet ruleSet = this.ruleSetProvider.createRuleExecutionSet( rulesStream,
+                                                                                      null );
         assertEquals( "rule set name",
                       "SistersRules",
                       ruleSet.getName() );
@@ -60,26 +60,26 @@ public class LocalRuleExecutionSetProviderTest extends RuleEngineTestBase {
     }
 
     public void testCreateFromObject() throws Exception {
-        InputStream inputStream = null;
+        final InputStream inputStream = null;
         try {
-            PackageBuilder builder = new PackageBuilder();
-            builder.addPackageFromDrl( new InputStreamReader( RuleEngineTestBase.class.getResourceAsStream( bindUri ) ) );
-            Package pkg = builder.getPackage();
-            RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( pkg,
-                                                                                        null );
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( RuleEngineTestBase.class.getResourceAsStream( this.bindUri ) ) );
+            final Package pkg = builder.getPackage();
+            final RuleExecutionSet ruleExecutionSet = this.ruleSetProvider.createRuleExecutionSet( pkg,
+                                                                                                   null );
             assertEquals( "rule set name",
                           "SistersRules",
                           ruleExecutionSet.getName() );
             assertEquals( "number of rules",
                           1,
                           ruleExecutionSet.getRules().size() );
-        } catch ( IOException e ) {
+        } catch ( final IOException e ) {
             fail( "Couldn't create the RuleExecutionSet. " + "Test threw an IOException." );
         } finally {
             if ( inputStream != null ) {
                 try {
                     inputStream.close();
-                } catch ( IOException e ) {
+                } catch ( final IOException e ) {
                     e.printStackTrace();
                 }
             }
@@ -90,9 +90,9 @@ public class LocalRuleExecutionSetProviderTest extends RuleEngineTestBase {
      * Test createRuleExecutionSet from Reader.
      */
     public void testCreateFromReader() throws Exception {
-        Reader ruleReader = new InputStreamReader( RuleEngineTestBase.class.getResourceAsStream( bindUri ) );
-        RuleExecutionSet ruleSet = ruleSetProvider.createRuleExecutionSet( ruleReader,
-                                                                           null );
+        final Reader ruleReader = new InputStreamReader( RuleEngineTestBase.class.getResourceAsStream( this.bindUri ) );
+        final RuleExecutionSet ruleSet = this.ruleSetProvider.createRuleExecutionSet( ruleReader,
+                                                                                      null );
         assertEquals( "rule set name",
                       "SistersRules",
                       ruleSet.getName() );
