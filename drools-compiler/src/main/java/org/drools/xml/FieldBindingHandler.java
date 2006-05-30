@@ -39,10 +39,10 @@ import org.xml.sax.SAXParseException;
 class FieldBindingHandler extends BaseAbstractHandler
     implements
     Handler {
-    FieldBindingHandler(XmlPackageReader xmlPackageReader) {
+    FieldBindingHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( ColumnDescr.class );
 
@@ -57,40 +57,40 @@ class FieldBindingHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        String identifier = attrs.getValue( "identifier" );
+        final String identifier = attrs.getValue( "identifier" );
         if ( identifier == null || identifier.trim().equals( "" ) ) {
             throw new SAXParseException( "<field-binding> requires an 'identifier' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        String fieldName = attrs.getValue( "field-name" );
+        final String fieldName = attrs.getValue( "field-name" );
         if ( fieldName == null || fieldName.trim().equals( "" ) ) {
             throw new SAXParseException( "<field-binding> requires a 'field-name' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( fieldName,
+        final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( fieldName,
                                                                      identifier );
 
         return fieldBindingDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) this.xmlPackageReader.getCurrent();
+        final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) this.xmlPackageReader.getCurrent();
 
-        LinkedList parents = this.xmlPackageReader.getParents();
-        ListIterator it = parents.listIterator( parents.size() );
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        ColumnDescr columnDescr = (ColumnDescr) it.previous();
+        final ColumnDescr columnDescr = (ColumnDescr) it.previous();
 
         columnDescr.addDescr( fieldBindingDescr );
 

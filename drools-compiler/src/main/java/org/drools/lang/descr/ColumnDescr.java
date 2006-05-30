@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,51 +16,54 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ColumnDescr extends PatternDescr {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 63959215220308107L;
     private String objectType;
     private String identifier;
     private List   descrs = Collections.EMPTY_LIST;
 
-    public ColumnDescr(String objectType) {
-        this(objectType, null);
-    }    
-    
-    public ColumnDescr(String objectType,
-                       String identifier) {
+    public ColumnDescr(final String objectType) {
+        this( objectType,
+              null );
+    }
+
+    public ColumnDescr(final String objectType,
+                       final String identifier) {
         this.objectType = objectType;
         this.identifier = identifier;
     }
 
-    public void addDescr(PatternDescr patternDescr) {
+    public void addDescr(final PatternDescr patternDescr) {
         if ( this.descrs == Collections.EMPTY_LIST ) {
             this.descrs = new ArrayList( 1 );
         }
-        this.descrs.add(  patternDescr );
+        this.descrs.add( patternDescr );
     }
 
-    public void setIdentifier(String identifier) {
-    		this.identifier = identifier;
+    public void setIdentifier(final String identifier) {
+        this.identifier = identifier;
     }
-    
+
     public String getObjectType() {
-        return objectType;
+        return this.objectType;
     }
 
     public String getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
     public List getDescrs() {
         return this.descrs;
     }
-    
+
     public String toString() {
-    		return "[Column: id=" + identifier + "; objectType=" + objectType + "]";
+        return "[Column: id=" + this.identifier + "; objectType=" + this.objectType + "]";
     }
 }

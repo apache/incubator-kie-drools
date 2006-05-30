@@ -1,4 +1,5 @@
 package org.drools.semantics.java;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,10 +15,6 @@ package org.drools.semantics.java;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,8 +34,7 @@ import org.drools.semantics.java.parser.JavaParserLexer;
  * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-public class JavaExprAnalyzer
-{
+public class JavaExprAnalyzer {
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -46,8 +42,7 @@ public class JavaExprAnalyzer
     /**
      * Construct.
      */
-    public JavaExprAnalyzer()
-    {
+    public JavaExprAnalyzer() {
         // intentionally left blank.
     }
 
@@ -67,21 +62,30 @@ public class JavaExprAnalyzer
      * @throws RecognitionException 
      *             If an error occurs in the parser.
      */
-    public List analyze(String expr,
-                        Set availDecls) throws RecognitionException 
-                                        
-    {
-    		CharStream charStream = new ANTLRStringStream( expr );
-        JavaParserLexer lexer = new JavaParserLexer( charStream );
-        TokenStream tokenStream = new CommonTokenStream( lexer );
-        JavaParser parser = new JavaParser( tokenStream );
+    public List[] analyzeExpression(final String expr,
+                                    final Set[] availableIdentifiers) throws RecognitionException {
+        final CharStream charStream = new ANTLRStringStream( expr );
+        final JavaParserLexer lexer = new JavaParserLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        final JavaParser parser = new JavaParser( tokenStream );
 
         parser.logicalOrExpression();
-        
-        List identifiers = parser.getIdentifiers();
 
-        return analyze( availDecls,
-                        identifiers );
+        return analyze( parser.getIdentifiers(),
+                        availableIdentifiers );
+    }
+
+    public List[] analyzeBlock(final String expr,
+                               final Set[] availableIdentifiers) throws RecognitionException {
+        final CharStream charStream = new ANTLRStringStream( "{" + expr + "}" );
+        final JavaParserLexer lexer = new JavaParserLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        final JavaParser parser = new JavaParser( tokenStream );
+
+        parser.compoundStatement();
+
+        return analyze( parser.getIdentifiers(),
+                        availableIdentifiers );
     }
 
     /**
@@ -97,21 +101,37 @@ public class JavaExprAnalyzer
      * @throws RecognitionException
      *             If an error occurs in the parser.
      */
-    private List analyze(Set availDecls,
-                         List identifiers) throws RecognitionException
-    {
-        List decls = new ArrayList();
-       
-        for ( Iterator declIter = availDecls.iterator(); declIter.hasNext(); )
-        {
-            String eachDecl = (String) declIter.next();
+    private List[] analyze(final List identifiers,
+                           final Set[] availableIdentifiers) throws RecognitionException {
+        final List[] used = new List[availableIdentifiers.length];
+        for ( int i = 0, length = used.length; i < length; i++ ) {
+            used[i] = new ArrayList();
+        }
 
-            if ( identifiers.contains( eachDecl ) )
-            {
-                decls.add( eachDecl );
+        for ( int i = 0, length = availableIdentifiers.length; i < length; i++ ) {
+            final Set set = availableIdentifiers[i];
+            for ( final Iterator it = set.iterator(); it.hasNext(); ) {
+                final String eachDecl = (String) it.next();
+                if ( identifiers.contains( eachDecl ) ) {
+                    used[i].add( eachDecl );
+                }
             }
         }
 
-        return decls;
+        return used;
+        //--------------------------------------------------------        
+        //        List decls = new ArrayList();
+        //        
+        //        for ( Iterator declIter = availDecls.iterator(); declIter.hasNext(); )
+        //        {
+        //            String eachDecl = (String) declIter.next();
+        //
+        //            if ( identifiers.contains( eachDecl ) )
+        //            {
+        //                decls.add( eachDecl );
+        //            }
+        //        }
+        //
+        //        return decls;        
     }
 }

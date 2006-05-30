@@ -1,6 +1,7 @@
 package org.drools;
 
 import java.io.Serializable;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,33 +18,37 @@ import java.io.Serializable;
  * limitations under the License.
  */
 
-
-
-public class Cheese implements Serializable {
+public class Cheese
+    implements
+    Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -1187540653710115339L;
     private String type;
     private int    price;
 
-    public Cheese(String type,
-                  int price) {
+    public Cheese(final String type,
+                  final int price) {
         super();
         this.type = type;
         this.price = price;
     }
 
     public int getPrice() {
-        return price;
+        return this.price;
     }
 
     public String getType() {
-        return type;
+        return this.type;
     }
-    
-    public void setPrice(int price) {
+
+    public void setPrice(final int price) {
         this.price = price;
     }
-    
+
     public String toString() {
-        return "Cheese( type='"+this.type+"', price="+this.price+" )";
+        return "Cheese( type='" + this.type + "', price=" + this.price + " )";
     }
 
 }

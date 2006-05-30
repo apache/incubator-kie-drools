@@ -35,19 +35,18 @@ public class MappingError extends DroolsError {
     public static final int ERROR_UNDECLARED_TOKEN = 22;
     public static final int ERROR_INVALID_TOKEN    = 23;
     public static final int ERROR_UNMATCHED_BRACES = 24;
-    
 
     private final int       errorCode;
     private final int       template;
     private final int       offset;
     private final String    token;
-    private String templateText;
+    private String          templateText;
 
-    public MappingError(int errorCode,
-                        int template,
-                        int offset,
-                        String token,
-                        String templateText) {
+    public MappingError(final int errorCode,
+                        final int template,
+                        final int offset,
+                        final String token,
+                        final String templateText) {
         this.errorCode = errorCode;
         this.template = template;
         this.token = token;
@@ -62,26 +61,26 @@ public class MappingError extends DroolsError {
     public int getErrorCode() {
         return this.errorCode;
     }
-    
+
     /**
      * @return the offset
      */
     public int getOffset() {
-        return offset;
+        return this.offset;
     }
 
     /**
      * @return the template
      */
     public int getTemplate() {
-        return template;
+        return this.template;
     }
-    
+
     /**
      * @return the original content.
      */
     public String getTemplateText() {
-        return templateText;
+        return this.templateText;
     }
 
     /**
@@ -90,17 +89,17 @@ public class MappingError extends DroolsError {
      * @see org.drools.compiler.DroolsError#getMessage()
      */
     public String getMessage() {
-        switch(this.errorCode) {
-            case ERROR_UNUSED_TOKEN:
-                return "Warning, the token "+this.token+" not used in the mapping.";
-            case ERROR_UNDECLARED_TOKEN:
-                return "Warning, the token "+this.token+" not found in the expression. (May not be a problem).";
-            case ERROR_INVALID_TOKEN:
-                return "Invalid token declaration at offset "+this.offset+": "+this.token;
-            case ERROR_UNMATCHED_BRACES:
-                return "Unexpected } found at offset "+this.offset;
-            default:
-                return "Unkown error at offset: "+this.offset;
+        switch ( this.errorCode ) {
+            case ERROR_UNUSED_TOKEN :
+                return "Warning, the token " + this.token + " not used in the mapping.";
+            case ERROR_UNDECLARED_TOKEN :
+                return "Warning, the token " + this.token + " not found in the expression. (May not be a problem).";
+            case ERROR_INVALID_TOKEN :
+                return "Invalid token declaration at offset " + this.offset + ": " + this.token;
+            case ERROR_UNMATCHED_BRACES :
+                return "Unexpected } found at offset " + this.offset;
+            default :
+                return "Unkown error at offset: " + this.offset;
         }
     }
 }

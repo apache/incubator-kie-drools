@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,32 +16,35 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 import java.util.Collections;
 import java.util.List;
 
 public class EvalDescr extends PatternDescr
     implements
     ConditionalElementDescr {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 325264120108029570L;
+
     private String   text;
 
     private String[] declarations;
 
     private String   classMethodName;
-    
-    public EvalDescr() {
-    }    
 
-    public EvalDescr(String text) {
+    public EvalDescr() {
+    }
+
+    public EvalDescr(final String text) {
         this.text = text;
     }
 
     public String getText() {
         return this.text;
     }
-    
-    public void setText(String text) {
+
+    public void setText(final String text) {
         this.text = text;
     }
 
@@ -48,11 +52,11 @@ public class EvalDescr extends PatternDescr
         return this.classMethodName;
     }
 
-    public void setClassMethodName(String classMethodName) {
+    public void setClassMethodName(final String classMethodName) {
         this.classMethodName = classMethodName;
     }
 
-    public void setDeclarations(String[] declarations) {
+    public void setDeclarations(final String[] declarations) {
         this.declarations = declarations;
     }
 
@@ -64,7 +68,7 @@ public class EvalDescr extends PatternDescr
         return Collections.EMPTY_LIST;
     }
 
-    public void addDescr(PatternDescr patternDescr) {
+    public void addDescr(final PatternDescr patternDescr) {
         // do thing, this can have no children        
     }
 }

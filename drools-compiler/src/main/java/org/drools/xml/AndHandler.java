@@ -41,10 +41,10 @@ import org.xml.sax.SAXException;
 class AndHandler extends BaseAbstractHandler
     implements
     Handler {
-    AndHandler(XmlPackageReader xmlPackageReader) {
+    AndHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( QueryDescr.class );
             this.validParents.add( RuleDescr.class );
@@ -64,32 +64,32 @@ class AndHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
-        AndDescr andDescr = new AndDescr();
+        final AndDescr andDescr = new AndDescr();
 
         return andDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        AndDescr andDescr = (AndDescr) this.xmlPackageReader.getCurrent();
+        final AndDescr andDescr = (AndDescr) this.xmlPackageReader.getCurrent();
 
-        LinkedList parents = this.xmlPackageReader.getParents();
-        ListIterator it = parents.listIterator( parents.size() );
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        Object parent = it.previous();
+        final Object parent = it.previous();
 
         if ( parent.getClass() == RuleDescr.class || parent.getClass() == QueryDescr.class ) {
-            RuleDescr ruleDescr = (RuleDescr) parent;
+            final RuleDescr ruleDescr = (RuleDescr) parent;
             ruleDescr.setLhs( andDescr );
         } else {
-            ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
+            final ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
             ceDescr.addDescr( andDescr );
         }
 

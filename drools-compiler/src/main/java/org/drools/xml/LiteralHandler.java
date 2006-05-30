@@ -39,10 +39,10 @@ import org.xml.sax.SAXParseException;
 class LiteralHandler extends BaseAbstractHandler
     implements
     Handler {
-    LiteralHandler(XmlPackageReader xmlPackageReader) {
+    LiteralHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( ColumnDescr.class );
 
@@ -57,47 +57,47 @@ class LiteralHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        String fieldName = attrs.getValue( "field-name" );
+        final String fieldName = attrs.getValue( "field-name" );
         if ( fieldName == null || fieldName.trim().equals( "" ) ) {
             throw new SAXParseException( "<literal> requires a 'field-name' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        String evaluator = attrs.getValue( "evaluator" );
+        final String evaluator = attrs.getValue( "evaluator" );
         if ( evaluator == null || evaluator.trim().equals( "" ) ) {
             throw new SAXParseException( "<literal> requires an 'evaluator' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        String text = attrs.getValue( "value" );
+        final String text = attrs.getValue( "value" );
         if ( text == null || text.trim().equals( "" ) ) {
             throw new SAXParseException( "<literal>  requires an 'value' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        LiteralDescr literalDescr = new LiteralDescr( fieldName,
+        final LiteralDescr literalDescr = new LiteralDescr( fieldName,
                                                       evaluator,
                                                       text );
 
         return literalDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        LiteralDescr literalDescr = (LiteralDescr) this.xmlPackageReader.getCurrent();
+        final LiteralDescr literalDescr = (LiteralDescr) this.xmlPackageReader.getCurrent();
 
-        LinkedList parents = this.xmlPackageReader.getParents();
-        ListIterator it = parents.listIterator( parents.size() );
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        ColumnDescr columnDescr = (ColumnDescr) it.previous();
+        final ColumnDescr columnDescr = (ColumnDescr) it.previous();
 
         columnDescr.addDescr( literalDescr );
 

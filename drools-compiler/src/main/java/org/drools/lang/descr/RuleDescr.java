@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,104 +16,104 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class RuleDescr extends PatternDescr  {
-    private String name;
-    private String documentation;
-    
+public class RuleDescr extends PatternDescr {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8285211076343653883L;
+    private String   name;
+    private String   documentation;
+
     private AndDescr lhs;
     private String   consequence;
-    private int consequenceLine;
-    private int consequenceColumn;    
-    private int offset;
-    private List attributes = Collections.EMPTY_LIST;
-    
-    private String className;
+    private int      consequenceLine;
+    private int      consequenceColumn;
+    private int      offset;
+    private List     attributes = Collections.EMPTY_LIST;
 
-    public RuleDescr(String name) {
-        this( name, "");
+    private String   className;
+
+    public RuleDescr(final String name) {
+        this( name,
+              "" );
     }
-    
-    public RuleDescr(String ruleName, String documentation) {
+
+    public RuleDescr(final String ruleName,
+                     final String documentation) {
         this.name = ruleName;
         this.documentation = documentation;
     }
-    
+
     public String getName() {
-        return name;
-    }       
-      
+        return this.name;
+    }
+
     public String getClassName() {
         return this.className;
     }
-    
-    public void SetClassName(String className) {
+
+    public void SetClassName(final String className) {
         this.className = className;
-    }    
-    
+    }
+
     public String getDocumentation() {
-        return documentation;
-    }    
-    
+        return this.documentation;
+    }
+
     public List getAttributes() {
-        return attributes;
-    }    
-    
-    public void addAttribute(AttributeDescr attribute) {
-        if ( this.attributes == Collections.EMPTY_LIST) {
+        return this.attributes;
+    }
+
+    public void addAttribute(final AttributeDescr attribute) {
+        if ( this.attributes == Collections.EMPTY_LIST ) {
             this.attributes = new ArrayList();
         }
         this.attributes.add( attribute );
-    }      
-    
-    public void setAttributes(List attributes) {
-    		this.attributes = new ArrayList( attributes );
+    }
+
+    public void setAttributes(final List attributes) {
+        this.attributes = new ArrayList( attributes );
     }
 
     public AndDescr getLhs() {
-        return lhs;
+        return this.lhs;
     }
 
-
-    public void setLhs(AndDescr lhs) {
+    public void setLhs(final AndDescr lhs) {
         this.lhs = lhs;
     }
-
 
     public String getConsequence() {
         return this.consequence;
     }
 
-
-    public void setConsequence(String consequence) {
+    public void setConsequence(final String consequence) {
         this.consequence = consequence;
     }
-    
-    public void setConsequenceLocation(int line, int column) {
-        this.consequenceLine   = line;
+
+    public void setConsequenceLocation(final int line,
+                                       final int column) {
+        this.consequenceLine = line;
         this.consequenceColumn = column;
     }
-    
-    public void setConsequenceOffset(int offset) {
+
+    public void setConsequenceOffset(final int offset) {
         this.offset = offset;
     }
-    
+
     public int getConsequenceOffset() {
         return this.offset;
     }
-    
+
     public int getConsequenceLine() {
         return this.consequenceLine;
     }
-    
+
     public int getConsequenceColumn() {
         return this.consequenceColumn;
-    }    
+    }
 }

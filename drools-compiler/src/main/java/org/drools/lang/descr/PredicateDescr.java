@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,59 +16,61 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 public class PredicateDescr extends PatternDescr {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1274917549785412384L;
     private final String fieldName;
-    private String text;
-    
+    private String       text;
+
     private final String declaration;
-    private String[] declarations;
-    
-    private String classMethodName;
-    
-    public PredicateDescr(String fieldName,
-                          String declaration) {
+    private String[]     declarations;
+
+    private String       classMethodName;
+
+    public PredicateDescr(final String fieldName,
+                          final String declaration) {
         this.fieldName = fieldName;
         this.declaration = declaration;
-    }    
-        
-    public PredicateDescr(String fieldName,
-                          String declaration,
-                          String text) {
+    }
+
+    public PredicateDescr(final String fieldName,
+                          final String declaration,
+                          final String text) {
         this.fieldName = fieldName;
         this.declaration = declaration;
         this.text = text;
     }
-    
+
     public String getFieldName() {
-        return fieldName;
+        return this.fieldName;
     }
-    
+
     public String getClassMethodName() {
         return this.classMethodName;
     }
 
-    public void setClassMethodName(String classMethodName) {
+    public void setClassMethodName(final String classMethodName) {
         this.classMethodName = classMethodName;
-    }     
-    
+    }
+
     public String getText() {
         return this.text;
-    } 
-    
-    public void setText(String text) {
+    }
+
+    public void setText(final String text) {
         this.text = text;
-    }    
-    
+    }
+
     public String getDeclaration() {
         return this.declaration;
     }
-    
-    public void setDeclarations( String[] declarations) {
+
+    public void setDeclarations(final String[] declarations) {
         this.declarations = declarations;
     }
-    
+
     public String[] getDeclarations() {
         return this.declarations;
     }

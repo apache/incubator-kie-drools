@@ -1,4 +1,5 @@
 package org.drools.lang.dsl.template;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,14 +16,9 @@ package org.drools.lang.dsl.template;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,125 +33,130 @@ import org.apache.commons.lang.StringUtils;
  */
 public class RegexTemplate {
 
-   
     private Pattern templatePattern;
-    private List holes;
-    private String template;
-    
-    public static void main(String[] args) {
-        
-        RegexTemplate regTemplate = new RegexTemplate("the date between {before} and {after}");
+    private List    holes;
+    private String  template;
+
+    public static void main(final String[] args) {
+
+        RegexTemplate regTemplate = new RegexTemplate( "the date between {before} and {after}" );
         regTemplate.compile();
-        
-        String out = regTemplate.populate("the date between date1 and date2", "dateBetween({before},{after})");
-        
+
+        final String out = regTemplate.populate( "the date between date1 and date2",
+                                           "dateBetween({before},{after})" );
+
         perfRegex( regTemplate,
                    out );
-        
-        regTemplate = new RegexTemplate("date of '{date}'");
+
+        regTemplate = new RegexTemplate( "date of '{date}'" );
         regTemplate.compile();
-        
-        
-        
-        System.out.println(regTemplate.populate("date of 'today' and date of 'tomorrow'", "dateOf({date})"));
-        
-        
+
+        System.out.println( regTemplate.populate( "date of 'today' and date of 'tomorrow'",
+                                                  "dateOf({date})" ) );
+
         perfTemplate();
-        
-        
-        
+
     }
 
-
-    private static void perfRegex(RegexTemplate regTemplate,
-                                  String out) {
-        long start = System.currentTimeMillis();
-        for (int i = 0; i < 100000; i++) {
-            regTemplate.populate("the date between date1 and date2", "dateBetween({before},{after})");
+    private static void perfRegex(final RegexTemplate regTemplate,
+                                  final String out) {
+        final long start = System.currentTimeMillis();
+        for ( int i = 0; i < 100000; i++ ) {
+            regTemplate.populate( "the date between date1 and date2",
+                                  "dateBetween({before},{after})" );
         }
-        System.out.println("time for regex " + (System.currentTimeMillis() - start));
-        System.out.println(out);
+        System.out.println( "time for regex " + (System.currentTimeMillis() - start) );
+        System.out.println( out );
     }
-
 
     private static void perfTemplate() {
         long start;
-        TemplateFactory factory = new TemplateFactory();
-        Template template = factory.getTemplate("the date between {before} and {after}");
-        
-        start = System.currentTimeMillis();
-        for (int i = 0; i < 100000; i++) {
-            template.expandAll("the date between date1 and date2", "dateBetween({before},{after})" );
-        }
-        System.out.println("time for non " + (System.currentTimeMillis() - start));
-    }
-  
-    
-    List lex() {
-        ChunkLexer lex = new ChunkLexer();
-        List chunks = lex.lex(template);
-        return chunks;
-      
-    }
-    
+        final TemplateFactory factory = new TemplateFactory();
+        final Template template = factory.getTemplate( "the date between {before} and {after}" );
 
-    public String populate(String source, String targetTemplate) {
-        Matcher matcher = templatePattern.matcher(source);
-        if (!matcher.matches()) return source;
-        
-        String result = targetTemplate;
-        if (matcher.groupCount() != holes.size()) {
-            throw new IllegalArgumentException("Unable to match up holes in template with source.");
+        start = System.currentTimeMillis();
+        for ( int i = 0; i < 100000; i++ ) {
+            template.expandAll( "the date between date1 and date2",
+                                "dateBetween({before},{after})" );
         }
-        
-        for (int i = 0; i < matcher.groupCount(); i++ ) {
-            String val = matcher.group(i + 1);
-            String hole = (String) holes.get(i);
-            result = replace(result, hole, val.trim());// result.replace(hole, val);
+        System.out.println( "time for non " + (System.currentTimeMillis() - start) );
+    }
+
+    List lex() {
+        final ChunkLexer lex = new ChunkLexer();
+        final List chunks = lex.lex( this.template );
+        return chunks;
+
+    }
+
+    public String populate(final String source,
+                           final String targetTemplate) {
+        final Matcher matcher = this.templatePattern.matcher( source );
+        if ( !matcher.matches() ) {
+            return source;
+        }
+
+        String result = targetTemplate;
+        if ( matcher.groupCount() != this.holes.size() ) {
+            throw new IllegalArgumentException( "Unable to match up holes in template with source." );
+        }
+
+        for ( int i = 0; i < matcher.groupCount(); i++ ) {
+            final String val = matcher.group( i + 1 );
+            final String hole = (String) this.holes.get( i );
+            result = replace( result,
+                              hole,
+                              val.trim() );// result.replace(hole, val);
         }
         return result;
     }
-    
+
     public void compile() {
-        List chunks = lex();
-        
-        StringBuffer regex = new StringBuffer();
-        List holes = new ArrayList();
-        for ( Iterator iter = chunks.iterator(); iter.hasNext(); ) {
-            String chunk = (String) iter.next();
-            if (chunk.startsWith("{")) {
-                holes.add(chunk);
-                regex.append("\\b(.*)\\b");
+        final List chunks = lex();
+
+        final StringBuffer regex = new StringBuffer();
+        final List holes = new ArrayList();
+        for ( final Iterator iter = chunks.iterator(); iter.hasNext(); ) {
+            final String chunk = (String) iter.next();
+            if ( chunk.startsWith( "{" ) ) {
+                holes.add( chunk );
+                regex.append( "\\b(.*)\\b" );
             } else {
-                regex.append(replace(chunk, " ", "\\s"));//chunk.replace(" ", "\\s"));
+                regex.append( replace( chunk,
+                                       " ",
+                                       "\\s" ) );//chunk.replace(" ", "\\s"));
             }
         }
         this.holes = holes;
-        this.templatePattern = Pattern.compile("\\s*" + regex.toString() + "\\s*");
+        this.templatePattern = Pattern.compile( "\\s*" + regex.toString() + "\\s*" );
     }
-    
-    public RegexTemplate(String grammarTemplate) {
+
+    public RegexTemplate(final String grammarTemplate) {
         this.template = grammarTemplate;
     }
-    
-    private String replace(String str, String find, String replace) {
-        return StringUtils.replace(str, find, replace);
+
+    private String replace(final String str,
+                           final String find,
+                           final String replace) {
+        return StringUtils.replace( str,
+                                    find,
+                                    replace );
     }
-    
+
     /**
      * Lex out chunks. 
      * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
      */
     static class ChunkLexer {
-        
-        private List chunks = new ArrayList();
-        
+
+        private final List         chunks = new ArrayList();
+
         private StringBuffer buffer = new StringBuffer();
-        
-        public List lex(String grammarTemplate) {
-            
-            char[] chars = grammarTemplate.toCharArray();
-            
+
+        public List lex(final String grammarTemplate) {
+
+            final char[] chars = grammarTemplate.toCharArray();
+
             for ( int i = 0; i < chars.length; i++ ) {
                 switch ( chars[i] ) {
                     case '{' :
@@ -164,35 +165,36 @@ public class RegexTemplate {
                     case '}' :
                         endHole();
                         break;
-                    default : 
-                        buffer.append(chars[i]);
+                    default :
+                        this.buffer.append( chars[i] );
                         break;
                 }
             }
-            String buf = this.buffer.toString();
-            if (!buf.equals("")) addChunk( buf );
+            final String buf = this.buffer.toString();
+            if ( !buf.equals( "" ) ) {
+                addChunk( buf );
+            }
             return this.chunks;
-            
+
         }
 
-        private boolean addChunk(String buf) {
+        private boolean addChunk(final String buf) {
             return this.chunks.add( buf.trim() );
         }
 
         private void endHole() {
-            String buf = this.buffer.toString();
-            chunks.add("{" + buf + "}");
+            final String buf = this.buffer.toString();
+            this.chunks.add( "{" + buf + "}" );
             this.buffer = new StringBuffer();
         }
 
         private void startHole() {
-            String buf = this.buffer.toString();
-            if (!buf.equals("")) {
+            final String buf = this.buffer.toString();
+            if ( !buf.equals( "" ) ) {
                 addChunk( buf );
             }
-            this.buffer = new StringBuffer();            
+            this.buffer = new StringBuffer();
         }
-        
-        
-    }    
+
+    }
 }

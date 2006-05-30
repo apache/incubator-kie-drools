@@ -66,7 +66,7 @@ public class DefaultConfiguration
      * @param name
      *            The name of the node.
      */
-    public DefaultConfiguration(String name) {
+    public DefaultConfiguration(final String name) {
         this.name = name;
         this.attrs = new HashMap();
         this.children = new ArrayList();
@@ -85,7 +85,7 @@ public class DefaultConfiguration
      * @param text
      *            The text.
      */
-    public void setText(String text) {
+    public void setText(final String text) {
         this.text = text;
     }
 
@@ -104,8 +104,8 @@ public class DefaultConfiguration
      * @param value
      *            The attribute value.
      */
-    public void setAttribute(String name,
-                             String value) {
+    public void setAttribute(final String name,
+                             final String value) {
         this.attrs.put( name,
                         value );
     }
@@ -113,7 +113,7 @@ public class DefaultConfiguration
     /**
      * @see Configuration
      */
-    public String getAttribute(String name) {
+    public String getAttribute(final String name) {
         return (String) this.attrs.get( name );
     }
 
@@ -121,7 +121,7 @@ public class DefaultConfiguration
      * @see Configuration
      */
     public String[] getAttributeNames() {
-        return (String[]) this.attrs.keySet().toArray( EMPTY_STRING_ARRAY );
+        return (String[]) this.attrs.keySet().toArray( DefaultConfiguration.EMPTY_STRING_ARRAY );
     }
 
     /**
@@ -130,16 +130,16 @@ public class DefaultConfiguration
      * @param config
      *            The child.
      */
-    public void addChild(Configuration config) {
+    public void addChild(final Configuration config) {
         this.children.add( config );
     }
 
     /**
      * @see Configuration
      */
-    public Configuration getChild(String name) {
-        for ( Iterator childIter = this.children.iterator(); childIter.hasNext(); ) {
-            Configuration eachConfig = (Configuration) childIter.next();
+    public Configuration getChild(final String name) {
+        for ( final Iterator childIter = this.children.iterator(); childIter.hasNext(); ) {
+            final Configuration eachConfig = (Configuration) childIter.next();
 
             if ( eachConfig.getName().equals( name ) ) {
                 return eachConfig;
@@ -152,11 +152,11 @@ public class DefaultConfiguration
     /**
      * @see Configuration
      */
-    public Configuration[] getChildren(String name) {
-        List result = new ArrayList();
+    public Configuration[] getChildren(final String name) {
+        final List result = new ArrayList();
 
-        for ( Iterator childIter = this.children.iterator(); childIter.hasNext(); ) {
-            Configuration eachConfig = (Configuration) childIter.next();
+        for ( final Iterator childIter = this.children.iterator(); childIter.hasNext(); ) {
+            final Configuration eachConfig = (Configuration) childIter.next();
 
             if ( eachConfig.getName().equals( name ) ) {
                 result.add( eachConfig );

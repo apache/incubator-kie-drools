@@ -1,4 +1,5 @@
 package org.drools.compiler;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,28 +16,26 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-
-
 import org.drools.lang.descr.FunctionDescr;
 
 public class FunctionError extends DroolsError {
     private FunctionDescr functionDescr;
-    private Object       object;
-    private String       message;
-    
-    public FunctionError(FunctionDescr functionDescr,
-                     Object object,
-                     String message) {
+    private Object        object;
+    private String        message;
+
+    public FunctionError(final FunctionDescr functionDescr,
+                         final Object object,
+                         final String message) {
         super();
         this.functionDescr = functionDescr;
         this.object = object;
         this.message = message;
-    }    
+    }
 
     public FunctionDescr getFunctionDescr() {
         return this.functionDescr;
     }
-       
+
     public Object getObject() {
         return this.object;
     }
@@ -44,5 +43,5 @@ public class FunctionError extends DroolsError {
     public String getMessage() {
         return this.message;
     }
-            
+
 }

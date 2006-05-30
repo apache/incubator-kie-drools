@@ -37,10 +37,10 @@ import org.xml.sax.SAXParseException;
 class RuleHandler extends BaseAbstractHandler
     implements
     Handler {
-    RuleHandler(XmlPackageReader xmlPackageReader) {
+    RuleHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( PackageDescr.class );
 
@@ -54,54 +54,54 @@ class RuleHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        String ruleName = attrs.getValue( "name" );
+        final String ruleName = attrs.getValue( "name" );
 
         if ( ruleName == null || ruleName.trim().equals( "" ) ) {
             throw new SAXParseException( "<rule> requires a 'name' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        RuleDescr ruleDescr = new RuleDescr( ruleName.trim() );
+        final RuleDescr ruleDescr = new RuleDescr( ruleName.trim() );
 
         return ruleDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = this.xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        RuleDescr ruleDescr = (RuleDescr) this.xmlPackageReader.getCurrent();
+        final RuleDescr ruleDescr = (RuleDescr) this.xmlPackageReader.getCurrent();
 
-        AndDescr lhs = (AndDescr) ruleDescr.getLhs();
+        final AndDescr lhs = ruleDescr.getLhs();
 
         if ( lhs == null ) {
             throw new SAXParseException( "<rule> requires a LHS",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        Configuration rhs = config.getChild( "rhs" );
+        final Configuration rhs = config.getChild( "rhs" );
         if ( rhs == null ) {
             throw new SAXParseException( "<rule> requires a <rh> child element",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
         ruleDescr.setConsequence( rhs.getText() );
 
-        Configuration[] attributes = config.getChildren( "rule-attribute" );
+        final Configuration[] attributes = config.getChildren( "rule-attribute" );
         for ( int i = 0, length = attributes.length; i < length; i++ ) {
-            String name = attributes[i].getAttribute( "name" );
+            final String name = attributes[i].getAttribute( "name" );
             if ( name == null || name.trim().equals( "" ) ) {
                 throw new SAXParseException( "<rule-attribute> requires a 'name' attribute",
-                                             xmlPackageReader.getLocator() );
+                                             this.xmlPackageReader.getLocator() );
             }
 
-            String value = attributes[i].getAttribute( "value" );
+            final String value = attributes[i].getAttribute( "value" );
 
             ruleDescr.addAttribute( new AttributeDescr( name,
                                                         value ) );

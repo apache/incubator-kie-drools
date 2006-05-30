@@ -36,10 +36,10 @@ import org.xml.sax.SAXParseException;
 class QueryHandler extends BaseAbstractHandler
     implements
     Handler {
-    QueryHandler(XmlPackageReader xmlPackageReader) {
+    QueryHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( PackageDescr.class );
 
@@ -53,35 +53,35 @@ class QueryHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        String queryName = attrs.getValue( "name" );
+        final String queryName = attrs.getValue( "name" );
 
         if ( queryName == null || queryName.trim().equals( "" ) ) {
             throw new SAXParseException( "<query> requires a 'name' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        QueryDescr queryDescr = new QueryDescr( queryName.trim() );
+        final QueryDescr queryDescr = new QueryDescr( queryName.trim() );
 
         return queryDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = this.xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        QueryDescr queryDescr = (QueryDescr) this.xmlPackageReader.getCurrent();
+        final QueryDescr queryDescr = (QueryDescr) this.xmlPackageReader.getCurrent();
 
-        AndDescr lhs = (AndDescr) queryDescr.getLhs();
+        final AndDescr lhs = queryDescr.getLhs();
 
         if ( lhs == null || lhs.getDescrs().isEmpty() ) {
             throw new SAXParseException( "<query> requires a LHS",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
         this.xmlPackageReader.getPackageDescr().addRule( queryDescr );

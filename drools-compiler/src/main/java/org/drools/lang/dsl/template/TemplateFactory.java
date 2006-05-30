@@ -1,4 +1,5 @@
 package org.drools.lang.dsl.template;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.lang.dsl.template;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,39 +35,37 @@ class TemplateFactory {
      * @param naturalTemplate From the grammar. eg "{0} likes cheese" is a template.
      * @return A template context ready to apply to a nl expression.
      */
-    public Template getTemplate(String naturalTemplate) {
-        
-        Template template = new Template();
-        
-        List chunkList = lexChunks(naturalTemplate);
-        for ( Iterator iter = chunkList.iterator(); iter.hasNext(); ) {
-             template.addChunk((String) iter.next());
-            
+    public Template getTemplate(final String naturalTemplate) {
+
+        final Template template = new Template();
+
+        final List chunkList = lexChunks( naturalTemplate );
+        for ( final Iterator iter = chunkList.iterator(); iter.hasNext(); ) {
+            template.addChunk( (String) iter.next() );
+
         }
         return template;
     }
-    
-    
-    List lexChunks(String grammarTemplate) {
-        ChunkLexer lexer = new ChunkLexer();
-        return lexer.lex(grammarTemplate);
+
+    List lexChunks(final String grammarTemplate) {
+        final ChunkLexer lexer = new ChunkLexer();
+        return lexer.lex( grammarTemplate );
     }
-    
-    
+
     /**
      * Lex out chunks. 
      * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
      */
     static class ChunkLexer {
-        
-        private List chunks = new ArrayList();
-        
+
+        private final List         chunks = new ArrayList();
+
         private StringBuffer buffer = new StringBuffer();
-        
-        public List lex(String grammarTemplate) {
-            
-            char[] chars = grammarTemplate.toCharArray();
-            
+
+        public List lex(final String grammarTemplate) {
+
+            final char[] chars = grammarTemplate.toCharArray();
+
             for ( int i = 0; i < chars.length; i++ ) {
                 switch ( chars[i] ) {
                     case '{' :
@@ -77,36 +74,37 @@ class TemplateFactory {
                     case '}' :
                         endHole();
                         break;
-                    default : 
-                        buffer.append(chars[i]);
+                    default :
+                        this.buffer.append( chars[i] );
                         break;
                 }
             }
-            String buf = this.buffer.toString();
-            if (!buf.equals("")) addChunk( buf );
+            final String buf = this.buffer.toString();
+            if ( !buf.equals( "" ) ) {
+                addChunk( buf );
+            }
             return this.chunks;
-            
+
         }
 
-        private boolean addChunk(String buf) {
+        private boolean addChunk(final String buf) {
             return this.chunks.add( buf.trim() );
         }
 
         private void endHole() {
-            String buf = this.buffer.toString();
-            chunks.add("{" + buf + "}");
+            final String buf = this.buffer.toString();
+            this.chunks.add( "{" + buf + "}" );
             this.buffer = new StringBuffer();
         }
 
         private void startHole() {
-            String buf = this.buffer.toString();
-            if (!buf.equals("")) {
+            final String buf = this.buffer.toString();
+            if ( !buf.equals( "" ) ) {
                 addChunk( buf );
             }
-            this.buffer = new StringBuffer();            
+            this.buffer = new StringBuffer();
         }
-        
-        
+
     }
-    
+
 }

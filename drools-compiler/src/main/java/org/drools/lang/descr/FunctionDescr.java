@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,60 +16,59 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class FunctionDescr {
-    private final String name;    
+    private final String name;
     private final String returnType;
-    
-    private List parameterTypes = Collections.EMPTY_LIST;
-    private List parameterNames = Collections.EMPTY_LIST;
-    
-    private String text;  
 
-    public FunctionDescr(String name, String returnType) {
+    private List         parameterTypes = Collections.EMPTY_LIST;
+    private List         parameterNames = Collections.EMPTY_LIST;
+
+    private String       text;
+
+    public FunctionDescr(final String name,
+                         final String returnType) {
         this.name = name;
         this.returnType = returnType;
     }
-    
+
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public List getParameterNames() {
-        return parameterNames;
+        return this.parameterNames;
     }
 
     public List getParameterTypes() {
-        return parameterTypes;
+        return this.parameterTypes;
     }
-    
-    public void addParameter(String type, String name) {
-        if (this.parameterTypes == Collections.EMPTY_LIST) {
+
+    public void addParameter(final String type,
+                             final String name) {
+        if ( this.parameterTypes == Collections.EMPTY_LIST ) {
             this.parameterTypes = new ArrayList();
         }
         this.parameterTypes.add( type );
-        
-        if (this.parameterNames == Collections.EMPTY_LIST) {
+
+        if ( this.parameterNames == Collections.EMPTY_LIST ) {
             this.parameterNames = new ArrayList();
         }
         this.parameterNames.add( name );
     }
-    
 
     public String getReturnType() {
-        return returnType;
+        return this.returnType;
     }
-    
-    public void setText(String text) {
-    		this.text = text;
+
+    public void setText(final String text) {
+        this.text = text;
     }
 
     public String getText() {
         return this.text;
-    } 
+    }
 }

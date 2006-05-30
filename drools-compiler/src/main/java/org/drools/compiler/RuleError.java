@@ -1,4 +1,5 @@
 package org.drools.compiler;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-
-
 import org.apache.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.Rule;
@@ -26,36 +25,36 @@ public class RuleError extends DroolsError {
     private PatternDescr descr;
     private Object       object;
     private String       message;
-    
-    public RuleError(Rule rule,
-                     PatternDescr descr,
-                     Object object,
-                     String message) {
+
+    public RuleError(final Rule rule,
+                     final PatternDescr descr,
+                     final Object object,
+                     final String message) {
         super();
         this.rule = rule;
         this.descr = descr;
         this.object = object;
         this.message = message;
     }
-    
+
     public Rule getRule() {
-        return rule;
+        return this.rule;
     }
 
     public PatternDescr getDescr() {
-        return descr;
+        return this.descr;
     }
-       
+
     public Object getObject() {
-        return object;
+        return this.object;
     }
-    
+
     /** 
      * This will return the line number of the error, if possible
      * Otherwise it will be -1
      */
     public int getLine() {
-        if (this.descr != null) {
+        if ( this.descr != null ) {
             return this.descr.getLine();
         } else {
             return -1;
@@ -63,15 +62,15 @@ public class RuleError extends DroolsError {
     }
 
     public String getMessage() {
-        String summary = message;
-        if (object instanceof CompilationProblem[]) {
-            CompilationProblem[] problem = (CompilationProblem[]) object;
+        String summary = this.message;
+        if ( this.object instanceof CompilationProblem[] ) {
+            final CompilationProblem[] problem = (CompilationProblem[]) this.object;
             for ( int i = 0; i < problem.length; i++ ) {
                 summary = summary + " " + problem[i].getMessage();
             }
-            
+
         }
         return summary;
     }
-            
+
 }

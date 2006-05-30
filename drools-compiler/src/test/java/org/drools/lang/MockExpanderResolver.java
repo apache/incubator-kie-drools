@@ -1,4 +1,5 @@
 package org.drools.lang;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.lang;
  * limitations under the License.
  */
 
-
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,27 +23,28 @@ public class MockExpanderResolver
     implements
     ExpanderResolver {
 
-    private Map resolveCalls = new HashMap();
-    private MockExpander expander = new MockExpander();
-    
-    public Expander get(String name,
-                        String config) {
-        resolveCalls.put( name, config );
-        return expander;
+    private final Map          resolveCalls = new HashMap();
+    private final MockExpander expander     = new MockExpander();
+
+    public Expander get(final String name,
+                        final String config) {
+        this.resolveCalls.put( name,
+                          config );
+        return this.expander;
     }
 
     /**
      * Check if it was called.
      */
-    public boolean checkCalled(String name) {
-        return resolveCalls.containsKey( name );
+    public boolean checkCalled(final String name) {
+        return this.resolveCalls.containsKey( name );
     }
-    
-    public String getConfigFor(String name) {
-        return (String) resolveCalls.get( name );
+
+    public String getConfigFor(final String name) {
+        return (String) this.resolveCalls.get( name );
     }
-    
-    public boolean checkExpanded(String patternOriginal) {
-        return expander.checkPattern( patternOriginal );
+
+    public boolean checkExpanded(final String patternOriginal) {
+        return this.expander.checkPattern( patternOriginal );
     }
 }

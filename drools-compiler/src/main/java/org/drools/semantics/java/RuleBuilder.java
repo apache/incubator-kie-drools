@@ -1,4 +1,5 @@
 package org.drools.semantics.java;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,15 +16,14 @@ package org.drools.semantics.java;
  * limitations under the License.
  */
 
-
-
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.Set;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
@@ -54,10 +54,10 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.And;
 import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
-import org.drools.rule.GroupElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Exists;
+import org.drools.rule.GroupElement;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Or;
@@ -98,17 +98,17 @@ public class RuleBuilder {
 
     private Map                         notDeclarations;
 
-    private static StringTemplateGroup  ruleGroup            = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
+    private static final StringTemplateGroup  ruleGroup            = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
                                                                                         AngleBracketTemplateLexer.class );
 
-    private static StringTemplateGroup  invokerGroup         = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaInvokers.stg" ) ),
+    private static final StringTemplateGroup  invokerGroup         = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaInvokers.stg" ) ),
                                                                                         AngleBracketTemplateLexer.class );
 
-    private static KnowledgeHelperFixer knowledgeHelperFixer = new KnowledgeHelperFixer();
-    private static FunctionFixer        functionFixer        = new FunctionFixer();
+    private static final KnowledgeHelperFixer knowledgeHelperFixer = new KnowledgeHelperFixer();
+    private static final FunctionFixer        functionFixer        = new FunctionFixer();
 
     // @todo move to an interface so it can work as a decorator
-    private JavaExprAnalyzer            analyzer             = new JavaExprAnalyzer();
+    private final JavaExprAnalyzer            analyzer             = new JavaExprAnalyzer();
 
     public RuleBuilder() {
         this.errors = new ArrayList();
@@ -145,8 +145,8 @@ public class RuleBuilder {
         return this.pkg;
     }
 
-    public synchronized Rule build(Package pkg,
-                                   RuleDescr ruleDescr) {
+    public synchronized Rule build(final Package pkg,
+                                   final RuleDescr ruleDescr) {
         this.pkg = pkg;
         this.methods = new ArrayList();
         this.invokers = new HashMap();
@@ -170,21 +170,21 @@ public class RuleBuilder {
         }
 
         // Assign attributes
-        setAttributes( rule,
+        setAttributes( this.rule,
                        ruleDescr.getAttributes() );
 
         // Build the left hand side
         // generate invoker, methods
         build( ruleDescr );
 
-        return rule;
+        return this.rule;
     }
 
-    private void setAttributes(Rule rule,
-                               List attributes) {        
-        for ( Iterator it = attributes.iterator(); it.hasNext(); ) {
-            AttributeDescr attributeDescr = (AttributeDescr) it.next();
-            String name = attributeDescr.getName();
+    private void setAttributes(final Rule rule,
+                               final List attributes) {
+        for ( final Iterator it = attributes.iterator(); it.hasNext(); ) {
+            final AttributeDescr attributeDescr = (AttributeDescr) it.next();
+            final String name = attributeDescr.getName();
             if ( name.equals( "salience" ) ) {
                 rule.setSalience( Integer.parseInt( attributeDescr.getValue() ) );
             } else if ( name.equals( "no-loop" ) ) {
@@ -212,43 +212,43 @@ public class RuleBuilder {
         }
     }
 
-    private void build(RuleDescr ruleDescr) {
+    private void build(final RuleDescr ruleDescr) {
 
-        for ( Iterator it = ruleDescr.getLhs().getDescrs().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        for ( final Iterator it = ruleDescr.getLhs().getDescrs().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             if ( object instanceof ConditionalElementDescr ) {
                 if ( object instanceof AndDescr ) {
-                    And and = new And();
+                    final And and = new And();
                     this.columnCounter.setParent( and );
-                    build( rule,
+                    build( this.rule,
                            (ConditionalElementDescr) object,
                            and,
                            false,
-                           false);
-                    rule.addPattern( and );
+                           false );
+                    this.rule.addPattern( and );
                 } else if ( object instanceof OrDescr ) {
-                    Or or = new Or();
-                    this.columnCounter.setParent( or );                    
-                    build( rule,
+                    final Or or = new Or();
+                    this.columnCounter.setParent( or );
+                    build( this.rule,
                            (ConditionalElementDescr) object,
                            or,
                            false,
                            false );
-                    rule.addPattern( or );
+                    this.rule.addPattern( or );
                 } else if ( object instanceof NotDescr ) {
                     // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
                     this.notDeclarations = new HashMap();
-                    Not not = new Not();
-                    this.columnCounter.setParent( not );                    
-                    build( rule,
+                    final Not not = new Not();
+                    this.columnCounter.setParent( not );
+                    build( this.rule,
                            (ConditionalElementDescr) object,
                            not,
                            true,
                            true );
-                    rule.addPattern( not );
+                    this.rule.addPattern( not );
 
                     // remove declarations bound inside not node
-                    for ( Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
+                    for ( final Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
                         this.declarations.remove( notIt.next() );
                     }
 
@@ -256,30 +256,30 @@ public class RuleBuilder {
                 } else if ( object instanceof ExistsDescr ) {
                     // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
                     this.notDeclarations = new HashMap();
-                    Exists exists = new Exists();
-                    this.columnCounter.setParent( exists );                    
-                    build( rule,
+                    final Exists exists = new Exists();
+                    this.columnCounter.setParent( exists );
+                    build( this.rule,
                            (ConditionalElementDescr) object,
                            exists,
                            true,
                            true );
                     // remove declarations bound inside not node
-                    for ( Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
+                    for ( final Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
                         this.declarations.remove( notIt.next() );
                     }
 
                     this.notDeclarations = null;
-                    rule.addPattern( exists );
+                    this.rule.addPattern( exists );
                 } else if ( object instanceof EvalDescr ) {
-                    EvalCondition eval = build( (EvalDescr) object );
+                    final EvalCondition eval = build( (EvalDescr) object );
                     if ( eval != null ) {
-                        rule.addPattern( eval );
+                        this.rule.addPattern( eval );
                     }
                 }
             } else if ( object instanceof ColumnDescr ) {
-                Column column = build( (ColumnDescr) object );
+                final Column column = build( (ColumnDescr) object );
                 if ( column != null ) {
-                    rule.addPattern( column );
+                    this.rule.addPattern( column );
                 }
             }
         }
@@ -293,63 +293,63 @@ public class RuleBuilder {
         buildRule( ruleDescr );
     }
 
-    private void build(Rule rule,
-                       ConditionalElementDescr descr,
-                       GroupElement ce,
-                       boolean decrementOffset,
+    private void build(final Rule rule,
+                       final ConditionalElementDescr descr,
+                       final GroupElement ce,
+                       final boolean decrementOffset,
                        boolean decrementFirst) {
-        for ( Iterator it = descr.getDescrs().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        for ( final Iterator it = descr.getDescrs().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             if ( object instanceof ConditionalElementDescr ) {
                 if ( object instanceof AndDescr ) {
-                    And and = new And();
+                    final And and = new And();
                     this.columnCounter.setParent( and );
                     build( rule,
                            (ConditionalElementDescr) object,
                            and,
                            false,
-                           false);
-                    ce.addChild( and );                    
+                           false );
+                    ce.addChild( and );
                 } else if ( object instanceof OrDescr ) {
-                    Or or = new Or();
+                    final Or or = new Or();
                     this.columnCounter.setParent( or );
                     build( rule,
                            (ConditionalElementDescr) object,
                            or,
                            false,
-                           false);
-                    ce.addChild( or );                    
+                           false );
+                    ce.addChild( or );
                 } else if ( object instanceof NotDescr ) {
-                    Not not = new Not();
+                    final Not not = new Not();
                     this.columnCounter.setParent( not );
                     build( rule,
                            (ConditionalElementDescr) object,
                            not,
                            true,
-                           true);
-                    ce.addChild( not );                    
+                           true );
+                    ce.addChild( not );
                 } else if ( object instanceof ExistsDescr ) {
-                    Exists exists = new Exists();
+                    final Exists exists = new Exists();
                     this.columnCounter.setParent( exists );
                     build( rule,
                            (ConditionalElementDescr) object,
                            exists,
-                           true, 
-                           true);
-                    ce.addChild( exists );                    
+                           true,
+                           true );
+                    ce.addChild( exists );
                 } else if ( object instanceof EvalDescr ) {
-                    EvalCondition eval = build( (EvalDescr) object );
+                    final EvalCondition eval = build( (EvalDescr) object );
                     if ( eval != null ) {
                         ce.addChild( eval );
                     }
                 }
             } else if ( object instanceof ColumnDescr ) {
-                if( decrementOffset && decrementFirst) {
+                if ( decrementOffset && decrementFirst ) {
                     this.columnOffset--;
                 } else {
                     decrementFirst = true;
                 }
-                Column column = build( (ColumnDescr) object );
+                final Column column = build( (ColumnDescr) object );
                 if ( column != null ) {
                     ce.addChild( column );
                 }
@@ -357,7 +357,7 @@ public class RuleBuilder {
         }
     }
 
-    private Column build(ColumnDescr columnDescr) {
+    private Column build(final ColumnDescr columnDescr) {
         if ( columnDescr.getObjectType() == null || columnDescr.getObjectType().equals( "" ) ) {
             this.errors.add( new RuleError( this.rule,
                                             columnDescr,
@@ -370,8 +370,8 @@ public class RuleBuilder {
 
         try {
             //clazz = Class.forName( columnDescr.getObjectType() );
-            clazz = typeResolver.resolveType( columnDescr.getObjectType() );
-        } catch ( ClassNotFoundException e ) {
+            clazz = this.typeResolver.resolveType( columnDescr.getObjectType() );
+        } catch ( final ClassNotFoundException e ) {
             this.errors.add( new RuleError( this.rule,
                                             columnDescr,
                                             null,
@@ -396,11 +396,11 @@ public class RuleBuilder {
             column = new Column( this.columnCounter.getNext(),
                                  this.columnOffset,
                                  new ClassObjectType( clazz ),
-                                 null);
+                                 null );
         }
 
-        for ( Iterator it = columnDescr.getDescrs().iterator(); it.hasNext(); ) {
-            Object object = it.next();
+        for ( final Iterator it = columnDescr.getDescrs().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
             if ( object instanceof FieldBindingDescr ) {
                 build( column,
                        (FieldBindingDescr) object );
@@ -421,18 +421,18 @@ public class RuleBuilder {
         return column;
     }
 
-    private void build(Column column,
-                       FieldBindingDescr fieldBindingDescr) {
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+    private void build(final Column column,
+                       final FieldBindingDescr fieldBindingDescr) {
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = getFieldExtractor( fieldBindingDescr,
+        final FieldExtractor extractor = getFieldExtractor( fieldBindingDescr,
                                                       clazz,
                                                       fieldBindingDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
 
-        Declaration declaration = column.addDeclaration( fieldBindingDescr.getIdentifier(),
+        final Declaration declaration = column.addDeclaration( fieldBindingDescr.getIdentifier(),
                                                          extractor );
 
         this.declarations.put( declaration.getIdentifier(),
@@ -444,8 +444,8 @@ public class RuleBuilder {
         }
     }
 
-    private void build(Column column,
-                       BoundVariableDescr boundVariableDescr) {
+    private void build(final Column column,
+                       final BoundVariableDescr boundVariableDescr) {
         if ( boundVariableDescr.getIdentifier() == null || boundVariableDescr.getIdentifier().equals( "" ) ) {
             this.errors.add( new RuleError( this.rule,
                                             boundVariableDescr,
@@ -454,16 +454,16 @@ public class RuleBuilder {
             return;
         }
 
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = getFieldExtractor( boundVariableDescr,
+        final FieldExtractor extractor = getFieldExtractor( boundVariableDescr,
                                                       clazz,
                                                       boundVariableDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
 
-        Declaration declaration = (Declaration) this.declarations.get( boundVariableDescr.getIdentifier() );
+        final Declaration declaration = (Declaration) this.declarations.get( boundVariableDescr.getIdentifier() );
 
         if ( declaration == null ) {
             this.errors.add( new RuleError( this.rule,
@@ -473,7 +473,7 @@ public class RuleBuilder {
             return;
         }
 
-        Evaluator evaluator = getEvaluator( boundVariableDescr,
+        final Evaluator evaluator = getEvaluator( boundVariableDescr,
                                             extractor.getObjectType().getValueType(),
                                             boundVariableDescr.getEvaluator() );
         if ( evaluator == null ) {
@@ -485,12 +485,12 @@ public class RuleBuilder {
                                                            evaluator ) );
     }
 
-    private void build(Column column,
-                       LiteralDescr literalDescr) {
+    private void build(final Column column,
+                       final LiteralDescr literalDescr) {
 
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = getFieldExtractor( literalDescr,
+        final FieldExtractor extractor = getFieldExtractor( literalDescr,
                                                       clazz,
                                                       literalDescr.getFieldName() );
         if ( extractor == null ) {
@@ -499,19 +499,19 @@ public class RuleBuilder {
 
         FieldValue field = null;
         if ( literalDescr.isStaticFieldValue() ) {
-            int lastDot = literalDescr.getText().lastIndexOf( '.' );
-            String className = literalDescr.getText().substring( 0,
+            final int lastDot = literalDescr.getText().lastIndexOf( '.' );
+            final String className = literalDescr.getText().substring( 0,
                                                                  lastDot );
-            String fieldName = literalDescr.getText().substring( lastDot + 1 );
+            final String fieldName = literalDescr.getText().substring( lastDot + 1 );
             try {
-                Class staticClass = this.typeResolver.resolveType( className );
+                final Class staticClass = this.typeResolver.resolveType( className );
                 field = new FieldImpl( staticClass.getField( fieldName ).get( null ) );
-            } catch ( ClassNotFoundException e ) {
+            } catch ( final ClassNotFoundException e ) {
                 this.errors.add( new RuleError( this.rule,
                                                 literalDescr,
                                                 e,
                                                 e.getMessage() ) );
-            } catch ( Exception e ) {
+            } catch ( final Exception e ) {
                 this.errors.add( new RuleError( this.rule,
                                                 literalDescr,
                                                 e,
@@ -522,7 +522,7 @@ public class RuleBuilder {
             try {
                 field = FieldFactory.getFieldValue( literalDescr.getText(),
                                                     extractor.getObjectType().getValueType() );
-            } catch ( Exception e ) {
+            } catch ( final Exception e ) {
                 this.errors.add( new RuleError( this.rule,
                                                 literalDescr,
                                                 e,
@@ -530,7 +530,7 @@ public class RuleBuilder {
             }
         }
 
-        Evaluator evaluator = getEvaluator( literalDescr,
+        final Evaluator evaluator = getEvaluator( literalDescr,
                                             extractor.getObjectType().getValueType(),
                                             literalDescr.getEvaluator() );
         if ( evaluator == null ) {
@@ -542,76 +542,75 @@ public class RuleBuilder {
                                                      evaluator ) );
     }
 
-    private void build(Column column,
-                       ReturnValueDescr returnValueDescr) {
-        String classMethodName = "returnValue" + counter++;
+    private void build(final Column column,
+                       final ReturnValueDescr returnValueDescr) {
+        final String classMethodName = "returnValue" + this.counter++;
         returnValueDescr.setClassMethodName( classMethodName );
 
-        List usedDeclarations = getUsedDeclarations( returnValueDescr,
+        final List[] usedIdentifiers = getUsedIdentifiers( returnValueDescr,
                                                      returnValueDescr.getText() );
-        if ( usedDeclarations == null ) {
-            return;
+
+        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
+            declarations[i] = (Declaration) this.declarations.get( (String) usedIdentifiers[0].get( i ) );
         }
 
-        Declaration[] declarations = new Declaration[usedDeclarations.size()];
-        for ( int i = 0, size = usedDeclarations.size(); i < size; i++ ) {
-            declarations[i] = (Declaration) this.declarations.get( (String) usedDeclarations.get( i ) );
-        }
-
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-        FieldExtractor extractor = getFieldExtractor( returnValueDescr,
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        final FieldExtractor extractor = getFieldExtractor( returnValueDescr,
                                                       clazz,
                                                       returnValueDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
 
-        Evaluator evaluator = getEvaluator( returnValueDescr,
+        final Evaluator evaluator = getEvaluator( returnValueDescr,
                                             extractor.getObjectType().getValueType(),
                                             returnValueDescr.getEvaluator() );
         if ( evaluator == null ) {
             return;
         }
 
-        ReturnValueConstraint returnValueConstraint = new ReturnValueConstraint( extractor,
+        final ReturnValueConstraint returnValueConstraint = new ReturnValueConstraint( extractor,
                                                                                  declarations,
                                                                                  evaluator );
         column.addConstraint( returnValueConstraint );
 
-        StringTemplate st = ruleGroup.getInstanceOf( "returnValueMethod" );
+        StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "returnValueMethod" );
 
         setStringTemplateAttributes( st,
                                      declarations,
+                                     (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      returnValueDescr.getText() );
 
         st.setAttribute( "methodName",
                          classMethodName );
-        
-        String returnValueText = functionFixer.fix( returnValueDescr.getText() );
+
+        final String returnValueText = RuleBuilder.functionFixer.fix( returnValueDescr.getText() );
         st.setAttribute( "text",
                          returnValueText );
 
         this.methods.add( st.toString() );
 
-        st = invokerGroup.getInstanceOf( "returnValueInvoker" );
+        st = RuleBuilder.invokerGroup.getInstanceOf( "returnValueInvoker" );
 
         st.setAttribute( "package",
                          this.pkg.getName() );
         st.setAttribute( "ruleClassName",
                          ucFirst( this.ruleDescr.getClassName() ) );
         st.setAttribute( "invokerClassName",
-                         ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
+                         this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
         st.setAttribute( "methodName",
                          classMethodName );
 
         setStringTemplateAttributes( st,
                                      declarations,
+                                     (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      returnValueDescr.getText() );
 
         st.setAttribute( "hashCode",
                          returnValueText.hashCode() );
 
-        String invokerClassName = pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
@@ -620,23 +619,23 @@ public class RuleBuilder {
                                returnValueDescr );
     }
 
-    private void build(Column column,
-                       PredicateDescr predicateDescr) {
+    private void build(final Column column,
+                       final PredicateDescr predicateDescr) {
         // generate method
         // generate Invoker
-        String classMethodName = "predicate" + counter++;
+        final String classMethodName = "predicate" + this.counter++;
         predicateDescr.setClassMethodName( classMethodName );
 
-        Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        FieldExtractor extractor = getFieldExtractor( predicateDescr,
+        final FieldExtractor extractor = getFieldExtractor( predicateDescr,
                                                       clazz,
                                                       predicateDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
 
-        Declaration declaration = column.addDeclaration( predicateDescr.getDeclaration(),
+        final Declaration declaration = column.addDeclaration( predicateDescr.getDeclaration(),
                                                          extractor );
 
         this.declarations.put( declaration.getIdentifier(),
@@ -647,25 +646,21 @@ public class RuleBuilder {
                                       declaration );
         }
 
-        List usedDeclarations = getUsedDeclarations( predicateDescr,
+        final List[] usedIdentifiers = getUsedIdentifiers( predicateDescr,
                                                      predicateDescr.getText() );
-        if ( usedDeclarations == null ) {
-            return;
-        }
-
         // Don't include the focus declaration, that hasn't been merged into the tuple yet.
-        usedDeclarations.remove( predicateDescr.getDeclaration() );
+        usedIdentifiers[0].remove( predicateDescr.getDeclaration() );
 
-        Declaration[] declarations = new Declaration[usedDeclarations.size()];
-        for ( int i = 0, size = usedDeclarations.size(); i < size; i++ ) {
-            declarations[i] = (Declaration) this.declarations.get( (String) usedDeclarations.get( i ) );
+        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
+            declarations[i] = (Declaration) this.declarations.get( (String) usedIdentifiers[0].get( i ) );
         }
 
-        PredicateConstraint predicateConstraint = new PredicateConstraint( declaration,
+        final PredicateConstraint predicateConstraint = new PredicateConstraint( declaration,
                                                                            declarations );
         column.addConstraint( predicateConstraint );
 
-        StringTemplate st = ruleGroup.getInstanceOf( "predicateMethod" );
+        StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "predicateMethod" );
 
         st.setAttribute( "declaration",
                          declaration );
@@ -675,25 +670,26 @@ public class RuleBuilder {
 
         setStringTemplateAttributes( st,
                                      declarations,
+                                     (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      predicateDescr.getText() );
 
         st.setAttribute( "methodName",
                          classMethodName );
-        
-        String predicateText =  functionFixer.fix( predicateDescr.getText() );
+
+        final String predicateText = RuleBuilder.functionFixer.fix( predicateDescr.getText() );
         st.setAttribute( "text",
                          predicateText );
 
         this.methods.add( st.toString() );
 
-        st = invokerGroup.getInstanceOf( "predicateInvoker" );
+        st = RuleBuilder.invokerGroup.getInstanceOf( "predicateInvoker" );
 
         st.setAttribute( "package",
                          this.pkg.getName() );
         st.setAttribute( "ruleClassName",
                          ucFirst( this.ruleDescr.getClassName() ) );
         st.setAttribute( "invokerClassName",
-                         ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
+                         this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
         st.setAttribute( "methodName",
                          classMethodName );
 
@@ -705,12 +701,13 @@ public class RuleBuilder {
 
         setStringTemplateAttributes( st,
                                      declarations,
+                                     (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      predicateDescr.getText() );
 
         st.setAttribute( "hashCode",
                          predicateText.hashCode() );
 
-        String invokerClassName = pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
@@ -719,55 +716,57 @@ public class RuleBuilder {
                                predicateDescr );
     }
 
-    private EvalCondition build(EvalDescr evalDescr) {
+    private EvalCondition build(final EvalDescr evalDescr) {
 
-        String classMethodName = "eval" + counter++;
+        final String classMethodName = "eval" + this.counter++;
         evalDescr.setClassMethodName( classMethodName );
 
-        List usedDeclarations = getUsedDeclarations( evalDescr,
+        final List[] usedIdentifiers = getUsedIdentifiers( evalDescr,
                                                      evalDescr.getText() );
 
-        Declaration[] declarations = new Declaration[usedDeclarations.size()];
-        for ( int i = 0, size = usedDeclarations.size(); i < size; i++ ) {
-            declarations[i] = (Declaration) this.declarations.get( (String) usedDeclarations.get( i ) );
+        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
+            declarations[i] = (Declaration) this.declarations.get( (String) usedIdentifiers[0].get( i ) );
         }
 
-        EvalCondition eval = new EvalCondition( declarations );
+        final EvalCondition eval = new EvalCondition( declarations );
 
-        StringTemplate st = ruleGroup.getInstanceOf( "evalMethod" );
+        StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "evalMethod" );
 
         setStringTemplateAttributes( st,
                                      declarations,
+                                     (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      evalDescr.getText() );
 
         st.setAttribute( "methodName",
                          classMethodName );
-        
-        String  evalText = functionFixer.fix( evalDescr.getText() );
+
+        final String evalText = RuleBuilder.functionFixer.fix( evalDescr.getText() );
         st.setAttribute( "text",
-                          evalText );
+                         evalText );
 
         this.methods.add( st.toString() );
 
-        st = invokerGroup.getInstanceOf( "evalInvoker" );
+        st = RuleBuilder.invokerGroup.getInstanceOf( "evalInvoker" );
 
         st.setAttribute( "package",
                          this.pkg.getName() );
         st.setAttribute( "ruleClassName",
                          ucFirst( this.ruleDescr.getClassName() ) );
         st.setAttribute( "invokerClassName",
-                         ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
+                         this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker" );
         st.setAttribute( "methodName",
                          classMethodName );
 
         setStringTemplateAttributes( st,
                                      declarations,
+                                     (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      evalDescr.getText() );
 
         st.setAttribute( "hashCode",
                          evalText.hashCode() );
 
-        String invokerClassName = pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        final String invokerClassName = this.pkg.getName() + "." + this.ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
@@ -777,27 +776,34 @@ public class RuleBuilder {
         return eval;
     }
 
-    private void buildConsequence(RuleDescr ruleDescr) {
+    private void buildConsequence(final RuleDescr ruleDescr) {
         // generate method
         // generate Invoker
-        String classMethodName = "consequence";
+        final String classMethodName = "consequence";
 
-        StringTemplate st = ruleGroup.getInstanceOf( "consequenceMethod" );
+        StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "consequenceMethod" );
 
         st.setAttribute( "methodName",
                          classMethodName );
 
-        Declaration[] declarations = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.size()] );
+        final List[] usedIdentifiers = getUsedCIdentifiers( ruleDescr,
+                                                      ruleDescr.getConsequence() );
+
+        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
+            declarations[i] = (Declaration) this.declarations.get( (String) usedIdentifiers[0].get( i ) );
+        }
+
         setStringTemplateAttributes( st,
                                      declarations,
+                                     (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      ruleDescr.getConsequence() );
-
         st.setAttribute( "text",
-                         functionFixer.fix( knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );
+                         RuleBuilder.functionFixer.fix( RuleBuilder.knowledgeHelperFixer.fix( ruleDescr.getConsequence() ) ) );
 
         this.methods.add( st.toString() );
 
-        st = invokerGroup.getInstanceOf( "consequenceInvoker" );
+        st = RuleBuilder.invokerGroup.getInstanceOf( "consequenceInvoker" );
 
         st.setAttribute( "package",
                          this.pkg.getName() );
@@ -810,12 +816,23 @@ public class RuleBuilder {
 
         setStringTemplateAttributes( st,
                                      declarations,
+                                     (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
                                      ruleDescr.getConsequence() );
+
+        final List list = Arrays.asList( this.rule.getDeclarations() );
+
+        final int[] indexes = new int[declarations.length];
+        for ( int i = 0, length = declarations.length; i < length; i++ ) {
+            indexes[i] = list.indexOf( declarations[i] );
+        }
+
+        st.setAttribute( "indexes",
+                         indexes );
 
         st.setAttribute( "text",
                          ruleDescr.getConsequence() );
 
-        String invokerClassName = this.pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
+        final String invokerClassName = this.pkg.getName() + "." + ruleDescr.getClassName() + ucFirst( classMethodName ) + "Invoker";
         this.invokers.put( invokerClassName,
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
@@ -824,86 +841,53 @@ public class RuleBuilder {
                                ruleDescr );
     }
 
-    private void buildRule(RuleDescr ruleDescr) {
+    private void buildRule(final RuleDescr ruleDescr) {
         // If there is no compiled code, return
         if ( this.methods.isEmpty() ) {
             this.ruleClass = null;
             return;
         }
-        String lineSeparator = System.getProperty( "line.separator" );
-        
-        StringBuffer buffer = new StringBuffer();
-        buffer.append( "package "  + this.pkg.getName() + ";" + lineSeparator );
-        
-            
-        for ( Iterator it = this.pkg.getImports().iterator(); it.hasNext(); ) {
-            buffer.append(  "import " + it.next() +";" + lineSeparator);
+        final String lineSeparator = System.getProperty( "line.separator" );
+
+        final StringBuffer buffer = new StringBuffer();
+        buffer.append( "package " + this.pkg.getName() + ";" + lineSeparator );
+
+        for ( final Iterator it = this.pkg.getImports().iterator(); it.hasNext(); ) {
+            buffer.append( "import " + it.next() + ";" + lineSeparator );
         }
-        
-        buffer.append( "public class " +  ucFirst( this.ruleDescr.getClassName() ) +" {" + lineSeparator );
-        
+
+        buffer.append( "public class " + ucFirst( this.ruleDescr.getClassName() ) + " {" + lineSeparator );
+
         for ( int i = 0, size = this.methods.size() - 1; i < size; i++ ) {
             buffer.append( this.methods.get( i ) + lineSeparator );
         }
-        
-               
-        String[] lines = buffer.toString().split( lineSeparator );
-                
+
+        final String[] lines = buffer.toString().split( lineSeparator );
+
         this.ruleDescr.setConsequenceOffset( lines.length + 2 );
         //To get the error position in the DRL
         //error.getLine() - this.ruleDescr.getConsequenceOffset() + this.ruleDescr.getConsequenceLine()
-        
+
         buffer.append( this.methods.get( this.methods.size() - 1 ) + lineSeparator );
-        buffer.append(  "}" );
+        buffer.append( "}" );
 
-        this.ruleClass = buffer.toString();        
+        this.ruleClass = buffer.toString();
     }
 
-    private List getUsedGlobals(String text) {
-        if ( text == null || text.trim().equals( "" ) ) {
-            return new ArrayList( 0 );
-        }
-        List list = new ArrayList( 1 );
-        Map globals = this.pkg.getGlobals();
-        for ( Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
-            String key = (String) it.next();
-
-            // poor mans check. Only add the application variable if it appears as text in the script
-            if ( text.indexOf( key ) == -1 ) {
-                continue;
-            }
-            Class clazz = (Class) globals.get( key );
-
-            String type = clazz.getName();
-            int nestedClassPosition = type.indexOf( '$' );
-
-            if ( nestedClassPosition != -1 ) {
-                type = type.substring( 0,
-                                       nestedClassPosition );
-            }
-
-            if ( !list.contains( key ) ) {
-                list.add( key );
-            }
-        }
-
-        return list;
-    }
-
-    private void setStringTemplateAttributes(StringTemplate st,
-                                             Declaration[] declarations,
-                                             String text) {
-        String[] declarationTypes = new String[declarations.length];
+    private void setStringTemplateAttributes(final StringTemplate st,
+                                             final Declaration[] declarations,
+                                             final String[] globals,
+                                             final String text) {
+        final String[] declarationTypes = new String[declarations.length];
         for ( int i = 0, size = declarations.length; i < size; i++ ) {
             declarationTypes[i] = ((ClassObjectType) declarations[i].getObjectType()).getClassType().getName().replace( '$',
                                                                                                                         '.' );
         }
 
-        List globals = getUsedGlobals( text );
-        List globalTypes = new ArrayList( globals.size() );
-        for ( Iterator it = globals.iterator(); it.hasNext(); ) {
-            globalTypes.add( ((Class) this.pkg.getGlobals().get( it.next() )).getName().replace( '$',
-                                                                                                 '.' ) );
+        final List globalTypes = new ArrayList( globals.length );
+        for ( int i = 0, length = globals.length; i < length; i++ ) {
+            globalTypes.add( ((Class) this.pkg.getGlobals().get( globals[i] )).getName().replace( '$',
+                                                                                                  '.' ) );
         }
 
         st.setAttribute( "declarations",
@@ -917,18 +901,18 @@ public class RuleBuilder {
                          globalTypes );
     }
 
-    private String ucFirst(String name) {
+    private String ucFirst(final String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 
-    private FieldExtractor getFieldExtractor(PatternDescr descr,
-                                             Class clazz,
-                                             String fieldName) {
+    private FieldExtractor getFieldExtractor(final PatternDescr descr,
+                                             final Class clazz,
+                                             final String fieldName) {
         FieldExtractor extractor = null;
         try {
             extractor = new ClassFieldExtractor( clazz,
                                                  fieldName );
-        } catch ( RuntimeDroolsException e ) {
+        } catch ( final RuntimeDroolsException e ) {
             this.errors.add( new RuleError( this.rule,
                                             descr,
                                             e,
@@ -938,10 +922,10 @@ public class RuleBuilder {
         return extractor;
     }
 
-    private Evaluator getEvaluator(PatternDescr descr,
-                                   int valueType,
-                                   String evaluatorString) {
-        Evaluator evaluator = EvaluatorFactory.getEvaluator( valueType,
+    private Evaluator getEvaluator(final PatternDescr descr,
+                                   final int valueType,
+                                   final String evaluatorString) {
+        final Evaluator evaluator = EvaluatorFactory.getEvaluator( valueType,
                                                              evaluatorString );
 
         if ( evaluator == null ) {
@@ -954,34 +938,49 @@ public class RuleBuilder {
         return evaluator;
     }
 
-    private List getUsedDeclarations(PatternDescr descr,
-                                     String text) {
-        List usedDeclarations = null;
+    private List[] getUsedIdentifiers(final PatternDescr descr,
+                                      final String text) {
+        List[] usedIdentifiers = null;
         try {
-            usedDeclarations = this.analyzer.analyze( text,
-                                                      this.declarations.keySet() );
-        } catch ( Exception e ) {
+            usedIdentifiers = this.analyzer.analyzeExpression( text,
+                                                               new Set[]{this.declarations.keySet(), this.pkg.getGlobals().keySet()} );
+        } catch ( final Exception e ) {
             this.errors.add( new RuleError( this.rule,
                                             descr,
                                             null,
                                             "Unable to determine the used declarations" ) );
         }
-        return usedDeclarations;
+        return usedIdentifiers;
     }
-    
+
+    private List[] getUsedCIdentifiers(final PatternDescr descr,
+                                       final String text) {
+        List[] usedIdentifiers = null;
+        try {
+            usedIdentifiers = this.analyzer.analyzeBlock( text,
+                                                          new Set[]{this.declarations.keySet(), this.pkg.getGlobals().keySet()} );
+        } catch ( final Exception e ) {
+            this.errors.add( new RuleError( this.rule,
+                                            descr,
+                                            null,
+                                            "Unable to determine the used declarations" ) );
+        }
+        return usedIdentifiers;
+    }
+
     static class ColumnCounter {
         // we start with -1 so that we can ++this.value - otherwise the first element has a lower value than the second in an 'or'
-        private int value = -1;
-        
-        private boolean orCheck;
-        
+        private int          value = -1;
+
+        private boolean      orCheck;
+
         private GroupElement ge;
-        
-        public void setParent(GroupElement ge) {
+
+        public void setParent(final GroupElement ge) {
             this.ge = ge;
             this.orCheck = false;
         }
-        
+
         public int getNext() {
             if ( this.ge != null && this.ge.getClass() == Or.class ) {
                 if ( !this.orCheck ) {
@@ -989,7 +988,7 @@ public class RuleBuilder {
                     return ++this.value;
                 } else {
                     return this.value;
-                }                                
+                }
             } else {
                 return ++this.value;
             }

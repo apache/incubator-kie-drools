@@ -1,4 +1,5 @@
 package org.drools.lang.descr;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,22 +16,25 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-
-
 public class AttributeDescr extends PatternDescr {
-    private String name;    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2746045674173812015L;
+    private String name;
     private String value;
-    
-    public AttributeDescr(String name, String value) {
+
+    public AttributeDescr(final String name,
+                          final String value) {
         this.name = name;
         this.value = value;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getValue() {
-        return value;
-    }            
+        return this.value;
+    }
 }

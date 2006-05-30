@@ -1,4 +1,5 @@
 package org.drools.lang.dsl;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.lang.dsl;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.io.Reader;
 import java.util.HashMap;
@@ -36,7 +35,7 @@ public class DefaultExpanderResolver
     ExpanderResolver {
 
     private final Map expanders = new HashMap();
-    
+
     /**
      * Create an empty resolver, which you will then
      * call addExpander multiple times, to map a specific expander
@@ -44,7 +43,7 @@ public class DefaultExpanderResolver
      */
     public DefaultExpanderResolver() {
     }
-    
+
     /**
      * This will load up a DSL from the reader specified.
      * This will make the expander available to any parser 
@@ -54,11 +53,12 @@ public class DefaultExpanderResolver
      * 
      * This is the constructor most people should use.
      */
-    public DefaultExpanderResolver(Reader reader) {
-        DefaultExpander expander = new DefaultExpander(reader);
-        expanders.put( "*", expander );
+    public DefaultExpanderResolver(final Reader reader) {
+        final DefaultExpander expander = new DefaultExpander( reader );
+        this.expanders.put( "*",
+                       expander );
     }
-    
+
     /**
      * Add an expander with the given name, which will be used
      * by looking for the "expander" keyword in the DRL.
@@ -70,18 +70,21 @@ public class DefaultExpanderResolver
      * involved when compiling multiple rule packages at the same time.
      * If you don't know what that sentence means, you probably don't need to use this method.
      */
-    public void addExpander(String name, Expander expander) {
-        this.expanders.put( name, expander );
+    public void addExpander(final String name,
+                            final Expander expander) {
+        this.expanders.put( name,
+                            expander );
     }
-    
-    public Expander get(String name,
-                        String config) {
-        if (expanders.containsKey( name )) {
-            return (Expander) expanders.get( name );
+
+    public Expander get(final String name,
+                        final String config) {
+        if ( this.expanders.containsKey( name ) ) {
+            return (Expander) this.expanders.get( name );
         } else {
-            Expander exp = (Expander) expanders.get( "*" );
-            if (exp == null) 
-                throw new IllegalArgumentException("Unable to provide an expander for " + name + " or a default expander.");
+            final Expander exp = (Expander) this.expanders.get( "*" );
+            if ( exp == null ) {
+                throw new IllegalArgumentException( "Unable to provide an expander for " + name + " or a default expander." );
+            }
             return exp;
         }
     }

@@ -21,8 +21,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.lang.descr.*;
-
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BoundVariableDescr;
+import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.LiteralDescr;
+import org.drools.lang.descr.NotDescr;
+import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PackageDescrDumper;
+import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.QueryDescr;
+import org.drools.lang.descr.ReturnValueDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.util.ReflectiveVisitor;
 
 /**
@@ -43,98 +58,98 @@ public class XmlDumper extends ReflectiveVisitor
         return this.xmlDump.toString();
     }
 
-    public void visitAndDescr(AndDescr descr) {
-        template = new String();
+    public void visitAndDescr(final AndDescr descr) {
+        this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
-            template = "<and>" + processDescrList( descr.getDescrs() ) + "</and>";
+            this.template = "<and>" + processDescrList( descr.getDescrs() ) + "</and>";
         } else {
-            template = "<and> </and>";
+            this.template = "<and> </and>";
         }
     }
 
-    public void visitAttributeDescr(AttributeDescr attributeDescr) {
-        template = new String();
-        template = "<rule-attribute name=\"" + attributeDescr.getName() + "\" value=\"" + attributeDescr.getValue() + "\" />" + eol;
+    public void visitAttributeDescr(final AttributeDescr attributeDescr) {
+        this.template = new String();
+        this.template = "<rule-attribute name=\"" + attributeDescr.getName() + "\" value=\"" + attributeDescr.getValue() + "\" />" + XmlDumper.eol;
     }
 
-    public void visitBoundVariableDescr(BoundVariableDescr descr) {
-        template = new String();
-        template = "<bound-variable field-name=\"" + descr.getFieldName() + "\" evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" identifier=\"" + descr.getIdentifier() + "\" />" + eol;
+    public void visitBoundVariableDescr(final BoundVariableDescr descr) {
+        this.template = new String();
+        this.template = "<bound-variable field-name=\"" + descr.getFieldName() + "\" evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" identifier=\"" + descr.getIdentifier() + "\" />" + XmlDumper.eol;
     }
 
-    public void visitColumnDescr(ColumnDescr descr) {
-        template = new String();
+    public void visitColumnDescr(final ColumnDescr descr) {
+        this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
             if ( descr.getIdentifier() != null ) {
-                template = "<column identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + processDescrList( descr.getDescrs() ) + "</column>" + eol;
+                this.template = "<column identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + processDescrList( descr.getDescrs() ) + "</column>" + XmlDumper.eol;
             } else {
-                template = "<column object-type=\"" + descr.getObjectType() + "\" >" + processDescrList( descr.getDescrs() ) + "</column>" + eol;
+                this.template = "<column object-type=\"" + descr.getObjectType() + "\" >" + processDescrList( descr.getDescrs() ) + "</column>" + XmlDumper.eol;
             }
         } else {
             if ( descr.getIdentifier() != null ) {
-                template = "<column identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" > </column>" + eol;
+                this.template = "<column identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" > </column>" + XmlDumper.eol;
             } else {
-                template = "<column object-type=\"" + descr.getObjectType() + "\" > </column>" + eol;
+                this.template = "<column object-type=\"" + descr.getObjectType() + "\" > </column>" + XmlDumper.eol;
             }
         }
 
     }
 
-    public void visitEvalDescr(EvalDescr descr) {
-        template = new String();
-        template = "<eval>" + descr.getText() + "</eval>" + eol;
+    public void visitEvalDescr(final EvalDescr descr) {
+        this.template = new String();
+        this.template = "<eval>" + descr.getText() + "</eval>" + XmlDumper.eol;
     }
 
-    public void visitExistsDescr(ExistsDescr descr) {
-        template = new String();
+    public void visitExistsDescr(final ExistsDescr descr) {
+        this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
-            template = "<exists>" + processDescrList( descr.getDescrs() ) + "</exists>";
+            this.template = "<exists>" + processDescrList( descr.getDescrs() ) + "</exists>";
         } else {
-            template = "<exists> </exists>";
+            this.template = "<exists> </exists>";
         }
     }
 
-    public void visitFieldBindingDescr(FieldBindingDescr descr) {
-        template = new String();
-        template = "<field-binding field-name=\"" + descr.getFieldName() + "\" identifier=\"" + descr.getIdentifier() + "\" />" + eol;
+    public void visitFieldBindingDescr(final FieldBindingDescr descr) {
+        this.template = new String();
+        this.template = "<field-binding field-name=\"" + descr.getFieldName() + "\" identifier=\"" + descr.getIdentifier() + "\" />" + XmlDumper.eol;
     }
 
-    public void visitFunctionDescr(FunctionDescr functionDescr) {
-        template = new String();
-        String parameterTemplate = processParameters( functionDescr.getParameterNames(),
+    public void visitFunctionDescr(final FunctionDescr functionDescr) {
+        this.template = new String();
+        final String parameterTemplate = processParameters( functionDescr.getParameterNames(),
                                                       functionDescr.getParameterTypes() );
 
-        template = "<function return-type=\"" + functionDescr.getReturnType() + "\" name=\"" + functionDescr.getName() + "\">" + eol + parameterTemplate + "<body>" + eol + functionDescr.getText() + eol + "</body>" + eol + "</function>" + eol;
+        this.template = "<function return-type=\"" + functionDescr.getReturnType() + "\" name=\"" + functionDescr.getName() + "\">" + XmlDumper.eol + parameterTemplate + "<body>" + XmlDumper.eol + functionDescr.getText() + XmlDumper.eol + "</body>" + XmlDumper.eol + "</function>" + XmlDumper.eol;
     }
 
-    public void visitLiteralDescr(LiteralDescr descr) {
-        template = new String();
-        template = "<literal field-name=\"" + descr.getFieldName() + "\" evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" value=\"" + descr.getText() + "\" />" + eol;
+    public void visitLiteralDescr(final LiteralDescr descr) {
+        this.template = new String();
+        this.template = "<literal field-name=\"" + descr.getFieldName() + "\" evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" value=\"" + descr.getText() + "\" />" + XmlDumper.eol;
     }
 
-    public void visitNotDescr(NotDescr descr) {
-        template = new String();
+    public void visitNotDescr(final NotDescr descr) {
+        this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
-            template = "<not>" + processDescrList( descr.getDescrs() ) + "</not>";
+            this.template = "<not>" + processDescrList( descr.getDescrs() ) + "</not>";
         } else {
-            template = "<not> </not>";
+            this.template = "<not> </not>";
         }
 
     }
 
-    public void visitOrDescr(OrDescr descr) {
-        template = new String();
+    public void visitOrDescr(final OrDescr descr) {
+        this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
-            template = "<or>" + processDescrList( descr.getDescrs() ) + "</or>";
+            this.template = "<or>" + processDescrList( descr.getDescrs() ) + "</or>";
         } else {
-            template = "<or> </or>";
+            this.template = "<or> </or>";
         }
     }
 
-    public void visitPackageDescr(PackageDescr packageDescr) {
-        String packageName = packageDescr.getName();
-        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " + eol + " <package name=\"" + packageName + "\"  " + eol + "\txmlns=\"http://drools.org/drools-3.0\" " + eol + "\txmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" " + eol
-                           + "\txs:schemaLocation=\"http://drools.org/drools-3.0 drools-3.0.xsd\"> " + eol;
+    public void visitPackageDescr(final PackageDescr packageDescr) {
+        final String packageName = packageDescr.getName();
+        final String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " + XmlDumper.eol + " <package name=\"" + packageName + "\"  " + XmlDumper.eol + "\txmlns=\"http://drools.org/drools-3.0\" " + XmlDumper.eol + "\txmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" " + XmlDumper.eol
+                           + "\txs:schemaLocation=\"http://drools.org/drools-3.0 drools-3.0.xsd\"> " + XmlDumper.eol;
         appendXmlDump( xmlString );
         appendXmlDump( processImportsList( packageDescr.getImports() ) );
         appendXmlDump( processGlobalsMap( packageDescr.getGlobals() ) );
@@ -143,30 +158,30 @@ public class XmlDumper extends ReflectiveVisitor
         appendXmlDump( "</package>" );
     }
 
-    public void visitPredicateDescr(PredicateDescr descr) {
-        template = new String();
-        template = "<predicate field-name=\"" + descr.getFieldName() + "\" identifier=\"" + descr.getDeclaration() + "\" >" + descr.getText() + "</predicate>" + eol;
+    public void visitPredicateDescr(final PredicateDescr descr) {
+        this.template = new String();
+        this.template = "<predicate field-name=\"" + descr.getFieldName() + "\" identifier=\"" + descr.getDeclaration() + "\" >" + descr.getText() + "</predicate>" + XmlDumper.eol;
 
     }
 
-    public void visitReturnValueDescr(ReturnValueDescr descr) {
-        template = new String();
-        template = "<return-value field-name=\"" + descr.getFieldName() + "\" evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" >" + descr.getText() + "</return-value>" + eol;
+    public void visitReturnValueDescr(final ReturnValueDescr descr) {
+        this.template = new String();
+        this.template = "<return-value field-name=\"" + descr.getFieldName() + "\" evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" >" + descr.getText() + "</return-value>" + XmlDumper.eol;
     }
 
-    public void visitQueryDescr(QueryDescr descr) {
-        template = new String();
-        template = "<query name=\"" + descr.getName() + "\">" + "<lhs>" + processDescrList( descr.getLhs().getDescrs() ) + "</lhs>" + "</query>";
+    public void visitQueryDescr(final QueryDescr descr) {
+        this.template = new String();
+        this.template = "<query name=\"" + descr.getName() + "\">" + "<lhs>" + processDescrList( descr.getLhs().getDescrs() ) + "</lhs>" + "</query>";
     }
 
     private String template;
 
-    private String processRules(List rules) {
+    private String processRules(final List rules) {
         String ruleList = "";
-        for ( Iterator iterator = rules.iterator(); iterator.hasNext(); ) {
-            RuleDescr ruleDescr = (RuleDescr) iterator.next();
-            String rule = "<rule name=\"" + ruleDescr.getName() + "\">" + eol;
-            String attribute = processAttribute( ruleDescr.getAttributes() );
+        for ( final Iterator iterator = rules.iterator(); iterator.hasNext(); ) {
+            final RuleDescr ruleDescr = (RuleDescr) iterator.next();
+            String rule = "<rule name=\"" + ruleDescr.getName() + "\">" + XmlDumper.eol;
+            final String attribute = processAttribute( ruleDescr.getAttributes() );
             String lhs = "";
             if ( ruleDescr.getLhs().getDescrs() != Collections.EMPTY_LIST ) {
                 lhs = "<lhs>" + processDescrList( ruleDescr.getLhs().getDescrs() ) + "</lhs>";
@@ -175,7 +190,7 @@ public class XmlDumper extends ReflectiveVisitor
                 lhs = "<lhs> </lhs>";
             }
 
-            String rhs = "<rhs>" + ruleDescr.getConsequence() + "</rhs>" + eol;
+            final String rhs = "<rhs>" + ruleDescr.getConsequence() + "</rhs>" + XmlDumper.eol;
             rule += attribute;
             rule += lhs;
             rule += rhs;
@@ -183,80 +198,80 @@ public class XmlDumper extends ReflectiveVisitor
             ruleList += rule;
         }
 
-        return ruleList + eol;
+        return ruleList + XmlDumper.eol;
     }
 
-    private String processDescrList(List descr) {
+    private String processDescrList(final List descr) {
         String descrString = "";
-        for ( Iterator iterator = descr.iterator(); iterator.hasNext(); ) {
+        for ( final Iterator iterator = descr.iterator(); iterator.hasNext(); ) {
             visit( iterator.next() );
-            descrString += template;
-            descrString += eol;
+            descrString += this.template;
+            descrString += XmlDumper.eol;
         }
-        return descrString + eol;
+        return descrString + XmlDumper.eol;
     }
 
-    private String processFunctionsList(List functions) {
+    private String processFunctionsList(final List functions) {
         String functionList = "";
 
-        for ( Iterator iterator = functions.iterator(); iterator.hasNext(); ) {
+        for ( final Iterator iterator = functions.iterator(); iterator.hasNext(); ) {
             visit( iterator.next() );
-            functionList += template;
+            functionList += this.template;
         }
 
-        return functionList + eol;
+        return functionList + XmlDumper.eol;
     }
 
-    private String processAttribute(List attributes) {
+    private String processAttribute(final List attributes) {
 
         String attributeList = "";
-        for ( Iterator iterator = attributes.iterator(); iterator.hasNext(); ) {
-            AttributeDescr attributeDescr = (AttributeDescr) iterator.next();
+        for ( final Iterator iterator = attributes.iterator(); iterator.hasNext(); ) {
+            final AttributeDescr attributeDescr = (AttributeDescr) iterator.next();
             visit( attributeDescr );
-            attributeList += template;
+            attributeList += this.template;
         }
-        return attributeList + eol;
+        return attributeList + XmlDumper.eol;
     }
 
-    private String processParameters(List parameterNames,
-                                     List parameterTypes) {
+    private String processParameters(final List parameterNames,
+                                     final List parameterTypes) {
         String paramList = "";
         int i = 0;
-        for ( Iterator iterator = parameterNames.iterator(); iterator.hasNext(); i++ ) {
-            String paramName = (String) iterator.next();
-            String paramType = (String) parameterTypes.get( i );
-            String paramTemplate = "<parameter identifier=\"" + paramName + "\" type=\"" + paramType + "\" />" + eol;
+        for ( final Iterator iterator = parameterNames.iterator(); iterator.hasNext(); i++ ) {
+            final String paramName = (String) iterator.next();
+            final String paramType = (String) parameterTypes.get( i );
+            final String paramTemplate = "<parameter identifier=\"" + paramName + "\" type=\"" + paramType + "\" />" + XmlDumper.eol;
             paramList += paramTemplate;
         }
 
-        return paramList + eol;
+        return paramList + XmlDumper.eol;
     }
 
-    private String processGlobalsMap(Map globals) {
+    private String processGlobalsMap(final Map globals) {
         String globalList = "";
-        for ( Iterator iterator = globals.keySet().iterator(); iterator.hasNext(); ) {
-            String key = (String) iterator.next();
-            String value = (String) globals.get( key );
-            String globalTemplate = "<global identifier=\"" + key + "\" type=\"" + value + "\" />" + eol;
+        for ( final Iterator iterator = globals.keySet().iterator(); iterator.hasNext(); ) {
+            final String key = (String) iterator.next();
+            final String value = (String) globals.get( key );
+            final String globalTemplate = "<global identifier=\"" + key + "\" type=\"" + value + "\" />" + XmlDumper.eol;
             globalList += globalTemplate;
         }
 
-        return globalList + eol;
+        return globalList + XmlDumper.eol;
     }
 
-    private String processImportsList(List imports) {
+    private String processImportsList(final List imports) {
         String importList = "";
 
-        for ( Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
-            String importString = (String) iterator.next();
-            String importTemplate = "<import name=\"" + importString + "\" /> " + eol;
+        for ( final Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
+            final String importString = (String) iterator.next();
+            final String importTemplate = "<import name=\"" + importString + "\" /> " + XmlDumper.eol;
             importList += importTemplate;
         }
-        return importList + eol;
+        return importList + XmlDumper.eol;
     }
 
-    private void appendXmlDump(String temp) {
-        xmlDump.append( temp );
+    private void appendXmlDump(final String temp) {
+        this.xmlDump.append( temp );
     }
 
     private String getEvaluator(String eval) {

@@ -1,4 +1,5 @@
 package org.drools;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,28 +16,32 @@ package org.drools;
  * limitations under the License.
  */
 
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cheesery implements Serializable {
-    public final static int MAKING_CHEESE = 0;
+public class Cheesery
+    implements
+    Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4654655548777389065L;
+    public final static int MAKING_CHEESE  = 0;
     public final static int SELLING_CHEESE = 1;
-    
-    private List cheeses = new ArrayList();
-    
-    private int status;
-    
+
+    private final List            cheeses        = new ArrayList();
+
+    private int             status;
+
     public List getCheeses() {
         return this.cheeses;
     }
-    
-    public void setStatus(int status) {
+
+    public void setStatus(final int status) {
         this.status = status;
     }
-    
+
     public int getStatus() {
         return this.status;
     }

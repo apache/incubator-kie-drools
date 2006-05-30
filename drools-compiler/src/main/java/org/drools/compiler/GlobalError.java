@@ -1,4 +1,5 @@
 package org.drools.compiler;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,22 +16,19 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-
-
 public class GlobalError extends DroolsError {
     private String global;
-    
-    public GlobalError(String global) {
+
+    public GlobalError(final String global) {
         this.global = global;
     }
-    
+
     public String getGlobal() {
         return this.global;
     }
 
     public String getMessage() {
-        return global;
+        return this.global;
     }
-    
 
 }

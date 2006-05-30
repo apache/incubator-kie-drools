@@ -1,4 +1,5 @@
 package org.drools.lang.dsl.template;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,14 +16,10 @@ package org.drools.lang.dsl.template;
  * limitations under the License.
  */
 
-
-
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * This is the utility class for compiling pseudo natural/DSL expression into the target 
@@ -46,23 +43,24 @@ public class NLExpressionCompiler {
 
     //a map of templates to the template contexts (template contexts are used to populate populate
     //the target mappings with data from a real expression.
-    private Map templateCache;
+    private Map       templateCache;
     private NLGrammar grammar;
-    
-    public NLExpressionCompiler(NLGrammar grammar) {
-        List grammarItems = grammar.getMappings();        
+
+    public NLExpressionCompiler(final NLGrammar grammar) {
+        final List grammarItems = grammar.getMappings();
         this.templateCache = new HashMap();
         this.grammar = grammar;
-        
+
         //build up a cache of templates
-        TemplateFactory factory = new TemplateFactory();
-        for ( Iterator iter = grammarItems.iterator(); iter.hasNext(); ) {
-            NLMappingItem mapping = (NLMappingItem) iter.next();
-            Template template = factory.getTemplate(mapping.getNaturalTemplate());
-            templateCache.put(mapping, template);
+        final TemplateFactory factory = new TemplateFactory();
+        for ( final Iterator iter = grammarItems.iterator(); iter.hasNext(); ) {
+            final NLMappingItem mapping = (NLMappingItem) iter.next();
+            final Template template = factory.getTemplate( mapping.getNaturalTemplate() );
+            this.templateCache.put( mapping,
+                               template );
         }
     }
-    
+
     /**
      * This will iterate through the grammar, trying to match any grammar templates with the expression.
      * When it can, it will pull the values out of the expression, put them in the target string, and then swap it out with 
@@ -71,41 +69,39 @@ public class NLExpressionCompiler {
      * scope is to indicate if it is expanding condition or consequence.
      * (null will only expand globals).
      */
-    public String compile(String expression, String scope) {
+    public String compile(final String expression,
+                          final String scope) {
         String expanded = expression;
-        
-        List mappings = grammar.getMappings();
+
+        final List mappings = this.grammar.getMappings();
 
         expanded = processMappings( expanded,
                                     mappings,
-                                    "*");
-        if (scope != null) {
-            expanded = processMappings( expanded, 
-                                        mappings, 
+                                    "*" );
+        if ( scope != null ) {
+            expanded = processMappings( expanded,
+                                        mappings,
                                         scope );
         }
-        if (expanded.equals( expression )) {
-            throw new IllegalArgumentException("Expression was not expandable: " + expression);
+        if ( expanded.equals( expression ) ) {
+            throw new IllegalArgumentException( "Expression was not expandable: " + expression );
         }
         return expanded;
     }
-    
 
     private String processMappings(String input,
-                                   List mappings, 
-                                   String scope) {
-        for ( Iterator iter = mappings.iterator(); iter.hasNext(); ) {
+                                   final List mappings,
+                                   final String scope) {
+        for ( final Iterator iter = mappings.iterator(); iter.hasNext(); ) {
             //get the template and apply it
-            NLMappingItem mapping = (NLMappingItem) iter.next();
-            if (mapping.getScope().equals( scope )) { 
-                Template template = (Template) templateCache.get( mapping );
-                input = template.expandAll(input, mapping.getTargetTemplate());
+            final NLMappingItem mapping = (NLMappingItem) iter.next();
+            if ( mapping.getScope().equals( scope ) ) {
+                final Template template = (Template) this.templateCache.get( mapping );
+                input = template.expandAll( input,
+                                            mapping.getTargetTemplate() );
             }
         }
         return input;
     }
-    
-    
-    
-    
+
 }

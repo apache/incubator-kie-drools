@@ -40,10 +40,10 @@ import org.xml.sax.SAXParseException;
 class NotHandler extends BaseAbstractHandler
     implements
     Handler {
-    NotHandler(XmlPackageReader xmlPackageReader) {
+    NotHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( AndDescr.class );
             this.validParents.add( OrDescr.class );
@@ -61,33 +61,33 @@ class NotHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
-        NotDescr notDescr = new NotDescr();
+        final NotDescr notDescr = new NotDescr();
 
         return notDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        NotDescr notDescr = (NotDescr) this.xmlPackageReader.getCurrent();
+        final NotDescr notDescr = (NotDescr) this.xmlPackageReader.getCurrent();
 
         if ( (notDescr.getDescrs().size() != 1) && (notDescr.getDescrs().get( 0 ).getClass() != ColumnDescr.class) ) {
             throw new SAXParseException( "<not> can only have a single <column...> as a child element",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
-        LinkedList parents = this.xmlPackageReader.getParents();
-        ListIterator it = parents.listIterator( parents.size() );
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        Object parent = it.previous();
+        final Object parent = it.previous();
 
-        ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
         parentDescr.addDescr( notDescr );
 
         return null;

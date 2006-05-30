@@ -40,10 +40,10 @@ import org.xml.sax.SAXParseException;
 class ColumnHandler extends BaseAbstractHandler
     implements
     Handler {
-    ColumnHandler(XmlPackageReader xmlPackageReader) {
+    ColumnHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
-        if ( (this.validParents == null) && (validPeers == null) ) {
+        if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
             this.validParents.add( AndDescr.class );
             this.validParents.add( OrDescr.class );
@@ -63,22 +63,22 @@ class ColumnHandler extends BaseAbstractHandler
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+        this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        String objectType = attrs.getValue( "object-type" );
+        final String objectType = attrs.getValue( "object-type" );
 
         if ( objectType == null || objectType.trim().equals( "" ) ) {
             throw new SAXParseException( "<column> requires an 'object-type' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         this.xmlPackageReader.getLocator() );
         }
 
         ColumnDescr columnDescr = null;
 
-        String identifier = attrs.getValue( "identifier" );
+        final String identifier = attrs.getValue( "identifier" );
         if ( identifier == null || identifier.trim().equals( "" ) ) {
             columnDescr = new ColumnDescr( objectType );
         } else {
@@ -89,18 +89,18 @@ class ColumnHandler extends BaseAbstractHandler
         return columnDescr;
     }
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        Configuration config = xmlPackageReader.endConfiguration();
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
+        final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        ColumnDescr columnDescr = (ColumnDescr) this.xmlPackageReader.getCurrent();
+        final ColumnDescr columnDescr = (ColumnDescr) this.xmlPackageReader.getCurrent();
 
-        LinkedList parents = this.xmlPackageReader.getParents();
-        ListIterator it = parents.listIterator( parents.size() );
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        Object parent = it.previous();
+        final Object parent = it.previous();
 
-        ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
         parentDescr.addDescr( columnDescr );
 
         return null;

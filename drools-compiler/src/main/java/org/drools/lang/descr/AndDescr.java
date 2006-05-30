@@ -26,17 +26,21 @@ import java.util.Map;
 public class AndDescr extends PatternDescr
     implements
     ConditionalElementDescr {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8225023304408452585L;
     private List descrs       = Collections.EMPTY_LIST;
-    private Map  boundColumns = new HashMap();
+    private final Map  boundColumns = new HashMap();
 
     public AndDescr() {
     }
 
-    public void addDescr(PatternDescr patternDescr) {
+    public void addDescr(final PatternDescr patternDescr) {
         if ( this.descrs == Collections.EMPTY_LIST ) {
             this.descrs = new ArrayList( 1 );
         }
-     
+
         if ( patternDescr instanceof ColumnDescr ) {
             addColumn( (ColumnDescr) patternDescr );
         } else {
@@ -52,31 +56,33 @@ public class AndDescr extends PatternDescr
      * If its not a bound column, or it is a unique bound variable column,
      * it will just add it to the list of children descrs.
      */
-    private void addColumn(ColumnDescr col) {
-        String identifier = col.getIdentifier();
+    private void addColumn(final ColumnDescr col) {
+        final String identifier = col.getIdentifier();
         if ( identifier == null || "".equals( identifier ) ) {
             this.descrs.add( col );
         } else {
-            if (boundColumns.containsKey( identifier )) {
-                ColumnDescr existingCol = (ColumnDescr) boundColumns.get( identifier );
-                if (existingCol.getObjectType().equals( col.getObjectType() )) {
-                    combinePatterns(existingCol, col.getDescrs());
+            if ( this.boundColumns.containsKey( identifier ) ) {
+                final ColumnDescr existingCol = (ColumnDescr) this.boundColumns.get( identifier );
+                if ( existingCol.getObjectType().equals( col.getObjectType() ) ) {
+                    combinePatterns( existingCol,
+                                     col.getDescrs() );
                 } else {
                     this.descrs.add( col );
                 }
             } else {
-                boundColumns.put( identifier, col );
+                this.boundColumns.put( identifier,
+                                  col );
                 this.descrs.add( col );
             }
         }
     }
 
-    private void combinePatterns(ColumnDescr existingCol,
-                                 List newColPatterns) {
-        for ( Iterator iter = newColPatterns.iterator(); iter.hasNext(); ) {
+    private void combinePatterns(final ColumnDescr existingCol,
+                                 final List newColPatterns) {
+        for ( final Iterator iter = newColPatterns.iterator(); iter.hasNext(); ) {
             existingCol.addDescr( (PatternDescr) iter.next() );
         }
-        
+
     }
 
     public List getDescrs() {

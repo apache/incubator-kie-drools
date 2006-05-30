@@ -1,4 +1,5 @@
 package org.drools.lang;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,12 +16,16 @@ package org.drools.lang;
  * limitations under the License.
  */
 
-
-
-
 public class ExpanderException extends GeneralParseException {
 
-    public ExpanderException(String message, int line) {
-    		super( message, line );
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4842957918475578512L;
+
+    public ExpanderException(final String message,
+                             final int line) {
+        super( message,
+               line );
     }
 }
