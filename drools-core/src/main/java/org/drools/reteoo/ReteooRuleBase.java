@@ -49,9 +49,10 @@ import org.drools.spi.PropagationContext;
  */
 public class ReteooRuleBase extends AbstractRuleBase {
     /**
-     * 
+     * DO NOT CHANGE BELLOW SERIAL_VERSION_ID UNLESS YOU ARE CHANGING DROOLS VERSION
+     * SERIAL_VERSION_ID=300 stands for version 3.0.0 
      */
-    private static final long serialVersionUID = -3335534060920817217L;
+    private static final long serialVersionUID = 300;
 
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private Rete              rete;
