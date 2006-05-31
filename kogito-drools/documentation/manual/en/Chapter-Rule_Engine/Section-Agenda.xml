@@ -9,8 +9,8 @@
   (this is where most of the work takes place) and 2) agenda evaluation (where
   rule actions are fired). It is important to note that this process is
   recursive, in that a rule firing may cause working memory actions to occur.
-  When working memory actions are taking place, no rules are being fired.
-  </para>
+  When working memory actions are taking place, no rules are being
+  fired.</para>
 
   <para>The items that are placed on the agenda are called "activations" which
   are a rule plus matched facts (facts that at that point in time allow the
@@ -40,7 +40,7 @@
 
     <para>As a general rule, it is a good idea not to count on the rules
     firing in any particular order, and try and author the rules without
-    worrying about a "flow". </para>
+    worrying about a "flow".</para>
 
     <para>The conflict resolution strategies emplyed by drools are: Salience,
     FIFO (first in, first out), Total Recency and Load order.</para>
@@ -60,6 +60,13 @@
     that the activations for rules in that group will only take effect (you
     can also have rules "auto focus" which means the focus for its agenda
     group it taken when that rules conditions are true).</para>
+
+    <para>They are sometimes known as "modules" in CLIPS terminology. Agenda
+    groups are a handy way to create a "flow" between grouped rules. You can
+    switch the group which has focus either from within the rule engine, or
+    from the API. If you rules have a clear need for multiple "phases" or
+    "sequences" of processing, consider using agenda-groups for this
+    purpose.</para>
   </section>
 
   <section>
