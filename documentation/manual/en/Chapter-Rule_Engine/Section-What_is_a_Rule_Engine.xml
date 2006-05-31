@@ -168,7 +168,7 @@ then
     different and how to get the best from them. Forward chaing is
     'data-driven' and thus reactionary - facts are asserted into the working
     memory which results in one or more rules being concurrently true and
-    scheduled for execution by t he Agenda - we start with a fact, it
+    scheduled for execution by the Agenda - we start with a fact, it
     propagates and we end in a conclusion. Drools is a forward chaining
     engine.</para>
 

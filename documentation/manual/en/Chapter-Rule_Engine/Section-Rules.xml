@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>Rules</title>
+  <title>Knowledge Representation</title>
 
   <section>
     <title>Production Rules</title>
@@ -17,15 +17,19 @@
       </listitem>
 
       <listitem>
+        <para>agenda-group</para>
+      </listitem>
+
+      <listitem>
+        <para>auto-focus</para>
+      </listitem>
+
+      <listitem>
         <para>activation-group</para>
       </listitem>
 
       <listitem>
         <para>no-loop</para>
-      </listitem>
-
-      <listitem>
-        <para>auto-focus</para>
       </listitem>
 
       <listitem>
@@ -139,7 +143,7 @@ rule “A Cheesey Rule”
         cheeses.add( cheese );
 end</programlisting>
 
-    <para> The following example shows a LHS with a single Column that has a
+    <para>The following example shows a LHS with a single Column that has a
     single <indexterm>
         <primary>Literal Field Constraint</primary>
       </indexterm>Literal Field Constraint used with a Cheese Fact:</para>
@@ -159,9 +163,11 @@ end</programlisting>
     }
 }</programlisting>
 
-    <para>Rule engines are a complete de-coupling of data from the logic.
-    Rules cannot be called directly as they are not methods or functions
-    instead Rules fire in response to changes in Working Memory's data.</para>
+    <para>Rule are a complete de-coupling of data from the logic. Rules cannot
+    be called directly as they are not methods or functions instead Rules fire
+    in response to changes in Working Memory's data. Rules are also fully
+    declarative in that they describe "what" not "how" like imperative
+    languages such as java.</para>
   </section>
 
   <section>

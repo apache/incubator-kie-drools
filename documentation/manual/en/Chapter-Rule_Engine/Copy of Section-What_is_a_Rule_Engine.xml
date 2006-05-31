@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>What is a Rule Engine</title>
+
+  <section>
+    <title>Background</title>
+
+    <para>Artificial Intelligence (A.I.) is a very broad research area that
+    focuses on "Making computers think like people" and includes disciplines
+    like Neural Networks, Genetic Algorithms, Decision Trees, Frame Systems
+    and Expert Systems. Knowledge representation is the area of A.I. concerned
+    with how knowledge is represented and manipulated. Expert Systems use
+    Knowledge representation to facilitate the codification of knowledge into
+    a knowledge base which can be used for reasoning - i.e. we can process
+    data with this knowledge base to infer conclusions. Expert Systems are
+    also known as Knowledge-based Systems and Knowledge-based Expert System
+    and are considered 'applied artificial intelligence'; the process of
+    developing with an Expert System is Knowledge Engineering. Drools is a
+    Rule Engine that uses the Rule Based approached to implement an Expert
+    System and is more correctly classified as a Production Rules
+    System.</para>
+
+    <para>The brain of a Rule Based approach is the Inference Engine; the role
+    of the Inference Engine is to infer conclusions about facts, from the
+    rules. </para>
+
+    <figure>
+      <title>Inference Engine</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="Rule_Engine.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="Inference_Engine.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>A Production Rule is a two-part structure using logic to express one
+    or more conditions which when met result in execution of actions.</para>
+
+    <programlisting>if
+    &lt;conditions&gt;
+then
+    &lt;actions&gt;</programlisting>
+
+    <para>This is achieved using First Order Logic, or predicate logic, which
+    extends Propositional Logic. <ulink
+    url="http://en.wikipedia.org/wiki/Emil_Leon_Post">Emil Leon Post</ulink>
+    was the first to develop an inference based system using symbols to
+    express logic - as a consequence of this he was able to prove that any
+    logical system (including mathematics) could be expressed with such a
+    system.</para>
+
+    <para>A proposition is a statement that can be classified as true or
+    false. If the truth can be determined from statement alone it is said to
+    be a "closed statement". In programming terms this is an expression that
+    does not reference any variables:</para>
+
+    <para>10 = = 2 * 5</para>
+
+    <para>Expressions that evaluate against one or more variables, facts, are
+    "open statements", in that we cannot determine whether the statement is
+    true until we have a variable instance to evaluate against:</para>
+
+    <para>Person.sex == "male"</para>
+
+    <para>With SQL if we look at the conclusion's action as simply returning
+    the matched fact to the user:</para>
+
+    <para>select * from People where People.sex == "male"</para>
+
+    <para>For any rows, which represent our facts, that are returned we have
+    inferred that those facts are male people. The following diagram shows how
+    the above SQL statement and People table can be represented in terms of
+    the previous Inference Engine diagram.</para>
+
+    <figure>
+      <title>SQL as a simplistic Inference Engine</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="Male_People.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="Male_People.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>So in java we can say that a simple proposition is of the form
+    'variable' 'operator' 'value' - where we often refer to 'value' as being a
+    literal value - a proposition can be thought as a field constraint.
+    Further to this propositions can be combined with conjuntive and
+    disjuntive connectives, which is the logic theorists way of saying
+    '&amp;&amp;' and '||'. The following shows two open propositional
+    statements connected together with a single disjunctive connective.</para>
+
+    <programlisting>person.getEyeColor().equals("blue") || person.getEyeColor().equals("green") </programlisting>
+
+    <para>However Propositional Logic is not Turing complete in that you are
+    limited to the problems you can define because it cannot express criteria
+    for the structure of data. First Order Logic (FOL), or Predicate Logic,
+    extends Propositional Logic with two new quantifier concepts to allow
+    expressions defining structure - specifically universal and existential
+    quantifiers. Universal quantifiers allow you to check that something is
+    true for everything. Existential quantifiers check for the existence of
+    something, in that it occurs at least once.</para>
+
+    <para>Imagine we have two classes - Student and Module. Module represents
+    each of the courses the Student attended for that semester, referenced by
+    the List collection. At the end of the semester each Module has a score.
+    If the Student has a Module score below 40 then they will fail that
+    semester - the existential quantifier can be used used with the "less than
+    40" open proposition to check for the existence of a Module that is true
+    for the specified criteria.</para>
+
+    <programlisting>public class Student {
+    private String name;
+    private List modules;
+
+    ...
+}</programlisting>
+
+    <programlisting>public Class Module {
+    private String name;
+    private String studentName;
+    private int score;</programlisting>
+
+    <para>Java is Turing complete in that you can write code, among other
+    things, to iterate data structures to check for existence. The following
+    should return a List of students who have failed the semester.</para>
+
+    <programlisting>List failedStudents = new ArrayList();
+
+for ( Iterator studentIter = students.iterator(); studentIter.hasNext() {
+    Student student = ( Student ) studentIter.next();
+    for ( Iterator it = student.getModules.iterator(); it.hasNext(); ) {
+        Module module = ( Module ) it.next();
+        if ( module.getScore() &lt; 40  ) {
+            failedStudents.add( student ) ;
+            break;
+        }
+    }
+}</programlisting>
+
+    <para>Early SQL implementations where not Turing complete as they did not
+    provide quantifiers to asses the structure of data. However modern SQL
+    engines allow nesting of SQL which can be combined with keywords like
+    'exists' and 'in': The following query would return a set of Students who
+    have failed the semester.</para>
+
+    <programlisting>select 
+    * 
+from 
+    Students s 
+where exists (  
+    select 
+        * 
+    from 
+        Modules m 
+    where 
+        m.student_name = s.name and 
+        m.score &lt; 40 
+)</programlisting>
+
+    <para>So modern SQL engines confuse things even more, by showing some
+    capabilities to support First Order Logic - still one of the key
+    differentiators here is in the design approach to solving this problem; as
+    an Inference Engine can handle far more complex rules involving many facts
+    and quantifiers in a stateful manner which may not be possible to express
+    in SQL and if it was would likely bring an SQL Engine to its knees - where
+    as an Inference Engine's design approach caters for First Order Logic.
+    Further to this an Inference Engine is stateful and thus reacts to changes
+    in data, as part of a Productions Rules System, which enables the logical
+    relationships between the results of the actions inferred by the data and
+    rules - this is called Truth Maintenance - .A Query Engine simply returns
+    results, so it has no support for Truth Maintenance. For example the
+    "Honest Politician" example, which always ensures that hope and decomcracy
+    exists.</para>
+
+    <programlisting>when
+    an honest Politician exists
+then
+    logically assert Hope
+
+when
+   Hope exists
+then
+   print "Hurrah!!! Democracy Lives" 
+
+when
+   Hope does not exist
+then
+   print "Democracy is Doomed" 
+</programlisting>
+
+    <para></para>
+
+    <para></para>
+
+    <para>To help gain a better understanding we can build a simple linear
+    rule engine</para>
+
+    <programlisting>// Interface for Production Rules
+public interface Rule {
+    public void evaluate(Object[] objects);
+}
+</programlisting>
+
+    <programlisting>public class LinearInferenceEngine {    
+    Rules[] rules;
+
+    public LinearInferenceEngine(Rule[] rules) {
+        this.rules = rules;
+    }
+
+    public void evaluate(Object[] objects) {
+        for ( int i = 0; i &lt; rules.length; i++ ) {
+            rules[i].evaluate( objects );
+        }
+    }
+}</programlisting>
+
+    <programlisting>// The production rule - a simple proposition
+public class FindMalePeople implements Rule {
+    public evaluate(Object[] objects) {
+        Person person = ( Person ) objects[i];
+        if ( person.getSex().equals( "male" ) {
+            consequence( people[i] );    
+        }
+    }
+
+    // The consequence 
+    private void consequence(Person person) {
+        System.out.println(Person.getName() + " is male" );
+    }
+}
+</programlisting>
+
+    <programlisting>// The Facts
+Person[] people = new Person[] { new Person("mark", "male"), new Person("bob", "male"), new Person("janet", "female") };
+
+// The Production Rules
+Rule rules[] = new Rule[] { new FindMalePeople() };
+
+/ The Linear Inference Engine
+LinearInferenceEngine engine = new LinearInferenceEngine( rules );
+
+// Evaluate Facts against the Productions  Rules using the Linear Inference Engine
+for ( int i = 0; i &lt; people.length; i++ ) {
+    engine.evaluate( new Object[] { people[i] } );
+}</programlisting>
+
+    <para>However what differentiates a Rule Engine from SQL is its ability to
+    deal with First Order Logic and actions</para>
+
+    <figure>
+      <title>Additional Reading</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>"Expert Systems - Principles and Programming" (2005) by Joseph
+          C. Giarratano, Gary D. Riley</para>
+        </listitem>
+
+        <listitem>
+          <para>"Introduction to Expert Systems" (1999) by Peter
+          Jackson</para>
+        </listitem>
+
+        <listitem>
+          <para>"Knowledge Representation and Reasing" (2004) by Ronald J.
+          Brachman, Hector J. Levesque</para>
+        </listitem>
+      </itemizedlist>
+    </figure>
+
+    <para>A Rule Engine like Drools is centred around the concept of
+    logicproduction rules (IF conditions THEN actions). Emil Leon Post (<ulink
+    url="http://en.wikipedia.org/wiki/Emil_Leon_Post">http://en.wikipedia.org/wiki/Emil_Leon_Post)</ulink>
+    was the first to use production systems in logic - as a consequence of
+    this he was able to prove that any logical system (including mathematics)
+    could be written with production rules. Quite an amazing proof, this
+    essentially means that you can represent any system/problem with
+    production rules (back in the real world there are constraints of
+    processing power and efficiency of course !).</para>
+
+    <para>You may also have heard of "Expert Systems" in the context of rule
+    engines. You can think of expert systems as a rule engine + the
+    codification of knowledge for a specific problem domain (+ a user
+    interface !). In that sense, Drools is a platform for expert systems.
+    Historically, rule engines popularity grew out of expert systems success
+    (for example, EMYCIN was one of the first "shells" for an expert system,
+    which was created from the MYCIN medical diagnosis expert system).</para>
+  </section>
+
+  <section>
+    <title>Rules</title>
+
+    <para>A <indexterm>
+        <primary>Rule</primary>
+      </indexterm>Rule is the codification of business knowledge. A Rule has
+    attributes, a Left Hand Side (LHS) and a Right Hand Side (RHS). Drools
+    allows the following attributes:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>salience</para>
+      </listitem>
+
+      <listitem>
+        <para>agenda-group</para>
+      </listitem>
+
+      <listitem>
+        <para>no-loop</para>
+      </listitem>
+
+      <listitem>
+        <para>auto-focus</para>
+      </listitem>
+
+      <listitem>
+        <para>duration</para>
+      </listitem>
+    </itemizedlist>
+
+    <programlisting>rule “&lt;name&gt;”    
+    &lt;attribute&gt; &lt;value&gt;    
+    when        
+        &lt;LHS&gt;    
+    then        
+        &lt;RHS&gt;
+end
+</programlisting>
+
+    <para>The LHS of the Rule consists of one or more Conditions. As the Rule
+    Engine is made aware of new data or changes to existing data it matches
+    the data against the Conditions, when all the Conditions are met and true
+    the RHS, and its actions, are executed; the RHS, called the <indexterm>
+        <primary>Consequence</primary>
+      </indexterm>Consequence. The LHS and the RHS is analogous to:</para>
+
+    <programlisting>if ( &lt;LHS&gt; ) {
+    &lt;RHS&gt;
+}</programlisting>
+
+    <para>Rules are associated with a namespace via the
+    <literal>package</literal> keyword; other Rule Engines may call this a
+    <indexterm>
+        <primary>Rule Set</primary>
+      </indexterm>Rule Set. A Package declares imports, global variables,
+    functions and rules.</para>
+
+    <programlisting>package com.sample
+
+import java.util.List
+import com.sample.Cheese
+
+global List cheeses
+
+function void exampleFunction(Cheese cheese) {
+    System.out.println( cheese );
+}
+
+rule “A Cheesy Rule”
+    when
+        cheese : Cheese( type == "stilton" )
+    then
+        exampleFunction( cheese );
+        cheeses.add( cheese );
+end</programlisting>
+
+    <para>The process of matching the new or existing modified data against
+    rules is called <indexterm>
+        <primary>Pattern Matching</primary>
+      </indexterm> Pattern Matching, the engine which does this matching is
+    the <indexterm>
+        <primary>Inference Engine</primary>
+      </indexterm>Inference Engine. The Rule's are referred to as the
+    <indexterm>
+        <primary>Production Memory</primary>
+      </indexterm>Production Memory and the data that the Inference Engine
+    matches against is the <indexterm>
+        <primary>WorkingMemory</primary>
+      </indexterm>Working Memory. the Agenda manages the execution of the
+    matched Rules. There are a number of algorithms used for Pattern Matching
+    by Inference Engines including:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Linear</para>
+      </listitem>
+
+      <listitem>
+        <para>Rete</para>
+      </listitem>
+
+      <listitem>
+        <para>Treat</para>
+      </listitem>
+
+      <listitem>
+        <para>Leaps</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Drools has implementations for both Rete and Leaps; Leaps is still
+    considered experiment. The Drools <indexterm>
+        <primary>Rete</primary>
+      </indexterm>Rete implementation is called ReteOO signifying that this
+    Drools has an enhanced and optimised implementation of the Rete algorithm.
+    Other Rete based engines also have marketting terms for their prioprietary
+    enhancements to Rete, like RetePlus and Rete III,</para>
+
+    <figure>
+      <title>A Basic Rete network</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="Rule_Engine.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="Rule_Engine.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The LHS of a rule is made up of <indexterm>
+        <primary>Conditional Element</primary>
+      </indexterm>iConditional Elements and <indexterm>
+        <primary>Field Constraint</primary>
+      </indexterm>iField Constraints. The following example shows a <indexterm>
+        <primary>Literal Field Constraint</primary>
+      </indexterm>iLiteral Field Constraint used with a Cheese Fact; the
+    combination of Field Constraints on a Fact is known as a <indexterm>
+        <primary>Column</primary>
+      </indexterm>Column.</para>
+
+    <programlisting>rule "Cheddar Cheese"
+    when
+        Cheese( type == "cheddar" )
+    then
+        System.out.println( "cheddar" );
+end</programlisting>
+
+    <para>The example above is similar to :</para>
+
+    <programlisting>public void cheddarCheese(Cheese cheese) {
+    if ( cheese.getType().equals("cheddar") {
+        System.out.println( "cheddar" );
+    }
+}</programlisting>
+
+    <para>Rule engines are a complete de-coupling of data from the logic.
+    Rules cannot be called directly as they are not methods or functions
+    instead Rules fire in response to changes in Working Memory's data, It may
+    help to think of this de-coupling as a specialised event sytem. The
+    Consequence is the Listener to the full matching of the LHS events.</para>
+
+    <para>Rule Engines are much like a database where Rule's LHS define the
+    queries on the Working Memory. The previous rule can be expressed in
+    <indexterm>
+        <primary>SQL</primary>
+      </indexterm>SQL as:</para>
+
+    <programlisting> select * from Cheese where type == "cheddar"</programlisting>
+
+    <para>A <indexterm>
+        <primary>DataBase</primary>
+      </indexterm>Database executes SQL, on request, where as a Rule Engine
+    will process data against its rules, its Production Memory, as it's
+    asserted; this process is known as <indexterm>
+        <primary>Pattern Matching</primary>
+      </indexterm>Pattern Matching. When added to the Production Memory,
+    Rule's are decomposed into a graph using the <indexterm>
+        <primary>Rete</primary>
+      </indexterm>Rete algorithm. Rete is one of the standard Rule Engine
+    algorithms developed by <indexterm>
+        <primary>Charles Forgey</primary>
+      </indexterm>Charles Forgey in 1979 which is covered in greater detail in
+    a Rete Algorithm chapter.</para>
+
+    <figure>
+      <title>A Basic Rete network</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="A_Basic_Rete_Network.svg"
+                     format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="A_Basic_Rete_Network.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Each Fact type in our Working Memory, such as <code>Cheese</code>,
+    is represented by an <indexterm>
+        <primary>Object Type</primary>
+      </indexterm>Object Type class, shown as the root node in our graph. When
+    Facts are asserted into the Working Memory the Rule Engine finds the
+    matching Object Type node and propagates the asserted Fact onto the next
+    node. The Object Type node maintains a memory of all matched Facts. in our
+    example the next node in the graph is a <indexterm>
+        <primary>Field Constraint</primary>
+      </indexterm>Field Constraint, <code>type == "cheddar", </code>its job is
+    to filter Facts using the given constraint; if the type of
+    <code>Cheese</code> is not "cheddar" the Fact progresses no further in the
+    network, if it is "cheddar" it is rememebered in the <indexterm>
+        <primary>Alpha Node</primary>
+      </indexterm>Alpha Node's memory and propagated onto the next node in the
+    network.. Alpha Node is classic Rete terminology for single input/single
+    output nodes, in that it receives a single Fact of a specified Object Type
+    and propates a single Fact of specified Object Type.</para>
+
+    <para>At this point we have what is known as a <indexterm>
+        <primary>Partial Match</primary>
+      </indexterm>Partial Match, in that we have matched facts against some,
+    but not all, of the Rule's nodes. <indexterm>
+        <primary>Left Input Adapter Node</primary>
+      </indexterm>s will be explained later, suffice to say it always
+    propagetes onto the next node, in this case a <indexterm>
+        <primary>Terminal Node</primary>
+      </indexterm>Terminal Node. The Terminal Node is our end node, now we say
+    the Rule is Fully Matched and ready to fire.</para>
+
+    <para>Earlier we mentioned that a Rule Engine is much like a Database, we
+    can prove this by using a <indexterm>
+        <primary>Query</primary>
+      </indexterm>Query construct. A Query is Rule with a special Terminal
+    node; instead of executing a Consequence the Terminal node stores matching
+    Facts in a list, which is returned as the result. Lets prove this</para>
+
+    <programlisting>query "Find cheeses with a cost of 5"
+    Cheese( price == 5 )
+end</programlisting>
+
+    <programlisting>// First create the facts
+Cheese stilton = new Cheese("stilton", 8);     // type, price
+Cheese cheddar = new Cheese("cheddar", 5);     // type, price
+Cheese mozarella = new Cheese("mozarella", 5); // type, price
+
+// Now assert them into the Working Memory
+workingMemory.assertObject( stilton );
+workingMemory.assertObject( cheddar );
+workingMemory.assertObject( mozarella );
+
+List results = workingMemory.getQueryResults( "Find cheeses with a cost of 5" );</programlisting>
+
+    <para>When we get the Query Results the List has a size of two and
+    references "cheddar" and "mozarella", as expected. If we had used a Rule
+    construct instead of a Query the Terminal Node's Consequence would have
+    attempted to fire twice, once for "cheddar" and once for
+    "mozarella".</para>
+
+    <para>When a Rule is Fully Matched it does not fire immediately (in Rete,
+    but in Leaps it does !). Instead the Rule plus the matched Facts are
+    <indexterm>
+        <primary>Activated</primary>
+      </indexterm>Activated placed onto the <indexterm>
+        <primary>Agenda</primary>
+      </indexterm>Agenda; which is responsible for the scheduling and firing
+    <indexterm>
+        <primary>Activation</primary>
+      </indexterm>Activations.</para>
+  </section>
+</section>
