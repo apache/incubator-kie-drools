@@ -107,7 +107,7 @@
   <section>
     <title>Rule Attriutes</title>
 
-    <para></para>
+    <para />
 
     <figure>
       <title>rule attributes</title>
@@ -198,8 +198,18 @@
 
       <para>type : long</para>
 
-      <para></para>
+      <para />
     </section>
+
+    <example>
+      <title>Some attribute examples</title>
+
+      <programlisting>rule "my rule"
+  salience 42
+  agenda-group "number 1"
+    when ...
+</programlisting>
+    </example>
   </section>
 
   <section>
@@ -509,7 +519,8 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
           <example>
             <title>Literal Cosntraints with Collections</title>
 
-            <programlisting>CheeseCounter( cheeses contains "stilton" )</programlisting>
+            <programlisting>CheeseCounter( cheeses contains "stilton" )
+CheeseCounter( cheeses excludes "chedder" )</programlisting>
           </example>
         </simplesect>
 
@@ -605,7 +616,7 @@ Cheesery( cheeses contains stilton )</programlisting>
           <title>Return Value operator</title>
 
           <programlisting>Person( girlAge : age, sex = "F" )
-Person( boyAge : age -&gt; ( girlAge == boyAge + 2 ), sex = 'M' )
+Person( boyAge : age -&gt; ( girlAge.intValue() == boyAge.intValue() + 2 ), sex = 'M' )
 </programlisting>
         </example>
       </section>
@@ -636,9 +647,7 @@ Person( boyAge : age -&gt; ( girlAge == boyAge + 2 ), sex = 'M' )
         primitives. Previously bound declarations can be used in the
         expression. All bound primitive declarations are boxed, there is
         currently no auto-unboxing. The returned value must be boxed if its a
-        primitive (unless you are using Java 5, in which case you don't have
-        to worry. If you are stuck on Java 1.4, I can recommend some headache
-        tablets).</para>
+        primitive..</para>
 
         <para>Like the Predicate example this will find all pairs of
         male/femal people where the male is 2 years older than the female.
@@ -649,7 +658,7 @@ Person( boyAge : age -&gt; ( girlAge == boyAge + 2 ), sex = 'M' )
           <title>Return Value operator</title>
 
           <programlisting>Person( girlAge : age, sex = "F" )
-Person( age == ( girlAge + 2 ), sex = 'M' )
+Person( age == ( new Integer(girlAge.intValue() + 2) ), sex = 'M' )
 </programlisting>
         </example>
       </section>
@@ -746,6 +755,11 @@ pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 
       match (its not XOR). Also, you may accidentally refer to a variable that
       is bound to a column that does not exist in a given activation (giving
       null pointer exceptions, and the associated headaches).</para>
+
+      <para>The best way to think of the OR conditional element is as a
+      shortcut for generating 2 additional rules. When you think of it that
+      way, its clear that for a single rule there could be multiple
+      activations if both sides of the OR conditional element are true.</para>
     </section>
 
     <section>
@@ -768,27 +782,29 @@ pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 
       <para>valid children : none</para>
 
       <para>Eval is essentially a catch all which allows any semantic code
-      (that returns a boolean) to be executed. This can refer to variables
-      that were bound in the LHS of the rule, and functions in the rule
-      package. An eval should be the last conditional element in the LHS of a
-      rule.</para>
+      (that returns a primitive primitive boolean) to be executed. This can
+      refer to variables that were bound in the LHS of the rule, and functions
+      in the rule package. An eval should be the last conditional element in
+      the LHS of a rule. You can have multiple evals in a rule. Generally you
+      would combine them with some column constraints.</para>
 
       <para>Evals cannot be indexed and thus are not as optimal as using Field
       Constraints. However this makes them ideal for being used when functions
       return values that change over time, which is not allowed within Field
-      Constraints.</para>
+      Constraints. An Eval will be checked each time if all the other
+      conditions in the rules are met.</para>
 
       <para>For folks who are familiar with Drools 2.x lineage, the old Drools
-      paramater and condition tags are equivalent to:</para>
-
-      <para>p1 : Parameter() p2 : Parameter()</para>
-
-      <para>eval( /* your condition here, involving the parameters */)</para>
+      paramater and condition tags are equivalent to binding a variable to an
+      appropriate type, and then using it in an eval node.</para>
 
       <example>
-        <title>or</title>
+        <title>eval</title>
 
-        <programlisting></programlisting>
+        <programlisting>p1 : Parameter() 
+p2 : Parameter()
+eval( p1.getList().containsKey(p2.getItem()) )
+eval( isValid(p1, p2) ) //this is how you call a function in the LHS - a function called "isValid"</programlisting>
       </example>
     </section>
 
@@ -823,7 +839,8 @@ pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 
       <example>
         <title>No red Busses</title>
 
-        <programlisting>not Bus(color == "red")</programlisting>
+        <programlisting>not Bus(color == "red")
+not ( Bus(color == "red", number == 42) ) //brackets are optional</programlisting>
       </example>
     </section>
 
@@ -887,7 +904,35 @@ pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 
 
       <para>Grouping is similar to using parentheses in algebra, it makes the
       order of operations explicit.</para>
+
+      <example>
+        <title>Example of groups</title>
+
+        <programlisting>...
+( 
+  Message( status == Message.HELLO ) and Message(message != null) 
+      or Message(status == null)  
+)
+...</programlisting>
+      </example>
     </section>
+
+    <example>
+      <title>A rule example</title>
+
+      <programlisting>rule "Approve if not rejected"
+  salience -100 
+  agenda-group "approval"
+    when
+        not Rejection() 
+        p : Policy(approved == false, policyState:status)
+        exists Driver(age &gt; 25)
+        Process(status == policyState)
+    then
+        log("APPROVED: due to no objections."); 
+        p.setApproved(true);
+end</programlisting>
+    </example>
   </section>
 
   <section>
