@@ -1,7 +1,4 @@
 package org.drools.common;
-
-import org.drools.RuleBaseConfiguration;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,6 +14,10 @@ import org.drools.RuleBaseConfiguration;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import org.drools.RuleBaseConfiguration;
+
+
 
 public interface NodeMemory {
     public int getId();
