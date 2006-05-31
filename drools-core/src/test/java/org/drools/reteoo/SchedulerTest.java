@@ -19,10 +19,10 @@ package org.drools.reteoo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.Agenda;
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
-import org.drools.common.Agenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;

@@ -21,12 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.Agenda;
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
-import org.drools.common.Agenda;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalAgenda;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -100,7 +102,7 @@ public class AgendaTest extends DroolsTestCase {
         final RuleBase ruleBase = new ReteooRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
-        final Agenda agenda = workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
         final TerminalNode node = new TerminalNode( 3,
@@ -192,7 +194,7 @@ public class AgendaTest extends DroolsTestCase {
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
-        final Agenda agenda = workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         //       // create the AgendaGroups
         final AgendaGroupImpl agendaGroup1 = new AgendaGroupImpl( "agendaGroup1" );
@@ -412,7 +414,7 @@ public class AgendaTest extends DroolsTestCase {
         final RuleBase ruleBase = new ReteooRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
-        final Agenda agenda = workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         // create the agendaGroup
         final AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup" );
@@ -491,7 +493,7 @@ public class AgendaTest extends DroolsTestCase {
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
-        final Agenda agenda = workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         final List list = new ArrayList();
 

@@ -16,7 +16,7 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import org.drools.common.Agenda;
+import org.drools.common.DefaultAgenda;
 import org.drools.rule.Query;
 import org.drools.spi.Activation;
 import org.drools.spi.ConsequenceException;
@@ -26,7 +26,7 @@ import org.drools.spi.ConsequenceException;
  * @author Alexander Bagerman
  * 
  */
-public class LeapsAgenda extends Agenda {
+public class LeapsAgenda extends DefaultAgenda {
     /**
      * 
      */

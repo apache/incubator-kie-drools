@@ -16,6 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import org.drools.Agenda;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
@@ -24,8 +25,9 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
-import org.drools.common.Agenda;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalAgenda;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
@@ -52,7 +54,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                     rule1 );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
-        final Agenda agenda = workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         final Consequence consequence = new Consequence() {
             /**

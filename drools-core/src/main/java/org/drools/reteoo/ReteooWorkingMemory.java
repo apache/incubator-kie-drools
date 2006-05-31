@@ -26,7 +26,7 @@ import org.drools.QueryResults;
 import org.drools.WorkingMemory;
 import org.drools.base.DroolsQuery;
 import org.drools.common.AbstractWorkingMemory;
-import org.drools.common.Agenda;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalFactHandle;
@@ -60,7 +60,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
     public ReteooWorkingMemory(final InternalRuleBase ruleBase) {
         super( ruleBase,
                ruleBase.newFactHandleFactory() );
-        this.agenda = new Agenda( this );
+        this.agenda = new DefaultAgenda( this );
     }
 
     public void doAssertObject(final InternalFactHandle handle,

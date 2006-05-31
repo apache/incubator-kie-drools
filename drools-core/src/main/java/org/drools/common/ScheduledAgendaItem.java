@@ -19,6 +19,7 @@ package org.drools.common;
 import java.io.Serializable;
 import java.util.TimerTask;
 
+import org.drools.Agenda;
 import org.drools.FactHandle;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -56,7 +57,7 @@ public class ScheduledAgendaItem extends TimerTask
     /** The rule. */
     private final Rule               rule;
 
-    private final Agenda             agenda;
+    private final InternalAgenda    agenda;
 
     private final PropagationContext context;
 
@@ -82,7 +83,7 @@ public class ScheduledAgendaItem extends TimerTask
      */
     public ScheduledAgendaItem(final long activationNumber,
                                final Tuple tuple,
-                               final Agenda agenda,
+                               final InternalAgenda agenda,
                                final PropagationContext context,
                                final Rule rule) {
         this.tuple = tuple;

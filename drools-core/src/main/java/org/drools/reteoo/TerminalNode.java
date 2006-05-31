@@ -18,10 +18,12 @@ package org.drools.reteoo;
 
 import java.util.Iterator;
 
+import org.drools.Agenda;
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.Agenda;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.AgendaItem;
+import org.drools.common.InternalAgenda;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
@@ -122,14 +124,14 @@ final class TerminalNode extends BaseNode
         if ( this.rule.getNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
             return;
         }
-        final Agenda agenda = workingMemory.getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         final Duration dur = this.rule.getDuration();
 
         if ( dur != null && dur.getDuration( tuple ) > 0 ) {
             final ScheduledAgendaItem item = new ScheduledAgendaItem( context.getPropagationNumber(),
                                                                       tuple,
-                                                                      workingMemory.getAgenda(),
+                                                                      agenda,
                                                                       context,
                                                                       this.rule );
 
@@ -168,7 +170,7 @@ final class TerminalNode extends BaseNode
                     // The AgendaGroup is defined but not yet added to the
                     // Agenda, so create the AgendaGroup and add to the Agenda.
                     agendaGroup = new AgendaGroupImpl( this.rule.getAgendaGroup() );
-                    workingMemory.getAgenda().addAgendaGroup( agendaGroup );
+                    agenda.addAgendaGroup( agendaGroup );
                 }
 
                 memory.setAgendaGroup( agendaGroup );

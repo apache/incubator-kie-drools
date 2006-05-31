@@ -690,7 +690,7 @@ class LeapsWorkingMemory extends AbstractWorkingMemory
                     // The AgendaGroup is defined but not yet added to the
                     // Agenda, so create the AgendaGroup and add to the Agenda.
                     agendaGroup = new AgendaGroupImpl( rule.getAgendaGroup() );
-                    this.getAgenda().addAgendaGroup( agendaGroup );
+                    this.agenda.addAgendaGroup( agendaGroup );
                 }
 
                 leapsRule.setAgendaGroup( agendaGroup );
