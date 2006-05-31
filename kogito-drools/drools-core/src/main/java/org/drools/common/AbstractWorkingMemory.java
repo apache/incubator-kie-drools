@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.Agenda;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.NoSuchFactHandleException;
@@ -100,7 +101,7 @@ public abstract class AbstractWorkingMemory
     protected final TruthMaintenanceSystem    tms;
 
     /** Rule-firing agenda. */
-    protected Agenda                          agenda;
+    protected DefaultAgenda                          agenda;
 
     protected final List                      factQueue                                     = new ArrayList();
 

@@ -19,7 +19,6 @@ package org.drools;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.Agenda;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.AgendaFilter;

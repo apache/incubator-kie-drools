@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.Agenda;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
@@ -52,9 +53,10 @@ import org.drools.util.Queueable;
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
-public class Agenda
+public class DefaultAgenda
     implements
-    Serializable {
+    Serializable, 
+    InternalAgenda {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -93,7 +95,7 @@ public class Agenda
      * @param conflictResolver
      *            The conflict resolver.
      */
-    public Agenda(final WorkingMemory workingMemory) {
+    public DefaultAgenda(final WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         this.agendaGroups = new HashMap();
         this.activationGroups = new HashMap();
@@ -109,6 +111,9 @@ public class Agenda
 
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#getWorkingMemory()
+     */
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
@@ -134,6 +139,9 @@ public class Agenda
         item.cancel();
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#getScheduledItems()
+     */
     public org.drools.util.LinkedList getScheduledItems() {
         return this.scheduledActivations;
     }
@@ -143,6 +151,9 @@ public class Agenda
                                agendaGroup );
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#setFocus(org.drools.spi.AgendaGroup)
+     */
     public boolean setFocus(final AgendaGroup agendaGroup) {
         // Set the focus to the agendaGroup if it doesn't already have the focus
         if ( this.focusStack.getLast() != agendaGroup ) {
@@ -152,25 +163,29 @@ public class Agenda
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#setFocus(java.lang.String)
+     */
     public void setFocus(final String name) {
         AgendaGroup agendaGroup = (AgendaGroup) this.agendaGroups.get( name );
 
         // Agenda may not have been created yet, if not create it.
         if ( agendaGroup == null ) {
             agendaGroup = new AgendaGroupImpl( name );
-            this.workingMemory.getAgenda().addAgendaGroup( agendaGroup );
+            ( ( DefaultAgenda ) this.workingMemory.getAgenda() ).addAgendaGroup( agendaGroup );
         }
         setFocus( agendaGroup );
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#getFocus()
+     */
     public AgendaGroup getFocus() {
         return (AgendaGroup) this.focusStack.getLast();
     }
 
-    /**
-     * Returns the next populated Agenda Group. If all groups are empty then return the MAIN, dfault, Agenda Group
-     * 
-     * @return
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#getNextFocus()
      */
     public AgendaGroup getNextFocus() {
         AgendaGroupImpl agendaGroup = null;
@@ -192,26 +207,44 @@ public class Agenda
         return agendaGroup;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#setCurrentAgendaGroup(org.drools.spi.AgendaGroup)
+     */
     public void setCurrentAgendaGroup(final AgendaGroup agendaGroup) {
         this.currentModule = (AgendaGroupImpl) agendaGroup;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#getCurrentAgendaGroup()
+     */
     public AgendaGroup getCurrentAgendaGroup() {
         return this.currentModule;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#getAgendaGroup(java.lang.String)
+     */
     public AgendaGroup getAgendaGroup(final String name) {
         return (AgendaGroup) this.agendaGroups.get( name );
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#getAgendaGroups()
+     */
     public AgendaGroup[] getAgendaGroups() {
         return (AgendaGroup[]) this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#getStack()
+     */
     public AgendaGroup[] getStack() {
         return (AgendaGroup[]) this.focusStack.toArray( new AgendaGroup[this.focusStack.size()] );
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#getActivationGroup(java.lang.String)
+     */
     public ActivationGroup getActivationGroup(final String name) {
         ActivationGroupImpl activationGroup = (ActivationGroupImpl) this.activationGroups.get( name );
         if ( activationGroup == null ) {
@@ -222,10 +255,8 @@ public class Agenda
         return activationGroup;
     }
 
-    /**
-     * Iterates all the <code>AgendGroup<code>s in the focus stack returning the total number of <code>Activation</code>s
-     * @return
-     *      total number of <code>Activation</code>s on the focus stack
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#focusStackSize()
      */
     public int focusStackSize() {
         int size = 0;
@@ -236,10 +267,8 @@ public class Agenda
         return size;
     }
 
-    /**
-     * Iterates all the modules in the focus stack returning the total number of <code>Activation</code>s
-     * @return
-     *      total number of activations on the focus stack
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#agendaSize()
      */
     public int agendaSize() {
         int size = 0;
@@ -250,6 +279,9 @@ public class Agenda
         return size;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#getActivations()
+     */
     public Activation[] getActivations() {
         final List list = new ArrayList();
         for ( final Iterator it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
@@ -259,6 +291,9 @@ public class Agenda
         return (Activation[]) list.toArray( new Activation[list.size()] );
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#getScheduledActivations()
+     */
     public Activation[] getScheduledActivations() {
         final List list = new ArrayList( this.scheduledActivations.size() );
         for ( LinkedListNode node = this.scheduledActivations.getFirst(); node != null; node = node.getNext() ) {
@@ -267,9 +302,8 @@ public class Agenda
         return (Activation[]) list.toArray( new Activation[list.size()] );
     }
 
-    /**
-     * Clears all Activations from the Agenda
-     * 
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#clearAgenda()
      */
     public void clearAgenda() {
         // Cancel all items and fire a Cancelled event for each Activation
@@ -287,11 +321,8 @@ public class Agenda
         }
     }
 
-    /**
-     * Clears all Activations from an Agenda Group. Any Activations that are also in an Xor Group are removed the
-     * the Xor Group.
-     * 
-     * @param agendaGroup
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#clearAgendaGroup(java.lang.String)
      */
     public void clearAgendaGroup(final String name) {
         final AgendaGroupImpl agendaGroup = (AgendaGroupImpl) this.agendaGroups.get( name );
@@ -300,16 +331,13 @@ public class Agenda
         }
     }
 
-    /**
-     * Clears all Activations from an Agenda Group. Any Activations that are also in an Xor Group are removed the
-     * the Xor Group.
-     * 
-     * @param agendaGroup
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#clearAgendaGroup(org.drools.common.AgendaGroupImpl)
      */
-    public void clearAgendaGroup(final AgendaGroupImpl agendaGroup) {
+    public void clearAgendaGroup(final AgendaGroup agendaGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
-        final Queueable[] queueable = agendaGroup.getQueueable();
+        final Queueable[] queueable = ( ( AgendaGroupImpl) agendaGroup ).getQueueable();
         for ( int i = 0, length = queueable.length; i < length; i++ ) {
             final AgendaItem item = (AgendaItem) queueable[i];
             if ( item == null ) {
@@ -325,14 +353,11 @@ public class Agenda
 
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item );
         }
-        agendaGroup.clear();
+        ( ( AgendaGroupImpl )agendaGroup ).clear();
     }
 
-    /**
-     * Clears all Activations from an Activation-Group. Any Activations that are also in an Agenda Group are removed
-     * from the Agenda Group.
-     * 
-     * @param activationGroup
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#clearActivationGroup(java.lang.String)
      */
     public void clearActivationGroup(final String name) {
         final ActivationGroup activationGroup = (ActivationGroup) this.activationGroups.get( name );
@@ -341,11 +366,8 @@ public class Agenda
         }
     }
 
-    /**
-     * Clears all Activations from an Xor Group. Any Activations that are also in an Agenda Group are removed
-     * from the Agenda Group.
-     * 
-     * @param activationGroup
+    /* (non-Javadoc)
+     * @see org.drools.common.AgendaI#clearActivationGroup(org.drools.spi.ActivationGroup)
      */
     public void clearActivationGroup(final ActivationGroup activationGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;

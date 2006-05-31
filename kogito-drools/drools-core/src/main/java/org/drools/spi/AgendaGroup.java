@@ -1,6 +1,6 @@
 package org.drools.spi;
 
-import org.drools.common.Agenda;
+import org.drools.common.DefaultAgenda;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -22,7 +22,7 @@ import org.drools.common.Agenda;
  *  The <code>Agenda</code> can be partitioned into groups, called <code>AgendaGroup</code>s. <code>Rule</code>s can be assigned to
  *  these <code>AgendaGroup</code>s. Only rules in the focus group can fire. 
  * 
- * @see Agenda
+ * @see DefaultAgenda
  * 
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
