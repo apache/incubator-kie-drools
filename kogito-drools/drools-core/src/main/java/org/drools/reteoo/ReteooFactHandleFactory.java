@@ -20,9 +20,11 @@ import org.drools.common.AbstractFactHandleFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.spi.FactHandleFactory;
-import org.drools.util.PrimitiveLongStack;
 
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
+    
+    private static final long serialVersionUID = 300;
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
