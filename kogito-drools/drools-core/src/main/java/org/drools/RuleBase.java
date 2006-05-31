@@ -17,6 +17,7 @@ package org.drools;
  */
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.drools.rule.Package;
 import org.drools.spi.FactHandleFactory;
@@ -61,18 +62,14 @@ public interface RuleBase
 
     WorkingMemory newWorkingMemory(boolean keepReference);
 
-    /**
-     * Retrieve the <code>FactHandleFactor</code>.
-     * 
-     * @return The fact handle factory.
-     */
-    FactHandleFactory getFactHandleFactory();
-
     Package[] getPackages();
 
     void addPackage(Package pkg) throws Exception;
-
-    //    void removePackage(Package pkg);
-    //    
-    //    void removePackage(String pkg);       
+    
+    void removePackage(String packageName);
+    
+    void removeRule(String packageName,
+                    String ruleName);      
+    
+    public Set getWorkingMemories();
 }
