@@ -76,6 +76,11 @@ public class PackageBuilder {
         this( pkg,
               null );
     }
+    
+    public PackageBuilder(PackageBuilderConfiguration configuration) {
+        this( null,
+              configuration );        
+    }
 
     /**
      * This allows you to pass in a pre existing package, and a configuration (for instance to set the classloader).

@@ -58,6 +58,8 @@ package <package>;
 
 public class <invokerClassName> implements org.drools.spi.ReturnValueExpression, org.drools.semantics.java.CompiledInvoker
 {
+    private static final long serialVersionUID  = 7952983928232702826L;
+    
     public Object evaluate(org.drools.spi.Tuple tuple,
                             org.drools.rule.Declaration[] declarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
@@ -84,6 +86,8 @@ package <package>;
 
 public class <invokerClassName> implements org.drools.spi.PredicateExpression, org.drools.semantics.java.CompiledInvoker
 {
+    private static final long serialVersionUID  = 7952983928232702826L;
+    
     public boolean evaluate(org.drools.spi.Tuple tuple,
                             org.drools.FactHandle factHandle,
                             org.drools.rule.Declaration declaration,
@@ -117,6 +121,8 @@ import org.drools.util.asm.MethodComparator.Tracer;
 
 public class <invokerClassName> implements org.drools.spi.EvalExpression, org.drools.semantics.java.CompiledInvoker
 {
+    private static final long serialVersionUID  = 7952983928232702826L;
+    
     public boolean evaluate(org.drools.spi.Tuple tuple,
                             org.drools.rule.Declaration[] declarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
@@ -142,6 +148,8 @@ package <package>;
 
 public class <invokerClassName> implements org.drools.spi.Consequence
 {
+    private static final long serialVersionUID  = 7952983928232702826L;
+
     public void evaluate(org.drools.spi.KnowledgeHelper knowledgeHelper,
                          org.drools.WorkingMemory workingMemory) throws Exception {    
                        

@@ -857,6 +857,7 @@ public class RuleBuilder {
         }
 
         buffer.append( "public class " + ucFirst( this.ruleDescr.getClassName() ) + " {" + lineSeparator );
+        buffer.append( "    private static final long serialVersionUID  = 7952983928232702826L;" + lineSeparator );
 
         for ( int i = 0, size = this.methods.size() - 1; i < size; i++ ) {
             buffer.append( this.methods.get( i ) + lineSeparator );
