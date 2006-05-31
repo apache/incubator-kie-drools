@@ -6,12 +6,12 @@
   This format is very light in terms of punctuation, and supports natural and
   domain specific languages via "expanders" that allow the language to morph
   to your problem domain. This chapter is mostly concered with the native rule
-  format. Diagrams used are known as "rail road" diagrams, and are basically
-  flow charts for the language terms. For the technically very keen, you can
-  also refer to "drl.g" which is the Antlr3 grammar for the rule language. If
-  you use the Rule Workbench, a lot of the rule structure is done for you with
-  content assistance, for example, type "ru" and press ctrl+space, and it will
-  build the rule structure for you.</para>
+  format. The Diagrams used are known as "rail road" diagrams, and are
+  basically flow charts for the language terms. For the technically very keen,
+  you can also refer to "drl.g" which is the Antlr3 grammar for the rule
+  language. If you use the Rule Workbench, a lot of the rule structure is done
+  for you with content assistance, for example, type "ru" and press
+  ctrl+space, and it will build the rule structure for you.</para>
 
   <section>
     <title>A rule file</title>

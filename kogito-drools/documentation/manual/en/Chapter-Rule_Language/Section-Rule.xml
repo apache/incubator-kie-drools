@@ -236,13 +236,17 @@
 Cheese( type == "stilton", price &lt; 10 )</programlisting>
     </example>
 
-    <para>A Column is what Drools calls a list of constraints on an Object
-    type. The above cases refer to constraints against instances of a Cheese
-    object. In the first case, there are obviously no constraints, so this
-    Column will match all instances of Cheese that it finds in working memory.
-    In the latter case, there are 2 constraints on "fields" that must be met
-    before the Cheese object will be matched (they are seperated by a comma,
-    which implicitly means "and").</para>
+    <para>A Rule consists of Field Constraints on one or more Object Types.
+    Internally each matched Object Type instance is stored in an array. If we
+    match against three objects Person, Person and Pet we have a three element
+    array; in Drools we refer to this list of Facts as a Tuple - each element
+    in the array is a Column. Each Object Type instance is filtered through
+    zero or more Field Constraints - the term Column is used to refer to this
+    list of constraints on the Object type. The first example has no
+    constraints and will match any Cheese instance in the Working Memory,
+    regardless of its field values. The second case refers to two Literal
+    Field Constraints on against instances of a Cheese object - they are
+    seperated by a comma, which implicitly means "and".</para>
 
     <figure>
       <title>Column</title>
@@ -299,10 +303,11 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
 
       <para>Note that if primitive types are used for a field, Drools will
       autobox them to their corresponding object types (even if you are using
-      java 1.4). On the whole, it is probably best to use the non primitive
-      types in the model objects you are using in your rules. If you use Java
-      5, then you get the best of both worlds (you can let the compiler
-      autobox for you - much neater).</para>
+      java 1.4) - however on java 1.4 there is currently no auto-unboxing when
+      inside code expressions or blocks. On the whole, it is probably best to
+      use the non primitive types in the model objects you are using in your
+      rules. If you use Java 5, then you get the best of both worlds (you can
+      let the compiler autobox for you - much neater).</para>
 
       <section>
         <title>Operators</title>
@@ -342,7 +347,9 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
 
         <para>A note on nulls: you can do checks against fields that are or
         maybe null, using == and != as you would expect, and the literal
-        "null" keyword, like: Cheese(type != null).</para>
+        "null" keyword, like: Cheese(type != null). Literal Constraints,
+        specifically the '==' operator, provide for very fast execution as we
+        can use hasing to improve performance.</para>
 
         <figure>
           <title>Literal Constraints</title>
@@ -559,26 +566,38 @@ CheeseCounter( cheeses excludes "chedder" )</programlisting>
           </mediaobject>
         </figure>
 
-        <para>Variables can be bound to Facts and and Fields and then used in
-        subsequent Field Constraints. A bound variable is called a <indexterm>
+        <para>Variables can be bound to Facts and their Fields and then used
+        in subsequent Field Constraints. A bound variable is called a
+        <indexterm>
             <primary>declaration</primary>
           </indexterm>Declaration. Declarations cannot be used with
         <literal>'matches'</literal>, although it works with
         <literal>'contains'</literal>. Valid operators are determined by the
-        type of the field being constrained.</para>
+        type of the field being constrained. Bound Variables, specifically the
+        '==' and '=!' operators, provide for very fast execution as we can use
+        hasing to improve performance.</para>
 
         <example>
           <title>Bound Field using '==' operator</title>
 
           <programlisting>Person( likes : favouriteCheese )
 Cheese( type == likes )</programlisting>
+
+          <para>'likes' is our variable, our Declaration, that is bound to the
+          favouriteCheese field for any matching Person instance and is used
+          to constrain the type of Cheese in the following Column. Any valid
+          java variable name can be used, including '$'; which you will often
+          see used to help differentiate declarations from fields. The exampe
+          below shows a declaration bound to the Columns Object Type instance
+          itself and used with a 'contains' operator, note the optional use of
+          '$' this time.</para>
         </example>
 
         <example>
           <title>Bound Fact using 'contains' operator</title>
 
-          <programlisting>stilton : Cheese( type == "stilton" )
-Cheesery( cheeses contains stilton )</programlisting>
+          <programlisting>$stilton : Cheese( type == "stilton" )
+Cheesery( cheeses contains $stilton )</programlisting>
         </example>
       </section>
 
@@ -604,10 +623,12 @@ Cheesery( cheeses contains stilton )</programlisting>
         <para>A <indexterm>
             <primary>Predicate</primary>
           </indexterm>Predicate constraint can use any valid Java expression
-        as long as it evaluated to a primitive boolean. Previously bound
-        declarations can be used in the expression. All bound primitive
-        declarations are boxed, there is currently no auto-unboxing (if you
-        use java 5, this is all automatic).</para>
+        as long as it evaluated to a primitive boolean - avoid using any
+        Drools keywords as Declaration identifiers. Previously bound
+        declarations can be used in the expression. Functions used in a
+        Predicate Constraint must return time constant results. All bound
+        primitive declarations are boxed, there is currently no auto-unboxing
+        (if you use java 5, this is all automatic).</para>
 
         <para>This example will find all pairs of male/femal people where the
         male is 2 years older than the female.</para>
@@ -644,8 +665,10 @@ Person( boyAge : age -&gt; ( girlAge.intValue() == boyAge.intValue() + 2 ), sex 
             <primary>Return Value</primary>
           </indexterm>Return Value constraint can use any valid Java
         expression as long as it returns an object, it cannot return
-        primitives. Previously bound declarations can be used in the
-        expression. All bound primitive declarations are boxed, there is
+        primitives - avoid using any Drools keywords as Declaration
+        identifiers. Functions used in a Return value Constraint must return
+        time constant results. Previously bound declarations can be used in
+        the expression. All bound primitive declarations are boxed, there is
         currently no auto-unboxing. The returned value must be boxed if its a
         primitive..</para>
 
@@ -671,7 +694,10 @@ Person( age == ( new Integer(girlAge.intValue() + 2) ), sex = 'M' )
     <para>Conditional elements work on one or more Columns (which were
     described above). The most common one is "and" which is implicit when you
     have multiple Columns in the LHS of a rule that are not connected in
-    anyway.</para>
+    anyway. Note that an 'and' cannot have a leading declaration binding like
+    'or' - this is obvious when you think about it. A declaration can only
+    reference a single Fact, when the 'and' is satisfied it matches more than
+    one fact - which fact would the declaration bind to?</para>
 
     <section>
       <title>'and'</title>
@@ -750,11 +776,19 @@ Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 )
 pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 ) )</programlisting>
       </example>
 
-      <para>Care must be taken when binding with an "or" conditional element,
-      as this may yield apparently unpredictable results if both conditions
-      match (its not XOR). Also, you may accidentally refer to a variable that
-      is bound to a column that does not exist in a given activation (giving
-      null pointer exceptions, and the associated headaches).</para>
+      <para>The 'or' conditional element results in multipe rule generation,
+      called sub rules, for each possible logically outcome. the examples
+      above would result in the internal generation of two rules. These two
+      rules work independantly within the Working Memory, which means both can
+      match, activate and fire - there is no shortcutting. Care must be taken
+      when binding with an "or" conditional element, as incorrect use may
+      yield apparently unpredictable results - if you bind a field on the
+      first Person of the 'or' and not the other and then try to access that
+      binding in a later Field Constraint or Consequence you cannot gaurantee
+      that decalration will be available for that sub rule. In such a scenario
+      you referred to a variable that is bound to a column that does not exist
+      in a given activation - giving null pointer exceptions, and the
+      associated headaches.</para>
 
       <para>The best way to think of the OR conditional element is as a
       shortcut for generating 2 additional rules. When you think of it that
@@ -827,8 +861,10 @@ eval( isValid(p1, p2) ) //this is how you call a function in the LHS - a functio
 
       <para>valid children: Column</para>
 
-      <para>Future versions of Drools will allow 'and' and 'or' to be nested
-      in 'not'</para>
+      <para>'not' is first order logic's Existential Quantifier and checks for
+      the non existence of something in the Working Memory. Currently only
+      Columns may be nested in a 'not' but future versions of will allow 'and'
+      and 'or' to be nested.</para>
 
       <example>
         <title>No Busses</title>
@@ -863,14 +899,16 @@ not ( Bus(color == "red", number == 42) ) //brackets are optional</programlistin
 
       <para>valid children: Column</para>
 
-      <para>Future versions of Drools will allow 'and' and 'or' to be nested
-      in 'not'.</para>
+      <para>'exists' is first order logic's Existential Quantifier and checks
+      for the existence of something in the Working Memory. Think of exist as
+      meaning "at least one..". It is different from just having the Column on
+      its own. If you had the column on its on, its kind of like saying "for
+      each one of...". if you use exist with a Column, then the rule will only
+      activate once regardless of how much data there is in working memory
+      that matches that condition. </para>
 
-      <para>Think of exist as meaning "at least one..". It is different from
-      just having the Column on its own. If you had the column on its on, its
-      kind of like saying "for each one of...". if you use exist with a
-      Column, then the rule will only activate once regardless of how much
-      data there is in working memory that matches that condition.</para>
+      <para>Currently only Columns may be nested in a 'exists' but future
+      versions of will allow 'and' and 'or' to be nested.</para>
 
       <example>
         <title>Atleast one Bus</title>
