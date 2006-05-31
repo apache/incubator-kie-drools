@@ -21,7 +21,14 @@
     their logic hard coded "shells" separated the logic from the system,
     providing an easy to use environment for user input. Drools is a Rule
     Engine that uses the Rule Based approached to implement an Expert System
-    and is more correctly classified as a Production Rules System.</para>
+    and is more correctly classified as a Production Rule System.</para>
+
+    <para>The term "Production Rule" originates from formal grammer - where it
+    is described as "an abstract structure that describes a formal language
+    precisely, i.e., a set of rules that mathematically delineates a (usually
+    infinite) set of finite-length strings over a (usually finite) alphabet"
+    (<ulink
+    url="http://en.wikipedia.org/wiki/Formal_grammar">wikipedia</ulink>).</para>
 
     <para>Business Rule Management Systems build value on top of an Rule
     Engine providing systems for rule management, deployment, collaboration,
@@ -31,23 +38,29 @@
 
     <para>The term Rule Engine is quite ambiguous in that it can be any system
     that uses rules, in any form, that can be applied to data to produce
-    outcomes; which includes simple systems like form validation: "How to
-    Build a Business Rules Engine (2004)" by Malcolm Chisholm exemplifies this
-    ambiguity. The book is actually about how to build and alter a database
-    schema to hold validation rules which it then shows how to generate VB
-    code from those validation rules to validate data entry - while a very
-    valid and usefil topic for some, it caused quite a suprise to this author,
-    unaware at the time in the subtleties of Rules Engines differences, who
-    was hoping to find some hidden secrets to help improve the Drools engine.
-    While a Production Rule System is a kind of Rule Engine and also Expert
-    System, the validation Rule Engine mention previously obviously isn't an
-    Expert System.</para>
+    outcomes; which includes simple systems like form validation and dynamic
+    expression engines: "How to Build a Business Rules Engine (2004)" by
+    Malcolm Chisholm exemplifies this ambiguity. The book is actually about
+    how to build and alter a database schema to hold validation rules which it
+    then shows how to generate VB code from those validation rules to validate
+    data entry - while a very valid and useful topic for some, it caused quite
+    a suprise to this author, unaware at the time in the subtleties of Rules
+    Engines differences, who was hoping to find some hidden secrets to help
+    improve the Drools engine. jBPM uses expressions and delegates in its
+    Decision nodes; which controls the transitions in a Workflow. At each node
+    it evaluates a rule that dicates the transition to undertake - this is
+    also a Rule Engine. While a Production Rule System is a kind of Rule
+    Engine and also Expert System, the validation and expression evaluation
+    Rule Engines mention previously are not Expert Systems.</para>
 
-    <para>The brain of a Production Rule System is an Inference Engine which
-    matches facts, the data, against Production Rules, also called
-    Productions, to infer conclusions which result in actions. A Production
-    Rule is a two-part structure using First Order Logic for knowledge
-    representation.</para>
+    <para>A Production Rule System is turing complete with a focus on
+    knowledge representation to expression propositional and first order logic
+    in a concise, non ambigious and declarative manner. The brain of a
+    Production Rules System is an Inference Engine that is able to scale to a
+    large number of rules and facts. The Inference Engine matches facts, the
+    data, against Production Rules, also called Productions or just Rules, to
+    infer conclusions which result in actions. A Production Rule is a two-part
+    structure using First Order Logic for knowledge representation.</para>
 
     <programlisting>when
     &lt;conditions&gt;
@@ -84,7 +97,7 @@ then
         <primary>Rete</primary>
       </indexterm>Rete and <indexterm>
         <primary>Leaps</primary>
-      </indexterm>Leaps; Leaps is considered provisional, as it is quite new.
+      </indexterm>Leaps; Leaps is considered experimental, as it is quite new.
     The Drools <indexterm>
         <primary>Rete</primary>
       </indexterm>Rete implementation is called ReteOO signifying that Drools
@@ -94,9 +107,11 @@ then
     III. It is important to understand that names like Rete III are purely
     marketing where, unlike the original published Rete Algorithm, no details
     of implementation are published; thus asking a question like "Does Drools
-    implement Rete III?" is nonsensical.</para>
+    implement Rete III?" is nonsensical. The most common enhancements are
+    covered in "Production Matching for Large Learning Systems (Rete/UL)"
+    (1995) by Robert B. Doorenbos.</para>
 
-    <para>The Production Rules are referred to as the <indexterm>
+    <para>The Rules are stored in the the <indexterm>
         <primary>Production Memory</primary>
       </indexterm>Production Memory and the facts that the Inference Engine
     matches against the <indexterm>
@@ -146,15 +161,55 @@ then
    print "Democracy is Doomed" 
 </programlisting>
 
-    <para>There are two general approaches to Rule Engines implementation -
-    forward chaing and backward chaining. Forward chaing is 'data-driven' and
-    thus reactionary - facts are asserted into the working memory which
-    results in rules firing - we start with a fact, it propagates and we end
-    in a conclusion. Drools is a forward chaining engine. Backward chaining is
-    'goal-driven', we start with a conclusion which the engine tries to
-    satisfy. If it can't it searches for conclusions, 'sub goals', that help
-    satisfy an unknown part fo the current goal - it continues this process
-    untill either the initial conclusion is proven or there are no more sub
-    goals.</para>
+    <para>There are two methods of execution for a Production Rule Systems -
+    Forward Chaining and Backward Chaining; systems that implement both are
+    called Hybrid Production Rule Systems. Understanding these two modes of
+    operation are key to understanding why a Production Rule System is
+    different and how to get the best from them. Forward chaing is
+    'data-driven' and thus reactionary - facts are asserted into the working
+    memory which results in one or more rules being concurrently true and
+    scheduled for execution by t he Agenda - we start with a fact, it
+    propagates and we end in a conclusion. Drools is a forward chaining
+    engine.</para>
+
+    <figure>
+      <title>Forward Chaining</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="Forward_Chaining.svg"
+                     format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="Forward_Chaining.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Backward chaining is 'goal-driven', we start with a conclusion which
+    the engine tries to satisfy. If it can't it searches for conclusions, 'sub
+    goals', that help satisfy an unknown part fo the current goal - it
+    continues this process untill either the initial conclusion is proven or
+    there are no more sub goals. Prolog is an example of a Backward Chaining
+    engine; Drools will adding support for Backward Chaining in its next major
+    release.</para>
+
+    <figure>
+      <title>Backward Chaining</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="Backward_Chaining.svg"
+                     format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="Backward_Chaining.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
   </section>
 </section>
