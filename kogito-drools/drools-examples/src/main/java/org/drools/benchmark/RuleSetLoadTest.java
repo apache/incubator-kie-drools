@@ -20,13 +20,13 @@ import java.io.Reader;
 
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.reteoo.RuleBaseImpl;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 
@@ -44,11 +44,7 @@ public class RuleSetLoadTest {
         //test.testFourThousandLoad();
     }
 
-    private static RuleBase readRule(String file) throws IOException,
-                                                 DroolsParserException,
-                                                 RuleIntegrationException,
-                                                 PackageIntegrationException,
-                                                 InvalidPatternException {
+    private static RuleBase readRule(String file) throws Exception {
         //read in the source
         Reader reader = new InputStreamReader( RuleSetLoadTest.class.getResourceAsStream( file ) );
         DrlParser parser = new DrlParser();
@@ -60,7 +56,7 @@ public class RuleSetLoadTest {
         Package pkg = builder.getPackage();
 
         //add the package to a rulebase
-        RuleBaseImpl ruleBase = new RuleBaseImpl();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
         return ruleBase;
     }
