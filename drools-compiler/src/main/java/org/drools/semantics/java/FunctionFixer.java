@@ -27,12 +27,15 @@ import java.util.regex.Pattern;
  * stuff like that.
  * A better future solution is to use a static import as found in Java 5, then ALL THIS can 
  * disappear. Oh Happy day.
+ * 
  * @author Michael Neale (sadly..)
+ * @author Ricardo Barone 
+ * (Ricardo actually made this all work !).
  *
  */
 public class FunctionFixer {
 
-    static Pattern   FUNCTION = Pattern.compile( "(\\S*\\s*|\\.\\s*)\\b([\\S&&[^\\.]]+)\\s*\\(([^)]*)\\)",
+    static Pattern   FUNCTION = Pattern.compile( "(\\S*\\s*|\\.\\s*)\\b([\\S&&[^\\.\\(\\)]]+)\\s*\\(([^)]*)\\)",
                                                  Pattern.DOTALL );
     static final Set KEYWORDS = getJavaKeywords();
 
@@ -90,8 +93,11 @@ public class FunctionFixer {
 
             if ( function == null ) {
                 function = matcher.group( 2 ).trim();
-                // if we have a reserve d work, DO NOT TOUCH !
-                if ( FunctionFixer.KEYWORDS.contains( function ) ) {
+                // if we have a reserved work, DO NOT TOUCH !
+                // if we have no function name, DO NOT TOUCH !
+                if ( function == null ||
+                        function.length() == 0 ||
+                        FunctionFixer.KEYWORDS.contains( function )  ) {
                     function = raw.substring( matcher.start( 2 ),
                                               matcher.start( 3 ) - 1 );
                 } else {
