@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.Cheese;
+import org.drools.Person;
+import org.drools.PersonInterface;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
@@ -167,23 +169,66 @@ public class LeapsTest extends IntegrationCases {
                     list.contains( "rule2" ) );
     }
 
+    /**
+     * this test is replicated here due to the fact that leaps
+     * does not create activations before fireAll.
+     * 
+     * so the only difference is in presence of fireAll () statement
+     */
     public void testDynamicRuleRemovals() throws Exception {
-        // TODO FIXME
-    }
 
-    public void testDynamicRuleRemovalsUnusedWorkingMemory() throws Exception {
-        // TODO FIXME
-    }
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass( ).getResourceAsStream( "test_Dynamic3.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass( ).getResourceAsStream( "test_Dynamic4.drl" ) ) );
+        final Package pkg = builder.getPackage( );
 
-    public void testLogicalAssertionsSelfreferencing() throws Exception {
-        // TODO FIXME
-    }
+        org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
+        final RuleBase ruleBase = getRuleBase( );
+        leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
+        ruleBase.addPackage( pkg );
 
-    public void testLogicalAssertionsDynamicRule() throws Exception {
-        // TODO FIXME        
-    }
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory( );
 
-    public void testLogicalAssertionsModifyEqual() throws Exception {
-        // TODO FIXME        
+        final List list = new ArrayList( );
+        workingMemory.setGlobal( "list", list );
+
+        final PersonInterface bob = new Person( "bob", "stilton" );
+        bob.setStatus( "Not evaluated" );
+        workingMemory.assertObject( bob );
+
+        final Cheese stilton1 = new Cheese( "stilton", 5 );
+        workingMemory.assertObject( stilton1 );
+
+        final Cheese stilton2 = new Cheese( "stilton", 3 );
+        workingMemory.assertObject( stilton2 );
+
+        final Cheese stilton3 = new Cheese( "stilton", 1 );
+        workingMemory.assertObject( stilton3 );
+
+        final Cheese cheddar = new Cheese( "cheddar", 5 );
+        workingMemory.assertObject( cheddar );
+        //        
+        //        workingMemory.get
+        //        
+        workingMemory.fireAllRules( );
+
+        assertEquals( 11, workingMemory.getAgenda( ).getActivations( ).length );
+
+        leapsRuleBase.removeRule( "org.drools.test", "Who likes Stilton" );
+        assertEquals( 8, workingMemory.getAgenda( ).getActivations( ).length );
+
+        leapsRuleBase.removeRule( "org.drools.test", "like cheese" );
+
+        final Cheese muzzarela = new Cheese( "muzzarela", 5 );
+        workingMemory.assertObject( muzzarela );
+
+        assertEquals( 4, workingMemory.getAgenda( ).getActivations( ).length );
+
+        leapsRuleBase.removePackage( "org.drools.test" );
+
+        assertEquals( 0, workingMemory.getAgenda( ).getActivations( ).length );
+
     }
 }
