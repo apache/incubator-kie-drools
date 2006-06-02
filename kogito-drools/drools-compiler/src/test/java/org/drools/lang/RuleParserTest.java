@@ -1055,6 +1055,36 @@ public class RuleParserTest extends TestCase {
 
         assertFalse( parser.hasErrors() );
     }
+    
+    public void FIXME_testOrNesting() throws Exception {
+        final RuleParser parser = parseResource( "and_or_rule.drl" );
+        parser.compilation_unit();
+
+        final PackageDescr pack = parser.getPackageDescr();
+        assertNotNull( pack );
+        assertEquals( 1,
+                      pack.getRules().size() );
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( "simple_rule",
+                      rule.getName() );
+
+        assertEquals(1, rule.getLhs().getDescrs().size());
+        
+        OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals(2, or.getDescrs().size());
+        
+        ColumnDescr first = (ColumnDescr) or.getDescrs().get( 0 );
+        assertEquals("Person", first.getObjectType());
+        
+        AndDescr and = (AndDescr) or.getDescrs().get( 1 );
+        assertEquals(2, and.getDescrs().size());
+        
+        ColumnDescr left = (ColumnDescr) and.getDescrs().get( 0 );
+        assertEquals("Person", left.getObjectType());
+        
+        ColumnDescr right = (ColumnDescr) and.getDescrs().get( 0 );
+        assertEquals("Cheese", right.getObjectType());
+    }
 
     /** Test that explicit "&&", "||" works as expected */
     public void testAndOrRules() throws Exception {
@@ -1151,7 +1181,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       pack.getRules().size() );
         final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
-        assertEquals( 1,
+        assertEquals( 2,
                       rule.getLhs().getDescrs().size() );
 
         final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
@@ -1163,19 +1193,17 @@ public class RuleParserTest extends TestCase {
                       leftCol.getObjectType() );
         assertEquals( "foo",
                       leftCol.getIdentifier() );
-
-        final AndDescr right = (AndDescr) or.getDescrs().get( 1 );
-        assertEquals( 2,
-                      right.getDescrs().size() );
-        final ColumnDescr secondFact = (ColumnDescr) right.getDescrs().get( 0 );
+        
+        final ColumnDescr rightCol = (ColumnDescr) or.getDescrs().get( 1 );
         assertEquals( "Person",
-                      secondFact.getObjectType() );
+                      rightCol.getObjectType() );
         assertEquals( "foo",
-                      secondFact.getIdentifier() );
+                      rightCol.getIdentifier() );
+        
+        final ColumnDescr cheeseDescr = (ColumnDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals("Cheese", cheeseDescr.getObjectType());
+        assertEquals(null, cheeseDescr.getIdentifier());
 
-        final ColumnDescr thirdFact = (ColumnDescr) right.getDescrs().get( 1 );
-        assertEquals( "Cheese",
-                      thirdFact.getObjectType() );
 
         assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" + bar );",
                                       rule.getConsequence() );
@@ -1210,12 +1238,12 @@ public class RuleParserTest extends TestCase {
                       firstFact.getIdentifier() );
 
         //second "option"
-        final ColumnDescr secondFact = (ColumnDescr) or.getDescrs().get( 0 );
+        final ColumnDescr secondFact = (ColumnDescr) or.getDescrs().get( 1 );
         assertEquals( "Person",
                       secondFact.getObjectType() );
-        assertEquals( "foo",
-                      secondFact.getIdentifier() );
-
+        assertEquals(1, secondFact.getDescrs().size());
+        assertEquals("foo", secondFact.getIdentifier());
+        
         assertEqualsIgnoreWhitespace( "System.out.println( \"Mark and Michael\" + bar );",
                                       rule.getConsequence() );
 

@@ -647,7 +647,7 @@ fact_binding returns [PatternDescr d]
  			((ColumnDescr)f).setIdentifier( id );
  			pd = f;
  		}
- 		(	'or'
+ 		(	('or'|'||') opt_eol
  			{	if ( ! multi ) {
  					PatternDescr first = pd;
  					pd = new OrDescr();
