@@ -772,23 +772,14 @@ Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 )
       <example>
         <title>or with binding</title>
 
-        <programlisting>pensioner : Person( sex == "f", age &gt; 60 ) || pensioner : Person( sex == "m", age &gt; 65 ) 
-pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 ) )</programlisting>
+        <programlisting>pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 ) )</programlisting>
       </example>
 
       <para>The 'or' conditional element results in multipe rule generation,
-      called sub rules, for each possible logically outcome. the examples
-      above would result in the internal generation of two rules. These two
-      rules work independantly within the Working Memory, which means both can
-      match, activate and fire - there is no shortcutting. Care must be taken
-      when binding with an "or" conditional element, as incorrect use may
-      yield apparently unpredictable results - if you bind a field on the
-      first Person of the 'or' and not the other and then try to access that
-      binding in a later Field Constraint or Consequence you cannot gaurantee
-      that decalration will be available for that sub rule. In such a scenario
-      you referred to a variable that is bound to a column that does not exist
-      in a given activation - giving null pointer exceptions, and the
-      associated headaches.</para>
+      called sub rules, for each possible logically outcome. the example above
+      would result in the internal generation of two rules. These two rules
+      work independently within the Working Memory, which means both can
+      match, activate and fire - there is no shortcutting. </para>
 
       <para>The best way to think of the OR conditional element is as a
       shortcut for generating 2 additional rules. When you think of it that
@@ -905,7 +896,7 @@ not ( Bus(color == "red", number == 42) ) //brackets are optional</programlistin
       its own. If you had the column on its on, its kind of like saying "for
       each one of...". if you use exist with a Column, then the rule will only
       activate once regardless of how much data there is in working memory
-      that matches that condition. </para>
+      that matches that condition.</para>
 
       <para>Currently only Columns may be nested in a 'exists' but future
       versions of will allow 'and' and 'or' to be nested.</para>
