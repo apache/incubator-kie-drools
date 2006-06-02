@@ -99,5 +99,17 @@ public class FunctionFixerTest extends TestCase {
         assertEquals( "System.out.println(\"foo(\" + Foo.foo(bar) + Bar.bar(baz)",
                       fixer.fix( "System.out.println(\"foo(\" + foo(bar) + bar(baz)" ) );
     }
+    
+    public void testXPath() {
+        final FunctionFixer fixer = new FunctionFixer();
+        assertEquals( "foo.executeXpath(\"//node1/node2/text()\")",
+                      fixer.fix("foo.executeXpath(\"//node1/node2/text()\")" ) );
+      }
+      
+      public void testExpressionGrouping() {
+       final FunctionFixer fixer = new FunctionFixer();
+        assertEquals( "while((foo = bar.baz()) != null)",
+                      fixer.fix( "while((foo = bar.baz()) != null)" ) );
+      }     
 
 }
