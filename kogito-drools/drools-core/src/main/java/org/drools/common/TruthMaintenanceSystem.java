@@ -97,15 +97,18 @@ public class TruthMaintenanceSystem {
         for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
             final InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
             final Set set = (Set) this.justifiedMap.get( handle.getId() );
-            set.remove( node );
-            if ( set.isEmpty() ) {
-                this.justifiedMap.remove( handle.getId() );
-                // this needs to be scheduled so we don't upset the current working memory operation
-                this.WorkingMemory.queueRetractAction( handle,
-                                                       false,
-                                                       true,
-                                                       context.getRuleOrigin(),
-                                                       context.getActivationOrigin() );
+            if (set != null) {
+                set.remove( node );
+                if (set.isEmpty( )) {
+                    this.justifiedMap.remove( handle.getId( ) );
+                    // this needs to be scheduled so we don't upset the current
+                    // working memory operation
+                    this.WorkingMemory.queueRetractAction( handle,
+                                                           false,
+                                                           true,
+                                                           context.getRuleOrigin( ),
+                                                           context.getActivationOrigin( ) );
+                }
             }
         }
     }

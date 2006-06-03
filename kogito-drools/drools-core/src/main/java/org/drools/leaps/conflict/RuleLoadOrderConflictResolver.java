@@ -18,7 +18,7 @@ package org.drools.leaps.conflict;
 
 import java.util.Comparator;
 
-import org.drools.leaps.RuleHandle;
+import org.drools.leaps.LeapsRuleHandle;
 
 /**
  * <code>RuleConflictResolver</code> that uses the load order of rules to
@@ -61,8 +61,8 @@ class RuleLoadOrderConflictResolver
         int ret = LoadOrderConflictResolver.getInstance().compare( o1,
                                                                    o2 );
         if ( ret == 0 ) {
-            ret = (-1) * AbstractConflictResolver.compare( ((RuleHandle) o1).getDominantPosition(),
-                                                           ((RuleHandle) o2).getDominantPosition() );
+            ret = (-1) * AbstractConflictResolver.compare( ((LeapsRuleHandle) o1).getDominantPosition(),
+                                                           ((LeapsRuleHandle) o2).getDominantPosition() );
         }
         return ret;
     };

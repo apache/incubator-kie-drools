@@ -43,8 +43,8 @@ public class FactHandleImplTest extends TestCase {
 
         try {
             final FactHandle fh1 = memory.assertObject( "object1" );
-            assertEquals( ((FactHandleImpl) fh1).getId(),
-                          ((FactHandleImpl) memory.getFactHandleFactory().newFactHandle( "dummy" )).getId() - 1 );
+            assertEquals( ((LeapsFactHandle) fh1).getId(),
+                          ((LeapsFactHandle) memory.getFactHandleFactory().newFactHandle( "dummy" )).getId() - 1 );
         } catch ( final FactException fe ) {
         }
     }

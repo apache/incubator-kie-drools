@@ -16,7 +16,7 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import org.drools.common.DefaultFactHandle;
+import org.drools.common.EqualityKey;
 import org.drools.common.InternalFactHandle;
 import org.drools.spi.FactHandleFactory;
 
@@ -24,9 +24,7 @@ import org.drools.spi.FactHandleFactory;
  * @author Alexander Bagerman
  * 
  */
-class LeapsFactHandleFactory
-    implements
-    FactHandleFactory {
+class LeapsFactHandleFactory implements FactHandleFactory {
     private static final long serialVersionUID = 8510623248591449450L;
 
     private long              counter;
@@ -41,9 +39,8 @@ class LeapsFactHandleFactory
      * 
      * @see org.drools.reteoo.FactHandleFactory
      */
-    public final InternalFactHandle newFactHandle(final Object object) {
-        return new FactHandleImpl( this.getNextId(),
-                                   object );
+    public final InternalFactHandle newFactHandle( final Object object ) {
+        return new LeapsFactHandle( this.getNextId( ), object );
     }
 
     /**
@@ -52,8 +49,7 @@ class LeapsFactHandleFactory
      * @param object
      * @return leaps handle
      */
-    public final InternalFactHandle newFactHandle(final long newId,
-                                                  final Object object) {
+    public final InternalFactHandle newFactHandle( final long newId, final Object object ) {
         return newFactHandle( object );
     }
 
@@ -66,26 +62,32 @@ class LeapsFactHandleFactory
     }
 
     /**
-     * does nothing in leaps context
+     * the same as in rete
      * 
      * @see org.drools.reteoo.FactHandleFactory
      */
-    public final void increaseFactHandleRecency(final InternalFactHandle factHandle) {
-        ;
+    public final void increaseFactHandleRecency( final InternalFactHandle factHandle ) {
+            factHandle.setRecency( this.getNextId( ) );
     }
 
-    public void destroyFactHandle(final InternalFactHandle factHandle) {
-        factHandle.invalidate();
+    /**
+     * instead of destroying we put EqualityKey back there 
+     * because of the nature of Leaps processing delayed actions
+     * 
+     * @see org.drools.reteoo.FactHandleFactory
+     */
+    public void destroyFactHandle( final InternalFactHandle factHandle ) {
+        factHandle.setEqualityKey( new EqualityKey( factHandle ) );
     }
 
     /**
      * @see org.drools.reteoo.FactHandleFactory
      */
     public FactHandleFactory newInstance() {
-        return new LeapsFactHandleFactory();
+        return new LeapsFactHandleFactory( );
     }
-    
+
     public Class getFactHandleType() {
-        return FactHandleImpl.class;
+        return LeapsFactHandle.class;
     }
 }

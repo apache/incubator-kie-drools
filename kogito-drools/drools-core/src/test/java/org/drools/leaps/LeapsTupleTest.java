@@ -28,32 +28,32 @@ public class LeapsTupleTest extends TestCase {
 
     LeapsTuple     tuple;
 
-    FactHandleImpl h1;
+    LeapsFactHandle h1;
 
-    FactHandleImpl h2;
+    LeapsFactHandle h2;
 
-    FactHandleImpl h3;
+    LeapsFactHandle h3;
 
-    FactHandleImpl h4;
+    LeapsFactHandle h4;
 
-    FactHandleImpl hOutsider;
+    LeapsFactHandle hOutsider;
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.h1 = new FactHandleImpl( 1,
+        this.h1 = new LeapsFactHandle( 1,
                                       "one" );
-        this.h2 = new FactHandleImpl( 2,
+        this.h2 = new LeapsFactHandle( 2,
                                       "two" );
-        this.h3 = new FactHandleImpl( 3,
+        this.h3 = new LeapsFactHandle( 3,
                                       "three" );
-        this.h4 = new FactHandleImpl( 4,
+        this.h4 = new LeapsFactHandle( 4,
                                       "four" );
-        final FactHandleImpl arr[] = {this.h1, this.h2, this.h3, this.h4};
+        final LeapsFactHandle arr[] = {this.h1, this.h2, this.h3, this.h4};
         this.tuple = new LeapsTuple( arr,
                                      null,
                                      null );
 
-        this.hOutsider = new FactHandleImpl( 9876,
+        this.hOutsider = new LeapsFactHandle( 9876,
                                              "outsider" );
     }
 
@@ -116,7 +116,7 @@ public class LeapsTupleTest extends TestCase {
      * Test method for 'org.drools.leaps.LeapsTuple.equals(Object)'
      */
     public void testEqualsObject() {
-        final FactHandleImpl arr[] = {this.h1, this.h2, this.h3, this.h4};
+        final LeapsFactHandle arr[] = {this.h1, this.h2, this.h3, this.h4};
         final LeapsTuple tupleToCompare = new LeapsTuple( arr,
                                                           null,
                                                           null );

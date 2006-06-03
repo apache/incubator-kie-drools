@@ -73,8 +73,8 @@ public class SchedulerTest extends DroolsTestCase {
                                                                        rule,
                                                                        null );
 
-        final FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory.assertObject( "tuple object" );
-        final FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
+        final LeapsFactHandle tupleFactHandle = (LeapsFactHandle) workingMemory.assertObject( "tuple object" );
+        final LeapsFactHandle[] factHandlesTuple = new LeapsFactHandle[1];
         factHandlesTuple[0] = tupleFactHandle;
 
         final ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
@@ -133,8 +133,8 @@ public class SchedulerTest extends DroolsTestCase {
                                                                                     rule,
                                                                                     knowledgeHelper.getActivation() );
 
-                    final FactHandleImpl tupleFactHandleIn = (FactHandleImpl) workingMemory.assertObject( "tuple object in" );
-                    final FactHandleImpl[] factHandlesTupleIn = new FactHandleImpl[1];
+                    final LeapsFactHandle tupleFactHandleIn = (LeapsFactHandle) workingMemory.assertObject( "tuple object in" );
+                    final LeapsFactHandle[] factHandlesTupleIn = new LeapsFactHandle[1];
                     factHandlesTupleIn[0] = tupleFactHandleIn;
                     final ArrayList leapsRules = (ArrayList) Builder.processRule( rule );
                     final LeapsTuple tupleIn = new LeapsTuple( factHandlesTupleIn,
@@ -151,8 +151,8 @@ public class SchedulerTest extends DroolsTestCase {
                                                                        rule,
                                                                        null );
 
-        final FactHandleImpl tupleFactHandle = (FactHandleImpl) workingMemory.assertObject( "tuple object" );
-        final FactHandleImpl[] factHandlesTuple = new FactHandleImpl[1];
+        final LeapsFactHandle tupleFactHandle = (LeapsFactHandle) workingMemory.assertObject( "tuple object" );
+        final LeapsFactHandle[] factHandlesTuple = new LeapsFactHandle[1];
         factHandlesTuple[0] = tupleFactHandle;
 
         final ArrayList leapsRules = (ArrayList) Builder.processRule( rule );

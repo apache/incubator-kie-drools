@@ -20,11 +20,11 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
+import org.drools.common.DefaultFactHandle;
 import org.drools.examples.manners.Context;
 import org.drools.examples.manners.Guest;
 import org.drools.examples.manners.Hobby;
 import org.drools.examples.manners.Sex;
-import org.drools.leaps.Handle;
 import org.drools.leaps.conflict.LoadOrderConflictResolver;
 
 /**
@@ -33,25 +33,25 @@ import org.drools.leaps.conflict.LoadOrderConflictResolver;
 
 public class TableTest extends TestCase {
 
-    Handle h1;
+    DefaultFactHandle h1;
 
-    Handle h1000;
+    DefaultFactHandle h1000;
 
-    Handle h100;
+    DefaultFactHandle h100;
 
-    Handle h10;
+    DefaultFactHandle h10;
 
     Table  testTable;
 
     protected void setUp() {
         this.testTable = new Table( LoadOrderConflictResolver.getInstance() );
-        this.h1 = new Handle( 1,
+        this.h1 = new DefaultFactHandle( 1,
                               "1" );
-        this.h1000 = new Handle( 1000,
+        this.h1000 = new DefaultFactHandle( 1000,
                                  "1000" );
-        this.h100 = new Handle( 100,
+        this.h100 = new DefaultFactHandle( 100,
                                 "100" );
-        this.h10 = new Handle( 10,
+        this.h10 = new DefaultFactHandle( 10,
                                "10" );
     }
 
@@ -207,23 +207,23 @@ public class TableTest extends TestCase {
         assertFalse( it.hasNext() );
 
         this.testTable.clear();
-        final Handle fh1 = new Handle( 1,
+        final DefaultFactHandle fh1 = new DefaultFactHandle( 1,
                                        new Guest( "1",
                                                   Sex.resolve( "m" ),
                                                   Hobby.resolve( "h2" ) ) );
-        final Handle fh2 = new Handle( 2,
+        final DefaultFactHandle fh2 = new DefaultFactHandle( 2,
                                        new Guest( "1",
                                                   Sex.resolve( "m" ),
                                                   Hobby.resolve( "h1" ) ) );
-        final Handle fh3 = new Handle( 3,
+        final DefaultFactHandle fh3 = new DefaultFactHandle( 3,
                                        new Guest( "1",
                                                   Sex.resolve( "m" ),
                                                   Hobby.resolve( "h3" ) ) );
-        final Handle fh4 = new Handle( 4,
+        final DefaultFactHandle fh4 = new DefaultFactHandle( 4,
                                        new Guest( "3",
                                                   Sex.resolve( "f" ),
                                                   Hobby.resolve( "h2" ) ) );
-        final Handle fhC = new Handle( 5,
+        final DefaultFactHandle fhC = new DefaultFactHandle( 5,
                                        new Context( "start" ) );
         this.testTable.add( fh1 );
         this.testTable.add( fh2 );

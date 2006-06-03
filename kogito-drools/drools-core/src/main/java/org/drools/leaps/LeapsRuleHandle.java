@@ -16,7 +16,11 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
+import org.drools.common.DefaultFactHandle;
+
 /**
+ * class container for rules. Re-using defaultfact handle 
+ * 
  * class container for rules used in the system. Handle is created for each
  * leaps rule, dominant position (column/ce position), dominant position type
  * (class at the column/ce position) or indicator if handle is for asserted or
@@ -25,19 +29,14 @@ package org.drools.leaps;
  * @author Alexander Bagerman
  * 
  */
-public class RuleHandle extends Handle {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 2506069324992187726L;
+public class LeapsRuleHandle extends DefaultFactHandle {
+
     // ce position for which handle is created
     private final int         dominantPosition;
 
-    public RuleHandle(final long id,
-                      final LeapsRule rule,
-                      final int dominantPosition) {
-        super( id,
-               rule );
+    public LeapsRuleHandle(final long id, final LeapsRule rule,
+                           final int dominantPosition) {
+        super( id, rule );
         this.dominantPosition = dominantPosition;
     }
 
@@ -73,7 +72,7 @@ public class RuleHandle extends Handle {
      * @see java.lang.Object
      */
     public boolean equals(final Object that) {
-        return super.equals( that ) && (this.getDominantPosition() == ((RuleHandle) that).getDominantPosition());
+        return super.equals( that ) && (this.getDominantPosition() == ((LeapsRuleHandle) that).getDominantPosition());
     }
 
     /**

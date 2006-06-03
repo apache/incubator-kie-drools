@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
-import org.drools.leaps.Handle;
+import org.drools.common.DefaultFactHandle;
 import org.drools.leaps.conflict.LoadOrderConflictResolver;
 
 /**
@@ -29,25 +29,25 @@ import org.drools.leaps.conflict.LoadOrderConflictResolver;
 
 public class TableIteratorTest extends TestCase {
 
-    Handle h1;
+    DefaultFactHandle h1;
 
-    Handle h1000;
+    DefaultFactHandle h1000;
 
-    Handle h100;
+    DefaultFactHandle h100;
 
-    Handle h10;
+    DefaultFactHandle h10;
 
     Table  testTable;
 
     protected void setUp() {
         this.testTable = new Table( LoadOrderConflictResolver.getInstance() );
-        this.h1 = new Handle( 1,
+        this.h1 = new DefaultFactHandle( 1,
                               "1" );
-        this.h1000 = new Handle( 1000,
+        this.h1000 = new DefaultFactHandle( 1000,
                                  "1000" );
-        this.h100 = new Handle( 100,
+        this.h100 = new DefaultFactHandle( 100,
                                 "100" );
-        this.h10 = new Handle( 10,
+        this.h10 = new DefaultFactHandle( 10,
                                "10" );
     }
 

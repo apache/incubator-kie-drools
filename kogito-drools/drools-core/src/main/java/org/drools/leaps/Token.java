@@ -46,9 +46,9 @@ public class Token
 
     private final InternalFactHandle dominantFactHandle;
 
-    private RuleHandle               currentRuleHandle  = null;
+    private LeapsRuleHandle          currentRuleHandle  = null;
 
-    private FactHandleImpl[]         currentFactHandles = new FactHandleImpl[0];
+    private LeapsFactHandle[]        currentFactHandles = new LeapsFactHandle[0];
 
     boolean                          resume             = false;
 
@@ -60,25 +60,28 @@ public class Token
      * 
      */
     public Token(final LeapsWorkingMemory workingMemory,
-                 final InternalFactHandle factHandle,
-                 final PropagationContext propagationContext) {
+            final InternalFactHandle factHandle,
+            final PropagationContext propagationContext) {
         this.workingMemory = workingMemory;
         this.dominantFactHandle = factHandle;
         this.propagationContext = propagationContext;
     }
 
     private Iterator rulesIterator() {
-        if ( this.rules == null ) {
-            if ( this.dominantFactHandle != null ) {
-                this.rules = this.workingMemory.getFactTable( this.dominantFactHandle.getObject().getClass() ).getRulesIterator();
+        if (this.rules == null) {
+            if (this.dominantFactHandle != null) {
+                this.rules = this.workingMemory.getFactTable( this.dominantFactHandle.getObject( )
+                                                                                     .getClass( ) )
+                                               .getRulesIterator( );
             }
         }
         return this.rules;
     }
 
-    public RuleHandle nextRuleHandle() {
-        this.currentRuleHandle = (RuleHandle) this.rules.next();
-        this.currentFactHandles = new FactHandleImpl[this.currentRuleHandle.getLeapsRule().getNumberOfColumns()];
+    public LeapsRuleHandle nextRuleHandle() {
+        this.currentRuleHandle = (LeapsRuleHandle) this.rules.next( );
+        this.currentFactHandles = new LeapsFactHandle[this.currentRuleHandle.getLeapsRule( )
+                                                                            .getNumberOfColumns( )];
         return this.currentRuleHandle;
     }
 
@@ -93,22 +96,26 @@ public class Token
         if ( this.rulesIterator() != null ) {
             // starting with calling rulesIterator() to make sure that we picks
             // rules because fact can be asserted before rules added
-            final long levelId = this.workingMemory.getIdLastFireAllAt();
-            if ( this.dominantFactHandle == null || this.dominantFactHandle.getId() >= levelId ) {
-                ret = this.rules.hasNext();
-            } else {
+            final long levelId = this.workingMemory.getIdLastFireAllAt( );
+            if (this.dominantFactHandle == null
+                    || this.dominantFactHandle.getRecency( ) >= levelId) {
+                ret = this.rules.hasNext( );
+            }
+            else {
                 // then we need to skip rules that have id lower than
                 // workingMemory.idLastFireAllAt
                 boolean done = false;
-                while ( !done ) {
-                    if ( this.rules.hasNext() ) {
-                        if ( ((RuleHandle) ((TableIterator) this.rules).peekNext()).getId() > levelId ) {
+                while (!done) {
+                    if (this.rules.hasNext( )) {
+                        if (( (LeapsRuleHandle) ( (TableIterator) this.rules ).peekNext( ) ).getRecency( ) > levelId) {
                             ret = true;
                             done = true;
-                        } else {
-                            this.rules.next();
                         }
-                    } else {
+                        else {
+                            this.rules.next( );
+                        }
+                    }
+                    else {
                         ret = false;
                         done = true;
                     }
@@ -127,8 +134,7 @@ public class Token
         }
     }
 
-    public void set(final int idx,
-                    final FactHandleImpl factHandle) {
+    public void set( final int idx, final LeapsFactHandle factHandle ) {
         this.currentFactHandles[idx] = factHandle;
     }
 
@@ -136,7 +142,7 @@ public class Token
         return this.dominantFactHandle;
     }
 
-    public RuleHandle getCurrentRuleHandle() {
+    public LeapsRuleHandle getCurrentRuleHandle() {
         return this.currentRuleHandle;
     }
 
@@ -153,8 +159,8 @@ public class Token
      * 
      * @see Object
      */
-    public boolean equals(final Object that) {
-        return this.dominantFactHandle.getId() == ((Token) that).dominantFactHandle.getId();
+    public boolean equals( final Object that ) {
+        return this.dominantFactHandle.getId( ) == ( (Token) that ).dominantFactHandle.getId( );
     }
 
     /**
@@ -164,15 +170,15 @@ public class Token
      * @return The currently bound <code>Object</code> value.
      * @see org.drools.spi.Tuple
      */
-    public InternalFactHandle get(final int idx) {
+    public InternalFactHandle get( final int idx ) {
         return this.currentFactHandles[idx];
     }
 
     /**
      * @see org.drools.spi.Tuple
      */
-    public InternalFactHandle get(final Declaration declaration) {
-        return this.get( declaration.getColumn() );
+    public InternalFactHandle get( final Declaration declaration ) {
+        return this.get( declaration.getColumn( ) );
     }
 
     /**
@@ -200,10 +206,14 @@ public class Token
      * @see java.lang.Object
      */
     public String toString() {
-        String ret = "TOKEN [" + this.dominantFactHandle + "]\n" + "\tRULE : " + this.currentRuleHandle + "\n";
-        if ( this.currentFactHandles != null ) {
-            for ( int i = 0, length = this.currentFactHandles.length; i < length; i++ ) {
-                ret = ret + ((i == this.currentRuleHandle.getDominantPosition()) ? "***" : "") + "\t" + i + " -> " + this.currentFactHandles[i].getObject() + "\n";
+        String ret = "TOKEN [" + this.dominantFactHandle + "]\n" + "\tRULE : "
+                + this.currentRuleHandle + "\n";
+        if (this.currentFactHandles != null) {
+            for (int i = 0, length = this.currentFactHandles.length; i < length; i++) {
+                ret = ret
+                        + ( ( i == this.currentRuleHandle.getDominantPosition( ) ) ? "***"
+                                : "" ) + "\t" + i + " -> "
+                        + this.currentFactHandles[i].getObject( ) + "\n";
             }
         }
         return ret;

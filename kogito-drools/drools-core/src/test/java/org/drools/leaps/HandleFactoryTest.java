@@ -16,6 +16,8 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
+import org.drools.common.DefaultFactHandle;
+
 import junit.framework.TestCase;
 
 /**
@@ -37,7 +39,7 @@ public class HandleFactoryTest extends TestCase {
      */
     public void testNewFactHandle() {
         final Object object = new Object();
-        assertTrue( ((Handle) this.factory.newFactHandle( object )).getObject() == object );
+        assertTrue( ((DefaultFactHandle) this.factory.newFactHandle( object )).getObject() == object );
     }
 
     /*
@@ -64,7 +66,7 @@ public class HandleFactoryTest extends TestCase {
 
         final String testObject = new String( "test object" );
         final long nextId = this.factory.getNextId() + 1;
-        final Handle handle = (Handle) this.factory.newFactHandle( testObject );
+        final DefaultFactHandle handle = (DefaultFactHandle) this.factory.newFactHandle( testObject );
         assertEquals( nextId,
                       handle.getId() );
         assertEquals( testObject,
@@ -81,7 +83,7 @@ public class HandleFactoryTest extends TestCase {
 
         final long nextId = this.factory.getNextId() + 1;
         assertEquals( nextId,
-                      ((Handle) this.factory.newFactHandle( 984393L,
+                      ((DefaultFactHandle) this.factory.newFactHandle( 984393L,
                                                             new Object() )).getId() );
 
     }
