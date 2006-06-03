@@ -1056,8 +1056,8 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.hasErrors() );
     }
     
-    public void FIXME_testOrNesting() throws Exception {
-        final RuleParser parser = parseResource( "and_or_rule.drl" );
+    public void testOrNesting() throws Exception {
+        final RuleParser parser = parseResource( "or_nesting.drl" );
         parser.compilation_unit();
 
         final PackageDescr pack = parser.getPackageDescr();
@@ -1082,7 +1082,7 @@ public class RuleParserTest extends TestCase {
         ColumnDescr left = (ColumnDescr) and.getDescrs().get( 0 );
         assertEquals("Person", left.getObjectType());
         
-        ColumnDescr right = (ColumnDescr) and.getDescrs().get( 0 );
+        ColumnDescr right = (ColumnDescr) and.getDescrs().get( 1 );
         assertEquals("Cheese", right.getObjectType());
     }
 
