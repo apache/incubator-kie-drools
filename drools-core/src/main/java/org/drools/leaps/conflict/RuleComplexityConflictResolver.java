@@ -18,7 +18,7 @@ package org.drools.leaps.conflict;
 
 import java.util.Comparator;
 
-import org.drools.leaps.RuleHandle;
+import org.drools.leaps.LeapsRuleHandle;
 
 /**
  * <code>RuleConflictResolver</code> that uses the rule complexity.
@@ -57,7 +57,7 @@ class RuleComplexityConflictResolver
      */
     public int compare(final Object o1,
                        final Object o2) {
-        return (-1) * AbstractConflictResolver.compare( (((RuleHandle) o1).getRuleComplexity()),
-                                                        (((RuleHandle) o2).getRuleComplexity()) );
+        return (-1) * AbstractConflictResolver.compare( (((LeapsRuleHandle) o1).getRuleComplexity()),
+                                                        (((LeapsRuleHandle) o2).getRuleComplexity()) );
     };
 }

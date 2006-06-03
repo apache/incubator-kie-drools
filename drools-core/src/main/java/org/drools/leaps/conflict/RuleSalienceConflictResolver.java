@@ -18,7 +18,7 @@ package org.drools.leaps.conflict;
 
 import java.util.Comparator;
 
-import org.drools.leaps.RuleHandle;
+import org.drools.leaps.LeapsRuleHandle;
 
 /**
  * <code>RuleConflictResolver</code> that uses the salience of rules to
@@ -57,7 +57,7 @@ class RuleSalienceConflictResolver
      */
     public int compare(final Object o1,
                        final Object o2) {
-        return (-1) * AbstractConflictResolver.compare( ((RuleHandle) o1).getSalience(),
-                                                        ((RuleHandle) o2).getSalience() );
+        return (-1) * AbstractConflictResolver.compare( ((LeapsRuleHandle) o1).getSalience(),
+                                                        ((LeapsRuleHandle) o2).getSalience() );
     };
 }

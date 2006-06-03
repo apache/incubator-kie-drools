@@ -18,7 +18,7 @@ package org.drools.leaps.conflict;
 
 import java.util.Comparator;
 
-import org.drools.leaps.Handle;
+import org.drools.common.DefaultFactHandle;
 
 /**
  * <code>LoadOrderConflictResolver</code> that uses the load order of rules to
@@ -58,7 +58,7 @@ public class LoadOrderConflictResolver
      */
     public int compare(final Object o1,
                        final Object o2) {
-        return (-1) * AbstractConflictResolver.compare( ((Handle) o1).getRecency(),
-                                                        ((Handle) o2).getRecency() );
+        return (-1) * AbstractConflictResolver.compare( ((DefaultFactHandle) o1).getRecency(),
+                                                        ((DefaultFactHandle) o2).getRecency() );
     };
 }

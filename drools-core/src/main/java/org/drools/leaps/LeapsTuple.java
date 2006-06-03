@@ -40,11 +40,11 @@ class LeapsTuple
 
     private boolean                readyForActivation;
 
-    private final FactHandleImpl[] factHandles;
+    private final LeapsFactHandle[] factHandles;
 
-    private FactHandleImpl[]       blockingNotFactHandles = null;
+    private LeapsFactHandle[]       blockingNotFactHandles = null;
 
-    private FactHandleImpl[]       existsFactHandles      = null;
+    private LeapsFactHandle[]       existsFactHandles      = null;
 
     private Activation             activation;
 
@@ -53,7 +53,7 @@ class LeapsTuple
     /**
      * agendaItem parts
      */
-    LeapsTuple(final FactHandleImpl factHandles[],
+    LeapsTuple(final LeapsFactHandle factHandles[],
                final LeapsRule leapsRule,
                final PropagationContext context) {
         this.factHandles = factHandles;
@@ -62,13 +62,13 @@ class LeapsTuple
 
         if ( this.leapsRule != null ) {
             if ( this.leapsRule.containsNotColumns() ) {
-                this.blockingNotFactHandles = new FactHandleImpl[this.leapsRule.getNotColumnConstraints().length];
+                this.blockingNotFactHandles = new LeapsFactHandle[this.leapsRule.getNotColumnConstraints().length];
                 for ( int i = 0; i < this.blockingNotFactHandles.length; i++ ) {
                     this.blockingNotFactHandles[i] = null;
                 }
             }
             if ( this.leapsRule.containsExistsColumns() ) {
-                this.existsFactHandles = new FactHandleImpl[this.leapsRule.getExistsColumnConstraints().length];
+                this.existsFactHandles = new LeapsFactHandle[this.leapsRule.getExistsColumnConstraints().length];
                 for ( int i = 0; i < this.existsFactHandles.length; i++ ) {
                     this.existsFactHandles[i] = null;
                 }
@@ -213,7 +213,7 @@ class LeapsTuple
         return buffer.toString();
     }
 
-    protected void setBlockingNotFactHandle(final FactHandleImpl factHandle,
+    protected void setBlockingNotFactHandle(final LeapsFactHandle factHandle,
                                             final int index) {
         this.readyForActivation = false;
         this.blockingNotFactHandles[index] = factHandle;
@@ -228,7 +228,7 @@ class LeapsTuple
         this.setReadyForActivation();
     }
 
-    protected void setExistsFactHandle(final FactHandleImpl factHandle,
+    protected void setExistsFactHandle(final LeapsFactHandle factHandle,
                                        final int index) {
         this.existsFactHandles[index] = factHandle;
         this.setReadyForActivation();

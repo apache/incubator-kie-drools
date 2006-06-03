@@ -16,6 +16,8 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
+import java.util.List;
+
 import org.drools.common.DefaultAgenda;
 import org.drools.rule.Query;
 import org.drools.spi.Activation;
@@ -39,19 +41,36 @@ public class LeapsAgenda extends DefaultAgenda {
         this.workingMemory = workingMemory;
     }
 
-    public synchronized void fireActivation(final Activation activation) throws ConsequenceException {
-        if ( activation.getRule() instanceof Query ) {
+    public synchronized void fireActivation( final Activation activation )
+            throws ConsequenceException {
+        if (activation.getRule( ) instanceof Query) {
             // put query results to the working memory location
-            this.workingMemory.addToQueryResults( activation.getRule().getName(),
-                                                  activation.getTuple() );
-        } else {
-            if ( activation.getRule().getActivationGroup() == null || (activation.getRule().getActivationGroup() != null && this.getActivationGroup( activation.getRule().getActivationGroup() ).isEmpty()) ) {
+            this.workingMemory.addToQueryResults( activation.getRule( ).getName( ),
+                                                  activation.getTuple( ) );
+        }
+        else {
+            if (activation.getRule( ).getActivationGroup( ) == null
+                    || ( activation.getRule( ).getActivationGroup( ) != null && this.getActivationGroup( activation.getRule( )
+                                                                                                                   .getActivationGroup( ) )
+                                                                                    .isEmpty( ) )) {
                 // fire regular rule
                 super.fireActivation( activation );
-                if ( activation.getRule().getActivationGroup() != null ) {
-                    this.getActivationGroup( activation.getRule().getActivationGroup() );
+                if (activation.getRule( ).getActivationGroup( ) != null) {
+                    this.getActivationGroup( activation.getRule( ).getActivationGroup( ) );
                 }
             }
         }
+    }
+    
+    /**
+     * to accomodate the difference between rete and leaps in storing 
+     * activations. we pull activations from rule to activations map
+     * we store in working memory to facilitate activations removal 
+     * when rule is removed from the memory
+     * 
+     */
+    public Activation[] getActivations() {
+        final List list = this.workingMemory.getActivations();
+        return (Activation[]) list.toArray( new Activation[list.size()] );
     }
 }

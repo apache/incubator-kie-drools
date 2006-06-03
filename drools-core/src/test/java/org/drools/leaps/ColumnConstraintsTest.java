@@ -85,10 +85,10 @@ public class ColumnConstraintsTest extends DroolsTestCase {
                                                    alphas,
                                                    null );
 
-        final LeapsTuple tuple = new LeapsTuple( new FactHandleImpl[0],
+        final LeapsTuple tuple = new LeapsTuple( new LeapsFactHandle[0],
                                                  null,
                                                  null );
-        assertTrue( columnConstraints.isAllowed( new FactHandleImpl( 23,
+        assertTrue( columnConstraints.isAllowed( new LeapsFactHandle( 23,
                                                                      new Context( Context.START_UP ) ),
                                                  tuple,
                                                  base.newWorkingMemory() ) );
@@ -126,7 +126,7 @@ public class ColumnConstraintsTest extends DroolsTestCase {
                                                    alphas,
                                                    null );
 
-        assertFalse( columnConstraints.isAllowed( new FactHandleImpl( 23,
+        assertFalse( columnConstraints.isAllowed( new LeapsFactHandle( 23,
                                                                       new Context( Context.START_UP ) ),
                                                   null,
                                                   base.newWorkingMemory() ) );

@@ -19,6 +19,7 @@ package org.drools.leaps;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.leaps.util.Table;
 import org.drools.spi.PropagationContext;
@@ -62,9 +63,9 @@ class FactTable extends Table {
      * @param ruleConflictResolver
      */
     public FactTable(final ConflictResolver conflictResolver) {
-        super( conflictResolver.getFactConflictResolver() );
-        this.rules = new RuleTable( conflictResolver.getRuleConflictResolver() );
-        this.tuples = new LinkedList();
+        super( conflictResolver.getFactConflictResolver( ) );
+        this.rules = new RuleTable( conflictResolver.getRuleConflictResolver( ) );
+        this.tuples = new LinkedList( );
     }
 
     /**
@@ -73,9 +74,9 @@ class FactTable extends Table {
      * @param workingMemory
      * @param ruleHandle
      */
-    public void addRule(final LeapsWorkingMemory workingMemory,
-                        final RuleHandle ruleHandle) {
-        if ( !this.rules.contains( ruleHandle ) ) {
+    public void addRule( final LeapsWorkingMemory workingMemory,
+                         final LeapsRuleHandle ruleHandle ) {
+        if (!this.rules.contains( ruleHandle )) {
             this.rules.add( ruleHandle );
             // push facts back to stack if needed
             this.checkAndAddFactsToStack( workingMemory );
@@ -87,14 +88,15 @@ class FactTable extends Table {
      * 
      * @param ruleHandle
      */
-    public void removeRule(final RuleHandle ruleHandle) {
+    public void removeRule( final LeapsWorkingMemory workingMemory,
+                            final LeapsRuleHandle ruleHandle ) {
         this.rules.remove( ruleHandle );
         // remove tuples that are still there
-        final LinkedList list = new LinkedList();
+        final LinkedList list = new LinkedList( );
 
-        for ( final Iterator it = this.getTuplesIterator(); it.hasNext(); ) {
-            final LeapsTuple tuple = (LeapsTuple) it.next();
-            if ( ruleHandle.getLeapsRule().getRule() != tuple.getLeapsRule().getRule() ) {
+        for (final Iterator it = this.getTuplesIterator( ); it.hasNext( );) {
+            final LeapsTuple tuple = (LeapsTuple) it.next( );
+            if (ruleHandle.getLeapsRule( ).getRule( ) != tuple.getLeapsRule( ).getRule( )) {
                 list.add( tuple );
             }
         }
@@ -110,27 +112,24 @@ class FactTable extends Table {
      *            memory
      * 
      */
-    private void checkAndAddFactsToStack(final LeapsWorkingMemory workingMemory) {
-        if ( this.reseededStack ) {
+    private void checkAndAddFactsToStack( final LeapsWorkingMemory workingMemory ) {
+        if (this.reseededStack) {
             this.setReseededStack( false );
 
-            final PropagationContextImpl context = new PropagationContextImpl( workingMemory.nextPropagationIdCounter(),
+            final PropagationContextImpl context = new PropagationContextImpl( workingMemory.nextPropagationIdCounter( ),
                                                                                PropagationContext.ASSERTION,
                                                                                null,
                                                                                null );
 
             // let's only add facts below waterline - added before rule is added
             // rest would be added to stack automatically
-            // @todo why is this null? It breaks FactHandle hashCode - chaning to new Object() for now            
-            final Handle startFactHandle = new FactHandleImpl( workingMemory.getIdLastFireAllAt(),
-                                                               new Object() );
-            for ( final Iterator it = this.tailIterator( startFactHandle,
-                                                         startFactHandle ); it.hasNext(); ) {
-                final FactHandleImpl handle = (FactHandleImpl) it.next();
-                workingMemory.pushTokenOnStack( handle,
-                                                new Token( workingMemory,
-                                                           handle,
-                                                           context ) );
+            final DefaultFactHandle startFactHandle = new DefaultFactHandle( workingMemory.getIdLastFireAllAt( ),
+                                                                             new Object( ) );
+            for (final Iterator it = this.tailIterator( startFactHandle, startFactHandle ); it.hasNext( );) {
+                final LeapsFactHandle handle = (LeapsFactHandle) it.next( );
+                workingMemory.pushTokenOnStack( handle, new Token( workingMemory,
+                                                                   handle,
+                                                                   context ) );
             }
         }
     }
@@ -141,7 +140,7 @@ class FactTable extends Table {
      * @param new
      *            value
      */
-    public void setReseededStack(final boolean reseeded) {
+    public void setReseededStack( final boolean reseeded ) {
         this.reseededStack = reseeded;
     }
 
@@ -152,41 +151,42 @@ class FactTable extends Table {
      * @return iterator of positive rule handles
      */
     public Iterator getRulesIterator() {
-        return this.rules.iterator();
+        return this.rules.iterator( );
     }
 
     /**
      * @see java.lang.Object
      */
     public String toString() {
-        final StringBuffer ret = new StringBuffer();
+        final StringBuffer ret = new StringBuffer( );
 
-        for ( final Iterator it = this.iterator(); it.hasNext(); ) {
-            final FactHandleImpl handle = (FactHandleImpl) it.next();
-            ret.append( "\n" + handle + "[" + handle.getObject() + "]" );
+        for (final Iterator it = this.iterator( ); it.hasNext( );) {
+            final LeapsFactHandle handle = (LeapsFactHandle) it.next( );
+            ret.append( "\n" + handle + "[" + handle.getObject( ) + "]" );
         }
 
         ret.append( "\nTuples :" );
 
-        for ( final Iterator it = this.tuples.iterator(); it.hasNext(); ) {
-            ret.append( "\n" + it.next() );
+        for (final Iterator it = this.tuples.iterator( ); it.hasNext( );) {
+            ret.append( "\n" + it.next( ) );
         }
 
         ret.append( "\nRules :" );
 
-        for ( final Iterator it = this.rules.iterator(); it.hasNext(); ) {
-            final RuleHandle handle = (RuleHandle) it.next();
-            ret.append( "\n\t" + handle.getLeapsRule().getRule().getName() + "[dominant - " + handle.getDominantPosition() + "]" );
+        for (final Iterator it = this.rules.iterator( ); it.hasNext( );) {
+            final LeapsRuleHandle handle = (LeapsRuleHandle) it.next( );
+            ret.append( "\n\t" + handle.getLeapsRule( ).getRule( ).getName( )
+                    + "[dominant - " + handle.getDominantPosition( ) + "]" );
         }
 
-        return ret.toString();
+        return ret.toString( );
     }
 
     protected Iterator getTuplesIterator() {
-        return this.tuples.iterator();
+        return this.tuples.iterator( );
     }
 
-    protected void addTuple(final LeapsTuple tuple) {
+    protected void addTuple( final LeapsTuple tuple ) {
         this.tuples.add( tuple );
     }
 }
