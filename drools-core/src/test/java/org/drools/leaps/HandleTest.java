@@ -29,7 +29,7 @@ public class HandleTest extends TestCase {
      * Test method for 'leaps.LeapsFactHandle.getId()'
      */
     public void testGetId() {
-        final Handle handle = new Handle( 123456789,
+        final LeapsFactHandle handle = new LeapsFactHandle( 123456789,
                                           new String( "test124" ) );
         assertEquals( handle.getId(),
                       123456789 );
