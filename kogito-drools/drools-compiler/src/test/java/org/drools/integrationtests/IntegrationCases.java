@@ -97,9 +97,10 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
     
-    public void FIXME_testFieldBiningsAndEvalSharing() throws Exception {
+   
+    public void testFieldBiningsAndEvalSharing() throws Exception {
         
-        String drl = "field_bindings.drl";
+        String drl = "test _FieldBindingsAndEvalSharing.drl";
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( drl ) ) );
         final Package pkg = builder.getPackage();
