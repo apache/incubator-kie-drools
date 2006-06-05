@@ -98,9 +98,19 @@ public abstract class IntegrationCases extends TestCase {
     }
     
    
-    public void testFieldBiningsAndEvalSharing() throws Exception {
-        
-        String drl = "test _FieldBindingsAndEvalSharing.drl";
+    public void testFieldBiningsAndEvalSharing() throws Exception {        
+        String drl = "test_FieldBindingsAndEvalSharing.drl";
+        evalSharingTest( drl );
+    }
+    
+    public void testFieldBiningsAndPredicateSharing() throws Exception {        
+        String drl = "test_FieldBindingsAndPredicateSharing.drl";
+        evalSharingTest( drl );
+    }    
+
+    private void evalSharingTest(String drl) throws DroolsParserException,
+                                            IOException,
+                                            Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( drl ) ) );
         final Package pkg = builder.getPackage();
