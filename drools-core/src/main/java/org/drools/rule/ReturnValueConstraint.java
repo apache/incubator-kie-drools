@@ -109,6 +109,20 @@ public class ReturnValueConstraint
         }
 
         final ReturnValueConstraint other = (ReturnValueConstraint) object;
+        
+        if ( this.requiredDeclarations.length != other.requiredDeclarations.length ) {
+        	return false;
+        }
+        
+        for ( int i = 0, length = this.requiredDeclarations.length; i < length; i++ ) {
+        	if ( this.requiredDeclarations[i].getColumn() != other.requiredDeclarations[i].getColumn() ) {
+        		return false;
+        	}
+
+        	if ( !this.requiredDeclarations[i].getExtractor().equals( other.requiredDeclarations[i].getExtractor() ) ) {
+        		return false;
+        	}        	
+        }        
 
         return this.expression.equals( other.expression );
     }
