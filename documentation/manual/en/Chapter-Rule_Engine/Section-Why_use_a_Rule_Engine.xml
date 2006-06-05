@@ -213,9 +213,9 @@
     to use a rule engine.</para>
 
     <para>Alternatives are script-based engines that provide the dynamicness
-    for "changes on the fly" (there are many solutions here) or</para>
+    for "changes on the fly" (there are many solutions here). </para>
 
-    <para>Process engines (also capable of workflow) such as jBPM allow you to
+	<para>Alternatively Process engines (also capable of workflow) such as jBPM allow you to
     graphically (or programmatically) describe steps in a process - those
     steps can also involve decision point which are in themselves a simple
     rule. Process engines and rules often can work nicely together, so its not
