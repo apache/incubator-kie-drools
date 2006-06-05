@@ -190,7 +190,7 @@ then
 
     <para>Backward chaining is 'goal-driven', we start with a conclusion which
     the engine tries to satisfy. If it can't it searches for conclusions, 'sub
-    goals', that help satisfy an unknown part fo the current goal - it
+    goals', that help satisfy an unknown part for the current goal - it
     continues this process untill either the initial conclusion is proven or
     there are no more sub goals. Prolog is an example of a Backward Chaining
     engine; Drools will adding support for Backward Chaining in its next major
