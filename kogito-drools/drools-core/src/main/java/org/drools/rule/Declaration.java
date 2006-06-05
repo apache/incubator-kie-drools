@@ -177,7 +177,7 @@ public class Declaration
 
         final Declaration other = (Declaration) object;
 
-        return this.column == other.column && this.identifier.equals( other.identifier ) && this.extractor.getObjectType().equals( other.extractor.getObjectType() );
+        return this.column == other.column && this.identifier.equals( other.identifier ) && this.extractor.equals( other.extractor );
     }
 
 }

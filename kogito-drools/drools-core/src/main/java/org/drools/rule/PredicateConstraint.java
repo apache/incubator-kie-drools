@@ -110,6 +110,28 @@ public class PredicateConstraint
         }
 
         final PredicateConstraint other = (PredicateConstraint) object;
+        
+        if ( this.requiredDeclarations.length != other.requiredDeclarations.length ) {
+        	return false;
+        }
+        
+    	if ( this.declaration.getColumn() != other.declaration.getColumn() ) {
+    		return false;
+    	}
+
+    	if ( !this.declaration.getExtractor().equals( other.declaration.getExtractor() ) ) {
+    		return false;
+    	}        
+        
+        for ( int i = 0, length = this.requiredDeclarations.length; i < length; i++ ) {
+        	if ( this.requiredDeclarations[i].getColumn() != other.requiredDeclarations[i].getColumn() ) {
+        		return false;
+        	}
+
+        	if ( !this.requiredDeclarations[i].getExtractor().equals( other.requiredDeclarations[i].getExtractor() ) ) {
+        		return false;
+        	}        	
+        }        
 
         return this.expression.equals( other.expression );
     }
