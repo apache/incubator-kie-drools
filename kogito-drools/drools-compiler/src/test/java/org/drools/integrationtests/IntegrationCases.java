@@ -43,9 +43,11 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.Sensor;
 import org.drools.State;
+import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
+import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.RuleError;
@@ -94,6 +96,32 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
     }
+    
+    public void FIXME_testFieldBiningsAndEvalSharing() throws Exception {
+        
+        String drl = "field_bindings.drl";
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( drl ) ) );
+        final Package pkg = builder.getPackage();
+        
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );        
+        WorkingMemory wm = ruleBase.newWorkingMemory();
+        
+        List list = new ArrayList();
+        wm.setGlobal( "list", list );
+        
+        TestParam tp1 = new TestParam();
+        tp1.setValue2( "boo" );
+        wm.assertObject( tp1 );
+        
+        
+        wm.fireAllRules();
+        
+        assertEquals(1, list.size());
+    }
+
+
 
     public void testEmptyColumn() throws Exception {
         //pre build the package
