@@ -81,6 +81,7 @@ public abstract class AbstractWorkingMemory
     /** The actual memory for the <code>JoinNode</code>s. */
     protected final PrimitiveLongMap          nodeMemories                                  = new PrimitiveLongMap( 32,
                                                                                                                     8 );
+
     /** Global values which are associated with this memory. */
     protected final Map                       globals                                       = new HashMap();
 
@@ -91,17 +92,18 @@ public abstract class AbstractWorkingMemory
 
     /** The eventSupport */
     protected final WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( this );
+
     protected final AgendaEventSupport        agendaEventSupport                            = new AgendaEventSupport( this );
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected final InternalRuleBase          ruleBase;
+    protected transient InternalRuleBase          ruleBase;
 
     protected final FactHandleFactory         handleFactory;
 
     protected final TruthMaintenanceSystem    tms;
 
     /** Rule-firing agenda. */
-    protected DefaultAgenda                          agenda;
+    protected DefaultAgenda                   agenda;
 
     protected final List                      factQueue                                     = new ArrayList();
 
@@ -150,6 +152,10 @@ public abstract class AbstractWorkingMemory
     // Instance methods
     // ------------------------------------------------------------
 
+    void setRuleBase(InternalRuleBase ruleBase) {
+        this.ruleBase = ruleBase;
+    }
+    
     public void addEventListener(final WorkingMemoryEventListener listener) {
         this.workingMemoryEventSupport.addEventListener( listener );
     }
@@ -190,7 +196,7 @@ public abstract class AbstractWorkingMemory
      */
     public void setGlobal(final String name,
                           final Object value) {
-        // Make sure the global has been declared in the RuleBase        
+        // Make sure the global has been declared in the RuleBase
         final Map globalDefintions = this.ruleBase.getGlobals();
         final Class type = (Class) globalDefintions.get( name );
         if ( (type == null) ) {
@@ -282,12 +288,12 @@ public abstract class AbstractWorkingMemory
      * 
      */
     public Object getObject(final FactHandle handle) {
-        // you must always  take the value from  the assertMap, incase the handle
-        // is  not from this WorkingMemory
+        // you must always take the value from the assertMap, incase the handle
+        // is not from this WorkingMemory
         InternalFactHandle factHandle = (InternalFactHandle) this.assertMap.get( handle );
         if ( factHandle != null ) {
             return factHandle.getObject();
-        } 
+        }
 
         return null;
 
@@ -307,9 +313,9 @@ public abstract class AbstractWorkingMemory
     }
 
     /**
-     * A helper method used to avoid lookups when iterating over facthandles and 
-     * objects at once. 
-     * DO NOT MAKE THIS METHOD PUBLIC UNLESS YOU KNOW WHAT YOU ARE DOING
+     * A helper method used to avoid lookups when iterating over facthandles and
+     * objects at once. DO NOT MAKE THIS METHOD PUBLIC UNLESS YOU KNOW WHAT YOU
+     * ARE DOING
      * 
      * @return
      */
@@ -407,7 +413,7 @@ public abstract class AbstractWorkingMemory
                                    final Rule rule,
                                    final Activation activation) throws FactException {
         if ( object == null ) {
-            // you cannot assert a  null object
+            // you cannot assert a null object
             return null;
         }
         InternalFactHandle handle = null;
@@ -422,20 +428,23 @@ public abstract class AbstractWorkingMemory
                 // lets see if the object is already logical asserted
                 key = this.tms.get( object );
             } else {
-                // Object is already asserted, so check and possibly correct its status and then return the handle
+                // Object is already asserted, so check and possibly correct its
+                // status and then return the handle
                 key = handle.getEqualityKey();
 
                 if ( key.getStatus() == EqualityKey.STATED ) {
-                    // return null as you  cannot  justify  a stated object.
+                    // return null as you cannot justify a stated object.
                     return handle;
                 }
 
                 if ( !logical ) {
-                    // this object was previously justified, so we have to override it to stated
+                    // this object was previously justified, so we have to
+                    // override it to stated
                     key.setStatus( EqualityKey.STATED );
                     this.tms.removeLogicalDependencies( handle );
                 } else {
-                    // this was object is already justified, so just add new logical dependency
+                    // this was object is already justified, so just add new
+                    // logical dependency
                     this.tms.addLogicalDependency( handle,
                                                    activation,
                                                    activation.getPropagationContext(),
@@ -447,7 +456,8 @@ public abstract class AbstractWorkingMemory
 
             // At this point we know the handle is null
             if ( key == null ) {
-                // key is also null, so treat as a totally new stated/logical assert
+                // key is also null, so treat as a totally new stated/logical
+                // assert
                 handle = this.handleFactory.newFactHandle( object );
                 this.assertMap.put( handle,
                                     handle );
@@ -465,12 +475,14 @@ public abstract class AbstractWorkingMemory
                 }
             } else if ( !logical ) {
                 if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                    // Its previous justified, so switch to stated and remove logical dependencies
+                    // Its previous justified, so switch to stated and remove
+                    // logical dependencies
                     final InternalFactHandle justifiedHandle = key.getFactHandle();
                     this.tms.removeLogicalDependencies( justifiedHandle );
 
                     if ( this.discardOnLogicalOverride ) {
-                        // override, setting  to new  instance, and return existing handle
+                        // override, setting to new instance, and return
+                        // existing handle
                         key.setStatus( EqualityKey.STATED );
                         handle = key.getFactHandle();
                         handle.setObject( object );
@@ -495,14 +507,16 @@ public abstract class AbstractWorkingMemory
 
             } else {
                 if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                    // only add as logical dependency if this wasn't previously stated
+                    // only add as logical dependency if this wasn't previously
+                    // stated
                     this.tms.addLogicalDependency( key.getFactHandle(),
                                                    activation,
                                                    activation.getPropagationContext(),
                                                    rule );
                     return key.getFactHandle();
                 } else {
-                    // You cannot justify a previously stated equality equal object, so return null
+                    // You cannot justify a previously stated equality equal
+                    // object, so return null
                     return null;
                 }
             }
@@ -516,10 +530,10 @@ public abstract class AbstractWorkingMemory
                                                                                       rule,
                                                                                       activation );
 
-            //            this.ruleBase.assertObject( handle,
-            //                                        object,
-            //                                        propagationContext,
-            //                                        this );
+            // this.ruleBase.assertObject( handle,
+            // object,
+            // propagationContext,
+            // this );
 
             doAssertObject( handle,
                             object,
@@ -594,29 +608,29 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    //    /**
-    //     * Associate an object with its handle.
-    //     * 
-    //     * @param handle
-    //     *            The handle.
-    //     * @param object
-    //     *            The object.
-    //     */
-    //    public void putObject(InternalFactHandle handle,
-    //                          Object object) {
-    //        this.assertMap.put( object,
-    //                            handle );
+    // /**
+    // * Associate an object with its handle.
+    // *
+    // * @param handle
+    // * The handle.
+    // * @param object
+    // * The object.
+    // */
+    // public void putObject(InternalFactHandle handle,
+    // Object object) {
+    // this.assertMap.put( object,
+    // handle );
     //
-    //        handle.setObject( object );
-    //    }
+    // handle.setObject( object );
+    // }
     //
-    //    public Object removeObject(InternalFactHandle handle) {
-    //        Object object = handle.getObject();
+    // public Object removeObject(InternalFactHandle handle) {
+    // Object object = handle.getObject();
     //
-    //        this.assertMap.remove( object );
+    // this.assertMap.remove( object );
     //
-    //        return object;
-    //    }
+    // return object;
+    // }
 
     public void retractObject(final FactHandle handle) throws FactException {
         retractObject( handle,
@@ -641,7 +655,7 @@ public abstract class AbstractWorkingMemory
         try {
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             if ( handle.getId() == -1 ) {
-                // can't retract an already  retracted handle
+                // can't retract an already retracted handle
                 return;
             }
             removePropertyChangeListener( handle );
@@ -654,10 +668,12 @@ public abstract class AbstractWorkingMemory
             doRetract( handle,
                        propagationContext );
 
-            // Update the equality key, which maintains a list of stated FactHandles
+            // Update the equality key, which maintains a list of stated
+            // FactHandles
             final EqualityKey key = handle.getEqualityKey();
 
-            // Its justified so attempt to remove any logical dependencies for the handle
+            // Its justified so attempt to remove any logical dependencies for
+            // the handle
             if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                 this.tms.removeLogicalDependencies( handle );
             }
@@ -808,9 +824,13 @@ public abstract class AbstractWorkingMemory
         implements
         WorkingMemoryAction {
         private InternalFactHandle factHandle;
+
         private boolean            removeLogical;
+
         private boolean            updateEqualsMap;
+
         private Rule               ruleOrigin;
+
         private Activation         activationOrigin;
 
         public WorkingMemoryRetractAction(final InternalFactHandle factHandle,

@@ -1,5 +1,6 @@
 package org.drools.util;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -42,7 +43,7 @@ import java.util.NoSuchElementException;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public class LinkedList {
+public class LinkedList implements Serializable {
     private LinkedListNode firstNode;
     private LinkedListNode lastNode;
 

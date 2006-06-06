@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
@@ -385,5 +386,22 @@ abstract public class AbstractRuleBase
 
     public RuleBaseConfiguration getConfiguration() {
         return this.config;
+    }
+    
+    public WorkingMemory newWorkingMemory(InputStream stream) throws IOException, ClassNotFoundException {
+        return newWorkingMemory( stream,
+                                 true );
+    }    
+    public WorkingMemory newWorkingMemory(InputStream stream, 
+                                          boolean keepReference ) throws IOException, ClassNotFoundException {
+        
+        final ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( stream,
+                                                                                              this.packageClassLoader );
+        
+        AbstractWorkingMemory workingMemory = ( AbstractWorkingMemory ) streamWithLoader.readObject();
+        workingMemory.setRuleBase( this );
+        
+        return workingMemory;
+    
     }
 }

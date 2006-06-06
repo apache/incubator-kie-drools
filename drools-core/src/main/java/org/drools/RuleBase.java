@@ -16,6 +16,8 @@ package org.drools;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -46,7 +48,8 @@ public interface RuleBase
 
     /**
      * Create a new <code>WorkingMemory</code> session for this
-     * <code>RuleBase</code>.
+     * <code>RuleBase</code>. By default the RuleBase retains a
+     * weak reference to returned WorkingMemory.
      * 
      * <p>
      * The created <code>WorkingMemory</code> uses the default conflict
@@ -60,7 +63,59 @@ public interface RuleBase
      */
     WorkingMemory newWorkingMemory();
 
+    /**
+     * Create a new <code>WorkingMemory</code> session for this
+     * <code>RuleBase</code>. Optionally the RuleBase retains a
+     * weak reference to returned WorkingMemory.
+     * 
+     * <p>
+     * The created <code>WorkingMemory</code> uses the default conflict
+     * resolution strategy.
+     * </p>
+     * 
+     * @see WorkingMemory
+     * @see org.drools.conflict.DefaultConflictResolver
+     * 
+     * @return A newly initialized <code>WorkingMemory</code>.
+     */
     WorkingMemory newWorkingMemory(boolean keepReference);
+
+    /**
+     * RuleBases handle the returning of a Serialized WorkingMemory
+     * pass as an InputStream. If the reference is a byte[] then
+     * wrap with new ByteArrayInputStream. By default the RuleBase retains a
+     * weak reference to returned WorkingMemory.
+     * 
+     * <p>
+     * The created <code>WorkingMemory</code> uses the default conflict
+     * resolution strategy.
+     * </p>
+     * 
+     * @see WorkingMemory
+     * @see org.drools.conflict.DefaultConflictResolver
+     * 
+     * @return A serialised initialized <code>WorkingMemory</code>.
+     */    
+    WorkingMemory newWorkingMemory(InputStream stream) throws IOException, ClassNotFoundException;
+
+    /**
+     * RuleBases handle the returning of a Serialized WorkingMemory
+     * pass as an InputStream. If the reference is a byte[] then
+     * wrap with new ByteArrayInputStream. Optionally the RuleBase retains a
+     * weak reference to returned WorkingMemory.
+     * 
+     * <p>
+     * The created <code>WorkingMemory</code> uses the default conflict
+     * resolution strategy.
+     * </p>
+     * 
+     * @see WorkingMemory
+     * @see org.drools.conflict.DefaultConflictResolver
+     * 
+     * @return A serialised initialized <code>WorkingMemory</code>.
+     */    
+    WorkingMemory newWorkingMemory(InputStream stream, boolean keepReference ) throws IOException, ClassNotFoundException;    
+    
 
     Package[] getPackages();
 

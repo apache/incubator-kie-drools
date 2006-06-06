@@ -29,6 +29,10 @@ import org.drools.spi.AsyncExceptionHandler;
 /**
  * A knowledge session for a <code>RuleBase</code>.
  * 
+ * While this object can be serialised out, it cannot be serialised in. This is because
+ * the RuleBase reference is transient. Please see the RuleBase interface for serializing
+ * in WorkingMemories from an InputStream.
+ * 
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
 public interface WorkingMemory

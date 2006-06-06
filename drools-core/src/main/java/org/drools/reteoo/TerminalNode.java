@@ -16,6 +16,7 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import org.drools.Agenda;
@@ -319,7 +320,7 @@ final class TerminalNode extends BaseNode
         return this.rule.equals( other.rule );
     }
 
-    class TerminalNodeMemory {
+    class TerminalNodeMemory implements Serializable {
         private AgendaGroupImpl agendaGroup;
 
         private ActivationGroup activationGroup;
