@@ -6,6 +6,7 @@
 
 package org.drools.util.concurrent.locks;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -24,7 +25,7 @@ public class ReentrantLock
 
     private final NonfairSync sync;
 
-    final static class NonfairSync {
+    final static class NonfairSync implements Serializable {
         private static final long  serialVersionUID = 7316153563782823691L;
 
         protected transient Thread owner_           = null;

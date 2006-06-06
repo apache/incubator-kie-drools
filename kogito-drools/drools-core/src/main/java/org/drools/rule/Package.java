@@ -169,8 +169,6 @@ public class Package
                                                                                               this.packageCompilationData.getClassLoader() );
 
         this.rules = (Map) streamWithLoader.readObject();
-
-        System.out.println( "done package" );
     }
 
     private static class ObjectInputStreamWithLoader extends ObjectInputStream {

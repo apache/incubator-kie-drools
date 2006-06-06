@@ -15,6 +15,7 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,7 +38,7 @@ import org.drools.util.PrimitiveLongMap;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  *
  */
-public class TruthMaintenanceSystem {
+public class TruthMaintenanceSystem implements Serializable {
 
     private final AbstractWorkingMemory WorkingMemory;
 
