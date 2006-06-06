@@ -16,6 +16,7 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.drools.WorkingMemory;
@@ -32,7 +33,7 @@ import org.drools.spi.Tuple;
  * @author Alexander Bagerman
  * 
  */
-public class ColumnConstraints {
+public class ColumnConstraints implements Serializable {
     private Class                   classType;
 
     private final FieldConstraint[] alphaConstraints;

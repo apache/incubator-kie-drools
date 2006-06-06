@@ -16,7 +16,9 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,7 @@ import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
 
 /** 
  * This runs the integration test cases with the leaps implementation.
@@ -229,6 +232,61 @@ public class LeapsTest extends IntegrationCases {
         leapsRuleBase.removePackage( "org.drools.test" );
 
         assertEquals( 0, workingMemory.getAgenda( ).getActivations( ).length );
-
     }
+    
+    public void testSerializable() throws Exception {       
+        
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( reader );
+        final Package pkg = builder.getPackage();
+
+        assertEquals( 0,
+                      builder.getErrors().length );
+
+        RuleBase ruleBase = getRuleBase();//RuleBaseFactory.newRuleBase();
+
+        ruleBase.addPackage( pkg );
+
+        final byte[] ast = serializeOut( ruleBase );
+        ruleBase = (RuleBase) serializeIn( ast );
+        final Rule[] rules = ruleBase.getPackages()[0].getRules();
+        assertEquals( 4,
+                      rules.length );
+
+        assertEquals( "match Person 1",
+                      rules[0].getName() );
+        assertEquals( "match Person 2",
+                      rules[1].getName() );
+        assertEquals( "match Person 3",
+                      rules[2].getName() );
+        assertEquals( "match Integer",
+                      rules[3].getName() );        
+        
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        workingMemory.setGlobal( "list", new ArrayList() );
+        
+        workingMemory.assertObject( new Integer(5) );        
+        
+        final byte[] wm = serializeOut( workingMemory );
+
+        workingMemory = ruleBase.newWorkingMemory( new ByteArrayInputStream( wm ) );
+        
+        assertEquals( 1, workingMemory.getObjects().size() );
+        assertEquals( new Integer( 5 ) , workingMemory.getObjects().get(0) );        
+        
+        workingMemory.fireAllRules();
+        
+        List list = ( List ) workingMemory.getGlobal( "list" );
+        
+        assertEquals( 1, list.size() );
+        assertEquals( new Integer( 4 ), list.get( 0 ) );
+        
+        assertEquals( 2, workingMemory.getObjects().size() );
+        assertEquals( new Integer( 5 ) , workingMemory.getObjects().get(0) );
+        assertEquals( "help" , workingMemory.getObjects().get(1) );        
+    }
+    
 }

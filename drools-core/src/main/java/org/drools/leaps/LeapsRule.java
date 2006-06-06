@@ -16,6 +16,7 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.drools.common.AgendaGroupImpl;
@@ -29,7 +30,7 @@ import org.drools.rule.Rule;
  * @author Alexander Bagerman
  * 
  */
-class LeapsRule {
+class LeapsRule implements Serializable {
     Rule                      rule;
 
     final ColumnConstraints[] columnConstraints;

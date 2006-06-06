@@ -17,6 +17,7 @@ package org.drools.leaps;
  */
 
 import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -808,65 +809,66 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
     /**
      * to store facts to cursor over it
      */
-    private final Map factTables = new Map( ) {
-                                     private LinkedList tables = new LinkedList( );
+    private final Map factTables = new FactTables(); 
+    
+    class FactTables implements Map, Serializable {
+        private LinkedList tables = new LinkedList( );
 
-                                     private HashMap    map    = new HashMap( );
+        private HashMap    map    = new HashMap( );
 
-                                     public int size() {
-                                         return this.tables.size( );
-                                     }
+        public int size() {
+            return this.tables.size( );
+        }
 
-                                     public void clear() {
-                                         this.tables.clear( );
-                                         this.map.clear( );
-                                     }
+        public void clear() {
+            this.tables.clear( );
+            this.map.clear( );
+        }
 
-                                     public boolean isEmpty() {
-                                         return this.tables.isEmpty( );
-                                     }
+        public boolean isEmpty() {
+            return this.tables.isEmpty( );
+        }
 
-                                     public boolean containsKey( Object key ) {
-                                         return this.map.containsKey( key );
-                                     }
+        public boolean containsKey( Object key ) {
+            return this.map.containsKey( key );
+        }
 
-                                     public boolean containsValue( Object value ) {
-                                         return this.map.containsValue( value );
-                                     }
+        public boolean containsValue( Object value ) {
+            return this.map.containsValue( value );
+        }
 
-                                     public Collection values() {
-                                         return this.tables;
-                                     }
+        public Collection values() {
+            return this.tables;
+        }
 
-                                     public void putAll( Map t ) {
-                                         this.tables.addAll( t.values( ) );
-                                         this.map.putAll( t );
-                                     }
+        public void putAll( Map t ) {
+            this.tables.addAll( t.values( ) );
+            this.map.putAll( t );
+        }
 
-                                     public Set entrySet() {
-                                         return this.map.entrySet( );
-                                     }
+        public Set entrySet() {
+            return this.map.entrySet( );
+        }
 
-                                     public Set keySet() {
-                                         return this.map.keySet( );
-                                     }
+        public Set keySet() {
+            return this.map.keySet( );
+        }
 
-                                     public Object get( Object key ) {
-                                         return this.map.get( key );
+        public Object get( Object key ) {
+            return this.map.get( key );
 
-                                     }
+        }
 
-                                     public Object remove( Object key ) {
-                                         Object ret = this.map.remove( key );
-                                         this.tables.remove( ret );
-                                         return ret;
-                                     }
+        public Object remove( Object key ) {
+            Object ret = this.map.remove( key );
+            this.tables.remove( ret );
+            return ret;
+        }
 
-                                     public Object put( Object key, Object value ) {
-                                         this.tables.add( value );
-                                         this.map.put( key, value );
-                                         return value;
-                                     }
-                                 };
-
+        public Object put( Object key, Object value ) {
+            this.tables.add( value );
+            this.map.put( key, value );
+            return value;
+        }        
+    }
 }

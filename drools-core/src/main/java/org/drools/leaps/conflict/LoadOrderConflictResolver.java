@@ -16,6 +16,7 @@ package org.drools.leaps.conflict;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.drools.common.DefaultFactHandle;
@@ -32,7 +33,8 @@ import org.drools.common.DefaultFactHandle;
  */
 public class LoadOrderConflictResolver
     implements
-    Comparator {
+    Comparator,
+    Serializable {
 
     /** Singleton instance. */
     private static final LoadOrderConflictResolver INSTANCE = new LoadOrderConflictResolver();
