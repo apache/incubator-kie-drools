@@ -73,13 +73,13 @@ class CompositeConflictResolver extends AbstractConflictResolver {
                            final Object o2) {
             int ret = 0;
             if ( o1 != o2 ) {
-                for ( int i = 0, length = CompositeConflictResolver.this.factResolvers.length; ret == 0 && i < length; ++i ) {
-                    ret = CompositeConflictResolver.this.factResolvers[i].compare( o1,
+                for ( int i = 0, length = CompositeConflictResolver.this.ruleResolvers.length; ret == 0 && i < length; ++i ) {
+                    ret = CompositeConflictResolver.this.ruleResolvers[i].compare( o1,
                                                                                    o2 );
                 }
             }
             return ret;
-        }          
+        }        
     }
     
 }
