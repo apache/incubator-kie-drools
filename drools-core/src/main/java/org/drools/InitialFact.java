@@ -1,5 +1,7 @@
 package org.drools;
 
+import java.io.Serializable;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,6 +18,6 @@ package org.drools;
  * limitations under the License.
  */
 
-public interface InitialFact {
+public interface InitialFact extends Serializable {
 
 }
