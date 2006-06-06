@@ -16,6 +16,7 @@
 
 package org.drools.reteoo.beta;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import javax.naming.OperationNotSupportedException;
@@ -43,7 +44,7 @@ import org.drools.util.MultiLinkedListNodeWrapper;
  *
  * Created: 12/02/2006
  */
-public interface BetaRightMemory {
+public interface BetaRightMemory extends Serializable {
 
     /**
      * Adds an object to the right memory

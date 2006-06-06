@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.WeakHashMap;
 
@@ -217,7 +218,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         super.addWorkingMemory( workingMemory,
                                 keepReference );
 
-        final InitialFactHandle handle = new InitialFactHandle( workingMemory.getFactHandleFactory().newFactHandle( new Object() ) );
+        final InitialFactHandle handle = new InitialFactHandle( workingMemory.getFactHandleFactory().newFactHandle( new Serializable() {} ) );
 
         final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                   PropagationContext.ASSERTION,
@@ -242,29 +243,5 @@ public class ReteooRuleBase extends AbstractRuleBase {
     protected void removeRule(final Rule rule) {
         this.reteooBuilder.removeRule( rule );
     }
-    //    /**
-    //     * This is to allow the RuleBase to be serializable.
-    //     */
-    //    private void readObject(ObjectInputStream is) throws ClassNotFoundException,
-    //                                                 IOException,
-    //                                                 Exception {
-    //        //always perform the default de-serialization first
-    //        is.defaultReadObject();
-    //        
-    //        this.lock = new Object();
-    //
-    //        ObjectTypeResolver resolver = new ClassObjectTypeResolver();
-    //        this.rete = new Rete( resolver );
-    //        this.reteooBuilder = new ReteooBuilder( this,
-    //                                                resolver );
-    //        this.globals = new HashMap();
-    //        this.workingMemories = new WeakHashMap();
-    //
-    //        Package[] packages = this.getPackages();
-    //        this.pkgs.clear();
-    //        for ( int i = 0; i < packages.length; i++ ) {
-    //            this.addPackage( packages[i] );
-    //        }
-    //    }
 
 }

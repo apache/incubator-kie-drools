@@ -35,3 +35,14 @@ rule "match Person 3"
        exists Person( name == "mark" )       
     then
 end 
+
+
+rule "match Integer"
+	agenda-group "yyy"	
+	auto-focus true
+    when
+		Integer()
+    then
+        assertLogical ( new String( "help" ) );
+        list.add( new Integer( 4 ) );
+end 

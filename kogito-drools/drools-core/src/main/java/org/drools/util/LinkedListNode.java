@@ -16,6 +16,8 @@ package org.drools.util;
  * limitations under the License.
  */
 
+import java.io.Serializable;
+
 /**
  * Items placed in a <code>LinkedList<code> must implement this interface .
  * 
@@ -24,7 +26,7 @@ package org.drools.util;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public interface LinkedListNode {
+public interface LinkedListNode extends Serializable {
 
     /**
      * Returns the next node
