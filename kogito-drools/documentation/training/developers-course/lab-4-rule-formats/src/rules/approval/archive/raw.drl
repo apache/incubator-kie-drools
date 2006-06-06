@@ -1,7 +1,8 @@
 #created on: 23/05/2006
 package org.acme.insurance
 
-
+import org.acme.insurance.Approve
+ 
 rule "Driver underage"
 	
 	when
@@ -40,7 +41,7 @@ rule "Driver in unsafe area for comprehensive and priors"
 		d : Driver(locationRiskProfile == "MED")
 		d : Driver(priorClaims > 1)
 		d : Driver(age < 25)
-		Policy(type == "COMPREHENSIVE")					
+		Policy(type == "COMPREHENSIVE")		 			
 	then
 		assert(new Rejection("Driver in that area is too risky - given past accidents and age."));
 end
@@ -52,7 +53,10 @@ rule "Driver unsafe for third party"
 	then
 		assert(new Rejection("Too many priors for third party"));
 end
-
+   
+   
+   
+   
 rule "Driver in bad area for theft"
 
 	when 
@@ -60,7 +64,7 @@ rule "Driver in bad area for theft"
 		d : Driver(locationRiskProfile == "HIGH")
 	then
 		assert(new Rejection("Unsafe area for theft"));
-end
+end 
 
 rule "Quick approval - safe driver, any policy type"
 	when
@@ -76,6 +80,7 @@ rule "Approve policy affirmative"
 	when
 		a : Approve()
 		p : Policy()
+				  
 	then
 		p.setApproved(true);
 		System.out.println("APPROVED: " 

@@ -11,7 +11,7 @@ expander acme.dsl
 rule "Driver has had too many accidents"
 	
 	when 
-		Driver has had more than 3 prior claims		
+		Driver has had more than 3 prior claims				
 	then 
 		Reject Policy with explanation : 'Too many accidents'
 		
@@ -40,7 +40,8 @@ rule "Driver in unsafe area for marginal age"
 	when
 		Policy type is 'COMPREHENSIVE'	
 		Driver is less than 25 years old
-		Driver has a location risk profile of 'HIGH'		
+		Driver has a location risk profile of 'HIGH'
+				
 	then
 		Reject Policy with explanation : 'Marginal age driver in high risk area'		
 end
@@ -51,6 +52,7 @@ rule "Driver in unsafe area with priors"
 		Policy type is 'COMPREHENSIVE'
 		Driver is less than 25 years old
 		Driver has had more than 1 prior claims
+		
 	then
 		Reject Policy with explanation : 'Driver in that area is too risky - given past accidents and age.'
 end
