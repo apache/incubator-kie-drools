@@ -16,6 +16,7 @@ package org.drools.leaps.util;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.EmptyStackException;
 import java.util.Iterator;
 
@@ -30,7 +31,7 @@ import org.drools.util.PrimitiveLongMap;
  * 
  */
 
-public class TokenStack {
+public class TokenStack implements Serializable {
 
     protected TableRecord          tailRecord = null;
 

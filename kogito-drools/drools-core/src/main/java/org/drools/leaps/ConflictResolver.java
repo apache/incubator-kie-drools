@@ -16,6 +16,7 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -25,7 +26,7 @@ import java.util.Comparator;
  * @author Alexander Bagerman
  * 
  */
-public interface ConflictResolver {
+public interface ConflictResolver extends Serializable {
     public Comparator getFactConflictResolver();
 
     public Comparator getRuleConflictResolver();

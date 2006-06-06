@@ -1688,12 +1688,7 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void testSerializable() throws Exception {
-//    	PrimitiveLongMap longMap = new PrimitiveLongMap(8, 32);
-//    	
-//        final byte[] map = serializeOut( longMap );
-//        longMap = (PrimitiveLongMap) serializeIn( map );
-    	
+    public void testSerializable() throws Exception {    	
     	
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
 
@@ -1727,7 +1722,7 @@ public abstract class IntegrationCases extends TestCase {
         
         workingMemory.setGlobal( "list", new ArrayList() );
         
-        workingMemory.assertObject( new Integer(5) );
+        workingMemory.assertObject( new Integer(5) );        
         
         final byte[] wm = serializeOut( workingMemory );
 
@@ -1747,8 +1742,7 @@ public abstract class IntegrationCases extends TestCase {
         
         assertEquals( 2, workingMemory.getObjects().size() );
         assertEquals( new Integer( 5 ) , workingMemory.getObjects().get(0) );
-        assertEquals( "help" , workingMemory.getObjects().get(1) );
-        
+        assertEquals( "help" , workingMemory.getObjects().get(1) );        
     }
 
     public void testLogicalAssertions() throws Exception {
@@ -2270,7 +2264,7 @@ public abstract class IntegrationCases extends TestCase {
         assertTrue( list.contains( "fired3" ) );
     }
 
-    private Object serializeIn(final byte[] bytes) throws IOException,
+    protected Object serializeIn(final byte[] bytes) throws IOException,
                                             ClassNotFoundException {
         final ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
         final Object obj = in.readObject();
@@ -2278,7 +2272,7 @@ public abstract class IntegrationCases extends TestCase {
         return obj;
     }
 
-    private byte[] serializeOut(final Object obj) throws IOException {
+    protected byte[] serializeOut(final Object obj) throws IOException {
         // Serialize to a byte array
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         final ObjectOutput out = new ObjectOutputStream( bos );

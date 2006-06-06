@@ -16,6 +16,7 @@ package org.drools.leaps.conflict;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.drools.leaps.LeapsRuleHandle;
@@ -32,7 +33,8 @@ import org.drools.leaps.LeapsRuleHandle;
  */
 class RuleSalienceConflictResolver
     implements
-    Comparator {
+    Comparator,
+    Serializable {
     /** Singleton instance. */
     private static final RuleSalienceConflictResolver INSTANCE = new RuleSalienceConflictResolver();
 

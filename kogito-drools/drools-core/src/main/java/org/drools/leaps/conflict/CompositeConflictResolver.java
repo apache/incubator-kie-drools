@@ -16,6 +16,7 @@ package org.drools.leaps.conflict;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -46,34 +47,39 @@ class CompositeConflictResolver extends AbstractConflictResolver {
     }
 
     public final Comparator getFactConflictResolver() {
-        return new Comparator() {
-            public int compare(final Object o1,
-                               final Object o2) {
-                int ret = 0;
-                if ( o1 != o2 ) {
-                    for ( int i = 0, length = CompositeConflictResolver.this.factResolvers.length; ret == 0 && i < length; ++i ) {
-                        ret = CompositeConflictResolver.this.factResolvers[i].compare( o1,
-                                                                                       o2 );
-                    }
+        return new FactConflictResolver();
+    }
+    
+    class FactConflictResolver implements Comparator, Serializable {
+        public int compare(final Object o1,
+                           final Object o2) {
+            int ret = 0;
+            if ( o1 != o2 ) {
+                for ( int i = 0, length = CompositeConflictResolver.this.factResolvers.length; ret == 0 && i < length; ++i ) {
+                    ret = CompositeConflictResolver.this.factResolvers[i].compare( o1,
+                                                                                   o2 );
                 }
-                return ret;
             }
-        };
+            return ret;
+        }        
     }
 
     public final Comparator getRuleConflictResolver() {
-        return new Comparator() {
-            public int compare(final Object o1,
-                               final Object o2) {
-                int ret = 0;
-                if ( o1 != o2 ) {
-                    for ( int i = 0, length = CompositeConflictResolver.this.ruleResolvers.length; ret == 0 && i < length; ++i ) {
-                        ret = CompositeConflictResolver.this.ruleResolvers[i].compare( o1,
-                                                                                       o2 );
-                    }
-                }
-                return ret;
-            }
-        };
+        return new RuleConflictResolver();
     }
+    
+    class RuleConflictResolver implements Comparator, Serializable {
+        public int compare(final Object o1,
+                           final Object o2) {
+            int ret = 0;
+            if ( o1 != o2 ) {
+                for ( int i = 0, length = CompositeConflictResolver.this.factResolvers.length; ret == 0 && i < length; ++i ) {
+                    ret = CompositeConflictResolver.this.factResolvers[i].compare( o1,
+                                                                                   o2 );
+                }
+            }
+            return ret;
+        }          
+    }
+    
 }
