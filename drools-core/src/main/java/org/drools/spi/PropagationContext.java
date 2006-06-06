@@ -16,9 +16,11 @@ package org.drools.spi;
  * limitations under the License.
  */
 
+import java.io.Serializable;
+
 import org.drools.rule.Rule;
 
-public interface PropagationContext {
+public interface PropagationContext extends Serializable {
 
     public static final int ASSERTION     = 0;
     public static final int RETRACTION    = 1;

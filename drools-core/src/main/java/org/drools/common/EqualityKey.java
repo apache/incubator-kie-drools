@@ -15,6 +15,7 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ import java.util.List;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  *
  */
-public class EqualityKey {
+public class EqualityKey implements Serializable {
     public final static int    STATED    = 1;
     public final static int    JUSTIFIED = 2;
 

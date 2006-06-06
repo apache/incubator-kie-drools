@@ -16,12 +16,14 @@ package org.drools.util;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 public class BinaryHeapFifoQueue
     implements
-    Queue {
+    Queue,
+    Serializable {
     /** The default capacity for a binary heap. */
     private final static int DEFAULT_CAPACITY = 13;
 
