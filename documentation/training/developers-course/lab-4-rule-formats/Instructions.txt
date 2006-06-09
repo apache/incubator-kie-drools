@@ -1,5 +1,5 @@
 ---------------------------------------------
-JBoss Rules Essentual Lab Excercise 4
+JBoss Rules Essentials Lab Excercise 4
 	- Alternative rule formats -
 ---------------------------------------------
 
