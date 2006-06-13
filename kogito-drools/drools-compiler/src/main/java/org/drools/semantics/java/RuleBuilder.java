@@ -548,7 +548,7 @@ public class RuleBuilder {
         returnValueDescr.setClassMethodName( classMethodName );
 
         final List[] usedIdentifiers = getUsedIdentifiers( returnValueDescr,
-                                                     returnValueDescr.getText() );
+                                                           returnValueDescr.getText() );
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
