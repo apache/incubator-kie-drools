@@ -72,37 +72,37 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.TypeResolver;
 
 public class RuleBuilder {
-    private Package                     pkg;
-    private Rule                        rule;
-    private RuleDescr                   ruleDescr;
+    private Package                           pkg;
+    private Rule                              rule;
+    private RuleDescr                         ruleDescr;
 
-    public String                       ruleClass;
-    public List                         methods;
-    public Map                          invokers;
+    public String                             ruleClass;
+    public List                               methods;
+    public Map                                invokers;
 
-    private Map                         invokerLookups;
+    private Map                               invokerLookups;
 
-    private Map                         descrLookups;
+    private Map                               descrLookups;
 
-    private Map                         declarations;
+    private Map                               declarations;
 
-    private int                         counter;
+    private int                               counter;
 
-    private ColumnCounter               columnCounter;
+    private ColumnCounter                     columnCounter;
 
-    private int                         columnOffset;
+    private int                               columnOffset;
 
-    private List                        errors;
+    private List                              errors;
 
-    private TypeResolver                typeResolver;
+    private TypeResolver                      typeResolver;
 
-    private Map                         notDeclarations;
+    private Map                               notDeclarations;
 
     private static final StringTemplateGroup  ruleGroup            = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaRule.stg" ) ),
-                                                                                        AngleBracketTemplateLexer.class );
+                                                                                              AngleBracketTemplateLexer.class );
 
     private static final StringTemplateGroup  invokerGroup         = new StringTemplateGroup( new InputStreamReader( RuleBuilder.class.getResourceAsStream( "javaInvokers.stg" ) ),
-                                                                                        AngleBracketTemplateLexer.class );
+                                                                                              AngleBracketTemplateLexer.class );
 
     private static final KnowledgeHelperFixer knowledgeHelperFixer = new KnowledgeHelperFixer();
     private static final FunctionFixer        functionFixer        = new FunctionFixer();
@@ -423,17 +423,27 @@ public class RuleBuilder {
 
     private void build(final Column column,
                        final FieldBindingDescr fieldBindingDescr) {
+        Declaration declaration = (Declaration) this.declarations.get( fieldBindingDescr.getIdentifier() );
+        if ( declaration != null ) {
+            // This declaration already  exists, so make it a bound variable declaration instead
+            build( column,
+                   new BoundVariableDescr( fieldBindingDescr.getFieldName(),
+                                           "==",
+                                           fieldBindingDescr.getIdentifier() ) );
+            return;
+        }
+
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = getFieldExtractor( fieldBindingDescr,
-                                                      clazz,
-                                                      fieldBindingDescr.getFieldName() );
+                                                            clazz,
+                                                            fieldBindingDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
 
-        final Declaration declaration = column.addDeclaration( fieldBindingDescr.getIdentifier(),
-                                                         extractor );
+        declaration = column.addDeclaration( fieldBindingDescr.getIdentifier(),
+                                             extractor );
 
         this.declarations.put( declaration.getIdentifier(),
                                declaration );
@@ -457,8 +467,8 @@ public class RuleBuilder {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = getFieldExtractor( boundVariableDescr,
-                                                      clazz,
-                                                      boundVariableDescr.getFieldName() );
+                                                            clazz,
+                                                            boundVariableDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
@@ -474,8 +484,8 @@ public class RuleBuilder {
         }
 
         final Evaluator evaluator = getEvaluator( boundVariableDescr,
-                                            extractor.getObjectType().getValueType(),
-                                            boundVariableDescr.getEvaluator() );
+                                                  extractor.getObjectType().getValueType(),
+                                                  boundVariableDescr.getEvaluator() );
         if ( evaluator == null ) {
             return;
         }
@@ -491,8 +501,8 @@ public class RuleBuilder {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = getFieldExtractor( literalDescr,
-                                                      clazz,
-                                                      literalDescr.getFieldName() );
+                                                            clazz,
+                                                            literalDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
@@ -501,7 +511,7 @@ public class RuleBuilder {
         if ( literalDescr.isStaticFieldValue() ) {
             final int lastDot = literalDescr.getText().lastIndexOf( '.' );
             final String className = literalDescr.getText().substring( 0,
-                                                                 lastDot );
+                                                                       lastDot );
             final String fieldName = literalDescr.getText().substring( lastDot + 1 );
             try {
                 final Class staticClass = this.typeResolver.resolveType( className );
@@ -531,8 +541,8 @@ public class RuleBuilder {
         }
 
         final Evaluator evaluator = getEvaluator( literalDescr,
-                                            extractor.getObjectType().getValueType(),
-                                            literalDescr.getEvaluator() );
+                                                  extractor.getObjectType().getValueType(),
+                                                  literalDescr.getEvaluator() );
         if ( evaluator == null ) {
             return;
         }
@@ -557,22 +567,22 @@ public class RuleBuilder {
 
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
         final FieldExtractor extractor = getFieldExtractor( returnValueDescr,
-                                                      clazz,
-                                                      returnValueDescr.getFieldName() );
+                                                            clazz,
+                                                            returnValueDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
 
         final Evaluator evaluator = getEvaluator( returnValueDescr,
-                                            extractor.getObjectType().getValueType(),
-                                            returnValueDescr.getEvaluator() );
+                                                  extractor.getObjectType().getValueType(),
+                                                  returnValueDescr.getEvaluator() );
         if ( evaluator == null ) {
             return;
         }
 
         final ReturnValueConstraint returnValueConstraint = new ReturnValueConstraint( extractor,
-                                                                                 declarations,
-                                                                                 evaluator );
+                                                                                       declarations,
+                                                                                       evaluator );
         column.addConstraint( returnValueConstraint );
 
         StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "returnValueMethod" );
@@ -629,14 +639,14 @@ public class RuleBuilder {
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
         final FieldExtractor extractor = getFieldExtractor( predicateDescr,
-                                                      clazz,
-                                                      predicateDescr.getFieldName() );
+                                                            clazz,
+                                                            predicateDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
 
         final Declaration declaration = column.addDeclaration( predicateDescr.getDeclaration(),
-                                                         extractor );
+                                                               extractor );
 
         this.declarations.put( declaration.getIdentifier(),
                                declaration );
@@ -647,7 +657,7 @@ public class RuleBuilder {
         }
 
         final List[] usedIdentifiers = getUsedIdentifiers( predicateDescr,
-                                                     predicateDescr.getText() );
+                                                           predicateDescr.getText() );
         // Don't include the focus declaration, that hasn't been merged into the tuple yet.
         usedIdentifiers[0].remove( predicateDescr.getDeclaration() );
 
@@ -657,7 +667,7 @@ public class RuleBuilder {
         }
 
         final PredicateConstraint predicateConstraint = new PredicateConstraint( declaration,
-                                                                           declarations );
+                                                                                 declarations );
         column.addConstraint( predicateConstraint );
 
         StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "predicateMethod" );
@@ -722,7 +732,7 @@ public class RuleBuilder {
         evalDescr.setClassMethodName( classMethodName );
 
         final List[] usedIdentifiers = getUsedIdentifiers( evalDescr,
-                                                     evalDescr.getText() );
+                                                           evalDescr.getText() );
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
@@ -787,7 +797,7 @@ public class RuleBuilder {
                          classMethodName );
 
         final List[] usedIdentifiers = getUsedCIdentifiers( ruleDescr,
-                                                      ruleDescr.getConsequence() );
+                                                            ruleDescr.getConsequence() );
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
@@ -927,7 +937,7 @@ public class RuleBuilder {
                                    final int valueType,
                                    final String evaluatorString) {
         final Evaluator evaluator = EvaluatorFactory.getEvaluator( valueType,
-                                                             evaluatorString );
+                                                                   evaluatorString );
 
         if ( evaluator == null ) {
             this.errors.add( new RuleError( this.rule,
