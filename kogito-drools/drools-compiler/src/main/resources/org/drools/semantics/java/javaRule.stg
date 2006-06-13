@@ -1,7 +1,7 @@
 group javaMethods;
 
 returnValueMethod(declarations, declarationTypes, globals, globalTypes, methodName, text) ::= <<
-public static Object <methodName>(<declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)>,<endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
+public static Object <methodName>(<declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)><if(declarations)>,<endif><endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
     return ( <text> );
 }
 >>
@@ -13,7 +13,7 @@ public static boolean <methodName>(<declarationType> <declaration.identifier><if
 >>
 
 evalMethod(declarations, declarationTypes, globals, globalTypes, methodName, text) ::= <<
-public static boolean <methodName>(<declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)>,<endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
+public static boolean <methodName>(<declarationTypes, declarations:{ type, declr | <type> <declr.identifier>}; separator=","><if(globals)><if(declarations)>,<endif><endif> <globalTypes, globals:{ type, identifier | <type> <identifier>}; separator=","> ) throws Exception {
     return ( <text> );
 }
 >>

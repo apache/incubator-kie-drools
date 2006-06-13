@@ -3,10 +3,14 @@ package org.drools.test;
 import org.drools.Cheese;
 
 global java.util.List list
+global java.lang.String string
+
 
 rule "global rule test"
     when
-        Cheese( )
+        Cheese( $type : type ->  ( $type.equals( string ) ), type == ( string.toString() ) )
+        eval( string.equals( "stilton" ) )
+        eval( $type.equals( string ) )
     then
 		list.add( new Integer(5) );
 end    

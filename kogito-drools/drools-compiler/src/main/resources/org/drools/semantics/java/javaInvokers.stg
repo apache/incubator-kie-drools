@@ -68,7 +68,7 @@ public class <invokerClassName> implements org.drools.spi.ReturnValueExpression,
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>( 
-            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
+            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)><if(declarations)>,<endif><endif>
 	        <globals:{ identifier | <identifier>}; separator=",\n"> );
     }    
     
@@ -131,7 +131,7 @@ public class <invokerClassName> implements org.drools.spi.EvalExpression, org.dr
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
         return <ruleClassName>.<methodName>( 
-            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)>,<endif>
+            <declarations:{ declr | <declr.identifier>}; separator=",\n"><if(globals)><if(declarations)>,<endif><endif>
 	        <globals:{ identifier | <identifier>}; separator=",\n"> );
     }
 
