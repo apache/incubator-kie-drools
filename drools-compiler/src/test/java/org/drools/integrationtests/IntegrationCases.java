@@ -88,6 +88,9 @@ public abstract class IntegrationCases extends TestCase {
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
+        
+        workingMemory.setGlobal( "string",
+                                 "stilton" );        
 
         final Cheese stilton = new Cheese( "stilton",
                                      5 );
