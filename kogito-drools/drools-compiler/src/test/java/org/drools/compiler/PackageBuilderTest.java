@@ -725,6 +725,63 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors() );
     }
+    
+    public void testDuplicateRuleNames() throws Exception {
+        
+        final PackageBuilder builder = new PackageBuilder();
+
+        final PackageDescr packageDescr = new PackageDescr( "p1" );
+
+        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+        packageDescr.addRule( ruleDescr );
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+        ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
+                                                   "stilton" );
+        LiteralDescr literalDescr = new LiteralDescr( "type",
+                                                      "==",
+                                                      null );
+        columnDescr.addDescr( literalDescr );
+        ruleDescr.setConsequence( "" );
+        
+        ruleDescr = new RuleDescr( "rule-1" );
+        ruleDescr.setLocation( 42, 43 );
+        packageDescr.addRule( ruleDescr );
+        lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+        columnDescr = new ColumnDescr( Cheese.class.getName(),
+                                                   "stilton" );
+        literalDescr = new LiteralDescr( "type",
+                                                      "!=",
+                                                      null );
+        columnDescr.addDescr( literalDescr );
+        ruleDescr.setConsequence( "" );
+        
+        
+        ruleDescr = new RuleDescr( "rule-2" );
+        ruleDescr.setLocation( 42, 43 );
+        packageDescr.addRule( ruleDescr );
+        lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+        columnDescr = new ColumnDescr( Cheese.class.getName(),
+                                                   "stilton" );
+        literalDescr = new LiteralDescr( "type",
+                                                      "!=",
+                                                      null );
+        columnDescr.addDescr( literalDescr );
+        ruleDescr.setConsequence( "" );        
+
+        builder.addPackage( packageDescr );
+
+        
+        
+        assertLength( 1,
+                      builder.getErrors() );
+        ParserError err = (ParserError) builder.getErrors()[0];
+        assertEquals(42, err.getRow());
+        assertEquals(43, err.getCol());
+       
+    }
 
     private void createReturnValueRule(final PackageDescr packageDescr,
                                        final String expression) {

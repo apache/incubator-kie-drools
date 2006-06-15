@@ -19,9 +19,11 @@ package org.drools.compiler;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.JavaCompiler;
@@ -160,10 +162,8 @@ public class PackageBuilder {
 
     public void addPackage(final PackageDescr packageDescr) {
 
-        if ( packageDescr.getName() == null || "".equals( packageDescr.getName() ) ) {
-
-            throw new MissingPackageNameException( "Missing package name for rule package." );
-        }
+        validatePackageName( packageDescr );
+        validateUniqueRuleNames( packageDescr );
 
         if ( this.pkg != null ) {
             //mergePackage( packageDescr ) ;
@@ -184,6 +184,25 @@ public class PackageBuilder {
             for ( final Iterator it = packageDescr.getRules().iterator(); it.hasNext(); ) {
                 addRule( (RuleDescr) it.next() );
             }
+        }
+    }
+
+    private void validatePackageName(final PackageDescr packageDescr) {
+        if ( packageDescr.getName() == null || "".equals( packageDescr.getName() ) ) {
+
+            throw new MissingPackageNameException( "Missing package name for rule package." );
+        }
+    }
+
+    private void validateUniqueRuleNames(final PackageDescr packageDescr) {
+        Set names = new HashSet();
+        for ( Iterator iter = packageDescr.getRules().iterator(); iter.hasNext(); ) {
+            RuleDescr rule = (RuleDescr) iter.next();
+            String name = rule.getName();
+            if (names.contains( name )) {
+                this.results.add( new ParserError("Duplicate rule name: " + name, rule.getLine(), rule.getColumn()) );
+            }
+            names.add( name );
         }
     }
 
