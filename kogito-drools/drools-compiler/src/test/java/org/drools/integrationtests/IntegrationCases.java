@@ -165,6 +165,31 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
+    public void FIXME_testExplicitAnd() throws Exception {
+        final Reader reader = new InputStreamReader( 
+                                   getClass().getResourceAsStream( "test_ExplicitAnd.drl" ) );
+        final DrlParser parser = new DrlParser();
+        final PackageDescr packageDescr = parser.parse( reader );
+
+        //pre build the package
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackage( packageDescr );
+        final Package pkg = builder.getPackage();
+
+        //add the package to a rulebase
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        //load up the rulebase
+
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );
+        workingMemory.assertObject( new Message("hola") );
+        
+        workingMemory.fireAllRules();
+        assertEquals(0, list.size());
+    }
+    
     public void testHelloWorld() throws Exception {
 
         //read in the source

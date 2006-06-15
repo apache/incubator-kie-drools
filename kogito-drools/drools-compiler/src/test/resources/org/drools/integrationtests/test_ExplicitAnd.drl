@@ -1,0 +1,13 @@
+package HelloWorld
+ 
+import org.drools.integrationtests.helloworld.Message
+import java.lang.*
+
+global java.util.List list;
+
+rule "Hello World"
+	when
+		Message() && Integer()
+	then
+		list.add("hola");
+end
