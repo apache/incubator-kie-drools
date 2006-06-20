@@ -41,18 +41,14 @@ public class TableTest extends TestCase {
 
     DefaultFactHandle h10;
 
-    Table  testTable;
+    Table             testTable;
 
     protected void setUp() {
-        this.testTable = new Table( LoadOrderConflictResolver.getInstance() );
-        this.h1 = new DefaultFactHandle( 1,
-                              "1" );
-        this.h1000 = new DefaultFactHandle( 1000,
-                                 "1000" );
-        this.h100 = new DefaultFactHandle( 100,
-                                "100" );
-        this.h10 = new DefaultFactHandle( 10,
-                               "10" );
+        this.testTable = new Table( LoadOrderConflictResolver.getInstance( ) );
+        this.h1 = new DefaultFactHandle( 1, "1" );
+        this.h1000 = new DefaultFactHandle( 1000, "1000" );
+        this.h100 = new DefaultFactHandle( 100, "100" );
+        this.h10 = new DefaultFactHandle( 10, "10" );
     }
 
     /*
@@ -86,34 +82,33 @@ public class TableTest extends TestCase {
         assertTrue( this.testTable.contains( this.h1 ) );
         this.testTable.remove( this.h1 );
         assertFalse( this.testTable.contains( this.h1 ) );
-        final Iterator it = this.testTable.iterator();
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h10 );
+        final Iterator it = this.testTable.iterator( );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h10 );
     }
 
     /*
      * Test method for 'org.drools..util.Table.isEmpty()'
      */
     public void testIsEmpty() {
-        assertTrue( this.testTable.isEmpty() );
+        assertTrue( this.testTable.isEmpty( ) );
         this.testTable.add( this.h1 );
-        assertFalse( this.testTable.isEmpty() );
+        assertFalse( this.testTable.isEmpty( ) );
         this.testTable.remove( this.h1 );
-        assertTrue( this.testTable.isEmpty() );
+        assertTrue( this.testTable.isEmpty( ) );
         this.testTable.add( this.h1 );
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h100 );
         this.testTable.add( this.h10 );
-        assertFalse( this.testTable.isEmpty() );
+        assertFalse( this.testTable.isEmpty( ) );
         this.testTable.remove( this.h100 );
-        assertFalse( this.testTable.isEmpty() );
+        assertFalse( this.testTable.isEmpty( ) );
         this.testTable.remove( this.h1000 );
-        assertFalse( this.testTable.isEmpty() );
+        assertFalse( this.testTable.isEmpty( ) );
         this.testTable.remove( this.h1 );
-        assertFalse( this.testTable.isEmpty() );
+        assertFalse( this.testTable.isEmpty( ) );
         this.testTable.remove( this.h10 );
-        assertTrue( this.testTable.isEmpty() );
+        assertTrue( this.testTable.isEmpty( ) );
     }
 
     /*
@@ -121,13 +116,11 @@ public class TableTest extends TestCase {
      */
     public void testHeadObject() {
         this.testTable.add( this.h1 );
-        assertEquals( this.h1,
-                      this.testTable.headRecord.object );
+        assertEquals( this.h1, this.testTable.headRecord.object );
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h100 );
         this.testTable.add( this.h10 );
-        assertEquals( this.h1000,
-                      this.testTable.headRecord.object );
+        assertEquals( this.h1000, this.testTable.headRecord.object );
     }
 
     /*
@@ -135,13 +128,11 @@ public class TableTest extends TestCase {
      */
     public void testTailObject() {
         this.testTable.add( this.h1 );
-        assertEquals( this.testTable.tailRecord.object,
-                      this.h1 );
+        assertEquals( this.testTable.tailRecord.object, this.h1 );
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h100 );
         this.testTable.add( this.h10 );
-        assertEquals( this.testTable.tailRecord.object,
-                      this.h1 );
+        assertEquals( this.testTable.tailRecord.object, this.h1 );
     }
 
     /*
@@ -150,33 +141,28 @@ public class TableTest extends TestCase {
     public void testIterator() {
         Iterator it;
         // empty iterator
-        it = this.testTable.iterator();
-        assertFalse( it.hasNext() );
+        it = this.testTable.iterator( );
+        assertFalse( it.hasNext( ) );
         // iterate over a single element
         this.testTable.add( this.h1 );
-        it = this.testTable.iterator();
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h1 );
-        assertFalse( it.hasNext() );
+        it = this.testTable.iterator( );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h1 );
+        assertFalse( it.hasNext( ) );
         // several items iterator
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h100 );
         this.testTable.add( this.h10 );
-        it = this.testTable.iterator();
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h1000 );
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h100 );
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h10 );
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h1 );
-        assertFalse( it.hasNext() );
+        it = this.testTable.iterator( );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h1000 );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h100 );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h10 );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h1 );
+        assertFalse( it.hasNext( ) );
     }
 
     public void testTailIterator() {
@@ -185,55 +171,47 @@ public class TableTest extends TestCase {
         this.testTable.add( this.h100 );
         this.testTable.add( this.h10 );
 
-        TableIterator it = this.testTable.tailIterator( this.h100,
-                                                        this.h10 );
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h10 );
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h1 );
-        assertFalse( it.hasNext() );
-        it.reset();
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h100 );
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h10 );
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h1 );
-        assertFalse( it.hasNext() );
+        TableIterator it = this.testTable.iteratorFromPositionToTableStart( this.h100,
+                                                                            this.h10 );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h10 );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h1 );
+        assertFalse( it.hasNext( ) );
+        it.reset( );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h100 );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h10 );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h1 );
+        assertFalse( it.hasNext( ) );
 
-        this.testTable.clear();
+        this.testTable.clear( );
         final DefaultFactHandle fh1 = new DefaultFactHandle( 1,
-                                       new Guest( "1",
-                                                  Sex.resolve( "m" ),
-                                                  Hobby.resolve( "h2" ) ) );
+                                                             new Guest( "1",
+                                                                        Sex.resolve( "m" ),
+                                                                        Hobby.resolve( "h2" ) ) );
         final DefaultFactHandle fh2 = new DefaultFactHandle( 2,
-                                       new Guest( "1",
-                                                  Sex.resolve( "m" ),
-                                                  Hobby.resolve( "h1" ) ) );
+                                                             new Guest( "1",
+                                                                        Sex.resolve( "m" ),
+                                                                        Hobby.resolve( "h1" ) ) );
         final DefaultFactHandle fh3 = new DefaultFactHandle( 3,
-                                       new Guest( "1",
-                                                  Sex.resolve( "m" ),
-                                                  Hobby.resolve( "h3" ) ) );
+                                                             new Guest( "1",
+                                                                        Sex.resolve( "m" ),
+                                                                        Hobby.resolve( "h3" ) ) );
         final DefaultFactHandle fh4 = new DefaultFactHandle( 4,
-                                       new Guest( "3",
-                                                  Sex.resolve( "f" ),
-                                                  Hobby.resolve( "h2" ) ) );
-        final DefaultFactHandle fhC = new DefaultFactHandle( 5,
-                                       new Context( "start" ) );
+                                                             new Guest( "3",
+                                                                        Sex.resolve( "f" ),
+                                                                        Hobby.resolve( "h2" ) ) );
+        final DefaultFactHandle fhC = new DefaultFactHandle( 5, new Context( "start" ) );
         this.testTable.add( fh1 );
         this.testTable.add( fh2 );
         this.testTable.add( fh3 );
         this.testTable.add( fh4 );
-        it = this.testTable.tailIterator( fhC,
-                                          fhC );
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      fh4 );
+        it = this.testTable.iteratorFromPositionToTableStart( fhC, fhC );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), fh4 );
     }
 
     public void testHeadIterator() {
@@ -241,16 +219,13 @@ public class TableTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h100 );
         this.testTable.add( this.h10 );
-        final TableIterator it = this.testTable.headIterator( this.h10 );
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h1000 );
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h100 );
-        assertTrue( it.hasNext() );
-        assertEquals( it.next(),
-                      this.h10 );
-        assertFalse( it.hasNext() );
+        final TableIterator it = this.testTable.iteratorFromPositionToTableEnd( this.h1 );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h10 );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h100 );
+        assertTrue( it.hasNext( ) );
+        assertEquals( it.next( ), this.h1000 );
+        assertFalse( it.hasNext( ) );
     }
 }

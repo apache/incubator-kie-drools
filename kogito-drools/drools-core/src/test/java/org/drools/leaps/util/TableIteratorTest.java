@@ -56,8 +56,7 @@ public class TableIteratorTest extends TestCase {
      * 'org.drools..util.TableIterator.TableIterator()'
      */
     public void testTableIterator() {
-        final BaseTableIterator it = new BaseTableIterator( null,
-                                                            null,
+        final IteratorFromPositionToTableStart it = new IteratorFromPositionToTableStart( null,
                                                             null );
         assertFalse( it.hasNext() );
         assertTrue( it.isEmpty() );
@@ -76,7 +75,7 @@ public class TableIteratorTest extends TestCase {
      * 'org.drools..util.TableIterator.TableIterator(TableRecord)'
      */
     public void testTableIteratorTableRecord() {
-        final BaseTableIterator it = new BaseTableIterator( new TableRecord( this.h1 ) );
+        final IteratorFromPositionToTableStart it = new IteratorFromPositionToTableStart( new TableRecord( this.h1 ) );
         assertTrue( it.hasNext() );
         assertFalse( it.isEmpty() );
         assertEquals( this.h1,
@@ -93,8 +92,7 @@ public class TableIteratorTest extends TestCase {
      */
     public void testTableIteratorTableRecordTableRecordTableRecord() {
         this.testTable.add( this.h1 );
-        BaseTableIterator it = new BaseTableIterator( this.testTable.headRecord,
-                                                      this.testTable.tailRecord,
+        IteratorFromPositionToTableStart it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                                       this.testTable.tailRecord );
         assertTrue( it.hasNext() );
         assertFalse( it.isEmpty() );
@@ -107,9 +105,8 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.headRecord,
-                                    this.testTable.tailRecord );
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
+                                    this.testTable.headRecord );
         assertFalse( it.isEmpty() );
         assertTrue( it.hasNext() );
         assertEquals( this.h1000,
@@ -129,8 +126,7 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.tailRecord,
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                     this.testTable.tailRecord );
         assertFalse( it.isEmpty() );
         assertTrue( it.hasNext() );
@@ -146,8 +142,7 @@ public class TableIteratorTest extends TestCase {
      */
     public void testIsEmpty() {
         this.testTable.add( this.h1 );
-        BaseTableIterator it = new BaseTableIterator( this.testTable.headRecord,
-                                                      this.testTable.tailRecord,
+        IteratorFromPositionToTableStart it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                                       this.testTable.tailRecord );
         assertFalse( it.isEmpty() );
         this.testTable.clear();
@@ -155,16 +150,13 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.headRecord,
-                                    this.testTable.tailRecord );
-        assertFalse( it.isEmpty() );
-        it = new BaseTableIterator( this.testTable.tailRecord,
-                                    this.testTable.headRecord,
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                     this.testTable.headRecord );
         assertFalse( it.isEmpty() );
-        it = new BaseTableIterator( null,
-                                    null,
+        it = new IteratorFromPositionToTableStart( this.testTable.tailRecord,
+                                    this.testTable.headRecord );
+        assertFalse( it.isEmpty() );
+        it = new IteratorFromPositionToTableStart( null,
                                     null );
         assertTrue( it.isEmpty() );
 
@@ -175,8 +167,7 @@ public class TableIteratorTest extends TestCase {
      */
     public void testReset() {
         this.testTable.add( this.h1 );
-        BaseTableIterator it = new BaseTableIterator( this.testTable.headRecord,
-                                                      this.testTable.tailRecord,
+        IteratorFromPositionToTableStart it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                                       this.testTable.tailRecord );
         assertEquals( this.h1,
                       it.next() );
@@ -188,9 +179,8 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.headRecord,
-                                    this.testTable.tailRecord );
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
+                                    this.testTable.headRecord );
         assertEquals( this.h1000,
                       it.next() );
         it.reset();
@@ -206,13 +196,12 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.tailRecord,
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                     this.testTable.tailRecord );
         it.reset();
         assertEquals( this.h1000,
                       it.next() );
-        it = new BaseTableIterator( new TableRecord( this.h1 ) );
+        it = new IteratorFromPositionToTableStart( new TableRecord( this.h1 ) );
         assertEquals( this.h1,
                       it.next() );
         it.reset();
@@ -226,8 +215,7 @@ public class TableIteratorTest extends TestCase {
      */
     public void testHasNext() {
         this.testTable.add( this.h1 );
-        BaseTableIterator it = new BaseTableIterator( this.testTable.headRecord,
-                                                      this.testTable.tailRecord,
+        IteratorFromPositionToTableStart it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                                       this.testTable.tailRecord );
         assertTrue( it.hasNext() );
         assertFalse( it.isEmpty() );
@@ -240,24 +228,21 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.headRecord,
-                                    this.testTable.tailRecord );
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
+                                    this.testTable.headRecord );
         assertTrue( it.hasNext() );
         this.testTable.clear();
         this.testTable.add( this.h1 );
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.tailRecord,
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                     this.testTable.tailRecord );
         assertTrue( it.hasNext() );
-        it = new BaseTableIterator( null,
-                                    null,
+        it = new IteratorFromPositionToTableStart( null,
                                     null );
         assertFalse( it.hasNext() );
-        it = new BaseTableIterator( new TableRecord( this.h1 ) );
+        it = new IteratorFromPositionToTableStart( new TableRecord( this.h1 ) );
         assertTrue( it.hasNext() );
 
     }
@@ -267,8 +252,7 @@ public class TableIteratorTest extends TestCase {
      */
     public void testNext() {
         this.testTable.add( this.h1 );
-        BaseTableIterator it = new BaseTableIterator( this.testTable.headRecord,
-                                                      this.testTable.tailRecord,
+        IteratorFromPositionToTableStart it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                                       this.testTable.tailRecord );
         assertEquals( this.h1,
                       it.next() );
@@ -277,9 +261,8 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.headRecord,
-                                    this.testTable.tailRecord );
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
+                                    this.testTable.headRecord );
         assertEquals( this.h1000,
                       it.next() );
         this.testTable.clear();
@@ -287,12 +270,11 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.tailRecord,
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                     this.testTable.tailRecord );
         assertEquals( this.h1,
                       it.next() );
-        it = new BaseTableIterator( new TableRecord( this.h1 ) );
+        it = new IteratorFromPositionToTableStart( new TableRecord( this.h1 ) );
         assertEquals( this.h1,
                       it.next() );
     }
@@ -302,8 +284,7 @@ public class TableIteratorTest extends TestCase {
      */
     public void testCurrent() {
         this.testTable.add( this.h1 );
-        BaseTableIterator it = new BaseTableIterator( this.testTable.headRecord,
-                                                      this.testTable.tailRecord,
+        IteratorFromPositionToTableStart it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                                       this.testTable.tailRecord );
         assertEquals( this.h1,
                       it.next() );
@@ -312,9 +293,8 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.headRecord,
-                                    this.testTable.tailRecord );
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
+                                    this.testTable.headRecord );
         assertEquals( this.h1000,
                       it.next() );
         this.testTable.clear();
@@ -322,12 +302,11 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.tailRecord,
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                     this.testTable.tailRecord );
         assertEquals( this.h1,
                       it.next() );
-        it = new BaseTableIterator( new TableRecord( this.h1 ) );
+        it = new IteratorFromPositionToTableStart( new TableRecord( this.h1 ) );
         assertEquals( this.h1,
                       it.next() );
     }
@@ -337,8 +316,7 @@ public class TableIteratorTest extends TestCase {
      */
     public void testPeekNext() {
         this.testTable.add( this.h1 );
-        BaseTableIterator it = new BaseTableIterator( this.testTable.headRecord,
-                                                      this.testTable.tailRecord,
+        IteratorFromPositionToTableStart it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                                       this.testTable.tailRecord );
         assertEquals( this.h1,
                       it.peekNext() );
@@ -349,9 +327,8 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.headRecord,
-                                    this.testTable.tailRecord );
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
+                                    this.testTable.headRecord );
         assertEquals( this.h1000,
                       it.peekNext() );
         assertEquals( this.h1000,
@@ -361,14 +338,13 @@ public class TableIteratorTest extends TestCase {
         this.testTable.add( this.h1000 );
         this.testTable.add( this.h10 );
         this.testTable.add( this.h100 );
-        it = new BaseTableIterator( this.testTable.headRecord,
-                                    this.testTable.tailRecord,
+        it = new IteratorFromPositionToTableStart( this.testTable.headRecord,
                                     this.testTable.tailRecord );
         assertEquals( this.h1,
                       it.peekNext() );
         assertEquals( this.h1,
                       it.next() );
-        it = new BaseTableIterator( new TableRecord( this.h1 ) );
+        it = new IteratorFromPositionToTableStart( new TableRecord( this.h1 ) );
         assertEquals( this.h1,
                       it.peekNext() );
         assertEquals( this.h1,

@@ -20,27 +20,26 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.drools.WorkingMemory;
 import org.drools.leaps.ColumnConstraints;
 
 /**
+ * double linked list structure to store objects in the ordered list 
+ * and iterate over the list for leaps 
  * 
  * @author Alexander Bagerman
  * 
  */
-public class Table
-    implements
-    Serializable {
+public class Table implements Serializable {
 
     /**
      * 
      */
     private static final long serialVersionUID = 2614082619270512055L;
 
-    private final TreeMap     map;
+    private final TreeSet     set;
 
     protected TableRecord     headRecord;
 
@@ -51,63 +50,57 @@ public class Table
     private int               count            = 0;
 
     public Table(final Comparator comparator) {
-        this.map = new TreeMap( comparator );
+        this.set = new TreeSet( new RecordComparator(comparator) );
     }
 
     protected void clear() {
         this.headRecord = new TableRecord( null );
         this.empty = true;
         this.count = 0;
-        this.map.clear();
+        this.set.clear( );
     }
 
     /**
      * @param object
      *            to add
      */
-    public void add(final Object object) {
-        boolean foundEqualObject = false;
+    public void add( final Object object ) {
         final TableRecord newRecord = new TableRecord( object );
-        if ( this.empty ) {
+        if (this.empty) {
             this.headRecord = newRecord;
             this.empty = false;
-        } else {
-            final SortedMap bufMap = this.map.headMap( object );
+        }
+        else {
             try {
                 // check on first key should work faster than check on empty
                 // but logically we check on empty
                 // if map empty it will throw exception
-                bufMap.firstKey();
-
-                //            if ( !bufMap.isEmpty() ) {
-                final TableRecord bufRec = (TableRecord) this.map.get( bufMap.lastKey() );
-                if ( bufRec.right != null ) {
+                final TableRecord bufRec = (TableRecord) this.set.headSet( newRecord )
+                                                                 .last( );
+                if (bufRec.right != null) {
                     bufRec.right.left = newRecord;
                 }
                 newRecord.right = bufRec.right;
                 bufRec.right = newRecord;
                 newRecord.left = bufRec;
 
-            } //else {
-            catch ( final NoSuchElementException nsee ) {
+            }
+            catch (final NoSuchElementException nsee) {
                 // means map is empty
                 this.headRecord.left = newRecord;
                 newRecord.right = this.headRecord;
                 this.headRecord = newRecord;
             }
         }
-        if ( !foundEqualObject ) {
-            // check if the new record was added at the end of the list
-            // and assign new value to the tail record
-            if ( newRecord.right == null ) {
-                this.tailRecord = newRecord;
-            }
-            //
-            this.count++;
-            //
-            this.map.put( object,
-                          newRecord );
+        // check if the new record was added at the end of the list
+        // and assign new value to the tail record
+        if (newRecord.right == null) {
+            this.tailRecord = newRecord;
         }
+        //
+        this.count++;
+        //
+        this.set.add( newRecord );
     }
 
     /**
@@ -116,39 +109,46 @@ public class Table
      * @param object
      *            to remove from the table
      */
-    public void remove(final Object object) {
-        if ( !this.empty ) {
-            final TableRecord record = (TableRecord) this.map.get( object );
+    public void remove( final Object object ) {
+        if (!this.empty) {
+            try {
+                final TableRecord record = (TableRecord) this.set.tailSet( new TableRecord( object ) )
+                                                                 .first( );
 
-            if ( record != null ) {
-                if ( record == this.headRecord ) {
-                    if ( record.right != null ) {
-                        this.headRecord = record.right;
-                        this.headRecord.left = null;
-                    } else {
-                        // single element in table being valid
-                        // table is empty now
-                        this.headRecord = new TableRecord( null );
-                        this.tailRecord = this.headRecord;
-                        this.empty = true;
+                if (record != null) {
+                    if (record == this.headRecord) {
+                        if (record.right != null) {
+                            this.headRecord = record.right;
+                            this.headRecord.left = null;
+                        }
+                        else {
+                            // single element in table being valid
+                            // table is empty now
+                            this.headRecord = new TableRecord( null );
+                            this.tailRecord = this.headRecord;
+                            this.empty = true;
+                        }
                     }
-                } else if ( record == this.tailRecord ) {
-                    // single element in the table case is being solved above
-                    // when
-                    // we checked for headRecord match
-                    this.tailRecord = record.left;
-                    this.tailRecord.right = null;
-                } else {
-                    // left
-                    record.left.right = record.right;
-                    record.right.left = record.left;
+                    else if (record == this.tailRecord) {
+                        // single element in the table case is being solved
+                        // above in check for headRecord match
+                        this.tailRecord = record.left;
+                        this.tailRecord.right = null;
+                    }
+                    else {
+                        // left
+                        record.left.right = record.right;
+                        record.right.left = record.left;
+                    }
+                    record.left = null;
+                    record.right = null;
                 }
-                record.left = null;
-                record.right = null;
+                this.count--;
+                //
+                this.set.remove( record );
             }
-            this.count--;
-            //
-            this.map.remove( object );
+            catch (final NoSuchElementException nsee) {
+            }
         }
     }
 
@@ -156,10 +156,10 @@ public class Table
      * @param object
      * @return indicator of presence of given object in the table
      */
-    public boolean contains(final Object object) {
+    public boolean contains( final Object object ) {
         boolean ret = false;
-        if ( !this.empty ) {
-            ret = this.map.containsKey( object );
+        if (!this.empty) {
+            ret = this.set.contains( new TableRecord( object ) );
         }
         return ret;
     }
@@ -167,38 +167,33 @@ public class Table
     /**
      * @return TableIterator for this Table
      * @see org.drools.leaps.util.TableIterator
-     * @see org.drools.leaps.util.BaseTableIterator
+     * @see org.drools.leaps.util.IteratorFromPositionToTableStart
      */
     public TableIterator iterator() {
         TableIterator ret;
-        if ( this.empty ) {
-            ret = new BaseTableIterator( null,
-                                         null,
-                                         null );
-        } else {
-            ret = new BaseTableIterator( this.headRecord,
-                                         this.headRecord,
-                                         this.tailRecord );
+        if (this.empty) {
+            ret = new IteratorFromPositionToTableStart( null, null );
+        }
+        else {
+            ret = new IteratorFromPositionToTableStart( this.headRecord, this.headRecord );
         }
         return ret;
     }
 
     public TableIterator reverseOrderIterator() {
         TableIterator ret;
-        if ( this.empty ) {
-            ret = new BaseTableReverseOrderIterator( null,
-                                                     null,
-                                                     null );
-        } else {
-            ret = new BaseTableReverseOrderIterator( this.tailRecord,
-                                                     this.tailRecord,
-                                                     this.headRecord );
+        if (this.empty) {
+            ret = new IteratorFromPositionToTableEnd( null, null );
+        }
+        else {
+            ret = new IteratorFromPositionToTableEnd( this.tailRecord, this.tailRecord );
         }
         return ret;
     }
 
     /**
-     * iterator over "tail" part of the table data.
+     * retrieve iterator over portion of the table data starting at objectAtStart and positioning
+     * iterator at objectAtPosition for resumed iterations 
      * 
      * @param objectAtStart -
      *            upper boundary of the iteration
@@ -207,147 +202,112 @@ public class Table
      * @return leaps table iterator
      * @throws TableOutOfBoundException
      */
-    public TableIterator tailConstrainedIterator(final WorkingMemory workingMemory,
-                                                 final ColumnConstraints constraints,
-                                                 final Object objectAtStart,
-                                                 final Object objectAtPosition) {
-        final Markers markers = this.getTailIteratorMarkers( objectAtStart,
-                                                             objectAtPosition );
-        return new ConstrainedFactTableIterator( workingMemory,
-                                                 constraints,
-                                                 markers.start,
-                                                 markers.current,
-                                                 markers.last );
-    }
-
-    public TableIterator tailIterator(final Object objectAtStart,
-                                      final Object objectAtPosition) {
-        final Markers markers = this.getTailIteratorMarkers( objectAtStart,
-                                                             objectAtPosition );
-        return new BaseTableIterator( markers.start,
-                                      markers.current,
-                                      markers.last );
-    }
-
-    private Markers getTailIteratorMarkers(final Object objectAtStart,
-                                           final Object objectAtPosition) {
-        // validate
-        final Markers ret = new Markers();
-        ret.start = null;
-        ret.current = null;
-        ret.last = null;
-        //
-        if ( this.map.comparator().compare( objectAtStart,
-                                            objectAtPosition ) > 0 ) {
-            // return empty iterator
-            return ret;
-        }
-        TableRecord startRecord = null;
-        TableRecord currentRecord = null;
-        final TableRecord lastRecord = this.tailRecord;
-
-        if ( !this.empty ) { // validate
-            if ( this.map.comparator().compare( objectAtStart,
-                                                this.tailRecord.object ) <= 0 ) {
-                // let's check if we need iterator over the whole table
-                SortedMap bufMap = this.map.tailMap( objectAtStart );
-                try {
-                    // check on first key should work faster than check on empty
-                    // but logically we check on empty
-                    // if map empty it will throw exception
-                    bufMap.firstKey();
-                    //
-                    startRecord = (TableRecord) bufMap.get( bufMap.firstKey() );
-                    if ( this.map.comparator().compare( objectAtStart,
-                                                        objectAtPosition ) == 0 ) {
-                        currentRecord = startRecord;
-                    } else {
-                        // rewind to position
-                        bufMap = bufMap.tailMap( objectAtPosition );
-
-                        try {
-                            // check on first key should work faster than check on empty
-                            // but logically we check on empty
-                            // if map empty it will throw exception
-                            bufMap.firstKey();
-                            //
-                            currentRecord = ((TableRecord) bufMap.get( bufMap.firstKey() ));
-                        } // else {
-                        catch ( final NoSuchElementException nsee ) {
-                            currentRecord = startRecord;
-                        }
-                    }
-                    ret.start = startRecord;
-                    ret.current = currentRecord;
-                    ret.last = lastRecord;
-                } catch ( final NoSuchElementException nsee ) {
-                }
-            }
-        }
-
-        return ret;
+    public TableIterator constrainedIteratorFromPositionToTableStart( final WorkingMemory workingMemory,
+                                                                      final ColumnConstraints constraints,
+                                                                      final Object objectAtStart,
+                                                                      final Object objectAtPosition ) {
+        return getIteratorFromPositionToTableStart( true,
+                                                    workingMemory,
+                                                    constraints,
+                                                    objectAtStart,
+                                                    objectAtPosition );
     }
 
     /**
-     * iterator over "head" part of the table data. it does not take
-     * "positional" parameter because it's used for scanning shadow tables and
-     * this scan never "resumes"
+     * retrieve iterator over portion of the table data starting at objectAtStart and positioning
+     * iterator at objectAtPosition for resumed iterations 
      * 
-     * @param objectAtEnd -
-     *            lower boundary of the iteration
+     * @param objectAtStart -
+     *            upper boundary of the iteration
+     * @param objectAtPosition -
+     *            starting point of the iteration
      * @return leaps table iterator
+     * @throws TableOutOfBoundException
      */
-    public TableIterator headIterator(final Object objectAtEnd) {
-        final Markers markers = this.getHeadIteratorMarkers( objectAtEnd );
-        return new BaseTableIterator( markers.start,
-                                      markers.current,
-                                      markers.last );
+    public TableIterator iteratorFromPositionToTableStart( final Object objectAtStart,
+                                                           final Object objectAtPosition ) {
+        return getIteratorFromPositionToTableStart( false,
+                                                    null,
+                                                    null,
+                                                    objectAtStart,
+                                                    objectAtPosition );
     }
 
-    public TableIterator headReverseOrderIterator(final Object objectAtEnd) {
-        final Markers markers = this.getHeadIteratorMarkers( objectAtEnd );
-        return new BaseTableReverseOrderIterator( markers.last,
-                                                  markers.last,
-                                                  markers.start );
+    /**
+     * retrieve iterator over portion of the table data starting at objectAtStart and positioning
+     * iterator at objectAtPosition for resumed iterations 
+     * 
+     * @param objectAtStart -
+     *            upper boundary of the iteration
+     * @param objectAtPosition -
+     *            starting point of the iteration
+     * @return leaps table iterator
+     * @throws TableOutOfBoundException
+     */
+    public TableIterator iteratorFromPositionToTableEnd( final Object objectAtStart ) {
+        TableRecord record = null;
+        try {
+            record = (TableRecord) this.set.headSet( new TableRecord( objectAtStart ) )
+                                                    .last( );
+        }
+        catch (final NoSuchElementException nsee) {
+        }
+
+        return new IteratorFromPositionToTableEnd( record, record );
     }
 
-    private Markers getHeadIteratorMarkers(final Object objectAtEnd) {
-        final Markers ret = new Markers();
-        ret.start = null;
-        ret.current = null;
-        ret.last = null;
-        //
-        final TableRecord startRecord = this.headRecord;
-        final TableRecord currentRecord = this.headRecord;
-        TableRecord lastRecord = null;
+    /**
+     * retrieve Markers structure for a given objectAtStart.  
+     * 
+     * @param objectAtStart -
+     *            upper boundary of the iteration
+     * @return Markers structure
+     */
+    private TableIterator getIteratorFromPositionToTableStart( final boolean isConstraint, 
+                                                               final WorkingMemory workingMemory,
+                                                               final ColumnConstraints constraints,
+                                                               final Object objectAtStart,
+                                                               final Object objectAtPosition ) {
+        TableRecord startRecord = null;
+        TableRecord currentRecord = null;
 
-        if ( !this.empty ) { // validate
-            if ( this.map.comparator().compare( this.headRecord.object,
-                                                objectAtEnd ) <= 0 ) {
-                // let's check if we need iterator over the whole table
-                final SortedMap bufMap = this.map.headMap( objectAtEnd );
-                try {
-                    // check on first key should work faster than check on empty
-                    // but logically we check on empty
-                    // if map empty it will throw exception
-                    bufMap.firstKey();
-                    //
-                    lastRecord = (TableRecord) bufMap.get( bufMap.lastKey() );
-                    // check if the next one is what we need
-                    if ( lastRecord.right != null && this.map.comparator().compare( lastRecord.right.object,
-                                                                                    objectAtEnd ) == 0 ) {
-                        lastRecord = lastRecord.right;
-                    }
-                    ret.start = startRecord;
-                    ret.current = currentRecord;
-                    ret.last = lastRecord;
-                } catch ( final NoSuchElementException nsee ) {
-                    // empty iterator
+        TableRecord recordAtStart = new TableRecord( objectAtStart );
+        if (!this.empty) { 
+            try {
+                // check on first key should work faster than check
+                // to see if set has no elements
+                // if set is empty it will throw exception
+                startRecord = (TableRecord) this.set.tailSet( recordAtStart ).first( );
+                if (objectAtStart == objectAtPosition) {
+                    currentRecord = startRecord;
                 }
+                else {
+                    // rewind to position
+                    try {
+                        // check on first key should work faster than check
+                        // to see if set has no elements
+                        // if set is empty it will throw exception
+                        currentRecord = (TableRecord) this.set.tailSet( new TableRecord( objectAtPosition ) )
+                                                              .first( );
+                    }
+                    catch (final NoSuchElementException nsee) {
+                        currentRecord = startRecord;
+                    }
+                }
+            }
+            catch (final NoSuchElementException nsee) {
             }
         }
 
-        return ret;
+        if (isConstraint ) {
+            return new ConstrainedIteratorFromPositionToTableStart( workingMemory,
+                                                                constraints,
+                                                                startRecord,
+                                                                currentRecord );
+        }
+        else {
+            return new IteratorFromPositionToTableStart( startRecord, currentRecord );
+        }
     }
 
     /**
@@ -362,8 +322,8 @@ public class Table
     public String toString() {
         String ret = "";
 
-        for ( final Iterator it = this.iterator(); it.hasNext(); ) {
-            ret = ret + it.next() + "\n";
+        for (final Iterator it = this.iterator( ); it.hasNext( );) {
+            ret = ret + it.next( ) + "\n";
         }
         return ret;
     }
@@ -380,19 +340,7 @@ public class Table
         return this.tailRecord.object;
     }
 
-    public static TableIterator singleItemIterator(final Object object) {
-        return new BaseTableIterator( new TableRecord( object ) );
-    }
-
-    /**
-     * to pass iterator positional attributes
-     *
-     */
-    class Markers {
-        TableRecord start;
-
-        TableRecord current;
-
-        TableRecord last;
+    public static TableIterator singleItemIterator( final Object object ) {
+        return new IteratorFromPositionToTableStart( new TableRecord( object ) );
     }
 }

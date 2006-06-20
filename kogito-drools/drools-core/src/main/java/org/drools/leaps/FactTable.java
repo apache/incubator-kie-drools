@@ -125,7 +125,7 @@ class FactTable extends Table {
             // rest would be added to stack automatically
             final DefaultFactHandle startFactHandle = new DefaultFactHandle( workingMemory.getIdLastFireAllAt( ),
                                                                              new Object( ) );
-            for (final Iterator it = this.tailIterator( startFactHandle, startFactHandle ); it.hasNext( );) {
+            for (final Iterator it = this.iteratorFromPositionToTableStart( startFactHandle, startFactHandle ); it.hasNext( );) {
                 final LeapsFactHandle handle = (LeapsFactHandle) it.next( );
                 workingMemory.pushTokenOnStack( handle, new Token( workingMemory,
                                                                    handle,
