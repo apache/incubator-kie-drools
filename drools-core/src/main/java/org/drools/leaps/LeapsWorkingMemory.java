@@ -218,8 +218,9 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
                 }
                 tuple.removeBlockingNotFactHandle( assembly.getIndex( ) );
 
-                TokenEvaluator.evaluateNotCondition( new LeapsFactHandle( factHandle.getRecency( ) + 1,
-                                                                          new Object( ) ),
+                TokenEvaluator.evaluateNotCondition( (LeapsFactHandle) factHandle,
+//                                                                          TokenEvaluator.evaluateNotCondition( new LeapsFactHandle( factHandle.getRecency( ) + 1,
+//                                                                                                                                    new Object( ) ),
                                                      assembly.getIndex( ),
                                                      tuple,
                                                      this );
@@ -235,8 +236,9 @@ class LeapsWorkingMemory extends AbstractWorkingMemory implements EventSupport,
                                                      tuple );
                 }
                 tuple.removeExistsFactHandle( assembly.getIndex( ) );
-                TokenEvaluator.evaluateExistsCondition( new LeapsFactHandle( factHandle.getRecency( ) + 1,
-                                                                             null ),
+                TokenEvaluator.evaluateExistsCondition( (LeapsFactHandle)factHandle,
+//                                                                             TokenEvaluator.evaluateExistsCondition( new LeapsFactHandle( factHandle.getRecency( ) + 1,
+//                                                                                                                                          null ),
                                                         assembly.getIndex( ),
                                                         tuple,
                                                         this );

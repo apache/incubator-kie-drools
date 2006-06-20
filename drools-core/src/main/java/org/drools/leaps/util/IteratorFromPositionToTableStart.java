@@ -25,20 +25,16 @@ import java.util.NoSuchElementException;
  * @author Alexander Bagerman
  * 
  */
-public class BaseTableIterator
-    implements
-    TableIterator {
+public class IteratorFromPositionToTableStart implements TableIterator {
     /**
      * interator that was not initialized as "empty" iterator (one or another
      * record was submitted to constractor) will set it to false
      */
-    private TableRecord firstRecord;
+    TableRecord firstRecord;
 
-    private TableRecord lastRecord;
+    TableRecord currentRecord;
 
-    private TableRecord currentRecord;
-
-    private TableRecord nextRecord;
+    TableRecord nextRecord;
 
     /**
      * constracts an leaps iterator to iterate over a single record. Used for
@@ -48,26 +44,16 @@ public class BaseTableIterator
      *            to iterate over
      */
 
-    /**
-     * constracts an leaps iterator to iterate over a single record. Used for
-     * Dominant fact dimention iteration
-     * 
-     * @param record
-     *            to iterate over
-     */
-    protected BaseTableIterator(final TableRecord record) {
+    protected IteratorFromPositionToTableStart(final TableRecord record) {
         this.firstRecord = record;
-        this.lastRecord = record;
         this.currentRecord = null;
         this.nextRecord = this.firstRecord;
     }
 
-    protected BaseTableIterator(final TableRecord startRecord,
-                                final TableRecord currentRecord,
-                                final TableRecord lastRecord) {
+    protected IteratorFromPositionToTableStart(final TableRecord startRecord,
+            final TableRecord currentRecord) {
         this.firstRecord = startRecord;
         this.nextRecord = currentRecord;
-        this.lastRecord = lastRecord;
         this.currentRecord = null;
     }
 
@@ -86,15 +72,10 @@ public class BaseTableIterator
 
     public Object next() {
         this.currentRecord = this.nextRecord;
-        if ( this.currentRecord != null ) {
-            // need to check on last record because we iterate of subset of
-            // all data limited by last record
-            if ( this.currentRecord == this.lastRecord ) {
-                this.nextRecord = null;
-            } else {
-                this.nextRecord = this.currentRecord.right;
-            }
-        } else {
+        if (this.currentRecord != null) {
+            this.nextRecord = this.currentRecord.right;
+        }
+        else {
             throw new NoSuchElementException( "No more elements to return" );
         }
         return this.currentRecord.object;

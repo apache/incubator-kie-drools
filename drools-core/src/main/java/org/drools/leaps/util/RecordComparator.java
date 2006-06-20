@@ -16,30 +16,28 @@ package org.drools.leaps.util;
  * limitations under the License.
  */
 
-import java.util.Iterator;
+
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
- * Leaps specific iterator for leaps tables. relies on leaps table double link
- * list structure for navigating
+ * this class wraps object comparator to sort records holding given objects in
+ * a list
  * 
  * @author Alexander Bagerman
  * 
  */
-public interface TableIterator extends Iterator {
-    /**
-     * single object iterator
-     * 
-     * @return table iterator
-     */
-    public boolean isEmpty();
 
-    public void reset();
+class RecordComparator implements Comparator, Serializable {
+    private Comparator objectComparator;
 
-    public boolean hasNext();
+    RecordComparator(Comparator objectComparator) {
+        this.objectComparator = objectComparator;
+    }
 
-    public Object next();
+    public int compare( Object record1, Object record2 ) {
+        return this.objectComparator.compare( ( (TableRecord) record1 ).object,
+                                              ( (TableRecord) record2 ).object );
+    }
 
-    public Object peekNext();
-
-    public void remove();
 }
