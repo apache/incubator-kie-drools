@@ -4560,6 +4560,17 @@ public class RuleParser extends Parser {
 
             }
 
+            if (d instanceof OrDescr) {
+            	List l = ((OrDescr) d).getDescrs();
+            	if (l != null && l.size() == 2) {
+            		PatternDescr subDescr = (PatternDescr) l.get(1);
+            		if (subDescr != null && (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0)) {
+		            	Token end = input.LT(-1);
+		            	d.setEndLocation(offset(end.getLine()), end.getCharPositionInLine());
+                	}
+            	}
+            }
+            
         }
         catch (RecognitionException re) {
             reportError(re);
@@ -4646,7 +4657,18 @@ public class RuleParser extends Parser {
 
 
             }
-
+            
+            if (d instanceof AndDescr) {
+            	List l = ((AndDescr) d).getDescrs();
+            	if (l != null && l.size() == 2) {
+            		PatternDescr subDescr = (PatternDescr) l.get(1);
+            		if (subDescr != null && (subDescr.getEndLine() != 0 || subDescr.getEndColumn() != 0)) {
+		            	Token end = input.LT(-1);
+		            	d.setEndLocation(offset(end.getLine()), end.getCharPositionInLine());
+                	}
+            	}
+            }
+            
         }
         catch (RecognitionException re) {
             reportError(re);
@@ -4835,6 +4857,11 @@ public class RuleParser extends Parser {
 
             }
 
+            if (column != null && (column.getEndLine() != 0 || column.getEndColumn() != 0)) {
+            	Token end = input.LT(-1);
+            	d.setEndLocation(offset(end.getLine()), end.getCharPositionInLine());
+            }
+
         }
         catch (RecognitionException re) {
             reportError(re);
@@ -4909,7 +4936,11 @@ public class RuleParser extends Parser {
             			d = new NotDescr( (ColumnDescr) column ); 
             			d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
             		
-
+            }
+            
+            if (column != null && (column.getEndLine() != 0 || column.getEndColumn() != 0)) {
+	            Token end = input.LT(-1);
+	            d.setEndLocation(offset(end.getLine()), end.getCharPositionInLine());
             }
 
         }
@@ -4954,6 +4985,9 @@ public class RuleParser extends Parser {
             		
 
             }
+            
+            Token end = input.LT(-1);
+            d.setEndLocation(offset(end.getLine()), end.getCharPositionInLine());
 
         }
         catch (RecognitionException re) {
