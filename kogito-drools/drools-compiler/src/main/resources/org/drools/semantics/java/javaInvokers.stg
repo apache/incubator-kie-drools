@@ -37,11 +37,11 @@ equals() ::= <<
             return true;
         }
         
-        if ( ! (object instanceof org.drools.semantics.java.CompiledInvoker) ) {
+        if ( ! (object instanceof org.drools.spi.CompiledInvoker) ) {
             return false;
         }
         
-        org.drools.semantics.java.CompiledInvoker other = ( org.drools.semantics.java.CompiledInvoker ) object;
+        org.drools.spi.CompiledInvoker other = ( org.drools.spi.CompiledInvoker ) object;
         
         return org.drools.util.asm.MethodComparator.compareBytecode( getMethodBytecode(), other.getMethodBytecode() );
     }
@@ -56,7 +56,7 @@ hashCode(hashCode) ::= <<
 returnValueInvoker(package, invokerClassName, ruleClassName, methodName, declarations, declarationTypes, globals, globalTypes, hashCode) ::= <<
 package <package>;
 
-public class <invokerClassName> implements org.drools.spi.ReturnValueExpression, org.drools.semantics.java.CompiledInvoker
+public class <invokerClassName> implements org.drools.spi.ReturnValueExpression, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 7952983928232702826L;
     
@@ -84,7 +84,7 @@ predicateInvoker(package, invokerClassName, ruleClassName, methodName, declarati
                  declarations, declarationTypes, globals, globalTypes, hashCode) ::= <<
 package <package>;
 
-public class <invokerClassName> implements org.drools.spi.PredicateExpression, org.drools.semantics.java.CompiledInvoker
+public class <invokerClassName> implements org.drools.spi.PredicateExpression, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 7952983928232702826L;
     
@@ -119,7 +119,7 @@ import org.drools.asm.ClassReader;
 import org.drools.asm.util.TraceMethodVisitor;
 import org.drools.util.asm.MethodComparator.Tracer;
 
-public class <invokerClassName> implements org.drools.spi.EvalExpression, org.drools.semantics.java.CompiledInvoker
+public class <invokerClassName> implements org.drools.spi.EvalExpression, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 7952983928232702826L;
     
