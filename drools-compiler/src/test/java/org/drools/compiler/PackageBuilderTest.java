@@ -63,7 +63,7 @@ import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
-import org.drools.semantics.java.CompiledInvoker;
+import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
