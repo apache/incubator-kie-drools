@@ -49,13 +49,13 @@ public interface MultiLinkedListNode
      * @return
      *      The containing LinkedList
      */
-    public LinkedList getLinkedList();
+    public LinkedList getOuterList();
 
     /**
      * Sets the containing LinkedList 
      * @param list
      *      The containing LinkedListNode
      */
-    public void setLinkedList(LinkedList list);
+    public void setOuterList(LinkedList list);
 
 }

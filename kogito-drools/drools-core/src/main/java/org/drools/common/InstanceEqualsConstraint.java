@@ -1,5 +1,3 @@
-package org.drools.common;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,18 +14,27 @@ package org.drools.common;
  * limitations under the License.
  */
 
+package org.drools.common;
+
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.Tuple;
 
+/**
+ * InstanceEqualsConstraint
+ *
+ * Created: 21/06/2006
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a> 
+ *
+ * @version $Id$
+ */
+
 public class InstanceEqualsConstraint
     implements
-    FieldConstraint {
-    /**
-     * 
-     */
-    private static final long   serialVersionUID = -4913836428340400997L;
+    FieldConstraint { 
+
+    private static final long serialVersionUID = 2986814365490743953L;
 
     private final Declaration[] declarations     = new Declaration[0];
 
@@ -44,7 +51,7 @@ public class InstanceEqualsConstraint
     public boolean isAllowed(final InternalFactHandle handle,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
-        return !(tuple.get( this.otherColumn ).getObject() == handle.getObject());
+        return (tuple.get( this.otherColumn ).getObject() == handle.getObject());
     }
 
     public String toString() {

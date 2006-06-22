@@ -63,7 +63,7 @@ public class DefaultRightMemory
      */
     public final void remove(final WorkingMemory workingMemory,
                              final ObjectMatches matches) {
-        matches.getLinkedList().remove( matches );
+        matches.getOuterList().remove( matches );
     }
 
     /**
@@ -85,7 +85,7 @@ public class DefaultRightMemory
      */
     public final void remove(final WorkingMemory workingMemory,
                              final MultiLinkedListNodeWrapper wrapper) {
-        wrapper.getLinkedList().remove( wrapper );
+        wrapper.getOuterList().remove( wrapper );
     }
 
     /**
@@ -125,7 +125,7 @@ public class DefaultRightMemory
      * @see org.drools.reteoo.beta.BetaRightMemory#isPossibleMatch(org.drools.util.MultiLinkedListNodeWrapper)
      */
     public final boolean isPossibleMatch(final MultiLinkedListNodeWrapper matches) {
-        return matches.getLinkedList() == this.memory;
+        return matches.getOuterList() == this.memory;
     }
 
     /**

@@ -110,7 +110,7 @@ public class ObjectEqualConstrRightMemory
             this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) matches.getChild() );
         }
-        final KeyMultiLinkedList list = (KeyMultiLinkedList) matches.getLinkedList();
+        final KeyMultiLinkedList list = (KeyMultiLinkedList) matches.getOuterList();
         list.remove( matches );
         this.memorySize--;
         if ( list.isEmpty() ) {
@@ -152,7 +152,7 @@ public class ObjectEqualConstrRightMemory
             this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) matches.getChild() );
         }
-        final KeyMultiLinkedList list = (KeyMultiLinkedList) matches.getLinkedList();
+        final KeyMultiLinkedList list = (KeyMultiLinkedList) matches.getOuterList();
         list.remove( matches );
         this.memorySize--;
         if ( list.isEmpty() ) {
@@ -245,7 +245,7 @@ public class ObjectEqualConstrRightMemory
     public final boolean isPossibleMatch(final MultiLinkedListNodeWrapper wrapper) {
         boolean ret = false;
         if ( this.selectedList != null ) {
-            ret = wrapper.getLinkedList() == this.selectedList;
+            ret = wrapper.getOuterList() == this.selectedList;
             if ( ret && (this.innerMemory != null) ) {
                 ret = this.innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) wrapper.getChild() );
             }

@@ -108,7 +108,7 @@ public class ObjectNotEqualConstrLeftMemory
             this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) tuple.getChild().getChild() );
         }
-        final LinkedList list = tuple.getChild().getLinkedList();
+        final LinkedList list = tuple.getChild().getOuterList();
         list.remove( tuple.getChild() );
         if ( list.isEmpty() ) {
             removeMemoryEntry( list );
@@ -153,7 +153,7 @@ public class ObjectNotEqualConstrLeftMemory
                                      (MultiLinkedListNodeWrapper) tuple.getChild().getChild() );
         }
 
-        final LinkedList list = tuple.getChild().getLinkedList();
+        final LinkedList list = tuple.getChild().getOuterList();
         list.remove( tuple.getChild() );
 
         if ( list.isEmpty() ) {
@@ -189,7 +189,7 @@ public class ObjectNotEqualConstrLeftMemory
                 boolean hasnext = false;
                 if ( this.next == null ) {
                     while ( this.candidate != null ) {
-                        if ( this.candidate.getChild().getLinkedList() != ObjectNotEqualConstrLeftMemory.this.noMatchList ) {
+                        if ( this.candidate.getChild().getOuterList() != ObjectNotEqualConstrLeftMemory.this.noMatchList ) {
                             if ( (ObjectNotEqualConstrLeftMemory.this.innerMemory == null) || (ObjectNotEqualConstrLeftMemory.this.innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) this.candidate.getChild().getChild() )) ) {
                                 hasnext = true;
                                 this.next = this.candidate;
@@ -261,8 +261,8 @@ public class ObjectNotEqualConstrLeftMemory
      */
     public final boolean isPossibleMatch(final MultiLinkedListNodeWrapper tuple) {
         boolean ret = false;
-        if ( (tuple != null) && (tuple.getChild() != null) && (tuple.getChild().getLinkedList() != null) ) {
-            ret = (tuple.getChild().getLinkedList() != this.noMatchList);
+        if ( (tuple != null) && (tuple.getChild() != null) && (tuple.getChild().getOuterList() != null) ) {
+            ret = (tuple.getChild().getOuterList() != this.noMatchList);
             if ( ret && (this.innerMemory != null) ) {
                 ret = this.innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) tuple.getChild().getChild() );
             }

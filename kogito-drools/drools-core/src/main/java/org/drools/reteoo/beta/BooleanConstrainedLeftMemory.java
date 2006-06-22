@@ -105,7 +105,7 @@ public class BooleanConstrainedLeftMemory
             this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
-        tuple.getLinkedList().remove( tuple );
+        tuple.getOuterList().remove( tuple );
     }
 
     /**
@@ -139,7 +139,7 @@ public class BooleanConstrainedLeftMemory
             this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
-        tuple.getLinkedList().remove( tuple );
+        tuple.getOuterList().remove( tuple );
     }
 
     /**
@@ -299,7 +299,7 @@ public class BooleanConstrainedLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#isPossibleMatch(org.drools.util.MultiLinkedListNodeWrapper)
      */
     public final boolean isPossibleMatch(final MultiLinkedListNodeWrapper tuple) {
-        boolean isPossible = ((this.selectedList != null) && (tuple.getLinkedList() == this.selectedList));
+        boolean isPossible = ((this.selectedList != null) && (tuple.getOuterList() == this.selectedList));
         if ( (isPossible) && (this.innerMemory != null) ) {
             isPossible = this.innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) tuple.getChild() );
         }

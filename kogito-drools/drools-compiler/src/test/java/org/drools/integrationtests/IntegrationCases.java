@@ -705,6 +705,45 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
+    public void testExists2() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_exists.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        final Cheese cheddar   = new Cheese( "cheddar", 7 );
+        final Cheese provolone = new Cheese( "provolone", 5); 
+        final Person edson     = new Person("Edson", "cheddar");
+        final Person bob       = new Person("Bob",   "muzzarela");
+        
+        workingMemory.assertObject( cheddar );
+        workingMemory.fireAllRules();
+        assertEquals( 0,
+                      list.size() );
+
+        workingMemory.assertObject( provolone );
+        workingMemory.fireAllRules();
+        assertEquals( 0,
+                      list.size() );
+
+        workingMemory.assertObject( edson );
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+
+        workingMemory.assertObject( bob );
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+    }
+
     public void testWithInvalidRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "invalid_rule.drl" ) ) );
