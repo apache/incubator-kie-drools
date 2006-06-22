@@ -40,7 +40,7 @@ public class MultiLinkedList extends LinkedList {
      */
     public void add(final MultiLinkedListNode node) {
         super.add( node );
-        node.setLinkedList( this );
+        node.setOuterList( this );
     }
 
     /**
@@ -55,6 +55,6 @@ public class MultiLinkedList extends LinkedList {
      */
     public void remove(final MultiLinkedListNode node) {
         super.remove( node );
-        node.setLinkedList( null );
+        node.setOuterList( null );
     }
 }

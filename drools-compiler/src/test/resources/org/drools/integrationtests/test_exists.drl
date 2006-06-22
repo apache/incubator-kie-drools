@@ -1,0 +1,14 @@
+package org.drools.examples;
+
+import org.drools.Person;
+import org.drools.Cheese;
+
+global java.util.List list;
+
+rule "Buy cheese"
+when
+  $cheese: Cheese($type : type);
+  exists Person(likes == $type);
+then
+  list.add($cheese);
+end

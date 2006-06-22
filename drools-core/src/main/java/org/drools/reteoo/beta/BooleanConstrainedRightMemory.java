@@ -107,7 +107,7 @@ public class BooleanConstrainedRightMemory
             this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) matches.getChild() );
         }
-        matches.getLinkedList().remove( matches );
+        matches.getOuterList().remove( matches );
     }
 
     /**
@@ -142,7 +142,7 @@ public class BooleanConstrainedRightMemory
             this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) wrapper.getChild() );
         }
-        wrapper.getLinkedList().remove( wrapper );
+        wrapper.getOuterList().remove( wrapper );
     }
 
     /**
@@ -233,7 +233,7 @@ public class BooleanConstrainedRightMemory
     public final boolean isPossibleMatch(final MultiLinkedListNodeWrapper matches) {
         boolean ret = false;
         if ( this.selectedList != null ) {
-            ret = matches.getLinkedList() == this.selectedList;
+            ret = matches.getOuterList() == this.selectedList;
             if ( ret && (this.innerMemory != null) ) {
                 ret = this.innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) matches.getChild() );
             }

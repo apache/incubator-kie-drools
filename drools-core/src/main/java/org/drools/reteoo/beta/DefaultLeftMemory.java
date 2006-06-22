@@ -113,7 +113,7 @@ public class DefaultLeftMemory
      * @inheritDoc
      */
     public final boolean isPossibleMatch(final MultiLinkedListNodeWrapper tuple) {
-        return tuple.getLinkedList() == this.memory;
+        return tuple.getOuterList() == this.memory;
     }
 
     /**

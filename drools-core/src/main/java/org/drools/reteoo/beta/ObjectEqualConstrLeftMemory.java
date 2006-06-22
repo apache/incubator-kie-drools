@@ -106,7 +106,7 @@ public class ObjectEqualConstrLeftMemory
             this.innerMemory.remove( workingMemory,
                                      (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
-        final LinkedList list = tuple.getLinkedList();
+        final LinkedList list = tuple.getOuterList();
         list.remove( tuple );
         this.size--;
         if ( list.isEmpty() ) {
@@ -147,7 +147,7 @@ public class ObjectEqualConstrLeftMemory
                                      (MultiLinkedListNodeWrapper) tuple.getChild() );
         }
 
-        final LinkedList list = tuple.getLinkedList();
+        final LinkedList list = tuple.getOuterList();
         list.remove( tuple );
         this.size--;
 
@@ -272,7 +272,7 @@ public class ObjectEqualConstrLeftMemory
      * @see org.drools.reteoo.beta.BetaLeftMemory#isPossibleMatch(org.drools.util.MultiLinkedListNodeWrapper)
      */
     public final boolean isPossibleMatch(final MultiLinkedListNodeWrapper tuple) {
-        return ((this.selectedList != null) && (tuple != null) && (tuple.getLinkedList() == this.selectedList));
+        return ((this.selectedList != null) && (tuple != null) && (tuple.getOuterList() == this.selectedList));
     }
 
     /**

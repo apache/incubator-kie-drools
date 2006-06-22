@@ -33,6 +33,7 @@ import org.drools.base.EvaluatorFactory;
 import org.drools.base.FieldFactory;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.InstanceEqualsConstraint;
+import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
@@ -410,7 +411,7 @@ class ReteooBuilder
                 final Map.Entry entry = (Map.Entry) it.next();
                 final Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
-                    predicateConstraints.add( new InstanceEqualsConstraint( ((Integer) entry.getValue()).intValue() ) );
+                    predicateConstraints.add( new InstanceNotEqualsConstraint( ((Integer) entry.getValue()).intValue() ) );
                 }
             }
 
@@ -490,10 +491,12 @@ class ReteooBuilder
         RightInputAdapterNode adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,
                                                                                                        column.getFactIndex(),
                                                                                                        notNode ) );
+
+        BetaNodeBinder identityBinder = new BetaNodeBinder( new InstanceEqualsConstraint( column.getFactIndex() ) );
         notNode = (NotNode) attachNode( new NotNode( this.id++,
                                                      tupleSource,
                                                      adapter,
-                                                     new BetaNodeBinder() ) );
+                                                     identityBinder ) );
 
         if ( exists.getChild() instanceof Not ) {
             adapter = (RightInputAdapterNode) attachNode( new RightInputAdapterNode( this.id++,

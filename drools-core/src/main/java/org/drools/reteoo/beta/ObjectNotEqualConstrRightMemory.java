@@ -118,11 +118,11 @@ public class ObjectNotEqualConstrRightMemory
         }
 
         // removing from indexed list
-        matches.getChild().getLinkedList().remove( matches.getChild() );
+        matches.getChild().getOuterList().remove( matches.getChild() );
 
-        if ( matches.getChild().getLinkedList().isEmpty() ) {
+        if ( matches.getChild().getOuterList().isEmpty() ) {
             // removing index map entry 
-            this.removeMemoryEntry( (MultiLinkedList) matches.getChild().getLinkedList() );
+            this.removeMemoryEntry( (MultiLinkedList) matches.getChild().getOuterList() );
         }
         matches.setChild( null );
 
@@ -176,11 +176,11 @@ public class ObjectNotEqualConstrRightMemory
         }
 
         // removing from indexed list
-        matches.getChild().getLinkedList().remove( matches.getChild() );
+        matches.getChild().getOuterList().remove( matches.getChild() );
 
-        if ( matches.getChild().getLinkedList().isEmpty() ) {
+        if ( matches.getChild().getOuterList().isEmpty() ) {
             // removing index map entry 
-            this.removeMemoryEntry( (MultiLinkedList) matches.getChild().getLinkedList() );
+            this.removeMemoryEntry( (MultiLinkedList) matches.getChild().getOuterList() );
         }
         matches.setChild( null );
 
@@ -207,7 +207,7 @@ public class ObjectNotEqualConstrRightMemory
                 boolean hasnext = false;
                 if ( this.next == null ) {
                     while ( this.candidate != null ) {
-                        if ( this.candidate.getChild().getLinkedList() != ObjectNotEqualConstrRightMemory.this.noMatchList ) {
+                        if ( this.candidate.getChild().getOuterList() != ObjectNotEqualConstrRightMemory.this.noMatchList ) {
                             if ( (ObjectNotEqualConstrRightMemory.this.innerMemory == null) || (ObjectNotEqualConstrRightMemory.this.innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) this.candidate.getChild().getChild() )) ) {
                                 hasnext = true;
                                 this.next = this.candidate;
@@ -276,8 +276,8 @@ public class ObjectNotEqualConstrRightMemory
      */
     public final boolean isPossibleMatch(final MultiLinkedListNodeWrapper matches) {
         boolean ret = false;
-        if ( (matches != null) && (matches.getChild() != null) && (matches.getChild().getLinkedList() != null) ) {
-            ret = (matches.getChild().getLinkedList() != this.noMatchList);
+        if ( (matches != null) && (matches.getChild() != null) && (matches.getChild().getOuterList() != null) ) {
+            ret = (matches.getChild().getOuterList() != this.noMatchList);
 
             if ( ret && (this.innerMemory != null) ) {
                 ret = this.innerMemory.isPossibleMatch( (MultiLinkedListNodeWrapper) matches.getChild().getChild() );
