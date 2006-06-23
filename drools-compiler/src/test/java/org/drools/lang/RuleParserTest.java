@@ -1758,6 +1758,17 @@ public class RuleParserTest extends TestCase {
         System.err.println( this.parser.getErrorMessages().get( 0 ) );
         assertTrue( ((String) this.parser.getErrorMessages().get( 0 )).indexOf( "Trailing semi-colon not allowed" ) >= 0 );
     }
+    
+    public void testEndPosition() throws Exception {
+        parseResource( "test_EndPosition.drl" ).compilation_unit();
+        RuleDescr rule = (RuleDescr) parser.getPackageDescr().getRules().get( 0 );
+        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals(6, col.getLine());
+
+        
+        assertEquals(8, col.getEndLine());
+        
+    }
 
     public void testQualifiedClassname() throws Exception {
         parseResource( "qualified_classname.drl" ).compilation_unit();

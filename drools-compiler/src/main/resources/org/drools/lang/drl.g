@@ -680,7 +680,10 @@ fact returns [PatternDescr d]
  					}
  				}
  
- 				)? opt_eol ')' opt_eol
+ 				)? opt_eol endLoc=')' opt_eol
+ 				{
+ 					d.setEndLocation( offset(endLoc.getLine()), endLoc.getCharPositionInLine() );	
+ 				}
  	;
 	
 	

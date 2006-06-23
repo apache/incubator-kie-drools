@@ -1,0 +1,12 @@
+
+
+
+rule simple_rule 
+  when
+	Foo(
+	  bar == baz, la==laz
+	  )
+  then
+	Kapow
+	Poof
+end
