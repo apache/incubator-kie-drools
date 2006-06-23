@@ -154,7 +154,7 @@ end</programlisting>
         Cheese( $chedddar : name == "cheddar" )
         $person : Person( favouriteCheese != $cheddar )
     then
-        System.out.println( $person.getName() + " does likes cheddar" );
+        System.out.println( $person.getName() + " does not like cheddar" );
 end</programlisting>
 
   <para>As you can see the compiled Rete network shows the alpha node is
