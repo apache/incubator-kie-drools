@@ -2330,6 +2330,30 @@ public abstract class IntegrationCases extends TestCase {
         assertTrue( list.contains( "fired1" ) );
         assertTrue( list.contains( "fired3" ) );
     }
+    
+    public void FIXME_testOrWithBinding() throws Exception {
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( 
+               getClass().getResourceAsStream( "test_OrWithBindings.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        workingMemory.assertObject( new Integer(42) );
+        workingMemory.assertObject( "hola" );
+        workingMemory.fireAllRules();
+
+        assertTrue( list.contains( "hola" ) );
+        assertEquals(1, list.size() );        
+        
+    }
 
     protected Object serializeIn(final byte[] bytes) throws IOException,
                                             ClassNotFoundException {

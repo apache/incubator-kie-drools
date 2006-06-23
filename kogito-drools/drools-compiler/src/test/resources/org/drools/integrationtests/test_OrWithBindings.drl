@@ -1,0 +1,13 @@
+package com.sample
+
+global java.util.List results
+
+rule "MyRule"	
+	when
+		(Integer() ||
+		Long())
+		s: String()
+	then 
+		System.out.println("result is " + s);
+		results.add(s);		
+end
