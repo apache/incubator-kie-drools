@@ -223,8 +223,8 @@ public class RuleBuilder {
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            and,
-                           false,
-                           false );
+                           false,   // do not decrement offset
+                           false ); // do not decrement first offset
                     this.rule.addPattern( and );
                 } else if ( object instanceof OrDescr ) {
                     final Or or = new Or();
@@ -232,8 +232,8 @@ public class RuleBuilder {
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            or,
-                           false,
-                           false );
+                           true,    // when OR is used, offset MUST be decremented
+                           false ); // do not decrement first offset
                     this.rule.addPattern( or );
                 } else if ( object instanceof NotDescr ) {
                     // We cannot have declarations created inside a not visible outside it, so track no declarations so they can be removed
@@ -243,8 +243,8 @@ public class RuleBuilder {
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            not,
-                           true,
-                           true );
+                           true,   // when NOT is used, offset MUST be decremented
+                           true ); // when NOT is used, offset MUST be decremented for first column
                     this.rule.addPattern( not );
 
                     // remove declarations bound inside not node
@@ -261,8 +261,8 @@ public class RuleBuilder {
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            exists,
-                           true,
-                           true );
+                           true,   // when EXIST is used, offset MUST be decremented
+                           true ); // when EXIST is used, offset MUST be decremented for first column
                     // remove declarations bound inside not node
                     for ( final Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
                         this.declarations.remove( notIt.next() );
@@ -307,8 +307,8 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            and,
-                           false,
-                           false );
+                           false,   // do not decrement offset
+                           false ); // do not decrement first offset
                     ce.addChild( and );
                 } else if ( object instanceof OrDescr ) {
                     final Or or = new Or();
@@ -316,8 +316,8 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            or,
-                           false,
-                           false );
+                           true,    // when OR is used, offset MUST be decremented
+                           false ); // do not decrement first offset
                     ce.addChild( or );
                 } else if ( object instanceof NotDescr ) {
                     final Not not = new Not();
@@ -325,8 +325,8 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            not,
-                           true,
-                           true );
+                           true,   // when NOT is used, offset MUST be decremented
+                           true ); // when NOT is used, offset MUST be decremented for first column
                     ce.addChild( not );
                 } else if ( object instanceof ExistsDescr ) {
                     final Exists exists = new Exists();
@@ -334,8 +334,8 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            exists,
-                           true,
-                           true );
+                           true,   // when EXIST is used, offset MUST be decremented
+                           true ); // when EXIST is used, offset MUST be decremented for first column
                     ce.addChild( exists );
                 } else if ( object instanceof EvalDescr ) {
                     final EvalCondition eval = build( (EvalDescr) object );
@@ -983,26 +983,14 @@ public class RuleBuilder {
         // we start with -1 so that we can ++this.value - otherwise the first element has a lower value than the second in an 'or'
         private int          value = -1;
 
-        private boolean      orCheck;
-
         private GroupElement ge;
 
         public void setParent(final GroupElement ge) {
             this.ge = ge;
-            this.orCheck = false;
         }
 
         public int getNext() {
-            if ( this.ge != null && this.ge.getClass() == Or.class ) {
-                if ( !this.orCheck ) {
-                    this.orCheck = true;
-                    return ++this.value;
-                } else {
-                    return this.value;
-                }
-            } else {
-                return ++this.value;
-            }
+            return ++this.value;
         }
     }
 }
