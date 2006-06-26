@@ -159,6 +159,29 @@ abstract class TupleSource extends BaseNode
         }
     }
 
+    /**
+     * Propagates a new tuple adding the given fact handle to the tuple 
+     * before propagating.
+     * 
+     * @param tuple The base tuple for propagation
+     * @param handle The handle to add to the tuple when propagating
+     * @param context
+     * @param workingMemory
+     */
+    protected void propagateAssertTuple(final ReteTuple tuple,
+                                        final DefaultFactHandle handle,
+                                        final PropagationContext context,
+                                        final ReteooWorkingMemory workingMemory) {
+        for ( int i = 0, size = getTupleSinks().size(); i < size; i++ ) {
+            final ReteTuple child = new ReteTuple( tuple, handle );
+            // no TupleMatch so instead add as a linked tuple
+            tuple.addLinkedTuple( new LinkedListObjectWrapper( child ) );
+            ((TupleSink) getTupleSinks().get( i )).assertTuple( child,
+                                                                context,
+                                                                workingMemory );
+        }
+    }
+
     protected void propagateRetractTuple(final TupleMatch tupleMatch,
                                          final PropagationContext context,
                                          final ReteooWorkingMemory workingMemory) {
