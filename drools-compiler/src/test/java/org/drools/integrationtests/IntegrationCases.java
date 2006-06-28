@@ -38,6 +38,7 @@ import org.drools.CheeseEqual;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
 //import org.drools.IndexedNumber;
+import org.drools.IndexedNumber;
 import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.QueryResults;
@@ -51,6 +52,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.RuleError;
 import org.drools.event.ActivationCancelledEvent;
@@ -459,6 +461,33 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( stilton,
                       list.get( 0 ) );
     }
+    
+    public void testJaninoEval() throws Exception {
+        PackageBuilderConfiguration config = new PackageBuilderConfiguration();
+        config.setCompiler( PackageBuilderConfiguration.JANINO );
+        final PackageBuilder builder = new PackageBuilder(config);
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        workingMemory.setGlobal( "five",
+                                 new Integer( 5 ) );
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        final Cheese stilton = new Cheese( "stilton",
+                                     5 );
+        workingMemory.assertObject( stilton );
+        workingMemory.fireAllRules();
+
+        assertEquals( stilton,
+                      list.get( 0 ) );
+    }    
 
     public void testEvalMore() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -2377,40 +2406,40 @@ public abstract class IntegrationCases extends TestCase {
         return bytes;
     }
 
-//    public void FIXME_testEval2() throws Exception {
-//        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Eval.drl" ) );
-//
-//        WorkingMemoryFileLogger logger = null;
-//        try {
-//            final PackageBuilder builder = new PackageBuilder();
-//            builder.addPackageFromDrl( reader );
-//            final Package pkg1 = builder.getPackage();
-//
-//            final RuleBase ruleBase = getRuleBase();
-//            ruleBase.addPackage( pkg1 );
-//            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-//            
-////            logger = new WorkingMemoryFileLogger(workingMemory);
-////            logger.setFileName( "logger.log" );
-////        DebugWorkingMemoryEventListener l1 = new DebugWorkingMemoryEventListener();
-////        workingMemory.addEventListener( l1 );
-////        DebugAgendaEventListener l2 = new DebugAgendaEventListener();
-////        workingMemory.addEventListener( l2 );
-//
-//            final int MAX = 3;
-//            for (int i=1 ; i<=MAX; i++) {
-//                IndexedNumber n = new IndexedNumber(i, MAX - i + 1);
-//                workingMemory.assertObject(n);
-//            }
-//            workingMemory.fireAllRules();
-//            
-//        } catch ( RuntimeException e ) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } finally {
-////            logger.writeToDisk();
-//        }
-//
-//    }
+    public void FIXME_testEval2() throws Exception {
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Eval.drl" ) );
+
+        WorkingMemoryFileLogger logger = null;
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( reader );
+            final Package pkg1 = builder.getPackage();
+
+            final RuleBase ruleBase = getRuleBase();
+            ruleBase.addPackage( pkg1 );
+            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            
+//            logger = new WorkingMemoryFileLogger(workingMemory);
+//            logger.setFileName( "logger.log" );
+//        DebugWorkingMemoryEventListener l1 = new DebugWorkingMemoryEventListener();
+//        workingMemory.addEventListener( l1 );
+//        DebugAgendaEventListener l2 = new DebugAgendaEventListener();
+//        workingMemory.addEventListener( l2 );
+
+            final int MAX = 3;
+            for (int i=1 ; i<=MAX; i++) {
+                IndexedNumber n = new IndexedNumber(i, MAX - i + 1);
+                workingMemory.assertObject(n);
+            }
+            workingMemory.fireAllRules();
+            
+        } catch ( RuntimeException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+//            logger.writeToDisk();
+        }
+
+    }
 
 }
