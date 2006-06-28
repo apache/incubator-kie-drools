@@ -1,12 +1,13 @@
 package HelloWorld
  
-import org.drools.integrationtests.helloworld.Message
+#we don't use the import, as class is fully qualified below 
+#import org.drools.integrationtests.helloworld.Message
 
 global java.util.List list;
 
 rule "Hello World"
 	when
-		$m : Message(list contains "hello", 
+		$m : org.drools.integrationtests.helloworld.Message(list contains "hello", 
 					text:message == "hola", 
 					number > 40, 
 					birthday > "10-Jul-1974", 
