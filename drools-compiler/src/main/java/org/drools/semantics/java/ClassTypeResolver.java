@@ -97,16 +97,16 @@ public class ClassTypeResolver
     public Class resolveType(final String className) throws ClassNotFoundException {
         Class clazz = null;
 
-        // first try loading className
-        try {
-            clazz = this.classLoader.loadClass( className );
-        } catch ( final ClassNotFoundException e ) {
-            clazz = null;
-        }
+        // Now try the package object type cache         
+        clazz = lookupFromCache( className );
 
-        // Now try the package object type cache 
+        // try loading className
         if ( clazz == null ) {
-            clazz = lookupFromCache( className );
+            try {
+                clazz = this.classLoader.loadClass( className );
+            } catch ( final ClassNotFoundException e ) {
+                clazz = null;
+            }
         }
 
         // Now try the className with each of the given imports 
