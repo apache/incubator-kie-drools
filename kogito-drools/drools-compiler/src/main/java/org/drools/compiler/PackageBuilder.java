@@ -19,6 +19,8 @@ package org.drools.compiler;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -28,9 +30,11 @@ import java.util.Set;
 import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.JavaCompiler;
 import org.apache.commons.jci.compilers.JavaCompilerFactory;
+import org.apache.commons.jci.problems.CompilationProblem;
 import org.apache.commons.jci.readers.MemoryResourceReader;
 import org.apache.commons.jci.readers.ResourceReader;
 import org.apache.commons.jci.stores.ResourceStore;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -63,6 +67,14 @@ public class PackageBuilder {
 
     private PackageBuilderConfiguration configuration;
 
+    private Map                         errorHandlers;
+
+    private List                        generatedClassList;
+
+    private ClassTypeResolver           typeResolver;
+
+    private ClassFieldExtractorCache    classFieldExtractorCache;
+
     /**
      * Use this when package is starting from scratch. 
      */
@@ -78,10 +90,10 @@ public class PackageBuilder {
         this( pkg,
               null );
     }
-    
+
     public PackageBuilder(PackageBuilderConfiguration configuration) {
         this( null,
-              configuration );        
+              configuration );
     }
 
     /**
@@ -96,14 +108,13 @@ public class PackageBuilder {
         }
 
         this.compiler = getCompiler( configuration.getCompiler() );
-
         this.configuration = configuration;
-
         this.src = new MemoryResourceReader();
-
         this.results = new ArrayList();
-
+        this.errorHandlers = new HashMap();
         this.pkg = pkg;
+        this.generatedClassList = new ArrayList();
+        this.classFieldExtractorCache = new ClassFieldExtractorCache();
 
         if ( pkg != null ) {
             this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
@@ -117,7 +128,7 @@ public class PackageBuilder {
      * @throws IOException
      */
     public void addPackageFromDrl(final Reader reader) throws DroolsParserException,
-                                                IOException {
+                                                      IOException {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
@@ -131,7 +142,7 @@ public class PackageBuilder {
      * @throws IOException
      */
     public void addPackageFromXml(final Reader reader) throws DroolsParserException,
-                                                IOException {
+                                                      IOException {
         final XmlPackageReader xmlReader = new XmlPackageReader();
 
         try {
@@ -152,14 +163,18 @@ public class PackageBuilder {
      */
     public void addPackageFromDrl(final Reader source,
                                   final Reader dsl) throws DroolsParserException,
-                                             IOException {
+                                                   IOException {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( source,
-                                         dsl );
+                                               dsl );
         this.results.addAll( parser.getErrors() );
         addPackage( pkg );
     }
 
+    /** 
+     * This adds a package from a Descr/AST 
+     * This will also trigger a compile.
+     */
     public void addPackage(final PackageDescr packageDescr) {
 
         validatePackageName( packageDescr );
@@ -185,6 +200,10 @@ public class PackageBuilder {
                 addRule( (RuleDescr) it.next() );
             }
         }
+
+        if ( this.generatedClassList.size() > 0 ) {
+            this.compileAll();
+        }
     }
 
     private void validatePackageName(final PackageDescr packageDescr) {
@@ -199,8 +218,10 @@ public class PackageBuilder {
         for ( Iterator iter = packageDescr.getRules().iterator(); iter.hasNext(); ) {
             RuleDescr rule = (RuleDescr) iter.next();
             String name = rule.getName();
-            if (names.contains( name )) {
-                this.results.add( new ParserError("Duplicate rule name: " + name, rule.getLine(), rule.getColumn()) );
+            if ( names.contains( name ) ) {
+                this.results.add( new ParserError( "Duplicate rule name: " + name,
+                                                   rule.getLine(),
+                                                   rule.getColumn() ) );
             }
             names.add( name );
         }
@@ -208,7 +229,7 @@ public class PackageBuilder {
 
     private Package newPackage(final PackageDescr packageDescr) {
         final Package pkg = new Package( packageDescr.getName(),
-                                   this.configuration.getClassLoader() );
+                                         this.configuration.getClassLoader() );
 
         this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData() );
 
@@ -226,7 +247,7 @@ public class PackageBuilder {
         }
 
         final TypeResolver typeResolver = new ClassTypeResolver( imports,
-                                                           pkg.getPackageCompilationData().getClassLoader() );
+                                                                 pkg.getPackageCompilationData().getClassLoader() );
 
         final Map globals = packageDescr.getGlobals();
         for ( final Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
@@ -244,45 +265,48 @@ public class PackageBuilder {
         }
     }
 
-    private CompilationResult compile(final String className,
-                                      final String text,
-                                      final MemoryResourceReader src,
-                                      final ResourceStore dst) {
-        src.add( className.replace( '.',
-                                    '/' ) + ".java",
-                 text.getBytes() );
-        final CompilationResult result = this.compiler.compile( new String[]{className},
-                                                     src,
-                                                     dst,
-                                                     this.pkg.getPackageCompilationData().getClassLoader() );
+    /** 
+     * This adds a compile "task" for when the compiler of 
+     * semantics (JCI) is called later on with compileAll()\
+     * which actually does the compiling.
+     * The ErrorHandler is required to map the errors back to the 
+     * element that caused it.
+     */
+    private void addClassCompileTask(final String className,
+                                     final String text,
+                                     final MemoryResourceReader src,
+                                     ErrorHandler handler) {
 
-        return result;
+        String fileName = className.replace( '.',
+                                             '/' ) + ".java";
+        src.add( fileName,
+                 text.getBytes() );
+
+        this.errorHandlers.put( fileName,
+                                handler );
+        this.generatedClassList.add( className );
     }
 
     private void addFunction(final FunctionDescr functionDescr) {
         final FunctionBuilder buidler = new FunctionBuilder();
-        final CompilationResult result = compile( this.pkg.getName() + "." + ucFirst( functionDescr.getName() ),
-                                            buidler.build( this.pkg,
-                                                           functionDescr ),
-                                            this.src,
-                                            this.packageStoreWrapper );
+        addClassCompileTask( this.pkg.getName() + "." + ucFirst( functionDescr.getName() ),
+                             buidler.build( this.pkg,
+                                            functionDescr ),
+                             this.src,
+                             new FunctionErrorHandler( functionDescr,
+                                                       "Function Compilation error" ) );
 
-        if ( result.getErrors().length > 0 ) {
-            this.results.add( new FunctionError( functionDescr,
-                                                 result.getErrors(),
-                                                 "Function Compilation error" ) );
-        }
     }
 
     private void addRule(final RuleDescr ruleDescr) {
 
         final String ruleClassName = getUniqueLegalName( this.pkg.getName(),
-                                                   ruleDescr.getName(),
-                                                   "java",
-                                                   this.src );
+                                                         ruleDescr.getName(),
+                                                         "java",
+                                                         this.src );
         ruleDescr.SetClassName( ucFirst( ruleClassName ) );
-
-        final RuleBuilder builder = new RuleBuilder();
+        
+        final RuleBuilder builder = new RuleBuilder( getTypeResolver(), classFieldExtractorCache );
 
         builder.build( this.pkg,
                        ruleDescr );
@@ -293,57 +317,77 @@ public class PackageBuilder {
 
         // Check if there is any code to compile. If so compile it.       
         if ( builder.getRuleClass() != null ) {
-            compileRule( builder,
-                         rule,
-                         ruleDescr );
+            addRuleSemantics( builder,
+                              rule,
+                              ruleDescr );
         }
 
         this.pkg.addRule( rule );
     }
 
+    /**
+     * @return a Type resolver, lazily. 
+     * If one does not exist yet, it will be initialised.
+     */
+    private TypeResolver getTypeResolver() {
+        if ( this.typeResolver == null ) {
+            typeResolver = new ClassTypeResolver( pkg.getImports(),
+                                                  pkg.getPackageCompilationData().getClassLoader() );
+            // make an automatic import for the current package
+            typeResolver.addImport( pkg.getName() + ".*" );
+            typeResolver.addImport( "java.lang.*" );
+        }
+        return this.typeResolver;
+    }
+
+    /**
+     * @deprecated Do not use for compiling rules. Do a whole package at a time.
+     */
     public void compileRule(final RuleBuilder builder,
                             final Rule rule,
                             final RuleDescr ruleDescr) {
+
+        addRuleSemantics( builder,
+                          rule,
+                          ruleDescr );
+        this.compileAll();
+    }
+
+    /**
+     * This will setup the semantic components of the rule for compiling later on.
+     */
+    private void addRuleSemantics(final RuleBuilder builder,
+                                 final Rule rule,
+                                 final RuleDescr ruleDescr) {
         // The compilation result is for th entire rule, so difficult to associate with any descr
-        CompilationResult result = compile( this.pkg.getName() + "." + ruleDescr.getClassName(),
-                                            builder.getRuleClass(),
-                                            this.src,
-                                            this.packageStoreWrapper );
+        addClassCompileTask( this.pkg.getName() + "." + ruleDescr.getClassName(),
+                             builder.getRuleClass(),
+                             this.src,
+                             new RuleErrorHandler( ruleDescr,
+                                                   rule,
+                                                   "Rule Compilation error" ) );
 
-        if ( result.getErrors().length > 0 ) {
-            this.results.add( new RuleError( rule,
-                                             ruleDescr,
-                                             result.getErrors(),
-                                             "Rule Compilation error" ) );
-        } else {
+        for ( final Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
+            final String className = (String) it.next();
 
-            for ( final Iterator it = builder.getInvokers().keySet().iterator(); it.hasNext(); ) {
-                final String className = (String) it.next();
-
-                // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
-                // If so we add it to the PackageCompilationData as it will get wired up on compilation
-                final Object invoker = builder.getInvokerLookups().get( className );
-                if ( invoker != null ) {
-                    this.pkg.getPackageCompilationData().putInvoker( className,
-                                                                     invoker );
-                }
-                final String text = (String) builder.getInvokers().get( className );
-
-                //System.out.println( className + ":\n" + text );
-
-                result = compile( className,
-                                  text,
-                                  this.src,
-                                  this.packageStoreWrapper );
-
-                if ( result.getErrors().length > 0 ) {
-                    final PatternDescr descr = (PatternDescr) builder.getDescrLookups().get( className );
-                    this.results.add( new RuleError( rule,
-                                                     descr,
-                                                     result.getErrors(),
-                                                     "Rule Compilation error for Invoker" ) );
-                }
+            // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
+            // If so we add it to the PackageCompilationData as it will get wired up on compilation
+            final Object invoker = builder.getInvokerLookups().get( className );
+            if ( invoker != null ) {
+                this.pkg.getPackageCompilationData().putInvoker( className,
+                                                                 invoker );
             }
+            final String text = (String) builder.getInvokers().get( className );
+
+            //System.out.println( className + ":\n" + text );
+            final PatternDescr descr = (PatternDescr) builder.getDescrLookups().get( className );
+            addClassCompileTask( className,
+                                 text,
+                                 this.src,
+                                 new RuleInvokerErrorHandler( descr,
+                                                              rule,
+                                                              "Unable to generate rule invoker." ) );
+
         }
     }
 
@@ -355,10 +399,48 @@ public class PackageBuilder {
      * Compiled packages are serializable.
      */
     public Package getPackage() {
+
         if ( hasErrors() ) {
             this.pkg.setError( this.printErrors() );
         }
         return this.pkg;
+    }
+
+    /**
+     * This actually triggers the compiling of all the resources.
+     * Errors are mapped back to the element that originally generated the semantic
+     * code.
+     */
+    private void compileAll() {
+        String[] classes = new String[this.generatedClassList.size()];
+        this.generatedClassList.toArray( classes );
+
+        final CompilationResult result = this.compiler.compile( classes,
+                                                                src,
+                                                                this.packageStoreWrapper,
+                                                                this.pkg.getPackageCompilationData().getClassLoader() );
+
+        //this will sort out the errors based on what class/file they happened in
+        if ( result.getErrors().length > 0 ) {
+            for ( int i = 0; i < result.getErrors().length; i++ ) {
+                CompilationProblem err = result.getErrors()[i];
+                ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
+                handler.addError( err );
+            }
+
+            Collection errors = this.errorHandlers.values();
+            for ( Iterator iter = errors.iterator(); iter.hasNext(); ) {
+                ErrorHandler handler = (ErrorHandler) iter.next();
+                if ( !(handler instanceof RuleInvokerErrorHandler) ) {                    
+                    this.results.add( handler.getError() );
+                } else {
+                    //we don't really want to report invoker errors.
+                    //mostly as they can happen when there is a syntax error in the RHS
+                    //and otherwise, it is a programmatic error in drools itself.
+                    System.err.println( "!!!! An error occurred compiling the invoker: " + handler.getError() );                    
+                }
+            }
+        }
     }
 
     /** This will return true if there were errors in the package building and compiling phase */
@@ -410,7 +492,7 @@ public class PackageBuilder {
 
             counter++;
             final String fileName = packageName.replaceAll( "\\.",
-                                                      "/" ) + newName + "_" + counter + ext;
+                                                            "/" ) + newName + "_" + counter + ext;
 
             exists = src.isAvailable( fileName );
         }
@@ -437,10 +519,6 @@ public class PackageBuilder {
     }
 
     public static class MissingPackageNameException extends IllegalArgumentException {
-
-        /**
-         * 
-         */
         private static final long serialVersionUID = 4056984379574366454L;
 
         public MissingPackageNameException(final String message) {
@@ -448,4 +526,92 @@ public class PackageBuilder {
         }
 
     }
+
+    /**
+     * This is the super of the error handlers.
+     * Each error handler knows how to report a compile error of its type, should it happen.
+     * This is needed, as the compiling is done as one
+     * hit at the end, and we need to be able to work out what rule/ast element
+     * caused the error.
+     */
+    public abstract static class ErrorHandler {
+        private List     errors = new ArrayList();
+        protected String message;
+
+        public void addError(CompilationProblem err) {
+            this.errors.add( err );
+        }
+
+        public abstract DroolsError getError();
+
+        /**
+         * We must use an error of JCI problem objects.
+         * If there are no problems, null is returned.
+         */
+        protected CompilationProblem[] getErrors() {
+            if ( errors.size() == 0 ) {
+                return null;
+            } else {
+                CompilationProblem[] list = new CompilationProblem[errors.size()];
+                errors.toArray( list );
+                return list;
+            }
+        }
+    }
+
+    public static class RuleErrorHandler extends ErrorHandler {
+
+        private PatternDescr descr;
+        private Rule         rule;
+
+        public RuleErrorHandler(PatternDescr ruleDescr,
+                                Rule rule,
+                                String message) {
+            this.descr = ruleDescr;
+            this.rule = rule;
+            this.message = message;
+        }
+
+        public DroolsError getError() {
+            return new RuleError( rule,
+                                  descr,
+                                  getErrors(),
+                                  message );
+        }
+
+    }
+
+    /**
+     * There isn't much point in reporting invoker errors, as
+     * they are no help. 
+     */
+    public static class RuleInvokerErrorHandler extends RuleErrorHandler {
+
+        public RuleInvokerErrorHandler(PatternDescr ruleDescr,
+                                       Rule rule,
+                                       String message) {
+            super( ruleDescr,
+                   rule,
+                   message );
+        }
+    }
+
+    public static class FunctionErrorHandler extends ErrorHandler {
+
+        private FunctionDescr descr;
+
+        public FunctionErrorHandler(FunctionDescr functionDescr,
+                                    String message) {
+            this.descr = functionDescr;
+            this.message = message;
+        }
+
+        public DroolsError getError() {
+            return new FunctionError( descr,
+                                      getErrors(),
+                                      message );
+        }
+
+    }
+
 }

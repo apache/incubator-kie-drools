@@ -30,6 +30,7 @@ import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorFactory;
 import org.drools.base.FieldFactory;
@@ -71,6 +72,11 @@ import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.TypeResolver;
 
+/**
+ * This builds the rule structure from an AST.
+ * Generates semantic code where necessary if semantics are used.
+ * This is an internal API.
+ */
 public class RuleBuilder {
     private Package                           pkg;
     private Rule                              rule;
@@ -94,7 +100,7 @@ public class RuleBuilder {
 
     private List                              errors;
 
-    private TypeResolver                      typeResolver;
+    private final TypeResolver                      typeResolver;
 
     private Map                               notDeclarations;
 
@@ -109,8 +115,12 @@ public class RuleBuilder {
 
     // @todo move to an interface so it can work as a decorator
     private final JavaExprAnalyzer            analyzer             = new JavaExprAnalyzer();
+    private ClassFieldExtractorCache classFieldExtractorCache;
 
-    public RuleBuilder() {
+
+    public RuleBuilder(TypeResolver resolver, ClassFieldExtractorCache cache) {
+        this.classFieldExtractorCache = cache;
+        this.typeResolver = resolver;
         this.errors = new ArrayList();
     }
 
@@ -155,11 +165,6 @@ public class RuleBuilder {
         this.descrLookups = new HashMap();
         this.columnCounter = new ColumnCounter();
 
-        this.typeResolver = new ClassTypeResolver( pkg.getImports(),
-                                                   pkg.getPackageCompilationData().getClassLoader() );
-        // make an automatic import for the current package
-        this.typeResolver.addImport( pkg.getName() + ".*" );
-        this.typeResolver.addImport( "java.lang.*" );
 
         this.ruleDescr = ruleDescr;
 
@@ -921,8 +926,7 @@ public class RuleBuilder {
                                              final String fieldName) {
         FieldExtractor extractor = null;
         try {
-            extractor = new ClassFieldExtractor( clazz,
-                                                 fieldName );
+            extractor = classFieldExtractorCache.getExtractor( clazz, fieldName );
         } catch ( final RuntimeDroolsException e ) {
             this.errors.add( new RuleError( this.rule,
                                             descr,
