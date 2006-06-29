@@ -40,8 +40,6 @@ import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.util.ReflectiveVisitor;
 
-import sun.security.krb5.internal.at;
-
 /**
  * 
  * @author <a href="mailto:jayaramcs@gmail.com">Author Jayaram C S</a>
