@@ -3,13 +3,20 @@ package org.drools.xml;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.drools.Cheese;
+import org.drools.RuleBase;
+import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
+import org.drools.compiler.PackageBuilder;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.Package;
 
 /**
  * Test the dump/convert format utilities.
@@ -85,7 +92,7 @@ public class DumperTest extends TestCase {
                       ruleDumped.getConsequence() );
 
     }
-
+        
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
         final String cleanExpected = expected.replaceAll( "\\s+",

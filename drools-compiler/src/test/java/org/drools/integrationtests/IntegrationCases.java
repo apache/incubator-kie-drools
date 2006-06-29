@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,11 +65,13 @@ import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.integrationtests.helloworld.Message;
+import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
+import org.drools.xml.XmlDumper;
 
 /**
  * This contains the test cases for each engines implementation to execute.
@@ -1290,6 +1293,90 @@ public abstract class IntegrationCases extends TestCase {
         assertEquals( "group2",
                       list.get( 7 ) );
     }
+    
+    public void testDumper() throws Exception {
+        final DrlParser parser = new DrlParser();
+        final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );        
+        
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackage(pkg );
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        final Cheese brie = new Cheese( "brie",
+                                  12 );
+        workingMemory.assertObject( brie );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 3,
+                      list.size() );
+        assertEquals( "3 1",
+                      list.get( 0 ) );
+        assertEquals( "MAIN",
+                      list.get( 1 ) );
+        assertEquals( "1 1",
+                      list.get( 2 ) );
+        
+        final DrlDumper drlDumper = new DrlDumper();
+        final String drlResult = drlDumper.dump( pkg );
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( drlResult ) );
+        
+        ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        workingMemory = ruleBase.newWorkingMemory();
+
+        list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        workingMemory.assertObject( brie );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 3,
+                      list.size() );
+        assertEquals( "3 1",
+                      list.get( 0 ) );
+        assertEquals( "MAIN",
+                      list.get( 1 ) );
+        assertEquals( "1 1",
+                      list.get( 2 ) );        
+        
+        final XmlDumper xmlDumper = new XmlDumper();
+        final String xmlResult = xmlDumper.dump( pkg );
+        builder = new PackageBuilder();
+        builder.addPackageFromXml( new StringReader( xmlResult ) );
+        
+        ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        workingMemory = ruleBase.newWorkingMemory();
+
+        list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        workingMemory.assertObject( brie );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 3,
+                      list.size() );
+        assertEquals( "3 1",
+                      list.get( 0 ) );
+        assertEquals( "MAIN",
+                      list.get( 1 ) );
+        assertEquals( "1 1",
+                      list.get( 2 ) );               
+    }
+    
 
     public void testXorGroups() throws Exception {
         final PackageBuilder builder = new PackageBuilder();

@@ -40,6 +40,8 @@ import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.util.ReflectiveVisitor;
 
+import sun.security.krb5.internal.at;
+
 /**
  * 
  * @author <a href="mailto:jayaramcs@gmail.com">Author Jayaram C S</a>
@@ -69,7 +71,15 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitAttributeDescr(final AttributeDescr attributeDescr) {
         this.template = new String();
-        this.template = "\t " + attributeDescr.getName() + " " + attributeDescr.getValue() + DrlDumper.eol;
+        String name = attributeDescr.getName();
+        String value = null;
+        if ( name.equals( "agenda-group" ) || name.equals( "activation-group" ) ) {
+            // These attributes may need quotes around them, if they have spaces, so add anyway
+            value =  "\"" + attributeDescr.getValue() + "\"";
+        } else {
+            value = attributeDescr.getValue();
+        }
+        this.template = "\t " + name + " " + value + DrlDumper.eol;
     }
 
     public void visitBoundVariableDescr(final BoundVariableDescr descr) {
