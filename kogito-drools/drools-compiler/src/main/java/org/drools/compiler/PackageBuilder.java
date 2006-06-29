@@ -55,24 +55,16 @@ import org.xml.sax.SAXException;
  * This can be done by merging into existing binary packages, or totally from source.
  */
 public class PackageBuilder {
+
     private JavaCompiler                compiler;
-
     private Package                     pkg;
-
     private List                        results;
-
     private PackageStore                packageStoreWrapper;
-
     private MemoryResourceReader        src;
-
     private PackageBuilderConfiguration configuration;
-
     private Map                         errorHandlers;
-
     private List                        generatedClassList;
-
     private ClassTypeResolver           typeResolver;
-
     private ClassFieldExtractorCache    classFieldExtractorCache;
 
     /**
@@ -173,7 +165,8 @@ public class PackageBuilder {
 
     /** 
      * This adds a package from a Descr/AST 
-     * This will also trigger a compile.
+     * This will also trigger a compile, if there are any generated classes to compile
+     * of course.
      */
     public void addPackage(final PackageDescr packageDescr) {
 
@@ -355,6 +348,7 @@ public class PackageBuilder {
 
     /**
      * This will setup the semantic components of the rule for compiling later on.
+     * It will not actually call the compiler
      */
     private void addRuleSemantics(final RuleBuilder builder,
                                  final Rule rule,
@@ -533,6 +527,11 @@ public class PackageBuilder {
      * This is needed, as the compiling is done as one
      * hit at the end, and we need to be able to work out what rule/ast element
      * caused the error.
+     * 
+     * An error handler it created for each class task that is queued to be compiled.
+     * This doesn't mean an error has occurred, it just means it *may* occur
+     * in the future and we need to be able to map it back to the AST element
+     * that originally spawned the code to be compiled.
      */
     public abstract static class ErrorHandler {
         private List     errors = new ArrayList();
@@ -542,13 +541,20 @@ public class PackageBuilder {
             this.errors.add( err );
         }
 
+        /**
+         * 
+         * @return A DroolsError object populated as appropriate,
+         * should the unthinkable happen and this need to be reported.
+         */
         public abstract DroolsError getError();
 
         /**
          * We must use an error of JCI problem objects.
          * If there are no problems, null is returned.
+         * These errors are placed in the DroolsError instances.
+         * Its not 1 to 1 with reported errors.
          */
-        protected CompilationProblem[] getErrors() {
+        protected CompilationProblem[] collectCompilerProblems() {
             if ( errors.size() == 0 ) {
                 return null;
             } else {
@@ -575,7 +581,7 @@ public class PackageBuilder {
         public DroolsError getError() {
             return new RuleError( rule,
                                   descr,
-                                  getErrors(),
+                                  collectCompilerProblems(),
                                   message );
         }
 
@@ -608,7 +614,7 @@ public class PackageBuilder {
 
         public DroolsError getError() {
             return new FunctionError( descr,
-                                      getErrors(),
+                                      collectCompilerProblems(),
                                       message );
         }
 
