@@ -1294,7 +1294,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 7 ) );
     }
     
-    public void testDumper() throws Exception {
+    public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );        
         
