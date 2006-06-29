@@ -430,11 +430,11 @@ public class RuleBuilder {
                        final FieldBindingDescr fieldBindingDescr) {
         Declaration declaration = (Declaration) this.declarations.get( fieldBindingDescr.getIdentifier() );
         if ( declaration != null ) {
-            // This declaration already  exists, so make it a bound variable declaration instead
-            build( column,
-                   new BoundVariableDescr( fieldBindingDescr.getFieldName(),
-                                           "==",
-                                           fieldBindingDescr.getIdentifier() ) );
+            // This declaration already  exists, so throw an Exception
+            this.errors.add( new RuleError( this.rule,
+                                            fieldBindingDescr,
+                                            null,
+                                            "Duplicate declaration for variable '" + fieldBindingDescr.getIdentifier() + "' in the rule '" + this.rule.getName() + "'" ) );
             return;
         }
 

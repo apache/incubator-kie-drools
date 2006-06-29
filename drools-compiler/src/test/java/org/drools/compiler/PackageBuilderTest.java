@@ -52,6 +52,7 @@ import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.And;
+import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
@@ -818,7 +819,14 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage( packageDescr );
         
         And and = builder.getPackage().getRule( "rule-1" ).getLhs();
-        and.getChildren().get( 0 );
+        Column c1 = (Column) and.getChildren().get( 0 );
+        assertEquals( Declaration.class, c1.getConstraints().get( 0 ).getClass() );
+        assertEquals( LiteralConstraint.class, c1.getConstraints().get( 1 ).getClass() );
+        
+        Column c2 = (Column) and.getChildren().get( 1 );
+        assertEquals( BoundVariableConstraint.class, c1.getConstraints().get( 0 ).getClass() );        
+//        c1.getConstraints().get( 0 )
+//        Column c2 = (Column) and.getChildren().get( 1 );
 
         assertLength( 0,
                       builder.getErrors() );
