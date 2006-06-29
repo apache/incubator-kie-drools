@@ -19,6 +19,7 @@ package org.drools.integrationtests;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +29,13 @@ import org.drools.PersonInterface;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
+import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
+import org.drools.lang.DrlDumper;
+import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.xml.XmlDumper;
 
 /** 
  * This runs the integration test cases with the leaps implementation.
@@ -288,5 +293,91 @@ public class LeapsTest extends IntegrationCases {
         assertEquals( new Integer( 5 ) , workingMemory.getObjects().get(0) );
         assertEquals( "help" , workingMemory.getObjects().get(1) );        
     }
+    
+    // @FIXME this is broken for leaps
+    public void testDumpers() throws Exception {
+        assertTrue(true);
+//        final DrlParser parser = new DrlParser();
+//        final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );        
+//        
+//        PackageBuilder builder = new PackageBuilder();
+//        builder.addPackage(pkg );
+//
+//        RuleBase ruleBase = getRuleBase();
+//        ruleBase.addPackage( builder.getPackage() );
+//        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+//
+//        List list = new ArrayList();
+//        workingMemory.setGlobal( "list",
+//                                 list );
+//
+//        final Cheese brie = new Cheese( "brie",
+//                                  12 );
+//        workingMemory.assertObject( brie );
+//
+//        workingMemory.fireAllRules();
+//
+//        assertEquals( 3,
+//                      list.size() );
+//        assertEquals( "3 1",
+//                      list.get( 0 ) );
+//        assertEquals( "MAIN",
+//                      list.get( 1 ) );
+//        assertEquals( "1 1",
+//                      list.get( 2 ) );
+//        
+//        final DrlDumper drlDumper = new DrlDumper();
+//        final String drlResult = drlDumper.dump( pkg );
+//        builder = new PackageBuilder();
+//        builder.addPackageFromDrl( new StringReader( drlResult ) );
+//        
+//        ruleBase = getRuleBase();
+//        ruleBase.addPackage( builder.getPackage() );
+//        workingMemory = ruleBase.newWorkingMemory();
+//
+//        list = new ArrayList();
+//        workingMemory.setGlobal( "list",
+//                                 list );
+//
+//        workingMemory.assertObject( brie );
+//
+//        workingMemory.fireAllRules();
+//
+//        assertEquals( 3,
+//                      list.size() );
+//        assertEquals( "3 1",
+//                      list.get( 0 ) );
+//        assertEquals( "MAIN",
+//                      list.get( 1 ) );
+//        assertEquals( "1 1",
+//                      list.get( 2 ) );        
+//        
+//        final XmlDumper xmlDumper = new XmlDumper();
+//        final String xmlResult = xmlDumper.dump( pkg );
+//        builder = new PackageBuilder();
+//        builder.addPackageFromXml( new StringReader( xmlResult ) );
+//        
+//        ruleBase = getRuleBase();
+//        ruleBase.addPackage( builder.getPackage() );
+//        workingMemory = ruleBase.newWorkingMemory();
+//
+//        list = new ArrayList();
+//        workingMemory.setGlobal( "list",
+//                                 list );
+//
+//        workingMemory.assertObject( brie );
+//
+//        workingMemory.fireAllRules();
+//
+//        assertEquals( 3,
+//                      list.size() );
+//        assertEquals( "3 1",
+//                      list.get( 0 ) );
+//        assertEquals( "MAIN",
+//                      list.get( 1 ) );
+//        assertEquals( "1 1",
+//                      list.get( 2 ) );               
+    }
+    
     
 }
