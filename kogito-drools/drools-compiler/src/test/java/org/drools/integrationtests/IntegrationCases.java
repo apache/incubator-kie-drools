@@ -172,7 +172,7 @@ public abstract class IntegrationCases extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void FIXME_testExplicitAnd() throws Exception {
+    public void testExplicitAnd() throws Exception {
         final Reader reader = new InputStreamReader( 
                                    getClass().getResourceAsStream( "test_ExplicitAnd.drl" ) );
         final DrlParser parser = new DrlParser();
