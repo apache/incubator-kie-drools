@@ -122,8 +122,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                 key = new EqualityKey( handle,
                                        status );
                 this.tms.put( key );
+            } else {
+                key.addFactHandle( handle );
             }
-            key.addFactHandle( handle );
+            
             handle.setEqualityKey( key );
 
             this.handleFactory.increaseFactHandleRecency( handle );
