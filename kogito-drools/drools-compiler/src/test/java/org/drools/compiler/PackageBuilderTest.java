@@ -795,8 +795,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final AndDescr lhs = new AndDescr();
         ruleDescr.setLhs( lhs );
 
-        final ColumnDescr column1 = new ColumnDescr( Cheese.class.getName(),
-                                                     "stilton" );
+        final ColumnDescr column1 = new ColumnDescr( Cheese.class.getName() );
         lhs.addDescr( column1 );
 
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "type",
@@ -809,26 +808,15 @@ public class PackageBuilderTest extends DroolsTestCase {
         column1.addDescr( fieldBindingDescr );
         column1.addDescr( listeralDescr );
         
-        final ColumnDescr column2 = new ColumnDescr( Cheese.class.getName(),
-                                                     "stilton" );
+        final ColumnDescr column2 = new ColumnDescr( Cheese.class.getName() );
         lhs.addDescr( column2 );
         column2.addDescr( fieldBindingDescr );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
-        builder.addPackage( packageDescr );
-        
-        And and = builder.getPackage().getRule( "rule-1" ).getLhs();
-        Column c1 = (Column) and.getChildren().get( 0 );
-        assertEquals( Declaration.class, c1.getConstraints().get( 0 ).getClass() );
-        assertEquals( LiteralConstraint.class, c1.getConstraints().get( 1 ).getClass() );
-        
-        Column c2 = (Column) and.getChildren().get( 1 );
-        assertEquals( BoundVariableConstraint.class, c1.getConstraints().get( 0 ).getClass() );        
-//        c1.getConstraints().get( 0 )
-//        Column c2 = (Column) and.getChildren().get( 1 );
+        builder.addPackage( packageDescr );        
 
-        assertLength( 0,
+        assertLength( 2,
                       builder.getErrors() );
     }
 
