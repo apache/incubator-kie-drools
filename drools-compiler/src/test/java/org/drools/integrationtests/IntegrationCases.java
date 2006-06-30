@@ -2496,37 +2496,20 @@ public abstract class IntegrationCases extends TestCase {
     public void FIXME_testEval2() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Eval.drl" ) );
 
-        WorkingMemoryFileLogger logger = null;
-        try {
-            final PackageBuilder builder = new PackageBuilder();
-            builder.addPackageFromDrl( reader );
-            final Package pkg1 = builder.getPackage();
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( reader );
+        final Package pkg1 = builder.getPackage();
 
-            final RuleBase ruleBase = getRuleBase();
-            ruleBase.addPackage( pkg1 );
-            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-            
-//            logger = new WorkingMemoryFileLogger(workingMemory);
-//            logger.setFileName( "logger.log" );
-//        DebugWorkingMemoryEventListener l1 = new DebugWorkingMemoryEventListener();
-//        workingMemory.addEventListener( l1 );
-//        DebugAgendaEventListener l2 = new DebugAgendaEventListener();
-//        workingMemory.addEventListener( l2 );
-
-            final int MAX = 3;
-            for (int i=1 ; i<=MAX; i++) {
-                IndexedNumber n = new IndexedNumber(i, MAX - i + 1);
-                workingMemory.assertObject(n);
-            }
-            workingMemory.fireAllRules();
-            
-        } catch ( RuntimeException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-//            logger.writeToDisk();
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg1 );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        
+        final int MAX = 3;
+        for (int i=1 ; i<=MAX; i++) {
+            IndexedNumber n = new IndexedNumber(i, MAX - i + 1);
+            workingMemory.assertObject(n);
         }
-
+        workingMemory.fireAllRules();
     }
 
 }
