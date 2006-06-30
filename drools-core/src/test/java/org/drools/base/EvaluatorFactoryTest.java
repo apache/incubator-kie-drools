@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -147,7 +148,7 @@ public class EvaluatorFactoryTest extends TestCase {
 
     public void testDate() throws Exception {
 
-        final SimpleDateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
+        final SimpleDateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.ENGLISH );
 
         //note that strings are also allowed on the right
         final Object[][] data = {{df.parse( "10-Jul-1974" ), "==", df.parse( "10-Jul-1974" ), Boolean.TRUE}, {df.parse( "10-Jul-1974" ), "<", df.parse( "11-Jul-1974" ), Boolean.TRUE},
