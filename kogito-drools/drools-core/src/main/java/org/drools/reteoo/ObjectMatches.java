@@ -61,6 +61,10 @@ public class ObjectMatches extends BaseMultiLinkedListNode {
 
         return tupleMatch;
     }
+    
+    void add(final TupleMatch tupleMatch) {
+        this.list.add( tupleMatch );
+    }
 
     /**
      * Removes the <code>TupleMatch</code> as the underlying <code>ReteTuple</code> has been retracted and no longer matches.
