@@ -2,6 +2,10 @@
 package Number
 
 import org.drools.IndexedNumber;
+import java.util.List;
+
+global java.util.List orderedNumbers;
+global java.util.List errors;
  
 rule "Order"
 salience 200
@@ -11,12 +15,10 @@ salience 200
 		n2 : IndexedNumber(number < $nb1);
 		eval(n1.getIndex() < n2.getIndex());
 		
-		#Works great
-		#n1 : IndexedNumber($nb1 : number, $index1 : index);
-		#n2 : IndexedNumber($nb2 : number -> ($nb2.compareTo($nb1)  < 0), index > $index1);
 	then
-		System.out.println("Swapping " + n1 + " with " + n2);
-		check(n1, n2);
+		if ( ! (n1.getIndex() < n2.getIndex())) {
+		    errors.add("Shouldn't fire for: " + n1 + " " + n2);
+        }
 		swap(n1, n2);
 		modify(n1);
 		modify(n2);
@@ -28,15 +30,9 @@ salience 10
 		n : IndexedNumber($idx : index);
 		not IndexedNumber(index < $idx);
 	then
-		System.out.println("Number is " + n);
+		orderedNumbers.add(n);
 		retract(n);
 end
-
-function void check(IndexedNumber n1, IndexedNumber n2) {
-	if ( ! (n1.getIndex() < n2.getIndex())) {
-		System.out.println("Shouldn't come here... " + n1 + " " + n2);
-	}
-}
 
 function void swap(IndexedNumber n1, IndexedNumber n2) {
 	int tmp = n1.getIndex();

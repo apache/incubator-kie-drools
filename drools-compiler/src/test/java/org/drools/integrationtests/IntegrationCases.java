@@ -2493,8 +2493,8 @@ public abstract class IntegrationCases extends TestCase {
         return bytes;
     }
 
-    public void FIXME_testEval2() throws Exception {
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Eval.drl" ) );
+    public void testJoinNodeModifyObject() throws Exception {
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyObject.drl" ) );
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( reader );
@@ -2504,12 +2504,26 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg1 );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         
-        final int MAX = 3;
+        final List orderedFacts = new ArrayList(); 
+        final List errors = new ArrayList();
+        
+        workingMemory.setGlobal( "orderedNumbers", orderedFacts );
+        workingMemory.setGlobal( "errors", errors );
+        
+        final int MAX = 5;
         for (int i=1 ; i<=MAX; i++) {
             IndexedNumber n = new IndexedNumber(i, MAX - i + 1);
             workingMemory.assertObject(n);
         }
         workingMemory.fireAllRules();
+        
+        Assert.assertTrue( "Processing generated errors: "+errors.toString(), 
+                           errors.isEmpty());
+        
+        for(int i=1 ; i<=MAX; i++) {
+            IndexedNumber n = (IndexedNumber) orderedFacts.get( i-1 );
+            Assert.assertEquals( "Fact is out of order", i, n.getIndex() );
+        }
     }
 
 }

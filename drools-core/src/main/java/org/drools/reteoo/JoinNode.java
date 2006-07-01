@@ -273,6 +273,10 @@ class JoinNode extends BetaNode {
                                        workingMemory ) ) {
                     TupleMatch tupleMatch = (TupleMatch) leftTuple.getTupleMatches().get( handle );
                     if ( tupleMatch != null ) {
+                        // ensures tupleMatch will be in the appropriate order
+                        objectMatches.remove( tupleMatch );
+                        objectMatches.add( tupleMatch );
+                        
                         propagateModifyTuple( tupleMatch,
                                               context,
                                               workingMemory );
