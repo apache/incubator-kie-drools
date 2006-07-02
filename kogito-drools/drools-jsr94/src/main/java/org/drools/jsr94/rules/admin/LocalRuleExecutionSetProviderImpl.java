@@ -2,13 +2,13 @@ package org.drools.jsr94.rules.admin;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,9 +37,9 @@ import org.drools.rule.Package;
  * interface which defines <code>RuleExecutionSet</code> creation methods for
  * defining <code>RuleExecutionSet</code>s from local (non-serializable)
  * resources.
- * 
+ *
  * @see LocalRuleExecutionSetProvider
- * 
+ *
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
@@ -59,17 +59,17 @@ public class LocalRuleExecutionSetProviderImpl
      * <code>createRuleExecutionSet</code> taking a Reader instance should be
      * used if the source is a character stream and encoding conversion should
      * be performed.
-     * 
+     *
      * @param ruleExecutionSetStream
      *            an input stream used to read the rule execution set.
      * @param properties
      *            additional properties used to create the
      *            <code>RuleExecutionSet</code> implementation. May be
      *            <code>null</code>.
-     * 
+     *
      * @throws RuleExecutionSetCreateException
      *             on rule execution set creation error.
-     * 
+     *
      * @return The created <code>RuleExecutionSet</code>.
      */
     public RuleExecutionSet createRuleExecutionSet(final InputStream ruleExecutionSetStream,
@@ -80,6 +80,8 @@ public class LocalRuleExecutionSetProviderImpl
                 final Reader dsl = new StringReader( (String) properties.get( "dsl" ) );
                 builder.addPackageFromDrl( new InputStreamReader( ruleExecutionSetStream ),
                                            dsl );
+            } else if (properties != null && properties.containsKey( "xml" ) ) {
+                builder.addPackageFromXml(new InputStreamReader( ruleExecutionSetStream ) );
             } else {
                 builder.addPackageFromDrl( new InputStreamReader( ruleExecutionSetStream ) );
             }
@@ -99,17 +101,17 @@ public class LocalRuleExecutionSetProviderImpl
      * Creates a <code>RuleExecutionSet</code> implementation using a supplied
      * character stream Reader and additional Drools-specific properties. A
      * Drools-specific rule execution set is read from the supplied Reader.
-     * 
+     *
      * @param ruleExecutionSetReader
      *            a Reader used to read the rule execution set.
      * @param properties
      *            additional properties used to create the
      *            <code>RuleExecutionSet</code> implementation. May be
      *            <code>null</code>.
-     * 
+     *
      * @throws RuleExecutionSetCreateException
      *             on rule execution set creation error.
-     * 
+     *
      * @return The created <code>RuleExecutionSet</code>.
      */
     public RuleExecutionSet createRuleExecutionSet(final Reader ruleExecutionSetReader,
@@ -120,6 +122,8 @@ public class LocalRuleExecutionSetProviderImpl
                 final Reader dsl = new StringReader( (String) properties.get( "dsl" ) );
                 builder.addPackageFromDrl( ruleExecutionSetReader,
                                            dsl );
+            } else if (properties != null && properties.containsKey( "xml" )) {
+                builder.addPackageFromXml( ruleExecutionSetReader );
             } else {
                 builder.addPackageFromDrl( ruleExecutionSetReader );
             }
@@ -139,17 +143,17 @@ public class LocalRuleExecutionSetProviderImpl
     /**
      * Creates a <code>RuleExecutionSet</code> implementation from a
      * Drools-specific AST representation and Drools-specific properties.
-     * 
+     *
      * @param ruleExecutionSetAst
      *            the vendor representation of a rule execution set
      * @param properties
      *            additional properties used to create the
      *            <code>RuleExecutionSet</code> implementation. May be
      *            <code>null</code>.
-     * 
+     *
      * @throws RuleExecutionSetCreateException
      *             on rule execution set creation error.
-     * 
+     *
      * @return The created <code>RuleExecutionSet</code>.
      */
     public RuleExecutionSet createRuleExecutionSet(final Object ruleExecutionSetAst,
@@ -165,17 +169,17 @@ public class LocalRuleExecutionSetProviderImpl
     /**
      * Creates a <code>RuleExecutionSet</code> implementation from a
      * <code>RuleSet</code> and Drools-specific properties.
-     * 
+     *
      * @param pkg
      *            a Drools <code>org.drools.rule.Package</code> representation
      *            of a rule execution set.
      * @param properties
      *            additional properties used to create the RuleExecutionSet
      *            implementation. May be <code>null</code>.
-     * 
+     *
      * @throws RuleExecutionSetCreateException
      *             on rule execution set creation error.
-     * 
+     *
      * @return The created <code>RuleExecutionSet</code>.
      */
     private RuleExecutionSet createRuleExecutionSet(final Package pkg,
