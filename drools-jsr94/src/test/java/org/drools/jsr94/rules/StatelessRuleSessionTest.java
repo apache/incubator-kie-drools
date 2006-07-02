@@ -2,13 +2,13 @@ package org.drools.jsr94.rules;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,13 +19,21 @@ package org.drools.jsr94.rules;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.rules.ConfigurationException;
 import javax.rules.ObjectFilter;
+import javax.rules.RuleServiceProvider;
+import javax.rules.RuleServiceProviderManager;
 import javax.rules.StatelessRuleSession;
+import javax.rules.admin.LocalRuleExecutionSetProvider;
+import javax.rules.admin.RuleExecutionSet;
+import javax.rules.admin.RuleExecutionSetCreateException;
+import javax.rules.admin.RuleExecutionSetRegisterException;
 
 import junit.framework.TestCase;
 
@@ -44,6 +52,7 @@ public class StatelessRuleSessionTest extends TestCase {
     private final String            bindUri         = "sisters.drl";
     private final String            bindUri_drl     = "sisters_expander.drl";
     private final String            bindUri_dsl     = "sisters_expander.dsl";
+    private final String            bindUri_xml         = "sisters.xml";
     private final String            bindUri_globals = "sisters_globals.drl";
 
     /**
@@ -64,11 +73,18 @@ public class StatelessRuleSessionTest extends TestCase {
         this.sessionBuilder.addRuleExecutionSet( this.bindUri_drl,
                                                  StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_drl ),
                                                  map );
+        final Map map_xml = new HashMap();
+        map_xml.put( "xml", "xml" );
+        this.sessionBuilder.addRuleExecutionSet( this.bindUri_xml,
+                StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_xml ),
+                map_xml );
+
 
         this.sessionBuilder.addRuleExecutionSet( this.bindUri_globals,
                                                  StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_globals ) );
 
     }
+    
 
     /*
      * Taken from DRLParser
@@ -87,6 +103,59 @@ public class StatelessRuleSessionTest extends TestCase {
         return text;
     }
 
+    public void testCreateRuleExecutionSetFromStreamWithXml(){
+    	
+		try {
+			final Map map_xml = new HashMap();
+	        map_xml.put( "xml", "xml" );
+	        
+	        RuleServiceProvider ruleServiceProvider;
+	        RuleServiceProviderManager.registerRuleServiceProvider( "http://drools.org/",
+	                RuleServiceProviderImpl.class );
+
+	        ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider( "http://drools.org/" );
+
+	        LocalRuleExecutionSetProvider ruleSetProvider = ruleServiceProvider.getRuleAdministrator().getLocalRuleExecutionSetProvider( null );
+			final RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_xml ),
+	        		map_xml );
+			assertNotNull(ruleExecutionSet);
+		} catch (RemoteException e) {
+			fail();
+		} catch (ConfigurationException e) {
+			fail();
+		} catch (RuleExecutionSetCreateException e) {
+			fail();
+		} catch (IOException e) {
+			fail();
+		}
+    }
+public void testCreateRuleExecutionSetFromStreamReaderWithXml(){    	
+		try {
+			final Map map_xml = new HashMap();
+	        map_xml.put( "xml", "xml" );
+	        
+	        RuleServiceProvider ruleServiceProvider;
+	        RuleServiceProviderManager.registerRuleServiceProvider( "http://drools.org/",
+	                RuleServiceProviderImpl.class );
+
+	        ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider( "http://drools.org/" );
+
+	        LocalRuleExecutionSetProvider ruleSetProvider = ruleServiceProvider.getRuleAdministrator().getLocalRuleExecutionSetProvider( null );
+			final Reader ruleReader = new InputStreamReader( StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_xml ) );
+			final RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( ruleReader,
+	        		map_xml );
+			assertNotNull(ruleExecutionSet);
+
+		} catch (RemoteException e) {
+			fail();
+		} catch (ConfigurationException e) {
+			fail();
+		} catch (RuleExecutionSetCreateException e) {
+			fail();
+		} catch (IOException e) {
+			fail();
+		}       
+    }
     /**
      * Test executeRules with globals.
      */
@@ -156,6 +225,49 @@ public class StatelessRuleSessionTest extends TestCase {
      */
     public void testExecuteRules() throws Exception {
         final StatelessRuleSession statelessSession = this.sessionBuilder.getStatelessRuleSession( this.bindUri );
+
+        final List inObjects = new ArrayList();
+
+        final Person bob = new Person( "bob" );
+        inObjects.add( bob );
+
+        final Person jeannie = new Person( "jeannie" );
+        jeannie.addSister( "rebecca" );
+        inObjects.add( jeannie );
+
+        final Person rebecca = new Person( "rebecca" );
+        rebecca.addSister( "jeannie" );
+        inObjects.add( rebecca );
+
+        // execute the rules
+        final List outList = statelessSession.executeRules( inObjects );
+
+        assertEquals( "incorrect size",
+                      5,
+                      outList.size() );
+
+        assertContains( outList,
+                        bob );
+
+        assertContains( outList,
+                        rebecca );
+
+        assertContains( outList,
+                        jeannie );
+
+        assertContains( outList,
+                        "rebecca and jeannie are sisters" );
+
+        assertContains( outList,
+                        "jeannie and rebecca are sisters" );
+
+        statelessSession.release();
+    }
+    /**
+     * Test executeRules with normal drl.
+     */
+    public void testExecuteRulesWithXml() throws Exception {
+        final StatelessRuleSession statelessSession = this.sessionBuilder.getStatelessRuleSession( this.bindUri_xml );
 
         final List inObjects = new ArrayList();
 
