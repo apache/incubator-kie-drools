@@ -73,29 +73,11 @@ public class LocalRuleExecutionSetProviderImpl
      * @return The created <code>RuleExecutionSet</code>.
      */
     public RuleExecutionSet createRuleExecutionSet(final InputStream ruleExecutionSetStream,
-                                                   final Map properties) throws RuleExecutionSetCreateException {
-        try {
-            final PackageBuilder builder = new PackageBuilder();
-            if ( properties != null && properties.containsKey( "dsl" ) ) {
-                final Reader dsl = new StringReader( (String) properties.get( "dsl" ) );
-                builder.addPackageFromDrl( new InputStreamReader( ruleExecutionSetStream ),
-                                           dsl );
-            } else if (properties != null && properties.containsKey( "xml" ) ) {
-                builder.addPackageFromXml(new InputStreamReader( ruleExecutionSetStream ) );
-            } else {
-                builder.addPackageFromDrl( new InputStreamReader( ruleExecutionSetStream ) );
-            }
-            final Package pkg = builder.getPackage();
-            return this.createRuleExecutionSet( pkg,
-                                                properties );
-        } catch ( final IOException e ) {
-            throw new RuleExecutionSetCreateException( "cannot create rule execution set",
-                                                       e );
-        } catch ( final DroolsParserException e ) {
-            throw new RuleExecutionSetCreateException( "cannot create rule execution set",
-                                                       e );
-        }
+                                                   final Map properties) throws RuleExecutionSetCreateException {        
+        return createRuleExecutionSet( new InputStreamReader( ruleExecutionSetStream ), properties);
     }
+    
+
 
     /**
      * Creates a <code>RuleExecutionSet</code> implementation using a supplied
@@ -118,28 +100,48 @@ public class LocalRuleExecutionSetProviderImpl
                                                    final Map properties) throws RuleExecutionSetCreateException {
         try {
             final PackageBuilder builder = new PackageBuilder();
-            if ( properties != null && properties.containsKey( "dsl" ) ) {
-                final Reader dsl = new StringReader( (String) properties.get( "dsl" ) );
-                builder.addPackageFromDrl( ruleExecutionSetReader,
-                                           dsl );
-            } else if (properties != null && properties.containsKey( "xml" )) {
-                builder.addPackageFromXml( ruleExecutionSetReader );
-            } else {
-                builder.addPackageFromDrl( ruleExecutionSetReader );
+            String dsl = null;
+            String source = null;
+            
+            if ( properties != null ) {
+                dsl = ( String ) properties.get( "dsl" );
+                source = ( String ) properties.get( "source" );
             }
-
+            
+            if ( source == null ) {
+                source = "drl";
+            }
+            
+            
+            if ( dsl == null ) {
+                if ( source.equals( "xml" ) ) {
+                    builder.addPackageFromXml( ruleExecutionSetReader );
+                } else {
+                    builder.addPackageFromDrl( ruleExecutionSetReader );
+                }
+            } else {
+                if ( source.equals( "xml" ) ) {
+                    // xml cannot specify a dsl
+                    builder.addPackageFromXml( ruleExecutionSetReader );
+                } else {
+                    builder.addPackageFromDrl( ruleExecutionSetReader,
+                                               new StringReader( dsl ) );
+                }               
+            }
+            
             final Package pkg = builder.getPackage();
-            return this.createRuleExecutionSet( pkg,
-                                                properties );
+            return createRuleExecutionSet( pkg,
+                                           properties );
         } catch ( final IOException e ) {
             throw new RuleExecutionSetCreateException( "cannot create rule execution set",
                                                        e );
         } catch ( final DroolsParserException e ) {
             throw new RuleExecutionSetCreateException( "cannot create rule execution set",
                                                        e );
-        }
+        } 
     }
-
+    
+    
     /**
      * Creates a <code>RuleExecutionSet</code> implementation from a
      * Drools-specific AST representation and Drools-specific properties.

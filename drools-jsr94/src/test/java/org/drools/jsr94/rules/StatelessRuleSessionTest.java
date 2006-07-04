@@ -52,7 +52,7 @@ public class StatelessRuleSessionTest extends TestCase {
     private final String            bindUri         = "sisters.drl";
     private final String            bindUri_drl     = "sisters_expander.drl";
     private final String            bindUri_dsl     = "sisters_expander.dsl";
-    private final String            bindUri_xml         = "sisters.xml";
+    private final String            bindUri_xml     = "sisters.xml";
     private final String            bindUri_globals = "sisters_globals.drl";
 
     /**
@@ -73,18 +73,18 @@ public class StatelessRuleSessionTest extends TestCase {
         this.sessionBuilder.addRuleExecutionSet( this.bindUri_drl,
                                                  StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_drl ),
                                                  map );
-        final Map map_xml = new HashMap();
-        map_xml.put( "xml", "xml" );
-        this.sessionBuilder.addRuleExecutionSet( this.bindUri_xml,
-                StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_xml ),
-                map_xml );
 
+        final Map map_xml = new HashMap();
+        map_xml.put( "source",
+                     "xml" );
+        this.sessionBuilder.addRuleExecutionSet( this.bindUri_xml,
+                                                 StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_xml ),
+                                                 map_xml );
 
         this.sessionBuilder.addRuleExecutionSet( this.bindUri_globals,
                                                  StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_globals ) );
 
     }
-    
 
     /*
      * Taken from DRLParser
@@ -103,59 +103,63 @@ public class StatelessRuleSessionTest extends TestCase {
         return text;
     }
 
-    public void testCreateRuleExecutionSetFromStreamWithXml(){
-    	
-		try {
-			final Map map_xml = new HashMap();
-	        map_xml.put( "xml", "xml" );
-	        
-	        RuleServiceProvider ruleServiceProvider;
-	        RuleServiceProviderManager.registerRuleServiceProvider( "http://drools.org/",
-	                RuleServiceProviderImpl.class );
+    public void testCreateRuleExecutionSetFromStreamWithXml() {
 
-	        ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider( "http://drools.org/" );
+        try {
+            final Map map = new HashMap();
+            map.put( "source",
+                     "xml" );
 
-	        LocalRuleExecutionSetProvider ruleSetProvider = ruleServiceProvider.getRuleAdministrator().getLocalRuleExecutionSetProvider( null );
-			final RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_xml ),
-	        		map_xml );
-			assertNotNull(ruleExecutionSet);
-		} catch (RemoteException e) {
-			fail();
-		} catch (ConfigurationException e) {
-			fail();
-		} catch (RuleExecutionSetCreateException e) {
-			fail();
-		} catch (IOException e) {
-			fail();
-		}
+            RuleServiceProvider ruleServiceProvider;
+            RuleServiceProviderManager.registerRuleServiceProvider( "http://drools.org/",
+                                                                    RuleServiceProviderImpl.class );
+
+            ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider( "http://drools.org/" );
+
+            LocalRuleExecutionSetProvider ruleSetProvider = ruleServiceProvider.getRuleAdministrator().getLocalRuleExecutionSetProvider( null );
+            final RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_xml ),
+                                                                                              map );
+            assertNotNull( ruleExecutionSet );
+        } catch ( RemoteException e ) {
+            fail();
+        } catch ( ConfigurationException e ) {
+            fail();
+        } catch ( RuleExecutionSetCreateException e ) {
+            fail();
+        } catch ( IOException e ) {
+            fail();
+        }
     }
-public void testCreateRuleExecutionSetFromStreamReaderWithXml(){    	
-		try {
-			final Map map_xml = new HashMap();
-	        map_xml.put( "xml", "xml" );
-	        
-	        RuleServiceProvider ruleServiceProvider;
-	        RuleServiceProviderManager.registerRuleServiceProvider( "http://drools.org/",
-	                RuleServiceProviderImpl.class );
 
-	        ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider( "http://drools.org/" );
+    public void testCreateRuleExecutionSetFromStreamReaderWithXml() {
+        try {
+            final Map map = new HashMap();
+            map.put( "source",
+                     "xml" );
 
-	        LocalRuleExecutionSetProvider ruleSetProvider = ruleServiceProvider.getRuleAdministrator().getLocalRuleExecutionSetProvider( null );
-			final Reader ruleReader = new InputStreamReader( StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_xml ) );
-			final RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( ruleReader,
-	        		map_xml );
-			assertNotNull(ruleExecutionSet);
+            RuleServiceProvider ruleServiceProvider;
+            RuleServiceProviderManager.registerRuleServiceProvider( "http://drools.org/",
+                                                                    RuleServiceProviderImpl.class );
 
-		} catch (RemoteException e) {
-			fail();
-		} catch (ConfigurationException e) {
-			fail();
-		} catch (RuleExecutionSetCreateException e) {
-			fail();
-		} catch (IOException e) {
-			fail();
-		}       
+            ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider( "http://drools.org/" );
+
+            LocalRuleExecutionSetProvider ruleSetProvider = ruleServiceProvider.getRuleAdministrator().getLocalRuleExecutionSetProvider( null );
+            final Reader ruleReader = new InputStreamReader( StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri_xml ) );
+            final RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( ruleReader,
+                                                                                              map );
+            assertNotNull( ruleExecutionSet );
+
+        } catch ( RemoteException e ) {
+            fail();
+        } catch ( ConfigurationException e ) {
+            fail();
+        } catch ( RuleExecutionSetCreateException e ) {
+            fail();
+        } catch ( IOException e ) {
+            fail();
+        }
     }
+
     /**
      * Test executeRules with globals.
      */
@@ -263,6 +267,7 @@ public void testCreateRuleExecutionSetFromStreamReaderWithXml(){
 
         statelessSession.release();
     }
+
     /**
      * Test executeRules with normal drl.
      */
