@@ -933,7 +933,7 @@ lhs_unary returns [PatternDescr d]
 		|	u=lhs_not
 		|	u=lhs_eval
 		|	u=lhs_column
-		|	'(' u=lhs ')'
+		|	'(' opt_eol u=lhs opt_eol ')'
 		) { d = u; }
 	;
 	
