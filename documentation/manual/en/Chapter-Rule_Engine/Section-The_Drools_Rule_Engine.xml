@@ -34,10 +34,12 @@
     <para>A RuleBase is a runtime component which consists of one or more
     Package's. Packages can be added and removed from the RuleBase at any
     time. A Rule Base can instantiate one or more WorkingMemories at any time;
-    a weak reference is maintained, unless its told otherwise. The Working
-    Memory consists of a number of sub components. XXXX Object assertion may
-    result in the creation of one or more Activations, the agenda is
-    resonpsible for scheduling the execution of these Activations</para>
+    a weak reference is maintained, unless it's told otherwise. The Working
+    Memory consists of a number of sub components inculding Working Memory
+    Event Support, Truth Maintenance System, Agenda and Agenda Event Support.
+    Object assertion may result in the creation of one or more Activations,
+    the agenda is resonpsible for scheduling the execution of these
+    Activations.</para>
 
     <figure>
       <title>Runtime Components</title>
@@ -272,7 +274,7 @@ RuleBase ruleBase = new ReteooRuleBase( conf );</programlisting>
       means ALL of the work is done during assertion; however, no rules are
       executedl you call "fireAllRules()" after you have finished asserting
       your facts. This is a common misunderstanding by people who think the
-      work happens when you call "fireAllRules()". </para>
+      work happens when you call "fireAllRules()".</para>
 
       <para>When an Object is asserted it returns a FactHandle. This
       FactHandle is the token used to represent your asserted Object inside
@@ -283,14 +285,14 @@ RuleBase ruleBase = new ReteooRuleBase( conf );</programlisting>
 FactHandle stiltonHandle = workingMemory.assertObject( stilton );</programlisting>
 
       <para>As mentioned in the Rule Base section a Working Memory may operate
-      in two assertions modes equality and identity - identity is default.
-      </para>
+      in two assertions modes equality and identity - identity is
+      default.</para>
 
       <para>Identity means the Working Memory uses an IdentityHashMap to store
       all asserted Objects. New instance assertions always result in the
       return of a new FactHandle, if an instance is asserted twice then it
       returns the previous fact handle – i.e. it ignores the second assertion
-      for the same fact. </para>
+      for the same fact.</para>
 
       <para>Equality means the Working Memory uses a HashMap to store all
       asserted Objects. New instance assertions will only return a new
@@ -466,7 +468,7 @@ workingMemory.setGlobal("list", list);</programlisting>
     facts, and placed onto the Agenda. The Agenda controls the execution order
     of these Activations using a Conflict Resolution strategy.</para>
 
-    <para>The engine operates in a "2 phase" mode which is recursive: </para>
+    <para>The engine operates in a "2 phase" mode which is recursive:</para>
 
     <orderedlist>
       <listitem>
@@ -481,7 +483,7 @@ workingMemory.setGlobal("list", list);</programlisting>
         <para>Agenda Evaluation - attempts to select a rule to fire, if a rule
         is not found it exits otherwise it attempts to fire the rule switching
         the phase back to Working Memory Actions and the process begins again
-        until the Agenda is empty. </para>
+        until the Agenda is empty.</para>
       </listitem>
     </orderedlist>
 

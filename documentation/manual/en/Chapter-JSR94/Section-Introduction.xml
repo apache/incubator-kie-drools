@@ -2,39 +2,25 @@
 <section>
   <title>Introduction</title>
 
-  <para>JBoss Rules comes with an own implementation for the Java Rule Engine
-  API (known as JSR94). The API allows you to change easier from your current
-  rule engine to JBoss Rules. If your code is making use of Java Rule Engine
-  API, you just need to change the implementation class, which you need to
-  give to the RuleServiceProviderManager, to use JBoss Rules as your rule
-  engine.</para>
+  <para>Drools provides an implementation of the Java Rule Engine API (known
+  as JSR94), which allows for support of multiple rule engines from a single
+  API. JSR94 does not deal in anyway with the rule language itself. W3C is
+  working on the <ulink
+  url="http://www.w3.org/TR/2006/WD-rif-ucr-20060323/">Rule Interchange Format
+  (RIF)</ulink> and the OMG has started to work on a standard based on <ulink
+  url="http://ruleml.org/">RuleML</ulink>, recently Haley Systems has also
+  proposed a rule alnguage standard called RML.</para>
 
-  <para>Well, thus easy it is not, because there is not standarized Rule
-  Language, yet. You will have to translate existing rules to the Drools Rule
-  Language which is supported by JBoss Rules. W3C is planning a <ulink
-  url="http://www.w3.org/TR/2006/WD-rif-ucr-20060323/">Rule Interchange
-  Format (RIF)</ulink> and <ulink url="http://ruleml.org/">RuleML</ulink> is
-  as well an interesting candidate for a Standard Rule Language. Till there is
-  Standard Rule Language, which will be supported by JBoss Rules, you are
-  invited to contribute your transformer, which is transforming rule language
-  X to the Drools Rule Language. The transformer might be a script, class,
-  stylesheet or everything what is doing the job.</para>
-
-  <para>The following sections deal with the use of the Java Rule Engine API.
-  There is a part which explains the specification and one how the Java Rule
-  Engine API can be used in example. If you know the specification, just skip
-  the specification section. There are some interesting links inside of the
-  references section giving you all the information about the Java Rule Engine
-  API you might need.</para>
-
-  <para>Before you start complaining about that you need to write more code
-  and that there is less functionality than if you make use of the native
-  Drools API, it is mentioned now, that a standard represents everytime the
-  lcd (least common denominator) of the specification drivers. That
-  functionality which is common around all the rule engines.</para>
-
-  <para>At the time of writing this documentation the JSR 94 implementation is
-  not supporting rules in XML and Domain Specific Languages. This will change
-  in one of the next releases. Please be appreciative of this fact and keep an
-  eye on the actual release notes.</para>
+  <para>It should be remembered that the JSR94 standard represents the "least
+  common denominator" in features across rule engines - this means there is
+  less functionality in the JSR94 api than in the standard Drools api. So by
+  using JSR94 you are restricting yourself in taking advantage of using the
+  full capabilities of the Drools Rule Engine. It is necessary to expose
+  further functionality, like globals and support for drl, dsl and xml via
+  properties maps due to the very basic feature set of JSR94 - this introduces
+  non portable functionality. Further to this, as JSR94 does not provide a
+  rule language, you are only solving a small fraction of the complexity of
+  switching rule engines with very little gain. So while we support JSR94, for
+  those that insist on using it, we strongly recommend you program against the
+  Drools API.</para>
 </section>
