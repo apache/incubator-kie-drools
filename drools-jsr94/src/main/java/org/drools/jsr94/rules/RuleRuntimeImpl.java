@@ -91,9 +91,7 @@ public class RuleRuntimeImpl
                                                                                    properties,
                                                                                    this.repository );
             return session;
-        }
-
-        if ( ruleSessionType == RuleRuntime.STATEFUL_SESSION_TYPE ) {
+        } else if ( ruleSessionType == RuleRuntime.STATEFUL_SESSION_TYPE ) {
             final StatefulRuleSessionImpl session = new StatefulRuleSessionImpl( uri,
                                                                                  properties,
                                                                                  this.repository );
