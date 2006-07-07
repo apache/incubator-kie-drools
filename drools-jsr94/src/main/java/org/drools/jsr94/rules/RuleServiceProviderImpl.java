@@ -16,8 +16,10 @@ package org.drools.jsr94.rules;
  * limitations under the License.
  */
 
+import javax.rules.ConfigurationException;
 import javax.rules.RuleRuntime;
 import javax.rules.RuleServiceProvider;
+import javax.rules.RuleServiceProviderManager;
 import javax.rules.admin.RuleAdministrator;
 
 import org.drools.jsr94.rules.admin.RuleAdministratorImpl;
@@ -32,6 +34,8 @@ import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
  * provided by Drools should be retrieved using a JNDI lookup. <p/> This class
  * should be constructed using the
  * <code>RuleServiceProviderManager.getRuleServiceProvider</code> method.
+ * This class is automatically registered to "http://drools.org/" on startup, 
+ * via the static block.
  * 
  * @see RuleRuntimeImpl
  * @see RuleAdministratorImpl
@@ -41,6 +45,8 @@ import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
 public class RuleServiceProviderImpl extends RuleServiceProvider {
+    public static final String         RULE_SERVICE_PROVIDER = "http://drools.org/";
+
     /** An instance of <code>RuleRuntimeImpl</code>. */
     private RuleRuntime                ruleRuntime;
 
@@ -48,6 +54,15 @@ public class RuleServiceProviderImpl extends RuleServiceProvider {
     private RuleAdministrator          ruleAdministrator;
 
     private RuleExecutionSetRepository repository;
+
+    static {
+        try {
+            RuleServiceProviderManager.registerRuleServiceProvider( RULE_SERVICE_PROVIDER,
+                                                                    RuleServiceProviderImpl.class );
+        } catch ( ConfigurationException e ) {
+            System.err.println( "Unable to regiser Rule Service  Provider " + RULE_SERVICE_PROVIDER );
+        }
+    }
 
     /**
      * Create a new <code>RuleServiceProviderImpl</code>.
@@ -57,13 +72,15 @@ public class RuleServiceProviderImpl extends RuleServiceProvider {
     }
 
     /**
+     * Returns the RuleExecutionSetRepository
      * @return
      */
     public synchronized RuleExecutionSetRepository getRepository() {
-        if ( this.repository != null ) {
-            return this.repository;
+        // Lazy loaded
+        if ( this.repository == null ) {
+            this.repository = new RuleExecutionSetRepository();
         }
-        return this.repository = new RuleExecutionSetRepository();
+        return this.repository;
     }
 
     /**
@@ -73,10 +90,11 @@ public class RuleServiceProviderImpl extends RuleServiceProvider {
      * @return an instance of <code>RuleRuntime</code>
      */
     public synchronized RuleRuntime getRuleRuntime() {
-        if ( this.ruleRuntime != null ) {
-            return this.ruleRuntime;
+        if ( this.ruleRuntime == null ) {
+            this.ruleRuntime = new RuleRuntimeImpl( getRepository() );
         }
-        return this.ruleRuntime = new RuleRuntimeImpl( getRepository() );
+        
+        return this.ruleRuntime;       
     }
 
     /**
@@ -87,9 +105,10 @@ public class RuleServiceProviderImpl extends RuleServiceProvider {
      * @return an instance of <code>RuleAdministrator</code>
      */
     public synchronized RuleAdministrator getRuleAdministrator() {
-        if ( this.ruleAdministrator != null ) {
-            return this.ruleAdministrator;
+        // Lazy instantiate
+        if ( this.ruleAdministrator == null ) {
+            this.ruleAdministrator = new RuleAdministratorImpl( getRepository() );
         }
-        return this.ruleAdministrator = new RuleAdministratorImpl( getRepository() );
+        return this.ruleAdministrator;
     }
 }

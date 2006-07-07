@@ -42,7 +42,11 @@ package org.drools.jsr94.rules;
  */
 
 import javax.rules.RuleRuntime;
+import javax.rules.RuleServiceProvider;
+import javax.rules.RuleServiceProviderManager;
 import javax.rules.admin.RuleAdministrator;
+
+import junit.framework.TestCase;
 
 /**
  * Test the RuleServiceProvider implementation.
@@ -50,26 +54,32 @@ import javax.rules.admin.RuleAdministrator;
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
-public class RuleServiceProviderTest extends RuleEngineTestBase {
+public class RuleServiceProviderTest extends TestCase {
     /**
      * Test getRuleRuntime.
      */
     public void testRuleRuntime() throws Exception {
-        final RuleRuntime ruleRuntime = this.ruleServiceProvider.getRuleRuntime();
+        Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");
+        RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider("http://drools.org/");
+        
+        final RuleRuntime ruleRuntime = ruleServiceProvider.getRuleRuntime();
         assertNotNull( "cannot obtain RuleRuntime",
                        ruleRuntime );
         assertTrue( "not a class instance",
-                    ruleRuntime == this.ruleServiceProvider.getRuleRuntime() );
+                    ruleRuntime == ruleServiceProvider.getRuleRuntime() );
     }
 
     /**
      * Test getRuleAdministrator.
      */
     public void testRuleAdministrator() throws Exception {
-        final RuleAdministrator ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
+        Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");
+        RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider("http://drools.org/");
+        
+        final RuleAdministrator ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
         assertNotNull( "cannot obtain RuleAdministrator",
                        ruleAdministrator );
         assertTrue( "not a class instance",
-                    ruleAdministrator == this.ruleServiceProvider.getRuleAdministrator() );
+                    ruleAdministrator == ruleServiceProvider.getRuleAdministrator() );
     }
 }
