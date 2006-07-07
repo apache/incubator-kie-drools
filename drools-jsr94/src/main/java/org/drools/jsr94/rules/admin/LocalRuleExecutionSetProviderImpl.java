@@ -100,11 +100,11 @@ public class LocalRuleExecutionSetProviderImpl
                                                    final Map properties) throws RuleExecutionSetCreateException {
         try {
             final PackageBuilder builder = new PackageBuilder();
-            String dsl = null;
+            Object dsl = null;
             String source = null;
             
             if ( properties != null ) {
-                dsl = ( String ) properties.get( "dsl" );
+                dsl = properties.get( "dsl" );
                 source = ( String ) properties.get( "source" );
             }
             
@@ -124,8 +124,13 @@ public class LocalRuleExecutionSetProviderImpl
                     // xml cannot specify a dsl
                     builder.addPackageFromXml( ruleExecutionSetReader );
                 } else {
-                    builder.addPackageFromDrl( ruleExecutionSetReader,
-                                               new StringReader( dsl ) );
+                    if  ( dsl instanceof Reader ) {
+                        builder.addPackageFromDrl( ruleExecutionSetReader,
+                                                   (Reader) dsl );                        
+                    } else {
+                        builder.addPackageFromDrl( ruleExecutionSetReader,
+                                                   new StringReader( (String) dsl ) );
+                    }
                 }               
             }
             
