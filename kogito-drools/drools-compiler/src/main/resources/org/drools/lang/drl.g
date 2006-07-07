@@ -641,7 +641,7 @@ fact_binding returns [PatternDescr d]
  		pd = null;
  		boolean multi = false;
  	}
- 	:	'(' fe=fact_expression[id] ')' { pd=fe; }
+ 	:	'(' opt_eol fe=fact_expression[id]opt_eol ')' { pd=fe; }
  	| 	f=fact opt_eol
  		{
  			((ColumnDescr)f).setIdentifier( id );
@@ -781,7 +781,7 @@ retval_constraint returns [String text]
 		text = null;
 	}
 	:	
-		'(' c=paren_chunk ')' { text = c; }
+		'('  c=paren_chunk  ')' { text = c; }
 	;
 
 predicate[List constraints]
@@ -933,7 +933,7 @@ lhs_unary returns [PatternDescr d]
 		|	u=lhs_not
 		|	u=lhs_eval
 		|	u=lhs_column
-		|	'(' u=lhs ')'
+		|	'(' opt_eol u=lhs opt_eol ')'
 		) { d = u; }
 	;
 	
