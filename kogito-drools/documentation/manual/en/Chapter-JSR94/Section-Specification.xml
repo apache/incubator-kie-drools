@@ -8,7 +8,7 @@
 
   <para>The Java Rule Engine API is divided in two packages. You use
   "javax.rules" mainly for executing the rule engine and "javax.rules.admin"
-  for administration. </para>
+  for administration.</para>
 
   <section>
     <title>javax.rules</title>
@@ -23,7 +23,7 @@
         <listitem>
           <para><interfacename>Handle</interfacename></para>
 
-          <para>The Handle is needed to get an Object back from the
+          <para>The Handle is used to retrieve an Object back from the
           <classname>WorkingMemory</classname> , which was added there in a
           <classname>StatefulRuleSession</classname> . With the
           <classname>Handle</classname> you can modify or remove an
@@ -42,26 +42,25 @@
         <listitem>
           <para><interfacename>ObjectFilter</interfacename></para>
 
-          <para>This interface is used to filter objects. If you give it to a
-          RuleSession, it will filter the output.</para>
+          <para>This interface is used to filter objects for
+          RuleSession.</para>
         </listitem>
 
         <listitem>
           <para><interfacename>RuleExecutionSetMetadata</interfacename></para>
 
-          <para>The RuleExecutionSetMetadata are keeping name, description and
-          URI of a RuleExecutionSet. Do not wonder, in the current
-          implementation name and description are the same.</para>
+          <para>The RuleExecutionSetMetadata is used to store name,
+          description and URI for a RuleExecutionSet.</para>
         </listitem>
 
         <listitem>
           <para><interfacename>RuleRuntime</interfacename></para>
 
           <para>The RuleRuntime is the key to a RuleSession. The RuleRuntime
-          you get from the RuleServiceProvider.</para>
+          obtained from the RuleServiceProvider.</para>
 
-          <para>If you got a RuleRuntime call createRuleSession() to open a
-          RuleSession.</para>
+          <para>If you retrieve a RuleRuntime call createRuleSession() to open
+          a RuleSession.</para>
 
           <para>Through the RuleRuntime you can retrieve a list of URIs of all
           RuleExecutionSets, which were registered by a RuleAdministrator. You
