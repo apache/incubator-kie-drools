@@ -2,7 +2,7 @@
   <parent>
     <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -10,7 +10,7 @@
   <artifactId>drools-decisiontables</artifactId>
 
   <name>Drools :: Decision Tables</name>
-  <version>3.0.1</version>
+  <version>3.0.2</version>
   
   <repositories>
     <repository>
