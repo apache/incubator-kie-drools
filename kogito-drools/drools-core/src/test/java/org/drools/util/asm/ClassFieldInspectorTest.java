@@ -28,7 +28,7 @@ public class ClassFieldInspectorTest extends TestCase {
 
     public void testIt() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( Person.class );
-        assertEquals( 6,
+        assertEquals( 7,
                       ext.getPropertyGetters().size() );
         assertEquals( "getAge",
                       ((Method) ext.getPropertyGetters().get( 0 )).getName() );
@@ -39,7 +39,7 @@ public class ClassFieldInspectorTest extends TestCase {
 
         final Map names = ext.getFieldNames();
         assertNotNull( names );
-        assertEquals( 6,
+        assertEquals( 7,
                       names.size() );
         assertEquals( 0,
                       ((Integer) names.get( "age" )).intValue() );
@@ -163,6 +163,15 @@ public class ClassFieldInspectorTest extends TestCase {
                       ext.getFieldTypes().get( "foo" ) );
 
     }
+    
+    public void testWierdCapsForField() throws Exception {
+        final ClassFieldInspector ext = new ClassFieldInspector( Person.class );
+        final Map methods = ext.getGetterMethods();
+        assertEquals( "getURI",
+                      ((Method) methods.get( "URI" )).getName() );
+        assertEquals( 7,
+                      methods.size() );        
+    }
 
     static class NonGetter {
 
@@ -187,6 +196,7 @@ public class ClassFieldInspectorTest extends TestCase {
         private boolean happy;
         private String  name;
         private int     age;
+        private String  URI;
 
         public int getAge() {
             return this.age;
@@ -225,6 +235,15 @@ public class ClassFieldInspectorTest extends TestCase {
         //this will not show up as it is a getter that takes an argument
         public String getAlsoBad(final String s) {
             return "ignored";
+        }
+        
+        //this should show up, as its a getter, but all CAPS
+        public String getURI() {
+            return this.URI;
+        }
+        
+        public void setURI(String URI) {
+            this.URI = URI;
         }
     }
 

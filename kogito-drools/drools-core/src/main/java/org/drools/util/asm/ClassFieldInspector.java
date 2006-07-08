@@ -127,6 +127,7 @@ public class ClassFieldInspector {
 
         private Class               clazz;
         private ClassFieldInspector inspector;
+        private Map                 fields = new HashMap();
 
         ClassFieldVisitor(final Class cls,
                           final ClassFieldInspector inspector) {
@@ -159,65 +160,50 @@ public class ClassFieldInspector {
             return null;
         }
 
-        public void visit(final int arg0,
-                          final int arg1,
-                          final String arg2,
-                          final String arg3,
-                          final String[] arg4,
-                          final String arg5) {
+        public void visitInnerClass(String name,
+                                    String outerName,
+                                    String innerName,
+                                    int access) {
         }
 
-        public void visitInnerClass(final String arg0,
-                                    final String arg1,
-                                    final String arg2,
-                                    final int arg3) {
-        }
-
-        public void visitField(final int access,
-                               final String arg1,
-                               final String arg2,
-                               final Object arg3,
-                               final Attribute arg4) {
-        }
-
-        public void visitAttribute(final Attribute arg0) {
+        public void visitAttribute(Attribute attr) {
         }
 
         public void visitEnd() {
         }
 
-        public void visit(final int arg0,
-                          final int arg1,
-                          final String arg2,
-                          final String arg3,
-                          final String arg4,
-                          final String[] arg5) {
+        public void visit(int version,
+                          int access,
+                          String name,
+                          String signature,
+                          String superName,
+                          String[] interfaces) {
+        }
+
+        public void visitSource(String source,
+                                String debug) {
 
         }
 
-        public void visitSource(final String arg0,
-                                final String arg1) {
+        public void visitOuterClass(String owner,
+                                    String name,
+                                    String desc) {
 
         }
 
-        public void visitOuterClass(final String arg0,
-                                    final String arg1,
-                                    final String arg2) {
-
-        }
-
-        public AnnotationVisitor visitAnnotation(final String arg0,
-                                                 final boolean arg1) {
+        public AnnotationVisitor visitAnnotation(String desc,
+                                                 boolean visible) {
 
             return new ClassFieldAnnotationVisitor();
         }
 
-        public FieldVisitor visitField(final int arg0,
-                                       final String arg1,
-                                       final String arg2,
-                                       final String arg3,
-                                       final Object arg4) {
-
+        public FieldVisitor visitField(final int access,
+                                       final String name,
+                                       final String desc,
+                                       final String signature,
+                                       final Object value) {
+            this.fields.put( name.toLowerCase(),
+                             name );
             return null;
         }
 
@@ -276,10 +262,15 @@ public class ClassFieldInspector {
 
         private String calcFieldName(String name,
                                      final int offset) {
-            name = name.substring( offset );
-            final char first = Character.toLowerCase( name.charAt( 0 ) );
-            name = first + name.substring( 1 );
-            return name;
+            if ( offset > 0 ) {
+                name = name.substring( offset );
+            }
+            String result = ( String ) this.fields.get( name.toLowerCase() );
+            if  ( result == null ) {
+                final char first = Character.toLowerCase( name.charAt( 0 ) );
+                result = first + name.substring( 1 );
+            }
+            return result;
         }
 
     }
