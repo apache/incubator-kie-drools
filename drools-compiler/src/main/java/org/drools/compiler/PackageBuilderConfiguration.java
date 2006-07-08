@@ -16,6 +16,8 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
+import java.util.Arrays;
+
 import org.drools.RuntimeDroolsException;
 
 /**
@@ -27,6 +29,9 @@ import org.drools.RuntimeDroolsException;
  * 
  * You can also use the system property "drools.compiler" to set the desired compiler.
  * The valid values are "ECLIPSE" and "JANINO" only. 
+ * 
+ * The default Java language level is 1.4 but it can be configured using the 
+ * system property "drools.compiler.lnglevel". Valid values are 1.4, 1.5 and 1.6.
  */
 public class PackageBuilderConfiguration {
     public static final int  ECLIPSE             = 0;
@@ -38,6 +43,12 @@ public class PackageBuilderConfiguration {
     private int              compiler            = PackageBuilderConfiguration.CONFIGURED_COMPILER;
 
     private ClassLoader      classLoader;
+    
+    public static final String DEFAULT_LANGUAGE_LEVEL = "1.4";
+    
+    public static final String[] LANGUAGE_LEVELS = new String[] {"1.4","1.5","1.6"};
+    
+	private String languageLevel = null;
 
     public PackageBuilderConfiguration() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -49,6 +60,19 @@ public class PackageBuilderConfiguration {
 
     public int getCompiler() {
         return this.compiler;
+    }
+    
+    public String getJavaLanguageLevel() {
+        if (languageLevel != null)
+            return languageLevel;
+        languageLevel = System.getProperty( "drools.compiler.lnglevel", DEFAULT_LANGUAGE_LEVEL );
+        if (Arrays.binarySearch( LANGUAGE_LEVELS, languageLevel ) < 0)
+            throw new RuntimeDroolsException( "value '" + languageLevel + "' is not a valid language level" );
+    	return languageLevel;
+    }
+    
+    public void setJavaLanguageLevel(String level) {
+    	languageLevel = level;
     }
 
     /** 
