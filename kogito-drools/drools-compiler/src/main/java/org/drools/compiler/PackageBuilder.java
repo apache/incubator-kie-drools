@@ -28,12 +28,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.jci.compilers.CompilationResult;
+import org.apache.commons.jci.compilers.EclipseJavaCompiler;
+import org.apache.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.apache.commons.jci.compilers.JavaCompiler;
 import org.apache.commons.jci.compilers.JavaCompilerFactory;
 import org.apache.commons.jci.problems.CompilationProblem;
 import org.apache.commons.jci.readers.MemoryResourceReader;
 import org.apache.commons.jci.readers.ResourceReader;
-import org.apache.commons.jci.stores.ResourceStore;
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -99,8 +101,8 @@ public class PackageBuilder {
             configuration = new PackageBuilderConfiguration();
         }
 
-        this.compiler = getCompiler( configuration.getCompiler() );
         this.configuration = configuration;
+        loadCompiler();
         this.src = new MemoryResourceReader();
         this.results = new ArrayList();
         this.errorHandlers = new HashMap();
@@ -298,8 +300,9 @@ public class PackageBuilder {
                                                          "java",
                                                          this.src );
         ruleDescr.SetClassName( ucFirst( ruleClassName ) );
-        
-        final RuleBuilder builder = new RuleBuilder( getTypeResolver(), classFieldExtractorCache );
+
+        final RuleBuilder builder = new RuleBuilder( getTypeResolver(),
+                                                     classFieldExtractorCache );
 
         builder.build( this.pkg,
                        ruleDescr );
@@ -351,8 +354,8 @@ public class PackageBuilder {
      * It will not actually call the compiler
      */
     private void addRuleSemantics(final RuleBuilder builder,
-                                 final Rule rule,
-                                 final RuleDescr ruleDescr) {
+                                  final Rule rule,
+                                  final RuleDescr ruleDescr) {
         // The compilation result is for th entire rule, so difficult to associate with any descr
         addClassCompileTask( this.pkg.getName() + "." + ruleDescr.getClassName(),
                              builder.getRuleClass(),
@@ -425,13 +428,13 @@ public class PackageBuilder {
             Collection errors = this.errorHandlers.values();
             for ( Iterator iter = errors.iterator(); iter.hasNext(); ) {
                 ErrorHandler handler = (ErrorHandler) iter.next();
-                if ( !(handler instanceof RuleInvokerErrorHandler) ) {                    
+                if ( !(handler instanceof RuleInvokerErrorHandler) ) {
                     this.results.add( handler.getError() );
                 } else {
                     //we don't really want to report invoker errors.
                     //mostly as they can happen when there is a syntax error in the RHS
                     //and otherwise, it is a programmatic error in drools itself.
-                    System.err.println( "!!!! An error occurred compiling the invoker: " + handler.getError() );                    
+                    System.err.println( "!!!! An error occurred compiling the invoker: " + handler.getError() );
                 }
             }
         }
@@ -498,13 +501,21 @@ public class PackageBuilder {
         return newName;
     }
 
-    private JavaCompiler getCompiler(final int compiler) {
-        switch ( compiler ) {
-            case PackageBuilderConfiguration.JANINO :
-                return JavaCompilerFactory.getInstance().createCompiler( "janino" );
+    private void loadCompiler() {
+        switch ( configuration.getCompiler() ) {
+            case PackageBuilderConfiguration.JANINO : {
+                if ( !"1.4".intern().equals( configuration.getJavaLanguageLevel() ) ) throw new RuntimeDroolsException( "Incompatible Java language level with selected compiler" );
+                compiler = JavaCompilerFactory.getInstance().createCompiler( "janino" );
+            }
             case PackageBuilderConfiguration.ECLIPSE :
-            default :
-                return JavaCompilerFactory.getInstance().createCompiler( "eclipse" );
+            default : {
+                EclipseJavaCompilerSettings eclipseSettings = new EclipseJavaCompilerSettings();
+                eclipseSettings.getMap().put( "org.eclipse.jdt.core.compiler.codegen.targetPlatform",
+                                              configuration.getJavaLanguageLevel() );
+                eclipseSettings.getMap().put( "org.eclipse.jdt.core.compiler.source",
+                                              configuration.getJavaLanguageLevel() );
+                compiler = new EclipseJavaCompiler( eclipseSettings );
+            }
         }
     }
 
@@ -619,5 +630,7 @@ public class PackageBuilder {
         }
 
     }
+
+    private static JavaCompiler cachedJavaCompiler = null;
 
 }
