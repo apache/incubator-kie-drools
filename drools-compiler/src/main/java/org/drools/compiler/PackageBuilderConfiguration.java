@@ -34,21 +34,21 @@ import org.drools.RuntimeDroolsException;
  * system property "drools.compiler.lnglevel". Valid values are 1.4, 1.5 and 1.6.
  */
 public class PackageBuilderConfiguration {
-    public static final int  ECLIPSE             = 0;
-    public static final int  JANINO              = 1;
+    public static final int      ECLIPSE                   = 0;
+    public static final int      JANINO                    = 1;
 
-    /** This will be only setup once. It tries to look for a system property */
-    private static final int CONFIGURED_COMPILER = getDefaultCompiler();
+    public static final String[] LANGUAGE_LEVELS           = new String[]{"1.4", "1.5", "1.6"};
+    public static final String   DEFAULT_LANGUAGE_LEVEL    = "1.4";
+    
+    /** These will be only setup once. It tries to look for a system property */
+    private static final int     CONFIGURED_COMPILER       = getDefaultCompiler();
+    private static final String  CONFIGURED_LANGUAGE_LEVEL = getDefaultLanguageLevel();
+    
+    private int                  compiler                  = PackageBuilderConfiguration.CONFIGURED_COMPILER;
 
-    private int              compiler            = PackageBuilderConfiguration.CONFIGURED_COMPILER;
+    private ClassLoader          classLoader;
 
-    private ClassLoader      classLoader;
-    
-    public static final String DEFAULT_LANGUAGE_LEVEL = "1.4";
-    
-    public static final String[] LANGUAGE_LEVELS = new String[] {"1.4","1.5","1.6"};
-    
-	private String languageLevel = null;
+    private String               languageLevel             = PackageBuilderConfiguration.CONFIGURED_LANGUAGE_LEVEL;
 
     public PackageBuilderConfiguration() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -61,18 +61,18 @@ public class PackageBuilderConfiguration {
     public int getCompiler() {
         return this.compiler;
     }
-    
+
     public String getJavaLanguageLevel() {
-        if (languageLevel != null)
-            return languageLevel;
-        languageLevel = System.getProperty( "drools.compiler.lnglevel", DEFAULT_LANGUAGE_LEVEL );
-        if (Arrays.binarySearch( LANGUAGE_LEVELS, languageLevel ) < 0)
-            throw new RuntimeDroolsException( "value '" + languageLevel + "' is not a valid language level" );
-    	return languageLevel;
+        if ( languageLevel != null ) return languageLevel;
+        languageLevel = System.getProperty( "drools.compiler.lnglevel",
+                                            DEFAULT_LANGUAGE_LEVEL );
+        if ( Arrays.binarySearch( LANGUAGE_LEVELS,
+                                  languageLevel ) < 0 ) throw new RuntimeDroolsException( "value '" + languageLevel + "' is not a valid language level" );
+        return languageLevel;
     }
-    
+
     public void setJavaLanguageLevel(String level) {
-    	languageLevel = level;
+        languageLevel = level;
     }
 
     /** 
@@ -111,7 +111,7 @@ public class PackageBuilderConfiguration {
     static int getDefaultCompiler() {
         try {
             final String prop = System.getProperty( "drools.compiler",
-                                              "ECLIPSE" );
+                                                    "ECLIPSE" );
             if ( prop.equals( "ECLIPSE".intern() ) ) {
                 return PackageBuilderConfiguration.ECLIPSE;
             } else if ( prop.equals( "JANINO" ) ) {
@@ -124,5 +124,26 @@ public class PackageBuilderConfiguration {
             System.err.println( "Drools config: unable to read the drools.compiler property. Using default." );
             return PackageBuilderConfiguration.ECLIPSE;
         }
+    }
+
+    static String getDefaultLanguageLevel() {
+        try {
+            String languageLevel = System.getProperty( "drools.compiler.lnglevel",
+                                                       DEFAULT_LANGUAGE_LEVEL );
+
+            if ( Arrays.binarySearch( LANGUAGE_LEVELS,
+                                      languageLevel ) < 0 ) {
+                throw new RuntimeDroolsException( "value '" + languageLevel + "' is not a valid language level" );
+            }
+
+            return languageLevel;
+        } catch ( Exception e) {
+            e.printStackTrace();
+            return "1.4";
+        }
+//        } catch ( final SecurityException e ) {
+//            System.err.println( "Drools config: unable to read the drools.compiler.lnglevel property. Using default." );
+//            return "1.4";
+//        }
     }
 }
