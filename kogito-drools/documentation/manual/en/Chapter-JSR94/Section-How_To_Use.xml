@@ -20,7 +20,7 @@
         <title>Automatic RuleServiceProvider Registration</title>
 
         <programlisting>// RuleServiceProviderImpl is registered to "http://drools.org/" via a static initialization block
-Class.forName("org.jcp.jsr94.jess.RuleServiceProviderImpl");
+Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");
 
 // Get the rule service provider from the provider manager.
 RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider("http://drools.org/");</programlisting>
@@ -28,10 +28,10 @@ RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServ
     RuleAdministration APIs. The RuleAdministration provides an administration
     API for the management of RuleExecutionSets, making it possible to
     register a RuleExecutionSet that can then be retrieved via the
-    RuleRuntime. </para>
+    RuleRuntime.</para>
 
     <para>First you need to create a RuleExecutionSet before it can be
-    registered; RuleAdministration provides factory methods to return an empty
+    registered; RuleAdministrator provides factory methods to return an empty
     LocalRuleExecutionSetProvider or RuleExecutionSetProvider. The
     LocalRuleExecutionSetProvider should be used to load a RuleExecutionSets
     from local sources that are not serializable, like Streams. The
@@ -39,8 +39,8 @@ RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServ
     serializable sources, like DOM Elements or Packages. Both the
     "ruleAdministrator.getLocalRuleExecutionSetProvider( null );" and the
     "ruleAdministrator.getRuleExecutionSetProvider( null );" take null as a
-    parameter, as the properties map for these methods is not currently used.
-    </para>
+    parameter, as the properties map for these methods is not currently
+    used.</para>
 
     <example>
       <title>Registering a LocalRuleExecutionSet with the RuleAdministration
@@ -92,9 +92,9 @@ RuleExecutionSet ruleExecutionSet = ruleExecutionSetProvider.createRuleExecution
 </programlisting>
     </example>
 
-    <para>When registering a RuleExecution set you must specify the name, to
-    be used for its retrieval. There is also a field to pass properties, this
-    is currently unused so just pass null.</para>
+    <para>When registering a RuleExecutionSet you must specify the name, to be
+    used for its retrieval. There is also a field to pass properties, this is
+    currently unused so just pass null.</para>
 
     <example>
       <title>Register the RuleExecutionSet</title>
@@ -108,13 +108,13 @@ ruleAdministrator.registerRuleExecutionSet(uri, ruleExecutionSet, null);</progra
   <section>
     <title>Using Stateful and Stateless RuleSessions</title>
 
-    <para>The Runtime, obtained from the RuleExecutionSetProvider, is used to
+    <para>The Runtime, obtained from the RuleServiceProvider, is used to
     create stateful and stateless rule engine sessions.</para>
 
     <example>
       <title>Getting the RuleRuntime</title>
 
-      <programlisting>RuleRuntime ruleRuntime = ruleExecutionSetProvider.getRuleRuntime();</programlisting>
+      <programlisting>RuleRuntime ruleRuntime = ruleServiceProvider.getRuleRuntime();</programlisting>
     </example>
 
     <para>To create a rule session you must use one of the two RuleRuntime
@@ -129,11 +129,11 @@ ruleAdministrator.registerRuleExecutionSet(uri, ruleExecutionSet, null);</progra
     <example>
       <title>Stateful Rule</title>
 
-      <programlisting>(StateFulRuleSession) session = ruleRuntime.createRuleSession( uri,
+      <programlisting>(StatefulRuleSession) session = ruleRuntime.createRuleSession( uri,
                                                                null,
                                                                RuleRuntime.STATEFUL_SESSION_TYPE );
 session.addObject( new PurchaseOrder( "lots of cheese" ) );
-session.executeObjects();</programlisting>
+session.executeRules();</programlisting>
     </example>
 
     <para>The StatelessRuleSession has a very simple API; you can only call
