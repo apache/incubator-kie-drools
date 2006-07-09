@@ -48,7 +48,7 @@ import javax.rules.admin.RuleExecutionSetRegisterException;
  */
 public class RuleAdministratorImpl
     implements
-    RuleAdministrator {
+    RuleAdministrator, java.io.Serializable {
     private RuleExecutionSetRepository repository;
 
     /** Default constructor. */
