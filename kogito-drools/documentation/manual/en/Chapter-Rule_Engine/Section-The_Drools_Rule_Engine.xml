@@ -84,7 +84,7 @@
     package namespace for the current PackageBuilder instance.</para>
 
     <example>
-      <title></title>
+      <title>Building a Package from multiple sources</title>
 
       <programlisting>PackageBuilder builder = new PackageBuilder();
 builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "package1.drl" ) ) );
@@ -100,11 +100,31 @@ Package pkg = builder.getPackage();</programlisting>
     is Eclipse JDT Core at source level "1.4" with the parent class loader set
     to "Thread.currentThread().getContextClassLoader()".</para>
 
-    <para>The following show how to specify the JANINO compiler</para>
+    <para>The following show how to specify the JANINO compiler
+    programmatically:</para>
 
-    <programlisting>PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+    <example>
+      <title>Configuring the PackageBuilder to use JANINO</title>
+
+      <programlisting>PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
 conf.setCompiler( PackageBuilderConfiguration.JANINO );
 PackageBuilder builder = new PackageBuilder( conf );</programlisting>
+    </example>
+
+    <para>This could also be done with a property file setting
+    "drools.compiler=JANINO".</para>
+
+    <example>
+      <title>Configuring the PackageBuilder to build with JDk 1.5
+      compatability</title>
+
+      <programlisting>PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+conf.setJavaLanguageLevel( "1.5" );
+PackageBuilder builder = new PackageBuilder( conf );</programlisting>
+    </example>
+
+    <para>This could also be done with a property file setting
+    "drools.compiler.languagelevel=1.5".</para>
 
     <figure>
       <title>PackageBuilderConfiguration</title>

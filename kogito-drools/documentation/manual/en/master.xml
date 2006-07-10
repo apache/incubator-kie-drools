@@ -5,7 +5,7 @@
 
     <subtitle>Drools Documentation</subtitle>
 
-    <releaseinfo>3.0</releaseinfo>
+    <releaseinfo>3.0.2</releaseinfo>
 
     <author>
       <firstname>Mark</firstname>
@@ -24,7 +24,7 @@
 
       <surname>Lin</surname>
     </author>
-    
+
     <author>
       <firstname>Michael</firstname>
 
@@ -60,10 +60,10 @@
 
       <xi:include href="Chapter-Rule_Engine/Section-Rules.xml" />
 
-      <xi:include href="Chapter-Rule_Engine/Section-Rete_Algorithm.xml" />            
-      
+      <xi:include href="Chapter-Rule_Engine/Section-Rete_Algorithm.xml" />
+
       <xi:include href="Chapter-Rule_Engine/Section-Leaps_Algorithm.xml" />
-      
+
       <xi:include href="Chapter-Rule_Engine/Section-The_Drools_Rule_Engine.xml" />
 
       <!--xi:include href="Chapter-Rule_Engine/Section-Rule_Base.xml" />
@@ -104,9 +104,9 @@
 
       <xi:include href="Chapter-Rule_Language/Section-Query.xml" />
 
-	  <xi:include href="Chapter-Rule_Language/Section-DSL.xml" />
+      <xi:include href="Chapter-Rule_Language/Section-DSL.xml" />
 
-	  <xi:include href="Chapter-Rule_Language/Section-XML.xml" />
+      <xi:include href="Chapter-Rule_Language/Section-XML.xml" />
 
       <!--xi:include href="Chapter-Rule_Language/Section-Column.xml" />
 
@@ -115,10 +115,11 @@
       <xi:include href="Chapter-Rule_Language/Section-Conditional_Elements.xml" /-->
     </chapter>
 
-	<chapter>
-		<title>Decision Tables</title>
-		<xi:include href="Chapter-Decision_Tables/Section-Spreadsheet.xml" />
-	</chapter>
+    <chapter>
+      <title>Decision Tables</title>
+
+      <xi:include href="Chapter-Decision_Tables/Section-Spreadsheet.xml" />
+    </chapter>
 
     <chapter>
       <title>The Rule Workbench (IDE)</title>
@@ -128,22 +129,23 @@
 
     <chapter>
       <title>The Java Rule Engine API</title>
-      
+
       <xi:include href="Chapter-JSR94/Section-Introduction.xml" />
 
       <!-- Removed till it can be completed -->
+
       <!-- include href="Chapter-JSR94/Section-Specification.xml" /-->
-      
+
       <xi:include href="Chapter-JSR94/Section-How_To_Use.xml" />
-      
+
       <xi:include href="Chapter-JSR94/Section-References.xml" />
-      
     </chapter>
 
-	<chapter>
-		<title>Performance tuning</title>
-		<xi:include href="Chapter-Performance_Tuning/Section-Performance.xml" />
-	</chapter>
+    <chapter>
+      <title>Performance tuning</title>
+
+      <xi:include href="Chapter-Performance_Tuning/Section-Performance.xml" />
+    </chapter>
 
     <chapter>
       <title>Examples</title>
@@ -151,19 +153,20 @@
       <xi:include href="Chapter-Examples/Section-Examples.xml" />
     </chapter>
 
-	<chapter>
-		<title>Deployment and Testing</title>
-		<xi:include href="Chapter-Deployment/Section-Deployment.xml" />
-		<xi:include href="Chapter-Deployment/Section-Testing.xml" />
-	</chapter>
-    
+    <chapter>
+      <title>Deployment and Testing</title>
+
+      <xi:include href="Chapter-Deployment/Section-Deployment.xml" />
+
+      <xi:include href="Chapter-Deployment/Section-Testing.xml" />
+    </chapter>
+
     <chapter>
       <title>Papers</title>
 
       <xi:include href="Chapter-Papers/Section-Manners.xml" />
-    </chapter>    
-
-    
+    </chapter>
   </part>
+
   <index />
 </book>
