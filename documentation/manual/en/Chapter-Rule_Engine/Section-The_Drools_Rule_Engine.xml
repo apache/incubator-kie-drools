@@ -83,15 +83,24 @@
     the classpath. Note that all added package sources must be of the same
     package namespace for the current PackageBuilder instance.</para>
 
-    <programlisting>PackageBuilder builder = new PackageBuilder();
+    <example>
+      <title></title>
+
+      <programlisting>PackageBuilder builder = new PackageBuilder();
 builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "package1.drl" ) ) );
 builder.addPackageFromXml( new InputStreamReader( getClass().getResourceAsStream( "package2.drl" ) ) );
 Package pkg = builder.getPackage();</programlisting>
+    </example>
 
-    <para>PackagBuilder is configurable, using PackageBuilderConfiguration.
-    Currently it allows you to specify an alternative parent ClassLoader and
-    also which compiler to us - the default is Eclipse JDT. The following show
-    how to specify the JANINO compiler</para>
+    <para>PackagBuilder is configurable, using PackageBuilderConfiguration. It
+    has default values that can be overriden programmatically via setters or
+    on first use via property settings. Currently it allows alternative
+    compilers (Janino, Eclipse JDT) to be specified, different jdk source
+    levels ("1.4" and "1.5") and a parent class loader. The default compiler
+    is Eclipse JDT Core at source level "1.4" with the parent class loader set
+    to "Thread.currentThread().getContextClassLoader()".</para>
+
+    <para>The following show how to specify the JANINO compiler</para>
 
     <programlisting>PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
 conf.setCompiler( PackageBuilderConfiguration.JANINO );
