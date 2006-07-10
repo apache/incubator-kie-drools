@@ -128,7 +128,7 @@ public class PackageBuilderConfiguration {
 
     static String getDefaultLanguageLevel() {
         try {
-            String languageLevel = System.getProperty( "drools.compiler.lnglevel",
+            String languageLevel = System.getProperty( "drools.compiler.languagelevel",
                                                        DEFAULT_LANGUAGE_LEVEL );
 
             if ( Arrays.binarySearch( LANGUAGE_LEVELS,
