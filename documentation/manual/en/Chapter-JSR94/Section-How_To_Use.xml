@@ -123,7 +123,7 @@ ruleAdministrator.registerRuleExecutionSet(uri, ruleExecutionSet, null);</progra
     RuleExecutionSet you wish to instantiate a RuleSession for. The properties
     map can be null, or it can be used to specify globals, as shown in the
     next section. The createRuleSession(....) method returns a RuleSession
-    instance which must then be cast to StateFulRuleSession or
+    instance which must then be cast to StatefulRuleSession or
     StatelessRuleSession.</para>
 
     <example>
