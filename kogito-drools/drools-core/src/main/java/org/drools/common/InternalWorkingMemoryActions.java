@@ -24,7 +24,7 @@ import org.drools.spi.Activation;
 
 public interface InternalWorkingMemoryActions
     extends
-    WorkingMemory {
+    InternalWorkingMemory {
     public void modifyObject(FactHandle handle,
                              Object object,
                              Rule rule,

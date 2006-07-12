@@ -57,8 +57,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
      * @param ruleBase
      *            The backing rule-base.
      */
-    public ReteooWorkingMemory(final InternalRuleBase ruleBase) {
-        super( ruleBase,
+    public ReteooWorkingMemory(final int  id, 
+                               final InternalRuleBase ruleBase) {
+        super( id,
+               ruleBase,
                ruleBase.newFactHandleFactory() );
         this.agenda = new DefaultAgenda( this );
     }

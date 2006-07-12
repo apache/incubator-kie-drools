@@ -78,7 +78,8 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
                                                                        new MockObjectSource( 15 ) );
@@ -141,7 +142,8 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final MockObjectSource source = new MockObjectSource( 15 );
 

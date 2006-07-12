@@ -152,7 +152,8 @@ public class HashedObjectSinkListTest extends TestCase {
      * Test method for 'org.drools.reteoo.HashedObjectSinkList.iterator(WorkingMemory, FactHandleImpl)'
      */
     public void testIterator() {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
         final MockObjectSource source = new MockObjectSource( 15 );
         final MockObjectSink sink = new MockObjectSink();
 

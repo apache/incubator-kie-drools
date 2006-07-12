@@ -49,7 +49,8 @@ public class JoinNodeTest extends DroolsTestCase {
                                                    PropagationContext.ASSERTION,
                                                    null,
                                                    null );
-        this.workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        this.workingMemory = new ReteooWorkingMemory( 1,
+                                                      new ReteooRuleBase() );
 
         this.tupleSource = new MockTupleSource( 4 );
         this.objectSource = new MockObjectSource( 4 );
@@ -98,7 +99,8 @@ public class JoinNodeTest extends DroolsTestCase {
     }
 
     public void testMemory() {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final MockObjectSource objectSource = new MockObjectSource( 1 );
         final MockTupleSource tupleSource = new MockTupleSource( 1 );
@@ -343,7 +345,8 @@ public class JoinNodeTest extends DroolsTestCase {
     }
 
     public void testUpdateWithMemory() {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final JoinNode joinNode = new JoinNode( 1,
                                                 this.tupleSource,

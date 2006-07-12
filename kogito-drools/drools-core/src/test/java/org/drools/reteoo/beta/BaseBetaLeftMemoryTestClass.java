@@ -62,7 +62,8 @@ public abstract class BaseBetaLeftMemoryTestClass extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        this.workingMemory = new ReteooWorkingMemory( 0, 
+                                                      new ReteooRuleBase() );
         this.obj0 = new DummyValueObject( true,
                                           "string1",
                                           10,

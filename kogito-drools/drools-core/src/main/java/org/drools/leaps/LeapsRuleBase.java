@@ -56,7 +56,7 @@ public class LeapsRuleBase extends AbstractRuleBase {
      *            The rete network.
      * @throws PackageIntegrationException
      */
-    public LeapsRuleBase() throws PackageIntegrationException {
+    public LeapsRuleBase() {
         this( null,
               null,
               new LeapsFactHandleFactory() );
@@ -69,7 +69,7 @@ public class LeapsRuleBase extends AbstractRuleBase {
      *            The rete network.
      * @throws PackageIntegrationException
      */
-    public LeapsRuleBase(final String id) throws PackageIntegrationException {
+    public LeapsRuleBase(final String id) {
         this( id,
               null,
               new LeapsFactHandleFactory() );
@@ -109,7 +109,8 @@ public class LeapsRuleBase extends AbstractRuleBase {
      * @see RuleBase
      */
     public WorkingMemory newWorkingMemory(final boolean keepReference) {
-        final LeapsWorkingMemory workingMemory = new LeapsWorkingMemory( this );
+        final LeapsWorkingMemory workingMemory = new LeapsWorkingMemory( this.workingMemoryCounter++, 
+                                                                         this );
         // add all rules added so far
         for ( final Iterator it = this.leapsRules.values().iterator(); it.hasNext(); ) {
             workingMemory.addLeapsRules( (List) it.next() );

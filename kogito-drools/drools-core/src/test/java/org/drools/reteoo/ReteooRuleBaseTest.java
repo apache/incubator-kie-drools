@@ -19,7 +19,7 @@ package org.drools.reteoo;
 import org.drools.DroolsTestCase;
 import org.drools.WorkingMemory;
 
-public class RuleBaseImplTest extends DroolsTestCase {
+public class ReteooRuleBaseTest extends DroolsTestCase {
     ReteooRuleBase ruleBase;
 
     WorkingMemory  wm1;
@@ -185,5 +185,6 @@ public class RuleBaseImplTest extends DroolsTestCase {
                       this.ruleBase.getGlobals().values() );
 
     }
+    
 
 }

@@ -45,11 +45,7 @@ public class RuleBaseFactory {
             case RuleBase.RETEOO :
                 return new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString() );
             case RuleBase.LEAPS :
-                try {
-                    return new org.drools.leaps.LeapsRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString() );
-                } catch ( final PackageIntegrationException e ) {
-                    throw new IllegalStateException( "Unable to create Leaps engine. Error: " + e.getMessage() );
-                }
+                return new org.drools.leaps.LeapsRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString() );
             default :
                 throw new IllegalArgumentException( "Unknown engine type: " + type );
 

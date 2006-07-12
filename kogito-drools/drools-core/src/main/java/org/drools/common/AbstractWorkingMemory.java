@@ -62,7 +62,6 @@ import org.drools.util.concurrent.locks.ReentrantLock;
  */
 public abstract class AbstractWorkingMemory
     implements
-    WorkingMemory,
     InternalWorkingMemoryActions,
     EventSupport,
     PropertyChangeListener {
@@ -74,6 +73,7 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
+    protected final long                      id;
 
     /** The arguments used when adding/removing a property change listener. */
     protected final Object[]                  addRemovePropertyChangeListenerArgs           = new Object[]{this};
@@ -126,8 +126,10 @@ public abstract class AbstractWorkingMemory
      * @param ruleBase
      *            The backing rule-base.
      */
-    public AbstractWorkingMemory(final InternalRuleBase ruleBase,
+    public AbstractWorkingMemory(final int id,
+                                 final InternalRuleBase ruleBase,
                                  final FactHandleFactory handleFactory) {
+        this.id = id;
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
         this.tms = new TruthMaintenanceSystem( this );
@@ -208,6 +210,10 @@ public abstract class AbstractWorkingMemory
             this.globals.put( name,
                               value );
         }
+    }
+    
+    public long getId() {
+        return this.id;
     }
 
     /**

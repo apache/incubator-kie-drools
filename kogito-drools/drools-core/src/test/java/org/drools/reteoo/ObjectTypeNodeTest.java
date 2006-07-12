@@ -59,7 +59,8 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final Rete source = new Rete();
 
@@ -95,7 +96,8 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testMemory() {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
@@ -134,7 +136,8 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final Rete source = new Rete();
 
@@ -184,7 +187,8 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final Rete source = new Rete();
 

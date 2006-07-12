@@ -56,7 +56,8 @@ public class TupleSourceTest extends DroolsTestCase {
                                                                        PropagationContext.RETRACTION,
                                                                        null,
                                                                        null );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final MockTupleSource source = new MockTupleSource( 15 );
         final MockTupleSink sink1 = new MockTupleSink();

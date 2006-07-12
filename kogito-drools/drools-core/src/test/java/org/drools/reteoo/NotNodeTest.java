@@ -52,7 +52,8 @@ public class NotNodeTest extends DroolsTestCase {
                                                    PropagationContext.ASSERTION,
                                                    null,
                                                    null );
-        this.workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        this.workingMemory = new ReteooWorkingMemory( 1,
+                                                      new ReteooRuleBase() );
 
         // string1Declaration is bound to column 3 
         this.node = new NotNode( 15,
