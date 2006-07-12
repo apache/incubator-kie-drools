@@ -58,9 +58,23 @@ public class LeapsRuleBase extends AbstractRuleBase {
      */
     public LeapsRuleBase() throws PackageIntegrationException {
         this( null,
+              null,
               new LeapsFactHandleFactory() );
     }
 
+    /**
+     * Construct.
+     * 
+     * @param rete
+     *            The rete network.
+     * @throws PackageIntegrationException
+     */
+    public LeapsRuleBase(final String id) throws PackageIntegrationException {
+        this( id,
+              null,
+              new LeapsFactHandleFactory() );
+    }    
+    
     /**
      * Construct.
      * 
@@ -75,9 +89,11 @@ public class LeapsRuleBase extends AbstractRuleBase {
      * @throws PackageIntegrationException
      * @throws Exception
      */
-    public LeapsRuleBase(final RuleBaseConfiguration config,
+    public LeapsRuleBase(final String id,
+                         final RuleBaseConfiguration config,
                          final FactHandleFactory factHandleFactory) {
-        super( config,
+        super( id,
+               config,
                factHandleFactory );
         this.leapsRules = new HashMap();
     }

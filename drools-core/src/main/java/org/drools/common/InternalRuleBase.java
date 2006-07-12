@@ -33,12 +33,7 @@ public interface InternalRuleBase
     /**
      * @return the id
      */
-    public String getId();
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id);    
+    public String getId();  
     
     public FactHandleFactory newFactHandleFactory();
 
