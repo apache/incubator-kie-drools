@@ -24,10 +24,15 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.jci.compilers.EclipseJavaCompiler;
+import org.apache.commons.jci.compilers.EclipseJavaCompilerSettings;
+import org.apache.commons.jci.compilers.JaninoJavaCompiler;
+import org.apache.commons.jci.compilers.JavaCompiler;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
@@ -52,7 +57,6 @@ import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.And;
-import org.drools.rule.BoundVariableConstraint;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
@@ -64,8 +68,8 @@ import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
-import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Activation;
+import org.drools.spi.CompiledInvoker;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
@@ -820,6 +824,49 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors() );
     }
 
+    public void testCompilerConfiguration() throws  Exception {
+        // test default is eclipse jdt core
+        PackageBuilder builder = new PackageBuilder( );;        
+        Field compilerField = builder.getClass().getDeclaredField( "compiler" );
+        compilerField.setAccessible(true);
+        JavaCompiler compiler = ( JavaCompiler ) compilerField.get( builder );
+        assertSame( EclipseJavaCompiler.class, compiler.getClass() );
+        
+        // test JANINO with property settings
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();       
+        conf.setCompiler( PackageBuilderConfiguration.JANINO );
+        builder = new PackageBuilder( conf );;      
+        compiler = ( JavaCompiler ) compilerField.get( builder );
+        assertSame( JaninoJavaCompiler.class, compiler.getClass() );
+        
+        // test eclipse jdt core with property settings and default source level
+        conf = new PackageBuilderConfiguration();       
+        conf.setCompiler( PackageBuilderConfiguration.ECLIPSE );
+        builder = new PackageBuilder( conf );;      
+        compiler = ( JavaCompiler ) compilerField.get( builder );
+        assertSame( EclipseJavaCompiler.class, compiler.getClass() );   
+        
+        EclipseJavaCompiler eclipseCompiler = ( EclipseJavaCompiler ) compiler;
+        Field settingsField  = eclipseCompiler.getClass().getDeclaredField( "settings" );
+        settingsField.setAccessible( true );
+        EclipseJavaCompilerSettings settings = ( EclipseJavaCompilerSettings ) settingsField.get( eclipseCompiler );
+        assertEquals( "1.4", settings.getMap().get( "org.eclipse.jdt.core.compiler.codegen.targetPlatform" ) );
+        assertEquals( "1.4", settings.getMap().get( "org.eclipse.jdt.core.compiler.source" ) );
+        
+        // test eclipse jdt core with property settings and jdk1.5 source level
+        conf = new PackageBuilderConfiguration();       
+        conf.setCompiler( PackageBuilderConfiguration.ECLIPSE );
+        conf.setJavaLanguageLevel( "1.5" );
+        builder = new PackageBuilder( conf );;      
+        compiler = ( JavaCompiler ) compilerField.get( builder );
+        assertSame( EclipseJavaCompiler.class, compiler.getClass() );   
+        
+        eclipseCompiler = ( EclipseJavaCompiler ) compiler;
+        settings = ( EclipseJavaCompilerSettings ) settingsField.get( eclipseCompiler );
+        assertEquals( "1.5", settings.getMap().get( "org.eclipse.jdt.core.compiler.codegen.targetPlatform" ) );
+        assertEquals( "1.5", settings.getMap().get( "org.eclipse.jdt.core.compiler.source" ) );     
+    }    
+    
     private void createReturnValueRule(final PackageDescr packageDescr,
                                        final String expression) {
         final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
