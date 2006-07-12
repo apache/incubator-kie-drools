@@ -36,7 +36,8 @@ public class ClassFieldInspectorTest extends TestCase {
                       ((Method) ext.getPropertyGetters().get( 1 )).getName() );
         assertEquals( "getName",
                       ((Method) ext.getPropertyGetters().get( 2 )).getName() );
-
+ 
+        
         final Map names = ext.getFieldNames();
         assertNotNull( names );
         assertEquals( 7,
@@ -47,7 +48,8 @@ public class ClassFieldInspectorTest extends TestCase {
                       ((Integer) names.get( "happy" )).intValue() );
         assertEquals( 2,
                       ((Integer) names.get( "name" )).intValue() );
-
+        assertNull( names.get( "nAme" ) );
+        
     }
 
     public void testInterface() throws Exception {
@@ -91,9 +93,21 @@ public class ClassFieldInspectorTest extends TestCase {
     }
 
     public void testInheritedFields() throws Exception {
-        final ClassFieldInspector ext = new ClassFieldInspector( BeanInherit.class );
+        ClassFieldInspector ext = new ClassFieldInspector( BeanInherit.class );
         assertEquals( 5,
                       ext.getPropertyGetters().size() );
+        
+        ext = new ClassFieldInspector( InterfaceChildImpl.class );
+        assertEquals( 8,
+                      ext.getPropertyGetters().size() );
+        // test inheritence from abstract class
+        assertEquals( 4, ( (Integer) ext.getFieldNames().get( "HTML" )).intValue() );
+        
+        // check normal field on child class
+        assertEquals( 1, ( (Integer) ext.getFieldNames().get( "baz" )).intValue() );
+        
+        // test inheritence from an interface
+        assertEquals( 3, ( (Integer) ext.getFieldNames().get( "URI" )).intValue() );
     }
 
     public void testIntefaceInheritance() throws Exception {
@@ -101,7 +115,8 @@ public class ClassFieldInspectorTest extends TestCase {
         final Map fields = ext.getFieldNames();
         assertTrue( fields.containsKey( "foo" ) );
         assertTrue( fields.containsKey( "bar" ) );
-        assertTrue( fields.containsKey( "baz" ) );
+        assertTrue( fields.containsKey( "baz" ) );        
+        assertTrue( fields.containsKey( "URI" ) );
     }
 
     public void testFieldIndexCalculation() {
@@ -145,6 +160,8 @@ public class ClassFieldInspectorTest extends TestCase {
                       ((Method) methods.get( "happy" )).getName() );
         assertEquals( "getName",
                       ((Method) methods.get( "name" )).getName() );
+        // test case sensitive
+        assertNull( methods.get( "nAme" ));        
         assertEquals( "getAge",
                       ((Method) methods.get( "age" )).getName() );
 

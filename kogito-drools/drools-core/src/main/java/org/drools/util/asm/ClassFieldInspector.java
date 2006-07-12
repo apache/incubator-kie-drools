@@ -16,6 +16,7 @@ package org.drools.util.asm;
  * limitations under the License.
  */
 
+import java.beans.Introspector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -275,11 +276,9 @@ public class ClassFieldInspector {
         }
 
         private String calcFieldName(String name,
-                                     final int offset) {
+                                     final int offset) {                      
             name = name.substring( offset );
-            final char first = Character.toLowerCase( name.charAt( 0 ) );
-            name = first + name.substring( 1 );
-            return name;
+            return Introspector.decapitalize(name);
         }
 
     }
