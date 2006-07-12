@@ -506,6 +506,7 @@ public class PackageBuilder {
             case PackageBuilderConfiguration.JANINO : {
                 if ( !"1.4".intern().equals( configuration.getJavaLanguageLevel() ) ) throw new RuntimeDroolsException( "Incompatible Java language level with selected compiler" );
                 compiler = JavaCompilerFactory.getInstance().createCompiler( "janino" );
+                break;
             }
             case PackageBuilderConfiguration.ECLIPSE :
             default : {
@@ -515,6 +516,7 @@ public class PackageBuilder {
                 eclipseSettings.getMap().put( "org.eclipse.jdt.core.compiler.source",
                                               configuration.getJavaLanguageLevel() );
                 compiler = new EclipseJavaCompiler( eclipseSettings );
+                break;
             }
         }
     }
