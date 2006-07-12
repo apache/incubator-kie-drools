@@ -37,4 +37,8 @@ public class ConcreteChild
         return 42;
     }
 
+    public String getURI() {
+        return "xxx";
+    }
+
 }
