@@ -43,7 +43,7 @@ import org.drools.spi.Tuple;
  * @author Alexander Bagerman
  *
  */
-public class RuleBaseImplTest extends DroolsTestCase {
+public class LeapsRuleBaseTest extends DroolsTestCase {
     LeapsRuleBase   ruleBase;
     LeapsRuleBase   ruleBaseAddRule;
 
@@ -116,10 +116,10 @@ public class RuleBaseImplTest extends DroolsTestCase {
                     final Tuple tuple = drools.getTuple();
 
                     final Context dummy = (Context) drools.get( contextRule1Declaration );
-                    if ( dummy == RuleBaseImplTest.this.context1 ) {
-                        RuleBaseImplTest.this.handlesForRules.add( RuleBaseImplTest.this.handle1Rule1 );
-                    } else if ( dummy == RuleBaseImplTest.this.context2 ) {
-                        RuleBaseImplTest.this.handlesForRules.add( RuleBaseImplTest.this.handle2Rule1 );
+                    if ( dummy == LeapsRuleBaseTest.this.context1 ) {
+                        LeapsRuleBaseTest.this.handlesForRules.add( LeapsRuleBaseTest.this.handle1Rule1 );
+                    } else if ( dummy == LeapsRuleBaseTest.this.context2 ) {
+                        LeapsRuleBaseTest.this.handlesForRules.add( LeapsRuleBaseTest.this.handle2Rule1 );
                     }
 
                 } catch ( final Exception e ) {
@@ -151,10 +151,10 @@ public class RuleBaseImplTest extends DroolsTestCase {
                     final Tuple tuple = drools.getTuple();
 
                     final Context dummy = (Context) drools.get( contextRule2Declaration );
-                    if ( dummy == RuleBaseImplTest.this.context1 ) {
-                        RuleBaseImplTest.this.handlesForRules.add( RuleBaseImplTest.this.handle1Rule2 );
-                    } else if ( dummy == RuleBaseImplTest.this.context2 ) {
-                        RuleBaseImplTest.this.handlesForRules.add( RuleBaseImplTest.this.handle2Rule2 );
+                    if ( dummy == LeapsRuleBaseTest.this.context1 ) {
+                        LeapsRuleBaseTest.this.handlesForRules.add( LeapsRuleBaseTest.this.handle1Rule2 );
+                    } else if ( dummy == LeapsRuleBaseTest.this.context2 ) {
+                        LeapsRuleBaseTest.this.handlesForRules.add( LeapsRuleBaseTest.this.handle2Rule2 );
                     }
 
                 } catch ( final Exception e ) {

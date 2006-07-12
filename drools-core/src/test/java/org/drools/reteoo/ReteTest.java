@@ -73,7 +73,8 @@ public class ReteTest extends DroolsTestCase {
      */
     public void testCache() throws FactException {
         final ReteooRuleBase ruleBase = new ReteooRuleBase();
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( ruleBase );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           ruleBase );
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
@@ -119,7 +120,8 @@ public class ReteTest extends DroolsTestCase {
      */
     public void testAssertObject() throws Exception {
         final ReteooRuleBase ruleBase = new ReteooRuleBase();
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( ruleBase );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           ruleBase );
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
@@ -167,7 +169,8 @@ public class ReteTest extends DroolsTestCase {
      */
     public void testRetractObject() throws Exception {
         final ReteooRuleBase ruleBase = new ReteooRuleBase();
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( ruleBase );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           ruleBase );
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();

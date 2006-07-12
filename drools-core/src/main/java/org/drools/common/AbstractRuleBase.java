@@ -60,7 +60,9 @@ abstract public class AbstractRuleBase
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected String                                id;
+    protected final String                          id;
+    
+    protected int                                   workingMemoryCounter;
     
     protected RuleBaseConfiguration                 config;
 

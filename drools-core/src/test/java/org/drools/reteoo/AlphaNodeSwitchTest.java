@@ -41,7 +41,8 @@ public class AlphaNodeSwitchTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        this.workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        this.workingMemory = new ReteooWorkingMemory( 1,
+                                                      new ReteooRuleBase() );
         final MockObjectSource source = new MockObjectSource( 15 );
         final MockObjectSink sink = new MockObjectSink();
 

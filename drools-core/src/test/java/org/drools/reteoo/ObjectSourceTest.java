@@ -57,7 +57,8 @@ public class ObjectSourceTest extends DroolsTestCase {
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final MockObjectSource source = new MockObjectSource( 15 );
         final MockObjectSink sink1 = new MockObjectSink();
@@ -122,7 +123,8 @@ public class ObjectSourceTest extends DroolsTestCase {
                                                                        PropagationContext.RETRACTION,
                                                                        null,
                                                                        null );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final MockObjectSource source = new MockObjectSource( 15 );
 

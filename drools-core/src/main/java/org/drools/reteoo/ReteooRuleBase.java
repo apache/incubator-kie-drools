@@ -230,7 +230,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * @see RuleBase
      */
     public WorkingMemory newWorkingMemory(final boolean keepReference) {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( this );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( this.workingMemoryCounter++,
+                                                                           this );
 
         super.addWorkingMemory( workingMemory,
                                 keepReference );

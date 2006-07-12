@@ -37,7 +37,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                                                    null,
                                                    null );
 
-        this.workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        this.workingMemory = new ReteooWorkingMemory( 1,
+                                                      new ReteooRuleBase() );
     }
 
     public void testAttach() throws Exception {
@@ -63,7 +64,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
     }
 
     public void testMemory() {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         final MockTupleSource source = new MockTupleSource( 12 );
 
@@ -553,7 +555,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // If no child nodes have children then we need to re-process the left
         // and right memories
         // as a joinnode does not store the resulting tuples
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( new ReteooRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           new ReteooRuleBase() );
 
         // Creat the object source so we can detect the alphaNode telling it to
         // propate its contents

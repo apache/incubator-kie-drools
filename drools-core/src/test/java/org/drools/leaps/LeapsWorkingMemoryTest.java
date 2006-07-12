@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.leaps;
 
 import junit.framework.TestCase;
 
@@ -7,12 +7,12 @@ import org.drools.common.EqualityKey;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
 
-public class ReteooWorkingMemoryTest extends TestCase {
+public class LeapsWorkingMemoryTest extends TestCase {
     /*
      * @see JBRULES-356
      */
     public void testBasicWorkingMemoryActions() {
-        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) new ReteooRuleBase().newWorkingMemory();
+        LeapsWorkingMemory workingMemory = (LeapsWorkingMemory) new LeapsRuleBase().newWorkingMemory();
         TruthMaintenanceSystem tms = workingMemory.getTruthMaintenanceSystem();
         String string = "test";
         FactHandle fd = workingMemory.assertObject(string);
@@ -28,10 +28,10 @@ public class ReteooWorkingMemoryTest extends TestCase {
         assertEquals(1, 
                      tms.getAssertMap().size() );        
         key = tms.get( string );
-        assertSame( fd, key.getFactHandle() );
+        assertNotSame( fd, key.getFactHandle() );
         assertNull( key.getOtherFactHandle() );
         
-        workingMemory.retractObject(fd);
+        workingMemory.retractObject( key.getFactHandle() );
         
         assertEquals(0, 
                      tms.getAssertMap().size() );        
@@ -51,7 +51,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
     }
     
     public void testId() {
-        ReteooRuleBase ruleBase =  new ReteooRuleBase();
+        LeapsRuleBase ruleBase =  new LeapsRuleBase();
         InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
         assertEquals( 0,
                       workingMemory.getId() );
