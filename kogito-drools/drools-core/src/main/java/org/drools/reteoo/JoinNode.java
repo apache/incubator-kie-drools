@@ -308,7 +308,7 @@ class JoinNode extends BetaNode {
                              final PropagationContext context,
                              final ReteooWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
+        
         // Remove and re-add the FactHandle from memory, ensures that its the latest on the list
         final ObjectMatches objectMatches = memory.remove( workingMemory,
                                                            handle );
@@ -323,7 +323,11 @@ class JoinNode extends BetaNode {
             final ReteTuple leftTuple = (ReteTuple) it.next();
             if ( tupleMatch != null && tupleMatch.getTuple() == leftTuple ) {
                 // has previous match so need to decide whether to continue
-                // modify or retract                
+                // modify or retract    
+
+                // Need to get the "next" tuple match before messing with references 
+                // using objectMatches.remove( tupleMatch ); for instance.
+                TupleMatch nextTupleMatch = (TupleMatch) tupleMatch.getNext();
                 if ( binder.isAllowed( handle,
                                        leftTuple,
                                        workingMemory ) ) {
@@ -337,7 +341,7 @@ class JoinNode extends BetaNode {
                                            context,
                                            workingMemory );
                 }
-                tupleMatch = (TupleMatch) tupleMatch.getNext();
+                tupleMatch = nextTupleMatch;
             } else {
                 // no previous join, so attempt join now
                 final TupleMatch newTupleMatch = attemptJoin( leftTuple,

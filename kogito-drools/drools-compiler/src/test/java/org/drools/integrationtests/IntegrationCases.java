@@ -49,6 +49,7 @@ import org.drools.State;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
+import org.drools.audit.WorkingMemoryLogger;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
