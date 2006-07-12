@@ -30,6 +30,16 @@ public interface InternalRuleBase
     extends
     RuleBase {
 
+    /**
+     * @return the id
+     */
+    public String getId();
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id);    
+    
     public FactHandleFactory newFactHandleFactory();
 
     public Map getGlobals();
