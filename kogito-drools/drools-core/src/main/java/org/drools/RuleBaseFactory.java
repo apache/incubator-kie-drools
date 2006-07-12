@@ -1,5 +1,7 @@
 package org.drools;
 
+import org.drools.util.UUIDGenerator;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -41,10 +43,10 @@ public class RuleBaseFactory {
     public static RuleBase newRuleBase(final int type) {
         switch ( type ) {
             case RuleBase.RETEOO :
-                return new org.drools.reteoo.ReteooRuleBase();
+                return new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString() );
             case RuleBase.LEAPS :
                 try {
-                    return new org.drools.leaps.LeapsRuleBase();
+                    return new org.drools.leaps.LeapsRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString() );
                 } catch ( final PackageIntegrationException e ) {
                     throw new IllegalStateException( "Unable to create Leaps engine. Error: " + e.getMessage() );
                 }

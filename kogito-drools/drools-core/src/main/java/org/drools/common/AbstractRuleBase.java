@@ -81,15 +81,6 @@ abstract public class AbstractRuleBase
 
     /** Special value when adding to the underlying map. */
     protected static final Object                   PRESENT = new Object();
-
-    // ------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------
-
-    public AbstractRuleBase(final RuleBaseConfiguration config,
-                            final FactHandleFactory factHandleFactory) {
-        this("default", config, factHandleFactory);
-    }
     
     /**
      * Construct.
@@ -100,7 +91,11 @@ abstract public class AbstractRuleBase
     public AbstractRuleBase(final String id,
                             final RuleBaseConfiguration config,
                             final FactHandleFactory factHandleFactory) {
-        this.id = id;
+        if ( id != null ) {
+            this.id = id;
+        } else {
+            this.id  = "default";
+        }
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
         this.factHandleFactory = factHandleFactory;
@@ -180,13 +175,6 @@ abstract public class AbstractRuleBase
      */
     public String getId() {
         return this.id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
     }
     
     /**

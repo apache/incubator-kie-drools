@@ -74,12 +74,26 @@ public class ReteooRuleBase extends AbstractRuleBase {
         this( null,
               new ReteooFactHandleFactory() );
     }
+    
+    /**
+     * Construct.
+     * 
+     * @param rete
+     *            The rete network.
+     */
+    public ReteooRuleBase(final String  id) {
+        this( id,
+              null,
+              new ReteooFactHandleFactory() );
+    }
+    
 
     /**
      * @param factHandleFactory
      */
-    public ReteooRuleBase(final FactHandleFactory factHandleFactory) {
-        this( null,
+    public ReteooRuleBase(final String id, final FactHandleFactory factHandleFactory) {
+        this( id,
+              null,
               factHandleFactory );
     }
 
@@ -87,7 +101,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * @param config
      */
     public ReteooRuleBase(final RuleBaseConfiguration config) {
-        this( config,
+        this( null,
+              config,
               new ReteooFactHandleFactory() );
     }
 
@@ -97,9 +112,11 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * @param rete
      *            The rete network.
      */
-    public ReteooRuleBase(final RuleBaseConfiguration config,
+    public ReteooRuleBase(String id,
+                          final RuleBaseConfiguration config,
                           final FactHandleFactory factHandleFactory) {
-        super( config,
+        super( id,
+               config,
                factHandleFactory );
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
