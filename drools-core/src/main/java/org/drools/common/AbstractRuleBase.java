@@ -60,6 +60,8 @@ abstract public class AbstractRuleBase
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
+    protected String                                id;
+    
     protected RuleBaseConfiguration                 config;
 
     protected Map                                   pkgs;
@@ -84,14 +86,21 @@ abstract public class AbstractRuleBase
     // Constructors
     // ------------------------------------------------------------
 
+    public AbstractRuleBase(final RuleBaseConfiguration config,
+                            final FactHandleFactory factHandleFactory) {
+        this("default", config, factHandleFactory);
+    }
+    
     /**
      * Construct.
      * 
      * @param rete
      *            The rete network.
      */
-    public AbstractRuleBase(final RuleBaseConfiguration config,
+    public AbstractRuleBase(final String id,
+                            final RuleBaseConfiguration config,
                             final FactHandleFactory factHandleFactory) {
+        this.id = id;
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
         this.factHandleFactory = factHandleFactory;
@@ -166,6 +175,20 @@ abstract public class AbstractRuleBase
         }
     }
 
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return this.id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+    
     /**
      * @see RuleBase
      */
@@ -401,7 +424,6 @@ abstract public class AbstractRuleBase
         AbstractWorkingMemory workingMemory = ( AbstractWorkingMemory ) streamWithLoader.readObject();
         workingMemory.setRuleBase( this );
         
-        return workingMemory;
-    
-    }
+        return workingMemory;    
+    }      
 }
