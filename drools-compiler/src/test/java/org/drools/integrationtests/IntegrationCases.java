@@ -39,9 +39,11 @@ import org.drools.CheeseEqual;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
 //import org.drools.IndexedNumber;
+import org.drools.AssertedObject;
 import org.drools.IndexedNumber;
 import org.drools.Person;
 import org.drools.PersonInterface;
+import org.drools.Precondition;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.Sensor;
@@ -2526,5 +2528,31 @@ public abstract class IntegrationCases extends TestCase {
             Assert.assertEquals( "Fact is out of order", i, n.getIndex() );
         }
     }
+    
+    public void testRemovePackage() {
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader(  getClass().getResourceAsStream( "test_RemovePackage.drl" )  ) );
+      
+            final RuleBase ruleBase = getRuleBase();
+            String packageName=builder.getPackage().getName();
+            ruleBase.addPackage( builder.getPackage() );
+      
+            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            
+            workingMemory.assertObject( new Precondition("genericcode","genericvalue"));
+            workingMemory.fireAllRules();
+            
+            RuleBase ruleBaseWM=workingMemory.getRuleBase();
+            ruleBaseWM.removePackage(packageName);
+            final PackageBuilder builder1 = new PackageBuilder();
+            builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
+            ruleBaseWM.addPackage(builder1.getPackage());
+            workingMemory.fireAllRules();
+        } catch ( Exception e ) {
+            Assert.fail( "Removing packages should not throw any exception: "+e.getMessage() );
+        }
+    }
+    
 
 }

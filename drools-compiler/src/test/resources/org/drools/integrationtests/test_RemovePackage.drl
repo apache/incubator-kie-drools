@@ -1,0 +1,21 @@
+package org.drools;
+
+import org.drools.Precondition;
+import org.drools.AssertedObject;
+
+rule rule1
+    salience 10
+    when
+        p: Precondition ( code == "genericcode")
+    then
+        assert( new AssertedObject( "value1") );
+        assert( new AssertedObject( "value2") );
+end
+
+rule rule2
+    when
+        p: Precondition ( code == "genericcode", value=="genericvalue")
+    then
+        assert( new AssertedObject( "value3") );
+        assert( new AssertedObject( "value4") );
+end 
