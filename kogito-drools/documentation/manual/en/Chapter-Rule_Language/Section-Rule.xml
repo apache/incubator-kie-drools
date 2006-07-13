@@ -294,13 +294,13 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
       <para>For example, refering to our Cheese class, the following :
       Cheese(type == ...) uses the getType() method on the a cheese instance.
       You can also access non getter methods, like "toString()" on the Object
-      for instance (in which case, you do Cheese(toString == ..) - you use the full name of the 
-      method with correct capitalisation, but not brackets).
-      Do please make sure that you are accessing methods that
-      take no parameters, and are in-fact "accessors" (as in, they don't change
-      the state of the object in a way that may effect the rules - remember
-      that the rule engine effectively caches the results of its matching
-      inbetween invocations to make it faster).</para>
+      for instance (in which case, you do Cheese(toString == ..) - you use the
+      full name of the method with correct capitalisation, but not brackets).
+      Do please make sure that you are accessing methods that take no
+      parameters, and are in-fact "accessors" (as in, they don't change the
+      state of the object in a way that may effect the rules - remember that
+      the rule engine effectively caches the results of its matching inbetween
+      invocations to make it faster).</para>
 
       <para>Note that if primitive types are used for a field, Drools will
       autobox them to their corresponding object types (even if you are using
@@ -313,16 +313,17 @@ Cheese( type == "stilton", price &lt; 10 )</programlisting>
       not yet support Java 5).</para>
 
       <section>
-	<title>JavaBeans as facts</title>
-	      <para>A note on JavaBeans: The JavaBean convention is followed, but as
-     	 shown above, you can access non getter methods by using the method name.
-      	The syntax is case sensitive. In the case of getter methods like
-      	"getURI" which uses capitals, the property name is "URI" as there is
-      	more then one capital letter after the "get" - this is exactly as per
-      	the JavaBean standard (in fact, the Instrospector utility is used).
-      </para>
+        <title>JavaBeans as facts</title>
+
+        <para>A note on JavaBeans: The JavaBean convention is followed, but as
+        shown above, you can access non getter methods by using the method
+        name. The syntax is case sensitive. In the case of getter methods like
+        "getURI" which uses capitals, the property name is "URI" as there is
+        more then one capital letter after the "get" - this is exactly as per
+        the JavaBean standard (in fact, the Instrospector utility is
+        used).</para>
       </section>
-      
+
       <section>
         <title>Operators</title>
 
@@ -694,8 +695,8 @@ Person( boyAge : age -&gt; ( girlAge.intValue() == boyAge.intValue() + 2 ), sex 
         <example>
           <title>Return Value operator</title>
 
-          <programlisting>Person( girlAge : age, sex = "F" )
-Person( age == ( new Integer(girlAge.intValue() + 2) ), sex = 'M' )
+          <programlisting>Person( girlAge : age, sex == "F" )
+Person( age == ( new Integer(girlAge.intValue() + 2) ), sex == 'M' )
 </programlisting>
         </example>
       </section>
