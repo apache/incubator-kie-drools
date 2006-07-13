@@ -432,7 +432,12 @@ public class Rule
 
         final Rule other = (Rule) object;
 
-        return (this.name.equals( other.name ) && this.agendaGroup.equals( other.agendaGroup ) && this.ActivationGroup.equals( other.ActivationGroup ) && this.salience == other.salience && this.noLoop == other.noLoop);
+        return (this.name.equals( other.name ) && 
+                this.agendaGroup.equals( other.agendaGroup ) &&
+                (( this.ActivationGroup == null && other.ActivationGroup == null) ||
+                 ( this.ActivationGroup != null && this.ActivationGroup.equals( other.ActivationGroup ))) && 
+                this.salience == other.salience && 
+                this.noLoop == other.noLoop);
     }
 
     public int hashCode() {

@@ -567,6 +567,7 @@ class ReteooBuilder
 
             node = candidate;
         } else {
+            node.addShare();
             this.id--;
         }
 
