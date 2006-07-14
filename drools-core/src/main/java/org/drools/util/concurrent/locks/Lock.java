@@ -6,8 +6,6 @@
 
 package org.drools.util.concurrent.locks;
 
-import EDU.oswego.cs.dl.util.concurrent.ReadWriteLock;
-
 //import edu.emory.mathcs.backport.java.util.concurrent.locks.*; // for javadoc (till 6280605 is fixed)
 //import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 
