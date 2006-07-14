@@ -17,6 +17,7 @@ package org.drools.reteoo;
  */
 
 import org.drools.DroolsTestCase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 
 public class ReteooRuleBaseTest extends DroolsTestCase {
@@ -28,7 +29,7 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
     WorkingMemory  wm4;
 
     public void setUp() {
-        this.ruleBase = new ReteooRuleBase();
+        this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
 
         this.wm1 = this.ruleBase.newWorkingMemory();
         this.wm2 = this.ruleBase.newWorkingMemory();

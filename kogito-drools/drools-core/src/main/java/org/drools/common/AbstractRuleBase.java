@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,10 +61,10 @@ abstract public class AbstractRuleBase
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected final String                          id;
-    
+    protected String                                id;
+
     protected int                                   workingMemoryCounter;
-    
+
     protected RuleBaseConfiguration                 config;
 
     protected Map                                   pkgs;
@@ -83,7 +84,16 @@ abstract public class AbstractRuleBase
 
     /** Special value when adding to the underlying map. */
     protected static final Object                   PRESENT = new Object();
+
     
+    /**
+     * Default constructor - for Externalizable. This should never be used by a user, as it 
+     * will result in an invalid state for the instance.
+     */    
+    public AbstractRuleBase() {
+
+    }
+
     /**
      * Construct.
      * 
@@ -96,7 +106,7 @@ abstract public class AbstractRuleBase
         if ( id != null ) {
             this.id = id;
         } else {
-            this.id  = "default";
+            this.id = "default";
         }
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
@@ -125,6 +135,7 @@ abstract public class AbstractRuleBase
         // a byte[]
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         final ObjectOutput out = new ObjectOutputStream( bos );
+        out.writeObject( this.id );
         out.writeObject( this.factHandleFactory );
         out.writeObject( this.globals );
         out.writeObject( this.config );
@@ -160,6 +171,7 @@ abstract public class AbstractRuleBase
         final ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( new ByteArrayInputStream( bytes ),
                                                                                               this.packageClassLoader );
 
+        this.id = (String) streamWithLoader.readObject();
         this.factHandleFactory = (FactHandleFactory) streamWithLoader.readObject();
         this.globals = (Map) streamWithLoader.readObject();
 
@@ -178,7 +190,7 @@ abstract public class AbstractRuleBase
     public String getId() {
         return this.id;
     }
-    
+
     /**
      * @see RuleBase
      */
@@ -400,20 +412,23 @@ abstract public class AbstractRuleBase
     public RuleBaseConfiguration getConfiguration() {
         return this.config;
     }
-    
-    public WorkingMemory newWorkingMemory(InputStream stream) throws IOException, ClassNotFoundException {
+
+    public WorkingMemory newWorkingMemory(InputStream stream) throws IOException,
+                                                             ClassNotFoundException {
         return newWorkingMemory( stream,
                                  true );
-    }    
-    public WorkingMemory newWorkingMemory(InputStream stream, 
-                                          boolean keepReference ) throws IOException, ClassNotFoundException {
-        
+    }
+
+    public WorkingMemory newWorkingMemory(InputStream stream,
+                                          boolean keepReference) throws IOException,
+                                                                ClassNotFoundException {
+
         final ObjectInputStreamWithLoader streamWithLoader = new ObjectInputStreamWithLoader( stream,
                                                                                               this.packageClassLoader );
-        
-        AbstractWorkingMemory workingMemory = ( AbstractWorkingMemory ) streamWithLoader.readObject();
+
+        AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) streamWithLoader.readObject();
         workingMemory.setRuleBase( this );
-        
-        return workingMemory;    
-    }      
+
+        return workingMemory;
+    }
 }

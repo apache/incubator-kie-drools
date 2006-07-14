@@ -17,6 +17,7 @@ package org.drools.reteoo;
  */
 
 import org.drools.DroolsTestCase;
+import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
@@ -57,7 +58,7 @@ public class TupleSourceTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase)  RuleBaseFactory.newRuleBase() );
 
         final MockTupleSource source = new MockTupleSource( 15 );
         final MockTupleSink sink1 = new MockTupleSink();

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.DroolsTestCase;
+import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
@@ -79,7 +80,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                                                                        null );
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
                                                                        new MockObjectSource( 15 ) );
@@ -143,7 +144,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                                                                        null );
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final MockObjectSource source = new MockObjectSource( 15 );
 

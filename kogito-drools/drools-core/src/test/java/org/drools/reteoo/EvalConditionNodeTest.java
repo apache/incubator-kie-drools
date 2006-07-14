@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
+import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
@@ -38,7 +39,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                                                    null );
 
         this.workingMemory = new ReteooWorkingMemory( 1,
-                                                      new ReteooRuleBase() );
+                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
     }
 
     public void testAttach() throws Exception {
@@ -65,7 +66,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
     public void testMemory() {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final MockTupleSource source = new MockTupleSource( 12 );
 
@@ -556,7 +557,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // and right memories
         // as a joinnode does not store the resulting tuples
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         // Creat the object source so we can detect the alphaNode telling it to
         // propate its contents

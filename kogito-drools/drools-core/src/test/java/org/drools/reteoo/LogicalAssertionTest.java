@@ -23,9 +23,9 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
-import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.PropagationContextImpl;
@@ -37,7 +37,7 @@ import org.drools.spi.PropagationContext;
 public class LogicalAssertionTest extends DroolsTestCase {
 
     public void testSingleLogicalRelationship() throws Exception {
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final Rete rete = ruleBase.getRete();
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
@@ -150,7 +150,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
 
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -235,7 +235,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final TerminalNode node = new TerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -456,7 +456,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final TerminalNode node = new TerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final Consequence consequence = new Consequence() {
@@ -537,7 +537,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
     public void testMultipleLogicalRelationships() throws FactException {
         final Rule rule1 = new Rule( "test-rule1" );
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final Rete rete = ruleBase.getRete();
 
         // Create a RuleBase with a single ObjectTypeNode we attach a
@@ -675,7 +675,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final TerminalNode node = new TerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -772,7 +772,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final TerminalNode node = new TerminalNode( 2,
                                                     new MockTupleSource( 2 ),
                                                     rule1 );
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         final Agenda agenda = workingMemory.getAgenda();

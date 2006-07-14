@@ -17,10 +17,12 @@ package org.drools.integrationtests.waltz;
  */
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.leaps.LeapsRuleBase;
 
 public class LeapsWaltzTest extends Waltz {
     protected RuleBase getRuleBase() throws Exception {
-        return new org.drools.leaps.LeapsRuleBase();
+        return RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
     }
 
 }

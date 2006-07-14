@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 import org.drools.FactHandle;
 import org.drools.QueryResult;
 import org.drools.QueryResults;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
@@ -36,7 +37,7 @@ import org.drools.spi.MockField;
 
 public class QueryTerminalNodeTest extends TestCase {
     public void testQueryTerminalNode() {
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final Rete rete = ruleBase.getRete();
 
         final ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );

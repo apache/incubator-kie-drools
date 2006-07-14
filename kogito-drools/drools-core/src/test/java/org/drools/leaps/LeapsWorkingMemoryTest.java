@@ -3,6 +3,8 @@ package org.drools.leaps;
 import junit.framework.TestCase;
 
 import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
@@ -12,7 +14,7 @@ public class LeapsWorkingMemoryTest extends TestCase {
      * @see JBRULES-356
      */
     public void testBasicWorkingMemoryActions() {
-        LeapsWorkingMemory workingMemory = (LeapsWorkingMemory) new LeapsRuleBase().newWorkingMemory();
+        LeapsWorkingMemory workingMemory = (LeapsWorkingMemory) RuleBaseFactory.newRuleBase( RuleBase.LEAPS ).newWorkingMemory();
         TruthMaintenanceSystem tms = workingMemory.getTruthMaintenanceSystem();
         String string = "test";
         FactHandle fd = workingMemory.assertObject(string);
@@ -51,7 +53,7 @@ public class LeapsWorkingMemoryTest extends TestCase {
     }
     
     public void testId() {
-        LeapsRuleBase ruleBase =  new LeapsRuleBase();
+        LeapsRuleBase ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
         assertEquals( 0,
                       workingMemory.getId() );

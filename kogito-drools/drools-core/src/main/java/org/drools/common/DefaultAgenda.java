@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.Agenda;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;

@@ -24,25 +24,20 @@ import java.util.List;
 
 import org.drools.FactException;
 import org.drools.PackageIntegrationException;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
+import org.drools.leaps.LeapsRuleBase;
 import org.drools.rule.DuplicateRuleNameException;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.InvalidRuleException;
 
 public class ReteooMannersTest extends BaseMannersTest {
 
-    public void testManners() throws DuplicateRuleNameException,
-                             InvalidRuleException,
-                             IntrospectionException,
-                             RuleIntegrationException,
-                             PackageIntegrationException,
-                             InvalidPatternException,
-                             FactException,
-                             IOException,
-                             InterruptedException {
+    public void testManners() throws Exception {
 
-        final org.drools.reteoo.ReteooRuleBase ruleBase = new org.drools.reteoo.ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
         ruleBase.addPackage( this.pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 

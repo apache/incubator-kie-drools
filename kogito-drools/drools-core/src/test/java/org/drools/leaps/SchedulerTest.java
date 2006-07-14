@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
@@ -35,7 +36,7 @@ import org.drools.spi.Tuple;
 
 public class SchedulerTest extends DroolsTestCase {
     public void testScheduledActivation() throws Exception {
-        final RuleBase ruleBase = new LeapsRuleBase();
+        final RuleBase ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
 
         final LeapsWorkingMemory workingMemory = (LeapsWorkingMemory) ruleBase.newWorkingMemory();
 
@@ -96,7 +97,7 @@ public class SchedulerTest extends DroolsTestCase {
     }
 
     public void testDoLoopScheduledActivation() throws Exception {
-        final RuleBase ruleBase = new LeapsRuleBase();
+        final RuleBase ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
 
         final LeapsWorkingMemory workingMemory = (LeapsWorkingMemory) ruleBase.newWorkingMemory();
 

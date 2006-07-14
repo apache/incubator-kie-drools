@@ -17,6 +17,7 @@ package org.drools;
  */
 
 import junit.framework.TestCase;
+
 import org.drools.common.InternalRuleBase;
 
 public class RuleBaseFactoryTest extends TestCase {

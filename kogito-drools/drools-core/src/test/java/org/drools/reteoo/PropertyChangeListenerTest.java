@@ -5,11 +5,12 @@ import java.beans.PropertyChangeSupport;
 
 import junit.framework.TestCase;
 
+import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 
 public class PropertyChangeListenerTest extends TestCase {
     public void test1() {
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 

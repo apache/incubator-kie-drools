@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 
 /**
@@ -36,7 +38,7 @@ public class LeapsWaltzTest extends BaseWaltzTest {
 
     public void testWaltz() throws Exception {
 
-        final org.drools.leaps.LeapsRuleBase ruleBase = new org.drools.leaps.LeapsRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         ruleBase.addPackage( this.pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
@@ -60,7 +62,7 @@ public class LeapsWaltzTest extends BaseWaltzTest {
         final LeapsWaltzTest waltz = new LeapsWaltzTest();
         waltz.setUp();
 
-        final org.drools.leaps.LeapsRuleBase ruleBase = new org.drools.leaps.LeapsRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         ruleBase.addPackage( waltz.pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 

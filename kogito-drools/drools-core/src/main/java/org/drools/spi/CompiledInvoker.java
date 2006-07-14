@@ -2,8 +2,6 @@ package org.drools.spi;
 
 import java.util.List;
 
-import org.drools.spi.Invoker;
-
 /**
  * This interface is used by semantic modules that are compiled
  * to bytecode. 

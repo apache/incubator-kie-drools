@@ -22,6 +22,8 @@ import junit.framework.TestCase;
 
 import org.drools.FactHandle;
 import org.drools.PackageIntegrationException;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
@@ -42,7 +44,7 @@ import org.drools.spi.MockField;
  */
 public class QueryResultsTest extends TestCase {
     public void testQueryTerminalNode() throws PackageIntegrationException {
-        final LeapsRuleBase ruleBase = new LeapsRuleBase();
+        final LeapsRuleBase ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
 
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
         final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,

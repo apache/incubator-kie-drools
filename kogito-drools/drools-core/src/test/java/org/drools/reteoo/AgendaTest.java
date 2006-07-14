@@ -24,8 +24,8 @@ import java.util.Map;
 import org.drools.Agenda;
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.common.DefaultAgenda;
 import org.drools.common.AgendaGroupImpl;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
@@ -46,7 +46,7 @@ import org.drools.spi.PropagationContext;
 
 public class AgendaTest extends DroolsTestCase {
     public void testClearAgenda() {
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
@@ -99,7 +99,7 @@ public class AgendaTest extends DroolsTestCase {
     }
 
     public void testFilters() throws Exception {
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
@@ -190,7 +190,7 @@ public class AgendaTest extends DroolsTestCase {
     }
 
     public void testFocusStack() throws ConsequenceException {
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
@@ -411,7 +411,7 @@ public class AgendaTest extends DroolsTestCase {
 
     //
     public void testAutoFocus() throws ConsequenceException {
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
@@ -489,7 +489,7 @@ public class AgendaTest extends DroolsTestCase {
     }
 
     public void testXorGroup() {
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 

@@ -16,7 +16,6 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.common.InternalFactHandle;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.PrimitiveLongStack;
 

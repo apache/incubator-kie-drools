@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.Agenda;
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
@@ -37,7 +38,7 @@ import org.drools.spi.Tuple;
 
 public class SchedulerTest extends DroolsTestCase {
     public void testScheduledActivation() throws Exception {
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
@@ -98,7 +99,7 @@ public class SchedulerTest extends DroolsTestCase {
     }
 
     public void testDoLoopScheduledActivation() throws Exception {
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
         final Agenda agenda = workingMemory.getAgenda();
@@ -174,7 +175,7 @@ public class SchedulerTest extends DroolsTestCase {
     }
 
     public void testNoLoopScheduledActivation() throws Exception {
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
         final Agenda agenda = workingMemory.getAgenda();

@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
+import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
@@ -60,7 +61,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null );
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final Rete source = new Rete();
 
@@ -97,7 +98,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
     public void testMemory() {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
@@ -137,7 +138,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null );
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final Rete source = new Rete();
 
@@ -188,7 +189,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null );
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final Rete source = new Rete();
 
