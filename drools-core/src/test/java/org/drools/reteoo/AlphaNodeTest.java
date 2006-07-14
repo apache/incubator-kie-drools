@@ -23,6 +23,7 @@ import java.util.Set;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
+import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.EvaluatorFactory;
 import org.drools.common.DefaultFactHandle;
@@ -56,7 +57,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
     public void testMemory() {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    null,
@@ -69,7 +70,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
     public void testLiteralConstraintAssertObjectWithMemory() throws Exception {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -154,7 +155,7 @@ public class AlphaNodeTest extends DroolsTestCase {
      */
     public void testReturnValueConstraintAssertObject() throws Exception {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -216,7 +217,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
     public void testRetractObject() throws Exception {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -298,7 +299,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         // Also it should only update the latest tuple sinky
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,

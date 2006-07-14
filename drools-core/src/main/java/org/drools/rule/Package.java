@@ -93,7 +93,8 @@ public class Package
     // ------------------------------------------------------------
 
     /**
-     * This is a default constructor purely for externalization
+     * Default constructor - for Externalizable. This should never be used by a user, as it 
+     * will result in an invalid state for the instance.
      */
     public Package() {
 

@@ -3,6 +3,7 @@ package org.drools.reteoo;
 import junit.framework.TestCase;
 
 import org.drools.FactHandle;
+import org.drools.RuleBaseFactory;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
@@ -12,7 +13,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
      * @see JBRULES-356
      */
     public void testBasicWorkingMemoryActions() {
-        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) new ReteooRuleBase().newWorkingMemory();
+        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) RuleBaseFactory.newRuleBase().newWorkingMemory();
         TruthMaintenanceSystem tms = workingMemory.getTruthMaintenanceSystem();
         String string = "test";
         FactHandle fd = workingMemory.assertObject(string);
@@ -51,7 +52,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
     }
     
     public void testId() {
-        ReteooRuleBase ruleBase =  new ReteooRuleBase();
+        ReteooRuleBase ruleBase =  (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newWorkingMemory();
         assertEquals( 0,
                       workingMemory.getId() );

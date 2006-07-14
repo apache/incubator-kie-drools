@@ -50,16 +50,11 @@ public class LeapsRuleBase extends AbstractRuleBase {
     private Map               leapsRules;
 
     /**
-     * Construct.
-     * 
-     * @param rete
-     *            The rete network.
-     * @throws PackageIntegrationException
+     * Default constructor - for Externalizable. This should never be used by a user, as it 
+     * will result in an invalid state for the instance.
      */
     public LeapsRuleBase() {
-        this( null,
-              null,
-              new LeapsFactHandleFactory() );
+
     }
 
     /**
@@ -67,7 +62,6 @@ public class LeapsRuleBase extends AbstractRuleBase {
      * 
      * @param rete
      *            The rete network.
-     * @throws PackageIntegrationException
      */
     public LeapsRuleBase(final String id) {
         this( id,
@@ -176,7 +170,9 @@ public class LeapsRuleBase extends AbstractRuleBase {
                                                       ClassNotFoundException {
         doReadExternal( stream,
                         new Object[0] );
-
+        
+        this.leapsRules = new HashMap();
+        
         for ( int i = 0; i < this.getPackages().length; i++ ) {
             final Rule[] rules = this.getPackages()[i].getRules();
 

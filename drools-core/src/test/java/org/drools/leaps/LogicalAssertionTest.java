@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
@@ -42,7 +44,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        this.ruleBase = new LeapsRuleBase();
+        this.ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         this.workingMemory = (LeapsWorkingMemory) this.ruleBase.newWorkingMemory();
         this.consequence = new Consequence() {
             /**

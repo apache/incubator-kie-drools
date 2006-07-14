@@ -22,6 +22,8 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 
 import org.drools.DroolsTestCase;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorFactory;
@@ -59,7 +61,7 @@ public class ColumnConstraintsTest extends DroolsTestCase {
      * WorkingMemoryImpl)'
      */
     public void testEvaluateAlphasSuccess() throws Exception {
-        final LeapsRuleBase base = new LeapsRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         final ArrayList alphas = new ArrayList();
         ColumnConstraints columnConstraints;
         FieldConstraint constraint;
@@ -91,7 +93,7 @@ public class ColumnConstraintsTest extends DroolsTestCase {
         assertTrue( columnConstraints.isAllowed( new LeapsFactHandle( 23,
                                                                      new Context( Context.START_UP ) ),
                                                  tuple,
-                                                 base.newWorkingMemory() ) );
+                                                 ruleBase.newWorkingMemory() ) );
     }
 
     /*
@@ -100,7 +102,7 @@ public class ColumnConstraintsTest extends DroolsTestCase {
      * WorkingMemoryImpl)'
      */
     public void testEvaluateAlphasFalure() throws Exception {
-        final LeapsRuleBase base = new LeapsRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         final ArrayList alphas = new ArrayList();
         ColumnConstraints columnConstraints;
         FieldConstraint constraint;
@@ -129,7 +131,7 @@ public class ColumnConstraintsTest extends DroolsTestCase {
         assertFalse( columnConstraints.isAllowed( new LeapsFactHandle( 23,
                                                                       new Context( Context.START_UP ) ),
                                                   null,
-                                                  base.newWorkingMemory() ) );
+                                                  ruleBase.newWorkingMemory() ) );
 
     }
 

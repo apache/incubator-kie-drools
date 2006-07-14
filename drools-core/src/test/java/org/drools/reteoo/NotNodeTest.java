@@ -23,6 +23,7 @@ import junit.framework.Assert;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
+import org.drools.RuleBaseFactory;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
@@ -53,7 +54,7 @@ public class NotNodeTest extends DroolsTestCase {
                                                    null,
                                                    null );
         this.workingMemory = new ReteooWorkingMemory( 1,
-                                                      new ReteooRuleBase() );
+                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         // string1Declaration is bound to column 3 
         this.node = new NotNode( 15,

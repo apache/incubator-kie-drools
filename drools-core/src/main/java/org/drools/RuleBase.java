@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.Set;
 
 import org.drools.rule.Package;
-import org.drools.spi.FactHandleFactory;
 
 /**
  * Active collection of <code>Rule</code>s.

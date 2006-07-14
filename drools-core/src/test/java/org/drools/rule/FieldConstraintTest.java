@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.FactHandle;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.EvaluatorFactory;
@@ -56,7 +57,7 @@ public class FieldConstraintTest extends TestCase {
      * @throws IntrospectionException
      */
     public void testLiteralConstraint() throws IntrospectionException {
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         final ClassFieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
@@ -104,7 +105,7 @@ public class FieldConstraintTest extends TestCase {
      * @throws IntrospectionException
      */
     public void testPredicateConstraint() throws IntrospectionException {
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
@@ -177,7 +178,7 @@ public class FieldConstraintTest extends TestCase {
      * @throws IntrospectionException
      */
     public void testReturnValueConstraint() throws IntrospectionException {
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,

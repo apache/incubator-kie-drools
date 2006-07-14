@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
+import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Rule;
@@ -58,7 +59,7 @@ public class ObjectSourceTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final MockObjectSource source = new MockObjectSource( 15 );
         final MockObjectSink sink1 = new MockObjectSink();
@@ -124,7 +125,7 @@ public class ObjectSourceTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final MockObjectSource source = new MockObjectSource( 15 );
 

@@ -19,7 +19,6 @@ package org.drools.common;
 import java.io.Serializable;
 import java.util.TimerTask;
 
-import org.drools.Agenda;
 import org.drools.FactHandle;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;

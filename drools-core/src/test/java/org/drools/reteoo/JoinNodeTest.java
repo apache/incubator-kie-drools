@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.DroolsTestCase;
+import org.drools.RuleBaseFactory;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
@@ -50,7 +51,7 @@ public class JoinNodeTest extends DroolsTestCase {
                                                    null,
                                                    null );
         this.workingMemory = new ReteooWorkingMemory( 1,
-                                                      new ReteooRuleBase() );
+                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         this.tupleSource = new MockTupleSource( 4 );
         this.objectSource = new MockObjectSource( 4 );
@@ -100,7 +101,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
     public void testMemory() {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final MockObjectSource objectSource = new MockObjectSource( 1 );
         final MockTupleSource tupleSource = new MockTupleSource( 1 );
@@ -346,7 +347,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
     public void testUpdateWithMemory() {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final JoinNode joinNode = new JoinNode( 1,
                                                 this.tupleSource,

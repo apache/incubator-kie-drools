@@ -23,11 +23,12 @@ import javax.naming.OperationNotSupportedException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.common.DefaultFactHandle;
-import org.drools.reteoo.ReteooFactHandleFactory;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.ReteooFactHandleFactory;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.spi.FactHandleFactory;
@@ -68,7 +69,7 @@ public abstract class BaseBetaRightMemoryTestClass extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         this.workingMemory = new ReteooWorkingMemory( 0, 
-                                                      new ReteooRuleBase() );
+                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         this.obj0 = new DummyValueObject( true,
                                           "string1",
                                           10,

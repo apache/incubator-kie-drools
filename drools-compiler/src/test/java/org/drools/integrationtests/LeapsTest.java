@@ -28,11 +28,13 @@ import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.leaps.LeapsRuleBase;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.xml.XmlDumper;
@@ -47,7 +49,7 @@ import org.drools.xml.XmlDumper;
 public class LeapsTest extends IntegrationCases {
 
     protected RuleBase getRuleBase() throws Exception {
-        return new org.drools.leaps.LeapsRuleBase();
+        return RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
     }
 
     /**

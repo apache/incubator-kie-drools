@@ -22,12 +22,15 @@ import java.beans.PropertyDescriptor;
 
 import junit.framework.TestCase;
 
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorFactory;
 import org.drools.examples.waltz.Edge;
 import org.drools.examples.waltz.Stage;
+import org.drools.leaps.LeapsRuleBase;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
@@ -79,7 +82,7 @@ public class OrTest extends TestCase {
 
         this.pkg.addRule( this.getNeverGetsToConsequenceRule() );
 
-        final org.drools.leaps.LeapsRuleBase ruleBase = new org.drools.leaps.LeapsRuleBase();
+        final org.drools.leaps.LeapsRuleBase ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         ruleBase.addPackage( this.pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage( Stage.LABELING ) );
@@ -110,7 +113,7 @@ public class OrTest extends TestCase {
 
         this.pkg.addRule( this.getNeverGetsToConsequenceRule() );
 
-        final org.drools.reteoo.ReteooRuleBase ruleBase = new org.drools.reteoo.ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
         ruleBase.addPackage( this.pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage( Stage.LABELING ) );
@@ -141,7 +144,7 @@ public class OrTest extends TestCase {
 
         this.pkg.addRule( this.getWorkingButCanNotResolveOrObjectInConsequenceOrder() );
 
-        final org.drools.leaps.LeapsRuleBase ruleBase = new org.drools.leaps.LeapsRuleBase();
+        final org.drools.leaps.LeapsRuleBase ruleBase =(LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
         ruleBase.addPackage( this.pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage( Stage.LABELING ) );
@@ -172,7 +175,7 @@ public class OrTest extends TestCase {
 
         this.pkg.addRule( this.getWorkingButCanNotResolveOrObjectInConsequenceOrder() );
 
-        final org.drools.reteoo.ReteooRuleBase ruleBase = new org.drools.reteoo.ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
         ruleBase.addPackage( this.pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         workingMemory.assertObject( new Stage( Stage.LABELING ) );

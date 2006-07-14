@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
+import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
 
@@ -40,7 +41,7 @@ public class ReteTest extends DroolsTestCase {
      * @throws Exception
      */
     public void testObjectTypeNodes() throws Exception {
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
 
         final Rete rete = ruleBase.getRete();
 
@@ -72,7 +73,7 @@ public class ReteTest extends DroolsTestCase {
      * @throws FactException
      */
     public void testCache() throws FactException {
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            ruleBase );
 
@@ -119,7 +120,7 @@ public class ReteTest extends DroolsTestCase {
      * @throws Exception
      */
     public void testAssertObject() throws Exception {
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            ruleBase );
 
@@ -168,7 +169,7 @@ public class ReteTest extends DroolsTestCase {
      * ObjectTypeNodes.
      */
     public void testRetractObject() throws Exception {
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            ruleBase );
 

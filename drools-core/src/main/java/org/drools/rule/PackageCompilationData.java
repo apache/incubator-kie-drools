@@ -47,25 +47,31 @@ public class PackageCompilationData
      */
     private static final long            serialVersionUID = -4351259299237235523L;
 
-    private Map                          invokerLookups   = new HashMap();
+    private Map                          invokerLookups;
 
     private Object                       AST;
 
-    private Map                          store            = new HashMap();
+    private Map                          store;
 
     private transient PackageClassLoader classLoader;
 
     private transient ClassLoader        parentClassLoader;
 
+    /**
+     * Default constructor - for Externalizable. This should never be used by a user, as it 
+     * will result in an invalid state for the instance.
+     */
     public PackageCompilationData() {
-        this( null );
+        
     }
 
     public PackageCompilationData(final ClassLoader parentClassLoader) {
-        init( parentClassLoader );
+        initClassLoader( parentClassLoader );
+        this.invokerLookups   = new HashMap();
+        this.store = new HashMap();
     }
 
-    private void init(ClassLoader parentClassLoader) {
+    private void initClassLoader(ClassLoader parentClassLoader) {
         if ( parentClassLoader == null ) {
             parentClassLoader = Thread.currentThread().getContextClassLoader();
 
@@ -103,7 +109,7 @@ public class PackageCompilationData
      */
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
-        init( null );
+        initClassLoader( null );
 
         this.store = (Map) stream.readObject();
         this.AST = stream.readObject();

@@ -23,6 +23,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
+import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.EvaluatorFactory;
 import org.drools.common.DefaultFactHandle;
@@ -153,7 +154,7 @@ public class HashedObjectSinkListTest extends TestCase {
      */
     public void testIterator() {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           new ReteooRuleBase() );
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         final MockObjectSource source = new MockObjectSource( 15 );
         final MockObjectSink sink = new MockObjectSink();
 

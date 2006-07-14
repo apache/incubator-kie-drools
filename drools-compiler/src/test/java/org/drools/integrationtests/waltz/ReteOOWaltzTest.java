@@ -17,12 +17,14 @@ package org.drools.integrationtests.waltz;
  */
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.leaps.LeapsRuleBase;
 import org.drools.reteoo.ReteooRuleBase;
 
 public class ReteOOWaltzTest extends Waltz {
     protected RuleBase getRuleBase() throws Exception {
 
-        return new ReteooRuleBase();
+        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
     }
 
 }

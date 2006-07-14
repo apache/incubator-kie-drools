@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 
 public class AddRemoveTest extends DroolsTestCase {
@@ -34,7 +35,7 @@ public class AddRemoveTest extends DroolsTestCase {
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        final RuleBase ruleBase = new ReteooRuleBase();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newWorkingMemory();
 
         // objectTypeNode.

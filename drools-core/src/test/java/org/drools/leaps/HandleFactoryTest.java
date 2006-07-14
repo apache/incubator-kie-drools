@@ -16,9 +16,9 @@ package org.drools.leaps;
  * limitations under the License.
  */
 
-import org.drools.common.DefaultFactHandle;
-
 import junit.framework.TestCase;
+
+import org.drools.common.DefaultFactHandle;
 
 /**
  * 

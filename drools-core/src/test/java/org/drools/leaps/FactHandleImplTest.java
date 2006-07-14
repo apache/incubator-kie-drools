@@ -20,6 +20,8 @@ import junit.framework.TestCase;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 
 /**
  * 
@@ -32,7 +34,7 @@ public class FactHandleImplTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.ruleBase = new LeapsRuleBase();
+        this.ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
     }
 
     /*

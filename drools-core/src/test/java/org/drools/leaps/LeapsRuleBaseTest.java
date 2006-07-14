@@ -19,6 +19,8 @@ package org.drools.leaps;
 import java.util.ArrayList;
 
 import org.drools.DroolsTestCase;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
@@ -77,14 +79,14 @@ public class LeapsRuleBaseTest extends DroolsTestCase {
     final Context   context2        = new Context( 1 );
 
     public void setUp() throws Exception {
-        this.ruleBase = new LeapsRuleBase();
+        this.ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
 
         this.wm1 = this.ruleBase.newWorkingMemory();
         this.wm2 = this.ruleBase.newWorkingMemory();
         this.wm3 = this.ruleBase.newWorkingMemory();
         this.wm4 = this.ruleBase.newWorkingMemory();
         // add rules section
-        this.ruleBaseAddRule = new LeapsRuleBase();
+        this.ruleBaseAddRule = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
 
         this.workingMemory = this.ruleBaseAddRule.newWorkingMemory();
         // rules

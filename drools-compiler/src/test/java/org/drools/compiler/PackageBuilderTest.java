@@ -37,6 +37,8 @@ import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.Primitives;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.InternalFactHandle;
@@ -144,7 +146,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors() );
 
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = ( ReteooRuleBase )RuleBaseFactory.newRuleBase();
         ruleBase.getGlobals().put( "map",
                                    Map.class );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
@@ -220,7 +222,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final Rule newRule = newPkg.getRule( "rule-1" );
 
-        final ReteooRuleBase ruleBase = new ReteooRuleBase();
+        final ReteooRuleBase ruleBase = ( ReteooRuleBase )RuleBaseFactory.newRuleBase();
         ruleBase.getGlobals().put( "map",
                                    Map.class );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();

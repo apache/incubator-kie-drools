@@ -30,7 +30,6 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
@@ -65,14 +64,11 @@ public class ReteooRuleBase extends AbstractRuleBase {
     // ------------------------------------------------------------
 
     /**
-     * Construct.
-     * 
-     * @param rete
-     *            The rete network.
+     * Default constructor - for Externalizable. This should never be used by a user, as it 
+     * will result in an invalid state for the instance.
      */
     public ReteooRuleBase() {
-        this( null,
-              new ReteooFactHandleFactory() );
+ 
     }
     
     /**
