@@ -331,6 +331,9 @@ class ReteooBuilder
     }
 
     private void attachQuery(final String queryName) {
+        // incrementing offset adjustment, since we are adding a new ObjectNodeType as our
+        // first column
+        this.currentOffsetAdjustment += 1;
         final ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
         final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( this.id++,
                                                                        this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),

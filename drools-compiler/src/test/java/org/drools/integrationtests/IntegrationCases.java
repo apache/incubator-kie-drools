@@ -28,30 +28,29 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.drools.AssertedObject;
 import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
-//import org.drools.IndexedNumber;
-import org.drools.AssertedObject;
 import org.drools.IndexedNumber;
 import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.Precondition;
+import org.drools.QueryResult;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.Sensor;
 import org.drools.State;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
-import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.audit.WorkingMemoryLogger;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -64,8 +63,6 @@ import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.DebugAgendaEventListener;
-import org.drools.event.DebugWorkingMemoryEventListener;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.integrationtests.helloworld.Message;
 import org.drools.lang.DrlDumper;
@@ -2551,6 +2548,37 @@ public abstract class IntegrationCases extends TestCase {
             workingMemory.fireAllRules();
         } catch ( Exception e ) {
             Assert.fail( "Removing packages should not throw any exception: "+e.getMessage() );
+        }
+    }
+    
+    public void testQuery2() {
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader(  getClass().getResourceAsStream( "test_Query.drl" )  ) );
+  
+            final RuleBase ruleBase = getRuleBase();
+            ruleBase.addPackage( builder.getPackage() );
+  
+            final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+            workingMemory.fireAllRules();
+
+            QueryResults results = workingMemory.getQueryResults( "assertedobjquery" );
+
+            if (results==null || !results.iterator().hasNext()) {
+                Assert.fail("The stated query should return a result");
+            } else {
+                int counter = 0;
+                for ( Iterator it = results.iterator(); it.hasNext(); ) {
+                    QueryResult result = ( QueryResult )it.next();;
+                    AssertedObject assertedObject=(AssertedObject)result.get( "assertedobj" );
+                    Assert.assertNotNull( "Query result is not expected to be null", assertedObject );
+                    counter++;
+                }
+                Assert.assertEquals( "Expecting a single result from the query", 1, counter );
+            }             
+            
+        } catch ( Exception e ) {
+            Assert.fail( "Retrieving query results should not throw any exception: "+e.getMessage() );
         }
     }
     

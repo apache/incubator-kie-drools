@@ -45,7 +45,7 @@ public class QueryResults {
         final Map map = new HashMap( declarations.length );
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
             map.put( declarations[i].getIdentifier(),
-                     declarations );
+                     declarations[i] );
         }
         this.declarations = map;
 
