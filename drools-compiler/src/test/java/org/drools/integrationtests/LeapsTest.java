@@ -296,89 +296,90 @@ public class LeapsTest extends IntegrationCases {
         assertEquals( "help" , workingMemory.getObjects().get(1) );        
     }
     
-    // @FIXME this is broken for leaps
+    
+    /**
+     * this test is replicated here due to the fact that leaps
+     * does not create activations before fireAll.
+     * 
+     * Lack of activations' pool makes "auto-focus" functionality unvailable. 
+     * While outcome of the rules is different it's still testing dumpers and 
+     * gets consitent outcome with it.
+     */
     public void testDumpers() throws Exception {
-        assertTrue(true);
-//        final DrlParser parser = new DrlParser();
-//        final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );        
-//        
-//        PackageBuilder builder = new PackageBuilder();
-//        builder.addPackage(pkg );
-//
-//        RuleBase ruleBase = getRuleBase();
-//        ruleBase.addPackage( builder.getPackage() );
-//        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-//
-//        List list = new ArrayList();
-//        workingMemory.setGlobal( "list",
-//                                 list );
-//
-//        final Cheese brie = new Cheese( "brie",
-//                                  12 );
-//        workingMemory.assertObject( brie );
-//
-//        workingMemory.fireAllRules();
-//
-//        assertEquals( 3,
-//                      list.size() );
-//        assertEquals( "3 1",
-//                      list.get( 0 ) );
-//        assertEquals( "MAIN",
-//                      list.get( 1 ) );
-//        assertEquals( "1 1",
-//                      list.get( 2 ) );
-//        
-//        final DrlDumper drlDumper = new DrlDumper();
-//        final String drlResult = drlDumper.dump( pkg );
-//        builder = new PackageBuilder();
-//        builder.addPackageFromDrl( new StringReader( drlResult ) );
-//        
-//        ruleBase = getRuleBase();
-//        ruleBase.addPackage( builder.getPackage() );
-//        workingMemory = ruleBase.newWorkingMemory();
-//
-//        list = new ArrayList();
-//        workingMemory.setGlobal( "list",
-//                                 list );
-//
-//        workingMemory.assertObject( brie );
-//
-//        workingMemory.fireAllRules();
-//
-//        assertEquals( 3,
-//                      list.size() );
-//        assertEquals( "3 1",
-//                      list.get( 0 ) );
-//        assertEquals( "MAIN",
-//                      list.get( 1 ) );
-//        assertEquals( "1 1",
-//                      list.get( 2 ) );        
-//        
-//        final XmlDumper xmlDumper = new XmlDumper();
-//        final String xmlResult = xmlDumper.dump( pkg );
-//        builder = new PackageBuilder();
-//        builder.addPackageFromXml( new StringReader( xmlResult ) );
-//        
-//        ruleBase = getRuleBase();
-//        ruleBase.addPackage( builder.getPackage() );
-//        workingMemory = ruleBase.newWorkingMemory();
-//
-//        list = new ArrayList();
-//        workingMemory.setGlobal( "list",
-//                                 list );
-//
-//        workingMemory.assertObject( brie );
-//
-//        workingMemory.fireAllRules();
-//
-//        assertEquals( 3,
-//                      list.size() );
-//        assertEquals( "3 1",
-//                      list.get( 0 ) );
-//        assertEquals( "MAIN",
-//                      list.get( 1 ) );
-//        assertEquals( "1 1",
-//                      list.get( 2 ) );               
+        final DrlParser parser = new DrlParser();
+        final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );        
+        
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackage(pkg );
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        final Cheese brie = new Cheese( "brie",
+                                  12 );
+        workingMemory.assertObject( brie );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2, 
+                      list.size() );
+        assertEquals( "MAIN", 
+                      list.get( 0 ) );
+        assertEquals( "3 1", 
+                      list.get( 1 ) );
+        
+        final DrlDumper drlDumper = new DrlDumper();
+        final String drlResult = drlDumper.dump( pkg );
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( drlResult ) );
+        
+        ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        workingMemory = ruleBase.newWorkingMemory();
+
+        list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        workingMemory.assertObject( brie );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2, 
+                      list.size() );
+        assertEquals( "MAIN", 
+                      list.get( 0 ) );
+        assertEquals( "3 1", 
+                      list.get( 1 ) );
+        
+        final XmlDumper xmlDumper = new XmlDumper();
+        final String xmlResult = xmlDumper.dump( pkg );
+        builder = new PackageBuilder();
+        builder.addPackageFromXml( new StringReader( xmlResult ) );
+        
+        ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        workingMemory = ruleBase.newWorkingMemory();
+
+        list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        workingMemory.assertObject( brie );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2, 
+                      list.size() );
+        assertEquals( "MAIN", 
+                      list.get( 0 ) );
+        assertEquals( "3 1", 
+                      list.get( 1 ) );
     }
     
     
