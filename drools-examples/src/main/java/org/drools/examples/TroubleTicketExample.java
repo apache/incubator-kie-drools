@@ -28,13 +28,13 @@ public class TroubleTicketExample {
         logger.setFileName( "log/trouble_ticket" );
 
         final Customer a = new Customer( "A",
-                                   "Gold" );
+                                         "Gold" );
         final Customer b = new Customer( "B",
-                                   "Platinum" );
+                                         "Platinum" );
         final Customer c = new Customer( "C",
-                                   "Silver" );
+                                         "Silver" );
         final Customer d = new Customer( "D",
-                                   "Silver" );
+                                         "Silver" );
 
         final Ticket t1 = new Ticket( a );
         final Ticket t2 = new Ticket( b );
