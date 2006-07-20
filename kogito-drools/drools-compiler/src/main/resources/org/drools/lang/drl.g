@@ -728,29 +728,52 @@ constraint[List constraints]
 					
 					(	bvc=ID
 						{
-							d = new BoundVariableDescr( f.getText(), op.getText(), bvc.getText() );
-							d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
-							constraints.add( d );
+
+							
+							//d = new BoundVariableDescr( f.getText(), op.getText(), bvc.getText() );
+							FieldConstraintDescr fc = new FieldConstraintDescr(f.getText());														
+							fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
+							VariableRestrictionDescr vd = new VariableRestrictionDescr(op.getText(), bvc.getText());
+							fc.addRestriction(vd);
+							
+							constraints.add( fc );
 						}
 					|
 						lc=enum_constraint 
 						{ 
-							d = new LiteralDescr( f.getText(), op.getText(), lc, true ); 
-							d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
-							constraints.add( d );
+							//d = new LiteralDescr( f.getText(), op.getText(), lc, true ); 
+							FieldConstraintDescr fc = new FieldConstraintDescr(f.getText());																					
+							fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
+							
+							LiteralRestrictionDescr lrd  = new LiteralRestrictionDescr(op.getText(), lc, true);
+							fc.addRestriction(lrd);
+							
+							constraints.add( fc );
 						}						
 					|
 						lc=literal_constraint 
 						{ 
-							d = new LiteralDescr( f.getText(), op.getText(), lc ); 
-							d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
-							constraints.add( d );
+							//d = new LiteralDescr( f.getText(), op.getText(), lc ); 
+							FieldConstraintDescr fc = new FieldConstraintDescr(f.getText());																					
+							fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
+							
+							LiteralRestrictionDescr lrd  = new LiteralRestrictionDescr(op.getText(), lc);
+							fc.addRestriction(lrd);
+							
+							constraints.add( fc );
 						}
 					|	rvc=retval_constraint 
 						{ 
-							d = new ReturnValueDescr( f.getText(), op.getText(), rvc ); 
-							d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
-							constraints.add( d );
+							
+							
+							//d = new ReturnValueDescr( f.getText(), op.getText(), rvc ); 
+							FieldConstraintDescr fc = new FieldConstraintDescr(f.getText());																					
+							fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
+
+							ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(f.getText(), op.getText(), rvc);							
+							fc.addRestriction(rvd);
+							
+							constraints.add( fc );
 						} 
 					)
 				)?					
