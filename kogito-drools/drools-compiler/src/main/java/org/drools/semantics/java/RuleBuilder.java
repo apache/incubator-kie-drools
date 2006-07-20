@@ -38,6 +38,9 @@ import org.drools.base.FieldImpl;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -52,6 +55,7 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.rule.And;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.Column;
@@ -427,6 +431,31 @@ public class RuleBuilder {
     }
 
     private void build(final Column column,
+                       final FieldConstraintDescr fieldConstraintDescr) {
+        
+        for ( final Iterator it = fieldConstraintDescr.getRestrictions().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
+            if ( object instanceof FieldBindingDescr ) {
+                build( fieldConstraintDescr,
+                       (FieldBindingDescr) object );
+            } else if ( object instanceof LiteralRestrictionDescr ) {
+                build( fieldConstraintDescr,
+                       (LiteralRestrictionDescr) object );
+            } else if ( object instanceof VariableRestrictionDescr ) {
+                build( fieldConstraintDescr,
+                       (VariableRestrictionDescr) object );
+            } else if ( object instanceof ReturnValueRestrictionDescr ) {
+                build( fieldConstraintDescr,
+                       (ReturnValueRestrictionDescr) object );
+            } //else if ( object instanceof PredicateDescr ) {
+//                build( column,
+//                       (PredicateDescr) object );
+//            }
+        }        
+        
+    }
+    
+    private void build(final Column column,
                        final FieldBindingDescr fieldBindingDescr) {
         Declaration declaration = (Declaration) this.declarations.get( fieldBindingDescr.getIdentifier() );
         if ( declaration != null ) {
@@ -459,8 +488,8 @@ public class RuleBuilder {
         }
     }
 
-    private void build(final Column column,
-                       final VariableDescr variableDescr) {
+    private void build(final FieldConstraintDescr fieldConstraintDescr,
+                       final VariableRestrictionDescr variableRestrictionDescr) {
         if ( variableDescr.getIdentifier() == null || variableDescr.getIdentifier().equals( "" ) ) {
             this.errors.add( new RuleError( this.rule,
                                             variableDescr,
@@ -500,8 +529,8 @@ public class RuleBuilder {
                                                            evaluator ) );
     }
 
-    private void build(final Column column,
-                       final LiteralDescr literalDescr) {
+    private void build(final FieldConstraintDescr fieldConstraintDescr,
+                       final LiteralRestrictionDescr literalRestrictionDescr) {
 
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
