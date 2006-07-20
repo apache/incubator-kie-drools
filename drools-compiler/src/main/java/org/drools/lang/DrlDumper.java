@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.BoundVariableDescr;
+import org.drools.lang.descr.VariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -80,7 +80,7 @@ public class DrlDumper extends ReflectiveVisitor
         this.template = "\t " + name + " " + value + DrlDumper.eol;
     }
 
-    public void visitBoundVariableDescr(final BoundVariableDescr descr) {
+    public void visitBoundVariableDescr(final VariableDescr descr) {
         this.template = new String();
         this.template = descr.getFieldName() + " " + descr.getEvaluator() + " " + descr.getIdentifier();
     }

@@ -20,7 +20,7 @@ public class PredicateDescr extends PatternDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = 1274917549785412384L;
+    private static final long serialVersionUID = 320;
     private final String fieldName;
     private String       text;
 

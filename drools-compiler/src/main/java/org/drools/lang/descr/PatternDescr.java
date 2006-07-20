@@ -25,35 +25,37 @@ public class PatternDescr
     implements
     Serializable {
 
-    private static final long serialVersionUID = 8250082341310416977L;
+    private static final long serialVersionUID = 320;
     private int               line;
     private int               column;
-	private int endLine;
-	private int endColumn;
+    private int               endLine;
+    private int               endColumn;
 
-	public void setLocation(int line, int column) {
-		this.line   = line;
-		this.column = column;
-	}
-	
-	public void setEndLocation(int line, int column) {
-		this.endLine = line;
-		this.endColumn = column;
-	}
-	
-	public int getLine() {
-		return this.line;
-	}
-	
-	public int getColumn() {
-		return this.column;
-	}
-	
-	public int getEndLine() {
-		return this.endLine;
-	}
-	
-	public int getEndColumn() {
-		return this.endColumn;
-	}
+    public void setLocation(int line,
+                            int column) {
+        this.line = line;
+        this.column = column;
+    }
+
+    public void setEndLocation(int line,
+                               int column) {
+        this.endLine = line;
+        this.endColumn = column;
+    }
+
+    public int getLine() {
+        return this.line;
+    }
+
+    public int getColumn() {
+        return this.column;
+    }
+
+    public int getEndLine() {
+        return this.endLine;
+    }
+
+    public int getEndColumn() {
+        return this.endColumn;
+    }
 }

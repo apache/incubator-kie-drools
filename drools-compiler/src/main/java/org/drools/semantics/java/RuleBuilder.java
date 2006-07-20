@@ -38,7 +38,7 @@ import org.drools.base.FieldImpl;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.BoundVariableDescr;
+import org.drools.lang.descr.VariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
@@ -53,7 +53,7 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.And;
-import org.drools.rule.BoundVariableConstraint;
+import org.drools.rule.VariableConstraint;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
@@ -412,9 +412,9 @@ public class RuleBuilder {
             } else if ( object instanceof LiteralDescr ) {
                 build( column,
                        (LiteralDescr) object );
-            } else if ( object instanceof BoundVariableDescr ) {
+            } else if ( object instanceof VariableDescr ) {
                 build( column,
-                       (BoundVariableDescr) object );
+                       (VariableDescr) object );
             } else if ( object instanceof ReturnValueDescr ) {
                 build( column,
                        (ReturnValueDescr) object );
@@ -460,42 +460,42 @@ public class RuleBuilder {
     }
 
     private void build(final Column column,
-                       final BoundVariableDescr boundVariableDescr) {
-        if ( boundVariableDescr.getIdentifier() == null || boundVariableDescr.getIdentifier().equals( "" ) ) {
+                       final VariableDescr variableDescr) {
+        if ( variableDescr.getIdentifier() == null || variableDescr.getIdentifier().equals( "" ) ) {
             this.errors.add( new RuleError( this.rule,
-                                            boundVariableDescr,
+                                            variableDescr,
                                             null,
-                                            "Identifier not defined for binding field '" + boundVariableDescr.getFieldName() + "'" ) );
+                                            "Identifier not defined for binding field '" + variableDescr.getFieldName() + "'" ) );
             return;
         }
 
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = getFieldExtractor( boundVariableDescr,
+        final FieldExtractor extractor = getFieldExtractor( variableDescr,
                                                             clazz,
-                                                            boundVariableDescr.getFieldName() );
+                                                            variableDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
 
-        final Declaration declaration = (Declaration) this.declarations.get( boundVariableDescr.getIdentifier() );
+        final Declaration declaration = (Declaration) this.declarations.get( variableDescr.getIdentifier() );
 
         if ( declaration == null ) {
             this.errors.add( new RuleError( this.rule,
-                                            boundVariableDescr,
+                                            variableDescr,
                                             null,
-                                            "Unable to return Declaration for identifier '" + boundVariableDescr.getIdentifier() + "'" ) );
+                                            "Unable to return Declaration for identifier '" + variableDescr.getIdentifier() + "'" ) );
             return;
         }
 
-        final Evaluator evaluator = getEvaluator( boundVariableDescr,
+        final Evaluator evaluator = getEvaluator( variableDescr,
                                                   extractor.getObjectType().getValueType(),
-                                                  boundVariableDescr.getEvaluator() );
+                                                  variableDescr.getEvaluator() );
         if ( evaluator == null ) {
             return;
         }
 
-        column.addConstraint( new BoundVariableConstraint( extractor,
+        column.addConstraint( new VariableConstraint( extractor,
                                                            declaration,
                                                            evaluator ) );
     }
@@ -552,9 +552,9 @@ public class RuleBuilder {
             return;
         }
 
-        column.addConstraint( new LiteralConstraint( field,
-                                                     extractor,
-                                                     evaluator ) );
+        column.addConstraint( new LiteralConstraint( extractor,
+                                                     evaluator,
+                                                     field ) );
     }
 
     private void build(final Column column,

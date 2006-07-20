@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.drools.lang.descr.BoundVariableDescr;
+import org.drools.lang.descr.VariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.LiteralDescr;
@@ -52,7 +52,7 @@ class BoundVariableHandler extends BaseAbstractHandler
             this.validPeers.add( PredicateDescr.class );
             this.validPeers.add( ReturnValueDescr.class );
             this.validPeers.add( FieldBindingDescr.class );
-            this.validPeers.add( BoundVariableDescr.class );
+            this.validPeers.add( VariableDescr.class );
             this.allowNesting = false;
         }
     }
@@ -81,30 +81,30 @@ class BoundVariableHandler extends BaseAbstractHandler
                                          this.xmlPackageReader.getLocator() );
         }
 
-        final BoundVariableDescr boundVariableDescr = new BoundVariableDescr( fieldName,
+        final VariableDescr variableDescr = new VariableDescr( fieldName,
                                                                         evaluator,
                                                                         identifier );
 
-        return boundVariableDescr;
+        return variableDescr;
     }
 
     public Object end(final String uri,
                       final String localName) throws SAXException {
         final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        final BoundVariableDescr boundVariableDescr = (BoundVariableDescr) this.xmlPackageReader.getCurrent();
+        final VariableDescr variableDescr = (VariableDescr) this.xmlPackageReader.getCurrent();
 
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
         final ColumnDescr columnDescr = (ColumnDescr) it.previous();
 
-        columnDescr.addDescr( boundVariableDescr );
+        columnDescr.addDescr( variableDescr );
 
         return null;
     }
 
     public Class generateNodeFor() {
-        return BoundVariableDescr.class;
+        return VariableDescr.class;
     }
 }

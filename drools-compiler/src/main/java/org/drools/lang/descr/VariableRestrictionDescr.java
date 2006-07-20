@@ -16,25 +16,18 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-public class BoundVariableDescr extends PatternDescr {
+public class VariableRestrictionDescr extends PatternDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = 7739599208890839005L;
-    private String fieldName;
-    private String evaluator;
-    private String declarationIdentifier;
+    private static final long serialVersionUID = 320;
+    private String            evaluator;
+    private String            declarationIdentifier;
 
-    public BoundVariableDescr(final String fieldName,
-                              final String evaluator,
-                              final String identifier) {
-        this.fieldName = fieldName;
+    public VariableRestrictionDescr(final String evaluator,
+                                    final String identifier) {
         this.declarationIdentifier = identifier;
         this.evaluator = evaluator;
-    }
-
-    public String getFieldName() {
-        return this.fieldName;
     }
 
     public String getEvaluator() {

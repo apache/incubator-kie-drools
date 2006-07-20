@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.BoundVariableDescr;
+import org.drools.lang.descr.VariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -271,13 +271,13 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "var1",
                       fieldBindingDescr.getIdentifier() );
 
-        final BoundVariableDescr boundVariableDescr = (BoundVariableDescr) column3.getDescrs().get( 4 );
+        final VariableDescr variableDescr = (VariableDescr) column3.getDescrs().get( 4 );
         assertEquals( "field1",
-                      boundVariableDescr.getFieldName() );
+                      variableDescr.getFieldName() );
         assertEquals( "==",
-                      boundVariableDescr.getEvaluator() );
+                      variableDescr.getEvaluator() );
         assertEquals( "var1",
-                      boundVariableDescr.getIdentifier() );
+                      variableDescr.getIdentifier() );
 
         final NotDescr notDescr = (NotDescr) lhsDescr.getDescrs().get( 5 );
         assertEquals( 1,

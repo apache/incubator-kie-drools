@@ -3753,7 +3753,7 @@ public class RuleParser extends Parser {
                             bvc=(Token)input.LT(1);
                             match(input,ID,FOLLOW_ID_in_constraint1899); 
 
-                            							d = new BoundVariableDescr( f.getText(), op.getText(), bvc.getText() );
+                            							d = new VariableDescr( f.getText(), op.getText(), bvc.getText() );
                             							d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
                             							constraints.add( d );
                             						

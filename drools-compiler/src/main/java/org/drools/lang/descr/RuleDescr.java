@@ -56,7 +56,7 @@ public class RuleDescr extends PatternDescr {
         return this.className;
     }
 
-    public void SetClassName(final String className) {
+    public void setClassName(final String className) {
         this.className = className;
     }
 

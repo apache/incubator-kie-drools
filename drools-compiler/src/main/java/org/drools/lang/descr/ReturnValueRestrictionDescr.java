@@ -16,34 +16,27 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-public class ReturnValueDescr extends PatternDescr {
+public class ReturnValueRestrictionDescr extends PatternDescr {
     /**
      * 
      */
     private static final long serialVersionUID = 478782161375380651L;
-    private String   fieldName;
     private String   evaluator;
     private String   text;
     private String[] declarations;
 
     private String   classMethodName;
 
-    public ReturnValueDescr(final String fieldName,
+    public ReturnValueRestrictionDescr(final String fieldName,
                             final String evaluator) {
-        this.fieldName = fieldName;
         this.evaluator = evaluator;
     }
 
-    public ReturnValueDescr(final String fieldName,
+    public ReturnValueRestrictionDescr(final String fieldName,
                             final String evaluator,
                             final String text) {
-        this.fieldName = fieldName;
         this.evaluator = evaluator;
         this.text = text;
-    }
-
-    public String getFieldName() {
-        return this.fieldName;
     }
 
     public String getClassMethodName() {
@@ -75,6 +68,6 @@ public class ReturnValueDescr extends PatternDescr {
     }
 
     public String toString() {
-        return "[ReturnValue: field=" + this.fieldName + "; evaluator=" + this.evaluator + "; text=" + this.text + "]";
+        return "[ReturnValue: evaluator=" + this.evaluator + "; text=" + this.text + "]";
     }
 }

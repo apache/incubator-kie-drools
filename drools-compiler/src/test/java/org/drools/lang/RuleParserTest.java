@@ -32,7 +32,7 @@ import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.BoundVariableDescr;
+import org.drools.lang.descr.VariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -1069,7 +1069,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "bob",
                       literalDescr.getText() );
 
-        final BoundVariableDescr variableDescr = (BoundVariableDescr) person.getDescrs().get( 2 );
+        final VariableDescr variableDescr = (VariableDescr) person.getDescrs().get( 2 );
         assertEquals( "likes",
                       variableDescr.getFieldName() );
         assertEquals( "==",
@@ -1479,7 +1479,7 @@ public class RuleParserTest extends TestCase {
 
         final NotDescr not = (NotDescr) rule.getLhs().getDescrs().get( 1 );
         column = (ColumnDescr) not.getDescrs().get( 0 );
-        final BoundVariableDescr boundVariable = (BoundVariableDescr) column.getDescrs().get( 0 );
+        final VariableDescr boundVariable = (VariableDescr) column.getDescrs().get( 0 );
         assertEquals( "type",
                       boundVariable.getFieldName() );
         assertEquals( "==",
