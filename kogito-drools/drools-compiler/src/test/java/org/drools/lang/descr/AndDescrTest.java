@@ -19,14 +19,14 @@ public class AndDescrTest extends TestCase {
         final AndDescr and = new AndDescr();
         final ColumnDescr col1 = new ColumnDescr( "Foo" );
         col1.setIdentifier( "foo" );
-        col1.addDescr( new BoundVariableDescr( "foo",
+        col1.addDescr( new VariableDescr( "foo",
                                                "==",
                                                "bar" ) );
         and.addDescr( col1 );
 
         final ColumnDescr col2 = new ColumnDescr( "Foo" );
         col2.setIdentifier( "foo" );
-        col2.addDescr( new BoundVariableDescr( "bar",
+        col2.addDescr( new VariableDescr( "bar",
                                                "==",
                                                "baz" ) );
         and.addDescr( col2 );
@@ -53,9 +53,9 @@ public class AndDescrTest extends TestCase {
         assertEquals( 2,
                       col1.getDescrs().size() );
         assertEquals( "bar",
-                      ((BoundVariableDescr) col1.getDescrs().get( 0 )).getIdentifier() );
+                      ((VariableDescr) col1.getDescrs().get( 0 )).getIdentifier() );
         assertEquals( "baz",
-                      ((BoundVariableDescr) col1.getDescrs().get( 1 )).getIdentifier() );
+                      ((VariableDescr) col1.getDescrs().get( 1 )).getIdentifier() );
     }
 
 }

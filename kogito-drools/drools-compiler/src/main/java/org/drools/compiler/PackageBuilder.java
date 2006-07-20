@@ -299,7 +299,7 @@ public class PackageBuilder {
                                                          ruleDescr.getName(),
                                                          "java",
                                                          this.src );
-        ruleDescr.SetClassName( ucFirst( ruleClassName ) );
+        ruleDescr.setClassName( ucFirst( ruleClassName ) );
 
         final RuleBuilder builder = new RuleBuilder( getTypeResolver(),
                                                      classFieldExtractorCache );
