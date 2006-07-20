@@ -1,7 +1,5 @@
 package org.drools.lang.descr;
 
-import java.util.List;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -23,29 +21,39 @@ import java.util.List;
  * a constraint on a single field of a column. 
  * The "text" contains the content, which may also be an enumeration. 
  */
-public class FieldConstraint extends PatternDescr {
+public class LiteralRestrictionDescr extends RestrictionDescr {
     /**
      * 
      */
     private static final long serialVersionUID = 320;
-    private String  fieldName;
-    private List    restrictions;
+    private String  evaluator;
+    private String  text;
+    private boolean staticFieldValue;
 
-    public FieldConstraint(final String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public String getFieldName() {
-        return this.fieldName;
-    }
-    
-    public void addRestriction(RestrictionDescr restriction) {
-        this.restrictions.add( restriction );
-    }
-    
-    public List getRestrictions() {
-        return this.restrictions;
+    public LiteralRestrictionDescr( final String evaluator,
+                        final String text) {
+        this( evaluator,
+              text,
+              false );
     }
 
-    
+    public LiteralRestrictionDescr(final String evaluator,
+                        final String text,
+                        final boolean staticFieldValue) {
+        this.text = text;
+        this.evaluator = evaluator;
+        this.staticFieldValue = staticFieldValue;
+    }
+
+    public boolean isStaticFieldValue() {
+        return this.staticFieldValue;
+    }
+
+    public String getEvaluator() {
+        return this.evaluator;
+    }
+
+    public String getText() {
+        return this.text;
+    }
 }
