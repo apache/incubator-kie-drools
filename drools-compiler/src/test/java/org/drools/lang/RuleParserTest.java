@@ -32,21 +32,24 @@ import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.VariableDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
+
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FunctionDescr;
-import org.drools.lang.descr.LiteralDescr;
+
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.ReturnValueDescr;
+
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
+import org.drools.rule.LiteralRestriction;
 
 public class RuleParserTest extends TestCase {
 
@@ -280,37 +283,49 @@ public class RuleParserTest extends TestCase {
         ColumnDescr col = (ColumnDescr) lhs.getDescrs().get( 0 );
         assertEquals( 1,
                       col.getDescrs().size() );
-        LiteralDescr lit = (LiteralDescr) col.getDescrs().get( 0 );
+        FieldConstraintDescr fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+        LiteralRestrictionDescr lit = (LiteralRestrictionDescr) fld.getRestrictions().get(0);
+        
         assertEquals( "==",
                       lit.getEvaluator() );
         assertEquals( "false",
                       lit.getText() );
         assertEquals( "bar",
-                      lit.getFieldName() );
+        			  fld.getFieldName() );
         assertEquals( false,
                       lit.isStaticFieldValue() );
 
         col = (ColumnDescr) lhs.getDescrs().get( 1 );
         assertEquals( 1,
                       col.getDescrs().size() );
-        lit = (LiteralDescr) col.getDescrs().get( 0 );
+        
+        
+        fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get(0);
+        
+        
         assertEquals( ">",
                       lit.getEvaluator() );
         assertEquals( "-42",
                       lit.getText() );
         assertEquals( "boo",
-                      lit.getFieldName() );
+                      fld.getFieldName() );
 
         col = (ColumnDescr) lhs.getDescrs().get( 2 );
         assertEquals( 1,
                       col.getDescrs().size() );
-        lit = (LiteralDescr) col.getDescrs().get( 0 );
+        
+        
+        //lit = (LiteralDescr) col.getDescrs().get( 0 );
+        
+        fld = (FieldConstraintDescr) col.getDescrs().get( 0 );
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get(0);
         assertEquals( ">",
                       lit.getEvaluator() );
         assertEquals( "-42.42",
                       lit.getText() );
         assertEquals( "boo",
-                      lit.getFieldName() );
+                      fld.getFieldName() );
 
         assertFalse( parser.hasErrors() );
     }
@@ -402,13 +417,17 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( 1,
                       first.getDescrs().size() );
-
-        LiteralDescr constraint = (LiteralDescr) first.getDescrs().get( 0 );
-
+        
+        
+        FieldConstraintDescr fld = (FieldConstraintDescr) first.getDescrs().get( 0 );
+        LiteralRestrictionDescr constraint = (LiteralRestrictionDescr) fld.getRestrictions().get(0);
+        
+        
+        
         assertNotNull( constraint );
 
         assertEquals( "a",
-                      constraint.getFieldName() );
+                      fld.getFieldName() );
         assertEquals( "==",
                       constraint.getEvaluator() );
         assertEquals( "3",
@@ -432,12 +451,16 @@ public class RuleParserTest extends TestCase {
         assertEquals( "a4",
                       fieldBindingDescr.getIdentifier() );
 
-        constraint = (LiteralDescr) second.getDescrs().get( 1 );
-
+        
+        fld = (FieldConstraintDescr) second.getDescrs().get( 1 );
+        constraint = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
+        
+        
+        
         assertNotNull( constraint );
 
         assertEquals( "a",
-                      constraint.getFieldName() );
+                      fld.getFieldName() );
         assertEquals( "==",
                       constraint.getEvaluator() );
         assertEquals( "4",
@@ -565,12 +588,15 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       first.getDescrs().size() );
 
-        LiteralDescr constraint = (LiteralDescr) first.getDescrs().get( 0 );
+        //LiteralDescr constraint = (LiteralDescr) first.getDescrs().get( 0 );
 
+        FieldConstraintDescr fld = (FieldConstraintDescr) first.getDescrs().get(0);
+        LiteralRestrictionDescr constraint = (LiteralRestrictionDescr) fld.getRestrictions().get(0);
+        
         assertNotNull( constraint );
 
         assertEquals( "a",
-                      constraint.getFieldName() );
+                      fld.getFieldName() );
         assertEquals( "==",
                       constraint.getEvaluator() );
         assertEquals( "3",
@@ -595,7 +621,9 @@ public class RuleParserTest extends TestCase {
                       fieldBindingDescr.getIdentifier() );
 
         constraint = (LiteralDescr) second.getDescrs().get( 1 );
-
+        
+        
+        
         assertNotNull( constraint );
 
         assertEquals( "a",
