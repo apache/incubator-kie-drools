@@ -127,7 +127,7 @@ class LogicTransformer {
         if ( or == null ) {
             // No or so just assign
             ands = new And[]{cloned};
-            checkForAndRemoveDuplicates( ands[0] );            
+            checkForAndRemoveDuplicates( ands[0] );
         } else {
             ands = new And[or.getChildren().size()];
             int i = 0;

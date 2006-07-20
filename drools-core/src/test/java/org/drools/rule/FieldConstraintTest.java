@@ -67,9 +67,9 @@ public class FieldConstraintTest extends TestCase {
 
         final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
                                                                    Evaluator.EQUAL );
-        final LiteralConstraint constraint = new LiteralConstraint( field,
-                                                                    extractor,
-                                                                    evaluator );
+        final LiteralConstraint constraint = new LiteralConstraint( extractor,
+                                                                    evaluator,
+                                                                    field );
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );

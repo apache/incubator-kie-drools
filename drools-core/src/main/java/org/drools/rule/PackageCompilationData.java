@@ -62,12 +62,12 @@ public class PackageCompilationData
      * will result in an invalid state for the instance.
      */
     public PackageCompilationData() {
-        
+
     }
 
     public PackageCompilationData(final ClassLoader parentClassLoader) {
         initClassLoader( parentClassLoader );
-        this.invokerLookups   = new HashMap();
+        this.invokerLookups = new HashMap();
         this.store = new HashMap();
     }
 

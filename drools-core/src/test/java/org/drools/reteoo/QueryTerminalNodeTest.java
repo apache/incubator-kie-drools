@@ -53,9 +53,9 @@ public class QueryTerminalNodeTest extends TestCase {
 
         final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
                                                                    Evaluator.EQUAL );
-        LiteralConstraint constraint = new LiteralConstraint( field,
-                                                              extractor,
-                                                              evaluator );
+        LiteralConstraint constraint = new LiteralConstraint( extractor,
+                                                              evaluator,
+                                                              field );
 
         AlphaNode alphaNode = new AlphaNode( 2,
                                              constraint,
@@ -77,9 +77,9 @@ public class QueryTerminalNodeTest extends TestCase {
 
         field = new MockField( "stilton" );
 
-        constraint = new LiteralConstraint( field,
-                                            extractor,
-                                            evaluator );
+        constraint = new LiteralConstraint( extractor,
+                                            evaluator,
+                                            field );
 
         alphaNode = new AlphaNode( 5,
                                    constraint,

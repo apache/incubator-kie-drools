@@ -32,71 +32,64 @@ public class ReturnValueConstraint
     /**
      * 
      */
-    private static final long          serialVersionUID       = -3888281054472597050L;
+    private static final long            serialVersionUID = -3888281054472597050L;
 
-    private final FieldExtractor       fieldExtractor;
-
-    private ReturnValueExpression      expression;
-
-    private final Declaration[]        requiredDeclarations;
-
-    private final Evaluator            evaluator;
-
-    private static final Declaration[] noRequiredDeclarations = new Declaration[]{};
+    private final FieldExtractor         fieldExtractor;
+    private final ReturnValueRestriction restriction;
 
     public ReturnValueConstraint(final FieldExtractor fieldExtractor,
-                                 final Declaration[] declarations,
-                                 final Evaluator evaluator) {
-        this( fieldExtractor,
-              null,
-              declarations,
-              evaluator );
-    }
-
-    public ReturnValueConstraint(final FieldExtractor fieldExtractor,
-                                 final ReturnValueExpression returnValueExpression,
                                  final Declaration[] declarations,
                                  final Evaluator evaluator) {
         this.fieldExtractor = fieldExtractor;
+        this.restriction = new ReturnValueRestriction( declarations,
+                                                       evaluator );
+    }
 
-        this.expression = returnValueExpression;
-
-        if ( declarations != null ) {
-            this.requiredDeclarations = declarations;
-        } else {
-            this.requiredDeclarations = ReturnValueConstraint.noRequiredDeclarations;
-        }
-
-        this.evaluator = evaluator;
+    public ReturnValueConstraint(final FieldExtractor fieldExtractor,
+                                 final ReturnValueExpression expression,
+                                 final Declaration[] declarations,
+                                 final Evaluator evaluator) {
+        this.fieldExtractor = fieldExtractor;
+        this.restriction = new ReturnValueRestriction( expression,
+                                                       declarations,
+                                                       evaluator );
     }
 
     public Declaration[] getRequiredDeclarations() {
-        return this.requiredDeclarations;
+        return this.restriction.getRequiredDeclarations();
     }
 
     public void setReturnValueExpression(final ReturnValueExpression expression) {
-        this.expression = expression;
+        this.restriction.setReturnValueExpression( expression );
     }
 
     public ReturnValueExpression getExpression() {
-        return this.expression;
+        return this.restriction.getExpression();
+    }
+
+    public Evaluator getEvaluator() {
+        return this.restriction.getEvaluator();
     }
 
     public boolean isAllowed(final InternalFactHandle handle,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
-        try {
-            return this.evaluator.evaluate( this.fieldExtractor.getValue( handle.getObject() ),
-                                            this.expression.evaluate( tuple,
-                                                                      this.requiredDeclarations,
-                                                                      workingMemory ) );
-        } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
-        }
+        return this.restriction.isAllowed( this.fieldExtractor.getValue( handle.getObject() ),
+                                           handle,
+                                           tuple,
+                                           workingMemory );
+    }
+
+    public String toString() {
+        return "[ReturnValueConstraint fieldExtractor=" + this.fieldExtractor + " evaluator=" + getEvaluator() + " declarations=" + getRequiredDeclarations() + "]";
     }
 
     public int hashCode() {
-        return this.expression.hashCode();
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + this.fieldExtractor.hashCode();
+        result = PRIME * result + this.restriction.hashCode();
+        return result;
     }
 
     public boolean equals(final Object object) {
@@ -109,21 +102,7 @@ public class ReturnValueConstraint
         }
 
         final ReturnValueConstraint other = (ReturnValueConstraint) object;
-        
-        if ( this.requiredDeclarations.length != other.requiredDeclarations.length ) {
-        	return false;
-        }
-        
-        for ( int i = 0, length = this.requiredDeclarations.length; i < length; i++ ) {
-        	if ( this.requiredDeclarations[i].getColumn() != other.requiredDeclarations[i].getColumn() ) {
-        		return false;
-        	}
 
-        	if ( !this.requiredDeclarations[i].getExtractor().equals( other.requiredDeclarations[i].getExtractor() ) ) {
-        		return false;
-        	}        	
-        }        
-
-        return this.expression.equals( other.expression );
+        return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
     }
 }

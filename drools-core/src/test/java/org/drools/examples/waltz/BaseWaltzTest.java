@@ -32,7 +32,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorFactory;
-import org.drools.rule.BoundVariableConstraint;
+import org.drools.rule.VariableConstraint;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidRuleException;
@@ -3760,9 +3760,9 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
 
         final MockField field = new MockField( fieldValue );
 
-        return new LiteralConstraint( field,
-                                      extractor,
-                                      evaluator );
+        return new LiteralConstraint( extractor,
+                                      evaluator,
+                                      field );
     }
 
     private void setFieldDeclaration(final Column column,
@@ -3786,7 +3786,7 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
         final FieldExtractor extractor = ClassFieldExtractorFactory.getClassFieldExtractor( clazz,
                                                                                             fieldName );
 
-        return new BoundVariableConstraint( extractor,
+        return new VariableConstraint( extractor,
                                             declaration,
                                             evaluator );
     }

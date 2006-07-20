@@ -20,7 +20,7 @@ import javax.naming.OperationNotSupportedException;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaNodeBinder;
-import org.drools.rule.BoundVariableConstraint;
+import org.drools.rule.VariableConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 
@@ -53,8 +53,8 @@ public class BetaMemoryFactory {
         final FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
         if ( (constraints != null) && (config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_INDEX_LEFT_BETA_MEMORY )) ) {
             for ( int i = 0; i < constraints.length; i++ ) {
-                if ( constraints[i] instanceof BoundVariableConstraint ) {
-                    final BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
+                if ( constraints[i] instanceof VariableConstraint ) {
+                    final VariableConstraint bvc = (VariableConstraint) constraints[i];
                     BetaLeftMemory innerMemory = null;
                     switch ( bvc.getEvaluator().getType() ) {
                         case Evaluator.BOOLEAN_TYPE :
@@ -118,8 +118,8 @@ public class BetaMemoryFactory {
         final FieldConstraint[] constraints = (binder != null) ? binder.getConstraints() : null;
         if ( (constraints != null) && (config.getBooleanProperty( RuleBaseConfiguration.PROPERTY_INDEX_RIGHT_BETA_MEMORY )) ) {
             for ( int i = 0; i < constraints.length; i++ ) {
-                if ( constraints[i] instanceof BoundVariableConstraint ) {
-                    final BoundVariableConstraint bvc = (BoundVariableConstraint) constraints[i];
+                if ( constraints[i] instanceof VariableConstraint ) {
+                    final VariableConstraint bvc = (VariableConstraint) constraints[i];
                     BetaRightMemory innerMemory = null;
                     switch ( bvc.getEvaluator().getType() ) {
                         case Evaluator.BOOLEAN_TYPE :

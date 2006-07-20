@@ -25,37 +25,28 @@ import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.Tuple;
 
-public class BoundVariableConstraint
+public class VariableConstraint
     implements
     FieldConstraint {
 
     /**
      * 
      */
-    private static final long    serialVersionUID = 8141052924257031767L;
+    private static final long         serialVersionUID = 320;
 
-    private final FieldExtractor fieldExtractor;
+    private final FieldExtractor      fieldExtractor;
+    private final VariableRestriction restriction;
 
-    private final Declaration    declaration;
-
-    private final int            column;
-
-    private final Declaration[]  requiredDeclarations;
-
-    private final Evaluator      evaluator;
-
-    public BoundVariableConstraint(final FieldExtractor fieldExtractor,
-                                   final Declaration declaration,
-                                   final Evaluator evaluator) {
+    public VariableConstraint(final FieldExtractor fieldExtractor,
+                              final Declaration declaration,
+                              final Evaluator evaluator) {
         this.fieldExtractor = fieldExtractor;
-        this.declaration = declaration;
-        this.column = declaration.getColumn();
-        this.requiredDeclarations = new Declaration[]{declaration};
-        this.evaluator = evaluator;
+        this.restriction = new VariableRestriction( declaration,
+                                                    evaluator );
     }
 
     public Declaration[] getRequiredDeclarations() {
-        return this.requiredDeclarations;
+        return this.restriction.getRequiredDeclarations();
     }
 
     public FieldExtractor getFieldExtractor() {
@@ -63,7 +54,7 @@ public class BoundVariableConstraint
     }
 
     public Evaluator getEvaluator() {
-        return this.evaluator;
+        return this.restriction.getEvaluator();
     }
 
     public boolean isAllowed(final InternalFactHandle handle,
@@ -78,25 +69,21 @@ public class BoundVariableConstraint
         //            return evaluator.evaluate( this.fieldExtractor.getValue( right ),
         //                                       declaration.getValue( left ) );                
         //        }
-        return this.evaluator.evaluate( this.fieldExtractor.getValue( handle.getObject() ),
-                                        this.declaration.getValue( tuple.get( this.column ).getObject() ) );
+        return this.restriction.isAllowed( this.fieldExtractor.getValue( handle.getObject() ),
+                                           handle,
+                                           tuple,
+                                           workingMemory );
     }
 
     public String toString() {
-        return "[BoundVariableConstraint fieldExtractor=" + this.fieldExtractor + " declaration=" + this.declaration + "]";
+        return "[VariableConstraint fieldExtractor=" + this.fieldExtractor + " declaration=" + getRequiredDeclarations() + "]";
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + this.column;
-        result = PRIME * result + ((this.declaration == null) ? 0 : this.declaration.hashCode());
-        result = PRIME * result + ((this.evaluator == null) ? 0 : this.evaluator.hashCode());
-        result = PRIME * result + ((this.fieldExtractor == null) ? 0 : this.fieldExtractor.hashCode());
-        result = PRIME * result + this.requiredDeclarations[0].hashCode();
+        result = PRIME * result + this.fieldExtractor.hashCode();
+        result = PRIME * result + this.restriction.hashCode();
         return result;
     }
 
@@ -109,10 +96,9 @@ public class BoundVariableConstraint
             return false;
         }
 
-        final BoundVariableConstraint other = (BoundVariableConstraint) object;
+        final VariableConstraint other = (VariableConstraint) object;
 
-        return (this.column == other.column) && this.fieldExtractor.equals( other.fieldExtractor ) && this.declaration.equals( other.declaration ) && this.evaluator.equals( other.evaluator ) && Arrays.equals( this.requiredDeclarations,
-                                                                                                                                                                                                                 other.requiredDeclarations );
+        return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
     }
 
 }

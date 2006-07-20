@@ -167,15 +167,15 @@ public class HashedObjectSinkListTest extends TestCase {
 
         final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
                                                                    Evaluator.EQUAL );
-        final LiteralConstraint constraint1 = new LiteralConstraint( field1,
-                                                                     extractor,
-                                                                     evaluator );
-        final LiteralConstraint constraint2 = new LiteralConstraint( field2,
-                                                                     extractor,
-                                                                     evaluator );
-        final LiteralConstraint constraint3 = new LiteralConstraint( field2,
-                                                                     extractor2,
-                                                                     evaluator );
+        final LiteralConstraint constraint1 = new LiteralConstraint( extractor,
+                                                                     evaluator,
+                                                                     field1 );
+        final LiteralConstraint constraint2 = new LiteralConstraint( extractor,
+                                                                     evaluator,
+                                                                     field2 );
+        final LiteralConstraint constraint3 = new LiteralConstraint( extractor2,
+                                                                     evaluator,
+                                                                     field2 );
 
         final AlphaNode alphaNode1 = new AlphaNode( 2,
                                                     constraint1,

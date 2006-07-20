@@ -86,9 +86,9 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
                                                                    Evaluator.EQUAL );
-        final LiteralConstraint constraint = new LiteralConstraint( field,
-                                                                    extractor,
-                                                                    evaluator );
+        final LiteralConstraint constraint = new LiteralConstraint( extractor,
+                                                                    evaluator,
+                                                                    field );
 
         // With Memory
         final AlphaNode alphaNode = new AlphaNode( 2,
@@ -171,9 +171,9 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
                                                                    Evaluator.EQUAL );
-        final LiteralConstraint constraint = new LiteralConstraint( field,
-                                                                    extractor,
-                                                                    evaluator );
+        final LiteralConstraint constraint = new LiteralConstraint( extractor,
+                                                                    evaluator,
+                                                                    field );
 
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    constraint,
@@ -233,9 +233,9 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
                                                                    Evaluator.EQUAL );
-        final LiteralConstraint constraint = new LiteralConstraint( field,
-                                                                    extractor,
-                                                                    evaluator );
+        final LiteralConstraint constraint = new LiteralConstraint( extractor,
+                                                                    evaluator,
+                                                                    field );
 
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    constraint,
@@ -315,9 +315,9 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
                                                                    Evaluator.EQUAL );
-        final LiteralConstraint constraint = new LiteralConstraint( field,
-                                                                    extractor,
-                                                                    evaluator );
+        final LiteralConstraint constraint = new LiteralConstraint( extractor,
+                                                                    evaluator,
+                                                                    field );
 
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    constraint,

@@ -22,38 +22,36 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.Restriction;
 import org.drools.spi.Tuple;
 
-public class LiteralConstraint
+public class LiteralRestriction
     implements
-    FieldConstraint{
+    Restriction {
 
     /**
      * 
      */
     private static final long          serialVersionUID     = 320;
 
-    private final FieldExtractor       extractor;
-    
-    private final LiteralRestriction   restriction;
+    private final FieldValue           field;
 
-    public LiteralConstraint(final FieldExtractor extractor,
-                             final Evaluator evaluator,
-                             final FieldValue field) {
-        this.extractor = extractor;
-        this.restriction = new LiteralRestriction(field, evaluator);
+    private final Evaluator            evaluator;
+
+    private static final Declaration[] requiredDeclarations = new Declaration[0];
+
+    public LiteralRestriction(final FieldValue field,
+                              final Evaluator evaluator) {
+        this.field = field;
+        this.evaluator = evaluator;
     }
 
     public Evaluator getEvaluator() {
-        return this.restriction.getEvaluator();
+        return this.evaluator;
     }
 
     public FieldValue getField() {
-        return this.restriction.getField();
-    }
-
-    public FieldExtractor getFieldExtractor() {
-        return this.extractor;
+        return this.field;
     }
 
     /**
@@ -62,24 +60,26 @@ public class LiteralConstraint
      *      Return an empty <code>Declaration[]</code>
      */
     public Declaration[] getRequiredDeclarations() {
-        return this.restriction.getRequiredDeclarations();
+        return LiteralRestriction.requiredDeclarations;
     }
 
-    public boolean isAllowed(final InternalFactHandle handle,
+    public boolean isAllowed(final Object object,
+                             final InternalFactHandle handle,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
-        return this.restriction.isAllowed( this.extractor.getValue( handle.getObject() ), handle, tuple, workingMemory );
+        return this.evaluator.evaluate( object,
+                                        this.field.getValue() );
     }
 
     public String toString() {
-        return "[LiteralConstraint fieldExtractor=" + this.extractor + " evaluator=" + getEvaluator() + " value=" + getField().getValue() + "]";
+        return "[LiteralRestriction evaluator=" + this.evaluator + " value=" + this.field.getValue() + "]";
     }
 
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + this.extractor.hashCode();
-        result = PRIME * result + this.restriction.hashCode();
+        result = PRIME * result + this.evaluator.hashCode();
+        result = PRIME * result + this.field.hashCode();
         return result;
     }
 
@@ -87,12 +87,12 @@ public class LiteralConstraint
         if ( this == object ) {
             return true;
         }
-        if ( object == null || object.getClass() != LiteralConstraint.class ) {
+        if ( object == null || object.getClass() != LiteralRestriction.class ) {
             return false;
         }
-        final LiteralConstraint other = (LiteralConstraint) object;
+        final LiteralRestriction other = (LiteralRestriction) object;
 
-        return this.extractor.equals( other.extractor ) && this.restriction.equals( other.restriction );
+        return this.field.equals( other.field ) && this.evaluator.equals( other.evaluator );
     }
 
-}
+};
