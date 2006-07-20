@@ -1,5 +1,6 @@
 package org.drools.lang.descr;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -24,15 +25,13 @@ import java.util.List;
  * The "text" contains the content, which may also be an enumeration. 
  */
 public class FieldConstraintDescr extends PatternDescr {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 320;
+
+	private static final long serialVersionUID = 320;
     private String  fieldName;
-    private List    restrictions;
+    private List    restrictions = new ArrayList();
 
     public FieldConstraintDescr(final String fieldName) {
-        this.fieldName = fieldName;
+        this.fieldName = fieldName;        
     }
 
     public String getFieldName() {
