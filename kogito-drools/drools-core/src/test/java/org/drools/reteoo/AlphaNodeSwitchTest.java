@@ -56,15 +56,15 @@ public class AlphaNodeSwitchTest extends TestCase {
 
         final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
                                                                    Evaluator.EQUAL );
-        this.constraint1 = new LiteralConstraint( field1,
-                                                  extractor,
-                                                  evaluator );
-        this.constraint2 = new LiteralConstraint( field2,
-                                                  extractor,
-                                                  evaluator );
-        this.constraint3 = new LiteralConstraint( field2,
-                                                  extractor2,
-                                                  evaluator );
+        this.constraint1 = new LiteralConstraint( extractor,
+                                                  evaluator,
+                                                  field1 );
+        this.constraint2 = new LiteralConstraint( extractor,
+                                                  evaluator,
+                                                  field2 );
+        this.constraint3 = new LiteralConstraint( extractor2,
+                                                  evaluator,
+                                                  field2 );
 
         this.alphaNode1 = new AlphaNode( 2,
                                          this.constraint1,

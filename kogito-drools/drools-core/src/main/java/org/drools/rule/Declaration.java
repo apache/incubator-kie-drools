@@ -159,13 +159,18 @@ public class Declaration
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public String toString() {
-        return "[Declaration: " + this.identifier + "]";
+        return "[Declaration: type=" + this.extractor.getObjectType() + " identifier=" + this.identifier + "]";
     }
 
     public int hashCode() {
-        return this.identifier.hashCode();
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + this.column;
+        result = PRIME * this.extractor.hashCode();
+        result = PRIME * this.identifier.hashCode();
+        return result;
     }
-
+      
     public boolean equals(final Object object) {
         if ( this == object ) {
             return true;

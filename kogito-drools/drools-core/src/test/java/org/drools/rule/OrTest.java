@@ -393,9 +393,9 @@ public class OrTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
                                                                   fieldName );
 
-        return new LiteralConstraint( field,
-                                      extractor,
-                                      evaluator );
+        return new LiteralConstraint( extractor,
+                                      evaluator,
+                                      field );
     }
 
     private FieldConstraint getBoundVariableConstraint(final Column column,
@@ -407,7 +407,7 @@ public class OrTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
                                                                   fieldName );
 
-        return new BoundVariableConstraint( extractor,
+        return new VariableConstraint( extractor,
                                             declaration,
                                             evaluator );
     }

@@ -196,8 +196,8 @@ public class QueryResultsTest extends TestCase {
 
         final FieldValue field = new MockField( fieldValue );
 
-        return new LiteralConstraint( field,
-                                      extractor,
-                                      evaluator );
+        return new LiteralConstraint( extractor,
+                                      evaluator,
+                                      field );
     }
 }

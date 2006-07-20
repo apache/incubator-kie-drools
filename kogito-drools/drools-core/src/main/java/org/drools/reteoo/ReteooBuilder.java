@@ -349,9 +349,9 @@ class ReteooBuilder
 
         final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
                                                                    Evaluator.EQUAL );
-        final LiteralConstraint constraint = new LiteralConstraint( field,
-                                                                    extractor,
-                                                                    evaluator );
+        final LiteralConstraint constraint = new LiteralConstraint( extractor,
+                                                                    evaluator,
+                                                                    field );
 
         final AlphaNode alphaNode = new AlphaNode( this.id++,
                                                    this.sinklistFactory.newObjectSinkList( AlphaNode.class ),
@@ -435,7 +435,7 @@ class ReteooBuilder
             }
 
             final FieldConstraint fieldConstraint = (FieldConstraint) object;
-            if ( fieldConstraint instanceof LiteralConstraint ) {
+            if ( fieldConstraint.getRequiredDeclarations().length == 0 ) {
                 this.objectSource = attachNode( new AlphaNode( this.id++,
                                                                this.sinklistFactory.newObjectSinkList( AlphaNode.class ),
                                                                fieldConstraint,

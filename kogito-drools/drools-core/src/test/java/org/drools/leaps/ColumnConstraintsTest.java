@@ -146,9 +146,9 @@ public class ColumnConstraintsTest extends DroolsTestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( clazz,
                                                                   fieldName );
 
-        return new LiteralConstraint( field,
-                                      extractor,
-                                      evaluator );
+        return new LiteralConstraint( extractor,
+                                      evaluator,
+                                      field );
     }
 
     public static int getIndex(final Class clazz,
