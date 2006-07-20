@@ -16,7 +16,7 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-public class ReturnValueRestrictionDescr extends PatternDescr {
+public class ReturnValueRestrictionDescr extends RestrictionDescr {
     /**
      * 
      */
