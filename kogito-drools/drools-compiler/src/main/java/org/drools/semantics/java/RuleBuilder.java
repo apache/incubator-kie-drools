@@ -413,19 +413,10 @@ public class RuleBuilder {
             if ( object instanceof FieldBindingDescr ) {
                 build( column,
                        (FieldBindingDescr) object );
-            } else if ( object instanceof LiteralDescr ) {
+            } else if ( object instanceof FieldConstraintDescr ) {
                 build( column,
-                       (LiteralDescr) object );
-            } else if ( object instanceof VariableDescr ) {
-                build( column,
-                       (VariableDescr) object );
-            } else if ( object instanceof ReturnValueDescr ) {
-                build( column,
-                       (ReturnValueDescr) object );
-            } else if ( object instanceof PredicateDescr ) {
-                build( column,
-                       (PredicateDescr) object );
-            }
+                       (FieldConstraintDescr) object );
+            } 
         }
         return column;
     }
@@ -436,16 +427,19 @@ public class RuleBuilder {
         for ( final Iterator it = fieldConstraintDescr.getRestrictions().iterator(); it.hasNext(); ) {
             final Object object = it.next();
             if ( object instanceof FieldBindingDescr ) {
-                build( fieldConstraintDescr,
+                build( column,
                        (FieldBindingDescr) object );
             } else if ( object instanceof LiteralRestrictionDescr ) {
-                build( fieldConstraintDescr,
+                build( column,
+                       fieldConstraintDescr,
                        (LiteralRestrictionDescr) object );
             } else if ( object instanceof VariableRestrictionDescr ) {
-                build( fieldConstraintDescr,
+                build( column,
+                       fieldConstraintDescr,
                        (VariableRestrictionDescr) object );
             } else if ( object instanceof ReturnValueRestrictionDescr ) {
-                build( fieldConstraintDescr,
+                build( column,
+                       fieldConstraintDescr,
                        (ReturnValueRestrictionDescr) object );
             } //else if ( object instanceof PredicateDescr ) {
 //                build( column,
@@ -488,38 +482,39 @@ public class RuleBuilder {
         }
     }
 
-    private void build(final FieldConstraintDescr fieldConstraintDescr,
+    private void build(final Column column,
+                       final FieldConstraintDescr fieldConstraintDescr,
                        final VariableRestrictionDescr variableRestrictionDescr) {
-        if ( variableDescr.getIdentifier() == null || variableDescr.getIdentifier().equals( "" ) ) {
+        if ( variableRestrictionDescr.getIdentifier() == null || variableRestrictionDescr.getIdentifier().equals( "" ) ) {
             this.errors.add( new RuleError( this.rule,
-                                            variableDescr,
+                                            variableRestrictionDescr,
                                             null,
-                                            "Identifier not defined for binding field '" + variableDescr.getFieldName() + "'" ) );
+                                            "Identifier not defined for binding field '" + fieldConstraintDescr.getFieldName() + "'" ) );
             return;
         }
 
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = getFieldExtractor( variableDescr,
+        final FieldExtractor extractor = getFieldExtractor( variableRestrictionDescr,
                                                             clazz,
-                                                            variableDescr.getFieldName() );
+                                                            fieldConstraintDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
 
-        final Declaration declaration = (Declaration) this.declarations.get( variableDescr.getIdentifier() );
+        final Declaration declaration = (Declaration) this.declarations.get( variableRestrictionDescr.getIdentifier() );
 
         if ( declaration == null ) {
             this.errors.add( new RuleError( this.rule,
-                                            variableDescr,
+                                            variableRestrictionDescr,
                                             null,
-                                            "Unable to return Declaration for identifier '" + variableDescr.getIdentifier() + "'" ) );
+                                            "Unable to return Declaration for identifier '" + variableRestrictionDescr.getIdentifier() + "'" ) );
             return;
         }
 
-        final Evaluator evaluator = getEvaluator( variableDescr,
+        final Evaluator evaluator = getEvaluator( variableRestrictionDescr,
                                                   extractor.getObjectType().getValueType(),
-                                                  variableDescr.getEvaluator() );
+                                                  variableRestrictionDescr.getEvaluator() );
         if ( evaluator == null ) {
             return;
         }
@@ -529,54 +524,55 @@ public class RuleBuilder {
                                                            evaluator ) );
     }
 
-    private void build(final FieldConstraintDescr fieldConstraintDescr,
+    private void build(final Column column,
+                       final FieldConstraintDescr fieldConstraintDescr,
                        final LiteralRestrictionDescr literalRestrictionDescr) {
 
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = getFieldExtractor( literalDescr,
+        final FieldExtractor extractor = getFieldExtractor( literalRestrictionDescr,
                                                             clazz,
-                                                            literalDescr.getFieldName() );
+                                                            fieldConstraintDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
 
         FieldValue field = null;
-        if ( literalDescr.isStaticFieldValue() ) {
-            final int lastDot = literalDescr.getText().lastIndexOf( '.' );
-            final String className = literalDescr.getText().substring( 0,
+        if ( literalRestrictionDescr.isStaticFieldValue() ) {
+            final int lastDot = literalRestrictionDescr.getText().lastIndexOf( '.' );
+            final String className = literalRestrictionDescr.getText().substring( 0,
                                                                        lastDot );
-            final String fieldName = literalDescr.getText().substring( lastDot + 1 );
+            final String fieldName = literalRestrictionDescr.getText().substring( lastDot + 1 );
             try {
                 final Class staticClass = this.typeResolver.resolveType( className );
                 field = new FieldImpl( staticClass.getField( fieldName ).get( null ) );
             } catch ( final ClassNotFoundException e ) {
                 this.errors.add( new RuleError( this.rule,
-                                                literalDescr,
+                                                literalRestrictionDescr,
                                                 e,
                                                 e.getMessage() ) );
             } catch ( final Exception e ) {
                 this.errors.add( new RuleError( this.rule,
-                                                literalDescr,
+                                                literalRestrictionDescr,
                                                 e,
-                                                "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalDescr.getText() + "'" ) );
+                                                "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
             }
 
         } else {
             try {
-                field = FieldFactory.getFieldValue( literalDescr.getText(),
+                field = FieldFactory.getFieldValue( literalRestrictionDescr.getText(),
                                                     extractor.getObjectType().getValueType() );
             } catch ( final Exception e ) {
                 this.errors.add( new RuleError( this.rule,
-                                                literalDescr,
+                                                literalRestrictionDescr,
                                                 e,
-                                                "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalDescr.getText() + "'" ) );
+                                                "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
             }
         }
 
-        final Evaluator evaluator = getEvaluator( literalDescr,
+        final Evaluator evaluator = getEvaluator( literalRestrictionDescr,
                                                   extractor.getObjectType().getValueType(),
-                                                  literalDescr.getEvaluator() );
+                                                  literalRestrictionDescr.getEvaluator() );
         if ( evaluator == null ) {
             return;
         }
@@ -587,12 +583,13 @@ public class RuleBuilder {
     }
 
     private void build(final Column column,
-                       final ReturnValueDescr returnValueDescr) {
+                       final FieldConstraintDescr fieldConstraintDescr,
+                       final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
         final String classMethodName = "returnValue" + this.counter++;
-        returnValueDescr.setClassMethodName( classMethodName );
+        returnValueRestrictionDescr.setClassMethodName( classMethodName );
 
-        final List[] usedIdentifiers = getUsedIdentifiers( returnValueDescr,
-                                                           returnValueDescr.getText() );
+        final List[] usedIdentifiers = getUsedIdentifiers( returnValueRestrictionDescr,
+                                                           returnValueRestrictionDescr.getText() );
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
@@ -600,16 +597,16 @@ public class RuleBuilder {
         }
 
         final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-        final FieldExtractor extractor = getFieldExtractor( returnValueDescr,
+        final FieldExtractor extractor = getFieldExtractor( returnValueRestrictionDescr,
                                                             clazz,
-                                                            returnValueDescr.getFieldName() );
+                                                            fieldConstraintDescr.getFieldName() );
         if ( extractor == null ) {
             return;
         }
 
-        final Evaluator evaluator = getEvaluator( returnValueDescr,
+        final Evaluator evaluator = getEvaluator( returnValueRestrictionDescr,
                                                   extractor.getObjectType().getValueType(),
-                                                  returnValueDescr.getEvaluator() );
+                                                  returnValueRestrictionDescr.getEvaluator() );
         if ( evaluator == null ) {
             return;
         }
@@ -624,12 +621,12 @@ public class RuleBuilder {
         setStringTemplateAttributes( st,
                                      declarations,
                                      (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
-                                     returnValueDescr.getText() );
+                                     returnValueRestrictionDescr.getText() );
 
         st.setAttribute( "methodName",
                          classMethodName );
 
-        final String returnValueText = RuleBuilder.functionFixer.fix( returnValueDescr.getText() );
+        final String returnValueText = RuleBuilder.functionFixer.fix( returnValueRestrictionDescr.getText() );
         st.setAttribute( "text",
                          returnValueText );
 
@@ -649,7 +646,7 @@ public class RuleBuilder {
         setStringTemplateAttributes( st,
                                      declarations,
                                      (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
-                                     returnValueDescr.getText() );
+                                     returnValueRestrictionDescr.getText() );
 
         st.setAttribute( "hashCode",
                          returnValueText.hashCode() );
@@ -660,7 +657,7 @@ public class RuleBuilder {
         this.invokerLookups.put( invokerClassName,
                                  returnValueConstraint );
         this.descrLookups.put( invokerClassName,
-                               returnValueDescr );
+                               returnValueRestrictionDescr );
     }
 
     private void build(final Column column,
