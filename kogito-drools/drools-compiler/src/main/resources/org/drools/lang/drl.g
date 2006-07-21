@@ -705,6 +705,7 @@ constraint[List constraints]
 		( fb=ID opt_eol ':' opt_eol )? 
 		f=ID	
 		{
+
 			if ( fb != null ) {
 				//System.err.println( "fb: " + fb.getText() );
 				//System.err.println( " f: " + f.getText() );
@@ -714,68 +715,91 @@ constraint[List constraints]
 				d.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 				constraints.add( d );
 			} 
-		}
-			opt_eol (	op=(	'=='
-					|	'>'
-					|	'>='
-					|	'<'
-					|	'<='
-					|	'!='
-					|	'contains'
-					|	'matches'
-					|       'excludes'
-					) opt_eol	
+			FieldConstraintDescr fc = new FieldConstraintDescr(f.getText());
+			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
+									
+			
+		}				
+			opt_eol (	op=operator opt_eol	
 					
 					(	bvc=ID
 						{
-
 							
-							//d = new BoundVariableDescr( f.getText(), op.getText(), bvc.getText() );
-							FieldConstraintDescr fc = new FieldConstraintDescr(f.getText());														
-							fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
-							VariableRestrictionDescr vd = new VariableRestrictionDescr(op.getText(), bvc.getText());
+														
+							
+							VariableRestrictionDescr vd = new VariableRestrictionDescr(op, bvc.getText());
 							fc.addRestriction(vd);
+							constraints.add(fc);
 							
-							constraints.add( fc );
 						}
 					|
 						lc=enum_constraint 
 						{ 
-							//d = new LiteralDescr( f.getText(), op.getText(), lc, true ); 
-							FieldConstraintDescr fc = new FieldConstraintDescr(f.getText());																					
-							fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
-							
-							LiteralRestrictionDescr lrd  = new LiteralRestrictionDescr(op.getText(), lc, true);
+
+							LiteralRestrictionDescr lrd  = new LiteralRestrictionDescr(op, lc, true);
 							fc.addRestriction(lrd);
+							constraints.add(fc);
 							
-							constraints.add( fc );
 						}						
 					|
 						lc=literal_constraint 
 						{ 
-							//d = new LiteralDescr( f.getText(), op.getText(), lc ); 
-							FieldConstraintDescr fc = new FieldConstraintDescr(f.getText());																					
-							fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 							
-							LiteralRestrictionDescr lrd  = new LiteralRestrictionDescr(op.getText(), lc);
+							LiteralRestrictionDescr lrd  = new LiteralRestrictionDescr(op, lc);
 							fc.addRestriction(lrd);
+							constraints.add(fc);
 							
-							constraints.add( fc );
 						}
 					|	rvc=retval_constraint 
 						{ 
 							
 							
-							//d = new ReturnValueDescr( f.getText(), op.getText(), rvc ); 
-							FieldConstraintDescr fc = new FieldConstraintDescr(f.getText());																					
-							fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 
-							ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(f.getText(), op.getText(), rvc);							
+							ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(f.getText(), op, rvc);							
 							fc.addRestriction(rvd);
+							constraints.add(fc);
 							
-							constraints.add( fc );
 						} 
 					)
+					(
+						con=('&'|'|')
+						{
+							if (con.getText().equals("&") ) {								
+								fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND));	
+							} else {
+								fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR));	
+							}							
+						}
+
+						op=operator
+						(	bvc=ID
+							{
+								VariableRestrictionDescr vd = new VariableRestrictionDescr(op, bvc.getText());
+								fc.addRestriction(vd);
+							}
+						|
+							lc=enum_constraint 
+							{ 
+								LiteralRestrictionDescr lrd  = new LiteralRestrictionDescr(op, lc, true);
+								fc.addRestriction(lrd);
+								
+							}						
+						|
+							lc=literal_constraint 
+							{ 
+								LiteralRestrictionDescr lrd  = new LiteralRestrictionDescr(op, lc);
+								fc.addRestriction(lrd);
+								
+							}
+						|	rvc=retval_constraint 
+							{ 
+								ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(f.getText(), op, rvc);							
+								fc.addRestriction(rvd);
+								
+							} 
+						)						
+						
+					)*
 				)?					
 		opt_eol
 	;
@@ -1030,6 +1054,26 @@ word returns [String word]
 	|	str=STRING { word=getString(str);} //str.getText(); word=word.substring( 1, word.length()-1 ); }
 	;
 
+operator returns [String str] 	
+	@init {
+		str = null;
+	}
+	:
+
+		'==' {str= "==";}
+		|'>' {str=">";}
+		|'>=' {str=">=";}		
+		|'<' {str="<";}
+		|'<=' {str="<=";}
+		|'!=' {str="!=";}
+		|'contains' {str="contains";}
+		|'matches' {str="matches";}
+		|'excludes' {str="excludes";}
+					
+						
+	;
+
+
 
 MISC 	:
 		'!' | '@' | '$' | '%' | '^' | '&' | '*' | '_' | '-' | '+'  | '?'
@@ -1038,7 +1082,7 @@ MISC 	:
 		| '/=' | '=/' | '>>=' 
 		
 	;
-
+	
 WS      :       (	' '
                 |	'\t'
                 |	'\f'
