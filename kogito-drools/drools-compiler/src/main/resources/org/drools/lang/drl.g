@@ -1061,6 +1061,7 @@ operator returns [String str]
 	:
 
 		'==' {str= "==";}
+		|'=' {str="==";}
 		|'>' {str=">";}
 		|'>=' {str=">=";}		
 		|'<' {str="<";}
