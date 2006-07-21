@@ -500,7 +500,7 @@ public class RuleParserTest extends TestCase {
         assertEquals(2, rule.getLhs().getDescrs().size());
         
         
-        //The first column, with 2 restrictions on a single field
+        //The first column, with 2 restrictions on a single field (plus a connective)
         ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get(0);
         assertEquals("Person", col.getObjectType());
         assertEquals(1, col.getDescrs().size());
