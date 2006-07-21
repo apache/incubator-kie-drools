@@ -33,28 +33,23 @@ import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.LiteralRestrictionDescr;
-
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FunctionDescr;
-import org.drools.lang.descr.RestrictionConnectiveDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
-
+import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
-
+import org.drools.lang.descr.RestrictionConnectiveDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
-import org.drools.rule.LiteralRestriction;
-import org.drools.rule.VariableConstraint;
 
 public class RuleParserTest extends TestCase {
 
@@ -487,18 +482,13 @@ public class RuleParserTest extends TestCase {
     
     public void testRestrictionsMultiple() throws Exception {
         final RuleDescr rule = parseResource( "restrictions_test.drl" ).rule();
-
         
-        
-        
-        assertFalse(this.parser.hasErrors());
-        
+        assertFalse(this.parser.hasErrors());        
         assertNotNull( rule );
 
-        assertEquals( "simple_rule",
-                      rule.getName() );
-        assertEquals(2, rule.getLhs().getDescrs().size());
-        
+        assertEqualsIgnoreWhitespace("consequence();", rule.getConsequence());
+        assertEquals( "simple_rule", rule.getName() );
+        assertEquals(2, rule.getLhs().getDescrs().size());        
         
         //The first column, with 2 restrictions on a single field (plus a connective)
         ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get(0);
