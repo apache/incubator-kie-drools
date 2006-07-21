@@ -19,6 +19,7 @@ package org.drools.lang;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -40,6 +41,7 @@ import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 
@@ -389,6 +391,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+            
     public void testSimpleRule() throws Exception {
         final RuleDescr rule = parseResource( "simple_rule.drl" ).rule();
 
@@ -479,6 +482,70 @@ public class RuleParserTest extends TestCase {
                                       rule.getConsequence() );
 
         assertFalse( this.parser.hasErrors() );
+    }
+    
+    
+    public void testRestrictionsMultiple() throws Exception {
+        final RuleDescr rule = parseResource( "restrictions_test.drl" ).rule();
+
+        
+        
+        
+        assertFalse(this.parser.hasErrors());
+        
+        assertNotNull( rule );
+
+        assertEquals( "simple_rule",
+                      rule.getName() );
+        assertEquals(2, rule.getLhs().getDescrs().size());
+        
+        
+        //The first column, with 2 restrictions on a single field
+        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Person", col.getObjectType());
+        assertEquals(1, col.getDescrs().size());
+        
+        FieldConstraintDescr fld = (FieldConstraintDescr) col.getDescrs().get(0);
+        assertEquals(3, fld.getRestrictions().size());
+        assertEquals("age", fld.getFieldName());
+        
+        LiteralRestrictionDescr lit = (LiteralRestrictionDescr) fld.getRestrictions().get(0);
+        assertEquals(">", lit.getEvaluator());
+        assertEquals("30", lit.getText());
+        
+        RestrictionConnectiveDescr con = (RestrictionConnectiveDescr) fld.getRestrictions().get(1);
+        assertEquals(RestrictionConnectiveDescr.AND, con.getConnective());
+        
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get(2);
+        assertEquals("<", lit.getEvaluator());
+        assertEquals("40", lit.getText());
+        
+        //the second col, with 2 fields, the first with 2 restrictions, the second field with one
+        col = (ColumnDescr) rule.getLhs().getDescrs().get(1);
+        assertEquals("Vehicle", col.getObjectType());
+        assertEquals(2, col.getDescrs().size());
+        
+        fld = (FieldConstraintDescr) col.getDescrs().get(0);
+        assertEquals(3, fld.getRestrictions().size());
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get(0);
+        assertEquals("type", fld.getFieldName());
+        assertEquals("==", lit.getEvaluator());
+        assertEquals("sedan", lit.getText());
+        con = (RestrictionConnectiveDescr) fld.getRestrictions().get(1);
+        assertEquals(RestrictionConnectiveDescr.OR, con.getConnective());
+        
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get(2);
+        assertEquals("==", lit.getEvaluator());
+        assertEquals("wagon", lit.getText());
+        
+        
+        	//now the second field
+        fld = (FieldConstraintDescr) col.getDescrs().get(1);
+        assertEquals(1, fld.getRestrictions().size());
+        lit = (LiteralRestrictionDescr) fld.getRestrictions().get(0);
+        assertEquals("<", lit.getEvaluator());
+        assertEquals("3", lit.getText());
+
     }
 
     public void testLineNumberInAST() throws Exception {
@@ -1944,6 +2011,15 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( cleanExpected,
                       cleanActual );
+    }
+    
+    private void prettyPrintErrors() {
+    	List msgs = this.parser.getErrorMessages();
+    	for (Iterator iter = msgs.iterator(); iter.hasNext();) {
+			String err = (String) iter.next();
+			System.out.println(err);
+			
+		}
     }
 
 }

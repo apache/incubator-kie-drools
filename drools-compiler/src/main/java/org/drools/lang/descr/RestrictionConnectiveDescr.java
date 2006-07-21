@@ -1,12 +1,16 @@
 package org.drools.lang.descr;
 
+/**
+ * This is used to connect restrictions together for a single field
+ * eg:
+ * 	age < 40 & > 30 
+ *
+ */
 public class RestrictionConnectiveDescr extends RestrictionDescr {    
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = 320;
-    private final static int AND = 0;
-    private final static int OR = 1;
+    public final static int AND = 0;
+    public final static int OR = 1;
     
     private int connective;
 
