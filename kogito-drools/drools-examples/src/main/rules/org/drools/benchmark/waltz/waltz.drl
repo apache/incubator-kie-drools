@@ -7,35 +7,6 @@ import org.drools.benchmark.waltz.Edge
 import org.drools.benchmark.waltz.Junction
 import org.drools.benchmark.waltz.WaltzUtil
 
-# the starting rule
-rule "begin waltz"
-	when
-		$stage : Stage(value == Stage.START)
-	then 
-	    assert (new Line( 122,  107));
-	    assert (new Line( 107, 2207));
-    	assert (new Line(2207, 3204));
-    	assert (new Line(3204, 6404));
-    	assert (new Line(2216, 2207));
-    	assert (new Line(3213, 3204));
-    	assert (new Line(2216, 3213));
-    	assert (new Line( 107, 2601));
-    	assert (new Line(2601, 7401));
-    	assert (new Line(6404, 7401));
-    	assert (new Line(3213, 6413));
-    	assert (new Line(6413, 6404));
-    	assert (new Line(7416, 7401));
-    	assert (new Line(5216, 6413));
-    	assert (new Line(2216, 5216));
-    	assert (new Line( 122, 5222));
-    	assert (new Line(5222, 7416));
-    	assert (new Line(5222, 5216));
-    	$stage.setValue(Stage.DUPLICATE);
-    	modify ( $stage );
-    	System.out.println("Waltz started");
-    	System.out.println("Stage: duplicate");
-end
-
 #If the duplicate flag is set, and there is still a line in WM, delete the line
 #and add two edges. One edge runs from p1 to p2 and the other runs from p2 to
 #p1.  We then plot the edge.
@@ -114,7 +85,7 @@ end
 rule "initial boundary junction L"
 	when
 	    $stage : Stage ( value == Stage.FIND_INITIAL_BOUNDARY )
-	             Junction( type == Junction.L, $basePoint:basePoint, $p1:p1, $p2:p2 )
+	    Junction( type == Junction.L, $basePoint:basePoint, $p1:p1, $p2:p2 )
 	    $edge1 : Edge ( p1 == $basePoint, p2 == $p1 )
 	    $edge2 : Edge ( p1 == $basePoint, p2 == $p2 )
         not Junction( $bp:basePoint > $basePoint )
@@ -132,7 +103,7 @@ end
 rule "initial boundary junction arrow"
 	when
 	    $stage : Stage ( value == Stage.FIND_INITIAL_BOUNDARY )
-	             Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
+	    Junction( type == Junction.ARROW, $basePoint:basePoint, $p1:p1, $p2:p2, $p3:p3 )
 	    $edge1 : Edge ( p1 == $basePoint, p2 == $p1 )
 	    $edge2 : Edge ( p1 == $basePoint, p2 == $p2 )
 	    $edge3 : Edge ( p1 == $basePoint, p2 == $p3 )
