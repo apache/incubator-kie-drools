@@ -17,7 +17,7 @@ rule assignFirstSeat
         count.setValue(  count.getValue() + 1 );        
         modify( count );
 
-#		System.out.println( "assign first seat :  " + seating + " : " + path );
+		System.out.println( "assign first seat :  " + seating + " : " + path );
 
         context.setState( Context.ASSIGN_SEATS );        
         modify( context );
@@ -48,7 +48,7 @@ rule findSeating
        Chosen chosen = new Chosen( seatId, leftGuestName, rightGuestHobby );
        assert( chosen  );
 
-#	   System.err.println( "find seating : " + seating + " : " + path + " : " + chosen);
+	   System.err.println( "find seating : " + seating + " : " + path + " : " + chosen);
 
        count.setValue(  countValue + 1 );
        modify( count );
@@ -103,7 +103,7 @@ rule allDone
     when
         context : Context( state == Context.PRINT_RESULTS ) 
     then
-#    	System.out.println( "All Done" );
+    	System.out.println( "All Done" );
 end
 
 //query getResults
