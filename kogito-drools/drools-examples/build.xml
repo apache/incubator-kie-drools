@@ -27,8 +27,7 @@
       </javac>                          
     </target>  
     
-    <target name="run-waltz50">               
-     
+    <target name="run-waltz50">                    
       <java classname="org.drools.benchmark.waltz.WaltzBenchmark"
       			fork="true">
         <classpath>            
@@ -43,5 +42,37 @@
       </java>                          
     </target>         
  
+
+    <target name="run-manners64">                    
+      <java classname="org.drools.benchmark.manners.MannersBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="manners64.dat"/>
+        <jvmarg value="-Xmx1024M" />
+        <jvmarg value="-Xms1024M" />
+      </java>                          
+    </target>            
+
+    <target name="run-manners128">                    
+      <java classname="org.drools.benchmark.manners.MannersBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="manners128.dat"/>
+        <jvmarg value="-Xmx1024M" />
+        <jvmarg value="-Xms1024M" />
+      </java>                          
+    </target>            
+
+
         
 </project>

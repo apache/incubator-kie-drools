@@ -42,7 +42,15 @@ public class MannersBenchmark {
         
         WorkingMemory workingMemory = ruleBase.newWorkingMemory();
         
-        InputStream is = MannersBenchmark.class.getResourceAsStream( "manners64.dat" );
+        String filename;
+        if (  args.length != 0 ) {
+            String arg = args[0];                
+            filename  = arg;                
+        } else {
+            filename  = "manners64.dat";
+        }        
+        
+        InputStream is = MannersBenchmark.class.getResourceAsStream( filename );
         List list = getInputObjects( is );
         for ( Iterator it = list.iterator(); it.hasNext(); ) {
             Object object = it.next();
