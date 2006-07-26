@@ -46,18 +46,30 @@ public abstract class WaltzBenchmark {
             
             WorkingMemory workingMemory = ruleBase.newWorkingMemory();
             
-            //this.loadLines( workingMemory, "waltz12.dat" );
+            String filename;
+            if (  args.length != 0 ) {
+                String arg = args[0];                
+                filename  = arg;                
+            } else {
+                filename  = "waltz12.dat";
+            }
             
-            Stage stage = new Stage(Stage.START);
+            loadLines( workingMemory, "waltz50.dat" );
+            
+            Stage stage = new Stage(Stage.DUPLICATE);
             workingMemory.assertObject( stage );
-            workingMemory.fireAllRules();               
+            
+            long start = System.currentTimeMillis();
+            workingMemory.fireAllRules();
+            System.out.println( System.currentTimeMillis() - start );
+            
         } catch (Throwable t) {
             t.printStackTrace();
         }
     }
 
     
-    private void loadLines(WorkingMemory wm, String filename) throws IOException {
+    private static void loadLines(WorkingMemory wm, String filename) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( filename ) ));
         Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
         String line = reader.readLine();
