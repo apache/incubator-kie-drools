@@ -54,14 +54,14 @@ public abstract class WaltzBenchmark {
                 filename  = "waltz12.dat";
             }
             
-            loadLines( workingMemory, "waltz50.dat" );
+            loadLines( workingMemory, filename );
             
             Stage stage = new Stage(Stage.DUPLICATE);
             workingMemory.assertObject( stage );
             
             long start = System.currentTimeMillis();
             workingMemory.fireAllRules();
-            System.out.println( System.currentTimeMillis() - start );
+            System.out.println( (System.currentTimeMillis() - start) / 1000 );
             
         } catch (Throwable t) {
             t.printStackTrace();
