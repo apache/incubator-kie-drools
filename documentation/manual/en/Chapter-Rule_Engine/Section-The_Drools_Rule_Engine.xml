@@ -678,20 +678,22 @@ workingMemory.setGlobal("list", list);</programlisting>
 
     <para>Normal assertions are said to be “STATED” (ie The Fact has been
     stated - just like the intuitive concept). Using a HashMap and a counter
-    we track how many times a particuarly equality is STATED; this means we
-    count how many different instances are equal. When we logical assert an
+    we track how many times a particuar equality is STATED; this means we
+    count how many different instances are equal. When we logically assert an
     object we are said to justify it and it is justified by the firing
     rule.For each logical assertion there can only be one equal object, each
     subsequent equal logical assertion increases the justification counter for
-    this logical assretion. As each justification is removed when we have no
-    more justifications the logical object is automatically retracted. If we
-    logically assert an object when there is an equal STATED object it will
-    fail and return null. If we STATE an object that has an exist equal object
-    that is JUSTIFIED we override the Fact - how this override works depends
-    on the configuration setting "WM_BEHAVIOR_PRESERVE". When the property is
-    set to discard we use the existing handle and replace the existing
-    instance with the new Object - this is the default behaviour - otherwise
-    we overrde it to STATED but we create an new FactHandle.</para>
+    this logical assertion. As each justification is removed when we have no
+    more justifications the logical object is automatically retracted. </para>
+
+    <para>If we logically assert an object when there is an equal STATED
+    object it will fail and return null. If we STATE an object that has an
+    exist equal object that is JUSTIFIED we override the Fact - how this
+    override works depends on the configuration setting
+    "WM_BEHAVIOR_PRESERVE". When the property is set to discard we use the
+    existing handle and replace the existing instance with the new Object -
+    this is the default behaviour - otherwise we overrde it to STATED but we
+    create an new FactHandle.</para>
 
     <para>This can sound confusing on a first read, so hopefully the flow
     charts below help. When it says that it returns a new FactHandle, this
