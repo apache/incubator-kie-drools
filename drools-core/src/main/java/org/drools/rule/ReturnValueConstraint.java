@@ -54,6 +54,12 @@ public class ReturnValueConstraint
                                                        declarations,
                                                        evaluator );
     }
+    
+    public ReturnValueConstraint(final FieldExtractor fieldExtractor,
+                                 final ReturnValueRestriction restriction) {
+        this.fieldExtractor = fieldExtractor;
+        this.restriction = restriction;
+    }    
 
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();

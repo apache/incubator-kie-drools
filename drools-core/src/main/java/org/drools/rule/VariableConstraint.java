@@ -44,6 +44,12 @@ public class VariableConstraint
         this.restriction = new VariableRestriction( declaration,
                                                     evaluator );
     }
+    
+    public VariableConstraint(final FieldExtractor fieldExtractor,
+                              final VariableRestriction restriction) {
+        this.fieldExtractor = fieldExtractor;
+        this.restriction = restriction;
+    }    
 
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();

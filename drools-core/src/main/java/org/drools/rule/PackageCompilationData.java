@@ -223,8 +223,8 @@ public class PackageCompilationData
                                           InstantiationException,
                                           IllegalAccessException {
         final Class clazz = this.classLoader.findClass( className );
-        if ( invoker instanceof ReturnValueConstraint ) {
-            ((ReturnValueConstraint) invoker).setReturnValueExpression( (ReturnValueExpression) clazz.newInstance() );
+        if ( invoker instanceof ReturnValueRestriction ) {
+            ((ReturnValueRestriction) invoker).setReturnValueExpression( (ReturnValueExpression) clazz.newInstance() );
         } else if ( invoker instanceof PredicateConstraint ) {
             ((PredicateConstraint) invoker).setPredicateExpression( (PredicateExpression) clazz.newInstance() );
         } else if ( invoker instanceof EvalCondition ) {
