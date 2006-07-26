@@ -14,9 +14,10 @@ public class Person
     private static final long serialVersionUID = 2640286967578736742L;
     private final String name;
     private final String likes;
-    private final int    age;
+    private int    age;
     private BigDecimal   bigDecimal;
     private BigInteger   bigInteger;
+    private String       hair;
 
     private char         sex;
 
@@ -79,6 +80,10 @@ public class Person
     public int getAge() {
         return this.age;
     }
+    
+    public void setAge(int age) {
+        this.age = age;
+    }
 
     /* (non-Javadoc)
      * @see org.drools.PersonInterface#isAlive()
@@ -106,6 +111,16 @@ public class Person
      */
     public void setSex(final char sex) {
         this.sex = sex;
+    }
+    
+    
+
+    public String getHair() {
+        return this.hair;
+    }
+
+    public void setHair(String hair) {
+        this.hair = hair;
     }
 
     public String toString() {

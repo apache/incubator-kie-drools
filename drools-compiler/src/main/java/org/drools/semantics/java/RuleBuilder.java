@@ -49,27 +49,37 @@ import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
+import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.rule.And;
+import org.drools.rule.AndCompositeRestriction;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Exists;
 import org.drools.rule.GroupElement;
 import org.drools.rule.LiteralConstraint;
+import org.drools.rule.LiteralRestriction;
+import org.drools.rule.MultiRestrictionFieldConstraint;
 import org.drools.rule.Not;
 import org.drools.rule.Or;
+import org.drools.rule.OrCompositeRestriction;
 import org.drools.rule.Package;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Query;
 import org.drools.rule.ReturnValueConstraint;
+import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
+import org.drools.rule.VariableRestriction;
 import org.drools.spi.Evaluator;
+import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.Restriction;
 import org.drools.spi.TypeResolver;
 
 /**
@@ -100,7 +110,7 @@ public class RuleBuilder {
 
     private List                              errors;
 
-    private final TypeResolver                      typeResolver;
+    private final TypeResolver                typeResolver;
 
     private Map                               notDeclarations;
 
@@ -115,10 +125,10 @@ public class RuleBuilder {
 
     // @todo move to an interface so it can work as a decorator
     private final JavaExprAnalyzer            analyzer             = new JavaExprAnalyzer();
-    private ClassFieldExtractorCache classFieldExtractorCache;
+    private ClassFieldExtractorCache          classFieldExtractorCache;
 
-
-    public RuleBuilder(TypeResolver resolver, ClassFieldExtractorCache cache) {
+    public RuleBuilder(TypeResolver resolver,
+                       ClassFieldExtractorCache cache) {
         this.classFieldExtractorCache = cache;
         this.typeResolver = resolver;
         this.errors = new ArrayList();
@@ -164,7 +174,6 @@ public class RuleBuilder {
         this.declarations = new HashMap();
         this.descrLookups = new HashMap();
         this.columnCounter = new ColumnCounter();
-
 
         this.ruleDescr = ruleDescr;
 
@@ -228,7 +237,7 @@ public class RuleBuilder {
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            and,
-                           false,   // do not decrement offset
+                           false, // do not decrement offset
                            false ); // do not decrement first offset
                     this.rule.addPattern( and );
                 } else if ( object instanceof OrDescr ) {
@@ -237,7 +246,7 @@ public class RuleBuilder {
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            or,
-                           true,    // when OR is used, offset MUST be decremented
+                           true, // when OR is used, offset MUST be decremented
                            false ); // do not decrement first offset
                     this.rule.addPattern( or );
                 } else if ( object instanceof NotDescr ) {
@@ -248,7 +257,7 @@ public class RuleBuilder {
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            not,
-                           true,   // when NOT is used, offset MUST be decremented
+                           true, // when NOT is used, offset MUST be decremented
                            true ); // when NOT is used, offset MUST be decremented for first column
                     this.rule.addPattern( not );
 
@@ -266,7 +275,7 @@ public class RuleBuilder {
                     build( this.rule,
                            (ConditionalElementDescr) object,
                            exists,
-                           true,   // when EXIST is used, offset MUST be decremented
+                           true, // when EXIST is used, offset MUST be decremented
                            true ); // when EXIST is used, offset MUST be decremented for first column
                     // remove declarations bound inside not node
                     for ( final Iterator notIt = this.notDeclarations.keySet().iterator(); notIt.hasNext(); ) {
@@ -312,7 +321,7 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            and,
-                           false,   // do not decrement offset
+                           false, // do not decrement offset
                            false ); // do not decrement first offset
                     ce.addChild( and );
                 } else if ( object instanceof OrDescr ) {
@@ -321,7 +330,7 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            or,
-                           true,    // when OR is used, offset MUST be decremented
+                           true, // when OR is used, offset MUST be decremented
                            false ); // do not decrement first offset
                     ce.addChild( or );
                 } else if ( object instanceof NotDescr ) {
@@ -330,7 +339,7 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            not,
-                           true,   // when NOT is used, offset MUST be decremented
+                           true, // when NOT is used, offset MUST be decremented
                            true ); // when NOT is used, offset MUST be decremented for first column
                     ce.addChild( not );
                 } else if ( object instanceof ExistsDescr ) {
@@ -339,7 +348,7 @@ public class RuleBuilder {
                     build( rule,
                            (ConditionalElementDescr) object,
                            exists,
-                           true,   // when EXIST is used, offset MUST be decremented
+                           true, // when EXIST is used, offset MUST be decremented
                            true ); // when EXIST is used, offset MUST be decremented for first column
                     ce.addChild( exists );
                 } else if ( object instanceof EvalDescr ) {
@@ -412,39 +421,165 @@ public class RuleBuilder {
             } else if ( object instanceof FieldConstraintDescr ) {
                 build( column,
                        (FieldConstraintDescr) object );
-            } 
+            } else if ( object instanceof PredicateDescr ) {
+                build( column,
+                       (PredicateDescr) object );
+            }
         }
         return column;
     }
 
+
     private void build(final Column column,
                        final FieldConstraintDescr fieldConstraintDescr) {
-        
-        for ( final Iterator it = fieldConstraintDescr.getRestrictions().iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            if ( object instanceof FieldBindingDescr ) {
-                build( column,
-                       (FieldBindingDescr) object );
-            } else if ( object instanceof LiteralRestrictionDescr ) {
-                build( column,
-                       fieldConstraintDescr,
-                       (LiteralRestrictionDescr) object );
+
+        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
+
+        final FieldExtractor extractor = getFieldExtractor( fieldConstraintDescr,
+                                                            clazz,
+                                                            fieldConstraintDescr.getFieldName() );
+        if ( extractor == null ) {
+            // @todo log error
+            return;
+        }
+
+        if ( fieldConstraintDescr.getRestrictions().size() == 1 ) {
+            final Object object = fieldConstraintDescr.getRestrictions().get( 0 );
+            
+            Restriction restriction = buildRestriction( extractor, fieldConstraintDescr, ( RestrictionDescr ) object );
+            if ( restriction == null ) {
+                // @todo log errors
+                return;
+            }
+
+            if ( object instanceof LiteralRestrictionDescr ) {
+                    column.addConstraint( new LiteralConstraint( extractor,
+                                                                 ( LiteralRestriction ) restriction ) );
             } else if ( object instanceof VariableRestrictionDescr ) {
-                build( column,
-                       fieldConstraintDescr,
-                       (VariableRestrictionDescr) object );
+                    column.addConstraint( new VariableConstraint( extractor,
+                                                                  ( VariableRestriction ) restriction ) );
             } else if ( object instanceof ReturnValueRestrictionDescr ) {
-                build( column,
-                       fieldConstraintDescr,
-                       (ReturnValueRestrictionDescr) object );
-            } //else if ( object instanceof PredicateDescr ) {
-//                build( column,
-//                       (PredicateDescr) object );
-//            }
-        }        
+                    column.addConstraint( new ReturnValueConstraint( extractor,
+                                                                     ( ReturnValueRestriction  ) restriction ) );
+            }
+
+            return;
+        }
+
+        List orList = new ArrayList();
+        List andList = null;
         
+        RestrictionDescr currentRestriction = null;
+        RestrictionDescr previousRestriction = null;        
+        
+        List currentList = null;
+        List previousList = null;
+
+
+        for ( final Iterator it = fieldConstraintDescr.getRestrictions().iterator(); it.hasNext(); ) {
+            Object object = it.next();
+
+            // Process an and/or connective 
+            if ( object instanceof RestrictionConnectiveDescr ) {
+
+                // is the connective an 'and'?
+                if ( ((RestrictionConnectiveDescr) object).getConnective() == RestrictionConnectiveDescr.AND ) {
+                    // if andList is null, then we know its the first
+                    if ( andList == null ) {
+                        andList = new ArrayList();
+                    }
+                    previousList = currentList;
+                    currentList= andList;
+                } else {
+                    previousList = currentList;
+                    currentList = orList;
+                }
+            } else {
+                Restriction restriction = null;
+                if ( currentList != null ) {                                                           
+                    // Are we are at the first operator? if so treat differently
+                    if ( previousList == null  ) {
+                        restriction = buildRestriction( extractor, fieldConstraintDescr, previousRestriction );
+                        if ( currentList == andList ) {
+                            andList.add( restriction );
+                        } else {
+                            orList.add(  restriction );
+                        }                    
+                    } else {              
+                        restriction = buildRestriction( extractor, fieldConstraintDescr, previousRestriction );
+                        
+                        if ( previousList == andList && currentList == orList ) {
+                            andList.add( restriction );
+                            if ( andList.size() == 1 ) {
+                                // Can't have an 'and' connective with one child, so add directly to the or list
+                                orList.add( andList.get( 0 ) );
+                            } else {
+                                Restriction restrictions = new AndCompositeRestriction( (Restriction[]) andList.toArray( new Restriction[andList.size()] ) );
+                                orList.add( restrictions );
+                            }           
+                            andList = null;                           
+                        } else if ( previousList == andList && currentList == andList ) {
+                            andList.add( restriction );
+                        } else if ( previousList == orList && currentList == andList ) {
+                            andList.add( restriction );
+                        } else if ( previousList == orList && currentList == orList ) {
+                            orList.add( restriction );
+                        }                    
+                    }
+                }    
+            }
+            previousRestriction = currentRestriction;                
+            currentRestriction = ( RestrictionDescr ) object;
+        }
+        
+        Restriction restriction = buildRestriction( extractor, fieldConstraintDescr, currentRestriction );
+        currentList.add( restriction );
+        
+        Restriction restrictions = null;
+        if ( currentList == andList &&  !orList.isEmpty() ) {
+            // Check if it finished with an and, and process it
+            if ( andList != null ) {
+                if ( andList.size() == 1 ) {
+                    // Can't have an 'and' connective with one child, so add directly to the or list
+                    orList.add( andList.get( 0 ) );
+                } else {
+                    orList.add( new AndCompositeRestriction( (Restriction[]) andList.toArray( new Restriction[andList.size()] ) ) );
+                }
+                andList = null;
+            }                  
+        }
+         
+        if ( !orList.isEmpty() ) {
+            restrictions =   new OrCompositeRestriction(( Restriction[] )  orList.toArray(  new Restriction[ orList.size() ] ));
+        } else if ( andList != null && !andList.isEmpty() ) {
+            restrictions = new AndCompositeRestriction( (Restriction[]) andList.toArray( new Restriction[andList.size()] ) );
+        } else {
+            // @todo throw error
+        }
+
+        column.addConstraint( new MultiRestrictionFieldConstraint( extractor, restrictions ) );        
     }
-    
+
+    private Restriction buildRestriction(FieldExtractor extractor, FieldConstraintDescr fieldConstraintDescr, RestrictionDescr restrictionDescr) {        
+        Restriction restriction = null;
+        if ( restrictionDescr instanceof LiteralRestrictionDescr ) {
+            restriction = build( extractor,
+                                                    fieldConstraintDescr,
+                                                    (LiteralRestrictionDescr) restrictionDescr);
+        } else if ( restrictionDescr instanceof VariableRestrictionDescr ) {
+            restriction = build( extractor,
+                                                    fieldConstraintDescr,
+                                                    (VariableRestrictionDescr) restrictionDescr );                                
+        } else if ( restrictionDescr instanceof ReturnValueRestrictionDescr ) {
+            restriction = build( extractor,
+                                                     fieldConstraintDescr,
+                                                     (ReturnValueRestrictionDescr) restrictionDescr );
+                               
+        }   
+        
+        return restriction;
+    }
+
     private void build(final Column column,
                        final FieldBindingDescr fieldBindingDescr) {
         Declaration declaration = (Declaration) this.declarations.get( fieldBindingDescr.getIdentifier() );
@@ -478,24 +613,15 @@ public class RuleBuilder {
         }
     }
 
-    private void build(final Column column,
-                       final FieldConstraintDescr fieldConstraintDescr,
-                       final VariableRestrictionDescr variableRestrictionDescr) {
+    private VariableRestriction build(final FieldExtractor extractor,
+                                      final FieldConstraintDescr fieldConstraintDescr,
+                                      final VariableRestrictionDescr variableRestrictionDescr) {
         if ( variableRestrictionDescr.getIdentifier() == null || variableRestrictionDescr.getIdentifier().equals( "" ) ) {
             this.errors.add( new RuleError( this.rule,
                                             variableRestrictionDescr,
                                             null,
                                             "Identifier not defined for binding field '" + fieldConstraintDescr.getFieldName() + "'" ) );
-            return;
-        }
-
-        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-
-        final FieldExtractor extractor = getFieldExtractor( variableRestrictionDescr,
-                                                            clazz,
-                                                            fieldConstraintDescr.getFieldName() );
-        if ( extractor == null ) {
-            return;
+            return null;
         }
 
         final Declaration declaration = (Declaration) this.declarations.get( variableRestrictionDescr.getIdentifier() );
@@ -505,39 +631,28 @@ public class RuleBuilder {
                                             variableRestrictionDescr,
                                             null,
                                             "Unable to return Declaration for identifier '" + variableRestrictionDescr.getIdentifier() + "'" ) );
-            return;
+            return null;
         }
 
         final Evaluator evaluator = getEvaluator( variableRestrictionDescr,
                                                   extractor.getObjectType().getValueType(),
                                                   variableRestrictionDescr.getEvaluator() );
         if ( evaluator == null ) {
-            return;
+            return null;
         }
 
-        column.addConstraint( new VariableConstraint( extractor,
-                                                           declaration,
-                                                           evaluator ) );
+        return new VariableRestriction( declaration,
+                                        evaluator );
     }
 
-    private void build(final Column column,
-                       final FieldConstraintDescr fieldConstraintDescr,
-                       final LiteralRestrictionDescr literalRestrictionDescr) {
-
-        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-
-        final FieldExtractor extractor = getFieldExtractor( literalRestrictionDescr,
-                                                            clazz,
-                                                            fieldConstraintDescr.getFieldName() );
-        if ( extractor == null ) {
-            return;
-        }
-
+    private LiteralRestriction build(final FieldExtractor extractor,
+                                     final FieldConstraintDescr fieldConstraintDescr,
+                                     final LiteralRestrictionDescr literalRestrictionDescr) {
         FieldValue field = null;
         if ( literalRestrictionDescr.isStaticFieldValue() ) {
             final int lastDot = literalRestrictionDescr.getText().lastIndexOf( '.' );
             final String className = literalRestrictionDescr.getText().substring( 0,
-                                                                       lastDot );
+                                                                                  lastDot );
             final String fieldName = literalRestrictionDescr.getText().substring( lastDot + 1 );
             try {
                 final Class staticClass = this.typeResolver.resolveType( className );
@@ -570,17 +685,16 @@ public class RuleBuilder {
                                                   extractor.getObjectType().getValueType(),
                                                   literalRestrictionDescr.getEvaluator() );
         if ( evaluator == null ) {
-            return;
+            return null;
         }
 
-        column.addConstraint( new LiteralConstraint( extractor,
-                                                     evaluator,
-                                                     field ) );
+        return new LiteralRestriction( field,
+                                       evaluator );
     }
 
-    private void build(final Column column,
-                       final FieldConstraintDescr fieldConstraintDescr,
-                       final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
+    private ReturnValueRestriction build(final FieldExtractor extractor,
+                                         final FieldConstraintDescr fieldConstraintDescr,
+                                         final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
         final String classMethodName = "returnValue" + this.counter++;
         returnValueRestrictionDescr.setClassMethodName( classMethodName );
 
@@ -592,25 +706,15 @@ public class RuleBuilder {
             declarations[i] = (Declaration) this.declarations.get( (String) usedIdentifiers[0].get( i ) );
         }
 
-        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-        final FieldExtractor extractor = getFieldExtractor( returnValueRestrictionDescr,
-                                                            clazz,
-                                                            fieldConstraintDescr.getFieldName() );
-        if ( extractor == null ) {
-            return;
-        }
-
         final Evaluator evaluator = getEvaluator( returnValueRestrictionDescr,
                                                   extractor.getObjectType().getValueType(),
                                                   returnValueRestrictionDescr.getEvaluator() );
         if ( evaluator == null ) {
-            return;
+            return null;
         }
 
-        final ReturnValueConstraint returnValueConstraint = new ReturnValueConstraint( extractor,
-                                                                                       declarations,
-                                                                                       evaluator );
-        column.addConstraint( returnValueConstraint );
+        final ReturnValueRestriction returnValueRestriction = new ReturnValueRestriction( declarations,
+                                                                                          evaluator );
 
         StringTemplate st = RuleBuilder.ruleGroup.getInstanceOf( "returnValueMethod" );
 
@@ -651,9 +755,11 @@ public class RuleBuilder {
         this.invokers.put( invokerClassName,
                            st.toString() );
         this.invokerLookups.put( invokerClassName,
-                                 returnValueConstraint );
+                                 returnValueRestriction );
         this.descrLookups.put( invokerClassName,
                                returnValueRestrictionDescr );
+
+        return returnValueRestriction;
     }
 
     private void build(final Column column,
@@ -948,7 +1054,8 @@ public class RuleBuilder {
                                              final String fieldName) {
         FieldExtractor extractor = null;
         try {
-            extractor = classFieldExtractorCache.getExtractor( clazz, fieldName );
+            extractor = classFieldExtractorCache.getExtractor( clazz,
+                                                               fieldName );
         } catch ( final RuntimeDroolsException e ) {
             this.errors.add( new RuleError( this.rule,
                                             descr,
