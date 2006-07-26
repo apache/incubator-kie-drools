@@ -43,6 +43,12 @@ public class LiteralConstraint
         this.extractor = extractor;
         this.restriction = new LiteralRestriction(field, evaluator);
     }
+    
+    public LiteralConstraint(final FieldExtractor extractor,
+                             final LiteralRestriction restriction) {
+        this.extractor = extractor;
+        this.restriction = restriction;
+    }    
 
     public Evaluator getEvaluator() {
         return this.restriction.getEvaluator();
