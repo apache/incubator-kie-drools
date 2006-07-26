@@ -1,0 +1,38 @@
+package org.drools
+
+import org.drools.Person;
+
+global java.util.List list1;
+global java.util.List list2;
+global java.util.List list3;
+global java.util.List list4;
+
+
+rule "& operator with number range"
+    when    	
+		$person : Person( age > 30 & < 40, hair == "red" )		    
+    then
+        list1.add( $person );
+end    
+
+rule "& operator with ! and strings"
+    when    	
+		$person : Person( hair != "blue" & != "purple", age > 30 & < 40  )		    
+    then
+        list2.add( $person );
+end   
+
+rule "| operator with == and strings"
+    when    	
+		$person : Person( hair == "blue" |  == "purple",   age < 30 )		    
+    then
+        list3.add( $person );
+end   
+
+
+rule "|  and  & operator with ==  and != and strings"
+    when    	
+		$person : Person( age > 30 & < 40 | > 10 & < 20, hair == "red" | == "blue" )	
+    then
+        list4.add( $person );
+end  
