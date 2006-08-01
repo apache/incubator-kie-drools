@@ -1,4 +1,4 @@
-// $ANTLR 3.0ea8 /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g 2006-07-21 13:05:28
+// $ANTLR 3.0ea8 /home/michael/projects/jboss-rules/drools-compiler/src/main/resources/org/drools/lang/drl.g 2006-08-01 15:50:19
 
 	package org.drools.lang;
 	import java.util.List;
@@ -3818,7 +3818,7 @@ public class RuleParser extends Parser {
                             							
                             							
 
-                            							ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(f.getText(), op, rvc);							
+                            							ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(op, rvc);							
                             							fc.addRestriction(rvd);
                             							constraints.add(fc);
                             							
@@ -3951,7 +3951,7 @@ public class RuleParser extends Parser {
                     	            following.pop();
 
                     	             
-                    	            								ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(f.getText(), op, rvc);							
+                    	            								ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(op, rvc);							
                     	            								fc.addRestriction(rvd);
                     	            								
                     	            							
