@@ -292,10 +292,17 @@ abstract public class AbstractRuleBase
         }
     }
 
+    /**
+     * Merge a new package with an existing package.
+     * Most of the work is done by the concrete implementations, 
+     * but this class does some work (including combining imports, compilation data, globals,
+     * and the actual Rule objects into the package).
+     */
     private void mergePackage(final Package pkg,
                               final Package newPkg) throws PackageIntegrationException {
         final Map globals = pkg.getGlobals();
         final List imports = pkg.getImports();
+        
 
         // First update the binary files
         // @todo: this probably has issues if you add classes in the incorrect order - functions, rules, invokers.
@@ -323,6 +330,16 @@ abstract public class AbstractRuleBase
             }
         }
         globals.putAll( newPkg.getGlobals() );
+        
+        //Add rules into the RuleBase package
+        //as this is needed for individual rule removal later on
+        Rule[] newRules = newPkg.getRules();
+        for ( int i = 0; i < newRules.length; i++ ) {
+            Rule newRule = newRules[i];
+            if (pkg.getRule( newRule.getName() ) == null) {
+                pkg.addRule( newRule );
+            }
+        }
     }
 
     protected void addRule(final Rule rule) throws InvalidPatternException {
