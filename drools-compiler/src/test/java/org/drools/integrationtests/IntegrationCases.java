@@ -808,7 +808,9 @@ public abstract class IntegrationCases extends TestCase {
 
     }
 
-    public void testErrorLineNumbers() throws Exception {
+    public void testErrorLineNumbers() throws Exception {        
+        //this test aims to test semantic errors
+        //parser errors are another test case
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "errors_in_rule.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -818,6 +820,8 @@ public abstract class IntegrationCases extends TestCase {
         assertNotNull( ruleErr.getDescr() );
         assertTrue( ruleErr.getLine() != -1 );
 
+        DroolsError errs[] = builder.getErrors();
+        
         assertEquals( 3,
                       builder.getErrors().length );
 
@@ -1759,8 +1763,7 @@ public abstract class IntegrationCases extends TestCase {
     public void testDynamicRuleRemovals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );        
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) ) );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1775,6 +1778,9 @@ public abstract class IntegrationCases extends TestCase {
             leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
         }
         ruleBase.addPackage( pkg );
+        PackageBuilder builder2 = new PackageBuilder();
+        builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );
+        ruleBase.addPackage( builder2.getPackage() );
 
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
