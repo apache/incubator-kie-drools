@@ -31,6 +31,13 @@ import org.drools.decisiontable.parser.SheetListener;
  * This implementation removes empty "cells" at the end of each line.
  * Different CSV tools may or may not put heaps of empty cells in.
  * 
+ * Csv format is almost identical to XLS, with the one limitation:
+ * Merged cells are not supported. To allow constraints to span across cells for the 
+ * one column, this is achieved by using "..." at the end of a cell value.
+ * If a cell value ends with "..." then it will be taken as spanned from the previous cell.
+ * 
+ * 
+ * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
 public class CsvParser
@@ -70,16 +77,44 @@ public class CsvParser
             this._listener.newRow( row,
                               cells.size() );
 
+            int startMergeCol = SheetListener.NON_MERGED;
             for ( int col = 0; col < cells.size(); col++ ) {
-                final String cell = (String) cells.get( col );
+                String cell = (String) cells.get( col );
 
+                startMergeCol = calcStartMerge( startMergeCol,
+                                                col,
+                                                cell );
+                
+                cell = calcCellText( startMergeCol,
+                                     cell );
+                
                 this._listener.newCell( row,
                                    col,
-                                   cell );
+                                   cell, startMergeCol );
             }
             row++;
             line = reader.readLine();
         }
+        _listener.finishSheet();
+    }
+
+    String calcCellText(int startMergeCol,
+                                String cell) {
+        if (startMergeCol != SheetListener.NON_MERGED) {
+            cell = cell.substring( 0, cell.length() - 3 );
+        }
+        return cell;
+    }
+
+    int calcStartMerge(int startMergeCol,
+                               int col,
+                               String cell) {
+        if (cell.endsWith( "..." ) && startMergeCol == SheetListener.NON_MERGED) {
+            startMergeCol = col;                    
+        } else if (!cell.endsWith( "..." )) {
+            startMergeCol = SheetListener.NON_MERGED;
+        }
+        return startMergeCol;
     }
 
     /** remove the trailing empty cells */

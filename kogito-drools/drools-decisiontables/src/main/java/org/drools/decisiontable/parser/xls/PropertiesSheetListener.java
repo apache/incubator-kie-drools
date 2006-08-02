@@ -101,7 +101,8 @@ public class PropertiesSheetListener
      */
     public void newCell(final int row,
                         final int column,
-                        final String value) {
+                        final String value,
+                        final int mergedColStart) {
         if ( emptyCellValue( value ) ) {
             return;
         }

@@ -52,6 +52,26 @@ public class CsvParserTest extends TestCase {
                                         3 ) );
 
     }
+    
+    /**
+     * Test the handling of merged cells.
+     */
+    public void testCellMergeHandling() {
+        CsvParser parser = new CsvParser(null, null);
+        assertEquals(SheetListener.NON_MERGED, parser.calcStartMerge( SheetListener.NON_MERGED, 1, "foo" ));
+        assertEquals(42, parser.calcStartMerge( SheetListener.NON_MERGED, 42, "..." ));
+        
+        assertEquals(42, parser.calcStartMerge( 42, 43, "..." ));
+        
+        assertEquals(SheetListener.NON_MERGED, parser.calcStartMerge( 42, 44, "VanHalen" ));
+        
+        
+        assertEquals("VanHalen", parser.calcCellText( SheetListener.NON_MERGED, "VanHalen" ));
+        assertEquals("VanHalen", parser.calcCellText( 42, "VanHalen..." ));
+        assertEquals("", parser.calcCellText( 42, "..." ));
+        
+        
+    }
 
     static class MockSheetListener
         implements
@@ -78,7 +98,8 @@ public class CsvParserTest extends TestCase {
 
         public void newCell(final int row,
                             final int column,
-                            final String value) {
+                            final String value,
+                            final int mergeCellStart) {
 
             this.data.put( cellKey( row,
                                column ),

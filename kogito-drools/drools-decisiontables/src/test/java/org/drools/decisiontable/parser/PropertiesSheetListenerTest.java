@@ -33,23 +33,23 @@ public class PropertiesSheetListenerTest extends TestCase {
 
         listener.newCell( 0,
                           0,
-                          "" );
+                          "", SheetListener.NON_MERGED );
 
         listener.newCell( 0,
                           1,
-                          "key1" );
+                          "key1", SheetListener.NON_MERGED );
         listener.newCell( 0,
                           2,
-                          "value1" );
+                          "value1", SheetListener.NON_MERGED );
 
         listener.newRow( 1,
                          4 );
         listener.newCell( 1,
                           1,
-                          "key2" );
+                          "key2", SheetListener.NON_MERGED );
         listener.newCell( 1,
                           3,
-                          "value2" );
+                          "value2", SheetListener.NON_MERGED );
 
         final Properties props = listener.getProperties();
 
@@ -57,7 +57,7 @@ public class PropertiesSheetListenerTest extends TestCase {
                          4 );
         listener.newCell( 1,
                           1,
-                          "key3" );
+                          "key3", SheetListener.NON_MERGED );
 
         assertEquals( "value1",
                       props.getProperty( "key1" ) );

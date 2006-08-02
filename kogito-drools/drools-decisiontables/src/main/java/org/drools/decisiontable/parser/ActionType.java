@@ -26,7 +26,7 @@ import org.drools.decisiontable.model.SnippetBuilder;
  * you can expect to see in the rows directly below.
  * 
  * There are five types of columns relevant to a rule table.
- * @author <a href="mailto:Michael.Neale@gmail.com"> Michael Neale</a>
+ * @author Michael Neale
  */
 public class ActionType {
 
@@ -56,18 +56,30 @@ public class ActionType {
 
     int                     type;
 
-    String                  value;
+    private SourceBuilder sourceBuilder = null;
 
-    ActionType(final int actionType,
-               final String cellValue) {
+//    private String                  value;
+
+    ActionType(final int actionType) {
         this.type = actionType;
-        this.value = cellValue;
+    }
+        
+
+    /**
+     * This is only set for LHS or RHS building. 
+     */
+    public void setSourceBuilder(SourceBuilder src) {
+        this.sourceBuilder = src;
+    }
+    
+    public SourceBuilder getSourceBuilder() {
+        return this.sourceBuilder;
     }
 
-    String getSnippet(final String cellValue) {
-        final SnippetBuilder builder = new SnippetBuilder( this.value );
-        return builder.build( cellValue );
-    }
+//    String getSnippet(final String cellValue) {
+//        final SnippetBuilder builder = new SnippetBuilder( this.value );
+//        return builder.build( cellValue );
+//    }
 
     /**
      * Create a new action type that matches this cell, and add it to the map,
@@ -79,12 +91,10 @@ public class ActionType {
                                         final int row) {
         if ( value.toUpperCase().startsWith( "C" ) ) {
             actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.CONDITION,
-                                               null ) );
+                               new ActionType( ActionType.CONDITION) );
         } else if ( value.toUpperCase().startsWith( "A" ) ) {
             actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.ACTION,
-                                               null ) );
+                               new ActionType( ActionType.ACTION) );
         } else if ( value.toUpperCase().startsWith( "P" ) ) // if the title cell
         // value starts with
         // "P" then put a
@@ -93,8 +103,7 @@ public class ActionType {
         // list
         {
             actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.PRIORITY,
-                                               null ) );
+                               new ActionType( ActionType.PRIORITY ) );
         } else if ( value.toUpperCase().startsWith( "D" ) ) // if the title cell
         // value starts with
         // "D" then put a
@@ -103,8 +112,7 @@ public class ActionType {
         // list
         {
             actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.DURATION,
-                                               null ) );
+                               new ActionType( ActionType.DURATION ) );
         } else if ( value.toUpperCase().startsWith( "N" ) ) // if the title cell
         // value starts with
         // "N" then put a
@@ -113,8 +121,7 @@ public class ActionType {
         // list
         {
             actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.NAME,
-                                               null ) );
+                               new ActionType( ActionType.NAME ) );
         } else if ( value.toUpperCase().startsWith( "I" ) ) // if the title cell
         // value starts with
         // "I" then put a
@@ -123,9 +130,8 @@ public class ActionType {
         // list
         {
             actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.DESCRIPTION,
-                                               null ) );
-        } else if ( value.toUpperCase().startsWith( "U" ) ) // if the title cell
+                               new ActionType( ActionType.DESCRIPTION ) );
+        } else if ( value.toUpperCase().startsWith( "U" ) || value.toUpperCase().equals( "NO-LOOP" ) ) // if the title cell
         // value starts with
         // "U" then put a
         // ActionType.NOLOOP
@@ -133,9 +139,8 @@ public class ActionType {
         // list
         {
             actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.NOLOOP,
-                                               null ) );
-        } else if ( value.toUpperCase().startsWith( "X" ) ) // if the title cell
+                               new ActionType( ActionType.NOLOOP ) );
+        } else if ( value.toUpperCase().startsWith( "X" ) || value.toUpperCase().equals( "ACTIVATION-GROUP" ) ) // if the title cell
         // value starts with
         // "X" then put a
         // ActionType.XORGROUP
@@ -143,11 +148,26 @@ public class ActionType {
         // list
         {
             actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.ACTIVATIONGROUP,
-                                               null ) );
+                               new ActionType( ActionType.ACTIVATIONGROUP ) );
         } else {
             throw new DecisionTableParseException( "Invalid column header (ACTION type), " + "should be CONDITION or ACTION (etc..) row number:" + (row + 1) + " cell number:" + (column + 1) + " - does not contain a leading C or A identifer." );
         }
     }
+
+    /**
+     * This is where a code snippet template is added.
+     */
+    public void addTemplate(int col, String content) {
+        this.sourceBuilder.addTemplate(  col, content );        
+    }
+    
+    /**
+     * Values are added to populate the template.
+     * The source builder contained needs to be "cleared" when the resultant snippet is extracted.
+     */
+    public void addCellValue(int col, String content) {
+        this.sourceBuilder.addCellValue( col, content );
+    }
+    
 
 }

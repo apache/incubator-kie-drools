@@ -1,19 +1,21 @@
-,RuleSet,ruleSetName,,,
+,"RuleSet","ruleSetName",,,
 ,,,,,
 ,,,,,
-
-,RuleTable - Mine,,,,
-,C,C,C,A,A
-,myObject.getColour().equals($param),myObject.size () > $param,myObject.size() < $param,myObject.setIsValid($param),"myObject.setIsValid($1, $2)"
-,Colour Type,Object size,Object size,Valid Object,Valid Object
-some stuff,red,1,$3.00,TRUE,"1,2"
-more to ignore,yellow,2,6,FALSE,"1,2"
-,blue,7,9,N,N
-
-RuleTable - freddy2,,,,,
-C,C,C,A,,
-myObject.getColour().equals($param),myObject.size () > $param,myObject.size() < $param,myObject.setIsValid($param),,
-Colour Type,Object size,Object size,Valid Object,,
-red,10,20,Y
-yellow, ,,Y
-,50,60,Y
+,,,,,
+,"RuleTable - Mine",,,,
+,"C","C","C","A","A"
+,"Foo...","Foo...",,,
+,"myObject.getColour().equals($param)","myObject.size () > $param","myObject.size() < $param","myObject.setIsValid($param)","myObject.setIsValid($1, $2)"
+,"Colour Type","Object size","Object size","Valid Object","Valid Object"
+"some stuff","red",1,3,TRUE,"1,2"
+"more to ignore","yellow",2,6,FALSE,"1,2"
+,"blue",7,9,"N","N"
+,,,,,
+"RuleTable - freddy2",,,,,
+"C","C","C","A",,
+,,,,,
+"myObject.getColour().equals($param)","myObject.size () > $param","myObject.size() < $param","myObject.setIsValid($param)",,
+"Colour Type","Object size","Object size","Valid Object",,
+"red",10,20,"Y",,
+"yellow"," ",,"Y",,
+,50,60,"Y",,

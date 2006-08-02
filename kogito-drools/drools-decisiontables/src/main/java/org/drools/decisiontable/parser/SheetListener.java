@@ -22,6 +22,8 @@ package org.drools.decisiontable.parser;
  * Callback interface for scanning an spreadsheet.
  */
 public interface SheetListener {
+	
+    public static final int NON_MERGED = -1;
 
     /**
      * Start a new sheet
@@ -61,9 +63,12 @@ public interface SheetListener {
      *            the column alpha character label
      * @param value
      *            the string value of the cell
+     * @param mergedCol
+     *            the "source" column if it is merged. -1 otherwise.           
      */
     public void newCell(int row,
                         int column,
-                        String value);
+                        String value,
+                        int mergedColStart);
 
 }

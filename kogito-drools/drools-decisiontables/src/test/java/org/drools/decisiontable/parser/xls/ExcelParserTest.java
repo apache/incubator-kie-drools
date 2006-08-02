@@ -16,7 +16,14 @@ package org.drools.decisiontable.parser.xls;
  * limitations under the License.
  */
 
+import java.util.Map;
+
 import junit.framework.TestCase;
+import jxl.Cell;
+//import jxl.CellFeatures;
+import jxl.CellType;
+import jxl.Range;
+import jxl.format.CellFormat;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
@@ -39,6 +46,103 @@ public class ExcelParserTest extends TestCase {
         assertEquals( "42",
                       ExcelParser.removeTrailingZero( test ) );
 
+    }
+    
+    /**
+     * This should test to see if a cell is in a certain range or not. 
+     * If it is in a merged range, then it should return the top left cell.
+     * @throws Exception
+     */
+    public void testCellMerge() throws Exception {
+    	ExcelParser parser = new ExcelParser((Map) null);
+    	
+    	Range[] ranges = new Range[1];
+    	
+    	MockRange r1 = new MockRange();
+    	ranges[0] = r1;
+    	r1.topLeft = new MockCell();
+    	r1.topLeft.row = 2;
+    	r1.topLeft.column = 2;
+    	r1.topLeft.contents = "first";
+    	
+
+    	
+    	r1.bottomRight = new MockCell();
+    	r1.bottomRight.column = 5;
+    	r1.bottomRight.row = 7;
+    	r1.bottomRight.contents = "last";
+    	
+    	
+    	MockCell cell = new MockCell();
+    	cell.contents = "test";
+    	cell.row = 1;
+    	cell.column = 1;
+    	
+    	assertNull(parser.getRangeIfMerged( cell, ranges));
+    	
+    	cell = new MockCell();
+    	cell.contents = "wrong";
+    	cell.row = 2;
+    	cell.column = 5;
+    	
+    	assertEquals("first", parser.getRangeIfMerged( cell, ranges).getTopLeft().getContents());
+    	
+    }
+    
+    static class MockCell implements Cell {
+
+    	int column;
+    	int row;
+    	String contents;
+    	
+
+		public CellFormat getCellFormat() {
+			return null;
+		}
+
+		public int getColumn() {
+			return column;
+		}
+
+		public String getContents() {
+			return contents;
+		}
+
+		public int getRow() {
+			return row;
+		}
+
+		public CellType getType() {
+			return null;
+		}
+
+		public boolean isHidden() {
+			return false;
+		}
+    	
+    }
+    
+    static class MockRange implements Range {
+
+    	MockCell bottomRight;
+		MockCell topLeft;
+    	
+		public Cell getBottomRight() {
+			return bottomRight;
+		}
+
+		public int getFirstSheetIndex() {
+			return 0;
+		}
+
+		public int getLastSheetIndex() {
+			return 0;
+		}
+
+		public Cell getTopLeft() {
+			return topLeft;
+		}
+    	
     }
 
 }
