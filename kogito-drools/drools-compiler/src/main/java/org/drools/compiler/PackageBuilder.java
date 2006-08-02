@@ -421,20 +421,29 @@ public class PackageBuilder {
         if ( result.getErrors().length > 0 ) {
             for ( int i = 0; i < result.getErrors().length; i++ ) {
                 CompilationProblem err = result.getErrors()[i];
+                System.out.println(err.getFileName());
+                System.out.println(err.getMessage());
+                
                 ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
+                if (handler instanceof RuleErrorHandler) {                    
+                    RuleErrorHandler rh = (RuleErrorHandler) handler;
+                    
+                }
                 handler.addError( err );
             }
 
             Collection errors = this.errorHandlers.values();
             for ( Iterator iter = errors.iterator(); iter.hasNext(); ) {
                 ErrorHandler handler = (ErrorHandler) iter.next();
-                if ( !(handler instanceof RuleInvokerErrorHandler) ) {
-                    this.results.add( handler.getError() );
-                } else {
-                    //we don't really want to report invoker errors.
-                    //mostly as they can happen when there is a syntax error in the RHS
-                    //and otherwise, it is a programmatic error in drools itself.
-                    System.err.println( "!!!! An error occurred compiling the invoker: " + handler.getError() );
+                if (handler.isInError()) {
+                    if ( !(handler instanceof RuleInvokerErrorHandler) ) {
+                        this.results.add( handler.getError() );
+                    } else {
+                        //we don't really want to report invoker errors.
+                        //mostly as they can happen when there is a syntax error in the RHS
+                        //and otherwise, it is a programmatic error in drools itself.
+                        System.err.println( "Warning: An error occurred compiling a semantic invoker. Errors should have been reported elsewhere.");
+                    }
                 }
             }
         }
@@ -549,9 +558,16 @@ public class PackageBuilder {
     public abstract static class ErrorHandler {
         private List     errors = new ArrayList();
         protected String message;
+        private boolean inError = false;
 
+        /** This needes to be checked if there is infact an error */
+        public boolean isInError() {
+            return inError;
+        }
+        
         public void addError(CompilationProblem err) {
             this.errors.add( err );
+            this.inError = true;
         }
 
         /**

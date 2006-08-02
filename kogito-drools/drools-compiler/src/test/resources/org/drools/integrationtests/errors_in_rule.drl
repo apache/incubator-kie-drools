@@ -15,3 +15,10 @@ rule "eval rule test"
     	#this is an error
         list.add( ;
 end  
+
+rule "This is fine"
+	when
+		String()
+	then
+		System.out.println("hello");
+end
