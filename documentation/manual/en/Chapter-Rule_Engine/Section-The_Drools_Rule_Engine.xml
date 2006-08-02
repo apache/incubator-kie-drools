@@ -208,7 +208,7 @@ ruleBase.newWorkingMemory( false ); // do not maintain a weak reference</program
     fireAllRules() for resulting Activations to fire.</para>
 
     <programlisting>ruleBase.addPackage( pkg  );  // Add a package instance
-ruleBase.addPackage( "org.com.sample"  );  // remove a package, and all its parts, by it's namespace
+ruleBase.removePackage( "org.com.sample"  );  // remove a package, and all its parts, by it's namespace
 ruleBase.removeRule( "org.com.sample", "my rule" ); // remove a specific rule from a namespace</programlisting>
 
     <para>While there is a method to remove an indivual rule, there is no
