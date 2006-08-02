@@ -86,7 +86,7 @@
     is conventional to use colour to make it obvious what the different areas
     of the table mean.</para>
 
-    <para>Note that although the decision tables look like the process top
+    <para>Note that although the decision tables look like they process top
     down, this is not necessarily the case. It is ideal if you can author
     rules in such a way as order does not matter (simply as it makes
     maintenance easier, you are not trying to shift rows around all the time).
@@ -152,27 +152,40 @@
 
     <para>Now you can see the hidden magic that makes it work. The RuleSet
     keyword indicates the name to be used in the "rule package" that all the
-    rules will come under (this is optional, it will have a default) in the
-    cell immediately to the right. The other keywords visible in Column C are:
-    Import, Sequential which will be covered later - just note that in general
-    the keywords make up name/value pairs. The RuleTable keyword is important
-    as it indicates that a chunk of rules will follow, based on some rule
-    templates. After the RuleTable keyword there is a name - this name is used
-    to prefix the generated rules names (the row numbers are appended to
-    create unique rule names). The column of RuleTable indicates the column in
-    which the rules start.</para>
+    rules will come under (the name is optional, it will have a default but
+    you MUST have the "RuleSet" keyword) in the cell immediately to the right.
+    The other keywords visible in Column C are: Import, Sequential which will
+    be covered later - just note that in general the keywords make up
+    name/value pairs. The RuleTable keyword is important as it indicates that
+    a chunk of rules will follow, based on some rule templates. After the
+    RuleTable keyword there is a name - this name is used to prefix the
+    generated rules names (the row numbers are appended to create unique rule
+    names). The column of RuleTable indicates the column in which the rules
+    start (columns to the left are ignored).</para>
 
     <para>Referring to row 14 (the row immediately after RuleTable): the
     keywords CONDITION and ACTION indicate that the data in the columns below
     are for either the LHS or the RHS parts of a rule. There are other
-    attributes on the rule which can also be optionally set this way. Row 15
-    contains the rule templates themselves: note that they use the "$para"
-    place holder to indicate where data from the cells below will be populated
-    (you can use $param, or $1, $2 etc to indicate parameters from a comma
-    seperated list in a cell below). Row 16 is ignored - it is textual
-    descriptions of the rule template.</para>
+    attributes on the rule which can also be optionally set this way.</para>
 
-    <para>Row 17 to 18 shows data, which will be combined (interpolated) with
+    <para>Row 15 contains declarations of "ObjectTypes" - the content in this
+    row is optional (if you are not using it, you must leave a blank row - but
+    you *will* want to use it !). When you use this row, the values in the
+    cells below (row 16) become constraints on that object type. In the above
+    case, it will generate: Person(age=="42") etc (where 42 comes from row
+    18). In the above example, the "==" is implicit (if you just put a field
+    name, it will assume that you are looking for exact matches). Also note
+    that you can have a ObjectType declaration span columns (via merged cells)
+    - and that means that all columns below the merged range will be combined
+    into the one set of contraints.</para>
+
+    <para>Row 16 contains the rule templates themselves: note that they can
+    use the "$para" place holder to indicate where data from the cells below
+    will be populated (you can use $param, or $1, $2 etc to indicate
+    parameters from a comma seperated list in a cell below). Row 17 is ignored
+    - it is textual descriptions of the rule template.</para>
+
+    <para>Row 18 to 19 shows data, which will be combined (interpolated) with
     the templates in row 15, to generate rules. If a cell contains no data,
     then its template is ignored (eg it means that condition, or action, does
     not apply for that rule-row). Rule rows are read until there is a BLANK
@@ -182,6 +195,21 @@
     same one where the RuleTable or RuleSet keywords should appear (in this
     case column C has been chosen to be significant, but you can use column A
     if you like).</para>
+
+    <para>In the above example, rules would be rendered like the following (as
+    it uses the "ObjectType" row): <programlisting>//row 18
+rule "Cheese_fans_18"
+  when
+    Person(age=="42")
+    Cheese(type=="stilton")
+  then
+    list.add("Old man stilton");
+end
+
+</programlisting> Note that the [age=="42"] and [type=="stilton"] are
+    interpreted as single constraints to be added to the respective ObjectType
+    in the cell above (if the cells above were spanned, then there could be
+    multiple constraints on one "column".</para>
   </section>
 
   <section>
@@ -191,18 +219,81 @@
       <title>Syntax of templates</title>
 
       <para>The syntax of what goes in the templates is dependent on if it is
-      a CONDITION column or ACTION column. In either case, it is identical to
+      a CONDITION column or ACTION column. In mosts cases, it is identical to
       "vanilla" DRL for the LHS or RHS respectively. This means in the LHS,
       the constraint language must be used, and in the RHS it is a snippet of
       code to be executed.</para>
 
-      <para>The "$para" place holder is used in templates to indicate where
+      <para>The "$param" place holder is used in templates to indicate where
       data form the cell will be interpolated. You can also use "$1" to the
       same effect. If the cell contains a comma seperated list of values, $1
       and $2 etc. may be used to indicate which positional parameter from the
       list of values in the cell will be used. <programlisting>For example: If the templates is [Foo(bar == $param)] and the cell is [ 42 ] then the result will be [Foo(bar == 42)]
 If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then the result will be [Foo(bar &gt; 42, baz ==42)]
 </programlisting></para>
+
+      <para>For conditions: How snippets are rendered depends on if there is
+      anything in the row above (where ObjectType declarations may appear). If
+      there is, then the snippets are rendered as individual constraints on
+      that ObjectType. If there isn't, then they are just rendered as is (with
+      values substituted). If you put just a plain field (as in the example
+      above) then it will assume you mean equality. If you put another
+      operator at the end of the snippet, then the values will put
+      interpolated at the end of the contraint, otherwise it will look for
+      "$param" as outlined previously.</para>
+
+      <para>For consequences: How snippets are rendered also depends on if
+      there is anything in the row immediately above it. If there is nothing
+      there, the output is simple the interpolated snippets. If there is
+      something there (which would typically be a bound variable or a global
+      like in the example above) then it will append it as a method call on
+      that object (refer to the above example).</para>
+
+      <para>This may be easiest to understand with some examples below.
+      <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="spanned_column.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot> The above shows how the Person ObjectType declaration
+      spans 2 columns in the spreadsheet, thus both constraints will appear as
+      Person(age == ... , type == ...). As before, as only the field names are
+      present in the snippet, they imply an equality test. <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="with_param.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot> The above condition example shows how you use
+      interpolation to place the values in the snippet (in this case it would
+      result in Person(age == "42")).<screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="operator_completion.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot> The above condition example show that if you put an
+      operator on the end by itself, the values will be placed after the
+      operator automatically. <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="with_binding.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot> You can of course put a binding in before the column
+      (the constraints will be added from the cells below). You can put
+      anything in the ObjectType row (eg it could be a pre condition for the
+      columns in the spreadsheet columns that follow).<screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="consequence.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot> This shows how the consequence could be done the by
+      simple interpolation (just leave the cell above blank, the same applies
+      to condition columns) - with this style you can put whatever you want in
+      the consequence (not just one method call).</para>
     </section>
 
     <section>

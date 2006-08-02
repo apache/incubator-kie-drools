@@ -2,7 +2,7 @@
   <parent>
     <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -10,7 +10,7 @@
   <artifactId>drools-decisiontables</artifactId>
 
   <name>Drools :: Decision Tables</name>
-  <version>3.0.2</version>
+  <version>3.0.3</version>
   
   <repositories>
     <repository>
@@ -21,9 +21,9 @@
   
   <dependencies>  
 	<dependency>
-		<groupId>poi</groupId>
-		<artifactId>poi</artifactId>
-		<version>2.5.1-final-20040804</version>
+		<groupId>jexcelapi</groupId>
+		<artifactId>jxl</artifactId>
+		<version>2.4.2</version>
 	</dependency>
     <dependency>
       <groupId>org.drools</groupId>

@@ -17,6 +17,8 @@ package org.drools.decisiontable;
  */
 
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
@@ -24,6 +26,9 @@ import junit.framework.TestCase;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  * 
  * Some basic unit tests for converter utility.
+ * Note that some of this may still use the drools 2.x syntax, as it is not compiled,
+ * only tested that it generates DRL in the correct structure (not that the DRL itself
+ * is correct).
  */
 public class SpreadsheetCompilerUnitTest extends TestCase {
 
@@ -53,21 +58,39 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
         final String drl = converter.compile( stream,
                                         InputType.CSV );
         assertNotNull( drl );
+        
+        System.out.println(drl);        
+        
         assertTrue( drl.indexOf( "myObject.setIsValid(1, 2)" ) > 0 );
-        assertTrue( drl.indexOf( "myObject.size () > 50" ) > 0 );
-        //System.out.println(drl);
+        assertTrue( drl.indexOf( "myObject.size () > 50" ) > 0 );    
+        
+        assertTrue( drl.indexOf("Foo(myObject.getColour().equals(red), myObject.size () > 1)") > 0);
     }
 
-    public void testLoadBasic() {
+    public void testLoadBasicWithMergedCells() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream( "/data/BasicWorkbook.xls" );
         final String drl = converter.compile( stream,
                                         InputType.XLS );
 
         assertNotNull( drl );
+        
+        Pattern p = Pattern.compile(".*setIsValid\\(Y\\).*setIsValid\\(Y\\).*setIsValid\\(Y\\).*",Pattern.DOTALL | Pattern.MULTILINE);
+        Matcher m = p.matcher(drl);
+        assertTrue(m.matches());
+                
         assertTrue( drl.indexOf( "This is a function block" ) > -1 );
         assertTrue( drl.indexOf( "global Class1 obj1;" ) > -1 );
-        //System.out.println(drl);
+        assertTrue( drl.indexOf( "myObject.setIsValid(10-Jul-1974)" ) > -1 );
+        assertTrue( drl.indexOf( "myObject.getColour().equals(blue)" ) > -1 );
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 1)" ) > -1 );
+        
+        assertTrue( drl.indexOf( "b: Bar() eval(myObject.size() < 3)" ) > -1 );
+        assertTrue( drl.indexOf( "b: Bar() eval(myObject.size() < 9)" ) > -1 );
+        
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 1)" ) < 
+                    drl.indexOf( "b: Bar() eval(myObject.size() < 3)" ));
+        
     }
 
 }

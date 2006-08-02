@@ -22,6 +22,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.acme.insurance.launcher.PricingRuleLauncher;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -67,6 +68,14 @@ public class SpreadsheetIntegrationTest extends TestCase {
         assertEquals( 1,
                       list.size() );
 
+    }
+    
+    /**
+     * A smoke test mainly.
+     */
+    public void testInsuranceExample() throws Exception {
+        PricingRuleLauncher launcher = new PricingRuleLauncher();
+        assertEquals(120, launcher.executeExample());
     }
 
 }

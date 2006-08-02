@@ -17,9 +17,12 @@ package org.drools.decisiontable.model;
  */
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.drools.decisiontable.parser.SourceBuilder;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
@@ -54,7 +57,7 @@ public class Rule extends DRLElement
     private List             _rhs;
 
     private int              _spreadsheetRow;
-
+    
     /**
      * Create a new rule. Note that the rule name should be post-fixed with the row number,
      * as one way of providing tracability for errors back to the originating spreadsheet.
@@ -75,6 +78,7 @@ public class Rule extends DRLElement
         this._rhs = new LinkedList();
         this._spreadsheetRow = spreadsheetRow;
     }
+    
 
     public void addCondition(final Condition con) {
         this._lhs.add( con );
