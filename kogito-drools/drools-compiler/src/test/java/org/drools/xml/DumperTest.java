@@ -1,7 +1,9 @@
 package org.drools.xml;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,14 +93,25 @@ public class DumperTest extends TestCase {
         assertEquals( ruleOriginal.getConsequence(),
                       ruleDumped.getConsequence() );
 
+        // Now double check the contents are the same
+        BufferedReader reader = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "test_Dump.drl" ) ) );
+        StringBuffer buffer = new StringBuffer();
+        String s = null;
+        while ( (s = reader.readLine()) != null ) {
+            buffer.append( s );
+        }
+
+        assertEqualsIgnoreWhitespace( buffer.toString(),
+                                      result );
+
     }
-        
+
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
         final String cleanExpected = expected.replaceAll( "\\s+",
-                                                    "" );
+                                                          "" );
         final String cleanActual = actual.replaceAll( "\\s+",
-                                                "" );
+                                                      "" );
 
         assertEquals( cleanExpected,
                       cleanActual );

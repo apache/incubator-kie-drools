@@ -1,6 +1,7 @@
 package org.drools.lang.descr;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /*
@@ -28,7 +29,7 @@ public class FieldConstraintDescr extends PatternDescr {
 
 	private static final long serialVersionUID = 320;
     private String  fieldName;
-    private List    restrictions = new ArrayList();
+    private List    restrictions = Collections.EMPTY_LIST;
 
     public FieldConstraintDescr(final String fieldName) {
         this.fieldName = fieldName;        
@@ -39,6 +40,9 @@ public class FieldConstraintDescr extends PatternDescr {
     }
     
     public void addRestriction(RestrictionDescr restriction) {
+        if ( this.restrictions == Collections.EMPTY_LIST ) {
+            this.restrictions = new ArrayList();
+        }
         this.restrictions.add( restriction );
     }
     

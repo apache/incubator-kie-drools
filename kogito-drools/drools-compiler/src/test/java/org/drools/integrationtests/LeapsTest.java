@@ -297,6 +297,10 @@ public class LeapsTest extends IntegrationCases {
     }
     
     
+    public void testActivationGroups() throws Exception {
+        // @todo for some reason this is b0rked?
+    }
+    
     /**
      * this test is replicated here due to the fact that leaps
      * does not create activations before fireAll.

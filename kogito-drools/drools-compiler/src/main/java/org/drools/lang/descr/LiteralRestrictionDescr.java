@@ -26,20 +26,20 @@ public class LiteralRestrictionDescr extends RestrictionDescr {
      * 
      */
     private static final long serialVersionUID = 320;
-    private String  evaluator;
-    private String  text;
-    private boolean staticFieldValue;
+    private String            evaluator;
+    private String            text;
+    private boolean           staticFieldValue;
 
-    public LiteralRestrictionDescr( final String evaluator,
-                        final String text) {
+    public LiteralRestrictionDescr(final String evaluator,
+                                   final String text) {
         this( evaluator,
               text,
               false );
     }
 
     public LiteralRestrictionDescr(final String evaluator,
-                        final String text,
-                        final boolean staticFieldValue) {
+                                   final String text,
+                                   final boolean staticFieldValue) {
         this.text = text;
         this.evaluator = evaluator;
         this.staticFieldValue = staticFieldValue;

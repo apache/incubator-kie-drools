@@ -34,15 +34,15 @@
 			</column>		
 									
 			<column object-type="Foo">
-				<literal field-name="field1" evaluator="==" value="value1" />
+			    <field-constraint field-name="field1">
+				    <literal-restriction       evaluator="==" value="value1" />
+    				<return-value-restriction  evaluator="==">1==1</return-value-restriction>				    
+	    			<variable-restriction      evaluator="==" identifier="var1" />								
+				</field-constraint>
 											
 				<predicate field-name="field1" identifier="var1">1==1</predicate>
-							
-				<return-value field-name="field1" evaluator="==">1==1</return-value>
-							
-				<field-binding field-name="field1" identifier="var1" />
-				
-				<bound-variable field-name="field1" evaluator="==" identifier="var1" />				
+														
+				<field-binding field-name="field1" identifier="var1" />				
 			</column>		
 			
 			<not>

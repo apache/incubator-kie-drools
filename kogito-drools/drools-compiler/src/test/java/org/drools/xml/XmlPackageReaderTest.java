@@ -8,20 +8,21 @@ import junit.framework.TestCase;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.VariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FunctionDescr;
-import org.drools.lang.descr.LiteralDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.ReturnValueDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 
 public class XmlPackageReaderTest extends TestCase {
     public void testParsePackageName() throws Exception {
@@ -241,43 +242,42 @@ public class XmlPackageReaderTest extends TestCase {
                       column2.getIdentifier() );
 
         final ColumnDescr column3 = (ColumnDescr) lhsDescr.getDescrs().get( 4 );
-        final LiteralDescr literalDescr = (LiteralDescr) column3.getDescrs().get( 0 );
+        //final LiteralDescr literalDescr = (LiteralDescr) column3.getDescrs().get( 0 );
+        FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) column3.getDescrs().get( 0 );
+        final LiteralRestrictionDescr literalDescr = (  LiteralRestrictionDescr ) fieldConstraintDescr.getRestrictions().get( 0 );
         assertEquals( "field1",
-                      literalDescr.getFieldName() );
+                      fieldConstraintDescr.getFieldName() );
         assertEquals( "==",
                       literalDescr.getEvaluator() );
         assertEquals( "value1",
                       literalDescr.getText() );
 
+        final ReturnValueRestrictionDescr returnValueDescr = (ReturnValueRestrictionDescr) fieldConstraintDescr.getRestrictions().get( 1 );    
+        assertEquals( "==",
+                      returnValueDescr.getEvaluator() );
+        assertEquals( "1==1",
+                      returnValueDescr.getText() );
+        
+      final VariableRestrictionDescr variableDescr = (VariableRestrictionDescr) fieldConstraintDescr.getRestrictions().get( 2 ); 
+      assertEquals( "==",
+                    variableDescr.getEvaluator() );
+      assertEquals( "var1",
+                    variableDescr.getIdentifier() );        
+        
         final PredicateDescr predicateDescr = (PredicateDescr) column3.getDescrs().get( 1 );
         assertEquals( "field1",
                       predicateDescr.getFieldName() );
         assertEquals( "var1",
                       predicateDescr.getDeclaration() );
         assertEquals( "1==1",
-                      predicateDescr.getText() );
+                      predicateDescr.getText() );        
 
-        final ReturnValueDescr returnValueDescr = (ReturnValueDescr) column3.getDescrs().get( 2 );
-        assertEquals( "field1",
-                      returnValueDescr.getFieldName() );
-        assertEquals( "==",
-                      returnValueDescr.getEvaluator() );
-        assertEquals( "1==1",
-                      returnValueDescr.getText() );
 
-        final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) column3.getDescrs().get( 3 );
+        final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) column3.getDescrs().get( 2 );
         assertEquals( "field1",
                       fieldBindingDescr.getFieldName() );
         assertEquals( "var1",
                       fieldBindingDescr.getIdentifier() );
-
-        final VariableDescr variableDescr = (VariableDescr) column3.getDescrs().get( 4 );
-        assertEquals( "field1",
-                      variableDescr.getFieldName() );
-        assertEquals( "==",
-                      variableDescr.getEvaluator() );
-        assertEquals( "var1",
-                      variableDescr.getIdentifier() );
 
         final NotDescr notDescr = (NotDescr) lhsDescr.getDescrs().get( 5 );
         assertEquals( 1,

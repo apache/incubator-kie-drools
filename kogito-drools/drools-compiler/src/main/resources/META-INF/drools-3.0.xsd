@@ -169,13 +169,22 @@
     <xs:complexType>
       <xs:choice maxOccurs="unbounded" minOccurs="0">
         <xs:element ref="drools:field-binding"/>        
-        <xs:element ref="drools:literal"/>                      
+        <xs:element ref="drools:field-constraint"/>                      
         <xs:element ref="drools:predicate"/>                
-        <xs:element ref="drools:return-value"/>                
-        <xs:element ref="drools:bound-variable"/>   
       </xs:choice>   
       <xs:attribute name="identifier" type="xs:string" use="optional"/>                
       <xs:attribute name="object-type" type="xs:string" use="required"/>   
+    </xs:complexType>
+  </xs:element>    
+
+  <xs:element name="field-constraint">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">  
+        <xs:element ref="drools:literal-restriction"/>                      
+        <xs:element ref="drools:variable-restriction"/>                
+        <xs:element ref="drools:return-value-restriction"/>                
+      </xs:choice>   
+      <xs:attribute name="field-name" type="xs:string" use="required"/>                
     </xs:complexType>
   </xs:element>    
   
@@ -186,14 +195,30 @@
     </xs:complexType>
   </xs:element>     
   
-  <xs:element name="literal">
+  <xs:element name="literal-restriction">
     <xs:complexType>
-      <xs:attribute name="field-name" type="xs:string" use="required"/>    
       <xs:attribute name="evaluator" type="xs:string" use="required"/>      
       <xs:attribute name="value" type="xs:string" use="required"/>            
     </xs:complexType>
   </xs:element>  
-
+  
+  <xs:element name="variable-restriction">
+    <xs:complexType>
+      <xs:attribute name="evaluator" type="xs:string" use="required"/>      
+      <xs:attribute name="identifier" type="xs:string" use="required"/>            
+    </xs:complexType>
+  </xs:element>    
+  
+  <xs:element name="return-value-restriction">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+        <xs:attribute name="evaluator" type="xs:string" use="required"/>  
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>   
+  
   <xs:element name="predicate">
     <xs:complexType>
       <xs:simpleContent>
@@ -203,24 +228,6 @@
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>
-  </xs:element>  
-  
-  <xs:element name="return-value">
-    <xs:complexType>
-      <xs:simpleContent>
-        <xs:extension base="xs:string">
-        <xs:attribute name="field-name" type="xs:string" use="required"/>    
-        <xs:attribute name="evaluator" type="xs:string" use="required"/>  
-        </xs:extension>
-      </xs:simpleContent>
-    </xs:complexType>
-  </xs:element>   
-  
-  <xs:element name="bound-variable">
-    <xs:complexType>
-      <xs:attribute name="field-name" type="xs:string" use="required"/>    
-      <xs:attribute name="evaluator" type="xs:string" use="required"/>      
-      <xs:attribute name="identifier" type="xs:string" use="required"/>            
-    </xs:complexType>
   </xs:element>    
+    
 </xs:schema>

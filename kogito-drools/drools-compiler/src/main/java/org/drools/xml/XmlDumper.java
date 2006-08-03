@@ -23,21 +23,22 @@ import java.util.Map;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.VariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FunctionDescr;
-import org.drools.lang.descr.LiteralDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PackageDescrDumper;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.ReturnValueDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.util.ReflectiveVisitor;
 
 /**
@@ -72,9 +73,9 @@ public class XmlDumper extends ReflectiveVisitor
         this.template = "<rule-attribute name=\"" + attributeDescr.getName() + "\" value=\"" + attributeDescr.getValue() + "\" />" + XmlDumper.eol;
     }
 
-    public void visitBoundVariableDescr(final VariableDescr descr) {
+    public void visitVariableRestrictionDescr(final VariableRestrictionDescr descr) {
         this.template = new String();
-        this.template = "<bound-variable field-name=\"" + descr.getFieldName() + "\" evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" identifier=\"" + descr.getIdentifier() + "\" />" + XmlDumper.eol;
+        this.template = "<variable-restriction evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" identifier=\"" + descr.getIdentifier() + "\" />" + XmlDumper.eol;
     }
 
     public void visitColumnDescr(final ColumnDescr descr) {
@@ -95,6 +96,12 @@ public class XmlDumper extends ReflectiveVisitor
 
     }
 
+    public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
+        if ( !descr.getRestrictions().isEmpty() ) {
+            processFieldConstraint( descr.getRestrictions() );
+        } 
+    }      
+    
     public void visitEvalDescr(final EvalDescr descr) {
         this.template = new String();
         this.template = "<eval>" + descr.getText() + "</eval>" + XmlDumper.eol;
@@ -122,9 +129,9 @@ public class XmlDumper extends ReflectiveVisitor
         this.template = "<function return-type=\"" + functionDescr.getReturnType() + "\" name=\"" + functionDescr.getName() + "\">" + XmlDumper.eol + parameterTemplate + "<body>" + XmlDumper.eol + functionDescr.getText() + XmlDumper.eol + "</body>" + XmlDumper.eol + "</function>" + XmlDumper.eol;
     }
 
-    public void visitLiteralDescr(final LiteralDescr descr) {
+    public void visitLiteralRestrictionDescr(final LiteralRestrictionDescr descr) {
         this.template = new String();
-        this.template = "<literal field-name=\"" + descr.getFieldName() + "\" evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" value=\"" + descr.getText() + "\" />" + XmlDumper.eol;
+        this.template = "<literal-restriction evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" value=\"" + descr.getText() + "\" />" + XmlDumper.eol;
     }
 
     public void visitNotDescr(final NotDescr descr) {
@@ -161,12 +168,11 @@ public class XmlDumper extends ReflectiveVisitor
     public void visitPredicateDescr(final PredicateDescr descr) {
         this.template = new String();
         this.template = "<predicate field-name=\"" + descr.getFieldName() + "\" identifier=\"" + descr.getDeclaration() + "\" >" + descr.getText() + "</predicate>" + XmlDumper.eol;
-
     }
 
-    public void visitReturnValueDescr(final ReturnValueDescr descr) {
+    public void visitReturnValueRestrictionDescr(final ReturnValueRestrictionDescr descr) {
         this.template = new String();
-        this.template = "<return-value field-name=\"" + descr.getFieldName() + "\" evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" >" + descr.getText() + "</return-value>" + XmlDumper.eol;
+        this.template = "<return-value-restriction evaluator=\"" + getEvaluator( descr.getEvaluator() ) + "\" >" + descr.getText() + "</return-value>" + XmlDumper.eol;
     }
 
     public void visitQueryDescr(final QueryDescr descr) {
@@ -200,6 +206,19 @@ public class XmlDumper extends ReflectiveVisitor
 
         return ruleList + XmlDumper.eol;
     }
+    
+    private String processFieldConstraint(List list) {
+        String descrString = "";
+        for ( final Iterator it = list.iterator(); it.hasNext(); ) {
+            final Object temp = it.next();
+            descrString += "<field-restrictions name=\"" +((FieldConstraintDescr) temp).getFieldName() + "\"> ";
+            visit( temp );
+            descrString += "</field-restrictions>"; 
+            descrString += this.template;
+        }
+        return descrString.substring( 0,
+                                      descrString.length() - 2 );
+    }      
 
     private String processDescrList(final List descr) {
         String descrString = "";

@@ -20,12 +20,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.drools.lang.descr.VariableDescr;
-import org.drools.lang.descr.ColumnDescr;
-import org.drools.lang.descr.FieldBindingDescr;
-import org.drools.lang.descr.LiteralDescr;
-import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.ReturnValueDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -36,23 +34,21 @@ import org.xml.sax.SAXParseException;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
-class LiteralHandler extends BaseAbstractHandler
+class ReturnValueRestrictionHandler extends BaseAbstractHandler
     implements
     Handler {
-    LiteralHandler(final XmlPackageReader xmlPackageReader) {
+    ReturnValueRestrictionHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
-            this.validParents.add( ColumnDescr.class );
+            this.validParents.add( FieldConstraintDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
-            this.validPeers.add( LiteralDescr.class );
-            this.validPeers.add( PredicateDescr.class );
-            this.validPeers.add( ReturnValueDescr.class );
-            this.validPeers.add( FieldBindingDescr.class );
-            this.validPeers.add( VariableDescr.class );
+            this.validPeers.add( LiteralRestrictionDescr.class );
+            this.validPeers.add( ReturnValueRestrictionDescr.class );
+            this.validPeers.add( VariableRestrictionDescr.class );
             this.allowNesting = false;
         }
     }
@@ -61,50 +57,44 @@ class LiteralHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs) throws SAXException {
         this.xmlPackageReader.startConfiguration( localName,
-                                             attrs );
-
-        final String fieldName = attrs.getValue( "field-name" );
-        if ( fieldName == null || fieldName.trim().equals( "" ) ) {
-            throw new SAXParseException( "<literal> requires a 'field-name' attribute",
-                                         this.xmlPackageReader.getLocator() );
-        }
-
+                                                  attrs );
         final String evaluator = attrs.getValue( "evaluator" );
         if ( evaluator == null || evaluator.trim().equals( "" ) ) {
-            throw new SAXParseException( "<literal> requires an 'evaluator' attribute",
+            throw new SAXParseException( "<return-value-restriction> requires an 'evaluator' attribute",
                                          this.xmlPackageReader.getLocator() );
         }
 
-        final String text = attrs.getValue( "value" );
-        if ( text == null || text.trim().equals( "" ) ) {
-            throw new SAXParseException( "<literal>  requires an 'value' attribute",
-                                         this.xmlPackageReader.getLocator() );
-        }
+        final ReturnValueRestrictionDescr returnValueDescr = new ReturnValueRestrictionDescr( evaluator );
 
-        final LiteralDescr literalDescr = new LiteralDescr( fieldName,
-                                                      evaluator,
-                                                      text );
-
-        return literalDescr;
+        return returnValueDescr;
     }
 
     public Object end(final String uri,
                       final String localName) throws SAXException {
         final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        final LiteralDescr literalDescr = (LiteralDescr) this.xmlPackageReader.getCurrent();
+        final ReturnValueRestrictionDescr returnValueDescr = (ReturnValueRestrictionDescr) this.xmlPackageReader.getCurrent();
+
+        final String expression = config.getText();
+
+        if ( expression == null || expression.trim().equals( "" ) ) {
+            throw new SAXParseException( "<return-value-restriction> must have some content",
+                                         this.xmlPackageReader.getLocator() );
+        }
+
+        returnValueDescr.setText( expression );
 
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        final ColumnDescr columnDescr = (ColumnDescr) it.previous();
+        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) it.previous();
 
-        columnDescr.addDescr( literalDescr );
+        fieldConstraintDescr.addRestriction( returnValueDescr );
 
         return null;
     }
 
     public Class generateNodeFor() {
-        return LiteralDescr.class;
+        return ReturnValueRestrictionDescr.class;
     }
 }

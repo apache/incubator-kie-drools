@@ -1,9 +1,14 @@
-package foo
+package foo;
 
-rule simple_rule 
+rule "simple_rule"
+  salience 10
+  no-loop true
+  agenda-group "agenda-group"
+  activation-group "activation-group"
   when
-    foo3 : Bar(a==3)
-    foo4 : Bar(a4:a==4)
+    foo3 : Bar( a == 3 | == 4, a3 == "hello")
+    foo4 : Bar( a4 : a != 4 & != 5)
+    foo5 : Bar( b == (a4 + 1) | > a4)    
     Baz()
   then
   if ( a == b ) {
