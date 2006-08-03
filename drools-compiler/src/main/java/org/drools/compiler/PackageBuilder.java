@@ -421,8 +421,6 @@ public class PackageBuilder {
         if ( result.getErrors().length > 0 ) {
             for ( int i = 0; i < result.getErrors().length; i++ ) {
                 CompilationProblem err = result.getErrors()[i];
-                System.out.println(err.getFileName());
-                System.out.println(err.getMessage());
                 
                 ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
                 if (handler instanceof RuleErrorHandler) {                    
