@@ -29,11 +29,13 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.drools.RuntimeDroolsException;
+import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
-import org.drools.base.EvaluatorFactory;
 import org.drools.base.FieldFactory;
 import org.drools.base.FieldImpl;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -429,7 +431,6 @@ public class RuleBuilder {
         return column;
     }
 
-
     private void build(final Column column,
                        final FieldConstraintDescr fieldConstraintDescr) {
 
@@ -445,22 +446,24 @@ public class RuleBuilder {
 
         if ( fieldConstraintDescr.getRestrictions().size() == 1 ) {
             final Object object = fieldConstraintDescr.getRestrictions().get( 0 );
-            
-            Restriction restriction = buildRestriction( extractor, fieldConstraintDescr, ( RestrictionDescr ) object );
+
+            Restriction restriction = buildRestriction( extractor,
+                                                        fieldConstraintDescr,
+                                                        (RestrictionDescr) object );
             if ( restriction == null ) {
                 // @todo log errors
                 return;
             }
 
             if ( object instanceof LiteralRestrictionDescr ) {
-                    column.addConstraint( new LiteralConstraint( extractor,
-                                                                 ( LiteralRestriction ) restriction ) );
+                column.addConstraint( new LiteralConstraint( extractor,
+                                                             (LiteralRestriction) restriction ) );
             } else if ( object instanceof VariableRestrictionDescr ) {
-                    column.addConstraint( new VariableConstraint( extractor,
-                                                                  ( VariableRestriction ) restriction ) );
+                column.addConstraint( new VariableConstraint( extractor,
+                                                              (VariableRestriction) restriction ) );
             } else if ( object instanceof ReturnValueRestrictionDescr ) {
-                    column.addConstraint( new ReturnValueConstraint( extractor,
-                                                                     ( ReturnValueRestriction  ) restriction ) );
+                column.addConstraint( new ReturnValueConstraint( extractor,
+                                                                 (ReturnValueRestriction) restriction ) );
             }
 
             return;
@@ -468,13 +471,12 @@ public class RuleBuilder {
 
         List orList = new ArrayList();
         List andList = null;
-        
+
         RestrictionDescr currentRestriction = null;
-        RestrictionDescr previousRestriction = null;        
-        
+        RestrictionDescr previousRestriction = null;
+
         List currentList = null;
         List previousList = null;
-
 
         for ( final Iterator it = fieldConstraintDescr.getRestrictions().iterator(); it.hasNext(); ) {
             Object object = it.next();
@@ -489,25 +491,29 @@ public class RuleBuilder {
                         andList = new ArrayList();
                     }
                     previousList = currentList;
-                    currentList= andList;
+                    currentList = andList;
                 } else {
                     previousList = currentList;
                     currentList = orList;
                 }
             } else {
                 Restriction restriction = null;
-                if ( currentList != null ) {                                                           
+                if ( currentList != null ) {
                     // Are we are at the first operator? if so treat differently
-                    if ( previousList == null  ) {
-                        restriction = buildRestriction( extractor, fieldConstraintDescr, previousRestriction );
+                    if ( previousList == null ) {
+                        restriction = buildRestriction( extractor,
+                                                        fieldConstraintDescr,
+                                                        previousRestriction );
                         if ( currentList == andList ) {
                             andList.add( restriction );
                         } else {
-                            orList.add(  restriction );
-                        }                    
-                    } else {              
-                        restriction = buildRestriction( extractor, fieldConstraintDescr, previousRestriction );
-                        
+                            orList.add( restriction );
+                        }
+                    } else {
+                        restriction = buildRestriction( extractor,
+                                                        fieldConstraintDescr,
+                                                        previousRestriction );
+
                         if ( previousList == andList && currentList == orList ) {
                             andList.add( restriction );
                             if ( andList.size() == 1 ) {
@@ -516,27 +522,29 @@ public class RuleBuilder {
                             } else {
                                 Restriction restrictions = new AndCompositeRestriction( (Restriction[]) andList.toArray( new Restriction[andList.size()] ) );
                                 orList.add( restrictions );
-                            }           
-                            andList = null;                           
+                            }
+                            andList = null;
                         } else if ( previousList == andList && currentList == andList ) {
                             andList.add( restriction );
                         } else if ( previousList == orList && currentList == andList ) {
                             andList.add( restriction );
                         } else if ( previousList == orList && currentList == orList ) {
                             orList.add( restriction );
-                        }                    
+                        }
                     }
-                }    
+                }
             }
-            previousRestriction = currentRestriction;                
-            currentRestriction = ( RestrictionDescr ) object;
+            previousRestriction = currentRestriction;
+            currentRestriction = (RestrictionDescr) object;
         }
-        
-        Restriction restriction = buildRestriction( extractor, fieldConstraintDescr, currentRestriction );
+
+        Restriction restriction = buildRestriction( extractor,
+                                                    fieldConstraintDescr,
+                                                    currentRestriction );
         currentList.add( restriction );
-        
+
         Restriction restrictions = null;
-        if ( currentList == andList &&  !orList.isEmpty() ) {
+        if ( currentList == andList && !orList.isEmpty() ) {
             // Check if it finished with an and, and process it
             if ( andList != null ) {
                 if ( andList.size() == 1 ) {
@@ -546,37 +554,40 @@ public class RuleBuilder {
                     orList.add( new AndCompositeRestriction( (Restriction[]) andList.toArray( new Restriction[andList.size()] ) ) );
                 }
                 andList = null;
-            }                  
+            }
         }
-         
+
         if ( !orList.isEmpty() ) {
-            restrictions =   new OrCompositeRestriction(( Restriction[] )  orList.toArray(  new Restriction[ orList.size() ] ));
+            restrictions = new OrCompositeRestriction( (Restriction[]) orList.toArray( new Restriction[orList.size()] ) );
         } else if ( andList != null && !andList.isEmpty() ) {
             restrictions = new AndCompositeRestriction( (Restriction[]) andList.toArray( new Restriction[andList.size()] ) );
         } else {
             // @todo throw error
         }
 
-        column.addConstraint( new MultiRestrictionFieldConstraint( extractor, restrictions ) );        
+        column.addConstraint( new MultiRestrictionFieldConstraint( extractor,
+                                                                   restrictions ) );
     }
 
-    private Restriction buildRestriction(FieldExtractor extractor, FieldConstraintDescr fieldConstraintDescr, RestrictionDescr restrictionDescr) {        
+    private Restriction buildRestriction(FieldExtractor extractor,
+                                         FieldConstraintDescr fieldConstraintDescr,
+                                         RestrictionDescr restrictionDescr) {
         Restriction restriction = null;
         if ( restrictionDescr instanceof LiteralRestrictionDescr ) {
             restriction = build( extractor,
-                                                    fieldConstraintDescr,
-                                                    (LiteralRestrictionDescr) restrictionDescr);
+                                 fieldConstraintDescr,
+                                 (LiteralRestrictionDescr) restrictionDescr );
         } else if ( restrictionDescr instanceof VariableRestrictionDescr ) {
             restriction = build( extractor,
-                                                    fieldConstraintDescr,
-                                                    (VariableRestrictionDescr) restrictionDescr );                                
+                                 fieldConstraintDescr,
+                                 (VariableRestrictionDescr) restrictionDescr );
         } else if ( restrictionDescr instanceof ReturnValueRestrictionDescr ) {
             restriction = build( extractor,
-                                                     fieldConstraintDescr,
-                                                     (ReturnValueRestrictionDescr) restrictionDescr );
-                               
-        }   
-        
+                                 fieldConstraintDescr,
+                                 (ReturnValueRestrictionDescr) restrictionDescr );
+
+        }
+
         return restriction;
     }
 
@@ -635,7 +646,7 @@ public class RuleBuilder {
         }
 
         final Evaluator evaluator = getEvaluator( variableRestrictionDescr,
-                                                  extractor.getObjectType().getValueType(),
+                                                  extractor.getValueType(),
                                                   variableRestrictionDescr.getEvaluator() );
         if ( evaluator == null ) {
             return null;
@@ -666,23 +677,23 @@ public class RuleBuilder {
                 this.errors.add( new RuleError( this.rule,
                                                 literalRestrictionDescr,
                                                 e,
-                                                "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
+                                                "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
             }
 
         } else {
             try {
                 field = FieldFactory.getFieldValue( literalRestrictionDescr.getText(),
-                                                    extractor.getObjectType().getValueType() );
+                                                    extractor.getValueType() );
             } catch ( final Exception e ) {
                 this.errors.add( new RuleError( this.rule,
                                                 literalRestrictionDescr,
                                                 e,
-                                                "Unable to create a Field value of type  '" + extractor.getObjectType().getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
+                                                "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
             }
         }
 
         final Evaluator evaluator = getEvaluator( literalRestrictionDescr,
-                                                  extractor.getObjectType().getValueType(),
+                                                  extractor.getValueType(),
                                                   literalRestrictionDescr.getEvaluator() );
         if ( evaluator == null ) {
             return null;
@@ -707,7 +718,7 @@ public class RuleBuilder {
         }
 
         final Evaluator evaluator = getEvaluator( returnValueRestrictionDescr,
-                                                  extractor.getObjectType().getValueType(),
+                                                  extractor.getValueType(),
                                                   returnValueRestrictionDescr.getEvaluator() );
         if ( evaluator == null ) {
             return null;
@@ -807,9 +818,10 @@ public class RuleBuilder {
 
         st.setAttribute( "declaration",
                          declaration );
+
         st.setAttribute( "declarationType",
-                         ((ClassObjectType) declaration.getObjectType()).getClassType().getName().replace( '$',
-                                                                                                           '.' ) );
+                         declaration.getExtractor().getExtractToClass().getName().replace( '$',
+                                                                                           '.' ) );
 
         setStringTemplateAttributes( st,
                                      declarations,
@@ -839,8 +851,8 @@ public class RuleBuilder {
         st.setAttribute( "declaration",
                          declaration );
         st.setAttribute( "declarationType",
-                         ((ClassObjectType) declaration.getObjectType()).getClassType().getName().replace( '$',
-                                                                                                           '.' ) );
+                         declaration.getExtractor().getExtractToClass().getName().replace( '$',
+                                                                                           '.' ) );
 
         setStringTemplateAttributes( st,
                                      declarations,
@@ -1024,8 +1036,8 @@ public class RuleBuilder {
                                              final String text) {
         final String[] declarationTypes = new String[declarations.length];
         for ( int i = 0, size = declarations.length; i < size; i++ ) {
-            declarationTypes[i] = ((ClassObjectType) declarations[i].getObjectType()).getClassType().getName().replace( '$',
-                                                                                                                        '.' );
+            declarationTypes[i] = declarations[i].getExtractor().getExtractToClass().getName().replace( '$',
+                                                                                                        '.' );
         }
 
         final List globalTypes = new ArrayList( globals.length );
@@ -1067,10 +1079,10 @@ public class RuleBuilder {
     }
 
     private Evaluator getEvaluator(final PatternDescr descr,
-                                   final int valueType,
+                                   final ValueType valueType,
                                    final String evaluatorString) {
-        final Evaluator evaluator = EvaluatorFactory.getEvaluator( valueType,
-                                                                   evaluatorString );
+
+        final Evaluator evaluator = valueType.getEvaluator( Operator.determineOperator( evaluatorString ) );
 
         if ( evaluator == null ) {
             this.errors.add( new RuleError( this.rule,

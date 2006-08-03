@@ -49,14 +49,16 @@ import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
-import org.drools.lang.descr.LiteralDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.ReturnValueDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.And;
 import org.drools.rule.Column;
@@ -103,9 +105,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         packageDescr.addGlobal( "map",
                                 "java.util.Map" );
 
-        final ReturnValueDescr returnValue = new ReturnValueDescr( "price",
-                                                                   "==",
-                                                                   "x" );
+        FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
+        returnValue.addRestriction( new ReturnValueRestrictionDescr("==", "x") );                
+        
         column.addDescr( returnValue );
 
         // There is no m this should produce errors.
@@ -294,12 +296,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         final ColumnDescr column = new ColumnDescr( Cheese.class.getName(),
                                                     "stilton" );
         lhs.addDescr( column );
+        
+        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
+        literalDescr.addRestriction( new VariableRestrictionDescr("==", "stilton") );        
 
-        final LiteralDescr listeralDescr = new LiteralDescr( "type",
-                                                             "==",
-                                                             "stilton" );
-
-        column.addDescr( listeralDescr );
+        column.addDescr( literalDescr );
 
         ruleDescr.setConsequence( "modify(stilton);" );
 
@@ -332,10 +333,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         packageDescr.addGlobal( "map",
                                 "java.util.Map" );
-
-        final ReturnValueDescr returnValue = new ReturnValueDescr( "price",
-                                                                   "==",
-                                                                   "new  Integer(( ( ( Integer )map.get(x) ).intValue() * y.intValue()))" );
+        
+        FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
+        returnValue.addRestriction( new ReturnValueRestrictionDescr("==", "new  Integer(( ( ( Integer )map.get(x) ).intValue() * y.intValue()))") );  
+        
         column.addDescr( returnValue );
 
         ruleDescr.setConsequence( "modify(stilton);" );
@@ -611,97 +612,97 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     public void testNumbers() throws Exception {
         // test boolean
-        createLiteralRule( new LiteralDescr( "booleanPrimitive",
-                                             "==",
-                                             "true" ) );
+        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "booleanPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "true") );            
+        createLiteralRule( literalDescr );
 
         // test boolean
-        createLiteralRule( new LiteralDescr( "booleanPrimitive",
-                                             "==",
-                                             "false" ) );
+        literalDescr = new FieldConstraintDescr( "booleanPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "false") );        
+        createLiteralRule( literalDescr );
 
         // test char
-        createLiteralRule( new LiteralDescr( "charPrimitive",
-                                             "==",
-                                             "a" ) );
+        literalDescr = new FieldConstraintDescr( "charPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "a") );        
+        createLiteralRule( literalDescr );
 
         // test byte
-        createLiteralRule( new LiteralDescr( "bytePrimitive",
-                                             "==",
-                                             "1" ) );
+        literalDescr = new FieldConstraintDescr( "bytePrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1") );            
+        createLiteralRule( literalDescr );
 
-        createLiteralRule( new LiteralDescr( "bytePrimitive",
-                                             "==",
-                                             "0" ) );
+        literalDescr = new FieldConstraintDescr( "bytePrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") );         
+        createLiteralRule( literalDescr );
 
-        createLiteralRule( new LiteralDescr( "bytePrimitive",
-                                             "==",
-                                             "-1" ) );
+        literalDescr = new FieldConstraintDescr( "bytePrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "-1") );         
+        createLiteralRule( literalDescr);
 
         // test short
-        createLiteralRule( new LiteralDescr( "shortPrimitive",
-                                             "==",
-                                             "1" ) );
+        literalDescr = new FieldConstraintDescr( "shortPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1") );         
+        createLiteralRule( literalDescr );
 
-        createLiteralRule( new LiteralDescr( "shortPrimitive",
-                                             "==",
-                                             "0" ) );
+        literalDescr = new FieldConstraintDescr( "shortPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") ); 
+        createLiteralRule( literalDescr );
 
-        createLiteralRule( new LiteralDescr( "shortPrimitive",
-                                             "==",
-                                             "-1" ) );
+        literalDescr = new FieldConstraintDescr( "shortPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "-1") );         
+        createLiteralRule( literalDescr );
 
         // test int
-        createLiteralRule( new LiteralDescr( "intPrimitive",
-                                             "==",
-                                             "1" ) );
+        literalDescr = new FieldConstraintDescr( "intPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1") );         
+        createLiteralRule( literalDescr );
 
-        createLiteralRule( new LiteralDescr( "intPrimitive",
-                                             "==",
-                                             "0" ) );
+        literalDescr = new FieldConstraintDescr( "intPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") ); 
+        createLiteralRule( literalDescr );
 
-        createLiteralRule( new LiteralDescr( "intPrimitive",
-                                             "==",
-                                             "-1" ) );
+        literalDescr = new FieldConstraintDescr( "intPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "-1") );         
+        createLiteralRule( literalDescr );
 
-        //        // test long
-        createLiteralRule( new LiteralDescr( "longPrimitive",
-                                             "==",
-                                             "1" ) );
+        // test long
+        literalDescr = new FieldConstraintDescr( "longPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1") );         
+        createLiteralRule( literalDescr );
 
-        createLiteralRule( new LiteralDescr( "longPrimitive",
-                                             "==",
-                                             "0" ) );
+        literalDescr = new FieldConstraintDescr( "longPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") );          
+        createLiteralRule( literalDescr );
 
-        createLiteralRule( new LiteralDescr( "longPrimitive",
-                                             "==",
-                                             "-1" ) );
+        literalDescr = new FieldConstraintDescr( "longPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") );          
+        createLiteralRule( literalDescr );
 
         // test float
-        createLiteralRule( new LiteralDescr( "floatPrimitive",
-                                             "==",
-                                             "1.1" ) );
+        literalDescr = new FieldConstraintDescr( "floatPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1.1") );          
+        createLiteralRule( literalDescr);
 
-        createLiteralRule( new LiteralDescr( "floatPrimitive",
-                                             "==",
-                                             "0" ) );
+        literalDescr = new FieldConstraintDescr( "floatPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") );        
+        createLiteralRule( literalDescr );
 
-        createLiteralRule( new LiteralDescr( "floatPrimitive",
-                                             "==",
-                                             "-1.1" ) );
+        literalDescr = new FieldConstraintDescr( "floatPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "-1.1") );        
+        createLiteralRule( literalDescr );
 
         // test double
-        createLiteralRule( new LiteralDescr( "doublePrimitive",
-                                             "==",
-                                             "1.1" ) );
+        literalDescr = new FieldConstraintDescr( "doublePrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "1.1") );        
+        createLiteralRule( literalDescr );
 
-        createLiteralRule( new LiteralDescr( "doublePrimitive",
-                                             "==",
-                                             "0" ) );
+        literalDescr = new FieldConstraintDescr( "doublePrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "0") );        
+        createLiteralRule( literalDescr );
 
-        createLiteralRule( new LiteralDescr( "doublePrimitive",
-                                             "==",
-                                             "-1.1" ) );
+        literalDescr = new FieldConstraintDescr( "floatPrimitive" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "-1.1") );        
+        createLiteralRule( literalDescr);
     }
 
     public void testNull() {
@@ -717,9 +718,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         final ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
                                                          "stilton" );
 
-        final LiteralDescr literalDescr = new LiteralDescr( "type",
-                                                            "==",
-                                                            null );
+        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", null) );            
+        
         columnDescr.addDescr( literalDescr );
 
         ruleDescr.setConsequence( "" );
@@ -745,9 +746,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
         ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
                                                    "stilton" );
-        LiteralDescr literalDescr = new LiteralDescr( "type",
-                                                      "==",
-                                                      null );
+        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", null) );    
         columnDescr.addDescr( literalDescr );
         ruleDescr.setConsequence( "" );
 
@@ -759,9 +759,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
         columnDescr = new ColumnDescr( Cheese.class.getName(),
                                        "stilton" );
-        literalDescr = new LiteralDescr( "type",
-                                         "!=",
-                                         null );
+        literalDescr = new FieldConstraintDescr( "type" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("!=", null) );    
         columnDescr.addDescr( literalDescr );
         ruleDescr.setConsequence( "" );
 
@@ -773,9 +772,10 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setLhs( lhs );
         columnDescr = new ColumnDescr( Cheese.class.getName(),
                                        "stilton" );
-        literalDescr = new LiteralDescr( "type",
-                                         "!=",
-                                         null );
+        
+        literalDescr = new FieldConstraintDescr( "type" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("!=", null ) );            
+        
         columnDescr.addDescr( literalDescr );
         ruleDescr.setConsequence( "" );
 
@@ -807,12 +807,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "type",
                                                                            "$type" );        
         
-        final LiteralDescr listeralDescr = new LiteralDescr( "type",
-                                                             "==",
-                                                             "stilton" );
+        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "stilton") );            
 
         column1.addDescr( fieldBindingDescr );
-        column1.addDescr( listeralDescr );
+        column1.addDescr( literalDescr );
         
         final ColumnDescr column2 = new ColumnDescr( Cheese.class.getName() );
         lhs.addDescr( column2 );
@@ -890,10 +889,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         packageDescr.addGlobal( "map",
                                 "java.util.Map" );
-
-        final ReturnValueDescr returnValue = new ReturnValueDescr( "price",
-                                                                   "==",
-                                                                   expression );
+       
+        FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
+        returnValue.addRestriction( new ReturnValueRestrictionDescr("==", expression) );
+        
         column.addDescr( returnValue );
 
         ruleDescr.setConsequence( "modify(stilton);" );
@@ -943,7 +942,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setConsequence( "" );
     }
 
-    private void createLiteralRule(final LiteralDescr literalDescr) {
+    private void createLiteralRule(final FieldConstraintDescr literalDescr) {
         final PackageBuilder builder = new PackageBuilder();
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
@@ -981,9 +980,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         final ColumnDescr columnDescr = new ColumnDescr( Cheese.class.getName(),
                                                          "stilton" );
 
-        final LiteralDescr literalDescr = new LiteralDescr( "type",
-                                                            "==",
-                                                            "stilton" );
+        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "stilton") );        
+        
         columnDescr.addDescr( literalDescr );
 
         ceDescr.addDescr( columnDescr );

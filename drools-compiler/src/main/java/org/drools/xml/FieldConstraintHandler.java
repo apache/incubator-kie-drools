@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import org.drools.lang.descr.ColumnDescr;
+import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.PredicateDescr;
@@ -34,10 +35,10 @@ import org.xml.sax.SAXParseException;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
-class FieldBindingHandler extends BaseAbstractHandler
+class FieldConstraintHandler extends BaseAbstractHandler
     implements
     Handler {
-    FieldBindingHandler(final XmlPackageReader xmlPackageReader) {
+    FieldConstraintHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
         if ( (this.validParents == null) && (this.validPeers == null) ) {
@@ -59,41 +60,36 @@ class FieldBindingHandler extends BaseAbstractHandler
         this.xmlPackageReader.startConfiguration( localName,
                                              attrs );
 
-        final String identifier = attrs.getValue( "identifier" );
-        if ( identifier == null || identifier.trim().equals( "" ) ) {
-            throw new SAXParseException( "<field-binding> requires an 'identifier' attribute",
-                                         this.xmlPackageReader.getLocator() );
-        }
-
         final String fieldName = attrs.getValue( "field-name" );
+
         if ( fieldName == null || fieldName.trim().equals( "" ) ) {
-            throw new SAXParseException( "<field-binding> requires a 'field-name' attribute",
+            throw new SAXParseException( "<field-constraint> requires a 'field-name' attribute",
                                          this.xmlPackageReader.getLocator() );
-        }
+        }               
 
-        final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( fieldName,
-                                                                     identifier );
+        FieldConstraintDescr fieldConstraint = new  FieldConstraintDescr( fieldName );
 
-        return fieldBindingDescr;
+        return fieldConstraint;
     }
 
     public Object end(final String uri,
                       final String localName) throws SAXException {
         final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) this.xmlPackageReader.getCurrent();
+        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) this.xmlPackageReader.getCurrent();
 
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        final ColumnDescr columnDescr = (ColumnDescr) it.previous();
+        final Object parent = it.previous();
 
-        columnDescr.addDescr( fieldBindingDescr );
+        final ColumnDescr columnDescr = ( ColumnDescr ) parent;
+        columnDescr.addDescr( fieldConstraintDescr );
 
         return null;
     }
 
     public Class generateNodeFor() {
-        return FieldBindingDescr.class;
+        return FieldConstraintDescr.class;
     }
 }

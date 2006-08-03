@@ -23,21 +23,23 @@ import java.util.Map;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.VariableDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FunctionDescr;
-import org.drools.lang.descr.LiteralDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PackageDescrDumper;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.ReturnValueDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.util.ReflectiveVisitor;
 
 /**
@@ -60,7 +62,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitAndDescr(final AndDescr descr) {
         this.template = new String();
-        if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
+        if ( !descr.getDescrs().isEmpty() ) {
             this.template = processDescrList( descr.getDescrs() );
         } else {
             this.template = "";
@@ -79,15 +81,21 @@ public class DrlDumper extends ReflectiveVisitor
         }
         this.template = "\t " + name + " " + value + DrlDumper.eol;
     }
+    
+    public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
+        if ( !descr.getRestrictions().isEmpty() ) {
+            this.template = descr.getFieldName() + " " + processFieldConstraint( descr.getRestrictions() );
+        } 
+    }    
 
-    public void visitBoundVariableDescr(final VariableDescr descr) {
+    public void visitVariableRestrictionDescr(final VariableRestrictionDescr descr) {
         this.template = new String();
-        this.template = descr.getFieldName() + " " + descr.getEvaluator() + " " + descr.getIdentifier();
+        this.template = descr.getEvaluator() + " " + descr.getIdentifier();
     }
 
     public void visitColumnDescr(final ColumnDescr descr) {
         this.template = new String();
-        if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
+        if ( !descr.getDescrs().isEmpty() ) {
             if ( descr.getIdentifier() != null ) {
                 this.template = "\t\t" + descr.getIdentifier() + " : " + descr.getObjectType() + "( " + processColoumnConstraintList( descr.getDescrs() ) + ")";
             } else {
@@ -110,7 +118,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitExistsDescr(final ExistsDescr descr) {
         this.template = new String();
-        if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
+        if ( !descr.getDescrs().isEmpty() ) {
             this.template = "\t\texists " + processDescrList( descr.getDescrs() );
         } else {
             this.template = "";
@@ -133,7 +141,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     }
 
-    public void visitLiteralDescr(final LiteralDescr descr) {
+    public void visitLiteralRestrictionDescr(final LiteralRestrictionDescr descr) {
         this.template = new String();
         String text = descr.getText();
         try {
@@ -142,12 +150,20 @@ public class DrlDumper extends ReflectiveVisitor
             text = "\"" + text + "\"";
         }
 
-        this.template = descr.getFieldName() + " " + descr.getEvaluator() + " " + text;
+        this.template = descr.getEvaluator() + " " + text;
+    }
+    
+    public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
+        if ( descr.getConnective() == RestrictionConnectiveDescr.OR ) {
+            this.template = " | ";
+        } else {
+            this.template = " & ";
+        }
     }
 
     public void visitNotDescr(final NotDescr descr) {
         this.template = new String();
-        if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
+        if ( descr.getDescrs().isEmpty() ) {
             this.template = "\t   not " + processDescrList( descr.getDescrs() );
         } else {
             this.template = "";
@@ -157,7 +173,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitOrDescr(final OrDescr descr) {
         this.template = new String();
-        if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
+        if ( !descr.getDescrs().isEmpty() ) {
             this.template = processOrDescrList( descr.getDescrs() );
         } else {
             this.template = " ";
@@ -190,9 +206,9 @@ public class DrlDumper extends ReflectiveVisitor
 
     }
 
-    public void visitReturnValueDescr(final ReturnValueDescr descr) {
+    public void visitReturnValueRestrictionDescr(final ReturnValueRestrictionDescr descr) {
         this.template = new String();
-        this.template = descr.getFieldName() + " " + descr.getEvaluator() + " ( " + descr.getText() + ")";
+        this.template = descr.getEvaluator() + " ( " + descr.getText() + ")";
     }
 
     public void visitQueryDescr(final QueryDescr descr) {
@@ -209,7 +225,7 @@ public class DrlDumper extends ReflectiveVisitor
             String rule = "rule \"" + ruleDescr.getName() + "\" " + DrlDumper.eol;
             final String attribute = processAttribute( ruleDescr.getAttributes() );
             String lhs = "";
-            if ( ruleDescr.getLhs().getDescrs() != Collections.EMPTY_LIST ) {
+            if ( !ruleDescr.getLhs().getDescrs().isEmpty() ) {
                 lhs = "\t when" + DrlDumper.eol + processDescrList( ruleDescr.getLhs().getDescrs() ) + DrlDumper.eol;
             } else {
 
@@ -264,10 +280,20 @@ public class DrlDumper extends ReflectiveVisitor
                                       descrString.length() - 2 );
     }
 
+    private String processFieldConstraint(List list)  {
+        String descrString = "";
+        for ( final Iterator it = list.iterator(); it.hasNext(); ) {
+            final Object temp = it.next();
+            visit( temp );
+            descrString += this.template;
+        }
+        return descrString;
+    }    
+    
     private String processDescrList(final List descr) {
         String descrString = "";
-        for ( final Iterator iterator = descr.iterator(); iterator.hasNext(); ) {
-            visit( iterator.next() );
+        for ( final Iterator it = descr.iterator(); it.hasNext(); ) {
+            visit( it.next() );
             descrString += this.template;
             descrString += DrlDumper.eol;
         }
@@ -277,8 +303,8 @@ public class DrlDumper extends ReflectiveVisitor
     private String processFunctionsList(final List functions) {
         String functionList = "";
 
-        for ( final Iterator iterator = functions.iterator(); iterator.hasNext(); ) {
-            visit( iterator.next() );
+        for ( final Iterator it = functions.iterator(); it.hasNext(); ) {
+            visit( it.next() );
             functionList += this.template;
         }
 
@@ -288,8 +314,8 @@ public class DrlDumper extends ReflectiveVisitor
     private String processAttribute(final List attributes) {
 
         String attributeList = "";
-        for ( final Iterator iterator = attributes.iterator(); iterator.hasNext(); ) {
-            final AttributeDescr attributeDescr = (AttributeDescr) iterator.next();
+        for ( final Iterator it = attributes.iterator(); it.hasNext(); ) {
+            final AttributeDescr attributeDescr = (AttributeDescr) it.next();
             visit( attributeDescr );
             attributeList += this.template;
         }
@@ -300,8 +326,8 @@ public class DrlDumper extends ReflectiveVisitor
                                      final List parameterTypes) {
         String paramList = "";
         int i = 0;
-        for ( final Iterator iterator = parameterNames.iterator(); iterator.hasNext(); i++ ) {
-            final String paramName = (String) iterator.next();
+        for ( final Iterator it = parameterNames.iterator(); it.hasNext(); i++ ) {
+            final String paramName = (String) it.next();
             final String paramType = (String) parameterTypes.get( i );
             final String paramTemplate = paramType + " " + paramName + ",";
             paramList += paramTemplate;
@@ -314,8 +340,8 @@ public class DrlDumper extends ReflectiveVisitor
     private String processGlobalsMap(final Map globals) {
         String globalList = "";
 
-        for ( final Iterator iterator = globals.keySet().iterator(); iterator.hasNext(); ) {
-            final String key = (String) iterator.next();
+        for ( final Iterator it = globals.keySet().iterator(); it.hasNext(); ) {
+            final String key = (String) it.next();
             final String value = (String) globals.get( key );
             final String globalTemplate = "global " + value + " " + key + ";" + DrlDumper.eol;
             globalList += globalTemplate;
@@ -327,8 +353,8 @@ public class DrlDumper extends ReflectiveVisitor
     private String processImportsList(final List imports) {
         String importList = "";
 
-        for ( final Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
-            final String importString = (String) iterator.next();
+        for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
+            final String importString = (String) it.next();
             final String importTemplate = "import " + importString + ";" + DrlDumper.eol;
             importList += importTemplate;
         }

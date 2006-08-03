@@ -102,9 +102,9 @@ public class XmlPackageReader extends DefaultHandler {
 
     private boolean             inHandledRuleSubElement;
 
-    private final MessageFormat       message                       = new MessageFormat( "({0}: {1}, {2}): {3}" );
+    private final MessageFormat message                       = new MessageFormat( "({0}: {1}, {2}): {3}" );
 
-    private final Map                 namespaces                    = new HashMap();
+    private final Map           namespaces                    = new HashMap();
 
     EntityResolver              entityResolver;
 
@@ -155,16 +155,18 @@ public class XmlPackageReader extends DefaultHandler {
                            new ColumnHandler( this ) );
 
         // Field Constraints
-        this.handlers.put( "literal",
-                           new LiteralHandler( this ) );
+        this.handlers.put( "field-constraint",
+                           new FieldConstraintHandler( this ) );
+        this.handlers.put( "literal-restriction",
+                           new LiteralRestrictionHandler( this ) );
+        this.handlers.put( "variable-restriction",
+                           new VariableRestrictionsHandler( this ) );        
         this.handlers.put( "predicate",
                            new PredicateHandler( this ) );
-        this.handlers.put( "return-value",
-                           new ReturnValueHandler( this ) );
+        this.handlers.put( "return-value-restriction",
+                           new ReturnValueRestrictionHandler( this ) );
         this.handlers.put( "field-binding",
                            new FieldBindingHandler( this ) );
-        this.handlers.put( "bound-variable",
-                           new BoundVariableHandler( this ) );
 
         initEntityResolver();
 
@@ -197,7 +199,7 @@ public class XmlPackageReader extends DefaultHandler {
      * @return The rule-set.
      */
     public PackageDescr read(final Reader reader) throws SAXException,
-                                           IOException {
+                                                 IOException {
         return read( new InputSource( reader ) );
     }
 
@@ -210,7 +212,7 @@ public class XmlPackageReader extends DefaultHandler {
      * @return The rule-set.
      */
     public PackageDescr read(final InputStream inputStream) throws SAXException,
-                                                     IOException {
+                                                           IOException {
         return read( new InputSource( inputStream ) );
     }
 
@@ -223,7 +225,7 @@ public class XmlPackageReader extends DefaultHandler {
      * @return The rule-set.
      */
     public PackageDescr read(final InputSource in) throws SAXException,
-                                            IOException {
+                                                  IOException {
         SAXParser localParser = null;
         if ( this.parser == null ) {
             final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -355,8 +357,8 @@ public class XmlPackageReader extends DefaultHandler {
                   handler );
 
         final Object node = handler.start( uri,
-                                     localName,
-                                     attrs );
+                                           localName,
+                                           attrs );
 
         if ( node != null ) {
             this.parents.add( node );
@@ -391,7 +393,7 @@ public class XmlPackageReader extends DefaultHandler {
         this.current = getParent( handler.generateNodeFor() );
 
         final Object node = handler.end( uri,
-                                   localName );
+                                         localName );
 
         // next
         if ( node != null && !this.lastWasEndElement ) {
@@ -587,13 +589,13 @@ public class XmlPackageReader extends DefaultHandler {
                                      final String systemId) throws SAXException {
         try {
             final InputSource inputSource = resolveSchema( publicId,
-                                                     systemId );
+                                                           systemId );
             if ( inputSource != null ) {
                 return inputSource;
             }
             if ( this.entityResolver != null ) {
                 return this.entityResolver.resolveEntity( publicId,
-                                                     systemId );
+                                                          systemId );
             }
         } catch ( final IOException ioe ) {
         }
@@ -605,7 +607,7 @@ public class XmlPackageReader extends DefaultHandler {
         super.startPrefixMapping( prefix,
                                   uri );
         this.namespaces.put( prefix,
-                        uri );
+                             uri );
     }
 
     public void endPrefixMapping(final String prefix) throws SAXException {
@@ -633,7 +635,7 @@ public class XmlPackageReader extends DefaultHandler {
 
     private InputSource resolveSchema(final String publicId,
                                       final String systemId) throws SAXException,
-                                                      IOException {
+                                                            IOException {
         // Schema files must end with xsd
         if ( !systemId.toLowerCase().endsWith( "xsd" ) ) {
             return null;

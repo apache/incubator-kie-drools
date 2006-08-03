@@ -20,12 +20,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.drools.lang.descr.VariableDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.FieldBindingDescr;
-import org.drools.lang.descr.LiteralDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.ReturnValueDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -48,11 +46,9 @@ class PredicateHandler extends BaseAbstractHandler
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
-            this.validPeers.add( LiteralDescr.class );
+            this.validPeers.add( FieldConstraintDescr.class );
             this.validPeers.add( PredicateDescr.class );
-            this.validPeers.add( ReturnValueDescr.class );
             this.validPeers.add( FieldBindingDescr.class );
-            this.validPeers.add( VariableDescr.class );
             this.allowNesting = false;
         }
     }

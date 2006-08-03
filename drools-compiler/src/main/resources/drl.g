@@ -755,7 +755,7 @@ constraint[List constraints]
 							
 							
 
-							ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(op, rvc);							
+							ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(f.getText(), op, rvc);							
 							fc.addRestriction(rvd);
 							constraints.add(fc);
 							
@@ -793,7 +793,7 @@ constraint[List constraints]
 							}
 						|	rvc=retval_constraint 
 							{ 
-								ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(op, rvc);							
+								ReturnValueRestrictionDescr rvd = new ReturnValueRestrictionDescr(f.getText(), op, rvc);							
 								fc.addRestriction(rvd);
 								
 							} 

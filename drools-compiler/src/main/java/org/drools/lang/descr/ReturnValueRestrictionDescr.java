@@ -21,20 +21,18 @@ public class ReturnValueRestrictionDescr extends RestrictionDescr {
      * 
      */
     private static final long serialVersionUID = 478782161375380651L;
-    private String   evaluator;
-    private String   text;
-    private String[] declarations;
+    private String            evaluator;
+    private String            text;
+    private String[]          declarations;
 
-    private String   classMethodName;
+    private String            classMethodName;
 
-    public ReturnValueRestrictionDescr(final String fieldName,
-                            final String evaluator) {
+    public ReturnValueRestrictionDescr(final String evaluator) {
         this.evaluator = evaluator;
     }
 
-    public ReturnValueRestrictionDescr(final String fieldName,
-                            final String evaluator,
-                            final String text) {
+    public ReturnValueRestrictionDescr(final String evaluator,
+                                       final String text) {
         this.evaluator = evaluator;
         this.text = text;
     }

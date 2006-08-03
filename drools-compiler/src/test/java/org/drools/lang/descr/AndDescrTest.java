@@ -18,17 +18,17 @@ public class AndDescrTest extends TestCase {
     public void testAddBoundCols() {
         final AndDescr and = new AndDescr();
         final ColumnDescr col1 = new ColumnDescr( "Foo" );
-        col1.setIdentifier( "foo" );
-        col1.addDescr( new VariableDescr( "foo",
-                                               "==",
-                                               "bar" ) );
+        col1.setIdentifier( "foo" );        
+        FieldConstraintDescr fieldConstraint1 = new FieldConstraintDescr("foo" );
+        fieldConstraint1.addRestriction( new VariableRestrictionDescr("==", "bar") );        
+        col1.addDescr( fieldConstraint1 );                
         and.addDescr( col1 );
 
         final ColumnDescr col2 = new ColumnDescr( "Foo" );
         col2.setIdentifier( "foo" );
-        col2.addDescr( new VariableDescr( "bar",
-                                               "==",
-                                               "baz" ) );
+        FieldConstraintDescr fieldConstraint2 = new FieldConstraintDescr("bar" );
+        fieldConstraint2.addRestriction( new VariableRestrictionDescr("==", "baz") );        
+        col2.addDescr( fieldConstraint2 );
         and.addDescr( col2 );
 
         and.addDescr( new NotDescr() );
@@ -53,9 +53,9 @@ public class AndDescrTest extends TestCase {
         assertEquals( 2,
                       col1.getDescrs().size() );
         assertEquals( "bar",
-                      ((VariableDescr) col1.getDescrs().get( 0 )).getIdentifier() );
+                      ( (VariableRestrictionDescr)( (FieldConstraintDescr) col1.getDescrs().get( 0 )).getRestrictions().get( 0 )).getIdentifier() );                     
         assertEquals( "baz",
-                      ((VariableDescr) col1.getDescrs().get( 1 )).getIdentifier() );
+                      ( (VariableRestrictionDescr)( (FieldConstraintDescr) col1.getDescrs().get( 1 )).getRestrictions().get( 0 )).getIdentifier() );
     }
 
 }
