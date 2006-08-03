@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
 import org.drools.WorkingMemory;
+import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
@@ -215,7 +216,7 @@ public class BooleanConstrainedRightMemory
     public final void selectPossibleMatches(final WorkingMemory workingMemory,
                                             final ReteTuple tuple) {
         boolean select = ((Boolean) this.declaration.getValue( tuple.get( this.column ).getObject() )).booleanValue();
-        select = (this.evaluator.getOperator()) == Evaluator.EQUAL ? select : !select;
+        select = (this.evaluator.getOperator()) == Operator.EQUAL ? select : !select;
         this.selectedList = (select == true) ? this.trueList : this.falseList;
 
         if ( this.innerMemory != null ) {

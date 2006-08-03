@@ -25,6 +25,7 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
+import org.drools.base.evaluators.Operator;
 import org.drools.spi.Evaluator;
 
 /**
@@ -47,7 +48,7 @@ public class EvaluatorFactoryTest extends TestCase {
         };
 
         runEvaluatorTest( data,
-                          Evaluator.OBJECT_TYPE );
+                          ValueType.OBJECT_TYPE );
 
     }
 
@@ -59,7 +60,7 @@ public class EvaluatorFactoryTest extends TestCase {
                 {field, "==", null, Boolean.FALSE}};
 
         runEvaluatorTest( data,
-                          Evaluator.ARRAY_TYPE );
+                          ValueType.ARRAY_TYPE );
 
     }
 
@@ -72,7 +73,7 @@ public class EvaluatorFactoryTest extends TestCase {
         };
 
         runEvaluatorTest( data,
-                          Evaluator.STRING_TYPE );
+                          ValueType.STRING_TYPE );
 
     }
 
@@ -84,7 +85,7 @@ public class EvaluatorFactoryTest extends TestCase {
                 {null, "!=", new Integer( 42 ), Boolean.TRUE}};
 
         runEvaluatorTest( data,
-                          Evaluator.INTEGER_TYPE );
+                          ValueType.INTEGER_TYPE );
 
     }
 
@@ -95,7 +96,7 @@ public class EvaluatorFactoryTest extends TestCase {
                 {new Short( (short) 42 ), "!=", new Short( (short) 41 ), Boolean.TRUE}, {new Short( (short) 42 ), "!=", null, Boolean.TRUE}};
 
         runEvaluatorTest( data,
-                          Evaluator.SHORT_TYPE );
+                          ValueType.SHORT_TYPE );
     }
 
     public void testBoolean() {
@@ -107,7 +108,7 @@ public class EvaluatorFactoryTest extends TestCase {
         };
 
         runEvaluatorTest( data,
-                          Evaluator.BOOLEAN_TYPE );
+                          ValueType.BOOLEAN_TYPE );
     }
 
     public void testDouble() {
@@ -116,7 +117,7 @@ public class EvaluatorFactoryTest extends TestCase {
                 {new Double( 42 ), ">=", new Double( 100 ), Boolean.FALSE}, {new Double( 42 ), "<", new Double( 1 ), Boolean.FALSE}, {new Double( 42 ), "==", null, Boolean.FALSE}, {null, "!=", new Double( 1 ), Boolean.TRUE}};
 
         runEvaluatorTest( data,
-                          Evaluator.DOUBLE_TYPE );
+                          ValueType.DOUBLE_TYPE );
     }
 
     public void testFloat() {
@@ -125,7 +126,7 @@ public class EvaluatorFactoryTest extends TestCase {
                 {new Float( 42 ), ">=", new Float( 100 ), Boolean.FALSE}, {new Float( 42 ), "<", new Float( 1 ), Boolean.FALSE}, {new Float( 42 ), "==", null, Boolean.FALSE}, {null, "!=", new Float( 1 ), Boolean.TRUE}};
 
         runEvaluatorTest( data,
-                          Evaluator.FLOAT_TYPE );
+                          ValueType.FLOAT_TYPE );
     }
 
     public void testLong() {
@@ -134,7 +135,7 @@ public class EvaluatorFactoryTest extends TestCase {
                 {new Long( 42 ), "<", new Long( 1 ), Boolean.FALSE}, {new Long( 42 ), "==", null, Boolean.FALSE}, {null, "!=", new Long( 1 ), Boolean.TRUE}};
 
         runEvaluatorTest( data,
-                          Evaluator.LONG_TYPE );
+                          ValueType.LONG_TYPE );
     }
 
     public void testCharacter() {
@@ -143,7 +144,7 @@ public class EvaluatorFactoryTest extends TestCase {
                 {new Character( 'z' ), ">=", new Character( 'a' ), Boolean.TRUE}, {new Character( 'a' ), ">=", new Character( 'z' ), Boolean.FALSE}, {new Character( 'z' ), "<", new Character( 'a' ), Boolean.FALSE},
                 {new Character( 'z' ), "==", null, Boolean.FALSE}, {null, "!=", new Character( 'a' ), Boolean.TRUE}};
         runEvaluatorTest( data,
-                          Evaluator.CHAR_TYPE );
+                          ValueType.CHAR_TYPE );
     }
 
     public void testDate() throws Exception {
@@ -158,31 +159,30 @@ public class EvaluatorFactoryTest extends TestCase {
                 {df.parse( "10-Jul-1974" ), "!=", "11-Jul-1974", Boolean.TRUE}, {df.parse( "10-Jul-2000" ), ">", "10-Jul-1974", Boolean.TRUE}, {df.parse( "10-Jul-1974" ), ">=", "10-Jul-1974", Boolean.TRUE},
                 {df.parse( "11-Jul-1974" ), ">=", "10-Jul-1974", Boolean.TRUE}, {df.parse( "10-Jul-1974" ), ">=", "11-Jul-1974", Boolean.FALSE}, {df.parse( "10-Jul-1974" ), "==", null, Boolean.FALSE}, {null, "!=", "11-Jul-1974", Boolean.TRUE}};
         runEvaluatorTest( data,
-                          Evaluator.DATE_TYPE );
+                          ValueType.DATE_TYPE );
     }
 
     public void testByte() {
         final Object[][] data = {{new Byte( "1" ), "==", new Byte( "1" ), Boolean.TRUE}, {new Byte( "1" ), "==", new Byte( "2" ), Boolean.FALSE}, {new Byte( "1" ), "!=", new Byte( "2" ), Boolean.TRUE},
                 {new Byte( "1" ), "!=", new Byte( "1" ), Boolean.FALSE}, {new Byte( "1" ), "<=", new Byte( "1" ), Boolean.TRUE}, {new Byte( "1" ), "==", null, Boolean.FALSE}, {null, "!=", new Byte( "1" ), Boolean.TRUE}};
         runEvaluatorTest( data,
-                          Evaluator.BYTE_TYPE );
+                          ValueType.BYTE_TYPE );
 
     }
 
     /**
      * Test utility to play the data through the evaluators.
      * @param data The data to try out : Array of {arg1, operator, arg2}
-     * @param evalType The Evaluator.**_TYPE to test
+     * @param valueType The Evaluator.**_TYPE to test
      */
     private void runEvaluatorTest(final Object[][] data,
-                                  final int evalType) {
+                                  final ValueType valueType) {
         for ( int i = 0; i < data.length; i++ ) {
             final Object[] row = data[i];
-            final Evaluator evaluator = EvaluatorFactory.getEvaluator( evalType,
-                                                                       (String) row[1] );
+            final Evaluator evaluator = valueType.getEvaluator( Operator.determineOperator( (String) row[1] ) );
             final boolean result = evaluator.evaluate( row[0],
                                                        row[2] );
-            final String message = "The evaluator type: [" + evalType + "] incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
+            final String message = "The evaluator type: [" + valueType + "] incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
             if ( row[3] == Boolean.TRUE ) {
                 assertTrue( message,
@@ -192,8 +192,8 @@ public class EvaluatorFactoryTest extends TestCase {
                              result );
             }
 
-            assertEquals( evalType,
-                          evaluator.getType() );
+            assertEquals( valueType,
+                          evaluator.getValueType() );
 
         }
     }

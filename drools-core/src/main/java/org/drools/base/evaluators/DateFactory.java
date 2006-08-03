@@ -21,6 +21,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
 /**
@@ -35,27 +42,41 @@ import org.drools.spi.Evaluator;
  * 
  * @author Michael Neale
  */
-public class DateFactory {
+public class DateFactory
+    implements
+    EvaluatorFactory {
 
-    private static final String DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
-    private static final String DATE_FORMAT_MASK    = getDateFormatMask();
+    private static final String     DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
+    private static final String     DATE_FORMAT_MASK    = getDateFormatMask();
 
-    public static Evaluator getDateEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return DateEqualEvaluator.INSTANCE;
-            case Evaluator.NOT_EQUAL :
-                return DateNotEqualEvaluator.INSTANCE;
-            case Evaluator.LESS :
-                return DateLessEvaluator.INSTANCE;
-            case Evaluator.LESS_OR_EQUAL :
-                return DateLessOrEqualEvaluator.INSTANCE;
-            case Evaluator.GREATER :
-                return DateGreaterEvaluator.INSTANCE;
-            case Evaluator.GREATER_OR_EQUAL :
-                return DateGreaterOrEqualEvaluator.INSTANCE;
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for DateEvaluator" );
+    private static EvaluatorFactory INSTANCE            = new DateFactory();
+
+    private DateFactory() {
+
+    }
+
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new DateFactory();
+        }
+        return INSTANCE;
+    }
+
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return DateEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return DateNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS ) {
+            return DateLessEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS_OR_EQUAL ) {
+            return DateLessOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER ) {
+            return DateGreaterEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER_OR_EQUAL ) {
+            return DateGreaterOrEqualEvaluator.INSTANCE;
+        } else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for DateEvaluator" );
         }
     }
 
@@ -63,12 +84,12 @@ public class DateFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -7248999526793624416L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new DateEqualEvaluator();
 
         private DateEqualEvaluator() {
-            super( Evaluator.DATE_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.DATE_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -97,12 +118,12 @@ public class DateFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -999744404766802074L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new DateNotEqualEvaluator();
 
         private DateNotEqualEvaluator() {
-            super( Evaluator.DATE_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.DATE_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -130,12 +151,12 @@ public class DateFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -4362504881470806670L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new DateLessEvaluator();
 
         private DateLessEvaluator() {
-            super( Evaluator.DATE_TYPE,
-                   Evaluator.LESS );
+            super( ValueType.DATE_TYPE,
+                   Operator.LESS );
         }
 
         public boolean evaluate(final Object object1,
@@ -157,12 +178,12 @@ public class DateFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -1545183091770593710L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new DateLessOrEqualEvaluator();
 
         private DateLessOrEqualEvaluator() {
-            super( Evaluator.DATE_TYPE,
-                   Evaluator.LESS_OR_EQUAL );
+            super( ValueType.DATE_TYPE,
+                   Operator.LESS_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -184,12 +205,12 @@ public class DateFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 1450531664603794369L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new DateGreaterEvaluator();
 
         private DateGreaterEvaluator() {
-            super( Evaluator.DATE_TYPE,
-                   Evaluator.GREATER );
+            super( ValueType.DATE_TYPE,
+                   Operator.GREATER );
         }
 
         public boolean evaluate(final Object object1,
@@ -211,12 +232,12 @@ public class DateFactory {
         /**
          * 
          */
-        private static final long      serialVersionUID = -6149840707848164332L;
+        private static final long      serialVersionUID = 320;
         private final static Evaluator INSTANCE         = new DateGreaterOrEqualEvaluator();
 
         private DateGreaterOrEqualEvaluator() {
-            super( Evaluator.DATE_TYPE,
-                   Evaluator.GREATER_OR_EQUAL );
+            super( ValueType.DATE_TYPE,
+                   Operator.GREATER_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,

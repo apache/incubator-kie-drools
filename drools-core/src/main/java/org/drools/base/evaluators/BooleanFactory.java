@@ -17,31 +17,50 @@ package org.drools.base.evaluators;
  */
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
-public class BooleanFactory {
-
-    public static Evaluator getBooleanEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return BooleanEqualEvaluator.INSTANCE;
-            case Evaluator.NOT_EQUAL :
-                return BooleanNotEqualEvaluator.INSTANCE;
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for BooleanEvaluator" );
-        }
+public class BooleanFactory implements EvaluatorFactory {
+    private static EvaluatorFactory INSTANCE = new BooleanFactory();
+    
+    private BooleanFactory() {
+        
     }
+    
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new BooleanFactory();
+        }
+        return INSTANCE;
+    }
+    
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return BooleanEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return BooleanNotEqualEvaluator.INSTANCE;
+        }  else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for BooleanEvaluator" );
+        }    
+    }
+    
 
     static class BooleanEqualEvaluator extends BaseEvaluator {
         /**
          * 
          */
-        private static final long      serialVersionUID = 7891019213259874134L;
+        private static final long      serialVersionUID = 320;
         private final static Evaluator INSTANCE         = new BooleanEqualEvaluator();
 
         private BooleanEqualEvaluator() {
-            super( Evaluator.BOOLEAN_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.BOOLEAN_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -61,12 +80,12 @@ public class BooleanFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -451325761056297938L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new BooleanNotEqualEvaluator();
 
         private BooleanNotEqualEvaluator() {
-            super( Evaluator.BOOLEAN_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.BOOLEAN_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,

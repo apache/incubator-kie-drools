@@ -17,45 +17,57 @@ package org.drools.base.evaluators;
  */
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.DoubleFactory.DoubleEqualEvaluator;
+import org.drools.base.evaluators.DoubleFactory.DoubleGreaterEvaluator;
+import org.drools.base.evaluators.DoubleFactory.DoubleGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.DoubleFactory.DoubleLessEvaluator;
+import org.drools.base.evaluators.DoubleFactory.DoubleLessOrEqualEvaluator;
+import org.drools.base.evaluators.DoubleFactory.DoubleNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
-public class ShortFactory {
-    public static Evaluator getShortEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return ShortEqualEvaluator.getInstance();
-            case Evaluator.NOT_EQUAL :
-                return ShortNotEqualEvaluator.getInstance();
-            case Evaluator.LESS :
-                return ShortLessEvaluator.getInstance();
-            case Evaluator.LESS_OR_EQUAL :
-                return ShortLessOrEqualEvaluator.getInstance();
-            case Evaluator.GREATER :
-                return ShortGreaterEvaluator.getInstance();
-            case Evaluator.GREATER_OR_EQUAL :
-                return ShortGreaterOrEqualEvaluator.getInstance();
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for ShortEvaluator" );
-        }
+public class ShortFactory implements EvaluatorFactory {
+    private static EvaluatorFactory INSTANCE = new ShortFactory();
+    
+    private ShortFactory() {
+        
     }
+    
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new ShortFactory();
+        }
+        return INSTANCE;
+    }        
 
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return ShortEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return ShortNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS ) {
+            return ShortLessEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS_OR_EQUAL ) {
+            return ShortLessOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER ) {
+            return ShortGreaterEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER_OR_EQUAL ) {
+            return ShortGreaterOrEqualEvaluator.INSTANCE;
+        }  else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for ShortEvaluator" );
+        }    
+    }
+    
     static class ShortEqualEvaluator extends BaseEvaluator {
         /**
          * 
          */
-        private static final long serialVersionUID = 8933390138182317179L;
-        private static Evaluator  INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( ShortEqualEvaluator.INSTANCE == null ) {
-                ShortEqualEvaluator.INSTANCE = new ShortEqualEvaluator();
-            }
-            return ShortEqualEvaluator.INSTANCE;
-        }
+        private static final long serialVersionUID = 320;
+        private static Evaluator  INSTANCE = new ShortEqualEvaluator();
 
         private ShortEqualEvaluator() {
-            super( Evaluator.SHORT_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.SHORT_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -75,19 +87,12 @@ public class ShortFactory {
         /**
          * 
          */
-        private static final long serialVersionUID = -273350270376804828L;
-        private static Evaluator  INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( ShortNotEqualEvaluator.INSTANCE == null ) {
-                ShortNotEqualEvaluator.INSTANCE = new ShortNotEqualEvaluator();
-            }
-            return ShortNotEqualEvaluator.INSTANCE;
-        }
-
+        private static final long serialVersionUID = 320;
+        private static Evaluator  INSTANCE = new ShortNotEqualEvaluator();
+        
         private ShortNotEqualEvaluator() {
-            super( Evaluator.SHORT_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.SHORT_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -107,19 +112,12 @@ public class ShortFactory {
         /**
          * 
          */
-        private static final long serialVersionUID = -1562867187426899162L;
-        private static Evaluator  INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( ShortLessEvaluator.INSTANCE == null ) {
-                ShortLessEvaluator.INSTANCE = new ShortLessEvaluator();
-            }
-            return ShortLessEvaluator.INSTANCE;
-        }
+        private static final long serialVersionUID = 320;
+        private static Evaluator  INSTANCE = new ShortLessEvaluator();
 
         private ShortLessEvaluator() {
-            super( Evaluator.SHORT_TYPE,
-                   Evaluator.LESS );
+            super( ValueType.SHORT_TYPE,
+                   Operator.LESS );
         }
 
         public boolean evaluate(final Object object1,
@@ -136,19 +134,12 @@ public class ShortFactory {
         /**
          * 
          */
-        private static final long serialVersionUID = -1541816846266081605L;
-        private static Evaluator  INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( ShortLessOrEqualEvaluator.INSTANCE == null ) {
-                ShortLessOrEqualEvaluator.INSTANCE = new ShortLessOrEqualEvaluator();
-            }
-            return ShortLessOrEqualEvaluator.INSTANCE;
-        }
+        private static final long serialVersionUID = 320;
+        private static Evaluator  INSTANCE = new ShortLessOrEqualEvaluator();
 
         private ShortLessOrEqualEvaluator() {
-            super( Evaluator.SHORT_TYPE,
-                   Evaluator.LESS_OR_EQUAL );
+            super( ValueType.SHORT_TYPE,
+                   Operator.LESS_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -165,19 +156,12 @@ public class ShortFactory {
         /**
          * 
          */
-        private static final long serialVersionUID = -3260955087091852509L;
-        private static Evaluator  INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( ShortGreaterEvaluator.INSTANCE == null ) {
-                ShortGreaterEvaluator.INSTANCE = new ShortGreaterEvaluator();
-            }
-            return ShortGreaterEvaluator.INSTANCE;
-        }
+        private static final long serialVersionUID = 320;
+        private static Evaluator  INSTANCE = new ShortGreaterEvaluator();
 
         private ShortGreaterEvaluator() {
-            super( Evaluator.SHORT_TYPE,
-                   Evaluator.GREATER );
+            super( ValueType.SHORT_TYPE,
+                   Operator.GREATER );
         }
 
         public boolean evaluate(final Object object1,
@@ -194,19 +178,12 @@ public class ShortFactory {
         /**
          * 
          */
-        private static final long serialVersionUID = 1254418853497580320L;
-        private static Evaluator  INSTANCE;
-
-        public static Evaluator getInstance() {
-            if ( ShortGreaterOrEqualEvaluator.INSTANCE == null ) {
-                ShortGreaterOrEqualEvaluator.INSTANCE = new ShortGreaterOrEqualEvaluator();
-            }
-            return ShortGreaterOrEqualEvaluator.INSTANCE;
-        }
+        private static final long serialVersionUID = 320;
+        private static Evaluator  INSTANCE = new ShortGreaterOrEqualEvaluator();
 
         private ShortGreaterOrEqualEvaluator() {
-            super( Evaluator.SHORT_TYPE,
-                   Evaluator.GREATER_OR_EQUAL );
+            super( ValueType.SHORT_TYPE,
+                   Operator.GREATER_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,

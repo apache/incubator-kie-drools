@@ -17,28 +17,47 @@ package org.drools.base.evaluators;
  */
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
-public class ByteFactory {
-
-    public static Evaluator getByteEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return ByteEqualEvaluator.INSTANCE;
-            case Evaluator.NOT_EQUAL :
-                return ByteNotEqualEvaluator.INSTANCE;
-            case Evaluator.LESS :
-                return ByteLessEvaluator.INSTANCE;
-            case Evaluator.LESS_OR_EQUAL :
-                return ByteLessOrEqualEvaluator.INSTANCE;
-            case Evaluator.GREATER :
-                return ByteGreaterEvaluator.INSTANCE;
-            case Evaluator.GREATER_OR_EQUAL :
-                return ByteGreaterOrEqualEvaluator.INSTANCE;
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for ByteEvaluator" );
-        }
+public class ByteFactory implements EvaluatorFactory {
+    private static EvaluatorFactory INSTANCE = new ByteFactory();
+    
+    private ByteFactory() {
+        
     }
+    
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new ByteFactory();
+        }
+        return INSTANCE;
+    }
+
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return ByteEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return ByteNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS ) {
+            return ByteLessEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS_OR_EQUAL ) {
+            return ByteLessOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER ) {
+            return ByteGreaterEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER_OR_EQUAL ) {
+            return ByteGreaterOrEqualEvaluator.INSTANCE;
+        }  else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for ByteEvaluator" );
+        }    
+    }
+
 
     static class ByteEqualEvaluator extends BaseEvaluator {
         /**
@@ -48,8 +67,8 @@ public class ByteFactory {
         public final static Evaluator INSTANCE         = new ByteEqualEvaluator();
 
         private ByteEqualEvaluator() {
-            super( Evaluator.BYTE_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.BYTE_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -73,8 +92,8 @@ public class ByteFactory {
         public final static Evaluator INSTANCE         = new ByteNotEqualEvaluator();
 
         private ByteNotEqualEvaluator() {
-            super( Evaluator.BYTE_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.BYTE_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -98,8 +117,8 @@ public class ByteFactory {
         public final static Evaluator INSTANCE         = new ByteLessEvaluator();
 
         private ByteLessEvaluator() {
-            super( Evaluator.BYTE_TYPE,
-                   Evaluator.LESS );
+            super( ValueType.BYTE_TYPE,
+                   Operator.LESS );
         }
 
         public boolean evaluate(final Object object1,
@@ -120,8 +139,8 @@ public class ByteFactory {
         public final static Evaluator INSTANCE         = new ByteLessOrEqualEvaluator();
 
         private ByteLessOrEqualEvaluator() {
-            super( Evaluator.BYTE_TYPE,
-                   Evaluator.LESS_OR_EQUAL );
+            super( ValueType.BYTE_TYPE,
+                   Operator.LESS_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -142,8 +161,8 @@ public class ByteFactory {
         public final static Evaluator INSTANCE         = new ByteGreaterEvaluator();
 
         private ByteGreaterEvaluator() {
-            super( Evaluator.BYTE_TYPE,
-                   Evaluator.GREATER );
+            super( ValueType.BYTE_TYPE,
+                   Operator.GREATER );
         }
 
         public boolean evaluate(final Object object1,
@@ -164,8 +183,8 @@ public class ByteFactory {
         private final static Evaluator INSTANCE         = new ByteGreaterOrEqualEvaluator();
 
         private ByteGreaterOrEqualEvaluator() {
-            super( Evaluator.BYTE_TYPE,
-                   Evaluator.GREATER_OR_EQUAL );
+            super( ValueType.BYTE_TYPE,
+                   Operator.GREATER_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,

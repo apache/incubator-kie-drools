@@ -22,7 +22,8 @@ import java.util.NoSuchElementException;
 import junit.framework.Assert;
 
 import org.drools.base.ClassFieldExtractor;
-import org.drools.base.EvaluatorFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
@@ -48,8 +49,7 @@ public class ObjectEqualConstrRightMemoryTest extends BaseBetaRightMemoryTestCla
         final Declaration declaration = new Declaration( "myObject",
                                                          extractor,
                                                          0 );
-        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                   Evaluator.EQUAL );
+        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
 
         this.memory = new ObjectEqualConstrRightMemory( extractor,
                                                         declaration,

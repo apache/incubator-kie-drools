@@ -17,39 +17,58 @@ package org.drools.base.evaluators;
  */
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
-public class CharacterFactory {
-
-    public static Evaluator getCharacterEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return CharacterEqualEvaluator.INSTANCE;
-            case Evaluator.NOT_EQUAL :
-                return CharacterNotEqualEvaluator.INSTANCE;
-            case Evaluator.LESS :
-                return CharacterLessEvaluator.INSTANCE;
-            case Evaluator.LESS_OR_EQUAL :
-                return CharacterLessOrEqualEvaluator.INSTANCE;
-            case Evaluator.GREATER :
-                return CharacterGreaterEvaluator.INSTANCE;
-            case Evaluator.GREATER_OR_EQUAL :
-                return CharacterGreaterOrEqualEvaluator.INSTANCE;
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for CharacterEvaluator" );
-        }
+public class CharacterFactory implements EvaluatorFactory {
+    private static EvaluatorFactory INSTANCE = new CharacterFactory();
+    
+    private CharacterFactory() {
+        
     }
+    
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new CharacterFactory();
+        }
+        return INSTANCE;
+    }
+
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return CharacterEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return CharacterNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS ) {
+            return CharacterLessEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS_OR_EQUAL ) {
+            return CharacterLessOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER ) {
+            return CharacterGreaterEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER_OR_EQUAL ) {
+            return CharacterGreaterOrEqualEvaluator.INSTANCE;
+        }  else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for CharacterEvaluator" );
+        }    
+    }
+
 
     static class CharacterEqualEvaluator extends BaseEvaluator {
         /**
          * 
          */
-        private static final long     serialVersionUID = 8766645269581805269L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new CharacterEqualEvaluator();
 
         private CharacterEqualEvaluator() {
-            super( Evaluator.CHAR_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.CHAR_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -69,12 +88,12 @@ public class CharacterFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 8010152240062213440L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new CharacterNotEqualEvaluator();
 
         private CharacterNotEqualEvaluator() {
-            super( Evaluator.CHAR_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.CHAR_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -94,12 +113,12 @@ public class CharacterFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 5236106171143422684L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new CharacterLessEvaluator();
 
         private CharacterLessEvaluator() {
-            super( Evaluator.CHAR_TYPE,
-                   Evaluator.LESS );
+            super( ValueType.CHAR_TYPE,
+                   Operator.LESS );
         }
 
         public boolean evaluate(final Object object1,
@@ -116,12 +135,12 @@ public class CharacterFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 8064001658173531244L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new CharacterLessOrEqualEvaluator();
 
         private CharacterLessOrEqualEvaluator() {
-            super( Evaluator.CHAR_TYPE,
-                   Evaluator.LESS_OR_EQUAL );
+            super( ValueType.CHAR_TYPE,
+                   Operator.LESS_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -138,12 +157,12 @@ public class CharacterFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 7622623046585316842L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new CharacterGreaterEvaluator();
 
         private CharacterGreaterEvaluator() {
-            super( Evaluator.CHAR_TYPE,
-                   Evaluator.GREATER );
+            super( ValueType.CHAR_TYPE,
+                   Operator.GREATER );
         }
 
         public boolean evaluate(final Object object1,
@@ -160,12 +179,12 @@ public class CharacterFactory {
         /**
          * 
          */
-        private static final long      serialVersionUID = 8587935558617586015L;
+        private static final long      serialVersionUID = 320;
         private final static Evaluator INSTANCE         = new CharacterGreaterOrEqualEvaluator();
 
         private CharacterGreaterOrEqualEvaluator() {
-            super( Evaluator.CHAR_TYPE,
-                   Evaluator.GREATER_OR_EQUAL );
+            super( ValueType.CHAR_TYPE,
+                   Operator.GREATER_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,

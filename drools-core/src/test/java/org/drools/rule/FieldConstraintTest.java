@@ -25,7 +25,8 @@ import org.drools.FactHandle;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
-import org.drools.base.EvaluatorFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.InstrumentedReteTuple;
 import org.drools.reteoo.ReteooRuleBase;
@@ -65,8 +66,8 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field = new MockField( "cheddar" );
 
-        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                   Evaluator.EQUAL );
+        Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+        
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -208,14 +209,12 @@ public class FieldConstraintTest extends TestCase {
         final ReturnValueConstraint constraint1 = new ReturnValueConstraint( priceExtractor,
                                                                              isDoubleThePrice,
                                                                              new Declaration[]{priceDeclaration},
-                                                                             EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                                                            Evaluator.EQUAL ) );
+                                                                             ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
 
         final ReturnValueConstraint constraint2 = new ReturnValueConstraint( priceExtractor,
                                                                              isDoubleThePrice,
                                                                              new Declaration[]{priceDeclaration},
-                                                                             EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                                                            Evaluator.GREATER ) );
+                                                                             ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER ) );
 
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );

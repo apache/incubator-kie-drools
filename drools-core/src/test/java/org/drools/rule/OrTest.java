@@ -27,7 +27,8 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
-import org.drools.base.EvaluatorFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.examples.waltz.Edge;
 import org.drools.examples.waltz.Stage;
 import org.drools.leaps.LeapsRuleBase;
@@ -69,10 +70,8 @@ public class OrTest extends TestCase {
         super.setUp();
         this.stageType = new ClassObjectType( Stage.class );
         this.edgeType = new ClassObjectType( Edge.class );
-        this.integerEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                    Evaluator.EQUAL );
-        this.integerNotEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                       Evaluator.NOT_EQUAL );
+        this.integerEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL );
+        this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
         this.pkg = new Package( "or" );
     }
 

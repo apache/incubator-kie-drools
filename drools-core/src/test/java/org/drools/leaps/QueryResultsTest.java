@@ -27,7 +27,8 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
-import org.drools.base.EvaluatorFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.rule.Column;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Query;
@@ -47,8 +48,7 @@ public class QueryResultsTest extends TestCase {
         final LeapsRuleBase ruleBase = (LeapsRuleBase) RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
 
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
-        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
-                                                                   Evaluator.EQUAL );
+        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
         // fires on context.state == integer(1)
         final Query query = new Query( "query-1" );
 

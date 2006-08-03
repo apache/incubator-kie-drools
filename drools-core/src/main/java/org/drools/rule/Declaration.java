@@ -42,6 +42,7 @@ package org.drools.rule;
 
 import java.io.Serializable;
 
+import org.drools.base.ValueType;
 import org.drools.spi.Extractor;
 import org.drools.spi.ObjectType;
 
@@ -122,12 +123,12 @@ public class Declaration
     }
 
     /**
-     * Retrieve the <code>ObjectType</code>.
+     * Retrieve the <code>ValueType</code>.
      * 
-     * @return The object-type.
+     * @return The ValueType.
      */
-    public ObjectType getObjectType() {
-        return this.extractor.getObjectType();
+    public ValueType getValueType() {
+        return this.extractor.getValueType();
     }
 
     /**
@@ -159,7 +160,7 @@ public class Declaration
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public String toString() {
-        return "[Declaration: type=" + this.extractor.getObjectType() + " identifier=" + this.identifier + "]";
+        return "[Declaration: type=" + this.extractor.getValueType() + " identifier=" + this.identifier + "]";
     }
 
     public int hashCode() {

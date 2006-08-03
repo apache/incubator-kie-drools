@@ -16,6 +16,7 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import org.drools.RuntimeDroolsException;
 import org.drools.spi.Evaluator;
 import org.drools.spi.ObjectType;
 
@@ -41,7 +42,7 @@ public class ClassObjectType
     /** Java object class. */
     protected Class           objectTypeClass;
 
-    protected int             valueType;
+    protected ValueType       valueType;
 
     // ------------------------------------------------------------
     // Constructors
@@ -55,7 +56,7 @@ public class ClassObjectType
      */
     public ClassObjectType(final Class objectTypeClass) {
         this.objectTypeClass = objectTypeClass;
-        setValueType( objectTypeClass );
+        this.valueType = ValueType.determineValueType( objectTypeClass );
     }
 
     // ------------------------------------------------------------
@@ -89,44 +90,8 @@ public class ClassObjectType
         return getClassType().isInstance( object );
     }
 
-    public int getValueType() {
+    public ValueType getValueType() {
         return this.valueType;
-    }
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // java.lang.Object
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    protected void setValueType(final Class clazz) {
-        if ( clazz == null ) {
-            this.valueType = Evaluator.NULL_TYPE;
-        } else if ( clazz == Character.class ) {
-            this.valueType = Evaluator.CHAR_TYPE;
-        } else if ( clazz == Byte.class ) {
-            this.valueType = Evaluator.BYTE_TYPE;
-        } else if ( clazz == Short.class ) {
-            this.valueType = Evaluator.SHORT_TYPE;
-        } else if ( clazz == Integer.class ) {
-            this.valueType = Evaluator.INTEGER_TYPE;
-        } else if ( clazz == Long.class ) {
-            this.valueType = Evaluator.LONG_TYPE;
-        } else if ( clazz == Float.class ) {
-            this.valueType = Evaluator.FLOAT_TYPE;
-        } else if ( clazz == Double.class ) {
-            this.valueType = Evaluator.DOUBLE_TYPE;
-        } else if ( clazz == Boolean.class ) {
-            this.valueType = Evaluator.BOOLEAN_TYPE;
-        } else if ( clazz == java.sql.Date.class ) {
-            this.valueType = Evaluator.DATE_TYPE;
-        } else if ( clazz == java.util.Date.class ) {
-            this.valueType = Evaluator.DATE_TYPE;
-        } else if ( clazz.isAssignableFrom( Object[].class ) ) {
-            this.valueType = Evaluator.ARRAY_TYPE;
-        } else if ( clazz == String.class ) {
-            this.valueType = Evaluator.STRING_TYPE;
-        } else if ( clazz instanceof Object ) {
-            this.valueType = Evaluator.OBJECT_TYPE;
-        }
     }
 
     public String toString() {

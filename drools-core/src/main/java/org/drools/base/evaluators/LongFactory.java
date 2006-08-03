@@ -17,38 +17,58 @@ package org.drools.base.evaluators;
  */
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
-public class LongFactory {
-    public static Evaluator getLongEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return LongEqualEvaluator.INSTANCE;
-            case Evaluator.NOT_EQUAL :
-                return LongNotEqualEvaluator.INSTANCE;
-            case Evaluator.LESS :
-                return LongLessEvaluator.INSTANCE;
-            case Evaluator.LESS_OR_EQUAL :
-                return LongLessOrEqualEvaluator.INSTANCE;
-            case Evaluator.GREATER :
-                return LongGreaterEvaluator.INSTANCE;
-            case Evaluator.GREATER_OR_EQUAL :
-                return LongGreaterOrEqualEvaluator.INSTANCE;
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for LongEvaluator" );
-        }
+public class LongFactory implements EvaluatorFactory {
+    private static EvaluatorFactory INSTANCE = new LongFactory();
+    
+    private LongFactory() {
+        
     }
+    
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new LongFactory();
+        }
+        return INSTANCE;
+    }
+
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return LongEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return LongNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS ) {
+            return LongLessEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS_OR_EQUAL ) {
+            return LongLessOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER ) {
+            return LongGreaterEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER_OR_EQUAL ) {
+            return LongGreaterOrEqualEvaluator.INSTANCE;
+        }  else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for LongEvaluator" );
+        }    
+    }
+
 
     static class LongEqualEvaluator extends BaseEvaluator {
         /**
          * 
          */
-        private static final long     serialVersionUID = 952936509469163071L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new LongEqualEvaluator();
 
         private LongEqualEvaluator() {
-            super( Evaluator.LONG_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.LONG_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -68,12 +88,12 @@ public class LongFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -6007396753250538232L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new LongNotEqualEvaluator();
 
         private LongNotEqualEvaluator() {
-            super( Evaluator.LONG_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.LONG_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -93,12 +113,12 @@ public class LongFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -4364068749553989563L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new LongLessEvaluator();
 
         private LongLessEvaluator() {
-            super( Evaluator.LONG_TYPE,
-                   Evaluator.LESS );
+            super( ValueType.LONG_TYPE,
+                   Operator.LESS );
         }
 
         public boolean evaluate(final Object object1,
@@ -115,12 +135,12 @@ public class LongFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -6047195686511631405L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new LongLessOrEqualEvaluator();
 
         private LongLessOrEqualEvaluator() {
-            super( Evaluator.LONG_TYPE,
-                   Evaluator.LESS_OR_EQUAL );
+            super( ValueType.LONG_TYPE,
+                   Operator.LESS_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -137,12 +157,12 @@ public class LongFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -6931144987779205475L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new LongGreaterEvaluator();
 
         private LongGreaterEvaluator() {
-            super( Evaluator.LONG_TYPE,
-                   Evaluator.GREATER );
+            super( ValueType.LONG_TYPE,
+                   Operator.GREATER );
         }
 
         public boolean evaluate(final Object object1,
@@ -159,12 +179,12 @@ public class LongFactory {
         /**
          * 
          */
-        private static final long      serialVersionUID = 4533604086739451238L;
+        private static final long      serialVersionUID = 320;
         private final static Evaluator INSTANCE         = new LongGreaterOrEqualEvaluator();
 
         private LongGreaterOrEqualEvaluator() {
-            super( Evaluator.LONG_TYPE,
-                   Evaluator.GREATER_OR_EQUAL );
+            super( ValueType.LONG_TYPE,
+                   Operator.GREATER_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,

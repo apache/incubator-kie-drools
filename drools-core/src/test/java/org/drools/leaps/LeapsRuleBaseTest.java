@@ -24,7 +24,8 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
-import org.drools.base.EvaluatorFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.examples.manners.Context;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
@@ -91,8 +92,7 @@ public class LeapsRuleBaseTest extends DroolsTestCase {
         this.workingMemory = this.ruleBaseAddRule.newWorkingMemory();
         // rules
         final ClassObjectType contextType = new ClassObjectType( Context.class );
-        final Evaluator integerEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                               Evaluator.EQUAL );
+        final Evaluator integerEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL );
         // rule 1
         // fires on context.state == integer(1)
         this.rule1 = new Rule( "rule1" );

@@ -28,7 +28,8 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.base.EvaluatorFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Query;
 import org.drools.spi.Evaluator;
@@ -51,8 +52,7 @@ public class QueryTerminalNodeTest extends TestCase {
 
         FieldValue field = new MockField( "query-1" );
 
-        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
-                                                                   Evaluator.EQUAL );
+        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
         LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                               evaluator,
                                                               field );

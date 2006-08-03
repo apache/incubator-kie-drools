@@ -38,7 +38,7 @@ public class ClassFieldExtractor
     /**
      * 
      */
-    private static final long        serialVersionUID = 1865123571023540643L;
+    private static final long        serialVersionUID = 320;
     private String                   fieldName;
     private Class                    clazz;
     private transient FieldExtractor extractor;
@@ -79,8 +79,12 @@ public class ClassFieldExtractor
         return this.extractor.getValue( object );
     }
 
-    public ObjectType getObjectType() {
-        return this.extractor.getObjectType();
+    public ValueType getValueType() {
+        return this.extractor.getValueType();
+    }
+    
+    public Class getExtractToClass() {
+        return this.extractor.getExtractToClass();
     }
 
     public String toString() {
@@ -88,7 +92,7 @@ public class ClassFieldExtractor
     }
 
     public int hashCode() {
-        return this.getObjectType().hashCode() * 17 + this.getIndex();
+        return getValueType().hashCode() * 17 + getIndex();
     }
 
     public boolean equals(final Object object) {
@@ -102,6 +106,6 @@ public class ClassFieldExtractor
 
         final ClassFieldExtractor other = (ClassFieldExtractor) object;
 
-        return this.extractor.getObjectType().equals( other.getObjectType() ) && this.extractor.getIndex() == other.getIndex();
+        return this.extractor.getValueType() == other.getValueType() && this.extractor.getIndex() == other.getIndex();
     }
 }

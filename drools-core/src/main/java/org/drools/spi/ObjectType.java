@@ -18,6 +18,8 @@ package org.drools.spi;
 
 import java.io.Serializable;
 
+import org.drools.base.ValueType;
+
 /**
  * Semantic object type differentiator.
  * 
@@ -40,5 +42,6 @@ public interface ObjectType
      */
     boolean matches(Object object);
 
-    int getValueType();
+    ValueType getValueType();
+    
 }

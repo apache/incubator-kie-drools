@@ -35,7 +35,8 @@ import junit.framework.TestCase;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
-import org.drools.base.EvaluatorFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
@@ -92,20 +93,12 @@ public abstract class BaseMannersTest extends TestCase {
         this.pathType = new ClassObjectType( Path.class );
         this.chosenType = new ClassObjectType( Chosen.class );
 
-        this.integerEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                                  Evaluator.EQUAL );
-        this.integerNotEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                                     Evaluator.NOT_EQUAL );
-
-        this.objectEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                                 Evaluator.EQUAL );
-        this.objectNotEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                                    Evaluator.NOT_EQUAL );
-
-        this.booleanEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.BOOLEAN_TYPE,
-                                                                                  Evaluator.EQUAL );
-        this.booleanNotEqualEvaluator = EvaluatorFactory.getInstance().getEvaluator( Evaluator.BOOLEAN_TYPE,
-                                                                                     Evaluator.NOT_EQUAL );
+        this.integerEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL );
+        this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
+        this.objectEqualEvaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        this.objectNotEqualEvaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.NOT_EQUAL );
+        this.booleanEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.EQUAL );
+        this.booleanNotEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.NOT_EQUAL );
 
         this.pkg = new Package( "Miss Manners" );
         this.pkg.addRule( getAssignFirstSeatRule() );

@@ -19,6 +19,8 @@ package org.drools.reteoo.beta;
 import javax.naming.OperationNotSupportedException;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.common.BetaNodeBinder;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.Evaluator;
@@ -56,29 +58,24 @@ public class BetaMemoryFactory {
                 if ( constraints[i] instanceof VariableConstraint ) {
                     final VariableConstraint bvc = (VariableConstraint) constraints[i];
                     BetaLeftMemory innerMemory = null;
-                    switch ( bvc.getEvaluator().getType() ) {
-                        case Evaluator.BOOLEAN_TYPE :
-                            innerMemory = new BooleanConstrainedLeftMemory( bvc.getFieldExtractor(),
-                                                                            bvc.getRequiredDeclarations()[0],
-                                                                            bvc.getEvaluator() );
-                            break;
-                        case Evaluator.OBJECT_TYPE :
-                        case Evaluator.SHORT_TYPE :
-                        case Evaluator.INTEGER_TYPE :
-                        case Evaluator.DOUBLE_TYPE :
-                        case Evaluator.FLOAT_TYPE :
-                        case Evaluator.BYTE_TYPE :
-                            if ( bvc.getEvaluator().getOperator() == Evaluator.EQUAL ) {
-                                innerMemory = new ObjectEqualConstrLeftMemory( bvc.getFieldExtractor(),
-                                                                               bvc.getRequiredDeclarations()[0],
-                                                                               bvc.getEvaluator() );
-                            } else if ( bvc.getEvaluator().getOperator() == Evaluator.NOT_EQUAL ) {
-                                innerMemory = new ObjectNotEqualConstrLeftMemory( bvc.getFieldExtractor(),
-                                                                                  bvc.getRequiredDeclarations()[0],
-                                                                                  bvc.getEvaluator() );
-                            }
-                            break;
+                    ValueType valueType = bvc.getEvaluator().getValueType();
+                    if ( valueType == ValueType.BOOLEAN_TYPE ) {
+                        innerMemory = new BooleanConstrainedLeftMemory( bvc.getFieldExtractor(),
+                                                                        bvc.getRequiredDeclarations()[0],
+                                                                        bvc.getEvaluator() );
+                    } else {
+                        //@todo : edson is this ok?
+                        if ( bvc.getEvaluator().getOperator() == Operator.EQUAL ) {
+                            innerMemory = new ObjectEqualConstrLeftMemory( bvc.getFieldExtractor(),
+                                                                           bvc.getRequiredDeclarations()[0],
+                                                                           bvc.getEvaluator() );
+                        } else if ( bvc.getEvaluator().getOperator() == Operator.NOT_EQUAL ) {
+                            innerMemory = new ObjectNotEqualConstrLeftMemory( bvc.getFieldExtractor(),
+                                                                              bvc.getRequiredDeclarations()[0],
+                                                                              bvc.getEvaluator() );
+                        }
                     }
+
                     if ( innerMemory != null ) {
                         if ( innerMostMemory != null ) {
                             try {
@@ -121,29 +118,26 @@ public class BetaMemoryFactory {
                 if ( constraints[i] instanceof VariableConstraint ) {
                     final VariableConstraint bvc = (VariableConstraint) constraints[i];
                     BetaRightMemory innerMemory = null;
-                    switch ( bvc.getEvaluator().getType() ) {
-                        case Evaluator.BOOLEAN_TYPE :
+                    ValueType valueType = bvc.getEvaluator().getValueType();
+                    if ( valueType == ValueType.BOOLEAN_TYPE ) {
+                        if ( valueType == ValueType.BOOLEAN_TYPE ) {
                             innerMemory = new BooleanConstrainedRightMemory( bvc.getFieldExtractor(),
                                                                              bvc.getRequiredDeclarations()[0],
                                                                              bvc.getEvaluator() );
-                            break;
-                        case Evaluator.OBJECT_TYPE :
-                        case Evaluator.SHORT_TYPE :
-                        case Evaluator.INTEGER_TYPE :
-                        case Evaluator.DOUBLE_TYPE :
-                        case Evaluator.FLOAT_TYPE :
-                        case Evaluator.BYTE_TYPE :
-                            if ( bvc.getEvaluator().getOperator() == Evaluator.EQUAL ) {
-                                innerMemory = new ObjectEqualConstrRightMemory( bvc.getFieldExtractor(),
-                                                                                bvc.getRequiredDeclarations()[0],
-                                                                                bvc.getEvaluator() );
-                            } else if ( bvc.getEvaluator().getOperator() == Evaluator.NOT_EQUAL ) {
-                                innerMemory = new ObjectNotEqualConstrRightMemory( bvc.getFieldExtractor(),
-                                                                                   bvc.getRequiredDeclarations()[0],
-                                                                                   bvc.getEvaluator() );
-                            }
-                            break;
+                        }
+                    } else {
+                        //@todo : edson is this ok?                        
+                        if ( bvc.getEvaluator().getOperator() == Operator.EQUAL ) {
+                            innerMemory = new ObjectEqualConstrRightMemory( bvc.getFieldExtractor(),
+                                                                            bvc.getRequiredDeclarations()[0],
+                                                                            bvc.getEvaluator() );
+                        } else if ( bvc.getEvaluator().getOperator() == Operator.NOT_EQUAL ) {
+                            innerMemory = new ObjectNotEqualConstrRightMemory( bvc.getFieldExtractor(),
+                                                                               bvc.getRequiredDeclarations()[0],
+                                                                               bvc.getEvaluator() );
+                        }
                     }
+
                     if ( innerMemory != null ) {
                         if ( innerMostMemory != null ) {
                             try {

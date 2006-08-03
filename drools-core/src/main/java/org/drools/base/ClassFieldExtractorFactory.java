@@ -254,37 +254,6 @@ public class ClassFieldExtractorFactory {
         return cw.toByteArray();
     }
 
-    /**
-     * Return the classObjectType, allowing for the fact that it will be autoboxed if it is a primitive.
-     */
-    protected static ClassObjectType getClassObjectType(final Class fieldType) throws IntrospectionException {
-        Class returnClass = null;
-        // autobox primitives
-        if ( fieldType.isPrimitive() ) {
-            if ( fieldType == char.class ) {
-                returnClass = Character.class;
-            } else if ( fieldType == byte.class ) {
-                returnClass = Byte.class;
-            } else if ( fieldType == short.class ) {
-                returnClass = Short.class;
-            } else if ( fieldType == int.class ) {
-                returnClass = Integer.class;
-            } else if ( fieldType == long.class ) {
-                returnClass = Long.class;
-            } else if ( fieldType == float.class ) {
-                returnClass = Float.class;
-            } else if ( fieldType == double.class ) {
-                returnClass = Double.class;
-            } else if ( fieldType == boolean.class ) {
-                returnClass = Boolean.class;
-            }
-        } else {
-            returnClass = fieldType;
-        }
-
-        return new ClassObjectType( returnClass );
-    }
-
     private static String getTypeName(final Class fieldType) {
         String ret = null;
 

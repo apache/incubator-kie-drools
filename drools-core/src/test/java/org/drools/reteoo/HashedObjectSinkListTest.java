@@ -25,7 +25,8 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldExtractor;
-import org.drools.base.EvaluatorFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.Evaluator;
@@ -165,8 +166,7 @@ public class HashedObjectSinkListTest extends TestCase {
         final FieldValue field1 = new MockField( "cheddar" );
         final FieldValue field2 = new MockField( "mussarela" );
 
-        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                   Evaluator.EQUAL );
+        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
         final LiteralConstraint constraint1 = new LiteralConstraint( extractor,
                                                                      evaluator,
                                                                      field1 );

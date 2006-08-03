@@ -18,10 +18,15 @@ package org.drools.spi;
 
 import java.io.Serializable;
 
+import org.drools.base.ValueType;
+
 public interface Extractor
     extends
     Serializable {
-    Object getValue(Object object);
+    
+    public Object getValue(Object object);
 
-    ObjectType getObjectType();
+    public ValueType getValueType();
+    
+    public Class getExtractToClass();
 }
