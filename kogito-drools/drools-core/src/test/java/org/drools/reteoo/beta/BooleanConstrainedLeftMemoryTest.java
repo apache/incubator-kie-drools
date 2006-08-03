@@ -22,7 +22,8 @@ import java.util.NoSuchElementException;
 import junit.framework.Assert;
 
 import org.drools.base.ClassFieldExtractor;
-import org.drools.base.EvaluatorFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
@@ -47,8 +48,7 @@ public class BooleanConstrainedLeftMemoryTest extends BaseBetaLeftMemoryTestClas
         final Declaration declaration = new Declaration( "myBoolean",
                                                          extractor,
                                                          0 );
-        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.BOOLEAN_TYPE,
-                                                                   Evaluator.EQUAL );
+        final Evaluator evaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.EQUAL );
 
         this.memory = new BooleanConstrainedLeftMemory( extractor,
                                                         declaration,

@@ -19,37 +19,58 @@ package org.drools.base.evaluators;
 import java.util.Arrays;
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
 /**
  * For handling simple (non collection) array types.
  * @author Michael Neale
  */
-public class ArrayFactory {
-
-    public static Evaluator getArrayEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return ArrayEqualEvaluator.INSTANCE;
-            case Evaluator.NOT_EQUAL :
-                return ArrayNotEqualEvaluator.INSTANCE;
-            case Evaluator.CONTAINS :
-                return ArrayContainsEvaluator.INSTANCE;
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for ArrayEvaluator" );
-        }
+public class ArrayFactory implements EvaluatorFactory {
+    private static EvaluatorFactory INSTANCE = new ArrayFactory();
+    
+    private ArrayFactory() {
+        
     }
+    
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new ArrayFactory();
+        }
+        return INSTANCE;
+    }
+
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return ArrayEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return ArrayNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS ) {
+            return ArrayContainsEvaluator.INSTANCE;
+        } else if ( operator == Operator.CONTAINS) {
+            return ArrayContainsEvaluator.INSTANCE;
+        } else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for ArrayEvaluator" );
+        }    
+    }
+    
 
     static class ArrayEqualEvaluator extends BaseEvaluator {
         /**
          * 
          */
-        private static final long     serialVersionUID = -3988506265461766585L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new ArrayEqualEvaluator();
 
         private ArrayEqualEvaluator() {
-            super( Evaluator.ARRAY_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.ARRAY_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -66,12 +87,12 @@ public class ArrayFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 4021357517502692236L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new ArrayNotEqualEvaluator();
 
         private ArrayNotEqualEvaluator() {
-            super( Evaluator.ARRAY_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.ARRAY_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -89,12 +110,12 @@ public class ArrayFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -4541491453186891644L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new ArrayContainsEvaluator();
 
         private ArrayContainsEvaluator() {
-            super( Evaluator.ARRAY_TYPE,
-                   Evaluator.CONTAINS );
+            super( ValueType.ARRAY_TYPE,
+                   Operator.CONTAINS );
         }
 
         public boolean evaluate(final Object object1,

@@ -73,6 +73,14 @@ public class AlphaNodeSwitch
         return this.alphaSwitch.values();
     }
 
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result +  this.constraint.getEvaluator().getOperator().hashCode();
+        result = PRIME * result + this.constraint.getFieldExtractor().getIndex();
+        return result;
+    }
+
     public boolean equals(final Object otherConstraint) {
         if ( this == otherConstraint ) {
             return true;
@@ -87,9 +95,5 @@ public class AlphaNodeSwitch
         return false;
     }
 
-    public int hashCode() {
-        return this.constraint.getEvaluator().getOperator() * 17 + this.constraint.getFieldExtractor().getIndex();
-
-    }
 
 }

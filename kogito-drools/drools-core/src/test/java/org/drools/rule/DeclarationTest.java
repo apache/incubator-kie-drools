@@ -43,7 +43,7 @@ public class DeclarationTest extends TestCase {
                       declaration.getIdentifier() );
 
         assertSame( String.class,
-                    ((ClassObjectType) declaration.getObjectType()).getClassType() );
+                    declaration.getExtractor().getExtractToClass() );
 
         assertSame( extractor,
                     declaration.getExtractor() );

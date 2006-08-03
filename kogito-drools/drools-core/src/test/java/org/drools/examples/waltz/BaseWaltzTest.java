@@ -31,7 +31,8 @@ import org.drools.DroolsTestCase;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.ClassObjectType;
-import org.drools.base.EvaluatorFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
@@ -88,24 +89,15 @@ public abstract class BaseWaltzTest extends DroolsTestCase {
         this.edgeType = new ClassObjectType( Edge.class );
         this.junctionType = new ClassObjectType( Junction.class );
         // evaluators
-        this.integerEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                    Evaluator.EQUAL );
-        this.integerNotEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                       Evaluator.NOT_EQUAL );
-        this.integerGreaterEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                      Evaluator.GREATER );
-        this.integerLessEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                   Evaluator.LESS );
-
-        this.objectEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                   Evaluator.EQUAL );
-        this.objectNotEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.OBJECT_TYPE,
-                                                                      Evaluator.NOT_EQUAL );
-
-        this.booleanEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.BOOLEAN_TYPE,
-                                                                    Evaluator.EQUAL );
-        this.booleanNotEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.BOOLEAN_TYPE,
-                                                                       Evaluator.NOT_EQUAL );
+        
+        this.integerEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL );
+        this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
+        this.integerGreaterEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER );
+        this.integerLessEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.LESS );        
+        this.objectEqualEvaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        this.objectNotEqualEvaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.NOT_EQUAL );
+        this.booleanEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.EQUAL );
+        this.booleanNotEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.NOT_EQUAL );        
 
         // rules
         this.pkg = new Package( "Waltz" );

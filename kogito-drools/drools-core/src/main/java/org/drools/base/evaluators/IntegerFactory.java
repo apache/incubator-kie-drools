@@ -17,38 +17,57 @@ package org.drools.base.evaluators;
  */
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
-public class IntegerFactory {
-    public static Evaluator getIntegerEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return IntegerEqualEvaluator.INSTANCE;
-            case Evaluator.NOT_EQUAL :
-                return IntegerNotEqualEvaluator.INSTANCE;
-            case Evaluator.LESS :
-                return IntegerLessEvaluator.INSTANCE;
-            case Evaluator.LESS_OR_EQUAL :
-                return IntegerLessOrEqualEvaluator.INSTANCE;
-            case Evaluator.GREATER :
-                return IntegerGreaterEvaluator.INSTANCE;
-            case Evaluator.GREATER_OR_EQUAL :
-                return IntegerGreaterOrEqualEvaluator.INSTANCE;
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for IntegerEvaluator" );
+public class IntegerFactory implements EvaluatorFactory {
+    private static EvaluatorFactory INSTANCE = new IntegerFactory();
+    
+    private IntegerFactory() {
+        
+    }
+    
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new IntegerFactory();
         }
+        return INSTANCE;
+    }
+
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return IntegerEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return IntegerNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS ) {
+            return IntegerLessEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS_OR_EQUAL ) {
+            return IntegerLessOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER ) {
+            return IntegerGreaterEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER_OR_EQUAL ) {
+            return IntegerGreaterOrEqualEvaluator.INSTANCE;
+        }  else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for IntegerEvaluator" );
+        }    
     }
 
     static class IntegerEqualEvaluator extends BaseEvaluator {
         /**
          * 
          */
-        private static final long     serialVersionUID = 7723739052946963265L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new IntegerEqualEvaluator();
 
         private IntegerEqualEvaluator() {
-            super( Evaluator.INTEGER_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.INTEGER_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -68,12 +87,12 @@ public class IntegerFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -9113145485945747879L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new IntegerNotEqualEvaluator();
 
         private IntegerNotEqualEvaluator() {
-            super( Evaluator.INTEGER_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.INTEGER_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -93,12 +112,12 @@ public class IntegerFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 4190533166100633474L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new IntegerLessEvaluator();
 
         private IntegerLessEvaluator() {
-            super( Evaluator.INTEGER_TYPE,
-                   Evaluator.LESS );
+            super( ValueType.INTEGER_TYPE,
+                   Operator.LESS );
         }
 
         public boolean evaluate(final Object object1,
@@ -115,12 +134,12 @@ public class IntegerFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -4044888400673214480L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new IntegerLessOrEqualEvaluator();
 
         private IntegerLessOrEqualEvaluator() {
-            super( Evaluator.INTEGER_TYPE,
-                   Evaluator.LESS_OR_EQUAL );
+            super( ValueType.INTEGER_TYPE,
+                   Operator.LESS_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -137,12 +156,12 @@ public class IntegerFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -5347620757145017588L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new IntegerGreaterEvaluator();
 
         private IntegerGreaterEvaluator() {
-            super( Evaluator.INTEGER_TYPE,
-                   Evaluator.GREATER );
+            super( ValueType.INTEGER_TYPE,
+                   Operator.GREATER );
         }
 
         public boolean evaluate(final Object object1,
@@ -159,12 +178,12 @@ public class IntegerFactory {
         /**
          * 
          */
-        private static final long      serialVersionUID = 7520187005496650583L;
+        private static final long      serialVersionUID = 320;
         private final static Evaluator INSTANCE         = new IntegerGreaterOrEqualEvaluator();
 
         private IntegerGreaterOrEqualEvaluator() {
-            super( Evaluator.INTEGER_TYPE,
-                   Evaluator.GREATER_OR_EQUAL );
+            super( ValueType.INTEGER_TYPE,
+                   Operator.GREATER_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,

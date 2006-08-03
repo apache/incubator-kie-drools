@@ -28,19 +28,19 @@ import org.drools.util.asm.ClassFieldInspector;
 abstract public class BaseClassFieldExtractor
     implements
     FieldExtractor {
-    private final ClassObjectType objectType;
-
     private final int             index;
 
     private final Class           fieldType;
+    
+    private final ValueType       valueType;    
 
     public BaseClassFieldExtractor(final Class clazz,
                                    final String fieldName) {
         try {
             final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
-            this.index = ((Integer) inspector.getFieldNames().get( fieldName )).intValue();
-            this.fieldType = (Class) inspector.getFieldTypes().get( fieldName );
-            this.objectType = ClassFieldExtractorFactory.getClassObjectType( this.fieldType );
+            this.index = ((Integer) inspector.getFieldNames().get( fieldName ) ).intValue();
+            this.fieldType = wrapPrimitive(  (Class) inspector.getFieldTypes().get( fieldName ) );
+            this.valueType = ValueType.determineValueType( this.fieldType );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
@@ -50,29 +50,62 @@ abstract public class BaseClassFieldExtractor
         return this.index;
     }
 
-    protected Class getFieldType() {
+    public Class getExtractToClass() {
         return this.fieldType;
+    }
+    
+    public ValueType  getValueType() {
+        return this.valueType;
     }
 
     /** This will be implemented by the dynamic classes */
     abstract public Object getValue(Object object);
-
-    public ObjectType getObjectType() {
-        return this.objectType;
-    }
-
-    public boolean equals(final Object other) {
-        if ( this == other ) {
-            return true;
+    
+    protected static Class wrapPrimitive(final Class fieldType) {
+        Class returnClass = null;
+        // autobox primitives
+        if ( fieldType.isPrimitive() ) {
+            if ( fieldType == char.class ) {
+                returnClass = Character.class;
+            } else if ( fieldType == byte.class ) {
+                returnClass = Byte.class;
+            } else if ( fieldType == short.class ) {
+                returnClass = Short.class;
+            } else if ( fieldType == int.class ) {
+                returnClass = Integer.class;
+            } else if ( fieldType == long.class ) {
+                returnClass = Long.class;
+            } else if ( fieldType == float.class ) {
+                returnClass = Float.class;
+            } else if ( fieldType == double.class ) {
+                returnClass = Double.class;
+            } else if ( fieldType == boolean.class ) {
+                returnClass = Boolean.class;
+            }
+        } else {
+            returnClass = fieldType;
         }
-        if ( !(other instanceof BaseClassFieldExtractor) ) {
-            return false;
-        }
-        final BaseClassFieldExtractor extr = (BaseClassFieldExtractor) other;
-        return this.objectType.equals( extr.objectType ) && this.index == extr.index;
+
+        return returnClass;
     }
 
     public int hashCode() {
-        return this.objectType.hashCode() * 17 + this.index;
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + this.fieldType.hashCode();
+        result = PRIME * result + this.index;
+        result = PRIME * result + this.valueType.hashCode();
+        return result;
     }
+
+    public boolean equals(final Object object) {
+        if ( this == object ) {
+            return true;
+        }
+        if ( !(object instanceof BaseClassFieldExtractor) ) {
+            return false;
+        }
+        final BaseClassFieldExtractor other = (BaseClassFieldExtractor) object;
+        return this.fieldType == other.fieldType && this.index == other.index;
+    }       
 }

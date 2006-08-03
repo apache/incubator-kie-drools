@@ -24,7 +24,7 @@ public class FieldImpl
     /**
      * 
      */
-    private static final long serialVersionUID = -5865571326405806524L;
+    private static final long serialVersionUID = 320;
     private Object            value;
 
     public FieldImpl(final Object value) {

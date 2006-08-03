@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.drools.WorkingMemory;
+import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.Evaluator;
@@ -69,7 +70,7 @@ public class HashedObjectSinkList
      * @inheritDoc
      */
     public boolean add(final ObjectSink objectSink) {
-        if ( (objectSink instanceof AlphaNode) && (((AlphaNode) objectSink).getConstraint() instanceof LiteralConstraint) && (((LiteralConstraint) ((AlphaNode) objectSink).getConstraint()).getEvaluator().getOperator() == Evaluator.EQUAL) ) {
+        if ( (objectSink instanceof AlphaNode) && (((AlphaNode) objectSink).getConstraint() instanceof LiteralConstraint) && (((LiteralConstraint) ((AlphaNode) objectSink).getConstraint()).getEvaluator().getOperator() == Operator.EQUAL) ) {
 
             final FieldConstraint constraint = ((AlphaNode) objectSink).getConstraint();
             final AlphaNodeSwitch wrapper = new AlphaNodeSwitch( (LiteralConstraint) constraint );
@@ -93,7 +94,7 @@ public class HashedObjectSinkList
      * @inheritDoc
      */
     public boolean remove(final ObjectSink objectSink) {
-        if ( (objectSink instanceof AlphaNode) && (((AlphaNode) objectSink).getConstraint() instanceof LiteralConstraint) && (((LiteralConstraint) ((AlphaNode) objectSink).getConstraint()).getEvaluator().getOperator() == Evaluator.EQUAL) ) {
+        if ( (objectSink instanceof AlphaNode) && (((AlphaNode) objectSink).getConstraint() instanceof LiteralConstraint) && (((LiteralConstraint) ((AlphaNode) objectSink).getConstraint()).getEvaluator().getOperator() == Operator.EQUAL) ) {
 
             final FieldConstraint constraint = ((AlphaNode) objectSink).getConstraint();
             AlphaNodeSwitch wrapper = new AlphaNodeSwitch( (LiteralConstraint) constraint );

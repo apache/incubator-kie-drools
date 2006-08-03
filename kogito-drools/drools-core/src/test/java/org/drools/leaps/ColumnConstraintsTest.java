@@ -26,7 +26,8 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
-import org.drools.base.EvaluatorFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.examples.manners.Context;
 import org.drools.rule.Column;
 import org.drools.rule.LiteralConstraint;
@@ -49,10 +50,8 @@ public class ColumnConstraintsTest extends DroolsTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.integerEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                    Evaluator.EQUAL );
-        this.integerNotEqualEvaluator = EvaluatorFactory.getEvaluator( Evaluator.INTEGER_TYPE,
-                                                                       Evaluator.NOT_EQUAL );
+        this.integerEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL );
+        this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
     }
 
     /*

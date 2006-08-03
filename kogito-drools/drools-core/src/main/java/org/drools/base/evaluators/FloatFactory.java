@@ -17,39 +17,58 @@ package org.drools.base.evaluators;
  */
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
-public class FloatFactory {
-
-    public static Evaluator getFloatEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return FloatEqualEvaluator.INSTANCE;
-            case Evaluator.NOT_EQUAL :
-                return FloatNotEqualEvaluator.INSTANCE;
-            case Evaluator.LESS :
-                return FloatLessEvaluator.INSTANCE;
-            case Evaluator.LESS_OR_EQUAL :
-                return FloatLessOrEqualEvaluator.INSTANCE;
-            case Evaluator.GREATER :
-                return FloatGreaterEvaluator.INSTANCE;
-            case Evaluator.GREATER_OR_EQUAL :
-                return FloatGreaterOrEqualEvaluator.INSTANCE;
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for FloatEvaluator" );
-        }
+public class FloatFactory implements EvaluatorFactory {
+    private static EvaluatorFactory INSTANCE = new FloatFactory();
+    
+    private FloatFactory() {
+        
     }
+    
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new FloatFactory();
+        }
+        return INSTANCE;
+    }
+
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return FloatEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return FloatNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS ) {
+            return FloatLessEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS_OR_EQUAL ) {
+            return FloatLessOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER ) {
+            return FloatGreaterEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER_OR_EQUAL ) {
+            return FloatGreaterOrEqualEvaluator.INSTANCE;
+        }  else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for FloatEvaluator" );
+        }    
+    }
+
 
     static class FloatEqualEvaluator extends BaseEvaluator {
         /**
          * 
          */
-        private static final long     serialVersionUID = -3295563005669423883L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new FloatEqualEvaluator();
 
         private FloatEqualEvaluator() {
-            super( Evaluator.FLOAT_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.FLOAT_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -69,12 +88,12 @@ public class FloatFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -4852271063945330337L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new FloatNotEqualEvaluator();
 
         private FloatNotEqualEvaluator() {
-            super( Evaluator.FLOAT_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.FLOAT_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -94,12 +113,12 @@ public class FloatFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -4971007931169565583L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new FloatLessEvaluator();
 
         private FloatLessEvaluator() {
-            super( Evaluator.FLOAT_TYPE,
-                   Evaluator.LESS );
+            super( ValueType.FLOAT_TYPE,
+                   Operator.LESS );
         }
 
         public boolean evaluate(final Object object1,
@@ -116,12 +135,12 @@ public class FloatFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 8475866839302691518L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new FloatLessOrEqualEvaluator();
 
         private FloatLessOrEqualEvaluator() {
-            super( Evaluator.FLOAT_TYPE,
-                   Evaluator.LESS_OR_EQUAL );
+            super( ValueType.FLOAT_TYPE,
+                   Operator.LESS_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -138,12 +157,12 @@ public class FloatFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 7121251641514162807L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new FloatGreaterEvaluator();
 
         private FloatGreaterEvaluator() {
-            super( Evaluator.FLOAT_TYPE,
-                   Evaluator.GREATER );
+            super( ValueType.FLOAT_TYPE,
+                   Operator.GREATER );
         }
 
         public boolean evaluate(final Object object1,
@@ -160,12 +179,12 @@ public class FloatFactory {
         /**
          * 
          */
-        private static final long      serialVersionUID = -6885383763349349798L;
+        private static final long      serialVersionUID = 320;
         private final static Evaluator INSTANCE         = new FloatGreaterOrEqualEvaluator();
 
         private FloatGreaterOrEqualEvaluator() {
-            super( Evaluator.FLOAT_TYPE,
-                   Evaluator.GREATER_OR_EQUAL );
+            super( ValueType.FLOAT_TYPE,
+                   Operator.GREATER_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,

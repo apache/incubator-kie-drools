@@ -1,6 +1,5 @@
-package org.drools.spi;
+package org.drools.facttemplates;
 
-import org.drools.base.ValueType;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -18,14 +17,20 @@ import org.drools.base.ValueType;
  * limitations under the License.
  */
 
+import org.drools.RuntimeDroolsException;
+import org.drools.base.ValueType;
+import org.drools.facttemplates.FieldTemplate;
+import org.drools.spi.Evaluator;
+import org.drools.spi.ObjectType;
+
 /**
  * Java class semantics <code>ObjectType</code>.
  * 
  * @author <a href="mailto:bob@werken.com">bob@werken.com </a>
  * 
- * @version $Id: MockObjectType.java,v 1.1 2005/07/26 01:06:34 mproctor Exp $
+ * @version $Id: ClassObjectType.java,v 1.5 2005/02/04 02:13:36 mproctor Exp $
  */
-public class MockObjectType
+public class FactTemplateObjectType
     implements
     ObjectType {
     // ------------------------------------------------------------
@@ -35,9 +40,10 @@ public class MockObjectType
     /**
      * 
      */
-    private static final long serialVersionUID = 7771710152014261852L;
-    /** Java object class. */
-    private boolean           matches;
+    private static final long serialVersionUID = 320;
+
+    /** FieldTemplate. */
+    protected FactTemplate  factTemplate;
 
     // ------------------------------------------------------------
     // Constructors
@@ -49,13 +55,22 @@ public class MockObjectType
      * @param objectTypeClass
      *            Java object class.
      */
-    public MockObjectType(final boolean matches) {
-        this.matches = matches;
+    public FactTemplateObjectType(final FactTemplate factTemplate) {
+        this.factTemplate = factTemplate;
     }
 
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
+
+    /**
+     * Return the Fact Template.
+     * 
+     * @return The Fact Template
+     */
+    public FactTemplate getFactTemplate() {
+        return this.factTemplate;        
+    }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // org.drools.spi.ObjectType
@@ -72,11 +87,43 @@ public class MockObjectType
      *         object type, else <code>false</code>.
      */
     public boolean matches(final Object object) {
-        return this.matches;
+        return this.factTemplate == object;
     }
 
+
     public ValueType getValueType() {
-        return ValueType.OBJECT_TYPE;
+        return ValueType.FACTTEMPLATE_TYPE;
+    }
+
+    public String toString() {
+        return "[ClassObjectType class=" + this.factTemplate.getName() + "]";
+    }
+
+    /**
+     * Determine if another object is equal to this.
+     * 
+     * @param object
+     *            The object to test.
+     * 
+     * @return <code>true</code> if <code>object</code> is equal to this,
+     *         otherwise <code>false</code>.
+     */
+    public boolean equals(final Object object) {
+        if ( this == object ) {
+            return true;
+        }
+
+        if ( object == null || object.getClass() != FactTemplateObjectType.class ) {
+            return false;
+        }
+
+        FactTemplateObjectType other = ( FactTemplateObjectType ) object;
+        
+        return this.factTemplate == other.factTemplate;
+    }
+
+    public int hashCode() {
+        return this.factTemplate.hashCode();
     }
 
 }

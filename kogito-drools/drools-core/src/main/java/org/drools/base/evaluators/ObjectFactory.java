@@ -19,6 +19,19 @@ package org.drools.base.evaluators;
 import java.util.Collection;
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.IntegerFactory.IntegerEqualEvaluator;
+import org.drools.base.evaluators.IntegerFactory.IntegerGreaterEvaluator;
+import org.drools.base.evaluators.IntegerFactory.IntegerGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.IntegerFactory.IntegerLessEvaluator;
+import org.drools.base.evaluators.IntegerFactory.IntegerLessOrEqualEvaluator;
+import org.drools.base.evaluators.IntegerFactory.IntegerNotEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
+import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
 /**
@@ -32,41 +45,53 @@ import org.drools.spi.Evaluator;
  * 
  * @author Michael Neale
  */
-public class ObjectFactory {
-
-    public static Evaluator getObjectEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return ObjectEqualEvaluator.INSTANCE;
-            case Evaluator.NOT_EQUAL :
-                return ObjectNotEqualEvaluator.INSTANCE;
-            case Evaluator.CONTAINS :
-                return ObjectContainsEvaluator.INSTANCE;
-            case Evaluator.LESS :
-                return ObjectLessEvaluator.INSTANCE;
-            case Evaluator.LESS_OR_EQUAL :
-                return ObjectLessOrEqualEvaluator.INSTANCE;
-            case Evaluator.GREATER :
-                return ObjectGreaterEvaluator.INSTANCE;
-            case Evaluator.GREATER_OR_EQUAL :
-                return ObjectGreaterOrEqualEvaluator.INSTANCE;
-            case Evaluator.EXCLUDES :
-                return ObjectExcludesEvaluator.INSTANCE;
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for ObjectEvaluator" );
-        }
+public class ObjectFactory implements EvaluatorFactory {
+    private static EvaluatorFactory INSTANCE = new ObjectFactory();
+    
+    private ObjectFactory() {
+        
     }
+    
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new ObjectFactory();
+        }
+        return INSTANCE;
+    }
+    
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return ObjectEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return ObjectNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS ) {
+            return ObjectLessEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS_OR_EQUAL ) {
+            return ObjectLessOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER ) {
+            return ObjectGreaterEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER_OR_EQUAL ) {
+            return ObjectGreaterOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.CONTAINS ) {
+            return ObjectContainsEvaluator.INSTANCE;
+        } else if ( operator == Operator.EXCLUDES ) {
+            return ObjectExcludesEvaluator.INSTANCE;
+        }  else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for ShortEvaluator" );
+        }    
+    }
+    
 
     static class ObjectEqualEvaluator extends BaseEvaluator {
         /**
          * 
          */
-        private static final long     serialVersionUID = 4532849170161094887L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new ObjectEqualEvaluator();
 
         private ObjectEqualEvaluator() {
-            super( Evaluator.OBJECT_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.OBJECT_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -86,12 +111,12 @@ public class ObjectFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -6995475512317781516L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new ObjectNotEqualEvaluator();
 
         private ObjectNotEqualEvaluator() {
-            super( Evaluator.OBJECT_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.OBJECT_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -111,12 +136,12 @@ public class ObjectFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 5327278696364237380L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new ObjectLessEvaluator();
 
         private ObjectLessEvaluator() {
-            super( Evaluator.OBJECT_TYPE,
-                   Evaluator.LESS );
+            super( ValueType.OBJECT_TYPE,
+                   Operator.LESS );
         }
 
         public boolean evaluate(final Object object1,
@@ -135,12 +160,12 @@ public class ObjectFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 3463248146201714137L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new ObjectLessOrEqualEvaluator();
 
         private ObjectLessOrEqualEvaluator() {
-            super( Evaluator.OBJECT_TYPE,
-                   Evaluator.LESS_OR_EQUAL );
+            super( ValueType.OBJECT_TYPE,
+                   Operator.LESS_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -158,12 +183,12 @@ public class ObjectFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 7808425299326128881L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new ObjectGreaterEvaluator();
 
         private ObjectGreaterEvaluator() {
-            super( Evaluator.OBJECT_TYPE,
-                   Evaluator.GREATER );
+            super( ValueType.OBJECT_TYPE,
+                   Operator.GREATER );
         }
 
         public boolean evaluate(final Object object1,
@@ -181,12 +206,12 @@ public class ObjectFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -3337081388987517878L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new ObjectGreaterOrEqualEvaluator();
 
         private ObjectGreaterOrEqualEvaluator() {
-            super( Evaluator.OBJECT_TYPE,
-                   Evaluator.GREATER_OR_EQUAL );
+            super( ValueType.OBJECT_TYPE,
+                   Operator.GREATER_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -204,12 +229,12 @@ public class ObjectFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 6607233589136455455L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new ObjectContainsEvaluator();
 
         private ObjectContainsEvaluator() {
-            super( Evaluator.OBJECT_TYPE,
-                   Evaluator.CONTAINS );
+            super( ValueType.OBJECT_TYPE,
+                   Operator.CONTAINS );
         }
 
         public boolean evaluate(final Object object1,
@@ -230,12 +255,12 @@ public class ObjectFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 4353038775000051165L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new ObjectExcludesEvaluator();
 
         private ObjectExcludesEvaluator() {
-            super( Evaluator.OBJECT_TYPE,
-                   Evaluator.EXCLUDES );
+            super( ValueType.OBJECT_TYPE,
+                   Operator.EXCLUDES );
         }
 
         public boolean evaluate(final Object object1,

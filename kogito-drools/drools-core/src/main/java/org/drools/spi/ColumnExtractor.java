@@ -1,5 +1,9 @@
 package org.drools.spi;
 
+import org.drools.base.ClassObjectType;
+import org.drools.base.ValueType;
+import org.drools.facttemplates.FactTemplate;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -36,6 +40,19 @@ public class ColumnExtractor
 
     public ObjectType getObjectType() {
         return this.objectType;
+    }
+
+    public Class getExtractToClass() {
+        // @todo : this is a bit nasty, but does the trick
+        if ( objectType.getClass() == ClassObjectType.class ) {
+            return ( ( ClassObjectType ) objectType ).getClassType();
+        } else {
+            return FactTemplate.class;
+        } 
+    }
+
+    public ValueType getValueType() {
+        return objectType.getValueType();
     }
 
 }

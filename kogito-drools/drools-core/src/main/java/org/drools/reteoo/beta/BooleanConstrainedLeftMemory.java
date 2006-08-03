@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.drools.WorkingMemory;
+import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
@@ -281,7 +282,7 @@ public class BooleanConstrainedLeftMemory
     public final void selectPossibleMatches(final WorkingMemory workingMemory,
                                             final InternalFactHandle handle) {
         boolean select = ((Boolean) this.extractor.getValue( handle.getObject() )).booleanValue();
-        select = (this.evaluator.getOperator()) == Evaluator.EQUAL ? select : !select;
+        select = (this.evaluator.getOperator()) == Operator.EQUAL ? select : !select;
         if ( select == true ) {
             this.selectedList = this.trueList;
         } else {

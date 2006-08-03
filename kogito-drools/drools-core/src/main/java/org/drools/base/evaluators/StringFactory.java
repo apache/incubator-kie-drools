@@ -17,6 +17,13 @@ package org.drools.base.evaluators;
  */
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.DoubleFactory.DoubleEqualEvaluator;
+import org.drools.base.evaluators.DoubleFactory.DoubleGreaterEvaluator;
+import org.drools.base.evaluators.DoubleFactory.DoubleGreaterOrEqualEvaluator;
+import org.drools.base.evaluators.DoubleFactory.DoubleLessEvaluator;
+import org.drools.base.evaluators.DoubleFactory.DoubleLessOrEqualEvaluator;
+import org.drools.base.evaluators.DoubleFactory.DoubleNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
 /**
@@ -26,31 +33,42 @@ import org.drools.spi.Evaluator;
  * 
  * @author Michael Neale
  */
-public class StringFactory {
-
-    public static Evaluator getStringEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return StringEqualEvaluator.INSTANCE;
-            case Evaluator.NOT_EQUAL :
-                return StringNotEqualEvaluator.INSTANCE;
-            case Evaluator.MATCHES :
-                return StringMatchesEvaluator.INSTANCE;
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for StringEvaluator" );
+public class StringFactory implements EvaluatorFactory {
+    private static EvaluatorFactory INSTANCE = new StringFactory();
+    
+    private StringFactory() {
+        
+    }
+    
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new StringFactory();
         }
+        return INSTANCE;
+    }
+
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return StringEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return StringNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.MATCHES ) {
+            return StringMatchesEvaluator.INSTANCE;
+        }  else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for StringEvaluator" );
+        }    
     }
 
     static class StringEqualEvaluator extends BaseEvaluator {
         /**
          * 
          */
-        private static final long     serialVersionUID = 5282693491345148054L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new StringEqualEvaluator();
 
         private StringEqualEvaluator() {
-            super( Evaluator.STRING_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.STRING_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -70,12 +88,12 @@ public class StringFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -3385245390840913608L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new StringNotEqualEvaluator();
 
         private StringNotEqualEvaluator() {
-            super( Evaluator.STRING_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.STRING_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -96,12 +114,12 @@ public class StringFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 5934192092501066510L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new StringMatchesEvaluator();
 
         private StringMatchesEvaluator() {
-            super( Evaluator.STRING_TYPE,
-                   Evaluator.MATCHES );
+            super( ValueType.STRING_TYPE,
+                   Operator.MATCHES );
         }
 
         public boolean evaluate(final Object object1,

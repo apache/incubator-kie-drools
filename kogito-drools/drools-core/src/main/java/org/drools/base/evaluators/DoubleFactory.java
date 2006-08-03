@@ -17,26 +17,38 @@ package org.drools.base.evaluators;
  */
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ValueType;
 import org.drools.spi.Evaluator;
 
-public class DoubleFactory {
+public class DoubleFactory implements EvaluatorFactory {
+    private static EvaluatorFactory INSTANCE = new DoubleFactory();
+    
+    private DoubleFactory() {
+        
+    }
+    
+    public static EvaluatorFactory getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new DoubleFactory();
+        }
+        return INSTANCE;
+    }
 
-    public static Evaluator getDoubleEvaluator(final int operator) {
-        switch ( operator ) {
-            case Evaluator.EQUAL :
-                return DoubleEqualEvaluator.INSTANCE;
-            case Evaluator.NOT_EQUAL :
-                return DoubleNotEqualEvaluator.INSTANCE;
-            case Evaluator.LESS :
-                return DoubleLessEvaluator.INSTANCE;
-            case Evaluator.LESS_OR_EQUAL :
-                return DoubleLessOrEqualEvaluator.INSTANCE;
-            case Evaluator.GREATER :
-                return DoubleGreaterEvaluator.INSTANCE;
-            case Evaluator.GREATER_OR_EQUAL :
-                return DoubleGreaterOrEqualEvaluator.INSTANCE;
-            default :
-                throw new RuntimeException( "Operator '" + operator + "' does not exist for DoubleEvaluator" );
+    public Evaluator getEvaluator(final Operator operator) {
+        if ( operator == Operator.EQUAL ) {
+            return DoubleEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.NOT_EQUAL ) {
+            return DoubleNotEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS ) {
+            return DoubleLessEvaluator.INSTANCE;
+        } else if ( operator == Operator.LESS_OR_EQUAL ) {
+            return DoubleLessOrEqualEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER ) {
+            return DoubleGreaterEvaluator.INSTANCE;
+        } else if ( operator == Operator.GREATER_OR_EQUAL ) {
+            return DoubleGreaterOrEqualEvaluator.INSTANCE;
+        }  else {
+            throw new RuntimeException( "Operator '" + operator + "' does not exist for DoubleEvaluator" );
         }
     }
 
@@ -44,12 +56,12 @@ public class DoubleFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 8638265291388692160L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new DoubleEqualEvaluator();
 
         private DoubleEqualEvaluator() {
-            super( Evaluator.DOUBLE_TYPE,
-                   Evaluator.EQUAL );
+            super( ValueType.DOUBLE_TYPE,
+                   Operator.EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -69,12 +81,12 @@ public class DoubleFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -1605810860861480665L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new DoubleNotEqualEvaluator();
 
         private DoubleNotEqualEvaluator() {
-            super( Evaluator.DOUBLE_TYPE,
-                   Evaluator.NOT_EQUAL );
+            super( ValueType.DOUBLE_TYPE,
+                   Operator.NOT_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -94,12 +106,12 @@ public class DoubleFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -6256590818217451743L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new DoubleLessEvaluator();
 
         private DoubleLessEvaluator() {
-            super( Evaluator.DOUBLE_TYPE,
-                   Evaluator.LESS );
+            super( ValueType.DOUBLE_TYPE,
+                   Operator.LESS );
         }
 
         public boolean evaluate(final Object object1,
@@ -116,12 +128,12 @@ public class DoubleFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = -3663317930533546094L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new DoubleLessOrEqualEvaluator();
 
         private DoubleLessOrEqualEvaluator() {
-            super( Evaluator.DOUBLE_TYPE,
-                   Evaluator.LESS_OR_EQUAL );
+            super( ValueType.DOUBLE_TYPE,
+                   Operator.LESS_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,
@@ -138,12 +150,12 @@ public class DoubleFactory {
         /**
          * 
          */
-        private static final long     serialVersionUID = 1420842292058943594L;
+        private static final long     serialVersionUID = 320;
         public final static Evaluator INSTANCE         = new DoubleGreaterEvaluator();
 
         private DoubleGreaterEvaluator() {
-            super( Evaluator.DOUBLE_TYPE,
-                   Evaluator.GREATER );
+            super( ValueType.DOUBLE_TYPE,
+                   Operator.GREATER );
         }
 
         public boolean evaluate(final Object object1,
@@ -160,12 +172,12 @@ public class DoubleFactory {
         /**
          * 
          */
-        private static final long      serialVersionUID = 468558955316190757L;
+        private static final long      serialVersionUID = 320;
         private final static Evaluator INSTANCE         = new DoubleGreaterOrEqualEvaluator();
 
         private DoubleGreaterOrEqualEvaluator() {
-            super( Evaluator.DOUBLE_TYPE,
-                   Evaluator.GREATER_OR_EQUAL );
+            super( ValueType.DOUBLE_TYPE,
+                   Operator.GREATER_OR_EQUAL );
         }
 
         public boolean evaluate(final Object object1,

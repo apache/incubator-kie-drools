@@ -16,6 +16,7 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import org.drools.base.evaluators.Operator;
 import org.drools.spi.Evaluator;
 
 /**
@@ -28,39 +29,41 @@ public abstract class BaseEvaluator
     implements
     Evaluator {
 
-    private final int operator;
+    private final Operator operator;
 
-    private final int type;
+    private final ValueType type;
 
-    public BaseEvaluator(final int type,
-                         final int operator) {
+    public BaseEvaluator(final ValueType type,
+                         final Operator operator) {
         this.type = type;
         this.operator = operator;
     }
 
-    public int getOperator() {
+    public Operator getOperator() {
         return this.operator;
     }
 
-    public int getType() {
+    public ValueType getValueType() {
         return this.type;
     }
 
     public abstract boolean evaluate(Object object1,
                                      Object object2);
 
-    public boolean equals(final Object other) {
-        if ( this == other ) {
+    public boolean equals(final Object object) {
+        if ( this == object ) {
             return true;
         }
-        if ( !this.getClass().equals( other.getClass() ) ) {
+        if ( object == null || getClass() != object.getClass() ) {
             return false;
         }
-        return (this.getOperator() == ((Evaluator) other).getOperator()) && (this.getType() == ((Evaluator) other).getType());
+        
+        Evaluator other = ( Evaluator ) object;        
+        return this.getOperator() == other.getOperator() && this.getValueType() == other.getValueType();
     }
 
     public int hashCode() {
-        return (this.getType() * 17) ^ (this.getOperator() * 11) ^ (this.getClass().hashCode());
+        return (this.getValueType().hashCode()) ^ (this.getOperator().hashCode()) ^ (this.getClass().hashCode());
     }
 
 }

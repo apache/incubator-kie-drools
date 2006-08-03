@@ -29,8 +29,9 @@ import org.drools.RuleIntegrationException;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.base.EvaluatorFactory;
 import org.drools.base.FieldFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.InstanceEqualsConstraint;
 import org.drools.common.InstanceNotEqualsConstraint;
@@ -345,10 +346,10 @@ class ReteooBuilder
                                                                        "name" );
 
         final FieldValue field = FieldFactory.getFieldValue( queryName,
-                                                             Evaluator.STRING_TYPE );
+                                                             ValueType.STRING_TYPE );
 
-        final Evaluator evaluator = EvaluatorFactory.getEvaluator( Evaluator.STRING_TYPE,
-                                                                   Evaluator.EQUAL );
+        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
