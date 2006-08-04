@@ -27,6 +27,21 @@
       </javac>                          
     </target>  
     
+    <target name="run-waltz12">                    
+      <java classname="org.drools.benchmark.waltz.WaltzBenchmark"
+      			fork="true">
+        <classpath>            
+          <pathelement path="target/classes" />            
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+        <arg value="waltz12.dat"/>
+        <jvmarg value="-Xmx1024M" />
+        <jvmarg value="-Xms1024M" />
+      </java>                          
+    </target>      
+    
     <target name="run-waltz50">                    
       <java classname="org.drools.benchmark.waltz.WaltzBenchmark"
       			fork="true">
