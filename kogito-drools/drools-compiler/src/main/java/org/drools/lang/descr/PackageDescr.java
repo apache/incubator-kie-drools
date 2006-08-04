@@ -27,14 +27,15 @@ public class PackageDescr extends PatternDescr {
      * 
      */
     private static final long serialVersionUID = 4491974850482281807L;
-    private final String name;
-    private final String documentation;
+    private final String      name;
+    private final String      documentation;
 
-    private List         imports    = Collections.EMPTY_LIST;
-    private List         attributes = Collections.EMPTY_LIST;
-    private Map          globals    = Collections.EMPTY_MAP;
-    private List         functions  = Collections.EMPTY_LIST;
-    private List         rules      = Collections.EMPTY_LIST;
+    private List              imports          = Collections.EMPTY_LIST;
+    private List              attributes       = Collections.EMPTY_LIST;
+    private Map               globals          = Collections.EMPTY_MAP;
+    private List              factTemplates    = Collections.EMPTY_LIST;
+    private List              functions        = Collections.EMPTY_LIST;
+    private List              rules            = Collections.EMPTY_LIST;
 
     public PackageDescr(final String name) {
         this( name,
@@ -77,7 +78,7 @@ public class PackageDescr extends PatternDescr {
 
     public Map getGlobals() {
         return this.globals;
-    }
+    }    
 
     public void addAttribute(final AttributeDescr attribute) {
         if ( this.attributes == Collections.EMPTY_LIST ) {
@@ -88,6 +89,17 @@ public class PackageDescr extends PatternDescr {
 
     public List getAttributes() {
         return this.attributes;
+    }
+    
+    public void addFactTemplate(final FactTemplateDescr  factTemplate) {
+        if ( this.factTemplates == Collections.EMPTY_LIST ) {
+            this.factTemplates = new ArrayList( 1 );
+        }
+        this.factTemplates.add( factTemplate );
+    }
+    
+    public List getFactTemplates() {
+        return this.factTemplates;
     }
 
     public void addFunction(final FunctionDescr function) {

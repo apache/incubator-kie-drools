@@ -37,6 +37,12 @@ import org.apache.commons.jci.readers.MemoryResourceReader;
 import org.apache.commons.jci.readers.ResourceReader;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
+import org.drools.facttemplates.FactTemplate;
+import org.drools.facttemplates.FactTemplateImpl;
+import org.drools.facttemplates.FieldTemplate;
+import org.drools.facttemplates.FieldTemplateImpl;
+import org.drools.lang.descr.FactTemplateDescr;
+import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -185,6 +191,10 @@ public class PackageBuilder {
 
         //only try to compile if there are no parse errors
         if ( !hasErrors() ) {
+            for ( final Iterator it = packageDescr.getFactTemplates().iterator(); it.hasNext(); ) {
+                addFactTemplate( (FactTemplateDescr) it.next() );
+            }
+
             //iterate and compile
             for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
                 addFunction( (FunctionDescr) it.next() );
@@ -291,6 +301,30 @@ public class PackageBuilder {
                              new FunctionErrorHandler( functionDescr,
                                                        "Function Compilation error" ) );
 
+    }
+
+    private void addFactTemplate(final FactTemplateDescr factTemplateDescr) {
+        List fields = new ArrayList();
+        int index = 0;
+        for ( final Iterator it = factTemplateDescr.getFields().iterator(); it.hasNext(); ) {
+            FieldTemplateDescr fieldTemplateDescr = (FieldTemplateDescr) it.next();
+            FieldTemplate fieldTemplate = null;
+            try {
+                fieldTemplate = new FieldTemplateImpl( fieldTemplateDescr.getName(),
+                                                       index++,
+                                                       getTypeResolver().resolveType( fieldTemplateDescr.getClassType() ) );
+            } catch ( ClassNotFoundException e ) {
+                this.results.add( new FieldTemplateError( this.pkg,
+                                                          fieldTemplateDescr,
+                                                          null,
+                                                          "Unable to resolve Class '" + fieldTemplateDescr.getClassType() + "'" ) );
+            }
+            fields.add( fieldTemplate );
+        }
+
+        FactTemplate factTemplate = new FactTemplateImpl( this.pkg,
+                                                          factTemplateDescr.getName(),
+                                                          (FieldTemplate[]) fields.toArray( new FieldTemplate[fields.size()] ) );
     }
 
     private void addRule(final RuleDescr ruleDescr) {
@@ -421,11 +455,11 @@ public class PackageBuilder {
         if ( result.getErrors().length > 0 ) {
             for ( int i = 0; i < result.getErrors().length; i++ ) {
                 CompilationProblem err = result.getErrors()[i];
-                
+
                 ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
-                if (handler instanceof RuleErrorHandler) {                    
+                if ( handler instanceof RuleErrorHandler ) {
                     RuleErrorHandler rh = (RuleErrorHandler) handler;
-                    
+
                 }
                 handler.addError( err );
             }
@@ -433,14 +467,14 @@ public class PackageBuilder {
             Collection errors = this.errorHandlers.values();
             for ( Iterator iter = errors.iterator(); iter.hasNext(); ) {
                 ErrorHandler handler = (ErrorHandler) iter.next();
-                if (handler.isInError()) {
+                if ( handler.isInError() ) {
                     if ( !(handler instanceof RuleInvokerErrorHandler) ) {
                         this.results.add( handler.getError() );
                     } else {
                         //we don't really want to report invoker errors.
                         //mostly as they can happen when there is a syntax error in the RHS
                         //and otherwise, it is a programmatic error in drools itself.
-                        System.err.println( "Warning: An error occurred compiling a semantic invoker. Errors should have been reported elsewhere.");
+                        System.err.println( "Warning: An error occurred compiling a semantic invoker. Errors should have been reported elsewhere." );
                     }
                 }
             }
@@ -554,15 +588,15 @@ public class PackageBuilder {
      * that originally spawned the code to be compiled.
      */
     public abstract static class ErrorHandler {
-        private List     errors = new ArrayList();
+        private List     errors  = new ArrayList();
         protected String message;
-        private boolean inError = false;
+        private boolean  inError = false;
 
         /** This needes to be checked if there is infact an error */
         public boolean isInError() {
             return inError;
         }
-        
+
         public void addError(CompilationProblem err) {
             this.errors.add( err );
             this.inError = true;

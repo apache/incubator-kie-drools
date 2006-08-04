@@ -43,13 +43,16 @@ import org.drools.WorkingMemory;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
+import org.drools.facttemplates.Fact;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
@@ -280,7 +283,54 @@ public class PackageBuilderTest extends DroolsTestCase {
         } catch ( final RuntimeException e ) {
             assertNotNull( e.getMessage() );
         }
+    }
+    
+    public void testFactTemplate()  {
+        final PackageBuilder builder = new PackageBuilder();
 
+        final PackageDescr packageDescr = new PackageDescr( "p1" );
+        final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+        packageDescr.addRule( ruleDescr );
+
+        final AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+
+        FactTemplateDescr cheese = new FactTemplateDescr( "Cheese" );
+        cheese.addFieldTemplate( new FieldTemplateDescr( "name", "String" ) );
+        cheese.addFieldTemplate(new  FieldTemplateDescr( "price", "Integer" ) );
+
+        packageDescr.addFactTemplate( cheese );
+        
+        final ColumnDescr column = new ColumnDescr( "Cheese",
+                                                    "stilton" );
+        lhs.addDescr( column );
+        
+        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "name" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "stilton") );        
+
+        column.addDescr( literalDescr );
+
+        ruleDescr.setConsequence( "System.out.println( stilton.getFieldValue( \"name\" ) + \" \" + stilton.getFieldValue( \"price\" ) );" );
+
+        builder.addPackage( packageDescr );
+
+        assertLength( 0,
+                      builder.getErrors() );
+        
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        Package pkg = builder.getPackage();
+        try {
+            ruleBase.addPackage( pkg );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+        Fact stilton = pkg.getFactTemplate( "Cheese" ).createFact( 1 );
+        stilton.setFieldValue( "name", "stilton" );
+        stilton.setFieldValue( "price", new Integer( 200 ) );
+        workingMemory.assertObject( stilton );        
+        workingMemory.fireAllRules();
+        
     }
 
     public void testLiteral() throws Exception {
@@ -298,7 +348,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         lhs.addDescr( column );
         
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new VariableRestrictionDescr("==", "stilton") );        
+        literalDescr.addRestriction( new LiteralRestrictionDescr("==", "stilton") );        
 
         column.addDescr( literalDescr );
 
