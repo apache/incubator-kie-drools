@@ -407,7 +407,7 @@ class ReteooBuilder
 
         final List predicateConstraints = new ArrayList();
 
-        if ( removeIdentities && column.getObjectType().getClass() != FactTemplateObjectType.class ) {
+        if ( removeIdentities && column.getObjectType().getClass() == ClassObjectType.class ) {
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
             final Class thisClass = ((ClassObjectType) column.getObjectType()).getClassType();
