@@ -258,6 +258,7 @@ compilation_unit
 		prolog 
 		(	r=rule 	{this.packageDescr.addRule( r ); } 
 		| 	q=query	{this.packageDescr.addRule( q ); }
+		|	t=template	{this.packageDescr.addFactTemplate ( t ); }
 		|	extra_statement 
 		)*
 	;
@@ -384,7 +385,42 @@ query returns [QueryDescr query]
 					
 		'end' opt_eol
 	;
-
+	
+template returns [FactTemplateDescr template]
+	@init {
+		template = null;		
+	}
+	:
+		opt_eol
+		loc='template' templateName=ID EOL
+		{
+			template = new FactTemplateDescr(templateName.getText());
+			template.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );			
+		}
+		(
+			slot=template_slot 
+			{
+				template.addFieldTemplate(slot);
+			}
+		)+
+		'end' EOL		
+	;
+	
+template_slot returns [FieldTemplateDescr field]
+	@init {
+		field = null;
+	}
+	:
+		//name=ID ':' fieldType=dotted_name ( EOL | ';' )
+		 fieldType=dotted_name name=ID ( EOL | ';' )
+		{
+			
+			
+			field = new FieldTemplateDescr(name.getText(), fieldType);
+			field.setLocation( offset(name.getLine()), name.getCharPositionInLine() );
+		}
+	;	
+	
 rule returns [RuleDescr rule]
 	@init {
 		rule = null;
@@ -1051,7 +1087,7 @@ word returns [String word]
 	|	'when'     { word="when"; }
 	|	'then'     { word="then"; }
 	|	'end'      { word="end"; }
-	|	str=STRING { word=getString(str);} //str.getText(); word=word.substring( 1, word.length()-1 ); }
+	|	str=STRING { word=getString(str);} 
 	;
 
 operator returns [String str] 	
@@ -1117,6 +1153,7 @@ BOOL
 ID	
 	:	('a'..'z'|'A'..'Z'|'_'|'$' | '\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9' | '\u00c0'..'\u00ff')* 
 	;
+	
 		
 
 SH_STYLE_SINGLE_LINE_COMMENT	
