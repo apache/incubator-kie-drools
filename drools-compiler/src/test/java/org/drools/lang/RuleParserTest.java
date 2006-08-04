@@ -36,8 +36,10 @@ import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
@@ -119,6 +121,51 @@ public class RuleParserTest extends TestCase {
         
     }
     
+    public void testTemplates() throws Exception {
+        
+        final RuleParser parser = parseResource( "test_Templates.drl" );
+
+        parser.compilation_unit();
+        final PackageDescr pkg = parser.getPackageDescr();
+
+        if (parser.hasErrors()) {
+        	System.err.println("FACT TEMPLATES FAILED: " + parser.getErrorMessages());
+        }
+        assertFalse( parser.hasErrors() );
+        
+        assertEquals( 1, pkg.getRules().size() );
+        assertEquals(2, pkg.getFactTemplates().size());
+        
+        FactTemplateDescr fact1 = (FactTemplateDescr) pkg.getFactTemplates().get(0);
+        assertEquals("Cheese", fact1.getName());
+        assertEquals(2, fact1.getFields().size());
+        
+        assertEquals("name", ((FieldTemplateDescr)fact1.getFields().get(0)).getName());
+        assertEquals("String", ((FieldTemplateDescr)fact1.getFields().get(0)).getClassType());
+        
+        assertEquals("age", ((FieldTemplateDescr)fact1.getFields().get(1)).getName());
+        assertEquals("Integer", ((FieldTemplateDescr)fact1.getFields().get(1)).getClassType());
+        
+        fact1 = null;
+        
+        FactTemplateDescr fact2 = (FactTemplateDescr) pkg.getFactTemplates().get(1);
+        assertEquals("Wine", fact2.getName());
+        assertEquals(3, fact2.getFields().size());
+        
+        assertEquals("name", ((FieldTemplateDescr)fact2.getFields().get(0)).getName());
+        assertEquals("String", ((FieldTemplateDescr)fact2.getFields().get(0)).getClassType());
+
+        assertEquals("year", ((FieldTemplateDescr)fact2.getFields().get(1)).getName());
+        assertEquals("String", ((FieldTemplateDescr)fact2.getFields().get(1)).getClassType());
+        
+        assertEquals("accolades", ((FieldTemplateDescr)fact2.getFields().get(2)).getName());
+        assertEquals("String[]", ((FieldTemplateDescr)fact2.getFields().get(2)).getClassType());
+
+        
+        
+        
+    }    
+    
     public void testTernaryExpression() throws Exception {
 
         final RuleParser parser = parseResource( "ternary_expression.drl" );
@@ -157,10 +204,14 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testFunctionWithArrays() throws Exception {
-        final DrlParser parser = new DrlParser();
-        final Reader drl = new InputStreamReader( this.getClass().getResourceAsStream( "function_arrays.drl" ) );
+        RuleParser parser = parseResource( "function_arrays.drl" );
 
-        final PackageDescr pkg = parser.parse( drl );
+        parser.compilation_unit();
+        PackageDescr pkg = parser.getPackageDescr();
+        
+        if (parser.hasErrors()) {
+        	System.err.println(parser.getErrorMessages());
+        }
         assertFalse( parser.hasErrors() );
         assertEquals( "foo",
                       pkg.getName() );
