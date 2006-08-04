@@ -35,6 +35,7 @@ import org.drools.base.evaluators.Operator;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.InstanceEqualsConstraint;
 import org.drools.common.InstanceNotEqualsConstraint;
+import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;
@@ -399,8 +400,6 @@ class ReteooBuilder
                                  final boolean removeIdentities) throws InvalidPatternException {
         final List constraints = column.getConstraints();
 
-//        final Class thisClass = ((ClassObjectType) column.getObjectType()).getClassType();
-
         this.objectSource = attachNode( new ObjectTypeNode( this.id++,
                                                             this.sinklistFactory.newObjectSinkList( ObjectTypeNode.class ),
                                                             column.getObjectType(),
@@ -408,16 +407,17 @@ class ReteooBuilder
 
         final List predicateConstraints = new ArrayList();
 
-        if ( removeIdentities ) {
-//            // Check if this object type exists before
-//            // If it does we need stop instance equals cross product
-//            for ( final Iterator it = this.objectType.entrySet().iterator(); it.hasNext(); ) {
-//                final Map.Entry entry = (Map.Entry) it.next();
-//                final Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
-//                if ( thisClass.isAssignableFrom( previousClass ) ) {
-//                    predicateConstraints.add( new InstanceNotEqualsConstraint( ((Integer) entry.getValue()).intValue() ) );
-//                }
-//            }
+        if ( removeIdentities && column.getObjectType().getClass() != FactTemplateObjectType.class ) {
+            // Check if this object type exists before
+            // If it does we need stop instance equals cross product
+            final Class thisClass = ((ClassObjectType) column.getObjectType()).getClassType();
+            for ( final Iterator it = this.objectType.entrySet().iterator(); it.hasNext(); ) {
+                final Map.Entry entry = (Map.Entry) it.next();
+                final Class previousClass = ((ClassObjectType) entry.getKey()).getClassType();
+                if ( thisClass.isAssignableFrom( previousClass ) ) {
+                    predicateConstraints.add( new InstanceNotEqualsConstraint( ((Integer) entry.getValue()).intValue() ) );
+                }
+            }
 
             // Must be added after the checking, otherwise it matches against itself
             this.objectType.put( column.getObjectType(),
