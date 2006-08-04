@@ -1,9 +1,12 @@
 package org.drools.facttemplates;
 
+import org.drools.rule.Package;
+
 import junit.framework.TestCase;
 
 public class TestFactTemplate extends TestCase {
     public void testFieldsAndGetters() {
+        Package pkg = new Package( "org.store" );
         FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                           0,
                                                           String.class );
@@ -11,7 +14,7 @@ public class TestFactTemplate extends TestCase {
                                                            1,
                                                            Integer.class );
         FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
-        FactTemplate cheese = new FactTemplateImpl( "org.store",
+        FactTemplate cheese = new FactTemplateImpl( pkg,
                                                     "Cheese",
                                                     fields );
 
@@ -43,6 +46,8 @@ public class TestFactTemplate extends TestCase {
     }
 
     public void testEqualsAndHashCode() {
+        Package pkg = new Package( "org.store" );
+        
         // Create cheese1 with name and price fields
         FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                           0,
@@ -51,7 +56,7 @@ public class TestFactTemplate extends TestCase {
                                                            1,
                                                            Integer.class );
         FieldTemplate[] fields1 = new FieldTemplate[]{cheeseName, cheesePrice};
-        FactTemplate cheese1 = new FactTemplateImpl( "org.store",
+        FactTemplate cheese1 = new FactTemplateImpl( pkg,
                                                      "Cheese",
                                                      fields1 );
 
@@ -60,7 +65,7 @@ public class TestFactTemplate extends TestCase {
                                                           0,
                                                           String.class );
         FieldTemplate[] fields2 = new FieldTemplate[]{cheeseType, cheesePrice};
-        FactTemplate cheese2 = new FactTemplateImpl( "org.store",
+        FactTemplate cheese2 = new FactTemplateImpl( pkg,
                                                      "Cheese",
                                                      fields2 );
 
@@ -80,7 +85,7 @@ public class TestFactTemplate extends TestCase {
                                                             1,
                                                             Integer.class );
         FieldTemplate[] fields3 = new FieldTemplate[]{cheeseName2, cheesePrice2};
-        FactTemplate cheese3 = new FactTemplateImpl( "org.store",
+        FactTemplate cheese3 = new FactTemplateImpl( pkg,
                                                      "Cheese",
                                                      fields3 );
         
@@ -91,6 +96,7 @@ public class TestFactTemplate extends TestCase {
     }
     
     public void testFacts() {
+        Package pkg = new Package( "org.store" );
         FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                           0,
                                                           String.class );
@@ -98,7 +104,7 @@ public class TestFactTemplate extends TestCase {
                                                            1,
                                                            Integer.class );
         FieldTemplate[] fields1 = new FieldTemplate[]{cheeseName, cheesePrice};
-        FactTemplate cheese1 = new FactTemplateImpl( "org.store",
+        FactTemplate cheese1 = new FactTemplateImpl( pkg,
                                                      "Cheese",
                                                      fields1 );        
         

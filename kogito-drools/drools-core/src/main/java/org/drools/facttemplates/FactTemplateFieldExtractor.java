@@ -3,7 +3,7 @@ package org.drools.facttemplates;
 import org.drools.base.ValueType;
 import org.drools.spi.FieldExtractor;
 
-public class FactTemplatorFieldExtractor
+public class FactTemplateFieldExtractor
     implements
     FieldExtractor {
 
@@ -11,7 +11,7 @@ public class FactTemplatorFieldExtractor
     private FactTemplate             factTemplate;
     private int                      fieldIndex;
 
-    public FactTemplatorFieldExtractor(final FactTemplate factTemplate,
+    public FactTemplateFieldExtractor(final FactTemplate factTemplate,
                                        final int fieldIndex) {
         this.factTemplate = factTemplate;
         this.fieldIndex = fieldIndex;
@@ -31,6 +31,6 @@ public class FactTemplatorFieldExtractor
     }
     
     public Class getExtractToClass() {
-        return this.factTemplate.getFieldTemplate( fieldIndex ).getValueType().getClass();
+        return Fact.class;//this.factTemplate.getFieldTemplate( fieldIndex ).getValueType().getClass();
     }
 }

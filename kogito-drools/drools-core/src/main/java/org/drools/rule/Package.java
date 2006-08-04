@@ -27,12 +27,14 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.facttemplates.FactTemplate;
 import org.drools.spi.TypeResolver;
 
 /**
@@ -54,10 +56,7 @@ public class Package
     /**
      * 
      */
-    private static final long      serialVersionUID = -3098171849409626501L;
-
-    /** Empty <code>Package</code> array. */
-    public static final Package[]  EMPTY_ARRAY      = new Package[0];
+    private static final long      serialVersionUID = 320;
 
     // ------------------------------------------------------------
     // Instance members
@@ -72,8 +71,8 @@ public class Package
     private List                   imports;
 
     private Map                    globals;
-
-    //private Map                    functions;
+    
+    private Map                    factTemplates;
 
     // @todo: add attributes to Package
     //private Map                   attributes;
@@ -122,8 +121,8 @@ public class Package
         this.name = name;
         this.imports = new ArrayList( 1 );
         this.rules = new LinkedHashMap();
-        this.globals = new HashMap();
-        //this.functions = new HashMap();
+        this.globals = Collections.EMPTY_MAP;
+        this.factTemplates = Collections.EMPTY_MAP;
         this.packageCompilationData = new PackageCompilationData( parentClassLoader );
     }
 
@@ -137,7 +136,6 @@ public class Package
         stream.writeObject( this.name );
         stream.writeObject( this.imports );
         stream.writeObject( this.globals );
-        //stream.writeObject( functions );
 
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
         // a byte[]
@@ -160,7 +158,6 @@ public class Package
         this.name = (String) stream.readObject();
         this.imports = (List) stream.readObject();
         this.globals = (Map) stream.readObject();
-        //this.functions = (Map) stream.readObject( );
 
         // Return the rules stored as a byte[]
         final byte[] bytes = (byte[]) stream.readObject();
@@ -220,6 +217,9 @@ public class Package
 
     public void addGlobal(final String identifier,
                           final Class clazz) {
+        if ( this.globals == Collections.EMPTY_MAP ) {
+            this.globals = new HashMap( 1 );
+        }
         this.globals.put( identifier,
                           clazz );
     }
@@ -234,6 +234,17 @@ public class Package
 
     public void removeFunction(final String functionName) {
         this.packageCompilationData.remove( this.name + "." + ucFirst( functionName ) );
+    }
+    
+    public FactTemplate getFactTemplate(final String name) {
+        return ( FactTemplate )  this.factTemplates.get( name );
+    }
+    
+    public void addFactTemplate(FactTemplate factTemplate) {
+        if ( this.factTemplates == Collections.EMPTY_MAP ) {
+            this.factTemplates = new HashMap( 1 );
+        }
+        this.factTemplates.put( factTemplate.getName(), factTemplate );
     }
 
     /**

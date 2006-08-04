@@ -16,8 +16,11 @@
  */
 package org.drools.facttemplates;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.drools.rule.Package;
 
 
 /**
@@ -38,12 +41,29 @@ import java.util.List;
  * undesirable.
  */
 public class FactTemplateImpl implements FactTemplate {
-    private FieldTemplate[] fields;
-    private String templateName = null;
+    private static int hashCode(Object[] array) {
+        final int PRIME = 31;
+        if ( array == null ) return 0;
+        int result = 1;
+        for ( int index = 0; index < array.length; index++ ) {
+            result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
+        }
+        return result;
+    }
 
-    public FactTemplateImpl(String name, FieldTemplate[] fields){
-        this.templateName = name;
+    private FieldTemplate[] fields;
+    private Package pkg;
+    private String name;    
+
+    public FactTemplateImpl(Package pkg, String name, FieldTemplate[] fields){
+        this.pkg = pkg;
+        this.name = name;
         this.fields = fields;
+        this.pkg.addFactTemplate( this );        
+    }
+    
+    public Package getPackage() {
+        return this.pkg;
     }
            
     /**
@@ -51,7 +71,7 @@ public class FactTemplateImpl implements FactTemplate {
      * @param name
      */
     public String getName(){
-        return this.templateName;
+        return this.name;
     }
 
     /**
@@ -124,7 +144,7 @@ public class FactTemplateImpl implements FactTemplate {
      */
     public String toString(){
         StringBuffer buf = new StringBuffer();
-        buf.append("(" + this.templateName + " ");
+        buf.append("(" + this.name + " ");
 //        for (int idx=0; idx < this.slots.length; idx++){
 //            buf.append("(" + this.slots[idx].getName() + 
 //                    " (type " + ConversionUtils.getTypeName(
@@ -137,5 +157,32 @@ public class FactTemplateImpl implements FactTemplate {
         buf.append(")");
         return buf.toString();
     }
+
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + FactTemplateImpl.hashCode( this.fields );
+        result = PRIME * result + this.name.hashCode();
+        result = PRIME * result + this.pkg.hashCode();
+        return result;
+    }
+
+    public boolean equals(Object object) {
+        if ( this == object ) {
+            return true;
+        }
+        
+        if ( object == null || getClass() != object.getClass() ) {
+            return false;
+        }
+        
+        final FactTemplateImpl other = (FactTemplateImpl) object;
+        if ( !Arrays.equals( this.fields,
+                             other.fields ) ) return false;
+        
+        return this.pkg.equals( other.pkg ) && this.name.equals( other.name );        
+    }
+    
+    
     
 }

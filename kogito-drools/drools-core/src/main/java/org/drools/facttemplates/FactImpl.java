@@ -77,6 +77,20 @@ public class FactImpl implements Fact, Serializable {
         return this.values[ index ];
     }
     
+    public Object getFieldValue(String name){
+        return this.values[ this.factTemplate.getFieldTemplateIndex( name ) ];
+    }
+    
+    
+    
+    public void setFieldValue(String name, Object value) {
+        setFieldValue( this.factTemplate.getFieldTemplateIndex( name ),
+                       value );
+    }
+    
+    public void setFieldValue(int index, Object value) {
+        this.values[ index ] = value;
+    }
      
 
     /**
@@ -108,7 +122,6 @@ public class FactImpl implements Fact, Serializable {
             int result = 1;
             result = PRIME * result + this.factTemplate.hashCode();
             result = PRIME * result + FactImpl.hashCode( this.values );
-            result = PRIME * result + (int) (this.id ^ (this.id >>> 32));
             hashCode = result;
             
         }
