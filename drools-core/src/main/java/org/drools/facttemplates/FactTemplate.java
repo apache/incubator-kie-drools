@@ -18,6 +18,8 @@ package org.drools.facttemplates;
 
 import java.io.Serializable;
 
+import org.drools.rule.Package;
+
 
 /**
  * @author Peter Lin
@@ -29,6 +31,9 @@ import java.io.Serializable;
 public interface FactTemplate
     extends
     Serializable {
+    
+    Package getPackage();
+    
     /**
      * The name of the template may be the fully qualified
      * class name, or an alias.
@@ -68,4 +73,6 @@ public interface FactTemplate
      * @return
      */
     int getFieldTemplateIndex(String name);
+    
+    Fact createFact(long id);
 }

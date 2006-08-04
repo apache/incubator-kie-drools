@@ -87,7 +87,11 @@ public class FactTemplateObjectType
      *         object type, else <code>false</code>.
      */
     public boolean matches(final Object object) {
-        return this.factTemplate == object;
+        if ( object.getClass() == FactImpl.class ) {
+            return this.factTemplate.equals( ( (Fact) object ).getFactTemplate() );
+        } else {
+            return false;
+        }
     }
 
 
@@ -119,7 +123,7 @@ public class FactTemplateObjectType
 
         FactTemplateObjectType other = ( FactTemplateObjectType ) object;
         
-        return this.factTemplate == other.factTemplate;
+        return this.factTemplate.equals( other.factTemplate );
     }
 
     public int hashCode() {

@@ -28,6 +28,8 @@ import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.NodeMemory;
+import org.drools.facttemplates.Fact;
+import org.drools.facttemplates.FactImpl;
 import org.drools.spi.ObjectType;
 import org.drools.spi.ObjectTypeResolver;
 import org.drools.spi.PropagationContext;
@@ -109,10 +111,19 @@ class Rete extends ObjectSource
 
         final Object object = handle.getObject();
 
-        ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( object.getClass() );
+        
+        Object key = null;
+            
+        if  ( object.getClass() == FactImpl.class ) {
+            key = ( ( Fact ) object ).getFactTemplate().getName();
+        } else {
+            key = object.getClass();
+        }
+        
+        ObjectTypeNode[] cachedNodes = (ObjectTypeNode[]) memory.get( key );
         if ( cachedNodes == null ) {
             cachedNodes = getMatchingNodes( object );
-            memory.put( object.getClass(),
+            memory.put( key,
                         cachedNodes );
         }
 

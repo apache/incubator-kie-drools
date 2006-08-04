@@ -2,12 +2,15 @@ package org.drools.facttemplates;
 
 import org.drools.Cheese;
 import org.drools.rule.Declaration;
+import org.drools.rule.Package;
 import org.drools.spi.Extractor;
 
 import junit.framework.TestCase;
 
 public class TestFactTemplateFieldExtractor extends TestCase {
     public void testExtractor() {
+        Package pkg = new Package( "org.store" );
+
         FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                           0,
                                                           String.class );
@@ -15,7 +18,7 @@ public class TestFactTemplateFieldExtractor extends TestCase {
                                                            1,
                                                            Integer.class );
         FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
-        FactTemplate cheese = new FactTemplateImpl( "org.store",
+        FactTemplate cheese = new FactTemplateImpl( pkg,
                                                     "Cheese",
                                                     fields );
 
@@ -48,8 +51,10 @@ public class TestFactTemplateFieldExtractor extends TestCase {
         assertEquals( new Integer( 55 ),
                       extractPrice.getValue( brie ) );
     }
-    
+
     public void testDeclaration() {
+        Package pkg = new Package( "org.store" );
+
         FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                           0,
                                                           String.class );
@@ -57,13 +62,13 @@ public class TestFactTemplateFieldExtractor extends TestCase {
                                                            1,
                                                            Integer.class );
         FieldTemplate[] fields = new FieldTemplate[]{cheeseName, cheesePrice};
-        FactTemplate cheese = new FactTemplateImpl( "org.store",
+        FactTemplate cheese = new FactTemplateImpl( pkg,
                                                     "Cheese",
                                                     fields );
-        
+
         Extractor extractName = new FactTemplateFieldExtractor( cheese,
-                                                                0 );        
-        
+                                                                0 );
+
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractName,
                                                          0 );
@@ -74,8 +79,8 @@ public class TestFactTemplateFieldExtractor extends TestCase {
         brie.setFieldValue( "price",
                             new Integer( 55 ) );
 
-        /* Check we can extract Declarations correctly */
+        // Check we can extract Declarations correctly 
         assertEquals( "brie",
-                      declaration.getValue( brie ) );        
+                      declaration.getValue( brie ) );
     }
 }

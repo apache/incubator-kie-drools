@@ -2,6 +2,7 @@ package org.drools.spi;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
+import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
 
 /*
@@ -47,7 +48,7 @@ public class ColumnExtractor
         if ( objectType.getClass() == ClassObjectType.class ) {
             return ( ( ClassObjectType ) objectType ).getClassType();
         } else {
-            return FactTemplate.class;
+            return Fact.class;
         } 
     }
 

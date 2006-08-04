@@ -29,6 +29,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
 import org.drools.spi.Evaluator;
@@ -147,7 +148,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                     memory.contains( f0 ) );
 
     }
-
+    
     /*
      * dont need to test with and without memory on this, as it was already done
      * on the previous two tests. This just test AlphaNode With a different
