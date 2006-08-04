@@ -37,6 +37,9 @@ import org.drools.base.FieldImpl;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.compiler.RuleError;
+import org.drools.facttemplates.FactTemplate;
+import org.drools.facttemplates.FactTemplateFieldExtractor;
+import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.ColumnDescr;
@@ -81,6 +84,7 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.ObjectType;
 import org.drools.spi.Restriction;
 import org.drools.spi.TypeResolver;
 
@@ -382,24 +386,30 @@ public class RuleBuilder {
             return null;
         }
 
-        Class clazz = null;
-
-        try {
-            //clazz = Class.forName( columnDescr.getObjectType() );
-            clazz = this.typeResolver.resolveType( columnDescr.getObjectType() );
-        } catch ( final ClassNotFoundException e ) {
-            this.errors.add( new RuleError( this.rule,
-                                            columnDescr,
-                                            null,
-                                            "Unable to resolve ObjectType '" + columnDescr.getObjectType() + "'" ) );
-            return null;
+        ObjectType objectType = null;
+                
+        FactTemplate factTemplate  = this.pkg.getFactTemplate( columnDescr.getObjectType() );
+        
+        if ( factTemplate != null ){
+            objectType = new FactTemplateObjectType( factTemplate );
+        } else {            
+            try {
+                //clazz = Class.forName( columnDescr.getObjectType() );
+                objectType = new ClassObjectType( this.typeResolver.resolveType( columnDescr.getObjectType() )) ;
+            } catch ( final ClassNotFoundException e ) {
+                this.errors.add( new RuleError( this.rule,
+                                                columnDescr,
+                                                null,
+                                                "Unable to resolve ObjectType '" + columnDescr.getObjectType() + "'" ) );
+                return null;
+            }
         }
 
         Column column;
         if ( columnDescr.getIdentifier() != null && !columnDescr.getIdentifier().equals( "" ) ) {
             column = new Column( this.columnCounter.getNext(),
                                  this.columnOffset,
-                                 new ClassObjectType( clazz ),
+                                 objectType,
                                  columnDescr.getIdentifier() );;
             this.declarations.put( column.getDeclaration().getIdentifier(),
                                    column.getDeclaration() );
@@ -411,7 +421,7 @@ public class RuleBuilder {
         } else {
             column = new Column( this.columnCounter.getNext(),
                                  this.columnOffset,
-                                 new ClassObjectType( clazz ),
+                                 objectType,
                                  null );
         }
 
@@ -434,10 +444,8 @@ public class RuleBuilder {
     private void build(final Column column,
                        final FieldConstraintDescr fieldConstraintDescr) {
 
-        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-
         final FieldExtractor extractor = getFieldExtractor( fieldConstraintDescr,
-                                                            clazz,
+                                                            column.getObjectType(),
                                                             fieldConstraintDescr.getFieldName() );
         if ( extractor == null ) {
             // @todo log error
@@ -603,10 +611,8 @@ public class RuleBuilder {
             return;
         }
 
-        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-
         final FieldExtractor extractor = getFieldExtractor( fieldBindingDescr,
-                                                            clazz,
+                                                            column.getObjectType(),
                                                             fieldBindingDescr.getFieldName() );
         if ( extractor == null ) {
             return;
@@ -780,10 +786,8 @@ public class RuleBuilder {
         final String classMethodName = "predicate" + this.counter++;
         predicateDescr.setClassMethodName( classMethodName );
 
-        final Class clazz = ((ClassObjectType) column.getObjectType()).getClassType();
-
         final FieldExtractor extractor = getFieldExtractor( predicateDescr,
-                                                            clazz,
+                                                            column.getObjectType(),
                                                             predicateDescr.getFieldName() );
         if ( extractor == null ) {
             return;
@@ -1062,17 +1066,24 @@ public class RuleBuilder {
     }
 
     private FieldExtractor getFieldExtractor(final PatternDescr descr,
-                                             final Class clazz,
+                                             final ObjectType objectType,
                                              final String fieldName) {
         FieldExtractor extractor = null;
-        try {
-            extractor = classFieldExtractorCache.getExtractor( clazz,
-                                                               fieldName );
-        } catch ( final RuntimeDroolsException e ) {
-            this.errors.add( new RuleError( this.rule,
-                                            descr,
-                                            e,
-                                            "Unable to create Field Extractor for '" + fieldName + "'" ) );
+        
+        if ( objectType.getValueType() == ValueType.FACTTEMPLATE_TYPE ) {
+            //@todo use extractor cache            
+            FactTemplate factTemplate = ( ( FactTemplateObjectType ) objectType ).getFactTemplate();
+            extractor = new FactTemplateFieldExtractor( factTemplate, factTemplate.getFieldTemplateIndex( fieldName ));
+        } else {        
+            try {
+                extractor = classFieldExtractorCache.getExtractor( ( ( ClassObjectType ) objectType ).getClassType(),
+                                                                   fieldName );
+            } catch ( final RuntimeDroolsException e ) {
+                this.errors.add( new RuleError( this.rule,
+                                                descr,
+                                                e,
+                                                "Unable to create Field Extractor for '" + fieldName + "'" ) );
+            }
         }
 
         return extractor;

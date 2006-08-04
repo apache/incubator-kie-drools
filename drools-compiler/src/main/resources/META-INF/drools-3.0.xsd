@@ -180,6 +180,7 @@
   <xs:element name="field-constraint">
     <xs:complexType>
       <xs:choice maxOccurs="unbounded" minOccurs="0">  
+        <xs:element ref="drools:connective-restriction"/>                            
         <xs:element ref="drools:literal-restriction"/>                      
         <xs:element ref="drools:variable-restriction"/>                
         <xs:element ref="drools:return-value-restriction"/>                
