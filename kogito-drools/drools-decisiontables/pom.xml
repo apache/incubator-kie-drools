@@ -32,37 +32,7 @@
     </dependency>
   </dependencies>
 
-  <!-- This is needed to copy the generated jars into the IDE/Plugs lib directory -->
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-            <execution>
-                <id>package</id>
-                <phase>package</phase>
-                <configuration>
-                    <tasks>
-                        <echo message="Copying file ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging} to ../drools-ide/lib/${project.artifactId}.${project.packaging}" />
-                        <copy file="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" tofile="../drools-ide/lib/${project.artifactId}.${project.packaging}" />
-                    </tasks>
-                </configuration>
-                <goals>
-                    <goal>run</goal>
-                </goals>
-            </execution>
-        </executions>
-        <dependencies>
-	        <dependency>
-                <groupId>ant</groupId>
-                <artifactId>ant-antlr</artifactId>
-                <version>1.6.5</version>
-	        </dependency>
-        </dependencies>
-      </plugin>      
-    </plugins>
-  </build>
+  <build/>
   
 
 
