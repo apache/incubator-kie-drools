@@ -64,6 +64,8 @@ import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.DefaultAgendaEventListener;
+import org.drools.facttemplates.Fact;
+import org.drools.facttemplates.FactTemplate;
 import org.drools.integrationtests.helloworld.Message;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
@@ -242,27 +244,6 @@ public abstract class IntegrationCases extends TestCase {
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
-        final AgendaEventListener listener = new DefaultAgendaEventListener() {
-
-            public void activationCreated(ActivationCreatedEvent event) {
-                System.out.println( event );
-            }
-
-            public void activationCancelled(ActivationCancelledEvent event) {
-                System.out.println( event );
-            }
-
-            public void beforeActivationFired(BeforeActivationFiredEvent event) {
-                System.out.println( event );
-            }
-
-            public void afterActivationFired(AfterActivationFiredEvent event) {
-                System.out.println( event );
-            }
-        };
-
-        workingMemory.addEventListener( listener );
-
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
@@ -299,6 +280,31 @@ public abstract class IntegrationCases extends TestCase {
 
         assertEquals( bill,
                       list.get( 0 ) );
+    }
+    
+    public void testFactTemplate() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactTemplate.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+        
+        FactTemplate cheese = pkg.getFactTemplate( "Cheese" );
+        Fact stilton = cheese.createFact( 0 );
+        stilton.setFieldValue( "name", "stilton" );
+        stilton.setFieldValue( "price", new Integer( 100 ) );
+        workingMemory.assertObject( stilton );
+        workingMemory.fireAllRules();
+        
+        assertEquals( 1, list.size() );
+        assertEquals( stilton, list.get( 0 ) );
+        
     }
 
     public void testPropertyChangeSupport() throws Exception {
