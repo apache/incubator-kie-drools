@@ -2691,4 +2691,28 @@ public abstract class IntegrationCases extends TestCase {
         }
     }
 
+    public void testExistsWithBinding() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( 
+               getClass().getResourceAsStream( "test_ExistsWithBindings.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        Cheese c = new Cheese( "stilton", 10 );
+        Person p = new Person( "Mark", "stilton" );
+        workingMemory.assertObject( c );
+        workingMemory.assertObject( p );
+        workingMemory.fireAllRules();
+
+        assertTrue( list.contains( c.getType() ) );
+        assertEquals(1, list.size() );        
+    }
+
 }
