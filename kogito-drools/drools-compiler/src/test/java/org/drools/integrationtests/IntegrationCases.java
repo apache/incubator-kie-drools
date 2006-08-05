@@ -304,6 +304,9 @@ public abstract class IntegrationCases extends TestCase {
         
         assertEquals( 1, list.size() );
         assertEquals( stilton, list.get( 0 ) );
+        Fact fact = ( Fact ) list.get( 0 );
+        assertSame( stilton, fact);
+        assertEquals( new Integer( 200 ), fact.getFieldValue( "price" ) );
         
     }
 
