@@ -16,8 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import java.util.Arrays;
-
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.spi.Evaluator;
@@ -66,15 +64,6 @@ public class VariableConstraint
     public boolean isAllowed(final InternalFactHandle handle,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
-        //can't do this as null indexing breaks.        
-        //        Object left = workingMemory.getObject( tuple.get( this.declaration ) );
-        //        Object right = workingMemory.getObject( handle );
-        //        if ( left == right ) {
-        //            return  false;
-        //        } else {
-        //            return evaluator.evaluate( this.fieldExtractor.getValue( right ),
-        //                                       declaration.getValue( left ) );                
-        //        }
         return this.restriction.isAllowed( this.fieldExtractor.getValue( handle.getObject() ),
                                            handle,
                                            tuple,
