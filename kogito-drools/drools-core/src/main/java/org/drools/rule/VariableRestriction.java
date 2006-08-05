@@ -71,7 +71,7 @@ public class VariableRestriction implements Restriction {
         //                                       declaration.getValue( left ) );                
         //        }
         return this.evaluator.evaluate( object,
-                                        this.declaration.getValue( tuple.get( this.column ).getObject() ) );
+                                        this.declaration.getValue( tuple.get( this.declaration ).getObject() ) );
     }
 
     public String toString() {
