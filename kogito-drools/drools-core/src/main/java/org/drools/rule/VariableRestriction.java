@@ -26,7 +26,9 @@ import org.drools.spi.FieldExtractor;
 import org.drools.spi.Restriction;
 import org.drools.spi.Tuple;
 
-public class VariableRestriction implements Restriction {
+public class VariableRestriction
+    implements
+    Restriction {
 
     /**
      * 
@@ -35,8 +37,6 @@ public class VariableRestriction implements Restriction {
 
     private final Declaration   declaration;
 
-    private final int           column;
-
     private final Declaration[] requiredDeclarations;
 
     private final Evaluator     evaluator;
@@ -44,7 +44,6 @@ public class VariableRestriction implements Restriction {
     public VariableRestriction(final Declaration declaration,
                                final Evaluator evaluator) {
         this.declaration = declaration;
-        this.column = declaration.getColumn();
         this.requiredDeclarations = new Declaration[]{declaration};
         this.evaluator = evaluator;
     }
@@ -61,15 +60,6 @@ public class VariableRestriction implements Restriction {
                              final InternalFactHandle handle,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
-        //can't do this as null indexing breaks.        
-        //        Object left = workingMemory.getObject( tuple.get( this.declaration ) );
-        //        Object right = workingMemory.getObject( handle );
-        //        if ( left == right ) {
-        //            return  false;
-        //        } else {
-        //            return evaluator.evaluate( this.fieldExtractor.getValue( right ),
-        //                                       declaration.getValue( left ) );                
-        //        }
         return this.evaluator.evaluate( object,
                                         this.declaration.getValue( tuple.get( this.declaration ).getObject() ) );
     }
@@ -84,7 +74,6 @@ public class VariableRestriction implements Restriction {
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + this.column;
         result = PRIME * result + ((this.declaration == null) ? 0 : this.declaration.hashCode());
         result = PRIME * result + ((this.evaluator == null) ? 0 : this.evaluator.hashCode());
         result = PRIME * result + this.requiredDeclarations[0].hashCode();
@@ -102,8 +91,8 @@ public class VariableRestriction implements Restriction {
 
         final VariableRestriction other = (VariableRestriction) object;
 
-        return (this.column == other.column) && this.declaration.equals( other.declaration ) && this.evaluator.equals( other.evaluator ) && Arrays.equals( this.requiredDeclarations,
-                                                                                                                                                           other.requiredDeclarations );
+        return this.declaration.equals( other.declaration ) && this.evaluator.equals( other.evaluator ) && Arrays.equals( this.requiredDeclarations,
+                                                                                                                          other.requiredDeclarations );
     }
 
 }
