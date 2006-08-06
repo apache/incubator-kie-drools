@@ -142,6 +142,11 @@ public class ClassTypeResolver
 
         }
 
+        // Now try the java.lang package
+        if (clazz == null) {
+        	clazz = defaultClass( className );
+        }
+
         // We still can't find the class so throw an exception 
         if ( clazz == null ) {
             throw new ClassNotFoundException( "Unable to find class '" + className + "'" );
@@ -197,6 +202,23 @@ public class ClassTypeResolver
         return clazz;
     }
 
+    private Class defaultClass(String className) {
+		String qualifiedClass = "java.lang." + className;
+		Class clazz = null;
+		try {
+			clazz = this.classLoader.loadClass(qualifiedClass);
+		} catch (final ClassNotFoundException e) {
+			// do nothing
+		}
+		if (clazz != null) {
+			if (this.cachedImports == Collections.EMPTY_MAP) {
+				this.cachedImports = new HashMap();
+			}
+			this.cachedImports.put(className, clazz);
+		}
+		return clazz;
+	}
+    
     public boolean isEmpty() {
         return this.imports.isEmpty();
     }
