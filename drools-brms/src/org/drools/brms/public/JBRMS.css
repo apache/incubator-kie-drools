@@ -254,3 +254,13 @@ a:visited {
 .infoProse {
   margin: 8px;
 }
+
+
+.rule-List {
+	border: 1px solid #AAAAAA;
+	background-color: white;
+	font-size: 70%;
+	cursor: pointer;
+	cursor: hand;
+}
+

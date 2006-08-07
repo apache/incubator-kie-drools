@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SourcesTableEvents;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TableListener;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -15,42 +16,55 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class RuleList extends Composite implements TableListener, ClickListener {
 
-  private static final int VISIBLE_EMAIL_COUNT = 10;
+  private static final int EDITOR_TAB = 1;
+
+private static final int VISIBLE_EMAIL_COUNT = 10;
 
   private HTML countLabel = new HTML();
   private HTML prevButton = new HTML("<a href='javascript:;'>&lt; prev</a>",
     true);
   private HTML nextButton = new HTML("<a href='javascript:;'>next &gt;</a>",
     true);
+  
+  private HTML editButton = new HTML("<a href='javascript:;'>edit</a>",
+		    true);  
+  
   private int startIndex, selectedRow = -1;
   private FlexTable table = new FlexTable();
   private HorizontalPanel navBar = new HorizontalPanel();
-
-  public RuleList() {
+  private TabPanel	tabPanel;
+  
+  
+  public RuleList(TabPanel tab) {
+	  
+	tabPanel = tab;
+	  
     // Setup the table.
     table.setCellSpacing(0);
-    table.setCellPadding(2);
+    table.setCellPadding(0);
     table.setWidth("100%");
 
     // Hook up events.
     table.addTableListener(this);
     prevButton.addClickListener(this);
     nextButton.addClickListener(this);
+    editButton.addClickListener(this);
 
     // Create the 'navigation' bar at the upper-right.
     HorizontalPanel innerNavBar = new HorizontalPanel();
-    innerNavBar.setStyleName("mail-ListNavBar");
+    innerNavBar.setStyleName("rule-ListNavBar");
     innerNavBar.setSpacing(8);
     innerNavBar.add(prevButton);
     innerNavBar.add(countLabel);
     innerNavBar.add(nextButton);
+    innerNavBar.add(editButton);
 
     navBar.setHorizontalAlignment(HorizontalPanel.ALIGN_RIGHT);
     navBar.add(innerNavBar);
     navBar.setWidth("100%");
 
     setWidget(table);
-    setStyleName("mail-List");
+    setStyleName("rule-List");
 
     initTable();
     update();
@@ -83,10 +97,18 @@ public class RuleList extends Composite implements TableListener, ClickListener 
         selectedRow = -1;
         update();
       }
+    } else if (sender == editButton) {
+    	System.out.println("selected row: " + selectedRow);
+    	changeTabToEdit();
     }
   }
 
-  /**
+  private void changeTabToEdit() {
+	tabPanel.selectTab(EDITOR_TAB);
+	
+  }
+
+/**
    * Initializes the table so that it contains enough rows for a full page of
    * emails. Also creates the images that will be used as 'read' flags.
    */
@@ -96,7 +118,7 @@ public class RuleList extends Composite implements TableListener, ClickListener 
     table.setText(0, 1, "status");
     table.setText(0, 2, "last updated by");
     table.setWidget(0, 3, navBar);
-    table.getRowFormatter().setStyleName(0, "ks-RuleListHeader");
+    table.getRowFormatter().setStyleName(0, "rule-ListHeader");
 
     // Initialize the rest of the rows.
     for (int i = 0; i < VISIBLE_EMAIL_COUNT; ++i) {

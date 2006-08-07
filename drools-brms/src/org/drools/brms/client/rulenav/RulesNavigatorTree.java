@@ -83,6 +83,10 @@ public class RulesNavigatorTree implements TreeListener {
 
   private Tree fTree = new Tree();
 
+  public void setTreeSize(String width) {
+	  fTree.setWidth(width);
+  }
+  
   public Tree getTree() {
 	  return fTree;
   }

@@ -47,13 +47,14 @@ public class JBRMSFeatureList extends Composite {
     link.setStyleName("ks-SinkItem");
 
     Widget w = link;
-    if (info.getImage() != null) {
-    	HorizontalPanel panel = new HorizontalPanel();
-    	panel.setStyleName("ks-SinkItem");
-    	panel.add(info.getImage());
-    	panel.add(link);
-    	w = panel;
-    }
+//this puts little icons next to the left hand labels    
+//    if (info.getImage() != null) {
+//    	HorizontalPanel panel = new HorizontalPanel();
+//    	panel.setStyleName("ks-SinkItem");
+//    	panel.add(info.getImage());
+//    	panel.add(link);
+//    	w = panel;
+//    }
     
     //list.add(link);
     list.add(w);
