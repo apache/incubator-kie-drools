@@ -16,34 +16,20 @@
 package org.drools.brms.client.rulelist;
 
 /**
- * A simple structure containing the basic components of an email.
+ * A simple structure containing the an item in a list for a rule asset.
  */
-public final class RuleItem {
+public final class RuleListItem {
 
-  public RuleItem(String ruleName, String status, String changedBy) {
+  public RuleListItem(String ruleName, String status, String changedBy) {
     this.name = ruleName;
     this.status = status;
-    this.changedBy = changedBy;    
+    this.changedBy = changedBy;
+    this.version = "1";
   }
 
-  /**
-   * The sender's name.
-   */
   public String name;
-
-  /**
-   * The sender's email.
-   */
   public String status;
-
-  /**
-   * The email subject line.
-   */
   public String changedBy;
+  public String version;
 
-
-  /**
-   * Read flag.
-   */
-  public boolean read;
 }

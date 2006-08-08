@@ -1,6 +1,6 @@
 package org.drools.brms.client;
 
-import org.drools.brms.client.rulelist.RuleList;
+import org.drools.brms.client.rulelist.RuleListView;
 import org.drools.brms.client.rulenav.RulesNavigatorTree;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -35,7 +35,7 @@ public class Rules extends JBRMSFeature {
 		
 		
 		panel.add(nav.getTree());
-		RuleList list = new RuleList(tab);
+		RuleListView list = new RuleListView(tab);
 		
 		
 		panel.add(list);
