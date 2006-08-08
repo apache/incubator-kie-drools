@@ -14,28 +14,23 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A composite that displays a list of emails that can be selected.
  */
-public class RuleList extends Composite implements TableListener, ClickListener {
+public class RuleListView extends Composite implements TableListener, ClickListener {
 
   private static final int EDITOR_TAB = 1;
-
-private static final int VISIBLE_EMAIL_COUNT = 10;
+  private static final int VISIBLE_ITEM_COUNT = 10;
 
   private HTML countLabel = new HTML();
-  private HTML prevButton = new HTML("<a href='javascript:;'>&lt; prev</a>",
-    true);
-  private HTML nextButton = new HTML("<a href='javascript:;'>next &gt;</a>",
-    true);
-  
-  private HTML editButton = new HTML("<a href='javascript:;'>edit</a>",
-		    true);  
+  private HTML prevButton = new HTML("<a href='javascript:;'>&lt; prev</a>",true);
+  private HTML nextButton = new HTML("<a href='javascript:;'>next &gt;</a>",true);  
+  private HTML editButton = new HTML("<a href='javascript:;'>edit</a>",true);  
   
   private int startIndex, selectedRow = -1;
   private FlexTable table = new FlexTable();
   private HorizontalPanel navBar = new HorizontalPanel();
   private TabPanel	tabPanel;
+  private RuleListData data = new RuleListData();
   
-  
-  public RuleList(TabPanel tab) {
+  public RuleListView(TabPanel tab) {
 	  
 	tabPanel = tab;
 	  
@@ -60,7 +55,7 @@ private static final int VISIBLE_EMAIL_COUNT = 10;
     innerNavBar.add(editButton);
 
     navBar.setHorizontalAlignment(HorizontalPanel.ALIGN_RIGHT);
-    navBar.add(innerNavBar);
+    navBar.add(innerNavBar); 
     navBar.setWidth("100%");
 
     setWidget(table);
@@ -79,9 +74,9 @@ private static final int VISIBLE_EMAIL_COUNT = 10;
   public void onClick(Widget sender) {
     if (sender == nextButton) {
       // Move forward a page.
-      startIndex += VISIBLE_EMAIL_COUNT;
-      if (startIndex >= RuleItems.getMailItemCount())
-        startIndex -= VISIBLE_EMAIL_COUNT;
+      startIndex += VISIBLE_ITEM_COUNT;
+      if (startIndex >= data.getMailItemCount())
+        startIndex -= VISIBLE_ITEM_COUNT;
       else {
         styleRow(selectedRow, false);
         selectedRow = -1;
@@ -89,7 +84,7 @@ private static final int VISIBLE_EMAIL_COUNT = 10;
       }
     } else if (sender == prevButton) {
       // Move back a page.
-      startIndex -= VISIBLE_EMAIL_COUNT;
+      startIndex -= VISIBLE_ITEM_COUNT;
       if (startIndex < 0)
         startIndex = 0;
       else {
@@ -97,18 +92,16 @@ private static final int VISIBLE_EMAIL_COUNT = 10;
         selectedRow = -1;
         update();
       }
-    } else if (sender == editButton) {
-    	System.out.println("selected row: " + selectedRow);
+    } else if (sender == editButton) {    	
     	changeTabToEdit();
     }
   }
 
   private void changeTabToEdit() {
-	tabPanel.selectTab(EDITOR_TAB);
-	
+	tabPanel.selectTab(EDITOR_TAB);	
   }
 
-/**
+  /**
    * Initializes the table so that it contains enough rows for a full page of
    * emails. Also creates the images that will be used as 'read' flags.
    */
@@ -117,18 +110,23 @@ private static final int VISIBLE_EMAIL_COUNT = 10;
     table.setText(0, 0, "name");
     table.setText(0, 1, "status");
     table.setText(0, 2, "last updated by");
-    table.setWidget(0, 3, navBar);
+    table.setText(0, 3, "version");
+    table.setWidget(0, 4, navBar); //TODO: maybe put this in a seperate bar not the header
     table.getRowFormatter().setStyleName(0, "rule-ListHeader");
 
     // Initialize the rest of the rows.
-    for (int i = 0; i < VISIBLE_EMAIL_COUNT; ++i) {
+    for (int i = 0; i < VISIBLE_ITEM_COUNT; ++i) {
       table.setText(i + 1, 0, "");
       table.setText(i + 1, 1, "");
       table.setText(i + 1, 2, "");
+      table.setText(i + 1, 3, "");
+      
       table.getCellFormatter().setWordWrap(i + 1, 0, false);
       table.getCellFormatter().setWordWrap(i + 1, 1, false);
       table.getCellFormatter().setWordWrap(i + 1, 2, false);
-      table.getFlexCellFormatter().setColSpan(i + 1, 2, 2);
+      table.getCellFormatter().setWordWrap(i + 1, 3, false);
+      
+      //table.getFlexCellFormatter().setColSpan(i + 1, 2, 2);
     }
   }
 
@@ -138,18 +136,15 @@ private static final int VISIBLE_EMAIL_COUNT = 10;
    * @param row the row to be selected
    */
   private void selectRow(int row) {
-    // When a row (other than the first one, which is used as a header) is
-    // selected, display its associated MailItem.
-    RuleItem item = RuleItems.getMailItem(startIndex + row);
-    if (item == null)
-      return;
 
+	//change the style flags
     styleRow(selectedRow, false);
     styleRow(row, true);
 
-    item.read = true;
+    //mark the selected row
     selectedRow = row;
     
+    //may also show "preview" view here of rule.
   }
 
   private void styleRow(int row, boolean selected) {
@@ -163,36 +158,38 @@ private static final int VISIBLE_EMAIL_COUNT = 10;
 
   private void update() {
     // Update the older/newer buttons & label.
-    int count = RuleItems.getMailItemCount();
-    int max = startIndex + VISIBLE_EMAIL_COUNT;
+    int count = data.getMailItemCount();
+    int max = startIndex + VISIBLE_ITEM_COUNT;
     if (max > count)
       max = count;
 
     prevButton.setVisible(startIndex != 0);
-    nextButton.setVisible(startIndex + VISIBLE_EMAIL_COUNT < count);
+    nextButton.setVisible(startIndex + VISIBLE_ITEM_COUNT < count);
     countLabel.setText("" + (startIndex + 1) + " - " + max + " of " + count);
 
     // Show the selected emails.
     int i = 0;
-    for (; i < VISIBLE_EMAIL_COUNT; ++i) {
+    for (; i < VISIBLE_ITEM_COUNT; ++i) {
       // Don't read past the end.
-      if (startIndex + i >= RuleItems.getMailItemCount())
+      if (startIndex + i >= data.getMailItemCount())
         break;
 
-      RuleItem item = RuleItems.getMailItem(startIndex + i);
+      RuleListItem item = data.getMailItem(startIndex + i);
 
       // Add a new row to the table, then set each of its columns to the
       // email's sender and subject values.
       table.setText(i + 1, 0, item.name);
       table.setText(i + 1, 1, item.status);
       table.setText(i + 1, 2, item.changedBy);
+      table.setText(i + 1, 3, item.version);
     }
 
     // Clear any remaining slots.
-    for (; i < VISIBLE_EMAIL_COUNT; ++i) {
+    for (; i < VISIBLE_ITEM_COUNT; ++i) {
       table.setHTML(i + 1, 0, "&nbsp;");
       table.setHTML(i + 1, 1, "&nbsp;");
       table.setHTML(i + 1, 2, "&nbsp;");
+      table.setHTML(i + 1, 3, "&nbsp;");
     }
 
     // Select the first row if none is selected.

@@ -239,7 +239,7 @@ a:visited {
   padding: 4px;
 }
 
-.ks-RuleListHeader {
+.rule-ListHeader {
 	background-image: url(images/gray_gradient.gif);
 	background-repeat: repeat-x;
 	font-weight: bold;
