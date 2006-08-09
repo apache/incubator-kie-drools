@@ -1,10 +1,14 @@
 package org.drools.base;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.ArrayFactory;
+import org.drools.base.evaluators.BigDecimalFactory;
+import org.drools.base.evaluators.BigIntegerFactory;
 import org.drools.base.evaluators.BooleanFactory;
 import org.drools.base.evaluators.ByteFactory;
 import org.drools.base.evaluators.CharacterFactory;
@@ -39,6 +43,8 @@ public class ValueType implements Serializable {
     public static final ValueType STRING_TYPE = new  ValueType( "String", String.class, StringFactory.getInstance() );    
     public static final ValueType OBJECT_TYPE = new  ValueType( "Object", Object.class, ObjectFactory.getInstance() );
     public static final ValueType FACTTEMPLATE_TYPE = new  ValueType( "FactTemplate", FactTemplate.class, ObjectFactory.getInstance() );    
+    public static final ValueType BIG_DECIMAL_TYPE = new  ValueType( "BigDecimal", BigDecimal.class, BigDecimalFactory.getInstance() );
+    public static final ValueType BIG_INTEGER_TYPE = new  ValueType( "BigInteger", BigInteger.class, BigIntegerFactory.getInstance() );
     
     private final String name;
     private final Class classType;
@@ -94,7 +100,14 @@ public class ValueType implements Serializable {
             return  ValueType .DATE_TYPE;
         } else if ( clazz.isAssignableFrom( Object[].class ) ) {
             return  ValueType .ARRAY_TYPE;
-        } else if ( clazz == String.class ) {
+        } else if ( clazz == BigDecimal.class )  {
+            return  ValueType .BIG_DECIMAL_TYPE;
+            
+        }
+        else if ( clazz == BigInteger.class )  {
+            return  ValueType .BIG_INTEGER_TYPE;            
+        } 
+        else if ( clazz == String.class ) {
             return  ValueType .STRING_TYPE;
         } else if ( clazz instanceof Object ) {
             return  ValueType .OBJECT_TYPE;

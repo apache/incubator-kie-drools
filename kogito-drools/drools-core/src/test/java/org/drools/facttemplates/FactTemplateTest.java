@@ -4,7 +4,7 @@ import org.drools.rule.Package;
 
 import junit.framework.TestCase;
 
-public class TestFactTemplate extends TestCase {
+public class FactTemplateTest extends TestCase {
     public void testFieldsAndGetters() {
         Package pkg = new Package( "org.store" );
         FieldTemplate cheeseName = new FieldTemplateImpl( "name",
@@ -19,7 +19,7 @@ public class TestFactTemplate extends TestCase {
                                                     fields );
 
         assertEquals( "org.store",
-                      cheese.getPackage() );
+                      cheese.getPackage().getName() );
         assertEquals( "Cheese",
                       cheese.getName() );
 
