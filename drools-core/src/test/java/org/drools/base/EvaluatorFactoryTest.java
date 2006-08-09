@@ -88,6 +88,43 @@ public class EvaluatorFactoryTest extends TestCase {
                           ValueType.INTEGER_TYPE );
 
     }
+    
+    public void testBigDecimal() {
+
+        ValueType type = ValueType.determineValueType(BigDecimal.class);
+        assertSame(type, ValueType.BIG_DECIMAL_TYPE);
+    	
+        final Object[][] data = {{new BigDecimal( 42 ), "==", new BigDecimal( 42 ), Boolean.TRUE}, 
+        		{new BigDecimal( 42 ), "<", new BigDecimal( 43 ), Boolean.TRUE}, {new BigDecimal( 42 ), ">=", new BigDecimal( 41 ), Boolean.TRUE},
+                {new BigDecimal( 42 ), "!=", new BigDecimal( 41 ), Boolean.TRUE}, {new BigDecimal( 42 ), ">", new BigDecimal( 41 ), Boolean.TRUE}, {new BigDecimal( 42 ), "<=", new BigDecimal( 42 ), Boolean.TRUE},
+                {new BigDecimal( 42 ), ">", new BigDecimal( 100 ), Boolean.FALSE}, {new BigDecimal( 42 ), "==", null, Boolean.FALSE}, {new BigDecimal( 42 ), "!=", null, Boolean.TRUE}, {null, "==", new BigDecimal( 42 ), Boolean.FALSE},
+                {null, "!=", new BigDecimal( 42 ), Boolean.TRUE}};
+
+        runEvaluatorTest( data,
+                          ValueType.BIG_DECIMAL_TYPE );
+
+        
+ 
+    }
+    
+    public void testBigInteger() {
+
+        ValueType type = ValueType.determineValueType(BigInteger.class);
+        assertSame(type, ValueType.BIG_INTEGER_TYPE);
+    	
+        final Object[][] data = {{new BigInteger( "42" ), "==", new BigInteger( "42" ), Boolean.TRUE}, 
+        		{new BigInteger( "42" ), "<", new BigInteger( "43" ), Boolean.TRUE}, {new BigInteger( "42" ), ">=", new BigInteger( "41" ), Boolean.TRUE},
+                {new BigInteger( "42" ), "!=", new BigInteger( "41" ), Boolean.TRUE}, {new BigInteger( "42" ), ">", new BigInteger( "41" ), Boolean.TRUE}, {new BigInteger( "42" ), "<=", new BigInteger( "42" ), Boolean.TRUE},
+                {new BigInteger( "42" ), ">", new BigInteger( "100" ), Boolean.FALSE}, {new BigInteger( "42" ), "==", null, Boolean.FALSE}, {new BigInteger( "42" ), "!=", null, Boolean.TRUE}, {null, "==", new BigInteger( "42" ), Boolean.FALSE},
+                {null, "!=", new BigInteger( "42" ), Boolean.TRUE}};
+
+        runEvaluatorTest( data,
+                          ValueType.BIG_INTEGER_TYPE );
+
+        
+
+    }    
+    
 
     public void testShort() {
 

@@ -16,6 +16,9 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 
@@ -65,6 +68,10 @@ public class FieldFactory {
             field = new FieldImpl( value );
         } else if ( valueType == ValueType.OBJECT_TYPE ) {
             field = new FieldImpl( value );
+        } else if ( valueType == ValueType.BIG_DECIMAL_TYPE ) {
+        	field = new FieldImpl( new BigDecimal(value) );
+        } else if ( valueType == ValueType.BIG_INTEGER_TYPE ) {
+        	field = new FieldImpl( new BigInteger(value) );
         }
 
         return field;

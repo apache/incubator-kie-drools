@@ -7,7 +7,7 @@ import org.drools.spi.Extractor;
 
 import junit.framework.TestCase;
 
-public class TestFactTemplateFieldExtractor extends TestCase {
+public class FactTemplateFieldExtractorTest extends TestCase {
     public void testExtractor() {
         Package pkg = new Package( "org.store" );
 
