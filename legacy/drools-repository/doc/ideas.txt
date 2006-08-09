@@ -1,0 +1,92 @@
+Required
+1. Version rules
+2. Allow for different states: draft, review, approved, deploy, outdated
+3. Perform a diff of one version against an older version
+4. Produce a bundled package of rules (aka ruleset)
+5. Backup rules
+6. Provide authentication for accounts
+7. Audit the access to the rule repository
+8. Restore the repository from backup
+
+These are the critical items. The others are nice features, but they aren't generally critical. For really large and complex cases, many of the features in the optional category might be required, but it's hard to say they are required for the general case.
+
+Optional
+1. query rules based on a condition. In other words, find all rules that have the condition "account.type == premium".
+2. store the data in a normalized format
+3. provide translation to other formats
+4. understand how rules go from draft to revision and enforce the process if necessary
+5. provide an automatic push mechanism to deploy rules
+6. automated rule validation at the rule logic level
+7. provides basic templates for categories of rule patterns
+8. provide plugin architecture for people to extend
+
+
+-- BOB --
+
+So, here's my rough sketch of what I'd been thinking...
+
+At the atomic level, we work purely with Rules.  Perhaps we just
+Serialize a Rule into a BLOB in the DB.
+
+Rules can belong to RuleSets.  By version.  The "Cheddar" RuleSet
+includes version #3 of Rule-A, where "Gouda" includes version #2 of
+the same rule.
+
+When a rule-set is 'deployed', either we:
+
+a) Use apache-directory, and just expose it over an JNDI-like
+interface directly from the repo
+       OR
+b) Have a deployer in the repo actually go out and jam it into an
+existing JNDI (ie, the one that comes with JBoss/WLS/etc).
+
+So, while we might have a RuleSet named 'Cheddar" that contains a
+certain set of rules, it gets deployed to java:rules/drools/
+myAppsRuntimeRules.
+
+The application just consistently does a JNDI lookup for 'java:rules/
+drools/myAppsRuntimeRules' and gets the currently deployed rule-set.
+The app has to have *NO* knowledge of what rules are in it, or the
+name given to the rule-set within the repository.
+
+We could provide, perhaps, a wrapper RuleBase that actually does a
+JNDI check before every newWorkingMemory() call to ensure it has the
+latest/greatest RuleBase that is actually deployed.  Just a
+delegating RuleBase, really.
+
+public class FancyJNDIRuleBase {
+
+    private RuleBase delegate;
+
+    public WorkingMemory newWorkingMemory() {
+        refreshDelegateIfNeeded();
+        return delegate.newWorkingMemory();
+    }
+}
+
+And/or something similar to help out JSR94 users.
+
+The repo has an API, either just a Java API for manipulating
+structures within the repo, and perhaps a SOAP/XMLRPC interface that
+a remote GUI can attach to.
+
+For shits'n'grins, a DRL importer/exporter could be nice.  Folks
+might not want to keep a repo running, but rather at compile-time
+have something export a .drl, jam it into the application's .war, and
+ship that by itself.
+
+Michael- as for 'tagging', I see that as ancillary, and very
+arbitrary/loose, compared to rule/rule-set names, and JNDI names.
+
+As noted last night, it's mostly for searching.  A rule can have
+multiple tags, free-form, assigned by the user.  But, we could remove
+all tags from the system, and it'd function identically.
+
+But, we could tag rules as "mortgage" or "brisbane residents" or
+"under review" or whatnot.
+
+In the GUI, folks could then pluck out all rules that apply to
+mortgages, brisbaners, etc.
+
+It's really to help organizations that have 10,000 rules, when they
+go to assemble a rule-set for deployment.

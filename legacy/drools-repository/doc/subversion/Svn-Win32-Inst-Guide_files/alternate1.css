@@ -1,0 +1,319 @@
+/*
+    CSS Stylesheet for better-scm.berlios.de
+    Copyright (c) Shlomi Fish, 2003-2005
+    Feel free to use, modify and re-distribute under the terms of the 
+    MIT X11 License (http://www.opensource.org/licenses/mit-license.php)
+
+    $Id: style.css 521 2005-04-28 08:54:06Z shlomif $
+*/
+
+body
+{
+    background-image: url(images/wood022.jpg); 
+}
+
+.main a
+{
+    border: thin solid transparent;
+    padding-left: 0.1em;
+    padding-right: 0.1em;        
+}
+
+a:hover 
+{ 
+    color : #FF00FF; /* Magenta */
+}
+
+.main a:hover
+{
+    border: thin solid blue;
+}
+
+a.bless:hover
+{
+    border: none;
+}
+
+.navbar
+{
+    float : left;
+    background-color : #EEEEA0;
+    width : 200px;
+    padding-left : 0.5em;
+    padding-right : 0.5em;
+    padding-top : 0.5em;
+    border: black solid thin;
+}
+.navbar, .leading_path, .footer
+{
+    margin-left: 10px;
+}
+.main
+{
+    padding-left : 1em;
+    padding-bottom : 1em;
+    padding-top : 0em;
+    padding-right: 1em;
+    margin-left : 240px;
+    margin-right: 10pt;
+    background-color : white;
+    border: thin solid black;
+}
+
+/* This is so the footer will be separated from the two other divs. */
+.main, .navbar
+{
+    margin-bottom: 1em;
+}
+
+p.desc { margin-left : 3em }
+h1
+{
+    background-color : #FFB060;
+    border: 4pt double green;
+    padding-left: 0.2em;
+    padding-bottom: 0.2em;
+}
+h2 
+{ 
+    background-color: #8080FF;
+}
+h2, h3, h4
+{
+    padding-left: 0.3em;
+}
+.main p, .main img
+{
+    padding-left : 1em;
+}
+.link { background : transparent; }
+/* Opera has a very wide default for margin-left, which causes the navbar
+   to be misrendered. This rule fixes it.
+   */
+.navbar ul
+{
+    margin-left: 0;
+}
+ul.navbarmain
+{ 
+    padding-left : 1em; 
+    font-size: 80%;
+    font-family: sans-serif;
+}
+ul.navbarnested 
+{ 
+    padding-left : 0em ; 
+    margin-left : 2em;
+}
+.note 
+{ 
+    border-color : black; 
+    border-style : double;
+    padding : 0.5em;
+    background-color : #98FB98; /* PaleGreen */
+}
+.note h2
+{
+   background: transparent;
+}
+ul.my li
+{
+    padding-bottom: 0.5em;
+}
+.righty
+{
+   float: right;
+   text-align: center;
+   font-size: 80%;
+   width: 30%;
+}
+.righty img
+{
+    border : 0;
+}
+.foot_left
+{
+    float : left;
+    width: 60%;
+}
+.webmaster
+{
+    margin-bottom: 0em;
+}
+.vcs
+{    
+    margin-top: 0.5em;
+    clear: left;
+}
+.vcs tt
+{
+    font-size: 83%;
+}
+
+.center
+{
+    text-align : center;
+}
+.nav_links
+{
+    text-align: center;
+    padding-left : 0em;
+    padding-top : 0em;
+}
+.nav_links li
+{
+    display: inline;
+    list-style-type: none;
+    padding-right: 0.2em;
+    padding-top: 0em;
+}
+.leading_path
+{
+    padding-left: 0.5em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    background-color : #DDA0DD; /* plum */
+    /* background-color: #FF7070; */
+    font-size: 85%;
+    border-color: black;
+    border-width: thin;
+    border-style: solid;
+    margin-top: 5pt;
+    margin-bottom: 0.5em;
+    margin-right: 10pt;
+}
+.leading_path :hover
+{
+    color : yellow;
+}
+.main, .navbar
+{
+    height: auto;
+}
+.footer
+{
+    clear: both;
+    background-color: white;
+    padding-left: 1em;
+    padding-right: 1em;
+    border: 1.5pt solid teal;
+    margin-right: 10pt;
+    margin-bottom: 1em;
+    overflow: hidden;
+}
+.footer:hover, .main:hover, .navbar:hover, .leading_path:hover
+{
+    border-color: red;
+}
+/* Workaround to get the <hr /> element at the bottom to properly display 
+   with Konqueror 3.3.x
+   */
+.footer hr
+{
+    width:100%;
+    clear:both;
+}
+tt { color : #8a2be2; }
+pre
+{
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 0.5em;
+    padding-top: 0.5em;
+    background-color: #FF8080;
+    border-width : thin;
+    border-color: #004000;
+    border-style: solid;
+}
+/* Border-less */
+.bless
+{
+    border : none;
+}
+.example
+{
+    margin-left: 1.5em;
+    margin-right: 2.5em;
+    border-width : 1.5pt;
+    border-color : #006400; /* darkgreen; */
+    border-style: solid;
+    margin-bottom : 1em;
+    background-color: #E0FF80;
+    padding-right: 0.5em;
+}
+.example:hover
+{    
+    border-color: red;
+    background-color:#E0FFA0;
+}
+
+.links
+{
+    list-style-position: inside;
+    padding-left: 1em;
+}
+.links li
+{
+    margin-bottom: 0.5em;
+    padding-left: 0.3em;
+    padding-top: 0.15em;
+    padding-bottom: 0.2em;
+    padding-right: 0.3em;
+}
+.links a
+{
+    font-weight: bold;
+}
+.links li:hover
+{
+    background-color: #E6FAE6;
+}
+.logo
+{
+    margin-top: 0.5em;
+    text-align: center;
+}
+.logo img
+{
+    border : none;
+}
+.image_list
+{
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    background-color: #FF80FF;
+}
+.image_list li
+{
+    vertical-align: middle;
+    margin-bottom: 0.5em;
+}
+.image_list img
+{
+    vertical-align:middle;
+}
+.news
+{
+    border: dashed 1.5pt black;
+    float: right;
+    background-color: #ebb9ea;
+    font-size: 60%;
+    font-family: sans-serif;
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-left: 0.5em;
+    margin-bottom: 0.5em;
+    padding-bottom: 1em;
+}
+.news ul
+{
+    list-style-position: inside;
+    margin-left: 0em;
+    padding-left: 0em;
+    margin-bottom: 0em;
+}
+.news h3
+{
+    margin-top:0.5em;
+}
+

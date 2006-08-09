@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping>
+
+    <class name="org.drools.repository.security.PermissionGroup" table="DROOLS_ACL_GROUPS">
+    	<id name="id" column="GROUP_ID">
+    		<generator class="native" />
+    	</id>
+    	
+        <property name="name" unique="true"/>
+        <property name="description" />
+        
+		<set name="userIdentities" cascade="all">
+			<key column="GROUP_ID"/>
+			<many-to-many class="org.drools.repository.security.RepositoryUser" />
+		</set>
+		
+		<set name="assetPermissions" cascade="all">
+			<key column="GROUP_ID" />
+			<one-to-many class="org.drools.repository.security.AssetPermission"/>
+		</set>
+		
+    </class>
+
+</hibernate-mapping>        

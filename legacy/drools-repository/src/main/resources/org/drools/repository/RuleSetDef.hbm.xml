@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping>
+
+    <class name="org.drools.repository.RuleSetDef" table="RULESET_DEFINITIONS">
+        <id name="id" column="RULESET_ID">
+			<generator class="native"/>
+        </id>
+        
+                
+		<property name="name" not-null="true" />	
+ 		<property name="lastSavedByUser" column="LAST_SAVED_USER" /> 		 		
+ 		<property name="lastSavedDate" column="LAST_SAVED_DATE" />				
+		
+		<component name="metaData">
+			<property name="title" />
+			<property name="creator" />
+			<property name="subject" />
+			<property name="description" />
+			<property name="publisher" />
+			<property name="contributor" />
+			<property name="dateCreated" />
+			<property name="format" />
+			<property name="source" />
+			<property name="language" />
+			<property name="relation" />
+			<property name="coverage" />
+			<property name="rights" />
+		</component>
+	
+	
+		<!--  tags to aid with searching and management of rules -->        
+		<set name="tags" table="RULESET_TAGS" lazy="false" cascade="all" optimistic-lock="false">
+		    <key column="RULESET_ID"/>
+		    <one-to-many class="org.drools.repository.Tag"/>
+		</set>  		
+		
+		<set name="versionHistory" table="RULESET_VERSION_HISTORY" lazy="false" cascade="all">
+			<key column="RULESET_ID" />
+			<one-to-many class="org.drools.repository.RuleSetVersionInfo"/>
+		</set>		
+
+		<!-- now come the versioned assets 
+		 IMPORTANT: Note that cascading is done in the "save" method, not by hibernate
+		 This is due to stop accidental version updates
+		 
+		 Note: the versioned asset sets are really "views" into the latest versions
+		 of the assets. Hence no auto cascading.
+		 
+		 -->
+		<set name="rules" lazy="false" table="RULESET_RULES" cascade="none" optimistic-lock="false">		
+			<key column="OWNING_RULESET_ID" />
+			<one-to-many class="org.drools.repository.RuleDef"/>
+			<filter name="workingVersionFilter" condition=":filteredVersionNumber = VERSION_NUMBER" />
+		</set>
+				
+		<set name="attachments" lazy="false" table="RULESET_ATTACHMENTS" cascade="none" optimistic-lock="false">
+			<key column="RULESET_ID"/>
+			<one-to-many class="org.drools.repository.RuleSetAttachment"/>
+			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			
+		</set>
+		
+		<set name="imports" lazy="false" table="RULESET_IMPORTS" cascade="none" optimistic-lock="false">
+			<key column="RULESET_ID"/>
+			<one-to-many class="org.drools.repository.ImportDef"/>
+			<filter name="workingVersionFilter" condition=":filteredVersionNumber = VERSION_NUMBER" />			
+		</set>		
+		
+		<set name="functions" lazy="false" table="RULESET_FUNCTIONS" cascade="none" optimistic-lock="false">
+			<key column="RULESET_ID"/>
+			<one-to-many class="org.drools.repository.FunctionDef"/>
+			<filter name="workingVersionFilter" condition=":filteredVersionNumber = VERSION_NUMBER" />			
+		</set>		
+		
+		<set name="applicationData" table="RULESET_APP_DATA" lazy="false" cascade="none" optimistic-lock="false">
+			<key column="RULESET_ID"/>
+			<one-to-many class="org.drools.repository.ApplicationDataDef"/>
+			<filter name="workingVersionFilter" condition=":filteredVersionNumber = VERSION_NUMBER" />			
+		</set>		
+		
+    </class>
+    
+    <!-- This magic allows us to have a view of working versions only -->
+	<filter-def name="workingVersionFilter">
+		<filter-param name="filteredVersionNumber" type="long" />
+	</filter-def>     
+
+</hibernate-mapping>    

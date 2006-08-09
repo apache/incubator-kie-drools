@@ -1,0 +1,53 @@
+<project>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+    <version>3.0-RC-2</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>drools-repository</artifactId>
+  <name>Drools :: Repository API</name>
+  <version>3.0-RC-2</version>  
+  <packaging>jar</packaging>
+
+  <repositories>
+    <repository>
+      <id>basedir</id>
+      <url>file://${basedir}/../repository</url>
+    </repository>
+  </repositories>  
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+	<!-- should update this to 3.1 final when it is pom'ed  -->
+    <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>hibernate</artifactId>
+      <version>3.1rc2</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0.1</version>
+    </dependency>    
+
+    <dependency>
+      <groupId>xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.1.2</version>
+    </dependency>    
+
+
+
+  </dependencies>
+
+
+</project>
