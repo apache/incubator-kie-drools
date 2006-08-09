@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.nexb.easyeclipse.drools.deployer; singleton=true
+Bundle-Version: 0.1.0
+Bundle-Vendor: %providerName
+Bundle-ClassPath: .
+Bundle-Activator: org.nexb.easyeclipse.drools.deployer.EasyDroolsPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime.compatibility,
+ org.eclipse.core.resources,
+ org.eclipse.ui,
+ org.tigris.subversion.subclipse.core,
+ org.tigris.subversion.subclipse.ui,
+ org.eclipse.team.ui,
+ org.eclipse.team.core
+Eclipse-AutoStart: true
+Plugin-Class: org.nexb.easyeclipse.drools.deployer.EasyDroolsPlugin

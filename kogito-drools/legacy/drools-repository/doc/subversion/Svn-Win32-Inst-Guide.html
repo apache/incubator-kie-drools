@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"><head><title>Subversion Installation Tutorial for Win32</title>
+
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="author" content="Shlomi Fish">
+<meta name="description" content="Better SCM: A Site for Version Control and Source Configuration Management Information and Advocacy">
+<meta name="keywords" content="Better SCM, SCM, version control, source control, revision control, source configuration management, CVS, Subversion, BitKeeper, open source, Shlomi Fish, installation, tutorial, win32">
+<link rel="stylesheet" href="Svn-Win32-Inst-Guide_files/style.css" type="text/css" media="screen, projection" title="Normal">
+<link rel="stylesheet" href="Svn-Win32-Inst-Guide_files/print.css" type="text/css" media="print">
+<link rel="shortcut icon" href="http://better-scm.berlios.de/favicon.ico" type="image/x-icon">
+<link rel="next" href="http://better-scm.berlios.de/vesta/" title="Vesta - a Distributed SCM with a special filesystem service">
+<link rel="prev" href="http://better-scm.berlios.de/subversion/compelling_alternative.html" title="Subversion - A Compelling Alternative to CVS and BitKeeper">
+<link rel="top" href="http://better-scm.berlios.de/" title="">
+<link rel="up" href="http://better-scm.berlios.de/subversion/" title="A Version Control System that Aims to Provide a Good Alternative to CVS">
+<link rel="alternate stylesheet" type="text/css" href="Svn-Win32-Inst-Guide_files/alternate1.css" media="screen, projection" title="Kitchy">
+<link rel="alternate" title="Better SCM RSS Feed" href="http://better-scm.berlios.de/rss.xml" type="application/rss+xml"></head><body>
+<p style="display: none;">
+<a href="#main">Go to main content</a>
+</p>
+<div class="leading_path">
+<a href="http://better-scm.berlios.de/" title="Better SCM Initiative">Better SCM</a> &#8594; <a href="http://better-scm.berlios.de/alternatives/">Alternatives</a> &#8594; <a href="http://better-scm.berlios.de/subversion/" title="A Version Control System that Aims to Provide a Good Alternative to CVS">Subversion</a> &#8594; <a href="http://better-scm.berlios.de/subversion/Svn-Win32-Inst-Guide.html" title="A Quick-start guide for Installing Subversion on a Microsoft Windows System">Win32 Installation Guide</a>
+</div>
+<div class="navbar">
+<p style="display: none;">
+<a href="#nav_menu">Go to the navigation menu</a>
+</p>
+<div class="logo">
+<a href="http://better-scm.berlios.de/" title="Home"><img src="Svn-Win32-Inst-Guide_files/better-scm-logo.png" alt="Better SCM"></a>
+</div>
+<ul class="nav_links">
+<li>
+<a href="http://better-scm.berlios.de/subversion/compelling_alternative.html" title="Previous Page (Alt+P)" accesskey="p"><img src="Svn-Win32-Inst-Guide_files/arrow-left.png" alt="Previous Page" class="bless"></a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/subversion/" title="Up in the Site (Alt+U)" accesskey="u"><img src="Svn-Win32-Inst-Guide_files/arrow-up.png" alt="Up in the Site" class="bless"></a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/vesta/" title="Next Page (Alt+N)" accesskey="n"><img src="Svn-Win32-Inst-Guide_files/arrow-right.png" alt="Next Page" class="bless"></a>
+</li>
+</ul>
+<div id="nav_menu">
+<ul class="navbarmain">
+<li>
+<a href="http://better-scm.berlios.de/">Home</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/news/">News</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/docs/" title="General Documents that don't Belong to Anywhere More Specific.">General Docs</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/alternatives/">Alternatives</a>
+<br>
+<ul class="navbarnested">
+<li>
+<a href="http://better-scm.berlios.de/aegis/" title="Aegis - an SCM by Peter Miller">Aegis</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/arch/" title="A Distributed Version Control System">Arch</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/bk/" title="A Proprietary Distributed Version Control System">BitKeeper</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/alternatives/darcs/" title="Darcs - an Open Source Distributed Version Control System">Darcs</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/monotone/" title="Monotone - an Open Source Distributed Version Control System">Monotone</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/alternatives/perforce/" title="Perforce - a Commercial Version Control Solution">Perforce</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/subversion/" title="A Version Control System that Aims to Provide a Good Alternative to CVS">Subversion</a>
+<br>
+<ul class="navbarnested">
+<li>
+<a href="http://better-scm.berlios.de/subversion/compelling_alternative.html" title="Subversion - A Compelling Alternative to CVS and BitKeeper">A Compelling Alternative</a>
+</li>
+<li>
+<b>Win32 Installation Guide</b>
+</li>
+</ul>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/vesta/" title="Vesta - a Distributed SCM with a special filesystem service">Vesta</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/to-avoid/" title="Version Control Systems to Avoid">What to Avoid</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/mailing-list.html">Mailing List</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/irc/" title="Chat about Version Control using the Internet">IRC</a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/links.html" title="Links of Relevance">Links</a>
+</li>
+</ul>
+<ul class="navbarmain">
+<li>
+<a href="http://better-scm.berlios.de/comparison/" title="A Detailed Comparison of Many Version Control Systems">Comparison</a>
+</li>
+</ul>
+<ul class="navbarmain">
+<li>
+<a href="http://better-scm.berlios.de/site-map/" title="A Page Concentrating all the Pages on the Site">Site Map</a>
+</li>
+</ul>
+<ul class="navbarmain">
+<li>
+<a href="http://better-scm.berlios.de/source/" title="How to Get and Manipulate the Source Code of this Site">Site Sources</a>
+</li>
+</ul>
+</div>
+<p>
+<a href="http://better-scm.berlios.de/rss.xml" rel="rss news"><img src="Svn-Win32-Inst-Guide_files/rss2feed.png" alt="RSS Feed" class="bless" style="margin-top: 1em;" title="Receive Site Updates using an RSS Reader"></a>
+</p>
+<p>
+<a href="http://developer.berlios.de/" class="bless"><img src="Svn-Win32-Inst-Guide_files/berlios-logo.png" alt="BerliOS Logo" class="bless" style="margin-top: 1em;" title="Hosted at BerliOS"></a>
+</p>
+<p>
+<a href="http://www.spreadfirefox.com/?q=affiliates&amp;id=0&amp;t=70" class="bless"><img class="bless" alt="Get Firefox!" title="Get Firefox! A safer, faster, better web-browser." src="Svn-Win32-Inst-Guide_files/get-firefox.png"></a>
+</p>
+<p>
+<a href="http://validator.w3.org/check/referer" title="Valid XHTML 1.1!" class="bless"><img class="highlight bless" src="Svn-Win32-Inst-Guide_files/valid-xhtml11.png" alt="Valid XHTML 1.1!" height="31" width="88"></a>
+</p>
+<p>
+<a href="http://jigsaw.w3.org/css-validator/" title="Valid CSS!" class="bless"><img class="highlight bless" src="Svn-Win32-Inst-Guide_files/valid-css.png" alt="Valid CSS!"></a>
+</p>
+<p>
+<a href="http://thewml.org/" title="Website META Language" class="bless"><img src="Svn-Win32-Inst-Guide_files/logo-wml.png" alt="Website Meta Language" class="bless" height="50" width="100"></a>
+</p>
+<p>
+<a href="http://web-cpan.berlios.de/latemp/" title="Made with Latemp" class="bless"><img src="Svn-Win32-Inst-Guide_files/latemp-button-rounded.png" alt="Made with Latemp" class="bless"></a>
+</p>
+<a href="https://developer.berlios.de/project/make_donation.php?group_id=526" rel="donate" title="Please donate to show your appreciation for the hard
+work conducted on the Better SCM Site"><img src="Svn-Win32-Inst-Guide_files/paypal.gif" alt="PayPal Donate" class="paypal"></a>
+<ul class="nav_links">
+<li>
+<a href="http://better-scm.berlios.de/subversion/compelling_alternative.html" title="Previous Page (Alt+P)"><img src="Svn-Win32-Inst-Guide_files/arrow-left.png" alt="Previous Page" class="bless"></a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/subversion/" title="Up in the Site (Alt+U)"><img src="Svn-Win32-Inst-Guide_files/arrow-up.png" alt="Up in the Site" class="bless"></a>
+</li>
+<li>
+<a href="http://better-scm.berlios.de/vesta/" title="Next Page (Alt+N)"><img src="Svn-Win32-Inst-Guide_files/arrow-right.png" alt="Next Page" class="bless"></a>
+</li>
+</ul>
+</div>
+<div class="main" id="main">
+<h1>Subversion Installation Tutorial for Win32</h1>
+<pre style="background: transparent none repeat scroll 0%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">Subversion Installation Tutorial for Win32
+==========================================
+
+Requirements:
+-------------
+
+* For the client any Windows 32-bit system (Windows 95/98/ME/NT/2000/XP/2003)
+
+* For the server a Windows NT-based system (Windows NT/2000/XP/2003)
+
+Installation Procedure:
+-----------------------
+
+1. Install Apache 2.0.x:
+
+(skip this step if you only want to install the client)
+
+Go to:
+
+http://httpd.apache.org/download.cgi
+
+and press the Win32 Binary (MSI Installer) link. After the download
+is complete, install by double clicking.
+
+Fill in the details, and select the port 8080 option.
+
+2. Install Subversion:
+
+Go to http://subversion.tigris.org/ ==&gt; Downloads ==&gt;
+Packaged Distributions ==&gt; Win32 ==&gt; friendly Installer program ==&gt;
+svn-X.Y.Z-setup.exe
+
+Install.
+
+3. Check the subversion client:
+
+    A. With your browser surf to http://svn.collab.net/repos/svn/trunk/ and
+    see that you see a list of files and directories there.
+
+    B. Start a command prompt (Start -&gt; Run -&gt; "cmd")
+
+    C. Change directory to a vacant directory.
+
+    D. Type:
+
+    svn checkout http://svn.collab.net/repos/svn/trunk/
+    
+    At the command line.
+
+    E. After a short while you should see an entire directory tree being
+    checked out.
+
+    F. It's OK, to cancel this operation by pressing Ctrl+Break
+    
+4. Setting up a subversion.so service
+
+    A. Copy the files "mod_dav_svn.so" and "mod_authz_svn.so" from
+       C:\Program Files\Subversion\apache2\modules to
+       C:\Program Files\Apache Group\Apache2\modules
+
+    B. Edit the file C:\Program Files\Apache Group\Apache2\conf\httpd.conf
+    using a text editor. Uncomment the line:
+
+        #LoadModule dav_module modules/mod_dav.so
+
+    and add a line:
+
+        LoadModule dav_svn_module modules/mod_dav_svn.so
+
+    to the end of the LoadModule block.
+
+    C. In the command prompt, goto an empty directory
+    and type the command:
+
+        svnadmin create myrepos
+
+    D. Next, in httpd.conf add the following statements to the end of the
+    file:
+
+        &lt;Location /svn/myrepos&gt;
+            DAV svn
+            SVNPath c:/path/to/directory/myrepos
+        &lt;/Location&gt;
+
+    E. Start Apache.
+
+    F. Surf to http://localhost:8080/ and make sure the server is running.
+
+    G. Point your browser at http://localhost:8080/svn/myrepos/ and make
+    sure you see a "Revision 0" notice at the top.
+
+
+5. Congratulations!
+
+    You can now run:
+    
+        svn checkout http://localhost:8080/svn/myrepos
+
+    from the command line and start populating your repository. Read the
+    Subversion book for more information on Subversion usage.
+</pre>
+</div>
+<div class="footer">
+<hr>
+<div class="righty">
+<p>
+<!-- Creative Commons License -->
+<a rel="license" href="http://creativecommons.org/licenses/by/2.0/"><img alt="Creative Commons License" src="Svn-Win32-Inst-Guide_files/somerights20.png"></a><br>
+This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/2.0/">Creative Commons
+License</a>.
+<!-- /Creative Commons License -->
+</p>
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:title>Better SCM Site Contents</dc:title>
+   <dc:date>2004</dc:date>
+   <dc:description>A Version Control Systems Information and Advocacy carrying site</dc:description>
+   <dc:creator><Agent>
+      <dc:title>Shlomi Fish</dc:title>
+   </Agent></dc:creator>
+   <dc:rights><Agent>
+      <dc:title>Shlomi Fish</dc:title>
+   </Agent></dc:rights>
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" />
+   <license rdf:resource="http://creativecommons.org/licenses/by/2.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by/2.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+</License>
+</rdf:RDF>
+-->
+</div>
+<div class="foot_left">
+<p class="webmaster">
+Webmaster: <a href="http://www.shlomifish.org/">Shlomi Fish</a> (<a href="mailto:shlomif@iglu.org.il">shlomif@iglu.org.il</a>)
+</p>
+<p class="vcs">
+<b>Version Control ID:</b> <tt>$Id: Svn-Win32-Inst-Guide.html.wml 167 2005-04-23 22:04:36Z shlomif $</tt>
+</p>
+</div>
+</div>
+
+</body></html>

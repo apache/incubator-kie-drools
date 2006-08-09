@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension point="org.eclipse.ui.popupMenus">
+		<objectContribution
+	        adaptable="true"
+    	    id="org.nexb.easyeclipse.drools.deployer.contribution"
+	        nameFilter="*.rule,*.drl,*.dsl"
+   	     	objectClass="org.eclipse.core.runtime.IAdaptable">
+			<!--            objectClass="org.eclipse.core.resourceclipse.core.resources.IFile"/> -->
+			<action
+         class="org.nexb.easyeclipse.drools.deployer.actions.CommitAsNonFinal"
+         definitionId="org.nexb.easyeclipse.drools.deployer.actions.DeployToSVNDraft"
+         enablesFor="1"
+         icon="icon/deploy.gif"
+         id="org.nexb.easyeclipse.drools.deployer.actions.DeployToSVNDraft"
+         label="commit as draft..."
+         menubarPath="additions">
+			</action>
+   <action
+         class="org.nexb.easyeclipse.drools.deployer.actions.CommitAsFinal"
+         definitionId="org.nexb.easyeclipse.drools.deployer.actions.DeployToSVNFinal"
+         icon="icon/deploy.gif"
+         id="org.nexb.easyeclipse.drools.deployer.actions.DeployToSVNFinal"
+         label="commit as approved..."
+         menubarPath="additions"/>
+		</objectContribution>
+	</extension>
+</plugin>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping>
+
+    <class name="org.drools.repository.RuleSetVersionInfo" table="RULESET_VERSION_INFO" select-before-update="true">
+    	
+    	<id name="id" column="RULESET_VERSION_ID">
+    		<generator class="native" />
+    	</id>
+    	
+        <property name="versionNumber"/>
+        <property name="versionComment"/>
+        <property name="createdOn"/>
+        <property name="status" />
+ 		<property name="lastSavedByUser" column="LAST_SAVED_USER" /> 		 		
+ 		<property name="lastSavedDate" column="LAST_SAVED_DATE" />        
+        
+    </class>
+
+</hibernate-mapping>        

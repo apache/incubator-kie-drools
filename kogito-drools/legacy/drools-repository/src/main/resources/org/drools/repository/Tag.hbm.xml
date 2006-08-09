@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping>
+
+	<!-- NOTE I really want to make tag strings normalised
+		Need to add in logic for finding existing tags of same value 
+		Or else use string as ID (not the best idea).
+		TODO: probably best to have a method with top 1000 tags cached - they re-use identity.
+		Then can look it up as needed.
+		-->
+    <class name="org.drools.repository.Tag" table="DROOLS_TAGS" select-before-update="true">
+    	<id name="id" column="TAG_ID">
+    		<generator class="native" />
+    	</id>
+        <property name="tag" column="TAG_VALUE"/>
+    </class>
+
+</hibernate-mapping>        

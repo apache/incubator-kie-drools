@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping>
+
+    <class name="org.drools.repository.RuleSetAttachment" table="DROOLS_ATTACHMENTS"
+	    select-before-update="true" optimistic-lock="version">
+        <id name="id" column="RULESET_ATTACHMENT_ID">
+			<generator class="native"/>
+        </id>
+		
+		<version name="lockingVersion" column="LOCKING_VERSION" />
+		<property name="name" not-null="true" />		
+		<property name="typeOfAttachment" />
+		<property name="content" />
+		<property name="originalFileName" />
+		<property name="versionNumber" />
+		<property name="versionComment" />
+		<property name="checkedOut" />
+		<property name="checkedOutBy" />
+		<property name="historicalRecord" column="HISTORICAL_RECORD_FLAG" />
+		<property name="historicalId" />
+ 		<property name="lastSavedByUser" column="LAST_SAVED_USER" /> 		 		
+ 		<property name="lastSavedDate" column="LAST_SAVED_DATE" />		
+		
+		<set name="tags" table="RULESET_ATTACHMENT_TAGS" lazy="false" cascade="all" optimistic-lock="false">
+		    <key column="RULESET_ATTACHMENT_ID"/>
+		    <one-to-many class="org.drools.repository.Tag"/>
+		</set>
+		
+		<filter name="historyFilter" condition=":viewHistory = HISTORICAL_RECORD_FLAG" />
+		
+    </class>
+    
+	<filter-def name="historyFilter">
+		<filter-param name="viewHistory" type="boolean" />
+	</filter-def>        
+
+</hibernate-mapping>    
