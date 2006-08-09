@@ -1,0 +1,4 @@
+#HTMLParser is not up in the maven2 repos yet. So this shows
+#how to install it as a 3rd party lib into you local repo.
+#run this command:
+mvn install:install-file -Dfile=htmlparser.jar -DgroupId=htmlparser -DartifactId=htmlparser -Dversion=1.5 -Dpackaging=jar
