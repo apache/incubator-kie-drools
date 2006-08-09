@@ -1,13 +1,13 @@
 package org.drools.brms.client;
 
+import org.drools.brms.client.ruleeditor.RuleView;
 import org.drools.brms.client.rulelist.RuleListView;
 import org.drools.brms.client.rulenav.RulesNavigatorTree;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.VerticalPanel;
+
 
 public class Rules extends JBRMSFeature {
 
@@ -18,7 +18,6 @@ public class Rules extends JBRMSFeature {
 			}
 
 			public Image getImage() {
-
 				return new Image("images/rules.gif");
 			}
 		};
@@ -28,23 +27,30 @@ public class Rules extends JBRMSFeature {
 		TabPanel tab = new TabPanel();
 		tab.setWidth("100%");
 		tab.setHeight("100%");
-		
-		HorizontalPanel  panel = new HorizontalPanel();
-		RulesNavigatorTree nav = new RulesNavigatorTree();	
+		setWidget(tab);
 		
 		
+		HorizontalPanel explorePanel = doExplore(tab);
 		
-		panel.add(nav.getTree());
-		RuleListView list = new RuleListView(tab);
+		RuleView ruleViewer = new RuleView();
+		ruleViewer.setWidth("100%");
+		ruleViewer.setHeight("100%");
 		
+		tab.add(explorePanel, "Explore");
+		tab.add(ruleViewer, "Author");
 		
-		panel.add(list);
-		
-		tab.add(panel, "Explore");
-		tab.add(panel, "Author");
 		tab.selectTab(0);
 		
-		setWidget(tab);
+		
+	}
+
+	private HorizontalPanel doExplore(TabPanel tab) {
+		HorizontalPanel  panel = new HorizontalPanel();
+		RulesNavigatorTree nav = new RulesNavigatorTree();			
+		panel.add(nav.getTree());
+		RuleListView list = new RuleListView(tab);
+		panel.add(list);
+		return panel;
 	}
 
 }
