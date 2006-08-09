@@ -1,0 +1,31 @@
+<project>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+    <version>3.0-RC-2/version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>drools-natural-dsl</artifactId>
+  <name>Drools :: Natural and DSL utility</name>
+  <version>3.0-RC-2</version>  
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.1</version>
+    </dependency>
+
+  </dependencies>
+
+
+</project>
