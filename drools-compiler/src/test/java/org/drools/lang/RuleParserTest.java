@@ -1110,6 +1110,64 @@ public class RuleParserTest extends TestCase {
         assertNotNull( rule.getConsequence() );
 
     }
+    
+    public void testExpanderMultipleConstraints() throws Exception {
+
+        final RuleParser parser = parseResource( "expander_multiple_constraints.drl" );
+        final DefaultExpanderResolver res = new DefaultExpanderResolver( new InputStreamReader( 
+        		this.getClass().getResourceAsStream( "multiple_constraints.dsl" ) ) );
+        parser.setExpanderResolver( res );
+        parser.setExpanderDebug( true );
+        parser.compilation_unit();
+      
+
+        assertFalse( parser.hasErrors() );
+        
+        final PackageDescr pkg = parser.getPackageDescr();
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals(2, rule.getLhs().getDescrs().size());
+
+        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Person", col.getObjectType());
+        
+        
+        assertEquals(2, col.getDescrs().size());
+        assertEquals("age", ((FieldConstraintDescr) col.getDescrs().get(0)).getFieldName());                
+        assertEquals("location", ((FieldConstraintDescr) col.getDescrs().get(1)).getFieldName());
+        
+        col = (ColumnDescr) rule.getLhs().getDescrs().get(1);
+        assertEquals("Bar", col.getObjectType());
+        
+        assertNotNull( rule.getConsequence() );
+
+    }    
+    
+    public void testExpanderMultipleConstraintsFlush() throws Exception {
+    	//this is similar to the other test, but it requires a flush to add the constraints
+        final RuleParser parser = parseResource( "expander_multiple_constraints_flush.drl" );
+        final DefaultExpanderResolver res = new DefaultExpanderResolver( new InputStreamReader( 
+        		this.getClass().getResourceAsStream( "multiple_constraints.dsl" ) ) );
+        parser.setExpanderResolver( res );
+        parser.setExpanderDebug( true );
+        parser.compilation_unit();
+      
+
+        assertFalse( parser.hasErrors() );
+        
+        final PackageDescr pkg = parser.getPackageDescr();
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals(1, rule.getLhs().getDescrs().size());
+
+        ColumnDescr col = (ColumnDescr) rule.getLhs().getDescrs().get(0);
+        assertEquals("Person", col.getObjectType());        
+        
+        assertEquals(2, col.getDescrs().size());
+        assertEquals("age", ((FieldConstraintDescr) col.getDescrs().get(0)).getFieldName());                
+        assertEquals("location", ((FieldConstraintDescr) col.getDescrs().get(1)).getFieldName());
+        
+        assertNotNull( rule.getConsequence() );
+
+    }      
 
     public void testExpanderUnExpandableErrorLines() throws Exception {
 

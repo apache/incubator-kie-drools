@@ -1,0 +1,17 @@
+#created on: 13/04/2006
+package mydsl
+
+
+expander multiple_constraints.dsl
+
+
+rule "Your First Rule"
+	
+	when
+		There is a Person with 
+			-age less than 42
+			-location is 'atlanta'
+	then 
+		Log "hola bob"		
+		
+end
