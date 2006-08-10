@@ -83,11 +83,33 @@ grammar RuleParser;
 		if (expanderDebug) {
 			System.out.println("Expanding LHS: " + text + " ----> " + expanded + " --> from line: " + line);
 		}
-		return expanded;	
-		
+		return expanded;			
 	}
-
-        /** Reparse the results of the expansion */
+	
+    	/** This will apply a list of constraints to an LHS block */
+    	private String applyConstraints(List constraints, String block) {
+    		//apply the constraints as a comma seperated list inside the previous block
+    		//the block will end in something like "foo()" and the constraint patterns will be put in the ()
+    		if (constraints == null) {
+    			return block;
+    		}
+    		StringBuffer list = new StringBuffer();    		
+    		for (Iterator iter = constraints.iterator(); iter.hasNext();) {
+				String con = (String) iter.next();
+				list.append("\n\t\t");
+				list.append(con);
+				if (iter.hasNext()) {
+					list.append(",");					
+				}			
+			}
+    		if (block.endsWith("()")) {
+    			return block.substring(0, block.length() - 2) + "(" + list.toString() + ")";
+    		} else {
+    			return block + "(" + list.toString() + ")";
+    		}
+    	}  
+    	
+        	/** Reparse the results of the expansion */
     	private void reparseLhs(String text, AndDescr descrs) throws RecognitionException {
     		CharStream charStream = new ANTLRStringStream( text );
     		RuleParserLexer lexer = new RuleParserLexer( charStream );
@@ -614,6 +636,7 @@ expander_lhs_block[AndDescr descrs]
 	@init {
 		String lhsBlock = null;
 		String eol = System.getProperty( "line.separator" );
+		List constraints = null;
 	}
 	:
 		(options{greedy=false;} : 
@@ -621,10 +644,23 @@ expander_lhs_block[AndDescr descrs]
 			{
 				//only expand non null
 				if (text != null) {
-					if (lhsBlock == null) {					
-						lhsBlock = runWhenExpander( text, offset(loc.getLine()));
+					if (text.trim().startsWith("-")) {
+						if (constraints == null) {
+							constraints = new ArrayList();
+						}
+						constraints.add(runWhenExpander( text, offset(loc.getLine())));
 					} else {
-						lhsBlock = lhsBlock + eol + runWhenExpander( text, offset(loc.getLine()));
+						if (constraints != null) {
+							lhsBlock = applyConstraints(constraints, lhsBlock);
+							constraints = null;
+						}
+					
+					
+						if (lhsBlock == null) {					
+							lhsBlock = runWhenExpander( text, offset(loc.getLine()));
+						} else {
+							lhsBlock = lhsBlock + eol + runWhenExpander( text, offset(loc.getLine()));
+						}
 					}
 					text = null;
 				}
@@ -632,7 +668,9 @@ expander_lhs_block[AndDescr descrs]
 			
 		)* 
 		
-		{
+		{	
+			//flush out any constraints left handing before the RHS
+			lhsBlock = applyConstraints(constraints, lhsBlock);
 			if (lhsBlock != null) {
 				reparseLhs(lhsBlock, descrs);
 			}
