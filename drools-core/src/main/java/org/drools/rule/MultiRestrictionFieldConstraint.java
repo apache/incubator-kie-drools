@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldConstraint;
@@ -40,11 +39,10 @@ public class MultiRestrictionFieldConstraint
         return this.restrictions.getRequiredDeclarations();
     }
 
-    public boolean isAllowed(final InternalFactHandle handle,
+    public boolean isAllowed(final Object object,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
-        return this.restrictions.isAllowed( this.extractor.getValue( handle.getObject() ),
-                                            handle,
+        return this.restrictions.isAllowed( this.extractor.getValue( object ),
                                             tuple,
                                             workingMemory );
     }

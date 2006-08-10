@@ -48,7 +48,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
     /**
      * 
      */
-    private static final long serialVersionUID = -5107074490638575715L;
+    private static final long serialVersionUID = 320;
 
     /**
      * Construct.
@@ -87,8 +87,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                              final Object object,
                              final Rule rule,
                              final Activation activation) throws FactException {
-        this.lock.lock();
         try {
+            this.lock.lock();
             final int status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             final Object originalObject = handle.getObject();

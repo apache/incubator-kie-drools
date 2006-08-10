@@ -17,7 +17,6 @@ package org.drools.spi;
  */
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 
 public class MockConstraint
@@ -33,7 +32,7 @@ public class MockConstraint
 
     public boolean            isAllowed        = true;
 
-    public boolean isAllowed(final InternalFactHandle handle,
+    public boolean isAllowed(final Object object,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
         return this.isAllowed;

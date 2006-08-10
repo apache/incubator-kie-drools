@@ -41,6 +41,7 @@ import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Exists;
+import org.drools.rule.From;
 import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.LiteralConstraint;
@@ -555,6 +556,63 @@ class ReteooBuilder
 
         return node;
     }
+    
+    private void attachFrom(final TupleSource tupleSource,
+                            final From from) {
+        Column column = from.getColumn();
+        
+        // Adjusting offset in case a previous Initial-Fact was added to the network
+        column.adjustOffset( this.currentOffsetAdjustment );
+        
+        final List constraints = column.getConstraints();
+
+        // Check if the Column is bound
+        if ( column.getDeclaration() != null ) {
+            final Declaration declaration = column.getDeclaration();
+            // Add the declaration the map of previously bound declarations
+            this.declarations.put( declaration.getIdentifier(),
+                                   declaration );
+        }
+
+        final List predicateConstraints = new ArrayList();
+        final List alphaNodeConstraints = new ArrayList();
+        
+        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
+            final Object object = it.next();
+            // Check if its a declaration
+            if ( object instanceof Declaration ) {
+                final Declaration declaration = (Declaration) object;
+                // Add the declaration the map of previously bound declarations
+                this.declarations.put( declaration.getIdentifier(),
+                                       declaration );
+                continue;
+            }
+
+            final FieldConstraint fieldConstraint = (FieldConstraint) object;
+            if ( fieldConstraint instanceof LiteralConstraint ) {
+                alphaNodeConstraints.add( fieldConstraint );
+            } else {
+                checkUnboundDeclarations( fieldConstraint.getRequiredDeclarations() );
+                predicateConstraints.add( fieldConstraint );
+            }
+        }
+        
+        
+        BetaNodeBinder binder;
+
+        if ( !predicateConstraints.isEmpty() ) {
+            binder = new BetaNodeBinder( (FieldConstraint[]) predicateConstraints.toArray( new FieldConstraint[predicateConstraints.size()] ) );
+        } else {
+            binder = new BetaNodeBinder();
+        }
+        
+        FromNode node = new FromNode( id, 
+                                      from.getDataProvider(),
+                                      this.tupleSource,
+                                      ( FieldConstraint[] ) alphaNodeConstraints.toArray( new FieldConstraint[ alphaNodeConstraints.size() ] ),
+                                      binder );        
+                
+    }    
 
     private ObjectSource attachNode(final ObjectSource candidate) {
         ObjectSource node = (ObjectSource) this.attachedNodes.get( candidate );

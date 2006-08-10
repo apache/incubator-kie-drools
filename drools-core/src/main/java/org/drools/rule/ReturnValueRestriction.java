@@ -20,7 +20,6 @@ import java.util.Arrays;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
@@ -93,7 +92,6 @@ public class ReturnValueRestriction
     }
 
     public boolean isAllowed(final Object object,
-                             final InternalFactHandle handle,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
         try {

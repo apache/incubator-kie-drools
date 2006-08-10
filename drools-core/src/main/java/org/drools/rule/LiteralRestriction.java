@@ -17,7 +17,6 @@ package org.drools.rule;
  */
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
@@ -64,7 +63,6 @@ public class LiteralRestriction
     }
 
     public boolean isAllowed(final Object object,
-                             final InternalFactHandle handle,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
         return this.evaluator.evaluate( object,

@@ -95,7 +95,7 @@ public abstract class AbstractWorkingMemory
     protected final AgendaEventSupport        agendaEventSupport                            = new AgendaEventSupport( this );
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected transient InternalRuleBase          ruleBase;
+    protected transient InternalRuleBase      ruleBase;
 
     protected final FactHandleFactory         handleFactory;
 
@@ -156,40 +156,75 @@ public abstract class AbstractWorkingMemory
     void setRuleBase(InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
-    
+
     public void addEventListener(final WorkingMemoryEventListener listener) {
-        this.workingMemoryEventSupport.addEventListener( listener );
+        try {
+            lock.lock();
+            this.workingMemoryEventSupport.addEventListener( listener );
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void removeEventListener(final WorkingMemoryEventListener listener) {
-        this.workingMemoryEventSupport.removeEventListener( listener );
+        try {
+            lock.lock();
+            this.workingMemoryEventSupport.removeEventListener( listener );
+        } finally {
+            lock.unlock();
+        }
     }
 
     public List getWorkingMemoryEventListeners() {
-        return this.workingMemoryEventSupport.getEventListeners();
+        try {
+            lock.lock();
+            return this.workingMemoryEventSupport.getEventListeners();
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void addEventListener(final AgendaEventListener listener) {
-        this.agendaEventSupport.addEventListener( listener );
+        try {
+            lock.lock();
+            this.agendaEventSupport.addEventListener( listener );
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void removeEventListener(final AgendaEventListener listener) {
-        this.agendaEventSupport.removeEventListener( listener );
+        try {
+            lock.lock();
+            this.agendaEventSupport.removeEventListener( listener );
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public List getAgendaEventListeners() {
+        try {
+            lock.lock();
+            return this.agendaEventSupport.getEventListeners();
+        } finally {
+            lock.unlock();
+        }
     }
 
     public FactHandleFactory getFactHandleFactory() {
         return this.handleFactory;
     }
 
-    public List getAgendaEventListeners() {
-        return this.agendaEventSupport.getEventListeners();
-    }
-
     /**
      * @see WorkingMemory
      */
     public Map getGlobals() {
-        return this.globals;
+        try {
+            lock.lock();
+            return this.globals;
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -197,20 +232,25 @@ public abstract class AbstractWorkingMemory
      */
     public void setGlobal(final String name,
                           final Object value) {
-        // Make sure the global has been declared in the RuleBase
-        final Map globalDefintions = this.ruleBase.getGlobals();
-        final Class type = (Class) globalDefintions.get( name );
-        if ( (type == null) ) {
-            throw new RuntimeException( "Unexpected global [" + name + "]" );
-        } else if ( !type.isInstance( value ) ) {
-            throw new RuntimeException( "Illegal class for global. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
+        try {
+            lock.lock();
+            // Make sure the global has been declared in the RuleBase
+            final Map globalDefintions = this.ruleBase.getGlobals();
+            final Class type = (Class) globalDefintions.get( name );
+            if ( (type == null) ) {
+                throw new RuntimeException( "Unexpected global [" + name + "]" );
+            } else if ( !type.isInstance( value ) ) {
+                throw new RuntimeException( "Illegal class for global. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
 
-        } else {
-            this.globals.put( name,
-                              value );
+            } else {
+                this.globals.put( name,
+                                  value );
+            }
+        } finally {
+            lock.unlock();
         }
     }
-    
+
     public long getId() {
         return this.id;
     }
@@ -219,8 +259,13 @@ public abstract class AbstractWorkingMemory
      * @see WorkingMemory
      */
     public Object getGlobal(final String name) {
-        final Object object = this.globals.get( name );
-        return object;
+        try {
+            lock.lock();
+            final Object object = this.globals.get( name );
+            return object;
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -293,14 +338,19 @@ public abstract class AbstractWorkingMemory
      * 
      */
     public Object getObject(final FactHandle handle) {
-        // you must always take the value from the assertMap, incase the handle
-        // is not from this WorkingMemory
-        InternalFactHandle factHandle = (InternalFactHandle) this.assertMap.get( handle );
-        if ( factHandle != null ) {
-            return factHandle.getObject();
-        }
+        try {
+            lock.lock();
+            // you must always take the value from the assertMap, incase the handle
+            // is not from this WorkingMemory
+            InternalFactHandle factHandle = (InternalFactHandle) this.assertMap.get( handle );
+            if ( factHandle != null ) {
+                return factHandle.getObject();
+            }
 
-        return null;
+            return null;
+        } finally {
+            lock.unlock();
+        }
 
     }
 
@@ -308,13 +358,23 @@ public abstract class AbstractWorkingMemory
      * @see WorkingMemory
      */
     public FactHandle getFactHandle(final Object object) {
-        final FactHandle factHandle = (FactHandle) this.assertMap.get( object );
+        try {
+            lock.lock();
+            final FactHandle factHandle = (FactHandle) this.assertMap.get( object );
 
-        return factHandle;
+            return factHandle;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public List getFactHandles() {
-        return new ArrayList( this.assertMap.values() );
+        try {
+            lock.lock();
+            return new ArrayList( this.assertMap.values() );
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -422,8 +482,8 @@ public abstract class AbstractWorkingMemory
             return null;
         }
         InternalFactHandle handle = null;
-        this.lock.lock();
         try {
+            this.lock.lock();
             // check if the object already exists in the WM
             handle = (InternalFactHandle) this.assertMap.get( object );
 
@@ -656,8 +716,8 @@ public abstract class AbstractWorkingMemory
                               final boolean updateEqualsMap,
                               final Rule rule,
                               final Activation activation) throws FactException {
-        this.lock.lock();
         try {
+            this.lock.lock();
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             if ( handle.getId() == -1 ) {
                 // can't retract an already retracted handle
