@@ -60,7 +60,7 @@ public class BetaNodeBinder
         }
 
         for ( int i = 0; i < this.constraints.length; i++ ) {
-            if ( !this.constraints[i].isAllowed( handle,
+            if ( !this.constraints[i].isAllowed( handle.getObject(),
                                                  tuple,
                                                  workingMemory ) ) {
                 return false;

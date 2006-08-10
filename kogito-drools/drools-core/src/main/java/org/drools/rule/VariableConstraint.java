@@ -17,7 +17,6 @@ package org.drools.rule;
  */
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
@@ -61,11 +60,10 @@ public class VariableConstraint
         return this.restriction.getEvaluator();
     }
 
-    public boolean isAllowed(final InternalFactHandle handle,
+    public boolean isAllowed(final Object object,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
-        return this.restriction.isAllowed( this.fieldExtractor.getValue( handle.getObject() ),
-                                           handle,
+        return this.restriction.isAllowed( this.fieldExtractor.getValue( object ),
                                            tuple,
                                            workingMemory );
     }

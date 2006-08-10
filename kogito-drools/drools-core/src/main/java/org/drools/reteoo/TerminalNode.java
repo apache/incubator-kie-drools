@@ -52,7 +52,7 @@ final class TerminalNode extends BaseNode
     /**
      * 
      */
-    private static final long serialVersionUID = -4172639826881353001L;
+    private static final long serialVersionUID = 320;
     /** The rule to invoke upon match. */
     private final Rule        rule;
     private final TupleSource tupleSource;

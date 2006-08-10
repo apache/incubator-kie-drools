@@ -131,7 +131,7 @@ class AlphaNode extends ObjectSource
                              final PropagationContext context,
                              final ReteooWorkingMemory workingMemory) throws FactException {
         final Set memory = (Set) workingMemory.getNodeMemory( this );
-        if ( this.constraint.isAllowed( handle,
+        if ( this.constraint.isAllowed( handle.getObject(),
                                         null,
                                         workingMemory ) ) {
             memory.add( handle );
@@ -157,7 +157,7 @@ class AlphaNode extends ObjectSource
                              final ReteooWorkingMemory workingMemory) {
         final Set memory = (Set) workingMemory.getNodeMemory( this );
 
-        if ( this.constraint.isAllowed( handle,
+        if ( this.constraint.isAllowed( handle.getObject(),
                                         null,
                                         workingMemory ) ) {
             if ( memory.add( handle ) ) {

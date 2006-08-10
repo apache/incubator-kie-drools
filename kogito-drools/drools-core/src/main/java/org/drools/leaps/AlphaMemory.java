@@ -19,7 +19,7 @@ class AlphaMemory {
                         final WorkingMemory workingMemory ) {
         Boolean ret = (Boolean) this.alphaChecks.get( factHandle );
         if (ret == null) {
-            ret = new Boolean( alpha.isAllowed( factHandle, tuple, workingMemory ) );
+            ret = new Boolean( alpha.isAllowed( factHandle.getObject(), tuple, workingMemory ) );
             this.alphaChecks.put( factHandle, ret );
         }
 

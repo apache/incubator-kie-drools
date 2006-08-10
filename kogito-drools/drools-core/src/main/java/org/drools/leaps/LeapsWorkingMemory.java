@@ -71,7 +71,7 @@ class LeapsWorkingMemory extends AbstractWorkingMemory
     implements
     EventSupport,
     PropertyChangeListener {
-    private static final long serialVersionUID       = -2524904474925421759L;
+    private static final long serialVersionUID       = 320;
 
     private final Map         queryResults;
 
@@ -326,8 +326,8 @@ class LeapsWorkingMemory extends AbstractWorkingMemory
                              final Object object,
                              final Rule rule,
                              final Activation activation) throws FactException {
-        this.getLock().lock();
         try {
+            this.getLock().lock();
             final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,

@@ -18,7 +18,6 @@ package org.drools.rule;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.Tuple;
@@ -85,12 +84,12 @@ public class PredicateConstraint
         return "[PredicateConstraint declarations=" + this.requiredDeclarations  + "]";
     }    
     
-    public boolean isAllowed(final InternalFactHandle handle,
+    public boolean isAllowed(final Object object,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
         try {
-            return this.expression.evaluate( tuple,
-                                             handle,
+            return this.expression.evaluate( object,
+                                             tuple,
                                              this.declaration,
                                              this.requiredDeclarations,
                                              workingMemory );

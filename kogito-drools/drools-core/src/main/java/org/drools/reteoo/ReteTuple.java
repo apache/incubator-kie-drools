@@ -203,6 +203,10 @@ public class ReteTuple extends BaseMultiLinkedListNode
         this.linkedTuples.clear();
     }
 
+    public void clearTupleMatches() {
+        this.matches.clear();
+    }    
+    
     public void addTupleMatch(final DefaultFactHandle handle,
                               final TupleMatch node) {
         if ( this.matches == Collections.EMPTY_MAP ) {

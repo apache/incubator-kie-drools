@@ -38,7 +38,6 @@ public class MockTupleSource extends TupleSource {
 
     public void attach() {
         this.attached++;
-
     }
 
     public int getAttached() {

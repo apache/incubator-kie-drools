@@ -23,8 +23,8 @@ import org.drools.rule.Declaration;
 public interface PredicateExpression
     extends
     Invoker {
-    public boolean evaluate(Tuple tuple,
-                            FactHandle factHandle,
+    public boolean evaluate(Object object,
+                            Tuple tuple,
                             Declaration declaration,
                             Declaration[] requiredDeclarations,
                             WorkingMemory workingMemory) throws Exception;

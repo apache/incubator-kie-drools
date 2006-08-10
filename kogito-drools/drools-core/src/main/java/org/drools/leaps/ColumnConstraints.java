@@ -85,7 +85,7 @@ public class ColumnConstraints implements Serializable {
         if ( this.alphaPresent ) {
             for ( int i = 0, length = this.alphaConstraints.length; i < length; i++ ) {
                 // escape immediately if some condition does not match
-                if ( !this.alphaConstraints[i].isAllowed( factHandle,
+                if ( !this.alphaConstraints[i].isAllowed( factHandle.getObject(),
                                                           tuple,
                                                           workingMemory ) ) {
                     return false;

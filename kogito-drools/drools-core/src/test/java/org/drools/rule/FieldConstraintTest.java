@@ -78,7 +78,7 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.assertObject( cheddar );
 
         // check constraint
-        assertTrue( constraint.isAllowed( cheddarHandle,
+        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
                                           null,
                                           workingMemory ) );
 
@@ -88,7 +88,7 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.assertObject( stilton );
 
         // check constraint
-        assertFalse( constraint.isAllowed( stiltonHandle,
+        assertFalse( constraint.isAllowed( stiltonHandle.getObject(),
                                            null,
                                            workingMemory ) );
     }
@@ -131,13 +131,13 @@ public class FieldConstraintTest extends TestCase {
              */
             private static final long serialVersionUID = -7805842671538257493L;
 
-            public boolean evaluate(Tuple tuple,
-                                    FactHandle factHandle,
+            public boolean evaluate(Object  object,
+                                    Tuple tuple,
                                     Declaration declaration,
                                     Declaration[] declarations,
                                     WorkingMemory workingMemory) {
                 int price1 = ((Integer) declarations[0].getValue( workingMemory.getObject( tuple.get( declarations[0] ) ) )).intValue();
-                int price2 = ((Integer) declaration.getValue( workingMemory.getObject( factHandle ) )).intValue();
+                int price2 = ((Integer) declaration.getValue( object )).intValue();
 
                 return (price2 == (price1 * 2));
 
@@ -160,7 +160,7 @@ public class FieldConstraintTest extends TestCase {
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
 
-        assertTrue( constraint1.isAllowed( f1,
+        assertTrue( constraint1.isAllowed( f1.getObject(),
                                            tuple,
                                            workingMemory ) );
     }
@@ -228,11 +228,11 @@ public class FieldConstraintTest extends TestCase {
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
 
-        assertTrue( constraint1.isAllowed( f1,
+        assertTrue( constraint1.isAllowed( f1.getObject(),
                                            tuple,
                                            workingMemory ) );
 
-        assertFalse( constraint2.isAllowed( f1,
+        assertFalse( constraint2.isAllowed( f1.getObject(),
                                             tuple,
                                             workingMemory ) );
 
@@ -241,7 +241,7 @@ public class FieldConstraintTest extends TestCase {
 
         final InternalFactHandle f2 = (InternalFactHandle) workingMemory.assertObject( cheddar2 );
 
-        assertTrue( constraint2.isAllowed( f2,
+        assertTrue( constraint2.isAllowed( f2.getObject(),
                                            tuple,
                                            workingMemory ) );
     }

@@ -33,7 +33,7 @@ public class Column
     /**
      * 
      */
-    private static final long serialVersionUID = 9167552040211010022L;
+    private static final long serialVersionUID = 320;
     private final ObjectType  objectType;
     private List              constraints      = Collections.EMPTY_LIST;
     final Declaration         declaration;
