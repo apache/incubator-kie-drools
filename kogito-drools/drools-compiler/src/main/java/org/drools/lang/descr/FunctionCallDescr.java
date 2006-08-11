@@ -9,21 +9,18 @@ import java.util.List;
 public class FunctionCallDescr extends DeclarativeInvokerDescr {
 
 	private String name;
-	private List args = new ArrayList();
+	private List args;
 
 	public FunctionCallDescr(String name) {
 		this.name = name;
 	}
 	
-	public void addArgument(String arg) {
-		args.add(arg);
-	}
 
-	public List getArgs() {
+	public List getArguments() {
 		return args;
 	}
 
-	public void setArgs(List args) {
+	public void setArguments(List args) {
 		this.args = args;
 	}
 
