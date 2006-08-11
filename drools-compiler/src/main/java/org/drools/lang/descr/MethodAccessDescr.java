@@ -14,16 +14,12 @@ import java.util.List;
 public class MethodAccessDescr extends DeclarativeInvokerDescr {
 
 	private String methodName;
-	private List arguments = new ArrayList();
+	private List arguments;
 	private String variableName;
 	
 	public MethodAccessDescr(String variableName, String methodName) {
 		this.methodName = methodName;
 		this.variableName = variableName;
-	}
-	
-	public void addArgument(String arg) {
-		this.arguments.add(arg);
 	}
 
 	public List getArguments() {

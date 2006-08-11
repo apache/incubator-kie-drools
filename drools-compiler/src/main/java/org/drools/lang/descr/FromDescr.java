@@ -1,12 +1,12 @@
 package org.drools.lang.descr;
 
-public class FromDescr {
+public class FromDescr extends PatternDescr {
 
 	private ColumnDescr column;
 	private DeclarativeInvokerDescr dataSource;
 	
-	public ColumnDescr getColumn() {
-		return column;
+	public int getLine() {
+		return column.getLine();
 	}
 	public void setColumn(ColumnDescr column) {
 		this.column = column;
