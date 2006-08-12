@@ -225,14 +225,18 @@ final class TerminalNode extends BaseNode
                             final PropagationContext context,
                             final ReteooWorkingMemory workingMemory) {
         // We have to remove and assert the new tuple as it has modified facts and thus its tuple is newer
-        if ( tuple.getActivation().isActivated() ) {
-            tuple.getActivation().remove();
+        boolean fireActivation = true;
+        Activation activation = tuple.getActivation();
+        
+        if ( activation.isActivated() ) {
+            activation.remove();
+            fireActivation = false;
         }
+
         assertTuple( tuple,
                      context,
                      workingMemory,
-                     false );
-
+                     fireActivation );
     }
 
     public String toString() {

@@ -1,0 +1,9 @@
+package org.drools
+
+rule "Supply cheese for every 2 persons with the same status"
+	when
+		p : Person($status : status, $age : age)
+		exists Person(status == $status, age > $age);
+	then
+        assertLogical(new String("Cheese for person with age " + $age));
+end
