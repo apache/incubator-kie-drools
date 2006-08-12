@@ -43,6 +43,10 @@ public class Cheese
         return this.type;
     }
 
+    public void setType( String type ) {
+        this.type = type;
+    }
+
     public void setPrice(final int price) {
         this.price = price;
     }

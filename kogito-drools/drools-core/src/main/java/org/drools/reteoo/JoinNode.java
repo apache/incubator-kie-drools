@@ -17,6 +17,7 @@ package org.drools.reteoo;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -258,6 +259,11 @@ class JoinNode extends BetaNode {
                          context,
                          workingMemory );
         } else {
+            // TIRELLI's NOTE: the following is necessary because in case memory  
+            // indexing is enabled, the loop over right objects may skip some of the
+            // previously matched objects
+            final Map oldMatches = new HashMap(matches);
+            
             // ensure the tuple is at the top of the memory
             memory.add( workingMemory,
                         leftTuple );
@@ -271,7 +277,7 @@ class JoinNode extends BetaNode {
                 if ( binder.isAllowed( handle,
                                        leftTuple,
                                        workingMemory ) ) {
-                    TupleMatch tupleMatch = (TupleMatch) leftTuple.getTupleMatches().get( handle );
+                    TupleMatch tupleMatch = (TupleMatch) oldMatches.remove( handle );
                     if ( tupleMatch != null ) {
                         // ensures tupleMatch will be in the appropriate order
                         objectMatches.remove( tupleMatch );
@@ -294,11 +300,22 @@ class JoinNode extends BetaNode {
                 } else {
                     final TupleMatch tupleMatch = leftTuple.removeMatch( handle );
                     if ( tupleMatch != null ) {
+                        oldMatches.remove( handle );
                         objectMatches.remove( tupleMatch );
                         propagateRetractTuple( tupleMatch,
                                                context,
                                                workingMemory );
                     }
+                }
+            }
+            
+            // TIRELLI's NOTE: the following is necessary because in case memory  
+            // indexing is enabled, the loop over right objects may skip some of the
+            // previously matched objects
+            if(!oldMatches.isEmpty()) {
+                for(Iterator it = oldMatches.values().iterator(); it.hasNext(); ) {
+                    final TupleMatch tupleMatch = (TupleMatch) it.next();
+                    tupleMatch.getObjectMatches().remove( tupleMatch );
                 }
             }
         }
