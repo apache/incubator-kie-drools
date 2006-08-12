@@ -17,6 +17,7 @@ package org.drools.reteoo;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -249,9 +250,13 @@ public class NotNode extends BetaNode {
         memory.add( workingMemory,
                     leftTuple );
 
-        final Map matches = leftTuple.getTupleMatches();
+        // TIRELLI's NOTE: the following is necessary because in case memory  
+        // indexing is enabled, the loop over right objects may skip some of the
+        // previously matched objects
+        final Map oldMatches = new HashMap(leftTuple.getTupleMatches());
+        leftTuple.getTupleMatches().clear();
 
-        final int previous = matches.size();
+        final int previous = oldMatches.size();
         final BetaNodeBinder binder = getJoinNodeBinder();
 
         for ( final Iterator rightIterator = memory.rightObjectIterator( workingMemory,
@@ -263,21 +268,30 @@ public class NotNode extends BetaNode {
                                    leftTuple,
                                    workingMemory ) ) {
                 // test passes
-                TupleMatch tupleMatch = (TupleMatch) leftTuple.getTupleMatches().get( handle );
+                TupleMatch tupleMatch = (TupleMatch) oldMatches.remove( handle );
                 if ( tupleMatch == null ) {
                     // no previous matches so add a match now
                     tupleMatch = objectMatches.add( leftTuple );
-                    leftTuple.addTupleMatch( handle,
-                                             tupleMatch );
                 }
+                leftTuple.addTupleMatch( handle,
+                                         tupleMatch );
             } else {
-                final TupleMatch tupleMatch = leftTuple.removeMatch( handle );
+                final TupleMatch tupleMatch = (TupleMatch) oldMatches.remove( handle );
                 if ( tupleMatch != null ) {
                     // use to match and doesn't any more, so remove match
                     objectMatches.remove( tupleMatch );
                 }
             }
         }
+
+        // TIRELLI's NOTE: the following is necessary because in case memory  
+        // indexing is enabled, the loop over right objects may skip some of the
+        // previously matched objects
+        for ( final Iterator oldMatchesIt = oldMatches.values().iterator(); oldMatchesIt.hasNext(); ) {
+            final TupleMatch tupleMatch = (TupleMatch) oldMatchesIt.next();
+            tupleMatch.getObjectMatches().remove( tupleMatch );
+        }
+        
         if ( previous == 0 && leftTuple.matchesSize() == 0 ) {
             propagateModifyTuple( leftTuple,
                                   context,
@@ -306,20 +320,22 @@ public class NotNode extends BetaNode {
 
         TupleMatch tupleMatch = objectMatches.getFirstTupleMatch();
         final BetaNodeBinder binder = getJoinNodeBinder();
-
+        
         for ( final Iterator it = memory.leftTupleIterator( workingMemory,
                                                             handle ); it.hasNext(); ) {
             final ReteTuple leftTuple = (ReteTuple) it.next();
+            
             if ( tupleMatch != null && tupleMatch.getTuple() == leftTuple ) {
                 // has previous match so need to decide whether to continue
                 // modify or retract
                 final int previous = leftTuple.getTupleMatches().size();
+                TupleMatch nextTupleMatch = (TupleMatch) tupleMatch.getNext();
                 if ( !binder.isAllowed( handle,
                                         leftTuple,
                                         workingMemory ) ) {
                     leftTuple.removeMatch( handle );
                     objectMatches.remove( tupleMatch );
-                }
+                } 
                 if ( previous == 0 && leftTuple.matchesSize() == 0 ) {
                     propagateModifyTuple( leftTuple,
                                           context,
@@ -334,7 +350,7 @@ public class NotNode extends BetaNode {
                                            workingMemory );
                 }
 
-                tupleMatch = (TupleMatch) tupleMatch.getNext();
+                tupleMatch = (TupleMatch) nextTupleMatch;
             } else {
                 // no previous join, so attempt join now
                 final int previousSize = leftTuple.matchesSize();
