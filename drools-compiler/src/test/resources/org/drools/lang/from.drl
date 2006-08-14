@@ -4,7 +4,7 @@ rule using_from
     Whee(bar=="baz") from whee("y")
     f: Foo(la==2) from bar.la(x)   
     Bam() from wa()
-    Kah() from la.wa()
+    Kah() from la.wa(42, 42.42, false, null)
     Bam(a=="c") 
   then
   	whee();

@@ -5,6 +5,10 @@ public class FromDescr extends PatternDescr {
 	private ColumnDescr column;
 	private DeclarativeInvokerDescr dataSource;
 	
+	FromDescr() {
+		//protected so only factory can create
+	}
+	
 	public int getLine() {
 		return column.getLine();
 	}
