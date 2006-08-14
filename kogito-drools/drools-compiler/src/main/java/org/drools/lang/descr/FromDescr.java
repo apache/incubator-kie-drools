@@ -18,4 +18,8 @@ public class FromDescr extends PatternDescr {
 		this.dataSource = dataSource;
 	}
 	
+	public ColumnDescr getReturnedColumn() {
+		return column;
+	}
+	
 }

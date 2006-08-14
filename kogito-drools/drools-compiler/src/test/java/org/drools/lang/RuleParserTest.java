@@ -37,14 +37,19 @@ import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FactTemplateDescr;
+import org.drools.lang.descr.FieldAccessDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
+import org.drools.lang.descr.FromDescr;
+import org.drools.lang.descr.FunctionCallDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.MethodAccessDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
@@ -313,6 +318,21 @@ public class RuleParserTest extends TestCase {
 
         assertFalse( this.parser.hasErrors() );
     }
+    
+    
+    public void testRuleParseLhs() throws Exception {
+    	String text = "Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") \n then";
+    	AndDescr descrs = new AndDescr();
+		CharStream charStream = new ANTLRStringStream( text );
+		RuleParserLexer lexer = new RuleParserLexer( charStream );
+		TokenStream tokenStream = new CommonTokenStream( lexer );
+		RuleParser parser = new RuleParser( tokenStream );
+		parser.setLineOffset( descrs.getLine() );
+		parser.normal_lhs_block(descrs);
+		System.err.println(parser.getErrorMessages());
+		assertFalse(parser.hasErrors());
+    	
+    }
 
     public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
         final RuleParser parser = parseResource( "literal_bool_and_negative.drl" );
@@ -437,7 +457,64 @@ public class RuleParserTest extends TestCase {
 
     }
 
-            
+
+    public void testFrom() throws Exception {
+        final RuleDescr rule = parseResource( "from.drl" ).rule();
+
+        System.err.println(parser.getErrorMessages());
+        assertFalse(parser.hasErrors());
+        
+        assertNotNull( rule );
+
+        assertEquals( "using_from",
+                      rule.getName() );
+
+        assertEquals(6, rule.getLhs().getDescrs().size());
+        
+        FromDescr from = (FromDescr) rule.getLhs().getDescrs().get(0);
+        
+        assertEquals(3, from.getLine());
+        
+        assertEquals("Foo", from.getReturnedColumn().getObjectType());
+        assertTrue(from.getDataSource() instanceof FieldAccessDescr);
+        assertEquals("baz", ((FieldAccessDescr) from.getDataSource()).getFieldName());        
+        assertEquals("bar", ((FieldAccessDescr) from.getDataSource()).getVariableName());
+        
+        
+        from = (FromDescr) rule.getLhs().getDescrs().get(1);
+        assertEquals("Whee", from.getReturnedColumn().getObjectType());
+        assertEquals(1, from.getReturnedColumn().getDescrs().size());
+        assertTrue(from.getDataSource() instanceof FunctionCallDescr);
+        assertEquals("whee", ((FunctionCallDescr) from.getDataSource()).getName());        
+        assertEquals(1, ((FunctionCallDescr) from.getDataSource()).getArguments().size());
+        assertEquals("y", ((FunctionCallDescr) from.getDataSource()).getArguments().get(0));
+
+        assertEquals(4, from.getLine());
+        assertEquals(4, from.getReturnedColumn().getLine());
+        
+        from = (FromDescr) rule.getLhs().getDescrs().get(2);
+        assertEquals("Foo", from.getReturnedColumn().getObjectType());
+        assertEquals(1, from.getReturnedColumn().getDescrs().size());
+        assertEquals("f", from.getReturnedColumn().getIdentifier());
+        assertTrue(from.getDataSource() instanceof MethodAccessDescr);
+        assertEquals("bar", ((MethodAccessDescr) from.getDataSource()).getVariableName());        
+        assertEquals("la", ((MethodAccessDescr) from.getDataSource()).getMethodName());
+        assertEquals(1, ((MethodAccessDescr) from.getDataSource()).getArguments().size());
+        assertEquals("x", ((MethodAccessDescr) from.getDataSource()).getArguments().get(0));        
+
+        assertEqualsIgnoreWhitespace("whee();", rule.getConsequence());
+        
+        from = (FromDescr) rule.getLhs().getDescrs().get(3);
+        assertEquals("wa", ((FunctionCallDescr)from.getDataSource()).getName());
+
+        from = (FromDescr) rule.getLhs().getDescrs().get(4);
+        assertEquals("wa", ((MethodAccessDescr)from.getDataSource()).getMethodName());
+        assertEquals("la", ((MethodAccessDescr)from.getDataSource()).getVariableName());
+        
+        
+        assertEquals("Bam", ((ColumnDescr)rule.getLhs().getDescrs().get(5)).getObjectType());
+    }
+    
     public void testSimpleRule() throws Exception {
         final RuleDescr rule = parseResource( "simple_rule.drl" ).rule();
 
@@ -981,6 +1058,7 @@ public class RuleParserTest extends TestCase {
         parser.setExpanderResolver( mockExpanderResolver );
         parser.compilation_unit();
         final PackageDescr pack = parser.getPackageDescr();
+        System.err.println(parser.getErrorMessages());
         assertNotNull( pack );
         assertEquals( 1,
                       pack.getRules().size() );
@@ -1077,12 +1155,19 @@ public class RuleParserTest extends TestCase {
         parser.setExpanderResolver( res );
         parser.compilation_unit();
         assertTrue( parser.hasErrors() );
-        final RecognitionException err = (RecognitionException) parser.getErrors().get( 0 );
-        assertEquals( 5,
+        
+        RecognitionException err = (RecognitionException) parser.getErrors().get( 0 );
+        //System.err.println(parser.getErrorMessages());
+        assertEquals(2, parser.getErrors().size());
+        
+        assertEquals( 6,
                       err.line );
-
+        err = (RecognitionException) parser.getErrors().get(1);
+        assertEquals( 9,
+                err.line );
+        
     }
-
+    
     public void testExpanderLineSpread() throws Exception {
 
         final RuleParser parser = parseResource( "expander_spread_lines.drl" );
@@ -1090,6 +1175,8 @@ public class RuleParserTest extends TestCase {
         parser.setExpanderResolver( res );
         parser.setExpanderDebug( true );
         parser.compilation_unit();
+        System.err.println(parser.getErrorMessages());
+        
         //        List errorMessages = parser.getErrorMessages();
         //        for ( Iterator iter = errorMessages.iterator(); iter.hasNext(); ) {
         //            String element = (String) iter.next();
@@ -1120,6 +1207,7 @@ public class RuleParserTest extends TestCase {
         parser.setExpanderDebug( true );
         parser.compilation_unit();
       
+        System.err.println(parser.getErrorMessages());
 
         assertFalse( parser.hasErrors() );
         
