@@ -111,7 +111,7 @@ grammar RuleParser;
     	
         	/** Reparse the results of the expansion */
     	private void reparseLhs(String text, AndDescr descrs) throws RecognitionException {
-    		CharStream charStream = new ANTLRStringStream( text );
+    		CharStream charStream = new ANTLRStringStream( text  + " \n  then"); //need to then so it knows when to end... werd...
     		RuleParserLexer lexer = new RuleParserLexer( charStream );
     		TokenStream tokenStream = new CommonTokenStream( lexer );
     		RuleParser parser = new RuleParser( tokenStream );
@@ -362,11 +362,11 @@ function
 			f = new FunctionDescr( name.getText(), retType );
 		} 
 		'(' opt_eol
-			(	(paramType=dotted_name)? opt_eol paramName=argument opt_eol
+			(	(paramType=dotted_name)? opt_eol paramName=argument_name opt_eol
 				{
 					f.addParameter( paramType, paramName );
 				}
-				(	',' opt_eol (paramType=dotted_name)? opt_eol paramName=argument opt_eol 
+				(	',' opt_eol (paramType=dotted_name)? opt_eol paramName=argument_name opt_eol 
 					{
 						f.addParameter( paramType, paramName );
 					}
@@ -692,9 +692,95 @@ lhs_column returns [PatternDescr d]
 	@init {
 		d=null;
 	}
-	:	f=fact_binding	{ d = f; }
-	|	f=fact		{ d = f; }
+	:	f=fact_binding { d = f; }
+	|	f=fact { d = f; }
 	;
+	
+from_statement returns [FromDescr d]
+	@init {
+		d=new FromDescr();
+	}
+ 	:
+ 		'from' opt_eol ds=from_source
+ 		{
+ 			d.setDataSource(ds);
+ 		
+ 		}
+ 		
+ 		
+ 		
+	;
+	
+from_source returns [DeclarativeInvokerDescr ds]
+	@init {
+		ds = null;
+	}
+	:
+		(var=ID '.' field=ID 
+		
+			{
+			  FieldAccessDescr fa = new FieldAccessDescr(var.getText(), field.getText());	
+			  fa.setLine(var.getLine());
+			  ds = fa;
+			 }
+	
+		) 
+		|
+		(var=ID '.' method=ID opt_eol  '(' opt_eol args=parameter_list opt_eol ')' 
+			{
+			MethodAccessDescr mc = new MethodAccessDescr(var.getText(), method.getText());
+			mc.setArguments(args);
+			mc.setLine(var.getLine());
+			ds = mc;
+			}	
+		)
+		|
+		(functionName=ID opt_eol '(' opt_eol args=parameter_list opt_eol ')'
+			{
+			FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
+			fc.setLine(functionName.getLine());
+			fc.setArguments(args);
+			ds = fc;
+			}
+
+		
+		)
+	
+	;	
+	
+parameter_list returns [ArrayList args]
+	@init {
+		args = new ArrayList();
+	}
+	:
+		(param=parameter_value  {
+			if (param != null) {
+				args.add(param);
+			}
+		}
+		 
+		(
+			opt_eol ',' opt_eol param=parameter_value {
+				if (param != null) {
+					args.add(param);
+				}
+			}
+		)*
+		)?
+	;
+	
+parameter_value returns [String text]
+	@init {
+		text = null;
+	}
+	:	(	t=STRING { text = getString( t ); } //t.getText(); text=text.substring( 1, text.length() - 1 ); }
+		|	t=INT    { text = t.getText(); }
+		|	t=FLOAT	 { text = t.getText(); }
+		|	t=BOOL 	 { text = t.getText(); }
+		|	t=ID { text = t.getText(); }	
+		|	t='null' { text = "null"; }	
+		)
+	;			
  	
 fact_binding returns [PatternDescr d]
 	@init {
@@ -1052,8 +1138,8 @@ lhs_unary returns [PatternDescr d]
 	}
 	:	(	u=lhs_exist
 		|	u=lhs_not
-		|	u=lhs_eval
-		|	u=lhs_column
+		|	u=lhs_eval				
+		|	u=lhs_column (fm=from_statement {fm.setColumn((ColumnDescr) u); u=fm;})?
 		|	'(' opt_eol u=lhs opt_eol ')'
 		) { d = u; }
 	;
@@ -1102,7 +1188,7 @@ dotted_name returns [String name]
 		id=ID { name=id.getText(); } ( '.' id=ID { name = name + "." + id.getText(); } )* ( '[' ']' { name = name + "[]";})*
 	;
 	
-argument returns [String name]
+argument_name returns [String name]
 	@init {
 		name = null;
 	}
