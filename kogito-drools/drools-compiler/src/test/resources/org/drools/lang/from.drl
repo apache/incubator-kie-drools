@@ -1,0 +1,11 @@
+rule using_from
+  when
+    Foo() from bar.baz
+    Whee(bar=="baz") from whee("y")
+    f: Foo(la==2) from bar.la(x)   
+    Bam() from wa()
+    Kah() from la.wa()
+    Bam(a=="c") 
+  then
+  	whee();
+end
