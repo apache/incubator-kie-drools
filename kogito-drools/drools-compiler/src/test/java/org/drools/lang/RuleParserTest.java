@@ -32,6 +32,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.ArgumentValueDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.ColumnDescr;
 import org.drools.lang.descr.EvalDescr;
@@ -49,7 +50,6 @@ import org.drools.lang.descr.MethodAccessDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
@@ -481,13 +481,17 @@ public class RuleParserTest extends TestCase {
         assertEquals("bar", ((FieldAccessDescr) from.getDataSource()).getVariableName());
         
         
+        ArgumentValueDescr arg = null;
+        
         from = (FromDescr) rule.getLhs().getDescrs().get(1);
         assertEquals("Whee", from.getReturnedColumn().getObjectType());
         assertEquals(1, from.getReturnedColumn().getDescrs().size());
         assertTrue(from.getDataSource() instanceof FunctionCallDescr);
         assertEquals("whee", ((FunctionCallDescr) from.getDataSource()).getName());        
         assertEquals(1, ((FunctionCallDescr) from.getDataSource()).getArguments().size());
-        assertEquals("y", ((FunctionCallDescr) from.getDataSource()).getArguments().get(0));
+        arg = ( (ArgumentValueDescr )((FunctionCallDescr) from.getDataSource()).getArguments().get(0));
+        assertEquals("y", arg.getValue());
+        assertEquals(ArgumentValueDescr.STRING, arg.getType());
 
         assertEquals(4, from.getLine());
         assertEquals(4, from.getReturnedColumn().getLine());
@@ -500,7 +504,11 @@ public class RuleParserTest extends TestCase {
         assertEquals("bar", ((MethodAccessDescr) from.getDataSource()).getVariableName());        
         assertEquals("la", ((MethodAccessDescr) from.getDataSource()).getMethodName());
         assertEquals(1, ((MethodAccessDescr) from.getDataSource()).getArguments().size());
-        assertEquals("x", ((MethodAccessDescr) from.getDataSource()).getArguments().get(0));        
+        arg = (ArgumentValueDescr) ((MethodAccessDescr) from.getDataSource()).getArguments().get(0);
+        
+        
+        assertEquals("x", arg.getValue());
+        assertEquals(ArgumentValueDescr.VARIABLE, arg.getType());
 
         assertEqualsIgnoreWhitespace("whee();", rule.getConsequence());
         
@@ -508,9 +516,27 @@ public class RuleParserTest extends TestCase {
         assertEquals("wa", ((FunctionCallDescr)from.getDataSource()).getName());
 
         from = (FromDescr) rule.getLhs().getDescrs().get(4);
-        assertEquals("wa", ((MethodAccessDescr)from.getDataSource()).getMethodName());
-        assertEquals("la", ((MethodAccessDescr)from.getDataSource()).getVariableName());
+        MethodAccessDescr meth = (MethodAccessDescr)from.getDataSource();
+        assertEquals("wa", meth.getMethodName());
+        assertEquals("la", meth.getVariableName());
         
+        arg = (ArgumentValueDescr) meth.getArguments().get(0);
+        assertEquals("42", arg.getValue());
+        assertEquals(ArgumentValueDescr.INTEGRAL, arg.getType());
+        
+        arg = (ArgumentValueDescr) meth.getArguments().get(1);
+        assertEquals("42.42", arg.getValue());
+        assertEquals(ArgumentValueDescr.DECIMAL, arg.getType());
+
+        arg = (ArgumentValueDescr) meth.getArguments().get(2);
+        assertEquals("false", arg.getValue());
+        assertEquals(ArgumentValueDescr.BOOLEAN, arg.getType());
+        
+        arg = (ArgumentValueDescr) meth.getArguments().get(3);
+        assertEquals("null", arg.getValue());
+        assertEquals(ArgumentValueDescr.NULL, arg.getType());
+        
+                
         
         assertEquals("Bam", ((ColumnDescr)rule.getLhs().getDescrs().get(5)).getObjectType());
     }

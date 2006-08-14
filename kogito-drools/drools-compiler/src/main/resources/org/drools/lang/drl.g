@@ -17,6 +17,8 @@ grammar RuleParser;
 	private List errors = new ArrayList();
 	private String source = "unknown";
 	private int lineOffset = 0;
+	private DescrFactory factory = new DescrFactory();
+	
 	
 	private boolean parserDebug = false;
 	
@@ -32,6 +34,10 @@ grammar RuleParser;
 	public void setSource(String source) {
 		this.source = source;
 	}
+	
+	public DescrFactory getFactory() {
+		return factory;
+	}	
 
 	/**
 	 * This may be set to enable debuggin of DSLs/expanders.
@@ -698,7 +704,7 @@ lhs_column returns [PatternDescr d]
 	
 from_statement returns [FromDescr d]
 	@init {
-		d=new FromDescr();
+		d=factory.createFrom();
 	}
  	:
  		'from' opt_eol ds=from_source
@@ -726,7 +732,7 @@ from_source returns [DeclarativeInvokerDescr ds]
 	
 		) 
 		|
-		(var=ID '.' method=ID opt_eol  '(' opt_eol args=parameter_list opt_eol ')' 
+		(var=ID '.' method=ID opt_eol  '(' opt_eol args=argument_list opt_eol ')' 
 			{
 			MethodAccessDescr mc = new MethodAccessDescr(var.getText(), method.getText());
 			mc.setArguments(args);
@@ -735,7 +741,7 @@ from_source returns [DeclarativeInvokerDescr ds]
 			}	
 		)
 		|
-		(functionName=ID opt_eol '(' opt_eol args=parameter_list opt_eol ')'
+		(functionName=ID opt_eol '(' opt_eol args=argument_list opt_eol ')'
 			{
 			FunctionCallDescr fc = new FunctionCallDescr(functionName.getText());
 			fc.setLine(functionName.getLine());
@@ -748,19 +754,19 @@ from_source returns [DeclarativeInvokerDescr ds]
 	
 	;	
 	
-parameter_list returns [ArrayList args]
+argument_list returns [ArrayList args]
 	@init {
 		args = new ArrayList();
 	}
 	:
-		(param=parameter_value  {
+		(param=argument_value  {
 			if (param != null) {
 				args.add(param);
 			}
 		}
 		 
 		(
-			opt_eol ',' opt_eol param=parameter_value {
+			opt_eol ',' opt_eol param=argument_value {
 				if (param != null) {
 					args.add(param);
 				}
@@ -769,16 +775,17 @@ parameter_list returns [ArrayList args]
 		)?
 	;
 	
-parameter_value returns [String text]
+argument_value returns [ArgumentValueDescr value]
 	@init {
-		text = null;
+		value = null;
+		String text = null;
 	}
-	:	(	t=STRING { text = getString( t ); } //t.getText(); text=text.substring( 1, text.length() - 1 ); }
-		|	t=INT    { text = t.getText(); }
-		|	t=FLOAT	 { text = t.getText(); }
-		|	t=BOOL 	 { text = t.getText(); }
-		|	t=ID { text = t.getText(); }	
-		|	t='null' { text = "null"; }	
+	:	(	t=STRING { text = getString( t );  value=new ArgumentValueDescr(ArgumentValueDescr.STRING, text);} 
+		|	t=INT    { text = t.getText();  value=new ArgumentValueDescr(ArgumentValueDescr.INTEGRAL, text);}
+		|	t=FLOAT	 { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.DECIMAL, text); }
+		|	t=BOOL 	 { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.BOOLEAN, text); }
+		|	t=ID { text = t.getText(); value=new ArgumentValueDescr(ArgumentValueDescr.VARIABLE, text);}	
+		|	t='null' { text = "null"; value=new ArgumentValueDescr(ArgumentValueDescr.NULL, text);}	
 		)
 	;			
  	
