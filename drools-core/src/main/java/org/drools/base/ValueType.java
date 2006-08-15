@@ -14,6 +14,7 @@ import org.drools.base.evaluators.ByteFactory;
 import org.drools.base.evaluators.CharacterFactory;
 import org.drools.base.evaluators.DateFactory;
 import org.drools.base.evaluators.DoubleFactory;
+import org.drools.base.evaluators.EvaluatorFactory;
 import org.drools.base.evaluators.FloatFactory;
 import org.drools.base.evaluators.IntegerFactory;
 import org.drools.base.evaluators.LongFactory;
@@ -21,9 +22,8 @@ import org.drools.base.evaluators.ObjectFactory;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.ShortFactory;
 import org.drools.base.evaluators.StringFactory;
-import org.drools.spi.Evaluator;
-import org.drools.base.evaluators.EvaluatorFactory;
 import org.drools.facttemplates.FactTemplate;
+import org.drools.spi.Evaluator;
 
 public class ValueType implements Serializable {
     

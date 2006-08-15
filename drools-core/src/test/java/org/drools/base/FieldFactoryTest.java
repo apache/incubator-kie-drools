@@ -3,9 +3,9 @@ package org.drools.base;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.spi.FieldValue;
-
 import junit.framework.TestCase;
+
+import org.drools.spi.FieldValue;
 
 public class FieldFactoryTest extends TestCase {
 

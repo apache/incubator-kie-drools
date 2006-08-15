@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;

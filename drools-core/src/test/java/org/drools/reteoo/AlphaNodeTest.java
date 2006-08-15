@@ -29,7 +29,6 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
-import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
 import org.drools.spi.Evaluator;

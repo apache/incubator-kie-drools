@@ -96,7 +96,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
      * 
      * @param tuple
      */
-    ReteTuple(final ReteTuple tuple) {
+    public ReteTuple(final ReteTuple tuple) {
         this.key = new TupleKey( tuple.key );
     }
 
@@ -108,7 +108,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
      * @param handle
      *      the <code>FactHandleImpl</code> to be joined.
      */
-    ReteTuple(final ReteTuple left,
+    public ReteTuple(final ReteTuple left,
               final DefaultFactHandle handle) {
         this.key = new TupleKey( left.key,
                                  handle );

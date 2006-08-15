@@ -18,7 +18,6 @@ package org.drools.base;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldExtractor;
-import org.drools.spi.ObjectType;
 import org.drools.util.asm.ClassFieldInspector;
 
 /**

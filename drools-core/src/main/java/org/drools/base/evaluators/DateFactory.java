@@ -22,12 +22,6 @@ import java.util.Date;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.ShortFactory.ShortEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortGreaterEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortGreaterOrEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortLessEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortLessOrEqualEvaluator;
-import org.drools.base.evaluators.ShortFactory.ShortNotEqualEvaluator;
 import org.drools.spi.Evaluator;
 
 /**
@@ -256,7 +250,7 @@ public class DateFactory
     }
 
     /** Use the simple date formatter to read the date from a string */
-    private static Date parseDate(final String input) {
+    public static Date parseDate(final String input) {
 
         final SimpleDateFormat df = new SimpleDateFormat( DateFactory.DATE_FORMAT_MASK );
         try {

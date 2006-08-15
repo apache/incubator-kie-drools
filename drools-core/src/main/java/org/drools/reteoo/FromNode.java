@@ -10,10 +10,6 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.rule.Declaration;
-import org.drools.rule.EvalCondition;
-import org.drools.rule.From;
-import org.drools.spi.Constraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -62,7 +58,7 @@ public class FromNode extends TupleSource
         memory.add( workingMemory,
                     leftTuple );
 
-        for ( Iterator it = this.dataProvider.getResults( leftTuple ); it.hasNext(); ) {
+        for ( Iterator it = this.dataProvider.getResults( leftTuple, workingMemory, context ); it.hasNext(); ) {
             Object object = it.next();
             
             // First alpha node filters

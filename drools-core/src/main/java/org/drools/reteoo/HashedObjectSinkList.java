@@ -29,7 +29,6 @@ import org.drools.WorkingMemory;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.rule.LiteralConstraint;
-import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 
 /**

@@ -21,8 +21,6 @@ import java.util.Arrays;
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldConstraint;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.Restriction;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;

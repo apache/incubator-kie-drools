@@ -44,7 +44,6 @@ import java.io.Serializable;
 
 import org.drools.base.ValueType;
 import org.drools.spi.Extractor;
-import org.drools.spi.ObjectType;
 
 /*
  * Copyright 2005 JBoss Inc

@@ -1,8 +1,6 @@
 package org.drools.facttemplates;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.base.ValueType;
-import org.drools.spi.Evaluator;
 
 public class FieldTemplateImpl
     implements

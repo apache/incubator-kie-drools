@@ -16,22 +16,13 @@ package org.drools.examples.manners;
  * limitations under the License.
  */
 
-import java.beans.IntrospectionException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.FactException;
-import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
-import org.drools.leaps.LeapsRuleBase;
-import org.drools.rule.DuplicateRuleNameException;
-import org.drools.rule.InvalidPatternException;
-import org.drools.rule.InvalidRuleException;
 
 public class ReteooMannersTest extends BaseMannersTest {
 

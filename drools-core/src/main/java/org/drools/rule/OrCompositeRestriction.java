@@ -1,9 +1,5 @@
 package org.drools.rule;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.drools.WorkingMemory;
 import org.drools.spi.Restriction;
 import org.drools.spi.Tuple;

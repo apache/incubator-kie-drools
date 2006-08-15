@@ -16,7 +16,6 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 
