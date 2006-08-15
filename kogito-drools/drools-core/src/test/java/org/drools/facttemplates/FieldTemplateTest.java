@@ -1,8 +1,8 @@
 package org.drools.facttemplates;
 
-import org.drools.base.ValueType;
-
 import junit.framework.TestCase;
+
+import org.drools.base.ValueType;
 
 public class FieldTemplateTest extends TestCase {
     public void  testFieldTemplate() {

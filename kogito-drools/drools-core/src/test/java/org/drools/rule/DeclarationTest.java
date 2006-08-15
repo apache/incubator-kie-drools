@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractor;
-import org.drools.base.ClassObjectType;
 import org.drools.spi.FieldExtractor;
 
 public class DeclarationTest extends TestCase {

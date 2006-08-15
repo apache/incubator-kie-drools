@@ -1,11 +1,10 @@
 package org.drools.facttemplates;
 
-import org.drools.Cheese;
+import junit.framework.TestCase;
+
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.spi.Extractor;
-
-import junit.framework.TestCase;
 
 public class FactTemplateFieldExtractorTest extends TestCase {
     public void testExtractor() {

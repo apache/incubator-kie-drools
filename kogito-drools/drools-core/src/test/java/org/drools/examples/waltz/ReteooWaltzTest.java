@@ -21,19 +21,9 @@ package org.drools.examples.waltz;
  * 
  */
 
-import java.beans.IntrospectionException;
-import java.io.IOException;
-
-import org.drools.FactException;
-import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.RuleIntegrationException;
 import org.drools.WorkingMemory;
-import org.drools.leaps.LeapsRuleBase;
-import org.drools.rule.DuplicateRuleNameException;
-import org.drools.rule.InvalidPatternException;
-import org.drools.rule.InvalidRuleException;
 
 /**
  * 

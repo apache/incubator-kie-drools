@@ -17,10 +17,7 @@ package org.drools.facttemplates;
  * limitations under the License.
  */
 
-import org.drools.RuntimeDroolsException;
 import org.drools.base.ValueType;
-import org.drools.facttemplates.FieldTemplate;
-import org.drools.spi.Evaluator;
 import org.drools.spi.ObjectType;
 
 /**

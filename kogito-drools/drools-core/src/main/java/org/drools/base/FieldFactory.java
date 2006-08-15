@@ -19,7 +19,6 @@ package org.drools.base;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 
 public class FieldFactory {

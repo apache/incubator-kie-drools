@@ -16,7 +16,6 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;

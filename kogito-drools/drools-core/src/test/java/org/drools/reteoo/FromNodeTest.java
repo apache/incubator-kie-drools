@@ -2,34 +2,29 @@ package org.drools.reteoo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
-import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
-import org.drools.rule.Column;
 import org.drools.rule.Declaration;
-import org.drools.rule.From;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.DataProvider;
-import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldValue;
 import org.drools.spi.MockField;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-
-import junit.framework.TestCase;
 
 public class FromNodeTest extends TestCase {
 
@@ -396,7 +391,7 @@ public class FromNodeTest extends TestCase {
             this.collection = collection;
         }
 
-        public Iterator getResults(Tuple tuple) {
+        public Iterator getResults(Tuple tuple, WorkingMemory wm, PropagationContext ctx) {
             return this.collection.iterator();
         }
     }

@@ -21,7 +21,6 @@ import java.io.ObjectInputStream;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldExtractor;
-import org.drools.spi.ObjectType;
 
 /**
  * This provides access to fields, and what their numerical index/object type is.

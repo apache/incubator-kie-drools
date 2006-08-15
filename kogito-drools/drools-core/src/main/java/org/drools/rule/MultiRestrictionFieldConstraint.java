@@ -1,14 +1,8 @@
 package org.drools.rule;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.drools.WorkingMemory;
-import org.drools.spi.Evaluator;
-import org.drools.spi.Extractor;
 import org.drools.spi.FieldConstraint;
 import org.drools.spi.FieldExtractor;
-import org.drools.spi.FieldValue;
 import org.drools.spi.Restriction;
 import org.drools.spi.Tuple;
 

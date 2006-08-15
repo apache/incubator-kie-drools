@@ -35,7 +35,6 @@ import org.drools.base.evaluators.Operator;
 import org.drools.common.BetaNodeBinder;
 import org.drools.common.InstanceEqualsConstraint;
 import org.drools.common.InstanceNotEqualsConstraint;
-import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.rule.And;
 import org.drools.rule.Column;
 import org.drools.rule.Declaration;

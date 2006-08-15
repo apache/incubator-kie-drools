@@ -23,7 +23,6 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.BetaNodeBinder;
 import org.drools.rule.VariableConstraint;
-import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
 
 /**

@@ -1,8 +1,8 @@
 package org.drools.facttemplates;
 
-import org.drools.rule.Package;
-
 import junit.framework.TestCase;
+
+import org.drools.rule.Package;
 
 public class FactTemplateTest extends TestCase {
     public void testFieldsAndGetters() {

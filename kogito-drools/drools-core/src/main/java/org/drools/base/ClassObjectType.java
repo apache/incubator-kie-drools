@@ -16,8 +16,6 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import org.drools.RuntimeDroolsException;
-import org.drools.spi.Evaluator;
 import org.drools.spi.ObjectType;
 
 /**

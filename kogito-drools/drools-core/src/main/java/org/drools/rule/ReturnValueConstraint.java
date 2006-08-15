@@ -16,7 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldConstraint;
