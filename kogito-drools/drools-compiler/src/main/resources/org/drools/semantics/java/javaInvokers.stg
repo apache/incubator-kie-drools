@@ -88,12 +88,12 @@ public class <invokerClassName> implements org.drools.spi.PredicateExpression, o
 {
     private static final long serialVersionUID  = 7952983928232702826L;
     
-    public boolean evaluate(org.drools.spi.Tuple tuple,
-                            org.drools.FactHandle factHandle,
+    public boolean evaluate(Object object,
+    						org.drools.spi.Tuple tuple,
                             org.drools.rule.Declaration declaration,
                             org.drools.rule.Declaration[] declarations, 
                             org.drools.WorkingMemory workingMemory) throws Exception {                               
-		<declarationType> <declaration.identifier> = (<declarationType>) declaration.getValue( workingMemory.getObject( factHandle ) );
+		<declarationType> <declaration.identifier> = (<declarationType>) declaration.getValue( object );
         <declarationTypes, declarations:{ type, declr| <type> <declr.identifier> = ( <type> ) declarations[<i0>].getValue( ( (org.drools.common.InternalFactHandle) tuple.get( declarations[<i0>] ) ).getObject() );<\n>}>
         <globalTypes, globals:{ type, identifier | <type> <identifier> = ( <type> ) workingMemory.getGlobal( "<identifier>" );<\n>}>    
         
