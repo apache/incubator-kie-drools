@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.drools.spi.DataProvider;
 
-public class From implements Serializable{
+public class From extends ConditionalElement implements Serializable {
     private Column column;   
     
     private DataProvider dataProvider;
@@ -21,5 +21,10 @@ public class From implements Serializable{
 
     public DataProvider getDataProvider() {
         return dataProvider;
+    }
+
+    public Object clone() {
+        // TODO Auto-generated method stub
+        return null;
     }    
 }

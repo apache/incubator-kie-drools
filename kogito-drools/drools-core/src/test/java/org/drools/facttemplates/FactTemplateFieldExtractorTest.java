@@ -2,6 +2,9 @@ package org.drools.facttemplates;
 
 import junit.framework.TestCase;
 
+import org.drools.Cheese;
+import org.drools.base.ClassObjectType;
+import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.spi.Extractor;
@@ -68,9 +71,11 @@ public class FactTemplateFieldExtractorTest extends TestCase {
         Extractor extractName = new FactTemplateFieldExtractor( cheese,
                                                                 0 );
 
+        Column column = new  Column(0, new FactTemplateObjectType( cheese ) );
+        
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractName,
-                                                         0 );
+                                                         column );
 
         Fact brie = cheese.createFact( 12 );
         brie.setFieldValue( "name",

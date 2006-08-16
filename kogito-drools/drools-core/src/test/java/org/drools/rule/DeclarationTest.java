@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassObjectType;
 import org.drools.spi.FieldExtractor;
 
 public class DeclarationTest extends TestCase {
@@ -31,12 +32,14 @@ public class DeclarationTest extends TestCase {
     public void testDeclaration() throws IntrospectionException {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
-
+        
+        Column column = new  Column(5, new ClassObjectType( Cheese.class ) );
+        
         /* Bind the extractor to a decleration */
         /* Declarations know the column they derive their value from */
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
-                                                         5 );
+                                                         column );
 
         assertEquals( "typeOfCheese",
                       declaration.getIdentifier() );
@@ -48,7 +51,7 @@ public class DeclarationTest extends TestCase {
                     declaration.getExtractor() );
 
         assertEquals( 5,
-                      declaration.getColumn() );
+                      declaration.getColumn().getFactIndex() );
 
     }
 
@@ -56,11 +59,13 @@ public class DeclarationTest extends TestCase {
         final FieldExtractor extractor = new ClassFieldExtractor( Cheese.class,
                                                                   "type" );
 
-        /* Bind the extractor to a decleration */
-        /* Declarations know the column they derive their value from */
+        Column column = new  Column(5, new ClassObjectType( Cheese.class ) );
+        
+        // Bind the extractor to a decleration 
+        // Declarations know the column they derive their value from 
         final Declaration declaration = new Declaration( "typeOfCheese",
                                                          extractor,
-                                                         5 );
+                                                         column );
 
         /* Create some facts */
         final Cheese cheddar = new Cheese( "cheddar",

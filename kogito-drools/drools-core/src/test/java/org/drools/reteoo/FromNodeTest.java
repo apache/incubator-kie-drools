@@ -12,10 +12,12 @@ import org.drools.FactHandle;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.VariableConstraint;
@@ -131,10 +133,12 @@ public class FromNodeTest extends TestCase {
 
         final ClassFieldExtractor ageExtractor = new ClassFieldExtractor( Person.class,
                                                                           "age" );
+        
+        Column column = new  Column(0, new ClassObjectType( Person.class ) );
 
         Declaration declaration = new Declaration( "age",
                                                    ageExtractor,
-                                                   0 );
+                                                   column );
 
         VariableConstraint variableConstraint = new VariableConstraint( priceExtractor,
                                                                         declaration,

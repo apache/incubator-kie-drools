@@ -6,8 +6,9 @@ import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 
 public interface DataProvider {
-    
+
     public Declaration[] getRequiredDeclarations();
     
-   public Iterator getResults(Tuple tuple, WorkingMemory wm, PropagationContext ctx); 
+    public Iterator getResults(Tuple tuple, WorkingMemory wm, PropagationContext ctx); 
+
 }

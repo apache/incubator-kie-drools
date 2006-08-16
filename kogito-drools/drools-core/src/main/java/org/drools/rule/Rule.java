@@ -45,7 +45,7 @@ public class Rule
     /**
      * 
      */
-    private static final long serialVersionUID  = 7952983928232702826L;
+    private static final long serialVersionUID  = 320;
 
     /**   */
     // ------------------------------------------------------------
@@ -296,6 +296,8 @@ public class Rule
     public void addPattern(final ConditionalElement ce) {
         if ( ce instanceof GroupElement ) {
             addDeclarations( (GroupElement) ce );
+        } else  if ( ce.getClass() == From.class ) {
+            addDeclarations( ((From) ce ).getColumn());
         }
         this.lhsRoot.addChild( ce );
     }

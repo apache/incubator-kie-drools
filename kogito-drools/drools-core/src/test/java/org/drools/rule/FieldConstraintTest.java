@@ -25,6 +25,7 @@ import org.drools.FactHandle;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
@@ -112,17 +113,22 @@ public class FieldConstraintTest extends TestCase {
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
 
+        Column column = new  Column(0, new ClassObjectType( Cheese.class ) );
+        
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
         final Declaration price1Declaration = new Declaration( "price1",
                                                                priceExtractor,
-                                                               0 );
+                                                               column );
 
+        
+        column = new  Column(1, new ClassObjectType( Cheese.class ) );
+        
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
         final Declaration price2Declaration = new Declaration( "price2",
                                                                priceExtractor,
-                                                               1 );
+                                                               column );
 
         final PredicateExpression evaluator = new PredicateExpression() {
 
@@ -184,12 +190,14 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldExtractor priceExtractor = new ClassFieldExtractor( Cheese.class,
                                                                        "price" );
+        
+        Column column = new  Column(0, new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
         // Declarations know the column they derive their value form
         final Declaration priceDeclaration = new Declaration( "price1",
                                                               priceExtractor,
-                                                              0 );
+                                                              column );
 
         final ReturnValueExpression isDoubleThePrice = new ReturnValueExpression() {
             /**

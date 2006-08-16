@@ -70,7 +70,7 @@ public class Column
         if ( identifier != null ) {
             this.declaration = new Declaration( identifier,
                                                 new ColumnExtractor( objectType ),
-                                                this.getFactIndex() );
+                                                this );
         } else {
             this.declaration = null;
         }
@@ -98,7 +98,7 @@ public class Column
         }
         final Declaration declaration = new Declaration( identifier,
                                                          extractor,
-                                                         this.getFactIndex() );
+                                                         this );
         this.constraints.add( declaration );
         return declaration;
 
@@ -135,12 +135,12 @@ public class Column
         this.offset += adjust;
 
         if ( this.declaration != null ) {
-            this.declaration.setColumn( this.getFactIndex() );
+            this.declaration.setColumn( this );
         }
         for ( final Iterator i = this.constraints.iterator(); i.hasNext(); ) {
             final Object constr = i.next();
             if ( constr instanceof Declaration ) {
-                ((Declaration) constr).setColumn( this.getFactIndex() );
+                ((Declaration) constr).setColumn( this );
             }
         }
     }
@@ -148,5 +148,55 @@ public class Column
     public String toString() {
         return "Column type='" + this.objectType + "', index='" + this.index + "', offset='" + this.getOffset() + "', identifer='" + this.declaration.getIdentifier() + "'";
     }
+
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + this.constraints.hashCode();
+        result = PRIME * result + ((this.declaration == null) ? 0 : this.declaration.hashCode());
+        result = PRIME * result + this.index;
+        result = PRIME * result + this.objectType.hashCode();
+        result = PRIME * result + this.offset;
+        return result;
+    }
+
+    public boolean equals(Object object) {
+        if ( this == object ) {
+            return true;
+        }
+        
+        if ( object == null || getClass() != object.getClass() ) {
+            return false;
+        }
+        
+        final Column other = (Column) object;
+
+        if ( !this.constraints.equals( other.constraints ) ) {
+            return false;
+        }
+        
+        if ( this.declaration == null ) {
+            if ( other.declaration != null ) {
+                return false;
+            }
+        } else if ( !this.declaration.equals( other.declaration ) ) {
+            return false;
+        }
+        
+        if ( this.index != other.index ) {
+            return false;
+        }
+        
+        
+        if ( !this.objectType.equals( other.objectType ) ) {
+            return false;
+        }
+        if ( this.offset != other.offset ) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
 }

@@ -29,6 +29,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
+import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
@@ -56,7 +57,7 @@ public class ObjectEqualConstrRightMemory
 
     private FieldExtractor  extractor    = null;
     private Declaration     declaration  = null;
-    private int             column;
+    private Column             column;
 
     public ObjectEqualConstrRightMemory(final FieldExtractor extractor,
                                         final Declaration declaration,
@@ -232,7 +233,7 @@ public class ObjectEqualConstrRightMemory
      */
     public final void selectPossibleMatches(final WorkingMemory workingMemory,
                                             final ReteTuple tuple) {
-        final Object select = this.declaration.getValue( tuple.get( this.column ).getObject() );
+        final Object select = this.declaration.getValue( tuple.get( this.column.getFactIndex() ).getObject() );
         final Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
         this.selectedList = (MultiLinkedList) this.memoryMap.get( hash );
 

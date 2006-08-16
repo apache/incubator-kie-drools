@@ -20,7 +20,7 @@ public class Exists extends GroupElement {
     /**
      * 
      */
-    private static final long serialVersionUID = -2731485078261324186L;
+    private static final long serialVersionUID = 320;
 
     public Object getChild() {
         return getChildren().get( 0 );

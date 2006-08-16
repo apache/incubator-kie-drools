@@ -164,7 +164,7 @@ public class ReteTuple extends BaseMultiLinkedListNode
      * @see org.drools.spi.Tuple#get(org.drools.rule.Declaration)
      */
     public InternalFactHandle get(final Declaration declaration) {
-        return get( declaration.getColumn() );
+        return get( declaration.getColumn().getFactIndex() );
     }
 
     public void setActivation(final Activation activation) {
