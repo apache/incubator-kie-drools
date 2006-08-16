@@ -673,7 +673,7 @@ expander_lhs_block[AndDescr descrs]
 				}
 			}
 			
-		)* 
+		(EOL)* )* 
 		
 		{	
 			//flush out any constraints left handing before the RHS
