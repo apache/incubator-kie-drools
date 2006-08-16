@@ -311,6 +311,10 @@ public abstract class AbstractWorkingMemory
         // the firing for any other assertObject(..) that get
         // nested inside, avoiding concurrent-modification
         // exceptions, depending on code paths of the actions.
+        
+        if ( !this.factQueue.isEmpty() ) {
+            propagateQueuedActions();
+        }
 
         if ( !this.firing ) {
             try {
@@ -793,17 +797,21 @@ public abstract class AbstractWorkingMemory
         }
 
     }
+    
+    public void queueWorkingMemoryAction( WorkingMemoryAction action ) {
+        this.factQueue.add( action );
+    }
 
     public void queueRetractAction(final InternalFactHandle factHandle,
                                    final boolean removeLogical,
                                    final boolean updateEqualsMap,
                                    final Rule ruleOrigin,
                                    final Activation activationOrigin) {
-        this.factQueue.add( new WorkingMemoryRetractAction( factHandle,
-                                                            false,
-                                                            true,
-                                                            ruleOrigin,
-                                                            activationOrigin ) );
+        queueWorkingMemoryAction( new WorkingMemoryRetractAction( factHandle,
+                                                                  false,
+                                                                  true,
+                                                                  ruleOrigin,
+                                                                  activationOrigin ) );        
     }
 
     /**
@@ -919,4 +927,5 @@ public abstract class AbstractWorkingMemory
                            this.activationOrigin );
         }
     }
+      
 }

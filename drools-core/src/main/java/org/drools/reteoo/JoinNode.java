@@ -59,7 +59,7 @@ class JoinNode extends BetaNode {
     /**
      * 
      */
-    private static final long serialVersionUID = 4075809540597599706L;
+    private static final long serialVersionUID = 320;
 
     /**
      * Construct.

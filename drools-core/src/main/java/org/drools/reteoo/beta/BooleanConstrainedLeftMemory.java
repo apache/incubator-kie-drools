@@ -23,6 +23,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
+import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
@@ -50,7 +51,7 @@ public class BooleanConstrainedLeftMemory
 
     private FieldExtractor  extractor    = null;
     private Declaration     declaration  = null;
-    private int             column;
+    private Column             column;
     private Evaluator       evaluator    = null;
 
     public BooleanConstrainedLeftMemory(final FieldExtractor extractor,
@@ -82,7 +83,7 @@ public class BooleanConstrainedLeftMemory
      */
     public final void add(final WorkingMemory workingMemory,
                           final ReteTuple tuple) {
-        final boolean select = ((Boolean) this.declaration.getValue( tuple.get( this.column ).getObject() )).booleanValue();
+        final boolean select = ((Boolean) this.declaration.getValue( tuple.get( this.column.getFactIndex() ).getObject() )).booleanValue();
         if ( select == true ) {
             this.trueList.add( tuple );
         } else {
@@ -116,7 +117,7 @@ public class BooleanConstrainedLeftMemory
      */
     public final void add(final WorkingMemory workingMemory,
                           final MultiLinkedListNodeWrapper tuple) {
-        final boolean partition = ((Boolean) this.declaration.getValue( ((ReteTuple) tuple.getNode()).get( this.column ).getObject() )).booleanValue();
+        final boolean partition = ((Boolean) this.declaration.getValue( ((ReteTuple) tuple.getNode()).get( this.column.getFactIndex() ).getObject() )).booleanValue();
         if ( partition == true ) {
             this.trueList.add( tuple );
         } else {

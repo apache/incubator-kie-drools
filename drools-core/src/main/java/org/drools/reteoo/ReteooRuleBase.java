@@ -31,6 +31,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.AbstractWorkingMemory.WorkingMemoryRetractAction;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
@@ -68,26 +69,26 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * will result in an invalid state for the instance.
      */
     public ReteooRuleBase() {
- 
+
     }
-    
+
     /**
      * Construct.
      * 
      * @param rete
      *            The rete network.
      */
-    public ReteooRuleBase(final String  id) {
+    public ReteooRuleBase(final String id) {
         this( id,
               null,
               new ReteooFactHandleFactory() );
     }
-    
 
     /**
      * @param factHandleFactory
      */
-    public ReteooRuleBase(final String id, final FactHandleFactory factHandleFactory) {
+    public ReteooRuleBase(final String id,
+                          final FactHandleFactory factHandleFactory) {
         this( id,
               null,
               factHandleFactory );
@@ -232,17 +233,19 @@ public class ReteooRuleBase extends AbstractRuleBase {
         super.addWorkingMemory( workingMemory,
                                 keepReference );
 
-        final InitialFactHandle handle = new InitialFactHandle( workingMemory.getFactHandleFactory().newFactHandle( new Serializable() {} ) );
+        final InitialFactHandle handle = new InitialFactHandle( workingMemory.getFactHandleFactory().newFactHandle( new Serializable() {
+        } ) );
 
         final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                   PropagationContext.ASSERTION,
                                                                                   null,
                                                                                   null );
 
-        assertObject( handle,
-                      handle.getObject(),
-                      propagationContext,
-                      workingMemory );
+        workingMemory.queueWorkingMemoryAction( workingMemory.new WorkingMemoryReteAssertAction( handle,
+                                                                                                 false,
+                                                                                                 true,
+                                                                                                 null,
+                                                                                                 null ) );
 
         return workingMemory;
     }

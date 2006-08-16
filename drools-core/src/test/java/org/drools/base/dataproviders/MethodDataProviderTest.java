@@ -8,6 +8,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -18,6 +19,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteTuple;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.spi.ColumnExtractor;
@@ -45,12 +47,16 @@ public class MethodDataProviderTest extends TestCase {
     
     public void testWithDeclarationsHelloWorld() throws Exception {
         
+        Column column = new  Column(0, new ClassObjectType( Cheese.class ) );
+        
         Extractor ex = new ColumnExtractor(new ClassObjectType(TestVariable.class));
-        Declaration varDec = new Declaration("var", ex, 0);
+        Declaration varDec = new Declaration("var", ex, column);
         declarations.put("var", varDec);
         
+        
+        column = new  Column(1, new ClassObjectType( Cheese.class ) );
         ex = new ColumnExtractor(new ClassObjectType(String.class));
-        Declaration var2Dec = new Declaration("var2", ex, 1);
+        Declaration var2Dec = new Declaration("var2", ex, column);
         declarations.put( "var2", var2Dec );
         
         List args = new ArrayList();

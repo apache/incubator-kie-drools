@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
+import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
@@ -51,7 +52,7 @@ public class ObjectNotEqualConstrLeftMemory
 
     private FieldExtractor  extractor        = null;
     private Declaration     declaration      = null;
-    private int             column;
+    private Column             column;
 
     public ObjectNotEqualConstrLeftMemory(final FieldExtractor extractor,
                                           final Declaration declaration,
@@ -300,7 +301,7 @@ public class ObjectNotEqualConstrLeftMemory
      */
     private final Object getTupleKey(final WorkingMemory workingMemory,
                                      final ReteTuple tuple) {
-        final Object select = this.declaration.getValue( tuple.get( this.column ).getObject() );
+        final Object select = this.declaration.getValue( tuple.get( this.column.getFactIndex() ).getObject() );
         return select;
     }
 

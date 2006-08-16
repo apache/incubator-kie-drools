@@ -27,6 +27,7 @@ import java.util.TreeSet;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
+import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
@@ -55,7 +56,7 @@ public class ObjectEqualConstrLeftMemory
 
     private FieldExtractor  extractor    = null;
     private Declaration     declaration  = null;
-    private int             column;
+    private Column             column;
 
     public ObjectEqualConstrLeftMemory(final FieldExtractor extractor,
                                        final Declaration declaration,
@@ -305,7 +306,7 @@ public class ObjectEqualConstrLeftMemory
      */
     private final Integer getTupleHash(final WorkingMemory workingMemory,
                                        final ReteTuple tuple) {
-        final Object select = this.declaration.getValue( tuple.get( this.column ).getObject() );
+        final Object select = this.declaration.getValue( tuple.get( this.column.getFactIndex() ).getObject() );
         final Integer hash = (select != null) ? new Integer( select.hashCode() ) : new Integer( 0 );
         return hash;
     }

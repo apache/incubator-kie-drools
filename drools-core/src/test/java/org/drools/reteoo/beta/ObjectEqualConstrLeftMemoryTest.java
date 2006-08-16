@@ -22,10 +22,12 @@ import java.util.NoSuchElementException;
 import junit.framework.Assert;
 
 import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ReteTuple;
+import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
 import org.drools.util.MultiLinkedListNodeWrapper;
@@ -44,9 +46,12 @@ public class ObjectEqualConstrLeftMemoryTest extends BaseBetaLeftMemoryTestClass
         super.setUp();
         final ClassFieldExtractor extractor = new ClassFieldExtractor( DummyValueObject.class,
                                                                        "objectAttr" );
+        
+        Column column = new  Column(0, new ClassObjectType( DummyValueObject.class ) );
+        
         final Declaration declaration = new Declaration( "myObject",
                                                          extractor,
-                                                         0 );
+                                                         column );
         final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
 
         this.memory = new ObjectEqualConstrLeftMemory( extractor,

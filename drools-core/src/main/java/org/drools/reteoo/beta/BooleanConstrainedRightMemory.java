@@ -26,6 +26,7 @@ import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.reteoo.ObjectMatches;
 import org.drools.reteoo.ReteTuple;
+import org.drools.rule.Column;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
@@ -52,7 +53,7 @@ public class BooleanConstrainedRightMemory
 
     private FieldExtractor  extractor    = null;
     private Declaration     declaration  = null;
-    private int             column;
+    private Column             column;
     private Evaluator       evaluator    = null;
 
     public BooleanConstrainedRightMemory(final FieldExtractor extractor,
@@ -215,7 +216,7 @@ public class BooleanConstrainedRightMemory
      */
     public final void selectPossibleMatches(final WorkingMemory workingMemory,
                                             final ReteTuple tuple) {
-        boolean select = ((Boolean) this.declaration.getValue( tuple.get( this.column ).getObject() )).booleanValue();
+        boolean select = ((Boolean) this.declaration.getValue( tuple.get( this.column.getFactIndex() ).getObject() )).booleanValue();
         select = (this.evaluator.getOperator()) == Operator.EQUAL ? select : !select;
         this.selectedList = (select == true) ? this.trueList : this.falseList;
 

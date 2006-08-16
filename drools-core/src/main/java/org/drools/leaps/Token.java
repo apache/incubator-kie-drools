@@ -178,7 +178,7 @@ public class Token
      * @see org.drools.spi.Tuple
      */
     public InternalFactHandle get( final Declaration declaration ) {
-        return this.get( declaration.getColumn( ) );
+        return this.get( declaration.getColumn( ).getFactIndex() );
     }
 
     /**

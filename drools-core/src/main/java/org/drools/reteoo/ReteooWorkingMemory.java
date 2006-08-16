@@ -31,6 +31,7 @@ import org.drools.common.EqualityKey;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.AbstractWorkingMemory.WorkingMemoryAction;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -56,7 +57,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
      * @param ruleBase
      *            The backing rule-base.
      */
-    public ReteooWorkingMemory(final int  id, 
+    public ReteooWorkingMemory(final int id,
                                final InternalRuleBase ruleBase) {
         super( id,
                ruleBase,
@@ -98,7 +99,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                 // and we cannot assert a null object
                 return;
             }
-            
+
             // set anyway, so that it updates the hashCodes
             handle.setObject( object );
 
@@ -126,7 +127,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             } else {
                 key.addFactHandle( handle );
             }
-            
+
             handle.setEqualityKey( key );
 
             this.handleFactory.increaseFactHandleRecency( handle );
@@ -181,4 +182,42 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                node );
     }
 
+    public class WorkingMemoryReteAssertAction
+        implements
+        WorkingMemoryAction {
+        private InternalFactHandle factHandle;
+
+        private boolean            removeLogical;
+
+        private boolean            updateEqualsMap;
+
+        private Rule               ruleOrigin;
+
+        private Activation         activationOrigin;
+
+        public WorkingMemoryReteAssertAction(final InternalFactHandle factHandle,
+                                             final boolean removeLogical,
+                                             final boolean updateEqualsMap,
+                                             final Rule ruleOrigin,
+                                             final Activation activationOrigin) {
+            super();
+            this.factHandle = factHandle;
+            this.removeLogical = removeLogical;
+            this.updateEqualsMap = updateEqualsMap;
+            this.ruleOrigin = ruleOrigin;
+            this.activationOrigin = activationOrigin;
+        }
+
+        public void propagate() {
+
+            PropagationContext context = new PropagationContextImpl( ReteooWorkingMemory.this.propagationIdCounter++,
+                                                                     PropagationContext.ASSERTION,
+                                                                     this.ruleOrigin,
+                                                                     this.activationOrigin );
+            ReteooWorkingMemory.this.ruleBase.assertObject( factHandle,
+                                                            factHandle.getObject(),
+                                                            context,
+                                                            ReteooWorkingMemory.this );
+        }
+    }
 }

@@ -99,7 +99,7 @@ public class EvalCondition extends ConditionalElement {
         }
 
         for ( int i = 0, length = this.requiredDeclarations.length; i < length; i++ ) {
-            if ( this.requiredDeclarations[i].getColumn() != other.requiredDeclarations[i].getColumn() ) {
+            if ( this.requiredDeclarations[i].getColumn().getFactIndex() != other.requiredDeclarations[i].getColumn().getFactIndex() ) {
                 return false;
             }
 

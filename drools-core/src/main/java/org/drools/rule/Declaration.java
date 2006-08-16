@@ -84,7 +84,7 @@ public class Declaration
 
     private final Extractor   extractor;
 
-    private int               column;
+    private Column               column;
 
     // ------------------------------------------------------------
     // Constructors
@@ -102,7 +102,7 @@ public class Declaration
      */
     public Declaration(final String identifier,
                        final Extractor extractor,
-                       final int column) {
+                       final Column column) {
         this.identifier = identifier;
         this.extractor = extractor;
         this.column = column;
@@ -135,11 +135,11 @@ public class Declaration
      * 
      * @return the column
      */
-    public int getColumn() {
+    public Column getColumn() {
         return this.column;
     }
 
-    public void setColumn(final int column) {
+    public void setColumn(final Column column) {
         this.column = column;
     }
 
@@ -165,7 +165,7 @@ public class Declaration
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + this.column;
+        result = PRIME * this.column.getFactIndex();
         result = PRIME * this.extractor.hashCode();
         result = PRIME * this.identifier.hashCode();
         return result;
@@ -180,9 +180,9 @@ public class Declaration
             return false;
         }
 
-        final Declaration other = (Declaration) object;
-
-        return this.column == other.column && this.identifier.equals( other.identifier ) && this.extractor.equals( other.extractor );
+        final Declaration other = (Declaration) object;               
+        
+        return this.column.getFactIndex() == other.column.getFactIndex() && this.identifier.equals( other.identifier ) && this.extractor.equals( other.extractor );
     }
 
 }
