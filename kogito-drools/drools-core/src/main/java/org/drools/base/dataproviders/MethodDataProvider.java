@@ -98,7 +98,9 @@ public class MethodDataProvider
                 }
             }
         }
-        return null;
+        throw new IllegalArgumentException("Unable to resolve the method: [" 
+                                           + methodName + "] on class: [" + variableClass.getName() 
+                                           + "] with " + numOfArgs + " parameters." );
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -108,6 +110,7 @@ public class MethodDataProvider
     public Iterator getResults(Tuple tuple,
                                WorkingMemory wm,
                                PropagationContext ctx) {
+        
         //get the variable value that we are operating on
         Object variable = null;
         if (variableIsDeclaration) {   
@@ -115,8 +118,10 @@ public class MethodDataProvider
         } else {
             variable = wm.getGlobal( this.variableName );
         }
-        
-        
+        if (variable == null) {
+            throw new IllegalArgumentException("Unable to resolve the variable: [" + this.variableName + "]");
+        }
+                
         //the types we have to convert the arguments to
         Class[] parameterTypes = this.method.getParameterTypes();
         
