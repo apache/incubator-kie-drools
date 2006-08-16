@@ -96,7 +96,8 @@
     <para>The "{" and "}" characters should only be used on the left hand side
     of the mapping (the expression) to mark tokens. On the right hand side you
     can use "{" and "}" on their own if needed - such as <programlisting>if (foo) {
-    doSomething(); }</programlisting>  as well as with the token names as shown above.</para>
+    doSomething(); }</programlisting> as well as with the token names as shown
+    above.</para>
 
     <para>Don't forget that if you are capturing strings from users, you will
     also need the quotes on the right hand side of the mapping, just like a
@@ -174,6 +175,44 @@ There is a person called Mike who is sad
   </section>
 
   <section>
+    <title>Adding constraints to facts</title>
+
+    <para>A common requirement when writing rule conditions is to be able to
+    add many constraints to fact declarations. A fact may have many (dozens)
+    of fields, all of which could be used or not used at various times. To
+    come up with every combination as seperate DSL statements would in many
+    cases not be feasable.</para>
+
+    <para>The DSL facility allows you to achieve this however, with a simple
+    convention. If your DSL expression starts with a "-", then it will be
+    assumed to be a field constraint, which will be added to the declaration
+    that is above it (one per line).</para>
+
+    <para>This is easier to explain with an example. Lets take look at Cheese
+    class, with the following fields: type, price, age, country. We can
+    express some LHS condition in normal DRL like the following
+    <programlisting>Cheese(age &lt; 5, price == 20, type=="stilton", country=="ch")</programlisting>
+    If you know ahead of time that you will use all the fields, all the time,
+    it is easy to do a mapping using the above techniques. However, chances
+    are that you will have many fields, and many combinations. If this is the
+    case, you can setup your mappings like so: <programlisting>[when]There is a Cheese with=Cheese()
+[when]-age is less than {age}=age&lt;{age}
+[when]-type is '{type}'=type=='{type}'
+[when]-country equal to '{country}'=country=='{country}'</programlisting> You
+    can then write rules with conditions like the following: <programlisting>There is a Cheese with
+        -age is less than 42
+        -type is 'stilton'</programlisting> The parser will pick up the "-"
+    lines (they have to be on their own line) and add them as constraints to
+    the declaration above. So in this specific case, using the above mappings,
+    is the equivalent to doing (in DRL): <programlisting>Cheese(age&lt;42, type=='stilton')</programlisting>
+    The parser will do all the work for you, meaning you just define mappings
+    for individual constraints, and can combine them how you like (if you are
+    using context assistant, if you press "-" followed by CTRL+space it will
+    conveniently provide you with a filtered list of field constraints to
+    choose from.</para>
+  </section>
+
+  <section>
     <title>How it works</title>
 
     <para>DSLs kick in when the rule is parsed. The DSL configuration is read
@@ -206,50 +245,77 @@ There is a person called Mike who is sad
   </section>
 
   <section>
-	<title>Creating a DSL from scratch</title>
-	<para>
-		DSLs can be aid with capturing rules if the rules are well known, just not in any technically usable format (ie. sitting around in people brains).
-		Until we are able to have those little sockets in our necks like in the Matrix, our means of getting stuff into computers is still the old fashioned way.
-	</para>
-	<para>
-		Rules engines require a object or data model to operate on - in many cases you may know this up front. In othercases the model will be discovered with the rules.
-		In any case, rules generally work better with simpler flatter object models. In some cases, this may mean having a rule object model which is a subset of the main applications model (perhaps mapped from it). Object models can often have complex relationships and hierachies in them - for rules you will want to simplify and flatten the model where possible, and let the rule engine infer relationships (as it provides future flexibility).
-		As stated previously, DSLs can have an advantage of providing some insulation between the object model and the rule language.
-	</para>
-	<para>
-		Coming up with a DSL is a collaborative approach for both technical and domain experts. Historically there was a role called "knowledge engineer" which is someone skilled in both the rule technology, and in capturing rules. Overa short period of time, your DSL should stabilise, which means that changes to rules are done entirely using the DSL. 
-		A suggested approach if you are starting from scratch is the following workflow:
+    <title>Creating a DSL from scratch</title>
 
-          <itemizedlist>
-            <listitem>
-              <para>Capture rules as loose "if then" statements - this is really to get an idea of size and complexity (possibly in a text document).</para>
-            </listitem>
+    <para>DSLs can be aid with capturing rules if the rules are well known,
+    just not in any technically usable format (ie. sitting around in people
+    brains). Until we are able to have those little sockets in our necks like
+    in the Matrix, our means of getting stuff into computers is still the old
+    fashioned way.</para>
 
-            <listitem>
-              <para>Look for recurring statements in the rules captured. Also look for the rule objects/fields (and match them up with what may already be known of the object model).</para>
-            </listitem>
+    <para>Rules engines require a object or data model to operate on - in many
+    cases you may know this up front. In othercases the model will be
+    discovered with the rules. In any case, rules generally work better with
+    simpler flatter object models. In some cases, this may mean having a rule
+    object model which is a subset of the main applications model (perhaps
+    mapped from it). Object models can often have complex relationships and
+    hierachies in them - for rules you will want to simplify and flatten the
+    model where possible, and let the rule engine infer relationships (as it
+    provides future flexibility). As stated previously, DSLs can have an
+    advantage of providing some insulation between the object model and the
+    rule language.</para>
 
-            <listitem>
-              <para>Create a new DSL, and start adding statements from the above steps. Provide the "holes" for data to be edited (as many statements will be similar, with only some data changing).</para>
-            </listitem>
+    <para>Coming up with a DSL is a collaborative approach for both technical
+    and domain experts. Historically there was a role called "knowledge
+    engineer" which is someone skilled in both the rule technology, and in
+    capturing rules. Overa short period of time, your DSL should stabilise,
+    which means that changes to rules are done entirely using the DSL. A
+    suggested approach if you are starting from scratch is the following
+    workflow: <itemizedlist>
+        <listitem>
+          <para>Capture rules as loose "if then" statements - this is really
+          to get an idea of size and complexity (possibly in a text
+          document).</para>
+        </listitem>
 
-            <listitem>
-              <para>Use the above DSL, and try to write the rules just like that appear in the "if then" statements from the first and second steps. Iterate this process until patterns appear and things stabilise. At this stage, you are not so worried about the rule language underneath, just the DSL.</para>
-            </listitem>
+        <listitem>
+          <para>Look for recurring statements in the rules captured. Also look
+          for the rule objects/fields (and match them up with what may already
+          be known of the object model).</para>
+        </listitem>
 
-            <listitem>
-              <para>At this stage you will need to look at the Objects, and the Fields that are needed for the rules, reconcile this with the datamodel so far.</para>
-            </listitem>
+        <listitem>
+          <para>Create a new DSL, and start adding statements from the above
+          steps. Provide the "holes" for data to be edited (as many statements
+          will be similar, with only some data changing).</para>
+        </listitem>
 
-            <listitem>
-              <para>Map the DSL statements to the rule language, based on the object model. Then repeat the process. Obviously this is best done in small steps, to make sure that things are on the right track.</para>
-            </listitem>
-          </itemizedlist>
-	</para>
+        <listitem>
+          <para>Use the above DSL, and try to write the rules just like that
+          appear in the "if then" statements from the first and second steps.
+          Iterate this process until patterns appear and things stabilise. At
+          this stage, you are not so worried about the rule language
+          underneath, just the DSL.</para>
+        </listitem>
 
-	<para>
-		A challanging concept to express in DSLs is bound variables. A tip for this is to have a DSL expressions that just bind a given variable name to an Object Type (with no conditions - you can add conditions to that bound object type in subsequent statements). You can then use that name elsewhere in the DSL (including in the action part of the rule). 
-	</para>
+        <listitem>
+          <para>At this stage you will need to look at the Objects, and the
+          Fields that are needed for the rules, reconcile this with the
+          datamodel so far.</para>
+        </listitem>
 
+        <listitem>
+          <para>Map the DSL statements to the rule language, based on the
+          object model. Then repeat the process. Obviously this is best done
+          in small steps, to make sure that things are on the right
+          track.</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>A challanging concept to express in DSLs is bound variables. A tip
+    for this is to have a DSL expressions that just bind a given variable name
+    to an Object Type (with no conditions - you can add conditions to that
+    bound object type in subsequent statements). You can then use that name
+    elsewhere in the DSL (including in the action part of the rule).</para>
   </section>
 </section>
