@@ -790,6 +790,29 @@ public abstract class IntegrationCases extends TestCase {
                       list.size() );
     }
 
+    
+    public void testBasicFrom() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_From.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );   
+        
+        WorkingMemory  workingMemory = ruleBase.newWorkingMemory();
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list", list );
+        
+        Cheesery cheesery = new Cheesery();
+        Cheese stilton = new Cheese( "stilton", 12);
+        cheesery.addCheese( stilton );
+        workingMemory.setGlobal( "cheesery", cheesery );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 1, list.size() );
+    }
+    
     public void testWithInvalidRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "invalid_rule.drl" ) ) );

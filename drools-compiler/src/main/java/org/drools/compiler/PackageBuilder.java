@@ -371,19 +371,6 @@ public class PackageBuilder {
     }
 
     /**
-     * @deprecated Do not use for compiling rules. Do a whole package at a time.
-     */
-    public void compileRule(final RuleBuilder builder,
-                            final Rule rule,
-                            final RuleDescr ruleDescr) {
-
-        addRuleSemantics( builder,
-                          rule,
-                          ruleDescr );
-        this.compileAll();
-    }
-
-    /**
      * This will setup the semantic components of the rule for compiling later on.
      * It will not actually call the compiler
      */

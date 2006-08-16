@@ -1,7 +1,10 @@
 package org.drools.lang.descr;
 
-public class FromDescr extends PatternDescr {
+import java.util.List;
 
+public class FromDescr extends PatternDescr
+    implements
+    ConditionalElementDescr { 
 	private ColumnDescr column;
 	private DeclarativeInvokerDescr dataSource;
 	
@@ -25,5 +28,15 @@ public class FromDescr extends PatternDescr {
 	public ColumnDescr getReturnedColumn() {
 		return column;
 	}
+
+    public void addDescr(PatternDescr patternDescr) {
+        //
+    }
+
+    public List getDescrs() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 	
+   
 }

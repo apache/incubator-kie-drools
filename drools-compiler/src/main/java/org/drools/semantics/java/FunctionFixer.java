@@ -61,7 +61,7 @@ public class FunctionFixer {
             final int endIndex = findEndParenthesis( raw,
                                                matcher );
             if ( endIndex < 0 ) {
-                // this means that the first '(' is inside quotes - jump it ant try again
+                // this means that the first '(' is inside quotes - jump it and try again
                 startIndex = matcher.start( 3 );
                 continue;
             } else {
