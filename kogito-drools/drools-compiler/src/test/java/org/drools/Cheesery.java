@@ -27,17 +27,21 @@ public class Cheesery
      * 
      */
     private static final long serialVersionUID = 4654655548777389065L;
-    public final static int MAKING_CHEESE  = 0;
-    public final static int SELLING_CHEESE = 1;
+    public final static int   MAKING_CHEESE    = 0;
+    public final static int   SELLING_CHEESE   = 1;
 
-    private final List            cheeses        = new ArrayList();
+    private final List        cheeses          = new ArrayList();
 
-    private int             status;
+    private int               status;
 
     public List getCheeses() {
         return this.cheeses;
     }
 
+    public void addCheese(Cheese cheese) {
+        this.cheeses.add( cheese );
+    }
+    
     public void setStatus(final int status) {
         this.status = status;
     }

@@ -599,7 +599,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       and.getChildren() );
         final Column column = (Column) and.getChildren().get( 0 );
 
-        final LiteralConstraint literalConstarint = (LiteralConstraint) column.getConstraints().get( 0 );
+        final LiteralConstraint literalConstraint = (LiteralConstraint) column.getConstraints().get( 0 );
     }
 
     public void testNot() throws Exception {
