@@ -9,7 +9,9 @@ rule "Your First Rule"
 	
 	when
 		Person is at least 42 years old and lives in atlanta 
+		
 			Or 
+			
 		There is a Person with name of bob
 	then 
 		Log "hola bob"		
