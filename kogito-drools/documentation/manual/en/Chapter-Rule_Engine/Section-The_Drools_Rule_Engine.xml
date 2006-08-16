@@ -301,7 +301,7 @@ RuleBase ruleBase = new ReteooRuleBase( conf );</programlisting>
       facts. WorkingMemory.assertObject(yourObject) for example. When you
       assert a fact, it is examined for matches against the rules etc. This
       means ALL of the work is done during assertion; however, no rules are
-      executedl you call "fireAllRules()" after you have finished asserting
+      executed you call "fireAllRules()" after you have finished asserting
       your facts. This is a common misunderstanding by people who think the
       work happens when you call "fireAllRules()".</para>
 
@@ -453,6 +453,17 @@ workingMemory.setGlobal("list", list);</programlisting>
     </section>
 
     <section>
+	<title>Initial Fact</title>
+	<para>
+	To support conditional elements like "not" (which will be covered later on), there is a need to "seed" the engine with something
+	known as the "Initial Fact". This fact is a special fact that is not intended to be seen by the user.
+
+	On the first working memory action (assert, fireAllRules) on a fresh working memory, the Initial Fact will be propagated 	 through the RETE network. This allows rules that have no LHS, or perhaps do not use normal facts (such as rules that use "from" 
+ 	to pull data from an external source). For instance, if a new working memory is created, and no facts are asserted, calling the 	fireAllRules will cause the Initial Fact to propagate, possibly activating rules (otherwise, nothing would happen as there area 	no other facts to start with).
+	</para>
+    </section>
+
+    <section>
       <title>Stateless and Statefull Sessions</title>
 
       <para>Rule engines that are based around algorithms like RETE are
@@ -582,42 +593,7 @@ workingMemory.setGlobal("list", list);</programlisting>
       specify an Agenda Group are placed there, it is also always the first
       group on the Stack and given focus as default.</para>
 
-      <section>
-        <title>Example scenario</title>
 
-        <para>An example may make things clearer. Imagine a credit card
-        processing application, processing transactions for a given account
-        (and we have a working memory accumulating knowledge about a single
-        accounts transaction). The rule engine is doing its best to decide if
-        transactions are possibly fraudulent or not. Imagine this rule base
-        basically has rules that kick in when there is "reason to be
-        suspicious" and when "everything is normal".</para>
-
-        <para>Of course there are many rules that operate no matter what
-        (performing standard calculations etc). Now there are possibly many
-        reasons as to what could trigger a "reason to be suspicious": someone
-        notifying the bank, a sequence of large transactions, transactions for
-        geographically disparate transactions, or even reports of credit card
-        theft. Rather then smattering all the little conditions in lots of
-        rules, imagine there is a fact class called
-        "SuspiciousAccount".</para>
-
-        <para>Then there can be a series of rules whose job is to look for
-        things that may raise suspicion, and if they fire, they simply assert
-        a new SuspiciousAccount() instance. All the other rules just have
-        conditions like "not SuspiciousAccount()" or "SuspiciousAccount()"
-        depending on their needs. Note that this has the advantage of allowing
-        there to be many rules around raising suspicion, without touching the
-        other rules. When the facts causing the SuspiciousAccount() assertion
-        are removed, the rule engine reverts back to the normal "mode" of
-        operation (and for instance, a rule with "not SuspiciousAccount()" may
-        kick in which flushes through any interrupted transactions).</para>
-
-        <para>If you have followed this far, you will note that truth
-        maintenance like logical assertions allows rules to behave a little
-        like a human would, and can certainly make the rules more
-        managable.</para>
-      </section>
     </section>
 
     <section>
@@ -684,7 +660,7 @@ workingMemory.setGlobal("list", list);</programlisting>
     rule.For each logical assertion there can only be one equal object, each
     subsequent equal logical assertion increases the justification counter for
     this logical assertion. As each justification is removed when we have no
-    more justifications the logical object is automatically retracted. </para>
+    more justifications the logical object is automatically retracted.</para>
 
     <para>If we logically assert an object when there is an equal STATED
     object it will fail and return null. If we STATE an object that has an
@@ -730,6 +706,44 @@ workingMemory.setGlobal("list", list);</programlisting>
         </imageobject>
       </mediaobject>
     </figure>
+
+      <section>
+        <title>Example scenario</title>
+
+        <para>An example may make things clearer. Imagine a credit card
+        processing application, processing transactions for a given account
+        (and we have a working memory accumulating knowledge about a single
+        accounts transaction). The rule engine is doing its best to decide if
+        transactions are possibly fraudulent or not. Imagine this rule base
+        basically has rules that kick in when there is "reason to be
+        suspicious" and when "everything is normal".</para>
+
+        <para>Of course there are many rules that operate no matter what
+        (performing standard calculations etc). Now there are possibly many
+        reasons as to what could trigger a "reason to be suspicious": someone
+        notifying the bank, a sequence of large transactions, transactions for
+        geographically disparate locations, or even reports of credit card
+        theft. Rather then smattering all the little conditions in lots of
+        rules, imagine there is a fact class called
+        "SuspiciousAccount".</para>
+
+        <para>Then there can be a series of rules whose job is to look for
+        things that may raise suspicion, and if they fire, they simply assert
+        a new SuspiciousAccount() instance. All the other rules just have
+        conditions like "not SuspiciousAccount()" or "SuspiciousAccount()"
+        depending on their needs. Note that this has the advantage of allowing
+        there to be many rules around raising suspicion, without touching the
+        other rules. When the facts causing the SuspiciousAccount() assertion
+        are removed, the rule engine reverts back to the normal "mode" of
+        operation (and for instance, a rule with "not SuspiciousAccount()" may
+        kick in which flushes through any interrupted transactions).</para>
+
+        <para>If you have followed this far, you will note that truth
+        maintenance like logical assertions allows rules to behave a little
+        like a human would, and can certainly make the rules more
+        managable.</para>
+      </section>
+
   </section>
 
   <section>

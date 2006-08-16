@@ -82,6 +82,10 @@
     come across classpath issues with "JDT", then you can switch to the janino
     compiler. Set the system property "drools.compiler": For example:
     -Ddrools.compiler=JANINO.</para>
+
+    <para>For up to date info on dependencies in a release, consult the
+    README_DEPENDENCIES.txt file, which can be found in the lib directory of
+    the download bundle, or in the root of the project directory.</para>
   </section>
 
   <section>
