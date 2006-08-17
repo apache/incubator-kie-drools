@@ -15,89 +15,53 @@
  */
 package org.drools.brms.client.rulenav;
 
+import org.drools.brms.client.rpc.RepositoryServiceAsync;
+import org.drools.brms.client.rpc.RepositoryServiceFactory;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
 
 /**
- * Demonstrates the {@link com.google.gwt.user.client.ui.Tree} widget.
+ * This is a rule/resource navigator that uses the server side categories to 
+ * navigate the repository.
+ * Uses the the {@link com.google.gwt.user.client.ui.Tree} widget.
  */
 public class RulesNavigatorTree implements TreeListener {
 
-  private static class PendingItem extends TreeItem {
-    public PendingItem() {
-      super("Please wait...");
-    }
-  }
 
-  private static class Proto {
-    public Proto[] children;
-    public TreeItem item;
-    public String text;
-
-    public Proto(String text) {
-      this.text = text;
-    }
-
-    public Proto(String text, Proto[] children) {
-      this(text);
-      this.children = children;
-    }
-  }
-
-  private static Proto[] fProto = new Proto[]{
-    new Proto("Pricing", new Proto[]{
-      new Proto("Correspondent", new Proto[]{
-        new Proto("Closed End seconds"), new Proto("No. 2 - B-Flat Major"),
-        new Proto("Government"), new Proto("No. 4 - G Major"),
-        new Proto("NGOs"),}),
-      new Proto("Wholesale", new Proto[]{}),
-      new Proto("Retail", new Proto[]{}),
-      new Proto("Symphonies", new Proto[]{
-        new Proto("No. 1 - C Major"), new Proto("No. 2 - D Major"),
-        new Proto("No. 3 - E-Flat Major"), new Proto("No. 4 - B-Flat Major"),
-        new Proto("No. 5 - C Minor"), new Proto("No. 6 - F Major"),
-        new Proto("No. 7 - A Major"), new Proto("No. 8 - F Major"),
-        new Proto("No. 9 - D Minor"),}),}),
-    new Proto("Eligibility", new Proto[]{
-      new Proto("Concertos", new Proto[]{
-        new Proto("Violin Concerto"), new Proto("Double Concerto - A Minor"),
-        new Proto("Piano Concerto No. 1 - D Minor"),
-        new Proto("Piano Concerto No. 2 - B-Flat Major"),}),
-      new Proto("Quartets", new Proto[]{
-        new Proto("Piano Quartet No. 1 - G Minor"),
-        new Proto("Piano Quartet No. 2 - A Major"),
-        new Proto("Piano Quartet No. 3 - C Minor"),
-        new Proto("String Quartet No. 3 - B-Flat Minor"),}),
-      new Proto("Sonatas", new Proto[]{
-        new Proto("Two Sonatas for Clarinet - F Minor"),
-        new Proto("Two Sonatas for Clarinet - E-Flat Major"),}),
-      new Proto("Symphonies", new Proto[]{
-        new Proto("No. 1 - C Minor"), new Proto("No. 2 - D Minor"),
-        new Proto("No. 3 - F Major"), new Proto("No. 4 - E Minor"),}),}),
-    new Proto("Rate Adjustments", new Proto[]{new Proto("Concertos", new Proto[]{
-      new Proto("Piano Concerto No. 12"), new Proto("Piano Concerto No. 17"),
-      new Proto("Clarinet Concerto"), new Proto("Violin Concerto No. 5"),
-      new Proto("Violin Concerto No. 4"),}),}),};
-
-
-  private Tree fTree = new Tree();
-
+  private Tree navTreeWidget = new Tree();
+  private RepositoryServiceAsync service = RepositoryServiceFactory.getService();
+  private TreeItem lastItemChanged = null;
+  
   public void setTreeSize(String width) {
-	  fTree.setWidth(width);
+	  navTreeWidget.setWidth(width);
   }   
   
   public Tree getTree() {
-	  return fTree;
+	  return navTreeWidget;
   }
   
   public RulesNavigatorTree() {
-    for (int i = 0; i < fProto.length; ++i) {
-      createItem(fProto[i]);
-      fTree.addItem(fProto[i].item);
-    }
 
-    fTree.addTreeListener(this);
+    service.loadChildCategories( "", new AsyncCallback() {
+
+        public void onFailure(Throwable caught) {
+            //TODO: work out how to handle it.
+        }
+
+        public void onSuccess(Object result) {
+            String[] categories = (String[]) result;
+            for ( int i = 0; i < categories.length; i++ ) {
+                navTreeWidget.addItem( categories[i] ).addItem( new PendingItem() );
+            }            
+            
+        }
+        
+    });  
+      
+    navTreeWidget.addTreeListener(this);
     
   }
 
@@ -105,25 +69,61 @@ public class RulesNavigatorTree implements TreeListener {
   }
 
   public void onTreeItemSelected(TreeItem item) {
+      System.out.println("TODO: call rule list view");
   }
+  
 
   public void onTreeItemStateChanged(TreeItem item) {
-    TreeItem child = item.getChild(0);
-    if (child instanceof PendingItem) {
-      item.removeItem(child);
-
-      Proto proto = (Proto) item.getUserObject();
-      for (int i = 0; i < proto.children.length; ++i) {
-        createItem(proto.children[i]);
-        item.addItem(proto.children[i].item);
-      }
+    if (notShowing( item )) return;
+    if (item == lastItemChanged) return;
+    lastItemChanged = item;
+    final TreeItem root = item;
+    
+    String categoryPath = item.getText();
+    //walk back up to build a tree
+    TreeItem parent = item.getParentItem();
+    while (parent != null) {
+        categoryPath = parent.getText() + "/" + categoryPath;
+        parent = parent.getParentItem();
     }
+    
+    service.loadChildCategories( categoryPath, new AsyncCallback() {
+
+        public void onFailure(Throwable caught) {
+            // TODO Auto-generated method stub            
+        }
+
+        public void onSuccess(Object result) {
+            TreeItem child = root.getChild( 0 );
+            if (child instanceof PendingItem) {
+                root.removeItem(child);
+            }
+            String[] list = (String[]) result;
+            for ( int i = 0; i < list.length; i++ ) {
+                root.addItem( list[i] ).addItem( new PendingItem() );
+            }
+        }
+        
+    });
+    
+    
   }
 
-  private void createItem(Proto proto) {
-    proto.item = new TreeItem(proto.text);
-    proto.item.setUserObject(proto);
-    if (proto.children != null)
-      proto.item.addItem(new PendingItem());
-  }
+private boolean notShowing(TreeItem item) {
+    return !item.getState();
+}
+
+//  private void createItem(Proto proto) {
+//    proto.item = new TreeItem(proto.text);
+//    proto.item.setUserObject(proto);
+//    //if (proto.children != null)
+//    proto.item.addItem(new PendingItem());
+//  }
+  
+  private static class PendingItem extends TreeItem {
+      public PendingItem() {
+        super("Please wait...");
+      }
+   }
+  
 }
