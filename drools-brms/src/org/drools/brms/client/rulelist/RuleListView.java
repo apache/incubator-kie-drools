@@ -1,6 +1,9 @@
 package org.drools.brms.client.rulelist;
 
 
+import org.drools.brms.client.rpc.RepositoryServiceFactory;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -97,7 +100,7 @@ public class RuleListView extends Composite implements TableListener, ClickListe
     }
   }
 
-  private void changeTabToEdit() {
+  private void changeTabToEdit() {   
 	tabPanel.selectTab(EDITOR_TAB);	
   }
 
