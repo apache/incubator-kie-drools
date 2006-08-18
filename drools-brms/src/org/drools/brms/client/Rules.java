@@ -70,8 +70,6 @@ public class Rules extends JBRMSFeature {
             public void selected(String selectedPath) {
                 System.out.println("Selected path: " + selectedPath);  
                 list.loadRulesForCategoryPath(selectedPath);
-                
-                              
             }
             
         });			
