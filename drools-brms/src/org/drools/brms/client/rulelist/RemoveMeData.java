@@ -20,12 +20,12 @@ package org.drools.brms.client.rulelist;
 /**
  * A simple client-side generator of fake email messages.
  */
-public class RuleListData {
+public class RemoveMeData {
 
   private RuleListItem[] items;
 	
 
-  public RuleListData() {
+  public RemoveMeData() {
 	  
 	  items = new RuleListItem[42];
 	  

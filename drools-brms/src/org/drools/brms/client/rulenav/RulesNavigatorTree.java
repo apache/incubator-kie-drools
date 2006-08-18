@@ -34,17 +34,19 @@ public class RulesNavigatorTree implements TreeListener {
   private Tree navTreeWidget = new Tree();
   private RepositoryServiceAsync service = RepositoryServiceFactory.getService();
   private TreeItem lastItemChanged = null;
+  private CategorySelectHandler categorySelectHandler;
   
   public void setTreeSize(String width) {
 	  navTreeWidget.setWidth(width);
   }   
   
+  /** Return the actual widget so the composite can use it */
   public Tree getTree() {
 	  return navTreeWidget;
   }
   
-  public RulesNavigatorTree() {
-
+  public RulesNavigatorTree(CategorySelectHandler handler) {    
+    this.categorySelectHandler = handler;
     service.loadChildCategories( "", new AsyncCallback() {
 
         public void onFailure(Throwable caught) {
@@ -66,10 +68,11 @@ public class RulesNavigatorTree implements TreeListener {
   }
 
   public void onShow() {
+      //move along... these are not the droids you're looking for...
   }
 
-  public void onTreeItemSelected(TreeItem item) {
-      System.out.println("TODO: call rule list view");
+  public void onTreeItemSelected(TreeItem item) {      
+      this.categorySelectHandler.selected( getPath( item ) );
   }
   
 
@@ -79,13 +82,9 @@ public class RulesNavigatorTree implements TreeListener {
     lastItemChanged = item;
     final TreeItem root = item;
     
-    String categoryPath = item.getText();
+    
     //walk back up to build a tree
-    TreeItem parent = item.getParentItem();
-    while (parent != null) {
-        categoryPath = parent.getText() + "/" + categoryPath;
-        parent = parent.getParentItem();
-    }
+    String categoryPath = getPath( item );
     
     service.loadChildCategories( categoryPath, new AsyncCallback() {
 
@@ -108,6 +107,16 @@ public class RulesNavigatorTree implements TreeListener {
     
     
   }
+
+private String getPath(TreeItem item) {
+    String categoryPath = item.getText();
+    TreeItem parent = item.getParentItem();
+    while (parent != null) {
+        categoryPath = parent.getText() + "/" + categoryPath;
+        parent = parent.getParentItem();
+    }
+    return categoryPath;
+}
 
 private boolean notShowing(TreeItem item) {
     return !item.getState();

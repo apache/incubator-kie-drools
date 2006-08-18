@@ -2,6 +2,7 @@ package org.drools.brms.client;
 
 import org.drools.brms.client.ruleeditor.RuleView;
 import org.drools.brms.client.rulelist.RuleListView;
+import org.drools.brms.client.rulenav.CategorySelectHandler;
 import org.drools.brms.client.rulenav.RulesNavigatorTree;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -46,9 +47,15 @@ public class Rules extends JBRMSFeature {
 
 	private HorizontalPanel doExplore(TabPanel tab) {
 		HorizontalPanel  panel = new HorizontalPanel();
-		RulesNavigatorTree nav = new RulesNavigatorTree();			
+		RulesNavigatorTree nav = new RulesNavigatorTree(new CategorySelectHandler() {
+
+            public void selected(String selectedPath) {
+                System.out.println("Selected path: " + selectedPath);                
+            }
+            
+        });			
 		panel.add(nav.getTree());
-		RuleListView list = new RuleListView(tab);
+		RuleListView list = new RuleListView(tab); //TODO: change this to item select handler
 		panel.add(list);
 		return panel;
 	}
