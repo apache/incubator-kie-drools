@@ -8,6 +8,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
  */
 public interface RepositoryService extends RemoteService {
 
-    public String myMethod(String blah);
+    public String[] loadChildCategories(String path);
     
 }
