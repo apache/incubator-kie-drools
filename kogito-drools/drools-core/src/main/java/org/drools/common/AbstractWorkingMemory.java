@@ -18,6 +18,7 @@ package org.drools.common;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
+import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FastMap;
 import org.drools.util.PrimitiveLongMap;
@@ -88,6 +90,11 @@ public abstract class AbstractWorkingMemory
     protected final Map                       assertMap;
 
     protected Map                             queryResults                                  = Collections.EMPTY_MAP;
+
+    protected GlobalResolver                  globalResolver;
+
+    protected static final Object             NULL                                          = new Serializable() {
+                                                                                            };
 
     /** The eventSupport */
     protected final WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( this );
@@ -231,7 +238,12 @@ public abstract class AbstractWorkingMemory
      * @see WorkingMemory
      */
     public void setGlobal(final String name,
-                          final Object value) {
+                          Object value) {
+        // Cannot set null values
+        if ( value == null ) {
+            return;
+        }
+        
         try {
             lock.lock();
             // Make sure the global has been declared in the RuleBase
@@ -250,6 +262,10 @@ public abstract class AbstractWorkingMemory
             lock.unlock();
         }
     }
+    
+    public void setGlobalResolver(GlobalResolver globalResolver) {
+        this.globalResolver = globalResolver;
+    }
 
     public long getId() {
         return this.id;
@@ -261,7 +277,10 @@ public abstract class AbstractWorkingMemory
     public Object getGlobal(final String name) {
         try {
             lock.lock();
-            final Object object = this.globals.get( name );
+            Object object = this.globals.get( name );
+            if ( object == null && this.globalResolver != null ) {
+                object = this.globalResolver.resolve( name );
+            }
             return object;
         } finally {
             lock.unlock();
@@ -311,7 +330,7 @@ public abstract class AbstractWorkingMemory
         // the firing for any other assertObject(..) that get
         // nested inside, avoiding concurrent-modification
         // exceptions, depending on code paths of the actions.
-        
+
         if ( !this.factQueue.isEmpty() ) {
             propagateQueuedActions();
         }
@@ -797,8 +816,8 @@ public abstract class AbstractWorkingMemory
         }
 
     }
-    
-    public void queueWorkingMemoryAction( WorkingMemoryAction action ) {
+
+    public void queueWorkingMemoryAction(WorkingMemoryAction action) {
         this.factQueue.add( action );
     }
 
@@ -811,7 +830,7 @@ public abstract class AbstractWorkingMemory
                                                                   false,
                                                                   true,
                                                                   ruleOrigin,
-                                                                  activationOrigin ) );        
+                                                                  activationOrigin ) );
     }
 
     /**
@@ -927,5 +946,5 @@ public abstract class AbstractWorkingMemory
                            this.activationOrigin );
         }
     }
-      
+
 }

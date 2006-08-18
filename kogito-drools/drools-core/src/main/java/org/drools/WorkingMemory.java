@@ -25,6 +25,7 @@ import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
+import org.drools.spi.GlobalResolver;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.
@@ -94,12 +95,12 @@ public interface WorkingMemory
     Map getGlobals();
 
     /**
-     * Set a specific piece of global in this working memory.
+     * Set a specific piece of global in this working memory. Null values will return doing nothign
      * 
      * @param name
      *            the name under which to populate the data
      * @param value
-     *            the application data
+     *            the global value, cannot be null
      */
     void setGlobal(String name,
                    Object value);
@@ -110,6 +111,12 @@ public interface WorkingMemory
      * @return application data or null if nothing is set under this name
      */
     Object getGlobal(String name);
+    
+    /**
+     * Delegate used to resolve any global names not found in the global map.
+     * @param globalResolver
+     */
+    void setGlobalResolver(GlobalResolver globalResolver);
 
     /**
      * Retrieve the <code>RuleBase</code> of this working memory.
