@@ -24,6 +24,7 @@ import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
+import org.drools.spi.GlobalResolver;
 
 /**
  * Each implemented method of the WorkingMemory interface is synchronised.
@@ -150,6 +151,10 @@ public class SynchronizedWorkingMemory
 
     public Map getGlobals() {
         return this.workingMemory.getGlobals();
+    }
+    
+    public void setGlobalResolver(GlobalResolver globalResolver) {
+        this.workingMemory.setGlobalResolver( globalResolver );
     }
 
     public QueryResults getQueryResults(final String query) {
