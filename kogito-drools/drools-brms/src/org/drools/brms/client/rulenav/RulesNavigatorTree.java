@@ -28,111 +28,108 @@ import com.google.gwt.user.client.ui.TreeListener;
  * navigate the repository.
  * Uses the the {@link com.google.gwt.user.client.ui.Tree} widget.
  */
-public class RulesNavigatorTree implements TreeListener {
+public class RulesNavigatorTree
+    implements
+    TreeListener {
 
+    private Tree                   navTreeWidget = new Tree();
+    private RepositoryServiceAsync service       = RepositoryServiceFactory.getService();
+    private CategorySelectHandler  categorySelectHandler;
 
-  private Tree navTreeWidget = new Tree();
-  private RepositoryServiceAsync service = RepositoryServiceFactory.getService();
-  private TreeItem lastItemChanged = null;
-  private CategorySelectHandler categorySelectHandler;
-  
-  public void setTreeSize(String width) {
-	  navTreeWidget.setWidth(width);
-  }   
-  
-  /** Return the actual widget so the composite can use it */
-  public Tree getTree() {
-	  return navTreeWidget;
-  }
-  
-  public RulesNavigatorTree(CategorySelectHandler handler) {    
-    this.categorySelectHandler = handler;
-    service.loadChildCategories( "", new AsyncCallback() {
-
-        public void onFailure(Throwable caught) {
-            //TODO: work out how to handle it.
-        }
-
-        public void onSuccess(Object result) {
-            String[] categories = (String[]) result;
-            for ( int i = 0; i < categories.length; i++ ) {
-                navTreeWidget.addItem( categories[i] ).addItem( new PendingItem() );
-            }            
-            
-        }
-        
-    });  
-      
-    navTreeWidget.addTreeListener(this);
-    
-  }
-
-  public void onShow() {
-      //move along... these are not the droids you're looking for...
-  }
-
-  public void onTreeItemSelected(TreeItem item) {      
-      this.categorySelectHandler.selected( getPath( item ) );
-  }
-  
-
-  public void onTreeItemStateChanged(TreeItem item) {
-    if (notShowing( item )) return;
-    if (item == lastItemChanged) return;
-    lastItemChanged = item;
-    final TreeItem root = item;
-    
-    
-    //walk back up to build a tree
-    String categoryPath = getPath( item );
-    
-    service.loadChildCategories( categoryPath, new AsyncCallback() {
-
-        public void onFailure(Throwable caught) {
-            // TODO Auto-generated method stub            
-        }
-
-        public void onSuccess(Object result) {
-            TreeItem child = root.getChild( 0 );
-            if (child instanceof PendingItem) {
-                root.removeItem(child);
-            }
-            String[] list = (String[]) result;
-            for ( int i = 0; i < list.length; i++ ) {
-                root.addItem( list[i] ).addItem( new PendingItem() );
-            }
-        }
-        
-    });
-    
-    
-  }
-
-private String getPath(TreeItem item) {
-    String categoryPath = item.getText();
-    TreeItem parent = item.getParentItem();
-    while (parent != null) {
-        categoryPath = parent.getText() + "/" + categoryPath;
-        parent = parent.getParentItem();
+    public void setTreeSize(String width) {
+        navTreeWidget.setWidth( width );
     }
-    return categoryPath;
-}
 
-private boolean notShowing(TreeItem item) {
-    return !item.getState();
-}
+    /** Return the actual widget so the composite can use it */
+    public Tree getTree() {
+        return navTreeWidget;
+    }
 
-//  private void createItem(Proto proto) {
-//    proto.item = new TreeItem(proto.text);
-//    proto.item.setUserObject(proto);
-//    //if (proto.children != null)
-//    proto.item.addItem(new PendingItem());
-//  }
-  
-  private static class PendingItem extends TreeItem {
-      public PendingItem() {
-        super("Please wait...");
-      }
-   }
-  
+    public RulesNavigatorTree(CategorySelectHandler handler) {
+        this.categorySelectHandler = handler;
+        service.loadChildCategories( "",
+                                     new AsyncCallback() {
+
+                                         public void onFailure(Throwable caught) {
+                                             //TODO: work out how to handle it.
+                                         }
+
+                                         public void onSuccess(Object result) {
+                                             String[] categories = (String[]) result;
+                                             for ( int i = 0; i < categories.length; i++ ) {
+                                                 navTreeWidget.addItem( categories[i] ).addItem( new PendingItem() );
+                                             }
+
+                                         }
+
+                                     } );
+
+        navTreeWidget.addTreeListener( this );
+
+    }
+
+    public void onShow() {
+        //move along... these are not the droids you're looking for...
+    }
+
+    public void onTreeItemSelected(TreeItem item) {
+        this.categorySelectHandler.selected( getPath( item ) );
+    }
+
+    public void onTreeItemStateChanged(TreeItem item) {
+
+        if ( hasBeenLoaded( item ) ) {
+            return;
+        }
+
+        final TreeItem root = item;
+
+        //walk back up to build a tree
+        String categoryPath = getPath( item );
+
+        item.setUserObject( new Boolean( true ) );
+
+        service.loadChildCategories( categoryPath,
+                                     new AsyncCallback() {
+
+                                         public void onFailure(Throwable caught) {
+                                             // TODO Auto-generated method stub            
+                                         }
+
+                                         public void onSuccess(Object result) {
+                                             TreeItem child = root.getChild( 0 );
+                                             if ( child instanceof PendingItem ) {
+                                                 root.removeItem( child );
+                                             }
+                                             String[] list = (String[]) result;
+                                             for ( int i = 0; i < list.length; i++ ) {
+                                                 root.addItem( list[i] ).addItem( new PendingItem() );
+                                             }
+                                         }
+
+                                     } );
+
+    }
+
+    private boolean hasBeenLoaded(TreeItem item) {
+        if ( item.getUserObject() == null ) return false;
+        return (((Boolean) item.getUserObject()).booleanValue());
+    }
+
+    private String getPath(TreeItem item) {
+        String categoryPath = item.getText();
+        TreeItem parent = item.getParentItem();
+        while ( parent != null ) {
+            categoryPath = parent.getText() + "/" + categoryPath;
+            parent = parent.getParentItem();
+        }
+        return categoryPath;
+    }
+
+    private static class PendingItem extends TreeItem {
+        public PendingItem() {
+            super( "Please wait..." );
+        }
+    }
+
 }

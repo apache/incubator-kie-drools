@@ -7,12 +7,12 @@ import org.drools.brms.client.rpc.TableConfig;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SourcesTableEvents;
 import com.google.gwt.user.client.ui.TableListener;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -35,7 +35,7 @@ public class RuleListView extends Composite
                                                                   true );
 
     private int                    startIndex, selectedRow = -1;
-    private FlexTable              table              = new FlexTable();
+    private Grid              table              = new Grid();
     private HorizontalPanel        navBar             = new HorizontalPanel();
     
     
@@ -75,11 +75,19 @@ public class RuleListView extends Composite
         navBar.add( innerNavBar );
         navBar.setWidth( "100%" );
 
-        //needed for composite to work
-        setWidget( table );
-
+        //this is so we can stack controls on top of the table
+        VerticalPanel vert = new VerticalPanel();
+        vert.add( navBar );
+        vert.add( table );
+        vert.setStyleName( "rule-List" );
+        vert.setWidth( "100%" );
+        
+        table.setStyleName( "rule-List" );
+        table.setWidth( "100%" );
+        
+        // needed for composite to work
+        setWidget( vert );
         setStyleName( "rule-List" );
-
         initTable();
 
     }
@@ -132,7 +140,10 @@ public class RuleListView extends Composite
     private void initTable() {
         // Create the header row.
 
-        table.setText( 0, 0, "Please wait..." );        
+        table.resize( 1, 1 );
+        table.getRowFormatter().setStyleName( 0, "rule-ListHeader" );  
+        table.setText( 0, 0, "Please wait..." );    
+        
         service.loadTableConfig( "ruleList", new AsyncCallback() {
 
             public void onFailure(Throwable caught) {
@@ -141,15 +152,17 @@ public class RuleListView extends Composite
 
             public void onSuccess(Object result) {
                 TableConfig config = (TableConfig) result;
+                
                 String[] header = config.headers;
-                numberOfColumns = header.length;
+                numberOfColumns = header.length;                
+                
+                visibleItemCount = config.rowsPerPage;
+                table.resize( visibleItemCount + 1, numberOfColumns);
+ 
                 for ( int i = 0; i < numberOfColumns; i++ ) {
                     table.setText( 0, i, header[i]);
-                }                
-                table.setWidget( 0,
-                                 numberOfColumns,
-                                 navBar );      
-                visibleItemCount = config.rowsPerPage;
+                }   
+                
                 data = new String[1][numberOfColumns];
                 update();      
                 
@@ -157,39 +170,6 @@ public class RuleListView extends Composite
             
         });
         
-        table.getRowFormatter().setStyleName( 0,
-                                              "rule-ListHeader" );
-
-        // Initialize the rest of the rows. MN: Not sure if I need to do this here or not...
-//        for ( int i = 0; i < VISIBLE_ITEM_COUNT; ++i ) {
-//            table.setText( i + 1,
-//                           0,
-//                           "" );
-//            table.setText( i + 1,
-//                           1,
-//                           "" );
-//            table.setText( i + 1,
-//                           2,
-//                           "" );
-//            table.setText( i + 1,
-//                           3,
-//                           "" );
-//
-//            table.getCellFormatter().setWordWrap( i + 1,
-//                                                  0,
-//                                                  false );
-//            table.getCellFormatter().setWordWrap( i + 1,
-//                                                  1,
-//                                                  false );
-//            table.getCellFormatter().setWordWrap( i + 1,
-//                                                  2,
-//                                                  false );
-//            table.getCellFormatter().setWordWrap( i + 1,
-//                                                  3,
-//                                                  false );
-//
-//            //table.getFlexCellFormatter().setColSpan(i + 1, 2, 2);
-//        }
     }
 
     /**
@@ -234,11 +214,12 @@ public class RuleListView extends Composite
     
 
     private void update() {
-        
+                        
         if (this.numberOfColumns == -1) {
             //if it hasn't been setup, can't load data yet
             return;
         }
+        
         // Update the older/newer buttons & label.
         int count = data.length;
         int max = startIndex + visibleItemCount;
