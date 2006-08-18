@@ -8,23 +8,23 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SourcesTableEvents;
-import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TableListener;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A composite that displays a list of emails that can be selected.
+ * A composite that displays an explorer and a list view.
  */
 public class RuleListView extends Composite
     implements
     TableListener,
     ClickListener {
 
-    private static final int       EDITOR_TAB         = 1;
-    private int                     visibleItemCount = -1;
+    
+    private int                    visibleItemCount = -1;
 
     private HTML                   countLabel         = new HTML();
     private HTML                   prevButton         = new HTML( "<a href='javascript:;'>&lt; prev</a>",
@@ -37,16 +37,20 @@ public class RuleListView extends Composite
     private int                    startIndex, selectedRow = -1;
     private FlexTable              table              = new FlexTable();
     private HorizontalPanel        navBar             = new HorizontalPanel();
-    private TabPanel               tabPanel;
+    
     
     private final RepositoryServiceAsync service;
     private String[][] data;
     protected int numberOfColumns;
+    private EditItemEvent editEvent;
 
-    public RuleListView(TabPanel tab) {
+    private long timer;
+
+    public RuleListView(EditItemEvent event) {
 
         service = RepositoryServiceFactory.getService();
-        tabPanel = tab;
+        this.editEvent = event;
+        
 
         // Setup the table.
         table.setCellSpacing( 0 );
@@ -109,12 +113,17 @@ public class RuleListView extends Composite
                 update();
             }
         } else if ( sender == editButton ) {
-            changeTabToEdit();
+            openEditor();
         }
     }
 
-    private void changeTabToEdit() {
-        tabPanel.selectTab( EDITOR_TAB );
+    /**
+     * Open the editor as pertains to the selected row !
+     */
+    private void openEditor() {
+        if (selectedRow < data.length) {
+            this.editEvent.open( data[selectedRow] );
+        }
     }
 
     /**
@@ -213,19 +222,19 @@ public class RuleListView extends Composite
         }
     }
     
-    /**
-     * This will inject the data into the table, and refresh it.
-     * The data needs to match up with how this table was configured.
-     * (the table will ask the server what cols there are, and how many to a page).
-     * @param data A 2D array of tablular data.
-     */
-    public void setData(String[][] data) {
-        this.data = data;
-        update();
+    
+    
+    private void startTime() {
+        this.timer = System.currentTimeMillis();
+    }
+    
+    private void finish(String message) {
+        System.out.println("time taken for " + message + " was: " + (System.currentTimeMillis() - timer));
     }
     
 
     private void update() {
+        
         if (this.numberOfColumns == -1) {
             //if it hasn't been setup, can't load data yet
             return;
@@ -269,18 +278,42 @@ public class RuleListView extends Composite
 //                           item.version );
         }
 
+        
+        startTime();
+        
+        System.out.println("i is " + visibleItemCount);
+        
         // Clear any remaining slots.
         for ( ; i < visibleItemCount; ++i ) {
-            
-            for(int col = 0; col < numberOfColumns; col++) {
-                table.setHTML( i + 1,
-                               col,
-                               "&nbsp;" );
-            }
-            
+            table.setHTML( i + 1, 0, "&nbsp;" );
         }
 
+        finish( "update( )");
+        
         // Select the first row if none is selected.
         if ( selectedRow == -1 ) selectRow( 0 );
+        
+        
+    }
+
+    public void loadRulesForCategoryPath(String selectedPath) {
+        service.loadRuleListForCategories( selectedPath, "", new AsyncCallback() {
+
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
+            }
+
+            public void onSuccess(Object result) {
+                String[][] data = (String[][]) result;
+                updateData(data);
+            }
+            
+        });
+        
+    }
+    
+    private void updateData(String[][] data) {
+        this.data = data;
+        update();
     }
 }

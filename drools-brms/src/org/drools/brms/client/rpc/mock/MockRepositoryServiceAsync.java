@@ -42,6 +42,7 @@ public class MockRepositoryServiceAsync
     public void loadRuleListForCategories(String categoryPath,
                                           String status,
                                           AsyncCallback callback) {
+        log("loading rule list", "for cat path: " + categoryPath);
         String[][] data = { { "Rule 1", "Production", "mark", "2" },
                             { "Rule 2", "Production", "mark", "2" },
                             { "Rule 3", "Production", "mark", "2" }};
@@ -53,6 +54,7 @@ public class MockRepositoryServiceAsync
 
     public void loadTableConfig(String listName,
                                 AsyncCallback callback) {
+        log("loading table config", listName);
         final TableConfig config = new TableConfig();
         final AsyncCallback cb = callback;
         Timer t = new Timer() {
