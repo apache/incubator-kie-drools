@@ -51,15 +51,7 @@ public class LeapsTest extends IntegrationCases {
     protected RuleBase getRuleBase() throws Exception {
         return RuleBaseFactory.newRuleBase( RuleBase.LEAPS );
     }
-    
-    
-
-    public void testFactTemplate() throws Exception {
-		// TODO FIXME !		
-	}
-
-
-
+ 
 	/**
      * Leaps query requires fireAll run before any probing can be done. this
      * test mirrors one in IntegrationCases.java with addition of call to
@@ -392,10 +384,6 @@ public class LeapsTest extends IntegrationCases {
                       list.get( 0 ) );
         assertEquals( "3 1", 
                       list.get( 1 ) );
-    }
-    
-    public void testBasicFrom() throws Exception {
-        // FIXME
     }
     
     public void testLogicalAssertionsWithExists() throws Exception {
